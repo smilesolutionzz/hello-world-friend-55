@@ -130,8 +130,8 @@ const Auth = () => {
           <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center mx-auto mb-4">
             <Heart className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">AI 심리케어</h1>
-          <p className="text-muted-foreground">가족 모두의 마음건강을 위한 통합 케어</p>
+          <h1 className="text-2xl font-bold text-foreground mb-2">AIHPRO</h1>
+          <p className="text-muted-foreground">데이터로 읽는 마음, AI하이라이트프로</p>
         </div>
 
         <Card className="p-6">

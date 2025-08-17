@@ -14,6 +14,89 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_coach_conversations: {
+        Row: {
+          content: string
+          conversation_context: Json | null
+          emotion_detected: string | null
+          id: string
+          intervention_type: string | null
+          message_type: string
+          profile_id: string
+          session_id: string | null
+          timestamp: string
+        }
+        Insert: {
+          content: string
+          conversation_context?: Json | null
+          emotion_detected?: string | null
+          id?: string
+          intervention_type?: string | null
+          message_type: string
+          profile_id: string
+          session_id?: string | null
+          timestamp?: string
+        }
+        Update: {
+          content?: string
+          conversation_context?: Json | null
+          emotion_detected?: string | null
+          id?: string
+          intervention_type?: string | null
+          message_type?: string
+          profile_id?: string
+          session_id?: string | null
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_coach_conversations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "ai_coach_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_coach_sessions: {
+        Row: {
+          created_at: string
+          effectiveness_score: number | null
+          emotion_analysis: Json | null
+          end_time: string | null
+          id: string
+          interventions_provided: Json | null
+          profile_id: string
+          session_data: Json
+          session_type: string
+          start_time: string
+        }
+        Insert: {
+          created_at?: string
+          effectiveness_score?: number | null
+          emotion_analysis?: Json | null
+          end_time?: string | null
+          id?: string
+          interventions_provided?: Json | null
+          profile_id: string
+          session_data?: Json
+          session_type: string
+          start_time?: string
+        }
+        Update: {
+          created_at?: string
+          effectiveness_score?: number | null
+          emotion_analysis?: Json | null
+          end_time?: string | null
+          id?: string
+          interventions_provided?: Json | null
+          profile_id?: string
+          session_data?: Json
+          session_type?: string
+          start_time?: string
+        }
+        Relationships: []
+      }
       ai_therapist_interactions: {
         Row: {
           ai_therapist_id: string
@@ -200,6 +283,99 @@ export type Database = {
         }
         Relationships: []
       }
+      cbt_homework_assignments: {
+        Row: {
+          ai_feedback: string | null
+          assignment_type: string
+          completed_at: string | null
+          completion_data: Json | null
+          completion_status: string | null
+          created_at: string
+          description: string
+          difficulty_level: number | null
+          due_date: string | null
+          id: string
+          instructions: Json
+          profile_id: string
+          title: string
+        }
+        Insert: {
+          ai_feedback?: string | null
+          assignment_type: string
+          completed_at?: string | null
+          completion_data?: Json | null
+          completion_status?: string | null
+          created_at?: string
+          description: string
+          difficulty_level?: number | null
+          due_date?: string | null
+          id?: string
+          instructions?: Json
+          profile_id: string
+          title: string
+        }
+        Update: {
+          ai_feedback?: string | null
+          assignment_type?: string
+          completed_at?: string | null
+          completion_data?: Json | null
+          completion_status?: string | null
+          created_at?: string
+          description?: string
+          difficulty_level?: number | null
+          due_date?: string | null
+          id?: string
+          instructions?: Json
+          profile_id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      cbt_patterns: {
+        Row: {
+          behavior_experiments: Json
+          cognitive_distortion_type: string
+          created_at: string
+          id: string
+          improvement_score: number | null
+          last_occurrence: string | null
+          negative_thoughts: Json
+          profile_id: string
+          progress_notes: string | null
+          restructured_thoughts: Json
+          trigger_situations: Json
+          updated_at: string
+        }
+        Insert: {
+          behavior_experiments?: Json
+          cognitive_distortion_type: string
+          created_at?: string
+          id?: string
+          improvement_score?: number | null
+          last_occurrence?: string | null
+          negative_thoughts?: Json
+          profile_id: string
+          progress_notes?: string | null
+          restructured_thoughts?: Json
+          trigger_situations?: Json
+          updated_at?: string
+        }
+        Update: {
+          behavior_experiments?: Json
+          cognitive_distortion_type?: string
+          created_at?: string
+          id?: string
+          improvement_score?: number | null
+          last_occurrence?: string | null
+          negative_thoughts?: Json
+          profile_id?: string
+          progress_notes?: string | null
+          restructured_thoughts?: Json
+          trigger_situations?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       chat_sessions: {
         Row: {
           ended_at: string | null
@@ -240,6 +416,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      coaching_effectiveness_metrics: {
+        Row: {
+          ai_coach_helpfulness_rating: number | null
+          areas_needing_focus: Json | null
+          cbt_skill_application_score: number | null
+          created_at: string
+          id: string
+          lifestyle_adherence_score: number | null
+          metric_date: string
+          overall_wellbeing_score: number | null
+          profile_id: string
+          relationship_satisfaction_score: number | null
+          specific_improvements: Json | null
+          stress_management_score: number | null
+        }
+        Insert: {
+          ai_coach_helpfulness_rating?: number | null
+          areas_needing_focus?: Json | null
+          cbt_skill_application_score?: number | null
+          created_at?: string
+          id?: string
+          lifestyle_adherence_score?: number | null
+          metric_date: string
+          overall_wellbeing_score?: number | null
+          profile_id: string
+          relationship_satisfaction_score?: number | null
+          specific_improvements?: Json | null
+          stress_management_score?: number | null
+        }
+        Update: {
+          ai_coach_helpfulness_rating?: number | null
+          areas_needing_focus?: Json | null
+          cbt_skill_application_score?: number | null
+          created_at?: string
+          id?: string
+          lifestyle_adherence_score?: number | null
+          metric_date?: string
+          overall_wellbeing_score?: number | null
+          profile_id?: string
+          relationship_satisfaction_score?: number | null
+          specific_improvements?: Json | null
+          stress_management_score?: number | null
+        }
+        Relationships: []
       }
       consultations: {
         Row: {
@@ -380,6 +601,48 @@ export type Database = {
           id?: string
           name?: string
           organization_id?: string
+        }
+        Relationships: []
+      }
+      emotion_monitoring_logs: {
+        Row: {
+          created_at: string
+          detection_source: string
+          detection_timestamp: string
+          emotion_type: string
+          id: string
+          intensity_level: number
+          intervention_triggered: boolean | null
+          intervention_type: string | null
+          profile_id: string
+          raw_data: Json
+          user_response: string | null
+        }
+        Insert: {
+          created_at?: string
+          detection_source: string
+          detection_timestamp?: string
+          emotion_type: string
+          id?: string
+          intensity_level: number
+          intervention_triggered?: boolean | null
+          intervention_type?: string | null
+          profile_id: string
+          raw_data?: Json
+          user_response?: string | null
+        }
+        Update: {
+          created_at?: string
+          detection_source?: string
+          detection_timestamp?: string
+          emotion_type?: string
+          id?: string
+          intensity_level?: number
+          intervention_triggered?: boolean | null
+          intervention_type?: string | null
+          profile_id?: string
+          raw_data?: Json
+          user_response?: string | null
         }
         Relationships: []
       }
@@ -790,6 +1053,51 @@ export type Database = {
         }
         Relationships: []
       }
+      lifestyle_coaching_data: {
+        Row: {
+          adherence_score: number | null
+          ai_recommendations: Json | null
+          created_at: string
+          exercise_data: Json | null
+          hormonal_factors: Json | null
+          id: string
+          mental_health_correlation: Json | null
+          nutrition_data: Json | null
+          profile_id: string
+          seasonal_factors: Json | null
+          sleep_data: Json | null
+          tracking_date: string
+        }
+        Insert: {
+          adherence_score?: number | null
+          ai_recommendations?: Json | null
+          created_at?: string
+          exercise_data?: Json | null
+          hormonal_factors?: Json | null
+          id?: string
+          mental_health_correlation?: Json | null
+          nutrition_data?: Json | null
+          profile_id: string
+          seasonal_factors?: Json | null
+          sleep_data?: Json | null
+          tracking_date: string
+        }
+        Update: {
+          adherence_score?: number | null
+          ai_recommendations?: Json | null
+          created_at?: string
+          exercise_data?: Json | null
+          hormonal_factors?: Json | null
+          id?: string
+          mental_health_correlation?: Json | null
+          nutrition_data?: Json | null
+          profile_id?: string
+          seasonal_factors?: Json | null
+          sleep_data?: Json | null
+          tracking_date?: string
+        }
+        Relationships: []
+      }
       lifestyle_patterns: {
         Row: {
           created_at: string
@@ -1096,6 +1404,51 @@ export type Database = {
           role?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      relationship_analysis: {
+        Row: {
+          communication_patterns: Json
+          conflict_triggers: Json
+          created_at: string
+          id: string
+          improvement_suggestions: Json
+          last_interaction_analysis: string | null
+          positive_interactions: Json
+          profile_id: string
+          relationship_id: string | null
+          relationship_type: string
+          satisfaction_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          communication_patterns?: Json
+          conflict_triggers?: Json
+          created_at?: string
+          id?: string
+          improvement_suggestions?: Json
+          last_interaction_analysis?: string | null
+          positive_interactions?: Json
+          profile_id: string
+          relationship_id?: string | null
+          relationship_type: string
+          satisfaction_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          communication_patterns?: Json
+          conflict_triggers?: Json
+          created_at?: string
+          id?: string
+          improvement_suggestions?: Json
+          last_interaction_analysis?: string | null
+          positive_interactions?: Json
+          profile_id?: string
+          relationship_id?: string | null
+          relationship_type?: string
+          satisfaction_score?: number | null
+          updated_at?: string
         }
         Relationships: []
       }

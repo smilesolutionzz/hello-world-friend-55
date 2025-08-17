@@ -62,8 +62,8 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
     setCurrentStep("AI 전문가 분석 완료!");
     
     try {
-      const aiAnalysis = await analyzeAssessmentResults(results, age, "성별미지정");
-      setAnalysis(aiAnalysis);
+      const result = await analyzeAssessmentResults(results, ageGroup, age);
+      setAnalysis(result.analysis);
     } catch (error) {
       console.error('AI Analysis Error:', error);
       setAnalysis(generateFallbackAnalysis());

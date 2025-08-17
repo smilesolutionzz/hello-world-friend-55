@@ -7,23 +7,26 @@ import LanguageTestForm from "@/components/assessment/LanguageTestForm";
 import LanguageTestResult from "@/components/assessment/LanguageTestResult";
 import PanicTestForm from "@/components/assessment/PanicTestForm";
 import PanicTestResult from "@/components/assessment/PanicTestResult";
+import DepressionTestForm from "@/components/assessment/DepressionTestForm";
+import DepressionTestResult from "@/components/assessment/DepressionTestResult";
 import AnalysisScreen from "@/components/analysis/AnalysisScreen";
 import ExpertMatching from "@/components/analysis/ExpertMatching";
 import ConsultationRoom from "@/components/consultation/ConsultationRoom";
 import { ExpertProfile } from "@/types/assessment";
 
 const Assessment = () => {
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | null>(null);
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
   const [languageResults, setLanguageResults] = useState<{answers: number[], total: number, average: number, ageGroup: string} | null>(null);
   const [panicResults, setPanicResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
+  const [depressionResults, setDepressionResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
 
-  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic') => {
+  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression') => {
     setTestType(type);
     setCurrentStep('age-select');
   };
@@ -35,6 +38,8 @@ const Assessment = () => {
       setCurrentStep('language-test');
     } else if (testType === 'panic') {
       setCurrentStep('panic-test');
+    } else if (testType === 'depression') {
+      setCurrentStep('depression-test');
     } else {
       setCurrentStep('assessment');
     }
@@ -58,6 +63,12 @@ const Assessment = () => {
     setCurrentStep('panic-result');
   };
 
+  const handleDepressionTestComplete = (results: {answers: number[], total: number, average: number, severity: string}) => {
+    console.log('Depression Test Results:', results);
+    setDepressionResults(results);
+    setCurrentStep('depression-result');
+  };
+
   const handleAnalysisComplete = (analysis: string) => {
     setAnalysisResult(analysis);
     setCurrentStep('matching');
@@ -75,7 +86,7 @@ const Assessment = () => {
   };
 
   const handleBack = () => {
-    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result') {
+    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result') {
       // 분석/매칭/상담/언어결과 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
@@ -84,6 +95,7 @@ const Assessment = () => {
       setAssessmentResults({});
       setLanguageResults(null);
       setPanicResults(null);
+      setDepressionResults(null);
       setAnalysisResult("");
       setSelectedExpert(null);
     } else if (currentStep === 'age-select') {
@@ -140,7 +152,7 @@ const Assessment = () => {
             </p>
           </div>
           
-          <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div 
               className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
               onClick={() => handleTestTypeSelect('psychological')}
@@ -177,6 +189,19 @@ const Assessment = () => {
                 <li>• 표준화된 21문항</li>
                 <li>• 신속한 증상 평가</li>
                 <li>• 심각도별 분석</li>
+              </ul>
+            </div>
+
+            <div 
+              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
+              onClick={() => handleTestTypeSelect('depression')}
+            >
+              <h3 className="text-2xl font-bold text-brand-gradient mb-4">우울증 검사</h3>
+              <p className="text-muted-foreground mb-4">Beck 우울척도 기반 정밀 진단</p>
+              <ul className="space-y-2 text-sm">
+                <li>• 표준화된 21문항</li>
+                <li>• AI 심층 분석</li>
+                <li>• 전문적 해석 제공</li>
               </ul>
             </div>
           </div>
@@ -231,6 +256,36 @@ const Assessment = () => {
           </div>
           <PanicTestForm 
             onComplete={handlePanicTestComplete}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'depression-test') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">우울증 자가검사 (3분)</h1>
+            <p className="text-muted-foreground">Beck 우울척도 기반 21문항</p>
+          </div>
+          <DepressionTestForm 
+            onComplete={handleDepressionTestComplete}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'depression-result' && depressionResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <DepressionTestResult 
+            results={depressionResults}
             onBack={handleBack}
           />
         </div>

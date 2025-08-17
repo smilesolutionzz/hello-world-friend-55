@@ -5,7 +5,7 @@ import { Baby, GraduationCap, Briefcase, Heart } from "lucide-react";
 
 interface AgeSelectorProps {
   onAgeGroupSelect: (ageGroup: 'infant' | 'child' | 'adult', age: number) => void;
-  testType?: 'psychological' | 'language' | 'panic' | null;
+  testType?: 'psychological' | 'language' | 'panic' | 'depression' | null;
 }
 
 const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
@@ -75,10 +75,10 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
           
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             <span className="block text-foreground mb-2">
-              {testType === 'language' ? '언어발달 검사' : testType === 'panic' ? '공황장애 검사' : '3분으로 시작하는'}
+              {testType === 'language' ? '언어발달 검사' : testType === 'panic' ? '공황장애 검사' : testType === 'depression' ? '우울증 검사' : '3분으로 시작하는'}
             </span>
             <span className="block text-brand-gradient">
-              {testType === 'language' ? '연령별 맞춤 진단' : testType === 'panic' ? 'DSM-5 기반 자가진단' : '전문가급 심리발달 진단'}
+              {testType === 'language' ? '연령별 맞춤 진단' : testType === 'panic' ? 'DSM-5 기반 자가진단' : testType === 'depression' ? 'Beck 우울척도 기반' : '전문가급 심리발달 진단'}
             </span>
           </h1>
           
@@ -87,6 +87,8 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
               ? '연령대를 선택하여 언어발달 수준을 확인해보세요' 
               : testType === 'panic'
               ? '연령대를 선택하여 공황장애 증상을 체크해보세요'
+              : testType === 'depression'
+              ? '연령대를 선택하여 우울증상을 확인해보세요'
               : '연령에 맞는 전문 검사로 정확한 분석을 받아보세요'
             }
           </p>
@@ -95,10 +97,10 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
         {/* Age Group Selection */}
         {!selectedGroup && (
           <div className="max-w-6xl mx-auto">
-            <div className={`grid ${testType === 'language' ? 'md:grid-cols-2' : testType === 'panic' ? 'md:grid-cols-1 max-w-2xl mx-auto' : 'md:grid-cols-3'} gap-8`}>
+            <div className={`grid ${testType === 'language' ? 'md:grid-cols-2' : (testType === 'panic' || testType === 'depression') ? 'md:grid-cols-1 max-w-2xl mx-auto' : 'md:grid-cols-3'} gap-8`}>
               {ageGroups.filter(group => {
                 if (testType === 'language') return group.key !== 'adult';
-                if (testType === 'panic') return group.key === 'adult';
+                if (testType === 'panic' || testType === 'depression') return group.key === 'adult';
                 return true;
               }).map((group) => {
                 const IconComponent = group.icon;

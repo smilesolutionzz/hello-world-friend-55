@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu } from "lucide-react";
+import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, BarChart3, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -78,20 +78,32 @@ const Navigation = () => {
       {!isMobile && (
         <>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" className="btn-ghost" onClick={() => navigate('/')}>
+            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/')}>
               <Home className="w-4 h-4 mr-2" />
               홈
             </Button>
-            <Button variant="ghost" className="btn-ghost" onClick={() => navigate('/assessment')}>
+            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/assessment')}>
               <Clock className="w-4 h-4 mr-2" />
               3분 검사
             </Button>
-            <Button variant="ghost" className="btn-ghost" onClick={() => navigate('/ai-counselor')}>
+            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/ai-counselor')}>
               <MessageCircle className="w-4 h-4 mr-2" />
               AI상담사
             </Button>
+            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/metaverse')}>
+              <Brain className="w-4 h-4 mr-2" />
+              메타버스치료
+            </Button>
+            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/family')}>
+              <Users className="w-4 h-4 mr-2" />
+              가족케어
+            </Button>
+            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/corporate')}>
+              <BarChart3 className="w-4 h-4 mr-2" />
+              기업솔루션
+            </Button>
             {user && (
-              <Button variant="ghost" className="btn-ghost" onClick={() => navigate('/dashboard')}>
+              <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/dashboard')}>
                 <BookOpen className="w-4 h-4 mr-2" />
                 내 계정
               </Button>
@@ -162,6 +174,21 @@ const Navigation = () => {
                 <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/ai-counselor')}>
                   <MessageCircle className="w-4 h-4 mr-3" />
                   AI상담사
+                </Button>
+                
+                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/metaverse')}>
+                  <Brain className="w-4 h-4 mr-3" />
+                  메타버스치료
+                </Button>
+                
+                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/family')}>
+                  <Users className="w-4 h-4 mr-3" />
+                  가족케어
+                </Button>
+                
+                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/corporate')}>
+                  <BarChart3 className="w-4 h-4 mr-3" />
+                  기업솔루션
                 </Button>
                 
                 {user && (

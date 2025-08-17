@@ -1,0 +1,136 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { message } = await req.json();
+    
+    if (!openAIApiKey) {
+      throw new Error('OpenAI API key not configured');
+    }
+
+    console.log('Received instant report request for message:', message);
+
+    const analysisPrompt = `
+당신은 육아와 아동발달 전문가입니다. 사용자의 고민을 분석하여 전문적이면서도 따뜻한 즉시 리포팅을 제공해주세요.
+
+사용자 고민: "${message}"
+
+다음 형식으로 리포팅해주세요:
+
+🔍 **상황 분석**
+- 현재 상황을 간결하게 요약
+
+💡 **전문가 관점 (참고용)**
+- 전문적 관점에서의 분석 (의학적 진단 아님을 명시)
+- 정상적인 발달 과정인지, 주의깊게 살펴볼 부분인지 설명
+
+🎯 **구체적 조언**
+1. 즉시 실천할 수 있는 구체적 방법들
+2. 단계적 접근 방법
+3. 상황별 대응 방안
+
+📚 **추가 정보**
+- 참고할 수 있는 자료나 정보 제공
+
+💝 **격려의 말**
+- 따뜻하고 공감적인 격려 메시지
+
+**중요사항:**
+- 모든 분석은 "참고용"임을 명시
+- 의학적 진단이 아님을 명확히 표시
+- 전문가 상담이 필요한 경우 권유
+- 위기상황 시 즉시 119나 1577-0199 연락하도록 안내
+
+약 500-800자 분량으로 전문적이면서도 따뜻하게 작성해주세요.
+`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-5-2025-08-07',
+        messages: [
+          { 
+            role: 'system', 
+            content: '당신은 육아와 아동발달 전문가입니다. 따뜻하고 전문적인 참고용 분석을 제공하며, 항상 "참고용"임을 명시합니다.'
+          },
+          { role: 'user', content: analysisPrompt }
+        ],
+        max_completion_tokens: 1000
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('OpenAI API Error:', errorData);
+      throw new Error(`OpenAI API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const report = data.choices[0].message.content;
+
+    // 위험 키워드 감지
+    const riskKeywords = ['자살', '자해', '죽고싶', '극심한', '심각한', '응급'];
+    const hasRiskKeywords = riskKeywords.some(keyword => 
+      message.toLowerCase().includes(keyword) || report.toLowerCase().includes(keyword)
+    );
+
+    console.log('Generated instant report successfully');
+
+    return new Response(JSON.stringify({ 
+      report,
+      riskLevel: hasRiskKeywords ? 'high' : 'low',
+      needsExpertConsultation: message.length > 200 || hasRiskKeywords,
+      timestamp: new Date().toISOString()
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+
+  } catch (error) {
+    console.error('Error in instant-report function:', error);
+    
+    // 기본 안전 응답
+    const fallbackReport = `🔍 **상황 분석 (참고용)**
+고민을 공유해주셔서 감사합니다. 현재 일시적인 분석 장애가 발생했습니다.
+
+💡 **전문가 관점 (참고용)**
+모든 육아 고민은 정상적인 과정의 일부입니다. 혼자 고민하지 마시고 전문가와 상담하시는 것을 권장합니다.
+
+🎯 **구체적 조언**
+1. 즉시 전문가 상담을 받아보세요
+2. 관찰일지를 작성하여 더 정확한 분석을 받으세요
+3. 응급상황 시 119 또는 1577-0199에 연락하세요
+
+📚 **추가 정보**
+더 상세한 전문가 리포팅을 원하시면 관찰일지 작성을 통해 정밀 분석을 받으실 수 있습니다.
+
+💝 **격려의 말**
+육아는 쉽지 않은 여정이지만, 도움을 구하는 것은 현명한 선택입니다. 언제든 전문가의 도움을 받으세요.
+
+⚠️ 이 내용은 참고용이며 의학적 진단이 아닙니다.`;
+
+    return new Response(JSON.stringify({ 
+      report: fallbackReport,
+      riskLevel: 'medium',
+      needsExpertConsultation: true,
+      timestamp: new Date().toISOString()
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+});

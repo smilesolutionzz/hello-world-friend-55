@@ -14,16 +14,23 @@ serve(async (req) => {
   try {
     const { planId, subscriptionType = 'monthly' } = await req.json();
     
-    // Supabase 클라이언트 생성
-    const supabaseClient = createClient(
+    // Supabase 클라이언트 생성 (인증용)
+    const supabaseAuth = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
+    // Service Role 키를 사용한 클라이언트 (데이터베이스 작업용)
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
     );
 
     // 사용자 인증 확인
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    const { data } = await supabaseAuth.auth.getUser(token);
     const user = data.user;
     
     if (!user) {
@@ -31,7 +38,7 @@ serve(async (req) => {
     }
 
     // 구독 플랜 정보 가져오기
-    const { data: plan, error: planError } = await supabaseClient
+    const { data: plan, error: planError } = await supabaseAdmin
       .from('subscription_plans')
       .select('*')
       .eq('id', planId)
@@ -47,7 +54,7 @@ serve(async (req) => {
       const endDate = new Date();
       endDate.setMonth(endDate.getMonth() + (subscriptionType === 'yearly' ? 12 : 1));
 
-      const { error: subError } = await supabaseClient
+      const { error: subError } = await supabaseAdmin
         .from('user_subscriptions')
         .insert({
           user_id: user.id,
@@ -82,13 +89,15 @@ serve(async (req) => {
       failUrl: `${req.headers.get("origin")}/payment-fail?orderId=${orderId}`,
     };
 
-    // 결제 내역 저장
-    const { error: paymentError } = await supabaseClient
+    // 결제 내역 저장 (Service Role 키 사용)
+    const { error: paymentError } = await supabaseAdmin
       .from('payment_history')
       .insert({
         user_id: user.id,
+        toss_order_id: orderId,
         amount,
-        order_id: orderId,
+        plan_id: planId,
+        subscription_type: subscriptionType,
         status: 'pending'
       });
 

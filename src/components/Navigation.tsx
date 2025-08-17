@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, BarChart3, Shield } from "lucide-react";
+import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, BarChart3, Shield, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -86,6 +86,10 @@ const Navigation = () => {
               <Clock className="w-4 h-4 mr-2" />
               3분 검사
             </Button>
+            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/language-test')}>
+              <FileText className="w-4 h-4 mr-2" />
+              언어검사
+            </Button>
             <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/ai-counselor')}>
               <MessageCircle className="w-4 h-4 mr-2" />
               AI상담사
@@ -169,6 +173,11 @@ const Navigation = () => {
                 <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/assessment')}>
                   <Clock className="w-4 h-4 mr-3" />
                   3분 검사
+                </Button>
+                
+                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/language-test')}>
+                  <FileText className="w-4 h-4 mr-3" />
+                  언어검사
                 </Button>
                 
                 <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/ai-counselor')}>

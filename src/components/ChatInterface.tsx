@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Send, Sparkles, AlertTriangle, ExternalLink, FileText, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface InstantReport {
   report: string;
@@ -33,28 +34,22 @@ const ChatInterface = () => {
     setReport(null);
     
     try {
-      const response = await fetch('https://ybhvjfkpwjwyufaynuyq.supabase.co/functions/v1/instant-report', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message }),
+      const { data, error } = await supabase.functions.invoke('instant-report', {
+        body: { message }
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setReport(data);
-        
-        // 위험 수준에 따른 토스트
-        if (data.riskLevel === 'high') {
-          toast({
-            title: "⚠️ 중요 안내",
-            description: "즉시 전문가 도움이 필요합니다. 119 또는 1577-0199로 연락하세요.",
-            variant: "destructive"
-          });
-        }
-      } else {
-        throw new Error('Analysis failed');
+      if (error) {
+        throw error;
+      }
+      setReport(data);
+      
+      // 위험 수준에 따른 토스트
+      if (data.riskLevel === 'high') {
+        toast({
+          title: "⚠️ 중요 안내",
+          description: "즉시 전문가 도움이 필요합니다. 119 또는 1577-0199로 연락하세요.",
+          variant: "destructive"
+        });
       }
     } catch (error) {
       console.error('AI analysis error:', error);

@@ -14,8 +14,8 @@ const HeroSection = () => {
         {/* Main Headline */}
         <div className="text-center mb-16 space-y-6">
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            <span className="block text-foreground mb-2">랜챗음적을 넣어서면</span>
-            <span className="block text-brand-gradient">해질이 시작되죠</span>
+            <span className="block text-foreground mb-2">3분으로 시작하는</span>
+            <span className="block text-brand-gradient">전문가급 심리진단</span>
           </h1>
           
           <div className="space-y-3 text-xl md:text-2xl">

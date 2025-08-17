@@ -50,8 +50,8 @@ const ChatInterface = () => {
 
         {/* Guidelines */}
         <div className="text-sm text-muted-foreground space-y-2 px-2">
-          <p>최소 50자 이상으로 가능한 상황하니 고민을 구체적으로 알려주세요</p>
-          <p>잠고원 안원 정보나 URL은 저희 가능해요. AI 분석을 하루 할머닛 가능해요!</p>
+          <p>최소 50자 이상으로 가능한 구체적으로 고민을 알려주세요</p>
+          <p>개인정보나 민감한 정보는 포함하지 말아주세요. AI 분석이 즉시 시작됩니다!</p>
         </div>
 
         {/* Submit Button */}

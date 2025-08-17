@@ -65,13 +65,24 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
     setCurrentStep("AI 전문가 분석 완료!");
     
     try {
+      console.log('Starting AI analysis with results:', results);
+      console.log('Age group:', ageGroup, 'Age:', age);
+      
       const result = await analyzeAssessmentResults(results, ageGroup, age);
-      setAnalysis(result.analysis);
+      console.log('Analysis result received:', result);
+      
+      if (result && result.analysis && result.analysis !== "분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.") {
+        setAnalysis(result.analysis);
+        console.log('Setting AI analysis');
+      } else {
+        console.log('Using fallback analysis due to empty or error result');
+        setAnalysis(generateFallbackAnalysis());
+      }
       
       // Generate AI predictions after analysis
       const predictionResult = await generateAIPredictions(
         results, 
-        result.analysis, 
+        result.analysis || generateFallbackAnalysis(), 
         ageGroup, 
         age, 
         [] // TODO: Get family members from context
@@ -89,9 +100,14 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
     setAnalysisComplete(true);
     
     setTimeout(() => {
+      const finalAnalysis = analysis || generateFallbackAnalysis();
+      console.log('Final analysis length:', finalAnalysis.length);
+      console.log('Has predictions:', !!predictions);
+      
       if (!predictions) {
         // Only redirect if no predictions (fallback behavior)
-        onAnalysisComplete(analysis || generateFallbackAnalysis());
+        console.log('Redirecting to expert matching with analysis');
+        onAnalysisComplete(finalAnalysis);
       }
     }, 2000);
   };

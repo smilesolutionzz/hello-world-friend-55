@@ -6,15 +6,27 @@ export const analyzeAssessmentResults = async (
   age: number
 ): Promise<{ analysis: string; riskLevel: 'low' | 'medium' | 'high' }> => {
   try {
+    console.log('Calling assessment-analyzer function with:', { ageGroup, age, resultsLength: Object.keys(results).length });
+    
     const { data, error } = await supabase.functions.invoke('assessment-analyzer', {
       body: { results, ageGroup, age }
     });
 
-    if (error) throw error;
+    console.log('Assessment analyzer response:', { data, error });
+
+    if (error) {
+      console.error('Supabase function error:', error);
+      throw error;
+    }
+
+    if (!data || !data.analysis) {
+      console.error('Invalid response from assessment analyzer:', data);
+      throw new Error('Invalid response from analysis service');
+    }
 
     return {
       analysis: data.analysis,
-      riskLevel: data.riskLevel
+      riskLevel: data.riskLevel || 'medium'
     };
   } catch (error) {
     console.error('Analysis error:', error);

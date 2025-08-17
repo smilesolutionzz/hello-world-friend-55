@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Sparkles, Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu } from "lucide-react";
+import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -70,9 +70,7 @@ const Navigation = () => {
       {/* Logo */}
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-2 text-xl sm:text-2xl font-bold cursor-pointer" onClick={() => navigate('/')}>
-          <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-          <span className="text-brand-gradient hidden sm:inline">AI 심리케어</span>
-          <span className="text-brand-gradient sm:hidden">AIH</span>
+          <span className="text-brand-gradient">AIHPRO</span>
         </div>
       </div>
 
@@ -148,8 +146,7 @@ const Navigation = () => {
             <SheetContent side="right" className="w-80">
               <div className="flex flex-col gap-4 mt-8">
                 <div className="flex items-center gap-2 text-xl font-bold mb-4">
-                  <Sparkles className="w-6 h-6 text-primary" />
-                  <span className="text-brand-gradient">AI 심리케어</span>
+                  <span className="text-brand-gradient">AIHPRO</span>
                 </div>
                 
                 <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/')}>

@@ -5,22 +5,25 @@ import ChildAssessment from "@/components/assessment/ChildAssessment";
 import AdultAssessment from "@/components/assessment/AdultAssessment";
 import LanguageTestForm from "@/components/assessment/LanguageTestForm";
 import LanguageTestResult from "@/components/assessment/LanguageTestResult";
+import PanicTestForm from "@/components/assessment/PanicTestForm";
+import PanicTestResult from "@/components/assessment/PanicTestResult";
 import AnalysisScreen from "@/components/analysis/AnalysisScreen";
 import ExpertMatching from "@/components/analysis/ExpertMatching";
 import ConsultationRoom from "@/components/consultation/ConsultationRoom";
 import { ExpertProfile } from "@/types/assessment";
 
 const Assessment = () => {
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'age-select' | 'assessment' | 'language-test' | 'analysis' | 'matching' | 'consultation' | 'language-result'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | null>(null);
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
   const [languageResults, setLanguageResults] = useState<{answers: number[], total: number, average: number, ageGroup: string} | null>(null);
+  const [panicResults, setPanicResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
 
-  const handleTestTypeSelect = (type: 'psychological' | 'language') => {
+  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic') => {
     setTestType(type);
     setCurrentStep('age-select');
   };
@@ -28,7 +31,13 @@ const Assessment = () => {
   const handleAgeGroupSelect = (ageGroup: 'infant' | 'child' | 'adult', age: number) => {
     setSelectedAgeGroup(ageGroup);
     setSelectedAge(age);
-    setCurrentStep(testType === 'language' ? 'language-test' : 'assessment');
+    if (testType === 'language') {
+      setCurrentStep('language-test');
+    } else if (testType === 'panic') {
+      setCurrentStep('panic-test');
+    } else {
+      setCurrentStep('assessment');
+    }
   };
 
   const handleAssessmentComplete = (results: Record<string, number>) => {
@@ -41,6 +50,12 @@ const Assessment = () => {
     console.log('Language Test Results:', results);
     setLanguageResults(results);
     setCurrentStep('language-result');
+  };
+
+  const handlePanicTestComplete = (results: {answers: number[], total: number, average: number, severity: string}) => {
+    console.log('Panic Test Results:', results);
+    setPanicResults(results);
+    setCurrentStep('panic-result');
   };
 
   const handleAnalysisComplete = (analysis: string) => {
@@ -60,7 +75,7 @@ const Assessment = () => {
   };
 
   const handleBack = () => {
-    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result') {
+    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result') {
       // 분석/매칭/상담/언어결과 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
@@ -68,6 +83,7 @@ const Assessment = () => {
       setSelectedAge(0);
       setAssessmentResults({});
       setLanguageResults(null);
+      setPanicResults(null);
       setAnalysisResult("");
       setSelectedExpert(null);
     } else if (currentStep === 'age-select') {
@@ -124,7 +140,7 @@ const Assessment = () => {
             </p>
           </div>
           
-          <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
             <div 
               className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
               onClick={() => handleTestTypeSelect('psychological')}
@@ -148,6 +164,19 @@ const Assessment = () => {
                 <li>• 연령대별 20문항</li>
                 <li>• 3분 간단 테스트</li>
                 <li>• 즉시 결과 확인</li>
+              </ul>
+            </div>
+
+            <div 
+              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
+              onClick={() => handleTestTypeSelect('panic')}
+            >
+              <h3 className="text-2xl font-bold text-brand-gradient mb-4">공황장애 검사</h3>
+              <p className="text-muted-foreground mb-4">DSM-5 기반 공황장애 자가진단</p>
+              <ul className="space-y-2 text-sm">
+                <li>• 표준화된 21문항</li>
+                <li>• 신속한 증상 평가</li>
+                <li>• 심각도별 분석</li>
               </ul>
             </div>
           </div>
@@ -185,6 +214,36 @@ const Assessment = () => {
         <div className="container mx-auto max-w-4xl">
           <LanguageTestResult 
             results={languageResults}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'panic-test') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">공황장애 자가검사 (3분)</h1>
+            <p className="text-muted-foreground">DSM-5 기반 21문항</p>
+          </div>
+          <PanicTestForm 
+            onComplete={handlePanicTestComplete}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'panic-result' && panicResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <PanicTestResult 
+            results={panicResults}
             onBack={handleBack}
           />
         </div>

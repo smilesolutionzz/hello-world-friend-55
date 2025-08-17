@@ -27,14 +27,6 @@ const HeroSection = () => {
             </p>
           </div>
 
-          {/* 법적 안전 공지 추가 */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
-            <p className="text-blue-800 text-sm">
-              <span className="font-semibold">⚠️ 중요:</span> 본 서비스는 참고용 자가체크 및 심리상담 연결 서비스입니다. 
-              의학적 진단·치료행위는 포함되지 않습니다. 
-              <span className="font-semibold">🚨 응급상황: 119 / 자살예방: 1577-0199</span>
-            </p>
-          </div>
         </div>
 
         {/* Chat Interface */}

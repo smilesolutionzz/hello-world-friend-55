@@ -1,6 +1,7 @@
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import PlatformOverview from "@/components/PlatformOverview";
+import VideoShowcase from "@/components/VideoShowcase";
 import TrustIndicators from "@/components/TrustIndicators";
 import KakaoTalkWidget from "@/components/KakaoTalkWidget";
 
@@ -10,6 +11,7 @@ const Index = () => {
       <Navigation />
       <HeroSection />
       <PlatformOverview />
+      <VideoShowcase />
       <TrustIndicators />
       <KakaoTalkWidget />
     </div>

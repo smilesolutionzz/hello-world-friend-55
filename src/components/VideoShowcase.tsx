@@ -1,8 +1,37 @@
-import { Play, Volume2, Users, Award } from "lucide-react";
+import { Play, Volume2, Users, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import useEmblaCarousel from 'embla-carousel-react';
 
 const VideoShowcase = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState<number | null>(null);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+
+  const videos = [
+    {
+      id: 1,
+      title: "플랫폼 소개 영상",
+      description: "AI 정신건강 케어의 새로운 경험",
+      embedId: "t4ZkQll1WxU",
+      thumbnail: "/api/placeholder/640/360"
+    },
+    {
+      id: 2,
+      title: "사용자 후기 모음",
+      description: "실제 이용자들의 생생한 경험담",
+      embedId: "dQw4w9WgXcQ", // 실제 영상 ID로 교체 필요
+      thumbnail: "/api/placeholder/640/360"
+    },
+    {
+      id: 3,
+      title: "전문가 인터뷰",
+      description: "정신건강 전문의가 말하는 AI 케어",
+      embedId: "dQw4w9WgXcQ", // 실제 영상 ID로 교체 필요
+      thumbnail: "/api/placeholder/640/360"
+    }
+  ];
+
+  const scrollPrev = () => emblaApi && emblaApi.scrollPrev();
+  const scrollNext = () => emblaApi && emblaApi.scrollNext();
 
   return (
     <section className="py-16 bg-gradient-to-b from-muted/30 to-background">
@@ -18,34 +47,58 @@ const VideoShowcase = () => {
           </p>
         </div>
 
-        {/* Main Video */}
-        <div className="max-w-4xl mx-auto mb-16">
-          <div className="relative bg-card rounded-2xl overflow-hidden shadow-2xl border">
-            <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center relative">
-              {!isPlaying ? (
-                <div className="text-center">
-                  <button 
-                    onClick={() => setIsPlaying(true)}
-                    className="w-20 h-20 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all hover:scale-105 mb-4"
-                  >
-                    <Play className="w-8 h-8 text-primary-foreground ml-1" />
-                  </button>
-                  <h3 className="text-xl font-semibold mb-2">플랫폼 소개 영상</h3>
-                  <p className="text-muted-foreground">AI 정신건강 케어의 새로운 경험</p>
-                </div>
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-black/90">
-                  {/* YouTube 임베드 예시 - 실제 영상 URL로 교체 필요 */}
-                  <iframe
-                    className="w-full h-full"
-                    src="https://www.youtube.com/embed/t4ZkQll1WxU?autoplay=1"
-                    title="AI하이라이트프로 소개 영상"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              )}
+        {/* Video Carousel */}
+        <div className="max-w-6xl mx-auto mb-16">
+          <div className="relative">
+            {/* Navigation Buttons */}
+            <button 
+              onClick={scrollPrev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-background transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button 
+              onClick={scrollNext}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-background transition-colors"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* Embla Carousel */}
+            <div className="overflow-hidden" ref={emblaRef}>
+              <div className="flex">
+                {videos.map((video) => (
+                  <div key={video.id} className="flex-[0_0_100%] min-w-0 px-4">
+                    <div className="bg-card rounded-2xl overflow-hidden shadow-2xl border">
+                      <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center relative">
+                        {isPlaying !== video.id ? (
+                          <div className="text-center">
+                            <button 
+                              onClick={() => setIsPlaying(video.id)}
+                              className="w-20 h-20 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all hover:scale-105 mb-4"
+                            >
+                              <Play className="w-8 h-8 text-primary-foreground ml-1" />
+                            </button>
+                            <h3 className="text-xl font-semibold mb-2">{video.title}</h3>
+                            <p className="text-muted-foreground">{video.description}</p>
+                          </div>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-black/90">
+                            <iframe
+                              className="w-full h-full"
+                              src={`https://www.youtube.com/embed/${video.embedId}?autoplay=1`}
+                              title={video.title}
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

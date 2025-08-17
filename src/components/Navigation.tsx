@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, BarChart3, Shield, FileText } from "lucide-react";
+import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -102,34 +102,24 @@ const Navigation = () => {
               <Users className="w-4 h-4 mr-1" />
               가족케어
             </Button>
-            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/corporate')}>
-              <BarChart3 className="w-4 h-4 mr-1" />
-              기업솔루션
-            </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 text-primary font-medium" onClick={() => handleNavigation('/subscription')}>
               <Shield className="w-4 h-4 mr-1" />
               구독
             </Button>
-            {user && (
-              <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/dashboard')}>
-                <BookOpen className="w-4 h-4 mr-1" />
-                내계정
-              </Button>
-            )}
           </div>
 
           <div className="flex items-center gap-2">
             {user ? (
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg">
+                <div 
+                  className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"
+                  onClick={() => navigate('/dashboard')}
+                >
                   <User className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium">
                     {profile?.display_name || user.email}
                   </span>
                 </div>
-                <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-                  대시보드
-                </Button>
                 <Button variant="ghost" size="sm" onClick={handleLogout}>
                   <LogOut className="w-4 h-4" />
                 </Button>
@@ -199,35 +189,24 @@ const Navigation = () => {
                   가족케어
                 </Button>
                 
-                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/corporate')}>
-                  <BarChart3 className="w-4 h-4 mr-3" />
-                  기업솔루션
-                </Button>
                 
                 <Button variant="ghost" className="justify-start text-primary font-medium" onClick={() => handleNavigation('/subscription')}>
                   <Shield className="w-4 h-4 mr-3" />
                   구독 플랜
                 </Button>
                 
-                {user && (
-                  <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/dashboard')}>
-                    <BookOpen className="w-4 h-4 mr-3" />
-                    내 계정
-                  </Button>
-                )}
-                
                 <div className="border-t pt-4 mt-4">
                   {user ? (
                     <div className="flex flex-col gap-3">
-                      <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg">
+                      <div 
+                        className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"
+                        onClick={() => handleNavigation('/dashboard')}
+                      >
                         <User className="w-4 h-4 text-primary" />
                         <span className="text-sm font-medium">
                           {profile?.display_name || user.email}
                         </span>
                       </div>
-                      <Button variant="outline" onClick={() => handleNavigation('/dashboard')}>
-                        대시보드
-                      </Button>
                       <Button variant="ghost" onClick={handleLogout} className="justify-start">
                         <LogOut className="w-4 h-4 mr-3" />
                         로그아웃

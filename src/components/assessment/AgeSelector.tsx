@@ -93,8 +93,8 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
         {/* Age Group Selection */}
         {!selectedGroup && (
           <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-8">
-              {ageGroups.map((group) => {
+            <div className="grid md:grid-cols-2 gap-8">
+              {ageGroups.filter(group => testType === 'language' ? group.key !== 'adult' : true).map((group) => {
                 const IconComponent = group.icon;
                 return (
                   <Card 

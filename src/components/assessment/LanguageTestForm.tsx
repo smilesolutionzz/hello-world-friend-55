@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft } from "lucide-react";
 
 interface LanguageTestFormProps {
-  ageGroup: 'infant' | 'child' | 'adult';
+  ageGroup: 'infant' | 'child';
   age: number;
   onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string}) => void;
   onBack: () => void;
@@ -58,28 +58,6 @@ const languageQuestions = {
     "자신의 의견을 논리적으로 표현합니다",
     "언어 규칙을 잘 지켜 말합니다"
   ],
-  'adult': [
-    "복잡한 주제에 대해 명확하게 설명할 수 있습니다",
-    "비즈니스나 공식적인 상황에서 적절한 언어를 사용합니다",
-    "다양한 관점을 고려하여 토론할 수 있습니다",
-    "문서 작성과 이해 능력이 우수합니다",
-    "은유적 표현과 함축적 의미를 파악합니다",
-    "전문적인 용어를 적절히 사용합니다",
-    "상대방의 의도를 정확히 파악하고 반응합니다",
-    "설득력 있는 논증을 구성할 수 있습니다",
-    "감정을 적절한 언어로 조절하여 표현합니다",
-    "문화적 차이를 고려한 언어 사용을 합니다",
-    "창의적이고 독창적인 표현을 사용합니다",
-    "갈등 상황에서 언어로 중재할 수 있습니다",
-    "추상적 개념을 구체적으로 설명할 수 있습니다",
-    "유머와 재치를 적절히 사용합니다",
-    "다국어나 방언 등 언어 다양성을 이해합니다",
-    "비언어적 의사소통과 언어를 조화롭게 사용합니다",
-    "전문 분야의 지식을 쉽게 설명할 수 있습니다",
-    "타인의 언어 스타일에 맞춰 소통할 수 있습니다",
-    "언어로 리더십과 영향력을 발휘합니다",
-    "자기성찰과 내적 대화를 언어로 구조화합니다"
-  ]
 };
 
 const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFormProps) => {
@@ -102,7 +80,7 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
       // 테스트 완료
       const total = answers.reduce((sum, answer) => sum + answer, 0);
       const average = Math.round((total / answers.length) * 10) / 10;
-      const ageGroupLabel = ageGroup === 'infant' ? '영유아' : ageGroup === 'child' ? '아동청소년' : '성인';
+      const ageGroupLabel = ageGroup === 'infant' ? '영유아' : '아동청소년';
       
       onComplete({
         answers,

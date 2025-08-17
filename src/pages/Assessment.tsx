@@ -169,7 +169,7 @@ const Assessment = () => {
             <p className="text-muted-foreground">연령에 맞춘 20문항</p>
           </div>
           <LanguageTestForm 
-            ageGroup={selectedAgeGroup!} 
+            ageGroup={selectedAgeGroup! as 'infant' | 'child'} 
             age={selectedAge}
             onComplete={handleLanguageTestComplete}
             onBack={handleBack}

@@ -253,6 +253,96 @@ export type Database = {
           },
         ]
       }
+      lifestyle_patterns: {
+        Row: {
+          created_at: string
+          exercise_minutes: number | null
+          id: string
+          menstrual_cycle_day: number | null
+          mood_score: number | null
+          notes: string | null
+          pattern_date: string
+          profile_id: string
+          sleep_hours: number | null
+          sleep_quality: number | null
+          social_interactions: number | null
+          stress_level: number | null
+          updated_at: string
+          weather_condition: string | null
+        }
+        Insert: {
+          created_at?: string
+          exercise_minutes?: number | null
+          id?: string
+          menstrual_cycle_day?: number | null
+          mood_score?: number | null
+          notes?: string | null
+          pattern_date: string
+          profile_id: string
+          sleep_hours?: number | null
+          sleep_quality?: number | null
+          social_interactions?: number | null
+          stress_level?: number | null
+          updated_at?: string
+          weather_condition?: string | null
+        }
+        Update: {
+          created_at?: string
+          exercise_minutes?: number | null
+          id?: string
+          menstrual_cycle_day?: number | null
+          mood_score?: number | null
+          notes?: string | null
+          pattern_date?: string
+          profile_id?: string
+          sleep_hours?: number | null
+          sleep_quality?: number | null
+          social_interactions?: number | null
+          stress_level?: number | null
+          updated_at?: string
+          weather_condition?: string | null
+        }
+        Relationships: []
+      }
+      personalized_recommendations: {
+        Row: {
+          content: Json
+          created_at: string
+          delivered_at: string | null
+          effectiveness_score: number | null
+          engaged_at: string | null
+          id: string
+          profile_id: string
+          recommendation_type: string
+          status: string | null
+          trigger_reason: string | null
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          delivered_at?: string | null
+          effectiveness_score?: number | null
+          engaged_at?: string | null
+          id?: string
+          profile_id: string
+          recommendation_type: string
+          status?: string | null
+          trigger_reason?: string | null
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          delivered_at?: string | null
+          effectiveness_score?: number | null
+          engaged_at?: string | null
+          id?: string
+          profile_id?: string
+          recommendation_type?: string
+          status?: string | null
+          trigger_reason?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -289,6 +379,96 @@ export type Database = {
           role?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      social_matches: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          match_score: number | null
+          match_type: string
+          profile_id_1: string
+          profile_id_2: string
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          match_score?: number | null
+          match_type: string
+          profile_id_1: string
+          profile_id_2: string
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          match_score?: number | null
+          match_type?: string
+          profile_id_1?: string
+          profile_id_2?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
+      user_behavior_logs: {
+        Row: {
+          behavior_data: Json
+          behavior_type: string
+          device_info: Json | null
+          id: string
+          profile_id: string
+          session_id: string | null
+          timestamp: string
+        }
+        Insert: {
+          behavior_data?: Json
+          behavior_type: string
+          device_info?: Json | null
+          id?: string
+          profile_id: string
+          session_id?: string | null
+          timestamp?: string
+        }
+        Update: {
+          behavior_data?: Json
+          behavior_type?: string
+          device_info?: Json | null
+          id?: string
+          profile_id?: string
+          session_id?: string | null
+          timestamp?: string
+        }
+        Relationships: []
+      }
+      user_insights: {
+        Row: {
+          confidence_score: number | null
+          id: string
+          insight_data: Json
+          insight_type: string
+          last_updated: string
+          profile_id: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          id?: string
+          insight_data: Json
+          insight_type: string
+          last_updated?: string
+          profile_id: string
+        }
+        Update: {
+          confidence_score?: number | null
+          id?: string
+          insight_data?: Json
+          insight_type?: string
+          last_updated?: string
+          profile_id?: string
         }
         Relationships: []
       }

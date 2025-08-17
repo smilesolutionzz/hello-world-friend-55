@@ -87,18 +87,85 @@ const Subscription = () => {
         return;
       }
 
-      // 유료 플랜인 경우 - 토스페이먼츠 체크아웃 URL로 이동
-      if (data.paymentData && data.paymentData.checkoutUrl) {
-        window.location.href = data.paymentData.checkoutUrl;
-        return;
-      }
+      // 유료 플랜인 경우 토스페이먼츠 결제 진행
+      const script = document.createElement('script');
+      script.src = 'https://js.tosspayments.com/v1/payment-widget';
+      script.async = true;
+      script.onload = () => {
+        try {
+          const clientKey = data.clientKey;
+          const paymentWidget = (window as any).PaymentWidget(clientKey, 'ANONYMOUS');
+          
+          // 모달 생성
+          const modal = document.createElement('div');
+          modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+          modal.innerHTML = `
+            <div class="bg-white p-6 rounded-lg max-w-md w-full relative">
+              <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl" onclick="this.closest('.fixed').remove()">&times;</button>
+              <h3 class="text-lg font-semibold mb-4">${planName} 구독 결제</h3>
+              <div id="payment-method" class="mb-4"></div>
+              <div id="agreement" class="mb-4"></div>
+              <button id="pay-button" class="w-full bg-primary text-primary-foreground py-3 rounded-md font-medium hover:bg-primary/90">
+                결제하기
+              </button>
+            </div>
+          `;
+          
+          document.body.appendChild(modal);
 
-      // 임시: 성공 페이지로 리다이렉트 (테스트용)
-      const successUrl = data.paymentData.successUrl + 
-        `?paymentKey=test_payment_key&orderId=${data.paymentData.orderId}&amount=${data.paymentData.amount}`;
-      window.location.href = successUrl;
+          // 위젯 렌더링
+          paymentWidget.renderPaymentMethods(
+            '#payment-method',
+            { value: data.paymentData.amount },
+            { variantKey: 'DEFAULT' }
+          );
+
+          paymentWidget.renderAgreement('#agreement', { variantKey: 'AGREEMENT' });
+
+          // 결제 버튼 이벤트
+          const payButton = modal.querySelector('#pay-button') as HTMLButtonElement;
+          payButton.onclick = async () => {
+            try {
+              await paymentWidget.requestPayment({
+                orderId: data.paymentData.orderId,
+                orderName: data.paymentData.orderName,
+                customerName: data.paymentData.customerName,
+                customerEmail: data.paymentData.customerEmail,
+                successUrl: data.paymentData.successUrl,
+                failUrl: data.paymentData.failUrl,
+              });
+            } catch (error) {
+              console.error('결제 요청 실패:', error);
+              toast({
+                title: "결제 실패",
+                description: "결제 처리 중 오류가 발생했습니다.",
+                variant: "destructive"
+              });
+            }
+          };
+
+        } catch (error) {
+          console.error('Payment widget initialization error:', error);
+          toast({
+            title: "결제 위젯 오류",
+            description: "결제 시스템을 불러올 수 없습니다.",
+            variant: "destructive"
+          });
+        }
+      };
+      
+      script.onerror = () => {
+        toast({
+          title: "스크립트 로드 실패",
+          description: "토스페이먼츠 결제 시스템을 불러올 수 없습니다.",
+          variant: "destructive"
+        });
+      };
+      
+      document.head.appendChild(script);
 
     } catch (error: any) {
+      console.error('Subscription error:', error);
       toast({ 
         title: "오류", 
         description: error.message || "구독 처리 중 오류가 발생했습니다.", 

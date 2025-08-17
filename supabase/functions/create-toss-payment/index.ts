@@ -103,21 +103,17 @@ serve(async (req) => {
 
     if (paymentError) throw paymentError;
 
-    // 실제 토스페이먼츠 결제 URL 생성
+    // 토스페이먼츠 결제 요청
     const tossClientKey = Deno.env.get("TOSS_PAYMENTS_CLIENT_KEY");
-    if (!tossClientKey) {
-      throw new Error("토스페이먼츠 클라이언트 키가 설정되지 않았습니다.");
+    const tossSecretKey = Deno.env.get("TOSS_PAYMENTS_SECRET_KEY");
+    
+    if (!tossClientKey || !tossSecretKey) {
+      throw new Error("토스페이먼츠 API 키가 설정되지 않았습니다.");
     }
-
-    // 토스페이먼츠 체크아웃 URL 생성 (실제 구현시 토스페이먼츠 API 사용)
-    const checkoutUrl = `https://checkout.tosspayments.com/payments?clientKey=${tossClientKey}&amount=${amount}&orderId=${orderId}&orderName=${encodeURIComponent(paymentData.orderName)}&customerName=${encodeURIComponent(paymentData.customerName)}&customerEmail=${encodeURIComponent(paymentData.customerEmail)}&successUrl=${encodeURIComponent(paymentData.successUrl)}&failUrl=${encodeURIComponent(paymentData.failUrl)}`;
 
     return new Response(JSON.stringify({ 
       success: true, 
-      paymentData: {
-        ...paymentData,
-        checkoutUrl
-      },
+      paymentData,
       clientKey: tossClientKey
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

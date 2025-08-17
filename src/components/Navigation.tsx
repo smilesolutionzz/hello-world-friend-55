@@ -86,6 +86,10 @@ const Navigation = () => {
               <Clock className="w-4 h-4 mr-1" />
               3분체크
             </Button>
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/observation')}>
+              <FileText className="w-4 h-4 mr-1" />
+              관찰일지
+            </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/ai-counselor')}>
               <MessageCircle className="w-4 h-4 mr-1" />
               AI상담
@@ -175,6 +179,10 @@ const Navigation = () => {
                   3분 체크
                 </Button>
                 
+                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/observation')}>
+                  <FileText className="w-4 h-4 mr-3" />
+                  관찰일지
+                </Button>
                 
                 <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/ai-counselor')}>
                   <MessageCircle className="w-4 h-4 mr-3" />

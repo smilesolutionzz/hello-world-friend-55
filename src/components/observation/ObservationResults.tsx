@@ -30,6 +30,17 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
   const { toast } = useToast();
   const [generating, setGenerating] = useState(false);
 
+  const calculateOverallAverage = (scores: any): string => {
+    const validScores = Object.values(scores)
+      .filter((s: any) => s && typeof s.average === 'number')
+      .map((s: any) => s.average as number);
+    
+    if (validScores.length === 0) return 'N/A';
+    
+    const sum = validScores.reduce((acc, score) => acc + score, 0);
+    return (sum / validScores.length).toFixed(1);
+  };
+
   const getDomainDisplayName = (domain: string) => {
     const names = {
       child_development: '아동발달',
@@ -162,9 +173,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
               <div>
                 <div className="text-sm text-muted-foreground">전체 평균</div>
                 <div className="font-medium">
-                  {Object.values(scores).length > 0 ? 
-                    (Object.values(scores).reduce((sum: number, s: any) => sum + (s.average || 0), 0) / Object.values(scores).length).toFixed(1) 
-                    : 'N/A'}/5.0
+                  {calculateOverallAverage(scores)}/5.0
                 </div>
               </div>
             </div>

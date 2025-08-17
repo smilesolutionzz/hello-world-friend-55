@@ -8,3 +8,9 @@ verify_jwt = true
 
 [functions.confirm-toss-payment]
 verify_jwt = false
+
+[functions.observation-analyzer]
+verify_jwt = true
+
+[functions.generate-observation-report]
+verify_jwt = true

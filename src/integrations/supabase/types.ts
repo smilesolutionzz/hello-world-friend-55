@@ -1242,6 +1242,142 @@ export type Database = {
         }
         Relationships: []
       }
+      observation_reports: {
+        Row: {
+          content: Json
+          created_by: string
+          generated_at: string
+          id: string
+          pdf_url: string | null
+          report_type: string
+          session_id: string | null
+          title: string
+        }
+        Insert: {
+          content?: Json
+          created_by: string
+          generated_at?: string
+          id?: string
+          pdf_url?: string | null
+          report_type: string
+          session_id?: string | null
+          title: string
+        }
+        Update: {
+          content?: Json
+          created_by?: string
+          generated_at?: string
+          id?: string
+          pdf_url?: string | null
+          report_type?: string
+          session_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "observation_reports_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "observation_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      observation_sessions: {
+        Row: {
+          ai_analysis: string | null
+          analysis_data: Json | null
+          created_at: string
+          domain: string
+          id: string
+          observation_period_end: string
+          observation_period_start: string
+          observer_name: string
+          profile_id: string
+          raw_data: Json
+          recommendations: Json | null
+          session_name: string
+          status: string | null
+          template_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          analysis_data?: Json | null
+          created_at?: string
+          domain: string
+          id?: string
+          observation_period_end: string
+          observation_period_start: string
+          observer_name: string
+          profile_id: string
+          raw_data?: Json
+          recommendations?: Json | null
+          session_name: string
+          status?: string | null
+          template_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          analysis_data?: Json | null
+          created_at?: string
+          domain?: string
+          id?: string
+          observation_period_end?: string
+          observation_period_start?: string
+          observer_name?: string
+          profile_id?: string
+          raw_data?: Json
+          recommendations?: Json | null
+          session_name?: string
+          status?: string | null
+          template_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "observation_sessions_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "observation_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      observation_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          domain: string
+          id: string
+          is_active: boolean | null
+          items: Json
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          domain: string
+          id?: string
+          is_active?: boolean | null
+          items?: Json
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          domain?: string
+          id?: string
+          is_active?: boolean | null
+          items?: Json
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       organizational_wellness: {
         Row: {
           burnout_risk_count: number | null

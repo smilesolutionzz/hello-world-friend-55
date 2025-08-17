@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,9 +17,16 @@ import {
   User,
   AlertTriangle,
   CheckCircle,
-  Clock
+  Clock,
+  MessageSquare,
+  Lock,
+  Crown,
+  TrendingUp,
+  LineChart
 } from "lucide-react";
-import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart as RechartsLineChart, Line } from 'recharts';
+import MediaDisplay from './MediaDisplay';
+import SubscriptionGate from './SubscriptionGate';
 
 interface ObservationResultsProps {
   session: any;
@@ -29,6 +36,38 @@ interface ObservationResultsProps {
 const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
   const { toast } = useToast();
   const [generating, setGenerating] = useState(false);
+  const [subscriptionData, setSubscriptionData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadSubscriptionData();
+  }, []);
+
+  const loadSubscriptionData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('user_subscription_usage')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error loading subscription data:', error);
+      } else {
+        setSubscriptionData(data);
+      }
+    } catch (error) {
+      console.error('Error loading subscription data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const calculateOverallAverage = (scores: any): string => {
     const validScores = Object.values(scores)
@@ -115,6 +154,21 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
     fullCategory: category
   }));
 
+  // Sample time series data for subscription users
+  const timeSeriesData = [
+    { date: '1주차', score: 3.2 },
+    { date: '2주차', score: 3.5 },
+    { date: '3주차', score: 3.8 },
+    { date: '4주차', score: 4.1 },
+  ];
+
+  const isPremiumUser = subscriptionData?.subscription_status === 'premium';
+  const hasUsagesLeft = !subscriptionData || subscriptionData.usage_count < 3;
+  const canViewAdvanced = isPremiumUser || hasUsagesLeft;
+
+  // Parse media files from session
+  const mediaFiles = session.media_files || [];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -125,11 +179,21 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
         <div className="flex items-center gap-3">
           <Button 
             onClick={generatePDFReport}
-            disabled={generating}
+            disabled={generating || !isPremiumUser}
             className="bg-primary"
           >
+            {!isPremiumUser && <Lock className="h-4 w-4 mr-2" />}
             <Download className="h-4 w-4 mr-2" />
-            {generating ? 'PDF 생성 중...' : 'PDF 다운로드'}
+            {generating ? 'PDF 생성 중...' : 'PDF로 저장'}
+            {!isPremiumUser && ' (추후)'}
+          </Button>
+          <Button 
+            variant="outline" 
+            disabled={!isPremiumUser}
+          >
+            {!isPremiumUser && <Lock className="h-4 w-4 mr-2" />}
+            <MessageSquare className="h-4 w-4 mr-2" />
+            전문가 피드백 요청{!isPremiumUser && ' (추후)'}
           </Button>
           <Button variant="outline" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -181,80 +245,210 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
         </CardContent>
       </Card>
 
+      {/* Subscription Gate for Free Users */}
+      {!canViewAdvanced && (
+        <Card className="border-amber-200 bg-amber-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Crown className="h-5 w-5 text-amber-600" />
+              <div>
+                <p className="font-medium text-amber-800">
+                  무료 체험은 3회까지 요약 제공. 심화 리포트와 PDF는 구독 전환 후 이용 가능합니다.
+                </p>
+                <p className="text-sm text-amber-700 mt-1">
+                  레이더 차트, 시간 추이 분석, PDF 저장 등의 기능을 이용하세요.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" className="border-amber-300 text-amber-800 hover:bg-amber-100">
+                구독하기
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">종합 개요</TabsTrigger>
           <TabsTrigger value="scores">점수 분석</TabsTrigger>
           <TabsTrigger value="analysis">AI 분석</TabsTrigger>
           <TabsTrigger value="recommendations">권고사항</TabsTrigger>
+          <TabsTrigger value="media">미디어</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Score Distribution */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
-                  영역별 점수 분포
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={barData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="category" />
-                    <YAxis domain={[0, 5]} />
-                    <Tooltip formatter={(value, name) => [value, '점수']} />
-                    <Bar dataKey="score" fill="#3b82f6" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            {/* Radar Chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5" />
-                  종합 프로파일
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <RadarChart data={radarData}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="category" />
-                    <PolarRadiusAxis domain={[0, 5]} />
-                    <Radar
-                      name="점수"
-                      dataKey="score"
-                      stroke="#3b82f6"
-                      fill="#3b82f6"
-                      fillOpacity={0.3}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Summary Stats */}
-          <div className="grid md:grid-cols-3 gap-4">
-            {Object.entries(scores).map(([category, data]: [string, any]) => (
-              <Card key={category}>
+          {/* Free Version - Summary Cards Only */}
+          {!canViewAdvanced ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Card>
                 <CardContent className="p-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-primary mb-1">
-                      {data.average.toFixed(1)}
-                    </div>
-                    <div className="text-sm text-muted-foreground mb-2">{category}</div>
-                    <Progress value={(data.average / 5) * 100} className="h-2" />
+                    <CheckCircle className="h-8 w-8 mx-auto mb-2 text-green-600" />
+                    <h3 className="font-semibold mb-1">현재 상황</h3>
+                    <p className="text-sm text-muted-foreground">
+                      전체적인 발달 상태가 양호하며, 몇 가지 영역에서 개선이 필요합니다.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <Target className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+                    <h3 className="font-semibold mb-1">핵심 포인트</h3>
+                    <p className="text-sm text-muted-foreground">
+                      사회적 상호작용과 언어 발달에 집중적인 관심이 필요합니다.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <Brain className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+                    <h3 className="font-semibold mb-1">긍정적 측면</h3>
+                    <p className="text-sm text-muted-foreground">
+                      인지능력과 운동발달은 연령에 적합한 수준을 보이고 있습니다.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <TrendingUp className="h-8 w-8 mx-auto mb-2 text-green-600" />
+                    <h3 className="font-semibold mb-1">개선 팁</h3>
+                    <p className="text-sm text-muted-foreground">
+                      일상적인 놀이 활동을 통해 자연스러운 상호작용을 늘려보세요.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-orange-600" />
+                    <h3 className="font-semibold mb-1">주의사항</h3>
+                    <p className="text-sm text-muted-foreground">
+                      지속적인 관찰과 기록을 통해 변화를 추적하는 것이 중요합니다.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            /* Premium Version - Full Analytics */
+            <>
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Score Distribution */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5" />
+                      영역별 점수 분포
+                      <Badge variant="outline" className="ml-auto text-xs">
+                        <Crown className="h-3 w-3 mr-1" />
+                        프리미엄
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={barData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="category" />
+                        <YAxis domain={[0, 5]} />
+                        <Tooltip formatter={(value, name) => [value, '점수']} />
+                        <Bar dataKey="score" fill="#3b82f6" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                {/* Radar Chart */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Target className="h-5 w-5" />
+                      종합 프로파일
+                      <Badge variant="outline" className="ml-auto text-xs">
+                        <Crown className="h-3 w-3 mr-1" />
+                        프리미엄
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <RadarChart data={radarData}>
+                        <PolarGrid />
+                        <PolarAngleAxis dataKey="category" />
+                        <PolarRadiusAxis domain={[0, 5]} />
+                        <Radar
+                          name="점수"
+                          dataKey="score"
+                          stroke="#3b82f6"
+                          fill="#3b82f6"
+                          fillOpacity={0.3}
+                        />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Time Series Chart - Premium Only */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <LineChart className="h-5 w-5" />
+                    시간별 변화 추이
+                    <Badge variant="outline" className="ml-auto text-xs">
+                      <Crown className="h-3 w-3 mr-1" />
+                      프리미엄
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <RechartsLineChart data={timeSeriesData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis domain={[0, 5]} />
+                      <Tooltip formatter={(value) => [value, '평균 점수']} />
+                      <Line 
+                        type="monotone" 
+                        dataKey="score" 
+                        stroke="#3b82f6" 
+                        strokeWidth={2}
+                        dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                      />
+                    </RechartsLineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Summary Stats */}
+              <div className="grid md:grid-cols-3 gap-4">
+                {Object.entries(scores).map(([category, data]: [string, any]) => (
+                  <Card key={category}>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-primary mb-1">
+                          {data.average.toFixed(1)}
+                        </div>
+                        <div className="text-sm text-muted-foreground mb-2">{category}</div>
+                        <Progress value={(data.average / 5) * 100} className="h-2" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
+          )}
         </TabsContent>
 
         <TabsContent value="scores" className="space-y-6">
@@ -365,6 +559,13 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="media" className="space-y-6">
+          <MediaDisplay 
+            mediaFiles={mediaFiles} 
+            title="관찰 기록 미디어"
+          />
         </TabsContent>
       </Tabs>
     </div>

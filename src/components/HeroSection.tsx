@@ -20,7 +20,7 @@ const HeroSection = () => {
           
           <div className="space-y-2 sm:space-y-3 text-lg sm:text-xl md:text-2xl">
             <p className="text-brand-gradient font-semibold">
-              "불안을 데이터로 안심을 리포트로"
+              "데이터로 읽는 마음, AI하이라이트프로"
             </p>
             <p className="text-muted-foreground text-base sm:text-lg">
               한 문장으로 시작해보세요

@@ -25,6 +25,7 @@ const ChildAssessment = ({ age, onComplete, onBack }: ChildAssessmentProps) => {
   const [isGameActive, setIsGameActive] = useState(false);
   const [gameTimer, setGameTimer] = useState(0);
   const [gameScore, setGameScore] = useState(0);
+  const [gameData, setGameData] = useState<any>(null);
 
   const currentGame = allGames[currentGameIndex];
   const progress = ((currentGameIndex + 1) / allGames.length) * 100;
@@ -48,6 +49,11 @@ const ChildAssessment = ({ age, onComplete, onBack }: ChildAssessmentProps) => {
     setIsGameActive(true);
     setGameTimer(0);
     setGameScore(0);
+    
+    // 표정 인식 게임 초기화
+    if (currentGame.name === "표정 인식 게임") {
+      initializeExpressionGame();
+    }
   };
 
   const completeGame = () => {
@@ -91,6 +97,55 @@ const ChildAssessment = ({ age, onComplete, onBack }: ChildAssessmentProps) => {
     } else {
       return Gamepad2;
     }
+  };
+
+  // 표정 인식 게임 데이터
+  const expressionData = [
+    { emoji: "😊", emotion: "기쁨", options: ["기쁨", "슬픔", "화남", "놀람"] },
+    { emoji: "😢", emotion: "슬픔", options: ["기쁨", "슬픔", "화남", "놀람"] },
+    { emoji: "😠", emotion: "화남", options: ["기쁨", "슬픔", "화남", "놀람"] },
+    { emoji: "😱", emotion: "놀람", options: ["기쁨", "슬픔", "화남", "놀람"] },
+    { emoji: "😴", emotion: "졸림", options: ["졸림", "신남", "무서움", "기쁨"] },
+    { emoji: "😍", emotion: "사랑", options: ["사랑", "슬픔", "화남", "놀람"] },
+    { emoji: "😰", emotion: "불안", options: ["불안", "기쁨", "화남", "슬픔"] },
+    { emoji: "🤔", emotion: "생각", options: ["생각", "기쁨", "슬픔", "화남"] }
+  ];
+
+  const initializeExpressionGame = () => {
+    const randomExpression = expressionData[Math.floor(Math.random() * expressionData.length)];
+    setGameData({
+      currentExpression: randomExpression,
+      correctAnswers: 0,
+      totalQuestions: 0
+    });
+  };
+
+  const handleExpressionAnswer = (selectedEmotion: string) => {
+    if (!isGameActive || !gameData) return;
+    
+    const isCorrect = selectedEmotion === gameData.currentExpression.emotion;
+    const newData = {
+      ...gameData,
+      correctAnswers: isCorrect ? gameData.correctAnswers + 1 : gameData.correctAnswers,
+      totalQuestions: gameData.totalQuestions + 1
+    };
+    
+    if (isCorrect) {
+      setGameScore(prev => prev + 10);
+    }
+    
+    // 다음 표정으로 넘어가기
+    setTimeout(() => {
+      if (newData.totalQuestions < 8) {
+        const nextExpression = expressionData[Math.floor(Math.random() * expressionData.length)];
+        setGameData({
+          ...newData,
+          currentExpression: nextExpression
+        });
+      }
+    }, 1000);
+    
+    setGameData(newData);
   };
 
   const getGameDemo = (gameName: string) => {
@@ -155,14 +210,23 @@ const ChildAssessment = ({ age, onComplete, onBack }: ChildAssessmentProps) => {
       "표정 인식 게임": (
         <div className="space-y-4">
           <div className="text-center">
-            <div className="text-8xl mb-4">😊</div>
-            <p className="text-sm text-muted-foreground">이 표정의 감정을 선택하세요</p>
+            <div className="text-8xl mb-4">
+              {gameData?.currentExpression?.emoji || "😊"}
+            </div>
+            <p className="text-sm text-muted-foreground">
+              이 표정의 감정을 선택하세요
+            </p>
+            {gameData && (
+              <p className="text-xs text-primary mt-2">
+                정답: {gameData.correctAnswers}/{gameData.totalQuestions}
+              </p>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-4">
-            {["기쁨", "슬픔", "화남", "놀람"].map(emotion => (
+            {(gameData?.currentExpression?.options || ["기쁨", "슬픔", "화남", "놀람"]).map(emotion => (
               <Button 
                 key={emotion}
-                onClick={handleGameAction}
+                onClick={() => handleExpressionAnswer(emotion)}
                 variant="outline"
                 className="h-12"
                 disabled={!isGameActive}

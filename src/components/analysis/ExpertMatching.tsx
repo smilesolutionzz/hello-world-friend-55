@@ -200,7 +200,7 @@ const ExpertMatching = ({ analysis, ageGroup, age, onExpertSelect }: ExpertMatch
                       
                       {/* Specialties */}
                       <div className="flex flex-wrap gap-2">
-                        {expert.specialty.map((spec, idx) => (
+                        {(expert.specialty || []).map((spec, idx) => (
                           <Badge key={idx} className={getSpecialtyColor(spec)}>
                             {spec}
                           </Badge>
@@ -209,7 +209,7 @@ const ExpertMatching = ({ analysis, ageGroup, age, onExpertSelect }: ExpertMatch
                       
                       {/* Credentials */}
                       <div className="flex flex-wrap gap-2">
-                        {expert.credentials.map((cred, idx) => (
+                        {(expert.credentials || []).map((cred, idx) => (
                           <Badge key={idx} variant="outline" className="text-xs">
                             {cred}
                           </Badge>

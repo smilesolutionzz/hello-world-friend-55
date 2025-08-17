@@ -85,8 +85,16 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
           <ArrowLeft className="w-4 h-4" />
           뒤로가기
         </Button>
-        <h1 className="text-3xl font-bold text-brand-gradient">공황장애 검사 결과</h1>
+        <h1 className="text-3xl font-bold text-brand-gradient">불안감 체크 결과 (참고용)</h1>
         <div></div>
+      </div>
+
+      {/* 법적 안전 공지 */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <p className="text-blue-800 text-sm">
+          <span className="font-semibold">📊 체크 결과 (참고용)</span><br />
+          ⚠️ 이 결과는 참고용이며 의학적 진단이 절대 아닙니다. 지속적 어려움이 있으시면 반드시 전문의와 상담하세요.
+        </p>
       </div>
 
       {/* Summary Card */}

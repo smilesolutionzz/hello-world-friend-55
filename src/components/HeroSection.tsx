@@ -23,7 +23,16 @@ const HeroSection = () => {
               "불안을 데이터로 안심을 리포트로"
             </p>
             <p className="text-muted-foreground text-base sm:text-lg">
-              한 문장으로 시작해보세요
+              한 문장으로 시작해보세요 (상담연결·참고용)
+            </p>
+          </div>
+
+          {/* 법적 안전 공지 추가 */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+            <p className="text-blue-800 text-sm">
+              <span className="font-semibold">⚠️ 중요:</span> 본 서비스는 참고용 자가체크 및 심리상담 연결 서비스입니다. 
+              의학적 진단·치료행위는 포함되지 않습니다. 
+              <span className="font-semibold">🚨 응급상황: 119 / 자살예방: 1577-0199</span>
             </p>
           </div>
         </div>

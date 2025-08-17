@@ -75,21 +75,21 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
           
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             <span className="block text-foreground mb-2">
-              {testType === 'language' ? '언어발달 검사' : testType === 'panic' ? '공황장애 검사' : testType === 'depression' ? '우울증 검사' : '3분으로 시작하는'}
+              {testType === 'language' ? '언어발달 자가체크' : testType === 'panic' ? '불안감 수준 확인' : testType === 'depression' ? '우울감 자가체크' : '3분으로 시작하는'}
             </span>
             <span className="block text-brand-gradient">
-              {testType === 'language' ? '연령별 맞춤 진단' : testType === 'panic' ? 'DSM-5 기반 자가진단' : testType === 'depression' ? 'Beck 우울척도 기반' : '전문가급 심리발달 진단'}
+              {testType === 'language' ? '연령별 맞춤 확인' : testType === 'panic' ? '자가체크 (참고용)' : testType === 'depression' ? '참고용 체크' : '마음상태 체크'}
             </span>
           </h1>
           
           <p className="text-xl text-muted-foreground">
             {testType === 'language' 
-              ? '연령대를 선택하여 언어발달 수준을 확인해보세요' 
+              ? '연령대를 선택하여 언어발달 수준을 확인해보세요 (참고용)' 
               : testType === 'panic'
-              ? '연령대를 선택하여 공황장애 증상을 체크해보세요'
+              ? '연령대를 선택하여 불안감 수준을 체크해보세요 (참고용)'
               : testType === 'depression'
-              ? '연령대를 선택하여 우울증상을 확인해보세요'
-              : '연령에 맞는 전문 검사로 정확한 분석을 받아보세요'
+              ? '연령대를 선택하여 우울감 수준을 확인해보세요 (참고용)'
+              : '연령에 맞는 마음상태 체크로 참고 분석을 받아보세요'
             }
           </p>
         </div>

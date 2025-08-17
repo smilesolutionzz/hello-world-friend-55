@@ -9,13 +9,14 @@ import PanicTestForm from "@/components/assessment/PanicTestForm";
 import PanicTestResult from "@/components/assessment/PanicTestResult";
 import DepressionTestForm from "@/components/assessment/DepressionTestForm";
 import DepressionTestResult from "@/components/assessment/DepressionTestResult";
+import LegalSafetyNotice from "@/components/LegalSafetyNotice";
 import AnalysisScreen from "@/components/analysis/AnalysisScreen";
 import ExpertMatching from "@/components/analysis/ExpertMatching";
 import ConsultationRoom from "@/components/consultation/ConsultationRoom";
 import { ExpertProfile } from "@/types/assessment";
 
 const Assessment = () => {
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result'>('test-type');
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
@@ -28,6 +29,10 @@ const Assessment = () => {
 
   const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression') => {
     setTestType(type);
+    setCurrentStep('legal-notice');
+  };
+
+  const handleLegalNoticeAccept = () => {
     setCurrentStep('age-select');
   };
 
@@ -90,6 +95,9 @@ const Assessment = () => {
       // 분석/매칭/상담/언어결과 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
+    } else if (currentStep === 'legal-notice') {
+      setCurrentStep('test-type');
+      setTestType(null);
       setSelectedAgeGroup(null);
       setSelectedAge(0);
       setAssessmentResults({});
@@ -141,14 +149,21 @@ const Assessment = () => {
   if (currentStep === 'test-type') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden">
+        {/* 최상단 법적 안전 공지 */}
+        <div className="bg-blue-600 text-white py-3 px-4 text-center text-sm">
+          <span className="font-semibold">⚠️ 중요 안내:</span> 본 서비스는 참고용 자가체크 및 심리상담 연결 서비스입니다. 
+          의학적 진단이나 치료행위는 포함되지 않습니다. 정확한 진단은 의료기관에서 받으세요. 
+          <span className="font-semibold ml-2">🚨 응급상황: 119 / 자살예방: 1577-0199</span>
+        </div>
+        
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
           <div className="text-center mb-16 space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold leading-tight">
               <span className="block text-foreground mb-2">3분으로 시작하는</span>
-              <span className="block text-brand-gradient">전문 검사</span>
+              <span className="block text-brand-gradient">마음상태 체크</span>
             </h1>
             <p className="text-xl text-muted-foreground">
-              어떤 검사를 받고 싶으신가요?
+              어떤 체크를 받고 싶으신가요? (참고용)
             </p>
           </div>
           
@@ -157,12 +172,12 @@ const Assessment = () => {
               className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
               onClick={() => handleTestTypeSelect('psychological')}
             >
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">심리발달 검사</h3>
-              <p className="text-muted-foreground mb-4">전문가급 심리 상태 및 발달 수준 종합 분석</p>
+              <h3 className="text-2xl font-bold text-brand-gradient mb-4">마음상태 체크</h3>
+              <p className="text-muted-foreground mb-4">연령별 맞춤 심리상태 참고 분석 (진단 아님)</p>
               <ul className="space-y-2 text-sm">
-                <li>• 연령별 맞춤 검사</li>
-                <li>• AI 분석 + 전문가 매칭</li>
-                <li>• 종합적인 심리상태 평가</li>
+                <li>• 연령별 맞춤 체크</li>
+                <li>• AI 참고 분석 + 상담사 연결</li>
+                <li>• 종합적인 마음상태 확인</li>
               </ul>
             </div>
             
@@ -170,12 +185,12 @@ const Assessment = () => {
               className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
               onClick={() => handleTestTypeSelect('language')}
             >
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">언어발달 검사</h3>
-              <p className="text-muted-foreground mb-4">연령에 맞춤 20문항으로 간단 진단</p>
+              <h3 className="text-2xl font-bold text-brand-gradient mb-4">언어발달 자가체크</h3>
+              <p className="text-muted-foreground mb-4">연령에 맞춤 20문항으로 간단 확인 (참고용)</p>
               <ul className="space-y-2 text-sm">
                 <li>• 연령대별 20문항</li>
-                <li>• 3분 간단 테스트</li>
-                <li>• 즉시 결과 확인</li>
+                <li>• 3분 간단 체크</li>
+                <li>• 즉시 참고결과 확인</li>
               </ul>
             </div>
 
@@ -183,12 +198,12 @@ const Assessment = () => {
               className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
               onClick={() => handleTestTypeSelect('panic')}
             >
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">공황장애 검사</h3>
-              <p className="text-muted-foreground mb-4">DSM-5 기반 공황장애 자가진단</p>
+              <h3 className="text-2xl font-bold text-brand-gradient mb-4">불안감 수준 확인</h3>
+              <p className="text-muted-foreground mb-4">불안감 증상 자가체크 (참고용)</p>
               <ul className="space-y-2 text-sm">
                 <li>• 표준화된 21문항</li>
-                <li>• 신속한 증상 평가</li>
-                <li>• 심각도별 분석</li>
+                <li>• 신속한 현재상태 확인</li>
+                <li>• 수준별 참고 분석</li>
               </ul>
             </div>
 
@@ -196,11 +211,11 @@ const Assessment = () => {
               className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
               onClick={() => handleTestTypeSelect('depression')}
             >
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">우울증 검사</h3>
-              <p className="text-muted-foreground mb-4">Beck 우울척도 기반 정밀 진단</p>
+              <h3 className="text-2xl font-bold text-brand-gradient mb-4">우울감 자가체크</h3>
+              <p className="text-muted-foreground mb-4">우울감 수준 확인 (참고용)</p>
               <ul className="space-y-2 text-sm">
                 <li>• 표준화된 21문항</li>
-                <li>• AI 심층 분석</li>
+                <li>• AI 참고 분석</li>
                 <li>• 전문적 해석 제공</li>
               </ul>
             </div>
@@ -210,6 +225,10 @@ const Assessment = () => {
     );
   }
 
+  if (currentStep === 'legal-notice' && testType) {
+    return <LegalSafetyNotice onAccept={handleLegalNoticeAccept} testType={testType} />;
+  }
+  
   if (currentStep === 'age-select') {
     return <AgeSelector onAgeGroupSelect={handleAgeGroupSelect} testType={testType} />;
   }
@@ -219,8 +238,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">언어발달 자가검사 (3분)</h1>
-            <p className="text-muted-foreground">연령에 맞춘 20문항</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">언어발달 자가체크 (3분)</h1>
+            <p className="text-muted-foreground">연령에 맞춘 20문항 (참고용)</p>
           </div>
           <LanguageTestForm 
             ageGroup={selectedAgeGroup! as 'infant' | 'child'} 
@@ -251,8 +270,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">공황장애 자가검사 (3분)</h1>
-            <p className="text-muted-foreground">DSM-5 기반 21문항</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">불안감 수준 확인 (3분)</h1>
+            <p className="text-muted-foreground">DSM-5 기반 21문항 (참고용)</p>
           </div>
           <PanicTestForm 
             onComplete={handlePanicTestComplete}
@@ -268,8 +287,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">우울증 자가검사 (3분)</h1>
-            <p className="text-muted-foreground">Beck 우울척도 기반 21문항</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">우울감 자가체크 (3분)</h1>
+            <p className="text-muted-foreground">Beck 우울척도 기반 21문항 (참고용)</p>
           </div>
           <DepressionTestForm 
             onComplete={handleDepressionTestComplete}

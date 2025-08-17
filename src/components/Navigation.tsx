@@ -84,7 +84,7 @@ const Navigation = () => {
             </Button>
             <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/assessment')}>
               <Clock className="w-4 h-4 mr-2" />
-              3분 검사
+              3분 체크
             </Button>
             <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/ai-counselor')}>
               <MessageCircle className="w-4 h-4 mr-2" />
@@ -168,7 +168,7 @@ const Navigation = () => {
                 
                 <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/assessment')}>
                   <Clock className="w-4 h-4 mr-3" />
-                  3분 검사
+                  3분 체크
                 </Button>
                 
                 

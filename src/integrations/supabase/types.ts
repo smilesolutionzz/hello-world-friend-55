@@ -176,6 +176,42 @@ export type Database = {
           },
         ]
       }
+      emotional_contagion_logs: {
+        Row: {
+          detection_confidence: number | null
+          emotion_type: string
+          family_id: string
+          id: string
+          influence_strength: number | null
+          source_member_id: string
+          target_member_id: string
+          time_delay_hours: number | null
+          timestamp: string
+        }
+        Insert: {
+          detection_confidence?: number | null
+          emotion_type: string
+          family_id: string
+          id?: string
+          influence_strength?: number | null
+          source_member_id: string
+          target_member_id: string
+          time_delay_hours?: number | null
+          timestamp?: string
+        }
+        Update: {
+          detection_confidence?: number | null
+          emotion_type?: string
+          family_id?: string
+          id?: string
+          influence_strength?: number | null
+          source_member_id?: string
+          target_member_id?: string
+          time_delay_hours?: number | null
+          timestamp?: string
+        }
+        Relationships: []
+      }
       families: {
         Row: {
           created_at: string
@@ -210,6 +246,108 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      family_dynamics: {
+        Row: {
+          analysis_date: string
+          created_at: string
+          dynamics_data: Json
+          family_id: string
+          family_wellness_index: number | null
+          id: string
+        }
+        Insert: {
+          analysis_date: string
+          created_at?: string
+          dynamics_data: Json
+          family_id: string
+          family_wellness_index?: number | null
+          id?: string
+        }
+        Update: {
+          analysis_date?: string
+          created_at?: string
+          dynamics_data?: Json
+          family_id?: string
+          family_wellness_index?: number | null
+          id?: string
+        }
+        Relationships: []
+      }
+      family_events: {
+        Row: {
+          affected_members: string[] | null
+          created_at: string
+          event_date: string
+          event_description: string | null
+          event_type: string
+          family_id: string
+          id: string
+          impact_level: number | null
+          resolution_status: string | null
+        }
+        Insert: {
+          affected_members?: string[] | null
+          created_at?: string
+          event_date: string
+          event_description?: string | null
+          event_type: string
+          family_id: string
+          id?: string
+          impact_level?: number | null
+          resolution_status?: string | null
+        }
+        Update: {
+          affected_members?: string[] | null
+          created_at?: string
+          event_date?: string
+          event_description?: string | null
+          event_type?: string
+          family_id?: string
+          id?: string
+          impact_level?: number | null
+          resolution_status?: string | null
+        }
+        Relationships: []
+      }
+      family_intervention_strategies: {
+        Row: {
+          created_at: string
+          effectiveness_score: number | null
+          family_id: string
+          id: string
+          intervention_order: number | null
+          predicted_effectiveness: number | null
+          status: string | null
+          strategy_content: Json
+          strategy_type: string
+          target_members: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          effectiveness_score?: number | null
+          family_id: string
+          id?: string
+          intervention_order?: number | null
+          predicted_effectiveness?: number | null
+          status?: string | null
+          strategy_content: Json
+          strategy_type: string
+          target_members?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          effectiveness_score?: number | null
+          family_id?: string
+          id?: string
+          intervention_order?: number | null
+          predicted_effectiveness?: number | null
+          status?: string | null
+          strategy_content?: Json
+          strategy_type?: string
+          target_members?: string[] | null
+        }
+        Relationships: []
       }
       family_members: {
         Row: {
@@ -252,6 +390,111 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      family_relationships: {
+        Row: {
+          created_at: string
+          family_id: string
+          generation: number
+          id: string
+          influence_weight: number | null
+          profile_id: string
+          relationship_type: string
+          stress_sensitivity: number | null
+        }
+        Insert: {
+          created_at?: string
+          family_id: string
+          generation: number
+          id?: string
+          influence_weight?: number | null
+          profile_id: string
+          relationship_type: string
+          stress_sensitivity?: number | null
+        }
+        Update: {
+          created_at?: string
+          family_id?: string
+          generation?: number
+          id?: string
+          influence_weight?: number | null
+          profile_id?: string
+          relationship_type?: string
+          stress_sensitivity?: number | null
+        }
+        Relationships: []
+      }
+      family_wellness_metrics: {
+        Row: {
+          collective_harmony: number | null
+          communication_quality: number | null
+          created_at: string
+          family_id: string
+          id: string
+          individual_scores: Json
+          metric_date: string
+          overall_wellness_index: number | null
+          resilience_index: number | null
+          stress_distribution: number | null
+        }
+        Insert: {
+          collective_harmony?: number | null
+          communication_quality?: number | null
+          created_at?: string
+          family_id: string
+          id?: string
+          individual_scores: Json
+          metric_date: string
+          overall_wellness_index?: number | null
+          resilience_index?: number | null
+          stress_distribution?: number | null
+        }
+        Update: {
+          collective_harmony?: number | null
+          communication_quality?: number | null
+          created_at?: string
+          family_id?: string
+          id?: string
+          individual_scores?: Json
+          metric_date?: string
+          overall_wellness_index?: number | null
+          resilience_index?: number | null
+          stress_distribution?: number | null
+        }
+        Relationships: []
+      }
+      generational_patterns: {
+        Row: {
+          family_id: string
+          generations_involved: number[] | null
+          id: string
+          intervention_recommendations: Json | null
+          last_analyzed: string
+          pattern_description: string | null
+          pattern_strength: number | null
+          pattern_type: string
+        }
+        Insert: {
+          family_id: string
+          generations_involved?: number[] | null
+          id?: string
+          intervention_recommendations?: Json | null
+          last_analyzed?: string
+          pattern_description?: string | null
+          pattern_strength?: number | null
+          pattern_type: string
+        }
+        Update: {
+          family_id?: string
+          generations_involved?: number[] | null
+          id?: string
+          intervention_recommendations?: Json | null
+          last_analyzed?: string
+          pattern_description?: string | null
+          pattern_strength?: number | null
+          pattern_type?: string
+        }
+        Relationships: []
       }
       lifestyle_patterns: {
         Row: {

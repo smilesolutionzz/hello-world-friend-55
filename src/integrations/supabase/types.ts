@@ -68,6 +68,57 @@ export type Database = {
           },
         ]
       }
+      business_impact_metrics: {
+        Row: {
+          absenteeism_reduction_percent: number | null
+          additional_metrics: Json | null
+          created_at: string
+          employee_satisfaction_improvement: number | null
+          estimated_cost_savings: number | null
+          id: string
+          metric_period_end: string
+          metric_period_start: string
+          organization_id: string
+          productivity_improvement_percent: number | null
+          roi_percentage: number | null
+          turnover_rate_after: number | null
+          turnover_rate_before: number | null
+          wellness_investment_amount: number | null
+        }
+        Insert: {
+          absenteeism_reduction_percent?: number | null
+          additional_metrics?: Json | null
+          created_at?: string
+          employee_satisfaction_improvement?: number | null
+          estimated_cost_savings?: number | null
+          id?: string
+          metric_period_end: string
+          metric_period_start: string
+          organization_id: string
+          productivity_improvement_percent?: number | null
+          roi_percentage?: number | null
+          turnover_rate_after?: number | null
+          turnover_rate_before?: number | null
+          wellness_investment_amount?: number | null
+        }
+        Update: {
+          absenteeism_reduction_percent?: number | null
+          additional_metrics?: Json | null
+          created_at?: string
+          employee_satisfaction_improvement?: number | null
+          estimated_cost_savings?: number | null
+          id?: string
+          metric_period_end?: string
+          metric_period_start?: string
+          organization_id?: string
+          productivity_improvement_percent?: number | null
+          roi_percentage?: number | null
+          turnover_rate_after?: number | null
+          turnover_rate_before?: number | null
+          wellness_investment_amount?: number | null
+        }
+        Relationships: []
+      }
       chat_sessions: {
         Row: {
           ended_at: string | null
@@ -176,6 +227,81 @@ export type Database = {
           },
         ]
       }
+      corporate_programs: {
+        Row: {
+          completion_rate: number | null
+          created_at: string
+          effectiveness_score: number | null
+          end_date: string | null
+          id: string
+          organization_id: string
+          participants_count: number | null
+          program_content: Json
+          program_type: string
+          roi_metrics: Json | null
+          start_date: string
+          status: string | null
+          target_demographic: Json
+        }
+        Insert: {
+          completion_rate?: number | null
+          created_at?: string
+          effectiveness_score?: number | null
+          end_date?: string | null
+          id?: string
+          organization_id: string
+          participants_count?: number | null
+          program_content: Json
+          program_type: string
+          roi_metrics?: Json | null
+          start_date: string
+          status?: string | null
+          target_demographic: Json
+        }
+        Update: {
+          completion_rate?: number | null
+          created_at?: string
+          effectiveness_score?: number | null
+          end_date?: string | null
+          id?: string
+          organization_id?: string
+          participants_count?: number | null
+          program_content?: Json
+          program_type?: string
+          roi_metrics?: Json | null
+          start_date?: string
+          status?: string | null
+          target_demographic?: Json
+        }
+        Relationships: []
+      }
+      departments: {
+        Row: {
+          created_at: string
+          employee_count: number | null
+          head_profile_id: string | null
+          id: string
+          name: string
+          organization_id: string
+        }
+        Insert: {
+          created_at?: string
+          employee_count?: number | null
+          head_profile_id?: string | null
+          id?: string
+          name: string
+          organization_id: string
+        }
+        Update: {
+          created_at?: string
+          employee_count?: number | null
+          head_profile_id?: string | null
+          id?: string
+          name?: string
+          organization_id?: string
+        }
+        Relationships: []
+      }
       emotional_contagion_logs: {
         Row: {
           detection_confidence: number | null
@@ -209,6 +335,93 @@ export type Database = {
           target_member_id?: string
           time_delay_hours?: number | null
           timestamp?: string
+        }
+        Relationships: []
+      }
+      employee_profiles: {
+        Row: {
+          created_at: string
+          department_id: string | null
+          employment_type: string | null
+          hire_date: string
+          id: string
+          is_active: boolean | null
+          level: string
+          organization_id: string
+          position: string
+          profile_id: string
+          years_of_experience: number | null
+        }
+        Insert: {
+          created_at?: string
+          department_id?: string | null
+          employment_type?: string | null
+          hire_date: string
+          id?: string
+          is_active?: boolean | null
+          level: string
+          organization_id: string
+          position: string
+          profile_id: string
+          years_of_experience?: number | null
+        }
+        Update: {
+          created_at?: string
+          department_id?: string | null
+          employment_type?: string | null
+          hire_date?: string
+          id?: string
+          is_active?: boolean | null
+          level?: string
+          organization_id?: string
+          position?: string
+          profile_id?: string
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
+      employee_wellness_tracking: {
+        Row: {
+          burnout_score: number | null
+          created_at: string
+          employee_profile_id: string
+          id: string
+          job_satisfaction: number | null
+          productivity_self_rating: number | null
+          stress_level: number | null
+          team_satisfaction: number | null
+          tracking_date: string
+          turnover_intention: number | null
+          wellness_factors: Json | null
+          work_life_balance: number | null
+        }
+        Insert: {
+          burnout_score?: number | null
+          created_at?: string
+          employee_profile_id: string
+          id?: string
+          job_satisfaction?: number | null
+          productivity_self_rating?: number | null
+          stress_level?: number | null
+          team_satisfaction?: number | null
+          tracking_date: string
+          turnover_intention?: number | null
+          wellness_factors?: Json | null
+          work_life_balance?: number | null
+        }
+        Update: {
+          burnout_score?: number | null
+          created_at?: string
+          employee_profile_id?: string
+          id?: string
+          job_satisfaction?: number | null
+          productivity_self_rating?: number | null
+          stress_level?: number | null
+          team_satisfaction?: number | null
+          tracking_date?: string
+          turnover_intention?: number | null
+          wellness_factors?: Json | null
+          work_life_balance?: number | null
         }
         Relationships: []
       }
@@ -547,6 +760,93 @@ export type Database = {
         }
         Relationships: []
       }
+      organizational_wellness: {
+        Row: {
+          burnout_risk_count: number | null
+          created_at: string
+          department_scores: Json
+          employee_satisfaction: number | null
+          high_stress_count: number | null
+          id: string
+          level_scores: Json
+          metric_date: string
+          organization_id: string
+          overall_wellness_score: number | null
+          productivity_index: number | null
+          team_cohesion_score: number | null
+          turnover_risk_score: number | null
+        }
+        Insert: {
+          burnout_risk_count?: number | null
+          created_at?: string
+          department_scores?: Json
+          employee_satisfaction?: number | null
+          high_stress_count?: number | null
+          id?: string
+          level_scores?: Json
+          metric_date: string
+          organization_id: string
+          overall_wellness_score?: number | null
+          productivity_index?: number | null
+          team_cohesion_score?: number | null
+          turnover_risk_score?: number | null
+        }
+        Update: {
+          burnout_risk_count?: number | null
+          created_at?: string
+          department_scores?: Json
+          employee_satisfaction?: number | null
+          high_stress_count?: number | null
+          id?: string
+          level_scores?: Json
+          metric_date?: string
+          organization_id?: string
+          overall_wellness_score?: number | null
+          productivity_index?: number | null
+          team_cohesion_score?: number | null
+          turnover_risk_score?: number | null
+        }
+        Relationships: []
+      }
+      organizations: {
+        Row: {
+          admin_profile_id: string
+          created_at: string
+          employee_count: number
+          id: string
+          industry: string
+          name: string
+          settings: Json | null
+          size_category: string
+          subscription_plan: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_profile_id: string
+          created_at?: string
+          employee_count: number
+          id?: string
+          industry: string
+          name: string
+          settings?: Json | null
+          size_category: string
+          subscription_plan?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_profile_id?: string
+          created_at?: string
+          employee_count?: number
+          id?: string
+          industry?: string
+          name?: string
+          settings?: Json | null
+          size_category?: string
+          subscription_plan?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       personalized_recommendations: {
         Row: {
           content: Json
@@ -655,6 +955,48 @@ export type Database = {
           profile_id_1?: string
           profile_id_2?: string
           status?: string | null
+        }
+        Relationships: []
+      }
+      team_dynamics: {
+        Row: {
+          analysis_date: string
+          collaboration_effectiveness: number | null
+          communication_quality: number | null
+          conflict_risk_level: string | null
+          created_at: string
+          department_id: string
+          id: string
+          intervention_recommendations: Json | null
+          leadership_satisfaction: number | null
+          stress_propagation_risk: number | null
+          team_harmony_score: number | null
+        }
+        Insert: {
+          analysis_date: string
+          collaboration_effectiveness?: number | null
+          communication_quality?: number | null
+          conflict_risk_level?: string | null
+          created_at?: string
+          department_id: string
+          id?: string
+          intervention_recommendations?: Json | null
+          leadership_satisfaction?: number | null
+          stress_propagation_risk?: number | null
+          team_harmony_score?: number | null
+        }
+        Update: {
+          analysis_date?: string
+          collaboration_effectiveness?: number | null
+          communication_quality?: number | null
+          conflict_risk_level?: string | null
+          created_at?: string
+          department_id?: string
+          id?: string
+          intervention_recommendations?: Json | null
+          leadership_satisfaction?: number | null
+          stress_propagation_risk?: number | null
+          team_harmony_score?: number | null
         }
         Relationships: []
       }

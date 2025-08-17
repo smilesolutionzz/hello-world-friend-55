@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Brain, Sparkles, ArrowRight, Clock, FileText } from "lucide-react";
 import { AssessmentResult } from "@/types/assessment";
-import { analyzeAssessmentResults } from "@/services/openai";
+import { analyzeAssessmentResults, generateAIPredictions } from "@/services/openai";
+import PredictionEngine from "@/components/prediction/PredictionEngine";
 
 interface AnalysisScreenProps {
   results: Record<string, number>;
@@ -18,6 +19,8 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
   const [currentStep, setCurrentStep] = useState<string>("검사 결과 수집 중...");
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [analysis, setAnalysis] = useState<string>("");
+  const [predictions, setPredictions] = useState<any>(null);
+  const [predictionConfidence, setPredictionConfidence] = useState<string>("");
 
   // 분석 단계들
   const analysisSteps = [
@@ -64,6 +67,18 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
     try {
       const result = await analyzeAssessmentResults(results, ageGroup, age);
       setAnalysis(result.analysis);
+      
+      // Generate AI predictions after analysis
+      const predictionResult = await generateAIPredictions(
+        results, 
+        result.analysis, 
+        ageGroup, 
+        age, 
+        [] // TODO: Get family members from context
+      );
+      
+      setPredictions(predictionResult.predictions);
+      setPredictionConfidence(predictionResult.confidence);
     } catch (error) {
       console.error('AI Analysis Error:', error);
       setAnalysis(generateFallbackAnalysis());
@@ -74,7 +89,10 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
     setAnalysisComplete(true);
     
     setTimeout(() => {
-      onAnalysisComplete(analysis || generateFallbackAnalysis());
+      if (!predictions) {
+        // Only redirect if no predictions (fallback behavior)
+        onAnalysisComplete(analysis || generateFallbackAnalysis());
+      }
     }, 2000);
   };
 
@@ -240,17 +258,31 @@ ${percentage < 60 ? '우울/불안 전문가와의 즉시 상담을 권장합니
 
               {/* Completion Message */}
               {analysisComplete && (
-                <div className="text-center space-y-4 pt-6 border-t">
-                  <div className="text-green-600 text-lg font-semibold flex items-center justify-center gap-2">
-                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm">✓</span>
+                <div className="space-y-6">
+                  <div className="text-center space-y-4 pt-6 border-t">
+                    <div className="text-green-600 text-lg font-semibold flex items-center justify-center gap-2">
+                      <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                      분석 완료! 전문가 매칭 결과로 이동합니다...
                     </div>
-                    분석 완료! 전문가 매칭 결과로 이동합니다...
+                    <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                      <Clock className="w-4 h-4" />
+                      <span>총 소요시간: 약 15초</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span>총 소요시간: 약 15초</span>
-                  </div>
+
+                  {/* Prediction Results */}
+                  {predictions && (
+                    <div className="mt-8">
+                      <PredictionEngine 
+                        predictions={predictions}
+                        confidence={predictionConfidence}
+                        ageGroup={ageGroup}
+                        age={age}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </div>

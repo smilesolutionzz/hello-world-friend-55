@@ -44,6 +44,35 @@ export const getExpertRecommendations = async (
   }
 };
 
+export const generateAIPredictions = async (
+  results: Record<string, number>,
+  analysis: string,
+  ageGroup: 'infant' | 'child' | 'adult',
+  age: number,
+  familyMembers: any[] = []
+) => {
+  try {
+    const { data, error } = await supabase.functions.invoke('ai-predictor', {
+      body: { results, analysis, ageGroup, age, familyMembers }
+    });
+
+    if (error) throw error;
+
+    return {
+      predictions: data.predictions,
+      confidence: data.confidence,
+      rawAnalysis: data.rawAnalysis
+    };
+  } catch (error) {
+    console.error('AI prediction error:', error);
+    return {
+      predictions: null,
+      confidence: 'low',
+      rawAnalysis: 'AI 예측 분석을 생성할 수 없습니다.'
+    };
+  }
+};
+
 // Backwards compatibility export
 export const matchExperts = getExpertRecommendations;
 

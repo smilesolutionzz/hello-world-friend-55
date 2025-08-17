@@ -65,7 +65,7 @@ const TrustIndicators = () => {
               제휴 문의하기
             </button>
             <button 
-              onClick={() => window.location.href = '/subscription'}
+              onClick={() => window.open('https://drive.google.com/file/d/1OYcwdA-RFyWp2P0EVMXVmvvqnB07I3wX/view?usp=drive_link', '_blank')}
               className="px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary/10 transition-colors"
             >
               기관혜택 PDF받기

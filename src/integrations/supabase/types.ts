@@ -14,7 +14,284 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      assessments: {
+        Row: {
+          age_at_assessment: number
+          age_group: string
+          analysis: string | null
+          completed_at: string
+          family_id: string | null
+          id: string
+          profile_id: string
+          recommendations: string | null
+          results: Json
+          risk_level: string | null
+        }
+        Insert: {
+          age_at_assessment: number
+          age_group: string
+          analysis?: string | null
+          completed_at?: string
+          family_id?: string | null
+          id?: string
+          profile_id: string
+          recommendations?: string | null
+          results: Json
+          risk_level?: string | null
+        }
+        Update: {
+          age_at_assessment?: number
+          age_group?: string
+          analysis?: string | null
+          completed_at?: string
+          family_id?: string | null
+          id?: string
+          profile_id?: string
+          recommendations?: string | null
+          results?: Json
+          risk_level?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessments_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          ended_at: string | null
+          id: string
+          is_active: boolean | null
+          messages: Json
+          profile_id: string
+          risk_levels: Json
+          session_summary: string | null
+          started_at: string
+        }
+        Insert: {
+          ended_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          messages?: Json
+          profile_id: string
+          risk_levels?: Json
+          session_summary?: string | null
+          started_at?: string
+        }
+        Update: {
+          ended_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          messages?: Json
+          profile_id?: string
+          risk_levels?: Json
+          session_summary?: string | null
+          started_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_sessions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consultations: {
+        Row: {
+          assessment_id: string | null
+          created_at: string
+          duration_minutes: number | null
+          expert_name: string
+          expert_specialization: string | null
+          family_id: string | null
+          id: string
+          next_appointment: string | null
+          notes: string | null
+          profile_id: string
+          session_type: string | null
+          status: string | null
+        }
+        Insert: {
+          assessment_id?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          expert_name: string
+          expert_specialization?: string | null
+          family_id?: string | null
+          id?: string
+          next_appointment?: string | null
+          notes?: string | null
+          profile_id: string
+          session_type?: string | null
+          status?: string | null
+        }
+        Update: {
+          assessment_id?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          expert_name?: string
+          expert_specialization?: string | null
+          family_id?: string | null
+          id?: string
+          next_appointment?: string | null
+          notes?: string | null
+          profile_id?: string
+          session_type?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultations_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultations_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      families: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "families_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_members: {
+        Row: {
+          family_id: string
+          id: string
+          is_primary_caregiver: boolean | null
+          joined_at: string
+          profile_id: string
+          relationship: string
+        }
+        Insert: {
+          family_id: string
+          id?: string
+          is_primary_caregiver?: boolean | null
+          joined_at?: string
+          profile_id: string
+          relationship: string
+        }
+        Update: {
+          family_id?: string
+          id?: string
+          is_primary_caregiver?: boolean | null
+          joined_at?: string
+          profile_id?: string
+          relationship?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_members_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "families"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "family_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          birth_date: string | null
+          created_at: string
+          display_name: string
+          gender: string | null
+          id: string
+          phone: string | null
+          role: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          birth_date?: string | null
+          created_at?: string
+          display_name: string
+          gender?: string | null
+          id?: string
+          phone?: string | null
+          role?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          birth_date?: string | null
+          created_at?: string
+          display_name?: string
+          gender?: string | null
+          id?: string
+          phone?: string | null
+          role?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

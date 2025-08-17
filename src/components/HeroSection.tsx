@@ -10,19 +10,19 @@ const HeroSection = () => {
         <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-warm-lavender/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
       </div>
 
-      <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 pt-12 sm:pt-20 pb-12 sm:pb-16">
         {/* Main Headline */}
-        <div className="text-center mb-16 space-y-6">
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            <span className="block text-foreground mb-2">3분으로 시작하는</span>
+        <div className="text-center mb-8 sm:mb-16 space-y-4 sm:space-y-6">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight">
+            <span className="block text-foreground mb-1 sm:mb-2">3분으로 시작하는</span>
             <span className="block text-brand-gradient">전문가급 심리진단</span>
           </h1>
           
-          <div className="space-y-3 text-xl md:text-2xl">
+          <div className="space-y-2 sm:space-y-3 text-lg sm:text-xl md:text-2xl">
             <p className="text-brand-gradient font-semibold">
               "불안을 데이터로 안심을 리포트로"
             </p>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-muted-foreground text-base sm:text-lg">
               한 문장으로 시작해보세요
             </p>
           </div>

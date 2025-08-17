@@ -129,6 +129,11 @@ const AICounselor = () => {
     window.location.href = '/assessment';
   };
 
+  const connectToAIHExpert = () => {
+    // AIH 전문가 카카오톡 오픈채팅 연결
+    window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank');
+  };
+
   const getRiskBadge = (level: 'low' | 'medium' | 'high') => {
     const configs = {
       low: { color: "bg-green-100 text-green-700", label: "안정" },
@@ -154,6 +159,13 @@ const AICounselor = () => {
               <div className="flex items-center justify-between">
                 <span className="font-semibold">위기상황이 감지되었습니다. 즉시 전문가 도움을 받으시길 권합니다.</span>
                 <div className="flex gap-2">
+                  <Button 
+                    size="sm" 
+                    className="bg-orange-600 hover:bg-orange-700 text-white"
+                    onClick={connectToAIHExpert}
+                  >
+                    💬 AIH전문가연결
+                  </Button>
                   <Button 
                     size="sm" 
                     variant="destructive"
@@ -309,7 +321,14 @@ const AICounselor = () => {
 
         {/* Quick Access Buttons */}
         <div className="max-w-4xl mx-auto mt-8">
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-4 gap-4">
+            <Card className="p-6 text-center hover-glow cursor-pointer" onClick={connectToAIHExpert}>
+              <div className="w-8 h-8 text-orange-600 mx-auto mb-3 text-2xl">💬</div>
+              <h3 className="font-semibold text-foreground mb-2">AIH 전문가</h3>
+              <p className="text-sm text-muted-foreground mb-3">카카오톡 즉시 연결</p>
+              <Badge className="bg-orange-100 text-orange-700">실시간 상담</Badge>
+            </Card>
+            
             <Card className="p-6 text-center hover-glow cursor-pointer" onClick={handleEmergencyCall}>
               <Phone className="w-8 h-8 text-red-600 mx-auto mb-3" />
               <h3 className="font-semibold text-foreground mb-2">응급상담</h3>

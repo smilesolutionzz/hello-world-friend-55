@@ -1290,6 +1290,7 @@ export type Database = {
           created_at: string
           domain: string
           id: string
+          media_files: Json | null
           observation_period_end: string
           observation_period_start: string
           observer_name: string
@@ -1307,6 +1308,7 @@ export type Database = {
           created_at?: string
           domain: string
           id?: string
+          media_files?: Json | null
           observation_period_end: string
           observation_period_start: string
           observer_name: string
@@ -1324,6 +1326,7 @@ export type Database = {
           created_at?: string
           domain?: string
           id?: string
+          media_files?: Json | null
           observation_period_end?: string
           observation_period_start?: string
           observer_name?: string
@@ -1977,6 +1980,36 @@ export type Database = {
           insight_type?: string
           last_updated?: string
           profile_id?: string
+        }
+        Relationships: []
+      }
+      user_subscription_usage: {
+        Row: {
+          created_at: string | null
+          id: string
+          subscription_status: string | null
+          trial_used: boolean | null
+          updated_at: string | null
+          usage_count: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          subscription_status?: string | null
+          trial_used?: boolean | null
+          updated_at?: string | null
+          usage_count?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          subscription_status?: string | null
+          trial_used?: boolean | null
+          updated_at?: string | null
+          usage_count?: number | null
+          user_id?: string | null
         }
         Relationships: []
       }

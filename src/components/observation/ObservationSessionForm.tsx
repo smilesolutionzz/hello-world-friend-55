@@ -30,6 +30,9 @@ const ObservationSessionForm = ({ template, onSessionCreated, onCancel }: Observ
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const [saving, setSaving] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState<any[]>([]);
+  const [showSubscriptionGate, setShowSubscriptionGate] = useState(false);
+  const [usageData, setUsageData] = useState<any>(null);
 
   const categories = template.items || [];
   const totalItems = categories.reduce((sum: number, cat: any) => sum + (cat.items?.length || 0), 0);

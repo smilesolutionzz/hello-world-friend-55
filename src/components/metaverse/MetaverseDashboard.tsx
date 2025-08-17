@@ -698,7 +698,7 @@ export const MetaverseDashboard = () => {
                       <div className="flex flex-wrap gap-1 mt-1">
                         {Object.entries(therapist.personality_traits).map(([trait, value]) => (
                           <Badge key={trait} variant="secondary" className="text-xs">
-                            {trait}: {value}/10
+                            {trait}: {String(value)}/10
                           </Badge>
                         ))}
                       </div>

@@ -14,13 +14,13 @@ const HeroSection = () => {
         {/* Main Headline */}
         <div className="text-center mb-8 sm:mb-16 space-y-4 sm:space-y-6">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight">
-            <span className="block text-foreground mb-1 sm:mb-2">3분으로 시작하는</span>
-            <span className="block text-brand-gradient">전문가급 심리진단</span>
+            <span className="block text-foreground mb-1 sm:mb-2">데이터로 읽는 마음,</span>
+            <span className="block text-brand-gradient">AI하이라이트프로</span>
           </h1>
           
           <div className="space-y-2 sm:space-y-3 text-lg sm:text-xl md:text-2xl">
             <p className="text-brand-gradient font-semibold">
-              "데이터로 읽는 마음, AI하이라이트프로"
+              "불안을 데이터로 안심을 리포트로"
             </p>
             <p className="text-muted-foreground text-base sm:text-lg">
               한 문장으로 시작해보세요

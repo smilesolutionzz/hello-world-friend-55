@@ -14,6 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_therapist_interactions: {
+        Row: {
+          ai_therapist_id: string
+          created_at: string
+          duration_minutes: number | null
+          emotional_analysis: Json | null
+          id: string
+          interaction_data: Json
+          interaction_type: string | null
+          profile_id: string
+          session_id: string | null
+          therapy_progress: Json | null
+        }
+        Insert: {
+          ai_therapist_id: string
+          created_at?: string
+          duration_minutes?: number | null
+          emotional_analysis?: Json | null
+          id?: string
+          interaction_data?: Json
+          interaction_type?: string | null
+          profile_id: string
+          session_id?: string | null
+          therapy_progress?: Json | null
+        }
+        Update: {
+          ai_therapist_id?: string
+          created_at?: string
+          duration_minutes?: number | null
+          emotional_analysis?: Json | null
+          id?: string
+          interaction_data?: Json
+          interaction_type?: string | null
+          profile_id?: string
+          session_id?: string | null
+          therapy_progress?: Json | null
+        }
+        Relationships: []
+      }
+      ai_therapists: {
+        Row: {
+          animation_config: Json | null
+          appearance_config: Json
+          created_at: string
+          id: string
+          interaction_styles: Json | null
+          is_active: boolean | null
+          name: string
+          personality_traits: Json | null
+          specialization: string
+          therapy_approaches: Json | null
+          voice_config: Json | null
+        }
+        Insert: {
+          animation_config?: Json | null
+          appearance_config?: Json
+          created_at?: string
+          id?: string
+          interaction_styles?: Json | null
+          is_active?: boolean | null
+          name: string
+          personality_traits?: Json | null
+          specialization: string
+          therapy_approaches?: Json | null
+          voice_config?: Json | null
+        }
+        Update: {
+          animation_config?: Json | null
+          appearance_config?: Json
+          created_at?: string
+          id?: string
+          interaction_styles?: Json | null
+          is_active?: boolean | null
+          name?: string
+          personality_traits?: Json | null
+          specialization?: string
+          therapy_approaches?: Json | null
+          voice_config?: Json | null
+        }
+        Relationships: []
+      }
       assessments: {
         Row: {
           age_at_assessment: number
@@ -760,6 +841,99 @@ export type Database = {
         }
         Relationships: []
       }
+      metaverse_presence: {
+        Row: {
+          avatar_id: string | null
+          connection_quality: Json | null
+          environment_id: string | null
+          id: string
+          last_activity: string | null
+          position_data: Json | null
+          profile_id: string
+          session_id: string | null
+          status: string | null
+        }
+        Insert: {
+          avatar_id?: string | null
+          connection_quality?: Json | null
+          environment_id?: string | null
+          id?: string
+          last_activity?: string | null
+          position_data?: Json | null
+          profile_id: string
+          session_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          avatar_id?: string | null
+          connection_quality?: Json | null
+          environment_id?: string | null
+          id?: string
+          last_activity?: string | null
+          position_data?: Json | null
+          profile_id?: string
+          session_id?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      metaverse_sessions: {
+        Row: {
+          created_at: string
+          current_participants: number | null
+          description: string | null
+          end_time: string | null
+          environment_id: string
+          host_profile_id: string
+          id: string
+          is_public: boolean | null
+          max_participants: number | null
+          scenario_data: Json | null
+          session_config: Json | null
+          session_name: string | null
+          session_type: string
+          start_time: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_participants?: number | null
+          description?: string | null
+          end_time?: string | null
+          environment_id: string
+          host_profile_id: string
+          id?: string
+          is_public?: boolean | null
+          max_participants?: number | null
+          scenario_data?: Json | null
+          session_config?: Json | null
+          session_name?: string | null
+          session_type: string
+          start_time?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_participants?: number | null
+          description?: string | null
+          end_time?: string | null
+          environment_id?: string
+          host_profile_id?: string
+          id?: string
+          is_public?: boolean | null
+          max_participants?: number | null
+          scenario_data?: Json | null
+          session_config?: Json | null
+          session_name?: string | null
+          session_type?: string
+          start_time?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       organizational_wellness: {
         Row: {
           burnout_risk_count: number | null
@@ -925,6 +1099,42 @@ export type Database = {
         }
         Relationships: []
       }
+      session_participants: {
+        Row: {
+          avatar_id: string | null
+          id: string
+          interaction_data: Json | null
+          joined_at: string | null
+          left_at: string | null
+          participant_role: string | null
+          profile_id: string
+          session_id: string
+          therapy_progress: Json | null
+        }
+        Insert: {
+          avatar_id?: string | null
+          id?: string
+          interaction_data?: Json | null
+          joined_at?: string | null
+          left_at?: string | null
+          participant_role?: string | null
+          profile_id: string
+          session_id: string
+          therapy_progress?: Json | null
+        }
+        Update: {
+          avatar_id?: string | null
+          id?: string
+          interaction_data?: Json | null
+          joined_at?: string | null
+          left_at?: string | null
+          participant_role?: string | null
+          profile_id?: string
+          session_id?: string
+          therapy_progress?: Json | null
+        }
+        Relationships: []
+      }
       social_matches: {
         Row: {
           created_at: string
@@ -1000,6 +1210,117 @@ export type Database = {
         }
         Relationships: []
       }
+      therapy_environments: {
+        Row: {
+          ambient_sounds: Json | null
+          created_at: string
+          description: string | null
+          environment_type: string
+          id: string
+          lighting_config: Json | null
+          name: string
+          scene_config: Json
+        }
+        Insert: {
+          ambient_sounds?: Json | null
+          created_at?: string
+          description?: string | null
+          environment_type: string
+          id?: string
+          lighting_config?: Json | null
+          name: string
+          scene_config?: Json
+        }
+        Update: {
+          ambient_sounds?: Json | null
+          created_at?: string
+          description?: string | null
+          environment_type?: string
+          id?: string
+          lighting_config?: Json | null
+          name?: string
+          scene_config?: Json
+        }
+        Relationships: []
+      }
+      therapy_scenarios: {
+        Row: {
+          ai_characters: Json | null
+          created_at: string
+          description: string | null
+          difficulty_level: number | null
+          environment_requirements: Json | null
+          id: string
+          scenario_config: Json
+          scenario_type: string
+          success_criteria: Json | null
+          target_age_group: string | null
+          therapeutic_goals: Json | null
+          title: string
+        }
+        Insert: {
+          ai_characters?: Json | null
+          created_at?: string
+          description?: string | null
+          difficulty_level?: number | null
+          environment_requirements?: Json | null
+          id?: string
+          scenario_config?: Json
+          scenario_type: string
+          success_criteria?: Json | null
+          target_age_group?: string | null
+          therapeutic_goals?: Json | null
+          title: string
+        }
+        Update: {
+          ai_characters?: Json | null
+          created_at?: string
+          description?: string | null
+          difficulty_level?: number | null
+          environment_requirements?: Json | null
+          id?: string
+          scenario_config?: Json
+          scenario_type?: string
+          success_criteria?: Json | null
+          target_age_group?: string | null
+          therapeutic_goals?: Json | null
+          title?: string
+        }
+        Relationships: []
+      }
+      user_avatars: {
+        Row: {
+          animation_preferences: Json | null
+          appearance_config: Json
+          avatar_name: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          profile_id: string
+          updated_at: string
+        }
+        Insert: {
+          animation_preferences?: Json | null
+          appearance_config?: Json
+          avatar_name?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          profile_id: string
+          updated_at?: string
+        }
+        Update: {
+          animation_preferences?: Json | null
+          appearance_config?: Json
+          avatar_name?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          profile_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_behavior_logs: {
         Row: {
           behavior_data: Json
@@ -1027,6 +1348,39 @@ export type Database = {
           profile_id?: string
           session_id?: string | null
           timestamp?: string
+        }
+        Relationships: []
+      }
+      user_environment_preferences: {
+        Row: {
+          accessibility_settings: Json | null
+          comfort_settings: Json | null
+          created_at: string
+          favorite_environment_id: string | null
+          id: string
+          preferred_environments: Json
+          profile_id: string
+          updated_at: string
+        }
+        Insert: {
+          accessibility_settings?: Json | null
+          comfort_settings?: Json | null
+          created_at?: string
+          favorite_environment_id?: string | null
+          id?: string
+          preferred_environments?: Json
+          profile_id: string
+          updated_at?: string
+        }
+        Update: {
+          accessibility_settings?: Json | null
+          comfort_settings?: Json | null
+          created_at?: string
+          favorite_environment_id?: string | null
+          id?: string
+          preferred_environments?: Json
+          profile_id?: string
+          updated_at?: string
         }
         Relationships: []
       }

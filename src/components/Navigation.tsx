@@ -66,7 +66,7 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between w-full px-4 sm:px-6 py-4 bg-white/80 backdrop-blur-sm border-b border-border">
+    <nav className="flex items-center justify-between w-full max-w-full min-w-0 px-4 sm:px-6 py-4 bg-white/80 backdrop-blur-sm border-b border-border">
       {/* Logo */}
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-2 text-xl sm:text-2xl font-bold cursor-pointer" onClick={() => navigate('/')}>
@@ -77,35 +77,35 @@ const Navigation = () => {
       {/* Desktop Navigation */}
       {!isMobile && (
         <>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/')}>
-              <Home className="w-4 h-4 mr-2" />
+          <div className="flex items-center flex-wrap gap-1 min-w-0">
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/')}>
+              <Home className="w-4 h-4 mr-1" />
               홈
             </Button>
-            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/assessment')}>
-              <Clock className="w-4 h-4 mr-2" />
-              3분 체크
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/assessment')}>
+              <Clock className="w-4 h-4 mr-1" />
+              3분체크
             </Button>
-            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/ai-counselor')}>
-              <MessageCircle className="w-4 h-4 mr-2" />
-              AI상담사
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/ai-counselor')}>
+              <MessageCircle className="w-4 h-4 mr-1" />
+              AI상담
             </Button>
-            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/metaverse')}>
-              <Brain className="w-4 h-4 mr-2" />
-              메타버스치료
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/metaverse')}>
+              <Brain className="w-4 h-4 mr-1" />
+              메타버스
             </Button>
-            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/family')}>
-              <Users className="w-4 h-4 mr-2" />
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/family')}>
+              <Users className="w-4 h-4 mr-1" />
               가족케어
             </Button>
-            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/corporate')}>
-              <BarChart3 className="w-4 h-4 mr-2" />
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/corporate')}>
+              <BarChart3 className="w-4 h-4 mr-1" />
               기업솔루션
             </Button>
             {user && (
-              <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/dashboard')}>
-                <BookOpen className="w-4 h-4 mr-2" />
-                내 계정
+              <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/dashboard')}>
+                <BookOpen className="w-4 h-4 mr-1" />
+                내계정
               </Button>
             )}
           </div>

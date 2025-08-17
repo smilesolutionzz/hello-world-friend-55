@@ -26,9 +26,9 @@ const Navigation = () => {
           <BookOpen className="w-4 h-4 mr-2" />
           관찰일지
         </Button>
-        <Button variant="ghost" className="btn-ghost">
+        <Button variant="ghost" className="btn-ghost" onClick={() => window.location.href = '/ai-counselor'}>
           <MessageCircle className="w-4 h-4 mr-2" />
-          실시간상담
+          AI상담사
         </Button>
         <Button variant="ghost" className="btn-ghost">
           <Info className="w-4 h-4 mr-2" />

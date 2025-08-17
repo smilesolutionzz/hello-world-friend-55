@@ -18,14 +18,14 @@ const VideoShowcase = () => {
       id: 2,
       title: "사용자 후기 모음",
       description: "실제 이용자들의 생생한 경험담",
-      embedId: "dQw4w9WgXcQ", // 실제 영상 ID로 교체 필요
+      embedId: "EAYwe4C8nds",
       thumbnail: "/api/placeholder/640/360"
     },
     {
       id: 3,
       title: "전문가 인터뷰",
       description: "정신건강 전문의가 말하는 AI 케어",
-      embedId: "dQw4w9WgXcQ", // 실제 영상 ID로 교체 필요
+      embedId: "DiNcA92PGZE",
       thumbnail: "/api/placeholder/640/360"
     }
   ];

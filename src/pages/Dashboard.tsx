@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { 
   Users, 
   Plus, 
@@ -17,13 +18,19 @@ import {
   User,
   Baby,
   Users as ChildIcon,
-  UserCheck
+  UserCheck,
+  BarChart3,
+  FileText,
+  Star,
+  CreditCard
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import FamilyManagement from "@/components/family/FamilyManagement";
 import AssessmentHistory from "@/components/history/AssessmentHistory";
 import ConsultationHistory from "@/components/history/ConsultationHistory";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
 interface Profile {
   id: string;
@@ -50,10 +57,28 @@ interface Family {
   family_members: FamilyMember[];
 }
 
+interface Observation {
+  id: string;
+  user_id: string;
+  age_group: string;
+  tags: string[];
+  score_overall: number;
+  created_at: string;
+  profile?: Profile;
+}
+
+interface UserStats {
+  user_id: string;
+  free_uses: number;
+  subscription: 'free' | 'premium' | 'pro';
+}
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [families, setFamilies] = useState<Family[]>([]);
+  const [observations, setObservations] = useState<Observation[]>([]);
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -96,6 +121,38 @@ const Dashboard = () => {
         .order('created_at', { ascending: false });
 
       setFamilies(familiesData || []);
+
+      // Load observations (mock data for now since table doesn't exist yet)
+      const mockObservations: Observation[] = [
+        {
+          id: '1',
+          user_id: user.id,
+          age_group: 'child',
+          tags: ['정서', '행동'],
+          score_overall: 85,
+          created_at: new Date().toISOString(),
+          profile: profileData
+        },
+        {
+          id: '2', 
+          user_id: user.id,
+          age_group: 'adult',
+          tags: ['인지', '사회성'],
+          score_overall: 72,
+          created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          profile: profileData
+        }
+      ];
+      setObservations(mockObservations);
+
+      // Load user stats (mock data)
+      const mockUserStats: UserStats = {
+        user_id: user.id,
+        free_uses: 1,
+        subscription: 'free'
+      };
+      setUserStats(mockUserStats);
+
     } catch (error) {
       console.error('Error loading dashboard data:', error);
     }
@@ -134,6 +191,42 @@ const Dashboard = () => {
     if (age < 3) return `유아 (${age}세)`;
     if (age < 18) return `아동/청소년 (${age}세)`;
     return `성인 (${age}세)`;
+  };
+
+  // Calculate KPI data
+  const totalObservations = observations.length;
+  const recent30DaysObservations = observations.filter(obs => {
+    const obsDate = new Date(obs.created_at);
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    return obsDate >= thirtyDaysAgo;
+  }).length;
+
+  // Calculate distribution data
+  const distributionData = [
+    { name: '정서', value: 25, color: '#0ea5e9' },
+    { name: '행동', value: 20, color: '#10b981' },
+    { name: '인지', value: 20, color: '#f59e0b' },
+    { name: '사회성', value: 20, color: '#8b5cf6' },
+    { name: '신체', value: 15, color: '#ef4444' }
+  ];
+
+  // Calculate trend data (12 weeks)
+  const trendData = Array.from({ length: 12 }, (_, i) => ({
+    week: `${12 - i}주 전`,
+    score: Math.floor(Math.random() * 30) + 70 // Mock data 70-100
+  }));
+
+  const getSubscriptionStatus = () => {
+    if (!userStats) return { label: '로딩중', color: 'bg-gray-100 text-gray-600' };
+    
+    switch (userStats.subscription) {
+      case 'premium':
+        return { label: '프리미엄', color: 'bg-blue-100 text-blue-600' };
+      case 'pro':
+        return { label: '프로', color: 'bg-purple-100 text-purple-600' };
+      default:
+        return { label: '무료', color: 'bg-gray-100 text-gray-600' };
+    }
   };
 
   if (loading) {
@@ -192,18 +285,16 @@ const Dashboard = () => {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            {/* Quick Stats */}
-            <div className="grid md:grid-cols-4 gap-4">
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Card className="p-6">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                    <Users className="w-6 h-6 text-primary" />
+                    <BarChart3 className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">
-                      {families.reduce((total, family) => total + family.family_members.length, 0)}
-                    </p>
-                    <p className="text-sm text-muted-foreground">가족 구성원</p>
+                    <p className="text-2xl font-bold text-foreground">{totalObservations}</p>
+                    <p className="text-sm text-muted-foreground">총 관찰수</p>
                   </div>
                 </div>
               </Card>
@@ -214,8 +305,8 @@ const Dashboard = () => {
                     <TrendingUp className="w-6 h-6 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">0</p>
-                    <p className="text-sm text-muted-foreground">완료된 검사</p>
+                    <p className="text-2xl font-bold text-foreground">{recent30DaysObservations}</p>
+                    <p className="text-sm text-muted-foreground">최근 30일 관찰수</p>
                   </div>
                 </div>
               </Card>
@@ -223,27 +314,200 @@ const Dashboard = () => {
               <Card className="p-6">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-blue-600" />
+                    <FileText className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">0</p>
-                    <p className="text-sm text-muted-foreground">예정된 상담</p>
+                    <p className="text-2xl font-bold text-foreground">
+                      {userStats ? `${3 - userStats.free_uses}/3` : '로딩중'}
+                    </p>
+                    <p className="text-sm text-muted-foreground">무료 분석 잔여</p>
                   </div>
                 </div>
               </Card>
 
               <Card className="p-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                    <Clock className="w-6 h-6 text-orange-600" />
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                    <CreditCard className="w-6 h-6 text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-foreground">24시간</p>
-                    <p className="text-sm text-muted-foreground">AI 상담 가능</p>
+                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getSubscriptionStatus().color}`}>
+                      {getSubscriptionStatus().label}
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">구독 상태</p>
                   </div>
                 </div>
               </Card>
             </div>
+
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Distribution Chart */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">영역별 분포</h3>
+                {distributionData.length > 0 ? (
+                  <div className="h-64">
+                    <ChartContainer config={{}} className="h-full w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={distributionData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={100}
+                            paddingAngle={5}
+                            dataKey="value"
+                          >
+                            {distributionData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {distributionData.map((item) => (
+                        <div key={item.name} className="flex items-center gap-1">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: item.color }}
+                          />
+                          <span className="text-sm text-muted-foreground">{item.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-64 flex items-center justify-center text-muted-foreground">
+                    <div className="text-center">
+                      <BarChart3 className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      <p>데이터가 없습니다</p>
+                    </div>
+                  </div>
+                )}
+              </Card>
+
+              {/* Trend Chart */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">최근 12주 점수 추이</h3>
+                {trendData.length > 0 ? (
+                  <div className="h-64">
+                    <ChartContainer config={{}} className="h-full w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={trendData}>
+                          <XAxis 
+                            dataKey="week" 
+                            className="text-xs"
+                            tick={{ fontSize: 10 }}
+                          />
+                          <YAxis 
+                            domain={[60, 100]}
+                            className="text-xs"
+                            tick={{ fontSize: 10 }}
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="score" 
+                            stroke="#0ea5e9" 
+                            strokeWidth={2}
+                            dot={{ fill: '#0ea5e9', strokeWidth: 2, r: 4 }}
+                            activeDot={{ r: 6 }}
+                          />
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
+                  </div>
+                ) : (
+                  <div className="h-64 flex items-center justify-center text-muted-foreground">
+                    <div className="text-center">
+                      <TrendingUp className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      <p>데이터가 없습니다</p>
+                    </div>
+                  </div>
+                )}
+              </Card>
+            </div>
+
+            {/* Subjects Table */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">대상자 현황</h3>
+                <Button variant="outline" size="sm" onClick={() => navigate('/observation')}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  새 관찰 추가
+                </Button>
+              </div>
+              
+              {observations.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>이름</TableHead>
+                        <TableHead>연령대</TableHead>
+                        <TableHead>최근 점수</TableHead>
+                        <TableHead>최근 업로드</TableHead>
+                        <TableHead>상태</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {observations.map((obs) => (
+                        <TableRow key={obs.id}>
+                          <TableCell className="font-medium">
+                            {obs.profile?.display_name || '알 수 없음'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{obs.age_group}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold">{obs.score_overall}</span>
+                              <div className="flex">
+                                {Array.from({ length: 5 }, (_, i) => (
+                                  <Star
+                                    key={i}
+                                    className={`w-3 h-3 ${
+                                      i < Math.floor(obs.score_overall / 20)
+                                        ? 'text-yellow-400 fill-current'
+                                        : 'text-gray-300'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {new Date(obs.created_at).toLocaleDateString('ko-KR')}
+                          </TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant={userStats?.subscription === 'free' ? 'secondary' : 'default'}
+                            >
+                              {userStats?.subscription === 'free' ? '무료' : '구독'}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                  <h4 className="font-medium mb-2">관찰 데이터가 없습니다</h4>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    첫 번째 관찰을 시작하여 데이터를 수집해보세요
+                  </p>
+                  <Button onClick={() => navigate('/observation')}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    관찰 시작하기
+                  </Button>
+                </div>
+              )}
+            </Card>
 
             {/* Family Overview */}
             <div className="space-y-4">

@@ -8,6 +8,9 @@ import Assessment from "./pages/Assessment";
 import AICounselor from "./pages/AICounselor";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import Metaverse from "./pages/Metaverse";
+import Family from "./pages/Family";
+import Corporate from "./pages/Corporate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +27,9 @@ const App = () => (
           <Route path="/ai-counselor" element={<AICounselor />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/metaverse" element={<Metaverse />} />
+          <Route path="/family" element={<Family />} />
+          <Route path="/corporate" element={<Corporate />} />
           
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

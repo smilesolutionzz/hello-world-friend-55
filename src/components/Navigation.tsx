@@ -86,10 +86,6 @@ const Navigation = () => {
               <Clock className="w-4 h-4 mr-2" />
               3분 검사
             </Button>
-            <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/language-test')}>
-              <FileText className="w-4 h-4 mr-2" />
-              언어검사
-            </Button>
             <Button variant="ghost" className="btn-ghost" onClick={() => handleNavigation('/ai-counselor')}>
               <MessageCircle className="w-4 h-4 mr-2" />
               AI상담사
@@ -175,10 +171,6 @@ const Navigation = () => {
                   3분 검사
                 </Button>
                 
-                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/language-test')}>
-                  <FileText className="w-4 h-4 mr-3" />
-                  언어검사
-                </Button>
                 
                 <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/ai-counselor')}>
                   <MessageCircle className="w-4 h-4 mr-3" />

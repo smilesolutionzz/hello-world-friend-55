@@ -11,6 +11,9 @@ import Dashboard from "./pages/Dashboard";
 import Metaverse from "./pages/Metaverse";
 import Family from "./pages/Family";
 import Corporate from "./pages/Corporate";
+import Subscription from "./pages/Subscription";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFail from "./pages/PaymentFail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +33,9 @@ const App = () => (
           <Route path="/metaverse" element={<Metaverse />} />
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />
+          <Route path="/subscription" element={<Subscription />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-fail" element={<PaymentFail />} />
           
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

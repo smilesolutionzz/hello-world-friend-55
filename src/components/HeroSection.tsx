@@ -31,6 +31,30 @@ const HeroSection = () => {
 
         {/* Chat Interface */}
         <ChatInterface />
+        
+        {/* CTA Section */}
+        <div className="mt-12 text-center">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200">
+            <h3 className="text-xl sm:text-2xl font-bold mb-4">더 정확한 분석이 필요하신가요?</h3>
+            <p className="text-muted-foreground mb-6">
+              프리미엄 플랜으로 전문가 수준의 AI 분석과 개인 맞춤 상담을 받아보세요
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button 
+                onClick={() => window.location.href = '/subscription'}
+                className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+              >
+                구독 플랜 보기
+              </button>
+              <button 
+                onClick={() => window.location.href = '/assessment'}
+                className="px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary/10 transition-colors"
+              >
+                무료 체험하기
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

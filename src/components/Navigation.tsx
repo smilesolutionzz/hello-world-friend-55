@@ -102,6 +102,10 @@ const Navigation = () => {
               <BarChart3 className="w-4 h-4 mr-1" />
               기업솔루션
             </Button>
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 text-primary font-medium" onClick={() => handleNavigation('/subscription')}>
+              <Shield className="w-4 h-4 mr-1" />
+              구독
+            </Button>
             {user && (
               <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/dashboard')}>
                 <BookOpen className="w-4 h-4 mr-1" />
@@ -190,6 +194,11 @@ const Navigation = () => {
                 <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/corporate')}>
                   <BarChart3 className="w-4 h-4 mr-3" />
                   기업솔루션
+                </Button>
+                
+                <Button variant="ghost" className="justify-start text-primary font-medium" onClick={() => handleNavigation('/subscription')}>
+                  <Shield className="w-4 h-4 mr-3" />
+                  구독 플랜
                 </Button>
                 
                 {user && (

@@ -1329,6 +1329,50 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_history: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          order_id: string
+          payment_key: string | null
+          payment_method: string | null
+          status: string
+          subscription_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          order_id: string
+          payment_key?: string | null
+          payment_method?: string | null
+          status?: string
+          subscription_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          order_id?: string
+          payment_key?: string | null
+          payment_method?: string | null
+          status?: string
+          subscription_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_history_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "user_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       personalized_recommendations: {
         Row: {
           content: Json
@@ -1518,6 +1562,42 @@ export type Database = {
           profile_id_1?: string
           profile_id_2?: string
           status?: string | null
+        }
+        Relationships: []
+      }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          expert_consultation: boolean | null
+          features: Json
+          id: string
+          max_reports: number | null
+          name: string
+          price: number
+          priority_support: boolean | null
+          yearly_price: number | null
+        }
+        Insert: {
+          created_at?: string
+          expert_consultation?: boolean | null
+          features?: Json
+          id?: string
+          max_reports?: number | null
+          name: string
+          price: number
+          priority_support?: boolean | null
+          yearly_price?: number | null
+        }
+        Update: {
+          created_at?: string
+          expert_consultation?: boolean | null
+          features?: Json
+          id?: string
+          max_reports?: number | null
+          name?: string
+          price?: number
+          priority_support?: boolean | null
+          yearly_price?: number | null
         }
         Relationships: []
       }
@@ -1763,6 +1843,53 @@ export type Database = {
           profile_id?: string
         }
         Relationships: []
+      }
+      user_subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string
+          current_period_start: string
+          id: string
+          payment_method: string | null
+          plan_id: string | null
+          status: string
+          subscription_type: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_period_end: string
+          current_period_start: string
+          id?: string
+          payment_method?: string | null
+          plan_id?: string | null
+          status?: string
+          subscription_type?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          payment_method?: string | null
+          plan_id?: string | null
+          status?: string
+          subscription_type?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

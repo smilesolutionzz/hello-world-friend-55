@@ -38,7 +38,7 @@ const VideoShowcase = () => {
                   {/* YouTube 임베드 예시 - 실제 영상 URL로 교체 필요 */}
                   <iframe
                     className="w-full h-full"
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                    src="https://www.youtube.com/embed/t4ZkQll1WxU?autoplay=1"
                     title="AI하이라이트프로 소개 영상"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

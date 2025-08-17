@@ -15,15 +15,9 @@ const ChatInterface = () => {
 
     setIsAnalyzing(true);
     
-    // 여기에 나중에 AI 분석 로직 추가
-    setTimeout(() => {
+      // AI 분석으로 전문가급 진단 시작
+      window.location.href = '/assessment';
       setIsAnalyzing(false);
-      toast({
-        title: "분석 완료",
-        description: "맞춤 전문가를 찾고 있습니다...",
-      });
-      setMessage("");
-    }, 2000);
   };
 
   return (

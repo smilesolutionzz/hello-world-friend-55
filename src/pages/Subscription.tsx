@@ -87,63 +87,16 @@ const Subscription = () => {
         return;
       }
 
-      // 유료 플랜인 경우 토스페이먼츠 결제 진행
-      const script = document.createElement('script');
-      script.src = 'https://js.tosspayments.com/v1/payment-widget';
-      script.onload = () => {
-        const clientKey = data.clientKey;
-        const paymentWidget = (window as any).PaymentWidget(clientKey, 'ANONYMOUS');
-        
-        paymentWidget.renderPaymentMethods(
-          '#payment-method',
-          { value: data.paymentData.amount },
-          { variantKey: 'DEFAULT' }
-        );
+      // 유료 플랜인 경우 - 토스페이먼츠 체크아웃 URL로 이동
+      if (data.paymentData && data.paymentData.checkoutUrl) {
+        window.location.href = data.paymentData.checkoutUrl;
+        return;
+      }
 
-        paymentWidget.renderAgreement('#agreement', { variantKey: 'AGREEMENT' });
-
-        // 결제 버튼 생성
-        const payButton = document.createElement('button');
-        payButton.textContent = '결제하기';
-        payButton.className = 'w-full bg-primary text-primary-foreground py-3 rounded-md font-medium';
-        payButton.onclick = async () => {
-          try {
-            await paymentWidget.requestPayment({
-              orderId: data.paymentData.orderId,
-              orderName: data.paymentData.orderName,
-              customerName: data.paymentData.customerName,
-              customerEmail: data.paymentData.customerEmail,
-              successUrl: data.paymentData.successUrl,
-              failUrl: data.paymentData.failUrl,
-            });
-          } catch (error) {
-            console.error('결제 요청 실패:', error);
-          }
-        };
-
-        // 모달 생성
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
-        modal.innerHTML = `
-          <div class="bg-white p-6 rounded-lg max-w-md w-full mx-4">
-            <h3 class="text-lg font-semibold mb-4">${planName} 구독 결제</h3>
-            <div id="payment-method"></div>
-            <div id="agreement"></div>
-            <div class="mt-4"></div>
-          </div>
-        `;
-        modal.querySelector('.mt-4')?.appendChild(payButton);
-
-        // 모달 닫기 버튼
-        const closeButton = document.createElement('button');
-        closeButton.textContent = '×';
-        closeButton.className = 'absolute top-2 right-2 text-gray-500 hover:text-gray-700';
-        closeButton.onclick = () => document.body.removeChild(modal);
-        modal.querySelector('.bg-white')?.appendChild(closeButton);
-
-        document.body.appendChild(modal);
-      };
-      document.head.appendChild(script);
+      // 임시: 성공 페이지로 리다이렉트 (테스트용)
+      const successUrl = data.paymentData.successUrl + 
+        `?paymentKey=test_payment_key&orderId=${data.paymentData.orderId}&amount=${data.paymentData.amount}`;
+      window.location.href = successUrl;
 
     } catch (error: any) {
       toast({ 

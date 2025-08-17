@@ -59,7 +59,7 @@ const TrustIndicators = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => window.location.href = '/contact'}
+              onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')}
               className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
             >
               제휴 문의하기
@@ -68,7 +68,7 @@ const TrustIndicators = () => {
               onClick={() => window.location.href = '/subscription'}
               className="px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary/10 transition-colors"
             >
-              서비스 체험하기
+              기관혜택 PDF받기
             </button>
           </div>
         </div>

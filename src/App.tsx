@@ -8,8 +8,6 @@ import Assessment from "./pages/Assessment";
 import AICounselor from "./pages/AICounselor";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
-import LanguageTest from "./pages/LanguageTest";
-import ReportResult from "./pages/ReportResult";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,8 +24,8 @@ const App = () => (
           <Route path="/ai-counselor" element={<AICounselor />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/language-test" element={<LanguageTest />} />
-          <Route path="/report-result" element={<ReportResult />} />
+          
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

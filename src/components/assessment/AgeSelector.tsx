@@ -5,9 +5,10 @@ import { Baby, GraduationCap, Briefcase, Heart } from "lucide-react";
 
 interface AgeSelectorProps {
   onAgeGroupSelect: (ageGroup: 'infant' | 'child' | 'adult', age: number) => void;
+  testType?: 'psychological' | 'language' | null;
 }
 
-const AgeSelector = ({ onAgeGroupSelect }: AgeSelectorProps) => {
+const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
   const [selectedGroup, setSelectedGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [specificAge, setSpecificAge] = useState<number>(0);
 
@@ -73,12 +74,19 @@ const AgeSelector = ({ onAgeGroupSelect }: AgeSelectorProps) => {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-            <span className="block text-foreground mb-2">3분으로 시작하는</span>
-            <span className="block text-brand-gradient">전문가급 심리발달 진단</span>
+            <span className="block text-foreground mb-2">
+              {testType === 'language' ? '언어발달 검사' : '3분으로 시작하는'}
+            </span>
+            <span className="block text-brand-gradient">
+              {testType === 'language' ? '연령별 맞춤 진단' : '전문가급 심리발달 진단'}
+            </span>
           </h1>
           
           <p className="text-xl text-muted-foreground">
-            연령에 맞는 전문 검사로 정확한 분석을 받아보세요
+            {testType === 'language' 
+              ? '연령대를 선택하여 언어발달 수준을 확인해보세요' 
+              : '연령에 맞는 전문 검사로 정확한 분석을 받아보세요'
+            }
           </p>
         </div>
 

@@ -47,8 +47,20 @@ const SubscriptionGate: React.FC<SubscriptionGateProps> = ({ onProceed, sessionC
         throw error;
       }
 
-      const usageData = data || { usage_count: 0, subscription_status: 'free' as const, trial_used: false };
-      setUsage(usageData);
+      const usageData = data || { 
+        usage_count: 0, 
+        subscription_status: 'free' as 'free' | 'premium', 
+        trial_used: false 
+      };
+      
+      // Type guard to ensure subscription_status is valid
+      const validatedUsage: SubscriptionUsage = {
+        usage_count: usageData.usage_count,
+        subscription_status: (usageData.subscription_status === 'premium' ? 'premium' : 'free') as 'free' | 'premium',
+        trial_used: usageData.trial_used
+      };
+      
+      setUsage(validatedUsage);
     } catch (error: any) {
       console.error('Usage data loading error:', error);
       toast({

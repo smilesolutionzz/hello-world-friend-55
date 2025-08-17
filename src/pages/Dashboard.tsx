@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   Users, 
   Plus, 
@@ -22,7 +23,12 @@ import {
   BarChart3,
   FileText,
   Star,
-  CreditCard
+  CreditCard,
+  Bell,
+  TrendingDown,
+  ArrowUp,
+  ArrowDown,
+  Mail
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -31,6 +37,7 @@ import AssessmentHistory from "@/components/history/AssessmentHistory";
 import ConsultationHistory from "@/components/history/ConsultationHistory";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { useToast } from "@/hooks/use-toast";
 
 interface Profile {
   id: string;
@@ -73,13 +80,18 @@ interface UserStats {
   subscription: 'free' | 'premium' | 'pro';
 }
 
+// Constants
+const CHANGE_THRESHOLD = 0.5; // 50% change threshold
+
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [families, setFamilies] = useState<Family[]>([]);
   const [observations, setObservations] = useState<Observation[]>([]);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showChangeModal, setShowChangeModal] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -122,7 +134,7 @@ const Dashboard = () => {
 
       setFamilies(familiesData || []);
 
-      // Load observations (mock data for now since table doesn't exist yet)
+      // Load observations (mock data with weekly scores for change detection)
       const mockObservations: Observation[] = [
         {
           id: '1',
@@ -141,9 +153,34 @@ const Dashboard = () => {
           score_overall: 72,
           created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
           profile: profileData
+        },
+        {
+          id: '3',
+          user_id: user.id,
+          age_group: 'child',
+          tags: ['정서', '행동'],
+          score_overall: 45, // 47% decrease from previous week (85 → 45)
+          created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+          profile: profileData
         }
       ];
       setObservations(mockObservations);
+
+      // Check for significant changes and show notifications
+      const changeDetection = calculateWeeklyChange(mockObservations);
+      if (changeDetection.hasSignificantChange) {
+        // Show toast notification
+        toast({
+          title: "변화 감지",
+          description: `최근 2주간 ${changeDetection.changeRate > 0 ? '상승' : '하락'} ${Math.abs(changeDetection.changeRate).toFixed(0)}% 변화가 감지되었습니다.`,
+          duration: 5000,
+        });
+
+        // Email notification placeholder for subscribers
+        if (userStats?.subscription !== 'free') {
+          console.log('이메일 알림 전송 (구독자용):', changeDetection);
+        }
+      }
 
       // Load user stats (mock data)
       const mockUserStats: UserStats = {
@@ -227,6 +264,38 @@ const Dashboard = () => {
       default:
         return { label: '무료', color: 'bg-gray-100 text-gray-600' };
     }
+  };
+
+  // Calculate weekly change rate
+  const calculateWeeklyChange = (observations: Observation[]) => {
+    const sortedObs = observations.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    
+    if (sortedObs.length < 2) {
+      return { hasSignificantChange: false, changeRate: 0, recentWeekScore: 0, previousWeekScore: 0 };
+    }
+
+    const recentWeekScore = sortedObs[0].score_overall;
+    const previousWeekScore = sortedObs[1].score_overall;
+    
+    if (previousWeekScore === 0) {
+      return { hasSignificantChange: false, changeRate: 0, recentWeekScore, previousWeekScore };
+    }
+
+    const changeRate = ((recentWeekScore - previousWeekScore) / previousWeekScore) * 100;
+    const hasSignificantChange = Math.abs(changeRate) >= (CHANGE_THRESHOLD * 100);
+
+    return { hasSignificantChange, changeRate, recentWeekScore, previousWeekScore };
+  };
+
+  const weeklyChange = calculateWeeklyChange(observations);
+
+  const sendEmailNotification = () => {
+    // Placeholder for email integration
+    toast({
+      title: "이메일 알림 설정",
+      description: "추후 이메일 연동 예정입니다.",
+      duration: 3000,
+    });
   };
 
   if (loading) {
@@ -339,6 +408,87 @@ const Dashboard = () => {
                 </div>
               </Card>
             </div>
+
+            {/* Change Detection Alert */}
+            {weeklyChange.hasSignificantChange && (
+              <Card className="p-6 border-orange-200 bg-orange-50">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center relative">
+                      <Bell className="w-6 h-6 text-orange-600" />
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                        <span className="text-xs text-white">🔔</span>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-orange-800">변화 감지</h3>
+                        {weeklyChange.changeRate > 0 ? (
+                          <ArrowUp className="w-4 h-4 text-green-600" />
+                        ) : (
+                          <ArrowDown className="w-4 h-4 text-red-600" />
+                        )}
+                      </div>
+                      <p className="text-sm text-orange-700 mb-2">
+                        최근 2주 변화율 {weeklyChange.changeRate > 0 ? '+' : ''}{weeklyChange.changeRate.toFixed(0)}% 
+                        {weeklyChange.changeRate > 0 ? ' ↑' : ' ↓'}
+                      </p>
+                      <p className="text-xs text-orange-600">
+                        {weeklyChange.previousWeekScore}점 → {weeklyChange.recentWeekScore}점
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Dialog open={showChangeModal} onOpenChange={setShowChangeModal}>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          자세히 보기
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md">
+                        <DialogHeader>
+                          <DialogTitle>변화 상세 내역</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <h4 className="font-medium mb-2">최근 관찰 기록</h4>
+                            <div className="space-y-2">
+                              {observations.slice(0, 3).map((obs, index) => (
+                                <div key={obs.id} className="flex justify-between items-center text-sm">
+                                  <span>{new Date(obs.created_at).toLocaleDateString('ko-KR')}</span>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium">{obs.score_overall}점</span>
+                                    <Badge variant="outline" className="text-xs">
+                                      {obs.tags.join(', ')}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span>변화율:</span>
+                            <span className={`font-medium ${weeklyChange.changeRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                              {weeklyChange.changeRate > 0 ? '+' : ''}{weeklyChange.changeRate.toFixed(1)}%
+                            </span>
+                          </div>
+                          {userStats?.subscription !== 'free' && (
+                            <Button 
+                              onClick={sendEmailNotification}
+                              className="w-full"
+                              variant="outline"
+                            >
+                              <Mail className="w-4 h-4 mr-2" />
+                              이메일 알림 설정
+                            </Button>
+                          )}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </div>
+              </Card>
+            )}
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

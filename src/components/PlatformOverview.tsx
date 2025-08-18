@@ -53,7 +53,7 @@ const PlatformOverview = () => {
         <div className="bg-card rounded-3xl p-8 shadow-lg border">
           <h3 className="text-2xl font-bold text-center mb-8">누구나 함께할 수 있는 플랫폼</h3>
           
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {/* 개인 사용자 */}
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -68,7 +68,7 @@ const PlatformOverview = () => {
               </ul>
             </div>
 
-            {/* 기업 및 기관 */}
+            {/* 기업 및 의료기관 */}
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Building className="w-6 h-6 text-primary" />
@@ -77,9 +77,22 @@ const PlatformOverview = () => {
               <ul className="space-y-2 text-muted-foreground ml-9">
                 <li>• 직원 정신건강 관리 솔루션 제공</li>
                 <li>• 병원 환자 케어 시스템 통합 연동</li>
-                <li>• 발달/상담센터·복지관·학교 연계 서비스</li>
                 <li>• 데이터 기반 조직 건강도 분석</li>
                 <li>• 전문 상담사 네트워크 구축 지원</li>
+              </ul>
+            </div>
+
+            {/* 발달/상담센터 · 복지관 · 유치원 */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Award className="w-6 h-6 text-primary" />
+                <h4 className="text-lg font-semibold">발달/상담센터 · 복지관 · 유치원</h4>
+              </div>
+              <ul className="space-y-2 text-muted-foreground ml-9">
+                <li>• 아동 발달 단계별 맞춤 검사 도구</li>
+                <li>• 전문 치료사 연계 시스템 구축</li>
+                <li>• 부모-아동 상호작용 분석 리포트</li>
+                <li>• 기관별 통합 관리 솔루션 제공</li>
               </ul>
             </div>
           </div>

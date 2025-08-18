@@ -66,7 +66,7 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
     fullMark: 3,
   }));
 
-  const evaluation = getOverallEvaluation(average);
+  const evaluation = getOverallEvaluation(total / Object.keys(categoryScores).length);
 
   return (
     <div className="space-y-8">
@@ -102,7 +102,7 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
               
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">평균</span>
-                <span className="text-2xl font-bold text-brand-gradient">{average.toFixed(1)}점</span>
+                <span className="text-2xl font-bold text-brand-gradient">{(total / Object.keys(categoryScores).length).toFixed(1)}점</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -152,7 +152,7 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
               <p className="text-lg font-medium">• 종합평가: {evaluation.level}</p>
             </div>
             <div>
-              <p className="text-lg font-medium mb-2">• 평균: {average.toFixed(1)}점</p>
+              <p className="text-lg font-medium mb-2">• 평균: {(total / Object.keys(categoryScores).length).toFixed(1)}점 / 3.0점</p>
               <p className="text-lg font-medium">• 연령대: {ageGroup}</p>
             </div>
           </div>

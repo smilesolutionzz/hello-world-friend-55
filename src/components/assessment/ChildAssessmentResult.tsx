@@ -61,7 +61,7 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
     fullMark: 100,
   }));
 
-  const evaluation = getOverallEvaluation(average);
+  const evaluation = getOverallEvaluation(total / Object.keys(gameScores).length);
 
   return (
     <div className="space-y-8">
@@ -97,7 +97,7 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
               
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">평균</span>
-                <span className="text-2xl font-bold text-brand-gradient">{average.toFixed(1)}점</span>
+                <span className="text-2xl font-bold text-brand-gradient">{(total / Object.keys(gameScores).length).toFixed(1)}점</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -147,7 +147,7 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
               <p className="text-lg font-medium">• 능력수준: {evaluation.level}</p>
             </div>
             <div>
-              <p className="text-lg font-medium mb-2">• 평균: {average.toFixed(1)}점</p>
+              <p className="text-lg font-medium mb-2">• 평균: {(total / Object.keys(gameScores).length).toFixed(1)}점 / 100점</p>
               <p className="text-lg font-medium">• 연령대: {ageGroup}</p>
             </div>
           </div>

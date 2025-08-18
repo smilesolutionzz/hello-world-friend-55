@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Moon, Sparkles, Brain, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DreamInterpretationProps {
   onBack: () => void;
@@ -27,21 +28,14 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
 
     setIsLoading(true);
     try {
-      const response = await fetch('/api/v1/dream-interpreter', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          dreamText: dreamText.trim()
-        }),
+      const { data, error } = await supabase.functions.invoke('dream-interpreter', {
+        body: { dreamText: dreamText.trim() }
       });
 
-      if (!response.ok) {
+      if (error) {
         throw new Error('꿈 해몽 분석에 실패했습니다.');
       }
 
-      const data = await response.json();
       setInterpretation(data.interpretation);
       
       toast({

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText } from "lucide-react";
+import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText, Crown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -86,6 +86,10 @@ const Navigation = () => {
               <Clock className="w-4 h-4 mr-1" />
               3분체크
             </Button>
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100" onClick={() => handleNavigation('/premium-assessment')}>
+              <Crown className="w-4 h-4 mr-1 text-yellow-600" />
+              <span className="text-yellow-700 font-medium">프리미엄검사</span>
+            </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/observation')}>
               <FileText className="w-4 h-4 mr-1" />
               관찰일지
@@ -167,6 +171,11 @@ const Navigation = () => {
                 <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/assessment')}>
                   <Clock className="w-4 h-4 mr-3" />
                   3분 체크
+                </Button>
+                
+                <Button variant="ghost" className="justify-start bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100" onClick={() => handleNavigation('/premium-assessment')}>
+                  <Crown className="w-4 h-4 mr-3 text-yellow-600" />
+                  <span className="text-yellow-700 font-medium">프리미엄 검사</span>
                 </Button>
                 
                 <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/observation')}>

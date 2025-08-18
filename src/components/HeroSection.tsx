@@ -41,6 +41,13 @@ const HeroSection = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
+                onClick={() => window.location.href = '/premium-assessment'}
+                className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg font-medium hover:from-yellow-600 hover:to-orange-600 transition-colors shadow-lg flex items-center justify-center gap-2"
+              >
+                <span className="text-lg">👑</span>
+                프리미엄 검사 체험
+              </button>
+              <button 
                 onClick={() => window.location.href = '/subscription'}
                 className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
               >

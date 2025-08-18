@@ -16,39 +16,48 @@ serve(async (req) => {
   try {
     const { message } = await req.json();
     
-    console.log('=== INSTANT REPORT DEBUG ===');
-    console.log('API Key exists:', !!openAIApiKey);
-    console.log('API Key prefix:', openAIApiKey?.substring(0, 7));
-    console.log('Message received:', message);
+    console.log('🚀 즉시 리포팅 시작');
+    console.log('📝 받은 메시지:', message);
+    console.log('🔑 API 키 확인:', openAIApiKey ? '설정됨' : '없음');
 
     if (!openAIApiKey) {
+      console.error('❌ OpenAI API 키가 설정되지 않음');
       throw new Error('OpenAI API key not configured');
     }
 
-    const analysisPrompt = `다음 육아 고민에 대해 전문 상담가 관점에서 분석해주세요:
+    if (!message || message.trim().length < 10) {
+      console.error('❌ 메시지가 너무 짧음');
+      throw new Error('Message too short');
+    }
+
+    const systemPrompt = `당신은 육아 및 발달 전문 상담가입니다. 
+부모의 고민을 듣고 따뜻하고 전문적인 조언을 제공하세요.
+항상 "참고용"임을 명시하고, 필요시 전문가 상담을 권하세요.`;
+
+    const userPrompt = `다음 육아 고민에 대해 전문적이고 따뜻한 조언을 해주세요:
 
 "${message}"
 
 다음 형식으로 답변해주세요:
 
-🔍 **상황 분석 (참고용)**
+🔍 **상황 분석**
 현재 상황을 간단히 정리해주세요.
 
-💡 **전문가 관점 (참고용)**
-발달심리학자 관점에서 2-3줄로 해석해주세요.
+💡 **전문가 관점**
+발달심리 전문가 관점에서 해석해주세요.
 
-🎯 **구체적 조언**
-실천 가능한 3-4가지 조언을 제시해주세요.
+🎯 **실천 조언**
+부모가 바로 실천할 수 있는 구체적인 방법들을 제시해주세요.
 
-📚 **추가 정보**
-도움이 될 수 있는 자료나 활동을 1-2개 추천해주세요.
+📚 **참고 자료**
+도움이 될 만한 정보나 활동을 추천해주세요.
 
 💝 **격려의 말**
-따뜻한 격려 메시지로 마무리해주세요.
+따뜻한 격려와 지지의 메시지를 전해주세요.
 
-⚠️ 이 내용은 참고용이며 의학적 진단이 아닙니다.`;
+⚠️ 이는 참고용 정보이며 의학적 진단이 아닙니다. 필요시 전문가 상담을 받으시기 바랍니다.`;
 
-    console.log('Sending request to OpenAI...');
+    console.log('🤖 OpenAI API 호출 시작');
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -59,85 +68,82 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          { 
-            role: 'system', 
-            content: '당신은 발달심리 및 육아 전문 상담가입니다. 따뜻하고 전문적인 조언을 제공하되, 항상 "참고용"임을 명시하세요.'
-          },
-          { role: 'user', content: analysisPrompt }
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
         ],
-        max_tokens: 800,
-        temperature: 0.7
+        max_tokens: 1000,
+        temperature: 0.8
       }),
     });
 
-    console.log('OpenAI response status:', response.status);
+    console.log('📡 OpenAI 응답 상태:', response.status);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('OpenAI API Error:', errorText);
-      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+      const errorData = await response.text();
+      console.error('❌ OpenAI API 오류:', errorData);
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('OpenAI API success:', data.choices?.[0]?.message?.content ? 'Got content' : 'No content');
-    
+    console.log('✅ OpenAI 응답 성공');
+
     const report = data.choices?.[0]?.message?.content;
     
-    if (!report || report.trim() === '') {
-      console.error('Empty report from OpenAI');
+    if (!report) {
+      console.error('❌ 빈 응답');
       throw new Error('Empty response from OpenAI');
     }
 
-    // 위험 키워드 감지
-    const riskKeywords = ['자살', '자해', '죽고싶', '극심한', '심각한', '응급'];
-    const hasRiskKeywords = riskKeywords.some(keyword => 
-      message.toLowerCase().includes(keyword) || report.toLowerCase().includes(keyword)
+    console.log('📄 생성된 리포트 길이:', report.length);
+
+    // 위험 키워드 체크
+    const riskKeywords = ['자살', '자해', '죽고싶다', '극심한', '심각한'];
+    const hasRisk = riskKeywords.some(keyword => 
+      message.toLowerCase().includes(keyword) || 
+      report.toLowerCase().includes(keyword)
     );
 
-    console.log('Successfully generated report');
-
-    return new Response(JSON.stringify({ 
-      report,
-      riskLevel: hasRiskKeywords ? 'high' : 'low',
-      needsExpertConsultation: message.length > 200 || hasRiskKeywords,
+    const result = {
+      success: true,
+      report: report,
+      riskLevel: hasRisk ? 'high' : 'low',
+      needsExpertConsultation: hasRisk || message.length > 200,
       timestamp: new Date().toISOString()
-    }), {
+    };
+
+    console.log('🎉 즉시 리포팅 완료');
+
+    return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error('=== ERROR IN INSTANT REPORT ===');
-    console.error('Error:', error.message);
-    console.error('Stack:', error.stack);
-    
-    // 에러 발생시 기본 응답
-    const errorReport = `🔍 **상황 분석 (참고용)**
-고민을 공유해주셔서 감사합니다. 현재 시스템 오류로 인해 일시적인 분석 제한이 있습니다.
+    console.error('💥 즉시 리포팅 오류:', error.message);
 
-💡 **전문가 관점 (참고용)**
-언어 발달과 관련된 고민은 많은 부모들이 경험하는 자연스러운 과정입니다. 전문가와의 상담을 통해 정확한 평가를 받으시길 권합니다.
+    const errorResult = {
+      success: false,
+      error: error.message,
+      report: `🔍 **분석 중 오류 발생**
 
-🎯 **구체적 조언**
-1. 소아과 또는 언어치료 전문가에게 상담을 받아보세요
-2. 아이와의 일상 대화를 늘려주세요
-3. 책 읽기나 노래 부르기 등을 함께 해보세요
-4. 아이의 말을 재촉하지 말고 기다려주세요
+죄송합니다. 현재 일시적인 기술적 문제로 AI 분석을 완료할 수 없습니다.
 
-📚 **추가 정보**
-언어발달지연에 대한 정확한 평가는 전문가를 통해 받으실 수 있습니다. 조기 발견과 적절한 지원이 중요합니다.
+💡 **임시 조치**
+- 잠시 후 다시 시도해주세요
+- 지속적인 문제 발생 시 고객센터로 문의해주세요
 
-💝 **격려의 말**
-아이의 발달을 세심하게 관찰하고 계시는 부모님의 마음이 느껴집니다. 전문가의 도움을 받아 아이에게 최선의 지원을 해주세요.
+🎯 **긴급 상황 시**
+- 응급상황: 119
+- 정신건강 위기상담: 1577-0199
 
-⚠️ 이 내용은 참고용이며 의학적 진단이 아닙니다.`;
-
-    return new Response(JSON.stringify({ 
-      report: errorReport,
+⚠️ 기술적 문제로 인한 일시적 서비스 제한입니다.`,
       riskLevel: 'medium',
       needsExpertConsultation: true,
       timestamp: new Date().toISOString()
-    }), {
+    };
+
+    return new Response(JSON.stringify(errorResult), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200 // 클라이언트가 에러를 처리할 수 있도록 200으로 반환
     });
   }
 });

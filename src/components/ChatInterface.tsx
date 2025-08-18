@@ -34,28 +34,47 @@ const ChatInterface = () => {
     setReport(null);
     
     try {
+      console.log('🚀 즉시 리포팅 시작:', message);
+      
       const { data, error } = await supabase.functions.invoke('instant-report', {
         body: { message }
       });
 
+      console.log('📡 서버 응답:', data);
+      console.log('❌ 에러 확인:', error);
+
       if (error) {
+        console.error('Supabase function error:', error);
         throw error;
       }
+
+      if (!data || !data.success) {
+        console.error('응답 오류:', data);
+        throw new Error(data?.error || '서버 응답 오류');
+      }
+
       setReport(data);
       
-      // 위험 수준에 따른 토스트
+      // 성공 토스트
+      toast({
+        title: "✅ 분석 완료",
+        description: "AI 리포팅이 성공적으로 생성되었습니다!",
+        variant: "default"
+      });
+
+      // 위험 수준에 따른 추가 토스트
       if (data.riskLevel === 'high') {
         toast({
-          title: "⚠️ 중요 안내",
+          title: "⚠️ 긴급 상황 감지",
           description: "즉시 전문가 도움이 필요합니다. 119 또는 1577-0199로 연락하세요.",
           variant: "destructive"
         });
       }
     } catch (error) {
-      console.error('AI analysis error:', error);
+      console.error('💥 AI 분석 오류:', error);
       toast({
-        title: "분석 오류",
-        description: "일시적인 문제가 발생했습니다. 다시 시도해주세요.",
+        title: "❌ 분석 실패",
+        description: "문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
         variant: "destructive"
       });
     } finally {

@@ -933,7 +933,158 @@ export const premiumAssessmentInfo = {
     questions_count: 16, 
     premium_features: ["성장잠재력 4영역 분석", "집중력 발달 상태 평가", "사회적 역량 강화 방안", "개인별 성장 로드맵"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
+  },
+  socialDevelopmentScreening: {
+    title: "사회적 발달 선별검사",
+    subtitle: "창작형 사회성 발달 종합평가",
+    description: "사회상호작용, 의사소통, 행동패턴, 감각반응의 4개 영역으로 사회적 발달 특성을 정밀 선별합니다",
+    duration: "약 7-10분",
+    questions_count: 20,
+    premium_features: ["사회성 발달 4영역 정밀분석", "의사소통 능력 평가", "감각 민감성 진단", "개별 발달 지원 방안"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   }
+};
+
+// 9. 사회적 발달 선별검사 (Social Development Screening Assessment)
+export const socialDevelopmentScreeningQuestions = {
+  social_interaction: [
+    {
+      id: "social_dev_si01",
+      text: "다른 사람과 눈을 마주치는 것을 자연스럽게 합니다",
+      category: "social_interaction",
+      subcategory: "eye_contact",
+      reverse: true
+    },
+    {
+      id: "social_dev_si02",
+      text: "다른 사람의 표정을 보고 기분을 이해하려고 합니다",
+      category: "social_interaction",
+      subcategory: "emotional_understanding",
+      reverse: true
+    },
+    {
+      id: "social_dev_si03",
+      text: "친구들과 함께 놀거나 활동하는 것을 즐깁니다",
+      category: "social_interaction",
+      subcategory: "peer_play",
+      reverse: true
+    },
+    {
+      id: "social_dev_si04",
+      text: "다른 사람이 부르면 쉽게 반응하고 돌아봅니다",
+      category: "social_interaction",
+      subcategory: "social_response",
+      reverse: true
+    },
+    {
+      id: "social_dev_si05",
+      text: "혼자만의 활동보다는 다른 사람과 함께하는 것을 선호합니다",
+      category: "social_interaction",
+      subcategory: "social_preference",
+      reverse: true
+    }
+  ],
+  communication: [
+    {
+      id: "social_dev_comm01",
+      text: "말로 자신의 생각이나 기분을 표현하는 것이 자연스럽습니다",
+      category: "communication",
+      subcategory: "verbal_expression",
+      reverse: true
+    },
+    {
+      id: "social_dev_comm02",
+      text: "손짓이나 몸짓으로 의사를 전달하려고 합니다",
+      category: "communication",
+      subcategory: "nonverbal_communication",
+      reverse: true
+    },
+    {
+      id: "social_dev_comm03",
+      text: "다른 사람의 말을 듣고 적절하게 대답할 수 있습니다",
+      category: "communication",
+      subcategory: "conversational_skills",
+      reverse: true
+    },
+    {
+      id: "social_dev_comm04",
+      text: "상황에 맞는 적절한 단어나 표현을 사용합니다",
+      category: "communication",
+      subcategory: "contextual_language",
+      reverse: true
+    },
+    {
+      id: "social_dev_comm05",
+      text: "질문을 받으면 상황에 맞게 대답하려고 노력합니다",
+      category: "communication",
+      subcategory: "response_appropriateness",
+      reverse: true
+    }
+  ],
+  behavioral_patterns: [
+    {
+      id: "social_dev_bp01",
+      text: "같은 행동을 반복적으로 하는 경향이 있습니다",
+      category: "behavioral_patterns",
+      subcategory: "repetitive_behaviors"
+    },
+    {
+      id: "social_dev_bp02",
+      text: "정해진 순서나 규칙이 바뀌면 매우 불편해합니다",
+      category: "behavioral_patterns",
+      subcategory: "routine_adherence"
+    },
+    {
+      id: "social_dev_bp03",
+      text: "특정한 물건이나 주제에만 과도하게 관심을 보입니다",
+      category: "behavioral_patterns",
+      subcategory: "restricted_interests"
+    },
+    {
+      id: "social_dev_bp04",
+      text: "손을 흔들거나 몸을 흔드는 등의 반복적인 움직임을 합니다",
+      category: "behavioral_patterns",
+      subcategory: "motor_behaviors"
+    },
+    {
+      id: "social_dev_bp05",
+      text: "예상하지 못한 변화가 생기면 강하게 저항하거나 화를 냅니다",
+      category: "behavioral_patterns",
+      subcategory: "change_resistance"
+    }
+  ],
+  sensory_responses: [
+    {
+      id: "social_dev_sr01",
+      text: "큰 소리나 특정 소리에 과민하게 반응합니다",
+      category: "sensory_responses",
+      subcategory: "auditory_sensitivity"
+    },
+    {
+      id: "social_dev_sr02",
+      text: "특정한 촉감이나 질감을 매우 싫어하거나 피하려고 합니다",
+      category: "sensory_responses",
+      subcategory: "tactile_sensitivity"
+    },
+    {
+      id: "social_dev_sr03",
+      text: "밝은 빛이나 깜빡이는 빛에 민감하게 반응합니다",
+      category: "sensory_responses",
+      subcategory: "visual_sensitivity"
+    },
+    {
+      id: "social_dev_sr04",
+      text: "특정 냄새나 맛에 대해 극도로 민감하거나 둔감합니다",
+      category: "sensory_responses",
+      subcategory: "olfactory_sensitivity"
+    },
+    {
+      id: "social_dev_sr05",
+      text: "통증이나 온도 변화를 잘 느끼지 못하거나 과도하게 반응합니다",
+      category: "sensory_responses",
+      subcategory: "pain_temperature_sensitivity"
+    }
+  ]
 };
 
 // 공통 평점 척도 (1-7점)

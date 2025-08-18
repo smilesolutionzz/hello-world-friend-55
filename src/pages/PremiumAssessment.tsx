@@ -14,7 +14,8 @@ import {
   relationshipAssessmentQuestions,
   financialPsychologyAssessmentQuestions,
   teenMentalCompassAssessmentQuestions,
-  teenGrowthCapacityAssessmentQuestions
+  teenGrowthCapacityAssessmentQuestions,
+  socialDevelopmentScreeningQuestions
 } from "@/data/premiumAssessmentQuestions";
 
 const PremiumAssessment = () => {
@@ -32,7 +33,8 @@ const PremiumAssessment = () => {
     relationship: Object.values(relationshipAssessmentQuestions).flat(),
     financialPsychology: Object.values(financialPsychologyAssessmentQuestions).flat(),
     teenMentalCompass: Object.values(teenMentalCompassAssessmentQuestions).flat(),
-    teenGrowthCapacity: Object.values(teenGrowthCapacityAssessmentQuestions).flat()
+    teenGrowthCapacity: Object.values(teenGrowthCapacityAssessmentQuestions).flat(),
+    socialDevelopmentScreening: Object.values(socialDevelopmentScreeningQuestions).flat()
   };
 
   const handleStartAssessment = (assessmentKey: string) => {
@@ -104,12 +106,12 @@ const PremiumAssessment = () => {
             <div className="flex items-center justify-center gap-2 mb-2">
               <Crown className="w-6 h-6 text-yellow-500" />
               <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                프리미엄 심리검사
+                프리미엄 AIH 검사
               </h1>
               <Crown className="w-6 h-6 text-yellow-500" />
             </div>
             <p className="text-lg text-muted-foreground">
-              전문적이고 정밀한 심리 분석을 위한 특별한 검사들
+              전문적이고 정밀한 심리 분석을 위한 AIH전문가의 창작 검사들
             </p>
           </div>
           
@@ -123,12 +125,12 @@ const PremiumAssessment = () => {
             <div className="relative z-10">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <Sparkles className="w-8 h-8 text-yellow-300" />
-                <h2 className="text-2xl font-bold">구독자 전용 프리미엄 검사</h2>
+                <h2 className="text-2xl font-bold">구독자 전용 프리미엄 AIH 검사</h2>
                 <Sparkles className="w-8 h-8 text-yellow-300" />
               </div>
               <div className="grid md:grid-cols-4 gap-6 text-center">
                 <div>
-                  <div className="text-2xl font-bold mb-1">8가지</div>
+                  <div className="text-2xl font-bold mb-1">9가지</div>
                   <div className="text-sm opacity-90">전문 검사</div>
                 </div>
                 <div>

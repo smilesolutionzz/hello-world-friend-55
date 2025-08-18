@@ -16,48 +16,39 @@ serve(async (req) => {
   try {
     const { message } = await req.json();
     
+    console.log('=== INSTANT REPORT DEBUG ===');
+    console.log('API Key exists:', !!openAIApiKey);
+    console.log('API Key prefix:', openAIApiKey?.substring(0, 7));
+    console.log('Message received:', message);
+
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
     }
 
-    console.log('Received instant report request for message:', message);
+    const analysisPrompt = `다음 육아 고민에 대해 전문 상담가 관점에서 분석해주세요:
 
-    const analysisPrompt = `
-당신은 발달·심리·노인인지·학습·직장적응 전반에 걸친 전문 상담가이자 리포팅 시스템입니다.
-사용자의 고민이나 상황을 바탕으로 전문적인 참고용 리포트를 작성하세요.
+"${message}"
 
-사용자 고민: "${message}"
+다음 형식으로 답변해주세요:
 
-⚠️ 반드시 지켜야 할 조건:
-- 의학적 "진단"은 하지 말고 "관찰·참고 분석"만 제공
-- 리포트는 길이 4~6개 블록으로 나눠서 제공
-- 따뜻한 격려 포함
-- 불안·자살·응급위험 키워드가 있으면 "전문가 즉시 연결 및 긴급 연락 필요"라고 표시
+🔍 **상황 분석 (참고용)**
+현재 상황을 간단히 정리해주세요.
 
-다음 구조로 리포팅해주세요:
-
-🔍 **상황 분석**
-사용자가 입력한 내용을 바탕으로 현재 상황을 간단히 정리해 주세요.
-
-💡 **전문가 관점**
-심리상담사·발달심리학자·노인전문간호사 등 관점에서 상황 해석을 2~3줄 제시하세요.
+💡 **전문가 관점 (참고용)**
+발달심리학자 관점에서 2-3줄로 해석해주세요.
 
 🎯 **구체적 조언**
-사용자가 바로 실천할 수 있는 3~4가지 조언을 항목으로 작성하세요.
+실천 가능한 3-4가지 조언을 제시해주세요.
 
 📚 **추가 정보**
-관련된 개념이나 도움이 될 수 있는 자료, 책, 활동을 1~2개 추천하세요.
+도움이 될 수 있는 자료나 활동을 1-2개 추천해주세요.
 
 💝 **격려의 말**
-사용자의 노력을 인정하고 희망적인 메시지로 마무리하세요.
+따뜻한 격려 메시지로 마무리해주세요.
 
-**중요사항:**
-- 모든 분석은 "참고용"이며 의학적 진단이 아님을 명시
-- 전문가 상담이 필요한 경우 권유
-- 위기상황 시 즉시 119나 1577-0199 연락하도록 안내
+⚠️ 이 내용은 참고용이며 의학적 진단이 아닙니다.`;
 
-참고용 리포트로 따뜻하고 전문적으로 작성해주세요.
-`;
+    console.log('Sending request to OpenAI...');
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -70,30 +61,31 @@ serve(async (req) => {
         messages: [
           { 
             role: 'system', 
-            content: '당신은 발달·심리·노인인지·학습·직장적응 전반에 걸친 전문 상담가이자 리포팅 시스템입니다. 따뜻하고 전문적인 참고용 분석을 제공하며, 항상 "참고용"임을 명시합니다.'
+            content: '당신은 발달심리 및 육아 전문 상담가입니다. 따뜻하고 전문적인 조언을 제공하되, 항상 "참고용"임을 명시하세요.'
           },
           { role: 'user', content: analysisPrompt }
         ],
-        max_tokens: 1000,
+        max_tokens: 800,
         temperature: 0.7
       }),
     });
 
+    console.log('OpenAI response status:', response.status);
+
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('OpenAI API Error:', errorData);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('OpenAI API Error:', errorText);
+      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('OpenAI API Response:', JSON.stringify(data, null, 2));
+    console.log('OpenAI API success:', data.choices?.[0]?.message?.content ? 'Got content' : 'No content');
     
-    const report = data.choices?.[0]?.message?.content || '';
-    console.log('Extracted report content:', report);
+    const report = data.choices?.[0]?.message?.content;
     
     if (!report || report.trim() === '') {
-      console.error('Empty report content from OpenAI');
-      throw new Error('Empty response from OpenAI API');
+      console.error('Empty report from OpenAI');
+      throw new Error('Empty response from OpenAI');
     }
 
     // 위험 키워드 감지
@@ -102,7 +94,7 @@ serve(async (req) => {
       message.toLowerCase().includes(keyword) || report.toLowerCase().includes(keyword)
     );
 
-    console.log('Generated instant report successfully');
+    console.log('Successfully generated report');
 
     return new Response(JSON.stringify({ 
       report,
@@ -114,30 +106,33 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Error in instant-report function:', error);
+    console.error('=== ERROR IN INSTANT REPORT ===');
+    console.error('Error:', error.message);
+    console.error('Stack:', error.stack);
     
-    // 기본 안전 응답
-    const fallbackReport = `🔍 **상황 분석 (참고용)**
-고민을 공유해주셔서 감사합니다. 현재 일시적인 분석 장애가 발생했습니다.
+    // 에러 발생시 기본 응답
+    const errorReport = `🔍 **상황 분석 (참고용)**
+고민을 공유해주셔서 감사합니다. 현재 시스템 오류로 인해 일시적인 분석 제한이 있습니다.
 
 💡 **전문가 관점 (참고용)**
-모든 육아 고민은 정상적인 과정의 일부입니다. 혼자 고민하지 마시고 전문가와 상담하시는 것을 권장합니다.
+언어 발달과 관련된 고민은 많은 부모들이 경험하는 자연스러운 과정입니다. 전문가와의 상담을 통해 정확한 평가를 받으시길 권합니다.
 
 🎯 **구체적 조언**
-1. 즉시 전문가 상담을 받아보세요
-2. 관찰일지를 작성하여 더 정확한 분석을 받으세요
-3. 응급상황 시 119 또는 1577-0199에 연락하세요
+1. 소아과 또는 언어치료 전문가에게 상담을 받아보세요
+2. 아이와의 일상 대화를 늘려주세요
+3. 책 읽기나 노래 부르기 등을 함께 해보세요
+4. 아이의 말을 재촉하지 말고 기다려주세요
 
 📚 **추가 정보**
-더 상세한 전문가 리포팅을 원하시면 관찰일지 작성을 통해 정밀 분석을 받으실 수 있습니다.
+언어발달지연에 대한 정확한 평가는 전문가를 통해 받으실 수 있습니다. 조기 발견과 적절한 지원이 중요합니다.
 
 💝 **격려의 말**
-육아는 쉽지 않은 여정이지만, 도움을 구하는 것은 현명한 선택입니다. 언제든 전문가의 도움을 받으세요.
+아이의 발달을 세심하게 관찰하고 계시는 부모님의 마음이 느껴집니다. 전문가의 도움을 받아 아이에게 최선의 지원을 해주세요.
 
 ⚠️ 이 내용은 참고용이며 의학적 진단이 아닙니다.`;
 
     return new Response(JSON.stringify({ 
-      report: fallbackReport,
+      report: errorReport,
       riskLevel: 'medium',
       needsExpertConsultation: true,
       timestamp: new Date().toISOString()

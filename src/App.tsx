@@ -19,6 +19,7 @@ import Observation from "./pages/Observation";
 import Expert from "./pages/Expert";
 import ExpertList from "./pages/ExpertList";
 import NotFound from "./pages/NotFound";
+import ShareView from "./pages/ShareView";
 
 const queryClient = new QueryClient();
 
@@ -38,7 +39,8 @@ const App = () => (
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/subscription" element={<Subscription />} />
-          <Route path="/pricing" element={<Pricing />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<Observation />} />
           <Route path="/expert" element={<Expert />} />
           <Route path="/experts" element={<ExpertList />} />

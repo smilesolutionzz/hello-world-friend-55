@@ -232,6 +232,42 @@ export type Database = {
           },
         ]
       }
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          target_share_id: string | null
+          target_timeline_id: string | null
+          user_agent: string | null
+          who_expert_id: string | null
+          who_user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          target_share_id?: string | null
+          target_timeline_id?: string | null
+          user_agent?: string | null
+          who_expert_id?: string | null
+          who_user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          target_share_id?: string | null
+          target_timeline_id?: string | null
+          user_agent?: string | null
+          who_expert_id?: string | null
+          who_user_id?: string | null
+        }
+        Relationships: []
+      }
       business_impact_metrics: {
         Row: {
           absenteeism_reduction_percent: number | null
@@ -873,6 +909,39 @@ export type Database = {
           turnover_intention?: number | null
           wellness_factors?: Json | null
           work_life_balance?: number | null
+        }
+        Relationships: []
+      }
+      expert_comments: {
+        Row: {
+          comment_text: string
+          created_at: string
+          created_via_share: boolean
+          expert_id: string
+          id: string
+          is_private: boolean
+          share_id: string | null
+          timeline_activity_id: string
+        }
+        Insert: {
+          comment_text: string
+          created_at?: string
+          created_via_share?: boolean
+          expert_id: string
+          id?: string
+          is_private?: boolean
+          share_id?: string | null
+          timeline_activity_id: string
+        }
+        Update: {
+          comment_text?: string
+          created_at?: string
+          created_via_share?: boolean
+          expert_id?: string
+          id?: string
+          is_private?: boolean
+          share_id?: string | null
+          timeline_activity_id?: string
         }
         Relationships: []
       }
@@ -2114,6 +2183,93 @@ export type Database = {
           target_age_group?: string | null
           therapeutic_goals?: Json | null
           title?: string
+        }
+        Relationships: []
+      }
+      timeline_activities: {
+        Row: {
+          actor: Json
+          created_at: string
+          family_id: string
+          files: Json | null
+          id: string
+          member_id: string | null
+          meta: Json | null
+          score_overall: number | null
+          summary: string | null
+          tags: string[] | null
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          actor?: Json
+          created_at?: string
+          family_id: string
+          files?: Json | null
+          id?: string
+          member_id?: string | null
+          meta?: Json | null
+          score_overall?: number | null
+          summary?: string | null
+          tags?: string[] | null
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          actor?: Json
+          created_at?: string
+          family_id?: string
+          files?: Json | null
+          id?: string
+          member_id?: string | null
+          meta?: Json | null
+          score_overall?: number | null
+          summary?: string | null
+          tags?: string[] | null
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      timeline_shares: {
+        Row: {
+          created_at: string
+          created_by: string
+          expires_at: string
+          family_id: string
+          id: string
+          is_active: boolean
+          member_id: string | null
+          permission: string
+          pin_code: string
+          share_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          expires_at: string
+          family_id: string
+          id?: string
+          is_active?: boolean
+          member_id?: string | null
+          permission: string
+          pin_code: string
+          share_id?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          expires_at?: string
+          family_id?: string
+          id?: string
+          is_active?: boolean
+          member_id?: string | null
+          permission?: string
+          pin_code?: string
+          share_id?: string
         }
         Relationships: []
       }

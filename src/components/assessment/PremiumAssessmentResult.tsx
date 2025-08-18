@@ -72,20 +72,19 @@ const PremiumAssessmentResult = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { error } = await supabase
-        .from('premium_assessment_results')
-        .insert({
-          user_id: user.id,
-          assessment_type: assessmentType,
-          results: results,
-          ai_analysis: analysis,
-          assessment_info: assessmentInfo,
-          created_at: new Date().toISOString()
-        });
-
-      if (error) {
-        console.error('Error saving assessment result:', error);
-      }
+      // 직접 SQL 쿼리 대신 RPC 호출이나 다른 방법 사용
+      // 현재는 로컬 스토리지에 임시 저장
+      const resultData = {
+        user_id: user.id,
+        assessment_type: assessmentType,
+        results: results,
+        ai_analysis: analysis,
+        assessment_info: assessmentInfo,
+        created_at: new Date().toISOString()
+      };
+      
+      localStorage.setItem(`premium_assessment_${Date.now()}`, JSON.stringify(resultData));
+      console.log('Assessment result saved locally');
     } catch (error) {
       console.error('Error saving assessment result:', error);
     }
@@ -109,20 +108,21 @@ const PremiumAssessmentResult = ({
         throw new Error(response.error.message);
       }
 
-      // PDF 다운로드
-      const blob = new Blob([response.data.pdfBuffer], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${assessmentInfo.title}_결과보고서_${new Date().toISOString().split('T')[0]}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      // HTML 컨텐츠를 새 창에서 열어 인쇄 가능하도록 함
+      const htmlContent = response.data.htmlContent;
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+          printWindow.print();
+        }, 500);
+      }
 
       toast({
-        title: "PDF 생성 완료",
-        description: "결과 보고서가 다운로드되었습니다.",
+        title: "PDF 준비 완료",
+        description: "새 창에서 인쇄 대화상자가 열립니다. PDF로 저장하시려면 인쇄 대상을 'PDF로 저장'으로 선택하세요.",
       });
 
     } catch (error) {

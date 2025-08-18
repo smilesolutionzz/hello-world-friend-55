@@ -1841,6 +1841,39 @@ export type Database = {
         }
         Relationships: []
       }
+      premium_assessment_results: {
+        Row: {
+          ai_analysis: string | null
+          assessment_info: Json
+          assessment_type: string
+          created_at: string
+          id: string
+          results: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          assessment_info: Json
+          assessment_type: string
+          created_at?: string
+          id?: string
+          results: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          assessment_info?: Json
+          assessment_type?: string
+          created_at?: string
+          id?: string
+          results?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

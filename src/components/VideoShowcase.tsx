@@ -39,7 +39,7 @@ const VideoShowcase = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             <span className="text-brand-gradient">3분</span>으로 이해하는
-            <br />AI하이라이트프로
+            <br />HIGHLIGHT PRO
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-[1.6] text-center">
             실제 이용자들의 경험과 전문가 인터뷰를 통해 우리 플랫폼이 어떻게 도움이 되는지 확인해보세요

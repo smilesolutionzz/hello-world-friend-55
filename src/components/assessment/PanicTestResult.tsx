@@ -145,6 +145,42 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
         </div>
       </Card>
 
+      {/* 전문가 해석 결과 */}
+      <Card className="p-8">
+        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 결과 요약</h3>
+        
+        <div className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <p className="text-lg font-medium mb-2">• 불안감 점수: {total}점 / 84점</p>
+              <p className="text-lg font-medium">• 심각도: {severity}</p>
+            </div>
+            <div>
+              <p className="text-lg font-medium mb-2">• 평균: {average}점</p>
+              <p className="text-lg font-medium">• 검사일: {new Date().toLocaleDateString('ko-KR')}</p>
+            </div>
+          </div>
+          
+          <div className="bg-muted/30 rounded-lg p-6">
+            <p className="text-lg leading-relaxed">
+              <strong>해석:</strong> {severity === "정상" 
+                ? "현재 공황장애 증상이 거의 없는 양호한 상태입니다. 정기적인 자가관리와 스트레스 관리를 통해 현재 상태를 유지하시기 바랍니다."
+                : severity === "경미"
+                ? "가벼운 불안 증상이 있을 수 있습니다. 규칙적인 운동과 이완 기법, 스트레스 관리를 통해 증상을 완화할 수 있습니다."
+                : severity === "중등도"
+                ? "공황장애 증상이 중등도 수준으로 나타나고 있습니다. 전문가와 상담하여 적절한 치료 방법을 찾아보시는 것을 권장합니다."
+                : "심각한 공황장애 증상이 확인됩니다. 즉시 전문가의 도움이 필요하며, 정신건강의학과 전문의와 상담받으시기를 적극 권장드립니다."}
+            </p>
+          </div>
+          
+          <div className="text-center pt-4">
+            <p className="text-primary font-medium">
+              👉 더 정밀한 분석 리포트(PDF) 받아보기
+            </p>
+          </div>
+        </div>
+      </Card>
+
       {/* Recommendation Card */}
       <Card className="p-8">
         <div className="flex items-start gap-4">

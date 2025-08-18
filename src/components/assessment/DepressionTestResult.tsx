@@ -179,21 +179,49 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
         </div>
       </Card>
 
-      {/* AI Analysis Card */}
+      {/* 전문가 해석 결과 */}
       <Card className="p-8">
-        <h3 className="text-2xl font-bold text-foreground mb-6">🤖 AI 참고 분석 (의학적 진단 아님)</h3>
-        {isLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            <span className="ml-3 text-lg">AI가 체크 결과를 참고 분석하고 있습니다...</span>
+        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 결과 요약</h3>
+        
+        <div className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <p className="text-lg font-medium mb-2">• 우울감 점수: {total}점 / 63점</p>
+              <p className="text-lg font-medium">• 심각도: {severity}</p>
+            </div>
+            <div>
+              <p className="text-lg font-medium mb-2">• 평균: {average}점</p>
+              <p className="text-lg font-medium">• 검사일: {new Date().toLocaleDateString('ko-KR')}</p>
+            </div>
           </div>
-        ) : (
-          <div className="prose prose-lg max-w-none">
-            <p className="text-foreground leading-relaxed whitespace-pre-line">
-              {aiAnalysis}
+          
+          <div className="bg-muted/30 rounded-lg p-6">
+            <p className="text-lg leading-relaxed">
+              {isLoading ? (
+                <div className="flex items-center gap-3">
+                  <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                  <span>전문가 해석을 생성하고 있습니다...</span>
+                </div>
+              ) : (
+                <>
+                  <strong>해석:</strong> {severity === "정상" 
+                    ? "현재 우울 증상이 정상 범위에 있습니다. 건강한 정신상태를 유지하고 계시며, 지속적인 자기관리를 통해 현재 상태를 유지하시기 바랍니다."
+                    : severity === "가벼운 우울"
+                    ? "가벼운 우울 증상이 확인됩니다. 일상적인 스트레스와 생활 변화로 인한 것일 수 있으며, 생활습관 개선과 스트레스 관리를 통해 증상 완화가 가능합니다."
+                    : severity === "중등도 우울"
+                    ? "중등도 우울 증상이 나타나고 있습니다. 일상생활에 일부 영향을 미칠 수 있어 전문가와의 상담을 통한 적극적인 관리가 필요합니다."
+                    : "심각한 우울 증상이 확인됩니다. 즉시 전문가의 도움이 필요하며, 정신건강의학과 전문의와 상담받으시기를 적극 권장드립니다."}
+                </>
+              )}
             </p>
           </div>
-        )}
+          
+          <div className="text-center pt-4">
+            <p className="text-primary font-medium">
+              👉 더 정밀한 분석 리포트(PDF) 받아보기
+            </p>
+          </div>
+        </div>
       </Card>
 
       {/* Recommendation Card */}

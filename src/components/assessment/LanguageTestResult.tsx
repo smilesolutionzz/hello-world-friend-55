@@ -99,6 +99,40 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         </div>
       </Card>
 
+      {/* 전문가 해석 결과 */}
+      <Card className="p-8">
+        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 결과 요약</h3>
+        
+        <div className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <p className="text-lg font-medium mb-2">• 언어발달 점수: {total}점 / 100점</p>
+              <p className="text-lg font-medium">• 평가: {evaluation.level}</p>
+            </div>
+            <div>
+              <p className="text-lg font-medium mb-2">• 평균: {average}점</p>
+              <p className="text-lg font-medium">• 연령대: {ageGroup}</p>
+            </div>
+          </div>
+          
+          <div className="bg-muted/30 rounded-lg p-6">
+            <p className="text-lg leading-relaxed">
+              <strong>해석:</strong> {evaluation.level === "양호" 
+                ? "언어발달이 연령대 기준으로 양호한 수준입니다. 현재의 언어적 상호작용과 학습 환경을 유지하며, 지속적인 언어 자극을 제공하시기 바랍니다."
+                : evaluation.level === "경계선"
+                ? "언어발달이 경계선 수준으로, 추가적인 관찰과 언어 자극이 필요합니다. 일상 대화를 늘리고 책 읽기 등의 활동을 통해 개선할 수 있습니다."
+                : "언어발달에 주의가 필요한 상태입니다. 전문가와의 상담을 통해 개별적인 언어치료 계획을 수립하시기를 권장드립니다."}
+            </p>
+          </div>
+          
+          <div className="text-center pt-4">
+            <p className="text-primary font-medium">
+              👉 더 정밀한 분석 리포트(PDF) 받아보기
+            </p>
+          </div>
+        </div>
+      </Card>
+
       {/* Chart */}
       <Card className="p-8">
         <h3 className="text-xl font-semibold mb-6 text-center">점수 분포</h3>

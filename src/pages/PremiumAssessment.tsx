@@ -4,6 +4,7 @@ import { ArrowLeft, Crown, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard";
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
+import PremiumAssessmentResult from "@/components/assessment/PremiumAssessmentResult";
 import { 
   premiumAssessmentInfo,
   personalityTypeAssessmentQuestions,
@@ -15,8 +16,9 @@ import {
 
 const PremiumAssessment = () => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState<'list' | 'assessment'>('list');
+  const [currentStep, setCurrentStep] = useState<'list' | 'assessment' | 'result'>('list');
   const [selectedAssessment, setSelectedAssessment] = useState<string>('');
+  const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
   const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
 
   const assessmentData = {
@@ -34,17 +36,30 @@ const PremiumAssessment = () => {
 
   const handleAssessmentComplete = (results: Record<string, number>) => {
     console.log('Premium Assessment Results:', results);
-    // TODO: 결과 페이지로 이동하거나 결과 저장
-    navigate('/assessment'); // 임시로 일반 평가 페이지로 이동
+    setAssessmentResults(results);
+    setCurrentStep('result');
   };
 
   const handleBack = () => {
-    if (currentStep === 'assessment') {
+    if (currentStep === 'result') {
+      setCurrentStep('list');
+    } else if (currentStep === 'assessment') {
       setCurrentStep('list');
     } else {
       navigate('/assessment');
     }
   };
+
+  if (currentStep === 'result' && selectedAssessment && Object.keys(assessmentResults).length > 0) {
+    return (
+      <PremiumAssessmentResult
+        assessmentType={selectedAssessment}
+        results={assessmentResults}
+        assessmentInfo={premiumAssessmentInfo[selectedAssessment as keyof typeof premiumAssessmentInfo]}
+        onBack={handleBack}
+      />
+    );
+  }
 
   if (currentStep === 'assessment' && selectedAssessment) {
     return (

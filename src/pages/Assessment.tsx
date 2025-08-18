@@ -15,6 +15,7 @@ import DepressionTestResult from "@/components/assessment/DepressionTestResult";
 import AdhdTestForm from "@/components/assessment/AdhdTestForm";
 import AdhdTestResult from "@/components/assessment/AdhdTestResult";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
+import RealTimeChat from "@/components/counseling/RealTimeChat";
 import LegalSafetyNotice from "@/components/LegalSafetyNotice";
 import AnalysisScreen from "@/components/analysis/AnalysisScreen";
 import ExpertMatching from "@/components/analysis/ExpertMatching";
@@ -22,7 +23,7 @@ import ConsultationRoom from "@/components/consultation/ConsultationRoom";
 import { ExpertProfile } from "@/types/assessment";
 
 const Assessment = () => {
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat'>('test-type');
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
@@ -169,6 +170,10 @@ const Assessment = () => {
   const handleStartAIChat = () => {
     setCurrentStep('ai-chat');
   };
+
+  const handleStartRealTimeChat = () => {
+    setCurrentStep('realtime-chat');
+  };
     const handleAnalysisComplete = (analysis: string) => {
     setCurrentStep('matching');
   };
@@ -185,7 +190,7 @@ const Assessment = () => {
   };
 
   const handleBack = () => {
-    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat') {
+    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
       // 분석/매칭/상담/결과 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
@@ -214,6 +219,15 @@ const Assessment = () => {
   if (currentStep === 'ai-chat') {
     return (
       <AIChatInterface 
+        assessmentResults={currentAssessmentResults}
+        onClose={handleBack}
+      />
+    );
+  }
+
+  if (currentStep === 'realtime-chat') {
+    return (
+      <RealTimeChat 
         assessmentResults={currentAssessmentResults}
         onClose={handleBack}
       />
@@ -476,6 +490,7 @@ const Assessment = () => {
             results={adultResults}
             onBack={handleBack}
             onStartAIChat={handleStartAIChat}
+            onStartRealTimeChat={handleStartRealTimeChat}
           />
         </div>
       </div>
@@ -509,6 +524,7 @@ const Assessment = () => {
             results={adhdResults}
             onBack={handleBack}
             onStartAIChat={handleStartAIChat}
+            onStartRealTimeChat={handleStartRealTimeChat}
           />
         </div>
       </div>

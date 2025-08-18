@@ -18,7 +18,8 @@ import {
   Settings,
   Lightbulb,
   TreePine,
-  Zap
+  Zap,
+  Clock
 } from "lucide-react";
 import { useFamilyEcosystem } from "@/hooks/useFamilyEcosystem";
 
@@ -144,10 +145,14 @@ const FamilyEcosystemDashboard = () => {
       )}
 
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
             개요
+          </TabsTrigger>
+          <TabsTrigger value="timeline" className="flex items-center gap-2">
+            <Clock className="w-4 h-4" />
+            타임라인
           </TabsTrigger>
           <TabsTrigger value="dynamics" className="flex items-center gap-2">
             <Network className="w-4 h-4" />
@@ -245,6 +250,15 @@ const FamilyEcosystemDashboard = () => {
               </div>
             </Card>
           )}
+        </TabsContent>
+
+        <TabsContent value="timeline" className="space-y-6">
+          <Card className="p-6">
+            <h2 className="text-2xl font-bold mb-4">가족 활동 타임라인</h2>
+            <p className="text-muted-foreground">
+              가족 구성원들의 검사, 상담, 분석 기록이 시간순으로 표시됩니다.
+            </p>
+          </Card>
         </TabsContent>
 
         <TabsContent value="dynamics" className="space-y-6">

@@ -82,7 +82,7 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
   };
 
   const getAnswerOptions = () => {
-    // Beck/Hamilton 척도 기반 응답 옵션
+    // 우울/불안 척도 기반 응답 옵션
     if (currentQuestion.id.startsWith('dep_') || currentQuestion.id.startsWith('anx_')) {
       return [
         { score: 0, label: "전혀 없음", description: "해당 증상이 전혀 없었습니다", color: "text-green-700 bg-green-50 border-green-200" },
@@ -224,8 +224,8 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
               <div className="bg-warm-lavender/20 p-4 rounded-xl">
                 <div className="text-sm space-y-1">
                   <p><strong>평가 도구:</strong> 
-                    {currentQuestion.id.startsWith('dep_') && " Beck Depression Inventory (BDI)"}
-                    {currentQuestion.id.startsWith('anx_') && " Hamilton Anxiety Rating Scale"}
+                    {currentQuestion.id.startsWith('dep_') && " 우울증상 자가체크"}
+                    {currentQuestion.id.startsWith('anx_') && " 불안증상 자가체크"}
                     {currentQuestion.id.startsWith('per_') && " Big Five Personality Factors"}
                     {currentQuestion.id.startsWith('work_') && " Workplace Adaptation Scale"}
                   </p>

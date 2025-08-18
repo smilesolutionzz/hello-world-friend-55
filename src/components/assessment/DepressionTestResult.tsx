@@ -282,7 +282,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
       <Card className="p-6 bg-blue-50 border-blue-200">
         <h4 className="font-semibold text-blue-900 mb-2">참고사항</h4>
         <p className="text-blue-800 text-sm leading-relaxed">
-          이 검사는 Beck 우울척도를 기반으로 한 자가진단 도구로, 의학적 진단을 대체할 수 없습니다. 
+          이 검사는 우울증상 자가체크를 위한 선별도구로, 의학적 진단을 대체할 수 없습니다. 
           정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.
         </p>
       </Card>

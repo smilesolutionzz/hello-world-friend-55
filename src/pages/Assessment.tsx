@@ -108,7 +108,7 @@ const Assessment = () => {
 
   const getTestTitle = (testType: string) => {
     switch (testType) {
-      case 'adhd': return 'ADHD 자가체크';
+      case 'adhd': return '주의집중력 자가체크';
       case 'depression': return '우울감 자가체크';
       case 'panic': return '불안감 수준 확인';
       case 'language': return '언어발달 자가체크';
@@ -435,11 +435,11 @@ const Assessment = () => {
               className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
               onClick={() => handleTestTypeSelect('adhd')}
             >
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">ADHD 자가체크</h3>
+              <h3 className="text-2xl font-bold text-brand-gradient mb-4">주의집중력 자가체크</h3>
               <p className="text-muted-foreground mb-4">연령별 ADHD 증상 확인 (참고용)</p>
               <ul className="space-y-2 text-sm">
                 <li>• 아동청소년/성인 구분</li>
-                <li>• DSM-5 기반 18문항</li>
+                <li>• 주의집중력 증상 체크 18문항</li>
                 <li>• 증상 영역별 분석</li>
               </ul>
             </div>
@@ -495,7 +495,7 @@ const Assessment = () => {
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">불안감 수준 확인 (3분)</h1>
-            <p className="text-muted-foreground">DSM-5 기반 21문항 (참고용)</p>
+            <p className="text-muted-foreground">불안감 수준 확인 21문항 (참고용)</p>
           </div>
           <PanicTestForm 
             onComplete={handlePanicTestComplete}
@@ -512,7 +512,7 @@ const Assessment = () => {
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">우울감 자가체크 (3분)</h1>
-            <p className="text-muted-foreground">Beck 우울척도 기반 21문항 (참고용)</p>
+            <p className="text-muted-foreground">우울감 자가체크 21문항 (참고용)</p>
           </div>
           <DepressionTestForm 
             onComplete={handleDepressionTestComplete}
@@ -596,8 +596,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">ADHD 자가체크 (3분)</h1>
-            <p className="text-muted-foreground">DSM-5 기반 18문항 (참고용)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">주의집중력 자가체크 (3분)</h1>
+            <p className="text-muted-foreground">주의집중력 증상 체크 18문항 (참고용)</p>
           </div>
           <AdhdTestForm 
             ageGroup={adhdAgeGroup}

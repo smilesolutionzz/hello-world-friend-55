@@ -21,22 +21,22 @@ interface PremiumAssessmentCardProps {
 const PremiumAssessmentCard = ({ assessmentKey, info, onStart, isSubscribed }: PremiumAssessmentCardProps) => {
   const getIcon = (key: string) => {
     const icons = {
-      jtci: Brain,
-      tci: Users,
-      elderly: Brain,
-      work_stress: Briefcase,
-      attachment: Heart
+      personality_type: Brain,
+      temperament: Users,
+      cognitive: Brain,
+      work_life: Briefcase,
+      relationship: Heart
     };
     return icons[key as keyof typeof icons] || Brain;
   };
 
   const getGradient = (key: string) => {
     const gradients = {
-      jtci: "from-purple-500 to-blue-600",
-      tci: "from-blue-500 to-teal-600", 
-      elderly: "from-green-500 to-emerald-600",
-      work_stress: "from-orange-500 to-red-600",
-      attachment: "from-pink-500 to-rose-600"
+      personality_type: "from-purple-500 to-blue-600",
+      temperament: "from-blue-500 to-teal-600", 
+      cognitive: "from-green-500 to-emerald-600",
+      work_life: "from-orange-500 to-red-600",
+      relationship: "from-pink-500 to-rose-600"
     };
     return gradients[key as keyof typeof gradients] || "from-gray-500 to-gray-600";
   };

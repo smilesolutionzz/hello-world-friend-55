@@ -204,7 +204,7 @@ ${percentage < 60 ? '우울/불안 전문가와의 즉시 상담을 권장합니
           </h1>
           
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            K-ASQ, Beck, Hamilton 등 국제 표준 검사도구 기반으로 정확한 분석을 제공합니다
+            과학적 검증된 심리측정도구 기반으로 정확한 분석을 제공합니다
           </p>
         </div>
 
@@ -314,8 +314,8 @@ ${percentage < 60 ? '우울/불안 전문가와의 즉시 상담을 권장합니
                 <div className="font-medium text-primary">검사 도구</div>
                 <div className="text-muted-foreground">
                   {ageGroup === 'infant' ? 'K-ASQ 발달선별검사' : 
-                   ageGroup === 'child' ? 'ADHD/인지능력검사' : 
-                   'Beck/Hamilton 임상척도'}
+                    ageGroup === 'child' ? '주의집중력/인지능력검사' : 
+                    '우울/불안 임상척도'}
                 </div>
               </div>
               <div>

@@ -1,7 +1,7 @@
 // 구독자용 심화 심리검사 데이터
 
-// 1. J-TCI 성격유형 검사 (Jung Type Character Inventory)
-export const jtciAssessmentQuestions = {
+// 1. 마음성향 분석검사 (4차원 성격 유형 분석)
+export const personalityTypeAssessmentQuestions = {
   extraversion: [
     {
       id: "jtci_e01",
@@ -124,8 +124,8 @@ export const jtciAssessmentQuestions = {
   ]
 };
 
-// 2. TCI 기질성격 검사 (Temperament and Character Inventory)
-export const tciAssessmentQuestions = {
+// 2. 타고난 기질 분석검사 (선천적 성향 측정)
+export const temperamentAssessmentQuestions = {
   novelty_seeking: [
     {
       id: "tci_ns01",
@@ -232,8 +232,8 @@ export const tciAssessmentQuestions = {
   ]
 };
 
-// 3. 노인 인지기능 검사 (Cognitive Assessment for Elderly)
-export const elderlyAssessmentQuestions = {
+// 3. 브레인케어 인지능력 검사 (종합 인지기능 평가)
+export const cognitiveAssessmentQuestions = {
   memory: [
     {
       id: "elderly_mem01",
@@ -328,8 +328,8 @@ export const elderlyAssessmentQuestions = {
   ]
 };
 
-// 4. 직장 스트레스 번아웃 검사 (Work Stress Burnout Assessment)
-export const workStressAssessmentQuestions = {
+// 4. 워킹 라이프 밸런스 검사 (직장인 정신건강 측정)
+export const workLifeAssessmentQuestions = {
   emotional_exhaustion: [
     {
       id: "work_ee01",
@@ -424,8 +424,8 @@ export const workStressAssessmentQuestions = {
   ]
 };
 
-// 5. 부부/연인 애착유형 검사 (Relationship Attachment Style Assessment)
-export const attachmentAssessmentQuestions = {
+// 5. 러브 케미 분석검사 (관계 애착 패턴 분석)
+export const relationshipAssessmentQuestions = {
   secure: [
     {
       id: "attach_sec01",
@@ -528,41 +528,41 @@ export const attachmentAssessmentQuestions = {
 
 // 각 검사별 표시명과 설명
 export const premiumAssessmentInfo = {
-  jtci: {
-    title: "J-TCI 성격유형 검사",
-    subtitle: "융의 심리학 이론 기반 정밀 성격 분석",
+  personality_type: {
+    title: "마음성향 분석검사",
+    subtitle: "4차원 성격유형 정밀분석",
     description: "외향성, 감각형, 사고형, 판단형의 4개 차원으로 16가지 성격유형을 정밀 분석합니다",
     duration: "약 5-7분",
     questions_count: 16,
     premium_features: ["16가지 성격유형 상세 분석", "직업 적합성 추천", "인간관계 스타일 분석", "개인 맞춤 발전 방향 제시"]
   },
-  tci: {
-    title: "TCI 기질성격 검사", 
-    subtitle: "과학적 7차원 성격 모델 기반 분석",
+  temperament: {
+    title: "타고난 기질 분석검사", 
+    subtitle: "선천적 성향 과학적 측정",
     description: "기질 4차원(자극추구, 위험회피, 사회적 민감성, 지속성)으로 타고난 성향을 분석합니다",
     duration: "약 6-8분",
     questions_count: 16,
-    premium_features: ["타고난 기질 4차원 분석", "스트레스 대처 방식", "중독 위험성 평가", "성격 발달 가능성"]
+    premium_features: ["타고난 기질 4차원 분석", "스트레스 대처 방식", "심리적 취약점 평가", "성격 발달 가능성"]
   },
-  elderly: {
-    title: "노인 인지기능 검사",
-    subtitle: "치매 조기발견 및 인지능력 종합평가", 
+  cognitive: {
+    title: "브레인케어 인지능력 검사",
+    subtitle: "종합 인지기능 정밀평가", 
     description: "기억력, 주의력, 실행기능, 언어능력의 4개 영역으로 인지기능을 정밀 평가합니다",
     duration: "약 4-6분",
     questions_count: 12,
-    premium_features: ["치매 위험도 평가", "인지기능 영역별 분석", "일상생활 영향도 평가", "인지강화 운동 추천"]
+    premium_features: ["인지능력 위험도 평가", "인지기능 영역별 분석", "일상생활 영향도 평가", "인지강화 운동 추천"]
   },
-  work_stress: {
-    title: "직장 스트레스 번아웃 검사",
+  work_life: {
+    title: "워킹 라이프 밸런스 검사",
     subtitle: "직장인 정신건강 종합진단",
     description: "감정소진, 비인격화, 성취감, 일-삶 균형의 4개 영역으로 번아웃을 정밀 측정합니다", 
     duration: "약 5-7분",
     questions_count: 13,
     premium_features: ["번아웃 위험도 측정", "스트레스 원인 분석", "회복력 평가", "직장적응 개선방안"]
   },
-  attachment: {
-    title: "부부/연인 애착유형 검사",
-    subtitle: "관계 심리학 기반 애착 패턴 분석",
+  relationship: {
+    title: "러브 케미 분석검사",
+    subtitle: "관계 애착패턴 심층분석",
     description: "안정형, 불안형, 회피형, 혼란형의 4가지 애착유형으로 관계 패턴을 분석합니다",
     duration: "약 4-6분", 
     questions_count: 15,

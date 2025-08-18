@@ -6,11 +6,11 @@ import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
 import { 
   premiumAssessmentInfo,
-  jtciAssessmentQuestions,
-  tciAssessmentQuestions, 
-  elderlyAssessmentQuestions,
-  workStressAssessmentQuestions,
-  attachmentAssessmentQuestions
+  personalityTypeAssessmentQuestions,
+  temperamentAssessmentQuestions, 
+  cognitiveAssessmentQuestions,
+  workLifeAssessmentQuestions,
+  relationshipAssessmentQuestions
 } from "@/data/premiumAssessmentQuestions";
 
 const PremiumAssessment = () => {
@@ -20,11 +20,11 @@ const PremiumAssessment = () => {
   const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
 
   const assessmentData = {
-    jtci: Object.values(jtciAssessmentQuestions).flat(),
-    tci: Object.values(tciAssessmentQuestions).flat(),
-    elderly: Object.values(elderlyAssessmentQuestions).flat(),
-    work_stress: Object.values(workStressAssessmentQuestions).flat(),
-    attachment: Object.values(attachmentAssessmentQuestions).flat()
+    personality_type: Object.values(personalityTypeAssessmentQuestions).flat(),
+    temperament: Object.values(temperamentAssessmentQuestions).flat(),
+    cognitive: Object.values(cognitiveAssessmentQuestions).flat(),
+    work_life: Object.values(workLifeAssessmentQuestions).flat(),
+    relationship: Object.values(relationshipAssessmentQuestions).flat()
   };
 
   const handleStartAssessment = (assessmentKey: string) => {

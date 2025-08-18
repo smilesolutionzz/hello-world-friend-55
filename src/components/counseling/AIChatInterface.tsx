@@ -84,7 +84,7 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
     const { testType, severity, ageGroup } = results;
     
     if (testType === 'adhd') {
-      return `안녕하세요! ADHD 자가체크 결과(${severity})를 바탕으로 상담을 도와드리겠습니다. ADHD 증상 관리나 일상생활에서 어려운 점이 있으시면 언제든 말씀해주세요. 🧠`;
+      return `안녕하세요! 주의집중력 자가체크 결과(${severity})를 바탕으로 상담을 도와드리겠습니다. 주의집중력 증상 관리나 일상생활에서 어려운 점이 있으시면 언제든 말씀해주세요. 🧠`;
     } else if (testType === 'depression') {
       return `안녕하세요! 우울감 체크 결과(${severity})를 확인했습니다. 지금 느끼고 계신 어려움들을 함께 나누어보면서, 조금씩 나아갈 수 있는 방법을 찾아보아요. 💙`;
     } else if (testType === 'panic') {

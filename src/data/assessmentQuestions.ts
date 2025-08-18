@@ -286,7 +286,7 @@ export const adultAssessmentQuestions: AdultAssessment = {
   ]
 };
 
-// ADHD 자가체크 질문 (아동청소년용)
+// 주의집중력 자가체크 질문 (아동청소년용)
 export const childAdhdQuestions = [
   "아이가 세심한 주의를 기울이지 못하거나 학습, 과제, 기타 활동에서 부주의한 실수를 자주 한다",
   "과제나 놀이 활동에서 지속적으로 주의를 집중하는데 어려움이 있다",
@@ -308,7 +308,7 @@ export const childAdhdQuestions = [
   "다른 사람을 방해하고 간섭한다"
 ];
 
-// ADHD 자가체크 질문 (성인용)
+// 주의집중력 자가체크 질문 (성인용)
 export const adultAdhdQuestions = [
   "과제나 활동 중 세부사항에 주의를 기울이지 못하거나 부주의한 실수를 자주 한다",
   "과제나 활동에서 지속적으로 주의를 집중하는데 어려움이 있다",

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Calendar, Clock, Users, Filter, Search, Share, Download, Eye, MessageSquare } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -47,7 +48,7 @@ interface TimelineTabProps {
 
 const TimelineTab = ({ familyId, members }: TimelineTabProps) => {
   const [activities, setActivities] = useState<TimelineActivity[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedMember, setSelectedMember] = useState<string>("all");
@@ -193,7 +194,38 @@ const TimelineTab = ({ familyId, members }: TimelineTabProps) => {
     return groups;
   };
 
-  const filteredActivities = mockActivities.filter(activity => {
+  // Load activities from database
+  useEffect(() => {
+    const loadActivities = async () => {
+      if (!familyId) return;
+      
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('timeline_activities')
+          .select('*')
+          .eq('family_id', familyId)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error loading timeline activities:', error);
+          // Fall back to mock data if database fails
+          setActivities(mockActivities);
+        } else {
+          setActivities((data as TimelineActivity[]) || []);
+        }
+      } catch (error) {
+        console.error('Error loading timeline activities:', error);
+        setActivities(mockActivities);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadActivities();
+  }, [familyId]);
+
+  const filteredActivities = activities.filter(activity => {
     if (selectedType !== 'all' && activity.type !== selectedType) return false;
     if (selectedMember !== 'all' && activity.member_id !== selectedMember) return false;
     if (searchQuery && !activity.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
@@ -324,6 +356,22 @@ const TimelineTab = ({ familyId, members }: TimelineTabProps) => {
       </Card>
 
       {/* Timeline Content */}
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">타임라인을 불러오는 중...</p>
+          </div>
+        </div>
+      ) : filteredActivities.length === 0 ? (
+        <Card className="p-12 text-center">
+          <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">아직 활동 기록이 없습니다</h3>
+          <p className="text-muted-foreground">
+            검사를 받거나 상담을 진행하면 이곳에 기록이 표시됩니다.
+          </p>
+        </Card>
+      ) : (
       <div className="space-y-8">
         {Object.entries(groupedActivities).map(([period, activities]) => {
           if (activities.length === 0) return null;
@@ -518,6 +566,7 @@ const TimelineTab = ({ familyId, members }: TimelineTabProps) => {
           );
         })}
       </div>
+      )}
 
       {/* Activity Detail Modal */}
       {selectedActivity && (

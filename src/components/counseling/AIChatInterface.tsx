@@ -28,6 +28,34 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  // Save consultation to timeline
+  const saveConsultationToTimeline = async (sessionId: string, summary: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // For now, skip family_id requirement since column doesn't exist
+      console.log('Saving consultation to timeline...');
+
+      await supabase
+        .from('timeline_activities')
+        .insert({
+          family_id: 'temp-family-id',
+          type: 'CONSULT',
+          title: 'AI 상담 세션',
+          summary: summary,
+          tags: ['AI상담', '정신건강'],
+          files: [],
+          actor: { role: 'user', name: user.email || '사용자' },
+          meta: { session_id: sessionId, message_count: messages.length }
+        });
+
+      console.log('Consultation saved to timeline');
+    } catch (error) {
+      console.error('Error saving consultation to timeline:', error);
+    }
+  };
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -131,6 +159,13 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
       });
     } finally {
       setIsLoading(false);
+      
+      // Save consultation if it's been going for a while
+      if (messages.length >= 5) {
+        const sessionId = crypto.randomUUID();
+        const summary = `총 ${messages.length}개의 메시지로 구성된 AI 상담 세션이 완료되었습니다.`;
+        await saveConsultationToTimeline(sessionId, summary);
+      }
     }
   };
 

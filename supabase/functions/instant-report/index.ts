@@ -85,7 +85,15 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const report = data.choices[0].message.content;
+    console.log('OpenAI API Response:', JSON.stringify(data, null, 2));
+    
+    const report = data.choices?.[0]?.message?.content || '';
+    console.log('Extracted report content:', report);
+    
+    if (!report || report.trim() === '') {
+      console.error('Empty report content from OpenAI');
+      throw new Error('Empty response from OpenAI API');
+    }
 
     // 위험 키워드 감지
     const riskKeywords = ['자살', '자해', '죽고싶', '극심한', '심각한', '응급'];

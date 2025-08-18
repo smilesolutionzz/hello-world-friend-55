@@ -14,6 +14,7 @@ import DepressionTestForm from "@/components/assessment/DepressionTestForm";
 import DepressionTestResult from "@/components/assessment/DepressionTestResult";
 import AdhdTestForm from "@/components/assessment/AdhdTestForm";
 import AdhdTestResult from "@/components/assessment/AdhdTestResult";
+import AIChatInterface from "@/components/counseling/AIChatInterface";
 import LegalSafetyNotice from "@/components/LegalSafetyNotice";
 import AnalysisScreen from "@/components/analysis/AnalysisScreen";
 import ExpertMatching from "@/components/analysis/ExpertMatching";
@@ -21,7 +22,7 @@ import ConsultationRoom from "@/components/consultation/ConsultationRoom";
 import { ExpertProfile } from "@/types/assessment";
 
 const Assessment = () => {
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result'>('test-type');
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
@@ -35,6 +36,7 @@ const Assessment = () => {
   const [adultResults, setAdultResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, categoryScores: Record<string, number>} | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
+  const [currentAssessmentResults, setCurrentAssessmentResults] = useState<any>(null);
 
   const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd') => {
     setTestType(type);
@@ -128,23 +130,46 @@ const Assessment = () => {
   const handlePanicTestComplete = (results: {answers: number[], total: number, average: number, severity: string}) => {
     console.log('Panic Test Results:', results);
     setPanicResults(results);
+    setCurrentAssessmentResults({
+      testType: 'panic',
+      ageGroup: '성인',
+      total: results.total,
+      average: results.average,
+      severity: results.severity
+    });
     setCurrentStep('panic-result');
   };
 
   const handleDepressionTestComplete = (results: {answers: number[], total: number, average: number, severity: string}) => {
     console.log('Depression Test Results:', results);
     setDepressionResults(results);
+    setCurrentAssessmentResults({
+      testType: 'depression',
+      ageGroup: '성인',
+      total: results.total,
+      average: results.average,
+      severity: results.severity
+    });
     setCurrentStep('depression-result');
   };
 
   const handleAdhdTestComplete = (results: {answers: number[], total: number, average: number, ageGroup: string, severity: string}) => {
     console.log('ADHD Test Results:', results);
     setAdhdResults(results);
+    setCurrentAssessmentResults({
+      testType: 'adhd',
+      ageGroup: results.ageGroup,
+      total: results.total,
+      average: results.average,
+      severity: results.severity
+    });
     setCurrentStep('adhd-result');
   };
 
-  const handleAnalysisComplete = (analysis: string) => {
-    setAnalysisResult(analysis);
+  const handleStartAIChat = () => {
+    setCurrentStep('ai-chat');
+  };
+    const handleAnalysisComplete = (analysis: string) => {
     setCurrentStep('matching');
   };
 
@@ -160,7 +185,7 @@ const Assessment = () => {
   };
 
   const handleBack = () => {
-    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result') {
+    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat') {
       // 분석/매칭/상담/결과 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
@@ -185,6 +210,15 @@ const Assessment = () => {
       setSelectedAge(0);
     }
   };
+
+  if (currentStep === 'ai-chat') {
+    return (
+      <AIChatInterface 
+        assessmentResults={currentAssessmentResults}
+        onClose={handleBack}
+      />
+    );
+  }
 
   if (currentStep === 'analysis') {
     return (
@@ -441,6 +475,7 @@ const Assessment = () => {
           <AdultAssessmentResult 
             results={adultResults}
             onBack={handleBack}
+            onStartAIChat={handleStartAIChat}
           />
         </div>
       </div>
@@ -473,6 +508,7 @@ const Assessment = () => {
           <AdhdTestResult 
             results={adhdResults}
             onBack={handleBack}
+            onStartAIChat={handleStartAIChat}
           />
         </div>
       </div>

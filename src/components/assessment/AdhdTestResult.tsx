@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink, MessageCircle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface AdhdTestResultProps {
@@ -13,9 +13,10 @@ interface AdhdTestResultProps {
     severity: string;
   };
   onBack: () => void;
+  onStartAIChat?: () => void;
 }
 
-const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
+const AdhdTestResult = ({ results, onBack, onStartAIChat }: AdhdTestResultProps) => {
   const { total, average, ageGroup, severity } = results;
   
   const getOverallEvaluation = (severity: string) => {
@@ -180,7 +181,7 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
       </Card>
 
       {/* Action Buttons */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-4 gap-4">
         <Button 
           className="btn-brand h-16"
           onClick={() => window.open('https://typebot.io/hilight-consult', '_blank')}
@@ -191,6 +192,19 @@ const AdhdTestResult = ({ results, onBack }: AdhdTestResultProps) => {
             <div className="text-sm opacity-90">즉시 상담 가능</div>
           </div>
         </Button>
+
+        {onStartAIChat && (
+          <Button 
+            className="bg-blue-600 hover:bg-blue-700 text-white h-16"
+            onClick={onStartAIChat}
+          >
+            <MessageCircle className="w-5 h-5 mr-2" />
+            <div className="text-left">
+              <div className="font-semibold">AI 상담 시작</div>
+              <div className="text-sm opacity-90">맞춤 상담 제공</div>
+            </div>
+          </Button>
+        )}
 
         <Button 
           variant="outline" 

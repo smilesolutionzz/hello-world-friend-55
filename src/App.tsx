@@ -14,6 +14,7 @@ import Corporate from "./pages/Corporate";
 import Subscription from "./pages/Subscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFail from "./pages/PaymentFail";
+import Pricing from "./pages/Pricing";
 import Observation from "./pages/Observation";
 import NotFound from "./pages/NotFound";
 
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/subscription" element={<Subscription />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/observation" element={<Observation />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />

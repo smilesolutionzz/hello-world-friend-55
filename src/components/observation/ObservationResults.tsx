@@ -277,69 +277,160 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          {/* Free Version - Summary Cards Only */}
+          {/* Free Version - Limited Report after 3 uses */}
           {!canViewAdvanced ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-center">
-                    <CheckCircle className="h-8 w-8 mx-auto mb-2 text-green-600" />
-                    <h3 className="font-semibold mb-1">현재 상황</h3>
-                    <p className="text-sm text-muted-foreground">
-                      전체적인 발달 상태가 양호하며, 몇 가지 영역에서 개선이 필요합니다.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-center">
-                    <Target className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-                    <h3 className="font-semibold mb-1">핵심 포인트</h3>
-                    <p className="text-sm text-muted-foreground">
-                      사회적 상호작용과 언어 발달에 집중적인 관심이 필요합니다.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-center">
-                    <Brain className="h-8 w-8 mx-auto mb-2 text-purple-600" />
-                    <h3 className="font-semibold mb-1">긍정적 측면</h3>
-                    <p className="text-sm text-muted-foreground">
-                      인지능력과 운동발달은 연령에 적합한 수준을 보이고 있습니다.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-center">
-                    <TrendingUp className="h-8 w-8 mx-auto mb-2 text-green-600" />
-                    <h3 className="font-semibold mb-1">개선 팁</h3>
-                    <p className="text-sm text-muted-foreground">
-                      일상적인 놀이 활동을 통해 자연스러운 상호작용을 늘려보세요.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardContent className="p-4">
-                  <div className="text-center">
-                    <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-orange-600" />
-                    <h3 className="font-semibold mb-1">주의사항</h3>
-                    <p className="text-sm text-muted-foreground">
-                      지속적인 관찰과 기록을 통해 변화를 추적하는 것이 중요합니다.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <>
+              {/* Limited Summary for users who exceeded free limit */}
+              {subscriptionData?.usage_count >= 3 ? (
+                <div className="space-y-6">
+                  <Card className="border-amber-200 bg-amber-50">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <Crown className="h-6 w-6 text-amber-600" />
+                          <div>
+                            <h3 className="font-semibold text-amber-800">축약 리포트</h3>
+                            <p className="text-sm text-amber-700">
+                              기록할수록 패턴이 보입니다. 4회차부터는 장기 추적/전문가 코멘트가 열립니다.
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div className="bg-white rounded-lg p-4">
+                            <p className="text-sm">
+                              전체적인 관찰 결과 양호한 편이며, 특정 영역에서 지속적인 관심이 필요합니다. 
+                              장기간 누적 데이터를 통해 더 정확한 패턴 분석이 가능합니다.
+                            </p>
+                          </div>
+                          
+                          <Card>
+                            <CardContent className="p-4">
+                              <div className="flex items-center gap-3">
+                                <CheckCircle className="h-5 w-5 text-green-600" />
+                                <div>
+                                  <h4 className="font-medium">긍정적 측면</h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    인지능력과 운동발달은 연령에 적합한 수준을 보이고 있습니다.
+                                  </p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Fixed CTA at bottom */}
+                  <Card className="border-primary bg-gradient-to-r from-primary/5 to-purple-500/5">
+                    <CardContent className="p-6">
+                      <div className="text-center space-y-4">
+                        <div>
+                          <h3 className="text-xl font-bold text-primary mb-2">
+                            심화 분석으로 더 정확한 인사이트를 얻어보세요
+                          </h3>
+                          <p className="text-muted-foreground">
+                            레이더 차트, 시간 추이 분석, 전문가 피드백까지 한번에
+                          </p>
+                        </div>
+                        
+                        <div className="grid md:grid-cols-3 gap-4 my-6">
+                          <div className="text-center">
+                            <BarChart3 className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+                            <p className="text-sm font-medium">영역별 상세 분석</p>
+                          </div>
+                          <div className="text-center">
+                            <TrendingUp className="h-8 w-8 mx-auto mb-2 text-green-600" />
+                            <p className="text-sm font-medium">시간별 변화 추이</p>
+                          </div>
+                          <div className="text-center">
+                            <FileText className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+                            <p className="text-sm font-medium">전문가급 PDF 리포트</p>
+                          </div>
+                        </div>
+                        
+                        <Button 
+                          size="lg" 
+                          className="w-full max-w-md mx-auto"
+                          onClick={() => window.location.href = '/pricing'}
+                        >
+                          <Crown className="h-4 w-4 mr-2" />
+                          구독하고 심화 리포트 보기
+                        </Button>
+                        
+                        <p className="text-xs text-muted-foreground">
+                          첫 7일 무료 체험 • 언제든 취소 가능
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                /* Basic 5-card summary for free users under 3 uses */
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <CheckCircle className="h-8 w-8 mx-auto mb-2 text-green-600" />
+                        <h3 className="font-semibold mb-1">현재 상황</h3>
+                        <p className="text-sm text-muted-foreground">
+                          전체적인 발달 상태가 양호하며, 몇 가지 영역에서 개선이 필요합니다.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <Target className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+                        <h3 className="font-semibold mb-1">핵심 포인트</h3>
+                        <p className="text-sm text-muted-foreground">
+                          사회적 상호작용과 언어 발달에 집중적인 관심이 필요합니다.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <Brain className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+                        <h3 className="font-semibold mb-1">긍정적 측면</h3>
+                        <p className="text-sm text-muted-foreground">
+                          인지능력과 운동발달은 연령에 적합한 수준을 보이고 있습니다.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <TrendingUp className="h-8 w-8 mx-auto mb-2 text-green-600" />
+                        <h3 className="font-semibold mb-1">개선 팁</h3>
+                        <p className="text-sm text-muted-foreground">
+                          일상적인 놀이 활동을 통해 자연스러운 상호작용을 늘려보세요.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-orange-600" />
+                        <h3 className="font-semibold mb-1">주의사항</h3>
+                        <p className="text-sm text-muted-foreground">
+                          지속적인 관찰과 기록을 통해 변화를 추적하는 것이 중요합니다.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+            </>
           ) : (
             /* Premium Version - Full Analytics */
             <>

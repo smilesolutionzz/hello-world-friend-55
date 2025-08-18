@@ -147,12 +147,12 @@ const ChatInterface = () => {
             </div>
           </Card>
 
-          <Card className="p-6 hover-glow cursor-pointer" onClick={() => window.open('https://typebot.io/hilight-consult', '_blank')}>
+          <Card className="p-6 hover-glow cursor-pointer" onClick={() => window.location.href = '/experts'}>
             <div className="flex items-center gap-4">
               <ExternalLink className="w-8 h-8 text-primary" />
               <div>
                 <h3 className="font-bold text-lg text-brand-gradient">전문가 상담 연결</h3>
-                <p className="text-sm text-muted-foreground">즉시 상담 가능</p>
+                <p className="text-sm text-muted-foreground">검증된 전문가와 1:1 상담</p>
               </div>
             </div>
           </Card>
@@ -169,9 +169,9 @@ const ChatInterface = () => {
                 </p>
                 <Button 
                   className="mt-3 btn-brand"
-                  onClick={() => window.open('https://typebot.io/hilight-consult', '_blank')}
+                  onClick={() => window.location.href = '/experts'}
                 >
-                  관찰일지 작성하러 가기
+                  전문가 상담 받기
                 </Button>
               </div>
             </div>

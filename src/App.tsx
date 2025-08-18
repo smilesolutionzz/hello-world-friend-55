@@ -17,6 +17,7 @@ import PaymentFail from "./pages/PaymentFail";
 import Pricing from "./pages/Pricing";
 import Observation from "./pages/Observation";
 import Expert from "./pages/Expert";
+import ExpertList from "./pages/ExpertList";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/observation" element={<Observation />} />
           <Route path="/expert" element={<Expert />} />
+          <Route path="/experts" element={<ExpertList />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
           

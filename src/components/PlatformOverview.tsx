@@ -7,7 +7,7 @@ const PlatformOverview = () => {
         {/* Platform Introduction */}
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            <span className="text-brand-gradient">AI하이라이트프로</span>와 함께하는
+            <span className="text-brand-gradient">AIHPRO</span>와 함께하는
             <br />정신건강 케어의 새로운 패러다임
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-[1.6] text-center">

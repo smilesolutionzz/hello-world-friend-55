@@ -21,8 +21,11 @@ import AnalysisScreen from "@/components/analysis/AnalysisScreen";
 import ExpertMatching from "@/components/analysis/ExpertMatching";
 import ConsultationRoom from "@/components/consultation/ConsultationRoom";
 import { ExpertProfile } from "@/types/assessment";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Assessment = () => {
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
@@ -38,6 +41,80 @@ const Assessment = () => {
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
   const [currentAssessmentResults, setCurrentAssessmentResults] = useState<any>(null);
+
+  // Timeline에 검사 결과 저장하는 함수
+  const saveTestToTimeline = async (testType: string, results: any) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile) return;
+
+      // 가족 ID 가져오기
+      const { data: familyMember } = await supabase
+        .from('family_members')
+        .select('family_id')
+        .eq('profile_id', profile.id)
+        .single();
+
+      const family_id = familyMember?.family_id || null;
+
+      // Timeline에 검사 기록 저장
+      const { error } = await supabase
+        .from('timeline_activities')
+        .insert({
+          family_id,
+          member_id: profile.id,
+          type: 'TEST',
+          title: getTestTitle(testType),
+          summary: `${getTestTitle(testType)} 완료 - 점수: ${results.total}점, 수준: ${results.severity || results.ageGroup}`,
+          score_overall: results.total,
+          tags: [testType, results.ageGroup || '성인'],
+          files: [],
+          actor: {
+            role: 'user',
+            id: user.id,
+            name: null
+          },
+          meta: {
+            testType,
+            results: {
+              total: results.total,
+              average: results.average,
+              severity: results.severity,
+              ageGroup: results.ageGroup
+            }
+          }
+        });
+
+      if (error) {
+        console.error('Timeline 저장 실패:', error);
+      } else {
+        toast({
+          title: "검사 완료",
+          description: "검사 결과가 타임라인에 저장되었습니다.",
+        });
+      }
+    } catch (error) {
+      console.error('Timeline 저장 중 오류:', error);
+    }
+  };
+
+  const getTestTitle = (testType: string) => {
+    switch (testType) {
+      case 'adhd': return 'ADHD 자가체크';
+      case 'depression': return '우울감 자가체크';
+      case 'panic': return '불안감 수준 확인';
+      case 'language': return '언어발달 자가체크';
+      default: return '심리상태 체크';
+    }
+  };
 
   const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd') => {
     setTestType(type);
@@ -122,15 +199,23 @@ const Assessment = () => {
     }
   };
 
-  const handleLanguageTestComplete = (results: {answers: number[], total: number, average: number, ageGroup: string}) => {
+  const handleLanguageTestComplete = async (results: {answers: number[], total: number, average: number, ageGroup: string}) => {
     console.log('Language Test Results:', results);
     setLanguageResults(results);
+    
+    // Timeline에 검사 결과 저장
+    await saveTestToTimeline('language', results);
+    
     setCurrentStep('language-result');
   };
 
-  const handlePanicTestComplete = (results: {answers: number[], total: number, average: number, severity: string}) => {
+  const handlePanicTestComplete = async (results: {answers: number[], total: number, average: number, severity: string}) => {
     console.log('Panic Test Results:', results);
     setPanicResults(results);
+    
+    // Timeline에 검사 결과 저장
+    await saveTestToTimeline('panic', results);
+    
     setCurrentAssessmentResults({
       testType: 'panic',
       ageGroup: '성인',
@@ -141,9 +226,13 @@ const Assessment = () => {
     setCurrentStep('panic-result');
   };
 
-  const handleDepressionTestComplete = (results: {answers: number[], total: number, average: number, severity: string}) => {
+  const handleDepressionTestComplete = async (results: {answers: number[], total: number, average: number, severity: string}) => {
     console.log('Depression Test Results:', results);
     setDepressionResults(results);
+    
+    // Timeline에 검사 결과 저장
+    await saveTestToTimeline('depression', results);
+    
     setCurrentAssessmentResults({
       testType: 'depression',
       ageGroup: '성인',
@@ -154,9 +243,13 @@ const Assessment = () => {
     setCurrentStep('depression-result');
   };
 
-  const handleAdhdTestComplete = (results: {answers: number[], total: number, average: number, ageGroup: string, severity: string}) => {
+  const handleAdhdTestComplete = async (results: {answers: number[], total: number, average: number, ageGroup: string, severity: string}) => {
     console.log('ADHD Test Results:', results);
     setAdhdResults(results);
+    
+    // Timeline에 검사 결과 저장
+    await saveTestToTimeline('adhd', results);
+    
     setCurrentAssessmentResults({
       testType: 'adhd',
       ageGroup: results.ageGroup,

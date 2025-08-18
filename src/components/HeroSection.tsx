@@ -23,7 +23,7 @@ const HeroSection = () => {
               "불안을 데이터로 안심을 리포트로"
             </p>
             <p className="text-muted-foreground text-base sm:text-lg">
-              한 문장으로 시작해보세요 (상담연결·참고용)
+              한 문장으로 시작해보세요
             </p>
           </div>
 

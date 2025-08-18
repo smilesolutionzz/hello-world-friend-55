@@ -1,130 +1,131 @@
 // 구독자용 심화 심리검사 데이터
+// 본 검사는 원저작과는 무관한 창작형 검사입니다.
 
-// 1. 마음성향 분석검사 (4차원 성격 유형 분석)
+// 1. 마음성향 분석검사 (독창적 4차원 성격 유형 분석)
 export const personalityTypeAssessmentQuestions = {
-  extraversion: [
+  social_energy: [
     {
-      id: "jtci_e01",
-      text: "새로운 사람들과 만나는 자리에서 에너지를 얻는 편입니다",
-      category: "extraversion",
+      id: "mind_se01",
+      text: "파티나 모임에서 새로운 사람들과 대화하는 것이 즐겁습니다",
+      category: "social_energy",
       reverse: false,
       weight: 1.2
     },
     {
-      id: "jtci_e02", 
-      text: "혼자 있는 시간이 많으면 답답함을 느낍니다",
-      category: "extraversion",
+      id: "mind_se02", 
+      text: "하루 종일 혼자만 있으면 무언가 빠진 느낌이 듭니다",
+      category: "social_energy",
       reverse: false,
       weight: 1.0
     },
     {
-      id: "jtci_e03",
-      text: "생각을 말로 표현하면서 정리하는 편입니다",
-      category: "extraversion", 
+      id: "mind_se03",
+      text: "머릿속 아이디어를 다른 사람과 나누며 발전시키는 것을 좋아합니다",
+      category: "social_energy", 
       reverse: false,
       weight: 1.1
     },
     {
-      id: "jtci_e04",
-      text: "조용한 환경보다는 활기찬 환경을 선호합니다",
-      category: "extraversion",
+      id: "mind_se04",
+      text: "조용한 카페보다는 사람들이 많은 장소에서 더 집중이 잘 됩니다",
+      category: "social_energy",
       reverse: false,
       weight: 1.0
     }
   ],
-  sensing: [
+  detail_focus: [
     {
-      id: "jtci_s01",
-      text: "구체적이고 실질적인 정보를 중요하게 생각합니다",
-      category: "sensing",
+      id: "mind_df01",
+      text: "설명서를 자세히 읽고 단계별로 따라하는 것을 선호합니다",
+      category: "detail_focus",
       reverse: false,
       weight: 1.3
     },
     {
-      id: "jtci_s02",
-      text: "현재 상황에 집중하는 것이 미래 계획보다 중요합니다",
-      category: "sensing",
+      id: "mind_df02",
+      text: "지금 당장 해야 할 일에 집중하는 것이 장기 계획보다 우선입니다",
+      category: "detail_focus",
       reverse: false,
       weight: 1.1
     },
     {
-      id: "jtci_s03",
-      text: "세부사항에 주의를 기울이며 꼼꼼히 확인합니다",
-      category: "sensing",
+      id: "mind_df03",
+      text: "작은 실수라도 놓치지 않으려고 여러 번 확인하는 편입니다",
+      category: "detail_focus",
       reverse: false,
       weight: 1.2
     },
     {
-      id: "jtci_s04", 
-      text: "경험과 사실에 근거해서 판단하는 편입니다",
-      category: "sensing",
+      id: "mind_df04", 
+      text: "직접 경험해본 것을 바탕으로 결정을 내리는 것이 안전합니다",
+      category: "detail_focus",
       reverse: false,
       weight: 1.2
     }
   ],
-  thinking: [
+  logical_approach: [
     {
-      id: "jtci_t01",
-      text: "논리적 일관성을 중요하게 생각합니다",
-      category: "thinking",
+      id: "mind_la01",
+      text: "모든 상황에서 앞뒤가 맞는 일관된 기준을 적용하려고 합니다",
+      category: "logical_approach",
       reverse: false,
       weight: 1.4
     },
     {
-      id: "jtci_t02",
-      text: "결정할 때 객관적 기준을 우선시합니다",
-      category: "thinking", 
+      id: "mind_la02",
+      text: "중요한 선택을 할 때 개인적 감정보다는 합리적 근거를 찾습니다",
+      category: "logical_approach", 
       reverse: false,
       weight: 1.3
     },
     {
-      id: "jtci_t03",
-      text: "개인적 감정보다는 원칙을 중시합니다",
-      category: "thinking",
+      id: "mind_la03",
+      text: "규칙이나 원칙이 있다면 예외를 두지 않고 지키는 것이 중요합니다",
+      category: "logical_approach",
       reverse: false,
       weight: 1.2
     },
     {
-      id: "jtci_t04",
-      text: "문제를 분석적으로 접근하는 것을 선호합니다",
-      category: "thinking",
+      id: "mind_la04",
+      text: "복잡한 문제를 작은 부분으로 나누어 체계적으로 해결합니다",
+      category: "logical_approach",
       reverse: false,
       weight: 1.1
     }
   ],
-  judging: [
+  structured_living: [
     {
-      id: "jtci_j01",
-      text: "미리 계획을 세우고 체계적으로 일을 진행합니다",
-      category: "judging",
+      id: "mind_sl01",
+      text: "하루 일과를 미리 정해두고 순서대로 진행하는 것이 편안합니다",
+      category: "structured_living",
       reverse: false,
       weight: 1.3
     },
     {
-      id: "jtci_j02",
-      text: "마감시한을 잘 지키며 시간 관리를 중요시합니다",
-      category: "judging",
+      id: "mind_sl02",
+      text: "약속 시간보다 일찍 도착해서 여유있게 준비하는 편입니다",
+      category: "structured_living",
       reverse: false,
       weight: 1.2
     },
     {
-      id: "jtci_j03",
-      text: "결정을 빨리 내리고 실행에 옮기는 편입니다",
-      category: "judging",
+      id: "mind_sl03",
+      text: "망설이기보다는 빠르게 결정하고 바로 행동으로 옮깁니다",
+      category: "structured_living",
       reverse: false,
       weight: 1.1
     },
     {
-      id: "jtci_j04",
-      text: "정해진 규칙과 절차를 따르는 것이 중요합니다",
-      category: "judging",
+      id: "mind_sl04",
+      text: "정해진 방식과 순서가 있으면 그것을 따르는 것이 효율적입니다",
+      category: "structured_living",
       reverse: false,
       weight: 1.0
     }
   ]
 };
 
-// 2. 타고난 기질 분석검사 (선천적 성향 측정)
+// 2. 타고난 기질 분석검사 (독창적 선천적 성향 측정)
 export const temperamentAssessmentQuestions = {
   novelty_seeking: [
     {
@@ -328,8 +329,8 @@ export const cognitiveAssessmentQuestions = {
   ]
 };
 
-// 4. 워킹 라이프 밸런스 검사 (직장인 정신건강 측정)
-export const workLifeAssessmentQuestions = {
+// 4. 직장 스트레스 번아웃 검사 (직장인 정신건강 측정)
+export const workStressAssessmentQuestions = {
   emotional_exhaustion: [
     {
       id: "work_ee01",
@@ -527,46 +528,52 @@ export const relationshipAssessmentQuestions = {
 };
 
 // 각 검사별 표시명과 설명
+// 본 검사는 원저작과는 무관한 창작형 검사입니다.
 export const premiumAssessmentInfo = {
   personality_type: {
     title: "마음성향 분석검사",
-    subtitle: "4차원 성격유형 정밀분석",
-    description: "외향성, 감각형, 사고형, 판단형의 4개 차원으로 16가지 성격유형을 정밀 분석합니다",
+    subtitle: "창작형 4차원 성격유형 정밀분석",
+    description: "사회에너지, 세부집중, 논리접근, 구조생활의 4개 차원으로 16가지 성격유형을 독창적으로 분석합니다",
     duration: "약 5-7분",
     questions_count: 16,
-    premium_features: ["16가지 성격유형 상세 분석", "직업 적합성 추천", "인간관계 스타일 분석", "개인 맞춤 발전 방향 제시"]
+    premium_features: ["16가지 성격유형 상세 분석", "직업 적합성 추천", "인간관계 스타일 분석", "개인 맞춤 발전 방향 제시"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
   temperament: {
     title: "타고난 기질 분석검사", 
-    subtitle: "선천적 성향 과학적 측정",
-    description: "기질 4차원(자극추구, 위험회피, 사회적 민감성, 지속성)으로 타고난 성향을 분석합니다",
+    subtitle: "창작형 선천적 성향 과학적 측정",
+    description: "기질 4차원(자극추구, 위험회피, 사회적 민감성, 지속성)으로 타고난 성향을 독창적으로 분석합니다",
     duration: "약 6-8분",
     questions_count: 16,
-    premium_features: ["타고난 기질 4차원 분석", "스트레스 대처 방식", "심리적 취약점 평가", "성격 발달 가능성"]
+    premium_features: ["타고난 기질 4차원 분석", "스트레스 대처 방식", "심리적 취약점 평가", "성격 발달 가능성"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
   cognitive: {
     title: "브레인케어 인지능력 검사",
-    subtitle: "종합 인지기능 정밀평가", 
-    description: "기억력, 주의력, 실행기능, 언어능력의 4개 영역으로 인지기능을 정밀 평가합니다",
+    subtitle: "창작형 종합 인지기능 정밀평가", 
+    description: "기억력, 주의력, 실행기능, 언어능력의 4개 영역으로 인지기능을 독창적으로 평가합니다",
     duration: "약 4-6분",
     questions_count: 12,
-    premium_features: ["인지능력 위험도 평가", "인지기능 영역별 분석", "일상생활 영향도 평가", "인지강화 운동 추천"]
+    premium_features: ["인지능력 위험도 평가", "인지기능 영역별 분석", "일상생활 영향도 평가", "인지강화 운동 추천"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
-  work_life: {
-    title: "워킹 라이프 밸런스 검사",
+  work_stress: {
+    title: "직장 스트레스 번아웃 검사",
     subtitle: "직장인 정신건강 종합진단",
     description: "감정소진, 비인격화, 성취감, 일-삶 균형의 4개 영역으로 번아웃을 정밀 측정합니다", 
     duration: "약 5-7분",
     questions_count: 13,
-    premium_features: ["번아웃 위험도 측정", "스트레스 원인 분석", "회복력 평가", "직장적응 개선방안"]
+    premium_features: ["번아웃 위험도 측정", "스트레스 원인 분석", "회복력 평가", "직장적응 개선방안"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
   relationship: {
     title: "러브 케미 분석검사",
-    subtitle: "관계 애착패턴 심층분석",
-    description: "안정형, 불안형, 회피형, 혼란형의 4가지 애착유형으로 관계 패턴을 분석합니다",
+    subtitle: "창작형 관계 애착패턴 심층분석",
+    description: "안정형, 불안형, 회피형, 혼란형의 4가지 애착유형으로 관계 패턴을 독창적으로 분석합니다",
     duration: "약 4-6분", 
     questions_count: 15,
-    premium_features: ["4가지 애착유형 분석", "관계 패턴 해석", "갈등 해결 방식", "건강한 관계 가이드"]
+    premium_features: ["4가지 애착유형 분석", "관계 패턴 해석", "갈등 해결 방식", "건강한 관계 가이드"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   }
 };
 

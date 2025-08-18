@@ -9,7 +9,7 @@ import {
   personalityTypeAssessmentQuestions,
   temperamentAssessmentQuestions, 
   cognitiveAssessmentQuestions,
-  workLifeAssessmentQuestions,
+  workStressAssessmentQuestions,
   relationshipAssessmentQuestions
 } from "@/data/premiumAssessmentQuestions";
 
@@ -23,7 +23,7 @@ const PremiumAssessment = () => {
     personality_type: Object.values(personalityTypeAssessmentQuestions).flat(),
     temperament: Object.values(temperamentAssessmentQuestions).flat(),
     cognitive: Object.values(cognitiveAssessmentQuestions).flat(),
-    work_life: Object.values(workLifeAssessmentQuestions).flat(),
+    work_stress: Object.values(workStressAssessmentQuestions).flat(),
     relationship: Object.values(relationshipAssessmentQuestions).flat()
   };
 

@@ -24,7 +24,7 @@ const PremiumAssessmentCard = ({ assessmentKey, info, onStart, isSubscribed }: P
       personality_type: Brain,
       temperament: Users,
       cognitive: Brain,
-      work_life: Briefcase,
+      work_stress: Briefcase,
       relationship: Heart
     };
     return icons[key as keyof typeof icons] || Brain;
@@ -35,7 +35,7 @@ const PremiumAssessmentCard = ({ assessmentKey, info, onStart, isSubscribed }: P
       personality_type: "from-purple-500 to-blue-600",
       temperament: "from-blue-500 to-teal-600", 
       cognitive: "from-green-500 to-emerald-600",
-      work_life: "from-orange-500 to-red-600",
+      work_stress: "from-orange-500 to-red-600",
       relationship: "from-pink-500 to-rose-600"
     };
     return gradients[key as keyof typeof gradients] || "from-gray-500 to-gray-600";

@@ -228,12 +228,15 @@ const PremiumAssessmentForm = ({
         <div className="max-w-4xl mx-auto mt-6">
           <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
             <CardContent className="p-4 text-center">
-              <div className="flex items-center justify-center gap-2 text-sm">
+              <div className="flex items-center justify-center gap-2 text-sm mb-2">
                 <Crown className="w-4 h-4 text-yellow-600" />
                 <span className="text-yellow-800 font-medium">
                   프리미엄 회원만의 특별한 전문 심리검사를 진행 중입니다
                 </span>
                 <Crown className="w-4 h-4 text-yellow-600" />
+              </div>
+              <div className="text-xs text-yellow-700 border-t border-yellow-200 pt-2">
+                ※ 본 검사는 원저작과는 무관한 창작형 검사입니다.
               </div>
             </CardContent>
           </Card>

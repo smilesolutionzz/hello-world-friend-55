@@ -13,8 +13,8 @@ import {
   workStressAssessmentQuestions,
   relationshipAssessmentQuestions,
   financialPsychologyAssessmentQuestions,
-  teenMmpiAssessmentQuestions,
-  teenCbclAssessmentQuestions
+  teenMentalCompassAssessmentQuestions,
+  teenGrowthCapacityAssessmentQuestions
 } from "@/data/premiumAssessmentQuestions";
 
 const PremiumAssessment = () => {
@@ -31,8 +31,8 @@ const PremiumAssessment = () => {
     work_stress: Object.values(workStressAssessmentQuestions).flat(),
     relationship: Object.values(relationshipAssessmentQuestions).flat(),
     financialPsychology: Object.values(financialPsychologyAssessmentQuestions).flat(),
-    teenMmpi: Object.values(teenMmpiAssessmentQuestions).flat(),
-    teenCbcl: Object.values(teenCbclAssessmentQuestions).flat()
+    teenMentalCompass: Object.values(teenMentalCompassAssessmentQuestions).flat(),
+    teenGrowthCapacity: Object.values(teenGrowthCapacityAssessmentQuestions).flat()
   };
 
   const handleStartAssessment = (assessmentKey: string) => {

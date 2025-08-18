@@ -175,7 +175,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
           
           <div className="text-center pt-4">
             <a 
-              href="https://drive.google.com/file/d/15LFa6OMWXwz0IyoSjN2GfIPzOqvqWUhH/view?usp=drive_link"
+              href="https://drive.google.com/file/d/17WD3mhW2T4TdkfxTzLpfH5bzFARxz_Vh/view?usp=drive_link"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary font-medium hover:underline"

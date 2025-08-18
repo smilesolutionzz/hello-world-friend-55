@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +53,7 @@ interface ObservationSessionFormProps {
 
 const ObservationSessionForm = ({ template, onSessionCreated, onCancel }: ObservationSessionFormProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [sessionData, setSessionData] = useState({
     session_name: '',
     observer_name: '',
@@ -228,7 +230,8 @@ const ObservationSessionForm = ({ template, onSessionCreated, onCancel }: Observ
         description: "AI 분석이 완료되었습니다.",
       });
 
-      onSessionCreated();
+      // Navigate to analysis page after successful analysis
+      navigate(`/analysis?sessionId=${session.id}`);
     } catch (error) {
       console.error('Error analyzing session:', error);
       toast({

@@ -11,8 +11,8 @@ const PlatformOverview = () => {
             <br />정신건강 케어의 새로운 패러다임
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-[1.6] text-center">
-            데이터 기반 정신건강 분석과 AI 상담을 통해 개인, 기업, 의료기관이 함께 만들어가는
-            <br />통합 정신건강 플랫폼입니다
+            데이터와 AI 상담을 기반으로, 개인·기업·의료기관이 함께 만드는
+            <br />차세대 통합 정신건강 플랫폼
           </p>
         </div>
 

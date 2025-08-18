@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
-import ChildAssessment from "@/components/assessment/ChildAssessment";
+import ChildAssessmentSimplified from "@/components/assessment/ChildAssessmentSimplified";
 import AdultAssessment from "@/components/assessment/AdultAssessment";
 import InfantAssessmentResult from "@/components/assessment/InfantAssessmentResult";
 import ChildAssessmentResult from "@/components/assessment/ChildAssessmentResult";
@@ -634,7 +634,7 @@ const Assessment = () => {
         />
       )}
       {selectedAgeGroup === 'child' && (
-        <ChildAssessment 
+        <ChildAssessmentSimplified 
           age={selectedAge} 
           onComplete={handleAssessmentComplete}
           onBack={handleBack}

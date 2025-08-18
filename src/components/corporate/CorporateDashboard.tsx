@@ -22,7 +22,7 @@ import {
   Activity
 } from 'lucide-react';
 import { useCorporateAnalytics } from '@/hooks/useCorporateAnalytics';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart as RechartsPieChart, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart as RechartsBarChart, Bar, PieChart as RechartsPieChart, Cell } from 'recharts';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
@@ -228,7 +228,7 @@ export const CorporateDashboard = () => {
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={Object.entries(wellnessData.department_scores).map(([dept, score]) => ({ 
+                  <RechartsBarChart data={Object.entries(wellnessData.department_scores).map(([dept, score]) => ({ 
                     department: dept, 
                     score: Number(score) 
                   }))}>
@@ -237,7 +237,7 @@ export const CorporateDashboard = () => {
                     <YAxis />
                     <Tooltip />
                     <Bar dataKey="score" fill="#8884d8" />
-                  </BarChart>
+                  </RechartsBarChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
@@ -300,7 +300,7 @@ export const CorporateDashboard = () => {
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={Object.entries(wellnessData.level_scores).map(([level, score]) => ({ 
+                  <RechartsBarChart data={Object.entries(wellnessData.level_scores).map(([level, score]) => ({ 
                     level, 
                     score: Number(score) 
                   }))}>
@@ -309,7 +309,7 @@ export const CorporateDashboard = () => {
                     <YAxis />
                     <Tooltip />
                     <Bar dataKey="score" fill="#82ca9d" />
-                  </BarChart>
+                  </RechartsBarChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>

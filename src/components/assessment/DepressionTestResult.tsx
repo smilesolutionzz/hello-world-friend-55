@@ -217,9 +217,14 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
           </div>
           
           <div className="text-center pt-4">
-            <p className="text-primary font-medium">
-              👉 더 정밀한 분석 리포트(PDF) 받아보기
-            </p>
+            <a 
+              href="https://drive.google.com/file/d/15LFa6OMWXwz0IyoSjN2GfIPzOqvqWUhH/view?usp=drive_link"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-medium hover:underline"
+            >
+              👉 구독 후 더 정밀한 분석 리포트(PDF) 다운받기 (예시)
+            </a>
           </div>
         </div>
       </Card>

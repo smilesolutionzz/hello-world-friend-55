@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Moon, Sparkles, Brain, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Moon, Sparkles, Brain, Loader2, Coins } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useTokens } from "@/hooks/useTokens";
+import TokenGate from "@/components/TokenGate";
 
 interface DreamInterpretationProps {
   onBack: () => void;
@@ -15,6 +18,9 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
   const [interpretation, setInterpretation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { checkTokenAvailability, consumeTokens } = useTokens();
+
+  const TOKENS_REQUIRED = 5;
 
   const handleSubmit = async () => {
     if (!dreamText.trim()) {
@@ -28,6 +34,9 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
 
     setIsLoading(true);
     try {
+      // 토큰 차감
+      await consumeTokens('dream_analysis', TOKENS_REQUIRED);
+
       const { data, error } = await supabase.functions.invoke('dream-interpreter', {
         body: { dreamText: dreamText.trim() }
       });
@@ -42,13 +51,21 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
         title: "꿈 해몽 완료",
         description: "AI가 꿈을 분석했습니다.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Dream interpretation error:', error);
-      toast({
-        title: "분석 실패",
-        description: "꿈 해몽 분석 중 오류가 발생했습니다.",
-        variant: "destructive"
-      });
+      if (error.message?.includes('토큰')) {
+        toast({
+          title: "토큰 부족",
+          description: error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "분석 실패",
+          description: "꿈 해몽 분석 중 오류가 발생했습니다.",
+          variant: "destructive"
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -58,6 +75,44 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
     setDreamText("");
     setInterpretation("");
   };
+
+  // 토큰이 부족한 경우 TokenGate 표시
+  if (!checkTokenAvailability(TOKENS_REQUIRED)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-800 relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-purple-400/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-32 right-16 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/3 w-72 h-72 bg-indigo-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+        </div>
+        
+        <div className="relative z-10 container mx-auto px-6 pt-8 pb-16">
+          <div className="flex items-center justify-between mb-8">
+            <Button 
+              variant="ghost" 
+              onClick={onBack}
+              className="flex items-center gap-2 text-white hover:bg-white/10"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              뒤로가기
+            </Button>
+          </div>
+          
+          <TokenGate 
+            tokensRequired={TOKENS_REQUIRED}
+            featureName="AI 꿈해몽"
+            onProceed={() => {}}
+          >
+            <div className="text-center space-y-2">
+              <p className="text-sm text-muted-foreground">
+                AI가 당신의 꿈을 심층 분석하여 숨겨진 의미를 해석해드립니다.
+              </p>
+            </div>
+          </TokenGate>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-800 relative overflow-hidden">
@@ -91,6 +146,12 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
             <p className="text-lg text-purple-200">
               당신의 꿈이 담고 있는 의미를 AI가 해석해드립니다
             </p>
+            <div className="flex items-center justify-center gap-2 mt-2">
+              <Badge variant="secondary" className="flex items-center gap-1">
+                <Coins className="w-3 h-3" />
+                {TOKENS_REQUIRED} 토큰 필요
+              </Badge>
+            </div>
           </div>
           
           <div className="w-20" />

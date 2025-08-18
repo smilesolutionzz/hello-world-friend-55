@@ -4,9 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Star, Sparkles, Calendar, Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Star, Sparkles, Calendar, Loader2, Coins } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useTokens } from "@/hooks/useTokens";
+import TokenGate from "@/components/TokenGate";
 
 interface SajuAnalysisProps {
   onBack: () => void;
@@ -23,6 +26,9 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
   const [analysis, setAnalysis] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { checkTokenAvailability, consumeTokens } = useTokens();
+
+  const TOKENS_REQUIRED = 8;
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -45,6 +51,9 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
 
     setIsLoading(true);
     try {
+      // 토큰 차감
+      await consumeTokens('saju_analysis', TOKENS_REQUIRED);
+
       const { data, error } = await supabase.functions.invoke('saju-analyzer', {
         body: formData
       });
@@ -59,13 +68,21 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
         title: "사주 분석 완료",
         description: "AI가 사주를 분석했습니다.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Saju analysis error:', error);
-      toast({
-        title: "분석 실패",
-        description: "사주 분석 중 오류가 발생했습니다.",
-        variant: "destructive"
-      });
+      if (error.message?.includes('토큰')) {
+        toast({
+          title: "토큰 부족",
+          description: error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "분석 실패",
+          description: "사주 분석 중 오류가 발생했습니다.",
+          variant: "destructive"
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -81,6 +98,44 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
     });
     setAnalysis("");
   };
+
+  // 토큰이 부족한 경우 TokenGate 표시
+  if (!checkTokenAvailability(TOKENS_REQUIRED)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-900 via-red-900 to-yellow-800 relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-yellow-400/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-32 right-16 w-80 h-80 bg-red-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/3 w-72 h-72 bg-orange-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
+        </div>
+        
+        <div className="relative z-10 container mx-auto px-6 pt-8 pb-16">
+          <div className="flex items-center justify-between mb-8">
+            <Button 
+              variant="ghost" 
+              onClick={onBack}
+              className="flex items-center gap-2 text-white hover:bg-white/10"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              뒤로가기
+            </Button>
+          </div>
+          
+          <TokenGate 
+            tokensRequired={TOKENS_REQUIRED}
+            featureName="AI 사주 분석"
+            onProceed={() => {}}
+          >
+            <div className="text-center space-y-2">
+              <p className="text-sm text-muted-foreground">
+                전통 사주학과 AI 기술을 결합하여 정확한 사주 분석을 제공합니다.
+              </p>
+            </div>
+          </TokenGate>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-900 via-red-900 to-yellow-800 relative overflow-hidden">
@@ -114,6 +169,12 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
             <p className="text-lg text-orange-200">
               AI가 당신의 사주를 분석하여 운세를 알려드립니다
             </p>
+            <div className="flex items-center justify-center gap-2 mt-2">
+              <Badge variant="secondary" className="flex items-center gap-1">
+                <Coins className="w-3 h-3" />
+                {TOKENS_REQUIRED} 토큰 필요
+              </Badge>
+            </div>
           </div>
           
           <div className="w-20" />

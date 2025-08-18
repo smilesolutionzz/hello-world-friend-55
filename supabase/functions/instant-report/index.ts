@@ -1,43 +1,81 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-// 환경변수 확인
-console.log('🔍 환경변수 확인 중...');
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-console.log('🔑 API 키 존재:', openAIApiKey ? '✅ 있음' : '❌ 없음');
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 serve(async (req) => {
+  // CORS preflight 처리
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { message } = await req.json();
+    console.log('🚀 즉시 리포팅 요청 수신');
     
-    console.log('🚀 즉시 리포팅 시작');
-    console.log('📝 받은 메시지:', message);
-    console.log('🔑 API 키 확인:', openAIApiKey ? '설정됨' : '없음');
+    // 환경변수 직접 확인
+    const apiKey = Deno.env.get('OPENAI_API_KEY');
+    console.log('🔑 API 키 상태:', apiKey ? `설정됨 (길이: ${apiKey.length})` : '설정되지 않음');
+    
+    // 요청 본문 파싱
+    const { message } = await req.json();
+    console.log('📝 메시지 길이:', message?.length || 0);
 
-    if (!openAIApiKey) {
-      console.error('❌ OpenAI API 키가 설정되지 않음');
-      throw new Error('OpenAI API key not configured');
+    // API 키 체크
+    if (!apiKey) {
+      console.error('❌ OpenAI API 키가 없습니다');
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'API key not found',
+        report: '🔍 **설정 오류**\n\nOpenAI API 키가 설정되지 않았습니다.\n관리자에게 문의해주세요.',
+        riskLevel: 'medium',
+        needsExpertConsultation: true,
+        timestamp: new Date().toISOString()
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200
+      });
     }
 
+    // 메시지 검증
     if (!message || message.trim().length < 10) {
-      console.error('❌ 메시지가 너무 짧음');
-      throw new Error('Message too short');
+      console.error('❌ 메시지가 너무 짧습니다');
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Message too short',
+        report: '입력한 내용이 너무 짧습니다. 더 자세히 작성해주세요.',
+        riskLevel: 'low',
+        needsExpertConsultation: false,
+        timestamp: new Date().toISOString()
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200
+      });
     }
 
-    const systemPrompt = `당신은 육아 및 발달 전문 상담가입니다. 
-부모의 고민을 듣고 따뜻하고 전문적인 조언을 제공하세요.
-항상 "참고용"임을 명시하고, 필요시 전문가 상담을 권하세요.`;
+    console.log('🤖 OpenAI API 호출 시작');
 
-    const userPrompt = `다음 육아 고민에 대해 전문적이고 따뜻한 조언을 해주세요:
+    // OpenAI API 호출
+    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: `당신은 육아 및 발달 전문 상담가입니다. 
+부모의 고민을 듣고 따뜻하고 전문적인 조언을 제공하세요.
+항상 "참고용"임을 명시하고, 필요시 전문가 상담을 권하세요.`
+          },
+          {
+            role: 'user',
+            content: `다음 육아 고민에 대해 전문적이고 따뜻한 조언을 해주세요:
 
 "${message}"
 
@@ -58,46 +96,52 @@ serve(async (req) => {
 💝 **격려의 말**
 따뜻한 격려와 지지의 메시지를 전해주세요.
 
-⚠️ 이는 참고용 정보이며 의학적 진단이 아닙니다. 필요시 전문가 상담을 받으시기 바랍니다.`;
-
-    console.log('🤖 OpenAI API 호출 시작');
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
+⚠️ 이는 참고용 정보이며 의학적 진단이 아닙니다. 필요시 전문가 상담을 받으시기 바랍니다.`
+          }
         ],
         max_tokens: 1000,
         temperature: 0.8
       }),
     });
 
-    console.log('📡 OpenAI 응답 상태:', response.status);
+    console.log('📡 OpenAI 응답 상태:', openaiResponse.status);
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error('❌ OpenAI API 오류:', errorData);
-      throw new Error(`OpenAI API error: ${response.status}`);
+    if (!openaiResponse.ok) {
+      const errorText = await openaiResponse.text();
+      console.error('❌ OpenAI API 오류:', errorText);
+      
+      return new Response(JSON.stringify({
+        success: false,
+        error: `OpenAI API error: ${openaiResponse.status}`,
+        report: '🔍 **일시적 오류**\n\nAI 분석 서비스에 일시적인 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.',
+        riskLevel: 'medium',
+        needsExpertConsultation: true,
+        timestamp: new Date().toISOString()
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200
+      });
     }
 
-    const data = await response.json();
-    console.log('✅ OpenAI 응답 성공');
-
+    const data = await openaiResponse.json();
     const report = data.choices?.[0]?.message?.content;
-    
+
     if (!report) {
-      console.error('❌ 빈 응답');
-      throw new Error('Empty response from OpenAI');
+      console.error('❌ 빈 응답 받음');
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Empty response',
+        report: 'AI 분석 결과가 생성되지 않았습니다. 다시 시도해주세요.',
+        riskLevel: 'medium',
+        needsExpertConsultation: true,
+        timestamp: new Date().toISOString()
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200
+      });
     }
 
-    console.log('📄 생성된 리포트 길이:', report.length);
+    console.log('✅ AI 분석 성공');
 
     // 위험 키워드 체크
     const riskKeywords = ['자살', '자해', '죽고싶다', '극심한', '심각한'];
@@ -106,47 +150,29 @@ serve(async (req) => {
       report.toLowerCase().includes(keyword)
     );
 
-    const result = {
+    return new Response(JSON.stringify({
       success: true,
       report: report,
       riskLevel: hasRisk ? 'high' : 'low',
       needsExpertConsultation: hasRisk || message.length > 200,
       timestamp: new Date().toISOString()
-    };
-
-    console.log('🎉 즉시 리포팅 완료');
-
-    return new Response(JSON.stringify(result), {
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error('💥 즉시 리포팅 오류:', error.message);
-
-    const errorResult = {
+    console.error('💥 예상치 못한 오류:', error);
+    
+    return new Response(JSON.stringify({
       success: false,
       error: error.message,
-      report: `🔍 **분석 중 오류 발생**
-
-죄송합니다. 현재 일시적인 기술적 문제로 AI 분석을 완료할 수 없습니다.
-
-💡 **임시 조치**
-- 잠시 후 다시 시도해주세요
-- 지속적인 문제 발생 시 고객센터로 문의해주세요
-
-🎯 **긴급 상황 시**
-- 응급상황: 119
-- 정신건강 위기상담: 1577-0199
-
-⚠️ 기술적 문제로 인한 일시적 서비스 제한입니다.`,
+      report: '🔍 **기술적 오류**\n\n예상치 못한 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.',
       riskLevel: 'medium',
       needsExpertConsultation: true,
       timestamp: new Date().toISOString()
-    };
-
-    return new Response(JSON.stringify(errorResult), {
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 200 // 클라이언트가 에러를 처리할 수 있도록 200으로 반환
+      status: 200
     });
   }
 });

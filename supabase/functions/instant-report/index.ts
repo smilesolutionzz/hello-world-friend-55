@@ -1,7 +1,10 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
+// 환경변수 확인
+console.log('🔍 환경변수 확인 중...');
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+console.log('🔑 API 키 존재:', openAIApiKey ? '✅ 있음' : '❌ 없음');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',

@@ -33,7 +33,7 @@ const TrustIndicators = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">신뢰할 수 있는 이유</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto leading-[1.6] text-center">
             데이터와 전문성을 바탕으로 한 검증된 정신건강 케어 플랫폼
           </p>
         </div>
@@ -54,7 +54,7 @@ const TrustIndicators = () => {
         {/* Partnership CTA */}
         <div className="mt-16 bg-gradient-to-r from-primary/10 to-accent/10 rounded-3xl p-8 text-center">
           <h3 className="text-2xl font-bold mb-4">함께 성장하는 파트너십</h3>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto leading-[1.6] text-center">
             의료기관, 기업, 상담센터와의 제휴를 통해 더 나은 정신건강 서비스를 만들어갑니다
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

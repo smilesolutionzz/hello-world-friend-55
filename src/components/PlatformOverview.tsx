@@ -10,7 +10,7 @@ const PlatformOverview = () => {
             <span className="text-brand-gradient">AI하이라이트프로</span>와 함께하는
             <br />정신건강 케어의 새로운 패러다임
           </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-[1.6] text-center">
             데이터 기반 정신건강 분석과 AI 상담을 통해 개인, 기업, 의료기관이 
             함께 만들어가는 통합 정신건강 플랫폼입니다
           </p>
@@ -23,7 +23,7 @@ const PlatformOverview = () => {
               <Brain className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-xl font-bold mb-2">AI 기반 정밀 분석</h3>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground max-w-sm mx-auto leading-[1.6] text-center">
               최신 AI 기술로 우울증, 불안장애 등을 정확하게 분석하고 개인 맞춤형 솔루션을 제공합니다
             </p>
           </div>
@@ -33,7 +33,7 @@ const PlatformOverview = () => {
               <Shield className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-xl font-bold mb-2">안전한 데이터 관리</h3>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground max-w-sm mx-auto leading-[1.6] text-center">
               의료진급 보안으로 개인정보를 보호하며, 투명한 데이터 활용으로 신뢰를 구축합니다
             </p>
           </div>
@@ -43,7 +43,7 @@ const PlatformOverview = () => {
               <Zap className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-xl font-bold mb-2">즉시 상담 연결</h3>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground max-w-sm mx-auto leading-[1.6] text-center">
               24시간 AI 상담부터 전문 상담사 매칭까지, 필요한 순간 바로 도움을 받을 수 있습니다
             </p>
           </div>

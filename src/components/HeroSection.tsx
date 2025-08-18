@@ -36,7 +36,7 @@ const HeroSection = () => {
         <div className="mt-12 text-center">
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200">
             <h3 className="text-xl sm:text-2xl font-bold mb-4">더 정확한 분석이 필요하신가요?</h3>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto leading-[1.6] text-center">
               프리미엄 플랜으로 전문가 수준의 AI 분석과 개인 맞춤 상담을 받아보세요
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -42,7 +42,7 @@ const VideoShowcase = () => {
             <br />HIGHLIGHT PRO
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-[1.6] text-center">
-            실제 이용자들의 경험과 AIH아나운서를 통해 우리 플랫폼이 어떻게 도움이 되는지
+            이용자들의 경험과 AIH아나운서를 통해 우리 플랫폼이 어떻게 도움이 되는지
             <br />확인해보세요
           </p>
         </div>

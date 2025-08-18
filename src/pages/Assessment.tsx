@@ -12,6 +12,8 @@ import PanicTestForm from "@/components/assessment/PanicTestForm";
 import PanicTestResult from "@/components/assessment/PanicTestResult";
 import DepressionTestForm from "@/components/assessment/DepressionTestForm";
 import DepressionTestResult from "@/components/assessment/DepressionTestResult";
+import AdhdTestForm from "@/components/assessment/AdhdTestForm";
+import AdhdTestResult from "@/components/assessment/AdhdTestResult";
 import LegalSafetyNotice from "@/components/LegalSafetyNotice";
 import AnalysisScreen from "@/components/analysis/AnalysisScreen";
 import ExpertMatching from "@/components/analysis/ExpertMatching";
@@ -19,21 +21,22 @@ import ConsultationRoom from "@/components/consultation/ConsultationRoom";
 import { ExpertProfile } from "@/types/assessment";
 
 const Assessment = () => {
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'child-result' | 'infant-result' | 'adult-result'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | null>(null);
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
   const [languageResults, setLanguageResults] = useState<{answers: number[], total: number, average: number, ageGroup: string} | null>(null);
   const [panicResults, setPanicResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
   const [depressionResults, setDepressionResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
+  const [adhdResults, setAdhdResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
   const [childResults, setChildResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, gameScores: Record<string, number>} | null>(null);
   const [infantResults, setInfantResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, categoryScores: Record<string, number>} | null>(null);
   const [adultResults, setAdultResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, categoryScores: Record<string, number>} | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
 
-  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression') => {
+  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd') => {
     setTestType(type);
     setCurrentStep('legal-notice');
   };
@@ -51,6 +54,8 @@ const Assessment = () => {
       setCurrentStep('panic-test');
     } else if (testType === 'depression') {
       setCurrentStep('depression-test');
+    } else if (testType === 'adhd') {
+      setCurrentStep('adhd-test');
     } else {
       setCurrentStep('assessment');
     }
@@ -132,6 +137,12 @@ const Assessment = () => {
     setCurrentStep('depression-result');
   };
 
+  const handleAdhdTestComplete = (results: {answers: number[], total: number, average: number, ageGroup: string, severity: string}) => {
+    console.log('ADHD Test Results:', results);
+    setAdhdResults(results);
+    setCurrentStep('adhd-result');
+  };
+
   const handleAnalysisComplete = (analysis: string) => {
     setAnalysisResult(analysis);
     setCurrentStep('matching');
@@ -149,7 +160,7 @@ const Assessment = () => {
   };
 
   const handleBack = () => {
-    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result') {
+    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result') {
       // 분석/매칭/상담/결과 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
@@ -162,6 +173,7 @@ const Assessment = () => {
       setLanguageResults(null);
       setPanicResults(null);
       setDepressionResults(null);
+      setAdhdResults(null);
       setAnalysisResult("");
       setSelectedExpert(null);
     } else if (currentStep === 'age-select') {
@@ -225,7 +237,7 @@ const Assessment = () => {
             </p>
           </div>
           
-          <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
             <div 
               className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
               onClick={() => handleTestTypeSelect('psychological')}
@@ -275,6 +287,19 @@ const Assessment = () => {
                 <li>• 표준화된 21문항</li>
                 <li>• AI 참고 분석</li>
                 <li>• 전문적 해석 제공</li>
+              </ul>
+            </div>
+
+            <div 
+              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
+              onClick={() => handleTestTypeSelect('adhd')}
+            >
+              <h3 className="text-2xl font-bold text-brand-gradient mb-4">ADHD 자가체크</h3>
+              <p className="text-muted-foreground mb-4">연령별 ADHD 증상 확인 (참고용)</p>
+              <ul className="space-y-2 text-sm">
+                <li>• 아동청소년/성인 구분</li>
+                <li>• DSM-5 기반 18문항</li>
+                <li>• 증상 영역별 분석</li>
               </ul>
             </div>
           </div>
@@ -415,6 +440,38 @@ const Assessment = () => {
         <div className="container mx-auto max-w-4xl">
           <AdultAssessmentResult 
             results={adultResults}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'adhd-test') {
+    const adhdAgeGroup = selectedAgeGroup === 'infant' ? 'child' : selectedAgeGroup === 'adult' ? 'adult' : 'child';
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">ADHD 자가체크 (3분)</h1>
+            <p className="text-muted-foreground">DSM-5 기반 18문항 (참고용)</p>
+          </div>
+          <AdhdTestForm 
+            ageGroup={adhdAgeGroup}
+            onComplete={handleAdhdTestComplete}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'adhd-result' && adhdResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <AdhdTestResult 
+            results={adhdResults}
             onBack={handleBack}
           />
         </div>

@@ -5,7 +5,7 @@ import { Baby, GraduationCap, Briefcase, Heart } from "lucide-react";
 
 interface AgeSelectorProps {
   onAgeGroupSelect: (ageGroup: 'infant' | 'child' | 'adult', age: number) => void;
-  testType?: 'psychological' | 'language' | 'panic' | 'depression' | null;
+  testType?: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | null;
 }
 
 const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
@@ -75,10 +75,10 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
           
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             <span className="block text-foreground mb-2">
-              {testType === 'language' ? '언어발달 자가체크' : testType === 'panic' ? '불안감 수준 확인' : testType === 'depression' ? '우울감 자가체크' : '3분으로 시작하는'}
+              {testType === 'language' ? '언어발달 자가체크' : testType === 'panic' ? '불안감 수준 확인' : testType === 'depression' ? '우울감 자가체크' : testType === 'adhd' ? 'ADHD 자가체크' : '3분으로 시작하는'}
             </span>
             <span className="block text-brand-gradient">
-              {testType === 'language' ? '연령별 맞춤 확인' : testType === 'panic' ? '자가체크 (참고용)' : testType === 'depression' ? '참고용 체크' : '마음상태 체크'}
+              {testType === 'language' ? '연령별 맞춤 확인' : testType === 'panic' ? '자가체크 (참고용)' : testType === 'depression' ? '참고용 체크' : testType === 'adhd' ? '연령별 체크 (참고용)' : '마음상태 체크'}
             </span>
           </h1>
           
@@ -89,6 +89,8 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
               ? '연령대를 선택하여 불안감 수준을 체크해보세요 (참고용)'
               : testType === 'depression'
               ? '연령대를 선택하여 우울감 수준을 확인해보세요 (참고용)'
+              : testType === 'adhd'
+              ? '연령대를 선택하여 ADHD 증상을 체크해보세요 (참고용)'
               : '연령에 맞는 마음상태 체크로 참고 분석을 받아보세요'
             }
           </p>
@@ -97,10 +99,11 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
         {/* Age Group Selection */}
         {!selectedGroup && (
           <div className="max-w-6xl mx-auto">
-            <div className={`grid ${testType === 'language' ? 'md:grid-cols-2' : (testType === 'panic' || testType === 'depression') ? 'md:grid-cols-1 max-w-2xl mx-auto' : 'md:grid-cols-3'} gap-8`}>
+            <div className={`grid ${testType === 'language' ? 'md:grid-cols-2' : (testType === 'panic' || testType === 'depression') ? 'md:grid-cols-1 max-w-2xl mx-auto' : testType === 'adhd' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-8`}>
               {ageGroups.filter(group => {
                 if (testType === 'language') return group.key !== 'adult';
                 if (testType === 'panic' || testType === 'depression') return group.key === 'adult';
+                if (testType === 'adhd') return group.key !== 'infant';
                 return true;
               }).map((group) => {
                 const IconComponent = group.icon;

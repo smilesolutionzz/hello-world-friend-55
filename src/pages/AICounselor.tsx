@@ -37,7 +37,7 @@ const AICounselor = () => {
     const welcomeMessage: ChatMessage = {
       id: 'welcome',
       sender: 'ai',
-      content: `안녕하세요! 저는 24시간 AI 심리상담사입니다. 🤗
+      content: `안녕하세요! 저는 24시간 AIH 심리상담사입니다. 🤗
 
 언제든지 마음 편히 이야기해주세요. 제가 여기 있어요.
 
@@ -197,7 +197,7 @@ const AICounselor = () => {
             </div>
           </div>
           
-          <h1 className="text-3xl font-bold text-foreground mb-2">24시간 AI 심리상담사</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">24시간 AIH 심리상담사</h1>
           <p className="text-muted-foreground mb-4">언제든지 안전하고 따뜻한 상담을 받으세요</p>
           
           <div className="flex items-center justify-center gap-4 text-sm">

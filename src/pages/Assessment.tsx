@@ -3,6 +3,9 @@ import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
 import ChildAssessment from "@/components/assessment/ChildAssessment";
 import AdultAssessment from "@/components/assessment/AdultAssessment";
+import InfantAssessmentResult from "@/components/assessment/InfantAssessmentResult";
+import ChildAssessmentResult from "@/components/assessment/ChildAssessmentResult";
+import AdultAssessmentResult from "@/components/assessment/AdultAssessmentResult";
 import LanguageTestForm from "@/components/assessment/LanguageTestForm";
 import LanguageTestResult from "@/components/assessment/LanguageTestResult";
 import PanicTestForm from "@/components/assessment/PanicTestForm";
@@ -16,7 +19,7 @@ import ConsultationRoom from "@/components/consultation/ConsultationRoom";
 import { ExpertProfile } from "@/types/assessment";
 
 const Assessment = () => {
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result'>('test-type');
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'child-result' | 'infant-result' | 'adult-result'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
@@ -24,6 +27,9 @@ const Assessment = () => {
   const [languageResults, setLanguageResults] = useState<{answers: number[], total: number, average: number, ageGroup: string} | null>(null);
   const [panicResults, setPanicResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
   const [depressionResults, setDepressionResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
+  const [childResults, setChildResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, gameScores: Record<string, number>} | null>(null);
+  const [infantResults, setInfantResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, categoryScores: Record<string, number>} | null>(null);
+  const [adultResults, setAdultResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, categoryScores: Record<string, number>} | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
 
@@ -53,7 +59,59 @@ const Assessment = () => {
   const handleAssessmentComplete = (results: Record<string, number>) => {
     console.log('Assessment Results:', results);
     setAssessmentResults(results);
-    setCurrentStep('analysis');
+    
+    // 결과 형식에 따라 적절한 단계로 이동
+    if (selectedAgeGroup === 'child') {
+      // 아동청소년 게임검사 결과 처리
+      const gameScores = results;
+      const total = Object.values(gameScores).reduce((sum, score) => sum + score, 0);
+      const average = total / Object.keys(gameScores).length;
+      
+      const childResults = {
+        answers: results,
+        total,
+        average,
+        ageGroup: `${selectedAge}세`,
+        gameScores
+      };
+      
+      setChildResults(childResults);
+      setCurrentStep('child-result');
+    } else if (selectedAgeGroup === 'infant') {
+      // 영유아 발달검사 결과 처리
+      const categoryScores = results;
+      const total = Object.values(categoryScores).reduce((sum, score) => sum + score, 0);
+      const average = total / Object.keys(categoryScores).length;
+      
+      const infantResults = {
+        answers: results,
+        total,
+        average,
+        ageGroup: `${selectedAge}세`,
+        categoryScores
+      };
+      
+      setInfantResults(infantResults);
+      setCurrentStep('infant-result');
+    } else if (selectedAgeGroup === 'adult') {
+      // 성인 심리평가 결과 처리
+      const categoryScores = results;
+      const total = Object.values(categoryScores).reduce((sum, score) => sum + score, 0);
+      const average = total / Object.keys(categoryScores).length;
+      
+      const adultResults = {
+        answers: results,
+        total,
+        average,
+        ageGroup: `${selectedAge}세`,
+        categoryScores
+      };
+      
+      setAdultResults(adultResults);
+      setCurrentStep('adult-result');
+    } else {
+      setCurrentStep('analysis');
+    }
   };
 
   const handleLanguageTestComplete = (results: {answers: number[], total: number, average: number, ageGroup: string}) => {
@@ -91,8 +149,8 @@ const Assessment = () => {
   };
 
   const handleBack = () => {
-    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result') {
-      // 분석/매칭/상담/언어결과 단계에서는 처음부터 다시 시작
+    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result') {
+      // 분석/매칭/상담/결과 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
     } else if (currentStep === 'legal-notice') {
@@ -318,6 +376,45 @@ const Assessment = () => {
         <div className="container mx-auto max-w-4xl">
           <PanicTestResult 
             results={panicResults}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'child-result' && childResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <ChildAssessmentResult 
+            results={childResults}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'infant-result' && infantResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <InfantAssessmentResult 
+            results={infantResults}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'adult-result' && adultResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <AdultAssessmentResult 
+            results={adultResults}
             onBack={handleBack}
           />
         </div>

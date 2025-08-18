@@ -42,7 +42,9 @@ const ChildAssessment = ({ age, onComplete, onBack }: ChildAssessmentProps) => {
       // 게임 종료
       completeGame();
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [isGameActive, gameTimer, currentGame.duration]);
 
   const startGame = () => {
@@ -78,7 +80,8 @@ const ChildAssessment = ({ age, onComplete, onBack }: ChildAssessmentProps) => {
 
   const calculateGameScore = () => {
     // 기본 점수 계산 (실제 게임에서는 더 복잡한 로직 적용)
-    const baseScore = Math.min(100, (gameScore / gameTimer) * 100);
+    if (gameTimer === 0) return 0;
+    const baseScore = Math.min(100, Math.max(0, (gameScore * 100) / Math.max(1, gameTimer * 2)));
     return Math.round(baseScore);
   };
 

@@ -639,6 +639,226 @@ export const financialPsychologyAssessmentQuestions = {
   ]
 };
 
+// 7. 청소년 심리적응 종합검사 (Teen MMPI Style Assessment)
+export const teenMmpiAssessmentQuestions = {
+  emotional_problems: [
+    {
+      id: "teen_mmpi_ep01",
+      text: "자주 우울하고 슬픈 기분이 듭니다",
+      category: "emotional_problems",
+      subcategory: "depression"
+    },
+    {
+      id: "teen_mmpi_ep02", 
+      text: "미래에 대해 막연한 불안감을 느낍니다",
+      category: "emotional_problems",
+      subcategory: "anxiety"
+    },
+    {
+      id: "teen_mmpi_ep03",
+      text: "쉽게 화가 나고 감정 조절이 어렵습니다",
+      category: "emotional_problems",
+      subcategory: "anger_control"
+    },
+    {
+      id: "teen_mmpi_ep04",
+      text: "스트레스를 받으면 몸이 아프거나 두통이 생깁니다",
+      category: "emotional_problems",
+      subcategory: "somatic_symptoms"
+    }
+  ],
+  behavioral_problems: [
+    {
+      id: "teen_mmpi_bp01",
+      text: "규칙이나 지시사항을 따르기 어렵습니다",
+      category: "behavioral_problems", 
+      subcategory: "rule_breaking"
+    },
+    {
+      id: "teen_mmpi_bp02",
+      text: "친구들과 자주 다투거나 갈등이 생깁니다",
+      category: "behavioral_problems",
+      subcategory: "aggression"
+    },
+    {
+      id: "teen_mmpi_bp03",
+      text: "충동적으로 행동해서 후회하는 경우가 많습니다",
+      category: "behavioral_problems",
+      subcategory: "impulsivity"
+    },
+    {
+      id: "teen_mmpi_bp04",
+      text: "거짓말을 하거나 남을 속이는 일이 있습니다",
+      category: "behavioral_problems",
+      subcategory: "deception"
+    }
+  ],
+  social_adaptation: [
+    {
+      id: "teen_mmpi_sa01",
+      text: "새로운 환경에 적응하는 것이 어렵습니다",
+      category: "social_adaptation",
+      subcategory: "environmental_adaptation"
+    },
+    {
+      id: "teen_mmpi_sa02",
+      text: "또래 친구들과 어울리는 것이 불편합니다",
+      category: "social_adaptation",
+      subcategory: "peer_relationships"
+    },
+    {
+      id: "teen_mmpi_sa03", 
+      text: "학교나 단체 활동에 참여하기를 꺼립니다",
+      category: "social_adaptation",
+      subcategory: "group_participation"
+    },
+    {
+      id: "teen_mmpi_sa04",
+      text: "다른 사람의 감정이나 상황을 이해하기 어렵습니다",
+      category: "social_adaptation",
+      subcategory: "empathy"
+    }
+  ],
+  identity_development: [
+    {
+      id: "teen_mmpi_id01",
+      text: "내가 누구인지, 무엇을 좋아하는지 잘 모르겠습니다",
+      category: "identity_development",
+      subcategory: "self_identity"
+    },
+    {
+      id: "teen_mmpi_id02",
+      text: "미래에 대한 구체적인 계획이나 목표가 없습니다",
+      category: "identity_development",
+      subcategory: "future_planning"
+    },
+    {
+      id: "teen_mmpi_id03",
+      text: "부모님이나 어른들과 의견 차이로 갈등이 많습니다",
+      category: "identity_development",
+      subcategory: "authority_conflict"
+    },
+    {
+      id: "teen_mmpi_id04",
+      text: "나만의 가치관이나 신념을 찾기 어렵습니다",
+      category: "identity_development",
+      subcategory: "value_formation"
+    }
+  ]
+};
+
+// 8. 청소년 행동문제 선별검사 (Teen CBCL Style Assessment)  
+export const teenCbclAssessmentQuestions = {
+  internalizing_problems: [
+    {
+      id: "teen_cbcl_ip01",
+      text: "혼자 있는 시간이 많고 외로움을 자주 느낍니다",
+      category: "internalizing_problems",
+      subcategory: "withdrawal"
+    },
+    {
+      id: "teen_cbcl_ip02",
+      text: "작은 일에도 과도하게 걱정하고 불안해합니다",
+      category: "internalizing_problems", 
+      subcategory: "anxiety"
+    },
+    {
+      id: "teen_cbcl_ip03",
+      text: "이유 없이 기분이 가라앉고 의욕이 없습니다",
+      category: "internalizing_problems",
+      subcategory: "depression"
+    },
+    {
+      id: "teen_cbcl_ip04",
+      text: "몸이 아프다고 호소하지만 특별한 원인이 없습니다",
+      category: "internalizing_problems",
+      subcategory: "somatic_complaints"
+    }
+  ],
+  externalizing_problems: [
+    {
+      id: "teen_cbcl_ep01",
+      text: "화가 나면 물건을 던지거나 부수는 행동을 합니다",
+      category: "externalizing_problems",
+      subcategory: "aggressive_behavior"
+    },
+    {
+      id: "teen_cbcl_ep02",
+      text: "어른들의 말을 듣지 않고 반항적으로 행동합니다",
+      category: "externalizing_problems",
+      subcategory: "oppositional_behavior"
+    },
+    {
+      id: "teen_cbcl_ep03",
+      text: "다른 사람의 물건을 허락 없이 가져가는 일이 있습니다",
+      category: "externalizing_problems",
+      subcategory: "conduct_problems"
+    },
+    {
+      id: "teen_cbcl_ep04",
+      text: "지켜야 할 약속이나 규칙을 자주 어깁니다",
+      category: "externalizing_problems",
+      subcategory: "rule_breaking"
+    }
+  ],
+  attention_problems: [
+    {
+      id: "teen_cbcl_ap01",
+      text: "한 가지 일에 오래 집중하기가 어렵습니다",
+      category: "attention_problems",
+      subcategory: "concentration"
+    },
+    {
+      id: "teen_cbcl_ap02",
+      text: "수업 시간에 딴생각을 하거나 멍하게 있는 경우가 많습니다",
+      category: "attention_problems",
+      subcategory: "classroom_attention"
+    },
+    {
+      id: "teen_cbcl_ap03",
+      text: "가만히 앉아있지 못하고 계속 움직이려고 합니다",
+      category: "attention_problems",
+      subcategory: "hyperactivity"
+    },
+    {
+      id: "teen_cbcl_ap04",
+      text: "중요한 물건을 자주 잃어버리거나 깜빡합니다",
+      category: "attention_problems", 
+      subcategory: "forgetfulness"
+    }
+  ],
+  social_competence: [
+    {
+      id: "teen_cbcl_sc01",
+      text: "친구들과 함께 하는 활동에 적극적으로 참여합니다",
+      category: "social_competence",
+      subcategory: "peer_interaction",
+      reverse: true
+    },
+    {
+      id: "teen_cbcl_sc02",
+      text: "갈등 상황에서 평화적으로 해결하려고 노력합니다",
+      category: "social_competence",
+      subcategory: "conflict_resolution",
+      reverse: true
+    },
+    {
+      id: "teen_cbcl_sc03",
+      text: "다른 사람의 기분을 잘 알아차리고 배려합니다",
+      category: "social_competence",
+      subcategory: "empathy",
+      reverse: true
+    },
+    {
+      id: "teen_cbcl_sc04",
+      text: "학교나 단체에서 리더 역할을 맡는 경우가 있습니다",
+      category: "social_competence",
+      subcategory: "leadership",
+      reverse: true
+    }
+  ]
+};
+
 // 각 검사별 표시명과 설명
 // 본 검사는 원저작과는 무관한 창작형 검사입니다.
 export const premiumAssessmentInfo = {
@@ -694,6 +914,24 @@ export const premiumAssessmentInfo = {
     duration: "약 5-7분", 
     questions_count: 16,
     premium_features: ["금전 태도 심층 분석", "소비 패턴 진단", "재정 불안 평가", "개인 맞춤 재정 관리 방향"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
+  },
+  teenMmpi: {
+    title: "청소년 심리적응 종합검사",
+    subtitle: "창작형 MMPI 스타일 청소년 전문 검사",
+    description: "정서문제, 행동문제, 사회적응, 정체성발달의 4개 영역으로 청소년의 심리적 적응을 종합 분석합니다",
+    duration: "약 6-8분",
+    questions_count: 16,
+    premium_features: ["청소년 심리적응 4영역 분석", "정서행동 문제 조기 발견", "또래관계 및 사회적응 평가", "개별 맞춤 상담 방향"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
+  },
+  teenCbcl: {
+    title: "청소년 행동문제 선별검사", 
+    subtitle: "창작형 CBCL 스타일 행동평가 척도",
+    description: "내재화문제, 외현화문제, 주의문제, 사회적능력의 4개 영역으로 청소년 행동문제를 정밀 선별합니다",
+    duration: "약 6-8분",
+    questions_count: 16, 
+    premium_features: ["내재화/외현화 문제 구분 진단", "ADHD 경향성 평가", "사회적 능력 발달 분석", "행동문제 조기 중재 방안"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   }
 };

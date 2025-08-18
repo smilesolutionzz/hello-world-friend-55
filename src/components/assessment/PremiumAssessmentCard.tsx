@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, Brain, Briefcase, Heart, Crown, CheckCircle, DollarSign } from "lucide-react";
+import { Clock, Users, Brain, Briefcase, Heart, Crown, CheckCircle, DollarSign, UserCheck, AlertTriangle } from "lucide-react";
 
 interface PremiumAssessmentCardProps {
   assessmentKey: string;
@@ -26,7 +26,9 @@ const PremiumAssessmentCard = ({ assessmentKey, info, onStart, isSubscribed }: P
       cognitive: Brain,
       work_stress: Briefcase,
       relationship: Heart,
-      financialPsychology: DollarSign
+      financialPsychology: DollarSign,
+      teenMmpi: UserCheck,
+      teenCbcl: AlertTriangle
     };
     return icons[key as keyof typeof icons] || Brain;
   };
@@ -38,7 +40,9 @@ const PremiumAssessmentCard = ({ assessmentKey, info, onStart, isSubscribed }: P
       cognitive: "from-green-500 to-emerald-600",
       work_stress: "from-orange-500 to-red-600",
       relationship: "from-pink-500 to-rose-600",
-      financialPsychology: "from-yellow-500 to-amber-600"
+      financialPsychology: "from-yellow-500 to-amber-600",
+      teenMmpi: "from-indigo-500 to-purple-600",
+      teenCbcl: "from-red-500 to-pink-600"
     };
     return gradients[key as keyof typeof gradients] || "from-gray-500 to-gray-600";
   };

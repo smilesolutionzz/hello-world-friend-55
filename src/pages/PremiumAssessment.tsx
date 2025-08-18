@@ -12,7 +12,9 @@ import {
   cognitiveAssessmentQuestions,
   workStressAssessmentQuestions,
   relationshipAssessmentQuestions,
-  financialPsychologyAssessmentQuestions
+  financialPsychologyAssessmentQuestions,
+  teenMmpiAssessmentQuestions,
+  teenCbclAssessmentQuestions
 } from "@/data/premiumAssessmentQuestions";
 
 const PremiumAssessment = () => {
@@ -28,7 +30,9 @@ const PremiumAssessment = () => {
     cognitive: Object.values(cognitiveAssessmentQuestions).flat(),
     work_stress: Object.values(workStressAssessmentQuestions).flat(),
     relationship: Object.values(relationshipAssessmentQuestions).flat(),
-    financialPsychology: Object.values(financialPsychologyAssessmentQuestions).flat()
+    financialPsychology: Object.values(financialPsychologyAssessmentQuestions).flat(),
+    teenMmpi: Object.values(teenMmpiAssessmentQuestions).flat(),
+    teenCbcl: Object.values(teenCbclAssessmentQuestions).flat()
   };
 
   const handleStartAssessment = (assessmentKey: string) => {
@@ -124,7 +128,7 @@ const PremiumAssessment = () => {
               </div>
               <div className="grid md:grid-cols-4 gap-6 text-center">
                 <div>
-                  <div className="text-2xl font-bold mb-1">6가지</div>
+                  <div className="text-2xl font-bold mb-1">8가지</div>
                   <div className="text-sm opacity-90">전문 검사</div>
                 </div>
                 <div>

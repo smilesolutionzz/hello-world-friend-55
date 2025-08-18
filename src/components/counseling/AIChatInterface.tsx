@@ -34,9 +34,6 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // For now, skip family_id requirement since column doesn't exist
-      console.log('Saving consultation to timeline...');
-
       await supabase
         .from('timeline_activities')
         .insert({
@@ -47,7 +44,11 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
           tags: ['AI상담', '정신건강'],
           files: [],
           actor: { role: 'user', name: user.email || '사용자' },
-          meta: { session_id: sessionId, message_count: messages.length }
+          meta: { 
+            session_id: sessionId, 
+            message_count: messages.length,
+            session_date: new Date().toISOString()
+          }
         });
 
       console.log('Consultation saved to timeline');

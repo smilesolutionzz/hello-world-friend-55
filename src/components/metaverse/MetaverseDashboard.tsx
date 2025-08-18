@@ -34,6 +34,7 @@ import {
 import { TherapyEnvironment3D, UserAvatar } from '@/components/metaverse/TherapyEnvironment3D';
 import { useMetaverseTherapy } from '@/hooks/useMetaverseTherapy';
 import { supabase } from '@/integrations/supabase/client';
+import { saveMetaverseSessionToTimeline } from '@/utils/timelineHelpers';
 
 const environmentIcons = {
   forest: TreePine,
@@ -333,7 +334,25 @@ export const MetaverseDashboard = () => {
               {videoEnabled ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
             </Button>
             
-            <Button variant="outline" onClick={() => setIsInSession(false)}>
+            <Button variant="outline" onClick={async () => {
+              // Calculate session duration and save to timeline
+              const sessionStart = new Date(Date.now() - 1800000); // 30분 전부터 시작했다고 가정
+              const duration = Math.round((new Date().getTime() - sessionStart.getTime()) / (1000 * 60));
+              
+              await saveMetaverseSessionToTimeline(
+                selectedEnvironment.name,
+                duration,
+                selectedAITherapist?.name,
+                sessionConfig.sessionType
+              );
+              
+              setIsInSession(false);
+              
+              toast({
+                title: "세션 종료",
+                description: `${duration}분간의 메타버스 치료 세션이 완료되어 타임라인에 기록되었습니다.`,
+              });
+            }}>
               세션 나가기
             </Button>
           </div>

@@ -11,6 +11,39 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Save, Send, ArrowLeft, AlertCircle } from "lucide-react";
 
+// Timeline save function
+const saveObservationToTimeline = async (sessionId: string, sessionName: string, observerName: string, sessionData: any, mediaFiles: any[], progress: number) => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    await supabase
+      .from('timeline_activities')
+      .insert({
+        family_id: 'temp-family-id',
+        type: 'NOTE',
+        title: `관찰일지: ${sessionName}`,
+        summary: `${observerName}가 작성한 관찰 기록입니다. 관찰 기간: ${sessionData.observation_period_start} ~ ${sessionData.observation_period_end}`,
+        tags: ['관찰일지', '행동관찰'],
+        files: mediaFiles.map(file => ({
+          url: file.url,
+          type: file.type === 'image' ? 'image' : 'video',
+          name: file.name
+        })),
+        actor: { role: 'user', name: observerName || user.email || '사용자' },
+        meta: { 
+          session_id: sessionId,
+          observation_items: Object.keys(sessionData).length,
+          completion_rate: Math.round(progress)
+        }
+      });
+
+    console.log('Observation saved to timeline');
+  } catch (error) {
+    console.error('Error saving observation to timeline:', error);
+  }
+};
+
 interface ObservationSessionFormProps {
   template: any;
   onSessionCreated: () => void;
@@ -122,6 +155,18 @@ const ObservationSessionForm = ({ template, onSessionCreated, onCancel }: Observ
         .single();
 
       if (error) throw error;
+
+      // Save to timeline when completed
+      if (status === 'completed' && data) {
+        await saveObservationToTimeline(
+          data.id,
+          sessionData.session_name,
+          sessionData.observer_name,
+          sessionData,
+          mediaFiles,
+          progress
+        );
+      }
 
       toast({
         title: status === 'completed' ? "관찰 완료" : "저장 완료",

@@ -2306,6 +2306,116 @@ export type Database = {
         }
         Relationships: []
       }
+      token_purchases: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          id: string
+          payment_method: string | null
+          plan_id: string | null
+          status: string
+          tokens_purchased: number
+          toss_order_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_paid: number
+          created_at?: string
+          id?: string
+          payment_method?: string | null
+          plan_id?: string | null
+          status?: string
+          tokens_purchased: number
+          toss_order_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          id?: string
+          payment_method?: string | null
+          plan_id?: string | null
+          status?: string
+          tokens_purchased?: number
+          toss_order_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "token_purchases_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "token_subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      token_subscription_plans: {
+        Row: {
+          created_at: string
+          features: Json
+          id: string
+          is_active: boolean | null
+          name: string
+          popular: boolean | null
+          price: number
+          tokens_included: number
+          updated_at: string
+          yearly_price: number
+        }
+        Insert: {
+          created_at?: string
+          features?: Json
+          id?: string
+          is_active?: boolean | null
+          name: string
+          popular?: boolean | null
+          price: number
+          tokens_included: number
+          updated_at?: string
+          yearly_price: number
+        }
+        Update: {
+          created_at?: string
+          features?: Json
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          popular?: boolean | null
+          price?: number
+          tokens_included?: number
+          updated_at?: string
+          yearly_price?: number
+        }
+        Relationships: []
+      }
+      token_usage_history: {
+        Row: {
+          created_at: string
+          feature_id: string | null
+          feature_type: string
+          id: string
+          tokens_used: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feature_id?: string | null
+          feature_type: string
+          id?: string
+          tokens_used: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feature_id?: string | null
+          feature_type?: string
+          id?: string
+          tokens_used?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_avatars: {
         Row: {
           animation_preferences: Json | null
@@ -2530,11 +2640,53 @@ export type Database = {
           },
         ]
       }
+      user_tokens: {
+        Row: {
+          created_at: string
+          current_tokens: number
+          id: string
+          last_used_at: string | null
+          total_purchased: number | null
+          total_used: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_tokens?: number
+          id?: string
+          last_used_at?: string | null
+          total_purchased?: number | null
+          total_used?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_tokens?: number
+          id?: string
+          last_used_at?: string | null
+          total_purchased?: number | null
+          total_used?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      consume_tokens: {
+        Args: {
+          p_feature_id?: string
+          p_feature_type: string
+          p_tokens_needed: number
+          p_user_id: string
+        }
+        Returns: Json
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]

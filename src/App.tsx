@@ -13,6 +13,7 @@ import Metaverse from "./pages/Metaverse";
 import Family from "./pages/Family";
 import Corporate from "./pages/Corporate";
 import Subscription from "./pages/Subscription";
+import TokenSubscription from "./pages/TokenSubscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFail from "./pages/PaymentFail";
 import Pricing from "./pages/Pricing";
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/subscription" element={<Subscription />} />
+          <Route path="/token-subscription" element={<TokenSubscription />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<Observation />} />

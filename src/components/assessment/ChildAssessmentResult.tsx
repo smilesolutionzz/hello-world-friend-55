@@ -18,12 +18,6 @@ interface ChildAssessmentResultProps {
 const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) => {
   const { total, average, ageGroup, gameScores } = results;
   
-  const chartData = Object.entries(gameScores).map(([game, score]) => ({
-    name: getShortGameName(game),
-    value: score,
-    fullMark: 100,
-  }));
-
   const getShortGameName = (gameName: string) => {
     const names = {
       "색깔 스트룹 테스트": "주의집중",
@@ -60,6 +54,12 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
       };
     }
   };
+  
+  const chartData = Object.entries(gameScores).map(([game, score]) => ({
+    name: getShortGameName(game),
+    value: score,
+    fullMark: 100,
+  }));
 
   const evaluation = getOverallEvaluation(average);
 

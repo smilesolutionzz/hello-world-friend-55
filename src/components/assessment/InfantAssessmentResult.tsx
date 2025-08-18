@@ -18,12 +18,6 @@ interface InfantAssessmentResultProps {
 const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps) => {
   const { total, average, ageGroup, categoryScores } = results;
   
-  const chartData = Object.entries(categoryScores).map(([category, score]) => ({
-    name: getCategoryName(category),
-    value: score,
-    fullMark: 3,
-  }));
-
   const getCategoryName = (category: string) => {
     const names = {
       grossMotor: "대근육 발달",
@@ -62,6 +56,12 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
       };
     }
   };
+  
+  const chartData = Object.entries(categoryScores).map(([category, score]) => ({
+    name: getCategoryName(category),
+    value: score,
+    fullMark: 3,
+  }));
 
   const evaluation = getOverallEvaluation(average);
 

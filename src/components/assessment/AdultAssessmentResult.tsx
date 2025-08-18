@@ -18,12 +18,6 @@ interface AdultAssessmentResultProps {
 const AdultAssessmentResult = ({ results, onBack }: AdultAssessmentResultProps) => {
   const { total, average, ageGroup, categoryScores } = results;
   
-  const chartData = Object.entries(categoryScores).map(([category, score]) => ({
-    name: getCategoryName(category),
-    value: score,
-    fullMark: 3,
-  }));
-
   const getCategoryName = (category: string) => {
     const names = {
       depression: "우울 척도",
@@ -61,6 +55,12 @@ const AdultAssessmentResult = ({ results, onBack }: AdultAssessmentResultProps) 
       };
     }
   };
+  
+  const chartData = Object.entries(categoryScores).map(([category, score]) => ({
+    name: getCategoryName(category),
+    value: score,
+    fullMark: 3,
+  }));
 
   const evaluation = getOverallEvaluation(average);
 

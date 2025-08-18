@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink, MessageCircle, Users } from "lucide-react";
+import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink, MessageCircle, Users, UserCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface AdultAssessmentResultProps {
@@ -19,6 +20,7 @@ interface AdultAssessmentResultProps {
 
 const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }: AdultAssessmentResultProps) => {
   const { total, average, ageGroup, categoryScores } = results;
+  const navigate = useNavigate();
   
   const getCategoryName = (category: string) => {
     const names = {
@@ -241,6 +243,28 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
           </div>
         </Button>
       </div>
+
+      {/* Expert Consultation CTA */}
+      <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+        <div className="flex items-center gap-4">
+          <div className="flex-shrink-0">
+            <UserCheck className="w-8 h-8 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-foreground mb-1">전문가 상담이 필요하신가요?</h4>
+            <p className="text-sm text-muted-foreground mb-3">
+              검사 결과를 바탕으로 맞춤형 전문가를 추천해드립니다.
+            </p>
+            <Button 
+              onClick={() => navigate('/expert?category=정서&mode=online')}
+              className="gap-2"
+            >
+              <ExternalLink className="w-4 h-4" />
+              전문가 상담 연결
+            </Button>
+          </div>
+        </div>
+      </Card>
 
       {/* Additional Information */}
       <Card className="p-6 bg-blue-50 border-blue-200">

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ExternalLink, MessageCircle, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface AdhdTestResultProps {
@@ -19,6 +20,7 @@ interface AdhdTestResultProps {
 
 const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }: AdhdTestResultProps) => {
   const { total, average, ageGroup, severity } = results;
+  const navigate = useNavigate();
   
   const getOverallEvaluation = (severity: string) => {
     if (severity === "정상 범위") {
@@ -185,12 +187,12 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
       <div className="grid md:grid-cols-5 gap-4">
         <Button 
           className="btn-brand h-16"
-          onClick={() => window.open('https://typebot.io/hilight-consult', '_blank')}
+          onClick={() => navigate('/expert?category=ADHD&mode=online')}
         >
           <ExternalLink className="w-5 h-5 mr-2" />
           <div className="text-left">
-            <div className="font-semibold">전문가 상담 연결</div>
-            <div className="text-sm opacity-90">즉시 상담 가능</div>
+            <div className="font-semibold">ADHD 전문가 연결</div>
+            <div className="text-sm opacity-90">맞춤 추천 상담</div>
           </div>
         </Button>
 

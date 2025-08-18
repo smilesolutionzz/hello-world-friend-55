@@ -527,6 +527,48 @@ export type Database = {
         }
         Relationships: []
       }
+      consult_requests: {
+        Row: {
+          budget_range: string | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          matched_expert_ids: string[] | null
+          mode: string
+          preferred_slots: string[] | null
+          region: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          budget_range?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          matched_expert_ids?: string[] | null
+          mode: string
+          preferred_slots?: string[] | null
+          region: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          budget_range?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          matched_expert_ids?: string[] | null
+          mode?: string
+          preferred_slots?: string[] | null
+          region?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       consultations: {
         Row: {
           assessment_id: string | null
@@ -861,6 +903,66 @@ export type Database = {
           observation_id?: string
           text?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      experts: {
+        Row: {
+          availability_text: string
+          calendly_url: string
+          categories: string[]
+          contact_form_url: string
+          created_at: string
+          credential: string
+          id: string
+          intro: string
+          name: string
+          online: boolean
+          photo_url: string | null
+          price_per_50: number
+          rating: number
+          region: string
+          updated_at: string
+          verified: boolean
+          visible: boolean
+        }
+        Insert: {
+          availability_text: string
+          calendly_url: string
+          categories?: string[]
+          contact_form_url: string
+          created_at?: string
+          credential: string
+          id?: string
+          intro: string
+          name: string
+          online?: boolean
+          photo_url?: string | null
+          price_per_50: number
+          rating?: number
+          region: string
+          updated_at?: string
+          verified?: boolean
+          visible?: boolean
+        }
+        Update: {
+          availability_text?: string
+          calendly_url?: string
+          categories?: string[]
+          contact_form_url?: string
+          created_at?: string
+          credential?: string
+          id?: string
+          intro?: string
+          name?: string
+          online?: boolean
+          photo_url?: string | null
+          price_per_50?: number
+          rating?: number
+          region?: string
+          updated_at?: string
+          verified?: boolean
+          visible?: boolean
         }
         Relationships: []
       }

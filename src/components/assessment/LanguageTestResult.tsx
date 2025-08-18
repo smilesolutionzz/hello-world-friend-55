@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, ExternalLink, Download, Mail } from "lucide-react";
+import { ArrowLeft, ExternalLink, Download, Mail, UserCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 interface LanguageTestResultProps {
@@ -16,6 +17,7 @@ interface LanguageTestResultProps {
 const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const { total, average, ageGroup } = results;
   const today = new Date().toLocaleDateString('ko-KR');
+  const navigate = useNavigate();
 
   // 점수에 따른 평가
   const getEvaluation = (score: number) => {
@@ -192,6 +194,28 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               <Mail className="w-4 h-4" />
               결과 저장 (추가 예정)
             </Button>
+          </div>
+        </Card>
+
+        {/* Expert Consultation CTA */}
+        <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0">
+              <UserCheck className="w-8 h-8 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-foreground mb-1">언어 전문가 상담 받기</h4>
+              <p className="text-sm text-muted-foreground mb-3">
+                언어발달 검사 결과를 바탕으로 전문가 상담을 받아보세요.
+              </p>
+              <Button 
+                onClick={() => navigate('/expert?category=언어&mode=online')}
+                className="gap-2"
+              >
+                <ExternalLink className="w-4 h-4" />
+                언어치료사 연결
+              </Button>
+            </div>
           </div>
         </Card>
       </div>

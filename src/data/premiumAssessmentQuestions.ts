@@ -527,6 +527,118 @@ export const relationshipAssessmentQuestions = {
   ]
 };
 
+// 6. 금전 심리 & 소비 패턴 검사 (Financial Psychology Assessment)
+export const financialPsychologyAssessmentQuestions = {
+  money_mindset: [
+    {
+      id: "fin_mm01",
+      text: "돈을 쓸 때마다 죄책감을 느끼는 편입니다",
+      category: "money_mindset",
+      subcategory: "guilt_spending"
+    },
+    {
+      id: "fin_mm02",
+      text: "돈이 많으면 행복할 것이라고 생각합니다",
+      category: "money_mindset",
+      subcategory: "money_happiness"
+    },
+    {
+      id: "fin_mm03",
+      text: "돈에 대해 이야기하는 것이 불편합니다",
+      category: "money_mindset",
+      subcategory: "money_taboo"
+    },
+    {
+      id: "fin_mm04",
+      text: "돈을 절약하는 것보다 경험에 투자하는 것이 중요합니다",
+      category: "money_mindset",
+      subcategory: "experience_value"
+    }
+  ],
+  spending_patterns: [
+    {
+      id: "fin_sp01",
+      text: "스트레스를 받으면 쇼핑으로 기분을 풀려고 합니다",
+      category: "spending_patterns",
+      subcategory: "emotional_spending"
+    },
+    {
+      id: "fin_sp02",
+      text: "계획에 없던 물건을 충동적으로 구매하는 경우가 많습니다",
+      category: "spending_patterns",
+      subcategory: "impulse_buying"
+    },
+    {
+      id: "fin_sp03",
+      text: "할인이나 세일 정보를 보면 필요 없어도 사게 됩니다",
+      category: "spending_patterns",
+      subcategory: "sale_attraction"
+    },
+    {
+      id: "fin_sp04",
+      text: "비싼 브랜드 제품을 선호하는 편입니다",
+      category: "spending_patterns",
+      subcategory: "brand_preference"
+    }
+  ],
+  financial_anxiety: [
+    {
+      id: "fin_fa01",
+      text: "미래의 경제적 불안정에 대해 자주 걱정합니다",
+      category: "financial_anxiety",
+      subcategory: "future_worry"
+    },
+    {
+      id: "fin_fa02",
+      text: "통장 잔고를 확인하는 것이 두렵습니다",
+      category: "financial_anxiety",
+      subcategory: "balance_avoidance"
+    },
+    {
+      id: "fin_fa03",
+      text: "다른 사람과 소득을 비교하며 스트레스받습니다",
+      category: "financial_anxiety",
+      subcategory: "income_comparison"
+    },
+    {
+      id: "fin_fa04",
+      text: "돈 관련 결정을 내리는 것이 어렵고 스트레스받습니다",
+      category: "financial_anxiety",
+      subcategory: "decision_stress"
+    }
+  ],
+  financial_goals: [
+    {
+      id: "fin_fg01",
+      text: "명확한 재정 목표를 세우고 계획적으로 관리합니다",
+      category: "financial_goals",
+      subcategory: "goal_setting",
+      reverse: true
+    },
+    {
+      id: "fin_fg02",
+      text: "투자와 저축에 대해 충분히 공부하고 실행합니다",
+      category: "financial_goals",
+      subcategory: "financial_education",
+      reverse: true
+    },
+    {
+      id: "fin_fg03",
+      text: "가계부나 가계관리 앱을 꾸준히 사용합니다",
+      category: "financial_goals",
+      subcategory: "budget_management",
+      reverse: true
+    },
+    {
+      id: "fin_fg04",
+      text: "긴급 상황을 대비한 비상금을 준비해두고 있습니다",
+      category: "financial_goals",
+      subcategory: "emergency_fund",
+      reverse: true
+    }
+  ]
+};
+
 // 각 검사별 표시명과 설명
 // 본 검사는 원저작과는 무관한 창작형 검사입니다.
 export const premiumAssessmentInfo = {
@@ -573,6 +685,15 @@ export const premiumAssessmentInfo = {
     duration: "약 4-6분", 
     questions_count: 15,
     premium_features: ["4가지 애착유형 분석", "관계 패턴 해석", "갈등 해결 방식", "건강한 관계 가이드"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
+  },
+  financialPsychology: {
+    title: "금전 심리 & 소비 패턴 검사",
+    subtitle: "창작형 금융 행동 심리 분석",
+    description: "돈에 대한 태도, 소비 패턴, 재정 불안, 목표 관리의 4개 영역으로 금전 심리를 독창적으로 분석합니다",
+    duration: "약 5-7분", 
+    questions_count: 16,
+    premium_features: ["금전 태도 심층 분석", "소비 패턴 진단", "재정 불안 평가", "개인 맞춤 재정 관리 방향"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   }
 };

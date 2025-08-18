@@ -14,6 +14,7 @@ import DepressionTestForm from "@/components/assessment/DepressionTestForm";
 import DepressionTestResult from "@/components/assessment/DepressionTestResult";
 import AdhdTestForm from "@/components/assessment/AdhdTestForm";
 import AdhdTestResult from "@/components/assessment/AdhdTestResult";
+import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
 import RealTimeChat from "@/components/counseling/RealTimeChat";
 import LegalSafetyNotice from "@/components/LegalSafetyNotice";
@@ -26,8 +27,8 @@ import { useToast } from "@/hooks/use-toast";
 
 const Assessment = () => {
   const { toast } = useToast();
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | null>(null);
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'dream-interpretation' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
@@ -116,9 +117,13 @@ const Assessment = () => {
     }
   };
 
-  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd') => {
+  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream') => {
     setTestType(type);
-    setCurrentStep('legal-notice');
+    if (type === 'dream') {
+      setCurrentStep('dream-interpretation');
+    } else {
+      setCurrentStep('legal-notice');
+    }
   };
 
   const handleLegalNoticeAccept = () => {
@@ -283,7 +288,7 @@ const Assessment = () => {
   };
 
   const handleBack = () => {
-    if (currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
+    if (currentStep === 'dream-interpretation' || currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
       // 분석/매칭/상담/결과 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
@@ -443,18 +448,35 @@ const Assessment = () => {
                 <li>• 증상 영역별 분석</li>
               </ul>
             </div>
+            
+            <div 
+              className="bg-gradient-to-br from-indigo-500 to-purple-600 hover-glow border border-purple-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white"
+              onClick={() => handleTestTypeSelect('dream')}
+            >
+              <h3 className="text-2xl font-bold mb-4">🌙 AI 꿈 해몽</h3>
+              <p className="text-purple-100 mb-4">당신의 꿈이 담고 있는 의미를 AI가 해석 (재미용)</p>
+              <ul className="space-y-2 text-sm text-purple-100">
+                <li>• 꿈 내용 입력</li>
+                <li>• AI 즉시 해몽</li>
+                <li>• 심리적 의미 해석</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     );
   }
 
-  if (currentStep === 'legal-notice' && testType) {
+  if (currentStep === 'dream-interpretation') {
+    return <DreamInterpretation onBack={handleBack} />;
+  }
+
+  if (currentStep === 'legal-notice' && testType && testType !== 'dream') {
     return <LegalSafetyNotice onAccept={handleLegalNoticeAccept} testType={testType} />;
   }
   
   if (currentStep === 'age-select') {
-    return <AgeSelector onAgeGroupSelect={handleAgeGroupSelect} testType={testType} />;
+    return <AgeSelector onAgeGroupSelect={handleAgeGroupSelect} testType={testType as 'psychological' | 'language' | 'panic' | 'depression' | 'adhd'} />;
   }
 
   if (currentStep === 'language-test') {

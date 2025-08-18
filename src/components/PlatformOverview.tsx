@@ -77,6 +77,7 @@ const PlatformOverview = () => {
               <ul className="space-y-2 text-muted-foreground ml-9">
                 <li>• 직원 정신건강 관리 솔루션 제공</li>
                 <li>• 병원 환자 케어 시스템 통합 연동</li>
+                <li>• 발달/상담센터·복지관·학교 연계 서비스</li>
                 <li>• 데이터 기반 조직 건강도 분석</li>
                 <li>• 전문 상담사 네트워크 구축 지원</li>
               </ul>

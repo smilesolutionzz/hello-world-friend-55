@@ -230,8 +230,10 @@ const ObservationSessionForm = ({ template, onSessionCreated, onCancel }: Observ
         description: "AI 분석이 완료되었습니다.",
       });
 
-      // Navigate to analysis page after successful analysis
-      navigate(`/analysis?sessionId=${session.id}`);
+      // Navigate to analysis page with session data instead of calling onSessionCreated
+      navigate(`/analysis?sessionId=${session.id}`, {
+        state: { session: { ...session, analysis_data: data, ai_analysis: data.analysis, recommendations: data.recommendations } }
+      });
     } catch (error) {
       console.error('Error analyzing session:', error);
       toast({

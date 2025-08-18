@@ -15,6 +15,7 @@ import DepressionTestResult from "@/components/assessment/DepressionTestResult";
 import AdhdTestForm from "@/components/assessment/AdhdTestForm";
 import AdhdTestResult from "@/components/assessment/AdhdTestResult";
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
+import SajuAnalysis from "@/components/assessment/SajuAnalysis";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
 import RealTimeChat from "@/components/counseling/RealTimeChat";
 import LegalSafetyNotice from "@/components/LegalSafetyNotice";
@@ -27,8 +28,8 @@ import { useToast } from "@/hooks/use-toast";
 
 const Assessment = () => {
   const { toast } = useToast();
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'dream-interpretation' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | null>(null);
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | 'saju' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
@@ -117,10 +118,12 @@ const Assessment = () => {
     }
   };
 
-  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream') => {
+  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | 'saju') => {
     setTestType(type);
     if (type === 'dream') {
       setCurrentStep('dream-interpretation');
+    } else if (type === 'saju') {
+      setCurrentStep('saju-analysis');
     } else {
       setCurrentStep('legal-notice');
     }
@@ -288,7 +291,7 @@ const Assessment = () => {
   };
 
   const handleBack = () => {
-    if (currentStep === 'dream-interpretation' || currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
+    if (currentStep === 'dream-interpretation' || currentStep === 'saju-analysis' || currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
       // 분석/매칭/상담/결과 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
@@ -461,6 +464,19 @@ const Assessment = () => {
                 <li>• 심리적 의미 해석</li>
               </ul>
             </div>
+            
+            <div 
+              className="bg-gradient-to-br from-orange-500 to-red-600 hover-glow border border-orange-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white"
+              onClick={() => handleTestTypeSelect('saju')}
+            >
+              <h3 className="text-2xl font-bold mb-4">🔮 AI 사주풀이</h3>
+              <p className="text-orange-100 mb-4">생년월일시로 당신의 운세와 사주를 AI가 분석 (재미용)</p>
+              <ul className="space-y-2 text-sm text-orange-100">
+                <li>• 생년월일시 입력</li>
+                <li>• AI 즉시 사주분석</li>
+                <li>• 운세와 성향 해석</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -469,6 +485,10 @@ const Assessment = () => {
 
   if (currentStep === 'dream-interpretation') {
     return <DreamInterpretation onBack={handleBack} />;
+  }
+  
+  if (currentStep === 'saju-analysis') {
+    return <SajuAnalysis onBack={handleBack} />;
   }
 
   if (currentStep === 'legal-notice' && testType && testType !== 'dream') {

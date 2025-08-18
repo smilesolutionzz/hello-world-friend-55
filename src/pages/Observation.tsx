@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ClipboardList, Plus, Eye, Download, Calendar, User, AlertCircle } from "lucide-react";
 import ObservationSessionForm from "@/components/observation/ObservationSessionForm";
+import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
 import ObservationResults from "@/components/observation/ObservationResults";
 
 const Observation = () => {
@@ -156,15 +157,10 @@ const Observation = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="templates">관찰 템플릿</TabsTrigger>
-          <TabsTrigger value="sessions">내 관찰 목록</TabsTrigger>
-          <TabsTrigger value="new-session" disabled={!selectedTemplate}>
-            새 관찰 세션
-          </TabsTrigger>
-          <TabsTrigger value="session-results" disabled={!selectedSession}>
-            관찰 결과
-          </TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="templates">템플릿</TabsTrigger>
+          <TabsTrigger value="sessions">내 관찰</TabsTrigger>
+          <TabsTrigger value="new-mobile">새 관찰</TabsTrigger>
         </TabsList>
 
         <TabsContent value="templates" className="space-y-6">
@@ -209,7 +205,7 @@ const Observation = () => {
         <TabsContent value="sessions" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold">내 관찰 세션</h2>
-            <Button onClick={() => setActiveTab("templates")}>
+            <Button onClick={() => setActiveTab("new-mobile")}>
               <Plus className="h-4 w-4 mr-2" />
               새 관찰 시작
             </Button>
@@ -223,8 +219,8 @@ const Observation = () => {
                 <p className="text-muted-foreground mb-4">
                   첫 번째 관찰을 시작해보세요
                 </p>
-                <Button onClick={() => setActiveTab("templates")}>
-                  관찰 템플릿 보기
+                <Button onClick={() => setActiveTab("new-mobile")}>
+                  새 관찰 시작하기
                 </Button>
               </CardContent>
             </Card>
@@ -268,7 +264,10 @@ const Observation = () => {
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => viewSession(session)}
+                          onClick={() => {
+                            setSelectedSession(session);
+                            setActiveTab("session-results");
+                          }}
                         >
                           <Eye className="h-4 w-4 mr-1" />
                           보기
@@ -294,14 +293,19 @@ const Observation = () => {
           )}
         </TabsContent>
 
-        <TabsContent value="new-session">
-          {selectedTemplate && (
-            <ObservationSessionForm
-              template={selectedTemplate}
-              onSessionCreated={handleSessionCreated}
-              onCancel={() => setActiveTab("templates")}
-            />
-          )}
+        <TabsContent value="new-mobile">
+          <ObservationFormMobile
+            onBack={() => setActiveTab("sessions")}
+            onSuccess={async (sessionId) => {
+              // Reload data and show results
+              await loadData();
+              const session = sessions.find(s => s.id === sessionId);
+              if (session) {
+                setSelectedSession(session);
+                setActiveTab("session-results");
+              }
+            }}
+          />
         </TabsContent>
 
         <TabsContent value="session-results">

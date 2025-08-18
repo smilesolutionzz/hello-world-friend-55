@@ -4,7 +4,7 @@ import { Crown, Sparkles, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface SubscriptionCTAProps {
-  context?: 'assessment' | 'ai-counselor' | 'dashboard' | 'general';
+  context?: 'observation' | 'report' | 'dashboard' | 'assessment' | 'ai-counselor' | 'general';
   title?: string;
   description?: string;
 }
@@ -18,6 +18,18 @@ const SubscriptionCTA = ({
 
   const getContextContent = () => {
     switch (context) {
+      case 'observation':
+        return {
+          title: title || "더 자세한 분석이 필요하신가요?",
+          description: description || "프리미엄으로 업그레이드하고 심화 분석 리포트를 받아보세요.",
+          icon: <Sparkles className="h-6 w-6" />
+        };
+      case 'report':
+        return {
+          title: title || "전문가급 리포트가 기다리고 있어요",
+          description: description || "차트, PDF 다운로드, 전문가 코멘트까지 한번에!",
+          icon: <Crown className="h-6 w-6" />
+        };
       case 'assessment':
         return {
           title: title || "더 정확한 분석을 원하시나요?",
@@ -32,8 +44,8 @@ const SubscriptionCTA = ({
         };
       case 'dashboard':
         return {
-          title: title || "구독으로 더 많은 기능을",
-          description: description || "개인 맞춤 분석, 전문가 상담, 우선 지원을 경험해보세요",
+          title: title || "프리미엄으로 더 많은 혜택을",
+          description: description || "무제한 분석, 전문가 코멘트, PDF 리포트까지",
           icon: <Crown className="h-6 w-6" />
         };
       default:
@@ -68,23 +80,26 @@ const SubscriptionCTA = ({
         
         <div className="flex flex-col sm:flex-row gap-3">
           <Button 
-            onClick={() => navigate('/subscription')}
-            className="flex items-center gap-2"
+            onClick={() => navigate('/pricing')}
+            className="flex items-center gap-2 w-full sm:w-auto"
+            aria-label="구독 플랜 보기"
           >
+            <Crown className="h-4 w-4" />
             구독 플랜 보기
-            <ArrowRight className="h-4 w-4" />
           </Button>
           
           <Button 
             variant="outline"
-            onClick={() => navigate('/assessment')}
+            onClick={() => navigate('/dashboard')}
+            className="w-full sm:w-auto"
+            aria-label="무료로 체험하기"
           >
             무료로 체험하기
           </Button>
         </div>
         
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p>• 언제든 취소 가능 • 첫 달 체험 가능 • 전문가 리포트 제공</p>
+        <div className="mt-4 text-sm text-muted-foreground text-center">
+          <p>기록할수록 패턴이 보입니다. 4회차부터는 장기 추적/전문가 코멘트가 열립니다.</p>
         </div>
       </CardContent>
     </Card>

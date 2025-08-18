@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import SubscriptionCTA from "@/components/SubscriptionCTA";
 import { 
   ArrowLeft, 
   Download, 
@@ -659,6 +660,11 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
           />
         </TabsContent>
       </Tabs>
+
+      {/* Subscription CTA at bottom */}
+      <div className="mt-8">
+        <SubscriptionCTA context="observation" />
+      </div>
     </div>
   );
 };

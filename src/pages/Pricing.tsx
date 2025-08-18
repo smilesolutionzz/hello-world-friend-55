@@ -10,58 +10,58 @@ const PricingPage = () => {
 
   const plans = [
     {
-      name: "무료 체험",
+      name: "Free",
       price: "무료",
-      period: "3회까지",
-      description: "기본 관찰일지 체험",
+      period: "",
+      description: "월 3회 요약 리포트",
       features: [
-        "관찰일지 작성 3회",
+        "월 3회 관찰일지 작성",
         "기본 AI 요약 리포트",
         "미디어 파일 업로드",
         "간단한 대시보드"
       ],
-      buttonText: "체험하기",
+      buttonText: "무료 시작하기",
       buttonVariant: "outline" as const,
       popular: false,
       current: true
     },
     {
-      name: "프리미엄",
-      price: "29,000원",
+      name: "Premium",
+      price: "29,900원",
       period: "월",
-      originalPrice: "58,000원",
-      discount: "50% 할인",
-      description: "무제한 관찰 및 심화 분석",
+      yearlyPrice: "299,000원",
+      discount: "연간 결제 시 2개월 무료",
+      description: "월 5회 + 차트 + PDF + 전문가 코멘트 1회",
       features: [
-        "무제한 관찰일지 작성",
+        "월 5회 관찰일지 작성",
         "심화 AI 분석 리포트",
-        "레이더차트 및 추이 분석",
-        "전문가급 PDF 다운로드",
-        "누적 데이터 비교 분석",
-        "전문가 피드백 요청",
-        "이메일 주간 리포트",
+        "차트 및 추이 분석",
+        "PDF 리포트 다운로드",
+        "전문가 코멘트 1회",
         "우선 고객지원"
       ],
-      buttonText: "프리미엄 시작하기",
+      buttonText: "Premium 구독하기",
       buttonVariant: "default" as const,
       popular: true,
       current: false
     },
     {
-      name: "전문기관",
-      price: "문의",
-      period: "",
-      description: "기관/팀 단위 맞춤 솔루션",
+      name: "Pro",
+      price: "99,000원",
+      period: "월",
+      yearlyPrice: "990,000원",
+      discount: "연간 결제 시 2개월 무료",
+      description: "무제한 + 전체 차트 + PDF + 전문가 코멘트 무제한",
       features: [
-        "무제한 사용자 추가",
-        "기관 전용 대시보드",
-        "전문가 협업 도구",
+        "무제한 관찰일지 작성",
+        "전체 차트 및 추이 분석",
+        "PDF 리포트 다운로드",
+        "전문가 코멘트 무제한",
         "맞춤형 리포트 템플릿",
-        "API 연동 지원",
         "전담 계정 매니저",
-        "온사이트 교육 지원"
+        "24/7 우선 지원"
       ],
-      buttonText: "문의하기",
+      buttonText: "Pro 구독하기",
       buttonVariant: "outline" as const,
       popular: false,
       current: false
@@ -69,14 +69,14 @@ const PricingPage = () => {
   ];
 
   const handlePlanSelect = (planName: string) => {
-    if (planName === "무료 체험") {
+    if (planName === "Free") {
       navigate('/dashboard');
-    } else if (planName === "프리미엄") {
-      // TODO: Implement Stripe checkout
-      console.log('Starting premium checkout...');
-    } else {
-      // Contact form for enterprise
-      console.log('Opening contact form...');
+    } else if (planName === "Premium") {
+      // 토스 결제 페이지로 이동 (자리표시 링크)
+      window.open('https://tosspayments.com/pricing/premium', '_blank');
+    } else if (planName === "Pro") {
+      // 토스 결제 페이지로 이동 (자리표시 링크)
+      window.open('https://tosspayments.com/pricing/pro', '_blank');
     }
   };
 
@@ -160,11 +160,6 @@ const PricingPage = () => {
                 
                 <div className="space-y-2">
                   <div className="flex items-center justify-center gap-2">
-                    {plan.originalPrice && (
-                      <span className="text-sm text-muted-foreground line-through">
-                        {plan.originalPrice}
-                      </span>
-                    )}
                     <span className={`text-3xl font-bold ${plan.popular ? 'text-primary' : ''}`}>
                       {plan.price}
                     </span>
@@ -173,8 +168,14 @@ const PricingPage = () => {
                     )}
                   </div>
                   
+                  {plan.yearlyPrice && (
+                    <div className="text-sm text-muted-foreground">
+                      연간: {plan.yearlyPrice}
+                    </div>
+                  )}
+                  
                   {plan.discount && (
-                    <Badge variant="destructive" className="text-xs">
+                    <Badge variant="secondary" className="text-xs">
                       {plan.discount}
                     </Badge>
                   )}

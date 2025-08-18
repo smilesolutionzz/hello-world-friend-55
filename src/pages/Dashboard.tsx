@@ -39,6 +39,7 @@ import TeamSettings from "@/components/team/TeamSettings";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { useToast } from "@/hooks/use-toast";
+import SubscriptionCTA from "@/components/SubscriptionCTA";
 
 interface Profile {
   id: string;
@@ -711,7 +712,7 @@ const Dashboard = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-6">
               <Card className="p-6 hover-glow cursor-pointer" onClick={() => navigate('/assessment')}>
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
@@ -741,6 +742,11 @@ const Dashboard = () => {
                   </div>
                 </div>
               </Card>
+
+              {/* Subscription CTA Panel */}
+              <div className="lg:col-span-1 md:col-span-2">
+                <SubscriptionCTA context="dashboard" />
+              </div>
             </div>
           </TabsContent>
 

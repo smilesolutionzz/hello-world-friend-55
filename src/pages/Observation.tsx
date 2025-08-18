@@ -157,10 +157,11 @@ const Observation = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="templates">템플릿</TabsTrigger>
           <TabsTrigger value="sessions">내 관찰</TabsTrigger>
           <TabsTrigger value="new-mobile">새 관찰</TabsTrigger>
+          <TabsTrigger value="new-session">관찰 세션</TabsTrigger>
         </TabsList>
 
         <TabsContent value="templates" className="space-y-6">
@@ -306,6 +307,16 @@ const Observation = () => {
               }
             }}
           />
+        </TabsContent>
+
+        <TabsContent value="new-session">
+          {selectedTemplate && (
+            <ObservationSessionForm
+              template={selectedTemplate}
+              onSessionCreated={handleSessionCreated}
+              onCancel={() => setActiveTab("templates")}
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="session-results">

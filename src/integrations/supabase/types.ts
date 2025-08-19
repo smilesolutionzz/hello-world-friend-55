@@ -2022,6 +2022,36 @@ export type Database = {
         }
         Relationships: []
       }
+      role_change_audit: {
+        Row: {
+          changed_at: string
+          changed_by: string
+          id: string
+          new_role: Database["public"]["Enums"]["app_role"]
+          old_role: Database["public"]["Enums"]["app_role"] | null
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          changed_at?: string
+          changed_by: string
+          id?: string
+          new_role: Database["public"]["Enums"]["app_role"]
+          old_role?: Database["public"]["Enums"]["app_role"] | null
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          changed_at?: string
+          changed_by?: string
+          id?: string
+          new_role?: Database["public"]["Enums"]["app_role"]
+          old_role?: Database["public"]["Enums"]["app_role"] | null
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       session_participants: {
         Row: {
           avatar_id: string | null
@@ -2793,6 +2823,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_access_metaverse_session: {
+        Args: { session_id: string }
+        Returns: boolean
+      }
       consume_tokens: {
         Args: {
           p_feature_id?: string
@@ -2804,6 +2838,10 @@ export type Database = {
       }
       generate_referral_code: {
         Args: { p_referrer_user_id: string }
+        Returns: string
+      }
+      get_user_employee_org: {
+        Args: Record<PropertyKey, never>
         Returns: string
       }
       get_user_family_ids: {
@@ -2823,6 +2861,10 @@ export type Database = {
       }
       is_family_creator: {
         Args: { family_uuid: string; user_uuid: string }
+        Returns: boolean
+      }
+      is_organization_admin: {
+        Args: Record<PropertyKey, never>
         Returns: boolean
       }
       process_referral_reward: {

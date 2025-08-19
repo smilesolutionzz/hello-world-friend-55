@@ -22,7 +22,10 @@ serve(async (req) => {
     );
 
     // 토스페이먼츠 결제 승인 API 호출
-    const secretKey = 'test_sk_zXLkKEypNArWmo50nX3lmeaxYG5R'; // 테스트 시크릿 키
+    const secretKey = Deno.env.get('TOSS_PAYMENTS_SECRET_KEY');
+    if (!secretKey) {
+      throw new Error('TOSS_PAYMENTS_SECRET_KEY is not configured');
+    }
     const encryptedSecretKey = btoa(secretKey + ':');
 
     const response = await fetch('https://api.tosspayments.com/v1/payments/confirm', {

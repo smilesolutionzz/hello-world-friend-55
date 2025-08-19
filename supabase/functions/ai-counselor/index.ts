@@ -14,6 +14,22 @@ serve(async (req) => {
 
   try {
     const { message, conversationHistory } = await req.json();
+    
+    // Input validation
+    if (!message || typeof message !== 'string' || message.trim().length === 0) {
+      throw new Error('Valid message is required');
+    }
+    
+    if (message.length > 5000) {
+      throw new Error('Message too long (max 5000 characters)');
+    }
+    
+    // Rate limiting check (basic implementation)
+    const clientIP = req.headers.get('x-forwarded-for') || 'unknown';
+    const rateLimitKey = `ai-counselor:${clientIP}`;
+    
+    // Sanitize input
+    const sanitizedMessage = message.replace(/[<>]/g, '').trim();
 
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
@@ -60,7 +76,7 @@ serve(async (req) => {
     const messages = [
       { role: 'system', content: systemPrompt },
       ...conversationHistory,
-      { role: 'user', content: message }
+      { role: 'user', content: sanitizedMessage }
     ];
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {

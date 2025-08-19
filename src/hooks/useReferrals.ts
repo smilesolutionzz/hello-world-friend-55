@@ -53,6 +53,21 @@ export const useReferrals = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('로그인이 필요합니다');
 
+      // First, check if user already has a pending referral code
+      const { data: existingReferrals } = await supabase
+        .from('user_referrals')
+        .select('referral_code')
+        .eq('status', 'pending')
+        .eq('reward_given', false)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (existingReferrals && existingReferrals.length > 0) {
+        // Return existing referral code
+        return existingReferrals[0].referral_code;
+      }
+
+      // Generate new referral code if none exists
       const { data, error } = await supabase.rpc('generate_referral_code', {
         p_referrer_user_id: user.id
       });
@@ -63,6 +78,21 @@ export const useReferrals = () => {
       return data;
     } catch (error: any) {
       console.error('Referral code generation error:', error);
+      
+      // If it's a duplicate key error, try to get the existing code
+      if (error.code === '23505') {
+        const { data: existingReferrals } = await supabase
+          .from('user_referrals')
+          .select('referral_code')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (existingReferrals && existingReferrals.length > 0) {
+          return existingReferrals[0].referral_code;
+        }
+      }
+      
       toast({
         title: "추천 코드 생성 실패",
         description: error.message || "추천 코드를 생성할 수 없습니다.",

@@ -285,18 +285,32 @@ export const MetaverseDashboard = () => {
         ['스트레스 완화']
       );
 
-      const aiMessage = {
-        id: Date.now() + 1,
-        type: 'ai',
-        content: response.verbal_response,
-        gesture: response.gesture_animation,
-        expression: response.facial_expression,
-        timestamp: new Date().toISOString()
-      };
+      if (response?.verbal_response) {
+        const aiMessage = {
+          id: Date.now() + 1,
+          type: 'ai',
+          content: response.verbal_response,
+          gesture: response.gesture_animation,
+          expression: response.facial_expression,
+          timestamp: new Date().toISOString()
+        };
 
-      setChatMessages(prev => [...prev, aiMessage]);
+        setChatMessages(prev => [...prev, aiMessage]);
+      } else {
+        throw new Error('AI 응답을 받지 못했습니다.');
+      }
     } catch (error) {
       console.error('Error getting AI response:', error);
+      
+      const errorMessage = {
+        id: Date.now() + 1,
+        type: 'ai',
+        content: 'AI 치료사가 일시적으로 응답할 수 없습니다. 잠시 후 다시 시도해주세요.',
+        timestamp: new Date().toISOString()
+      };
+      
+      setChatMessages(prev => [...prev, errorMessage]);
+      
       toast({
         title: "오류",
         description: "AI 치료사 응답 중 오류가 발생했습니다.",
@@ -714,7 +728,14 @@ export const MetaverseDashboard = () => {
                 className={`cursor-pointer transition-all hover:shadow-lg ${
                   selectedAITherapist?.id === therapist.id ? 'ring-2 ring-primary' : ''
                 }`}
-                onClick={() => setSelectedAITherapist(therapist)}
+                onClick={() => {
+                  setSelectedAITherapist(therapist);
+                  console.log('AI 치료사 선택됨:', therapist.name);
+                  toast({
+                    title: "AI 치료사 선택",
+                    description: `${therapist.name}이(가) 선택되었습니다.`,
+                  });
+                }}
               >
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -807,7 +828,17 @@ export const MetaverseDashboard = () => {
         <TabsContent value="scenarios" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {scenarios.map((scenario) => (
-              <Card key={scenario.id}>
+              <Card 
+                key={scenario.id}
+                className="cursor-pointer transition-all hover:shadow-lg"
+                onClick={() => {
+                  console.log('시나리오 선택됨:', scenario.title);
+                  toast({
+                    title: "시나리오 선택",
+                    description: `${scenario.title} 시나리오가 선택되었습니다.`,
+                  });
+                }}
+              >
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Brain className="h-5 w-5" />

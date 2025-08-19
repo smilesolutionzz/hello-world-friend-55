@@ -91,13 +91,9 @@ export const useMetaverseTherapy = () => {
     try {
       const { data, error } = await supabase
         .from('metaverse_sessions')
-        .select(`
-          *,
-          therapy_environments (name, environment_type),
-          profiles!metaverse_sessions_host_profile_id_fkey (display_name)
-        `)
+        .select('*')
         .eq('is_public', isPublic)
-        .eq('status', 'active')
+        .eq('status', 'planned')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -106,7 +102,8 @@ export const useMetaverseTherapy = () => {
       return data;
     } catch (error) {
       console.error('Error loading metaverse sessions:', error);
-      throw error;
+      setSessions([]);
+      return [];
     }
   };
 

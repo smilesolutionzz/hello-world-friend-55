@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ExternalLink, MessageCircle, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import ProductRecommendation from "@/components/ProductRecommendation";
 
 interface AdhdTestResultProps {
   results: {
@@ -244,6 +245,13 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           </div>
         </Button>
       </div>
+
+      {/* 상품 추천 */}
+      <ProductRecommendation 
+        category="adhd" 
+        severity={severity}
+        ageGroup={ageGroup}
+      />
 
       {/* Additional Information */}
       <Card className="p-6 bg-blue-50 border-blue-200">

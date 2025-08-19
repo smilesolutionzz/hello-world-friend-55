@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import ProductRecommendation from "@/components/ProductRecommendation";
 
 interface DepressionTestResultProps {
   results: {
@@ -277,6 +278,12 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
           </div>
         </Button>
       </div>
+
+      {/* 상품 추천 */}
+      <ProductRecommendation 
+        category="depression" 
+        severity={severity}
+      />
 
       {/* Additional Information */}
       <Card className="p-6 bg-blue-50 border-blue-200">

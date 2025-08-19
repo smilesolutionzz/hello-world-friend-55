@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink, MessageCircle, Users, UserCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import ProductRecommendation from "@/components/ProductRecommendation";
 
 interface AdultAssessmentResultProps {
   results: {
@@ -265,6 +266,13 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
           </div>
         </div>
       </Card>
+
+      {/* 상품 추천 */}
+      <ProductRecommendation 
+        category="adult" 
+        severity={evaluation.level}
+        ageGroup={ageGroup}
+      />
 
       {/* Additional Information */}
       <Card className="p-6 bg-blue-50 border-blue-200">

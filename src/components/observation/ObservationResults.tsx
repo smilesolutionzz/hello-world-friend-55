@@ -28,6 +28,7 @@ import {
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart as RechartsLineChart, Line } from 'recharts';
 import MediaDisplay from './MediaDisplay';
 import SubscriptionGate from './SubscriptionGate';
+import ProductRecommendation from '@/components/ProductRecommendation';
 
 interface ObservationResultsProps {
   session: any;
@@ -660,6 +661,13 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
           />
         </TabsContent>
       </Tabs>
+
+      {/* 상품 추천 */}
+      <ProductRecommendation 
+        category="child" 
+        domain={session.domain}
+        severity={riskLevel}
+      />
 
       {/* Subscription CTA at bottom */}
       <div className="mt-8">

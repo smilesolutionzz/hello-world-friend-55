@@ -12,6 +12,7 @@ import {
   FileText,
   Eye
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Assessment {
@@ -29,6 +30,7 @@ interface Assessment {
 }
 
 const AssessmentHistory = () => {
+  const navigate = useNavigate();
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -102,7 +104,7 @@ const AssessmentHistory = () => {
           <h2 className="text-2xl font-bold text-foreground">검사 기록</h2>
           <p className="text-muted-foreground">가족 구성원들의 심리검사 기록을 관리하세요</p>
         </div>
-        <Button onClick={() => window.location.href = '/assessment'}>
+        <Button onClick={() => navigate('/assessment')}>
           <TrendingUp className="w-4 h-4 mr-2" />
           새 검사 시작
         </Button>
@@ -171,7 +173,7 @@ const AssessmentHistory = () => {
           <p className="text-muted-foreground mb-6">
             3분 심리검사를 통해 정확한 상태를 파악해보세요
           </p>
-          <Button onClick={() => window.location.href = '/assessment'}>
+          <Button onClick={() => navigate('/assessment')}>
             <TrendingUp className="w-4 h-4 mr-2" />
             첫 번째 검사 시작하기
           </Button>

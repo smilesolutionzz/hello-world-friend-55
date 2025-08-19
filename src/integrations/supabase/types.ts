@@ -2687,6 +2687,10 @@ export type Database = {
         }
         Returns: Json
       }
+      get_user_family_ids: {
+        Args: { user_uuid: string }
+        Returns: string[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -2696,6 +2700,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_family_creator: {
+        Args: { family_uuid: string; user_uuid: string }
         Returns: boolean
       }
     }

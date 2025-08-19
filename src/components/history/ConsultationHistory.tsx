@@ -12,6 +12,7 @@ import {
   Eye,
   Plus
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Consultation {
@@ -30,6 +31,7 @@ interface Consultation {
 }
 
 const ConsultationHistory = () => {
+  const navigate = useNavigate();
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -112,11 +114,11 @@ const ConsultationHistory = () => {
           <p className="text-muted-foreground">전문가와의 상담 기록을 확인하고 관리하세요</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => window.location.href = '/ai-counselor'}>
+          <Button variant="outline" onClick={() => navigate('/ai-counselor')}>
             <MessageCircle className="w-4 h-4 mr-2" />
             AI 상담
           </Button>
-          <Button onClick={() => window.location.href = '/assessment'}>
+          <Button onClick={() => navigate('/assessment')}>
             <Plus className="w-4 h-4 mr-2" />
             전문가 상담 예약
           </Button>
@@ -199,11 +201,11 @@ const ConsultationHistory = () => {
             전문가와의 상담을 통해 더 깊이 있는 도움을 받아보세요
           </p>
           <div className="flex gap-4 justify-center">
-            <Button variant="outline" onClick={() => window.location.href = '/ai-counselor'}>
+            <Button variant="outline" onClick={() => navigate('/ai-counselor')}>
               <MessageCircle className="w-4 h-4 mr-2" />
               AI 상담 시작
             </Button>
-            <Button onClick={() => window.location.href = '/assessment'}>
+            <Button onClick={() => navigate('/assessment')}>
               <Plus className="w-4 h-4 mr-2" />
               전문가 상담 예약
             </Button>

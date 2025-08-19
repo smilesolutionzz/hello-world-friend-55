@@ -385,7 +385,7 @@ const PredictionEngine = ({ predictions, confidence, ageGroup, age }: Prediction
           <BarChart3 className="w-4 h-4 mr-2" />
           예측 결과 저장
         </Button>
-        <Button onClick={() => window.location.href = '/assessment'}>
+        <Button onClick={() => navigate('/assessment')}>
           <Target className="w-4 h-4 mr-2" />
           전문가 상담 신청
         </Button>

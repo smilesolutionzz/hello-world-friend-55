@@ -15,6 +15,7 @@ import {
   Crown,
   Sparkles
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Expert {
   id: string;
@@ -81,9 +82,10 @@ const mockExperts: Expert[] = [
 ];
 
 const ExpertList = () => {
+  const navigate = useNavigate();
   const handleConsultation = (expertId: string) => {
     // 구독으로 리다이렉트
-    window.location.href = '/token-subscription?source=expert-consultation';
+    navigate('/token-subscription?source=expert-consultation');
   };
 
   return (
@@ -113,7 +115,7 @@ const ExpertList = () => {
               </div>
             </div>
             <Button 
-              onClick={() => window.location.href = '/token-subscription?source=expert-banner'}
+              onClick={() => navigate('/token-subscription?source=expert-banner')}
               className="btn-brand"
             >
               구독하기
@@ -227,7 +229,7 @@ const ExpertList = () => {
             </div>
           </div>
           <Button 
-            onClick={() => window.location.href = '/token-subscription?source=expert-bottom'}
+            onClick={() => navigate('/token-subscription?source=expert-bottom')}
             size="lg"
             className="btn-brand"
           >

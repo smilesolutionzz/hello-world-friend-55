@@ -129,7 +129,7 @@ const AICounselor = () => {
 
   const connectToExpert = () => {
     // 전문가 연결 페이지로 이동
-    window.location.href = '/assessment';
+    navigate('/assessment');
   };
 
   const connectToAIHExpert = () => {

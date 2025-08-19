@@ -1,6 +1,9 @@
 import ChatInterface from "./ChatInterface";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden">
       {/* Background decoration */}
@@ -40,25 +43,29 @@ const HeroSection = () => {
               프리미엄 플랜으로 전문가 수준의 AI 분석과 개인 맞춤 상담을 받아보세요
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={() => window.location.href = '/premium-assessment'}
+              <Button 
+                size="lg"
+                onClick={() => navigate('/premium-assessment')}
                 className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg font-medium hover:from-yellow-600 hover:to-orange-600 transition-colors shadow-lg flex items-center justify-center gap-2"
               >
                 <span className="text-lg">👑</span>
                 프리미엄 검사 체험
-              </button>
-              <button 
-                onClick={() => window.location.href = '/token-subscription'}
+              </Button>
+              <Button 
+                size="lg"
+                onClick={() => navigate('/token-subscription')}
                 className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
               >
                 구독 플랜 보기
-              </button>
-              <button 
-                onClick={() => window.location.href = '/assessment'}
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                onClick={() => navigate('/assessment')}
                 className="px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary/10 transition-colors"
               >
                 무료 체험하기
-              </button>
+              </Button>
             </div>
           </div>
         </div>

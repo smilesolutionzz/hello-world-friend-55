@@ -24,9 +24,11 @@ import ExpertMatching from "@/components/analysis/ExpertMatching";
 import ConsultationRoom from "@/components/consultation/ConsultationRoom";
 import { ExpertProfile } from "@/types/assessment";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const Assessment = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | 'saju' | null>(null);
@@ -307,7 +309,7 @@ const Assessment = () => {
 
   const handleEndSession = () => {
     // 상담 종료 후 홈으로 돌아가기
-    window.location.href = '/';
+    navigate('/');
   };
 
   const handleBack = () => {

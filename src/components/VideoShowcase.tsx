@@ -1,8 +1,10 @@
 import { Play, Volume2, Users, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useEmblaCarousel from 'embla-carousel-react';
 
 const VideoShowcase = () => {
+  const navigate = useNavigate();
   const [isPlaying, setIsPlaying] = useState<number | null>(null);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
@@ -142,7 +144,7 @@ const VideoShowcase = () => {
               "실시간으로 AI 분석 과정을 보여드립니다"
             </p>
             <button 
-              onClick={() => window.location.href = '/assessment'}
+              onClick={() => navigate('/assessment')}
               className="text-xs text-primary hover:underline"
             >
               직접 체험해보기 →

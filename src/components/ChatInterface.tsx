@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Send, Sparkles, AlertTriangle, ExternalLink, FileText, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 interface InstantReport {
@@ -18,6 +19,7 @@ const ChatInterface = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [report, setReport] = useState<InstantReport | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,7 +139,7 @@ const ChatInterface = () => {
 
         {/* 추가 서비스 안내 */}
         <div className="grid md:grid-cols-2 gap-6">
-          <Card className="p-6 hover-glow cursor-pointer" onClick={() => window.location.href = '/assessment'}>
+          <Card className="p-6 hover-glow cursor-pointer" onClick={() => navigate('/assessment')}>
             <div className="flex items-center gap-4">
               <Clock className="w-8 h-8 text-primary" />
               <div>
@@ -147,7 +149,7 @@ const ChatInterface = () => {
             </div>
           </Card>
 
-          <Card className="p-6 hover-glow cursor-pointer" onClick={() => window.location.href = '/experts'}>
+          <Card className="p-6 hover-glow cursor-pointer" onClick={() => navigate('/experts')}>
             <div className="flex items-center gap-4">
               <ExternalLink className="w-8 h-8 text-primary" />
               <div>
@@ -169,7 +171,7 @@ const ChatInterface = () => {
                 </p>
                 <Button 
                   className="mt-3 btn-brand"
-                  onClick={() => window.location.href = '/experts'}
+                  onClick={() => navigate('/experts')}
                 >
                   전문가 상담 받기
                 </Button>

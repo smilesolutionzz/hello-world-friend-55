@@ -29,6 +29,7 @@ import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadius
 import MediaDisplay from './MediaDisplay';
 import SubscriptionGate from './SubscriptionGate';
 import ProductRecommendation from '@/components/ProductRecommendation';
+import { useNavigate } from "react-router-dom";
 
 interface ObservationResultsProps {
   session: any;
@@ -37,6 +38,7 @@ interface ObservationResultsProps {
 
 const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [generating, setGenerating] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -379,7 +381,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
                         <Button 
                           size="lg" 
                           className="w-full max-w-md mx-auto"
-                          onClick={() => window.location.href = '/token-subscription'}
+                          onClick={() => navigate('/token-subscription')}
                         >
                           <Crown className="h-4 w-4 mr-2" />
                           구독하고 심화 리포트 보기

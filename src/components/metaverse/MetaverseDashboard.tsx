@@ -494,7 +494,7 @@ export const MetaverseDashboard = () => {
       </div>
 
       {/* Session Quick Start */}
-      {selectedEnvironment && selectedAITherapist && userAvatars.length > 0 && (
+      {selectedAITherapist && (
         <Card className="mb-6 border-primary/20 bg-primary/5">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">

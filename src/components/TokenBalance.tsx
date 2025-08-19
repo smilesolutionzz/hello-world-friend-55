@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Coins, Plus, TrendingUp } from 'lucide-react';
+import { Coins, Plus, TrendingUp, Gift } from 'lucide-react';
 import { useTokens } from '@/hooks/useTokens';
 import { useNavigate } from 'react-router-dom';
 
@@ -91,10 +91,14 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 토큰 충전
               </Button>
               {tokenBalance && (
-                <div className="text-xs text-center text-muted-foreground">
+                <div className="text-xs text-center text-muted-foreground space-y-1">
                   <div className="flex items-center gap-1 justify-center">
                     <TrendingUp className="w-3 h-3" />
                     총 사용: {tokenBalance.total_used}개
+                  </div>
+                  <div className="text-xs text-primary/60 flex items-center gap-1 justify-center">
+                    <Gift className="w-3 h-3" />
+                    친구 추천시 10토큰
                   </div>
                 </div>
               )}

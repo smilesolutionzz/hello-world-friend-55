@@ -2603,6 +2603,57 @@ export type Database = {
         }
         Relationships: []
       }
+      user_referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          referral_code: string
+          referred_profile_id: string
+          referrer_profile_id: string
+          reward_given: boolean
+          reward_tokens: number
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code: string
+          referred_profile_id: string
+          referrer_profile_id: string
+          reward_given?: boolean
+          reward_tokens?: number
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referred_profile_id?: string
+          referrer_profile_id?: string
+          reward_given?: boolean
+          reward_tokens?: number
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_referrals_referred_profile_id_fkey"
+            columns: ["referred_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_referrals_referrer_profile_id_fkey"
+            columns: ["referrer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           assigned_by: string | null
@@ -2751,6 +2802,10 @@ export type Database = {
         }
         Returns: Json
       }
+      generate_referral_code: {
+        Args: { p_referrer_user_id: string }
+        Returns: string
+      }
       get_user_family_ids: {
         Args: { user_uuid: string }
         Returns: string[]
@@ -2769,6 +2824,10 @@ export type Database = {
       is_family_creator: {
         Args: { family_uuid: string; user_uuid: string }
         Returns: boolean
+      }
+      process_referral_reward: {
+        Args: { p_referral_code: string; p_referred_user_id: string }
+        Returns: Json
       }
     }
     Enums: {

@@ -17,9 +17,13 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { useReferrals } from '@/hooks/useReferrals';
+import { useToast } from '@/hooks/use-toast';
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { processReferralReward } = useReferrals();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -50,7 +54,22 @@ const Auth = () => {
     };
     
     checkUser();
-  }, [navigate]);
+    
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        // Process referral reward if there's a stored referral code
+        const referralCode = localStorage.getItem('referralCode');
+        if (referralCode) {
+          await processReferralReward(referralCode);
+          localStorage.removeItem('referralCode');
+        }
+        navigate('/dashboard');
+      }
+    });
+    
+    return () => subscription.unsubscribe();
+  }, [navigate, processReferralReward]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +85,8 @@ const Auth = () => {
       if (error) {
         setError(error.message);
       } else {
-        navigate('/dashboard');
+        // Auth state change listener will handle navigation and referral processing
+        // navigate('/dashboard'); // Removed to let the auth listener handle it
       }
     } catch (err) {
       setError("로그인 중 오류가 발생했습니다.");
@@ -114,6 +134,7 @@ const Auth = () => {
         setError(error.message);
       } else {
         setSuccess("회원가입이 완료되었습니다! 이메일을 확인해주세요.");
+        // Auth state change listener will handle referral processing after email confirmation
       }
     } catch (err) {
       setError("회원가입 중 오류가 발생했습니다.");

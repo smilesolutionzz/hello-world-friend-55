@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +30,7 @@ interface PredictionEngineProps {
 
 const PredictionEngine = ({ predictions, confidence, ageGroup, age }: PredictionEngineProps) => {
   const [selectedTab, setSelectedTab] = useState("treatment");
+  const navigate = useNavigate();
 
   // Helper functions to safely access Korean prediction data
   const getTreatmentData = () => {

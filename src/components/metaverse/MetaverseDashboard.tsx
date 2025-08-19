@@ -29,12 +29,14 @@ import {
   Star,
   BookOpen,
   Flower,
-  Mountain
+  Mountain,
+  Home
 } from 'lucide-react';
 import { TherapyEnvironment3D, UserAvatar } from '@/components/metaverse/TherapyEnvironment3D';
 import { useMetaverseTherapy } from '@/hooks/useMetaverseTherapy';
 import { supabase } from '@/integrations/supabase/client';
 import { saveMetaverseSessionToTimeline } from '@/utils/timelineHelpers';
+import { useNavigate } from 'react-router-dom';
 
 const environmentIcons = {
   forest: TreePine,
@@ -46,6 +48,7 @@ const environmentIcons = {
 };
 
 export const MetaverseDashboard = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const {
     loading,
@@ -450,14 +453,24 @@ export const MetaverseDashboard = () => {
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Globe className="h-8 w-8 text-primary" />
-            메타버스 치료 환경
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            몰입형 3D 가상 치료 공간에서 새로운 차원의 치료를 경험하세요
-          </p>
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+          >
+            <Home className="w-4 h-4" />
+            홈으로
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Globe className="h-8 w-8 text-primary" />
+              메타버스 치료 환경
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              몰입형 3D 가상 치료 공간에서 새로운 차원의 치료를 경험하세요
+            </p>
+          </div>
         </div>
         
         <Button onClick={handleEnvironmentRecommendation} disabled={loading || !currentProfile}>

@@ -12,9 +12,11 @@ import {
   Send,
   Bot,
   Shield,
-  Sparkles
+  Sparkles,
+  Home
 } from "lucide-react";
 import { chatWithAICounselor } from "@/services/openai";
+import { useNavigate } from "react-router-dom";
 
 interface ChatMessage {
   id: string;
@@ -25,6 +27,7 @@ interface ChatMessage {
 }
 
 const AICounselor = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -191,6 +194,18 @@ const AICounselor = () => {
       <div className="container mx-auto px-6 pt-8 pb-16">
         {/* Header */}
         <div className="text-center mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <Home className="w-4 h-4" />
+              홈으로
+            </Button>
+            <div className="flex-1" />
+          </div>
+          
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
               <Bot className="w-8 h-8 text-white" />

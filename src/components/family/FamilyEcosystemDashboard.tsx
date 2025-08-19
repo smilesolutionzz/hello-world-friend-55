@@ -19,12 +19,16 @@ import {
   Lightbulb,
   TreePine,
   Zap,
-  Clock
+  Clock,
+  ArrowLeft,
+  Home
 } from "lucide-react";
 import { useFamilyEcosystem } from "@/hooks/useFamilyEcosystem";
 import TimelineTab from "@/components/timeline/TimelineTab";
+import { useNavigate } from "react-router-dom";
 
 const FamilyEcosystemDashboard = () => {
+  const navigate = useNavigate();
   const {
     familyMembers,
     familyDynamics,
@@ -78,6 +82,18 @@ const FamilyEcosystemDashboard = () => {
     <div className="space-y-6 p-6">
       {/* Header */}
       <div className="text-center space-y-4">
+        <div className="flex items-center justify-between mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+          >
+            <Home className="w-4 h-4" />
+            홈으로
+          </Button>
+          <div className="flex-1" />
+        </div>
+        
         <div className="flex items-center justify-center gap-3">
           <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
             <Users className="w-6 h-6 text-white" />

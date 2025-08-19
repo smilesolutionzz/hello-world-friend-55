@@ -126,7 +126,7 @@ const TokenGate: React.FC<TokenGateProps> = ({
 
         <div className="space-y-3">
           <Button
-            onClick={() => navigate('/subscription')}
+            onClick={() => navigate('/token-subscription')}
             className="w-full"
             size="lg"
           >

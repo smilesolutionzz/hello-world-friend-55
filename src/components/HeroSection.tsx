@@ -48,7 +48,7 @@ const HeroSection = () => {
                 프리미엄 검사 체험
               </button>
               <button 
-                onClick={() => window.location.href = '/subscription'}
+                onClick={() => window.location.href = '/token-subscription'}
                 className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
               >
                 구독 플랜 보기

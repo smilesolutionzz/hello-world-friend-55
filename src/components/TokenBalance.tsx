@@ -48,7 +48,7 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
           <Button
             size="sm"
             variant="outline"
-            onClick={() => navigate('/subscription')}
+            onClick={() => navigate('/token-subscription')}
             className="text-xs px-2 py-1 h-6"
           >
             <Plus className="w-3 h-3 mr-1" />
@@ -83,7 +83,7 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
             <div className="space-y-2">
               <Button
                 size="sm"
-                onClick={() => navigate('/subscription')}
+                onClick={() => navigate('/token-subscription')}
                 className="w-full"
                 variant={isLowBalance ? "default" : "outline"}
               >

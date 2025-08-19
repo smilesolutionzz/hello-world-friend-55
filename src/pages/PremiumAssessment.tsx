@@ -177,7 +177,7 @@ const PremiumAssessment = () => {
                 전문적인 심리검사와 상세한 분석 보고서를 받아보실 수 있습니다
               </p>
               <Button 
-                onClick={() => navigate('/pricing')}
+                onClick={() => navigate('/token-subscription')}
                 className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-8 py-3"
                 size="lg"
               >

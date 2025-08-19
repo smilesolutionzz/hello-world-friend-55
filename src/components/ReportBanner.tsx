@@ -32,7 +32,7 @@ const ReportBanner: React.FC<ReportBannerProps> = ({ onDismiss }) => {
           <div className="flex items-center gap-2">
             <Button
               size="sm"
-              onClick={() => navigate('/pricing')}
+              onClick={() => navigate('/token-subscription')}
               className="h-8 px-3 text-xs"
               aria-label="구독 플랜 보기"
             >

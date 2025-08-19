@@ -155,7 +155,7 @@ const SubscriptionGate: React.FC<SubscriptionGateProps> = ({ onProceed, sessionC
           <div className="text-center">
             <Button
               variant="outline"
-              onClick={() => navigate('/subscription')}
+              onClick={() => navigate('/token-subscription')}
               className="text-primary border-primary hover:bg-primary/10"
             >
               프리미엄 플랜 보기
@@ -221,7 +221,7 @@ const SubscriptionGate: React.FC<SubscriptionGateProps> = ({ onProceed, sessionC
 
         <div className="space-y-3">
           <Button
-            onClick={() => navigate('/subscription')}
+            onClick={() => navigate('/token-subscription')}
             className="w-full"
             size="lg"
           >

@@ -25,7 +25,7 @@ const PaymentSuccess = () => {
           description: "결제 정보가 올바르지 않습니다.",
           variant: "destructive"
         });
-        navigate('/subscription');
+        navigate('/token-subscription');
         return;
       }
 
@@ -52,7 +52,7 @@ const PaymentSuccess = () => {
           description: error.message || "결제 확인 중 오류가 발생했습니다.",
           variant: "destructive"
         });
-        navigate('/subscription');
+        navigate('/token-subscription');
       } finally {
         setLoading(false);
       }

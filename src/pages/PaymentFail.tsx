@@ -43,7 +43,7 @@ const PaymentFail = () => {
           <div className="space-y-3">
             <Button 
               className="w-full" 
-              onClick={() => navigate('/subscription')}
+              onClick={() => navigate('/token-subscription')}
             >
               <RotateCcw className="h-4 w-4 mr-2" />
               다시 시도하기

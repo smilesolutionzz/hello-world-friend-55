@@ -83,7 +83,7 @@ const mockExperts: Expert[] = [
 const ExpertList = () => {
   const handleConsultation = (expertId: string) => {
     // 구독으로 리다이렉트
-    window.location.href = '/subscription?source=expert-consultation';
+    window.location.href = '/token-subscription?source=expert-consultation';
   };
 
   return (
@@ -113,7 +113,7 @@ const ExpertList = () => {
               </div>
             </div>
             <Button 
-              onClick={() => window.location.href = '/subscription?source=expert-banner'}
+              onClick={() => window.location.href = '/token-subscription?source=expert-banner'}
               className="btn-brand"
             >
               구독하기
@@ -227,7 +227,7 @@ const ExpertList = () => {
             </div>
           </div>
           <Button 
-            onClick={() => window.location.href = '/subscription?source=expert-bottom'}
+            onClick={() => window.location.href = '/token-subscription?source=expert-bottom'}
             size="lg"
             className="btn-brand"
           >

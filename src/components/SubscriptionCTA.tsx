@@ -80,7 +80,7 @@ const SubscriptionCTA = ({
         
         <div className="flex flex-col sm:flex-row gap-3">
           <Button 
-            onClick={() => navigate('/pricing')}
+            onClick={() => navigate('/token-subscription')}
             className="flex items-center gap-2 w-full sm:w-auto"
             aria-label="구독 플랜 보기"
           >

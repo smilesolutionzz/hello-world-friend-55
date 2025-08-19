@@ -354,7 +354,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
                         <Button 
                           size="lg" 
                           className="w-full max-w-md mx-auto"
-                          onClick={() => window.location.href = '/pricing'}
+                          onClick={() => window.location.href = '/token-subscription'}
                         >
                           <Crown className="h-4 w-4 mr-2" />
                           구독하고 심화 리포트 보기

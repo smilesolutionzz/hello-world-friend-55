@@ -493,6 +493,38 @@ export const MetaverseDashboard = () => {
         </Button>
       </div>
 
+      {/* Session Quick Start */}
+      {selectedEnvironment && selectedAITherapist && userAvatars.length > 0 && (
+        <Card className="mb-6 border-primary/20 bg-primary/5">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex -space-x-2">
+                  {getEnvironmentIcon(selectedEnvironment.environment_type)}
+                  <Bot className="h-8 w-8 text-primary ml-2" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">메타버스 세션 준비 완료</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedEnvironment.name} • {selectedAITherapist.name}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button 
+                  onClick={handleCreateSession}
+                  size="lg"
+                  className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+                >
+                  <Play className="h-4 w-4 mr-2" />
+                  세션 시작하기
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="environments">가상 환경</TabsTrigger>

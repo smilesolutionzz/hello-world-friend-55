@@ -34,8 +34,6 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
 
     setIsLoading(true);
     try {
-      // 토큰 차감
-      await consumeTokens('dream_analysis', TOKENS_REQUIRED);
 
       const { data, error } = await supabase.functions.invoke('dream-interpreter', {
         body: { dreamText: dreamText.trim() }
@@ -76,43 +74,6 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
     setInterpretation("");
   };
 
-  // 토큰이 부족한 경우 TokenGate 표시
-  if (!checkTokenAvailability(TOKENS_REQUIRED)) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-800 relative overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-64 h-64 bg-purple-400/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-32 right-16 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-1/2 left-1/3 w-72 h-72 bg-indigo-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
-        </div>
-        
-        <div className="relative z-10 container mx-auto px-6 pt-8 pb-16">
-          <div className="flex items-center justify-between mb-8">
-            <Button 
-              variant="ghost" 
-              onClick={onBack}
-              className="flex items-center gap-2 text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              뒤로가기
-            </Button>
-          </div>
-          
-          <TokenGate 
-            tokensRequired={TOKENS_REQUIRED}
-            featureName="AI 꿈해몽"
-            onProceed={() => {}}
-          >
-            <div className="text-center space-y-2">
-              <p className="text-sm text-muted-foreground">
-                AI가 당신의 꿈을 심층 분석하여 숨겨진 의미를 해석해드립니다.
-              </p>
-            </div>
-          </TokenGate>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-800 relative overflow-hidden">
@@ -147,9 +108,8 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
               당신의 꿈이 담고 있는 의미를 AI가 해석해드립니다
             </p>
             <div className="flex items-center justify-center gap-2 mt-2">
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Coins className="w-3 h-3" />
-                {TOKENS_REQUIRED} 토큰 필요
+              <Badge variant="secondary" className="flex items-center gap-1 bg-green-500/20 text-green-400 border-green-400/30">
+                무료 이용 가능
               </Badge>
             </div>
           </div>

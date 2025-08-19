@@ -123,73 +123,152 @@ const Dashboard = () => {
 
       setProfile(profileData);
 
+      if (!profileData) return;
+
       // Load families
-      const { data: familiesData } = await supabase
-        .from('families')
+      const { data: familyMemberData } = await supabase
+        .from('family_members')
         .select(`
           *,
-          family_members(
-            *,
-            profile:profiles(*)
+          families:family_id (
+            id,
+            name,
+            description,
+            created_at
+          ),
+          profiles:profile_id (
+            id,
+            display_name,
+            phone,
+            birth_date,
+            gender
           )
         `)
-        .order('created_at', { ascending: false });
+        .eq('profile_id', profileData.id);
 
-      setFamilies(familiesData || []);
+      // 가족 데이터 구성
+      const familyMap = new Map();
+      familyMemberData?.forEach((member: any) => {
+        const family = member.families;
+        if (!family) return;
+        
+        if (!familyMap.has(family.id)) {
+          familyMap.set(family.id, {
+            ...family,
+            family_members: []
+          });
+        }
+        
+        familyMap.get(family.id).family_members.push({
+          id: member.id,
+          relationship: member.relationship,
+          is_primary_caregiver: member.is_primary_caregiver,
+          profile: {
+            ...member.profiles,
+            role: member.relationship
+          }
+        });
+      });
 
-      // Load observations (mock data with weekly scores for change detection)
-      const mockObservations: Observation[] = [
-        {
-          id: '1',
+      const familiesArray = Array.from(familyMap.values());
+      setFamilies(familiesArray);
+
+      // Load real assessment data
+      const { data: assessmentData } = await supabase
+        .from('assessments')
+        .select('*')
+        .eq('profile_id', profileData.id)
+        .order('completed_at', { ascending: false })
+        .limit(20);
+
+      // Load real consultation data
+      const { data: consultationData } = await supabase
+        .from('consultations')
+        .select('*')
+        .eq('profile_id', profileData.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      // Load observation session data
+      const { data: observationData } = await supabase
+        .from('observation_sessions')
+        .select('*')
+        .eq('profile_id', profileData.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      // Combine all data into observations format
+      const allObservations: Observation[] = [];
+
+      // Add assessments
+      assessmentData?.forEach((assessment: any) => {
+        allObservations.push({
+          id: assessment.id,
           user_id: user.id,
-          age_group: 'child',
-          tags: ['정서', '행동'],
-          score_overall: 85,
-          created_at: new Date().toISOString(),
+          age_group: assessment.age_group,
+          tags: ['검사', assessment.age_group],
+          score_overall: typeof assessment.results === 'object' && assessment.results.total 
+            ? assessment.results.total 
+            : 75,
+          created_at: assessment.completed_at,
           profile: profileData
-        },
-        {
-          id: '2', 
+        });
+      });
+
+      // Add consultations
+      consultationData?.forEach((consultation: any) => {
+        allObservations.push({
+          id: consultation.id,
           user_id: user.id,
           age_group: 'adult',
-          tags: ['인지', '사회성'],
-          score_overall: 72,
-          created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          profile: profileData
-        },
-        {
-          id: '3',
-          user_id: user.id,
-          age_group: 'child',
-          tags: ['정서', '행동'],
-          score_overall: 45, // 47% decrease from previous week (85 → 45)
-          created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-          profile: profileData
-        }
-      ];
-      setObservations(mockObservations);
-
-      // Check for significant changes and show notifications
-      const changeDetection = calculateWeeklyChange(mockObservations);
-      if (changeDetection.hasSignificantChange) {
-        // Show toast notification
-        toast({
-          title: "변화 감지",
-          description: `최근 2주간 ${changeDetection.changeRate > 0 ? '상승' : '하락'} ${Math.abs(changeDetection.changeRate).toFixed(0)}% 변화가 감지되었습니다.`,
-          duration: 5000,
+          tags: ['상담', consultation.session_type || '일반상담'],
+          score_overall: 80,
+          created_at: consultation.created_at,
+          profile: {
+            ...profileData,
+            display_name: consultation.expert_name || '전문가'
+          }
         });
+      });
 
-        // Email notification placeholder for subscribers
-        if (userStats?.subscription !== 'free') {
-          console.log('이메일 알림 전송 (구독자용):', changeDetection);
+      // Add observation sessions
+      observationData?.forEach((observation: any) => {
+        allObservations.push({
+          id: observation.id,
+          user_id: user.id,
+          age_group: observation.domain === 'infant' ? 'infant' : observation.domain === 'child' ? 'child' : 'adult',
+          tags: ['관찰일지', observation.domain],
+          score_overall: observation.analysis_data?.score?.overall || 75,
+          created_at: observation.created_at,
+          profile: {
+            ...profileData,
+            display_name: observation.observer_name || profileData.display_name || '관찰자'
+          }
+        });
+      });
+
+      // Sort by creation date
+      allObservations.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      setObservations(allObservations);
+
+      // Check for significant changes if we have data
+      if (allObservations.length > 1) {
+        const changeDetection = calculateWeeklyChange(allObservations);
+        if (changeDetection.hasSignificantChange) {
+          toast({
+            title: "변화 감지",
+            description: `최근 기간 동안 ${changeDetection.changeRate > 0 ? '상승' : '하락'} ${Math.abs(changeDetection.changeRate).toFixed(0)}% 변화가 감지되었습니다.`,
+            duration: 5000,
+          });
         }
       }
 
-      // Load user stats (mock data)
+      // Load user stats
       const mockUserStats: UserStats = {
         user_id: user.id,
-        free_uses: 1,
-        subscription: 'free'
+        free_uses: Math.max(0, 3 - allObservations.length), // 실제 사용량 반영
+        subscription: allObservations.length > 5 ? 'premium' : 'free'
       };
       setUserStats(mockUserStats);
 

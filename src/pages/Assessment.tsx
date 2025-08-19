@@ -64,8 +64,28 @@ const Assessment = () => {
         .select('family_id')
         .eq('profile_id', profile.id)
         .single();
-
+      
       const family_id = familyMember?.family_id || null;
+
+      // 평가 결과를 assessments 테이블에 저장
+      const { data: assessmentData, error: assessmentError } = await supabase
+        .from('assessments')
+        .insert({
+          profile_id: profile.id,
+          family_id,
+          age_group: results.ageGroup || 'adult',
+          age_at_assessment: selectedAge || 30,
+          results: results,
+          analysis: null,
+          recommendations: null,
+          risk_level: results.severity || 'medium'
+        })
+        .select()
+        .single();
+
+      if (assessmentError) {
+        console.error('Error saving assessment:', assessmentError);
+      }
 
       // Timeline에 검사 기록 저장
       const { error } = await supabase

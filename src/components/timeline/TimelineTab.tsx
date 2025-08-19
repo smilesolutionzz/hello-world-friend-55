@@ -197,26 +197,51 @@ const TimelineTab = ({ familyId, members }: TimelineTabProps) => {
   // Load activities from database
   useEffect(() => {
     const loadActivities = async () => {
-      if (!familyId) return;
-      
       setLoading(true);
+      
       try {
-        const { data, error } = await supabase
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!profile) {
+          setLoading(false);
+          return;
+        }
+
+        let query = supabase
           .from('timeline_activities')
           .select('*')
-          .eq('family_id', familyId)
           .order('created_at', { ascending: false });
+
+        // familyId가 있으면 가족 활동, 없으면 개인 활동
+        if (familyId) {
+          query = query.eq('family_id', familyId);
+        } else {
+          query = query.eq('member_id', profile.id);
+        }
+
+        const { data, error } = await query;
 
         if (error) {
           console.error('Error loading timeline activities:', error);
-          // Fall back to mock data if database fails
-          setActivities(mockActivities);
+          setActivities([]);
         } else {
+          console.log('Loaded activities:', data);
           setActivities((data as TimelineActivity[]) || []);
         }
+
       } catch (error) {
-        console.error('Error loading timeline activities:', error);
-        setActivities(mockActivities);
+        console.error('Error in loadActivities:', error);
+        setActivities([]);
       } finally {
         setLoading(false);
       }

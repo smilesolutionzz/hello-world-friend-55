@@ -11,10 +11,27 @@ export const saveMetaverseSessionToTimeline = async (
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // 사용자 프로필 조회
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!profile) return;
+
+    // 가족 정보 조회
+    const { data: familyMember } = await supabase
+      .from('family_members')
+      .select('family_id')
+      .eq('profile_id', profile.id)
+      .single();
+
     await supabase
       .from('timeline_activities')
       .insert({
-        family_id: 'temp-family-id',
+        family_id: familyMember?.family_id || null,
+        member_id: profile.id,
         type: 'SYSTEM',
         title: `메타버스 치료 세션`,
         summary: `${environmentName} 환경에서 ${duration}분간 메타버스 치료를 진행했습니다.${therapistName ? ` 담당: ${therapistName}` : ''}`,
@@ -51,10 +68,27 @@ export const saveAssessmentToTimeline = async (
       ? results.overallScore 
       : Object.values(results as Record<string, number>).reduce((a, b) => a + b, 0) / Object.keys(results).length;
 
+    // 사용자 프로필 조회
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!profile) return;
+
+    // 가족 정보 조회
+    const { data: familyMember } = await supabase
+      .from('family_members')
+      .select('family_id')
+      .eq('profile_id', profile.id)
+      .single();
+
     await supabase
       .from('timeline_activities')
       .insert({
-        family_id: 'temp-family-id',
+        family_id: familyMember?.family_id || null,
+        member_id: profile.id,
         type: 'TEST',
         title: testTitle,
         summary: `${ageGroup} 대상 ${testTitle}를 완료했습니다. 종합 점수: ${Math.round(overallScore)}점`,
@@ -86,10 +120,27 @@ export const saveConsultationToTimeline = async (
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // 사용자 프로필 조회
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!profile) return;
+
+    // 가족 정보 조회
+    const { data: familyMember } = await supabase
+      .from('family_members')
+      .select('family_id')
+      .eq('profile_id', profile.id)
+      .single();
+
     await supabase
       .from('timeline_activities')
       .insert({
-        family_id: 'temp-family-id',
+        family_id: familyMember?.family_id || null,
+        member_id: profile.id,
         type: 'CONSULT',
         title: `${consultationType} 세션`,
         summary: summary,

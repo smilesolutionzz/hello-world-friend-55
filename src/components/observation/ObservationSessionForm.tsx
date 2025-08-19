@@ -18,10 +18,27 @@ const saveObservationToTimeline = async (sessionId: string, sessionName: string,
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // 사용자 프로필 조회
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!profile) return;
+
+    // 가족 정보 조회
+    const { data: familyMember } = await supabase
+      .from('family_members')
+      .select('family_id')
+      .eq('profile_id', profile.id)
+      .single();
+
     await supabase
       .from('timeline_activities')
       .insert({
-        family_id: 'temp-family-id',
+        family_id: familyMember?.family_id || null,
+        member_id: profile.id,
         type: 'NOTE',
         title: `관찰일지: ${sessionName}`,
         summary: `${observerName}가 작성한 관찰 기록입니다. 관찰 기간: ${sessionData.observation_period_start} ~ ${sessionData.observation_period_end}`,

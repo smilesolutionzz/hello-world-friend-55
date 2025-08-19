@@ -1451,6 +1451,70 @@ export type Database = {
         }
         Relationships: []
       }
+      metaverse_session_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          invitation_code: string
+          invitee_email: string | null
+          invitee_profile_id: string | null
+          inviter_profile_id: string
+          message: string | null
+          session_id: string
+          status: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          invitation_code?: string
+          invitee_email?: string | null
+          invitee_profile_id?: string | null
+          inviter_profile_id: string
+          message?: string | null
+          session_id: string
+          status?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          invitation_code?: string
+          invitee_email?: string | null
+          invitee_profile_id?: string | null
+          inviter_profile_id?: string
+          message?: string | null
+          session_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metaverse_session_invitations_invitee_profile_id_fkey"
+            columns: ["invitee_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metaverse_session_invitations_inviter_profile_id_fkey"
+            columns: ["inviter_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metaverse_session_invitations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "metaverse_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       metaverse_sessions: {
         Row: {
           created_at: string

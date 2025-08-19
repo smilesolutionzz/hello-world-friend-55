@@ -30,7 +30,13 @@ import {
   BookOpen,
   Flower,
   Mountain,
-  Home
+  Home,
+  UserPlus,
+  Share2,
+  Mail,
+  Copy,
+  Check,
+  Loader2
 } from 'lucide-react';
 import { TherapyEnvironment3D, UserAvatar } from '@/components/metaverse/TherapyEnvironment3D';
 import { useMetaverseTherapy } from '@/hooks/useMetaverseTherapy';
@@ -94,6 +100,11 @@ export const MetaverseDashboard = () => {
   });
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [videoEnabled, setVideoEnabled] = useState(true);
+  const [isAIResponding, setIsAIResponding] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteMessage, setInviteMessage] = useState('');
+  const [copiedCode, setCopiedCode] = useState(false);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -263,7 +274,7 @@ export const MetaverseDashboard = () => {
   };
 
   const handleSendMessage = async () => {
-    if (!userMessage.trim() || !selectedAITherapist || !currentProfile) return;
+    if (!userMessage.trim() || !selectedAITherapist || !currentProfile || isAIResponding) return;
 
     const newMessage = {
       id: Date.now(),
@@ -274,6 +285,7 @@ export const MetaverseDashboard = () => {
 
     setChatMessages(prev => [...prev, newMessage]);
     setUserMessage('');
+    setIsAIResponding(true);
 
     try {
       const response = await generateAITherapistResponse(
@@ -316,6 +328,52 @@ export const MetaverseDashboard = () => {
         description: "AI 치료사 응답 중 오류가 발생했습니다.",
         variant: "destructive",
       });
+    } finally {
+      setIsAIResponding(false);
+    }
+  };
+
+  const handleInviteFriend = async () => {
+    if (!currentProfile || !currentSession || !inviteEmail.trim()) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('metaverse_session_invitations')
+        .insert({
+          session_id: currentSession.id,
+          inviter_profile_id: currentProfile.id,
+          invitee_email: inviteEmail,
+          message: inviteMessage || '메타버스 치료 세션에 참여하세요!',
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // 초대 링크 생성
+      const inviteUrl = `${window.location.origin}/metaverse?invite=${data.invitation_code}`;
+      
+      // 클립보드에 복사
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
+
+      setShowInviteModal(false);
+      setInviteEmail('');
+      setInviteMessage('');
+
+      toast({
+        title: "초대 완료",
+        description: "초대 링크가 클립보드에 복사되었습니다.",
+      });
+    } catch (error) {
+      console.error('Error sending invitation:', error);
+      toast({
+        title: "오류",
+        description: "초대 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -335,6 +393,15 @@ export const MetaverseDashboard = () => {
           </div>
           
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setShowInviteModal(true)}
+              title="친구 초대"
+            >
+              <UserPlus className="h-4 w-4" />
+            </Button>
+            
             <Button
               variant={audioEnabled ? "default" : "secondary"}
               size="icon"
@@ -441,6 +508,16 @@ export const MetaverseDashboard = () => {
                   </div>
                 </div>
               ))}
+              
+              {/* AI 응답 로딩 표시 */}
+              {isAIResponding && (
+                <div className="flex justify-start">
+                  <div className="bg-muted p-3 rounded-lg flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-sm text-muted-foreground">AI 치료사가 응답 중...</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Message Input */}
@@ -451,15 +528,72 @@ export const MetaverseDashboard = () => {
                   value={userMessage}
                   onChange={(e) => setUserMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  disabled={!selectedAITherapist}
+                  disabled={!selectedAITherapist || isAIResponding}
                 />
-                <Button onClick={handleSendMessage} disabled={!selectedAITherapist}>
-                  전송
+                <Button 
+                  onClick={handleSendMessage} 
+                  disabled={!selectedAITherapist || isAIResponding || !userMessage.trim()}
+                >
+                  {isAIResponding ? <Loader2 className="h-4 w-4 animate-spin" /> : '전송'}
                 </Button>
               </div>
             </div>
           </div>
         </div>
+
+        {/* 초대 모달 */}
+        {showInviteModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <Card className="w-full max-w-md">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <UserPlus className="h-5 w-5" />
+                  친구 초대
+                </CardTitle>
+                <CardDescription>
+                  이메일로 친구를 초대하거나 링크를 공유하세요
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">초대할 이메일</label>
+                  <Input
+                    type="email"
+                    placeholder="friend@example.com"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium">초대 메시지 (선택사항)</label>
+                  <Textarea
+                    placeholder="함께 메타버스 치료 세션에 참여해요!"
+                    value={inviteMessage}
+                    onChange={(e) => setInviteMessage(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+                
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowInviteModal(false)}
+                  >
+                    취소
+                  </Button>
+                  <Button
+                    onClick={handleInviteFriend}
+                    disabled={!inviteEmail.trim()}
+                  >
+                    {copiedCode ? <Check className="h-4 w-4 mr-2" /> : <Mail className="h-4 w-4 mr-2" />}
+                    초대하기
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     );
   }

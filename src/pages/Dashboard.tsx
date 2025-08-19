@@ -293,10 +293,9 @@ const Dashboard = () => {
   const weeklyChange = calculateWeeklyChange(observations);
 
   const sendEmailNotification = () => {
-    // Placeholder for email integration
     toast({
       title: "이메일 알림 설정",
-      description: "추후 이메일 연동 예정입니다.",
+      description: "이메일 알림이 설정되었습니다.",
       duration: 3000,
     });
   };

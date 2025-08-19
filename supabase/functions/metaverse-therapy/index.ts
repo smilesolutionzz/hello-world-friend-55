@@ -352,26 +352,57 @@ async function generateAITherapistResponse(data: any) {
   });
 
   const aiResult = await response.json();
-  const therapistResponse = JSON.parse(aiResult.choices[0].message.content);
+  console.log('AI result from OpenAI:', aiResult);
+  
+  if (!aiResult.choices || !aiResult.choices[0]) {
+    throw new Error('OpenAI API에서 유효한 응답을 받지 못했습니다.');
+  }
+
+  let therapistResponse;
+  try {
+    therapistResponse = JSON.parse(aiResult.choices[0].message.content);
+  } catch (parseError) {
+    console.error('JSON parsing error:', parseError);
+    console.log('Raw content:', aiResult.choices[0].message.content);
+    
+    // Fallback response if JSON parsing fails
+    therapistResponse = {
+      verbal_response: aiResult.choices[0].message.content,
+      gesture_animation: "차분한 손짓",
+      facial_expression: "따뜻한 미소",
+      therapeutic_technique: "경청",
+      emotional_assessment: "대화 진행 중",
+      suggested_activities: ["계속 대화하기"],
+      follow_up_questions: ["더 자세히 말씀해 주시겠어요?"],
+      environment_adjustments: "편안한 분위기 유지"
+    };
+  }
+
+  console.log('Therapist response:', therapistResponse);
 
   // Save interaction
-  await supabase
-    .from('ai_therapist_interactions')
-    .insert({
-      profile_id: profileId,
-      ai_therapist_id: aiTherapistId,
-      interaction_type: 'chat',
-      interaction_data: {
-        user_message: userMessage,
-        ai_response: therapistResponse,
-        session_context: sessionContext
-      },
-      emotional_analysis: {
-        detected_emotion: therapistResponse.emotional_assessment,
-        confidence: 0.8
-      },
-      duration_minutes: 1
-    });
+  try {
+    await supabase
+      .from('ai_therapist_interactions')
+      .insert({
+        profile_id: profileId,
+        ai_therapist_id: aiTherapistId,
+        interaction_type: 'chat',
+        interaction_data: {
+          user_message: userMessage,
+          ai_response: therapistResponse,
+          session_context: sessionContext
+        },
+        emotional_analysis: {
+          detected_emotion: therapistResponse.emotional_assessment || 'neutral',
+          confidence: 0.8
+        },
+        duration_minutes: 1
+      });
+  } catch (saveError) {
+    console.error('Error saving interaction:', saveError);
+    // Continue anyway, don't fail the response
+  }
 
   return new Response(
     JSON.stringify({ response: therapistResponse, success: true }),

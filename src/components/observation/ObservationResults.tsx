@@ -117,14 +117,36 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
 
       if (error) throw error;
 
-      // In a real implementation, this would trigger PDF download
+      if (data && data.content && data.content.html) {
+        // Create PDF blob from HTML content
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          printWindow.document.write(data.content.html);
+          printWindow.document.close();
+          
+          // Wait for content to load then trigger print/save as PDF
+          printWindow.onload = () => {
+            printWindow.focus();
+            printWindow.print();
+          };
+        }
+        
+        // Also create a downloadable HTML file as backup
+        const blob = new Blob([data.content.html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${session.session_name || '관찰리포트'}_${new Date().toISOString().split('T')[0]}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
       toast({
         title: "PDF 리포트 생성 완료",
-        description: "전문 관찰 리포트가 생성되었습니다.",
+        description: "전문 관찰 리포트가 생성되었습니다. 브라우저의 인쇄 기능을 사용해 PDF로 저장하세요.",
       });
-
-      // For demo purposes, show the generated content
-      console.log('Generated report:', data);
 
     } catch (error) {
       console.error('Error generating PDF:', error);

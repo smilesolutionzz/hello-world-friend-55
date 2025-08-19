@@ -268,6 +268,39 @@ export type Database = {
         }
         Relationships: []
       }
+      auth_attempts: {
+        Row: {
+          attempt_type: string
+          created_at: string
+          email: string | null
+          id: string
+          ip_address: string | null
+          success: boolean
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          attempt_type: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          ip_address?: string | null
+          success?: boolean
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          attempt_type?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          ip_address?: string | null
+          success?: boolean
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       business_impact_metrics: {
         Row: {
           absenteeism_reduction_percent: number | null
@@ -2052,6 +2085,30 @@ export type Database = {
         }
         Relationships: []
       }
+      security_settings: {
+        Row: {
+          created_at: string
+          id: string
+          setting_name: string
+          setting_value: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          setting_name: string
+          setting_value: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          setting_name?: string
+          setting_value?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       session_participants: {
         Row: {
           avatar_id: string | null
@@ -2827,6 +2884,10 @@ export type Database = {
         Args: { session_id: string }
         Returns: boolean
       }
+      check_login_attempts: {
+        Args: { user_email: string }
+        Returns: boolean
+      }
       consume_tokens: {
         Args: {
           p_feature_id?: string
@@ -2866,6 +2927,17 @@ export type Database = {
       is_organization_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      log_auth_attempt: {
+        Args: {
+          p_attempt_type?: string
+          p_email?: string
+          p_ip_address?: string
+          p_success?: boolean
+          p_user_agent?: string
+          p_user_id?: string
+        }
+        Returns: undefined
       }
       process_referral_reward: {
         Args: { p_referral_code: string; p_referred_user_id: string }

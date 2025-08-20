@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      assessment_enhanced_analysis: {
+        Row: {
+          assessment_type: string
+          created_at: string
+          enhanced_analysis: string
+          id: string
+          raw_results: Json
+          recommendations: string[] | null
+          risk_level: string | null
+          score_interpretation: Json
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          assessment_type: string
+          created_at?: string
+          enhanced_analysis: string
+          id?: string
+          raw_results: Json
+          recommendations?: string[] | null
+          risk_level?: string | null
+          score_interpretation: Json
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          assessment_type?: string
+          created_at?: string
+          enhanced_analysis?: string
+          id?: string
+          raw_results?: Json
+          recommendations?: string[] | null
+          risk_level?: string | null
+          score_interpretation?: Json
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       assessments: {
         Row: {
           age_at_assessment: number | null

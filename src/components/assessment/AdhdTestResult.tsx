@@ -103,8 +103,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium">평균</span>
-                <span className="text-2xl font-bold text-brand-gradient">{average.toFixed(1)}점</span>
+                <span className="text-lg font-medium">규준집단 대비</span>
+                <span className="text-2xl font-bold text-brand-gradient">{((total/54)*100).toFixed(0)}%</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -160,15 +160,21 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           </div>
           
           <div className="bg-muted/30 rounded-lg p-6">
-            <p className="text-lg leading-relaxed">
-              <strong>해석:</strong> {evaluation.level === "정상 범위" 
-                ? "ADHD 자가체크 결과 현재 증상들이 일반적인 범위 내에 있는 것으로 나타났습니다. 부주의나 과잉행동/충동성 증상이 일상생활에 큰 지장을 주지 않는 수준입니다. 하지만 스트레스나 환경 변화로 인해 증상이 나타날 수 있으므로, 규칙적인 생활 패턴과 적절한 스트레스 관리를 통해 현재의 안정적인 상태를 유지하시기 바랍니다."
-                : evaluation.level === "경계선 수준"
-                ? "ADHD 자가체크 결과 일부 증상들이 경계선 수준에 있어 주의 깊은 관찰이 필요합니다. 부주의나 과잉행동/충동성 증상이 때때로 일상생활에 영향을 미칠 수 있습니다. 생활 습관 개선, 시간 관리 기술 훈련, 규칙적인 운동 등을 통해 증상을 관리해보시고, 증상이 지속되거나 악화될 경우 정신건강의학과 전문의와 상담받으시기를 권장합니다."
-                : evaluation.level === "중등도 수준"
-                ? "ADHD 자가체크 결과 중등도 수준의 증상이 확인되어 전문가의 정확한 평가가 필요합니다. 부주의나 과잉행동/충동성 증상이 학업, 업무, 또는 대인관계에서 상당한 어려움을 야기할 수 있습니다. 정신건강의학과에서 정확한 진단을 받고 적절한 치료 계획을 수립하시기를 강력히 권장드립니다. 약물치료와 행동치료를 병행하면 증상 개선에 많은 도움이 됩니다."
-                : "ADHD 자가체크 결과 심각한 수준의 증상이 확인되어 즉시 전문가의 도움이 필요합니다. 현재 증상들이 일상생활 전반에 상당한 지장을 주고 있을 가능성이 높습니다. 정신건강의학과에서 정확한 진단과 즉시 치료를 받으시기를 적극 권장드립니다. ADHD는 적절한 치료를 통해 충분히 관리 가능한 질환이므로 전문가와 상담하여 맞춤형 치료 계획을 수립하시기 바랍니다."}
-            </p>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-5 h-5 bg-primary/20 rounded-full animate-pulse"></div>
+              <span className="text-lg font-medium">AI 전문가 해석 생성 중...</span>
+            </div>
+            <div id="ai-analysis-content">
+              <p className="text-lg leading-relaxed">
+                <strong>기본 해석:</strong> {evaluation.level === "정상 범위" 
+                  ? "ADHD 자가체크 결과 현재 증상들이 일반적인 범위 내에 있는 것으로 나타났습니다. 부주의나 과잉행동/충동성 증상이 일상생활에 큰 지장을 주지 않는 수준입니다."
+                  : evaluation.level === "경계선 수준"
+                  ? "ADHD 자가체크 결과 일부 증상들이 경계선 수준에 있어 주의 깊은 관찰이 필요합니다. 부주의나 과잉행동/충동성 증상이 때때로 일상생활에 영향을 미칠 수 있습니다."
+                  : evaluation.level === "중등도 수준"
+                  ? "ADHD 자가체크 결과 중등도 수준의 증상이 확인되어 전문가의 정확한 평가가 필요합니다. 부주의나 과잉행동/충동성 증상이 학업, 업무, 또는 대인관계에서 상당한 어려움을 야기할 수 있습니다."
+                  : "ADHD 자가체크 결과 심각한 수준의 증상이 확인되어 즉시 전문가의 도움이 필요합니다. 현재 증상들이 일상생활 전반에 상당한 지장을 주고 있을 가능성이 높습니다."}
+              </p>
+            </div>
           </div>
           
           <div className="text-center pt-4">

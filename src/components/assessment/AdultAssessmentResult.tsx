@@ -102,8 +102,8 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium">평균</span>
-                <span className="text-2xl font-bold text-brand-gradient">{(total / Object.keys(categoryScores).length).toFixed(1)}점</span>
+                <span className="text-lg font-medium">규준집단 대비</span>
+                <span className="text-2xl font-bold text-brand-gradient">{Math.round((total / (Object.keys(categoryScores).length * 3)) * 100)}%</span>
               </div>
               
               <div className="flex justify-between items-center">

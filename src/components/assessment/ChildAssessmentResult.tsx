@@ -98,8 +98,8 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium">평균</span>
-                <span className="text-2xl font-bold text-brand-gradient">{(total / Object.keys(gameScores).length).toFixed(1)}점</span>
+                <span className="text-lg font-medium">규준집단 대비</span>
+                <span className="text-2xl font-bold text-brand-gradient">{Math.round((total / (Object.keys(gameScores).length * 100)) * 100)}%</span>
               </div>
               
               <div className="flex justify-between items-center">

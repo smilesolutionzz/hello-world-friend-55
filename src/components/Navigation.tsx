@@ -226,80 +226,80 @@ const Navigation = () => {
               <div className="flex flex-col h-full">
                 {/* Header */}
                 <div className="p-6 border-b border-border/50">
-                  <h2 className="text-lg font-bold text-brand-gradient">HIGHLIGHT PRO</h2>
+                  <h2 className="text-lg font-bold text-brand-gradient">AIHPRO</h2>
                 </div>
                 
                 {/* Navigation Links */}
-                <div className="flex-1 p-4 space-y-2 overflow-y-auto">
+                <div className="flex-1 p-4 space-y-1 overflow-y-auto">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
                     onClick={() => handleNavigation('/')}
                   >
-                    <Home className="mr-3 h-5 w-5 text-primary" />
+                    <Home className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">홈</span>
                   </Button>
                   
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
                     onClick={() => handleNavigation('/assessment')}
                   >
-                    <Clock className="mr-3 h-5 w-5 text-primary" />
+                    <Clock className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">3분 검사</span>
                   </Button>
                   
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
                     onClick={() => handleNavigation('/premium-assessment')}
                   >
-                    <Crown className="mr-3 h-5 w-5 text-yellow-500" />
+                    <Crown className="mr-3 h-5 w-5 text-yellow-500 shrink-0" />
                     <span className="font-medium">프리미엄 검사</span>
                   </Button>
                   
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
                     onClick={() => handleNavigation('/observation')}
                   >
-                    <BookOpen className="mr-3 h-5 w-5 text-primary" />
+                    <BookOpen className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">관찰일지</span>
                   </Button>
                   
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
                     onClick={() => handleNavigation('/ai-counselor')}
                   >
-                    <MessageCircle className="mr-3 h-5 w-5 text-primary" />
+                    <MessageCircle className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">AI 상담사</span>
                   </Button>
                   
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
                     onClick={() => handleNavigation('/metaverse')}
                   >
-                    <Brain className="mr-3 h-5 w-5 text-primary" />
+                    <Brain className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">메타버스</span>
                   </Button>
                   
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
                     onClick={() => handleNavigation('/family')}
                   >
-                    <Users className="mr-3 h-5 w-5 text-primary" />
+                    <Users className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">가족케어</span>
                   </Button>
                   
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
                     onClick={() => handleNavigation('/token-subscription')}
                   >
-                    <Shield className="mr-3 h-5 w-5 text-primary" />
+                    <Shield className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">구독플랜</span>
                   </Button>
                 </div>

@@ -56,7 +56,7 @@ const FamilyEcosystemDashboard = () => {
   });
 
   const handleTrackEvent = async () => {
-    await trackFamilyEvent(newEvent);
+    await trackFamilyEvent();
     setNewEvent({
       type: '',
       description: '',

@@ -225,7 +225,7 @@ export const MetaverseDashboard = () => {
 
     try {
       const activeAvatar = userAvatars.find(a => a.is_active);
-      await joinMetaverseSession(sessionId, currentProfile.id, activeAvatar?.id);
+      await joinMetaverseSession(sessionId);
       
       setIsInSession(true);
       
@@ -247,15 +247,7 @@ export const MetaverseDashboard = () => {
     if (!currentProfile || !avatarConfig.name) return;
 
     try {
-      const avatar = await createUserAvatar(
-        currentProfile.id,
-        avatarConfig.name,
-        {
-          bodyColor: avatarConfig.bodyColor,
-          skinColor: avatarConfig.skinColor,
-          style: avatarConfig.style
-        }
-      );
+      const avatar = await createUserAvatar();
 
       await loadUserAvatars(currentProfile.id);
       

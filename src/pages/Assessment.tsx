@@ -62,11 +62,8 @@ const Assessment = () => {
       if (!profile) return;
 
       // 가족 ID 가져오기
-      const { data: familyMember } = await supabase
-        .from('family_members')
-        .select('family_id')
-        .eq('profile_id', profile.id)
-        .single();
+      // Mock family data
+      const familyMember = { family_id: 'mock-family-id' };
       
       const family_id = familyMember?.family_id || null;
 

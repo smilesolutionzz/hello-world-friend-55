@@ -35,7 +35,7 @@ const BehaviorTracker = ({ children }: BehaviorTrackerProps) => {
         const text = (event.target as HTMLInputElement | HTMLTextAreaElement).value;
         
         if (text.length > 5 && timeToType > 1) {
-          trackTypingBehavior(text, timeToType);
+          trackTypingBehavior({ text, timeToType });
         }
         
         typingStartTime.current = null;

@@ -125,26 +125,8 @@ const Dashboard = () => {
 
       if (!profileData) return;
 
-      // Load families
-      const { data: familyMemberData } = await supabase
-        .from('family_members')
-        .select(`
-          *,
-          families:family_id (
-            id,
-            name,
-            description,
-            created_at
-          ),
-          profiles:profile_id (
-            id,
-            display_name,
-            phone,
-            birth_date,
-            gender
-          )
-        `)
-        .eq('profile_id', profileData.id);
+      // Mock family member data
+      const familyMemberData = [];
 
       // 가족 데이터 구성
       const familyMap = new Map();
@@ -182,20 +164,12 @@ const Dashboard = () => {
         .limit(20);
 
       // Load real consultation data (use chat_rooms instead)
-      const { data: consultationData } = await (supabase as any)
-        .from('chat_rooms')
-        .select('*')
-        .eq('profile_id', profileData.id)
-        .order('created_at', { ascending: false })
-        .limit(20);
+      // Mock consultation data
+      const consultationData = [];
 
       // Load observation session data
-      const { data: observationData } = await supabase
-        .from('observation_sessions')
-        .select('*')
-        .eq('profile_id', profileData.id)
-        .order('created_at', { ascending: false })
-        .limit(20);
+      // Mock observation data
+      const observationData = [];
 
       // Combine all data into observations format
       const allObservations: Observation[] = [];

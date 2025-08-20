@@ -89,8 +89,8 @@ const Observation = () => {
 
   const getDomainDisplayName = (domain: string) => {
     const names = {
-      child_development: '아동발달',
-      psychology: '심리상담',
+      child_development: '아동발달 추천',
+      psychology: '심리상담 추천',
       elderly_care: '노인케어',
       workplace: '직장적응',
       learning: '학습능력',

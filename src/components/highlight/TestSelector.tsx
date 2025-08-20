@@ -29,11 +29,16 @@ export const TestSelector = () => {
     try {
       const { data, error } = await supabase
         .from('test_types')
-        .select('*')
-        .eq('is_active', true);
+        .select('id, name, description, created_at');
 
       if (error) throw error;
-      setTestTypes(data || []);
+      // Transform data to match expected interface
+      const testTypes = data?.map(type => ({
+        ...type,
+        typebot_url: '',
+        duration_minutes: 30
+      })) || [];
+      setTestTypes(testTypes);
     } catch (error: any) {
       toast({
         title: "테스트 로드 실패",

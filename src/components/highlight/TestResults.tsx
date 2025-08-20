@@ -71,8 +71,6 @@ export const TestResults = () => {
           id,
           scores,
           completed_at,
-          ai_analysis,
-          expert_feedback,
           test_types (
             name,
             description

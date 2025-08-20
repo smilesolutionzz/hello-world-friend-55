@@ -70,8 +70,8 @@ export const AIHighlightDashboard: React.FC<AIHighlightDashboardProps> = ({ prof
       const { data: observationLogs } = await supabase
         .from('observation_sessions')
         .select('*')
-        .eq('profile_id', targetProfileId)
-        .order('created_at', { ascending: false });
+        .eq('user_id', targetProfileId)
+        .order('created_at', { ascending: false }) as any;
 
       // Load test results
       const { data: testResults } = await supabase

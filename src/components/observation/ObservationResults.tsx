@@ -56,10 +56,10 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
       }
 
       const { data, error } = await supabase
-        .from('user_subscription_usage')
+        .from('subscriptions')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         console.error('Error loading subscription data:', error);

@@ -169,7 +169,11 @@ const ObservationSessionForm = ({ template, onSessionCreated, onCancel }: Observ
 
       const { data, error } = await supabase
         .from('observation_sessions')
-        .insert(sessionPayload)
+        .insert({
+          user_id: user.id,
+          session_type: 'observation',
+          observations: sessionPayload
+        })
         .select()
         .single();
 

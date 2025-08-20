@@ -46,10 +46,15 @@ const AssessmentHistory = () => {
           *,
           profile:profiles(display_name)
         `)
-        .order('completed_at', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setAssessments((data || []) as Assessment[]);
+      // Transform data to match Assessment interface
+      const assessments = data?.map(assessment => ({
+        ...assessment,
+        completed_at: assessment.created_at
+      })) || [];
+      setAssessments(assessments as any);
     } catch (error) {
       console.error('Error loading assessments:', error);
     }

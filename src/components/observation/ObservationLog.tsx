@@ -65,21 +65,19 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
     setIsSubmitting(true);
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       const { error } = await supabase
         .from('observation_sessions')
         .insert({
-          profile_id: profileId,
-          domain: formData.setting || 'general',
-          session_name: `관찰일지 - ${formData.observation_date}`,
-          observer_name: formData.observer_name,
-          observation_period_start: `${formData.observation_date}T00:00:00Z`,
-          observation_period_end: `${formData.observation_date}T23:59:59Z`,
-          raw_data: {
+          user_id: user.id,
+          session_type: formData.setting || 'general',
+          observations: {
             observation_date: formData.observation_date,
-            duration_minutes: parseInt(formData.duration_minutes),
+            duration_minutes: parseInt(formData.duration_minutes) || 0,
             setting: formData.setting,
-            child_age_months: parseInt(formData.child_age_months),
-            observation_type: formData.observation_type,
+            observer_name: formData.observer_name,
             behaviors_observed: formData.behaviors_observed,
             social_interactions: formData.social_interactions,
             communication_patterns: formData.communication_patterns,
@@ -91,7 +89,7 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
             next_steps: formData.next_steps,
             tags: formData.tags
           }
-        });
+        } as any);
 
       if (error) throw error;
 

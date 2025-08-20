@@ -288,7 +288,12 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess }) 
 
       const { data: session, error: saveError } = await supabase
         .from('observation_sessions')
-        .insert(sessionPayload)
+        .insert({
+          user_id: user.id,
+          session_type: 'observation',
+          observations: sessionPayload,
+          summary: data.report.situation
+        })
         .select()
         .single();
 

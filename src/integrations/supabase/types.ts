@@ -1981,6 +1981,7 @@ export type Database = {
           id: string
           phone: string | null
           role: string | null
+          subscription_tier: string | null
           updated_at: string
           user_id: string
         }
@@ -1993,6 +1994,7 @@ export type Database = {
           id?: string
           phone?: string | null
           role?: string | null
+          subscription_tier?: string | null
           updated_at?: string
           user_id: string
         }
@@ -2005,6 +2007,7 @@ export type Database = {
           id?: string
           phone?: string | null
           role?: string | null
+          subscription_tier?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -2289,6 +2292,83 @@ export type Database = {
           leadership_satisfaction?: number | null
           stress_propagation_risk?: number | null
           team_harmony_score?: number | null
+        }
+        Relationships: []
+      }
+      test_results: {
+        Row: {
+          ai_analysis: string | null
+          completed_at: string
+          created_at: string
+          expert_feedback: string | null
+          id: string
+          pdf_url: string | null
+          raw_data: Json | null
+          scores: Json
+          test_type_id: string
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          completed_at?: string
+          created_at?: string
+          expert_feedback?: string | null
+          id?: string
+          pdf_url?: string | null
+          raw_data?: Json | null
+          scores: Json
+          test_type_id: string
+          user_id: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          completed_at?: string
+          created_at?: string
+          expert_feedback?: string | null
+          id?: string
+          pdf_url?: string | null
+          raw_data?: Json | null
+          scores?: Json
+          test_type_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "test_results_test_type_id_fkey"
+            columns: ["test_type_id"]
+            isOneToOne: false
+            referencedRelation: "test_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      test_types: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+          typebot_url: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          typebot_url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          typebot_url?: string
         }
         Relationships: []
       }

@@ -9,6 +9,13 @@ import PremiumAssessment from "./pages/PremiumAssessment";
 import AICounselor from "./pages/AICounselor";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+
+// HIGHLIGHT MVP Pages
+import HighlightAuth from "./pages/HighlightAuth";
+import HighlightDashboard from "./pages/HighlightDashboard";
+import HighlightSubscription from "./pages/HighlightSubscription";
+import { TypebotEmbed } from "./components/highlight/TypebotEmbed";
+import { TestResults } from "./components/highlight/TestResults";
 import Metaverse from "./pages/Metaverse";
 import Family from "./pages/Family";
 import Corporate from "./pages/Corporate";
@@ -32,12 +39,20 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* HIGHLIGHT MVP Routes */}
+          <Route path="/auth" element={<HighlightAuth />} />
+          <Route path="/dashboard" element={<HighlightDashboard />} />
+          <Route path="/test/:testId" element={<TypebotEmbed />} />
+          <Route path="/results/:resultId" element={<TestResults />} />
+          <Route path="/subscription" element={<HighlightSubscription />} />
+          
+          {/* Legacy Routes */}
           <Route path="/" element={<Index />} />
           <Route path="/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/ai-counselor" element={<AICounselor />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/legacy-auth" element={<Auth />} />
+          <Route path="/legacy-dashboard" element={<Dashboard />} />
           <Route path="/metaverse" element={<Metaverse />} />
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />

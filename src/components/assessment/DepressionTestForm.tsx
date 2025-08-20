@@ -82,7 +82,7 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
   };
 
   const currentAnswer = answers[currentQuestion];
-  const canProceed = currentAnswer > 0;
+  const canProceed = currentAnswer >= 0;
 
   return (
     <Card className="max-w-4xl mx-auto p-8">

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, Share } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useSubscriptionGuard } from '@/hooks/useSubscriptionGuard';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
 interface TestResult {
@@ -19,6 +20,35 @@ interface TestResult {
   ai_analysis?: string;
   expert_feedback?: string;
 }
+
+const PremiumFeature = ({ children }: { children: React.ReactNode }) => {
+  const { allowed, loading } = useSubscriptionGuard();
+  const navigate = useNavigate();
+  
+  if (loading) {
+    return <div className="animate-pulse bg-muted h-20 rounded"></div>;
+  }
+  
+  if (!allowed) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>프리미엄 기능</CardTitle>
+          <CardDescription>
+            이 기능은 프리미엄 플랜에서만 사용할 수 있습니다.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={() => navigate('/subscription')}>
+            프리미엄 구독하기
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+  
+  return <>{children}</>;
+};
 
 export const TestResults = () => {
   const { resultId } = useParams();
@@ -158,10 +188,12 @@ export const TestResults = () => {
               <Share className="w-4 h-4 mr-2" />
               공유
             </Button>
-            <Button size="sm">
-              <Download className="w-4 h-4 mr-2" />
-              PDF 다운로드
-            </Button>
+            <PremiumFeature>
+              <Button size="sm">
+                <Download className="w-4 h-4 mr-2" />
+                PDF 다운로드
+              </Button>
+            </PremiumFeature>
           </div>
         </div>
       </div>
@@ -241,32 +273,29 @@ export const TestResults = () => {
         </Card>
 
         {/* 전문가 피드백 */}
-        {result.expert_feedback ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>전문가 피드백</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground leading-relaxed">
-                {result.expert_feedback}
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle>전문가 피드백</CardTitle>
-              <CardDescription>
-                전문가 피드백은 프리미엄 플랜에서 제공됩니다.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button onClick={() => navigate('/subscription')}>
-                프리미엄 구독하기
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+        <PremiumFeature>
+          {result.expert_feedback ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>전문가 피드백</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">
+                  {result.expert_feedback}
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>전문가 피드백</CardTitle>
+                <CardDescription>
+                  전문가 피드백이 아직 작성되지 않았습니다.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          )}
+        </PremiumFeature>
       </div>
     </div>
   );

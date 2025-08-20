@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { User, LogOut, History, Crown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 
 interface Profile {
   display_name: string;
@@ -23,6 +24,7 @@ interface RecentTest {
 }
 
 export default function HighlightDashboard() {
+  const { authenticated, loading: authLoading } = useAuthGuard();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [recentTests, setRecentTests] = useState<RecentTest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,22 +32,17 @@ export default function HighlightDashboard() {
   const { toast } = useToast();
 
   useEffect(() => {
-    checkAuth();
-  }, []);
+    if (authenticated) {
+      loadData();
+    }
+  }, [authenticated]);
 
-  const checkAuth = async () => {
+  const loadData = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/auth');
-        return;
-      }
-
       await fetchProfile();
       await fetchRecentTests();
     } catch (error) {
-      console.error('Auth check failed:', error);
-      navigate('/auth');
+      console.error('Data loading failed:', error);
     } finally {
       setLoading(false);
     }
@@ -106,7 +103,7 @@ export default function HighlightDashboard() {
     navigate('/auth');
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

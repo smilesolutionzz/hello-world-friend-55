@@ -42,19 +42,19 @@ const App = () => (
         <Routes>
           {/* HIGHLIGHT MVP Routes */}
           <Route path="/auth" element={<HighlightAuth />} />
-          <Route path="/dashboard" element={<HighlightDashboard />} />
+          <Route path="/highlight-dashboard" element={<HighlightDashboard />} />
           <Route path="/highlight-ai" element={<HighlightAI />} />
           <Route path="/test/:testId" element={<TypebotEmbed />} />
           <Route path="/results/:resultId" element={<TestResults />} />
           <Route path="/subscription" element={<HighlightSubscription />} />
           
-          {/* Legacy Routes */}
+          {/* Main Routes */}
           <Route path="/" element={<Index />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/ai-counselor" element={<AICounselor />} />
           <Route path="/legacy-auth" element={<Auth />} />
-          <Route path="/legacy-dashboard" element={<Dashboard />} />
           <Route path="/metaverse" element={<Metaverse />} />
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />

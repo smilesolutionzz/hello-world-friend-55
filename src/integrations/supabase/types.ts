@@ -120,10 +120,41 @@ export type Database = {
         }
         Relationships: []
       }
+      expert_notes: {
+        Row: {
+          author_id: string
+          created_at: string
+          id: string
+          is_visible_to_family: boolean | null
+          observation_id: string
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          created_at?: string
+          id?: string
+          is_visible_to_family?: boolean | null
+          observation_id: string
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          id?: string
+          is_visible_to_family?: boolean | null
+          observation_id?: string
+          text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       family_members: {
         Row: {
           age: number | null
           created_at: string
+          family_id: string | null
           id: string
           name: string
           relationship: string | null
@@ -132,6 +163,7 @@ export type Database = {
         Insert: {
           age?: number | null
           created_at?: string
+          family_id?: string | null
           id?: string
           name: string
           relationship?: string | null
@@ -140,12 +172,130 @@ export type Database = {
         Update: {
           age?: number | null
           created_at?: string
+          family_id?: string | null
           id?: string
           name?: string
           relationship?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "family_members_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      observation_logs: {
+        Row: {
+          behavior_type: string | null
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          family_member_id: string | null
+          id: string
+          is_crisis: boolean | null
+          location: string | null
+          media_files: Json | null
+          severity: number | null
+          tags: string[] | null
+          title: string
+          triggers: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          behavior_type?: string | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          family_member_id?: string | null
+          id?: string
+          is_crisis?: boolean | null
+          location?: string | null
+          media_files?: Json | null
+          severity?: number | null
+          tags?: string[] | null
+          title: string
+          triggers?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          behavior_type?: string | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          family_member_id?: string | null
+          id?: string
+          is_crisis?: boolean | null
+          location?: string | null
+          media_files?: Json | null
+          severity?: number | null
+          tags?: string[] | null
+          title?: string
+          triggers?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "observation_logs_family_member_id_fkey"
+            columns: ["family_member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      observation_sessions: {
+        Row: {
+          created_at: string
+          duration_minutes: number | null
+          family_member_id: string | null
+          id: string
+          observations: Json | null
+          session_type: string
+          status: string | null
+          summary: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_minutes?: number | null
+          family_member_id?: string | null
+          id?: string
+          observations?: Json | null
+          session_type: string
+          status?: string | null
+          summary?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_minutes?: number | null
+          family_member_id?: string | null
+          id?: string
+          observations?: Json | null
+          session_type?: string
+          status?: string | null
+          summary?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "observation_sessions_family_member_id_fkey"
+            columns: ["family_member_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -169,6 +319,48 @@ export type Database = {
           display_name?: string | null
           id?: string
           subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          amount: number | null
+          created_at: string
+          currency: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          payment_method: string | null
+          plan_type: string
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          payment_method?: string | null
+          plan_type: string
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          payment_method?: string | null
+          plan_type?: string
+          status?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -286,6 +478,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tokens: {
+        Row: {
+          created_at: string
+          id: string
+          token_count: number | null
+          total_purchased: number | null
+          total_used: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          token_count?: number | null
+          total_purchased?: number | null
+          total_used?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          token_count?: number | null
+          total_purchased?: number | null
+          total_used?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {

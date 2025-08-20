@@ -47,8 +47,8 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
       const { data: familyMember } = await supabase
         .from('family_members')
         .select('family_id')
-        .eq('profile_id', profile.id)
-        .single();
+        .eq('user_id', profile.user_id)
+        .maybeSingle();
 
       await supabase
         .from('timeline_activities')

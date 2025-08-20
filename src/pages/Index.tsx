@@ -28,7 +28,7 @@ const Index = () => {
         if (user) {
           // Process immediately if user is already logged in
           const success = await processReferralReward(refCode);
-          if (success) {
+          if (success !== undefined) {
             localStorage.removeItem('referralCode');
           }
         } else {

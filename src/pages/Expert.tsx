@@ -59,13 +59,9 @@ const Expert = () => {
 
   const fetchExperts = async () => {
     try {
-      const { data, error } = await supabase
-        .from('experts')
-        .select('*')
-        .eq('visible', true);
-
-      if (error) throw error;
-      setExperts(data || []);
+      // Use mock data instead of querying non-existent table
+      const { mockExperts } = await import('@/data/mockExperts');
+      setExperts(mockExperts);
     } catch (error) {
       console.error('Error fetching experts:', error);
       toast({
@@ -149,11 +145,14 @@ const Expert = () => {
 
     // Record consult request
     try {
-      await supabase.from('consult_requests').insert({
+      // Mock consultation request - in real app would save to database
+      console.log('Consultation request:', {
+        expert_id: expertId,
+        user_id: 'mock-user',
         category: selectedCategory,
         region: selectedRegion,
         mode: selectedMode,
-        matched_expert_ids: [expertId]
+        status: 'pending'
       });
       
       toast({

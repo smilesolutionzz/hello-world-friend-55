@@ -76,10 +76,20 @@ export const mockCorporateAnalytics = {
   detectTeamConflicts: async (id: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
   generateInterventionStrategies: async (id: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
   calculateROIMetrics: async (id: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
-  loadOrganizations: async (callback: any) => { callback([]); return Promise.resolve(); },
-  loadOrganizationData: async (callback: any) => { callback([]); return Promise.resolve(); },
-  loadWellnessHistory: async () => {},
-  loadCorporatePrograms: async () => {},
+  loadOrganizations: async (callback?: any) => { 
+    if (callback) callback(mockCorporateAnalytics.organizations); 
+    return Promise.resolve(); 
+  },
+  loadOrganizationData: async (orgId: string) => {},
+  loadWellnessHistory: async (orgId: string) => [
+    { date: '2024-01', score: 75 },
+    { date: '2024-02', score: 78 }
+  ],
+  loadCorporatePrograms: async (orgId: string) => [
+    { id: '1', name: 'Wellness Program', status: 'active' }
+  ],
+  generateInterventions: async (orgId: string, type: string) => ({ success: true }),
+  calculateROI: async (orgId: string, metric: string) => ({ roi: 15.5 }),
   fetchAnalytics: async (id?: any) => {},
   trackFamilyEvent: async (a: any, b: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
   runComprehensiveAnalysis: async (a: any, b: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] })

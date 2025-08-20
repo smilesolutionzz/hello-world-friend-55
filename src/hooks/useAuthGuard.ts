@@ -20,16 +20,17 @@ export const useAuthGuard = (): AuthGuardReturn => {
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error || !session?.user) {
-          navigate('/auth');
-          return;
+          setAuthenticated(false);
+          setUser(null);
+          // Don't navigate immediately, let components handle this
+        } else {
+          setUser(session.user);
+          setAuthenticated(true);
         }
-
-        setUser(session.user);
-        setAuthenticated(true);
       } catch (error) {
         console.error('Auth check error:', error);
-        navigate('/auth');
         setAuthenticated(false);
+        setUser(null);
       } finally {
         setLoading(false);
       }

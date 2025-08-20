@@ -3,8 +3,8 @@ export function useReferrals() {
     loading: false,
     referrals: [],
     generateReferralCode: async () => 'REF123',
-    trackReferral: async () => {},
+    trackReferral: async (code?: any) => {},
     fetchReferrals: async () => {},
-    processReferralReward: async () => {}
+    processReferralReward: async (code?: any) => {}
   };
 }

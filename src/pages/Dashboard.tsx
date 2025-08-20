@@ -121,7 +121,7 @@ const Dashboard = () => {
         .eq('user_id', user.id)
         .single();
 
-      setProfile(profileData);
+      setProfile({ ...profileData, role: 'user' } as any);
 
       if (!profileData) return;
 
@@ -181,9 +181,9 @@ const Dashboard = () => {
         .order('completed_at', { ascending: false })
         .limit(20);
 
-      // Load real consultation data
-      const { data: consultationData } = await supabase
-        .from('consultations')
+      // Load real consultation data (use chat_rooms instead)
+      const { data: consultationData } = await (supabase as any)
+        .from('chat_rooms')
         .select('*')
         .eq('profile_id', profileData.id)
         .order('created_at', { ascending: false })
@@ -211,7 +211,7 @@ const Dashboard = () => {
             ? assessment.results.total 
             : 75,
           created_at: assessment.completed_at,
-          profile: profileData
+          profile: { ...profileData, role: 'user' } as any
         });
       });
 
@@ -226,8 +226,9 @@ const Dashboard = () => {
           created_at: consultation.created_at,
           profile: {
             ...profileData,
+            role: 'user',
             display_name: consultation.expert_name || '전문가'
-          }
+          } as any
         });
       });
 
@@ -242,8 +243,9 @@ const Dashboard = () => {
           created_at: observation.created_at,
           profile: {
             ...profileData,
+            role: 'user',
             display_name: observation.observer_name || profileData.display_name || '관찰자'
-          }
+          } as any
         });
       });
 

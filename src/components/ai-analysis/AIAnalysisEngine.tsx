@@ -81,15 +81,16 @@ export const AIAnalysisEngine: React.FC<AIAnalysisEngineProps> = ({ data, onAnal
 
       if (error) throw error;
 
-      // 분석 결과 저장
+      // Store analysis result in assessments table for now
       const { error: saveError } = await supabase
-        .from('ai_analysis_reports')
+        .from('assessments')
         .insert({
           profile_id: data.profileId,
-          analysis_type: 'comprehensive',
-          analysis_data: analysisResult,
-          risk_level: analysisResult.risk_level,
-          confidence_score: analysisResult.overall_score
+          age_group: 'comprehensive',
+          age_at_assessment: 0,
+          results: analysisResult,
+          analysis: `AI Analysis - Risk Level: ${analysisResult.risk_level}`,
+          risk_level: analysisResult.risk_level
         });
 
       if (saveError) throw saveError;

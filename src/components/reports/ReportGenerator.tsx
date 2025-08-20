@@ -62,20 +62,23 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ data, onReport
 
       if (error) throw error;
 
-      // 리포트 메타데이터 저장
+      // Store report metadata in assessments table for now
       const { data: reportRecord, error: saveError } = await supabase
-        .from('generated_reports')
+        .from('assessments')
         .insert({
           profile_id: data.profileId,
-          report_type: data.reportType,
-          file_url: reportResult.report_url,
-          metadata: {
+          age_group: data.reportType,
+          age_at_assessment: 0,
+          results: {
+            report_url: reportResult.report_url,
             child_name: data.childName,
             birth_date: data.birthDate,
             generation_date: new Date().toISOString(),
             ai_analysis_id: data.aiAnalysis.id,
             expert_feedback_id: data.expertFeedback?.id
-          }
+          },
+          analysis: `Generated Report - ${data.reportType}`,
+          risk_level: data.aiAnalysis?.risk_level || 'medium'
         })
         .select()
         .single();

@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 // HIGHLIGHT MVP Pages
 import HighlightAuth from "./pages/HighlightAuth";
 import HighlightDashboard from "./pages/HighlightDashboard";
+import HighlightAI from "./pages/HighlightAI";
 import HighlightSubscription from "./pages/HighlightSubscription";
 import { TypebotEmbed } from "./components/highlight/TypebotEmbed";
 import { TestResults } from "./components/highlight/TestResults";
@@ -42,6 +43,7 @@ const App = () => (
           {/* HIGHLIGHT MVP Routes */}
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/dashboard" element={<HighlightDashboard />} />
+          <Route path="/highlight-ai" element={<HighlightAI />} />
           <Route path="/test/:testId" element={<TypebotEmbed />} />
           <Route path="/results/:resultId" element={<TestResults />} />
           <Route path="/subscription" element={<HighlightSubscription />} />

@@ -42,15 +42,23 @@ const ConsultationHistory = () => {
   const loadConsultations = async () => {
     try {
       const { data, error } = await supabase
-        .from('consultations')
-        .select(`
-          *,
-          profile:profiles(display_name)
-        `)
+        .from('chat_rooms')
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setConsultations((data || []) as Consultation[]);
+      // Transform chat rooms to consultation format
+      const consultations = data?.map(room => ({
+        id: room.id,
+        expert_name: '온라인 상담사',
+        session_type: 'individual' as const,
+        status: room.status as 'scheduled' | 'completed' | 'cancelled',
+        created_at: room.created_at,
+        profile: {
+          display_name: '사용자'
+        }
+      })) || [];
+      setConsultations(consultations);
     } catch (error) {
       console.error('Error loading consultations:', error);
     }

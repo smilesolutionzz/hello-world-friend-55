@@ -58,7 +58,7 @@ const App = () => (
           <Route path="/metaverse" element={<Metaverse />} />
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />
-          <Route path="/subscription" element={<Subscription />} />
+          <Route path="/legacy-subscription" element={<Subscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/share/:shareId" element={<ShareView />} />

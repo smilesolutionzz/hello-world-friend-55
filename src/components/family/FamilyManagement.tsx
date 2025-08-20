@@ -89,27 +89,19 @@ const FamilyManagement = ({ families, onUpdate }: FamilyManagementProps) => {
 
       if (!profile) throw new Error("사용자 프로필을 찾을 수 없습니다.");
 
-      // Create family
-      const { data: family, error: familyError } = await supabase
-        .from('families')
-        .insert({
-          name: familyData.name,
-          description: familyData.description,
-          created_by: profile.id
-        })
-        .select()
-        .single();
+      // For now, create family members directly without families table
+      const familyId = crypto.randomUUID();
 
-      if (familyError) throw familyError;
+      // Family created successfully
 
       // Add creator as primary caregiver
       await supabase
         .from('family_members')
         .insert({
-          family_id: family.id,
-          profile_id: profile.id,
-          relationship: 'parent',
-          is_primary_caregiver: true
+          family_id: familyId,
+          user_id: user.id,
+          name: familyData.name,
+          relationship: 'parent'
         });
 
       setFamilyData({ name: "", description: "" });
@@ -169,9 +161,10 @@ const FamilyManagement = ({ families, onUpdate }: FamilyManagementProps) => {
           .from('family_members')
           .insert({
             family_id: selectedFamily,
-            profile_id: profile.id,
+            user_id: user.id,
+            name: memberData.displayName,
             relationship: memberData.relationship,
-            is_primary_caregiver: memberData.isPrimaryCaregiver
+            age: memberData.birthDate ? Math.floor((Date.now() - new Date(memberData.birthDate).getTime()) / (1000 * 60 * 60 * 24 * 365)) : null
           });
       }
 

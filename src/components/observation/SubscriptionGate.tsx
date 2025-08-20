@@ -38,12 +38,12 @@ const SubscriptionGate: React.FC<SubscriptionGateProps> = ({ onProceed, sessionC
       }
 
       const { data, error } = await supabase
-        .from('user_subscription_usage')
-        .select('usage_count, subscription_status, trial_used')
+        .from('subscriptions')
+        .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         throw error;
       }
 
@@ -55,9 +55,9 @@ const SubscriptionGate: React.FC<SubscriptionGateProps> = ({ onProceed, sessionC
       
       // Type guard to ensure subscription_status is valid
       const validatedUsage: SubscriptionUsage = {
-        usage_count: usageData.usage_count,
-        subscription_status: (usageData.subscription_status === 'premium' ? 'premium' : 'free') as 'free' | 'premium',
-        trial_used: usageData.trial_used
+        usage_count: (usageData as any).usage_count || 0,
+        subscription_status: ((usageData as any).status === 'active' ? 'premium' : 'free') as 'free' | 'premium',
+        trial_used: (usageData as any).trial_used || false
       };
       
       setUsage(validatedUsage);

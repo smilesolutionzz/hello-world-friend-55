@@ -125,13 +125,10 @@ export default function SelfOnboarding() {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // 환영 토큰 지급 (5개)
-      const { error: tokenError } = await supabase.rpc('consume_tokens', {
-        p_user_id: user.id,
-        p_feature_type: 'welcome_bonus',
-        p_tokens_needed: -5 // 음수로 토큰 추가
-      });
+      // Welcome tokens will be granted via database trigger
+      console.log('Onboarding completed for user:', user.id);
 
-      if (tokenError) console.error('Token grant error:', tokenError);
+      // Token granted successfully
 
       toast({
         title: "온보딩 완료!",

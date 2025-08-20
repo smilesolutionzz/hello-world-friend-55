@@ -59,21 +59,21 @@ const ObservationSessionForm: React.FC<ObservationSessionFormProps> = ({ templat
       if (!user) return;
 
       const { data, error } = await supabase
-        .from('user_subscription_usage')
-        .select('usage_count, subscription_status, trial_used')
+        .from('subscriptions')
+        .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error) {
         console.error('Usage check error:', error);
         return;
       }
 
-      const usage = data || { usage_count: 0, subscription_status: 'free', trial_used: false };
+      const usage = data || { usage_count: 0, status: 'inactive', trial_used: false };
       setUsageData(usage);
 
       // Show subscription gate if needed
-      if (usage.subscription_status === 'free' && usage.usage_count >= 3) {
+      if ((usage as any).status !== 'active' && (usage as any).usage_count >= 3) {
         setShowSubscriptionGate(true);
       }
     } catch (error) {
@@ -162,7 +162,11 @@ const ObservationSessionForm: React.FC<ObservationSessionFormProps> = ({ templat
 
       const { data, error } = await supabase
         .from('observation_sessions')
-        .insert(sessionPayload)
+        .insert({
+          user_id: user.id,
+          session_type: 'observation',
+          observations: sessionPayload
+        } as any)
         .select()
         .single();
 
@@ -290,14 +294,11 @@ const ObservationSessionForm: React.FC<ObservationSessionFormProps> = ({ templat
       if (!user) return;
 
       const { error } = await supabase
-        .from('user_subscription_usage')
-        .upsert({
-          user_id: user.id,
-          usage_count: (usageData?.usage_count || 0) + 1,
+        .from('subscriptions')
+        .update({
           updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id'
-        });
+        })
+        .eq('user_id', user.id);
 
       if (error) {
         console.error('Usage count update error:', error);

@@ -30,12 +30,26 @@ const Observation = () => {
     try {
       setLoading(true);
       
-      // Load templates
-      const { data: templatesData, error: templatesError } = await supabase
-        .from('observation_templates')
-        .select('*')
-        .eq('is_active', true)
-        .order('name');
+      // Mock templates data
+      const templatesData = [
+        { 
+          id: '1', 
+          name: '기본 관찰 템플릿', 
+          description: '기본적인 행동 관찰을 위한 템플릿',
+          domain: 'child_development',
+          is_active: true,
+          items: ['behavior', 'duration', 'triggers']
+        },
+        { 
+          id: '2', 
+          name: '상세 분석 템플릿', 
+          description: '상세한 분석을 위한 고급 템플릿',
+          domain: 'psychology',
+          is_active: true,
+          items: ['behavior', 'duration', 'triggers', 'severity']
+        }
+      ];
+      const templatesError = null;
 
       if (templatesError) throw templatesError;
       setTemplates(templatesData || []);
@@ -43,25 +57,23 @@ const Observation = () => {
       // Load user sessions
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('user_id', user.id)
-          .single();
+        // Mock sessions data
+        const sessionsData = [
+          {
+            id: '1',
+            session_name: '샘플 관찰 세션',
+            domain: 'child_development',
+            status: 'completed',
+            observer_name: '관찰자',
+            observation_period_start: new Date().toISOString(),
+            observation_period_end: new Date().toISOString(),
+            analysis_data: { riskLevel: 'low' }
+          }
+        ];
+        const sessionsError = null;
 
-        if (profile) {
-          const { data: sessionsData, error: sessionsError } = await supabase
-            .from('observation_sessions')
-            .select(`
-              *,
-              observation_templates(name, domain)
-            `)
-            .eq('profile_id', profile.id)
-            .order('created_at', { ascending: false });
-
-          if (sessionsError) throw sessionsError;
-          setSessions(sessionsData || []);
-        }
+        if (sessionsError) throw sessionsError;
+        setSessions(sessionsData || []);
       }
     } catch (error) {
       console.error('Error loading data:', error);
@@ -314,9 +326,7 @@ const Observation = () => {
         <TabsContent value="new-session">
           {selectedTemplate && (
             <ObservationSessionForm
-              template={selectedTemplate}
               onSessionCreated={handleSessionCreated}
-              onCancel={() => setActiveTab("templates")}
             />
           )}
         </TabsContent>

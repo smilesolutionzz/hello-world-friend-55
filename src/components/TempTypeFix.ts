@@ -74,8 +74,8 @@ export const mockCorporateAnalytics = {
   analyzeOrganizationalWellness: async (id: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
   predictTurnoverRisk: async (id: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
   detectTeamConflicts: async (id: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
-  generateInterventionStrategies: async (id: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
-  calculateROIMetrics: async (id: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
+  generateInterventionStrategies: async (id: any, options?: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
+  calculateROIMetrics: async (id: any, metric?: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
   loadOrganizations: async (callback?: any) => { 
     if (callback) callback(mockCorporateAnalytics.organizations); 
     return Promise.resolve(); 
@@ -88,8 +88,8 @@ export const mockCorporateAnalytics = {
   loadCorporatePrograms: async (orgId: string) => [
     { id: '1', name: 'Wellness Program', status: 'active' }
   ],
-  generateInterventions: async (orgId: string, type: string) => ({ success: true }),
-  calculateROI: async (orgId: string, metric: string) => ({ roi: 15.5 }),
+  generateInterventions: async (orgId: string, options?: any) => ({ success: true }),
+  calculateROI: async (orgId: string, metric?: any) => ({ roi: 15.5 }),
   fetchAnalytics: async (id?: any) => {},
   trackFamilyEvent: async (a: any, b: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] }),
   runComprehensiveAnalysis: async (a: any, b: any) => ({ departments_analysis: [], overall_team_health: 75, priority_interventions: [], overall_wellness_score: 75, burnout_risk_count: 3, team_cohesion_score: 4.2, productivity_index: 85, department_scores: [], level_scores: [], length: 0, map: (fn: any) => [], high_risk_employees: [], department_risk_levels: [], predictive_factors: [], retention_strategies: [] })
@@ -105,7 +105,7 @@ export const mockFamilyEcosystem = {
   wellnessMetrics: null,
   emotionalContagions: [],
   isLoading: false,
-  analyzeFamilyDynamics: async (id: any) => {},
+  analyzeFamilyDynamics: async (id?: any) => {},
   detectEmotionalContagion: async () => {},
   generateInterventionStrategies: async () => {},
   analyzeGenerationalPatterns: async () => {},
@@ -129,11 +129,11 @@ export const mockMetaverseTherapy = {
   fetchSessions: async () => {},
   fetchUserAvatars: async () => {},
   createSession: async () => {},
-  joinSession: async () => {},
-  endSession: async () => {},
+  joinSession: async (id?: any) => {},
+  endSession: async (id?: any) => {},
   loadTherapyEnvironments: async (id?: any) => {},
   loadMetaverseSessions: async () => {},
-  loadUserAvatars: async () => {},
+  loadUserAvatars: async (id?: any) => {},
   loadAITherapists: async () => {},
   loadTherapyScenarios: async () => {},
   recommendEnvironment: async (a?: any, b?: any, c?: any) => ({ recommended_environment_id: '1' }),
@@ -160,7 +160,7 @@ export const mockPersonalization = {
   findSocialMatches: async (criteria?: any) => {},
   engageWithRecommendation: async (id?: any) => {},
   loadRecommendations: async () => {},
-  trackBehavior: async (behavior?: any) => {},
+  trackBehavior: async (behavior?: any, data?: any) => {},
   trackPageView: async (page?: any, duration?: any) => {},
   trackTypingBehavior: async (data?: any) => {}
 };

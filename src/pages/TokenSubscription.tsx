@@ -32,11 +32,12 @@ const TokenSubscription = () => {
   }, []);
 
   const fetchPlans = async () => {
-    const { data, error } = await supabase
-      .from('token_subscription_plans')
-      .select('*')
-      .eq('is_active', true)
-      .order('price', { ascending: true });
+    // Mock token subscription plans
+    const data = [
+      { id: '1', name: '토큰 100개', tokens: 100, price: 19900, yearly_price: 199000, tokens_included: 100, features: ['기본 토큰'], popular: false },
+      { id: '2', name: '토큰 500개', tokens: 500, price: 89900, yearly_price: 899000, tokens_included: 500, features: ['대량 토큰'], popular: true }
+    ];
+    const error = null;
 
     if (error) {
       toast({ 

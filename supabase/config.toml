@@ -1,1 +1,119 @@
 project_id = "hrcqxjetmzxoephgyjlb"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+api_url = "http://127.0.0.1:54321"
+
+[inbucket]
+enabled = true
+port = 54324
+smtp_port = 54325
+pop3_port = 54326
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://hrcqxjetmzxoephgyjlb.supabase.co"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+
+# Configure edge functions to work properly
+[functions.ai-coach-advanced]
+verify_jwt = true
+
+[functions.ai-counselor]
+verify_jwt = true
+
+[functions.ai-counselor-chat]
+verify_jwt = true
+
+[functions.ai-predictor]
+verify_jwt = true
+
+[functions.assessment-analyzer]
+verify_jwt = true
+
+[functions.check-subscription]
+verify_jwt = true
+
+[functions.confirm-token-payment]
+verify_jwt = false
+
+[functions.confirm-toss-payment]
+verify_jwt = false
+
+[functions.corporate-analytics]
+verify_jwt = true
+
+[functions.create-checkout]
+verify_jwt = true
+
+[functions.create-token-payment]
+verify_jwt = true
+
+[functions.create-toss-payment]
+verify_jwt = true
+
+[functions.depression-analyzer]
+verify_jwt = true
+
+[functions.dream-interpreter]
+verify_jwt = true
+
+[functions.expert-matcher]
+verify_jwt = true
+
+[functions.family-ecosystem-analyzer]
+verify_jwt = true
+
+[functions.generate-observation-report]
+verify_jwt = true
+
+[functions.generate-premium-pdf]
+verify_jwt = true
+
+[functions.input-validation]
+verify_jwt = false
+
+[functions.instant-report]
+verify_jwt = true
+
+[functions.metaverse-therapy]
+verify_jwt = true
+
+[functions.observation-analyzer]
+verify_jwt = true
+
+[functions.observe-report]
+verify_jwt = true
+
+[functions.personalization-engine]
+verify_jwt = true
+
+[functions.premium-assessment-analyzer]
+verify_jwt = true
+
+[functions.saju-analyzer]
+verify_jwt = true

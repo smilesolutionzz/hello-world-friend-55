@@ -56,12 +56,17 @@ export const AuthForm = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.log('Login error:', error);
+        throw error;
+      }
+
+      console.log('Login successful:', data);
 
       toast({
         title: "로그인 성공",

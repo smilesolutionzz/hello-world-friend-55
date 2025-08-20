@@ -2036,39 +2036,51 @@ export type Database = {
       }
       profiles: {
         Row: {
+          age_group: string | null
           avatar_url: string | null
           birth_date: string | null
           created_at: string
           display_name: string
           gender: string | null
           id: string
+          interests: Json | null
           phone: string | null
+          primary_concern: string | null
+          relationship_to_child: string | null
           role: string | null
           subscription_tier: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          age_group?: string | null
           avatar_url?: string | null
           birth_date?: string | null
           created_at?: string
           display_name: string
           gender?: string | null
           id?: string
+          interests?: Json | null
           phone?: string | null
+          primary_concern?: string | null
+          relationship_to_child?: string | null
           role?: string | null
           subscription_tier?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          age_group?: string | null
           avatar_url?: string | null
           birth_date?: string | null
           created_at?: string
           display_name?: string
           gender?: string | null
           id?: string
+          interests?: Json | null
           phone?: string | null
+          primary_concern?: string | null
+          relationship_to_child?: string | null
           role?: string | null
           subscription_tier?: string | null
           updated_at?: string

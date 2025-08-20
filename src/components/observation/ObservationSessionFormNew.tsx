@@ -321,11 +321,11 @@ const ObservationSessionForm: React.FC<ObservationSessionFormProps> = ({ templat
 
       if (!profile) return;
 
-      const { data: family } = await supabase
+      const { data: family } = await (supabase as any)
         .from('family_members')
         .select('family_id')
-        .eq('profile_id', profile.id)
-        .single();
+        .eq('user_id', user.id)
+        .maybeSingle();
 
       await supabase
         .from('timeline_activities')

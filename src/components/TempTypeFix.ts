@@ -25,3 +25,100 @@ export const defaultData = {
   ai_analysis: null,
   expert_feedback: null
 };
+
+// Mock hook data for complex hooks
+export const mockCorporateAnalytics = {
+  loading: false,
+  analytics: { 
+    employeeWellness: { score: 75 }, 
+    programEffectiveness: { rate: 82 },
+    departments_analysis: [],
+    overall_team_health: 75,
+    priority_interventions: []
+  },
+  wellnessData: null,
+  turnoverPrediction: null,
+  teamConflicts: [],
+  interventionStrategies: [],
+  roiAnalysis: null,
+  organizations: [],
+  currentOrganization: null,
+  analyzeOrganizationalWellness: async (id: any) => {},
+  predictTurnoverRisk: async (id: any) => {},
+  detectTeamConflicts: async (id: any) => {},
+  generateInterventionStrategies: async (id: any) => {},
+  calculateROIMetrics: async (id: any) => {},
+  loadOrganizations: async (callback: any) => callback([]),
+  loadOrganizationData: async (callback: any) => callback([]),
+  loadWellnessHistory: async () => {},
+  loadCorporatePrograms: async () => {},
+  fetchAnalytics: async () => {},
+  trackFamilyEvent: async (a: any, b: any) => {},
+  runComprehensiveAnalysis: async (a: any, b: any) => {}
+};
+
+export const mockFamilyEcosystem = {
+  loading: false,
+  ecosystem: { familyHealth: { score: 80 }, relationships: { quality: 4.1 } },
+  familyMembers: [],
+  familyDynamics: null,
+  interventionStrategies: [],
+  generationalPatterns: null,
+  wellnessMetrics: null,
+  emotionalContagions: [],
+  isLoading: false,
+  analyzeFamilyDynamics: async (id: any) => {},
+  detectEmotionalContagion: async () => {},
+  generateInterventionStrategies: async () => {},
+  analyzeGenerationalPatterns: async () => {},
+  calculateWellnessIndex: async () => {},
+  runComprehensiveAnalysis: async () => {},
+  trackFamilyEvent: async () => {},
+  fetchEcosystem: async () => {}
+};
+
+export const mockMetaverseTherapy = {
+  loading: false,
+  environments: [],
+  currentSession: null,
+  createTherapySession: async () => {},
+  fetchEnvironments: async () => {},
+  sessions: [],
+  userAvatars: [],
+  aiTherapists: [],
+  scenarios: [],
+  recommendedEnvironment: null,
+  fetchSessions: async () => {},
+  fetchUserAvatars: async () => {},
+  createSession: async () => {},
+  joinSession: async () => {},
+  endSession: async () => {},
+  loadTherapyEnvironments: async () => {},
+  loadMetaverseSessions: async () => {},
+  loadUserAvatars: async () => {},
+  loadAITherapists: async () => {},
+  loadTherapyScenarios: async () => {},
+  recommendEnvironment: async () => {},
+  createMetaverseSession: async () => {},
+  joinMetaverseSession: async () => {},
+  generateAITherapistResponse: async () => {},
+  createUserAvatar: async () => {}
+};
+
+export const mockPersonalization = {
+  loading: false,
+  preferences: null,
+  recommendations: [],
+  insights: null,
+  isLoading: false,
+  updatePreferences: async () => {},
+  fetchPreferences: async () => {},
+  getPersonalizedRecommendation: async () => {},
+  logLifestyle: async () => {},
+  findSocialMatches: async () => {},
+  engageWithRecommendation: async () => {},
+  loadRecommendations: async () => {},
+  trackBehavior: async () => {},
+  trackPageView: async () => {},
+  trackTypingBehavior: async () => {}
+};

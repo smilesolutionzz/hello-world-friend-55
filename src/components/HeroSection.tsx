@@ -42,30 +42,32 @@ const HeroSection = () => {
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto leading-[1.6] text-center">
               프리미엄 플랜으로 전문가 수준의 AI 분석과 개인 맞춤 상담을 받아보세요
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col gap-3 justify-center max-w-lg mx-auto">
               <Button 
                 size="lg"
                 onClick={() => navigate('/premium-assessment')}
-                className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg font-medium hover:from-yellow-600 hover:to-orange-600 transition-colors shadow-lg flex items-center justify-center gap-2"
+                className="w-full px-6 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl font-medium hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg flex items-center justify-center gap-2 h-12 sm:h-auto"
               >
                 <span className="text-lg">👑</span>
-                프리미엄 검사 체험
+                <span className="text-sm sm:text-base">프리미엄 검사 체험</span>
               </Button>
-              <Button 
-                size="lg"
-                onClick={() => navigate('/token-subscription')}
-                className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
-              >
-                구독 플랜 보기
-              </Button>
-              <Button 
-                size="lg"
-                variant="outline"
-                onClick={() => navigate('/assessment')}
-                className="px-6 py-3 border border-primary text-primary rounded-lg font-medium hover:bg-primary/10 transition-colors"
-              >
-                무료 체험하기
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button 
+                  size="lg"
+                  onClick={() => navigate('/token-subscription')}
+                  className="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-colors h-11 text-sm sm:text-base"
+                >
+                  구독 플랜 보기
+                </Button>
+                <Button 
+                  size="lg"
+                  variant="outline"
+                  onClick={() => navigate('/assessment')}
+                  className="flex-1 px-6 py-3 border border-primary text-primary rounded-xl font-medium hover:bg-primary/10 transition-colors h-11 text-sm sm:text-base"
+                >
+                  무료 체험하기
+                </Button>
+              </div>
             </div>
           </div>
         </div>

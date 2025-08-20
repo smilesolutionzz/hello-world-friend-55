@@ -25,7 +25,7 @@ export const saveMetaverseSessionToTimeline = async (
       .from('family_members')
       .select('family_id')
       .eq('profile_id', profile.id)
-      .single();
+      .single() as any;
 
     await supabase
       .from('timeline_activities')
@@ -64,9 +64,16 @@ export const saveAssessmentToTimeline = async (
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const overallScore = typeof results === 'object' && results.overallScore 
-      ? results.overallScore 
-      : Object.values(results as Record<string, number>).reduce((a, b) => a + b, 0) / Object.keys(results).length;
+    let overallScore = 0;
+    if (typeof results === 'object' && results?.overallScore) {
+      overallScore = results.overallScore;
+    } else if (typeof results === 'object' && results !== null) {
+      const values = Object.values(results);
+      const numbers = values.filter(v => typeof v === 'number') as number[];
+      if (numbers.length > 0) {
+        overallScore = numbers.reduce((a, b) => a + b, 0) / numbers.length;
+      }
+    }
 
     // 사용자 프로필 조회
     const { data: profile } = await supabase
@@ -82,7 +89,7 @@ export const saveAssessmentToTimeline = async (
       .from('family_members')
       .select('family_id')
       .eq('profile_id', profile.id)
-      .single();
+      .single() as any;
 
     await supabase
       .from('timeline_activities')
@@ -134,7 +141,7 @@ export const saveConsultationToTimeline = async (
       .from('family_members')
       .select('family_id')
       .eq('profile_id', profile.id)
-      .single();
+      .single() as any;
 
     await supabase
       .from('timeline_activities')

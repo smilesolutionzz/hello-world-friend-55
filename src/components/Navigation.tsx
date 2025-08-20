@@ -204,122 +204,185 @@ const Navigation = () => {
       {/* Mobile Navigation */}
       {isMobile && (
         <div className="flex items-center gap-2">
+          {/* Sign Up Button - only show if not logged in */}
           {!user && (
-            <Button size="sm" onClick={() => navigate('/auth')}>
-              시작하기
+            <Button 
+              onClick={() => navigate('/auth')}
+              variant="ghost"
+              size="sm"
+              className="text-xs px-3 py-2 h-9 font-medium"
+            >
+              회원가입
             </Button>
           )}
           
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm">
-                <Menu className="w-5 h-5" />
+              <Button variant="ghost" size="icon" className="h-10 w-10">
+                <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80">
-              <div className="flex flex-col gap-4 mt-8">
-                <div className="flex items-center gap-2 text-xl font-bold mb-4">
-                  <span className="text-brand-gradient">AIHPRO</span>
+            <SheetContent side="right" className="w-[85vw] max-w-sm p-0 bg-background/95 backdrop-blur-md">
+              <div className="flex flex-col h-full">
+                {/* Header */}
+                <div className="p-6 border-b border-border/50">
+                  <h2 className="text-lg font-bold text-brand-gradient">HIGHLIGHT PRO</h2>
                 </div>
                 
-                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/')}>
-                  <Home className="w-4 h-4 mr-3" />
-                  홈
-                </Button>
+                {/* Navigation Links */}
+                <div className="flex-1 p-4 space-y-2 overflow-y-auto">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/')}
+                  >
+                    <Home className="mr-3 h-5 w-5 text-primary" />
+                    <span className="font-medium">홈</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/assessment')}
+                  >
+                    <Clock className="mr-3 h-5 w-5 text-primary" />
+                    <span className="font-medium">3분 검사</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/premium-assessment')}
+                  >
+                    <Crown className="mr-3 h-5 w-5 text-yellow-500" />
+                    <span className="font-medium">프리미엄 검사</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/observation')}
+                  >
+                    <BookOpen className="mr-3 h-5 w-5 text-primary" />
+                    <span className="font-medium">관찰일지</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/ai-counselor')}
+                  >
+                    <MessageCircle className="mr-3 h-5 w-5 text-primary" />
+                    <span className="font-medium">AI 상담사</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/metaverse')}
+                  >
+                    <Brain className="mr-3 h-5 w-5 text-primary" />
+                    <span className="font-medium">메타버스</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/family')}
+                  >
+                    <Users className="mr-3 h-5 w-5 text-primary" />
+                    <span className="font-medium">가족케어</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/token-subscription')}
+                  >
+                    <Shield className="mr-3 h-5 w-5 text-primary" />
+                    <span className="font-medium">구독플랜</span>
+                  </Button>
+                </div>
                 
-                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/assessment')}>
-                  <Clock className="w-4 h-4 mr-3" />
-                  3분 체크
-                </Button>
-                
-                <Button variant="ghost" className="justify-start bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100" onClick={() => handleNavigation('/premium-assessment')}>
-                  <Crown className="w-4 h-4 mr-3 text-yellow-600" />
-                  <span className="text-yellow-700 font-medium">프리미엄 검사</span>
-                </Button>
-                
-                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/observation')}>
-                  <FileText className="w-4 h-4 mr-3" />
-                  관찰일지
-                </Button>
-                
-                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/ai-counselor')}>
-                  <MessageCircle className="w-4 h-4 mr-3" />
-                  AI상담사
-                </Button>
-                
-                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/metaverse')}>
-                  <Brain className="w-4 h-4 mr-3" />
-                  메타버스치료
-                </Button>
-                
-                <Button variant="ghost" className="justify-start" onClick={() => handleNavigation('/family')}>
-                  <Users className="w-4 h-4 mr-3" />
-                  가족케어
-                </Button>
-                
-                
-                <Button variant="ghost" className="justify-start text-primary font-medium" onClick={() => handleNavigation('/token-subscription')}>
-                  <Shield className="w-4 h-4 mr-3" />
-                  구독 플랜
-                </Button>
-                
-                <div className="border-t pt-4 mt-4">
-                  {user ? (
-                    <div className="flex flex-col gap-3">
-                      {/* 모바일 토큰 정보 */}
-                      <div className="bg-gray-50 rounded-lg p-3">
-                        <div className="text-sm font-medium mb-2 flex items-center gap-1">
-                          <Coins className="w-4 h-4 text-primary" />
-                          토큰 잔액
-                        </div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs text-muted-foreground">보유 토큰</span>
-                          <Badge variant="secondary">
-                            {tokenLoading ? '...' : `${tokenBalance?.current_tokens || 0}개`}
-                          </Badge>
-                        </div>
-                        {!tokenLoading && tokenBalance && (
-                          <Progress 
-                            value={Math.min((tokenBalance.current_tokens / 50) * 100, 100)} 
-                            className="h-2 mb-2" 
-                          />
-                        )}
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="w-full" 
-                          onClick={() => handleNavigation('/token-subscription')}
-                        >
-                          <Plus className="w-3 h-3 mr-1" />
-                          토큰 충전
-                        </Button>
-                      </div>
-                      
-                      <div 
-                        className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"
-                        onClick={() => handleNavigation('/dashboard')}
-                      >
-                        <User className="w-4 h-4 text-primary" />
-                        <span className="text-sm font-medium">
-                          {profile?.display_name || user.email}
+                {/* User Section */}
+                {user && (
+                  <div className="border-t border-border/50 p-4 space-y-4 bg-muted/20">
+                    {/* Token Balance */}
+                    <div className="bg-card/50 backdrop-blur-sm rounded-xl p-4 border border-border/30">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-sm font-medium text-muted-foreground">토큰 잔액</span>
+                        <span className="text-xl font-bold text-primary">
+                          {tokenLoading ? '...' : tokenBalance?.current_tokens || 0}
                         </span>
                       </div>
-                      <Button variant="ghost" onClick={handleLogout} className="justify-start">
-                        <LogOut className="w-4 h-4 mr-3" />
+                      <Progress value={Math.min(((tokenBalance?.current_tokens || 0) / 50) * 100, 100)} className="h-2 mb-3" />
+                      <Button 
+                        size="sm" 
+                        className="w-full btn-brand h-9"
+                        onClick={() => handleNavigation('/token-subscription')}
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        토큰 충전
+                      </Button>
+                    </div>
+                    
+                    {/* User Profile */}
+                    <div className="flex items-center gap-3 p-3 bg-card/30 rounded-xl border border-border/20">
+                      <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+                        <User className="w-6 h-6 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold truncate">
+                          {profile?.display_name || user?.email}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          사용자
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="space-y-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start h-10 bg-card/30 border-border/30"
+                        onClick={() => handleNavigation('/dashboard')}
+                      >
+                        <Settings className="mr-3 h-4 w-4" />
+                        대시보드
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start h-10 text-red-600 hover:text-red-700 bg-card/30 border-border/30 hover:bg-red-50/50"
+                        onClick={handleLogout}
+                      >
+                        <LogOut className="mr-3 h-4 w-4" />
                         로그아웃
                       </Button>
                     </div>
-                  ) : (
-                    <div className="flex flex-col gap-3">
-                      <Button variant="outline" onClick={() => handleNavigation('/auth')}>
-                        로그인
-                      </Button>
-                      <Button onClick={() => handleNavigation('/auth')}>
-                        회원가입
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
+                
+                {/* Login/Register for non-logged in users */}
+                {!user && (
+                  <div className="border-t border-border/50 p-4 space-y-3 bg-muted/20">
+                    <Button 
+                      className="w-full btn-brand h-11 text-base font-medium"
+                      onClick={() => handleNavigation('/auth')}
+                    >
+                      로그인
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="w-full h-11 text-base font-medium bg-card/30 border-border/30"
+                      onClick={() => handleNavigation('/auth')}
+                    >
+                      회원가입
+                    </Button>
+                  </div>
+                )}
               </div>
             </SheetContent>
           </Sheet>

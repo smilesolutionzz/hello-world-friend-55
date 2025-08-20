@@ -17,7 +17,7 @@ const PlatformOverview = () => {
         </div>
 
         {/* Core Features */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
           <div className="text-center group">
             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
               <Brain className="w-8 h-8 text-primary" />
@@ -53,7 +53,7 @@ const PlatformOverview = () => {
         <div className="bg-card rounded-3xl p-8 shadow-lg border">
           <h3 className="text-2xl font-bold text-center mb-8">누구나 함께할 수 있는 플랫폼</h3>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {/* 개인 사용자 */}
             <div className="space-y-4">
               <div className="flex items-center gap-3">

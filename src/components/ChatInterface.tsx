@@ -208,13 +208,13 @@ const ChatInterface = () => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="예시: 우리 아이가 20개월인데 아직도 엄마밖에 못하고, 울음을 멈추지 못해서 걱정이에요. 이런 상황이 정상적인 발달 과정인지 궁금합니다."
-            className="chat-input resize-none min-h-[120px] sm:min-h-[150px] text-base sm:text-lg leading-relaxed"
+            className="chat-input resize-none min-h-[140px] sm:min-h-[150px] text-sm sm:text-lg leading-relaxed px-4 py-4 sm:px-6 sm:py-5"
             disabled={isAnalyzing}
             maxLength={500}
           />
           
           {/* Character Count */}
-          <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 text-xs sm:text-sm text-muted-foreground">
+          <div className="absolute bottom-3 sm:bottom-4 left-4 sm:left-6 text-xs sm:text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded">
             {message.length}/500 (최소 50자)
           </div>
         </div>

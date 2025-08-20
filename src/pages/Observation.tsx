@@ -276,17 +276,17 @@ const Observation = () => {
                             PDF
                           </Button>
                         )}
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => {
-                            setSelectedSession(session);
-                            setActiveTab("session-results");
-                          }}
-                        >
-                          <Eye className="h-4 w-4 mr-1" />
-                          보기
-                        </Button>
+                         <Button 
+                           variant="outline" 
+                           size="sm"
+                           onClick={() => {
+                             // Navigate to AI analysis page directly
+                             navigate('/highlight-ai');
+                           }}
+                         >
+                           <Eye className="h-4 w-4 mr-1" />
+                           보기
+                         </Button>
                       </div>
                     </div>
 

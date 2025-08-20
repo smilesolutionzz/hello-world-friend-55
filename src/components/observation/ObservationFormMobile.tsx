@@ -307,7 +307,8 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess }) 
       });
 
       setTimeout(() => {
-        onSuccess(session.id);
+        // Navigate to AI analysis page (HighlightAI) instead of session-results
+        window.location.href = '/highlight-ai';
       }, 1500);
 
     } catch (error: any) {

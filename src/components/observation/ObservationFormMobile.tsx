@@ -142,8 +142,10 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess }) 
   const uploadMediaFiles = async (): Promise<{ url: string; type: 'image' | 'video' }[]> => {
     if (mediaFiles.length === 0) return [];
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('인증이 필요합니다.');
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      throw new Error('로그인이 필요합니다. 먼저 로그인해주세요.');
+    }
 
     const uploadedFiles = await Promise.all(
       mediaFiles.map(async (mediaFile) => {
@@ -226,8 +228,20 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess }) 
       }
 
       // Save to database
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('인증이 필요합니다.');
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        toast({
+          title: "로그인이 필요합니다",
+          description: "관찰 데이터를 저장하려면 먼저 로그인해주세요.",
+          variant: "destructive",
+          action: (
+            <Button variant="outline" size="sm" onClick={() => window.location.href = '/auth'}>
+              로그인하기
+            </Button>
+          )
+        });
+        throw new Error('사용자 인증이 만료되었습니다.');
+      }
 
       const { data: profile } = await supabase
         .from('profiles')

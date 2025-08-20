@@ -122,8 +122,21 @@ const ObservationSessionForm: React.FC<ObservationSessionFormProps> = ({ templat
 
     setSaving(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('인증이 필요합니다.');
+      // Check authentication with better UX
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        toast({
+          title: "로그인이 필요합니다",
+          description: "데이터를 저장하려면 먼저 로그인해주세요.",
+          variant: "destructive",
+          action: (
+            <Button variant="outline" size="sm" onClick={() => window.location.href = '/auth'}>
+              로그인하기
+            </Button>
+          )
+        });
+        throw new Error('사용자 인증이 만료되었습니다.');
+      }
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -249,6 +262,9 @@ const ObservationSessionForm: React.FC<ObservationSessionFormProps> = ({ templat
         await updateUsageCount();
       }
 
+      // Save to timeline for better data tracking
+      await saveObservationToTimeline(sessionId, analysisData);
+
       toast({
         title: "분석 완료",
         description: "관찰 데이터 분석이 성공적으로 완료되었습니다."
@@ -288,6 +304,54 @@ const ObservationSessionForm: React.FC<ObservationSessionFormProps> = ({ templat
       }
     } catch (error) {
       console.error('Failed to update usage count:', error);
+    }
+  };
+
+  const saveObservationToTimeline = async (sessionId: string, analysisData: any) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile) return;
+
+      const { data: family } = await supabase
+        .from('family_members')
+        .select('family_id')
+        .eq('profile_id', profile.id)
+        .single();
+
+      await supabase
+        .from('timeline_activities')
+        .insert({
+          family_id: family?.family_id || 'default',
+          member_id: profile.id,
+          type: 'OBSERVATION',
+          title: `관찰일지: ${sessionData.sessionName}`,
+          summary: `${template.domain} 영역 관찰 분석 완료`,
+          actor: {
+            name: sessionData.observerName,
+            profile_id: profile.id
+          },
+          meta: {
+            sessionId,
+            domain: template.domain,
+            observer: sessionData.observerName,
+            period: `${sessionData.observationPeriodStart} ~ ${sessionData.observationPeriodEnd}`,
+            analysis_summary: analysisData.analysis?.substring(0, 200) + '...',
+            template_name: template.name
+          },
+          score_overall: Math.round((analysisData.averageScore || 0) * 20), // Convert to 0-100 scale
+          tags: [template.domain, 'observation'],
+          created_at: new Date().toISOString()
+        });
+    } catch (error) {
+      console.error('Failed to save to timeline:', error);
     }
   };
 

@@ -10,6 +10,7 @@ import { ClipboardList, Plus, Eye, Download, Calendar, User, AlertCircle } from 
 import ObservationSessionForm from "@/components/observation/ObservationSessionForm";
 import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
 import ObservationResults from "@/components/observation/ObservationResults";
+import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 
 const Observation = () => {
   const navigate = useNavigate();
@@ -146,15 +147,16 @@ const Observation = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-4">
-          전영역 관찰일지 시스템
-        </h1>
-        <p className="text-xl text-muted-foreground">
-          체계적 관찰과 AI 분석을 통한 전문 리포팅 플랫폼
-        </p>
-      </div>
+    <AuthenticationGuard fallbackMessage="관찰일지 시스템을 사용하려면 로그인이 필요합니다.">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
+            전영역 관찰일지 시스템
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            체계적 관찰과 AI 분석을 통한 전문 리포팅 플랫폼
+          </p>
+        </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
@@ -328,7 +330,8 @@ const Observation = () => {
           )}
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </AuthenticationGuard>
   );
 };
 

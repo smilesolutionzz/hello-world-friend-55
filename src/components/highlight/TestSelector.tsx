@@ -27,18 +27,46 @@ export const TestSelector = () => {
 
   const fetchTestTypes = async () => {
     try {
-      const { data, error } = await supabase
-        .from('test_types')
-        .select('id, name, description, created_at');
-
-      if (error) throw error;
-      // Transform data to match expected interface
-      const testTypes = data?.map(type => ({
-        ...type,
-        typebot_url: '',
-        duration_minutes: 30
-      })) || [];
-      setTestTypes(testTypes);
+      // Mock data with Korean translations
+      const mockTestTypes = [
+        {
+          id: 'adhd-test',
+          name: 'ADHD 검사',
+          description: '주의력결핍 과잉행동장애 종합 평가',
+          typebot_url: '',
+          duration_minutes: 30
+        },
+        {
+          id: 'depression-test',
+          name: '우울증 검사',
+          description: '우울증 선별 진단 평가',
+          typebot_url: '',
+          duration_minutes: 30
+        },
+        {
+          id: 'anxiety-test',
+          name: '불안장애 검사',
+          description: '불안장애 종합 평가 진단',
+          typebot_url: '',
+          duration_minutes: 30
+        },
+        {
+          id: 'language-development',
+          name: '언어발달 검사',
+          description: '언어 능력 및 발달 평가',
+          typebot_url: '',
+          duration_minutes: 30
+        },
+        {
+          id: 'premium-assessment',
+          name: '프리미엄 종합검사',
+          description: '전문가급 종합 심리 평가',
+          typebot_url: '',
+          duration_minutes: 30
+        }
+      ];
+      
+      setTestTypes(mockTestTypes);
     } catch (error: any) {
       toast({
         title: "테스트 로드 실패",

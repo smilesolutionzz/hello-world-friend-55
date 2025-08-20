@@ -34,35 +34,35 @@ export const TestSelector = () => {
           name: 'ADHD 검사',
           description: '주의력결핍 과잉행동장애 종합 평가',
           typebot_url: '',
-          duration_minutes: 30
+          duration_minutes: 3
         },
         {
           id: 'depression-test',
           name: '우울증 검사',
           description: '우울증 선별 진단 평가',
           typebot_url: '',
-          duration_minutes: 30
+          duration_minutes: 3
         },
         {
           id: 'anxiety-test',
           name: '불안장애 검사',
           description: '불안장애 종합 평가 진단',
           typebot_url: '',
-          duration_minutes: 30
+          duration_minutes: 3
         },
         {
           id: 'language-development',
           name: '언어발달 검사',
           description: '언어 능력 및 발달 평가',
           typebot_url: '',
-          duration_minutes: 30
+          duration_minutes: 3
         },
         {
           id: 'premium-assessment',
           name: '프리미엄 종합검사',
           description: '전문가급 종합 심리 평가',
           typebot_url: '',
-          duration_minutes: 30
+          duration_minutes: 3
         }
       ];
       

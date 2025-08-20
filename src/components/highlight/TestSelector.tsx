@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Play, MessageSquare, Brain, Activity } from 'lucide-react';
+import { Clock, Play, MessageSquare, Brain, Activity, Home, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface TestType {
@@ -86,11 +86,32 @@ export const TestSelector = () => {
   };
 
   const handleStartTest = (testType: TestType) => {
-    navigate(`/test/${testType.id}`, { 
-      state: { 
-        testType: testType
-      } 
-    });
+    console.log('Starting test:', testType.name);
+    
+    // Navigate to different pages based on test type
+    switch (testType.id) {
+      case 'adhd-test':
+        navigate('/assessment');
+        break;
+      case 'depression-test':
+        navigate('/assessment'); 
+        break;
+      case 'anxiety-test':
+        navigate('/assessment');
+        break;
+      case 'language-development':
+        navigate('/assessment');
+        break;
+      case 'premium-assessment':
+        navigate('/premium-assessment');
+        break;
+      default:
+        navigate('/assessment');
+    }
+  };
+
+  const handleGoHome = () => {
+    navigate('/');
   };
 
   if (loading) {
@@ -104,6 +125,26 @@ export const TestSelector = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
       <div className="container mx-auto px-4 py-8">
+        {/* Header with Home Button */}
+        <div className="flex items-center justify-between mb-8">
+          <Button
+            variant="outline"
+            onClick={handleGoHome}
+            className="flex items-center gap-2"
+          >
+            <Home className="w-4 h-4" />
+            홈으로 가기
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={() => window.history.back()}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            뒤로가기
+          </Button>
+        </div>
+
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
             3분 심리 검사

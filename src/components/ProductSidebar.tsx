@@ -89,7 +89,7 @@ const ProductSidebar = () => {
   };
 
   return (
-    <div className="w-72 bg-gradient-to-b from-slate-800 to-slate-900 text-white min-h-screen p-4 overflow-y-auto">
+    <div className="w-72 bg-gradient-to-b from-slate-800 to-slate-900 text-white h-screen p-4 overflow-y-auto flex flex-col">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-brand-gradient mb-2">AIHPRO</h2>
@@ -166,7 +166,7 @@ const ProductSidebar = () => {
       </div>
 
       {/* Bottom CTA */}
-      <div className="mt-6 pt-4 border-t border-slate-600">
+      <div className="mt-6 pt-4 border-t border-slate-600 pb-4">
         <Button 
           className="w-full btn-brand mb-2"
           onClick={() => navigate('/token-subscription')}

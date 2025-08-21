@@ -7,6 +7,7 @@ import VideoShowcase from "@/components/VideoShowcase";
 import TrustIndicators from "@/components/TrustIndicators";
 import KakaoTalkWidget from "@/components/KakaoTalkWidget";
 import ReferralWidget from "@/components/ReferralWidget";
+import ProductSidebar from "@/components/ProductSidebar";
 import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -46,14 +47,24 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <HeroSection />
-      <PlatformOverview />
-      <div className="container mx-auto px-4 py-8">
-        <ReferralWidget />
+      <div className="flex">
+        {/* Product Sidebar */}
+        <div className="hidden lg:block fixed left-0 top-0 z-40">
+          <ProductSidebar />
+        </div>
+        
+        {/* Main Content */}
+        <div className="flex-1 lg:ml-72">
+          <HeroSection />
+          <PlatformOverview />
+          <div className="container mx-auto px-4 py-8">
+            <ReferralWidget />
+          </div>
+          <VideoShowcase />
+          <TrustIndicators />
+          <KakaoTalkWidget />
+        </div>
       </div>
-      <VideoShowcase />
-      <TrustIndicators />
-      <KakaoTalkWidget />
     </div>
   );
 };

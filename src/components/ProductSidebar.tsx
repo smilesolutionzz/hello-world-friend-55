@@ -169,13 +169,13 @@ const ProductSidebar = () => {
       <div className="mt-6 pt-4 border-t border-slate-600 pb-4">
         <Button 
           className="w-full btn-brand mb-2"
-          onClick={() => navigate('/token-subscription')}
+          onClick={() => navigate('/subscription')}
         >
           <Gift className="w-4 h-4 mr-2" />
-          구독 플랜 보기
+          구독 관리
         </Button>
         <p className="text-xs text-slate-400 text-center">
-          월 구독으로 더 많은 혜택을 받아보세요
+          토큰팩 또는 무제한 플랜으로 업그레이드하세요
         </p>
       </div>
     </div>

@@ -363,6 +363,45 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          features: Json | null
+          id: string
+          is_active: boolean | null
+          name: string
+          price_monthly: number | null
+          price_yearly: number | null
+          token_count: number | null
+          type: Database["public"]["Enums"]["subscription_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price_monthly?: number | null
+          price_yearly?: number | null
+          token_count?: number | null
+          type: Database["public"]["Enums"]["subscription_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price_monthly?: number | null
+          price_yearly?: number | null
+          token_count?: number | null
+          type?: Database["public"]["Enums"]["subscription_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           amount: number | null
@@ -548,15 +587,96 @@ export type Database = {
         }
         Relationships: []
       }
+      usage_tracking: {
+        Row: {
+          count: number | null
+          created_at: string
+          feature_type: string
+          id: string
+          usage_date: string
+          user_id: string | null
+        }
+        Insert: {
+          count?: number | null
+          created_at?: string
+          feature_type: string
+          id?: string
+          usage_date?: string
+          user_id?: string | null
+        }
+        Update: {
+          count?: number | null
+          created_at?: string
+          feature_type?: string
+          id?: string
+          usage_date?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          plan_id: string | null
+          status: string | null
+          stripe_subscription_id: string | null
+          subscription_type: Database["public"]["Enums"]["subscription_type"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan_id?: string | null
+          status?: string | null
+          stripe_subscription_id?: string | null
+          subscription_type?: Database["public"]["Enums"]["subscription_type"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan_id?: string | null
+          status?: string | null
+          stripe_subscription_id?: string | null
+          subscription_type?: Database["public"]["Enums"]["subscription_type"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_monthly_usage: {
+        Args: { p_feature_type: string; p_user_id: string }
+        Returns: number
+      }
+      track_feature_usage: {
+        Args: { p_feature_type: string; p_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      subscription_type: "free" | "token_pack" | "monthly_unlimited"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -683,6 +803,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      subscription_type: ["free", "token_pack", "monthly_unlimited"],
+    },
   },
 } as const

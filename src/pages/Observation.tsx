@@ -30,23 +30,55 @@ const Observation = () => {
     try {
       setLoading(true);
       
-      // Mock templates data
+      // Enhanced templates data with clear differences
       const templatesData = [
         { 
           id: '1', 
           name: '기본 관찰 템플릿', 
-          description: '기본적인 행동 관찰을 위한 템플릿',
+          description: '간단하고 빠른 일상 관찰 기록 (10-15분 소요)',
           domain: 'child_development',
           is_active: true,
-          items: ['behavior', 'duration', 'triggers']
+          duration: '10-15분',
+          token_cost: '5토큰',
+          features: [
+            '기본적인 행동 관찰',
+            '시간대별 활동 기록',
+            '간단한 AI 분석',
+            '기본 리포트 제공'
+          ],
+          items: [
+            { id: 'behavior', category: '행동관찰', name: '일반적 행동 패턴' },
+            { id: 'duration', category: '시간기록', name: '활동 지속시간' },
+            { id: 'triggers', category: '환경요인', name: '행동 유발 요인' }
+          ],
+          suitable_for: '일상적인 관찰, 처음 사용자'
         },
         { 
           id: '2', 
           name: '상세 분석 템플릿', 
-          description: '상세한 분석을 위한 고급 템플릿',
+          description: '전문가급 깊이 있는 심층 관찰 분석 (25-30분 소요)',
           domain: 'psychology',
           is_active: true,
-          items: ['behavior', 'duration', 'triggers', 'severity']
+          duration: '25-30분',
+          token_cost: '15토큰',
+          features: [
+            '심층 행동 분석',
+            '감정 상태 평가',
+            '발달 단계 분석',
+            '전문가급 AI 분석',
+            '상세 PDF 리포트',
+            '개선 방안 제시'
+          ],
+          items: [
+            { id: 'behavior', category: '행동관찰', name: '세부 행동 패턴' },
+            { id: 'duration', category: '시간기록', name: '활동 지속시간' },
+            { id: 'triggers', category: '환경요인', name: '행동 유발 요인' },
+            { id: 'severity', category: '심각도평가', name: '행동 강도 및 빈도' },
+            { id: 'emotional_state', category: '정서상태', name: '감정 변화 관찰' },
+            { id: 'social_interaction', category: '사회성', name: '타인과의 상호작용' },
+            { id: 'developmental_markers', category: '발달지표', name: '연령별 발달 수준' }
+          ],
+          suitable_for: '전문적인 분석이 필요한 경우, 지속적인 모니터링'
         }
       ];
       const templatesError = null;
@@ -184,30 +216,71 @@ const Observation = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {templates.map((template) => (
-              <Card key={template.id} className="hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50">
-                <CardHeader className="text-center pb-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center mx-auto mb-4">
-                    <ClipboardList className="h-8 w-8 text-white" />
+              <Card key={template.id} className="hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50 relative overflow-hidden">
+                {/* Premium Badge for Advanced Template */}
+                {template.id === '2' && (
+                  <div className="absolute top-4 right-4 z-10">
+                    <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
+                      전문가급
+                    </Badge>
                   </div>
-                  <CardTitle className="text-xl">{template.name}</CardTitle>
-                  <Badge className={`${getDomainColor(template.domain)} mx-auto`}>
-                    {getDomainDisplayName(template.domain)}
-                  </Badge>
+                )}
+                
+                <CardHeader className="text-center pb-4 relative">
+                  <div className={`w-20 h-20 ${template.id === '1' ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gradient-to-br from-purple-500 to-purple-600'} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                    <ClipboardList className="h-10 w-10 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl mb-2">{template.name}</CardTitle>
+                  <div className="flex items-center justify-center gap-4 mb-3">
+                    <Badge className={getDomainColor(template.domain)}>
+                      {getDomainDisplayName(template.domain)}
+                    </Badge>
+                    <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                      {template.duration}
+                    </Badge>
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                      {template.token_cost}
+                    </Badge>
+                  </div>
                 </CardHeader>
-                <CardContent className="text-center space-y-4">
-                  <CardDescription className="min-h-[60px] text-base">
+                
+                <CardContent className="space-y-6">
+                  <CardDescription className="text-base text-center leading-relaxed">
                     {template.description}
                   </CardDescription>
                   
-                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                    <ClipboardList className="h-4 w-4" />
-                    {template.items?.length || 0}개 관찰 항목
+                  {/* Features List */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">포함 기능</h4>
+                    <div className="space-y-2">
+                      {template.features.map((feature: string, index: number) => (
+                        <div key={index} className="flex items-center gap-2 text-sm">
+                          <div className={`w-2 h-2 rounded-full ${template.id === '1' ? 'bg-blue-500' : 'bg-purple-500'}`} />
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Observation Items Count */}
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <ClipboardList className="h-4 w-4" />
+                      <span>관찰 항목</span>
+                    </div>
+                    <span className="font-semibold">{template.items?.length || 0}개 영역</span>
+                  </div>
+
+                  {/* Suitable For */}
+                  <div className="p-3 bg-blue-50 rounded-lg">
+                    <div className="text-sm font-medium text-blue-800 mb-1">추천 대상</div>
+                    <div className="text-sm text-blue-700">{template.suitable_for}</div>
                   </div>
                   
                   <Button 
-                    className="w-full btn-primary"
+                    className={`w-full ${template.id === '1' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'} text-white`}
                     size="lg"
                     onClick={() => {
                       setSelectedTemplate(template);
@@ -215,41 +288,83 @@ const Observation = () => {
                     }}
                   >
                     <Plus className="h-5 w-5 mr-2" />
-                    이 템플릿으로 시작하기
+                    {template.id === '1' ? '간편하게 시작하기' : '전문 분석 시작하기'}
                   </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          {/* Quick Start Guide */}
+          {/* Comparison Guide */}
           <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-blue-600" />
-                관찰일지 작성 가이드
-              </h3>
-              <div className="grid md:grid-cols-3 gap-4 text-sm">
-                <div className="flex items-start gap-2">
-                  <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
-                  <div>
-                    <div className="font-medium">템플릿 선택</div>
-                    <div className="text-muted-foreground">관찰 목적에 맞는 템플릿을 선택하세요</div>
+            <CardContent className="p-8">
+              <h3 className="text-2xl font-bold text-center mb-6">📋 템플릿 비교 가이드</h3>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Basic Template */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">기본</span>
+                    </div>
+                    <h4 className="text-lg font-semibold">기본 관찰 템플릿</h4>
+                  </div>
+                  <div className="pl-11 space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-500">✓</span>
+                      <span>빠르고 간단한 관찰 (10-15분)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-500">✓</span>
+                      <span>기본적인 행동 패턴 기록</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-500">✓</span>
+                      <span>일상적인 모니터링에 적합</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-blue-500">✓</span>
+                      <span>처음 사용자도 쉽게 이용</span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-start gap-2">
-                  <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
-                  <div>
-                    <div className="font-medium">관찰 기록</div>
-                    <div className="text-muted-foreground">체계적으로 관찰 내용을 기록하세요</div>
+
+                {/* Advanced Template */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">상세</span>
+                    </div>
+                    <h4 className="text-lg font-semibold">상세 분석 템플릿</h4>
+                  </div>
+                  <div className="pl-11 space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-500">✓</span>
+                      <span>전문가급 심층 분석 (25-30분)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-500">✓</span>
+                      <span>감정 상태 및 발달 단계 평가</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-500">✓</span>
+                      <span>상세한 PDF 리포트 제공</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-purple-500">✓</span>
+                      <span>전문적인 개선 방안 제시</span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-start gap-2">
-                  <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
-                  <div>
-                    <div className="font-medium">AI 분석</div>
-                    <div className="text-muted-foreground">전문가 수준의 AI 분석 결과를 받아보세요</div>
-                  </div>
+              </div>
+
+              <div className="mt-8 text-center">
+                <div className="inline-flex items-center gap-4 px-6 py-3 bg-white rounded-lg border">
+                  <AlertCircle className="h-5 w-5 text-amber-500" />
+                  <span className="text-sm font-medium">
+                    <strong>권장:</strong> 처음 사용하시는 경우 기본 템플릿으로 시작한 후, 
+                    더 자세한 분석이 필요하면 상세 템플릿을 이용해보세요.
+                  </span>
                 </div>
               </div>
             </CardContent>

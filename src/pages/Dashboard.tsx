@@ -167,12 +167,12 @@ const Dashboard = () => {
       const familiesArray = Array.from(familyMap.values());
       setFamilies(familiesArray);
 
-      // Load real assessment data
+      // Load real assessment data - Fix column name
       const { data: assessmentData } = await supabase
         .from('assessments')
         .select('*')
         .eq('profile_id', profileData.id)
-        .order('completed_at', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(20);
 
       // Load real consultation data (use chat_rooms instead)
@@ -196,7 +196,7 @@ const Dashboard = () => {
           score_overall: typeof assessment.results === 'object' && assessment.results.total 
             ? assessment.results.total 
             : 75,
-          created_at: assessment.completed_at,
+          created_at: assessment.created_at,
           profile: { ...profileData, role: 'user' } as any
         });
       });

@@ -49,7 +49,7 @@ serve(async (req) => {
     }
 
     // 결제 금액 계산
-    const amount = subscriptionType === 'yearly' ? plan.yearly_price : plan.price;
+    const amount = plan.price_krw;
     
     // 주문 ID 생성
     const orderId = `token_order_${user.id}_${Date.now()}`;
@@ -71,9 +71,8 @@ serve(async (req) => {
       .insert({
         user_id: user.id,
         plan_id: planId,
-        tokens_purchased: plan.tokens_included,
-        amount_paid: amount,
-        toss_order_id: orderId,
+        amount: amount,
+        order_id: orderId,
         status: 'pending'
       });
 

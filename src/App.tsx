@@ -26,6 +26,8 @@ import Subscription from "./pages/Subscription";
 import TokenSubscription from "./pages/TokenSubscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFail from "./pages/PaymentFail";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
+import SubscriptionCancel from "./pages/SubscriptionCancel";
 import Pricing from "./pages/Pricing";
 import Observation from "./pages/Observation";
 import Expert from "./pages/Expert";
@@ -73,6 +75,8 @@ const App = () => (
           <Route path="/expert-list" element={<ExpertList />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
+          <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+          <Route path="/subscription-cancel" element={<SubscriptionCancel />} />
           
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

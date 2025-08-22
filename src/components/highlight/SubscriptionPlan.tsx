@@ -1,23 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Crown, ArrowLeft } from 'lucide-react';
+import { Check, Crown, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useSubscription } from '@/hooks/useSubscription';
 
 export const SubscriptionPlan = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { subscribed, subscription_tier, loading: subLoading, refreshSubscription } = useSubscription();
 
   const handleSubscribe = async (planType: 'premium') => {
     setLoading(true);
     try {
-      // TODO: Implement Stripe checkout
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate('/auth');
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+      
       toast({
-        title: "구독 준비 중",
-        description: "결제 시스템을 준비 중입니다.",
+        title: "결제 페이지로 이동",
+        description: "새 창에서 결제를 진행해 주세요.",
       });
     } catch (error: any) {
       toast({
@@ -40,9 +61,10 @@ export const SubscriptionPlan = () => {
         '기본 AI 분석',
         '결과 시각화'
       ],
-      buttonText: '현재 플랜',
+      buttonText: (!subscribed || subscription_tier !== 'premium') ? '현재 플랜' : '무료로 변경',
       buttonVariant: 'outline' as const,
-      isCurrentPlan: true
+      isCurrentPlan: !subscribed || subscription_tier !== 'premium',
+      isFree: true
     },
     {
       name: '프리미엄',
@@ -56,9 +78,10 @@ export const SubscriptionPlan = () => {
         '카카오 알림톡',
         '우선 고객지원'
       ],
-      buttonText: '구독하기',
-      buttonVariant: 'default' as const,
-      isPremium: true
+      buttonText: subscribed && subscription_tier === 'premium' ? '구독 중' : '구독하기',
+      buttonVariant: subscribed && subscription_tier === 'premium' ? 'outline' as const : 'default' as const,
+      isPremium: true,
+      isCurrentPlan: subscribed && subscription_tier === 'premium'
     }
   ];
 
@@ -86,15 +109,46 @@ export const SubscriptionPlan = () => {
           <p className="text-muted-foreground">
             더 정확하고 상세한 심리 분석을 받아보세요
           </p>
+          {subscribed && (
+            <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-green-700 font-medium">
+                현재 {subscription_tier === 'premium' ? '프리미엄' : '기본'} 플랜을 사용 중입니다
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={refreshSubscription}
+                disabled={subLoading}
+                className="mt-2"
+              >
+                <RefreshCw className={`w-3 h-3 mr-1 ${subLoading ? 'animate-spin' : ''}`} />
+                구독 상태 새로고침
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {plans.map((plan) => (
             <Card 
               key={plan.name}
-              className={`relative ${plan.isPremium ? 'border-primary shadow-lg' : ''}`}
+              className={`relative ${
+                plan.isCurrentPlan 
+                  ? 'border-green-500 bg-green-50/50 shadow-lg' 
+                  : plan.isPremium 
+                  ? 'border-primary shadow-lg' 
+                  : ''
+              }`}
             >
-              {plan.isPremium && (
+              {plan.isCurrentPlan && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-green-500 text-white px-3 py-1">
+                    <Check className="w-3 h-3 mr-1" />
+                    사용 중
+                  </Badge>
+                </div>
+              )}
+              {plan.isPremium && !plan.isCurrentPlan && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <Badge className="bg-primary text-primary-foreground px-3 py-1">
                     <Crown className="w-3 h-3 mr-1" />
@@ -124,10 +178,21 @@ export const SubscriptionPlan = () => {
                 <Button
                   variant={plan.buttonVariant}
                   className="w-full"
-                  disabled={plan.isCurrentPlan || loading}
-                  onClick={() => plan.isPremium && handleSubscribe('premium')}
+                  disabled={(plan.isCurrentPlan && !plan.isPremium) || loading || subLoading}
+                  onClick={() => {
+                    if (plan.isPremium && !plan.isCurrentPlan) {
+                      handleSubscribe('premium');
+                    }
+                  }}
                 >
-                  {plan.buttonText}
+                  {loading && plan.isPremium ? (
+                    <>
+                      <RefreshCw className="w-3 h-3 mr-2 animate-spin" />
+                      처리 중...
+                    </>
+                  ) : (
+                    plan.buttonText
+                  )}
                 </Button>
               </CardContent>
             </Card>

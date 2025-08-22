@@ -40,15 +40,15 @@ serve(async (req) => {
           price_data: {
             currency: "krw",
             product_data: { name: "프리미엄 구독" },
-            unit_amount: 29000,
+            unit_amount: 29900, // 29,900원
             recurring: { interval: "month" },
           },
           quantity: 1,
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/payment-success`,
-      cancel_url: `${req.headers.get("origin")}/pricing`,
+      success_url: `${req.headers.get("origin")}/subscription-success`,
+      cancel_url: `${req.headers.get("origin")}/subscription-cancel`,
     });
 
     return new Response(JSON.stringify({ url: session.url }), {

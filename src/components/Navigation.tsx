@@ -105,7 +105,7 @@ const Navigation = () => {
             </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/experts')}>
               <Users className="w-4 h-4 mr-1" />
-              전문가
+              전문가고용
             </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/family')}>
               <Users className="w-4 h-4 mr-1" />
@@ -282,7 +282,7 @@ const Navigation = () => {
                     onClick={() => handleNavigation('/experts')}
                   >
                     <Users className="mr-3 h-5 w-5 text-primary shrink-0" />
-                    <span className="font-medium">전문가 고용</span>
+                    <span className="font-medium">전문가고용</span>
                   </Button>
                   
                   <Button

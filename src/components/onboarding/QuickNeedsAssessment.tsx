@@ -377,7 +377,11 @@ export default function QuickNeedsAssessment() {
                         </div>
                         <Button 
                           size="lg"
-                          onClick={() => navigate(test.route)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            console.log(`Navigating to: ${test.route}`);
+                            navigate(test.route);
+                          }}
                           className="group/btn bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-3"
                         >
                           <span className="mr-2">시작하기</span>
@@ -456,7 +460,10 @@ export default function QuickNeedsAssessment() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => navigate('/experts')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate('/experts');
+                    }}
                     className="bg-white hover:bg-green-50 border-green-200 text-green-700"
                   >
                     전문가 상담 예약
@@ -546,6 +553,10 @@ export default function QuickNeedsAssessment() {
                 <Button 
                   className="w-full bg-white/40 backdrop-blur-sm border-2 border-white/50 text-slate-800 dark:text-slate-100 hover:bg-white/60 hover:scale-105 transition-all duration-300 group-hover:shadow-lg font-semibold"
                   variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedConcern(recommendation.concern);
+                  }}
                 >
                   <span className="mr-2">자세히 보기</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
@@ -569,7 +580,10 @@ export default function QuickNeedsAssessment() {
                 3분 기본 검사로 시작해서 개인 맞춤 추천을 받아보세요
               </p>
               <Button 
-                onClick={() => navigate('/assessment')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate('/assessment');
+                }}
                 size="lg"
                 className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-8 py-4 text-lg"
               >

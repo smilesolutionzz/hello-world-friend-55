@@ -45,14 +45,14 @@ const ClientLogos = () => {
           ))}
         </div>
 
-        <div className="text-center mt-8 sm:mt-12">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-4 sm:px-6 py-2 sm:py-3">
-            <span className="text-lg">✨</span>
-            <span className="text-sm sm:text-base font-medium text-foreground">
-              <span className="text-brand-gradient font-bold">500+</span> 기관에서 신뢰하는 AI 분석
-            </span>
+          <div className="text-center mt-8 sm:mt-12">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-4 sm:px-6 py-2 sm:py-3">
+              <span className="text-lg">✨</span>
+              <span className="text-sm sm:text-base font-medium text-foreground">
+                <span className="text-brand-gradient font-bold">50+</span> 기관에서 신뢰하는 AI + 전문가 분석
+              </span>
+            </div>
           </div>
-        </div>
       </div>
     </section>
   );

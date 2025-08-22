@@ -140,7 +140,19 @@ const AssessmentHistory = () => {
                   </div>
                 </div>
                 
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    // Navigate to assessment result with the specific assessment data
+                    navigate(`/assessment/${assessment.id}`, { 
+                      state: { 
+                        assessment: assessment,
+                        showResults: true 
+                      } 
+                    });
+                  }}
+                >
                   <Eye className="w-4 h-4 mr-2" />
                   상세보기
                 </Button>

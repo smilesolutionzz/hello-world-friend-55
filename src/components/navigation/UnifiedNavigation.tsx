@@ -38,7 +38,7 @@ const navigationItems: NavigationItem[] = [
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },
   { icon: Users, label: '가족관리', path: '/family', requiresAuth: true },
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: true },
-  { icon: CreditCard, label: '구독', path: '/subscription', requiresAuth: true, badge: 'PRO' },
+  { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: true, badge: 'PRO' },
 ];
 
 export const UnifiedNavigation = () => {

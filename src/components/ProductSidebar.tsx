@@ -50,13 +50,23 @@ const ProductSidebar = () => {
       route: "/premium-assessment"
     },
     {
+      icon: <MessageCircle className="w-5 h-5" />,
+      title: "30분 상담 (카카오)",
+      price: "월 30,000원~",
+      tokenCost: "30토큰",
+      badge: "빠른상담",
+      badgeType: "recommended",
+      description: "카카오톡 채팅 전문가 상담",
+      route: "/experts"
+    },
+    {
       icon: <Users className="w-5 h-5" />,
-      title: "전문가 고용",
+      title: "60분 상담 (화상)",
       price: "월 50,000원~",
       tokenCost: "50토큰",
       badge: "프리미엄",
       badgeType: "premium",
-      description: "1:1 맞춤 전문가 상담",
+      description: "1:1 화상 전문가 상담",
       route: "/experts"
     },
     {

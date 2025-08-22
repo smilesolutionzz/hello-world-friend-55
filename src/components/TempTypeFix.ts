@@ -98,12 +98,84 @@ export const mockCorporateAnalytics = {
 export const mockFamilyEcosystem = {
   loading: false,
   ecosystem: { familyHealth: { score: 80 }, relationships: { quality: 4.1 } },
-  familyMembers: [],
-  familyDynamics: null,
-  interventionStrategies: [],
-  generationalPatterns: null,
-  wellnessMetrics: null,
-  emotionalContagions: [],
+  familyMembers: [
+    { id: '1', name: '엄마', age: 35, relationship: 'parent' },
+    { id: '2', name: '아빠', age: 37, relationship: 'parent' },
+    { id: '3', name: '아이', age: 5, relationship: 'child' }
+  ],
+  familyDynamics: {
+    memberStates: [
+      { id: '1', name: '엄마', role: 'parent', currentMood: '평온', stressLevel: 3 },
+      { id: '2', name: '아빠', role: 'parent', currentMood: '피곤', stressLevel: 6 },
+      { id: '3', name: '아이', role: 'child', currentMood: '활발', stressLevel: 2 }
+    ],
+    insights: [
+      {
+        type: 'positive',
+        severity: 'medium',
+        message: '가족 간 소통이 향상되고 있습니다',
+        recommendations: ['매주 가족 시간 늘리기', '감정 표현 연습하기']
+      }
+    ],
+    correlations: [
+      { 
+        member1: '엄마', 
+        member2: '아이', 
+        correlation: 0.7, 
+        strength: 0.7,
+        type: 'positive',
+        description: '높은 상관관계' 
+      }
+    ]
+  },
+  interventionStrategies: [
+    {
+      id: '1',
+      strategy_type: '소통 개선',
+      priority: 1,
+      intervention_order: 1,
+      predicted_effectiveness: 85,
+      status: 'active',
+      strategy_content: {
+        description: '가족 간 소통을 개선하기 위한 전략',
+        timeline: '4주',
+        successMetrics: ['가족 대화 시간 증가', '갈등 빈도 감소']
+      }
+    }
+  ],
+  generationalPatterns: [
+    {
+      id: '1',
+      pattern_type: '소통 패턴',
+      pattern_strength: 0.8,
+      pattern_description: '세대 간 소통 방식의 차이',
+      strength: 0.8,
+      generations_involved: [1, 2],
+      intervention_recommendations: {
+        interventions: ['세대별 맞춤 대화법 교육', '공통 관심사 찾기']
+      }
+    }
+  ],
+  wellnessMetrics: {
+    overall_wellness_index: 75,
+    collective_harmony: 80,
+    communication_quality: 70,
+    resilience_index: 65,
+    overallWellness: 75,
+    collectiveHarmony: 80,
+    communicationQuality: 70,
+    resilience: 65
+  },
+  emotionalContagions: [
+    {
+      source: '엄마',
+      target: '아이',
+      emotion: '스트레스',
+      emotionType: '스트레스',
+      timeDelay: 30,
+      strength: 0.6
+    }
+  ],
   isLoading: false,
   analyzeFamilyDynamics: async (id?: any) => {},
   detectEmotionalContagion: async () => {},

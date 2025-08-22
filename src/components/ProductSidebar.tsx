@@ -100,7 +100,7 @@ const ProductSidebar = () => {
   };
 
   return (
-    <div className="w-72 bg-gradient-to-b from-slate-800 to-slate-900 text-white h-screen p-4 overflow-y-auto flex flex-col">
+    <div className="w-72 bg-gradient-to-b from-slate-800 to-slate-900 text-white h-[calc(100vh-4rem)] p-4 overflow-y-auto flex flex-col border-r border-slate-600">{/* 네비게이션 높이만큼 조정 */}
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-brand-gradient mb-2">AIHPRO</h2>

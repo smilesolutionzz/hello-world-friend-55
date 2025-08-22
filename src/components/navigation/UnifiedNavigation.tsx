@@ -69,7 +69,7 @@ export const UnifiedNavigation = () => {
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="hidden lg:flex bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
+      <nav className="hidden lg:flex bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-40">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -121,7 +121,7 @@ export const UnifiedNavigation = () => {
       </nav>
 
       {/* Mobile Navigation */}
-      <nav className="lg:hidden bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
+      <nav className="lg:hidden bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-40">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-14">
             {/* Logo */}

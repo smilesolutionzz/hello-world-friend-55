@@ -49,7 +49,7 @@ const Index = () => {
       <UnifiedNavigation />
       <div className="flex">
         {/* Product Sidebar */}
-        <div className="hidden lg:block fixed left-0 top-0 z-40">
+        <div className="hidden lg:block fixed left-0 top-16 z-30 h-full">
           <ProductSidebar />
         </div>
         

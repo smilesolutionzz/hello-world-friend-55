@@ -477,28 +477,41 @@ const ExpertHiring = () => {
       
       <div className="container mx-auto px-4 py-8">
         {/* 헤더 섹션 */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <Crown className="w-8 h-8 text-primary animate-pulse-glow" />
-            <h1 className="text-4xl font-bold text-brand-gradient">전문가 고용</h1>
-            <Brain className="w-8 h-8 text-secondary animate-pulse-glow" />
-          </div>
-          <div className="space-y-2 max-w-4xl mx-auto">
-            <p className="text-2xl font-semibold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              AI가 추천하는 맞춤형 전문가와 함께
-            </p>
-            <p className="text-xl text-muted-foreground">
-              <span className="text-primary font-medium">체계적이고 지속적인</span> 상담을 받아보세요
-            </p>
-            <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span>전문가 직접 매칭</span>
-              <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span>월 15만원 이하</span>
-              <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              <span>24시간 상담 지원</span>
+        <div className="text-center mb-12 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 rounded-3xl blur-xl"></div>
+          <div className="relative z-10 bg-card/80 backdrop-blur-sm rounded-3xl p-8 border shadow-lg">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="p-2 bg-primary/10 rounded-full animate-pulse">
+                <Crown className="w-8 h-8 text-primary" />
+              </div>
+              <h1 className="text-5xl font-black bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                전문가 고용
+              </h1>
+              <div className="p-2 bg-secondary/10 rounded-full animate-pulse">
+                <Brain className="w-8 h-8 text-secondary" />
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h2 className="text-3xl font-bold text-foreground">
+                🤖 <span className="text-primary">AI 맞춤 추천</span> × 
+                <span className="text-secondary"> 전문가 매칭</span>
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                당신만을 위한 전문가를 AI가 찾아드립니다
+              </p>
+              
+              <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
+                <Badge className="bg-green-100 text-green-700 hover:bg-green-200 px-4 py-2">
+                  ✅ 월 15만원 이하
+                </Badge>
+                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2">
+                  🎯 AI 정밀 매칭
+                </Badge>
+                <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-200 px-4 py-2">
+                  🕐 24시간 지원
+                </Badge>
+              </div>
             </div>
           </div>
         </div>

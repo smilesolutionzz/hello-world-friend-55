@@ -59,104 +59,304 @@ interface Expert {
 
 const mockExperts: Expert[] = [
   {
-    id: "1",
-    name: "김소연 박사",
-    specialty: ["아동발달심리", "ADHD", "자폐스펙트럼"],
-    credentials: ["소아청소년정신과 전문의", "발달심리학 박사", "20년 경력"],
+    id: '1',
+    name: '김미영',
+    specialty: ['아동발달', '언어치료'],
+    credentials: ['아동발달 전문의', '언어재활사 1급'],
     rating: 4.9,
-    reviews: 127,
-    experience: "20년",
-    availability: "평일 9-18시",
-    monthlyPrice: 600000,
-    hourlyPrice: 150000,
-    image: "/placeholder.svg",
-    description: "아동 ADHD, 자폐스펙트럼, 언어발달지연 전문. 개별화된 치료 계획으로 최적의 결과를 제공합니다.",
-    languages: ["한국어", "영어"],
-    consultationTypes: ["화상상담", "전화상담", "방문상담"],
-    monthlyServices: ["주 1회 정기상담 (4회)", "24시간 응급상담", "맞춤 치료계획 수립", "진행상황 보고서"],
+    reviews: 156,
+    experience: '12년',
+    availability: '평일 9-18시',
+    monthlyPrice: 120000,
+    hourlyPrice: 30000,
+    image: '/api/placeholder/150/150',
+    description: '12년간 아동발달센터에서 근무하며 수백 명의 아이들을 치료해온 경험이 있습니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담'],
+    monthlyServices: [
+      '주 2회 개별 상담 (월 8회)',
+      '월 1회 부모 상담',
+      '발달 평가 및 리포트',
+      '24시간 긴급 상담 지원'
+    ],
     portfolio: {
       cases: 450,
       successRate: 92,
-      specializations: ["ADHD 치료", "자폐스펙트럼 개입", "언어발달 치료"]
+      specializations: ['아동발달', '언어치료', '발달평가']
     },
-    location: "서울 강남구",
+    location: '서울 강남구',
     isOnline: true,
-    responseTime: "평균 2시간 이내"
+    responseTime: '평균 2시간 이내'
   },
   {
-    id: "2",
-    name: "이준호 교수",
-    specialty: ["언어치료", "조음장애", "유창성장애"],
-    credentials: ["언어병리학 박사", "대학병원 재직", "15년 경력"],
+    id: '2',
+    name: '박상훈',
+    specialty: ['행동분석', '자폐스펙트럼'],
+    credentials: ['BCBA 자격증', '행동분석사'],
     rating: 4.8,
     reviews: 89,
-    experience: "15년",
-    availability: "평일 14-20시",
-    monthlyPrice: 480000,
-    hourlyPrice: 120000,
-    image: "/placeholder.svg",
-    description: "언어발달지연, 조음장애, 유창성장애 전문. 체계적인 평가와 맞춤형 치료를 제공합니다.",
-    languages: ["한국어"],
-    consultationTypes: ["화상상담", "방문상담"],
-    monthlyServices: ["주 1회 정기상담 (4회)", "일일 언어 과제 제공", "보호자 교육", "월말 평가보고서"],
-    portfolio: {
-      cases: 320,
-      successRate: 88,
-      specializations: ["조음치료", "언어발달 촉진", "유창성 개선"]
-    },
-    location: "서울 서초구",
-    isOnline: true,
-    responseTime: "평균 4시간 이내"
-  },
-  {
-    id: "3",
-    name: "박민정 원장",
-    specialty: ["행동분석", "자폐스펙트럼", "사회성발달"],
-    credentials: ["응용행동분석 박사", "ABA 국제자격증", "12년 경력"],
-    rating: 4.9,
-    reviews: 156,
-    experience: "12년",
-    availability: "평일 10-19시",
-    monthlyPrice: 520000,
-    hourlyPrice: 130000,
-    image: "/placeholder.svg",
-    description: "자폐스펙트럼, 행동문제, 사회성 발달 전문. 과학적 근거 기반의 개입 프로그램을 제공합니다.",
-    languages: ["한국어", "영어", "일본어"],
-    consultationTypes: ["화상상담", "전화상담", "방문상담"],
-    monthlyServices: ["주 1회 정기상담 (4회)", "행동계획 수립", "가족 코칭", "월 2회 진도체크"],
+    experience: '8년',
+    availability: '평일 10-19시',
+    monthlyPrice: 95000,
+    hourlyPrice: 25000,
+    image: '/api/placeholder/150/150',
+    description: 'ABA 치료 전문가로 자폐스펙트럼 아동의 행동 개선에 특화되어 있습니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담'],
+    monthlyServices: [
+      '주 3회 ABA 치료 (월 12회)',
+      '행동 목표 설정 및 관리',
+      '가족 교육 프로그램',
+      '진전 상황 월간 리포트'
+    ],
     portfolio: {
       cases: 280,
       successRate: 94,
-      specializations: ["ABA 치료", "사회성 훈련", "행동수정"]
+      specializations: ['ABA 치료', '행동분석', '자폐스펙트럼']
     },
-    location: "경기 성남시",
+    location: '경기 성남시',
     isOnline: true,
-    responseTime: "평균 1시간 이내"
+    responseTime: '평균 1시간 이내'
   },
   {
-    id: "4",
-    name: "최영수 상담사",
-    specialty: ["청소년상담", "우울증", "불안장애"],
-    credentials: ["상담심리학 석사", "청소년상담사 1급", "8년 경력"],
+    id: '3',
+    name: '이정아',
+    specialty: ['언어치료', '발음교정'],
+    credentials: ['1급 언어재활사'],
     rating: 4.7,
-    reviews: 203,
-    experience: "8년",
-    availability: "평일 16-22시, 주말 가능",
-    monthlyPrice: 400000,
-    hourlyPrice: 100000,
-    image: "/placeholder.svg",
-    description: "청소년 우울, 불안, 학교적응 문제 전문. 청소년의 눈높이에 맞춘 상담으로 호평받고 있습니다.",
-    languages: ["한국어"],
-    consultationTypes: ["화상상담", "전화상담"],
-    monthlyServices: ["주 1회 정기상담 (4회)", "일일 감정체크", "학습코칭", "가족상담 월 1회"],
+    reviews: 124,
+    experience: '6년',
+    availability: '평일 14-20시',
+    monthlyPrice: 85000,
+    hourlyPrice: 22000,
+    image: '/api/placeholder/150/150',
+    description: '언어발달지연 아동의 언어능력 향상을 위한 맞춤형 치료를 제공합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담'],
+    monthlyServices: [
+      '주 2회 언어치료 (월 8회)',
+      '발음 교정 및 언어 자극',
+      '부모 가정지도 교육',
+      '언어발달 평가서 제공'
+    ],
+    portfolio: {
+      cases: 320,
+      successRate: 88,
+      specializations: ['언어치료', '발음교정', '언어발달']
+    },
+    location: '서울 마포구',
+    isOnline: false,
+    responseTime: '평균 4시간 이내'
+  },
+  {
+    id: '4',
+    name: '최동현',
+    specialty: ['청소년상담', '심리상담'],
+    credentials: ['청소년상담사 1급', '상담심리사'],
+    rating: 4.9,
+    reviews: 78,
+    experience: '10년',
+    availability: '평일 16-22시, 주말 가능',
+    monthlyPrice: 110000,
+    hourlyPrice: 28000,
+    image: '/api/placeholder/150/150',
+    description: '청소년기 정서적 어려움과 학업 스트레스 상담을 전문으로 합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '전화상담'],
+    monthlyServices: [
+      '주 1회 개별 상담 (월 4회)',
+      '위기 상황 24시간 대응',
+      '부모-자녀 관계 개선 상담',
+      '학업 동기 향상 프로그램'
+    ],
     portfolio: {
       cases: 180,
       successRate: 86,
-      specializations: ["청소년 상담", "학교적응", "우울증 치료"]
+      specializations: ['청소년 상담', '학교적응', '심리상담']
     },
-    location: "온라인 전용",
+    location: '온라인 전용',
     isOnline: true,
-    responseTime: "평균 30분 이내"
+    responseTime: '평균 30분 이내'
+  },
+  {
+    id: '5',
+    name: '강은미',
+    specialty: ['심리상담', '심리평가'],
+    credentials: ['임상심리사 1급'],
+    rating: 4.8,
+    reviews: 203,
+    experience: '14년',
+    availability: '평일 9-17시',
+    monthlyPrice: 135000,
+    hourlyPrice: 34000,
+    image: '/api/placeholder/150/150',
+    description: '아동 및 청소년의 심리적 어려움을 전문적으로 평가하고 치료합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담'],
+    monthlyServices: [
+      '주 1회 심리상담 (월 4회)',
+      '심리검사 및 평가',
+      '가족 상담 프로그램',
+      '정신건강 관리 가이드'
+    ],
+    portfolio: {
+      cases: 420,
+      successRate: 91,
+      specializations: ['심리평가', 'ADHD', '우울증', '불안장애']
+    },
+    location: '서울 서초구',
+    isOnline: true,
+    responseTime: '평균 3시간 이내'
+  },
+  {
+    id: '6',
+    name: '윤호진',
+    specialty: ['아동발달', '심리상담', '행동분석'],
+    credentials: ['발달재활서비스 제공기관 대표', '아동심리 전문가'],
+    rating: 4.9,
+    reviews: 312,
+    experience: '18년',
+    availability: '평일 8-18시',
+    monthlyPrice: 180000,
+    hourlyPrice: 45000,
+    image: '/api/placeholder/150/150',
+    description: '18년간 아동발달 분야에서 센터를 운영하며 종합적인 발달지원을 제공합니다.',
+    languages: ['한국어', '영어'],
+    consultationTypes: ['화상상담', '방문상담', '전화상담'],
+    monthlyServices: [
+      '월 2회 종합 발달 상담',
+      '개별 치료 계획 수립',
+      '다학제 팀 케어 코디네이션',
+      '발달 평가 및 진단서 작성'
+    ],
+    portfolio: {
+      cases: 850,
+      successRate: 95,
+      specializations: ['발달센터 운영', '종합발달지원', '팀케어']
+    },
+    location: '서울 강동구',
+    isOnline: true,
+    responseTime: '평균 1시간 이내'
+  },
+  {
+    id: '7',
+    name: '조현주',
+    specialty: ['감각통합', '작업치료'],
+    credentials: ['작업치료사 면허', '감각통합 전문인증'],
+    rating: 4.7,
+    reviews: 145,
+    experience: '9년',
+    availability: '평일 10-18시',
+    monthlyPrice: 100000,
+    hourlyPrice: 25000,
+    image: '/api/placeholder/150/150',
+    description: '감각통합 어려움을 겪는 아동들의 일상생활 기능 향상을 돕습니다.',
+    languages: ['한국어'],
+    consultationTypes: ['방문상담'],
+    monthlyServices: [
+      '주 2회 감각통합치료 (월 8회)',
+      '작업치료 및 소근육 발달',
+      '가정용 감각도구 추천',
+      '부모교육 및 가정지도'
+    ],
+    portfolio: {
+      cases: 290,
+      successRate: 89,
+      specializations: ['감각통합', '작업치료', '소근육발달']
+    },
+    location: '경기 고양시',
+    isOnline: false,
+    responseTime: '평균 6시간 이내'
+  },
+  {
+    id: '8',
+    name: '노은영',
+    specialty: ['특수교육', '인지학습'],
+    credentials: ['특수교육 정교사 1급'],
+    rating: 4.8,
+    reviews: 167,
+    experience: '11년',
+    availability: '평일 9-17시',
+    monthlyPrice: 90000,
+    hourlyPrice: 23000,
+    image: '/api/placeholder/150/150',
+    description: '발달장애 아동의 개별화 교육 프로그램을 통해 학습능력을 향상시킵니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담'],
+    monthlyServices: [
+      '주 2회 개별화 교육 (월 8회)',
+      '인지학습 프로그램',
+      '사회성 기술 훈련',
+      '교육계획 수립 및 평가'
+    ],
+    portfolio: {
+      cases: 380,
+      successRate: 87,
+      specializations: ['특수교육', '인지학습', '사회성훈련']
+    },
+    location: '서울 노원구',
+    isOnline: true,
+    responseTime: '평균 4시간 이내'
+  },
+  {
+    id: '9',
+    name: '김태현',
+    specialty: ['놀이치료', '심리상담'],
+    credentials: ['놀이치료 전문가', '아동상담사'],
+    rating: 4.6,
+    reviews: 98,
+    experience: '7년',
+    availability: '평일 15-20시',
+    monthlyPrice: 80000,
+    hourlyPrice: 20000,
+    image: '/api/placeholder/150/150',
+    description: '놀이를 통해 아동의 정서적 문제와 행동 문제를 치료합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['방문상담'],
+    monthlyServices: [
+      '주 1회 놀이치료 (월 4회)',
+      '부모-아동 놀이 상담',
+      '정서조절 프로그램',
+      '놀이평가 및 보고서'
+    ],
+    portfolio: {
+      cases: 150,
+      successRate: 84,
+      specializations: ['놀이치료', '정서조절', '모래놀이']
+    },
+    location: '서울 용산구',
+    isOnline: false,
+    responseTime: '평균 5시간 이내'
+  },
+  {
+    id: '10',
+    name: '서민정',
+    specialty: ['가족상담', '심리상담'],
+    credentials: ['가족상담전문가 1급', '상담심리사'],
+    rating: 4.9,
+    reviews: 234,
+    experience: '13년',
+    availability: '평일 10-19시, 주말 오전',
+    monthlyPrice: 125000,
+    hourlyPrice: 32000,
+    image: '/api/placeholder/150/150',
+    description: '가족 시스템 전체의 건강한 소통과 관계 개선을 지원합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담'],
+    monthlyServices: [
+      '월 2회 가족상담 (월 2회)',
+      '부부관계 개선 상담',
+      '자녀양육 코칭',
+      '가족갈등 중재 서비스'
+    ],
+    portfolio: {
+      cases: 520,
+      successRate: 93,
+      specializations: ['가족치료', '부모교육', '관계개선']
+    },
+    location: '경기 분당구',
+    isOnline: true,
+    responseTime: '평균 2시간 이내'
   }
 ];
 
@@ -244,11 +444,11 @@ const ExpertHiring = () => {
 
     if (priceFilter && priceFilter !== "all") {
       if (priceFilter === "low") {
-        filtered = filtered.filter(expert => expert.monthlyPrice <= 400000);
+        filtered = filtered.filter(expert => expert.monthlyPrice <= 150000);
       } else if (priceFilter === "medium") {
-        filtered = filtered.filter(expert => expert.monthlyPrice > 400000 && expert.monthlyPrice <= 600000);
+        filtered = filtered.filter(expert => expert.monthlyPrice > 150000 && expert.monthlyPrice <= 250000);
       } else if (priceFilter === "high") {
-        filtered = filtered.filter(expert => expert.monthlyPrice > 600000);
+        filtered = filtered.filter(expert => expert.monthlyPrice > 250000);
       }
     }
 
@@ -360,6 +560,7 @@ const ExpertHiring = () => {
                   <SelectItem value="언어치료">언어치료</SelectItem>
                   <SelectItem value="행동분석">행동분석</SelectItem>
                   <SelectItem value="청소년상담">청소년상담</SelectItem>
+                  <SelectItem value="심리상담">심리상담</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -369,9 +570,9 @@ const ExpertHiring = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">전체</SelectItem>
-                  <SelectItem value="low">40만원 이하</SelectItem>
-                  <SelectItem value="medium">40-60만원</SelectItem>
-                  <SelectItem value="high">60만원 이상</SelectItem>
+                  <SelectItem value="low">15만원 이하</SelectItem>
+                  <SelectItem value="medium">15-25만원</SelectItem>
+                  <SelectItem value="high">25만원 이상</SelectItem>
                 </SelectContent>
               </Select>
 

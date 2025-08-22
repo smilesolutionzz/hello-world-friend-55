@@ -19,9 +19,9 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
   
   const chartData = [
     {
-      name: '평균 점수',
-      value: average,
-      fullMark: 4,
+      name: '총점',
+      value: total,
+      fullMark: 84,
     }
   ];
 
@@ -110,8 +110,8 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium">평균</span>
-                <span className="text-2xl font-bold text-brand-gradient">{average}점</span>
+                <span className="text-lg font-medium">규준집단 대비</span>
+                <span className="text-2xl font-bold text-brand-gradient">{((total/84)*100).toFixed(0)}%</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -135,7 +135,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
-                  <YAxis domain={[0, 4]} />
+                  <YAxis domain={[0, 84]} />
                   <Tooltip />
                   <Bar dataKey="value" fill="hsl(var(--primary))" />
                 </BarChart>
@@ -156,7 +156,6 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
               <p className="text-lg font-medium">• 심각도: {severity}</p>
             </div>
             <div>
-              <p className="text-lg font-medium mb-2">• 평균: {average}점</p>
               <p className="text-lg font-medium">• 검사일: {new Date().toLocaleDateString('ko-KR')}</p>
             </div>
           </div>

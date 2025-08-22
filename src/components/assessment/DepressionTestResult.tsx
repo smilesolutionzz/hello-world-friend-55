@@ -23,9 +23,9 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
   
   const chartData = [
     {
-      name: '평균 점수',
-      value: average,
-      fullMark: 3,
+      name: '총점',
+      value: total,
+      fullMark: 63,
     }
   ];
 
@@ -170,7 +170,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
-                  <YAxis domain={[0, 3]} />
+                  <YAxis domain={[0, 63]} />
                   <Tooltip />
                   <Bar dataKey="value" fill="hsl(var(--primary))" />
                 </BarChart>
@@ -191,7 +191,6 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
               <p className="text-lg font-medium">• 심각도: {severity}</p>
             </div>
             <div>
-              <p className="text-lg font-medium mb-2">• 평균: {average}점</p>
               <p className="text-lg font-medium">• 검사일: {new Date().toLocaleDateString('ko-KR')}</p>
             </div>
           </div>

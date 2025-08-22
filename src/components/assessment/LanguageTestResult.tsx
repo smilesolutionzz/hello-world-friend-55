@@ -47,9 +47,9 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   // 차트 데이터
   const chartData = [
     {
-      name: '평균 점수',
-      value: average,
-      fullMark: 4
+      name: '총점',
+      value: total,
+      fullMark: 100
     }
   ];
 
@@ -80,12 +80,12 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               <p className="text-2xl font-bold">{total}점</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">평균</p>
-              <p className="text-2xl font-bold">{average}점</p>
-            </div>
-            <div className="space-y-2">
               <p className="text-sm text-muted-foreground">연령대</p>
               <p className="text-2xl font-bold">{ageGroup}</p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">평가 결과</p>
+              <p className="text-2xl font-bold">{evaluation.level}</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">검사일</p>
@@ -112,7 +112,6 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               <p className="text-lg font-medium">• 평가: {evaluation.level}</p>
             </div>
             <div>
-              <p className="text-lg font-medium mb-2">• 평균: {average}점</p>
               <p className="text-lg font-medium">• 연령대: {ageGroup}</p>
             </div>
           </div>
@@ -148,7 +147,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis domain={[0, 4]} />
+              <YAxis domain={[0, 100]} />
               <Tooltip />
               <Bar dataKey="value" fill="hsl(var(--primary))" />
             </BarChart>

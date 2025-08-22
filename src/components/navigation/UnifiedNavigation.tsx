@@ -80,7 +80,6 @@ export const UnifiedNavigation = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
                 <Brain className="w-4 h-4 text-white" />
               </div>
-              <span className="text-lg font-bold">AI 하이라이트프로</span>
             </div>
 
             {/* Desktop Menu */}
@@ -132,7 +131,6 @@ export const UnifiedNavigation = () => {
               <div className="w-7 h-7 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
                 <Brain className="w-3 h-3 text-white" />
               </div>
-              <span className="font-bold">AI 하이라이트프로</span>
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -151,7 +149,6 @@ export const UnifiedNavigation = () => {
                       <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
                         <Brain className="w-4 h-4 text-white" />
                       </div>
-                      <span className="font-bold">AI 하이라이트프로</span>
                     </div>
                   </div>
 

@@ -141,7 +141,19 @@ const Observation = () => {
   return (
     <AuthenticationGuard fallbackMessage="관찰일지 시스템을 사용하려면 로그인이 필요합니다.">
       <div className="container mx-auto px-4 py-8">
+        {/* Header with Home Button */}
         <div className="mb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              홈으로
+            </Button>
+          </div>
           <h1 className="text-4xl font-bold text-foreground mb-4">
             전영역 관찰일지 시스템
           </h1>

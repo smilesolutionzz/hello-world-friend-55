@@ -30,7 +30,7 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   { icon: Home, label: '홈', path: '/' },
   { icon: BarChart3, label: '대시보드', path: '/dashboard', requiresAuth: true },
-  { icon: TrendingUp, label: '심리 검사', path: '/assessment', requiresAuth: true },
+  { icon: TrendingUp, label: '3분테스트', path: '/assessment', requiresAuth: true },
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-counselor', requiresAuth: true },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },
   { icon: Users, label: '가족관리', path: '/family', requiresAuth: true },

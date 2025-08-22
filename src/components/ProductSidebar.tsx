@@ -186,7 +186,7 @@ const ProductSidebar = () => {
       <div className="mt-6 pt-4 border-t border-slate-600 pb-4">
         <Button 
           className="w-full btn-brand mb-2"
-          onClick={() => navigate('/subscription')}
+          onClick={() => navigate('/token-subscription')}
         >
           <Gift className="w-4 h-4 mr-2" />
           구독 관리

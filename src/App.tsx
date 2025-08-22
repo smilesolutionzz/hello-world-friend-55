@@ -51,7 +51,7 @@ const App = () => (
           <Route path="/highlight-ai" element={<HighlightAI />} />
           <Route path="/test/:testId" element={<TypebotEmbed />} />
           <Route path="/results/:resultId" element={<TestResults />} />
-          <Route path="/subscription" element={<HighlightSubscription />} />
+          <Route path="/subscription" element={<TokenSubscription />} />
           
           {/* Main Routes */}
           <Route path="/" element={<Index />} />
@@ -75,8 +75,10 @@ const App = () => (
           <Route path="/expert-list" element={<ExpertList />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
+          {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />
           <Route path="/subscription-cancel" element={<SubscriptionCancel />} />
+          */}
           
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

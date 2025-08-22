@@ -18,7 +18,9 @@ import {
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
+import { useTokens } from '@/hooks/useTokens';
 import { supabase } from '@/integrations/supabase/client';
+import TokenBalance from '@/components/TokenBalance';
 
 interface NavigationItem {
   icon: React.ElementType;
@@ -74,14 +76,21 @@ export const UnifiedNavigation = () => {
       <nav className="hidden lg:flex bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-40">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div 
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => navigate('/')}
-            >
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
-                <Brain className="w-4 h-4 text-white" />
+            {/* Logo & Token Balance */}
+            <div className="flex items-center gap-4">
+              <div 
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => navigate('/')}
+              >
+                <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
+                  <Brain className="w-4 h-4 text-white" />
+                </div>
               </div>
+              
+              {/* Token Balance for logged in users */}
+              {user && (
+                <TokenBalance compact showPurchaseButton={false} />
+              )}
             </div>
 
             {/* Desktop Menu */}
@@ -125,14 +134,21 @@ export const UnifiedNavigation = () => {
       <nav className="lg:hidden bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-40">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-14">
-            {/* Logo */}
-            <div 
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => navigate('/')}
-            >
-              <div className="w-7 h-7 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
-                <Brain className="w-3 h-3 text-white" />
+            {/* Logo & Token Balance */}
+            <div className="flex items-center gap-3">
+              <div 
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => navigate('/')}
+              >
+                <div className="w-7 h-7 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
+                  <Brain className="w-3 h-3 text-white" />
+                </div>
               </div>
+              
+              {/* Token Balance for mobile */}
+              {user && (
+                <TokenBalance compact showPurchaseButton={false} />
+              )}
             </div>
 
             {/* Mobile Menu Toggle */}

@@ -484,7 +484,7 @@ const ExpertHiring = () => {
               <div className="p-2 bg-primary/10 rounded-full animate-pulse">
                 <Crown className="w-8 h-8 text-primary" />
               </div>
-              <h1 className="text-5xl font-black bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+              <h1 className="text-5xl font-black text-foreground drop-shadow-sm">
                 전문가 고용
               </h1>
               <div className="p-2 bg-secondary/10 rounded-full animate-pulse">
@@ -494,8 +494,8 @@ const ExpertHiring = () => {
             
             <div className="space-y-4">
               <h2 className="text-3xl font-bold text-foreground">
-                🤖 <span className="text-primary">AI 맞춤 추천</span> × 
-                <span className="text-secondary"> 전문가 매칭</span>
+                🤖 <span className="text-blue-600 font-extrabold">AI 맞춤 추천</span> × 
+                <span className="text-purple-600 font-extrabold"> 전문가 매칭</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 당신만을 위한 전문가를 AI가 찾아드립니다

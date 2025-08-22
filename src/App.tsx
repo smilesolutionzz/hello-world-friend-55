@@ -9,6 +9,8 @@ import PremiumAssessment from "./pages/PremiumAssessment";
 import AICounselor from "./pages/AICounselor";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import NeedsAssessment from "./pages/NeedsAssessment";
+import QuickNeeds from "./pages/QuickNeeds";
 
 // HIGHLIGHT MVP Pages
 import HighlightAuth from "./pages/HighlightAuth";
@@ -56,6 +58,8 @@ const App = () => (
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/ai-counselor" element={<AICounselor />} />
           <Route path="/legacy-auth" element={<Auth />} />
+          <Route path="/needs-assessment" element={<NeedsAssessment />} />
+          <Route path="/quick-needs" element={<QuickNeeds />} />
           
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />

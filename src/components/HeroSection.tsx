@@ -36,7 +36,33 @@ const HeroSection = () => {
         <ChatInterface />
         
         {/* CTA Section */}
-        <div className="mt-12 text-center">
+        <div className="mt-12 text-center space-y-6">
+          {/* 니즈별 맞춤 추천 섹션 */}
+          <div className="bg-gradient-to-br from-primary/5 to-secondary/5 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-primary/20">
+            <h3 className="text-xl sm:text-2xl font-bold mb-2">🎯 어떤 도움이 필요하신가요?</h3>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto leading-[1.6] text-center">
+              당신의 니즈에 맞는 최적의 테스트를 찾아드립니다
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-lg mx-auto">
+              <Button 
+                size="lg"
+                onClick={() => navigate('/quick-needs')}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-600 transition-all shadow-lg h-11 text-sm sm:text-base"
+              >
+                맞춤 테스트 찾기
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                onClick={() => navigate('/needs-assessment')}
+                className="flex-1 px-6 py-3 border border-primary text-primary rounded-xl font-medium hover:bg-primary/10 transition-colors h-11 text-sm sm:text-base"
+              >
+                상세 니즈 분석
+              </Button>
+            </div>
+          </div>
+          
+          {/* 기존 프리미엄 섹션 */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200">
             <h3 className="text-xl sm:text-2xl font-bold mb-4">더 정확한 분석이 필요하신가요?</h3>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto leading-[1.6] text-center">

@@ -105,6 +105,12 @@ const ProductSidebar = () => {
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-brand-gradient mb-2">AIHPRO</h2>
         <p className="text-sm text-slate-300">심리상담 전문 플랫폼</p>
+        <button 
+          onClick={() => navigate('/quick-needs')}
+          className="mt-3 w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-600 transition-all"
+        >
+          🎯 맞춤 테스트 찾기
+        </button>
       </div>
 
       {/* Products */}

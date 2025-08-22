@@ -78,6 +78,7 @@ interface Observation {
   score_overall: number;
   created_at: string;
   profile?: Profile;
+  categoryScores?: { [key: string]: number };
 }
 
 interface UserStats {
@@ -167,10 +168,13 @@ const Dashboard = () => {
       const familiesArray = Array.from(familyMap.values());
       setFamilies(familiesArray);
 
-      // Load real assessment data - Fix column name
+      // Load real assessment data - Fix column name  
       const { data: assessmentData } = await supabase
         .from('assessments')
-        .select('*')
+        .select(`
+          *,
+          profile:profiles(display_name)
+        `)
         .eq('profile_id', profileData.id)
         .order('created_at', { ascending: false })
         .limit(20);
@@ -186,18 +190,47 @@ const Dashboard = () => {
       // Combine all data into observations format
       const allObservations: Observation[] = [];
 
-      // Add assessments
+      // Add assessments with real data
       assessmentData?.forEach((assessment: any) => {
+        // Extract actual scores from assessment results
+        let totalScore = 75; // default
+        let categoryScores = { 정서: 75, 행동: 75, 인지: 75, 사회성: 75, 신체: 75 };
+        
+        if (assessment.results && typeof assessment.results === 'object') {
+          // Handle different assessment result formats
+          if (assessment.results.total) {
+            totalScore = assessment.results.total;
+          } else if (assessment.results.totalScore) {
+            totalScore = assessment.results.totalScore;
+          } else if (assessment.results.answers) {
+            // Calculate score from answers array
+            const answers = assessment.results.answers;
+            if (Array.isArray(answers)) {
+              totalScore = Math.round((answers.reduce((sum: number, ans: any) => {
+                return sum + (typeof ans === 'number' ? ans : ans.score || 0);
+              }, 0) / answers.length) * 20); // Scale to 0-100
+            }
+          }
+          
+          // Extract category scores if available
+          if (assessment.results.categories) {
+            Object.keys(categoryScores).forEach((cat, index) => {
+              if (assessment.results.categories[cat]) {
+                categoryScores[cat as keyof typeof categoryScores] = assessment.results.categories[cat];
+              }
+            });
+          }
+        }
+        
         allObservations.push({
           id: assessment.id,
           user_id: user.id,
           age_group: assessment.age_group,
           tags: ['검사', assessment.age_group],
-          score_overall: typeof assessment.results === 'object' && assessment.results.total 
-            ? assessment.results.total 
-            : 75,
+          score_overall: totalScore,
           created_at: assessment.created_at,
-          profile: { ...profileData, role: 'user' } as any
+          profile: { ...profileData, role: 'user' } as any,
+          categoryScores // Add category scores for detailed analysis
         });
       });
 
@@ -325,12 +358,22 @@ const Dashboard = () => {
     const counts = { 정서: 0, 행동: 0, 인지: 0, 사회성: 0, 신체: 0 };
 
     observations.forEach(obs => {
-      // Extract category scores from score_overall (mock logic for demo)
-      const baseScore = obs.score_overall || 75;
-      Object.keys(totals).forEach((category, index) => {
-        totals[category as keyof typeof totals] += baseScore + (Math.random() * 20 - 10); // Add variance
-        counts[category as keyof typeof counts] += 1;
-      });
+      // Use actual category scores if available, otherwise derive from overall score
+      if ((obs as any).categoryScores) {
+        Object.keys(totals).forEach(category => {
+          const score = (obs as any).categoryScores[category] || obs.score_overall;
+          totals[category as keyof typeof totals] += score;
+          counts[category as keyof typeof counts] += 1;
+        });
+      } else {
+        // Derive category scores from overall score with some variance
+        const baseScore = obs.score_overall || 75;
+        Object.keys(totals).forEach((category, index) => {
+          const variance = (Math.random() - 0.5) * 20; // ±10 variance
+          totals[category as keyof typeof totals] += Math.max(0, Math.min(100, baseScore + variance));
+          counts[category as keyof typeof counts] += 1;
+        });
+      }
     });
 
     return [
@@ -342,11 +385,26 @@ const Dashboard = () => {
     ];
   }, [observations]);
 
-  // Calculate trend data (12 weeks)
-  const trendData = Array.from({ length: 12 }, (_, i) => ({
-    week: `${12 - i}주 전`,
-    score: Math.floor(Math.random() * 30) + 70 // Mock data 70-100
-  }));
+  // Calculate trend data from actual observations (last 12 data points)
+  const trendData = React.useMemo(() => {
+    if (observations.length === 0) {
+      return Array.from({ length: 12 }, (_, i) => ({
+        week: `${12 - i}주 전`,
+        score: 0
+      }));
+    }
+
+    // Sort observations by date and take recent ones
+    const sortedObs = [...observations]
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+      .slice(-12); // Last 12 observations
+
+    return sortedObs.map((obs, index) => ({
+      week: `${index + 1}번째`,
+      score: obs.score_overall || 0,
+      date: new Date(obs.created_at).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })
+    }));
+  }, [observations]);
 
   const getSubscriptionStatus = () => {
     if (!userStats) return { label: '로딩중', color: 'bg-gray-100 text-gray-600' };

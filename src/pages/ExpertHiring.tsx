@@ -236,13 +236,13 @@ const ExpertHiring = () => {
       );
     }
 
-    if (specialtyFilter) {
+    if (specialtyFilter && specialtyFilter !== "all") {
       filtered = filtered.filter(expert =>
         expert.specialty.some(s => s.includes(specialtyFilter))
       );
     }
 
-    if (priceFilter) {
+    if (priceFilter && priceFilter !== "all") {
       if (priceFilter === "low") {
         filtered = filtered.filter(expert => expert.monthlyPrice <= 400000);
       } else if (priceFilter === "medium") {
@@ -252,7 +252,7 @@ const ExpertHiring = () => {
       }
     }
 
-    if (locationFilter) {
+    if (locationFilter && locationFilter !== "all") {
       if (locationFilter === "online") {
         filtered = filtered.filter(expert => expert.isOnline);
       } else {
@@ -355,7 +355,7 @@ const ExpertHiring = () => {
                   <SelectValue placeholder="전문분야 선택" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">전체</SelectItem>
+                  <SelectItem value="all">전체</SelectItem>
                   <SelectItem value="아동발달">아동발달</SelectItem>
                   <SelectItem value="언어치료">언어치료</SelectItem>
                   <SelectItem value="행동분석">행동분석</SelectItem>
@@ -368,7 +368,7 @@ const ExpertHiring = () => {
                   <SelectValue placeholder="가격대 선택" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">전체</SelectItem>
+                  <SelectItem value="all">전체</SelectItem>
                   <SelectItem value="low">40만원 이하</SelectItem>
                   <SelectItem value="medium">40-60만원</SelectItem>
                   <SelectItem value="high">60만원 이상</SelectItem>
@@ -380,7 +380,7 @@ const ExpertHiring = () => {
                   <SelectValue placeholder="지역 선택" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">전체</SelectItem>
+                  <SelectItem value="all">전체</SelectItem>
                   <SelectItem value="online">온라인 전용</SelectItem>
                   <SelectItem value="서울">서울</SelectItem>
                   <SelectItem value="경기">경기</SelectItem>

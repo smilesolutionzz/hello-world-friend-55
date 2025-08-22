@@ -507,9 +507,14 @@ const ExpertHiring = () => {
                           <AvatarImage src={expert.image} />
                           <AvatarFallback>{expert.name[0]}</AvatarFallback>
                         </Avatar>
-                        <div>
-                          <h4 className="font-semibold text-purple-800">{expert.name}</h4>
-                          <div className="flex items-center gap-1">
+                         <div>
+                           <div className="flex items-center gap-2">
+                             <h4 className="font-semibold text-purple-800">{expert.name}</h4>
+                             <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-700">
+                               {expert.credentials[0]}
+                             </Badge>
+                           </div>
+                           <div className="flex items-center gap-1">
                             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                             <span className="text-sm">{expert.rating}</span>
                             {expert.aiMatchScore && (
@@ -605,13 +610,13 @@ const ExpertHiring = () => {
                         <AvatarFallback className="text-lg">{expert.name[0]}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="text-xl font-bold text-brand-gradient">{expert.name}</h3>
-                          <Badge variant="secondary" className="bg-primary/10 text-primary">
-                            <Award className="w-3 h-3 mr-1" />
-                            전문의
-                          </Badge>
-                        </div>
+                         <div className="flex items-center gap-2 mb-2">
+                           <h3 className="text-xl font-bold text-brand-gradient">{expert.name}</h3>
+                           <Badge variant="secondary" className="bg-primary/10 text-primary">
+                             <Award className="w-3 h-3 mr-1" />
+                             {expert.credentials[0]}
+                           </Badge>
+                         </div>
                         <div className="flex items-center gap-4 mb-3">
                           <div className="flex items-center gap-1">
                             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />

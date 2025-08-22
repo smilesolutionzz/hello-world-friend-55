@@ -26,7 +26,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
       key: 'child' as const, 
       title: '아동청소년',
       subtitle: '6-18세',
-      description: '게이미피케이션 + ADHD 검사',
+      description: 'ADHD 검사',
       icon: GraduationCap,
       color: 'from-calm-blue to-soft-mint',
       features: ['주의집중력', '사회-정서', '인지능력', '학습능력']
@@ -75,7 +75,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
           
           <h1 className="text-4xl md:text-6xl font-bold leading-tight">
             <span className="block text-foreground mb-2">
-              {testType === 'language' ? '언어발달 자가체크' : testType === 'panic' ? '불안감 수준 확인' : testType === 'depression' ? '우울감 자가체크' : testType === 'adhd' ? '주의집중력 자가체크' : '3분으로 시작하는'}
+              {testType === 'language' ? '영유아발달체크' : testType === 'panic' ? '불안감 수준 확인' : testType === 'depression' ? '우울감 자가체크' : testType === 'adhd' ? '주의집중력 자가체크' : '3분으로 시작하는'}
             </span>
             <span className="block text-brand-gradient">
               {testType === 'language' ? '연령별 맞춤 확인' : testType === 'panic' ? '자가체크 (참고용)' : testType === 'depression' ? '참고용 체크' : testType === 'adhd' ? '연령별 체크 (참고용)' : '마음상태 체크'}
@@ -84,7 +84,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
           
           <p className="text-xl text-muted-foreground">
             {testType === 'language' 
-              ? '연령대를 선택하여 언어발달 수준을 확인해보세요 (참고용)' 
+              ? '영유아 발달 수준을 확인해보세요 (참고용)' 
               : testType === 'panic'
               ? '연령대를 선택하여 불안감 수준을 체크해보세요 (참고용)'
               : testType === 'depression'
@@ -101,7 +101,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
           <div className="max-w-6xl mx-auto">
             <div className={`grid ${testType === 'language' ? 'md:grid-cols-2' : (testType === 'panic' || testType === 'depression') ? 'md:grid-cols-1 max-w-2xl mx-auto' : testType === 'adhd' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-8`}>
               {ageGroups.filter(group => {
-                if (testType === 'language') return group.key !== 'adult';
+                if (testType === 'language') return group.key === 'infant';
                 if (testType === 'panic' || testType === 'depression') return group.key === 'adult';
                 if (testType === 'adhd') return group.key !== 'infant';
                 return true;

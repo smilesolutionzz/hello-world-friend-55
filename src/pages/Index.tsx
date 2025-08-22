@@ -5,6 +5,7 @@ import HeroSection from "@/components/HeroSection";
 import PlatformOverview from "@/components/PlatformOverview";
 import VideoShowcase from "@/components/VideoShowcase";
 import TrustIndicators from "@/components/TrustIndicators";
+import TrustBadges from "@/components/TrustBadges";
 import KakaoTalkWidget from "@/components/KakaoTalkWidget";
 import ReferralWidget from "@/components/ReferralWidget";
 import ProductSidebar from "@/components/ProductSidebar";
@@ -56,6 +57,7 @@ const Index = () => {
         {/* Main Content */}
         <div className="flex-1 lg:ml-72">
           <HeroSection />
+          <TrustBadges />
           <PlatformOverview />
           <div className="container mx-auto px-4 py-8">
             <ReferralWidget />

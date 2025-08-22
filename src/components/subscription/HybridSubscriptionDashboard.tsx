@@ -7,9 +7,11 @@ import { Progress } from '@/components/ui/progress';
 import { useHybridSubscription } from '@/hooks/useHybridSubscription';
 import { useTokens } from '@/hooks/useTokens';
 import { Zap, Crown, TrendingUp, AlertCircle, Gift, Star } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export function HybridSubscriptionDashboard() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { subscription, plans, usage, loading, getUpgradeGuide } = useHybridSubscription();
   const { tokenBalance } = useTokens();
   const [selectedPeriod, setSelectedPeriod] = useState<'monthly' | 'yearly'>('monthly');
@@ -223,7 +225,25 @@ export function HybridSubscriptionDashboard() {
                     <Button 
                       className="w-full"
                       variant={isPopular ? 'default' : 'outline'}
-                      onClick={() => navigate('/subscription')}
+                      onClick={() => {
+                        if (plan.type === 'free') {
+                          // 무료 플랜으로 다운그레이드
+                          // TODO: 구독 취소 로직 구현
+                          toast({
+                            title: "무료 플랜",
+                            description: "무료 플랜은 별도 등록이 필요하지 않습니다.",
+                          });
+                        } else if (plan.type === 'token_pack') {
+                          // 토큰 구매 페이지로 이동
+                          navigate('/token-subscription');
+                        } else {
+                          // 월간 구독 페이지로 이동 (향후 구현)
+                          toast({
+                            title: "서비스 준비 중",
+                            description: "월간 구독 서비스를 준비 중입니다. 토큰팩을 이용해주세요.",
+                          });
+                        }
+                      }}
                     >
                       {plan.type === 'free' ? '무료 시작' : '구독하기'}
                     </Button>

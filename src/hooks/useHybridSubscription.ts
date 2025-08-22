@@ -39,24 +39,41 @@ export function useHybridSubscription() {
   // 구독 플랜 목록 가져오기
   const fetchPlans = async () => {
     try {
+      console.log('🔍 구독 플랜 가져오기 시작');
       const { data, error } = await supabase
         .from('subscription_plans')
         .select('*')
         .eq('is_active', true)
         .order('price_monthly', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ 구독 플랜 가져오기 에러:', error);
+        throw error;
+      }
+      
+      console.log('✅ 구독 플랜 데이터:', data);
       setPlans(data || []);
     } catch (error) {
       console.error('Error fetching plans:', error);
+      toast({
+        title: "플랜 로딩 오류",
+        description: "구독 플랜을 불러오는데 실패했습니다.",
+        variant: "destructive"
+      });
     }
   };
 
   // 사용자 구독 정보 가져오기
   const fetchUserSubscription = async () => {
     try {
+      console.log('🔍 사용자 구독 정보 가져오기 시작');
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.log('❌ 사용자 인증 정보 없음');
+        return;
+      }
+
+      console.log('✅ 사용자 인증됨:', user.id);
 
       const { data, error } = await supabase
         .from('user_subscriptions')
@@ -67,10 +84,20 @@ export function useHybridSubscription() {
         .eq('user_id', user.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error && error.code !== 'PGRST116') {
+        console.error('❌ 구독 정보 가져오기 에러:', error);
+        throw error;
+      }
+      
+      console.log('✅ 사용자 구독 데이터:', data);
       setSubscription(data);
     } catch (error) {
       console.error('Error fetching subscription:', error);
+      toast({
+        title: "구독 정보 로딩 오류", 
+        description: "구독 정보를 불러오는데 실패했습니다.",
+        variant: "destructive"
+      });
     }
   };
 

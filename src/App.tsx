@@ -58,13 +58,13 @@ const App = () => (
           
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />
-          <Route path="/legacy-subscription" element={<Subscription />} />
+          <Route path="/subscription" element={<Subscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<Observation />} />
           <Route path="/expert" element={<Expert />} />
-          <Route path="/experts" element={<ExpertHiring />} />
+          <Route path="/expert-hiring" element={<ExpertHiring />} />
           <Route path="/expert-list" element={<ExpertList />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />

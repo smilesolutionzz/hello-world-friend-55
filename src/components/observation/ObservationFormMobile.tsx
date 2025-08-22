@@ -35,11 +35,12 @@ interface MediaFile {
 interface ObservationFormProps {
   onBack: () => void;
   onSuccess: (sessionId: string) => void;
+  templateType?: 'basic' | 'detailed';
 }
 
 type FormState = 'idle' | 'validating' | 'uploading' | 'analyzing' | 'success' | 'error';
 
-const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess }) => {
+const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, templateType = 'basic' }) => {
   const { toast } = useToast();
   
   // Form state
@@ -54,18 +55,32 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess }) 
   
   // Tags
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const availableTags = ['정서', '행동', '인지', '사회성', '신체'];
+  const availableTags = templateType === 'detailed' 
+    ? ['정서', '행동', '인지', '사회성', '신체', '언어발달', '자기조절능력']
+    : ['정서', '행동', '인지', '사회성', '신체'];
   
   // Content
   const [observationText, setObservationText] = useState('');
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
+  
+  // Detailed template fields
+  const [detailedObservations, setDetailedObservations] = useState({
+    specificBehaviors: '',
+    environmentalFactors: '',
+    socialInteractions: '',
+    emotionalResponse: '',
+    interventionEffects: ''
+  });
   
   // Legal consent
   const [legalConsent, setLegalConsent] = useState(false);
   
   // Character count and validation
   const textLength = observationText.trim().length;
-  const isTextValid = textLength >= 50;
+  const detailedTextLength = Object.values(detailedObservations).join('').trim().length;
+  const totalTextLength = templateType === 'detailed' ? textLength + detailedTextLength : textLength;
+  const minLength = templateType === 'detailed' ? 200 : 50;
+  const isTextValid = totalTextLength >= minLength;
   const canSubmit = isTextValid && selectedTags.length > 0 && legalConsent && targetName.trim();
 
   const handleTagToggle = (tag: string) => {
@@ -407,9 +422,12 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess }) 
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span>진행률</span>
-          <span>{Math.round((textLength / 50) * 100)}%</span>
+          <span>{Math.round((totalTextLength / minLength) * 100)}%</span>
         </div>
-        <Progress value={Math.min((textLength / 50) * 100, 100)} />
+        <Progress value={Math.min((totalTextLength / minLength) * 100, 100)} />
+        <div className="text-xs text-muted-foreground">
+          {templateType === 'detailed' ? '최소 200자 이상 작성해주세요' : '최소 50자 이상 작성해주세요'}
+        </div>
       </div>
 
       {/* Basic Information */}
@@ -512,20 +530,28 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess }) 
       {/* Observation Text */}
       <Card>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">관찰 내용 *</CardTitle>
+          <CardTitle className="text-lg">
+            {templateType === 'detailed' ? '기본 관찰 내용 *' : '관찰 내용 *'}
+          </CardTitle>
+          {templateType === 'detailed' && (
+            <p className="text-sm text-muted-foreground">전반적인 관찰 상황을 간략히 기록해주세요.</p>
+          )}
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <Textarea
               value={observationText}
               onChange={(e) => setObservationText(e.target.value)}
-              placeholder="관찰한 행동, 반응, 상황 등을 구체적으로 기록해주세요. (최소 50자)"
-              rows={6}
+              placeholder={templateType === 'detailed' 
+                ? "전반적인 관찰 상황을 간략히 기록해주세요."
+                : "관찰한 행동, 반응, 상황 등을 구체적으로 기록해주세요. (최소 50자)"
+              }
+              rows={templateType === 'detailed' ? 4 : 6}
               className="resize-none"
             />
             <div className="flex justify-between items-center mt-2 text-sm">
               <span className={textLength < 50 ? "text-red-500" : "text-green-600"}>
-                {textLength}/50자 이상
+                {textLength}/{templateType === 'detailed' ? '50' : '50'}자 이상
               </span>
               {textLength < 50 && (
                 <span className="text-red-500">
@@ -536,6 +562,87 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess }) 
           </div>
         </CardContent>
       </Card>
+
+      {/* Detailed Analysis Fields - Only for detailed template */}
+      {templateType === 'detailed' && (
+        <div className="space-y-6">
+          <Card>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
+                상세 관찰 영역
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">각 영역별로 구체적인 관찰 내용을 기록해주세요.</p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <Label className="text-sm font-medium">구체적 행동 관찰 *</Label>
+                <Textarea
+                  value={detailedObservations.specificBehaviors}
+                  onChange={(e) => setDetailedObservations(prev => ({...prev, specificBehaviors: e.target.value}))}
+                  placeholder="구체적인 행동, 반응, 표정 등을 상세히 기록해주세요."
+                  rows={3}
+                  className="mt-2 resize-none"
+                />
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium">환경적 요인</Label>
+                <Textarea
+                  value={detailedObservations.environmentalFactors}
+                  onChange={(e) => setDetailedObservations(prev => ({...prev, environmentalFactors: e.target.value}))}
+                  placeholder="주변 환경, 소음, 조명, 공간 등이 행동에 미친 영향을 기록해주세요."
+                  rows={3}
+                  className="mt-2 resize-none"
+                />
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium">사회적 상호작용 *</Label>
+                <Textarea
+                  value={detailedObservations.socialInteractions}
+                  onChange={(e) => setDetailedObservations(prev => ({...prev, socialInteractions: e.target.value}))}
+                  placeholder="타인과의 상호작용, 의사소통 방식, 사회적 반응 등을 기록해주세요."
+                  rows={3}
+                  className="mt-2 resize-none"
+                />
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium">정서적 반응 *</Label>
+                <Textarea
+                  value={detailedObservations.emotionalResponse}
+                  onChange={(e) => setDetailedObservations(prev => ({...prev, emotionalResponse: e.target.value}))}
+                  placeholder="감정 표현, 기분 변화, 스트레스 반응 등을 기록해주세요."
+                  rows={3}
+                  className="mt-2 resize-none"
+                />
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium">개입 효과</Label>
+                <Textarea
+                  value={detailedObservations.interventionEffects}
+                  onChange={(e) => setDetailedObservations(prev => ({...prev, interventionEffects: e.target.value}))}
+                  placeholder="특별한 개입이나 지원이 있었다면 그 효과를 기록해주세요."
+                  rows={3}
+                  className="mt-2 resize-none"
+                />
+              </div>
+
+              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-blue-700 dark:text-blue-300">상세 관찰 작성률</span>
+                  <span className={`font-medium ${detailedTextLength >= 150 ? "text-green-600" : "text-orange-600"}`}>
+                    {detailedTextLength}/150자 이상
+                  </span>
+                </div>
+                <Progress value={Math.min((detailedTextLength / 150) * 100, 100)} className="mt-2" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Media Upload */}
       <Card>

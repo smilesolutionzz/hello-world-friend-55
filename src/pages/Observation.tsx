@@ -512,6 +512,7 @@ const Observation = () => {
                     description: "AI 분석이 완료되었습니다. 결과를 확인해보세요.",
                   });
                 }}
+                templateType={selectedTemplate?.id}
               />
             </div>
           )}

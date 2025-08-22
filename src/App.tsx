@@ -35,6 +35,7 @@ import ExpertList from "./pages/ExpertList";
 import ExpertHiring from "./pages/ExpertHiring";
 import NotFound from "./pages/NotFound";
 import ShareView from "./pages/ShareView";
+import AssessmentHistory from "./components/history/AssessmentHistory";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/assessment" element={<Assessment />} />
+          <Route path="/assessment-history" element={<AssessmentHistory />} />
           <Route path="/ai-counselor" element={<AICounselor />} />
           <Route path="/legacy-auth" element={<Auth />} />
           <Route path="/needs-assessment" element={<NeedsAssessment />} />

@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText, Crown, Coins, Settings, ChevronDown, Plus } from "lucide-react";
+import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText, Crown, Coins, Settings, ChevronDown, Plus, History } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -90,6 +90,10 @@ const Navigation = () => {
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/assessment')}>
               <Clock className="w-4 h-4 mr-1" />
               3분체크
+            </Button>
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/assessment-history')}>
+              <History className="w-4 h-4 mr-1" />
+              검사기록
             </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100" onClick={() => handleNavigation('/premium-assessment')}>
               <Crown className="w-4 h-4 mr-1 text-yellow-600" />
@@ -247,6 +251,15 @@ const Navigation = () => {
                   >
                     <Clock className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">3분 검사</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/assessment-history')}
+                  >
+                    <History className="mr-3 h-5 w-5 text-primary shrink-0" />
+                    <span className="font-medium">검사 기록</span>
                   </Button>
                   
                   <Button

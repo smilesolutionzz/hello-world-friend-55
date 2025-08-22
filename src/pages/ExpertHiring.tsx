@@ -150,7 +150,7 @@ const mockExperts: Expert[] = [
   },
   {
     id: '4',
-    name: '최동현',
+    name: '박하진',
     specialty: ['청소년상담', '심리상담'],
     credentials: ['청소년상담사 1급', '상담심리사'],
     rating: 4.9,
@@ -210,7 +210,7 @@ const mockExperts: Expert[] = [
   },
   {
     id: '6',
-    name: '윤호진',
+    name: '이수석',
     specialty: ['아동발달', '심리상담', '행동분석'],
     credentials: ['발달재활서비스 제공기관 대표', '아동심리 전문가'],
     rating: 4.9,
@@ -270,9 +270,9 @@ const mockExperts: Expert[] = [
   },
   {
     id: '8',
-    name: '노은영',
+    name: '백경열',
     specialty: ['특수교육', '인지학습'],
-    credentials: ['특수교육 정교사 1급'],
+    credentials: ['특수교육 정교사'],
     rating: 4.8,
     reviews: 167,
     experience: '11년',
@@ -330,7 +330,7 @@ const mockExperts: Expert[] = [
   },
   {
     id: '10',
-    name: '서민정',
+    name: '이하연',
     specialty: ['가족상담', '심리상담'],
     credentials: ['가족상담전문가 1급', '상담심리사'],
     rating: 4.9,

@@ -81,7 +81,7 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
   const textLength = observationText.trim().length;
   const detailedTextLength = Object.values(detailedObservations).join('').trim().length;
   const totalTextLength = isDetailedTemplate ? textLength + detailedTextLength : textLength;
-  const minLength = isDetailedTemplate ? 200 : 50;
+  const minLength = isDetailedTemplate ? 150 : 50;
   const isTextValid = totalTextLength >= minLength;
   const canSubmit = isTextValid && selectedTags.length > 0 && legalConsent && targetName.trim();
 
@@ -428,7 +428,7 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
         </div>
         <Progress value={Math.min((totalTextLength / minLength) * 100, 100)} />
         <div className="text-xs text-muted-foreground">
-          {isDetailedTemplate ? '최소 200자 이상 작성해주세요' : '최소 50자 이상 작성해주세요'}
+          {isDetailedTemplate ? "최소 150자 이상 작성해주세요" : "최소 50자 이상 작성해주세요"}
         </div>
       </div>
 
@@ -635,11 +635,11 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
               <div className="mt-4 p-3 bg-purple-100 dark:bg-purple-950/20 rounded-lg">
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-purple-700 dark:text-purple-300 font-medium">💡 상세 관찰 작성률</span>
-                  <span className={`font-medium ${detailedTextLength >= 150 ? "text-green-600" : "text-orange-600"}`}>
-                    {detailedTextLength}/150자 이상
+                  <span className={`font-medium ${detailedTextLength >= 100 ? "text-green-600" : "text-orange-600"}`}>
+                    {detailedTextLength}/100자 이상
                   </span>
                 </div>
-                <Progress value={Math.min((detailedTextLength / 150) * 100, 100)} className="mt-2" />
+                <Progress value={Math.min((detailedTextLength / 100) * 100, 100)} className="mt-2" />
               </div>
             </CardContent>
           </Card>

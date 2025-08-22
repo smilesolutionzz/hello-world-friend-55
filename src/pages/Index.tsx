@@ -49,22 +49,8 @@ const Index = () => {
     <div className="min-h-screen">
       <UnifiedNavigation />
       <div className="flex">
-        {/* Product Sidebar with Badge */}
+        {/* Product Sidebar */}
         <div className="hidden lg:block fixed left-0 top-16 z-30 h-full">
-          {/* Floating Badge above sidebar */}
-          <div className="absolute -top-4 left-4 z-40">
-            <div className="relative">
-              <div className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 text-white px-4 py-2 rounded-full shadow-lg border-2 border-white/20 backdrop-blur-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg animate-pulse">✨</span>
-                  <span className="text-sm font-bold">AI 심리분석 1위</span>
-                  <span className="text-lg animate-bounce">🏆</span>
-                </div>
-              </div>
-              {/* Glowing effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-yellow-500 to-orange-500 rounded-full blur-lg opacity-50 -z-10"></div>
-            </div>
-          </div>
           <ProductSidebar />
         </div>
         

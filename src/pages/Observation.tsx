@@ -30,58 +30,12 @@ const Observation = () => {
     try {
       setLoading(true);
       
-      // Enhanced templates data with clear differences
-      const templatesData = [
-        { 
-          id: '1', 
-          name: '기본 관찰 템플릿', 
-          description: '간단하고 빠른 일상 관찰 기록 (10-15분 소요)',
-          domain: 'child_development',
-          is_active: true,
-          duration: '10-15분',
-          token_cost: '5토큰',
-          features: [
-            '기본적인 행동 관찰',
-            '시간대별 활동 기록',
-            '간단한 AI 분석',
-            '기본 리포트 제공'
-          ],
-          items: [
-            { id: 'behavior', category: '행동관찰', name: '일반적 행동 패턴' },
-            { id: 'duration', category: '시간기록', name: '활동 지속시간' },
-            { id: 'triggers', category: '환경요인', name: '행동 유발 요인' }
-          ],
-          suitable_for: '일상적인 관찰, 처음 사용자'
-        },
-        { 
-          id: '2', 
-          name: '상세 분석 템플릿', 
-          description: '전문가급 깊이 있는 심층 관찰 분석 (25-30분 소요)',
-          domain: 'psychology',
-          is_active: true,
-          duration: '25-30분',
-          token_cost: '15토큰',
-          features: [
-            '심층 행동 분석',
-            '감정 상태 평가',
-            '발달 단계 분석',
-            '전문가급 AI 분석',
-            '상세 PDF 리포트',
-            '개선 방안 제시'
-          ],
-          items: [
-            { id: 'behavior', category: '행동관찰', name: '세부 행동 패턴' },
-            { id: 'duration', category: '시간기록', name: '활동 지속시간' },
-            { id: 'triggers', category: '환경요인', name: '행동 유발 요인' },
-            { id: 'severity', category: '심각도평가', name: '행동 강도 및 빈도' },
-            { id: 'emotional_state', category: '정서상태', name: '감정 변화 관찰' },
-            { id: 'social_interaction', category: '사회성', name: '타인과의 상호작용' },
-            { id: 'developmental_markers', category: '발달지표', name: '연령별 발달 수준' }
-          ],
-          suitable_for: '전문적인 분석이 필요한 경우, 지속적인 모니터링'
-        }
-      ];
-      const templatesError = null;
+      // Load templates from database
+      const { data: templatesData, error: templatesError } = await supabase
+        .from('observation_templates')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order');
 
       if (templatesError) throw templatesError;
       setTemplates(templatesData || []);
@@ -89,20 +43,14 @@ const Observation = () => {
       // Load user sessions
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        // Mock sessions data
-        const sessionsData = [
-          {
-            id: '1',
-            session_name: '샘플 관찰 세션',
-            domain: 'child_development',
-            status: 'completed',
-            observer_name: '관찰자',
-            observation_period_start: new Date().toISOString(),
-            observation_period_end: new Date().toISOString(),
-            analysis_data: { riskLevel: 'low' }
-          }
-        ];
-        const sessionsError = null;
+        const { data: sessionsData, error: sessionsError } = await supabase
+          .from('observation_sessions')
+          .select(`
+            *,
+            family_member:family_members(name)
+          `)
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
 
         if (sessionsError) throw sessionsError;
         setSessions(sessionsData || []);
@@ -258,7 +206,7 @@ const Observation = () => {
             {templates.map((template) => (
               <Card key={template.id} className="hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50 relative overflow-hidden">
                 {/* Premium Badge for Advanced Template */}
-                {template.id === '2' && (
+                {template.template_type === 'detailed' && (
                   <div className="absolute top-4 right-4 z-10">
                     <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
                       전문가급
@@ -267,7 +215,7 @@ const Observation = () => {
                 )}
                 
                 <CardHeader className="text-center pb-4 relative">
-                  <div className={`w-20 h-20 ${template.id === '1' ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gradient-to-br from-purple-500 to-purple-600'} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                  <div className={`w-20 h-20 ${template.template_type === 'basic' ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gradient-to-br from-purple-500 to-purple-600'} rounded-full flex items-center justify-center mx-auto mb-4`}>
                     <ClipboardList className="h-10 w-10 text-white" />
                   </div>
                   <CardTitle className="text-2xl mb-2">{template.name}</CardTitle>
@@ -275,12 +223,12 @@ const Observation = () => {
                     <Badge className={getDomainColor(template.domain)}>
                       {getDomainDisplayName(template.domain)}
                     </Badge>
-                    <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-                      {template.duration}
-                    </Badge>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      {template.token_cost}
-                    </Badge>
+                     <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                       {template.duration}
+                     </Badge>
+                     <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                       {template.cost}
+                     </Badge>
                   </div>
                 </CardHeader>
                 
@@ -503,44 +451,44 @@ const Observation = () => {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-3">
-                          <h3 className="text-lg font-semibold">{session.session_name}</h3>
-                          <Badge className={getDomainColor(session.domain)}>
-                            {getDomainDisplayName(session.domain)}
-                          </Badge>
-                          <Badge 
-                            variant="outline" 
-                            className={`${getStatusColor(session.status)} border-0`}
-                          >
-                            {getStatusText(session.status)}
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4" />
-                            <span>관찰자: {session.observer_name}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4" />
-                            <span>
-                              {new Date(session.observation_period_start).toLocaleDateString('ko-KR')} ~ 
-                              {new Date(session.observation_period_end).toLocaleDateString('ko-KR')}
-                            </span>
-                          </div>
-                        </div>
+                         <div className="flex items-center gap-3 mb-3">
+                           <h3 className="text-lg font-semibold">{session.summary || '관찰 세션'}</h3>
+                           <Badge className={getDomainColor(session.session_type)}>
+                             {getDomainDisplayName(session.session_type)}
+                           </Badge>
+                           <Badge 
+                             variant="outline" 
+                             className={`${getStatusColor(session.status)} border-0`}
+                           >
+                             {getStatusText(session.status)}
+                           </Badge>
+                         </div>
+                         
+                         <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                           <div className="flex items-center gap-2">
+                             <User className="h-4 w-4" />
+                             <span>가족구성원: {session.family_member?.name || '미지정'}</span>
+                           </div>
+                           <div className="flex items-center gap-2">
+                             <Calendar className="h-4 w-4" />
+                             <span>
+                               {new Date(session.created_at).toLocaleDateString('ko-KR')}
+                               {session.duration_minutes && ` (${session.duration_minutes}분)`}
+                             </span>
+                           </div>
+                         </div>
 
-                        {session.status === 'analyzed' && session.analysis_data?.riskLevel && (
-                          <div className="mt-4 p-3 bg-muted rounded-lg">
-                            <div className="flex items-center gap-2">
-                              <AlertCircle className="h-4 w-4" />
-                              <span className="text-sm font-medium">
-                                분석 결과: {session.analysis_data.riskLevel === 'low' ? '양호' : 
-                                          session.analysis_data.riskLevel === 'medium' ? '보통' : '주의 필요'}
-                              </span>
-                            </div>
-                          </div>
-                        )}
+                         {session.status === 'analyzed' && session.observations?.analysis?.riskLevel && (
+                           <div className="mt-4 p-3 bg-muted rounded-lg">
+                             <div className="flex items-center gap-2">
+                               <AlertCircle className="h-4 w-4" />
+                               <span className="text-sm font-medium">
+                                 분석 결과: {session.observations.analysis.riskLevel === 'low' ? '양호' : 
+                                           session.observations.analysis.riskLevel === 'medium' ? '보통' : '주의 필요'}
+                               </span>
+                             </div>
+                           </div>
+                         )}
                       </div>
                       
                       <div className="flex items-center gap-2">

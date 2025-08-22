@@ -1,32 +1,20 @@
 import React from 'react';
 
 const ClientLogos = () => {
-  // Sample client/partner logos - replace with actual partner logos
+  // Partner clinics and institutions
   const clients = [
-    { name: "서울대학교병원", logo: "🏥" },
-    { name: "삼성생명", logo: "💼" },
-    { name: "현대자동차", logo: "🚗" },
-    { name: "LG전자", logo: "📱" },
-    { name: "KBS", logo: "📺" },
-    { name: "한국교육개발원", logo: "📚" },
-    { name: "보건복지부", logo: "🏛️" },
-    { name: "서울특별시", logo: "🏢" },
-    { name: "연세대학교", logo: "🎓" },
-    { name: "고려대학교", logo: "📖" },
-    { name: "아산병원", logo: "⚕️" },
-    { name: "세브란스병원", logo: "🏥" },
-    { name: "SK텔레콤", logo: "📞" },
-    { name: "네이버", logo: "🔍" },
-    { name: "카카오", logo: "💬" },
-    { name: "교육부", logo: "🎯" },
-    { name: "한국심리학회", logo: "🧠" },
-    { name: "대한의사협회", logo: "👩‍⚕️" },
-    { name: "한국아동발달연구소", logo: "👶" },
-    { name: "서울아동병원", logo: "🏥" },
-    { name: "국민건강보험공단", logo: "🛡️" },
-    { name: "한국교원대학교", logo: "👨‍🏫" },
-    { name: "육아정책연구소", logo: "👨‍👩‍👧‍👦" },
-    { name: "한국청소년상담복지개발원", logo: "🤝" }
+    { name: "한점미소발달센터 남양주점", logo: "😊" },
+    { name: "한점미소발달센터 부천점", logo: "😊" },
+    { name: "인애한의원 강남점", logo: "🏥" },
+    { name: "우아함발달센터 안산점", logo: "🌟" },
+    { name: "우아함발달센터 화성점", logo: "🌟" },
+    { name: "APA발달센터", logo: "🧠" },
+    { name: "한국스포츠과학연구소", logo: "⚽" },
+    { name: "용인대학교", logo: "🎓" },
+    { name: "한국특수체육학회", logo: "🏃‍♂️" },
+    { name: "명지대학교", logo: "📚" },
+    { name: "삼성웰니스의원", logo: "💼" },
+    { name: "가까이한의원", logo: "🌿" }
   ];
 
   return (
@@ -41,16 +29,16 @@ const ClientLogos = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 sm:gap-8">
           {clients.map((client, index) => (
             <div
               key={index}
-              className="group bg-white/60 backdrop-blur-sm border border-gray-200/60 rounded-xl p-4 sm:p-6 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col items-center justify-center min-h-[100px] sm:min-h-[120px] hover:bg-white/80"
+              className="group bg-white/60 backdrop-blur-sm border border-gray-200/60 rounded-xl p-6 sm:p-8 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col items-center justify-center min-h-[140px] sm:min-h-[160px] hover:bg-white/80"
             >
-              <div className="text-2xl sm:text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
+              <div className="text-4xl sm:text-5xl mb-3 group-hover:scale-110 transition-transform duration-300">
                 {client.logo}
               </div>
-              <div className="text-xs sm:text-sm font-medium text-center text-foreground/80 group-hover:text-foreground transition-colors">
+              <div className="text-sm sm:text-base font-medium text-center text-foreground/80 group-hover:text-foreground transition-colors">
                 {client.name}
               </div>
             </div>

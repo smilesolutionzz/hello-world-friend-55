@@ -476,17 +476,21 @@ export default function QuickNeedsAssessment() {
         <div className="text-center mb-12">
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent h-32 rounded-full blur-3xl"></div>
-            <h1 className="relative text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+            <h1 className="relative text-5xl font-bold mb-6 text-slate-800 dark:text-slate-100">
               어떤 도움이 필요하신가요?
             </h1>
           </div>
-          <p className="text-xl text-muted-foreground mb-6 max-w-2xl mx-auto">
-            가장 관심 있는 영역을 선택하시면 <span className="text-primary font-semibold">맞춤형 테스트 패키지</span>를 추천해드립니다
-          </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <Sparkles className="w-4 h-4 text-yellow-500" />
-            <span>AI가 분석한 최적의 검사 과정</span>
-            <Sparkles className="w-4 h-4 text-yellow-500" />
+          <div className="max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-slate-700 dark:text-slate-200 mb-4 font-medium leading-relaxed">
+              가장 관심 있는 영역을 선택하시면 
+              <span className="text-primary font-bold bg-primary/10 px-2 py-1 rounded-lg mx-1">맞춤형 테스트 패키지</span>
+              를 추천해드립니다
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 px-6 py-3 rounded-full border border-yellow-200 dark:border-yellow-700 mx-auto w-fit shadow-sm">
+            <Sparkles className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+            <span className="text-slate-800 dark:text-slate-100 font-semibold">AI가 분석한 최적의 검사 과정</span>
+            <Sparkles className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
           </div>
         </div>
 
@@ -507,15 +511,15 @@ export default function QuickNeedsAssessment() {
               
               <CardHeader className="text-center pb-4 relative">
                 <div className="relative w-20 h-20 mx-auto mb-4">
-                  <div className="absolute inset-0 bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg group-hover:shadow-xl transition-shadow duration-300"></div>
+                  <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg group-hover:shadow-xl transition-shadow duration-300"></div>
                   <div className="relative w-full h-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     {recommendation.icon}
                   </div>
                 </div>
-                <CardTitle className="text-2xl mb-2 group-hover:scale-105 transition-transform duration-300">
+                <CardTitle className="text-2xl mb-3 group-hover:scale-105 transition-transform duration-300 text-slate-800 dark:text-slate-100">
                   {recommendation.title}
                 </CardTitle>
-                <CardDescription className="text-center font-medium">
+                <CardDescription className="text-center font-medium text-slate-600 dark:text-slate-300 text-base">
                   {recommendation.description}
                 </CardDescription>
               </CardHeader>
@@ -523,7 +527,7 @@ export default function QuickNeedsAssessment() {
               <CardContent className="text-center relative">
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center justify-center gap-2">
-                    <span className="text-sm font-semibold text-foreground">
+                    <span className="text-sm font-bold text-slate-800 dark:text-slate-100 bg-white/50 px-3 py-1 rounded-full">
                       {recommendation.tests.length}개 맞춤 테스트
                     </span>
                   </div>
@@ -540,7 +544,7 @@ export default function QuickNeedsAssessment() {
                 </div>
                 
                 <Button 
-                  className="w-full bg-white/20 backdrop-blur-sm border border-white/30 text-foreground hover:bg-white/30 hover:scale-105 transition-all duration-300 group-hover:shadow-lg"
+                  className="w-full bg-white/40 backdrop-blur-sm border-2 border-white/50 text-slate-800 dark:text-slate-100 hover:bg-white/60 hover:scale-105 transition-all duration-300 group-hover:shadow-lg font-semibold"
                   variant="outline"
                 >
                   <span className="mr-2">자세히 보기</span>
@@ -552,16 +556,16 @@ export default function QuickNeedsAssessment() {
         </div>
 
         <div className="mt-16 text-center">
-          <Card className="max-w-3xl mx-auto bg-gradient-to-br from-white via-primary/5 to-secondary/5 border-0 shadow-2xl overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-accent"></div>
+          <Card className="max-w-3xl mx-auto bg-gradient-to-br from-white via-blue-50/50 to-purple-50/50 border-2 border-primary/20 shadow-2xl overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary via-secondary to-accent"></div>
             <CardContent className="p-8">
               <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full">
+                <div className="p-3 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full">
                   <Clock className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="text-2xl font-bold">어떤 걸 선택해야 할지 모르겠다면?</h3>
+                <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">어떤 걸 선택해야 할지 모르겠다면?</h3>
               </div>
-              <p className="text-muted-foreground mb-6 text-lg max-w-xl mx-auto">
+              <p className="text-slate-700 dark:text-slate-200 mb-6 text-lg max-w-xl mx-auto font-medium">
                 3분 기본 검사로 시작해서 개인 맞춤 추천을 받아보세요
               </p>
               <Button 

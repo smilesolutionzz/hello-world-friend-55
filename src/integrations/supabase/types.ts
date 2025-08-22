@@ -557,6 +557,92 @@ export type Database = {
           },
         ]
       }
+      token_purchases: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          order_id: string
+          payment_method: string | null
+          plan_id: string | null
+          status: string | null
+          toss_payment_key: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          order_id: string
+          payment_method?: string | null
+          plan_id?: string | null
+          status?: string | null
+          toss_payment_key?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          order_id?: string
+          payment_method?: string | null
+          plan_id?: string | null
+          status?: string | null
+          toss_payment_key?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "token_purchases_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "token_subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      token_subscription_plans: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          features: Json | null
+          id: string
+          is_active: boolean | null
+          is_popular: boolean | null
+          name: string
+          price_krw: number
+          token_count: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name: string
+          price_krw: number
+          token_count: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name?: string
+          price_krw?: number
+          token_count?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       tokens: {
         Row: {
           created_at: string
@@ -660,6 +746,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_tokens: {
+        Row: {
+          created_at: string | null
+          current_tokens: number | null
+          id: string
+          referral_bonus: number | null
+          total_purchased: number | null
+          total_used: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_tokens?: number | null
+          id?: string
+          referral_bonus?: number | null
+          total_purchased?: number | null
+          total_used?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_tokens?: number | null
+          id?: string
+          referral_bonus?: number | null
+          total_purchased?: number | null
+          total_used?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {

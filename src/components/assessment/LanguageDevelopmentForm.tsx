@@ -8,7 +8,7 @@ import { ArrowLeft, ArrowRight, CheckCircle, Crown, Baby } from "lucide-react";
 import { allLanguageDevelopmentQuestions, LanguageDevelopmentQuestion } from "@/data/languageDevelopmentQuestions";
 
 interface LanguageDevelopmentFormProps {
-  onComplete: (results: Record<string, number>) => void;
+  onComplete: (results: Record<string, number>, answers: Record<string, string>) => void;
   onBack: () => void;
 }
 
@@ -53,7 +53,16 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
         total_percentage: Math.round((totalScore / (questions.length * 2)) * 100)
       };
 
-      onComplete(results);
+      // 답변 데이터를 문자열로 변환하여 전달
+      const stringAnswers: Record<string, string> = {};
+      Object.entries(answers).forEach(([questionId, answerIndex]) => {
+        const question = questions.find(q => q.id === questionId);
+        if (question) {
+          stringAnswers[questionId] = question.options[answerIndex] || '';
+        }
+      });
+
+      onComplete(results, stringAnswers);
     } else {
       setCurrentQuestionIndex(prev => prev + 1);
     }

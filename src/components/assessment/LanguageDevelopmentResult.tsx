@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Download, Share2, Crown, Baby, TrendingUp, AlertCircle, Copy } from "lucide-react";
+import { ArrowLeft, Download, Share2, Crown, Baby, TrendingUp, AlertCircle, Copy, Loader2 } from "lucide-react";
 import { languageDevelopmentScoring } from "@/data/languageDevelopmentQuestions";
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { supabase } from "@/integrations/supabase/client";
@@ -10,11 +10,14 @@ import { useToast } from "@/hooks/use-toast";
 
 interface LanguageDevelopmentResultProps {
   results: Record<string, number>;
+  answers: Record<string, string>;
   onBack: () => void;
 }
 
-const LanguageDevelopmentResult = ({ results, onBack }: LanguageDevelopmentResultProps) => {
+const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelopmentResultProps) => {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<string>('');
+  const [isAnalyzing, setIsAnalyzing] = useState(true);
   const { toast } = useToast();
   // 점수 해석 함수
   const getScoreInterpretation = (score: number, category: 'receptive' | 'expressive' | 'total') => {
@@ -61,8 +64,38 @@ const LanguageDevelopmentResult = ({ results, onBack }: LanguageDevelopmentResul
     }
   ];
 
-  // AI 해석 생성
-  const generateAIInterpretation = () => {
+  // AI 전문가 분석 실행
+  useEffect(() => {
+    const generateAIAnalysis = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('language-development-analyzer', {
+          body: {
+            results,
+            answers,
+            ageGroup: '영유아' // 필요시 동적으로 전달
+          }
+        });
+
+        if (error) {
+          console.error('AI 분석 오류:', error);
+          throw error;
+        }
+
+        setAiAnalysis(data.analysis);
+      } catch (error) {
+        console.error('AI 분석 실패:', error);
+        // 실패 시 기본 해석 사용
+        setAiAnalysis(generateFallbackInterpretation());
+      } finally {
+        setIsAnalyzing(false);
+      }
+    };
+
+    generateAIAnalysis();
+  }, [results, answers]);
+
+  // 기본 해석 생성 (AI 분석 실패 시 사용)
+  const generateFallbackInterpretation = () => {
     const interpretations = [];
     
     if (receptiveInterpretation.level === 'excellent' && expressiveInterpretation.level === 'excellent') {
@@ -89,10 +122,8 @@ const LanguageDevelopmentResult = ({ results, onBack }: LanguageDevelopmentResul
 
     interpretations.push("🎯 지속적인 언어 자극과 상호작용을 통해 더욱 발달시킬 수 있습니다.");
 
-    return interpretations;
+    return interpretations.join('\n\n');
   };
-
-  const aiInterpretations = generateAIInterpretation();
 
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
@@ -134,7 +165,7 @@ const LanguageDevelopmentResult = ({ results, onBack }: LanguageDevelopmentResul
           
           <div class="interpretation">
             <h3>AI 전문가 해석</h3>
-            ${aiInterpretations.map(interp => `<p>• ${interp}</p>`).join('')}
+            <p>${aiAnalysis || generateFallbackInterpretation()}</p>
           </div>
           
           <div class="recommendations">
@@ -209,7 +240,7 @@ const LanguageDevelopmentResult = ({ results, onBack }: LanguageDevelopmentResul
 💬 표현언어: ${results.expressive}점 / 38점 (${results.expressive_percentage}%)
 
 🤖 AI 전문가 해석:
-${aiInterpretations.map(interp => `• ${interp}`).join('\n')}
+${aiAnalysis || generateFallbackInterpretation()}
 
 💡 발달 촉진 권장사항:
 수용언어: 책 읽어주기, 일상 대화, 다양한 어휘 사용
@@ -426,12 +457,18 @@ ${aiInterpretations.map(interp => `• ${interp}`).join('\n')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {aiInterpretations.map((interpretation, index) => (
-                <div key={index} className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
-                  <AlertCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <p className="text-sm leading-relaxed">{interpretation}</p>
+              {isAnalyzing ? (
+                <div className="flex items-center justify-center gap-3 p-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  <span className="text-lg font-medium">AI 전문가가 검사 결과를 분석하고 있습니다...</span>
                 </div>
-              ))}
+              ) : (
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <div className="whitespace-pre-line text-sm leading-relaxed">
+                    {aiAnalysis || generateFallbackInterpretation()}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

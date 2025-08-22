@@ -26,6 +26,7 @@ const PremiumAssessment = () => {
   const [currentStep, setCurrentStep] = useState<'list' | 'assessment' | 'result'>('list');
   const [selectedAssessment, setSelectedAssessment] = useState<string>('');
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
+  const [assessmentAnswers, setAssessmentAnswers] = useState<Record<string, string>>({});
   const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
 
   const assessmentData = {
@@ -46,9 +47,12 @@ const PremiumAssessment = () => {
     setCurrentStep('assessment');
   };
 
-  const handleAssessmentComplete = (results: Record<string, number>) => {
+  const handleAssessmentComplete = (results: Record<string, number>, answers?: Record<string, string>) => {
     console.log('Premium Assessment Results:', results);
     setAssessmentResults(results);
+    if (answers) {
+      setAssessmentAnswers(answers);
+    }
     setCurrentStep('result');
   };
 
@@ -67,6 +71,7 @@ const PremiumAssessment = () => {
       return (
         <LanguageDevelopmentResult
           results={assessmentResults}
+          answers={assessmentAnswers}
           onBack={handleBack}
         />
       );

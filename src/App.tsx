@@ -17,7 +17,7 @@ import HighlightAI from "./pages/HighlightAI";
 import HighlightSubscription from "./pages/HighlightSubscription";
 import { TypebotEmbed } from "./components/highlight/TypebotEmbed";
 import { TestResults } from "./components/highlight/TestResults";
-import Metaverse from "./pages/Metaverse";
+
 import Family from "./pages/Family";
 import Corporate from "./pages/Corporate";
 import Subscription from "./pages/Subscription";
@@ -28,6 +28,7 @@ import Pricing from "./pages/Pricing";
 import Observation from "./pages/Observation";
 import Expert from "./pages/Expert";
 import ExpertList from "./pages/ExpertList";
+import ExpertHiring from "./pages/ExpertHiring";
 import NotFound from "./pages/NotFound";
 import ShareView from "./pages/ShareView";
 
@@ -55,7 +56,7 @@ const App = () => (
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/ai-counselor" element={<AICounselor />} />
           <Route path="/legacy-auth" element={<Auth />} />
-          <Route path="/metaverse" element={<Metaverse />} />
+          
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/legacy-subscription" element={<Subscription />} />
@@ -64,7 +65,8 @@ const App = () => (
         <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<Observation />} />
           <Route path="/expert" element={<Expert />} />
-          <Route path="/experts" element={<ExpertList />} />
+          <Route path="/experts" element={<ExpertHiring />} />
+          <Route path="/expert-list" element={<ExpertList />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
           

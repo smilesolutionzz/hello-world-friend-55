@@ -103,9 +103,9 @@ const Navigation = () => {
               <MessageCircle className="w-4 h-4 mr-1" />
               AI상담
             </Button>
-            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/metaverse')}>
-              <Brain className="w-4 h-4 mr-1" />
-              메타버스
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/experts')}>
+              <Users className="w-4 h-4 mr-1" />
+              전문가
             </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/family')}>
               <Users className="w-4 h-4 mr-1" />
@@ -279,10 +279,10 @@ const Navigation = () => {
                   <Button
                     variant="ghost"
                     className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
-                    onClick={() => handleNavigation('/metaverse')}
+                    onClick={() => handleNavigation('/experts')}
                   >
-                    <Brain className="mr-3 h-5 w-5 text-primary shrink-0" />
-                    <span className="font-medium">메타버스</span>
+                    <Users className="mr-3 h-5 w-5 text-primary shrink-0" />
+                    <span className="font-medium">전문가 고용</span>
                   </Button>
                   
                   <Button

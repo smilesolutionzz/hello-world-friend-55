@@ -46,13 +46,13 @@ const ProductSidebar = () => {
       route: "/ai-counselor"
     },
     {
-      icon: <Brain className="w-5 h-5" />,
-      title: "메타버스 치료",
-      price: "15,000원",
-      badge: "최신",
-      badgeType: "latest",
-      description: "VR 기반 몰입형 치료",
-      route: "/metaverse"
+      icon: <Users className="w-5 h-5" />,
+      title: "전문가 고용",
+      price: "월 150,000원~",
+      badge: "프리미엄",
+      badgeType: "premium",
+      description: "1:1 맞춤 전문가 상담",
+      route: "/experts"
     },
     {
       icon: <Users className="w-5 h-5" />,
@@ -83,6 +83,8 @@ const ProductSidebar = () => {
         return 'bg-orange-500 text-white hover:bg-orange-600';
       case 'package':
         return 'bg-pink-500 text-white hover:bg-pink-600';
+      case 'premium':
+        return 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600';
       default:
         return 'bg-gray-500 text-white hover:bg-gray-600';
     }

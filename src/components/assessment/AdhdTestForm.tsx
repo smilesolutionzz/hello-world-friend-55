@@ -36,21 +36,21 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
       
       let severity = "";
       if (ageGroup === 'child') {
-        if (total <= 18) {
+        if (total <= 12) {
           severity = "정상 범위";
-        } else if (total <= 36) {
+        } else if (total <= 24) {
           severity = "경계선 수준";
-        } else if (total <= 54) {
+        } else if (total <= 36) {
           severity = "중등도 수준";
         } else {
           severity = "심각한 수준";
         }
       } else {
-        if (total <= 24) {
+        if (total <= 16) {
           severity = "정상 범위";
-        } else if (total <= 42) {
+        } else if (total <= 28) {
           severity = "경계선 수준";
-        } else if (total <= 60) {
+        } else if (total <= 40) {
           severity = "중등도 수준";
         } else {
           severity = "심각한 수준";
@@ -118,19 +118,13 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="1" id="option1" />
               <Label htmlFor="option1" className="text-base cursor-pointer">
-                때때로 있음 (1점)
+                가끔 있음 (1점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="2" id="option2" />
               <Label htmlFor="option2" className="text-base cursor-pointer">
                 자주 있음 (2점)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="3" id="option3" />
-              <Label htmlFor="option3" className="text-base cursor-pointer">
-                매우 자주 있음 (3점)
               </Label>
             </div>
           </RadioGroup>

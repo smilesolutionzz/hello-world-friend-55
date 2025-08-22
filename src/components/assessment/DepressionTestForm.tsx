@@ -56,11 +56,11 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
       const average = Math.round((total / answers.length) * 10) / 10;
       
       let severity = "";
-      if (total <= 9) {
+      if (total <= 6) {
         severity = "정상";
-      } else if (total <= 18) {
+      } else if (total <= 12) {
         severity = "가벼운 우울";
-      } else if (total <= 29) {
+      } else if (total <= 20) {
         severity = "중등도 우울";
       } else {
         severity = "심한 우울";
@@ -133,12 +133,6 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
               <RadioGroupItem value="2" id="option2" />
               <Label htmlFor="option2" className="text-base cursor-pointer">
                 자주 그렇다 (2점)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="3" id="option3" />
-              <Label htmlFor="option3" className="text-base cursor-pointer">
-                항상 그렇다 (3점)
               </Label>
             </div>
           </RadioGroup>

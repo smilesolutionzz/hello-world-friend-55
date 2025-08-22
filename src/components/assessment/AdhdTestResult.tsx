@@ -59,12 +59,12 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
     {
       name: "부주의 증상",
       value: inattentionScore,
-      fullMark: 27,
+      fullMark: 18,
     },
     {
       name: "과잉행동/충동성",
       value: hyperactivityScore,
-      fullMark: 27,
+      fullMark: 18,
     }
   ];
 
@@ -104,7 +104,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
               
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">규준집단 대비</span>
-                <span className="text-2xl font-bold text-brand-gradient">{((total/54)*100).toFixed(0)}%</span>
+                <span className="text-2xl font-bold text-brand-gradient">{((total/36)*100).toFixed(0)}%</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -133,7 +133,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" fontSize={12} />
-                  <YAxis domain={[0, 27]} />
+                  <YAxis domain={[0, 18]} />
                   <Tooltip />
                   <Bar dataKey="value" fill="hsl(var(--primary))" />
                 </BarChart>
@@ -150,7 +150,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <p className="text-lg font-medium mb-2">• 주의집중력 체크 점수: {total}점 / 54점</p>
+              <p className="text-lg font-medium mb-2">• 주의집중력 체크 점수: {total}점 / 36점</p>
               <p className="text-lg font-medium">• 평가 결과: {evaluation.level}</p>
             </div>
             <div>

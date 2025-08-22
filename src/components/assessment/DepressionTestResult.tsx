@@ -25,7 +25,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
     {
       name: '총점',
       value: total,
-      fullMark: 63,
+      fullMark: 42,
     }
   ];
 
@@ -146,7 +146,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
               
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">규준집단 대비</span>
-                <span className="text-2xl font-bold text-brand-gradient">{((total/63)*100).toFixed(0)}%</span>
+                <span className="text-2xl font-bold text-brand-gradient">{((total/42)*100).toFixed(0)}%</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -170,7 +170,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
-                  <YAxis domain={[0, 63]} />
+                  <YAxis domain={[0, 42]} />
                   <Tooltip />
                   <Bar dataKey="value" fill="hsl(var(--primary))" />
                 </BarChart>
@@ -187,7 +187,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <p className="text-lg font-medium mb-2">• 우울감 점수: {total}점 / 63점</p>
+              <p className="text-lg font-medium mb-2">• 우울감 점수: {total}점 / 42점</p>
               <p className="text-lg font-medium">• 심각도: {severity}</p>
             </div>
             <div>

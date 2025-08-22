@@ -21,13 +21,13 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
 
   // 점수에 따른 평가
   const getEvaluation = (score: number) => {
-    if (score <= 40) {
+    if (score <= 24) {
       return {
         level: "주의 필요",
         description: "전문가 상담을 권장합니다.",
         color: "text-red-600"
       };
-    } else if (score <= 60) {
+    } else if (score <= 36) {
       return {
         level: "경계선",
         description: "경계선 소견, 추가 평가 추천.",
@@ -49,7 +49,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
     {
       name: '총점',
       value: total,
-      fullMark: 100
+      fullMark: 60
     }
   ];
 
@@ -108,7 +108,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <p className="text-lg font-medium mb-2">• 언어발달 점수: {total}점 / 100점</p>
+              <p className="text-lg font-medium mb-2">• 언어발달 점수: {total}점 / 60점</p>
               <p className="text-lg font-medium">• 평가: {evaluation.level}</p>
             </div>
             <div>
@@ -147,7 +147,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis domain={[0, 100]} />
+              <YAxis domain={[0, 60]} />
               <Tooltip />
               <Bar dataKey="value" fill="hsl(var(--primary))" />
             </BarChart>

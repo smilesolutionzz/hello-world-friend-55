@@ -142,19 +142,13 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="2" id="option2" />
               <Label htmlFor="option2" className="text-base cursor-pointer">
-                아니다 (2점)
+                보통이다 (2점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="3" id="option3" />
               <Label htmlFor="option3" className="text-base cursor-pointer">
-                그렇다 (3점)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="4" id="option4" />
-              <Label htmlFor="option4" className="text-base cursor-pointer">
-                매우 그렇다 (4점)
+                매우 그렇다 (3점)
               </Label>
             </div>
           </RadioGroup>

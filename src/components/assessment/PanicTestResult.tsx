@@ -21,7 +21,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
     {
       name: '총점',
       value: total,
-      fullMark: 84,
+      fullMark: 63,
     }
   ];
 
@@ -111,7 +111,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
               
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">규준집단 대비</span>
-                <span className="text-2xl font-bold text-brand-gradient">{((total/84)*100).toFixed(0)}%</span>
+                <span className="text-2xl font-bold text-brand-gradient">{((total/63)*100).toFixed(0)}%</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -135,7 +135,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
-                  <YAxis domain={[0, 84]} />
+                  <YAxis domain={[0, 63]} />
                   <Tooltip />
                   <Bar dataKey="value" fill="hsl(var(--primary))" />
                 </BarChart>
@@ -152,7 +152,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <p className="text-lg font-medium mb-2">• 불안감 점수: {total}점 / 84점</p>
+              <p className="text-lg font-medium mb-2">• 불안감 점수: {total}점 / 63점</p>
               <p className="text-lg font-medium">• 심각도: {severity}</p>
             </div>
             <div>

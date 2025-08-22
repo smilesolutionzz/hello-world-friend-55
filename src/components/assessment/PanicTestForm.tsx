@@ -56,11 +56,11 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
       const average = Math.round((total / answers.length) * 10) / 10;
       
       let severity = "";
-      if (total <= 21) {
+      if (total <= 14) {
         severity = "정상";
-      } else if (total <= 42) {
+      } else if (total <= 28) {
         severity = "경미";
-      } else if (total <= 63) {
+      } else if (total <= 42) {
         severity = "중등도";
       } else {
         severity = "심각";
@@ -133,12 +133,6 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
               <RadioGroupItem value="3" id="option3" />
               <Label htmlFor="option3" className="text-base cursor-pointer">
                 자주 있다 (3점)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="4" id="option4" />
-              <Label htmlFor="option4" className="text-base cursor-pointer">
-                항상 있다 (4점)
               </Label>
             </div>
           </RadioGroup>

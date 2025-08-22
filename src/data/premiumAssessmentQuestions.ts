@@ -942,6 +942,15 @@ export const premiumAssessmentInfo = {
     questions_count: 20,
     premium_features: ["사회성 발달 4영역 정밀분석", "의사소통 능력 평가", "감각 민감성 진단", "개별 발달 지원 방안"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
+  },
+  languageDevelopment: {
+    title: "AIH 영유아 언어발달 자가체크",
+    subtitle: "심화 언어발달 진단 - 77문항",
+    description: "수용언어(39문항)와 표현언어(38문항)를 종합적으로 평가하는 전문 검사",
+    duration: "15-20분",
+    questions_count: 77,
+    premium_features: ["연령별 맞춤 문항", "수용/표현언어 분석", "발달 수준 평가", "상세 AI 해석"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   }
 };
 
@@ -1097,3 +1106,23 @@ export const likertScale = [
   { value: 6, label: "그렇다" },
   { value: 7, label: "매우 그렇다" }
 ];
+
+// AIH 영유아 언어발달 자가체크 정보
+export const languageDevelopmentAssessmentInfo = {
+  title: "AIH 영유아 언어발달 자가체크",
+  subtitle: "심화 언어발달 진단",
+  description: "수용언어와 표현언어를 종합적으로 평가하는 77문항 전문 검사",
+  duration: "15-20분",
+  totalQuestions: 77,
+  categories: {
+    receptive: "수용언어 (39문항)",
+    expressive: "표현언어 (38문항)"
+  },
+  ageRanges: ["6-12개월", "13-18개월", "19-24개월", "25-30개월", "31-36개월"],
+  features: [
+    "연령별 맞춤 문항",
+    "수용/표현언어 분석",
+    "발달 수준 평가",
+    "상세 AI 해석"
+  ]
+};

@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard";
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
 import PremiumAssessmentResult from "@/components/assessment/PremiumAssessmentResult";
+import LanguageDevelopmentForm from "@/components/assessment/LanguageDevelopmentForm";
+import LanguageDevelopmentResult from "@/components/assessment/LanguageDevelopmentResult";
 import { 
   premiumAssessmentInfo,
   personalityTypeAssessmentQuestions,
@@ -17,6 +19,7 @@ import {
   teenGrowthCapacityAssessmentQuestions,
   socialDevelopmentScreeningQuestions
 } from "@/data/premiumAssessmentQuestions";
+import { allLanguageDevelopmentQuestions } from "@/data/languageDevelopmentQuestions";
 
 const PremiumAssessment = () => {
   const navigate = useNavigate();
@@ -34,7 +37,8 @@ const PremiumAssessment = () => {
     financialPsychology: Object.values(financialPsychologyAssessmentQuestions).flat(),
     teenMentalCompass: Object.values(teenMentalCompassAssessmentQuestions).flat(),
     teenGrowthCapacity: Object.values(teenGrowthCapacityAssessmentQuestions).flat(),
-    socialDevelopmentScreening: Object.values(socialDevelopmentScreeningQuestions).flat()
+    socialDevelopmentScreening: Object.values(socialDevelopmentScreeningQuestions).flat(),
+    languageDevelopment: allLanguageDevelopmentQuestions
   };
 
   const handleStartAssessment = (assessmentKey: string) => {
@@ -59,6 +63,15 @@ const PremiumAssessment = () => {
   };
 
   if (currentStep === 'result' && selectedAssessment && Object.keys(assessmentResults).length > 0) {
+    if (selectedAssessment === 'languageDevelopment') {
+      return (
+        <LanguageDevelopmentResult
+          results={assessmentResults}
+          onBack={handleBack}
+        />
+      );
+    }
+
     return (
       <PremiumAssessmentResult
         assessmentType={selectedAssessment}
@@ -70,6 +83,15 @@ const PremiumAssessment = () => {
   }
 
   if (currentStep === 'assessment' && selectedAssessment) {
+    if (selectedAssessment === 'languageDevelopment') {
+      return (
+        <LanguageDevelopmentForm
+          onComplete={handleAssessmentComplete}
+          onBack={handleBack}
+        />
+      );
+    }
+
     return (
       <PremiumAssessmentForm
         assessmentType={selectedAssessment}
@@ -130,7 +152,7 @@ const PremiumAssessment = () => {
               </div>
               <div className="grid md:grid-cols-4 gap-6 text-center">
                 <div>
-                  <div className="text-2xl font-bold mb-1">9가지</div>
+                  <div className="text-2xl font-bold mb-1">10가지</div>
                   <div className="text-sm opacity-90">전문 검사</div>
                 </div>
                 <div>

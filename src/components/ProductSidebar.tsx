@@ -49,7 +49,7 @@ const ProductSidebar = () => {
       icon: <MessageCircle className="w-5 h-5" />,
       title: "30분 상담 (카카오)",
       tokenCost: "30토큰",
-      badge: "빠른상담",
+      badge: "PRO전문가상담",
       badgeType: "recommended",
       description: "카카오톡 채팅 전문가 상담",
       route: "/experts"

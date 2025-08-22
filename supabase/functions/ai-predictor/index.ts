@@ -77,7 +77,7 @@ ${analysis}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-5-2025-08-07',
         messages: [
           { 
             role: 'system', 
@@ -85,8 +85,7 @@ ${analysis}
           },
           { role: 'user', content: predictionPrompt }
         ],
-        max_tokens: 2000,
-        temperature: 0.2, // 낮은 온도로 일관된 예측
+        max_completion_tokens: 2000,
       }),
     });
 

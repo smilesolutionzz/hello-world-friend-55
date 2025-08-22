@@ -65,7 +65,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-5-2025-08-07',
         messages: [
           {
             role: 'system',
@@ -99,8 +99,7 @@ serve(async (req) => {
 ⚠️ 이는 참고용 정보이며 의학적 진단이 아닙니다. 필요시 전문가 상담을 받으시기 바랍니다.`
           }
         ],
-        max_tokens: 1000,
-        temperature: 0.8
+        max_completion_tokens: 1000,
       }),
     });
 

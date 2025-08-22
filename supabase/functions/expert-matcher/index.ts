@@ -150,13 +150,12 @@ ID: ${expert.id}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-5-2025-08-07',
         messages: [
           { role: 'system', content: '당신은 심리상담 전문가 매칭 시스템입니다. 분석 결과에 가장 적합한 전문가를 정확하게 추천합니다.' },
           { role: 'user', content: matchingPrompt }
         ],
-        max_tokens: 800,
-        temperature: 0.2,
+        max_completion_tokens: 800,
       }),
     });
 

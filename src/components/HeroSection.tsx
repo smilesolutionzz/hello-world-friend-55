@@ -1,9 +1,19 @@
 import ChatInterface from "./ChatInterface";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { TypingAnimation } from "@/components/ui/typing-animation";
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  
+  const typingPhrases = [
+    "우리 아이 20개월인데 아직도 엄마밖에 못하고, 울음을 멈추지 못해서 걱정이에요",
+    "최근 직장에서 스트레스가 심해서 불안하고 우울한 기분이 계속 지속되고 있어요",
+    "중학생 딸이 친구관계 때문에 힘들어하는데 어떻게 도와줘야 할지 모르겠어요",
+    "결혼 후 남편과의 관계에서 소통이 잘 안 되고 자꾸 갈등이 생겨서 힘들어요",
+    "60대 부모님이 건망증이 심해지시는데 치매 초기 증상인지 걱정됩니다",
+    "고등학생 아들이 게임만 하고 공부는 안 해서 미래가 걱정되어요"
+  ];
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden">
       {/* Background decoration */}
@@ -18,18 +28,33 @@ const HeroSection = () => {
         <div className="text-center mb-8 sm:mb-16 space-y-4 sm:space-y-6">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight">
             <span className="block text-foreground mb-1 sm:mb-2">데이터로 읽는 마음,</span>
-            <span className="block text-brand-gradient">AI하이라이트프로</span>
+            <span className="block text-brand-gradient">AI 심리분석 플랫폼</span>
           </h1>
           
-          <div className="space-y-2 sm:space-y-3 text-lg sm:text-xl md:text-2xl">
-            <p className="text-brand-gradient font-semibold">
-              "불안을 데이터로 안심을 리포트로"
-            </p>
-            <p className="text-muted-foreground text-base sm:text-lg">
-              한 문장으로 시작해보세요
-            </p>
+          <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-2 sm:space-y-3 text-lg sm:text-xl md:text-2xl">
+              <p className="text-brand-gradient font-semibold">
+                "불안을 데이터로, 안심을 리포트로"
+              </p>
+              <p className="text-muted-foreground text-base sm:text-lg">
+                한 문장으로 시작해보세요
+              </p>
+            </div>
+            
+            {/* 타이핑 애니메이션 예시 */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
+              <p className="text-sm text-muted-foreground mb-2">예시:</p>
+              <div className="text-left text-sm sm:text-base text-foreground leading-relaxed min-h-[3rem] flex items-center">
+                <TypingAnimation 
+                  phrases={typingPhrases}
+                  typingSpeed={50}
+                  deletingSpeed={30}
+                  pauseDuration={2000}
+                  className="text-gray-700"
+                />
+              </div>
+            </div>
           </div>
-
         </div>
 
         {/* Chat Interface */}

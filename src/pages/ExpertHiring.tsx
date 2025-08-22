@@ -478,14 +478,29 @@ const ExpertHiring = () => {
       <div className="container mx-auto px-4 py-8">
         {/* 헤더 섹션 */}
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-2 mb-4">
+          <div className="flex items-center justify-center gap-2 mb-6">
             <Crown className="w-8 h-8 text-primary animate-pulse-glow" />
             <h1 className="text-4xl font-bold text-brand-gradient">전문가 고용</h1>
             <Brain className="w-8 h-8 text-secondary animate-pulse-glow" />
           </div>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            AI가 추천하는 맞춤형 전문가와 함께 체계적이고 지속적인 상담을 받아보세요
-          </p>
+          <div className="space-y-2 max-w-4xl mx-auto">
+            <p className="text-2xl font-semibold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+              AI가 추천하는 맞춤형 전문가와 함께
+            </p>
+            <p className="text-xl text-muted-foreground">
+              <span className="text-primary font-medium">체계적이고 지속적인</span> 상담을 받아보세요
+            </p>
+            <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              <span>전문가 직접 매칭</span>
+              <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              <span>월 15만원 이하</span>
+              <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              <span>24시간 상담 지원</span>
+            </div>
+          </div>
         </div>
 
         {/* AI 추천 섹션 */}

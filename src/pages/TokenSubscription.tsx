@@ -202,10 +202,10 @@ const TokenSubscription = () => {
           </div>
           
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            토큰 기반 AI 심리분석
+            토큰 기반 AIH 맞춤분석
           </h1>
           <p className="text-xl text-slate-600 mb-8 max-w-3xl mx-auto">
-            필요한 만큼만 사용하고, 더 스마트하게 심리 분석을 받아보세요.<br />
+            필요한 만큼만 사용하고, 더 스마트하게 맞춤 분석을 받아보세요.<br />
             각 분석마다 정확한 토큰만 소모되어 효율적이고 투명합니다.
           </p>
           

@@ -489,7 +489,7 @@ export default function QuickNeedsAssessment() {
           </div>
           <div className="flex items-center justify-center gap-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 px-6 py-3 rounded-full border border-yellow-200 dark:border-yellow-700 mx-auto w-fit shadow-sm">
             <Sparkles className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-            <span className="text-slate-800 dark:text-slate-100 font-semibold">AI가 분석한 최적의 검사 과정</span>
+            <span className="text-slate-800 dark:text-slate-100 font-semibold">AIHPRO가 분석한 최적의 검사과정</span>
             <Sparkles className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
           </div>
         </div>

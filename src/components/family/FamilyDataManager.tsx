@@ -79,16 +79,29 @@ const FamilyDataManager = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // 현재 사용자의 평가만 로드 (profiles 조인 없이)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (!profile) {
+        console.log('No profile found for user');
+        return;
+      }
+
       const { data, error } = await supabase
         .from('assessments')
-        .select(`
-          *,
-          profiles!inner(user_id)
-        `)
-        .eq('profiles.user_id', user.id)
+        .select('*')
+        .eq('profile_id', profile.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Assessments error:', error);
+        return;
+      }
+      
       setAssessments(data || []);
     } catch (error) {
       console.error('Error loading assessments:', error);
@@ -104,35 +117,41 @@ const FamilyDataManager = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('사용자 인증이 필요합니다.');
 
-      const familyId = crypto.randomUUID();
-
+      // family_id 대신 user_id만 사용해서 단순화
       const { error } = await supabase
         .from('family_members')
         .insert({
-          family_id: familyId,
           user_id: user.id,
           name: memberData.name,
           relationship: memberData.relationship,
           age: memberData.age ? parseInt(memberData.age) : null
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw new Error(`구성원 추가 실패: ${error.message}`);
+      }
 
       // 타임라인에 기록
-      await supabase
-        .from('timeline_activities')
-        .insert({
-          type: 'SYSTEM',
-          title: `새 가족 구성원 추가: ${memberData.name}`,
-          summary: `${memberData.relationship} 관계의 ${memberData.name}님이 가족에 추가되었습니다.`,
-          tags: ['가족관리', '구성원추가'],
-          actor: { role: 'user', name: user.email },
-          meta: { 
-            member_name: memberData.name,
-            relationship: memberData.relationship,
-            age: memberData.age
-          }
-        });
+      try {
+        await supabase
+          .from('timeline_activities')
+          .insert({
+            type: 'SYSTEM',
+            title: `새 가족 구성원 추가: ${memberData.name}`,
+            summary: `${memberData.relationship} 관계의 ${memberData.name}님이 가족에 추가되었습니다.`,
+            tags: ['가족관리', '구성원추가'],
+            actor: { role: 'user', name: user.email },
+            meta: { 
+              member_name: memberData.name,
+              relationship: memberData.relationship,
+              age: memberData.age
+            }
+          });
+      } catch (timelineError) {
+        console.error('Timeline error (non-critical):', timelineError);
+        // 타임라인 저장 실패는 치명적이지 않으므로 계속 진행
+      }
 
       setMemberData({ name: '', relationship: '', age: '' });
       setShowAddMember(false);
@@ -143,6 +162,7 @@ const FamilyDataManager = () => {
         description: `${memberData.name}님이 가족에 추가되었습니다.`
       });
     } catch (error: any) {
+      console.error('Add member error:', error);
       toast({
         title: "추가 실패",
         description: error.message,
@@ -170,19 +190,29 @@ const FamilyDataManager = () => {
       const averageScore = Object.values(mockResults).reduce((a, b) => a + b, 0) / 4;
       const riskLevel = averageScore >= 80 ? 'low' : averageScore >= 60 ? 'medium' : 'high';
 
-      // profiles에서 해당 사용자 프로필 찾기
-      const { data: profiles, error: profileError } = await supabase
+      // 현재 사용자의 프로필 가져오기
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('사용자 인증이 필요합니다.');
+
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('id')
-        .eq('user_id', member.user_id)
-        .single();
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Profile error:', profileError);
+        throw new Error('프로필을 찾을 수 없습니다.');
+      }
+
+      if (!profile) {
+        throw new Error('사용자 프로필이 존재하지 않습니다.');
+      }
 
       const { error } = await supabase
         .from('assessments')
         .insert({
-          profile_id: profiles.id,
+          profile_id: profile.id,
           age_group: member.age && member.age < 3 ? 'infant' : member.age && member.age < 18 ? 'child' : 'adult',
           age_at_assessment: member.age,
           results: mockResults,
@@ -190,24 +220,31 @@ const FamilyDataManager = () => {
           risk_level: riskLevel
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Assessment error:', error);
+        throw new Error(`평가 저장 실패: ${error.message}`);
+      }
 
-      // 타임라인에 기록
-      await supabase
-        .from('timeline_activities')
-        .insert({
-          member_id: memberId,
-          type: 'TEST',
-          title: `${member.name} 발달평가 완료`,
-          summary: `종합 점수: ${Math.round(averageScore)}점 (${riskLevel === 'low' ? '양호' : riskLevel === 'medium' ? '보통' : '주의'})`,
-          tags: ['발달평가', member.relationship],
-          actor: { role: 'system', name: 'AI 평가 시스템' },
-          meta: { 
-            average_score: averageScore,
-            risk_level: riskLevel,
-            member_name: member.name
-          }
-        });
+      // 타임라인에 기록 (오류가 나더라도 평가는 성공으로 처리)
+      try {
+        await supabase
+          .from('timeline_activities')
+          .insert({
+            member_id: memberId,
+            type: 'TEST',
+            title: `${member.name} 발달평가 완료`,
+            summary: `종합 점수: ${Math.round(averageScore)}점 (${riskLevel === 'low' ? '양호' : riskLevel === 'medium' ? '보통' : '주의'})`,
+            tags: ['발달평가', member.relationship],
+            actor: { role: 'system', name: 'AI 평가 시스템' },
+            meta: { 
+              average_score: averageScore,
+              risk_level: riskLevel,
+              member_name: member.name
+            }
+          });
+      } catch (timelineError) {
+        console.error('Timeline error (non-critical):', timelineError);
+      }
 
       loadAssessments();
 
@@ -216,6 +253,7 @@ const FamilyDataManager = () => {
         description: `${member.name}님의 발달평가가 완료되었습니다.`
       });
     } catch (error: any) {
+      console.error('Assessment error:', error);
       toast({
         title: "평가 실패",
         description: error.message,

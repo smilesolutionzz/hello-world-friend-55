@@ -208,12 +208,50 @@ const Observation = () => {
           <TabsTrigger value="my-observations">내 관찰 기록</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="new-observation" className="space-y-6">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">새 관찰 시작하기</h2>
-            <p className="text-lg text-muted-foreground">
-              관찰하고자 하는 영역에 맞는 템플릿을 선택하고 바로 시작하세요
+        <TabsContent value="new-observation" className="space-y-8">
+          {/* Value Proposition Header */}
+          <div className="text-center space-y-4 mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-sm font-medium text-blue-800">
+              🧠 AI + 전문가 분석
+            </div>
+            <h2 className="text-3xl font-bold tracking-tight">전문가급 관찰 분석을 받아보세요</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              간단한 관찰 기록으로 <span className="font-semibold text-primary">AI 심층 분석</span>과 
+              <span className="font-semibold text-primary"> 전문가 수준의 PDF 리포트</span>를 제공받으세요
             </p>
+          </div>
+
+          {/* Benefits Preview */}
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">
+              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-white text-xl">🤖</span>
+              </div>
+              <h3 className="font-semibold text-blue-900 mb-2">실시간 AI 분석</h3>
+              <p className="text-sm text-blue-700">
+                관찰 직후 즉시 전문적인 해석과 인사이트 제공
+              </p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200">
+              <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-white text-xl">📋</span>
+              </div>
+              <h3 className="font-semibold text-purple-900 mb-2">전문가 PDF 리포트</h3>
+              <p className="text-sm text-purple-700">
+                의료진 수준의 상세한 관찰 분석 보고서
+              </p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200">
+              <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-white text-xl">📊</span>
+              </div>
+              <h3 className="font-semibold text-green-900 mb-2">데이터 기반 통찰</h3>
+              <p className="text-sm text-green-700">
+                누적 데이터를 통한 발달 패턴 분석
+              </p>
+            </div>
           </div>
           
           <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
@@ -246,16 +284,58 @@ const Observation = () => {
                   </div>
                 </CardHeader>
                 
-                <CardContent className="space-y-6">
-                  <CardDescription className="text-base text-center leading-relaxed">
-                    {template.description}
-                  </CardDescription>
-                  
+                <CardContent className="space-y-4">
+                  {/* AI Analysis Preview */}
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                    <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                      🤖 AI 분석 결과 미리보기
+                    </h4>
+                    <div className="text-sm text-blue-700 space-y-1">
+                      {template.id === '1' ? (
+                        <>
+                          <div>• 기본 행동 패턴 분석</div>
+                          <div>• 즉시 인사이트 제공</div>
+                          <div>• 간단한 권고사항</div>
+                        </>
+                      ) : (
+                        <>
+                          <div>• 심층 발달 상태 분석</div>
+                          <div>• 전문가급 해석</div>
+                          <div>• 맞춤형 개입 전략</div>
+                          <div>• 장기 발달 예측</div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* PDF Report Preview */}
+                  <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                    <h4 className="font-semibold text-purple-900 mb-2 flex items-center gap-2">
+                      📋 전문가 PDF 리포트
+                    </h4>
+                    <div className="text-sm text-purple-700 space-y-1">
+                      {template.id === '1' ? (
+                        <>
+                          <div>• 2-3페이지 요약 리포트</div>
+                          <div>• 핵심 관찰 사항</div>
+                          <div>• 기본 권고사항</div>
+                        </>
+                      ) : (
+                        <>
+                          <div>• 5-8페이지 상세 리포트</div>
+                          <div>• 의료진 수준 분석</div>
+                          <div>• 전문가 권고사항</div>
+                          <div>• 데이터 시각화 차트</div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
                   {/* Features List */}
                   <div className="space-y-3">
-                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">포함 기능</h4>
+                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">추가 혜택</h4>
                     <div className="space-y-2">
-                      {template.features.map((feature: string, index: number) => (
+                      {template.features.slice(0, 3).map((feature: string, index: number) => (
                         <div key={index} className="flex items-center gap-2 text-sm">
                           <div className={`w-2 h-2 rounded-full ${template.id === '1' ? 'bg-blue-500' : 'bg-purple-500'}`} />
                           <span>{feature}</span>
@@ -263,24 +343,26 @@ const Observation = () => {
                       ))}
                     </div>
                   </div>
-
-                  {/* Observation Items Count */}
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <ClipboardList className="h-4 w-4" />
-                      <span>관찰 항목</span>
-                    </div>
-                    <span className="font-semibold">{template.items?.length || 0}개 영역</span>
-                  </div>
-
-                  {/* Suitable For */}
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <div className="text-sm font-medium text-blue-800 mb-1">추천 대상</div>
-                    <div className="text-sm text-blue-700">{template.suitable_for}</div>
-                  </div>
                   
+                  {/* Specs and Pricing */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center p-3 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold text-primary">{template.duration}</div>
+                      <div className="text-sm text-muted-foreground">분석 시간</div>
+                    </div>
+                    <div className="text-center p-3 bg-muted rounded-lg">
+                      <div className="text-2xl font-bold text-primary">{template.cost}</div>
+                      <div className="text-sm text-muted-foreground">토큰 비용</div>
+                    </div>
+                  </div>
+
+                  {/* CTA Button */}
                   <Button 
-                    className={`w-full ${template.id === '1' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'} text-white`}
+                    className={`w-full h-12 text-white font-semibold ${
+                      template.id === '1' 
+                        ? 'bg-blue-600 hover:bg-blue-700' 
+                        : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                    }`}
                     size="lg"
                     onClick={() => {
                       setSelectedTemplate(template);
@@ -288,8 +370,15 @@ const Observation = () => {
                     }}
                   >
                     <Plus className="h-5 w-5 mr-2" />
-                    {template.id === '1' ? '간편하게 시작하기' : '전문 분석 시작하기'}
+                    {template.id === '1' ? '빠른 분석 시작하기' : '전문가 분석 시작하기'}
                   </Button>
+
+                  {/* Value Guarantee */}
+                  <div className="text-center">
+                    <div className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full">
+                      ✅ {template.id === '1' ? '즉시 결과 보장' : '전문가급 분석 보장'}
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}

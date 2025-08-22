@@ -41,6 +41,7 @@ interface ObservationFormProps {
 type FormState = 'idle' | 'validating' | 'uploading' | 'analyzing' | 'success' | 'error';
 
 const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, templateType = 'basic' }) => {
+  console.log('템플릿 타입:', templateType); // 디버깅용
   const { toast } = useToast();
   
   // Form state
@@ -566,73 +567,73 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
       {/* Detailed Analysis Fields - Only for detailed template */}
       {templateType === 'detailed' && (
         <div className="space-y-6">
-          <Card>
+          <Card className="border-purple-200 bg-purple-50/50">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <span className="w-2 h-2 bg-primary rounded-full"></span>
-                상세 관찰 영역
+                🔍 상세 관찰 영역
               </CardTitle>
               <p className="text-sm text-muted-foreground">각 영역별로 구체적인 관찰 내용을 기록해주세요.</p>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <Label className="text-sm font-medium">구체적 행동 관찰 *</Label>
+                <Label className="text-sm font-medium text-purple-700">구체적 행동 관찰 *</Label>
                 <Textarea
                   value={detailedObservations.specificBehaviors}
                   onChange={(e) => setDetailedObservations(prev => ({...prev, specificBehaviors: e.target.value}))}
                   placeholder="구체적인 행동, 반응, 표정 등을 상세히 기록해주세요."
                   rows={3}
-                  className="mt-2 resize-none"
+                  className="mt-2 resize-none border-purple-200 focus:border-purple-400"
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium">환경적 요인</Label>
+                <Label className="text-sm font-medium text-purple-700">환경적 요인</Label>
                 <Textarea
                   value={detailedObservations.environmentalFactors}
                   onChange={(e) => setDetailedObservations(prev => ({...prev, environmentalFactors: e.target.value}))}
                   placeholder="주변 환경, 소음, 조명, 공간 등이 행동에 미친 영향을 기록해주세요."
                   rows={3}
-                  className="mt-2 resize-none"
+                  className="mt-2 resize-none border-purple-200 focus:border-purple-400"
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium">사회적 상호작용 *</Label>
+                <Label className="text-sm font-medium text-purple-700">사회적 상호작용 *</Label>
                 <Textarea
                   value={detailedObservations.socialInteractions}
                   onChange={(e) => setDetailedObservations(prev => ({...prev, socialInteractions: e.target.value}))}
                   placeholder="타인과의 상호작용, 의사소통 방식, 사회적 반응 등을 기록해주세요."
                   rows={3}
-                  className="mt-2 resize-none"
+                  className="mt-2 resize-none border-purple-200 focus:border-purple-400"
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium">정서적 반응 *</Label>
+                <Label className="text-sm font-medium text-purple-700">정서적 반응 *</Label>
                 <Textarea
                   value={detailedObservations.emotionalResponse}
                   onChange={(e) => setDetailedObservations(prev => ({...prev, emotionalResponse: e.target.value}))}
                   placeholder="감정 표현, 기분 변화, 스트레스 반응 등을 기록해주세요."
                   rows={3}
-                  className="mt-2 resize-none"
+                  className="mt-2 resize-none border-purple-200 focus:border-purple-400"
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium">개입 효과</Label>
+                <Label className="text-sm font-medium text-purple-700">개입 효과</Label>
                 <Textarea
                   value={detailedObservations.interventionEffects}
                   onChange={(e) => setDetailedObservations(prev => ({...prev, interventionEffects: e.target.value}))}
                   placeholder="특별한 개입이나 지원이 있었다면 그 효과를 기록해주세요."
                   rows={3}
-                  className="mt-2 resize-none"
+                  className="mt-2 resize-none border-purple-200 focus:border-purple-400"
                 />
               </div>
 
-              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+              <div className="mt-4 p-3 bg-purple-100 dark:bg-purple-950/20 rounded-lg">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-blue-700 dark:text-blue-300">상세 관찰 작성률</span>
+                  <span className="text-purple-700 dark:text-purple-300 font-medium">💡 상세 관찰 작성률</span>
                   <span className={`font-medium ${detailedTextLength >= 150 ? "text-green-600" : "text-orange-600"}`}>
                     {detailedTextLength}/150자 이상
                   </span>

@@ -60,7 +60,7 @@ const ProductSidebar = () => {
       tokenCost: "50토큰",
       badge: "프리미엄",
       badgeType: "premium",
-      description: "15페이지이상의 맞춤 리포팅(PDF제공)",
+      description: "15페이지이상의 맞춤 리포팅(PDF)",
       route: "/experts"
     },
     {

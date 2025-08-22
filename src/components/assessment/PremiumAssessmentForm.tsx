@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, ArrowRight, CheckCircle, Crown } from "lucide-react";
-import { likertScale } from "@/data/premiumAssessmentQuestions";
+import { fourChoiceOptions } from "@/data/premiumAssessmentQuestions";
 
 interface PremiumAssessmentFormProps {
   assessmentType: string;
@@ -46,11 +46,11 @@ const PremiumAssessmentForm = ({
         const categoryQuestions = questions.filter(q => q.category === category);
         const categoryAnswers = categoryQuestions
           .map(q => {
-            let score = answers[q.id] || 4; // 기본값 4점 (보통)
+            let score = answers[q.id] || 2; // 기본값 2점 (4지선다 중간값)
             
             // 역문항 처리
             if (q.reverse) {
-              score = 8 - score; // 7점 척도에서 역산
+              score = 5 - score; // 4점 척도에서 역산
             }
             
             // 가중치 적용 (있는 경우)
@@ -154,7 +154,7 @@ const PremiumAssessmentForm = ({
                 onValueChange={handleAnswerChange}
                 className="space-y-3"
               >
-                {likertScale.map((option) => (
+                {(currentQuestion.options || fourChoiceOptions).map((option) => (
                   <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-purple-50/50 transition-colors">
                     <RadioGroupItem value={option.value.toString()} id={option.value.toString()} />
                     <Label htmlFor={option.value.toString()} className="flex-1 cursor-pointer font-medium">

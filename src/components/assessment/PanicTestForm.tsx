@@ -37,7 +37,7 @@ const panicQuestions = [
 
 const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(21).fill(0));
+  const [answers, setAnswers] = useState<number[]>(new Array(21).fill(2)); // 기본값 2점 (보통)
 
   const progress = ((currentQuestion + 1) / panicQuestions.length) * 100;
 
@@ -120,19 +120,19 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="1" id="option1" />
               <Label htmlFor="option1" className="text-base cursor-pointer">
-                전혀 없다 (1점)
+                그렇지 않다 (1점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="2" id="option2" />
               <Label htmlFor="option2" className="text-base cursor-pointer">
-                가끔 있다 (2점)
+                보통이다 (2점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="3" id="option3" />
               <Label htmlFor="option3" className="text-base cursor-pointer">
-                자주 있다 (3점)
+                그렇다 (3점)
               </Label>
             </div>
           </RadioGroup>

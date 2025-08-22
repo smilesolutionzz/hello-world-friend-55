@@ -37,7 +37,7 @@ const depressionQuestions = [
 
 const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(21).fill(0));
+  const [answers, setAnswers] = useState<number[]>(new Array(21).fill(2)); // 기본값 2점 (보통)
 
   const progress = ((currentQuestion + 1) / depressionQuestions.length) * 100;
 
@@ -56,11 +56,11 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
       const average = Math.round((total / answers.length) * 10) / 10;
       
       let severity = "";
-      if (total <= 6) {
+      if (total <= 30) {
         severity = "정상";
-      } else if (total <= 12) {
+      } else if (total <= 42) {
         severity = "가벼운 우울";
-      } else if (total <= 20) {
+      } else if (total <= 54) {
         severity = "중등도 우울";
       } else {
         severity = "심한 우울";
@@ -82,7 +82,7 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
   };
 
   const currentAnswer = answers[currentQuestion];
-  const canProceed = currentAnswer >= 0;
+  const canProceed = currentAnswer >= 1; // 1점 이상이어야 함
 
   return (
     <Card className="max-w-4xl mx-auto p-8">
@@ -118,21 +118,21 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
             className="space-y-4"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="0" id="option0" />
-              <Label htmlFor="option0" className="text-base cursor-pointer">
-                전혀 그렇지 않다 (0점)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
               <RadioGroupItem value="1" id="option1" />
               <Label htmlFor="option1" className="text-base cursor-pointer">
-                가끔 그렇다 (1점)
+                그렇지 않다 (1점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="2" id="option2" />
               <Label htmlFor="option2" className="text-base cursor-pointer">
-                자주 그렇다 (2점)
+                보통이다 (2점)
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="3" id="option3" />
+              <Label htmlFor="option3" className="text-base cursor-pointer">
+                그렇다 (3점)
               </Label>
             </div>
           </RadioGroup>

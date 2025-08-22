@@ -16,7 +16,7 @@ interface AdhdTestFormProps {
 const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   const questions = ageGroup === 'child' ? childAdhdQuestions : adultAdhdQuestions;
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(0));
+  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(2)); // 기본값 2점 (보통)
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
@@ -36,21 +36,21 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
       
       let severity = "";
       if (ageGroup === 'child') {
-        if (total <= 12) {
+        if (total <= 18) {
           severity = "정상 범위";
-        } else if (total <= 24) {
-          severity = "경계선 수준";
         } else if (total <= 36) {
+          severity = "경계선 수준";
+        } else if (total <= 54) {
           severity = "중등도 수준";
         } else {
           severity = "심각한 수준";
         }
       } else {
-        if (total <= 16) {
+        if (total <= 24) {
           severity = "정상 범위";
-        } else if (total <= 28) {
+        } else if (total <= 42) {
           severity = "경계선 수준";
-        } else if (total <= 40) {
+        } else if (total <= 60) {
           severity = "중등도 수준";
         } else {
           severity = "심각한 수준";
@@ -74,7 +74,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   };
 
   const currentAnswer = answers[currentQuestion];
-  const canProceed = currentAnswer >= 0;
+  const canProceed = currentAnswer >= 1; // 1점 이상이어야 함
 
   return (
     <Card className="max-w-4xl mx-auto p-8">
@@ -110,21 +110,21 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
             className="space-y-4"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="0" id="option0" />
-              <Label htmlFor="option0" className="text-base cursor-pointer">
-                전혀 없음 (0점)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
               <RadioGroupItem value="1" id="option1" />
               <Label htmlFor="option1" className="text-base cursor-pointer">
-                가끔 있음 (1점)
+                그렇지 않다 (1점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="2" id="option2" />
               <Label htmlFor="option2" className="text-base cursor-pointer">
-                자주 있음 (2점)
+                보통이다 (2점)
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="3" id="option3" />
+              <Label htmlFor="option3" className="text-base cursor-pointer">
+                그렇다 (3점)
               </Label>
             </div>
           </RadioGroup>

@@ -8,6 +8,12 @@ export const personalityTypeAssessmentQuestions = {
       id: "mind_se01",
       text: "파티나 모임에서 새로운 사람들과 대화하는 것이 즐겁습니다",
       category: "social_energy",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
       reverse: false,
       weight: 1.2
     },
@@ -15,13 +21,25 @@ export const personalityTypeAssessmentQuestions = {
       id: "mind_se02", 
       text: "하루 종일 혼자만 있으면 무언가 빠진 느낌이 듭니다",
       category: "social_energy",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
       reverse: false,
       weight: 1.0
     },
     {
       id: "mind_se03",
       text: "머릿속 아이디어를 다른 사람과 나누며 발전시키는 것을 좋아합니다",
-      category: "social_energy", 
+      category: "social_energy",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
       reverse: false,
       weight: 1.1
     },
@@ -29,6 +47,12 @@ export const personalityTypeAssessmentQuestions = {
       id: "mind_se04",
       text: "조용한 카페보다는 사람들이 많은 장소에서 더 집중이 잘 됩니다",
       category: "social_energy",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
       reverse: false,
       weight: 1.0
     }
@@ -38,6 +62,12 @@ export const personalityTypeAssessmentQuestions = {
       id: "mind_df01",
       text: "설명서를 자세히 읽고 단계별로 따라하는 것을 선호합니다",
       category: "detail_focus",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
       reverse: false,
       weight: 1.3
     },
@@ -1096,7 +1126,15 @@ export const socialDevelopmentScreeningQuestions = {
   ]
 };
 
-// 공통 평점 척도 (1-7점)
+// 4지선다형 공통 선택지 (프리미엄 검사용)
+export const fourChoiceOptions = [
+  { value: 1, label: "전혀 그렇지 않다" },
+  { value: 2, label: "그렇지 않다" },
+  { value: 3, label: "그렇다" },
+  { value: 4, label: "매우 그렇다" }
+];
+
+// 공통 평점 척도 (1-7점) - 이전 버전 유지
 export const likertScale = [
   { value: 1, label: "전혀 그렇지 않다" },
   { value: 2, label: "그렇지 않다" },

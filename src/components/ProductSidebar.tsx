@@ -48,7 +48,7 @@ const ProductSidebar = () => {
     {
       icon: <Users className="w-5 h-5" />,
       title: "전문가 고용",
-      price: "월 150,000원~",
+      price: "월 50,000원~",
       badge: "프리미엄",
       badgeType: "premium",
       description: "1:1 맞춤 전문가 상담",

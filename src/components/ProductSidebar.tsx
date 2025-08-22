@@ -12,7 +12,6 @@ const ProductSidebar = () => {
     {
       icon: <Clock className="w-5 h-5" />,
       title: "3분 심리검사",
-      price: "무료",
       tokenCost: "1토큰",
       badge: "시작",
       badgeType: "popular",
@@ -22,7 +21,6 @@ const ProductSidebar = () => {
     {
       icon: <FileText className="w-5 h-5" />,
       title: "관찰일지 작성",
-      price: "5,000원",
       tokenCost: "3토큰",
       badge: "습관형성",
       badgeType: "new",
@@ -32,7 +30,6 @@ const ProductSidebar = () => {
     {
       icon: <MessageCircle className="w-5 h-5" />,
       title: "AI 상담사",
-      price: "7,000원",
       tokenCost: "5토큰",
       badge: "추천",
       badgeType: "recommended",
@@ -42,7 +39,6 @@ const ProductSidebar = () => {
     {
       icon: <Crown className="w-5 h-5" />,
       title: "프리미엄 검사",
-      price: "10,000원",
       tokenCost: "8토큰",
       badge: "심화분석",
       badgeType: "hot",
@@ -52,7 +48,6 @@ const ProductSidebar = () => {
     {
       icon: <MessageCircle className="w-5 h-5" />,
       title: "30분 상담 (카카오)",
-      price: "월 30,000원~",
       tokenCost: "30토큰",
       badge: "빠른상담",
       badgeType: "recommended",
@@ -62,7 +57,6 @@ const ProductSidebar = () => {
     {
       icon: <Users className="w-5 h-5" />,
       title: "60분 상담 (화상)",
-      price: "월 50,000원~",
       tokenCost: "50토큰",
       badge: "프리미엄",
       badgeType: "premium",
@@ -72,7 +66,6 @@ const ProductSidebar = () => {
     {
       icon: <Users className="w-5 h-5" />,
       title: "가족케어 패키지",
-      price: "25,000원",
       tokenCost: "20토큰",
       badge: "확장",
       badgeType: "package",
@@ -142,16 +135,9 @@ const ProductSidebar = () => {
                 {product.description}
               </p>
               <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="text-sm font-bold text-primary">
-                    {product.price}
-                  </span>
-                  {product.tokenCost && (
-                    <span className="text-xs text-blue-400 font-medium">
-                      또는 {product.tokenCost}
-                    </span>
-                  )}
-                </div>
+                <span className="text-sm font-bold text-blue-400">
+                  {product.tokenCost}
+                </span>
                 <Button 
                   size="sm" 
                   variant="outline"

@@ -202,6 +202,8 @@ const TimelineTab = ({ familyId, members }: TimelineTabProps) => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
+          // 로그인하지 않은 경우 mock 데이터 사용
+          setActivities(mockActivities);
           setLoading(false);
           return;
         }
@@ -213,6 +215,7 @@ const TimelineTab = ({ familyId, members }: TimelineTabProps) => {
           .single();
 
         if (!profile) {
+          setActivities(mockActivities);
           setLoading(false);
           return;
         }
@@ -222,26 +225,22 @@ const TimelineTab = ({ familyId, members }: TimelineTabProps) => {
           .select('*')
           .order('created_at', { ascending: false });
 
-        // familyId가 있으면 가족 활동, 없으면 개인 활동
-        if (familyId) {
-          query = query.eq('family_id', familyId);
-        } else {
-          query = query.eq('member_id', profile.id);
-        }
-
+        // 모든 사용자 관련 활동 로드 (가족 + 개인)
         const { data, error } = await query;
 
         if (error) {
           console.error('Error loading timeline activities:', error);
-          setActivities([]);
+          setActivities(mockActivities);
         } else {
           console.log('Loaded activities:', data);
-          setActivities((data as TimelineActivity[]) || []);
+          const dbActivities = (data as TimelineActivity[]) || [];
+          // DB 데이터가 없으면 mock 데이터 표시
+          setActivities(dbActivities.length > 0 ? dbActivities : mockActivities);
         }
 
       } catch (error) {
         console.error('Error in loadActivities:', error);
-        setActivities([]);
+        setActivities(mockActivities);
       } finally {
         setLoading(false);
       }

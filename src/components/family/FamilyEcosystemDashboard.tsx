@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useFamilyEcosystem } from "@/hooks/useFamilyEcosystem";
 import TimelineTab from "@/components/timeline/TimelineTab";
+import FamilyDataManager from "@/components/family/FamilyDataManager";
 import { useNavigate } from "react-router-dom";
 
 const FamilyEcosystemDashboard = () => {
@@ -152,7 +153,7 @@ const FamilyEcosystemDashboard = () => {
                   <div className="text-2xl">{getMemberWeatherIcon(member)}</div>
                   <div className="flex-1 min-w-0">
                     <div className="font-medium truncate">{member.name}</div>
-                    <div className="text-xs text-muted-foreground">{member.role}</div>
+                    <div className="text-xs text-muted-foreground">{member.relationship}</div>
                   </div>
                 </div>
               ))}
@@ -162,10 +163,14 @@ const FamilyEcosystemDashboard = () => {
       )}
 
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
             개요
+          </TabsTrigger>
+          <TabsTrigger value="management" className="flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            가족관리
           </TabsTrigger>
           <TabsTrigger value="timeline" className="flex items-center gap-2">
             <Clock className="w-4 h-4" />
@@ -269,8 +274,20 @@ const FamilyEcosystemDashboard = () => {
           )}
         </TabsContent>
 
+        <TabsContent value="management" className="space-y-6">
+          <FamilyDataManager />
+        </TabsContent>
+
         <TabsContent value="timeline" className="space-y-6">
-          <TimelineTab familyId={""} members={[]} />
+          <TimelineTab 
+            familyId={familyMembers[0]?.family_id || ""} 
+            members={familyMembers.map(m => ({
+              id: m.id,
+              name: m.name,
+              age_group: m.age && m.age < 3 ? 'infant' : m.age && m.age < 18 ? 'child' : 'adult',
+              relation: m.relationship
+            }))} 
+          />
         </TabsContent>
 
         <TabsContent value="dynamics" className="space-y-6">

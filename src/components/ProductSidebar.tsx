@@ -13,6 +13,7 @@ const ProductSidebar = () => {
       icon: <Clock className="w-5 h-5" />,
       title: "3분 심리검사",
       price: "무료",
+      tokenCost: "1토큰",
       badge: "시작",
       badgeType: "popular",
       description: "빠른 기본 심리상태 체크",
@@ -22,6 +23,7 @@ const ProductSidebar = () => {
       icon: <FileText className="w-5 h-5" />,
       title: "관찰일지 작성",
       price: "5,000원",
+      tokenCost: "3토큰",
       badge: "습관형성",
       badgeType: "new",
       description: "체계적인 행동 관찰 기록",
@@ -31,6 +33,7 @@ const ProductSidebar = () => {
       icon: <MessageCircle className="w-5 h-5" />,
       title: "AI 상담사",
       price: "7,000원",
+      tokenCost: "5토큰",
       badge: "추천",
       badgeType: "recommended",
       description: "24시간 AI 심리상담",
@@ -40,6 +43,7 @@ const ProductSidebar = () => {
       icon: <Crown className="w-5 h-5" />,
       title: "프리미엄 검사",
       price: "10,000원",
+      tokenCost: "8토큰",
       badge: "심화분석",
       badgeType: "hot",
       description: "전문가급 상세 심리분석",
@@ -49,6 +53,7 @@ const ProductSidebar = () => {
       icon: <Users className="w-5 h-5" />,
       title: "전문가 고용",
       price: "월 50,000원~",
+      tokenCost: "50토큰",
       badge: "프리미엄",
       badgeType: "premium",
       description: "1:1 맞춤 전문가 상담",
@@ -58,6 +63,7 @@ const ProductSidebar = () => {
       icon: <Users className="w-5 h-5" />,
       title: "가족케어 패키지",
       price: "25,000원",
+      tokenCost: "20토큰",
       badge: "확장",
       badgeType: "package",
       description: "가족 전체 심리관리",
@@ -126,9 +132,16 @@ const ProductSidebar = () => {
                 {product.description}
               </p>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-primary">
-                  {product.price}
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-primary">
+                    {product.price}
+                  </span>
+                  {product.tokenCost && (
+                    <span className="text-xs text-blue-400 font-medium">
+                      또는 {product.tokenCost}
+                    </span>
+                  )}
+                </div>
                 <Button 
                   size="sm" 
                   variant="outline"

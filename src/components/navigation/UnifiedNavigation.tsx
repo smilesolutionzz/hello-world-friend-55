@@ -34,7 +34,7 @@ const navigationItems: NavigationItem[] = [
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-counselor', requiresAuth: true },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },
   { icon: Users, label: '가족관리', path: '/family', requiresAuth: true },
-  { icon: CreditCard, label: '구독관리', path: '/subscription', requiresAuth: true, badge: 'PRO' },
+  { icon: CreditCard, label: '구독', path: '/subscription', requiresAuth: true, badge: 'PRO' },
 ];
 
 export const UnifiedNavigation = () => {

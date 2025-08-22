@@ -13,7 +13,8 @@ import {
   Users,
   MessageCircle,
   TrendingUp,
-  User
+  User,
+  UserCheck
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -34,6 +35,7 @@ const navigationItems: NavigationItem[] = [
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-counselor', requiresAuth: true },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },
   { icon: Users, label: '가족관리', path: '/family', requiresAuth: true },
+  { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: true },
   { icon: CreditCard, label: '구독', path: '/subscription', requiresAuth: true, badge: 'PRO' },
 ];
 

@@ -424,7 +424,7 @@ const Assessment = () => {
               className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
               onClick={() => handleTestTypeSelect('language')}
             >
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">영유아발달체크</h3>
+              <h3 className="text-2xl font-bold text-brand-gradient mb-4">영유아언어발달체크</h3>
               <p className="text-muted-foreground mb-4">연령에 맞춤 20문항으로 간단 확인 (참고용)</p>
               <ul className="space-y-2 text-sm">
                 <li>• 연령대별 20문항</li>

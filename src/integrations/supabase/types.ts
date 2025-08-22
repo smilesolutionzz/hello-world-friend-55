@@ -869,6 +869,7 @@ export type Database = {
           created_at: string | null
           current_tokens: number | null
           id: string
+          last_daily_bonus_date: string | null
           referral_bonus: number | null
           total_purchased: number | null
           total_used: number | null
@@ -879,6 +880,7 @@ export type Database = {
           created_at?: string | null
           current_tokens?: number | null
           id?: string
+          last_daily_bonus_date?: string | null
           referral_bonus?: number | null
           total_purchased?: number | null
           total_used?: number | null
@@ -889,6 +891,7 @@ export type Database = {
           created_at?: string | null
           current_tokens?: number | null
           id?: string
+          last_daily_bonus_date?: string | null
           referral_bonus?: number | null
           total_purchased?: number | null
           total_used?: number | null
@@ -902,6 +905,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_daily_tokens: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       get_monthly_usage: {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: number

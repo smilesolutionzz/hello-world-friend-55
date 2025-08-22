@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ClipboardList, Plus, Eye, Download, Calendar, User, AlertCircle } from "lucide-react";
+import { ClipboardList, Plus, Eye, Download, Calendar, User, AlertCircle, ChevronLeft } from "lucide-react";
 import ObservationSessionForm from "@/components/observation/ObservationSessionForm";
 import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
 import ObservationResults from "@/components/observation/ObservationResults";
@@ -19,7 +19,7 @@ const Observation = () => {
   const [sessions, setSessions] = useState<any[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
   const [selectedSession, setSelectedSession] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("templates");
+  const [activeTab, setActiveTab] = useState("new-observation");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -133,20 +133,20 @@ const Observation = () => {
 
   const startNewSession = (template: any) => {
     setSelectedTemplate(template);
-    setActiveTab("new-session");
+    setActiveTab("start-session");
   };
 
   const viewSession = (session: any) => {
     setSelectedSession(session);
-    setActiveTab("session-results");
+    setActiveTab("view-results");
   };
 
   const handleSessionCreated = () => {
-    setActiveTab("sessions");
+    setActiveTab("my-observations");
     loadData();
     toast({
-      title: "관찰 세션 생성 완료",
-      description: "새로운 관찰 세션이 생성되었습니다.",
+      title: "관찰일지 작성 완료",
+      description: "새로운 관찰일지가 생성되었습니다.",
     });
   };
 
@@ -171,71 +171,124 @@ const Observation = () => {
         </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="templates">템플릿</TabsTrigger>
-          <TabsTrigger value="sessions">내 관찰</TabsTrigger>
-          <TabsTrigger value="new-mobile">새 관찰</TabsTrigger>
-          <TabsTrigger value="new-session">관찰 세션</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="new-observation">새 관찰 시작</TabsTrigger>
+          <TabsTrigger value="my-observations">내 관찰 기록</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="templates" className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">관찰 템플릿 선택</h2>
-            <p className="text-muted-foreground">
-              관찰하고자 하는 영역에 맞는 템플릿을 선택하세요
+        <TabsContent value="new-observation" className="space-y-6">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">새 관찰 시작하기</h2>
+            <p className="text-lg text-muted-foreground">
+              관찰하고자 하는 영역에 맞는 템플릿을 선택하고 바로 시작하세요
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {templates.map((template) => (
-              <Card key={template.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{template.name}</CardTitle>
-                    <Badge className={getDomainColor(template.domain)}>
-                      {getDomainDisplayName(template.domain)}
-                    </Badge>
+              <Card key={template.id} className="hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50">
+                <CardHeader className="text-center pb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ClipboardList className="h-8 w-8 text-white" />
                   </div>
-                  <CardDescription className="min-h-[60px]">
+                  <CardTitle className="text-xl">{template.name}</CardTitle>
+                  <Badge className={`${getDomainColor(template.domain)} mx-auto`}>
+                    {getDomainDisplayName(template.domain)}
+                  </Badge>
+                </CardHeader>
+                <CardContent className="text-center space-y-4">
+                  <CardDescription className="min-h-[60px] text-base">
                     {template.description}
                   </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <ClipboardList className="h-4 w-4" />
-                      {template.items?.length || 0}개 항목
-                    </div>
-                    <Button onClick={() => startNewSession(template)}>
-                      <Plus className="h-4 w-4 mr-2" />
-                      시작하기
-                    </Button>
+                  
+                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                    <ClipboardList className="h-4 w-4" />
+                    {template.items?.length || 0}개 관찰 항목
                   </div>
+                  
+                  <Button 
+                    className="w-full btn-primary"
+                    size="lg"
+                    onClick={() => {
+                      setSelectedTemplate(template);
+                      setActiveTab("start-session");
+                    }}
+                  >
+                    <Plus className="h-5 w-5 mr-2" />
+                    이 템플릿으로 시작하기
+                  </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          {/* Quick Start Guide */}
+          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-blue-600" />
+                관찰일지 작성 가이드
+              </h3>
+              <div className="grid md:grid-cols-3 gap-4 text-sm">
+                <div className="flex items-start gap-2">
+                  <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
+                  <div>
+                    <div className="font-medium">템플릿 선택</div>
+                    <div className="text-muted-foreground">관찰 목적에 맞는 템플릿을 선택하세요</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
+                  <div>
+                    <div className="font-medium">관찰 기록</div>
+                    <div className="text-muted-foreground">체계적으로 관찰 내용을 기록하세요</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
+                  <div>
+                    <div className="font-medium">AI 분석</div>
+                    <div className="text-muted-foreground">전문가 수준의 AI 분석 결과를 받아보세요</div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
-        <TabsContent value="sessions" className="space-y-6">
+        <TabsContent value="my-observations" className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">내 관찰 세션</h2>
-            <Button onClick={() => setActiveTab("new-mobile")}>
+            <div>
+              <h2 className="text-2xl font-semibold">내 관찰 기록</h2>
+              <p className="text-muted-foreground mt-1">지금까지 작성한 관찰일지를 확인하고 관리하세요</p>
+            </div>
+            <Button 
+              onClick={() => setActiveTab("new-observation")}
+              className="btn-primary"
+            >
               <Plus className="h-4 w-4 mr-2" />
               새 관찰 시작
             </Button>
           </div>
 
           {sessions.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-12">
-                <ClipboardList className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">아직 관찰 세션이 없습니다</h3>
-                <p className="text-muted-foreground mb-4">
-                  첫 번째 관찰을 시작해보세요
+            <Card className="border-dashed border-2">
+              <CardContent className="text-center py-16">
+                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <ClipboardList className="h-12 w-12 text-muted-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">아직 관찰 기록이 없습니다</h3>
+                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                  첫 번째 관찰일지를 작성해보세요. 체계적인 관찰과 AI 분석을 통해 
+                  전문적인 인사이트를 얻을 수 있습니다.
                 </p>
-                <Button onClick={() => setActiveTab("new-mobile")}>
-                  새 관찰 시작하기
+                <Button 
+                  onClick={() => setActiveTab("new-observation")}
+                  size="lg"
+                  className="btn-primary"
+                >
+                  <Plus className="h-5 w-5 mr-2" />
+                  첫 관찰일지 작성하기
                 </Button>
               </CardContent>
             </Card>
@@ -246,61 +299,66 @@ const Observation = () => {
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center gap-3 mb-3">
                           <h3 className="text-lg font-semibold">{session.session_name}</h3>
                           <Badge className={getDomainColor(session.domain)}>
                             {getDomainDisplayName(session.domain)}
                           </Badge>
-                          <Badge variant="outline" className={getStatusColor(session.status)}>
+                          <Badge 
+                            variant="outline" 
+                            className={`${getStatusColor(session.status)} border-0`}
+                          >
                             {getStatusText(session.status)}
                           </Badge>
                         </div>
                         
                         <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-2">
                             <User className="h-4 w-4" />
-                            {session.observer_name}
+                            <span>관찰자: {session.observer_name}</span>
                           </div>
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-2">
                             <Calendar className="h-4 w-4" />
-                            {new Date(session.observation_period_start).toLocaleDateString('ko-KR')} ~{' '}
-                            {new Date(session.observation_period_end).toLocaleDateString('ko-KR')}
+                            <span>
+                              {new Date(session.observation_period_start).toLocaleDateString('ko-KR')} ~ 
+                              {new Date(session.observation_period_end).toLocaleDateString('ko-KR')}
+                            </span>
                           </div>
                         </div>
+
+                        {session.status === 'analyzed' && session.analysis_data?.riskLevel && (
+                          <div className="mt-4 p-3 bg-muted rounded-lg">
+                            <div className="flex items-center gap-2">
+                              <AlertCircle className="h-4 w-4" />
+                              <span className="text-sm font-medium">
+                                분석 결과: {session.analysis_data.riskLevel === 'low' ? '양호' : 
+                                          session.analysis_data.riskLevel === 'medium' ? '보통' : '주의 필요'}
+                              </span>
+                            </div>
+                          </div>
+                        )}
                       </div>
                       
                       <div className="flex items-center gap-2">
                         {session.status === 'analyzed' && (
                           <Button variant="outline" size="sm">
                             <Download className="h-4 w-4 mr-1" />
-                            PDF
+                            PDF 다운로드
                           </Button>
                         )}
-                         <Button 
-                           variant="outline" 
-                           size="sm"
-                           onClick={() => {
-                             // Navigate to AI analysis page directly
-                             navigate('/highlight-ai');
-                           }}
-                         >
-                           <Eye className="h-4 w-4 mr-1" />
-                           보기
-                         </Button>
+                        <Button 
+                          variant="default" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedSession(session);
+                            setActiveTab("view-results");
+                          }}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          상세보기
+                        </Button>
                       </div>
                     </div>
-
-                    {session.status === 'analyzed' && session.analysis_data?.riskLevel && (
-                      <div className="mt-4 p-3 bg-muted rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <AlertCircle className="h-4 w-4" />
-                          <span className="text-sm font-medium">
-                            위험도: {session.analysis_data.riskLevel === 'low' ? '양호' : 
-                                   session.analysis_data.riskLevel === 'medium' ? '보통' : '주의'}
-                          </span>
-                        </div>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
               ))}
@@ -308,35 +366,62 @@ const Observation = () => {
           )}
         </TabsContent>
 
-        <TabsContent value="new-mobile">
-          <ObservationFormMobile
-            onBack={() => setActiveTab("sessions")}
-            onSuccess={async (sessionId) => {
-              // Reload data and show results
-              await loadData();
-              const session = sessions.find(s => s.id === sessionId);
-              if (session) {
-                setSelectedSession(session);
-                setActiveTab("session-results");
-              }
-            }}
-          />
-        </TabsContent>
-
-        <TabsContent value="new-session">
+        {/* Simplified Session Start */}
+        <TabsContent value="start-session">
           {selectedTemplate && (
-            <ObservationSessionForm
-              onSessionCreated={handleSessionCreated}
-            />
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center gap-4 mb-6">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setActiveTab("new-observation")}
+                  className="flex items-center gap-2"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  템플릿 선택으로 돌아가기
+                </Button>
+              </div>
+              
+              <ObservationFormMobile
+                onBack={() => setActiveTab("new-observation")}
+                onSuccess={async (sessionId) => {
+                  await loadData();
+                  const session = sessions.find(s => s.id === sessionId);
+                  if (session) {
+                    setSelectedSession(session);
+                    setActiveTab("view-results");
+                  } else {
+                    setActiveTab("my-observations");
+                  }
+                  toast({
+                    title: "관찰일지 작성 완료",
+                    description: "AI 분석이 완료되었습니다. 결과를 확인해보세요.",
+                  });
+                }}
+              />
+            </div>
           )}
         </TabsContent>
 
-        <TabsContent value="session-results">
+        {/* Results View */}
+        <TabsContent value="view-results">
           {selectedSession && (
-            <ObservationResults
-              session={selectedSession}
-              onBack={() => setActiveTab("sessions")}
-            />
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center gap-4 mb-6">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setActiveTab("my-observations")}
+                  className="flex items-center gap-2"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  내 관찰 기록으로 돌아가기
+                </Button>
+              </div>
+              
+              <ObservationResults
+                session={selectedSession}
+                onBack={() => setActiveTab("my-observations")}
+              />
+            </div>
           )}
         </TabsContent>
       </Tabs>

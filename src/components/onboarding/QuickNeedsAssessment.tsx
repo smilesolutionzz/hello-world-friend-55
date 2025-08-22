@@ -280,10 +280,10 @@ export default function QuickNeedsAssessment() {
         },
         {
           id: 'expert-60min',
-          name: '전문가 60분 상담',
+          name: 'AIH박사급리포팅',
           tokenCost: '50토큰',
-          duration: '60분',
-          route: '/experts?type=video',
+          duration: '15페이지이상',
+          route: '/experts?type=report',
           badge: '프리미엄',
           badgeColor: 'bg-gradient-to-r from-amber-500 to-yellow-600'
         }

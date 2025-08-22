@@ -56,11 +56,11 @@ const ProductSidebar = () => {
     },
     {
       icon: <Users className="w-5 h-5" />,
-      title: "60분 상담 (화상)",
+      title: "AIH박사급리포팅",
       tokenCost: "50토큰",
       badge: "프리미엄",
       badgeType: "premium",
-      description: "1:1 화상 전문가 상담",
+      description: "15페이지이상의 맞춤 리포팅(PDF제공)",
       route: "/experts"
     },
     {

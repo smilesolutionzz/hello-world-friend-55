@@ -7,7 +7,7 @@ import { ArrowLeft, Zap, Star, Crown, Check, ArrowRight, TrendingUp, Brain, Targ
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
-import Navigation from '@/components/Navigation';
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import TokenBalance from '@/components/TokenBalance';
 
 interface TokenPlan {
@@ -191,7 +191,7 @@ const TokenSubscription = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <Navigation />
+      <UnifiedNavigation />
       
       <div className="container mx-auto px-4 py-12">
         {/* 헤더 섹션 */}

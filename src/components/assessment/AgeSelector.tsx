@@ -17,7 +17,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
       key: 'infant' as const,
       title: '영유아',
       subtitle: '0-5세',
-      description: 'K-ASQ 기반 전문 발달검사',
+      description: 'AIH 영유아발달체크',
       icon: Baby,
       color: 'from-gentle-peach to-warm-lavender',
       features: ['대근육/소근육 발달', '언어 발달', '사회성 발달', '인지 발달']
@@ -99,7 +99,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
         {/* Age Group Selection */}
         {!selectedGroup && (
           <div className="max-w-6xl mx-auto">
-            <div className={`grid ${testType === 'language' ? 'md:grid-cols-2' : (testType === 'panic' || testType === 'depression') ? 'md:grid-cols-1 max-w-2xl mx-auto' : testType === 'adhd' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-8`}>
+            <div className={`grid ${testType === 'language' ? 'md:grid-cols-1 max-w-md mx-auto' : (testType === 'panic' || testType === 'depression') ? 'md:grid-cols-1 max-w-2xl mx-auto' : testType === 'adhd' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-8`}>
               {ageGroups.filter(group => {
                 if (testType === 'language') return group.key === 'infant';
                 if (testType === 'panic' || testType === 'depression') return group.key === 'adult';

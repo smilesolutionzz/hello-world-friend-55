@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import Navigation from "@/components/Navigation";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import HeroSection from "@/components/HeroSection";
 import PlatformOverview from "@/components/PlatformOverview";
 import VideoShowcase from "@/components/VideoShowcase";
@@ -46,7 +46,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <Navigation />
+      <UnifiedNavigation />
       <div className="flex">
         {/* Product Sidebar */}
         <div className="hidden lg:block fixed left-0 top-0 z-40">

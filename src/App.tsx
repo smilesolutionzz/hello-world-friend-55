@@ -45,16 +45,9 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          {/* HIGHLIGHT MVP Routes */}
-          <Route path="/auth" element={<HighlightAuth />} />
-          <Route path="/highlight-dashboard" element={<HighlightDashboard />} />
-          <Route path="/highlight-ai" element={<HighlightAI />} />
-          <Route path="/test/:testId" element={<TypebotEmbed />} />
-          <Route path="/results/:resultId" element={<TestResults />} />
-          <Route path="/subscription" element={<TokenSubscription />} />
-          
-          {/* Main Routes */}
+          {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/assessment" element={<Assessment />} />

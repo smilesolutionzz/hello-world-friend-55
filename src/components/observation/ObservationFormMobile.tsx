@@ -35,7 +35,7 @@ interface MediaFile {
 interface ObservationFormProps {
   onBack: () => void;
   onSuccess: (sessionId: string) => void;
-  templateType?: 'basic' | 'detailed';
+  templateType?: 'basic' | 'detailed' | string;
 }
 
 type FormState = 'idle' | 'validating' | 'uploading' | 'analyzing' | 'success' | 'error';
@@ -56,7 +56,8 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
   
   // Tags
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const availableTags = templateType === 'detailed' 
+  const isDetailedTemplate = templateType === 'detailed' || templateType === '2';
+  const availableTags = isDetailedTemplate 
     ? ['정서', '행동', '인지', '사회성', '신체', '언어발달', '자기조절능력']
     : ['정서', '행동', '인지', '사회성', '신체'];
   
@@ -79,8 +80,8 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
   // Character count and validation
   const textLength = observationText.trim().length;
   const detailedTextLength = Object.values(detailedObservations).join('').trim().length;
-  const totalTextLength = templateType === 'detailed' ? textLength + detailedTextLength : textLength;
-  const minLength = templateType === 'detailed' ? 200 : 50;
+  const totalTextLength = isDetailedTemplate ? textLength + detailedTextLength : textLength;
+  const minLength = isDetailedTemplate ? 200 : 50;
   const isTextValid = totalTextLength >= minLength;
   const canSubmit = isTextValid && selectedTags.length > 0 && legalConsent && targetName.trim();
 
@@ -427,7 +428,7 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
         </div>
         <Progress value={Math.min((totalTextLength / minLength) * 100, 100)} />
         <div className="text-xs text-muted-foreground">
-          {templateType === 'detailed' ? '최소 200자 이상 작성해주세요' : '최소 50자 이상 작성해주세요'}
+          {isDetailedTemplate ? '최소 200자 이상 작성해주세요' : '최소 50자 이상 작성해주세요'}
         </div>
       </div>
 
@@ -532,9 +533,9 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg">
-            {templateType === 'detailed' ? '기본 관찰 내용 *' : '관찰 내용 *'}
+            {isDetailedTemplate ? '기본 관찰 내용 *' : '관찰 내용 *'}
           </CardTitle>
-          {templateType === 'detailed' && (
+          {isDetailedTemplate && (
             <p className="text-sm text-muted-foreground">전반적인 관찰 상황을 간략히 기록해주세요.</p>
           )}
         </CardHeader>
@@ -543,16 +544,16 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
             <Textarea
               value={observationText}
               onChange={(e) => setObservationText(e.target.value)}
-              placeholder={templateType === 'detailed' 
+              placeholder={isDetailedTemplate 
                 ? "전반적인 관찰 상황을 간략히 기록해주세요."
                 : "관찰한 행동, 반응, 상황 등을 구체적으로 기록해주세요. (최소 50자)"
               }
-              rows={templateType === 'detailed' ? 4 : 6}
+              rows={isDetailedTemplate ? 4 : 6}
               className="resize-none"
             />
             <div className="flex justify-between items-center mt-2 text-sm">
               <span className={textLength < 50 ? "text-red-500" : "text-green-600"}>
-                {textLength}/{templateType === 'detailed' ? '50' : '50'}자 이상
+                {textLength}/{isDetailedTemplate ? '50' : '50'}자 이상
               </span>
               {textLength < 50 && (
                 <span className="text-red-500">
@@ -565,7 +566,7 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
       </Card>
 
       {/* Detailed Analysis Fields - Only for detailed template */}
-      {templateType === 'detailed' && (
+      {isDetailedTemplate && (
         <div className="space-y-6">
           <Card className="border-purple-200 bg-purple-50/50">
             <CardHeader className="pb-4">

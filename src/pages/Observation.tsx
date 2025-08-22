@@ -291,7 +291,7 @@ const Observation = () => {
                       🤖 AI 분석 결과 미리보기
                     </h4>
                     <div className="text-sm text-blue-700 space-y-1">
-                      {template.id === '1' ? (
+                      {template.template_type === 'basic' ? (
                         <>
                           <div>• 기본 행동 패턴 분석</div>
                           <div>• 즉시 인사이트 제공</div>
@@ -314,7 +314,7 @@ const Observation = () => {
                       📋 전문가 PDF 리포트
                     </h4>
                     <div className="text-sm text-purple-700 space-y-1">
-                      {template.id === '1' ? (
+                      {template.template_type === 'basic' ? (
                         <>
                           <div>• 2-3페이지 요약 리포트</div>
                           <div>• 핵심 관찰 사항</div>
@@ -337,7 +337,7 @@ const Observation = () => {
                     <div className="space-y-2">
                       {template.features.slice(0, 3).map((feature: string, index: number) => (
                         <div key={index} className="flex items-center gap-2 text-sm">
-                          <div className={`w-2 h-2 rounded-full ${template.id === '1' ? 'bg-blue-500' : 'bg-purple-500'}`} />
+                          <div className={`w-2 h-2 rounded-full ${template.template_type === 'basic' ? 'bg-blue-500' : 'bg-purple-500'}`} />
                           <span>{feature}</span>
                         </div>
                       ))}
@@ -359,7 +359,7 @@ const Observation = () => {
                   {/* CTA Button */}
                   <Button 
                     className={`w-full h-12 text-white font-semibold ${
-                      template.id === '1' 
+                      template.template_type === 'basic' 
                         ? 'bg-blue-600 hover:bg-blue-700' 
                         : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
                     }`}
@@ -370,13 +370,13 @@ const Observation = () => {
                     }}
                   >
                     <Plus className="h-5 w-5 mr-2" />
-                    {template.id === '1' ? '빠른 분석 시작하기' : '전문가 분석 시작하기'}
+                    {template.template_type === 'basic' ? '빠른 분석 시작하기' : '전문가 분석 시작하기'}
                   </Button>
 
                   {/* Value Guarantee */}
                   <div className="text-center">
                     <div className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full">
-                      ✅ {template.id === '1' ? '즉시 결과 보장' : '전문가급 분석 보장'}
+                      ✅ {template.template_type === 'basic' ? '즉시 결과 보장' : '전문가급 분석 보장'}
                     </div>
                   </div>
                 </CardContent>
@@ -601,7 +601,7 @@ const Observation = () => {
                     description: "AI 분석이 완료되었습니다. 결과를 확인해보세요.",
                   });
                 }}
-                templateType={selectedTemplate?.id}
+                templateType={selectedTemplate?.template_type}
               />
             </div>
           )}

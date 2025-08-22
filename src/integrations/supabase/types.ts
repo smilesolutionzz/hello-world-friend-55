@@ -227,6 +227,39 @@ export type Database = {
           },
         ]
       }
+      observation_domains: {
+        Row: {
+          color_class: string
+          created_at: string
+          description: string | null
+          display_name: string
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          color_class?: string
+          created_at?: string
+          description?: string | null
+          display_name: string
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          color_class?: string
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       observation_logs: {
         Row: {
           behavior_type: string | null
@@ -335,6 +368,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      observation_templates: {
+        Row: {
+          cost: string
+          created_at: string
+          description: string
+          duration: string
+          features: Json
+          id: string
+          is_active: boolean
+          items: Json
+          name: string
+          sort_order: number
+          suitable_for: string
+          template_type: string
+          updated_at: string
+        }
+        Insert: {
+          cost: string
+          created_at?: string
+          description: string
+          duration: string
+          features?: Json
+          id?: string
+          is_active?: boolean
+          items?: Json
+          name: string
+          sort_order?: number
+          suitable_for: string
+          template_type: string
+          updated_at?: string
+        }
+        Update: {
+          cost?: string
+          created_at?: string
+          description?: string
+          duration?: string
+          features?: Json
+          id?: string
+          is_active?: boolean
+          items?: Json
+          name?: string
+          sort_order?: number
+          suitable_for?: string
+          template_type?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

@@ -13,25 +13,16 @@ const ProductSidebar = () => {
       icon: <Clock className="w-5 h-5" />,
       title: "3분 심리검사",
       price: "무료",
-      badge: "인기",
+      badge: "시작",
       badgeType: "popular",
       description: "빠른 기본 심리상태 체크",
       route: "/assessment"
     },
     {
-      icon: <Crown className="w-5 h-5" />,
-      title: "프리미엄 검사",
-      price: "10,000원",
-      badge: "HOT",
-      badgeType: "hot",
-      description: "전문가급 상세 심리분석",
-      route: "/premium-assessment"
-    },
-    {
       icon: <FileText className="w-5 h-5" />,
       title: "관찰일지 작성",
       price: "5,000원",
-      badge: "NEW",
+      badge: "습관형성",
       badgeType: "new",
       description: "체계적인 행동 관찰 기록",
       route: "/observation"
@@ -46,6 +37,15 @@ const ProductSidebar = () => {
       route: "/ai-counselor"
     },
     {
+      icon: <Crown className="w-5 h-5" />,
+      title: "프리미엄 검사",
+      price: "10,000원",
+      badge: "심화분석",
+      badgeType: "hot",
+      description: "전문가급 상세 심리분석",
+      route: "/premium-assessment"
+    },
+    {
       icon: <Users className="w-5 h-5" />,
       title: "전문가 고용",
       price: "월 150,000원~",
@@ -58,7 +58,7 @@ const ProductSidebar = () => {
       icon: <Users className="w-5 h-5" />,
       title: "가족케어 패키지",
       price: "25,000원",
-      badge: "패키지",
+      badge: "확장",
       badgeType: "package",
       description: "가족 전체 심리관리",
       route: "/family"

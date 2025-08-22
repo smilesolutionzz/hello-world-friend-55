@@ -228,8 +228,8 @@ const TokenSubscription = () => {
                 <CardDescription>빠른 심리상태 진단</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-blue-600 mb-2">3토큰</div>
-                <p className="text-sm text-slate-600">기본적인 심리 상태를 빠르게 파악</p>
+                <div className="text-3xl font-bold text-blue-600 mb-2">5토큰</div>
+                <p className="text-sm text-slate-600">기본적인 심리 상태, 꿈해몽, 사주분석</p>
               </CardContent>
             </Card>
 
@@ -242,8 +242,8 @@ const TokenSubscription = () => {
                 <CardDescription>깊이 있는 개인 분석</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-purple-600 mb-2">5토큰</div>
-                <p className="text-sm text-slate-600">꿈해몽, 성격분석 등 전문 분석</p>
+                <div className="text-3xl font-bold text-purple-600 mb-2">10토큰</div>
+                <p className="text-sm text-slate-600">개인 맞춤형 심층 심리 분석</p>
               </CardContent>
             </Card>
 
@@ -256,8 +256,8 @@ const TokenSubscription = () => {
                 <CardDescription>종합적인 심층 분석</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-green-600 mb-2">8토큰</div>
-                <p className="text-sm text-slate-600">사주분석, 종합 심리 진단</p>
+                <div className="text-3xl font-bold text-green-600 mb-2">30토큰</div>
+                <p className="text-sm text-slate-600">전문가 수준의 종합 심리 진단</p>
               </CardContent>
             </Card>
           </div>

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Download, Share2, Crown, Baby, TrendingUp, AlertCircle } from "lucide-react";
+import { ArrowLeft, Download, Share2, Crown, Baby, TrendingUp, AlertCircle, Copy } from "lucide-react";
 import { languageDevelopmentScoring } from "@/data/languageDevelopmentQuestions";
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface LanguageDevelopmentResultProps {
   results: Record<string, number>;
@@ -12,6 +14,8 @@ interface LanguageDevelopmentResultProps {
 }
 
 const LanguageDevelopmentResult = ({ results, onBack }: LanguageDevelopmentResultProps) => {
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const { toast } = useToast();
   // 점수 해석 함수
   const getScoreInterpretation = (score: number, category: 'receptive' | 'expressive' | 'total') => {
     const scoring = languageDevelopmentScoring[category];
@@ -90,14 +94,143 @@ const LanguageDevelopmentResult = ({ results, onBack }: LanguageDevelopmentResul
 
   const aiInterpretations = generateAIInterpretation();
 
-  const handleDownloadPDF = () => {
-    // PDF 다운로드 기능 (추후 구현)
-    console.log("PDF 다운로드");
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true);
+    try {
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>AIH 영유아 언어발달 검사 결과</title>
+          <style>
+            body { font-family: 'Arial', sans-serif; margin: 40px; line-height: 1.6; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .score-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+            .score-large { font-size: 24px; font-weight: bold; color: #333; }
+            .interpretation { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+            .recommendations { margin-top: 20px; }
+            .recommendations ul { padding-left: 20px; }
+            .disclaimer { margin-top: 30px; padding: 15px; background: #e3f2fd; border-radius: 5px; font-size: 12px; text-align: center; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>AIH 영유아 언어발달 검사 결과</h1>
+            <p>검사일: ${new Date().toLocaleDateString('ko-KR')}</p>
+          </div>
+          
+          <div class="score-section">
+            <h2>전체 언어발달 수준</h2>
+            <div class="score-large">${results.total}점 / 77점 (${results.total_percentage}%)</div>
+            <p><strong>해석:</strong> ${totalInterpretation.description}</p>
+          </div>
+          
+          <div class="score-section">
+            <h3>영역별 상세 결과</h3>
+            <p><strong>수용언어:</strong> ${results.receptive}점 / 39점 (${results.receptive_percentage}%) - ${receptiveInterpretation.description}</p>
+            <p><strong>표현언어:</strong> ${results.expressive}점 / 38점 (${results.expressive_percentage}%) - ${expressiveInterpretation.description}</p>
+          </div>
+          
+          <div class="interpretation">
+            <h3>AI 전문가 해석</h3>
+            ${aiInterpretations.map(interp => `<p>• ${interp}</p>`).join('')}
+          </div>
+          
+          <div class="recommendations">
+            <h3>발달 촉진 권장사항</h3>
+            <div style="display: flex; gap: 20px;">
+              <div style="flex: 1;">
+                <h4>수용언어 발달을 위해</h4>
+                <ul>
+                  <li>책을 읽어주며 그림 설명하기</li>
+                  <li>일상에서 많은 대화하기</li>
+                  <li>다양한 어휘로 말해주기</li>
+                  <li>아이의 관심사에 맞춘 놀이</li>
+                </ul>
+              </div>
+              <div style="flex: 1;">
+                <h4>표현언어 발달을 위해</h4>
+                <ul>
+                  <li>아이의 말에 충분한 반응 보이기</li>
+                  <li>노래와 율동 함께 하기</li>
+                  <li>아이가 말할 기회 많이 주기</li>
+                  <li>표현을 격려하고 칭찬하기</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="disclaimer">
+            ※ 본 검사는 참고용 자가체크이며, 전문적인 진단을 대체하지 않습니다.
+          </div>
+        </body>
+        </html>
+      `;
+
+      const { data, error } = await supabase.functions.invoke('generate-premium-pdf', {
+        body: { htmlContent }
+      });
+
+      if (error) throw error;
+
+      // 새 창에서 PDF 열기
+      const newWindow = window.open('', '_blank');
+      if (newWindow) {
+        newWindow.document.write(htmlContent);
+        newWindow.document.close();
+        newWindow.print();
+      }
+
+      toast({
+        title: "PDF 생성 완료",
+        description: "언어발달 검사 결과 PDF가 생성되었습니다.",
+      });
+    } catch (error) {
+      console.error('PDF 생성 오류:', error);
+      toast({
+        title: "PDF 생성 실패",
+        description: "PDF 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
-  const handleShare = () => {
-    // 공유 기능 (추후 구현)
-    console.log("결과 공유");
+  const handleShare = async () => {
+    const shareText = `🌟 AIH 영유아 언어발달 검사 결과 🌟
+
+📊 전체 점수: ${results.total}점 / 77점 (${results.total_percentage}%)
+📈 해석: ${totalInterpretation.description}
+
+📋 영역별 결과:
+👂 수용언어: ${results.receptive}점 / 39점 (${results.receptive_percentage}%)
+💬 표현언어: ${results.expressive}점 / 38점 (${results.expressive_percentage}%)
+
+🤖 AI 전문가 해석:
+${aiInterpretations.map(interp => `• ${interp}`).join('\n')}
+
+💡 발달 촉진 권장사항:
+수용언어: 책 읽어주기, 일상 대화, 다양한 어휘 사용
+표현언어: 충분한 반응, 노래와 율동, 말할 기회 제공
+
+검사일: ${new Date().toLocaleDateString('ko-KR')}
+※ 본 검사는 참고용이며, 전문적인 진단을 대체하지 않습니다.`;
+
+    try {
+      await navigator.clipboard.writeText(shareText);
+      toast({
+        title: "복사 완료",
+        description: "검사 결과가 클립보드에 복사되었습니다.",
+      });
+    } catch (error) {
+      toast({
+        title: "복사 실패",
+        description: "클립보드 복사에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -134,13 +267,18 @@ const LanguageDevelopmentResult = ({ results, onBack }: LanguageDevelopmentResul
           </div>
           
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleDownloadPDF}
+              disabled={isGeneratingPDF}
+            >
               <Download className="w-4 h-4 mr-2" />
-              PDF
+              {isGeneratingPDF ? "생성중..." : "PDF"}
             </Button>
             <Button variant="outline" size="sm" onClick={handleShare}>
-              <Share2 className="w-4 h-4 mr-2" />
-              공유
+              <Copy className="w-4 h-4 mr-2" />
+              복사
             </Button>
           </div>
         </div>

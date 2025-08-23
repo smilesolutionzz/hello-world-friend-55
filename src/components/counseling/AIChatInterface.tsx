@@ -201,7 +201,7 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
         <div className="container mx-auto max-w-4xl">
           {/* Header */}
           <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">AI 심리상담사</h1>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">AIH 해결사</h1>
             <p className="text-muted-foreground">전문적이고 따뜻한 AI 상담 서비스 (참고용)</p>
             {onClose && (
               <Button variant="outline" onClick={onClose} className="mt-4">

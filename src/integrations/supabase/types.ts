@@ -922,6 +922,8 @@ export type Database = {
           created_at: string
           current_tokens: number
           id: string
+          last_daily_bonus_date: string | null
+          referral_bonus: number | null
           total_purchased: number
           total_used: number
           updated_at: string
@@ -931,6 +933,8 @@ export type Database = {
           created_at?: string
           current_tokens?: number
           id?: string
+          last_daily_bonus_date?: string | null
+          referral_bonus?: number | null
           total_purchased?: number
           total_used?: number
           updated_at?: string
@@ -940,6 +944,8 @@ export type Database = {
           created_at?: string
           current_tokens?: number
           id?: string
+          last_daily_bonus_date?: string | null
+          referral_bonus?: number | null
           total_purchased?: number
           total_used?: number
           updated_at?: string

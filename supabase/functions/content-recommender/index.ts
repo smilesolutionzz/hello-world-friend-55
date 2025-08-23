@@ -43,8 +43,13 @@ serve(async (req) => {
     logStep('Function started');
 
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    const perplexityApiKey = Deno.env.get('PERPLEXITY_API_KEY');
+    
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
+    }
+    if (!perplexityApiKey) {
+      throw new Error('Perplexity API key not configured');
     }
 
     const requestBody: ContentRecommendationRequest = await req.json();
@@ -61,8 +66,9 @@ serve(async (req) => {
       senior: '노인'
     };
 
-    const prompt = `
-다음 관찰 기록을 바탕으로 도움이 될 만한 유튜브 컨텐츠를 추천해주세요:
+    // Step 1: GPT로 관찰 내용 분석 및 키워드 추출
+    const analysisPrompt = `
+다음 관찰 기록을 분석하여 도움이 될 만한 유튜브 컨텐츠 검색 키워드를 추천해주세요:
 
 **관찰 정보:**
 - 연령대: ${ageGroupMap[requestBody.ageGroup]}
@@ -70,107 +76,217 @@ serve(async (req) => {
 - 관찰 내용: ${requestBody.observationText}
 ${requestBody.analysisResult ? `- AI 분석 결과: ${requestBody.analysisResult}` : ''}
 
-다음 형식의 JSON으로 5개의 추천 컨텐츠를 제공해주세요:
+다음 JSON 형식으로 5개의 검색 키워드를 제공해주세요:
 
 {
-  "recommendations": [
+  "searchQueries": [
     {
-      "title": "구체적인 제목",
-      "description": "컨텐츠에 대한 간단한 설명 (2-3문장)",
-      "youtubeUrl": "https://youtube.com/watch?v=실제존재하는영상ID",
+      "keyword": "구체적인 한국어 검색어",
       "category": "발달놀이|부모교육|치료방법|행동교정|감정조절|사회성향상 중 하나",
-      "duration": "예상 시청 시간",
-      "reason": "이 컨텐츠가 도움이 되는 구체적인 이유"
+      "purpose": "이 검색어로 찾고자 하는 컨텐츠 목적"
     }
   ]
 }
 
-추천 기준:
-1. 관찰된 문제나 발달 영역과 직접적으로 관련된 실용적인 컨텐츠
-2. 해당 연령대에 적합한 접근법을 다루는 컨텐츠
-3. 부모나 보호자가 실제로 적용할 수 있는 구체적인 방법을 제시하는 컨텐츠
-4. 전문가가 진행하거나 신뢰할 수 있는 교육기관의 컨텐츠 우선
-5. 실제 존재하는 유튜브 링크만 제공 (가상의 링크 금지)
+검색어 예시:
+- "3세 아이 떼쓰기 대처방법"
+- "유아 언어발달 놀이"
+- "ADHD 아동 집중력 높이는 방법"
+- "자폐 아동 사회성 향상 활동"
 
-실제 존재하는 유튜브 채널 예시:
-- 우리아이 발달연구소
-- 육아정보채널 베이비뉴스
-- 키즈노트 공식채널
-- 아동발달센터
-- 아이코리아TV
-- 맘카페TV
-
-반드시 실제 존재하는 유튜브 링크만 제공하고, JSON 형식을 정확히 지켜주세요.
+실제 유튜브에서 검색했을 때 관련 동영상이 많이 나올 수 있는 키워드로 작성해주세요.
 `;
 
-    logStep('Calling OpenAI API');
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    logStep('Analyzing observation for keywords');
+    
+    const analysisResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14', // 안정적인 GPT-4.1 모델 사용
+        model: 'gpt-4o',
         messages: [
           {
             role: 'system',
-            content: '당신은 아동발달, 육아, 교육 전문가입니다. 관찰 기록을 바탕으로 실제로 도움이 되는 유튜브 컨텐츠를 추천합니다. 반드시 실제 존재하는 유튜브 링크만 제공하고 JSON 형식을 정확히 지켜주세요.'
+            content: '당신은 아동발달, 육아, 교육 전문가입니다. 관찰 기록을 바탕으로 실제 도움이 되는 유튜브 검색 키워드를 추천합니다.'
           },
           {
             role: 'user',
-            content: prompt
+            content: analysisPrompt
           }
         ],
-        max_tokens: 1500, // GPT-4.1에서는 max_tokens 사용
-        temperature: 0.7, // 창의적이지만 일관된 응답을 위해
+        max_tokens: 1000,
+        temperature: 0.7,
       }),
     });
 
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+    if (!analysisResponse.ok) {
+      throw new Error(`OpenAI API error: ${analysisResponse.status}`);
     }
 
-    const aiResponse = await response.json();
-    const contentText = aiResponse.choices[0].message.content;
+    const analysisData = await analysisResponse.json();
+    const analysisText = analysisData.choices[0].message.content;
     
-    logStep('OpenAI response received', { textLength: contentText.length });
+    logStep('Analysis completed', { textLength: analysisText.length });
 
-    // Parse JSON response
-    let recommendations: RecommendedContent[] = [];
+    // Parse search queries
+    let searchQueries: Array<{keyword: string, category: string, purpose: string}> = [];
     
     try {
-      const jsonMatch = contentText.match(/\{[\s\S]*\}/);
+      const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        recommendations = parsed.recommendations || [];
+        searchQueries = parsed.searchQueries || [];
       }
     } catch (parseError) {
-      logStep('JSON parsing failed, using fallback', { error: parseError });
-      
-      // Fallback recommendations if parsing fails
-      recommendations = [
-        {
-          title: "아동 행동 이해하기",
-          description: "아이의 문제행동 원인과 해결방법을 전문가가 설명합니다.",
-          youtubeUrl: "https://www.youtube.com/results?search_query=아동+행동+문제+해결방법",
-          category: "행동교정",
-          duration: "15-20분",
-          reason: "관찰된 행동 패턴을 이해하고 개선방안을 찾는데 도움이 됩니다."
-        },
-        {
-          title: "발달놀이 가이드",
-          description: "연령별 발달 단계에 맞는 놀이 활동을 소개합니다.",
-          youtubeUrl: "https://www.youtube.com/results?search_query=유아+발달놀이+가이드",
-          category: "발달놀이",
-          duration: "10-15분",
-          reason: "일상에서 쉽게 할 수 있는 발달 촉진 활동을 배울 수 있습니다."
-        }
+      logStep('Analysis parsing failed, using fallback');
+      searchQueries = [
+        { keyword: `${ageGroupMap[requestBody.ageGroup]} 발달 놀이`, category: '발달놀이', purpose: '발달 촉진' },
+        { keyword: `${ageGroupMap[requestBody.ageGroup]} 행동 문제 해결`, category: '행동교정', purpose: '행동 개선' }
       ];
     }
 
-    logStep('Content recommendations generated', { count: recommendations.length });
+    // Step 2: Perplexity API로 실제 유튜브 동영상 검색
+    logStep('Searching for YouTube videos with Perplexity', { queryCount: searchQueries.length });
+    
+    const recommendations: RecommendedContent[] = [];
+    
+    for (const query of searchQueries.slice(0, 3)) { // 처리 시간을 고려해 3개로 제한
+      try {
+        logStep('Searching with query', { keyword: query.keyword });
+        
+        const searchPrompt = `유튜브에서 "${query.keyword}"와 관련된 실제 존재하는 동영상을 찾아주세요. 
+        
+다음 정보를 포함해서 1-2개의 동영상을 추천해주세요:
+- 동영상 제목
+- 채널명
+- 실제 유튜브 URL (https://www.youtube.com/watch?v=형식)
+- 동영상 설명 (1-2문장)
+- 대략적인 재생 시간
+
+응답은 다음 형식으로 해주세요:
+제목: [동영상 제목]
+채널: [채널명]  
+URL: [실제 유튜브 URL]
+설명: [간단한 설명]
+시간: [재생 시간]
+
+---
+
+제목: [두 번째 동영상 제목]
+채널: [채널명]
+URL: [실제 유튜브 URL]  
+설명: [간단한 설명]
+시간: [재생 시간]`;
+
+        const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${perplexityApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'llama-3.1-sonar-large-128k-online',
+            messages: [
+              {
+                role: 'system',
+                content: '당신은 유튜브 검색 전문가입니다. 사용자가 요청한 키워드로 실제 존재하는 유튜브 동영상을 찾아서 추천해주세요. 반드시 실제 존재하는 URL만 제공하세요.'
+              },
+              {
+                role: 'user',
+                content: searchPrompt
+              }
+            ],
+            temperature: 0.2,
+            top_p: 0.9,
+            max_tokens: 1000,
+            return_images: false,
+            return_related_questions: false,
+            search_domain_filter: ['youtube.com'],
+            search_recency_filter: 'month',
+            frequency_penalty: 1,
+            presence_penalty: 0
+          }),
+        });
+
+        if (!perplexityResponse.ok) {
+          logStep('Perplexity API error', { status: perplexityResponse.status });
+          continue;
+        }
+
+        const perplexityData = await perplexityResponse.json();
+        const searchResult = perplexityData.choices[0].message.content;
+        
+        logStep('Perplexity search result', { textLength: searchResult.length });
+
+        // Parse Perplexity response
+        const videos = searchResult.split('---').map(section => {
+          const lines = section.trim().split('\n');
+          const video: any = {};
+          
+          lines.forEach(line => {
+            if (line.startsWith('제목:')) video.title = line.replace('제목:', '').trim();
+            if (line.startsWith('채널:')) video.channel = line.replace('채널:', '').trim();
+            if (line.startsWith('URL:')) video.url = line.replace('URL:', '').trim();
+            if (line.startsWith('설명:')) video.description = line.replace('설명:', '').trim();
+            if (line.startsWith('시간:')) video.duration = line.replace('시간:', '').trim();
+          });
+          
+          return video;
+        }).filter(video => video.title && video.url && video.url.includes('youtube.com'));
+
+        // Add to recommendations
+        videos.forEach(video => {
+          if (recommendations.length < 5) {
+            recommendations.push({
+              title: video.title,
+              description: video.description || `${query.category} 관련 도움이 되는 영상입니다.`,
+              youtubeUrl: video.url,
+              category: query.category,
+              duration: video.duration || '10-15분',
+              reason: `${query.purpose}에 도움이 되는 실제 전문가 영상입니다.`
+            });
+          }
+        });
+
+        // 검색 간 짧은 딜레이
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+      } catch (searchError) {
+        logStep('Error searching for videos', { error: searchError, keyword: query.keyword });
+        continue;
+      }
+    }
+
+    // 검색 결과가 부족하면 GPT 기반 추천 추가
+    if (recommendations.length < 3) {
+      logStep('Adding GPT-based fallback recommendations');
+      
+      const fallbackRecommendations = [
+        {
+          title: "아동 발달 전문가와 함께하는 교육법",
+          description: "아이의 발달 단계에 맞는 교육 방법을 전문가가 설명합니다.",
+          youtubeUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQueries[0]?.keyword || '아동 발달')}`,
+          category: searchQueries[0]?.category || "부모교육",
+          duration: "15-20분",
+          reason: "관찰된 발달 상황에 맞는 전문적인 교육 방법을 배울 수 있습니다."
+        },
+        {
+          title: "놀이를 통한 아이 성장 가이드",
+          description: "일상 놀이를 통해 아이의 발달을 도울 수 있는 방법을 소개합니다.",
+          youtubeUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQueries[1]?.keyword || '발달놀이')}`,
+          category: "발달놀이",
+          duration: "10-15분",
+          reason: "놀이를 통해 자연스럽게 발달을 촉진할 수 있는 방법을 제공합니다."
+        }
+      ];
+
+      recommendations.push(...fallbackRecommendations.slice(0, 5 - recommendations.length));
+    }
+
+    logStep('Final recommendations prepared', { count: recommendations.length });
 
     return new Response(JSON.stringify({ 
       success: true,

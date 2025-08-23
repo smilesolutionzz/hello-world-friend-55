@@ -969,6 +969,10 @@ export type Database = {
         Args: { p_referral_code: string; p_user_id: string }
         Returns: boolean
       }
+      can_access_family_observation: {
+        Args: { observation_user_id: string }
+        Returns: boolean
+      }
       generate_referral_code: {
         Args: Record<PropertyKey, never>
         Returns: string

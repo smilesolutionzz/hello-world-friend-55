@@ -133,7 +133,26 @@ const Auth = () => {
     }
     
     try {
-      // 먼저 Supabase Auth에 회원가입을 시도하여 중복 확인
+      // 전화번호 중복 확인 (전화번호가 입력된 경우)
+      if (signupData.phone) {
+        const { data: existingPhone, error: phoneCheckError } = await supabase
+          .from('profiles')
+          .select('user_id')
+          .eq('phone', signupData.phone)
+          .maybeSingle();
+
+        if (phoneCheckError && phoneCheckError.code !== 'PGRST116') {
+          console.error('Phone check error:', phoneCheckError);
+        }
+
+        if (existingPhone) {
+          setError("이미 가입된 전화번호입니다.");
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Supabase Auth에 회원가입 시도
       const { error } = await supabase.auth.signUp({
         email: signupData.email,
         password: signupData.password,
@@ -156,6 +175,8 @@ const Auth = () => {
           setError("비밀번호가 너무 약합니다. 더 강한 비밀번호를 사용해주세요.");
         } else if (error.message.includes('Password should be at least')) {
           setError("비밀번호는 최소 6자 이상이어야 합니다.");
+        } else if (error.message.includes('duplicate key value violates unique constraint')) {
+          setError("이미 가입된 전화번호입니다.");
         } else {
           setError(`회원가입 오류: ${error.message}`);
         }

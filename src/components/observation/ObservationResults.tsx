@@ -34,6 +34,7 @@ import MediaDisplay from './MediaDisplay';
 import SubscriptionGate from './SubscriptionGate';
 import ProductRecommendation from '@/components/ProductRecommendation';
 import RecommendationPanel from './RecommendationPanel';
+import ContentRecommendationPanel from './ContentRecommendationPanel';
 import { useNavigate } from "react-router-dom";
 
 interface ObservationResultsProps {
@@ -307,7 +308,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
           <TabsTrigger value="scores">점수 분석</TabsTrigger>
           <TabsTrigger value="analysis">AI 분석</TabsTrigger>
           <TabsTrigger value="recommendations">권고사항</TabsTrigger>
-          <TabsTrigger value="media">관련 컨텐츠</TabsTrigger>
+          <TabsTrigger value="content">관련 컨텐츠</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -733,6 +734,10 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
 
         <TabsContent value="recommendations" className="space-y-6">
           <RecommendationPanel session={session} />
+        </TabsContent>
+
+        <TabsContent value="content" className="space-y-6">
+          <ContentRecommendationPanel session={session} />
         </TabsContent>
 
         <TabsContent value="media" className="space-y-6">

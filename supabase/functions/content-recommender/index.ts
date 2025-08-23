@@ -112,7 +112,7 @@ ${requestBody.analysisResult ? `- AI 분석 결과: ${requestBody.analysisResult
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-4.1-2025-04-14', // 안정적인 GPT-4.1 모델 사용
         messages: [
           {
             role: 'system',
@@ -123,7 +123,8 @@ ${requestBody.analysisResult ? `- AI 분석 결과: ${requestBody.analysisResult
             content: prompt
           }
         ],
-        max_completion_tokens: 1500,
+        max_tokens: 1500, // GPT-4.1에서는 max_tokens 사용
+        temperature: 0.7, // 창의적이지만 일관된 응답을 위해
       }),
     });
 

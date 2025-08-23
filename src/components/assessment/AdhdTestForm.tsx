@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft } from "lucide-react";
 import { childAdhdQuestions, adultAdhdQuestions } from "@/data/assessmentQuestions";
+import TokenGate from "@/components/TokenGate";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
+import { useTokens } from "@/hooks/useTokens";
 
 interface AdhdTestFormProps {
   ageGroup: 'child' | 'adult';
@@ -17,6 +20,8 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   const questions = ageGroup === 'child' ? childAdhdQuestions : adultAdhdQuestions;
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(2)); // 기본값 2점 (보통)
+  const [hasStarted, setHasStarted] = useState(false);
+  const { consumeTokens } = useTokens();
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
@@ -24,6 +29,13 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = parseInt(value);
     setAnswers(newAnswers);
+  };
+
+  const handleStartTest = async () => {
+    const success = await consumeTokens(TOKEN_COSTS.ADHD_TEST);
+    if (success) {
+      setHasStarted(true);
+    }
   };
 
   const handleNext = () => {
@@ -75,6 +87,27 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
 
   const currentAnswer = answers[currentQuestion];
   const canProceed = currentAnswer >= 1; // 1점 이상이어야 함
+
+  // 토큰 게이트 표시
+  if (!hasStarted) {
+    return (
+      <TokenGate
+        tokensRequired={TOKEN_COSTS.ADHD_TEST}
+        featureName="ADHD 자가체크"
+        onProceed={handleStartTest}
+      >
+        <div className="space-y-4 text-center">
+          <div className="text-lg font-semibold">ADHD 자가체크 특징</div>
+          <ul className="space-y-2 text-sm text-muted-foreground max-w-md mx-auto">
+            <li>• {ageGroup === 'child' ? '아동청소년' : '성인'} 맞춤 문항</li>
+            <li>• 총 {questions.length}문항, 약 3분 소요</li>
+            <li>• 주의집중력 수준 분석</li>
+            <li>• 전문가 연결 추천</li>
+          </ul>
+        </div>
+      </TokenGate>
+    );
+  }
 
   return (
     <Card className="max-w-4xl mx-auto p-8">

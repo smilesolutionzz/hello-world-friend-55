@@ -19,6 +19,9 @@ import {
 } from "lucide-react";
 import { chatWithAICounselor } from "@/services/openai";
 import { useNavigate } from "react-router-dom";
+import { useTokens } from "@/hooks/useTokens";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatMessage {
   id: string;
@@ -30,6 +33,8 @@ interface ChatMessage {
 
 const AICounselor = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { consumeTokens, checkTokenAvailability } = useTokens();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -73,6 +78,27 @@ const AICounselor = () => {
 
   const handleSendMessage = async () => {
     if (!currentMessage.trim()) return;
+
+    // 토큰 체크
+    if (!checkTokenAvailability(TOKEN_COSTS.AI_COUNSELOR_CHAT)) {
+      toast({
+        title: "토큰이 부족합니다",
+        description: `AI 상담을 위해 ${TOKEN_COSTS.AI_COUNSELOR_CHAT}개의 토큰이 필요합니다.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // 토큰 차감
+    const success = await consumeTokens(TOKEN_COSTS.AI_COUNSELOR_CHAT);
+    if (!success) {
+      toast({
+        title: "토큰 차감 실패",
+        description: "토큰 충전 페이지로 이동하세요.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),

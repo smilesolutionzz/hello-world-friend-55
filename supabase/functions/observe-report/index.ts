@@ -183,7 +183,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-4.1-2025-04-14',
         messages: [
           {
             role: 'system',
@@ -194,7 +194,8 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
             content: prompt
           }
         ],
-        max_completion_tokens: 2000,
+        max_tokens: 2000,
+        temperature: 0.7,
       }),
     });
 

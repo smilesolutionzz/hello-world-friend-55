@@ -67,25 +67,8 @@ serve(async (req) => {
       senior: '노인'
     };
 
-    // Perplexity API로 실제 유튜브 컨텐츠 추천
-    logStep('Generating recommendations with Perplexity');
-
-    const response = await fetch('https://api.perplexity.ai/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${perplexityApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-sonar-small-128k-online',
-        messages: [
-          {
-            role: 'system',
-            content: '당신은 유튜브 컨텐츠 추천 전문가입니다. 실제 존재하는 유튜브 동영상만을 추천하고, 정확한 링크를 제공합니다. 반드시 JSON 형식으로 답변하세요.'
-          },
-          {
-            role: 'user',
-            content: `다음 관찰 기록을 바탕으로 실제 존재하는 유튜브 컨텐츠 5개를 추천해주세요:
+    const prompt = `
+다음 관찰 기록을 바탕으로 도움이 될 만한 유튜브 컨텐츠를 추천해주세요:
 
 **관찰 정보:**
 - 연령대: ${ageGroupMap[requestBody.ageGroup]}
@@ -93,45 +76,62 @@ serve(async (req) => {
 - 관찰 내용: ${requestBody.observationText}
 ${requestBody.analysisResult ? `- AI 분석 결과: ${requestBody.analysisResult}` : ''}
 
-다음 형식의 JSON으로 응답해주세요:
+다음 형식의 JSON으로 5개의 추천 컨텐츠를 제공해주세요:
 
 {
   "recommendations": [
     {
-      "title": "실제 동영상 제목",
+      "title": "구체적인 제목",
       "description": "컨텐츠에 대한 간단한 설명 (2-3문장)",
-      "youtubeUrl": "https://www.youtube.com/watch?v=실제영상ID",
+      "youtubeUrl": "https://www.youtube.com/watch?v=kSZZHfuJx4g",
       "category": "발달놀이|부모교육|치료방법|행동교정|감정조절|사회성향상 중 하나",
-      "duration": "실제 영상 길이",
-      "reason": "이 컨텐츠가 관찰 내용에 도움이 되는 구체적인 이유"
+      "duration": "예상 시청 시간",
+      "reason": "이 컨텐츠가 도움이 되는 구체적인 이유"
     }
   ]
 }
 
-중요 조건:
-1. 반드시 실제 존재하는 유튜브 동영상만 추천하세요
-2. 실제 작동하는 유튜브 URL (https://www.youtube.com/watch?v= 형식)을 제공하세요
-3. 관찰 내용과 직접적으로 관련된 컨텐츠만 추천하세요
-4. 전문가가 진행하는 신뢰할 수 있는 컨텐츠를 우선으로 하세요
-5. JSON 형식을 정확히 지켜주세요`
+추천 기준:
+1. 관찰된 문제나 발달 영역과 직접적으로 관련된 실용적인 컨텐츠
+2. 해당 연령대에 적합한 접근법을 다루는 컨텐츠
+3. 부모나 보호자가 실제로 적용할 수 있는 구체적인 방법을 제시하는 컨텐츠
+4. 전문가가 진행하거나 신뢰할 수 있는 교육기관의 컨텐츠 우선
+5. 반드시 JSON 형식을 정확히 지켜주세요
+`;
+
+    logStep('Calling OpenAI API');
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4.1-2025-04-14',
+        messages: [
+          {
+            role: 'system',
+            content: '당신은 아동발달, 육아, 교육 전문가입니다. 관찰 기록을 바탕으로 실제로 도움이 되는 유튜브 컨텐츠를 추천합니다. 반드시 JSON 형식을 정확히 지켜주세요.'
+          },
+          {
+            role: 'user',
+            content: prompt
           }
         ],
-        temperature: 0.3,
-        max_tokens: 2000,
-        return_images: false,
-        return_related_questions: false,
-        search_recency_filter: 'month'
+        max_tokens: 1500,
+        temperature: 0.7,
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`Perplexity API error: ${response.status}`);
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const aiResponse = await response.json();
     const contentText = aiResponse.choices[0].message.content;
     
-    logStep('Perplexity response received', { textLength: contentText.length });
+    logStep('OpenAI response received', { textLength: contentText.length });
 
     // Parse JSON response
     let recommendations: RecommendedContent[] = [];

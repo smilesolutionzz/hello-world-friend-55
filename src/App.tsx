@@ -37,6 +37,7 @@ import ExpertList from "./pages/ExpertList";
 import ExpertHiring from "./pages/ExpertHiring";
 import NotFound from "./pages/NotFound";
 import ShareView from "./pages/ShareView";
+import TokenTest from "./pages/TokenTest";
 import AssessmentHistory from "./components/history/AssessmentHistory";
 
 const queryClient = new QueryClient();
@@ -73,6 +74,7 @@ const App = () => (
           <Route path="/payment-fail" element={<PaymentFail />} />
           <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />
           <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
+          <Route path="/token-test" element={<TokenTest />} />
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />
           <Route path="/subscription-cancel" element={<SubscriptionCancel />} />

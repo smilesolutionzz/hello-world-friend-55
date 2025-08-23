@@ -69,6 +69,20 @@ const TokenSubscription = () => {
         return;
       }
 
+      // 패키지별 Stripe 결제 링크 설정
+      const stripeLinks: { [key: string]: string } = {
+        // 스타터팩 ID에 맞춰서 링크 연결 (실제 패키지 ID로 수정 필요)
+        'starter': 'https://buy.stripe.com/test_5kQ3cpf8ybdH5CS9HrcEw01'
+      };
+
+      // 첫 번째 패키지를 스타터팩으로 가정하고 연결
+      const pkg = packages.find(p => p.id === packageId);
+      if (pkg && pkg.token_count <= 100) {
+        console.log('=== Redirecting to Stripe payment link for starter pack');
+        window.location.href = 'https://buy.stripe.com/test_5kQ3cpf8ybdH5CS9HrcEw01';
+        return;
+      }
+
       console.log('=== Calling create-token-order function');
       
       const { data, error } = await supabase.functions.invoke('create-token-order', {

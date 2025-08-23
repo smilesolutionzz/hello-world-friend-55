@@ -71,24 +71,31 @@ const TokenSubscription = () => {
 
       // 패키지별 Stripe 결제 링크 설정
       const pkg = packages.find(p => p.id === packageId);
+      console.log('=== Found package:', pkg);
       
       if (pkg) {
         // 스타터팩 (100개 이하)
         if (pkg.token_count <= 100) {
           console.log('=== Redirecting to Stripe payment link for starter pack');
-          window.location.href = 'https://buy.stripe.com/test_5kQ3cpf8ybdH5CS9HrcEw01';
+          const url = 'https://buy.stripe.com/test_5kQ3cpf8ybdH5CS9HrcEw01';
+          console.log('=== Opening URL:', url);
+          window.open(url, '_blank');
           return;
         }
         // 프리미엄팩 (101-500개)
         else if (pkg.token_count <= 500) {
           console.log('=== Redirecting to Stripe payment link for premium pack');
-          window.location.href = 'https://buy.stripe.com/test_7sY00d1hI4Pj0iydXHcEw02';
+          const url = 'https://buy.stripe.com/test_7sY00d1hI4Pj0iydXHcEw02';
+          console.log('=== Opening URL:', url);
+          window.open(url, '_blank');
           return;
         }
         // 프로팩 (500개 초과)
         else {
           console.log('=== Redirecting to Stripe payment link for pro pack');
-          window.location.href = 'https://buy.stripe.com/test_9B6dR3aSi5TnaXc6vfcEw00';
+          const url = 'https://buy.stripe.com/test_9B6dR3aSi5TnaXc6vfcEw00';
+          console.log('=== Opening URL:', url);
+          window.open(url, '_blank');
           return;
         }
       }

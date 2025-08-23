@@ -10,7 +10,7 @@ export const TOKEN_COSTS = {
   SAJU_ANALYSIS: 8,         // 사주 분석
   
   // AI 상담 관련  
-  AI_COUNSELOR_CHAT: 1,     // AI 상담사 채팅 (메시지당)
+  AI_COUNSELOR_CHAT: 0,     // AI 상담사 채팅 (메시지당) - 무료
   AI_COACH: 3,              // AI 코치 세션
   
   // 관찰 및 분석

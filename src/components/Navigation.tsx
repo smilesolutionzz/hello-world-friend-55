@@ -61,8 +61,20 @@ const Navigation = () => {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/');
+    try {
+      console.log('로그아웃 시작...');
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('로그아웃 에러:', error);
+        throw error;
+      }
+      console.log('로그아웃 성공');
+      setUser(null);
+      setProfile(null);
+      navigate('/');
+    } catch (error) {
+      console.error('로그아웃 처리 중 에러:', error);
+    }
   };
 
   const handleNavigation = (path: string) => {

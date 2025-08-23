@@ -53,9 +53,20 @@ export const UnifiedNavigation = () => {
     setIsOpen(false);
   };
 
-  const handleAuth = () => {
+  const handleAuth = async () => {
     if (user) {
-      supabase.auth.signOut();
+      try {
+        console.log('로그아웃 시작...');
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          console.error('로그아웃 에러:', error);
+          throw error;
+        }
+        console.log('로그아웃 성공');
+        navigate('/');
+      } catch (error) {
+        console.error('로그아웃 처리 중 에러:', error);
+      }
     } else {
       navigate('/auth');
     }

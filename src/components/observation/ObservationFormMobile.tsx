@@ -432,24 +432,25 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto px-4 py-6 space-y-6">
+    <div className="w-full max-w-lg mx-auto px-2 sm:px-4 py-3 sm:py-6 space-y-3 sm:space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <Button variant="ghost" size="sm" onClick={onBack}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          돌아가기
+        <Button variant="ghost" size="sm" onClick={onBack} className="text-xs sm:text-sm">
+          <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
+          <span className="hidden sm:inline">돌아가기</span>
+          <span className="sm:hidden">뒤로</span>
         </Button>
         {renderStateIndicator()}
       </div>
 
       {/* Progress */}
       <div className="space-y-2">
-        <div className="flex justify-between text-sm">
+        <div className="flex justify-between text-xs sm:text-sm">
           <span>진행률</span>
           <span>{Math.round((totalTextLength / minLength) * 100)}%</span>
         </div>
         <Progress value={Math.min((totalTextLength / minLength) * 100, 100)} />
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs text-muted-foreground break-keep">
           {isDetailedTemplate ? "최소 150자 이상 작성해주세요" : "최소 50자 이상 작성해주세요"}
         </div>
       </div>

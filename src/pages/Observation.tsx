@@ -140,9 +140,9 @@ const Observation = () => {
 
   return (
     <AuthenticationGuard fallbackMessage="관찰일지 시스템을 사용하려면 로그인이 필요합니다.">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         {/* Header with Home Button */}
-        <div className="mb-8">
+        <div className="mb-4 sm:mb-8">
           <div className="flex items-center gap-4 mb-4">
             <Button
               variant="ghost"
@@ -154,67 +154,79 @@ const Observation = () => {
               홈으로
             </Button>
           </div>
-          <h1 className="text-4xl font-bold text-foreground mb-4">
+          <h1 className="text-xl sm:text-2xl md:text-4xl font-bold text-foreground mb-2 sm:mb-4 break-keep">
             전영역 관찰일지 시스템
           </h1>
-          <p className="text-xl text-muted-foreground">
+          <p className="text-sm sm:text-lg md:text-xl text-muted-foreground break-keep">
             체계적 관찰과 AI 분석을 통한 전문 리포팅 플랫폼
           </p>
         </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="new-observation">새 관찰 시작</TabsTrigger>
-          <TabsTrigger value="my-observations">내 관찰 기록</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 h-auto">
+          <TabsTrigger value="new-observation" className="text-xs sm:text-sm py-2 px-2 break-keep">
+            새 관찰 시작
+          </TabsTrigger>
+          <TabsTrigger value="my-observations" className="text-xs sm:text-sm py-2 px-2 break-keep">
+            내 관찰 기록
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="new-observation" className="space-y-8">
           {/* Value Proposition Header */}
-          <div className="text-center space-y-4 mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-sm font-medium text-blue-800">
+          <div className="text-center space-y-2 sm:space-y-4 mb-4 sm:mb-8 px-2">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-xs sm:text-sm font-medium text-blue-800">
               🧠 AI + 전문가 분석
             </div>
-            <h2 className="text-3xl font-bold tracking-tight">전문가급 관찰 분석을 받아보세요</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight break-keep">
+              전문가급 관찰 분석을 받아보세요
+            </h2>
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto break-keep">
               간단한 관찰 기록으로 <span className="font-semibold text-primary">AI 심층 분석</span>과 
               <span className="font-semibold text-primary"> 전문가 수준의 PDF 리포트</span>를 제공받으세요
             </p>
           </div>
 
           {/* Benefits Preview */}
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">
-              <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-4">
-                <span className="text-white text-xl">🤖</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-4 sm:mb-8 px-2">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-3 sm:p-6 rounded-xl border border-blue-200">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-2 sm:mb-4">
+                <span className="text-white text-sm sm:text-xl">🤖</span>
               </div>
-              <h3 className="font-semibold text-blue-900 mb-2">실시간 AI 분석</h3>
-              <p className="text-sm text-blue-700">
+              <h3 className="font-semibold text-blue-900 mb-1 sm:mb-2 text-sm sm:text-base break-keep">
+                실시간 AI 분석
+              </h3>
+              <p className="text-xs sm:text-sm text-blue-700 break-keep">
                 관찰 직후 즉시 전문적인 해석과 인사이트 제공
               </p>
             </div>
             
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200">
-              <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-4">
-                <span className="text-white text-xl">📋</span>
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-3 sm:p-6 rounded-xl border border-purple-200">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-2 sm:mb-4">
+                <span className="text-white text-sm sm:text-xl">📋</span>
               </div>
-              <h3 className="font-semibold text-purple-900 mb-2">전문가 PDF 리포트</h3>
-              <p className="text-sm text-purple-700">
+              <h3 className="font-semibold text-purple-900 mb-1 sm:mb-2 text-sm sm:text-base break-keep">
+                전문가 PDF 리포트
+              </h3>
+              <p className="text-xs sm:text-sm text-purple-700 break-keep">
                 의료진 수준의 상세한 관찰 분석 보고서
               </p>
             </div>
             
-            <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200">
-              <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-4">
-                <span className="text-white text-xl">📊</span>
+            <div className="bg-gradient-to-br from-green-50 to-green-100 p-3 sm:p-6 rounded-xl border border-green-200 sm:col-span-2 md:col-span-1">
+              <div className="w-8 h-8 sm:w-12 sm:h-12 bg-green-500 rounded-lg flex items-center justify-center mb-2 sm:mb-4">
+                <span className="text-white text-sm sm:text-xl">📊</span>
               </div>
-              <h3 className="font-semibold text-green-900 mb-2">데이터 기반 통찰</h3>
-              <p className="text-sm text-green-700">
+              <h3 className="font-semibold text-green-900 mb-1 sm:mb-2 text-sm sm:text-base break-keep">
+                데이터 기반 통찰
+              </h3>
+              <p className="text-xs sm:text-sm text-green-700 break-keep">
                 누적 데이터를 통한 발달 패턴 분석
               </p>
             </div>
           </div>
           
-          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 max-w-6xl mx-auto px-2">
             {templates.map((template) => (
               <Card key={template.id} className="hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50 relative overflow-hidden">
                 {/* Premium Badge for Advanced Template */}

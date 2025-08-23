@@ -26,15 +26,31 @@ const Index = () => {
         // Store referral code in localStorage for later use during signup
         localStorage.setItem('referralCode', refCode);
         
-        // Check if user is already logged in
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          // Process immediately if user is already logged in
-          const success = await processReferralReward(refCode);
-          if (success !== undefined) {
-            localStorage.removeItem('referralCode');
+        try {
+          // 안전하게 유저 정보 확인
+          const { data: { user }, error } = await supabase.auth.getUser();
+          
+          // JWT 토큰 관련 에러는 무시하고 진행
+          if (error && !error.message.includes('invalid claim') && !error.message.includes('bad_jwt')) {
+            console.error('Auth error:', error);
+            return;
           }
-        } else {
+          
+          if (user && !error) {
+            // 사용자가 로그인된 상태에서만 추천 보상 처리
+            const success = await processReferralReward(refCode);
+            if (success !== undefined) {
+              localStorage.removeItem('referralCode');
+            }
+          } else {
+            toast({
+              title: "🎉 추천 링크로 접속했습니다!",
+              description: "회원가입하시면 추천인에게 10토큰이 지급됩니다.",
+            });
+          }
+        } catch (error) {
+          console.error('Referral check error:', error);
+          // 에러가 발생해도 토스트는 표시
           toast({
             title: "🎉 추천 링크로 접속했습니다!",
             description: "회원가입하시면 추천인에게 10토큰이 지급됩니다.",

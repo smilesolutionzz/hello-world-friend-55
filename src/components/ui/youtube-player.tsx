@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Play, X } from "lucide-react";
 
@@ -42,9 +42,6 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ title, youtubeUrl, childr
         {children}
       </DialogTrigger>
       <DialogContent className="max-w-4xl w-full p-0">
-        <DialogDescription className="sr-only">
-          유튜브 동영상 플레이어
-        </DialogDescription>
         <DialogHeader className="p-6 pb-3">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-lg font-semibold pr-8">

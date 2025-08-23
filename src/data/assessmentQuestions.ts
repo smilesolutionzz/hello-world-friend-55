@@ -199,7 +199,7 @@ export const childAssessmentGames: ChildAssessment = {
   ]
 };
 
-// 성인 임상급 심리평가
+// 성인 임상급 심리평가 (15개 문항)
 export const adultAssessmentQuestions: AdultAssessment = {
   depressionScreening: [
     {
@@ -225,6 +225,30 @@ export const adultAssessmentQuestions: AdultAssessment = {
         needsSupport: { score: 3, description: "현저히 감소" }
       },
       clinicalSignificance: "무쾌감증 평가"
+    },
+    {
+      id: "dep_03",
+      text: "지난 2주간, 잠들기 어렵거나 자주 깨는 등 수면 문제가 있었습니까?",
+      category: "emotional",
+      ageRange: "성인",
+      scoringCriteria: {
+        excellent: { score: 0, description: "수면 문제 없음" },
+        good: { score: 1, description: "가끔 수면 문제" },
+        needsSupport: { score: 3, description: "심각한 수면 문제" }
+      },
+      clinicalSignificance: "우울증 부수 증상"
+    },
+    {
+      id: "dep_04",
+      text: "지난 2주간, 평소보다 피로감을 많이 느끼거나 에너지가 부족했습니까?",
+      category: "emotional",
+      ageRange: "성인",
+      scoringCriteria: {
+        excellent: { score: 0, description: "에너지 충분" },
+        good: { score: 1, description: "약간 피로감" },
+        needsSupport: { score: 3, description: "심한 피로감" }
+      },
+      clinicalSignificance: "우울증 신체증상"
     }
   ],
 
@@ -252,6 +276,30 @@ export const adultAssessmentQuestions: AdultAssessment = {
         needsSupport: { score: 3, description: "자주 있음" }
       },
       clinicalSignificance: "불안의 신체적 증상 평가"
+    },
+    {
+      id: "anx_03",
+      text: "특정 상황이나 장소를 피하게 되는 경우가 있었습니까?",
+      category: "emotional",
+      ageRange: "성인",
+      scoringCriteria: {
+        excellent: { score: 0, description: "회피 없음" },
+        good: { score: 1, description: "가끔 회피" },
+        needsSupport: { score: 3, description: "자주 회피" }
+      },
+      clinicalSignificance: "회피 행동 패턴 평가"
+    },
+    {
+      id: "anx_04",
+      text: "갑작스럽게 극심한 불안이나 공포감을 느낀 적이 있었습니까?",
+      category: "emotional",
+      ageRange: "성인",
+      scoringCriteria: {
+        excellent: { score: 0, description: "전혀 없음" },
+        good: { score: 1, description: "가끔 있음" },
+        needsSupport: { score: 3, description: "자주 있음" }
+      },
+      clinicalSignificance: "공황발작 선별"
     }
   ],
 
@@ -267,6 +315,30 @@ export const adultAssessmentQuestions: AdultAssessment = {
         needsSupport: { score: 0, description: "그렇지 않다" }
       },
       clinicalSignificance: "개방성 요인 평가"
+    },
+    {
+      id: "per_02",
+      text: "계획을 세우고 체계적으로 일을 처리하는 편입니까?",
+      category: "cognitive",
+      ageRange: "성인",
+      scoringCriteria: {
+        excellent: { score: 2, description: "매우 그렇다" },
+        good: { score: 1, description: "보통이다" },
+        needsSupport: { score: 0, description: "그렇지 않다" }
+      },
+      clinicalSignificance: "성실성 요인 평가"
+    },
+    {
+      id: "per_03",
+      text: "다른 사람들과 어울리기를 좋아하고 사교적인 편입니까?",
+      category: "social",
+      ageRange: "성인",
+      scoringCriteria: {
+        excellent: { score: 2, description: "매우 그렇다" },
+        good: { score: 1, description: "보통이다" },
+        needsSupport: { score: 0, description: "그렇지 않다" }
+      },
+      clinicalSignificance: "외향성 요인 평가"
     }
   ],
 
@@ -282,6 +354,42 @@ export const adultAssessmentQuestions: AdultAssessment = {
         needsSupport: { score: 0, description: "불만족" }
       },
       clinicalSignificance: "직장 적응도 평가"
+    },
+    {
+      id: "work_02",
+      text: "업무 스트레스를 적절히 관리할 수 있습니까?",
+      category: "social",
+      ageRange: "성인",
+      scoringCriteria: {
+        excellent: { score: 2, description: "잘 관리함" },
+        good: { score: 1, description: "보통" },
+        needsSupport: { score: 0, description: "관리 어려움" }
+      },
+      clinicalSignificance: "스트레스 대처능력 평가"
+    },
+    {
+      id: "work_03",
+      text: "현재 일에 대해 성취감을 느끼고 있습니까?",
+      category: "social",
+      ageRange: "성인",
+      scoringCriteria: {
+        excellent: { score: 2, description: "높은 성취감" },
+        good: { score: 1, description: "보통" },
+        needsSupport: { score: 0, description: "성취감 부족" }
+      },
+      clinicalSignificance: "직업 만족도 평가"
+    },
+    {
+      id: "work_04",
+      text: "직장 내에서 자신의 의견을 적절히 표현할 수 있습니까?",
+      category: "social",
+      ageRange: "성인",
+      scoringCriteria: {
+        excellent: { score: 2, description: "잘 표현함" },
+        good: { score: 1, description: "보통" },
+        needsSupport: { score: 0, description: "표현 어려움" }
+      },
+      clinicalSignificance: "자기표현능력 평가"
     }
   ]
 };

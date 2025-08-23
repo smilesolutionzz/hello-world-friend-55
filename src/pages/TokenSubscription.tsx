@@ -66,23 +66,101 @@ const TokenSubscription = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
+      // 토큰 패키지를 위한 Stripe 체크아웃 생성 (기존 create-token-order 사용)
+      const { data, error } = await supabase.functions.invoke('create-token-order', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
         body: { 
-          planId: packageId,
-          subscriptionType: 'one-time' // 일회성 토큰 구매
+          packageId
         }
       });
 
       if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, '_blank');
+      // 토스페이먼츠 결제 진행
+      if (data?.clientKey && data?.paymentData) {
+        // 토스페이먼츠 스크립트 로드 및 결제 위젯 생성
+        const script = document.createElement('script');
+        script.src = 'https://js.tosspayments.com/v1/payment-widget';
+        script.async = true;
+        script.onload = () => {
+          try {
+            const clientKey = data.clientKey;
+            const paymentWidget = (window as any).PaymentWidget(clientKey, 'ANONYMOUS');
+            
+            // 모달 생성
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+              <div class="bg-white p-6 rounded-lg max-w-md w-full relative">
+                <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl" onclick="this.closest('.fixed').remove()">&times;</button>
+                <h3 class="text-lg font-semibold mb-4">토큰 충전</h3>
+                <div id="payment-method" class="mb-4"></div>
+                <div id="agreement" class="mb-4"></div>
+                <button id="pay-button" class="w-full bg-primary text-primary-foreground py-3 rounded-md font-medium hover:bg-primary/90">
+                  결제하기
+                </button>
+              </div>
+            `;
+            
+            document.body.appendChild(modal);
+
+            // 위젯 렌더링
+            paymentWidget.renderPaymentMethods(
+              '#payment-method',
+              { value: data.paymentData.amount },
+              { variantKey: 'DEFAULT' }
+            );
+
+            paymentWidget.renderAgreement('#agreement', { variantKey: 'AGREEMENT' });
+
+            // 결제 버튼 이벤트
+            const payButton = modal.querySelector('#pay-button') as HTMLButtonElement;
+            payButton.onclick = async () => {
+              try {
+                await paymentWidget.requestPayment({
+                  orderId: data.paymentData.orderId,
+                  orderName: data.paymentData.orderName,
+                  customerName: data.paymentData.customerName,
+                  customerEmail: data.paymentData.customerEmail,
+                  successUrl: `${window.location.origin}/token-payment-success`,
+                  failUrl: `${window.location.origin}/token-payment-fail`,
+                });
+              } catch (error) {
+                console.error('결제 요청 실패:', error);
+                toast({
+                  title: "결제 실패",
+                  description: "결제 처리 중 오류가 발생했습니다.",
+                  variant: "destructive"
+                });
+              }
+            };
+
+          } catch (error) {
+            console.error('Payment widget initialization error:', error);
+            toast({
+              title: "결제 위젯 오류",
+              description: "결제 시스템을 불러올 수 없습니다.",
+              variant: "destructive"
+            });
+          }
+        };
+        
+        script.onerror = () => {
+          toast({
+            title: "스크립트 로드 실패",
+            description: "토스페이먼츠 결제 시스템을 불러올 수 없습니다.",
+            variant: "destructive"
+          });
+        };
+        
+        document.head.appendChild(script);
+      } else {
         toast({
-          title: "결제 페이지로 이동",
-          description: "Stripe 결제 페이지가 새 창에서 열렸습니다.",
+          title: "결제 데이터 오류",
+          description: "결제 정보를 가져올 수 없습니다.",
+          variant: "destructive"
         });
       }
     } catch (error: any) {
@@ -155,7 +233,7 @@ const TokenSubscription = () => {
             </p>
           </div>
           
-          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto pt-8">
             {packages.map((pkg, index) => {
               const valuePerToken = getValuePerToken(pkg.price_krw, pkg.token_count);
               const gradientClass = getGradientClass(pkg.token_count);
@@ -163,24 +241,24 @@ const TokenSubscription = () => {
               return (
                 <Card 
                   key={pkg.id} 
-                  className={`relative group transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${
+                  className={`relative group transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 mt-4 ${
                     pkg.is_popular 
                       ? 'border-2 border-purple-400 shadow-xl scale-105' 
                       : 'border-2 border-transparent hover:border-primary/20'
-                  } overflow-hidden`}
+                  } overflow-visible`}
                 >
                   {/* 배경 그라데이션 */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-5 group-hover:opacity-10 transition-opacity duration-500`} />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} opacity-5 group-hover:opacity-10 transition-opacity duration-500 rounded-lg`} />
                   
                   {pkg.is_popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 text-sm font-bold shadow-lg">
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
+                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 text-sm font-bold shadow-lg whitespace-nowrap">
                         🔥 인기 선택
                       </Badge>
                     </div>
                   )}
                   
-                  <CardHeader className="text-center pb-8 pt-12">
+                  <CardHeader className="text-center pb-8 pt-16">
                     {/* 아이콘 */}
                     <div className="flex justify-center mb-6">
                       <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradientClass} shadow-lg`}>

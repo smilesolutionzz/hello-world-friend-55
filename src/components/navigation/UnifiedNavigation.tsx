@@ -107,20 +107,11 @@ export const UnifiedNavigation = () => {
                     item.path === '/premium-assessment' 
                       ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
                       : ''
-                  } ${
-                    item.requiresAuth && !user 
-                      ? 'opacity-70 cursor-not-allowed' 
-                      : ''
                   }`}
                   disabled={item.requiresAuth && !user}
                 >
                   <item.icon className="w-4 h-4" />
                   {item.label}
-                  {item.requiresAuth && !user && (
-                    <Badge variant="outline" className="ml-1 text-xs">
-                      로그인 필요
-                    </Badge>
-                  )}
                   {item.badge && (
                     <Badge variant="secondary" className="ml-1 text-xs">
                       {item.badge}
@@ -196,21 +187,12 @@ export const UnifiedNavigation = () => {
                           item.path === '/premium-assessment' 
                             ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
                             : ''
-                        } ${
-                          item.requiresAuth && !user 
-                            ? 'opacity-70 cursor-not-allowed' 
-                            : ''
                         }`}
                         onClick={() => handleNavigation(item.path)}
                         disabled={item.requiresAuth && !user}
                       >
                         <item.icon className="w-4 h-4" />
                         {item.label}
-                        {item.requiresAuth && !user && (
-                          <Badge variant="outline" className="ml-auto text-xs">
-                            로그인 필요
-                          </Badge>
-                        )}
                         {item.badge && (
                           <Badge variant="secondary" className="ml-auto text-xs">
                             {item.badge}

@@ -136,6 +136,7 @@ export type Database = {
         Row: {
           assessment_results: Json | null
           created_at: string
+          expert_id: string | null
           id: string
           status: string | null
           updated_at: string
@@ -144,6 +145,7 @@ export type Database = {
         Insert: {
           assessment_results?: Json | null
           created_at?: string
+          expert_id?: string | null
           id?: string
           status?: string | null
           updated_at?: string
@@ -152,6 +154,7 @@ export type Database = {
         Update: {
           assessment_results?: Json | null
           created_at?: string
+          expert_id?: string | null
           id?: string
           status?: string | null
           updated_at?: string

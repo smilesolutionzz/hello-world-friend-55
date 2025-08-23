@@ -224,6 +224,26 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
 
       setFormState('analyzing');
 
+      // 토큰 소모량 계산 (템플릿 타입에 따라)
+      const tokenCost = isDetailedTemplate ? 3 : 1;
+      
+      // 현재 토큰 잔액 확인
+      const { data: tokenData, error: tokenError } = await supabase
+        .from('user_tokens')
+        .select('current_tokens')
+        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+        .single();
+
+      if (tokenError || !tokenData || tokenData.current_tokens < tokenCost) {
+        toast({
+          title: "토큰 부족",
+          description: `분석을 위해 ${tokenCost}개의 토큰이 필요합니다. 토큰을 충전해주세요.`,
+          variant: "destructive"
+        });
+        setFormState('idle');
+        return;
+      }
+
       // Call the standardized observe-report function
       const { data, error } = await supabase.functions.invoke('observe-report', {
         body: {
@@ -232,9 +252,11 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
           context,
           tags: selectedTags,
           files: uploadedFiles,
-          mode: 'free', // This would be determined by subscription status
+          mode: isDetailedTemplate ? 'detailed' : 'basic', // 템플릿 타입에 따라 모드 설정
           targetName,
-          observationDate
+          observationDate,
+          templateType: templateType, // 템플릿 정보 추가
+          tokenCost: tokenCost // 토큰 비용 전달
         }
       });
 

@@ -263,6 +263,8 @@ const Observation = () => {
                           <div>• 전문가급 해석</div>
                           <div>• 맞춤형 개입 전략</div>
                           <div>• 장기 발달 예측</div>
+                          <div className="font-semibold text-purple-700 bg-purple-100 px-2 py-1 rounded">• 권고사항 추천 시스템</div>
+                          <div className="font-semibold text-blue-700 bg-blue-100 px-2 py-1 rounded">• 교육컨텐츠 추천</div>
                         </>
                       )}
                     </div>
@@ -286,6 +288,8 @@ const Observation = () => {
                           <div>• 의료진 수준 분석</div>
                           <div>• 전문가 권고사항</div>
                           <div>• 데이터 시각화 차트</div>
+                          <div className="font-semibold text-purple-700 bg-purple-100 px-2 py-1 rounded">• 맞춤형 교육 자료</div>
+                          <div className="font-semibold text-green-700 bg-green-100 px-2 py-1 rounded">• 추천 컨텐츠 링크</div>
                         </>
                       )}
                     </div>
@@ -311,8 +315,15 @@ const Observation = () => {
                       <div className="text-sm text-muted-foreground">분석 시간</div>
                     </div>
                     <div className="text-center p-3 bg-muted rounded-lg">
-                      <div className="text-2xl font-bold text-primary">{template.cost}</div>
+                      <div className={`text-2xl font-bold ${template.template_type === 'basic' ? 'text-blue-600' : 'text-purple-600'}`}>
+                        {template.template_type === 'basic' ? '1 토큰' : '3 토큰'}
+                      </div>
                       <div className="text-sm text-muted-foreground">토큰 비용</div>
+                      {template.template_type === 'detailed' && (
+                        <div className="text-xs text-purple-600 font-medium mt-1">
+                          💎 고급 분석
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -414,6 +425,23 @@ const Observation = () => {
                     <strong>권장:</strong> 처음 사용하시는 경우 기본 템플릿으로 시작한 후, 
                     더 자세한 분석이 필요하면 상세 템플릿을 이용해보세요.
                   </span>
+                </div>
+              </div>
+              
+              {/* Token Cost Comparison */}
+              <div className="mt-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border-2 border-orange-200">
+                <h4 className="text-center font-bold text-orange-800 mb-4">💰 토큰 비용 차이</h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="text-center p-3 bg-blue-100 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600 mb-1">1 토큰</div>
+                    <div className="text-sm text-blue-700">기본 관찰 템플릿</div>
+                    <div className="text-xs text-blue-600 mt-1">빠르고 경제적</div>
+                  </div>
+                  <div className="text-center p-3 bg-purple-100 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-600 mb-1">3 토큰</div>
+                    <div className="text-sm text-purple-700">상세 분석 템플릿</div>
+                    <div className="text-xs text-purple-600 mt-1">전문가급 + 교육컨텐츠</div>
+                  </div>
                 </div>
               </div>
             </CardContent>

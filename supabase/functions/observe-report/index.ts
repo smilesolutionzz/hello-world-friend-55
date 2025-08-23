@@ -13,9 +13,11 @@ interface ObserveReportRequest {
   context: 'home' | 'institution' | 'therapy' | 'other';
   tags: string[];
   files: { url: string; type: 'image' | 'video' }[];
-  mode: 'free' | 'paid';
+  mode: 'basic' | 'detailed' | 'free' | 'paid'; // 업데이트: basic/detailed 모드 추가
   targetName?: string;
   observationDate?: string;
+  templateType?: string;
+  tokenCost?: number; // 토큰 비용 추가
 }
 
 interface ObserveReportResponse {
@@ -61,6 +63,34 @@ serve(async (req) => {
   try {
     logStep('Function started');
 
+    const supabaseServiceClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      { auth: { persistSession: false } }
+    );
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
+    );
+
+    // Get authenticated user
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        message: '인증이 필요합니다.' 
+      }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
@@ -71,14 +101,62 @@ serve(async (req) => {
       textLength: requestBody.text?.length,
       ageGroup: requestBody.ageGroup,
       tags: requestBody.tags,
-      fileCount: requestBody.files?.length || 0
+      fileCount: requestBody.files?.length || 0,
+      mode: requestBody.mode,
+      tokenCost: requestBody.tokenCost
     });
 
-    // Validation
-    if (!requestBody.text || requestBody.text.trim().length < 50) {
+    // 토큰 차감 처리
+    const tokenCost = requestBody.tokenCost || (requestBody.mode === 'detailed' ? 3 : 1);
+    
+    // 현재 토큰 잔액 확인 및 차감
+    const { data: tokenData, error: tokenError } = await supabaseServiceClient
+      .from('user_tokens')
+      .select('current_tokens, total_used')
+      .eq('user_id', user.id)
+      .single();
+
+    if (tokenError || !tokenData) {
       return new Response(JSON.stringify({ 
         ok: false, 
-        message: '관찰 내용은 최소 50자 이상 입력해주세요.' 
+        message: '토큰 정보를 확인할 수 없습니다.' 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (tokenData.current_tokens < tokenCost) {
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        message: `분석을 위해 ${tokenCost}개의 토큰이 필요합니다. 현재 토큰: ${tokenData.current_tokens}개` 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // 토큰 차감
+    const { error: updateError } = await supabaseServiceClient
+      .from('user_tokens')
+      .update({ 
+        current_tokens: tokenData.current_tokens - tokenCost,
+        total_used: tokenData.total_used + tokenCost 
+      })
+      .eq('user_id', user.id);
+
+    if (updateError) {
+      throw new Error('토큰 차감 중 오류가 발생했습니다.');
+    }
+
+    logStep('Token deducted', { tokenCost, remainingTokens: tokenData.current_tokens - tokenCost });
+
+    // Validation
+    const minLength = requestBody.mode === 'detailed' ? 150 : 50;
+    if (!requestBody.text || requestBody.text.trim().length < minLength) {
+      return new Response(JSON.stringify({ 
+        ok: false, 
+        message: `관찰 내용은 최소 ${minLength}자 이상 입력해주세요.` 
       }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -117,7 +195,10 @@ serve(async (req) => {
       other: '기타'
     };
 
-    const prompt = `
+    // 분석 모드에 따른 프롬프트 조정
+    const isDetailedMode = requestBody.mode === 'detailed';
+    
+    const basePrompt = `
 다음 관찰 기록을 전문적으로 분석해주세요:
 
 **관찰 정보:**
@@ -125,18 +206,21 @@ serve(async (req) => {
 - 상황: ${contextMap[requestBody.context]}
 - 관찰 영역: ${requestBody.tags.join(', ')}
 - 날짜: ${requestBody.observationDate || '미지정'}
+- 분석 수준: ${isDetailedMode ? '상세 전문가 분석' : '기본 분석'}
 
 **관찰 내용:**
 ${requestBody.text}
 
 ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.length}개 파일 (${requestBody.files.map(f => f.type).join(', ')})` : ''}
+`;
 
+    const detailedPrompt = basePrompt + `
 다음 형식으로 상세한 전문가 분석을 제공해주세요:
 
 **상황 분석**
 관찰된 내용을 바탕으로 현재 상황을 구체적으로 분석해주세요.
 
-**발달 상태 평가**
+**발달 상태 평가** 
 현재 발달 수준과 연령대별 기준과의 비교를 통해 발달적 상황을 평가해주세요.
 
 **주요 관심 사항**
@@ -148,25 +232,39 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 **개선 방안**
 실제로 실행 가능한 구체적인 개선 방법들을 제시해주세요.
 
+**권고사항 추천**
+다음과 같이 구체적인 권고사항을 제시해주세요:
+- 일상생활에서 실천할 수 있는 구체적인 방법
+- 가정에서 적용할 수 있는 환경 조성 방안
+- 단계별 개선 계획
+
+**교육컨텐츠 추천**
+관찰 결과에 맞는 추천 교육자료를 제시해주세요:
+- 관련 도서나 자료 추천
+- 온라인 교육 프로그램 제안
+- 전문가 상담 분야 안내
+
 **전문가 상담 권장**
 전문적인 평가나 상담이 필요한지 여부와 그 이유를 설명해주세요.
-
-**위험도 평가**
-다음 중 하나로 평가해주세요:
-- 낮음: 정상 발달 범위 내
-- 보통: 약간의 주의가 필요한 상태  
-- 높음: 전문적 개입이 시급히 필요한 상태
-- 매우높음: 즉각적인 전문가 상담이 필요한 상태
-
-각 영역별 점수 (0-100점):
-정서: (점수)
-행동: (점수)  
-인지: (점수)
-사회성: (점수)
-신체: (점수)
-
-전문적이고 상세하게 작성하되, 가족이 이해하기 쉽고 실용적으로 활용할 수 있도록 설명해주세요.
 `;
+
+    const basicPrompt = basePrompt + `
+다음 형식으로 기본 분석을 제공해주세요:
+
+**상황 요약**
+관찰된 주요 내용을 간략하게 요약해주세요.
+
+**주요 포인트**
+관찰에서 발견된 중요한 특징들을 나열해주세요.
+
+**개선 팁**
+간단하고 실용적인 개선 방법을 제시해주세요.
+
+**주의사항**
+특별히 주의해서 관찰해야 할 부분이 있다면 알려주세요.
+`;
+
+    const prompt = isDetailedMode ? detailedPrompt : basicPrompt;
 
     logStep('Calling OpenAI API');
 
@@ -188,7 +286,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
             content: prompt
           }
         ],
-        max_completion_tokens: 3000,
+        max_completion_tokens: isDetailedMode ? 4000 : 2000,
       }),
     });
 

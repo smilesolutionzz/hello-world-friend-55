@@ -227,7 +227,7 @@ ${scoresText}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4o',
         messages: [
           {
             role: 'system',
@@ -238,7 +238,8 @@ ${scoresText}
             content: getAnalysisPrompt(assessmentType)
           }
         ],
-        max_completion_tokens: 5000,
+        max_tokens: 5000,
+        temperature: 0.7,
       }),
     });
 

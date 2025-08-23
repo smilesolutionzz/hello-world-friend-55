@@ -117,7 +117,7 @@ ${Object.entries(answers).map(([questionId, answer]) => `문항 ${questionId}: $
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-4o',
         messages: [
           { 
             role: 'system', 
@@ -125,7 +125,8 @@ ${Object.entries(answers).map(([questionId, answer]) => `문항 ${questionId}: $
           },
           { role: 'user', content: prompt }
         ],
-        max_completion_tokens: 4500,
+        max_tokens: 4500,
+        temperature: 0.7,
       }),
     });
 

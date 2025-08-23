@@ -56,7 +56,6 @@ const App = () => (
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/assessment-history" element={<AssessmentHistory />} />
           <Route path="/ai-counselor" element={<AICounselor />} />
-          <Route path="/legacy-auth" element={<Auth />} />
           <Route path="/needs-assessment" element={<NeedsAssessment />} />
           <Route path="/quick-needs" element={<QuickNeeds />} />
           

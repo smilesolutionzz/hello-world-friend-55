@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, Lock, User, Phone, Calendar, Users } from 'lucide-react';
+import { Loader2, Mail, Lock, User as UserIcon, Phone, Calendar, Users } from 'lucide-react';
+import type { User, Session } from '@supabase/supabase-js';
 
 export const AuthForm = () => {
   const [loading, setLoading] = useState(false);
@@ -23,8 +24,41 @@ export const AuthForm = () => {
   const [interests, setInterests] = useState<string[]>([]);
   const [primaryConcern, setPrimaryConcern] = useState('');
   const [relationshipToChild, setRelationshipToChild] = useState('');
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log('Auth state changed:', event, session);
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Redirect authenticated users to dashboard
+        if (session?.user) {
+          setTimeout(() => {
+            navigate('/');
+          }, 0);
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      // Redirect if already authenticated
+      if (session?.user) {
+        navigate('/');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const interestOptions = [
     { id: 'language_delay', label: '언어지연' },
@@ -189,7 +223,7 @@ export const AuthForm = () => {
                   <div className="space-y-2">
                     <Label htmlFor="display-name">이름 *</Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <UserIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="display-name"
                         type="text"

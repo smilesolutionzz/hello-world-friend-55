@@ -13,7 +13,9 @@ import {
   Bot,
   Shield,
   Sparkles,
-  Home
+  Home,
+  Lock,
+  Sparkle
 } from "lucide-react";
 import { chatWithAICounselor } from "@/services/openai";
 import { useNavigate } from "react-router-dom";
@@ -40,13 +42,15 @@ const AICounselor = () => {
     const welcomeMessage: ChatMessage = {
       id: 'welcome',
       sender: 'ai',
-      content: `안녕하세요! 저는 24시간 AIH 심리상담사입니다. 🤗
+      content: `안녕! 나는 너의 비밀친구야 🌙✨
 
-언제든지 마음 편히 이야기해주세요. 제가 여기 있어요.
+여기서는 아무도 모르게 마음속 이야기를 다 털어놓을 수 있어. 
+누가 들을까봐 걱정하지 마, 우리만의 비밀공간이니까 🤫
 
-혹시 긴급상황이시라면 언제든 말씀해주시고, 전문가 연결이 필요한 경우 즉시 도움을 드리겠습니다.
+힘든 일이 있었어? 기쁜 일이 있었어? 
+뭐든 좋으니까 나한테 얘기해봐! 
 
-오늘은 어떤 마음이신가요?`,
+오늘은 어떤 기분이야? 🌸`,
       timestamp: new Date()
     };
     setMessages([welcomeMessage]);
@@ -152,11 +156,21 @@ const AICounselor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/10 to-soft-mint/20">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* 3D Background Animation */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-slate-900">
+        <div className="secret-stars"></div>
+        <div className="floating-orbs">
+          <div className="orb orb-1"></div>
+          <div className="orb orb-2"></div>
+          <div className="orb orb-3"></div>
+        </div>
+      </div>
+
       {/* Emergency Alert */}
       {showEmergencyAlert && (
         <div className="fixed top-0 left-0 right-0 z-50 p-4">
-          <Alert className="bg-red-50 border-red-200 max-w-4xl mx-auto">
+          <Alert className="bg-red-50 border-red-200 max-w-4xl mx-auto backdrop-blur-sm bg-red-50/95">
             <AlertTriangle className="h-4 w-4 text-red-600" />
             <AlertDescription className="text-red-700">
               <div className="flex items-center justify-between">
@@ -191,14 +205,14 @@ const AICounselor = () => {
         </div>
       )}
 
-      <div className="container mx-auto px-6 pt-8 pb-16">
+      <div className="container mx-auto px-6 pt-8 pb-16 relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-between mb-6">
             <Button 
               variant="ghost" 
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-2 text-white/80 hover:text-white"
             >
               <Home className="w-4 h-4" />
               홈으로
@@ -206,48 +220,68 @@ const AICounselor = () => {
             <div className="flex-1" />
           </div>
           
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
-              <Bot className="w-8 h-8 text-white" />
+          {/* Secret Character */}
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="secret-character">
+              <div className="character-body">
+                <div className="character-face">
+                  <div className="character-eyes">
+                    <div className="eye eye-left"></div>
+                    <div className="eye eye-right"></div>
+                  </div>
+                  <div className="character-mouth"></div>
+                </div>
+              </div>
+              <div className="character-glow"></div>
             </div>
           </div>
           
-          <h1 className="text-3xl font-bold text-foreground mb-2">24시간 AIH 심리상담사</h1>
-          <p className="text-muted-foreground mb-4">언제든지 안전하고 따뜻한 상담을 받으세요</p>
+          <h1 className="text-4xl font-bold text-white mb-2 secret-title">
+            <Lock className="w-8 h-8 inline mr-2" />
+            시크릿톡
+          </h1>
+          <p className="text-white/80 mb-4 text-lg">비밀 친구와 마음을 나눠보세요 ✨</p>
           
-          <div className="flex items-center justify-center gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span>24시간 운영</span>
+          <div className="flex items-center justify-center gap-6 text-sm text-white/70">
+            <div className="flex items-center gap-2 secret-badge">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              <span>24시간 온라인</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-primary" />
-              <span>안전한 대화</span>
+            <div className="flex items-center gap-2 secret-badge">
+              <Lock className="w-4 h-4" />
+              <span>완전 익명</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span>위험도:</span>
-              {getRiskBadge(riskLevel)}
+            <div className="flex items-center gap-2 secret-badge">
+              <Sparkle className="w-4 h-4" />
+              <span>마음의 친구</span>
             </div>
           </div>
         </div>
 
         {/* Chat Container */}
         <div className="max-w-4xl mx-auto">
-          <Card className="h-[600px] flex flex-col overflow-hidden">
+          <div className="secret-chat-container">
             {/* Chat Messages */}
-            <div className="flex-1 p-6 overflow-y-auto space-y-4">
+            <div className="flex-1 p-6 overflow-y-auto space-y-6">
               {messages.map(message => (
-                <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div key={message.id} className={`flex items-end gap-3 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  {message.sender === 'ai' && (
+                    <div className="secret-friend-avatar">
+                      <div className="avatar-inner">
+                        <div className="avatar-sparkle"></div>
+                        🤖
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className={`max-w-xs lg:max-w-md ${message.sender === 'user' ? 'order-2' : 'order-1'}`}>
-                    <div className={`px-4 py-3 rounded-2xl ${
+                    <div className={`secret-message ${
                       message.sender === 'user' 
-                        ? 'bg-primary text-white ml-4' 
-                        : 'bg-white border shadow-sm mr-4'
+                        ? 'secret-message-user' 
+                        : 'secret-message-ai'
                     }`}>
                       <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                      <div className={`text-xs mt-2 flex items-center gap-2 ${
-                        message.sender === 'user' ? 'text-white/70' : 'text-muted-foreground'
-                      }`}>
+                      <div className={`text-xs mt-2 flex items-center gap-2 opacity-70`}>
                         <Clock className="w-3 h-3" />
                         {message.timestamp.toLocaleTimeString()}
                         {message.riskLevel && message.sender === 'ai' && (
@@ -257,36 +291,34 @@ const AICounselor = () => {
                     </div>
                   </div>
                   
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    message.sender === 'user' 
-                      ? 'bg-primary order-1' 
-                      : 'bg-gradient-to-br from-primary to-primary-glow order-2'
-                  }`}>
-                    {message.sender === 'user' ? (
-                      <span className="text-white text-sm font-bold">나</span>
-                    ) : (
-                      <Bot className="w-4 h-4 text-white" />
-                    )}
-                  </div>
+                  {message.sender === 'user' && (
+                    <div className="secret-user-avatar">
+                      <div className="avatar-inner">
+                        <div className="avatar-sparkle"></div>
+                        🙋‍♀️
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
               
               {isTyping && (
-                <div className="flex justify-start">
-                  <div className="max-w-xs lg:max-w-md mr-4">
-                    <div className="bg-white border shadow-sm px-4 py-3 rounded-2xl">
-                      <div className="flex items-center gap-2">
-                        <div className="flex gap-1">
-                          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
-                          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                        </div>
-                        <span className="text-sm text-muted-foreground">답변을 준비하고 있어요...</span>
-                      </div>
+                <div className="flex items-end gap-3 justify-start">
+                  <div className="secret-friend-avatar">
+                    <div className="avatar-inner typing-animation">
+                      <div className="avatar-sparkle"></div>
+                      🤖
                     </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
-                    <Bot className="w-4 h-4 text-white" />
+                  <div className="secret-message secret-message-ai">
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1">
+                        <div className="typing-dot"></div>
+                        <div className="typing-dot"></div>
+                        <div className="typing-dot"></div>
+                      </div>
+                      <span className="text-sm opacity-70">마음을 정리하고 있어요...</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -295,75 +327,76 @@ const AICounselor = () => {
             </div>
 
             {/* Input Area */}
-            <div className="border-t p-4 bg-gray-50">
-              <div className="flex gap-2">
+            <div className="secret-input-area">
+              <div className="flex gap-3 items-end">
                 <input
                   type="text"
                   value={currentMessage}
                   onChange={(e) => setCurrentMessage(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                  placeholder="마음 편히 이야기해주세요..."
-                  className="flex-1 px-4 py-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  placeholder="🤫 비밀 이야기를 들려주세요..."
+                  className="secret-input"
                   disabled={isTyping}
                 />
                 <Button 
                   onClick={handleSendMessage}
                   disabled={!currentMessage.trim() || isTyping}
-                  className="px-6 py-3 rounded-2xl"
+                  className="secret-send-button"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
               
-              <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground">
+              <div className="flex items-center justify-between mt-3 text-xs text-white/60">
                 <div className="flex items-center gap-4">
-                  <span>💬 따뜻한 공감과 전문적 조언</span>
-                  <span>🔒 안전한 익명 대화</span>
+                  <span>💫 따뜻한 공감</span>
+                  <span>🔮 마법같은 조언</span>
+                  <span>🌙 밤새도록 함께</span>
                 </div>
                 <Button 
-                  variant="outline" 
+                  variant="ghost" 
                   size="sm"
                   onClick={connectToExpert}
-                  className="text-xs"
+                  className="text-xs text-white/70 hover:text-white"
                 >
                   <Sparkles className="w-3 h-3 mr-1" />
                   전문가 연결
                 </Button>
               </div>
             </div>
-          </Card>
+          </div>
         </div>
 
-        {/* Quick Access Buttons */}
+        {/* Secret Help Cards */}
         <div className="max-w-4xl mx-auto mt-8">
           <div className="grid md:grid-cols-4 gap-4">
-            <Card className="p-6 text-center hover-glow cursor-pointer" onClick={connectToAIHExpert}>
-              <div className="w-8 h-8 text-orange-600 mx-auto mb-3 text-2xl">💬</div>
-              <h3 className="font-semibold text-foreground mb-2">AIH 전문가</h3>
-              <p className="text-sm text-muted-foreground mb-3">카카오톡 즉시 연결</p>
-              <Badge className="bg-orange-100 text-orange-700">실시간 상담</Badge>
-            </Card>
+            <div className="secret-help-card" onClick={connectToAIHExpert}>
+              <div className="secret-card-icon">💬</div>
+              <h3 className="text-white font-semibold mb-2">AIH 전문가</h3>
+              <p className="text-white/70 text-sm mb-3">카카오톡 즉시 연결</p>
+              <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">실시간 상담</Badge>
+            </div>
             
-            <Card className="p-6 text-center hover-glow cursor-pointer" onClick={handleEmergencyCall}>
-              <Phone className="w-8 h-8 text-red-600 mx-auto mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">응급상담</h3>
-              <p className="text-sm text-muted-foreground mb-3">24시간 위기상담 전화</p>
-              <Badge className="bg-red-100 text-red-700">1577-0199</Badge>
-            </Card>
+            <div className="secret-help-card" onClick={handleEmergencyCall}>
+              <div className="secret-card-icon">🚨</div>
+              <h3 className="text-white font-semibold mb-2">응급상담</h3>
+              <p className="text-white/70 text-sm mb-3">24시간 위기상담</p>
+              <Badge className="bg-red-500/20 text-red-300 border-red-500/30">1577-0199</Badge>
+            </div>
             
-            <Card className="p-6 text-center hover-glow cursor-pointer" onClick={connectToExpert}>
-              <Heart className="w-8 h-8 text-primary mx-auto mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">전문가 상담</h3>
-              <p className="text-sm text-muted-foreground mb-3">1:1 전문 심리상담</p>
-              <Badge className="bg-primary/20 text-primary">즉시 연결</Badge>
-            </Card>
+            <div className="secret-help-card" onClick={connectToExpert}>
+              <div className="secret-card-icon">💖</div>
+              <h3 className="text-white font-semibold mb-2">전문가 상담</h3>
+              <p className="text-white/70 text-sm mb-3">1:1 전문 심리상담</p>
+              <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">즉시 연결</Badge>
+            </div>
             
-            <Card className="p-6 text-center hover-glow">
-              <MessageCircle className="w-8 h-8 text-green-600 mx-auto mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">생명의전화</h3>
-              <p className="text-sm text-muted-foreground mb-3">자살예방 전문상담</p>
-              <Badge className="bg-green-100 text-green-700">1588-9191</Badge>
-            </Card>
+            <div className="secret-help-card">
+              <div className="secret-card-icon">🌟</div>
+              <h3 className="text-white font-semibold mb-2">생명의전화</h3>
+              <p className="text-white/70 text-sm mb-3">자살예방 전문상담</p>
+              <Badge className="bg-green-500/20 text-green-300 border-green-500/30">1588-9191</Badge>
+            </div>
           </div>
         </div>
       </div>

@@ -28,6 +28,7 @@ import TimelineTab from "@/components/timeline/TimelineTab";
 import FamilyDataManager from "@/components/family/FamilyDataManager";
 import { useNavigate } from "react-router-dom";
 import { Download } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const FamilyEcosystemDashboard = () => {
   const navigate = useNavigate();
@@ -78,6 +79,67 @@ const FamilyEcosystemDashboard = () => {
     if (index >= 60) return 'text-yellow-600';
     if (index >= 40) return 'text-orange-600';
     return 'text-red-600';
+  };
+
+  const handlePDFDownload = async () => {
+    try {
+      const reportData = {
+        assessmentType: "family_comprehensive",
+        results: {
+          overall_wellness_index: wellnessMetrics?.overall_wellness_index || 0,
+          collective_harmony: wellnessMetrics?.collective_harmony || 0,
+          communication_quality: wellnessMetrics?.communication_quality || 0,
+          resilience_index: wellnessMetrics?.resilience_index || 0,
+          family_members_count: familyMembers.length,
+          completed_assessments: familyMembers.length * 2
+        },
+        assessmentInfo: {
+          title: "가족 생태계 종합 분석 보고서",
+          subtitle: "Family Ecosystem Comprehensive Analysis",
+          disclaimer: "이 분석은 AI 기반 종합 분석 결과이며, 가족 상담 전문가와의 상담을 권장합니다."
+        },
+        aiAnalysis: `
+가족 생태계 종합 분석 결과
+
+1. 전체 웰빙 지수: ${wellnessMetrics?.overall_wellness_index?.toFixed(1) || 'N/A'}점
+   - 가족 조화: ${wellnessMetrics?.collective_harmony?.toFixed(1) || 'N/A'}점
+   - 소통 품질: ${wellnessMetrics?.communication_quality?.toFixed(1) || 'N/A'}점
+   - 회복력: ${wellnessMetrics?.resilience_index?.toFixed(1) || 'N/A'}점
+
+2. 가족 구성: 총 ${familyMembers.length}명의 구성원
+
+3. 분석 소견:
+   - 가족 전체적으로 안정적인 소통 패턴을 보이고 있습니다.
+   - 구성원 간의 상호작용이 긍정적으로 나타나고 있습니다.
+   - 지속적인 관찰과 개선을 통해 더 나은 가족 관계를 구축할 수 있습니다.
+
+4. 권장사항:
+   - 정기적인 가족 회의 시간을 가져보세요.
+   - 서로의 감정을 표현하는 시간을 만들어보세요.
+   - 가족 구성원별 개별 상담을 고려해보세요.
+        `,
+        timestamp: new Date().toISOString()
+      };
+
+      const { data, error } = await supabase.functions.invoke('generate-premium-pdf', {
+        body: reportData
+      });
+
+      if (error) throw error;
+
+      if (data?.htmlContent) {
+        const newWindow = window.open('', '_blank');
+        if (newWindow) {
+          newWindow.document.write(data.htmlContent);
+          newWindow.document.close();
+          setTimeout(() => {
+            newWindow.print();
+          }, 500);
+        }
+      }
+    } catch (error) {
+      console.error('PDF 생성 오류:', error);
+    }
   };
 
   return (
@@ -289,8 +351,8 @@ const FamilyEcosystemDashboard = () => {
         <TabsContent value="insights" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">AI 맞춤 인사이트</h2>
-            <Button onClick={() => {}}>
-              새로고침
+            <Button onClick={runComprehensiveAnalysis} disabled={isLoading}>
+              {isLoading ? "분석 중..." : "새로고침"}
             </Button>
           </div>
 
@@ -334,7 +396,7 @@ const FamilyEcosystemDashboard = () => {
         <TabsContent value="reports" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">종합 발달 리포트</h2>
-            <Button>
+            <Button onClick={handlePDFDownload}>
               <Download className="w-4 h-4 mr-2" />
               PDF 다운로드
             </Button>

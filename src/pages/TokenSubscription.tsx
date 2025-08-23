@@ -25,6 +25,7 @@ const TokenSubscription = () => {
   const { tokenBalance } = useTokens();
   const [packages, setPackages] = useState<TokenPackage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [packagesLoading, setPackagesLoading] = useState(true);
   const [purchasingPackageId, setPurchasingPackageId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -32,6 +33,8 @@ const TokenSubscription = () => {
   }, []);
 
   const fetchPackages = async () => {
+    console.log('=== Fetching token packages...');
+    setPackagesLoading(true);
     try {
       const { data, error } = await supabase
         .from('token_packages')
@@ -39,15 +42,29 @@ const TokenSubscription = () => {
         .eq('is_active', true)
         .order('price_krw', { ascending: true });
 
+      console.log('=== Packages data:', data);
+      console.log('=== Packages error:', error);
+
       if (error) throw error;
       setPackages(data || []);
+      
+      if (!data || data.length === 0) {
+        console.warn('=== No token packages found');
+        toast({
+          title: "알림",
+          description: "사용 가능한 토큰 패키지가 없습니다.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
-      console.error('Error fetching packages:', error);
+      console.error('=== Error fetching packages:', error);
       toast({
         title: "오류",
         description: "토큰 패키지를 불러오는 중 오류가 발생했습니다.",
         variant: "destructive",
       });
+    } finally {
+      setPackagesLoading(false);
     }
   };
 
@@ -169,85 +186,137 @@ const TokenSubscription = () => {
 
         {/* Packages */}
         <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {packages.map((pkg) => (
-            <Card 
-              key={pkg.id} 
-              className={`relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                pkg.is_popular 
-                  ? 'border-2 border-purple-400 shadow-lg scale-105' 
-                  : 'border border-border hover:border-primary/20'
-              }`}
-              style={{ overflow: 'visible' }}
-            >
-              {pkg.is_popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
-                    🔥 인기 선택
-                  </Badge>
-                </div>
-              )}
-              
-              <CardHeader className="text-center pb-6 pt-12">
-                <div className="flex justify-center mb-4">
-                  <div className="p-4 rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
-                    {getPlanIcon(pkg.token_count)}
+          {packagesLoading ? (
+            // Loading state
+            Array.from({ length: 3 }).map((_, index) => (
+              <Card key={index} className="animate-pulse">
+                <CardHeader className="text-center pb-6 pt-12">
+                  <div className="flex justify-center mb-4">
+                    <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
                   </div>
-                </div>
-                
-                <CardTitle className="text-2xl mb-2">{pkg.name}</CardTitle>
-                <p className="text-muted-foreground text-sm mb-4">{pkg.description}</p>
-                
-                <div className="space-y-2">
-                  <div className="text-4xl font-bold text-foreground">
-                    ₩{formatPrice(pkg.price_krw)}
+                  <div className="space-y-2">
+                    <div className="h-6 bg-gray-200 rounded mx-auto w-24"></div>
+                    <div className="h-4 bg-gray-200 rounded mx-auto w-32"></div>
+                    <div className="h-8 bg-gray-200 rounded mx-auto w-20"></div>
+                    <div className="h-6 bg-gray-200 rounded mx-auto w-16"></div>
                   </div>
-                  <div className="text-xl font-bold text-primary">
-                    {pkg.token_count}개 토큰
-                  </div>
-                </div>
-              </CardHeader>
-
-              <CardContent className="space-y-4 pb-8">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span className="text-sm">{pkg.token_count}개 토큰 즉시 지급</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span className="text-sm">영구 사용 가능</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span className="text-sm">안전한 결제 시스템</span>
-                  </div>
-                </div>
-
-                <div className="pt-4">
-                  <Button 
-                    className="w-full py-3 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
-                    disabled={loading}
-                    onClick={() => {
-                      console.log('=== Button clicked for package:', pkg.id);
-                      handlePurchase(pkg.id);
-                    }}
-                  >
-                    {purchasingPackageId === pkg.id ? (
-                      <div className="flex items-center gap-2">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
-                        처리중...
+                </CardHeader>
+                <CardContent className="space-y-4 pb-8">
+                  <div className="space-y-3">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-5 h-5 bg-gray-200 rounded"></div>
+                        <div className="h-4 bg-gray-200 rounded flex-1"></div>
                       </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <Rocket className="w-5 h-5" />
-                        지금 구매하기
-                      </div>
-                    )}
-                  </Button>
+                    ))}
+                  </div>
+                  <div className="pt-4">
+                    <div className="w-full h-12 bg-gray-200 rounded"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : packages.length === 0 ? (
+            // No packages state
+            <div className="col-span-full text-center py-16">
+              <div className="bg-card border border-border rounded-2xl p-8 max-w-md mx-auto">
+                <div className="text-muted-foreground mb-4">
+                  <Coins className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+                <h3 className="text-xl font-semibold mb-2">토큰 패키지가 없습니다</h3>
+                <p className="text-muted-foreground mb-4">
+                  현재 사용 가능한 토큰 패키지가 없습니다.
+                </p>
+                <Button 
+                  onClick={fetchPackages}
+                  variant="outline"
+                  className="mx-auto"
+                >
+                  다시 시도
+                </Button>
+              </div>
+            </div>
+          ) : (
+            packages.map((pkg) => (
+              <Card 
+                key={pkg.id} 
+                className={`relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                  pkg.is_popular 
+                    ? 'border-2 border-purple-400 shadow-lg scale-105' 
+                    : 'border border-border hover:border-primary/20'
+                }`}
+                style={{ overflow: 'visible' }}
+              >
+                {pkg.is_popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                    <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
+                      🔥 인기 선택
+                    </Badge>
+                  </div>
+                )}
+                
+                <CardHeader className="text-center pb-6 pt-12">
+                  <div className="flex justify-center mb-4">
+                    <div className="p-4 rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
+                      {getPlanIcon(pkg.token_count)}
+                    </div>
+                  </div>
+                  
+                  <CardTitle className="text-2xl mb-2">{pkg.name}</CardTitle>
+                  <p className="text-muted-foreground text-sm mb-4">{pkg.description}</p>
+                  
+                  <div className="space-y-2">
+                    <div className="text-4xl font-bold text-foreground">
+                      ₩{formatPrice(pkg.price_krw)}
+                    </div>
+                    <div className="text-xl font-bold text-primary">
+                      {pkg.token_count}개 토큰
+                    </div>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="space-y-4 pb-8">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Check className="h-5 w-5 text-green-500" />
+                      <span className="text-sm">{pkg.token_count}개 토큰 즉시 지급</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Check className="h-5 w-5 text-green-500" />
+                      <span className="text-sm">영구 사용 가능</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Check className="h-5 w-5 text-green-500" />
+                      <span className="text-sm">안전한 결제 시스템</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-4">
+                    <Button 
+                      className="w-full py-3 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+                      disabled={loading}
+                      onClick={() => {
+                        console.log('=== Button clicked for package:', pkg.id);
+                        handlePurchase(pkg.id);
+                      }}
+                    >
+                      {purchasingPackageId === pkg.id ? (
+                        <div className="flex items-center gap-2">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+                          처리중...
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Rocket className="w-5 h-5" />
+                          지금 구매하기
+                        </div>
+                      )}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
 
         {/* Benefits */}

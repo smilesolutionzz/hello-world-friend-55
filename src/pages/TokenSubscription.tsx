@@ -85,6 +85,12 @@ const TokenSubscription = () => {
           window.location.href = 'https://buy.stripe.com/test_7sY00d1hI4Pj0iydXHcEw02';
           return;
         }
+        // 프로팩 (500개 초과)
+        else {
+          console.log('=== Redirecting to Stripe payment link for pro pack');
+          window.location.href = 'https://buy.stripe.com/test_9B6dR3aSi5TnaXc6vfcEw00';
+          return;
+        }
       }
 
       console.log('=== Calling create-token-order function');

@@ -21,6 +21,7 @@ import { TypebotEmbed } from "./components/highlight/TypebotEmbed";
 import { TestResults } from "./components/highlight/TestResults";
 
 import Family from "./pages/Family";
+import CounselingFlow from "./pages/CounselingFlow";
 import Corporate from "./pages/Corporate";
 import Subscription from "./pages/Subscription";
 import TokenSubscription from "./pages/TokenSubscription";
@@ -56,6 +57,7 @@ const App = () => (
           <Route path="/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/assessment-history" element={<AssessmentHistory />} />
+          <Route path="/counseling" element={<CounselingFlow />} />
           <Route path="/ai-counselor" element={<AICounselor />} />
           <Route path="/needs-assessment" element={<NeedsAssessment />} />
           <Route path="/quick-needs" element={<QuickNeeds />} />

@@ -115,10 +115,25 @@ const Navigation = () => {
               <FileText className="w-4 h-4 mr-1" />
               관찰일지
             </Button>
-            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/ai-counselor')}>
-              <MessageCircle className="w-4 h-4 mr-1" />
-              AIH상담
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 flex items-center gap-1">
+                  <MessageCircle className="w-4 h-4" />
+                  상담
+                  <ChevronDown className="w-3 h-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleNavigation('/counseling')}>
+                  <Brain className="w-4 h-4 mr-2" />
+                  단계별 상담 (AI→전문가)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleNavigation('/ai-counselor')}>
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  AI 상담만
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/experts')}>
               <Users className="w-4 h-4 mr-1" />
               전문가고용

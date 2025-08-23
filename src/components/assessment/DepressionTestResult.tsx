@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
+import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Loader2, MessageCircle, Brain } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
@@ -18,6 +19,7 @@ interface DepressionTestResultProps {
 }
 
 const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) => {
+  const navigate = useNavigate();
   const { total, average, severity, answers } = results;
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
@@ -245,15 +247,26 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
       </Card>
 
       {/* Action Buttons */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-5 gap-4">
         <Button 
           className="btn-brand h-16"
-          onClick={() => window.open('https://typebot.io/hilight-consult', '_blank')}
+          onClick={() => navigate('/counseling', { state: { assessmentResults: { ...results, testType: 'depression' } } })}
         >
-          <ExternalLink className="w-5 h-5 mr-2" />
+          <MessageCircle className="w-5 h-5 mr-2" />
           <div className="text-left">
-            <div className="font-semibold">전문가 상담 연결</div>
-            <div className="text-sm opacity-90">즉시 상담 가능</div>
+            <div className="font-semibold">단계별 상담 시작</div>
+            <div className="text-sm opacity-90">AI → 전문가</div>
+          </div>
+        </Button>
+
+        <Button 
+          className="bg-blue-600 hover:bg-blue-700 text-white h-16"
+          onClick={() => navigate('/ai-counselor', { state: { assessmentResults: { ...results, testType: 'depression' } } })}
+        >
+          <Brain className="w-5 h-5 mr-2" />
+          <div className="text-left">
+            <div className="font-semibold">AI 상담만</div>
+            <div className="text-sm opacity-90">빠른 상담</div>
           </div>
         </Button>
 

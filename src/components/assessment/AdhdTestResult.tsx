@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ExternalLink, MessageCircle, Users } from "lucide-react";
+import { ArrowLeft, ExternalLink, MessageCircle, Users, Brain } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
@@ -205,31 +205,27 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           </div>
         </Button>
 
-        {onStartAIChat && (
-          <Button 
-            className="bg-blue-600 hover:bg-blue-700 text-white h-16"
-            onClick={onStartAIChat}
-          >
-            <MessageCircle className="w-5 h-5 mr-2" />
-            <div className="text-left">
-              <div className="font-semibold">AI 상담 시작</div>
-              <div className="text-sm opacity-90">맞춤 상담 제공</div>
-            </div>
-          </Button>
-        )}
+        <Button 
+          className="btn-brand h-16"
+          onClick={() => navigate('/counseling', { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
+        >
+          <MessageCircle className="w-5 h-5 mr-2" />
+          <div className="text-left">
+            <div className="font-semibold">단계별 상담 시작</div>
+            <div className="text-sm opacity-90">AI → 전문가</div>
+          </div>
+        </Button>
 
-        {onStartRealTimeChat && (
-          <Button 
-            className="bg-green-600 hover:bg-green-700 text-white h-16"
-            onClick={onStartRealTimeChat}
-          >
-            <Users className="w-5 h-5 mr-2" />
-            <div className="text-left">
-              <div className="font-semibold">실시간 채팅</div>
-              <div className="text-sm opacity-90">전문가와 직접</div>
-            </div>
-          </Button>
-        )}
+        <Button 
+          className="bg-blue-600 hover:bg-blue-700 text-white h-16"
+          onClick={() => navigate('/ai-counselor', { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
+        >
+          <Brain className="w-5 h-5 mr-2" />
+          <div className="text-left">
+            <div className="font-semibold">AI 상담만</div>
+            <div className="text-sm opacity-90">빠른 상담</div>
+          </div>
+        </Button>
 
         <Button 
           variant="outline" 

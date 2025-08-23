@@ -30,6 +30,8 @@ const PaymentSuccess = () => {
       }
 
       try {
+        console.log('Confirming payment:', { paymentKey, orderId, amount });
+        
         const { data, error } = await supabase.functions.invoke('confirm-toss-payment', {
           body: { paymentKey, orderId, amount: parseInt(amount) }
         });

@@ -43,7 +43,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-4o',
         messages: [
           {
             role: 'system',
@@ -95,7 +95,8 @@ serve(async (req) => {
 위 정보를 바탕으로 종합적인 사주 분석을 해주세요.`
           }
         ],
-        max_completion_tokens: 1000,
+        max_tokens: 1000,
+        temperature: 0.7,
       }),
     });
 

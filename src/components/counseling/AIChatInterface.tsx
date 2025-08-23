@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User, AlertTriangle, ExternalLink, Phone } from "lucide-react";
+import { Send, Bot, User, AlertTriangle, ExternalLink, Phone, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -199,15 +199,18 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
     <CounselingRoom>
       <div className="min-h-screen bg-gradient-to-br from-transparent via-calm-blue/10 to-warm-lavender/20 p-6 backdrop-blur-sm">
         <div className="container mx-auto max-w-4xl">
+          {/* Back Button */}
+          {onClose && (
+            <Button variant="outline" onClick={onClose} className="mb-6 flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              뒤로가기
+            </Button>
+          )}
+          
           {/* Header */}
           <div className="mb-6 text-center">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">AIH 해결사</h1>
             <p className="text-gray-800 font-medium bg-white/70 backdrop-blur-sm rounded-lg px-4 py-2 mx-auto inline-block">전문적이고 따뜻한 상담 서비스</p>
-            {onClose && (
-              <Button variant="outline" onClick={onClose} className="mt-4">
-                뒤로가기
-              </Button>
-            )}
           </div>
 
           {/* Emergency Notice */}

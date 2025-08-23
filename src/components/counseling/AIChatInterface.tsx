@@ -227,7 +227,7 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
                     <Button 
                       size="sm" 
                       className="bg-red-600 hover:bg-red-700 text-white"
-                      onClick={() => window.open('https://typebot.io/hilight-consult', '_blank')}
+                      onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')}
                     >
                       <ExternalLink className="w-4 h-4 mr-1" />
                       즉시 전문가 상담

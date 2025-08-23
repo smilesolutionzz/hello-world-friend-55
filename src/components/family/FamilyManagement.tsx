@@ -431,7 +431,7 @@ const FamilyManagement = ({ families, onUpdate }: FamilyManagementProps) => {
           <p className="text-muted-foreground mb-6">
             첫 번째 가족을 만들어 통합 케어를 시작해보세요
           </p>
-          <Button>
+          <Button onClick={() => setShowCreateFamily(true)}>
             <Plus className="w-4 h-4 mr-2" />
             첫 번째 가족 만들기
           </Button>

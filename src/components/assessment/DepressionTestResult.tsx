@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
+import { useTestResultActions } from '@/hooks/useTestResultActions';
 
 interface DepressionTestResultProps {
   results: {
@@ -17,9 +18,10 @@ interface DepressionTestResultProps {
 }
 
 const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) => {
-  const { total, average, severity } = results;
+  const { total, average, severity, answers } = results;
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   
   const chartData = [
     {
@@ -258,22 +260,52 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
         <Button 
           variant="outline" 
           className="h-16"
-          disabled
+          onClick={() => generatePDFReport({
+            testType: '우울증 검사',
+            results: {
+              total: results.total,
+              average: results.average,
+              severity,
+              answers: results.answers
+            },
+            analysis: `우울증 검사 결과 분석: ${recommendation.description}`,
+            testInfo: {
+              ageGroup: 'adult',
+              generatedAt: new Date().toISOString(),
+              version: '1.0'
+            }
+          })}
+          disabled={isGeneratingPDF}
         >
           <div className="text-left">
-            <div className="font-semibold">PDF 리포트</div>
-            <div className="text-sm text-muted-foreground">(추가 예정)</div>
+            <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
+            <div className="text-sm text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
           </div>
         </Button>
 
         <Button 
           variant="outline" 
           className="h-16"
-          disabled
+          onClick={() => saveTestResult({
+            testType: '우울증 검사',
+            results: {
+              total: results.total,
+              average: results.average,
+              severity,
+              answers: results.answers
+            },
+            analysis: `우울증 검사 결과 분석: ${recommendation.description}`,
+            ageGroup: 'adult',
+            testInfo: {
+              generatedAt: new Date().toISOString(),
+              version: '1.0'
+            }
+          })}
+          disabled={isSaving}
         >
           <div className="text-left">
-            <div className="font-semibold">결과 저장</div>
-            <div className="text-sm text-muted-foreground">(추가 예정)</div>
+            <div className="font-semibold">{isSaving ? '저장 중...' : '결과 저장'}</div>
+            <div className="text-sm text-muted-foreground">{isSaving ? '잠시만 기다려주세요' : '검사기록에 저장'}</div>
           </div>
         </Button>
       </div>

@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, ExternalLink, Download, Mail, UserCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useTestResultActions } from '@/hooks/useTestResultActions';
 
 interface LanguageTestResultProps {
   results: {
@@ -18,6 +19,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const { total, average, ageGroup } = results;
   const today = new Date().toLocaleDateString('ko-KR');
   const navigate = useNavigate();
+  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
 
   // 점수에 따른 평가
   const getEvaluation = (score: number) => {
@@ -174,24 +176,53 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         <Card className="p-6">
           <h3 className="font-semibold mb-4">결과 저장 및 공유</h3>
           <p className="text-sm text-muted-foreground mb-4">
-            검사 결과를 PDF로 저장하거나 알림으로 받아보세요.
+            검사 결과를 PDF로 저장하거나 데이터베이스에 저장하세요.
           </p>
           <div className="space-y-2">
             <Button 
               variant="outline" 
               className="w-full flex items-center gap-2"
-              disabled
+              onClick={() => generatePDFReport({
+                testType: '언어발달 검사',
+                results: {
+                  total,
+                  average,
+                  ageGroup,
+                  answers: results.answers
+                },
+                analysis: '언어발달 검사 결과 분석',
+                testInfo: {
+                  generatedAt: new Date().toISOString(),
+                  version: '1.0'
+                }
+              })}
+              disabled={isGeneratingPDF}
             >
               <Download className="w-4 h-4" />
-              PDF 리포트 (추가 예정)
+              {isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}
             </Button>
             <Button 
               variant="outline" 
               className="w-full flex items-center gap-2"
-              disabled
+              onClick={() => saveTestResult({
+                testType: '언어발달 검사',
+                results: {
+                  total,
+                  average,
+                  ageGroup,
+                  answers: results.answers
+                },
+                analysis: '언어발달 검사 결과 분석',
+                ageGroup: '영유아',
+                testInfo: {
+                  generatedAt: new Date().toISOString(),
+                  version: '1.0'
+                }
+              })}
+              disabled={isSaving}
             >
               <Mail className="w-4 h-4" />
-              결과 저장 (추가 예정)
+              {isSaving ? '저장 중...' : '결과 저장'}
             </Button>
           </div>
         </Card>

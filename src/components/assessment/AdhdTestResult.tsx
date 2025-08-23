@@ -5,6 +5,7 @@ import { ArrowLeft, ExternalLink, MessageCircle, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
+import { useTestResultActions } from '@/hooks/useTestResultActions';
 
 interface AdhdTestResultProps {
   results: {
@@ -20,8 +21,9 @@ interface AdhdTestResultProps {
 }
 
 const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }: AdhdTestResultProps) => {
-  const { total, average, ageGroup, severity } = results;
+  const { total, average, ageGroup, severity, answers } = results;
   const navigate = useNavigate();
+  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   
   const getOverallEvaluation = (severity: string) => {
     if (severity === "정상 범위") {
@@ -232,22 +234,52 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
         <Button 
           variant="outline" 
           className="h-16"
-          disabled
+          onClick={() => generatePDFReport({
+            testType: 'ADHD 검사',
+            results: {
+              total: results.total,
+              average: results.average,
+              severity,
+              answers
+            },
+            analysis: `ADHD 검사 결과 분석: ${evaluation.description}`,
+            testInfo: {
+              ageGroup,
+              generatedAt: new Date().toISOString(),
+              version: '1.0'
+            }
+          })}
+          disabled={isGeneratingPDF}
         >
           <div className="text-left">
-            <div className="font-semibold">PDF 리포트</div>
-            <div className="text-sm text-muted-foreground">(추가 예정)</div>
+            <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
+            <div className="text-sm text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
           </div>
         </Button>
 
         <Button 
           variant="outline" 
           className="h-16"
-          disabled
+          onClick={() => saveTestResult({
+            testType: 'ADHD 검사',
+            results: {
+              total: results.total,
+              average: results.average,
+              severity,
+              answers
+            },
+            analysis: `ADHD 검사 결과 분석: ${evaluation.description}`,
+            ageGroup,
+            testInfo: {
+              generatedAt: new Date().toISOString(),
+              version: '1.0'
+            }
+          })}
+          disabled={isSaving}
         >
           <div className="text-left">
-            <div className="font-semibold">결과 저장</div>
-            <div className="text-sm text-muted-foreground">(추가 예정)</div>
+            <div className="font-semibold">{isSaving ? '저장 중...' : '결과 저장'}</div>
+            <div className="text-sm text-muted-foreground">{isSaving ? '잠시만 기다려주세요' : '검사기록에 저장'}</div>
           </div>
         </Button>
       </div>

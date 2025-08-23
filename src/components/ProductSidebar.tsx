@@ -166,10 +166,10 @@ const ProductSidebar = () => {
                 <Star className="w-8 h-8 text-yellow-300" />
               </div>
             </div>
-            <h3 className="font-bold mb-1">무료 상담 이벤트</h3>
+            <h3 className="font-bold mb-1">무료 체험 이벤트</h3>
             <p className="text-xs text-purple-100 mb-3">
-              첫 상담 무료 체험하고
-              <br />심리 건강 체크해보세요
+              회원가입시 10토큰 지급되고
+              <br />매일 로그인시 2토큰씩 추가지급됩니다. 궁금증을 해결하세요
             </p>
             <Button 
               size="sm"

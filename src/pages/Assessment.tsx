@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
 import ChildAssessmentSimplified from "@/components/assessment/ChildAssessmentSimplified";
@@ -408,9 +409,12 @@ const Assessment = () => {
           
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
             <div 
-              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
+              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
               onClick={() => handleTestTypeSelect('psychological')}
             >
+              <div className="absolute top-4 right-4">
+                <Badge className="bg-orange-500 text-white">3토큰</Badge>
+              </div>
               <h3 className="text-2xl font-bold text-brand-gradient mb-4">마음상태 체크</h3>
               <p className="text-muted-foreground mb-4">연령별 맞춤 심리상태 참고 분석 (진단 아님)</p>
               <ul className="space-y-2 text-sm">
@@ -421,9 +425,12 @@ const Assessment = () => {
             </div>
             
             <div 
-              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
+              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
               onClick={() => handleTestTypeSelect('language')}
             >
+              <div className="absolute top-4 right-4">
+                <Badge className="bg-blue-500 text-white">2토큰</Badge>
+              </div>
               <h3 className="text-2xl font-bold text-brand-gradient mb-4">영유아언어발달체크</h3>
               <p className="text-muted-foreground mb-4">연령에 맞춤 20문항으로 간단 확인 (참고용)</p>
               <ul className="space-y-2 text-sm">
@@ -434,9 +441,12 @@ const Assessment = () => {
             </div>
 
             <div 
-              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
+              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
               onClick={() => handleTestTypeSelect('panic')}
             >
+              <div className="absolute top-4 right-4">
+                <Badge className="bg-blue-500 text-white">2토큰</Badge>
+              </div>
               <h3 className="text-2xl font-bold text-brand-gradient mb-4">불안감 수준 확인</h3>
               <p className="text-muted-foreground mb-4">불안감 증상 자가체크 (참고용)</p>
               <ul className="space-y-2 text-sm">
@@ -447,9 +457,12 @@ const Assessment = () => {
             </div>
 
             <div 
-              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
+              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
               onClick={() => handleTestTypeSelect('depression')}
             >
+              <div className="absolute top-4 right-4">
+                <Badge className="bg-blue-500 text-white">2토큰</Badge>
+              </div>
               <h3 className="text-2xl font-bold text-brand-gradient mb-4">우울감 자가체크</h3>
               <p className="text-muted-foreground mb-4">우울감 수준 확인 (참고용)</p>
               <ul className="space-y-2 text-sm">
@@ -460,9 +473,12 @@ const Assessment = () => {
             </div>
 
             <div 
-              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
+              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
               onClick={() => handleTestTypeSelect('adhd')}
             >
+              <div className="absolute top-4 right-4">
+                <Badge className="bg-blue-500 text-white">2토큰</Badge>
+              </div>
               <h3 className="text-2xl font-bold text-brand-gradient mb-4">주의집중력 자가체크</h3>
               <p className="text-muted-foreground mb-4">연령별 ADHD 증상 확인 (참고용)</p>
               <ul className="space-y-2 text-sm">
@@ -473,9 +489,12 @@ const Assessment = () => {
             </div>
             
             <div 
-              className="bg-gradient-to-br from-indigo-500 to-purple-600 hover-glow border border-purple-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white"
+              className="bg-gradient-to-br from-indigo-500 to-purple-600 hover-glow border border-purple-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
               onClick={() => handleTestTypeSelect('dream')}
             >
+              <div className="absolute top-4 right-4">
+                <Badge className="bg-purple-700 text-white">5토큰</Badge>
+              </div>
               <h3 className="text-2xl font-bold mb-4">🌙 AI 꿈 해몽</h3>
               <p className="text-purple-100 mb-4">당신의 꿈이 담고 있는 의미를 AI가 해석 (재미용)</p>
               <ul className="space-y-2 text-sm text-purple-100">
@@ -486,9 +505,12 @@ const Assessment = () => {
             </div>
             
             <div 
-              className="bg-gradient-to-br from-orange-500 to-red-600 hover-glow border border-orange-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white"
+              className="bg-gradient-to-br from-orange-500 to-red-600 hover-glow border border-orange-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
               onClick={() => handleTestTypeSelect('saju')}
             >
+              <div className="absolute top-4 right-4">
+                <Badge className="bg-red-700 text-white">8토큰</Badge>
+              </div>
               <h3 className="text-2xl font-bold mb-4">🔮 AI 사주풀이</h3>
               <p className="text-orange-100 mb-4">생년월일시로 당신의 운세와 사주를 AI가 분석 (재미용)</p>
               <ul className="space-y-2 text-sm text-orange-100">

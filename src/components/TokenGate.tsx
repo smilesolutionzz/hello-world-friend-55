@@ -13,13 +13,17 @@ interface TokenGateProps {
   featureName: string;
   onProceed: () => void;
   children?: React.ReactNode;
+  showAlternatives?: boolean;
+  category?: 'basic' | 'premium' | 'special';
 }
 
 const TokenGate: React.FC<TokenGateProps> = ({ 
   tokensRequired, 
   featureName, 
-  onProceed,
-  children 
+  onProceed, 
+  children,
+  showAlternatives = true,
+  category = 'basic'
 }) => {
   const { tokenBalance, checkTokenAvailability, loading } = useTokens();
   const navigate = useNavigate();

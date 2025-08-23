@@ -162,7 +162,7 @@ export default function NeedsBasedOnboarding() {
       id: 'ai-counselor',
       title: 'AI 상담사',
       description: '24시간 AI 심리상담',
-      tokenCost: '5토큰',
+      tokenCost: '무료',
       duration: '30분',
       difficulty: 'basic',
       icon: <MessageCircle className="w-5 h-5" />,

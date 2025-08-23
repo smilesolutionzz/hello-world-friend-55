@@ -71,7 +71,7 @@ export default function QuickNeedsAssessment() {
         {
           id: 'ai-chat',
           name: 'AI 스트레스 상담',
-          tokenCost: '5토큰',
+          tokenCost: '무료',
           duration: '30분',
           route: '/ai-counselor',
           badge: '즉시상담',
@@ -155,7 +155,7 @@ export default function QuickNeedsAssessment() {
         {
           id: 'crisis-support',
           name: 'AI 즉시 지원',
-          tokenCost: '5토큰',
+          tokenCost: '무료',
           duration: '즉시',
           route: '/ai-counselor?mode=crisis',
           badge: '응급지원',
@@ -272,7 +272,7 @@ export default function QuickNeedsAssessment() {
         {
           id: 'personality-analysis',
           name: '성격유형 분석',
-          tokenCost: '5토큰',
+          tokenCost: '무료',
           duration: '20분',
           route: '/premium-assessment?type=personality',
           badge: '성격분석',

@@ -30,7 +30,7 @@ const ProductSidebar = () => {
     {
       icon: <MessageCircle className="w-5 h-5" />,
       title: "AI 상담사",
-      tokenCost: "5토큰",
+      tokenCost: "무료",
       badge: "추천",
       badgeType: "recommended",
       description: "24시간 AI 심리상담",

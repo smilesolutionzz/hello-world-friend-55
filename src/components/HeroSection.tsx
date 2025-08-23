@@ -63,7 +63,7 @@ const HeroSection = () => {
         <div className="text-center mb-8 sm:mb-16 space-y-4 sm:space-y-6">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight">
             <span className="block text-foreground mb-1 sm:mb-2">병원급 정확도의</span>
-            <span className="block text-brand-gradient">AIH + 전문가 심리분석</span>
+            <span className="block text-brand-gradient">딥러닝AI + 전문가 멘탈분석</span>
           </h1>
           
           <div className="space-y-4 sm:space-y-6">

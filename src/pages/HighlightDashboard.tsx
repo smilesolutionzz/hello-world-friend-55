@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { User, LogOut, History, Crown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
-import { OnboardingOverlay } from '@/components/ui/onboarding-overlay';
 
 interface Profile {
   display_name: string;
@@ -29,45 +28,14 @@ export default function HighlightDashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [recentTests, setRecentTests] = useState<RecentTest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showOnboarding, setShowOnboarding] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     if (authenticated) {
       loadData();
-      checkFirstLogin();
     }
   }, [authenticated]);
-
-  const checkFirstLogin = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      // 프로필이 방금 생성되었는지 확인 (새 사용자)
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('created_at')
-        .eq('user_id', user.id)
-        .single();
-
-      if (profile) {
-        const profileCreated = new Date(profile.created_at);
-        const now = new Date();
-        const timeDiff = now.getTime() - profileCreated.getTime();
-        const minutesDiff = timeDiff / (1000 * 60);
-
-        // 프로필이 5분 이내에 생성되었거나 로컬 스토리지에 온보딩 완료 정보가 없는 경우
-        const onboardingCompleted = localStorage.getItem('onboarding_completed');
-        if (minutesDiff < 5 || !onboardingCompleted) {
-          setShowOnboarding(true);
-        }
-      }
-    } catch (error) {
-      console.error('First login check failed:', error);
-    }
-  };
 
   const loadData = async () => {
     try {
@@ -135,15 +103,6 @@ export default function HighlightDashboard() {
     navigate('/auth');
   };
 
-  const handleOnboardingComplete = () => {
-    localStorage.setItem('onboarding_completed', 'true');
-    setShowOnboarding(false);
-    toast({
-      title: "환영합니다!",
-      description: "AIHPRO 하이라이트를 시작해보세요!",
-    });
-  };
-
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -153,14 +112,7 @@ export default function HighlightDashboard() {
   }
 
   return (
-    <>
-      <OnboardingOverlay
-        isOpen={showOnboarding}
-        onClose={() => setShowOnboarding(false)}
-        onComplete={handleOnboardingComplete}
-      />
-      
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
       {/* Header */}
       <div className="border-b bg-background/95 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -287,6 +239,5 @@ export default function HighlightDashboard() {
         </div>
       </div>
     </div>
-    </>
   );
 }

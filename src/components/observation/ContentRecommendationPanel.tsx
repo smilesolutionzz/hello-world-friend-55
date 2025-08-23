@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Youtube, ExternalLink, Play, Clock } from "lucide-react";
+import YouTubePlayer from "@/components/ui/youtube-player";
 
 interface ContentRecommendation {
   title: string;
@@ -152,13 +153,21 @@ const ContentRecommendationPanel: React.FC<ContentRecommendationPanelProps> = ({
                 )}
                 
                 <div className="flex gap-2">
+                  <YouTubePlayer title={content.title} youtubeUrl={content.youtubeUrl}>
+                    <Button className="bg-red-600 hover:bg-red-700 text-white flex-1">
+                      <Play className="h-4 w-4 mr-2" />
+                      동영상 재생
+                    </Button>
+                  </YouTubePlayer>
+                  
                   <Button
+                    variant="outline"
                     onClick={() => handleYoutubeClick(content.youtubeUrl)}
-                    className="bg-red-600 hover:bg-red-700 text-white flex-1"
+                    className="px-3"
                   >
-                    <Youtube className="h-4 w-4 mr-2" />
-                    유튜브에서 보기
+                    <ExternalLink className="h-4 w-4" />
                   </Button>
+                  
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -169,7 +178,7 @@ const ContentRecommendationPanel: React.FC<ContentRecommendationPanelProps> = ({
                     }}
                     className="px-3"
                   >
-                    <ExternalLink className="h-4 w-4" />
+                    <Youtube className="h-4 w-4" />
                   </Button>
                 </div>
               </CardContent>

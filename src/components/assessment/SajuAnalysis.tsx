@@ -49,17 +49,36 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
       return;
     }
 
+    // 토큰 확인
+    const hasTokens = checkTokenAvailability(TOKENS_REQUIRED);
+    if (!hasTokens) {
+      toast({
+        title: "토큰 부족",
+        description: `사주 분석에는 ${TOKENS_REQUIRED}토큰이 필요합니다. 토큰을 충전해주세요.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
-
       const { data, error } = await supabase.functions.invoke('saju-analyzer', {
         body: formData
       });
 
       if (error) {
+        console.error('Supabase function error:', error);
         throw new Error('사주 분석에 실패했습니다.');
       }
 
+      if (!data?.analysis) {
+        console.error('Empty analysis received:', data);
+        throw new Error('사주 분석 결과를 받지 못했습니다.');
+      }
+
+      // 토큰 소모
+      await consumeTokens(TOKENS_REQUIRED);
+      
       setAnalysis(data.analysis);
       
       toast({
@@ -77,7 +96,7 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
       } else {
         toast({
           title: "분석 실패",
-          description: "사주 분석 중 오류가 발생했습니다.",
+          description: error.message || "사주 분석 중 오류가 발생했습니다.",
           variant: "destructive"
         });
       }
@@ -131,8 +150,9 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
               AI가 당신의 사주를 분석하여 운세를 알려드립니다
             </p>
             <div className="flex items-center justify-center gap-2 mt-2">
-              <Badge variant="secondary" className="flex items-center gap-1 bg-green-500/20 text-green-400 border-green-400/30">
-                무료 이용 가능
+              <Badge variant="secondary" className="flex items-center gap-1 bg-orange-500/20 text-orange-300 border-orange-400/30">
+                <Coins className="w-3 h-3" />
+                {TOKENS_REQUIRED}토큰 필요
               </Badge>
             </div>
           </div>

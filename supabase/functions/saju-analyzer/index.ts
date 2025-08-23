@@ -16,14 +16,26 @@ serve(async (req) => {
 
   try {
     const { name, birthDate, birthTime, gender, birthCity } = await req.json();
+    
+    console.log('Saju analysis request:', { name, birthDate, birthTime, gender, birthCity });
 
     if (!name || !birthDate || !birthTime || !gender || !birthCity) {
+      console.error('Missing required fields');
       return new Response(JSON.stringify({ error: '모든 정보를 입력해주세요.' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
+    if (!openAIApiKey) {
+      console.error('OpenAI API key not found');
+      return new Response(JSON.stringify({ error: 'OpenAI API 키가 설정되지 않았습니다.' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('Making OpenAI API call...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -87,13 +99,26 @@ serve(async (req) => {
       }),
     });
 
+    console.log('OpenAI response status:', response.status);
+    
     if (!response.ok) {
-      throw new Error('OpenAI API 요청 실패');
+      const errorText = await response.text();
+      console.error('OpenAI API error:', response.status, errorText);
+      throw new Error(`OpenAI API 요청 실패: ${response.status}`);
     }
 
     const data = await response.json();
-    const analysis = data.choices[0].message.content;
+    console.log('OpenAI response data:', data);
+    
+    const analysis = data.choices?.[0]?.message?.content;
+    
+    if (!analysis) {
+      console.error('No analysis content in response:', data);
+      throw new Error('AI 분석 결과를 받지 못했습니다.');
+    }
 
+    console.log('Analysis generated successfully, length:', analysis.length);
+    
     return new Response(JSON.stringify({ analysis }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

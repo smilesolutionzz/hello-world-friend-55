@@ -155,6 +155,11 @@ function generateHTMLReport(testType: string, results: any, analysis: string, te
     </style>
 </head>
 <body>
+    <div style="text-align: center; margin-bottom: 30px; padding: 20px 0; border-bottom: 2px solid #e2e8f0;">
+        <div style="font-size: 24px; font-weight: bold; color: #3b82f6; margin-bottom: 5px;">AIHPRO.COM</div>
+        <div style="font-size: 12px; color: #666;">AIH 기반 심리검사 전문 플랫폼</div>
+    </div>
+    
     <div class="header">
         <h1>${testType} 검사 결과 리포트</h1>
         <p>생성일: ${currentDate}</p>
@@ -182,7 +187,7 @@ function generateHTMLReport(testType: string, results: any, analysis: string, te
     <div class="footer">
         <p>본 리포트는 참고용이며 의학적 진단이 아닙니다.</p>
         <p>정확한 진단과 치료를 위해서는 전문의와 상담하시기 바랍니다.</p>
-        <p>© 2024 AI 심리검사 플랫폼. All rights reserved.</p>
+        <p>© 2024 AIHPRO.COM. All rights reserved.</p>
     </div>
 </body>
 </html>

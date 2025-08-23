@@ -242,6 +242,11 @@ function generateReportHTML(sessionData: any, reportType: string): string {
     </style>
 </head>
 <body>
+    <div style="text-align: center; margin-bottom: 30px; padding: 20px 0; border-bottom: 2px solid #e2e8f0;">
+        <div style="font-size: 24px; font-weight: bold; color: #3b82f6; margin-bottom: 5px;">AIHPRO.COM</div>
+        <div style="font-size: 12px; color: #666;">AIH 기반 아동발달 관찰 전문 플랫폼</div>
+    </div>
+    
     <!-- Header -->
     <div class="header">
         <h1>${domainName} 종합 관찰기록서</h1>
@@ -325,6 +330,10 @@ function generateReportHTML(sessionData: any, reportType: string): string {
         본 관찰기록서는 체계적 관찰에 기반한 참고자료이며, 의학적 진단이나 전문적 평가를 대체하지 않습니다. 
         전문적 판단이 필요한 경우 해당 분야 전문가와 상담하시기 바랍니다. 
         응급상황이나 즉시 지원이 필요한 경우에는 관련 기관(119, 1577-0199 등)에 즉시 연락하시기 바랍니다.
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #666; font-size: 12px;">
+        © 2024 AIHPRO.COM. All rights reserved.
     </div>
 </body>
 </html>

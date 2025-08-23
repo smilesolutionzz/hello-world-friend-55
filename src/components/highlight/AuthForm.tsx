@@ -11,10 +11,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Lock, User as UserIcon, Phone, Calendar, Users } from 'lucide-react';
 import type { User, Session } from '@supabase/supabase-js';
+import { OnboardingOverlay } from '@/components/ui/onboarding-overlay';
 
 export const AuthForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(false);
   
   // 로그인 폼 데이터
   const [signInData, setSignInData] = useState({
@@ -144,8 +146,10 @@ export const AuthForm = () => {
       } else if (data.session) {
         toast({
           title: "회원가입 완료", 
-          description: "환영합니다!",
+          description: "환영합니다! 10토큰이 지급되었습니다.",
         });
+        // 신규 가입자에게 온보딩 표시
+        setShowOnboarding(true);
       }
 
     } catch (error: any) {
@@ -215,8 +219,9 @@ export const AuthForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
-      <Card className="w-full max-w-lg">
+    <>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
+        <Card className="w-full max-w-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
             HIGHLIGHT
@@ -471,8 +476,19 @@ export const AuthForm = () => {
               </form>
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </div>
+      
+      {/* 온보딩 오버레이 */}
+      <OnboardingOverlay
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+        onComplete={() => {
+          setShowOnboarding(false);
+          navigate('/');
+        }}
+      />
+    </>
   );
 };

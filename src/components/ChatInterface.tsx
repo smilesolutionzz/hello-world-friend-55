@@ -6,6 +6,7 @@ import { Send, Sparkles, AlertTriangle, ExternalLink, FileText, Clock } from "lu
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface InstantReport {
   report: string;
@@ -20,6 +21,7 @@ const ChatInterface = () => {
   const [report, setReport] = useState<InstantReport | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -230,11 +232,11 @@ const ChatInterface = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-center sm:justify-end">
+        <div className={`flex ${isMobile ? 'justify-center' : 'justify-end'}`}>
           <Button
             type="submit"
             disabled={isAnalyzing || message.length < 50}
-            className="btn-brand w-full sm:w-auto min-w-[160px] h-12"
+            className={`btn-brand ${isMobile ? 'w-full' : 'w-auto'} min-w-[160px] h-12 text-sm sm:text-base`}
           >
             {isAnalyzing ? (
               <>

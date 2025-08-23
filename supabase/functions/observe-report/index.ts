@@ -107,7 +107,7 @@ serve(async (req) => {
     });
 
     // 토큰 차감 처리
-    const tokenCost = requestBody.tokenCost || (requestBody.mode === 'detailed' ? 3 : 1);
+    const tokenCost = requestBody.tokenCost || (requestBody.mode === 'detailed' ? 5 : 3);
     
     // 현재 토큰 잔액 확인 및 차감
     const { data: tokenData, error: tokenError } = await supabaseServiceClient

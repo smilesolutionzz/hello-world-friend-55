@@ -225,7 +225,7 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
       setFormState('analyzing');
 
       // 토큰 소모량 계산 (템플릿 타입에 따라)
-      const tokenCost = isDetailedTemplate ? 3 : 1;
+      const tokenCost = isDetailedTemplate ? 5 : 3;
       
       // 현재 토큰 잔액 확인
       const { data: tokenData, error: tokenError } = await supabase

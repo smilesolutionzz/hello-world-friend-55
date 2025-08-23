@@ -316,7 +316,7 @@ const Observation = () => {
                     </div>
                     <div className="text-center p-3 bg-muted rounded-lg">
                       <div className={`text-2xl font-bold ${template.template_type === 'basic' ? 'text-blue-600' : 'text-purple-600'}`}>
-                        {template.template_type === 'basic' ? '1 토큰' : '3 토큰'}
+                        {template.template_type === 'basic' ? '3 토큰' : '5 토큰'}
                       </div>
                       <div className="text-sm text-muted-foreground">토큰 비용</div>
                       {template.template_type === 'detailed' && (
@@ -433,12 +433,12 @@ const Observation = () => {
                 <h4 className="text-center font-bold text-orange-800 mb-4">💰 토큰 비용 차이</h4>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="text-center p-3 bg-blue-100 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600 mb-1">1 토큰</div>
+                    <div className="text-2xl font-bold text-blue-600 mb-1">3 토큰</div>
                     <div className="text-sm text-blue-700">기본 관찰 템플릿</div>
-                    <div className="text-xs text-blue-600 mt-1">빠르고 경제적</div>
+                    <div className="text-xs text-blue-600 mt-1">빠르고 실용적</div>
                   </div>
                   <div className="text-center p-3 bg-purple-100 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600 mb-1">3 토큰</div>
+                    <div className="text-2xl font-bold text-purple-600 mb-1">5 토큰</div>
                     <div className="text-sm text-purple-700">상세 분석 템플릿</div>
                     <div className="text-xs text-purple-600 mt-1">전문가급 + 교육컨텐츠</div>
                   </div>

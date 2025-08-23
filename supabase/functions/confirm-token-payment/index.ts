@@ -13,82 +13,131 @@ serve(async (req) => {
 
   try {
     const { paymentKey, orderId, amount } = await req.json();
+    
+    if (!paymentKey || !orderId || !amount) {
+      throw new Error("필수 파라미터가 누락되었습니다.");
+    }
 
-    // Service Role 키를 사용한 클라이언트
+    // Supabase 클라이언트 생성
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } }
     );
 
-    // 토스페이먼츠 결제 승인
+    // 토스페이먼츠 API로 결제 확인
     const tossSecretKey = Deno.env.get("TOSS_PAYMENTS_SECRET_KEY");
-    const authHeader = `Basic ${btoa(tossSecretKey + ':')}`;
+    const authHeader = `Basic ${btoa(`${tossSecretKey}:`)}`;
 
-    const tossResponse = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
-      method: 'POST',
-      headers: {
-        'Authorization': authHeader,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        paymentKey,
-        orderId,
-        amount,
-      }),
-    });
-
-    const tossData = await tossResponse.json();
+    const tossResponse = await fetch(
+      `https://api.tosspayments.com/v1/payments/confirm`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": authHeader,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paymentKey,
+          orderId,
+          amount,
+        }),
+      }
+    );
 
     if (!tossResponse.ok) {
-      throw new Error(`토스페이먼츠 결제 승인 실패: ${tossData.message}`);
+      const errorData = await tossResponse.json();
+      throw new Error(`토스페이먼츠 확인 실패: ${errorData.message}`);
     }
 
-    // 구매 내역 업데이트
-    const { data: purchase, error: purchaseUpdateError } = await supabaseAdmin
+    const paymentData = await tossResponse.json();
+    console.log("Payment confirmed:", paymentData);
+
+    // 결제 내역 업데이트 및 플랜 정보 가져오기
+    const { data: purchase, error: updateError } = await supabaseAdmin
       .from('token_purchases')
       .update({
         status: 'completed',
-        payment_method: tossData.method
+        toss_payment_key: paymentKey,
+        payment_method: paymentData.method || 'card'
       })
-      .eq('toss_order_id', orderId)
-      .select('user_id, tokens_purchased')
+      .eq('order_id', orderId)
+      .select(`
+        *,
+        plan:token_subscription_plans(
+          id,
+          name,
+          token_count,
+          price_krw
+        )
+      `)
       .single();
 
-    if (purchaseUpdateError) throw purchaseUpdateError;
+    if (updateError) throw updateError;
+
+    if (!purchase?.plan) {
+      throw new Error("토큰 플랜 정보를 찾을 수 없습니다.");
+    }
 
     // 사용자 토큰 잔액 업데이트
-    const { error: tokenUpdateError } = await supabaseAdmin
+    const { data: currentTokens, error: tokenError } = await supabaseAdmin
       .from('user_tokens')
-      .upsert({
-        user_id: purchase.user_id,
-        current_tokens: 0, // 기본값으로 설정, 실제로는 기존 값에 추가해야 함
-        total_purchased: 0, // 기본값으로 설정, 실제로는 기존 값에 추가해야 함
-      }, {
-        onConflict: 'user_id',
-        ignoreDuplicates: false
-      });
-
-    // 현재 토큰 잔액을 가져와서 업데이트
-    const { data: currentTokens } = await supabaseAdmin
-      .from('user_tokens')
-      .select('current_tokens, total_purchased')
+      .select('*')
       .eq('user_id', purchase.user_id)
       .single();
 
-    await supabaseAdmin
-      .from('user_tokens')
-      .update({
-        current_tokens: (currentTokens?.current_tokens || 0) + purchase.tokens_purchased,
-        total_purchased: (currentTokens?.total_purchased || 0) + purchase.tokens_purchased,
-        updated_at: new Date().toISOString()
-      })
-      .eq('user_id', purchase.user_id);
+    if (tokenError && tokenError.code !== 'PGRST116') {
+      throw tokenError;
+    }
 
-    return new Response(JSON.stringify({
-      success: true,
-      message: '토큰 충전이 완료되었습니다',
-      tokensAdded: purchase.tokens_purchased
+    const newTokenCount = (currentTokens?.current_tokens || 0) + purchase.plan.token_count;
+    const newTotalPurchased = (currentTokens?.total_purchased || 0) + purchase.plan.token_count;
+
+    if (currentTokens) {
+      // 기존 토큰 업데이트
+      const { error: updateTokenError } = await supabaseAdmin
+        .from('user_tokens')
+        .update({
+          current_tokens: newTokenCount,
+          total_purchased: newTotalPurchased,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', purchase.user_id);
+
+      if (updateTokenError) throw updateTokenError;
+    } else {
+      // 새 토큰 레코드 생성
+      const { error: insertTokenError } = await supabaseAdmin
+        .from('user_tokens')
+        .insert({
+          user_id: purchase.user_id,
+          current_tokens: newTokenCount,
+          total_purchased: newTotalPurchased,
+          total_used: 0,
+          referral_bonus: 0,
+          last_daily_bonus_date: new Date().toISOString().split('T')[0]
+        });
+
+      if (insertTokenError) throw insertTokenError;
+    }
+
+    // 사용량 추적 기록
+    const { error: trackingError } = await supabaseAdmin
+      .from('usage_tracking')
+      .insert({
+        user_id: purchase.user_id,
+        feature_type: 'token_purchase',
+        usage_date: new Date().toISOString().split('T')[0],
+        count: purchase.plan.token_count
+      });
+
+    if (trackingError) console.error('Usage tracking error:', trackingError);
+
+    return new Response(JSON.stringify({ 
+      success: true, 
+      message: "토큰이 성공적으로 충전되었습니다.",
+      tokens_added: purchase.plan.token_count,
+      new_balance: newTokenCount
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

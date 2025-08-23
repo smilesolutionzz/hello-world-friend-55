@@ -130,8 +130,8 @@ const TokenSubscription = () => {
                 orderName: data.paymentData.orderName,
                 customerName: data.paymentData.customerName,
                 customerEmail: data.paymentData.customerEmail,
-                successUrl: data.paymentData.successUrl,
-                failUrl: data.paymentData.failUrl,
+                successUrl: `${window.location.origin}/token-payment-success`,
+                failUrl: `${window.location.origin}/token-payment-fail`,
               });
             } catch (error) {
               console.error('결제 요청 실패:', error);

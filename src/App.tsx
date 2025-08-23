@@ -26,6 +26,8 @@ import Subscription from "./pages/Subscription";
 import TokenSubscription from "./pages/TokenSubscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFail from "./pages/PaymentFail";
+import TokenPaymentSuccess from "./pages/TokenPaymentSuccess";
+import TokenPaymentFail from "./pages/TokenPaymentFail";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCancel from "./pages/SubscriptionCancel";
 import Pricing from "./pages/Pricing";
@@ -70,6 +72,8 @@ const App = () => (
           <Route path="/expert-list" element={<ExpertList />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
+          <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />
+          <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />
           <Route path="/subscription-cancel" element={<SubscriptionCancel />} />

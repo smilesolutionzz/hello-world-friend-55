@@ -22,6 +22,7 @@ import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useTokens } from '@/hooks/useTokens';
 import { supabase } from '@/integrations/supabase/client';
 import TokenBalance from '@/components/TokenBalance';
+import secretTalkCharacter from '@/assets/secret-talk-character.png';
 
 interface NavigationItem {
   icon: React.ElementType;
@@ -109,26 +110,32 @@ export const UnifiedNavigation = () => {
             {/* Desktop Menu */}
             <div className="flex items-center gap-1">
               {navigationItems.map((item) => (
-                <Button
-                  key={item.path}
-                  variant={isActive(item.path) ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => handleNavigation(item.path)}
-                  className={`flex items-center gap-2 ${
-                    item.path === '/premium-assessment' 
-                      ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
-                      : ''
-                  }`}
-                  disabled={item.requiresAuth && !user}
-                >
-                  <item.icon className="w-4 h-4" />
-                  {item.label}
-                  {item.badge && (
-                    <Badge variant="secondary" className="ml-1 text-xs">
-                      {item.badge}
-                    </Badge>
-                  )}
-                </Button>
+                  <Button
+                    key={item.path}
+                    variant={isActive(item.path) ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => handleNavigation(item.path)}
+                    className={`flex items-center gap-2 ${
+                      item.path === '/premium-assessment' 
+                        ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
+                        : item.path === '/ai-counselor'
+                        ? 'bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 hover:from-purple-100 hover:to-indigo-100 text-purple-800 font-medium'
+                        : ''
+                    }`}
+                    disabled={item.requiresAuth && !user}
+                  >
+                    {item.path === '/ai-counselor' ? (
+                      <img src={secretTalkCharacter} alt="시크릿톡" className="w-4 h-4" />
+                    ) : (
+                      <item.icon className="w-4 h-4" />
+                    )}
+                    {item.label}
+                    {item.badge && (
+                      <Badge variant="secondary" className="ml-1 text-xs">
+                        {item.badge}
+                      </Badge>
+                    )}
+                  </Button>
               ))}
 
               {/* Auth Button */}
@@ -191,25 +198,31 @@ export const UnifiedNavigation = () => {
                   {/* Navigation Items */}
                   <div className="flex-1 space-y-2">
                     {navigationItems.map((item) => (
-                      <Button
-                        key={item.path}
-                        variant={isActive(item.path) ? "default" : "ghost"}
-                        className={`w-full justify-start gap-3 ${
-                          item.path === '/premium-assessment' 
-                            ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
-                            : ''
-                        }`}
-                        onClick={() => handleNavigation(item.path)}
-                        disabled={item.requiresAuth && !user}
-                      >
-                        <item.icon className="w-4 h-4" />
-                        {item.label}
-                        {item.badge && (
-                          <Badge variant="secondary" className="ml-auto text-xs">
-                            {item.badge}
-                          </Badge>
-                        )}
-                      </Button>
+                        <Button
+                          key={item.path}
+                          variant={isActive(item.path) ? "default" : "ghost"}
+                          className={`w-full justify-start gap-3 ${
+                            item.path === '/premium-assessment' 
+                              ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
+                              : item.path === '/ai-counselor'
+                              ? 'bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 hover:from-purple-100 hover:to-indigo-100 text-purple-800 font-medium'
+                              : ''
+                          }`}
+                          onClick={() => handleNavigation(item.path)}
+                          disabled={item.requiresAuth && !user}
+                        >
+                          {item.path === '/ai-counselor' ? (
+                            <img src={secretTalkCharacter} alt="시크릿톡" className="w-4 h-4" />
+                          ) : (
+                            <item.icon className="w-4 h-4" />
+                          )}
+                          {item.label}
+                          {item.badge && (
+                            <Badge variant="secondary" className="ml-auto text-xs">
+                              {item.badge}
+                            </Badge>
+                          )}
+                        </Button>
                     ))}
                   </div>
 

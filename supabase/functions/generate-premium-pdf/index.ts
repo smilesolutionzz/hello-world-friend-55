@@ -164,6 +164,9 @@ const generatePDFHTML = (data: any) => {
     </head>
     <body>
       <div class="header">
+        <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-weight: bold; font-size: 18px; letter-spacing: 1px;">
+          AIHPRO 프리미엄분석결과
+        </div>
         <div class="title">${assessmentInfo.title}</div>
         <div class="subtitle">${assessmentInfo.subtitle}</div>
         <div class="date">검사일: ${new Date(timestamp).toLocaleDateString('ko-KR')}</div>

@@ -53,7 +53,7 @@ export default function QuickNeedsAssessment() {
         {
           id: 'basic',
           name: '3분 스트레스 체크',
-          tokenCost: '1토큰',
+          tokenCost: '2토큰',
           duration: '3분',
           route: '/assessment',
           badge: '빠른시작',

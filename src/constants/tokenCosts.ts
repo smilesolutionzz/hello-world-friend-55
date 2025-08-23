@@ -1,7 +1,7 @@
 // 각 기능별 토큰 소진량 정의
 export const TOKEN_COSTS = {
   // 심리검사 관련
-  PSYCHOLOGICAL_TEST: 3,     // 마음상태 체크
+  PSYCHOLOGICAL_TEST: 2,     // 마음상태 체크
   ADHD_TEST: 2,             // ADHD 자가체크
   DEPRESSION_TEST: 2,       // 우울감 자가체크  
   PANIC_TEST: 2,            // 불안감 수준 확인

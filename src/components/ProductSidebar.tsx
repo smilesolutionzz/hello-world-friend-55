@@ -12,7 +12,7 @@ const ProductSidebar = () => {
     {
       icon: <Clock className="w-5 h-5" />,
       title: "3분 심리검사",
-      tokenCost: "1토큰",
+      tokenCost: "2토큰",
       badge: "시작",
       badgeType: "popular",
       description: "빠른 기본 심리상태 체크",

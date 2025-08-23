@@ -71,7 +71,7 @@ export default function NeedsBasedOnboarding() {
       id: 'quick-assessment',
       title: '3분 심리검사',
       description: '빠른 기본 심리상태 체크',
-      tokenCost: '1토큰',
+      tokenCost: '2토큰',
       duration: '3분',
       difficulty: 'basic',
       icon: <Clock className="w-5 h-5" />,

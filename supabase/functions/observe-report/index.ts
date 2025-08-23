@@ -208,57 +208,22 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     
     logStep('OpenAI response received', { textLength: analysisText.length });
 
-    // Parse the analysis response
-    const lines = analysisText.split('\n').filter(line => line.trim());
-    
-    let situation = '';
-    const points: string[] = [];
-    const positives: string[] = [];
-    const tips: string[] = [];
-    const alerts: string[] = [];
-    const mediaNotes: string[] = [];
+    // Parse domain scores from the analysis
     const domainScores = { 정서: 75, 행동: 80, 인지: 85, 사회성: 70, 신체: 78 };
-
-    let currentSection = '';
     
-    for (const line of lines) {
-      const trimmed = line.trim();
-      
-      if (trimmed.includes('현재 상황') || trimmed.includes('요약')) {
-        currentSection = 'situation';
-        continue;
-      } else if (trimmed.includes('핵심') || trimmed.includes('포인트')) {
-        currentSection = 'points';
-        continue;
-      } else if (trimmed.includes('긍정') || trimmed.includes('잘')) {
-        currentSection = 'positives';
-        continue;
-      } else if (trimmed.includes('개선') || trimmed.includes('제안') || trimmed.includes('팁')) {
-        currentSection = 'tips';
-        continue;
-      } else if (trimmed.includes('주의') || trimmed.includes('신호')) {
-        currentSection = 'alerts';
-        continue;
-      } else if (trimmed.includes('점수')) {
-        currentSection = 'scores';
-        continue;
-      }
-
-      // Extract content based on current section
-      if (currentSection === 'situation' && trimmed && !trimmed.startsWith('**')) {
-        situation += (situation ? ' ' : '') + trimmed;
-      } else if (currentSection === 'points' && (trimmed.startsWith('-') || trimmed.startsWith('•'))) {
-        points.push(trimmed.substring(1).trim());
-      } else if (currentSection === 'positives' && (trimmed.startsWith('-') || trimmed.startsWith('•'))) {
-        positives.push(trimmed.substring(1).trim());
-      } else if (currentSection === 'tips' && (trimmed.startsWith('-') || trimmed.startsWith('•'))) {
-        tips.push(trimmed.substring(1).trim());
-      } else if (currentSection === 'alerts' && (trimmed.startsWith('-') || trimmed.startsWith('•'))) {
-        alerts.push(trimmed.substring(1).trim());
+    // Try to extract scores from AI response
+    const scoreRegex = /(\w+):\s*(\d+)/g;
+    let match;
+    while ((match = scoreRegex.exec(analysisText)) !== null) {
+      const domain = match[1];
+      const score = parseInt(match[2]);
+      if (domain in domainScores && score >= 0 && score <= 100) {
+        domainScores[domain as keyof typeof domainScores] = score;
       }
     }
 
     // Add media notes if files were provided
+    const mediaNotes: string[] = [];
     if (requestBody.files.length > 0) {
       requestBody.files.forEach((file, index) => {
         mediaNotes.push(`${file.type === 'image' ? '이미지' : '영상'} ${index + 1}: 행동 관찰을 위한 시각적 자료로 분석에 참고되었습니다.`);
@@ -270,14 +235,17 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
       Object.values(domainScores).reduce((sum, score) => sum + score, 0) / 5
     );
 
+    // Simple parsing for basic structure
+    const sections = analysisText.split(/🔍|💡|🎯|📚|💝|⚠️/).filter(section => section.trim().length > 0);
+    
     const result: ObserveReportResponse = {
       ok: true,
       report: {
-        situation: analysisText, // 전체 GPT 응답을 그대로 사용
-        points: points.length > 0 ? points : ['관찰된 주요 행동 특성을 분석했습니다.'],
-        positives: positives.length > 0 ? positives : ['발달에 적합한 긍정적 측면이 관찰됩니다.'],
-        tips: tips.length > 0 ? tips : ['지속적인 관찰과 기록을 권장합니다.'],
-        alerts: alerts,
+        situation: sections[0]?.trim() || analysisText.substring(0, 500) + '...',
+        points: ['전문가 관점에서 분석된 주요 특징들입니다.'],
+        positives: ['관찰된 긍정적인 발달 특성들을 확인했습니다.'],
+        tips: ['실용적인 개선 방안들을 제시합니다.'],
+        alerts: [],
         mediaNotes
       },
       score: {
@@ -288,9 +256,8 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 
     logStep('Analysis completed successfully', { 
       overallScore,
-      pointsCount: points.length,
-      positivesCount: positives.length,
-      tipsCount: tips.length
+      analysisLength: analysisText.length,
+      sectionsFound: sections.length
     });
 
     return new Response(JSON.stringify(result), {

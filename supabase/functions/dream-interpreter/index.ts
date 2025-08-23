@@ -149,9 +149,16 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const interpretation = data.choices[0].message.content;
+    console.log('OpenAI response:', JSON.stringify(data, null, 2));
+    
+    const interpretation = data.choices?.[0]?.message?.content;
+    
+    if (!interpretation || interpretation.trim() === '') {
+      console.error('Empty interpretation received from OpenAI');
+      throw new Error('OpenAI에서 빈 응답을 받았습니다.');
+    }
 
-    return new Response(JSON.stringify({ interpretation }), {
+    return new Response(JSON.stringify({ interpretation: interpretation.trim() }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {

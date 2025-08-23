@@ -40,6 +40,7 @@ import NotFound from "./pages/NotFound";
 import ShareView from "./pages/ShareView";
 import TokenTest from "./pages/TokenTest";
 import AssessmentHistory from "./components/history/AssessmentHistory";
+import { SessionManager } from "./components/SessionManager";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <SessionManager />
         <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />

@@ -379,7 +379,7 @@ export default function QuickNeedsAssessment() {
                           size="lg"
                           onClick={(e) => {
                             e.stopPropagation();
-                            console.log(`Navigating to: ${test.route}`);
+                            console.log(`🚀 맞춤테스트 시작: ${test.name} -> ${test.route}`);
                             navigate(test.route);
                           }}
                           className="group/btn bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-3"

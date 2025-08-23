@@ -417,6 +417,59 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_history: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          payment_key: string | null
+          payment_method: string | null
+          plan_id: string | null
+          status: string
+          subscription_id: string | null
+          subscription_type: string | null
+          toss_order_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          payment_key?: string | null
+          payment_method?: string | null
+          plan_id?: string | null
+          status?: string
+          subscription_id?: string | null
+          subscription_type?: string | null
+          toss_order_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_key?: string | null
+          payment_method?: string | null
+          plan_id?: string | null
+          status?: string
+          subscription_id?: string | null
+          subscription_type?: string | null
+          toss_order_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_history_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -474,6 +527,45 @@ export type Database = {
           referrer_id?: string
           status?: string
           tokens_awarded?: number | null
+        }
+        Relationships: []
+      }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          features: string[] | null
+          id: string
+          is_active: boolean
+          name: string
+          price: number
+          type: string
+          updated_at: string
+          yearly_price: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          is_active?: boolean
+          name: string
+          price?: number
+          type?: string
+          updated_at?: string
+          yearly_price?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          features?: string[] | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          type?: string
+          updated_at?: string
+          yearly_price?: number | null
         }
         Relationships: []
       }
@@ -771,6 +863,53 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      user_subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          payment_method: string | null
+          plan_id: string | null
+          status: string
+          subscription_type: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          payment_method?: string | null
+          plan_id?: string | null
+          status?: string
+          subscription_type?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          payment_method?: string | null
+          plan_id?: string | null
+          status?: string
+          subscription_type?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_tokens: {
         Row: {

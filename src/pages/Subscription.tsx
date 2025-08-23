@@ -14,23 +14,24 @@ const Subscription = () => {
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
   const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchSubscriptionPlans = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('subscription_plans')
-          .select('*')
-          .order('price', { ascending: true });
+  // 하드코딩된 플랜 사용 (DB에서 가져오는 대신)
+  // useEffect(() => {
+  //   const fetchSubscriptionPlans = async () => {
+  //     try {
+  //       const { data, error } = await supabase
+  //         .from('subscription_plans')
+  //         .select('*')
+  //         .order('price', { ascending: true });
         
-        if (error) throw error;
-        setSubscriptionPlans(data || []);
-      } catch (error) {
-        console.error('Error fetching subscription plans:', error);
-      }
-    };
+  //       if (error) throw error;
+  //       setSubscriptionPlans(data || []);
+  //     } catch (error) {
+  //       console.error('Error fetching subscription plans:', error);
+  //     }
+  //   };
 
-    fetchSubscriptionPlans();
-  }, []);
+  //   fetchSubscriptionPlans();
+  // }, []);
 
   const plans = [
     {

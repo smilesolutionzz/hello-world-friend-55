@@ -38,6 +38,12 @@ const generatePDFHTML = (data: any) => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>${assessmentInfo.title} 결과보고서</title>
       <style>
+        @media print {
+          * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+          body { font-size: 12px; margin: 0; padding: 15px; }
+          .page-break { page-break-before: always; }
+          .no-break { page-break-inside: avoid; }
+        }
         body {
           font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
           line-height: 1.6;
@@ -45,12 +51,40 @@ const generatePDFHTML = (data: any) => {
           max-width: 800px;
           margin: 0 auto;
           padding: 20px;
+          background: white;
+        }
+        .brand-header {
+          text-align: center;
+          margin-bottom: 30px;
+          padding: 20px 0;
+          border-bottom: 2px solid #e5e7eb;
+        }
+        .brand-title {
+          font-size: 24px;
+          font-weight: bold;
+          color: #6366f1;
+          margin-bottom: 5px;
+        }
+        .brand-subtitle {
+          font-size: 12px;
+          color: #6b7280;
         }
         .header {
           text-align: center;
           border-bottom: 3px solid #6366f1;
           padding-bottom: 20px;
           margin-bottom: 30px;
+        }
+        .premium-badge {
+          background: linear-gradient(135deg, #6366f1, #8b5cf6);
+          color: white;
+          padding: 15px;
+          border-radius: 10px;
+          margin-bottom: 20px;
+          text-align: center;
+          font-weight: bold;
+          font-size: 18px;
+          letter-spacing: 1px;
         }
         .title {
           font-size: 28px;
@@ -73,15 +107,49 @@ const generatePDFHTML = (data: any) => {
           padding: 20px;
           border-radius: 10px;
           margin-bottom: 30px;
+          text-align: center;
         }
         .average-score {
           font-size: 36px;
           font-weight: bold;
-          text-align: center;
           margin-bottom: 10px;
+        }
+        .score-description {
+          font-size: 16px;
+          opacity: 0.9;
+        }
+        .test-info {
+          background: #f8fafc;
+          padding: 20px;
+          border-radius: 8px;
+          border: 1px solid #e5e7eb;
+          margin-bottom: 30px;
+        }
+        .test-info h3 {
+          color: #1f2937;
+          margin-top: 0;
+          margin-bottom: 15px;
+        }
+        .info-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 15px;
+        }
+        .info-item {
+          display: flex;
+          flex-direction: column;
+        }
+        .info-label {
+          font-weight: bold;
+          color: #374151;
+          margin-bottom: 5px;
+        }
+        .info-value {
+          color: #6b7280;
         }
         .score-section {
           margin-bottom: 30px;
+          page-break-inside: avoid;
         }
         .section-title {
           font-size: 20px;
@@ -93,9 +161,10 @@ const generatePDFHTML = (data: any) => {
         }
         .score-item {
           margin-bottom: 15px;
-          padding: 10px;
+          padding: 15px;
           border: 1px solid #e5e7eb;
           border-radius: 8px;
+          background: white;
         }
         .score-header {
           display: flex;
@@ -106,30 +175,43 @@ const generatePDFHTML = (data: any) => {
         .category {
           font-weight: bold;
           text-transform: capitalize;
+          color: #374151;
         }
         .score-value {
           font-weight: bold;
           color: #6366f1;
+          font-size: 18px;
         }
         .score-bar {
           width: 100%;
-          height: 8px;
+          height: 12px;
           background-color: #e5e7eb;
-          border-radius: 4px;
+          border-radius: 6px;
           overflow: hidden;
-          margin-bottom: 5px;
+          margin-bottom: 8px;
         }
         .score-fill {
           height: 100%;
           background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #6366f1);
+          border-radius: 6px;
           transition: width 0.3s ease;
         }
         .score-level {
-          font-size: 12px;
+          font-size: 14px;
           color: #6b7280;
+          font-weight: 500;
+        }
+        .score-interpretation {
+          margin-top: 8px;
+          padding: 10px;
+          background: #f0f9ff;
+          border-radius: 6px;
+          font-size: 14px;
+          color: #0369a1;
         }
         .analysis-section {
           margin-top: 30px;
+          page-break-inside: avoid;
         }
         .analysis-content {
           background: #f9fafb;
@@ -137,6 +219,35 @@ const generatePDFHTML = (data: any) => {
           border-radius: 10px;
           border-left: 4px solid #10b981;
           white-space: pre-wrap;
+          line-height: 1.8;
+        }
+        .recommendations {
+          background: #f0f9ff;
+          padding: 20px;
+          border-radius: 8px;
+          border-left: 4px solid #0ea5e9;
+          margin: 20px 0;
+        }
+        .recommendations h3 {
+          color: #0369a1;
+          margin-top: 0;
+        }
+        .recommendation-list {
+          list-style: none;
+          padding: 0;
+        }
+        .recommendation-list li {
+          padding: 8px 0;
+          border-bottom: 1px solid #e0f2fe;
+          position: relative;
+          padding-left: 20px;
+        }
+        .recommendation-list li:before {
+          content: "•";
+          color: #0ea5e9;
+          font-weight: bold;
+          position: absolute;
+          left: 0;
         }
         .disclaimer {
           background: #fef3c7;
@@ -146,6 +257,7 @@ const generatePDFHTML = (data: any) => {
           margin-top: 30px;
           font-size: 12px;
           color: #92400e;
+          page-break-inside: avoid;
         }
         .footer {
           text-align: center;
@@ -154,24 +266,18 @@ const generatePDFHTML = (data: any) => {
           border-top: 1px solid #e5e7eb;
           color: #6b7280;
           font-size: 12px;
-        }
-        @media print {
-          body { padding: 10px; }
-          .header { page-break-after: avoid; }
-          .analysis-section { page-break-inside: avoid; }
+          page-break-inside: avoid;
         }
       </style>
     </head>
     <body>
-      <div style="text-align: center; margin-bottom: 30px; padding: 20px 0; border-bottom: 2px solid #e5e7eb;">
-        <div style="font-size: 24px; font-weight: bold; color: #6366f1; margin-bottom: 5px;">AIHPRO.COM</div>
-        <div style="font-size: 12px; color: #6b7280;">AI 기반 심리검사 전문 플랫폼</div>
+      <div class="brand-header">
+        <div class="brand-title">AIHPRO.COM</div>
+        <div class="brand-subtitle">AIH 기반 심리검사 전문 플랫폼</div>
       </div>
       
       <div class="header">
-        <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-weight: bold; font-size: 18px; letter-spacing: 1px;">
-          AIHPRO 프리미엄분석결과
-        </div>
+        <div class="premium-badge">AIHPRO 프리미엄분석결과</div>
         <div class="title">${assessmentInfo.title}</div>
         <div class="subtitle">${assessmentInfo.subtitle}</div>
         <div class="date">검사일: ${new Date(timestamp).toLocaleDateString('ko-KR')}</div>
@@ -179,28 +285,68 @@ const generatePDFHTML = (data: any) => {
 
       <div class="summary-box">
         <div class="average-score">${averageScore.toFixed(1)}</div>
-        <div style="text-align: center;">평균 점수 (7점 만점)</div>
+        <div class="score-description">평균 점수 (7점 만점)</div>
+        <div style="margin-top: 10px; font-size: 14px; opacity: 0.9;">
+          ${averageScore >= 6 ? '높음 수준' : averageScore >= 5 ? '중상 수준' : averageScore >= 4 ? '보통 수준' : averageScore >= 3 ? '중하 수준' : '낮음 수준'}
+        </div>
       </div>
+
+      ${assessmentInfo ? `
+      <div class="test-info no-break">
+        <h3>검사 정보</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">검사명</div>
+            <div class="info-value">${assessmentInfo.title}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">검사 유형</div>
+            <div class="info-value">${assessmentType}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">평가 항목 수</div>
+            <div class="info-value">${Object.keys(results).length}개 영역</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">검사일</div>
+            <div class="info-value">${new Date(timestamp).toLocaleDateString('ko-KR')}</div>
+          </div>
+        </div>
+      </div>
+      ` : ''}
 
       <div class="score-section">
         <div class="section-title">영역별 상세 점수</div>
         ${scoresHTML}
       </div>
 
-      <div class="analysis-section">
-        <div class="section-title">AI 전문가 심층 분석</div>
+      <div class="analysis-section page-break">
+        <div class="section-title">AIH 전문가 심층 분석</div>
         <div class="analysis-content">${aiAnalysis}</div>
+      </div>
+
+      <div class="recommendations no-break">
+        <h3>추천 사항 및 다음 단계</h3>
+        <ul class="recommendation-list">
+          <li>정기적인 자가 평가를 통해 변화를 모니터링하세요</li>
+          <li>낮은 점수를 받은 영역에 대해 집중적인 관심을 기울이세요</li>
+          <li>전문가와의 상담을 통해 개인별 맞춤 전략을 수립하세요</li>
+          <li>필요시 추가적인 전문 평가나 검사를 고려해보세요</li>
+          <li>가족이나 주변 지지체계와 결과를 공유하여 도움을 받으세요</li>
+        </ul>
       </div>
 
       <div class="disclaimer">
         <strong>※ 중요 안내</strong><br>
         ${assessmentInfo.disclaimer}<br>
-        본 검사 결과는 AI 기반 분석을 통한 참고 자료이며, 정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다.
+        본 검사 결과는 AIH 기반 분석을 통한 참고 자료이며, 정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다.
       </div>
 
       <div class="footer">
-        생성일: ${new Date().toLocaleString('ko-KR')}<br>
-        이 보고서는 프리미엄 심리검사 결과를 바탕으로 생성되었습니다.
+        <p><strong>프리미엄 분석 리포트</strong></p>
+        <p>생성일: ${new Date().toLocaleString('ko-KR')}</p>
+        <p>이 보고서는 프리미엄 심리검사 결과를 바탕으로 생성되었습니다.</p>
+        <p style="margin-top: 15px;">© 2024 AIHPRO.COM. All rights reserved.</p>
       </div>
     </body>
     </html>

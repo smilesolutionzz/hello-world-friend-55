@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import CounselingRoom from "@/components/3d/CounselingRoom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -195,142 +196,144 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-      <div className="container mx-auto max-w-4xl">
-        {/* Header */}
-        <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-brand-gradient mb-2">AI 심리상담사</h1>
-          <p className="text-muted-foreground">전문적이고 따뜻한 AI 상담 서비스 (참고용)</p>
-          {onClose && (
-            <Button variant="outline" onClick={onClose} className="mt-4">
-              뒤로가기
-            </Button>
-          )}
-        </div>
+    <CounselingRoom>
+      <div className="min-h-screen bg-gradient-to-br from-transparent via-calm-blue/10 to-warm-lavender/20 p-6 backdrop-blur-sm">
+        <div className="container mx-auto max-w-4xl">
+          {/* Header */}
+          <div className="mb-6 text-center">
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">AI 심리상담사</h1>
+            <p className="text-muted-foreground">전문적이고 따뜻한 AI 상담 서비스 (참고용)</p>
+            {onClose && (
+              <Button variant="outline" onClick={onClose} className="mt-4">
+                뒤로가기
+              </Button>
+            )}
+          </div>
 
-        {/* Emergency Notice */}
-        {needsProfessionalHelp && (
-          <Card className="mb-6 p-4 bg-red-50 border-red-200">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-600 mt-1" />
-              <div>
-                <h3 className="font-semibold text-red-800 mb-2">🚨 전문가 상담 권장</h3>
-                <p className="text-red-700 text-sm mb-3">
-                  현재 상황에서는 전문가의 직접적인 도움이 필요할 수 있습니다.
-                </p>
-                <div className="flex gap-2">
-                  <Button 
-                    size="sm" 
-                    className="bg-red-600 hover:bg-red-700 text-white"
-                    onClick={() => window.open('https://typebot.io/hilight-consult', '_blank')}
-                  >
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    즉시 전문가 상담
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    onClick={() => window.open('tel:1577-0199')}
-                  >
-                    <Phone className="w-4 h-4 mr-1" />
-                    자살예방상담 1577-0199
-                  </Button>
+          {/* Emergency Notice */}
+          {needsProfessionalHelp && (
+            <Card className="mb-6 p-4 bg-red-50 border-red-200 backdrop-blur-md bg-white/80">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-red-600 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-red-800 mb-2">🚨 전문가 상담 권장</h3>
+                  <p className="text-red-700 text-sm mb-3">
+                    현재 상황에서는 전문가의 직접적인 도움이 필요할 수 있습니다.
+                  </p>
+                  <div className="flex gap-2">
+                    <Button 
+                      size="sm" 
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                      onClick={() => window.open('https://typebot.io/hilight-consult', '_blank')}
+                    >
+                      <ExternalLink className="w-4 h-4 mr-1" />
+                      즉시 전문가 상담
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => window.open('tel:1577-0199')}
+                    >
+                      <Phone className="w-4 h-4 mr-1" />
+                      자살예방상담 1577-0199
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Card>
-        )}
+            </Card>
+          )}
 
-        {/* Assessment Results Summary */}
-        {assessmentResults && (
-          <Card className="mb-6 p-4 bg-blue-50 border-blue-200">
-            <h3 className="font-semibold text-blue-900 mb-2">📊 검사 결과 요약</h3>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="secondary">{assessmentResults.testType === 'adhd' ? 'ADHD 체크' : assessmentResults.testType === 'depression' ? '우울감 체크' : assessmentResults.testType === 'panic' ? '불안감 체크' : assessmentResults.testType === 'language' ? '언어발달 체크' : '심리평가'}</Badge>
-              <Badge variant="secondary">{assessmentResults.ageGroup || assessmentResults.severity}</Badge>
-              <Badge variant="secondary">총점: {assessmentResults.total}점</Badge>
-            </div>
-          </Card>
-        )}
+          {/* Assessment Results Summary */}
+          {assessmentResults && (
+            <Card className="mb-6 p-4 bg-blue-50 border-blue-200 backdrop-blur-md bg-white/80">
+              <h3 className="font-semibold text-blue-900 mb-2">📊 검사 결과 요약</h3>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">{assessmentResults.testType === 'adhd' ? 'ADHD 체크' : assessmentResults.testType === 'depression' ? '우울감 체크' : assessmentResults.testType === 'panic' ? '불안감 체크' : assessmentResults.testType === 'language' ? '언어발달 체크' : '심리평가'}</Badge>
+                <Badge variant="secondary">{assessmentResults.ageGroup || assessmentResults.severity}</Badge>
+                <Badge variant="secondary">총점: {assessmentResults.total}점</Badge>
+              </div>
+            </Card>
+          )}
 
-        {/* Chat Interface */}
-        <Card className="flex flex-col h-[500px]">
-          {/* Messages */}
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          {/* Chat Interface */}
+          <Card className="flex flex-col h-[500px] backdrop-blur-md bg-white/80 border-white/30">
+            {/* Messages */}
+            <ScrollArea className="flex-1 p-4">
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div className={`flex gap-3 max-w-[80%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        message.role === 'user' 
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'bg-blue-100 text-blue-600'
+                      }`}>
+                        {message.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                      </div>
+                      <div className={`rounded-lg p-3 ${
+                        message.role === 'user' 
+                          ? 'bg-primary text-primary-foreground' 
+                          : 'bg-muted'
+                      }`}>
+                        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                        <span className="text-xs opacity-70 mt-1 block">
+                          {message.timestamp.toLocaleTimeString('ko-KR', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                      <Bot className="w-4 h-4" />
+                    </div>
+                    <div className="bg-muted rounded-lg p-3">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            </ScrollArea>
+
+            {/* Input Area */}
+            <div className="border-t p-4">
+              <div className="flex gap-2">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="무엇이든 편하게 이야기해주세요..."
+                  disabled={isLoading}
+                  className="flex-1"
+                />
+                <Button 
+                  onClick={sendMessage} 
+                  disabled={!input.trim() || isLoading}
+                  className="btn-brand"
                 >
-                  <div className={`flex gap-3 max-w-[80%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      message.role === 'user' 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'bg-blue-100 text-blue-600'
-                    }`}>
-                      {message.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-                    </div>
-                    <div className={`rounded-lg p-3 ${
-                      message.role === 'user' 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'bg-muted'
-                    }`}>
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                      <span className="text-xs opacity-70 mt-1 block">
-                        {message.timestamp.toLocaleTimeString('ko-KR', { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
-                    <Bot className="w-4 h-4" />
-                  </div>
-                  <div className="bg-muted rounded-lg p-3">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                이 상담은 참고용입니다. 응급상황시 119 또는 자살예방상담 1577-0199로 연락하세요.
+              </p>
             </div>
-          </ScrollArea>
-
-          {/* Input Area */}
-          <div className="border-t p-4">
-            <div className="flex gap-2">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="무엇이든 편하게 이야기해주세요..."
-                disabled={isLoading}
-                className="flex-1"
-              />
-              <Button 
-                onClick={sendMessage} 
-                disabled={!input.trim() || isLoading}
-                className="btn-brand"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              이 상담은 참고용입니다. 응급상황시 119 또는 자살예방상담 1577-0199로 연락하세요.
-            </p>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
-    </div>
+    </CounselingRoom>
   );
 };
 

@@ -23,7 +23,8 @@ import {
   Lock,
   Crown,
   TrendingUp,
-  LineChart
+  LineChart,
+  Loader2
 } from "lucide-react";
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart as RechartsLineChart, Line } from 'recharts';
 import MediaDisplay from './MediaDisplay';
@@ -302,7 +303,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
           <TabsTrigger value="scores">점수 분석</TabsTrigger>
           <TabsTrigger value="analysis">AI 분석</TabsTrigger>
           <TabsTrigger value="recommendations">권고사항</TabsTrigger>
-          <TabsTrigger value="media">미디어</TabsTrigger>
+          <TabsTrigger value="media">관련 컨텐츠</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -684,17 +685,14 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
         </TabsContent>
 
         <TabsContent value="media" className="space-y-6">
-          <MediaDisplay 
-            mediaFiles={mediaFiles} 
-            title="관찰 기록 미디어"
-          />
+          <RecommendedContent session={session} />
         </TabsContent>
       </Tabs>
 
       {/* 상품 추천 */}
       <ProductRecommendation 
         category="child" 
-        domain={session.domain}
+        domain={session.observations?.domain || session.domain}
         severity={riskLevel}
       />
 
@@ -702,6 +700,197 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
       <div className="mt-8">
         <SubscriptionCTA context="observation" />
       </div>
+    </div>
+  );
+};
+
+// New component for recommended content
+const RecommendedContent = ({ session }: { session: any }) => {
+  const { toast } = useToast();
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
+
+  const loadRecommendations = async () => {
+    if (hasLoaded) return;
+    
+    try {
+      setLoading(true);
+      
+      const observationData = session.observations?.raw_data;
+      if (!observationData) {
+        toast({
+          title: "데이터 오류",
+          description: "관찰 데이터를 찾을 수 없습니다.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('content-recommender', {
+        body: {
+          observationText: observationData.text,
+          ageGroup: observationData.ageGroup,
+          tags: observationData.tags,
+          analysisResult: session.observations?.analysis_data?.report?.situation
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        setRecommendations(data.recommendations || []);
+        setHasLoaded(true);
+      } else {
+        throw new Error(data.error);
+      }
+
+    } catch (error) {
+      console.error('Error loading recommendations:', error);
+      toast({
+        title: "컨텐츠 로딩 오류",
+        description: "추천 컨텐츠를 불러오는 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCategoryIcon = (category: string) => {
+    const icons: Record<string, string> = {
+      '발달놀이': '🎯',
+      '부모교육': '👨‍👩‍👧‍👦',
+      '치료방법': '🏥',
+      '행동교정': '🎭',
+      '감정조절': '💭',
+      '사회성향상': '🤝'
+    };
+    return icons[category] || '📺';
+  };
+
+  const getCategoryColor = (category: string) => {
+    const colors: Record<string, string> = {
+      '발달놀이': 'bg-blue-100 text-blue-800',
+      '부모교육': 'bg-green-100 text-green-800',
+      '치료방법': 'bg-red-100 text-red-800',
+      '행동교정': 'bg-purple-100 text-purple-800',
+      '감정조절': 'bg-yellow-100 text-yellow-800',
+      '사회성향상': 'bg-pink-100 text-pink-800'
+    };
+    return colors[category] || 'bg-gray-100 text-gray-800';
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="p-8 text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">맞춤형 컨텐츠를 찾고 있습니다...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span className="text-xl">📚</span>
+            맞춤형 학습 컨텐츠
+          </CardTitle>
+          <CardDescription>
+            관찰 결과를 바탕으로 AI가 추천하는 도움이 될 만한 유튜브 컨텐츠입니다
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {!hasLoaded ? (
+            <div className="text-center py-8">
+              <Button onClick={loadRecommendations} size="lg">
+                <span className="text-lg mr-2">🎯</span>
+                맞춤형 컨텐츠 추천받기
+              </Button>
+              <p className="text-sm text-muted-foreground mt-2">
+                관찰 내용에 맞는 유튜브 컨텐츠를 AI가 분석해서 추천해드립니다
+              </p>
+            </div>
+          ) : recommendations.length > 0 ? (
+            <div className="space-y-4">
+              {recommendations.map((content, index) => (
+                <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{getCategoryIcon(content.category)}</span>
+                      <Badge className={getCategoryColor(content.category)}>
+                        {content.category}
+                      </Badge>
+                      <Badge variant="outline">{content.duration}</Badge>
+                    </div>
+                  </div>
+                  
+                  <h3 className="font-semibold text-lg mb-2">{content.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-3">{content.description}</p>
+                  
+                  <div className="bg-blue-50 p-3 rounded-lg mb-3">
+                    <p className="text-sm text-blue-800">
+                      <strong>추천 이유:</strong> {content.reason}
+                    </p>
+                  </div>
+                  
+                  <Button 
+                    asChild 
+                    className="w-full"
+                    onClick={() => {
+                      toast({
+                        title: "컨텐츠 열기",
+                        description: `${content.title} 영상을 새 창에서 확인하세요.`
+                      });
+                    }}
+                  >
+                    <a 
+                      href={content.youtubeUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2"
+                    >
+                      <span className="text-red-600 text-xl">▶️</span>
+                      유튜브에서 보기
+                    </a>
+                  </Button>
+                </div>
+              ))}
+              
+              <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg">💡</span>
+                  <h4 className="font-semibold text-blue-900">컨텐츠 활용 팁</h4>
+                </div>
+                <ul className="text-sm text-blue-800 space-y-1 ml-6">
+                  <li>• 영상을 시청한 후 아이와 함께 실습해보세요</li>
+                  <li>• 전문가의 조언을 메모해두고 일상에 적용해보세요</li>
+                  <li>• 궁금한 점은 영상 댓글이나 전문가에게 문의하세요</li>
+                  <li>• 꾸준한 관찰과 기록으로 변화를 확인해보세요</li>
+                </ul>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">추천할 컨텐츠를 찾지 못했습니다.</p>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setHasLoaded(false);
+                  loadRecommendations();
+                }}
+                className="mt-2"
+              >
+                다시 시도
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

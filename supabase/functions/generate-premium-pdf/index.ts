@@ -163,6 +163,11 @@ const generatePDFHTML = (data: any) => {
       </style>
     </head>
     <body>
+      <div style="text-align: center; margin-bottom: 30px; padding: 20px 0; border-bottom: 2px solid #e5e7eb;">
+        <div style="font-size: 24px; font-weight: bold; color: #6366f1; margin-bottom: 5px;">AIHPRO.COM</div>
+        <div style="font-size: 12px; color: #6b7280;">AI 기반 심리검사 전문 플랫폼</div>
+      </div>
+      
       <div class="header">
         <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-weight: bold; font-size: 18px; letter-spacing: 1px;">
           AIHPRO 프리미엄분석결과

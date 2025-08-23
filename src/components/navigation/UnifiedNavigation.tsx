@@ -38,6 +38,7 @@ const navigationItems: NavigationItem[] = [
   { icon: History, label: '검사기록', path: '/assessment-history', requiresAuth: true },
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-counselor', requiresAuth: true },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },
+  { icon: FileText, label: '프리미엄관찰일지', path: '/premium-assessment', requiresAuth: true, badge: 'PREMIUM' },
   { icon: Users, label: '가족관리', path: '/family', requiresAuth: true },
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: true },
   { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: true, badge: 'PRO' },

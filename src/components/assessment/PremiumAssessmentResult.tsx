@@ -275,7 +275,7 @@ const PremiumAssessmentResult = ({
                 </div>
                 <div>
                   <h2 className="text-xl font-bold">AI 심층 분석 보고서</h2>
-                  <p className="text-sm text-muted-foreground">GPT-5 기반 전문가 수준 해석</p>
+                  <p className="text-sm text-muted-foreground">AI 기반 전문가 수준 해석</p>
                 </div>
                 <Sparkles className="w-6 h-6 text-yellow-500" />
               </CardTitle>

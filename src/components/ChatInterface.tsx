@@ -207,7 +207,7 @@ const ChatInterface = () => {
           <Textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="예시: 우리 아이가 20개월인데 아직도 엄마밖에 못하고, 울음을 멈추지 못해서 걱정이에요. 이런 상황이 정상적인 발달 과정인지 궁금합니다."
+            placeholder="예시: 14개월 아기가 아직 걷지 못해요... 다른 아이들과 비교되어서 너무 걱정돼요 / 고3 아들이 극도로 예민해져서 가족 모두가 힘들어요... 입시 스트레스 때문일까요? / 육아 스트레스로 아이에게 화를 자주 내요... 나쁜 엄마가 된 것 같아서 괴로워요"
             className="chat-input resize-none min-h-[140px] sm:min-h-[150px] text-sm sm:text-lg leading-relaxed px-4 py-4 sm:px-6 sm:py-5"
             disabled={isAnalyzing}
             maxLength={500}

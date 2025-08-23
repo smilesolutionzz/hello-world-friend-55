@@ -153,12 +153,23 @@ const ContentRecommendationPanel: React.FC<ContentRecommendationPanelProps> = ({
                 )}
                 
                 <div className="flex gap-2">
-                  <YouTubePlayer title={content.title} youtubeUrl={content.youtubeUrl}>
-                    <Button className="bg-red-600 hover:bg-red-700 text-white flex-1">
-                      <Play className="h-4 w-4 mr-2" />
-                      동영상 재생
+                  {/* YouTube 검색 페이지인 경우 embed 대신 외부 링크로 처리 */}
+                  {content.youtubeUrl.includes('youtube.com/results') || content.youtubeUrl.includes('search_query=') ? (
+                    <Button 
+                      onClick={() => handleYoutubeClick(content.youtubeUrl)}
+                      className="bg-red-600 hover:bg-red-700 text-white flex-1"
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      YouTube에서 보기
                     </Button>
-                  </YouTubePlayer>
+                  ) : (
+                    <YouTubePlayer title={content.title} youtubeUrl={content.youtubeUrl}>
+                      <Button className="bg-red-600 hover:bg-red-700 text-white flex-1">
+                        <Play className="h-4 w-4 mr-2" />
+                        동영상 재생
+                      </Button>
+                    </YouTubePlayer>
+                  )}
                   
                   <Button
                     variant="outline"

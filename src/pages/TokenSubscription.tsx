@@ -52,6 +52,8 @@ const TokenSubscription = () => {
   };
 
   const handlePurchase = async (packageId: string) => {
+    console.log('Purchase button clicked for package:', packageId);
+    
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
@@ -63,6 +65,7 @@ const TokenSubscription = () => {
       return;
     }
 
+    console.log('User session found, proceeding with purchase...');
     setLoading(true);
 
     try {
@@ -330,13 +333,18 @@ const TokenSubscription = () => {
                       )}
                     </div>
 
-                    {/* CTA 버튼 */}
-                    <div className="pt-6">
-                      <Button 
-                        className={`w-full py-4 text-lg font-bold bg-gradient-to-r ${gradientClass} hover:shadow-lg hover:scale-105 transition-all duration-300 text-white border-0`}
-                        disabled={loading}
-                        onClick={() => handlePurchase(pkg.id)}
-                      >
+                     {/* CTA 버튼 */}
+                     <div className="pt-6">
+                       <Button 
+                         className={`w-full py-4 text-lg font-bold bg-gradient-to-r ${gradientClass} hover:shadow-lg hover:scale-105 transition-all duration-300 text-white border-0`}
+                         disabled={loading}
+                         onClick={(e) => {
+                           e.preventDefault();
+                           e.stopPropagation();
+                           console.log('Button clicked - disabled?', loading, 'packageId:', pkg.id);
+                           handlePurchase(pkg.id);
+                         }}
+                       >
                         {loading ? (
                           <div className="flex items-center gap-2">
                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>

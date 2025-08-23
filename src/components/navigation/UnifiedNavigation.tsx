@@ -107,7 +107,11 @@ export const UnifiedNavigation = () => {
                   variant={isActive(item.path) ? "default" : "ghost"}
                   size="sm"
                   onClick={() => handleNavigation(item.path)}
-                  className="flex items-center gap-2"
+                  className={`flex items-center gap-2 ${
+                    item.path === '/premium-assessment' 
+                      ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
+                      : ''
+                  }`}
                 >
                   <item.icon className="w-4 h-4" />
                   {item.label}
@@ -184,7 +188,11 @@ export const UnifiedNavigation = () => {
                       <Button
                         key={item.path}
                         variant={isActive(item.path) ? "default" : "ghost"}
-                        className="w-full justify-start gap-3"
+                        className={`w-full justify-start gap-3 ${
+                          item.path === '/premium-assessment' 
+                            ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
+                            : ''
+                        }`}
                         onClick={() => handleNavigation(item.path)}
                       >
                         <item.icon className="w-4 h-4" />

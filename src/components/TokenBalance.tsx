@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Coins, Plus, TrendingUp, Gift, Info } from 'lucide-react';
+import { Coins, Plus, TrendingUp, Gift, Info, BarChart3 } from 'lucide-react';
 import { useTokens } from '@/hooks/useTokens';
 import { useNavigate } from 'react-router-dom';
 
@@ -91,6 +91,16 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                   </div>
                 </div>
               )}
+
+              {/* 대시보드 버튼 */}
+              <Button
+                onClick={() => navigate('/dashboard')}
+                className="w-full"
+                variant="outline"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                대시보드
+              </Button>
 
               {/* 충전 버튼 */}
               <Button

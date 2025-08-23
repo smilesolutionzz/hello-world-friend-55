@@ -39,7 +39,7 @@ const TokenPaymentSuccess = () => {
           return;
         }
 
-        const { data, error } = await supabase.functions.invoke('confirm-stripe-payment', {
+        const { data, error } = await supabase.functions.invoke('confirm-token-order', {
           headers: {
             Authorization: `Bearer ${session.access_token}`,
           },
@@ -48,11 +48,11 @@ const TokenPaymentSuccess = () => {
 
         if (error) throw error;
 
-        if (data.type === 'token') {
+        if (data.success) {
           setConfirmed(true);
           setTokenData({
-            tokens_added: data.tokens_added,
-            payment_intent: data.payment_intent
+            tokens_added: data.tokensAdded,
+            payment_intent: sessionId
           });
           
           // 토큰 잔액 새로고침
@@ -60,12 +60,10 @@ const TokenPaymentSuccess = () => {
 
           toast({
             title: "토큰 충전 완료!",
-            description: `${data.tokens_added}개의 토큰이 성공적으로 충전되었습니다.`,
+            description: `${data.tokensAdded}개의 토큰이 성공적으로 충전되었습니다.`,
           });
         } else {
-          // 구독 결제의 경우 구독 성공 페이지로 리다이렉트
-          navigate('/subscription-success?session_id=' + sessionId);
-          return;
+          throw new Error('결제 처리에 실패했습니다.');
         }
 
       } catch (error: any) {

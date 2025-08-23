@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import Stripe from "https://esm.sh/stripe@14.21.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -55,17 +56,51 @@ serve(async (req) => {
     
     console.log('Package found:', tokenPackage.name);
 
-    // 주문 ID 생성
-    const orderId = `order_${user.id}_${Date.now()}`;
+    // Stripe 초기화
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) {
+      throw new Error("Stripe 설정이 완료되지 않았습니다");
+    }
 
-    // 토스페이먼츠 결제 데이터 준비
-    const paymentData = {
-      amount: tokenPackage.price_krw,
-      orderId,
-      orderName: `${tokenPackage.name} (${tokenPackage.token_count}개 토큰)`,
-      customerEmail: user.email,
-      customerName: user.email?.split('@')[0] || '사용자',
-    };
+    const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
+    
+    // 고객 확인/생성
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    let customerId;
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id;
+    }
+
+    // 주문 ID 생성
+    const orderId = `token_order_${user.id}_${Date.now()}`;
+
+    // Stripe 체크아웃 세션 생성
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      customer_email: customerId ? undefined : user.email,
+      line_items: [
+        {
+          price_data: {
+            currency: "krw",
+            product_data: { 
+              name: `${tokenPackage.name} (${tokenPackage.token_count}개 토큰)`,
+              description: tokenPackage.description
+            },
+            unit_amount: tokenPackage.price_krw,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${req.headers.get("origin")}/token-payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/token-subscription`,
+      metadata: {
+        orderId,
+        packageId,
+        userId: user.id,
+        tokenCount: tokenPackage.token_count.toString()
+      }
+    });
 
     // 주문 내역 저장
     const { error: orderError } = await supabaseAdmin
@@ -84,25 +119,12 @@ serve(async (req) => {
       throw new Error("주문 생성에 실패했습니다");
     }
 
-    // 토스페이먼츠 키 확인
-    const tossClientKey = Deno.env.get("TOSS_PAYMENTS_CLIENT_KEY");
-    const tossSecretKey = Deno.env.get("TOSS_PAYMENTS_SECRET_KEY");
-    
-    console.log('Toss keys check:', { 
-      hasClient: !!tossClientKey, 
-      hasSecret: !!tossSecretKey 
-    });
-    
-    if (!tossClientKey || !tossSecretKey) {
-      throw new Error("토스페이먼츠 설정이 완료되지 않았습니다");
-    }
-
-    console.log('=== Order Created Successfully ===');
+    console.log('=== Stripe Session Created Successfully ===');
     
     return new Response(JSON.stringify({ 
       success: true, 
-      paymentData,
-      clientKey: tossClientKey
+      url: session.url,
+      sessionId: session.id
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

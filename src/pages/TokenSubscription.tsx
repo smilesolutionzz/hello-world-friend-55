@@ -85,11 +85,12 @@ const TokenSubscription = () => {
         throw error;
       }
 
-      if (data?.clientKey && data?.paymentData) {
-        console.log('=== Starting payment process');
-        await initiatePayment(data.clientKey, data.paymentData);
+      if (data?.url) {
+        console.log('=== Redirecting to Stripe checkout');
+        // Stripe 체크아웃으로 리다이렉트
+        window.location.href = data.url;
       } else {
-        throw new Error('결제 데이터를 받지 못했습니다.');
+        throw new Error('결제 URL을 받지 못했습니다.');
       }
     } catch (error: any) {
       console.error('=== Purchase error:', error);
@@ -102,75 +103,6 @@ const TokenSubscription = () => {
       setLoading(false);
       setPurchasingPackageId(null);
     }
-  };
-
-  const initiatePayment = async (clientKey: string, paymentData: any) => {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'https://js.tosspayments.com/v1/payment-widget';
-      script.async = true;
-      
-      script.onload = () => {
-        try {
-          console.log('=== TossPayments script loaded');
-          const paymentWidget = (window as any).PaymentWidget(clientKey, 'ANONYMOUS');
-          
-          const modal = document.createElement('div');
-          modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
-          modal.innerHTML = `
-            <div class="bg-white p-6 rounded-lg max-w-md w-full relative">
-              <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl" onclick="this.closest('.fixed').remove(); window.rejectPayment();">&times;</button>
-              <h3 class="text-lg font-semibold mb-4">토큰 구매</h3>
-              <div id="payment-method" class="mb-4"></div>
-              <div id="agreement" class="mb-4"></div>
-              <button id="pay-button" class="w-full bg-blue-500 text-white py-3 rounded-md font-medium hover:bg-blue-600">
-                결제하기
-              </button>
-            </div>
-          `;
-          
-          document.body.appendChild(modal);
-
-          paymentWidget.renderPaymentMethods(
-            '#payment-method',
-            { value: paymentData.amount },
-            { variantKey: 'DEFAULT' }
-          );
-
-          paymentWidget.renderAgreement('#agreement', { variantKey: 'AGREEMENT' });
-
-          const payButton = modal.querySelector('#pay-button') as HTMLButtonElement;
-          (window as any).rejectPayment = () => reject(new Error('사용자가 결제를 취소했습니다.'));
-          
-          payButton.onclick = async () => {
-            try {
-              console.log('=== Requesting payment');
-              await paymentWidget.requestPayment({
-                orderId: paymentData.orderId,
-                orderName: paymentData.orderName,
-                customerName: paymentData.customerName,
-                customerEmail: paymentData.customerEmail,
-                successUrl: `${window.location.origin}/token-payment-success`,
-                failUrl: `${window.location.origin}/token-payment-fail`,
-              });
-              resolve(true);
-            } catch (error) {
-              console.error('=== Payment request failed:', error);
-              reject(error);
-            }
-          };
-        } catch (error) {
-          console.error('=== Payment widget error:', error);
-          reject(error);
-        }
-      };
-      
-      script.onerror = () => {
-        reject(new Error('토스페이먼츠 스크립트를 불러올 수 없습니다.'));
-      };
-      
-      document.head.appendChild(script);
-    });
   };
 
   const formatPrice = (price: number) => {

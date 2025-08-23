@@ -133,43 +133,37 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 
 다음 형식으로 상세한 전문가 분석을 제공해주세요:
 
-🔍 **상황 분석**
-관찰된 내용을 바탕으로 현재 상황을 구체적으로 분석해주세요. (3-4문장)
+**상황 분석**
+관찰된 내용을 바탕으로 현재 상황을 구체적으로 분석해주세요.
 
-💡 **전문가 관점**
-발달심리학, 아동발달학, 또는 관련 전문 분야 관점에서 관찰 내용을 해석해주세요. 
-- 연령별 발달 특성과 비교 분석
-- 행동의 의미와 배경 설명
-- 정상/비정상 발달 범위 내에서의 위치 분석
+**발달 상태 평가**
+현재 발달 수준과 연령대별 기준과의 비교를 통해 발달적 상황을 평가해주세요.
 
-🎯 **구체적 조언**
-실제로 실행 가능한 구체적인 방법들을 4-5개 제시해주세요:
-1. 일상생활에서 바로 적용할 수 있는 방법
-2. 환경 조성 방안
-3. 상호작용 개선 전략
-4. 놀이나 활동을 통한 발달 촉진 방법
-5. 부모/보호자의 대응 방식
+**주요 관심 사항**
+관찰된 행동이나 특성 중 특별히 주의 깊게 관찰해야 할 사항들을 나열해주세요.
 
-📚 **참고 자료**
-도움이 될 만한 구체적인 정보를 제시해주세요:
-- 추천 도서나 자료
-- 유용한 활동이나 프로그램
-- 전문기관 연계 필요성 여부
+**잠재적 문제점**
+현재 관찰된 내용에서 우려되는 부분이나 개선이 필요한 영역을 분석해주세요.
 
-💝 **격려의 말**
-따뜻하고 희망적인 메시지로 부모/보호자에게 격려와 지지를 전해주세요.
-- 현재 노력에 대한 인정
-- 긍정적인 변화 가능성
-- 지속적인 관심과 사랑의 중요성
+**개선 방안**
+실제로 실행 가능한 구체적인 개선 방법들을 제시해주세요.
 
-⚠️ 이는 전문적 관찰 분석 참고자료이며 의학적 진단이 아닙니다. 전문적인 평가가 필요한 경우 관련 전문가와 상담하시기 바랍니다.
+**전문가 상담 권장**
+전문적인 평가나 상담이 필요한지 여부와 그 이유를 설명해주세요.
+
+**위험도 평가**
+다음 중 하나로 평가해주세요:
+- 낮음: 정상 발달 범위 내
+- 보통: 약간의 주의가 필요한 상태  
+- 높음: 전문적 개입이 시급히 필요한 상태
+- 매우높음: 즉각적인 전문가 상담이 필요한 상태
 
 각 영역별 점수 (0-100점):
-- 정서: (점수와 함께 간단한 설명)
-- 행동: (점수와 함께 간단한 설명)
-- 인지: (점수와 함께 간단한 설명)
-- 사회성: (점수와 함께 간단한 설명)
-- 신체: (점수와 함께 간단한 설명)
+정서: (점수)
+행동: (점수)  
+인지: (점수)
+사회성: (점수)
+신체: (점수)
 
 전문적이고 상세하게 작성하되, 가족이 이해하기 쉽고 실용적으로 활용할 수 있도록 설명해주세요.
 `;
@@ -208,11 +202,11 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     
     logStep('OpenAI response received', { textLength: analysisText.length });
 
-    // Parse domain scores from the analysis
-    const domainScores = { 정서: 75, 행동: 80, 인지: 85, 사회성: 70, 신체: 78 };
+    // Parse the analysis response properly
+    const domainScores = { 정서: 70, 행동: 70, 인지: 70, 사회성: 70, 신체: 70 };
     
-    // Try to extract scores from AI response
-    const scoreRegex = /(\w+):\s*(\d+)/g;
+    // Extract scores from AI response
+    const scoreRegex = /(정서|행동|인지|사회성|신체):\s*(\d+)/g;
     let match;
     while ((match = scoreRegex.exec(analysisText)) !== null) {
       const domain = match[1];
@@ -221,6 +215,42 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         domainScores[domain as keyof typeof domainScores] = score;
       }
     }
+
+    // Extract risk level from analysis
+    let riskLevel = '보통';
+    const riskMatches = analysisText.match(/위험도.*?:?\s*(낮음|보통|높음|매우높음)/i);
+    if (riskMatches) {
+      riskLevel = riskMatches[1];
+    }
+
+    // Parse detailed sections
+    const sections = {
+      situation: '',
+      development: '',
+      concerns: '',
+      issues: '',
+      improvements: '',
+      consultation: ''
+    };
+
+    // Extract each section content
+    const situationMatch = analysisText.match(/\*\*상황 분석\*\*([\s\S]*?)(?=\*\*|$)/);
+    if (situationMatch) sections.situation = situationMatch[1].trim();
+
+    const developmentMatch = analysisText.match(/\*\*발달 상태 평가\*\*([\s\S]*?)(?=\*\*|$)/);
+    if (developmentMatch) sections.development = developmentMatch[1].trim();
+
+    const concernsMatch = analysisText.match(/\*\*주요 관심 사항\*\*([\s\S]*?)(?=\*\*|$)/);
+    if (concernsMatch) sections.concerns = concernsMatch[1].trim();
+
+    const issuesMatch = analysisText.match(/\*\*잠재적 문제점\*\*([\s\S]*?)(?=\*\*|$)/);
+    if (issuesMatch) sections.issues = issuesMatch[1].trim();
+
+    const improvementsMatch = analysisText.match(/\*\*개선 방안\*\*([\s\S]*?)(?=\*\*|$)/);
+    if (improvementsMatch) sections.improvements = improvementsMatch[1].trim();
+
+    const consultationMatch = analysisText.match(/\*\*전문가 상담 권장\*\*([\s\S]*?)(?=\*\*|$)/);
+    if (consultationMatch) sections.consultation = consultationMatch[1].trim();
 
     // Add media notes if files were provided
     const mediaNotes: string[] = [];
@@ -235,17 +265,26 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
       Object.values(domainScores).reduce((sum, score) => sum + score, 0) / 5
     );
 
-    // Simple parsing for basic structure
-    const sections = analysisText.split(/🔍|💡|🎯|📚|💝|⚠️/).filter(section => section.trim().length > 0);
+    // Build comprehensive analysis result
+    const analysisResult = {
+      situation: sections.situation || '상황 분석이 진행되었습니다.',
+      development: sections.development || '발달 상태 평가가 완료되었습니다.',
+      concerns: sections.concerns || '주요 관심 사항을 확인했습니다.',
+      issues: sections.issues || '잠재적 문제점을 분석했습니다.',
+      improvements: sections.improvements || '개선 방안을 제시했습니다.',
+      consultation: sections.consultation || '전문가 상담 권장사항을 제공했습니다.',
+      riskLevel: riskLevel,
+      fullAnalysis: analysisText
+    };
     
     const result: ObserveReportResponse = {
       ok: true,
       report: {
-        situation: sections[0]?.trim() || analysisText.substring(0, 500) + '...',
-        points: ['전문가 관점에서 분석된 주요 특징들입니다.'],
-        positives: ['관찰된 긍정적인 발달 특성들을 확인했습니다.'],
-        tips: ['실용적인 개선 방안들을 제시합니다.'],
-        alerts: [],
+        situation: analysisResult.situation,
+        points: [analysisResult.development],
+        positives: [analysisResult.concerns],
+        tips: [analysisResult.improvements],
+        alerts: riskLevel === '높음' || riskLevel === '매우높음' ? [analysisResult.consultation] : [],
         mediaNotes
       },
       score: {

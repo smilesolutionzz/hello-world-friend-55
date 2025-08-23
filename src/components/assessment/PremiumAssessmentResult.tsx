@@ -145,6 +145,19 @@ const PremiumAssessmentResult = ({
     return { level: "낮음", color: "bg-blue-500", description: "매우 약한 특성" };
   };
 
+  const translateCategory = (category: string) => {
+    const translations: Record<string, string> = {
+      'novelty_seeking': 'Novelty Seeking (자극추구)',
+      'harm_avoidance': 'Harm Avoidance (위험회피)', 
+      'reward_dependence': 'Reward Dependence (사회적 민감성)',
+      'persistence': 'Persistence (인내력)',
+      'self_directedness': 'Self-Directedness (자율성)',
+      'cooperativeness': 'Cooperativeness (협조성)',
+      'self_transcendence': 'Self-Transcendence (자기초월)'
+    };
+    return translations[category.toLowerCase()] || category.replace(/_/g, ' ');
+  };
+
   const totalScore = Object.values(results).reduce((sum, score) => sum + score, 0);
   const averageScore = totalScore / Object.keys(results).length;
 
@@ -213,8 +226,8 @@ const PremiumAssessmentResult = ({
                       return (
                         <div key={category} className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="font-medium capitalize">
-                              {category.replace(/_/g, ' ')}
+                            <span className="font-medium">
+                              {translateCategory(category)}
                             </span>
                             <div className="flex items-center gap-2">
                               <Badge variant="outline" className={`${interpretation.color} text-white`}>

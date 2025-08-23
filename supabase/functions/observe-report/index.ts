@@ -181,15 +181,14 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         messages: [
           {
             role: 'system',
-            content: '당신은 아동발달, 심리상담, 행동분석 전문가입니다. 관찰 기록을 바탕으로 전문적이고 객관적인 분석을 제공합니다.'
+            content: '당신은 아동발달, 심리상담, 행동분석 전문가입니다. 관찰 기록을 바탕으로 전문적이고 객관적인 분석을 제공하며, 실용적인 조언과 구체적인 개선방안을 제시합니다. 응답은 반드시 요청된 형식을 정확히 따라주세요.'
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        max_tokens: 2000,
-        temperature: 0.7,
+        max_completion_tokens: 3000,
       }),
     });
 

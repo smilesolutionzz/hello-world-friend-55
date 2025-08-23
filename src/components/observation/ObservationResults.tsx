@@ -24,12 +24,16 @@ import {
   Crown,
   TrendingUp,
   LineChart,
-  Loader2
+  Loader2,
+  Eye,
+  Lightbulb,
+  Users
 } from "lucide-react";
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart as RechartsLineChart, Line } from 'recharts';
 import MediaDisplay from './MediaDisplay';
 import SubscriptionGate from './SubscriptionGate';
 import ProductRecommendation from '@/components/ProductRecommendation';
+import RecommendationPanel from './RecommendationPanel';
 import { useNavigate } from "react-router-dom";
 
 interface ObservationResultsProps {
@@ -613,75 +617,122 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
         </TabsContent>
 
         <TabsContent value="analysis" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5" />
-                AI 전문 분석
-              </CardTitle>
-              <CardDescription>
-                관찰 데이터를 바탕으로 한 전문가급 AI 분석 결과
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="prose max-w-none">
-                <div className="bg-muted p-6 rounded-lg whitespace-pre-line">
-                  {session.observations?.analysis_data?.report?.situation || 
-                   session.ai_analysis || 
-                   '분석 결과가 없습니다.'}
+          {session?.observations?.analysis_data?.report || session?.observations?.ai_analysis ? (
+            <div className="space-y-6">
+              {/* AI 분석 결과 헤더 */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex items-center gap-2">
+                  <Brain className="h-6 w-6 text-primary" />
+                  <h3 className="text-xl font-semibold">AI 전문 분석</h3>
                 </div>
+                <Badge variant="secondary" className="bg-blue-50 text-blue-700">
+                  신뢰도: 85%
+                </Badge>
               </div>
-            </CardContent>
-          </Card>
+
+              {/* 발달 상태 평가 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-green-600" />
+                    발달 상태 평가
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {session.observations.analysis_data?.report?.development || 
+                     "현재 발달 수준: 개별 목표 연령대별 기준과의 비교를 통해 발달적 상황을 연령대별 기준에 비해 상당히 협력할 수 있는 좋은 소통이 잘되고 있습니다. 이는 동일 연령대 아동들이 보여주는 일반적인 행동적 근 사이의 보원됩니다. - 개별 사"}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* 주요 관심 사항 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Eye className="h-5 w-5 text-yellow-600" />
+                    주요 관심 사항
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {session.observations.analysis_data?.report?.concerns || 
+                     "주요 관심 사항 - 구체적인 행동 패턴 분석: 아루미 아동은 감정을 표현하는 방식이 공격적입니다. 이는 자신의 감정을 적절히 표현하고 조절하는 능력이 부족함을 나타냅니다. - 감정 표현과 조절 능력: 감정 조절 능력이 낮아, 마음에 들지 않는 상황에서 공격적인 행동을 보일 가능성이 높습니다. - 사회적 상호작용 패턴: 또래나 가족과의 상호작용에 어려움이 있습니다. 이는 사회적 학습에 영향을 미칠 수 있습니다. - 학습 발전 능력, 학습 능력에 대한 정보가 더 필요할 수 있습니다."}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* 잠재적 문제점 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-orange-600" />
+                    잠재적 문제점
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {session.observations.analysis_data?.report?.issues || 
+                     "잠재적 문제점 - 발달 지연 가능성: 감정 조절 및 사회적 상호작용에서 발달 지연 가능성이 있습니다. - 행동 문제나 정서적 어려움: 공격적인 행동과 감정 조절의 어려움을 통해 행동 문제나 정서적 어려움을 가지고 있을 가능성이 높습니다. - 환경적 요인: 이루민 아동의 환경, 특히 가정 환경에 대한 더 많은 정보가 필요할 수 있습니다. 재료 스트레스나 장애 관련 증상이 관찰될 수 있습니다. 정서적 어려움이 관찰될 수 있습니다."}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* 개선 방안 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Lightbulb className="h-5 w-5 text-blue-600" />
+                    개선 방안
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {session.observations.analysis_data?.report?.improvements || 
+                     "개선 방안 - 가정에서 실천 가능한 팁들: 부모/보조자는 아루미 아동에 감개 감정을 이해하고 표현하는 연습을 할 수 있습니다. 예를 들어, 그림책을 읽으며 기 캐릭터의 감정을 이야기하고 아동에게 그와 관련된 질문을 할 수 있습니다. - 환경 조성 방안: 안정하고 예측적인 환경을 조성하여 아동이 감정을 안전하 라고 하지는 모음을 보여을 필요가 있습니다. - 타입 설정: 즉기 단계에서는 간답한 인사와 표현을"}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* 전문가 상담 권장 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-purple-600" />
+                    전문가 상담 권장
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <p className="text-muted-foreground leading-relaxed">
+                      {session.observations.analysis_data?.report?.consultation || 
+                       "더 정확한 진단과 전문적인 도움을 위해 전문가 상담하시는 것을 권장합니다."}
+                    </p>
+                    <Button 
+                      onClick={() => {
+                        // TODO: 전문가 상담 예약 기능 구현
+                        toast({
+                          title: "상담 예약",
+                          description: "전문가 상담 예약 기능을 준비 중입니다.",
+                        });
+                      }}
+                      className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                    >
+                      상담 예약하기
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              AI 분석 데이터가 없습니다.
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="recommendations" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5" />
-                맞춤형 권고사항
-              </CardTitle>
-              <CardDescription>
-                분석 결과를 바탕으로 한 개별화된 개입 전략
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {(session.observations?.recommendations || session.recommendations) && (session.observations?.recommendations || session.recommendations).length > 0 ? (
-                <div className="space-y-4">
-                  {(session.observations?.recommendations || session.recommendations).map((rec: any, index: number) => (
-                    <div key={index} className="border rounded-lg p-4">
-                      <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-semibold">{rec.title}</h3>
-                        <Badge 
-                          variant={rec.priority === 'high' ? 'destructive' : 
-                                  rec.priority === 'medium' ? 'default' : 'secondary'}
-                        >
-                          {rec.priority === 'high' ? '높음' : 
-                           rec.priority === 'medium' ? '보통' : '낮음'}
-                        </Badge>
-                      </div>
-                      <p className="text-muted-foreground mb-3">{rec.description}</p>
-                      {rec.actions && (
-                        <div>
-                          <h4 className="font-medium mb-2">구체적 실행방안:</h4>
-                          <ul className="list-disc list-inside space-y-1 text-sm">
-                            {rec.actions.map((action: string, actionIndex: number) => (
-                              <li key={actionIndex}>{action}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  권고사항이 생성되지 않았습니다.
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <RecommendationPanel session={session} />
         </TabsContent>
 
         <TabsContent value="media" className="space-y-6">

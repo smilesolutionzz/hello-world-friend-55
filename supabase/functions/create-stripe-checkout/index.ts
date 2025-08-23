@@ -18,6 +18,9 @@ serve(async (req) => {
     const { planId, subscriptionType = 'monthly' } = await req.json();
     console.log('요청 데이터:', { planId, subscriptionType });
     
+    // 토큰 패키지인지 구독 플랜인지 확인
+    const isTokenPackage = subscriptionType === 'one-time';
+    
     // 사용자 인증
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("인증이 필요합니다");
@@ -43,19 +46,48 @@ serve(async (req) => {
     const user = userData.user;
     console.log('사용자 인증 완료:', user.id);
 
-    // 구독 플랜 조회
-    const { data: plan, error: planError } = await supabaseAdmin
-      .from('subscription_plans')
-      .select('*')
-      .eq('id', planId)
-      .eq('is_active', true)
-      .single();
+    let plan: any;
+    let tableName: string;
+    let orderIdPrefix: string;
 
-    if (planError || !plan) {
-      throw new Error("구독 플랜을 찾을 수 없습니다");
+    if (isTokenPackage) {
+      // 토큰 패키지 조회
+      const { data: tokenPackage, error: packageError } = await supabaseAdmin
+        .from('token_packages')
+        .select('*')
+        .eq('id', planId)
+        .eq('is_active', true)
+        .single();
+
+      if (packageError || !tokenPackage) {
+        throw new Error("토큰 패키지를 찾을 수 없습니다");
+      }
+      
+      plan = {
+        ...tokenPackage,
+        price: tokenPackage.price_krw
+      };
+      tableName = 'token_orders';
+      orderIdPrefix = 'token';
+      console.log('토큰 패키지 조회 완료:', plan.name);
+    } else {
+      // 구독 플랜 조회
+      const { data: subscriptionPlan, error: planError } = await supabaseAdmin
+        .from('subscription_plans')
+        .select('*')
+        .eq('id', planId)
+        .eq('is_active', true)
+        .single();
+
+      if (planError || !subscriptionPlan) {
+        throw new Error("구독 플랜을 찾을 수 없습니다");
+      }
+      
+      plan = subscriptionPlan;
+      tableName = 'payment_history';
+      orderIdPrefix = 'sub';
+      console.log('구독 플랜 조회 완료:', plan.name);
     }
-    
-    console.log('플랜 조회 완료:', plan.name);
 
     // Stripe 초기화
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -74,10 +106,10 @@ serve(async (req) => {
     }
 
     // 주문 ID 생성
-    const orderId = `sub_${user.id}_${Date.now()}`;
+    const orderId = `${orderIdPrefix}_${user.id}_${Date.now()}`;
 
     // 체크아웃 세션 생성
-    const session = await stripe.checkout.sessions.create({
+    const sessionConfig: any = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
@@ -89,37 +121,69 @@ serve(async (req) => {
               description: plan.description 
             },
             unit_amount: plan.price,
-            recurring: { interval: "month" },
           },
           quantity: 1,
         },
       ],
-      mode: "subscription",
-      success_url: `${req.headers.get("origin")}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/subscription`,
       metadata: {
         user_id: user.id,
         plan_id: planId,
         subscription_type: subscriptionType,
-        order_id: orderId
+        order_id: orderId,
+        is_token_package: isTokenPackage.toString()
       }
-    });
+    };
 
-    // 결제 내역 저장
-    const { error: paymentError } = await supabaseAdmin
-      .from('payment_history')
-      .insert({
-        user_id: user.id,
-        plan_id: planId,
-        toss_order_id: orderId,
-        amount: plan.price,
-        subscription_type: subscriptionType,
-        status: 'pending'
-      });
+    if (isTokenPackage) {
+      // 토큰 패키지 - 일회성 결제
+      sessionConfig.mode = "payment";
+      sessionConfig.success_url = `${req.headers.get("origin")}/token-payment-success?session_id={CHECKOUT_SESSION_ID}`;
+      sessionConfig.cancel_url = `${req.headers.get("origin")}/token-subscription`;
+    } else {
+      // 구독 플랜 - 정기 결제
+      sessionConfig.line_items[0].price_data.recurring = { interval: "month" };
+      sessionConfig.mode = "subscription";
+      sessionConfig.success_url = `${req.headers.get("origin")}/subscription-success?session_id={CHECKOUT_SESSION_ID}`;
+      sessionConfig.cancel_url = `${req.headers.get("origin")}/subscription`;
+    }
 
-    if (paymentError) {
-      console.error('결제 내역 저장 오류:', paymentError);
-      throw new Error("결제 내역 저장에 실패했습니다");
+    const session = await stripe.checkout.sessions.create(sessionConfig);
+
+    // 주문 내역 저장
+    if (isTokenPackage) {
+      // 토큰 주문 저장
+      const { error: orderError } = await supabaseAdmin
+        .from('token_orders')
+        .insert({
+          user_id: user.id,
+          package_id: planId,
+          order_id: orderId,
+          amount: plan.price,
+          tokens_purchased: plan.token_count,
+          status: 'pending'
+        });
+
+      if (orderError) {
+        console.error('토큰 주문 저장 오류:', orderError);
+        throw new Error("토큰 주문 생성에 실패했습니다");
+      }
+    } else {
+      // 구독 결제 내역 저장
+      const { error: paymentError } = await supabaseAdmin
+        .from('payment_history')
+        .insert({
+          user_id: user.id,
+          plan_id: planId,
+          toss_order_id: orderId,
+          amount: plan.price,
+          subscription_type: subscriptionType,
+          status: 'pending'
+        });
+
+      if (paymentError) {
+        console.error('결제 내역 저장 오류:', paymentError);
+        throw new Error("결제 내역 저장에 실패했습니다");
+      }
     }
 
     console.log('=== Stripe Checkout 세션 생성 완료 ===');

@@ -19,41 +19,54 @@ const TokenPaymentSuccess = () => {
 
   useEffect(() => {
     const confirmPayment = async () => {
-      const paymentKey = searchParams.get('paymentKey');
-      const orderId = searchParams.get('orderId');
-      const amount = searchParams.get('amount');
+      const sessionId = searchParams.get('session_id');
 
-      if (!paymentKey || !orderId || !amount) {
+      if (!sessionId) {
         toast({
           title: "결제 정보 오류",
-          description: "필수 결제 정보가 누락되었습니다.",
+          description: "세션 정보가 누락되었습니다.",
           variant: "destructive"
         });
-        setLoading(false);
+        navigate('/token-subscription');
         return;
       }
 
       try {
-        const { data, error } = await supabase.functions.invoke('confirm-token-order', {
-          body: {
-            paymentKey,
-            orderId,
-            amount: parseInt(amount)
-          }
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          navigate('/auth');
+          return;
+        }
+
+        const { data, error } = await supabase.functions.invoke('confirm-stripe-payment', {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: { sessionId }
         });
 
         if (error) throw error;
 
-        setConfirmed(true);
-        setTokenData(data);
-        
-        // 토큰 잔액 새로고침
-        await refreshTokenBalance();
+        if (data.type === 'token') {
+          setConfirmed(true);
+          setTokenData({
+            tokens_added: data.tokens_added,
+            payment_intent: data.payment_intent
+          });
+          
+          // 토큰 잔액 새로고침
+          await refreshTokenBalance();
 
-        toast({
-          title: "토큰 충전 완료!",
-          description: `${data.tokens_added}개의 토큰이 성공적으로 충전되었습니다.`,
-        });
+          toast({
+            title: "토큰 충전 완료!",
+            description: `${data.tokens_added}개의 토큰이 성공적으로 충전되었습니다.`,
+          });
+        } else {
+          // 구독 결제의 경우 구독 성공 페이지로 리다이렉트
+          navigate('/subscription-success?session_id=' + sessionId);
+          return;
+        }
 
       } catch (error: any) {
         console.error('Payment confirmation error:', error);
@@ -68,7 +81,7 @@ const TokenPaymentSuccess = () => {
     };
 
     confirmPayment();
-  }, [searchParams, toast, refreshTokenBalance]);
+  }, [searchParams, toast, refreshTokenBalance, navigate]);
 
   if (loading) {
     return (
@@ -133,27 +146,33 @@ const TokenPaymentSuccess = () => {
           <div className="bg-slate-50 p-6 rounded-lg">
             <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
               <CreditCard className="h-5 w-5" />
-              주문 정보
+              결제 정보
             </h3>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-600">주문번호:</span>
+                <span className="text-slate-600">세션 ID:</span>
                 <span className="font-mono text-xs bg-white px-2 py-1 rounded border">
-                  {searchParams.get('orderId')}
+                  {searchParams.get('session_id')?.slice(0, 24)}...
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-600">결제금액:</span>
-                <span className="font-semibold">
-                  ₩{parseInt(searchParams.get('amount') || '0').toLocaleString()}
-                </span>
-              </div>
+              {tokenData?.payment_intent && (
+                <div className="flex justify-between">
+                  <span className="text-slate-600">결제 ID:</span>
+                  <span className="font-mono text-xs bg-white px-2 py-1 rounded border">
+                    {tokenData.payment_intent.slice(0, 20)}...
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-slate-600">결제일시:</span>
                 <span className="flex items-center gap-1 text-slate-800">
                   <Clock className="h-4 w-4" />
                   {new Date().toLocaleString('ko-KR')}
                 </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-600">결제 방식:</span>
+                <span className="font-semibold">Stripe 카드 결제</span>
               </div>
             </div>
           </div>

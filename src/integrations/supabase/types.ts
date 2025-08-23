@@ -444,6 +444,39 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          referee_id: string | null
+          referral_code: string
+          referrer_id: string
+          status: string
+          tokens_awarded: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referee_id?: string | null
+          referral_code: string
+          referrer_id: string
+          status?: string
+          tokens_awarded?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referee_id?: string | null
+          referral_code?: string
+          referrer_id?: string
+          status?: string
+          tokens_awarded?: number | null
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           created_at: string
@@ -909,9 +942,21 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      apply_referral_code: {
+        Args: { p_referral_code: string; p_user_id: string }
+        Returns: boolean
+      }
+      generate_referral_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_monthly_usage: {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: number
+      }
+      process_referral_reward: {
+        Args: { p_referee_id: string; p_referral_code: string }
+        Returns: boolean
       }
       track_feature_usage: {
         Args: { p_feature_type: string; p_user_id: string }

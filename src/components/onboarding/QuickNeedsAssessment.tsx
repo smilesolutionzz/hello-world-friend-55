@@ -377,12 +377,19 @@ export default function QuickNeedsAssessment() {
                         </div>
                         <Button 
                           size="lg"
+                          type="button"
                           onClick={(e) => {
+                            e.preventDefault();
                             e.stopPropagation();
                             console.log(`🚀 맞춤테스트 시작: ${test.name} -> ${test.route}`);
-                            navigate(test.route);
+                            try {
+                              navigate(test.route);
+                              console.log(`✅ 네비게이션 성공: ${test.route}`);
+                            } catch (error) {
+                              console.error(`❌ 네비게이션 실패:`, error);
+                            }
                           }}
-                          className="group/btn bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-3"
+                          className="group/btn bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-3 cursor-pointer"
                         >
                           <span className="mr-2">시작하기</span>
                           <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -554,12 +561,19 @@ export default function QuickNeedsAssessment() {
                 </div>
                 
                 <Button 
-                  className="w-full bg-white/40 backdrop-blur-sm border-2 border-white/50 text-slate-800 dark:text-slate-100 hover:bg-white/60 hover:scale-105 transition-all duration-300 group-hover:shadow-lg font-semibold"
+                  className="w-full bg-white/40 backdrop-blur-sm border-2 border-white/50 text-slate-800 dark:text-slate-100 hover:bg-white/60 hover:scale-105 transition-all duration-300 group-hover:shadow-lg font-semibold cursor-pointer"
                   variant="outline"
+                  type="button"
                   onClick={(e) => {
+                    e.preventDefault();
                     e.stopPropagation();
                     console.log(`자세히보기 클릭: ${recommendation.title}`);
-                    setSelectedConcern(recommendation.concern);
+                    try {
+                      setSelectedConcern(recommendation.concern);
+                      console.log(`✅ 자세히보기 성공: ${recommendation.concern}`);
+                    } catch (error) {
+                      console.error(`❌ 자세히보기 실패:`, error);
+                    }
                   }}
                 >
                   <span className="mr-2">자세히 보기</span>
@@ -583,15 +597,21 @@ export default function QuickNeedsAssessment() {
               <p className="text-slate-700 dark:text-slate-200 mb-6 text-lg max-w-xl mx-auto font-medium">
                 3분 기본 검사로 시작해서 개인 맞춤 추천을 받아보세요
               </p>
-              <Button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log('3분 기본 검사 시작 클릭');
-                  navigate('/assessment');
-                }}
-                size="lg"
-                className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-8 py-4 text-lg"
-              >
+                <Button 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('3분 기본 검사 시작 클릭');
+                    try {
+                      navigate('/assessment');
+                      console.log('✅ 기본검사 네비게이션 성공');
+                    } catch (error) {
+                      console.error('❌ 기본검사 네비게이션 실패:', error);
+                    }
+                  }}
+                  size="lg"
+                  className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 px-8 py-4 text-lg cursor-pointer"
+                >
                 <Clock className="w-5 h-5 mr-2" />
                 3분 기본 검사 시작
                 <Sparkles className="w-5 h-5 ml-2" />

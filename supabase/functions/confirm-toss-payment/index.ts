@@ -14,6 +14,8 @@ serve(async (req) => {
   try {
     const { paymentKey, orderId, amount } = await req.json();
     
+    console.log('Payment confirmation request:', { paymentKey, orderId, amount });
+    
     // Supabase 클라이언트 생성 (서비스 롤)
     const supabaseService = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -27,6 +29,8 @@ serve(async (req) => {
       throw new Error('TOSS_PAYMENTS_SECRET_KEY is not configured');
     }
     const encryptedSecretKey = btoa(secretKey + ':');
+
+    console.log('Calling TossPayments API with orderId:', orderId);
 
     const response = await fetch('https://api.tosspayments.com/v1/payments/confirm', {
       method: 'POST',
@@ -42,8 +46,15 @@ serve(async (req) => {
     });
 
     const result = await response.json();
+    
+    console.log('TossPayments API response:', {
+      status: response.status,
+      ok: response.ok,
+      result: result
+    });
 
     if (!response.ok) {
+      console.error('TossPayments API error:', result);
       throw new Error(result.message || '결제 승인에 실패했습니다.');
     }
 
@@ -55,11 +66,14 @@ serve(async (req) => {
         status: 'completed',
         payment_method: result.method
       })
-      .eq('order_id', orderId)
+      .eq('toss_order_id', orderId)  // 'order_id' 대신 'toss_order_id' 사용
       .select('*, user_id')
       .single();
 
-    if (paymentUpdateError) throw paymentUpdateError;
+    if (paymentUpdateError) {
+      console.error('Payment update error:', paymentUpdateError);
+      throw paymentUpdateError;
+    }
 
     // 결제된 주문에서 플랜 ID 추출 (주문명에서 플랜 정보 추출 또는 별도 테이블 조회)
     // 여기서는 간단히 주문명 기반으로 플랜 결정

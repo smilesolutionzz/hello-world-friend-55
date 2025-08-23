@@ -107,9 +107,17 @@ serve(async (req) => {
     const tossClientKey = Deno.env.get("TOSS_PAYMENTS_CLIENT_KEY");
     const tossSecretKey = Deno.env.get("TOSS_PAYMENTS_SECRET_KEY");
     
+    console.log('TossPayments keys check:', {
+      clientKeyExists: !!tossClientKey,
+      secretKeyExists: !!tossSecretKey,
+      clientKeyPrefix: tossClientKey?.substring(0, 10) + '...',
+    });
+    
     if (!tossClientKey || !tossSecretKey) {
       throw new Error("토스페이먼츠 API 키가 설정되지 않았습니다.");
     }
+
+    console.log('Payment request created:', paymentData);
 
     return new Response(JSON.stringify({ 
       success: true, 

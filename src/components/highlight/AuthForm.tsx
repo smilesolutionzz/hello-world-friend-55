@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,23 +31,22 @@ export const AuthForm = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Redirect authenticated users to dashboard
-        if (session?.user) {
-          setTimeout(() => {
-            navigate('/');
-          }, 0);
+        // Only redirect on SIGNED_IN event to avoid conflicts
+        if (event === 'SIGNED_IN' && session?.user) {
+          console.log('User signed in, redirecting to dashboard');
+          navigate('/');
         }
       }
     );
 
-    // THEN check for existing session
+    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -83,18 +83,46 @@ export const AuthForm = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!displayName.trim()) {
+      toast({
+        title: "오류",
+        description: "이름을 입력해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!email.trim() || !password.trim()) {
+      toast({
+        title: "오류", 
+        description: "이메일과 비밀번호를 모두 입력해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      toast({
+        title: "오류",
+        description: "비밀번호는 최소 6자 이상이어야 합니다.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      const { error } = await supabase.auth.signUp({
-        email,
+      console.log('회원가입 시도 중...');
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
         password,
         options: {
-          emailRedirectTo: redirectUrl,
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
-            display_name: displayName || email.split('@')[0],
-            phone,
+            display_name: displayName.trim(),
+            phone: phone.trim(),
             birth_date: birthDate,
             gender,
             age_group: ageGroup,
@@ -105,16 +133,47 @@ export const AuthForm = () => {
         }
       });
 
-      if (error) throw error;
+      console.log('회원가입 응답:', data, error);
 
+      if (error) {
+        console.error('회원가입 오류:', error);
+        let errorMessage = error.message;
+        
+        if (error.message.includes('already registered')) {
+          errorMessage = '이미 가입된 이메일입니다. 로그인해주세요.';
+        } else if (error.message.includes('invalid email')) {
+          errorMessage = '유효하지 않은 이메일 형식입니다.';
+        } else if (error.message.includes('weak password')) {
+          errorMessage = '비밀번호가 너무 약합니다.';
+        }
+        
+        toast({
+          title: "회원가입 실패",
+          description: errorMessage,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // 회원가입 성공
       toast({
-        title: "회원가입 완료",
-        description: "이메일을 확인하여 계정을 활성화해주세요.",
+        title: "회원가입 성공!",
+        description: "HIGHLIGHT에 오신 것을 환영합니다! 이메일을 확인해주세요.",
       });
+
+      // 이메일 확인이 필요한 경우와 즉시 로그인되는 경우 모두 처리
+      if (data.user && !data.session) {
+        console.log('이메일 확인 필요');
+      } else if (data.session) {
+        console.log('즉시 로그인 성공');
+        // onAuthStateChange에서 자동으로 리다이렉션됨
+      }
+
     } catch (error: any) {
+      console.error('회원가입 중 예외 발생:', error);
       toast({
-        title: "회원가입 실패",
-        description: error.message,
+        title: "오류",
+        description: "회원가입 중 문제가 발생했습니다. 다시 시도해주세요.",
         variant: "destructive",
       });
     } finally {
@@ -124,31 +183,58 @@ export const AuthForm = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email.trim() || !password.trim()) {
+      toast({
+        title: "오류",
+        description: "이메일과 비밀번호를 입력해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
+      console.log('로그인 시도 중...');
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password,
       });
 
+      console.log('로그인 응답:', data, error);
+
       if (error) {
-        console.log('Login error:', error);
-        throw error;
+        console.error('로그인 오류:', error);
+        let errorMessage = error.message;
+        
+        if (error.message.includes('Invalid login credentials')) {
+          errorMessage = '이메일 또는 비밀번호가 잘못되었습니다.';
+        } else if (error.message.includes('Email not confirmed')) {
+          errorMessage = '이메일 인증이 필요합니다. 이메일을 확인해주세요.';
+        }
+        
+        toast({
+          title: "로그인 실패",
+          description: errorMessage,
+          variant: "destructive",
+        });
+        return;
       }
 
-      console.log('Login successful:', data);
-
+      console.log('로그인 성공:', data);
       toast({
         title: "로그인 성공",
         description: "HIGHLIGHT에 오신 것을 환영합니다!",
       });
       
-      navigate('/');
+      // onAuthStateChange에서 자동으로 리다이렉션됨
+
     } catch (error: any) {
+      console.error('로그인 중 예외 발생:', error);
       toast({
-        title: "로그인 실패",
-        description: error.message,
+        title: "오류",
+        description: "로그인 중 문제가 발생했습니다. 다시 시도해주세요.",
         variant: "destructive",
       });
     } finally {
@@ -237,7 +323,7 @@ export const AuthForm = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="phone">전화번호 *</Label>
+                    <Label htmlFor="phone">전화번호</Label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
@@ -247,7 +333,6 @@ export const AuthForm = () => {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         className="pl-10"
-                        required
                       />
                     </div>
                   </div>

@@ -162,10 +162,13 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
     }
   };
 
-  const analysisData = session.analysis_data || {};
+  const analysisData = session.observations?.analysis_data || {};
   const scores = analysisData.scores || {};
   const riskLevel = analysisData.riskLevel || 'medium';
   const riskInfo = getRiskLevelInfo(riskLevel);
+
+  // Parse media files from session  
+  const mediaFiles = session.observations?.media_files || [];
 
   // Prepare chart data
   const radarData = Object.entries(scores).map(([category, data]: [string, any]) => ({
@@ -192,15 +195,13 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
   const hasUsagesLeft = !subscriptionData || subscriptionData.usage_count < 3;
   const canViewAdvanced = isPremiumUser || hasUsagesLeft;
 
-  // Parse media files from session
-  const mediaFiles = session.media_files || [];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold">{session.session_name}</h2>
-          <p className="text-muted-foreground">{getDomainDisplayName(session.domain)} 관찰 결과</p>
+          <h2 className="text-2xl font-semibold">{session.observations?.session_name || session.session_name}</h2>
+          <p className="text-muted-foreground">{getDomainDisplayName(session.observations?.domain || session.domain)} 관찰 결과</p>
         </div>
         <div className="flex items-center gap-3">
           <Button 
@@ -238,7 +239,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
               <User className="h-5 w-5 text-muted-foreground" />
               <div>
                 <div className="text-sm text-muted-foreground">관찰자</div>
-                <div className="font-medium">{session.observer_name}</div>
+                <div className="font-medium">{session.observations?.observer_name || session.observer_name}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -246,8 +247,8 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
               <div>
                 <div className="text-sm text-muted-foreground">관찰 기간</div>
                 <div className="font-medium">
-                  {new Date(session.observation_period_start).toLocaleDateString('ko-KR')} ~{' '}
-                  {new Date(session.observation_period_end).toLocaleDateString('ko-KR')}
+                  {new Date(session.observations?.observation_period_start || session.observation_period_start).toLocaleDateString('ko-KR')} ~{' '}
+                  {new Date(session.observations?.observation_period_end || session.observation_period_end).toLocaleDateString('ko-KR')}
                 </div>
               </div>
             </div>
@@ -624,7 +625,9 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
             <CardContent>
               <div className="prose max-w-none">
                 <div className="bg-muted p-6 rounded-lg whitespace-pre-line">
-                  {session.ai_analysis || '분석 결과가 없습니다.'}
+                  {session.observations?.analysis_data?.report?.situation || 
+                   session.ai_analysis || 
+                   '분석 결과가 없습니다.'}
                 </div>
               </div>
             </CardContent>
@@ -643,9 +646,9 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {session.recommendations && session.recommendations.length > 0 ? (
+              {(session.observations?.recommendations || session.recommendations) && (session.observations?.recommendations || session.recommendations).length > 0 ? (
                 <div className="space-y-4">
-                  {session.recommendations.map((rec: any, index: number) => (
+                  {(session.observations?.recommendations || session.recommendations).map((rec: any, index: number) => (
                     <div key={index} className="border rounded-lg p-4">
                       <div className="flex items-start justify-between mb-2">
                         <h3 className="font-semibold">{rec.title}</h3>

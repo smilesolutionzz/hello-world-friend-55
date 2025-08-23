@@ -105,7 +105,7 @@ const Navigation = () => {
             </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/ai-counselor')}>
               <MessageCircle className="w-4 h-4 mr-1" />
-              AI상담
+              AIH상담
             </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/experts')}>
               <Users className="w-4 h-4 mr-1" />
@@ -286,7 +286,7 @@ const Navigation = () => {
                     onClick={() => handleNavigation('/ai-counselor')}
                   >
                     <MessageCircle className="mr-3 h-5 w-5 text-primary shrink-0" />
-                    <span className="font-medium">AI 상담사</span>
+                    <span className="font-medium">AIH 상담사</span>
                   </Button>
                   
                   <Button

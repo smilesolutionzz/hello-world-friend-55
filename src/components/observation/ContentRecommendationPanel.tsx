@@ -88,7 +88,7 @@ const ContentRecommendationPanel: React.FC<ContentRecommendationPanelProps> = ({
         <div>
           <h3 className="text-xl font-semibold flex items-center gap-2">
             <Youtube className="h-5 w-5 text-red-600" />
-            맞춤 컨텐츠 추천
+            AIH 맞춤 컨텐츠 추천
           </h3>
           <p className="text-muted-foreground text-sm mt-1">
             관찰 내용을 바탕으로 도움이 될 유튜브 컨텐츠를 추천합니다
@@ -212,7 +212,7 @@ const ContentRecommendationPanel: React.FC<ContentRecommendationPanelProps> = ({
               <Youtube className="h-12 w-12 mx-auto mb-4 text-red-600" />
               <h3 className="font-medium mb-2">아직 추천받은 컨텐츠가 없습니다</h3>
               <p className="text-muted-foreground text-sm mb-4">
-                관찰 내용을 분석하여 도움이 될 유튜브 컨텐츠를 AI가 추천해드립니다.
+                관찰 내용을 분석하여 도움이 될 유튜브 컨텐츠를 AIH가 추천해드립니다.
               </p>
               <Button 
                 onClick={generateContentRecommendations}

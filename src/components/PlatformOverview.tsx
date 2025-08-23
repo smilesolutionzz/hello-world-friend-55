@@ -11,7 +11,7 @@ const PlatformOverview = () => {
             <br />정신건강 케어의 새로운 패러다임
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-[1.6] text-center">
-            데이터와 AI 상담을 기반으로, 개인·기업·의료기관이 함께 만드는
+            데이터와 AIH 상담을 기반으로, 개인·기업·의료기관이 함께 만드는
             <br />차세대 통합 정신건강 플랫폼
           </p>
         </div>
@@ -22,9 +22,9 @@ const PlatformOverview = () => {
             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
               <Brain className="w-8 h-8 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-2">AI 기반 정밀 분석</h3>
+            <h3 className="text-xl font-bold mb-2">AIH 기반 정밀 분석</h3>
             <p className="text-muted-foreground max-w-sm mx-auto leading-[1.6] text-center">
-              최신 AI 기술로 우울증, 불안장애 등을 정확하게 분석하고 개인 맞춤형 솔루션을 제공합니다
+              최신 AIH 기술로 우울증, 불안장애 등을 정확하게 분석하고 개인 맞춤형 솔루션을 제공합니다
             </p>
           </div>
 
@@ -44,7 +44,7 @@ const PlatformOverview = () => {
             </div>
             <h3 className="text-xl font-bold mb-2">즉시 상담 연결</h3>
             <p className="text-muted-foreground max-w-sm mx-auto leading-[1.6] text-center">
-              24시간 AI 상담부터 전문 상담사 매칭까지, 필요한 순간 바로 도움을 받을 수 있습니다
+              24시간 AIH 상담부터 전문 상담사 매칭까지, 필요한 순간 바로 도움을 받을 수 있습니다
             </p>
           </div>
         </div>
@@ -64,7 +64,7 @@ const PlatformOverview = () => {
                 <li>• 무료 기본 상담으로 부담 없이 시작</li>
                 <li>• 정확한 심리 상태 진단과 맞춤 케어</li>
                 <li>• 가족 단위 종합 정신건강 관리</li>
-                <li>• 24시간 언제든 접근 가능한 AI 상담</li>
+                <li>• 24시간 언제든 접근 가능한 AIH 상담</li>
               </ul>
             </div>
 

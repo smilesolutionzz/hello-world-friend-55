@@ -22,10 +22,10 @@ const ClientLogos = () => {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2 sm:mb-4">
-            <span className="text-brand-gradient">신뢰받는 AI 심리분석 플랫폼</span>
+            <span className="text-brand-gradient">신뢰받는 AIH 심리분석 플랫폼</span>
           </h2>
           <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
-            전국 주요 의료기관과 교육기관에서 선택한 전문 AI 분석 서비스
+            전국 주요 의료기관과 교육기관에서 선택한 전문 AIH 분석 서비스
           </p>
         </div>
 
@@ -49,7 +49,7 @@ const ClientLogos = () => {
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-4 sm:px-6 py-2 sm:py-3">
               <span className="text-lg">✨</span>
               <span className="text-sm sm:text-base font-medium text-foreground">
-                <span className="text-brand-gradient font-bold">50+</span> 기관에서 신뢰하는 AI + 전문가 분석
+                <span className="text-brand-gradient font-bold">50+</span> 기관에서 신뢰하는 AIH + 전문가 분석
               </span>
             </div>
           </div>

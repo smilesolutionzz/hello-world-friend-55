@@ -60,7 +60,7 @@ const ChatInterface = () => {
       // 성공 토스트
       toast({
         title: "✅ 분석 완료",
-        description: "AI 리포팅이 성공적으로 생성되었습니다!",
+        description: "AIH 리포팅이 성공적으로 생성되었습니다!",
         variant: "default"
       });
 
@@ -73,7 +73,7 @@ const ChatInterface = () => {
         });
       }
     } catch (error) {
-      console.error('💥 AI 분석 오류:', error);
+      console.error('💥 AIH 분석 오류:', error);
       toast({
         title: "❌ 분석 실패",
         description: "문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
@@ -107,13 +107,13 @@ const ChatInterface = () => {
           </Card>
         )}
 
-        {/* AI 리포팅 결과 */}
+        {/* AIH 리포팅 결과 */}
         <Card className="p-8">
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Sparkles className="w-6 h-6 text-primary" />
-                <h2 className="text-2xl font-bold text-brand-gradient">AI 즉시 리포팅 (참고용)</h2>
+                <h2 className="text-2xl font-bold text-brand-gradient">AIH 즉시 리포팅 (참고용)</h2>
               </div>
               <div className="text-sm text-muted-foreground">
                 {new Date(report.timestamp).toLocaleString('ko-KR')}
@@ -128,7 +128,7 @@ const ChatInterface = () => {
               </p>
             </div>
 
-            {/* AI 분석 결과 */}
+            {/* AIH 분석 결과 */}
             <div className="prose prose-lg max-w-none">
               <div className="whitespace-pre-line text-foreground leading-relaxed">
                 {report.report}
@@ -196,7 +196,7 @@ const ChatInterface = () => {
       <div className="flex items-center justify-center mb-6 sm:mb-8">
         <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-2xl px-4 sm:px-6 py-2 sm:py-3 shadow-lg border border-border">
           <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-primary animate-pulse-glow" />
-          <span className="text-lg sm:text-xl font-semibold text-brand-gradient">AI 즉시 리포팅</span>
+          <span className="text-lg sm:text-xl font-semibold text-brand-gradient">AIH 즉시 리포팅</span>
           <span className="text-xs sm:text-sm bg-primary/20 text-primary px-2 py-1 rounded-full">beta</span>
         </div>
       </div>
@@ -239,7 +239,7 @@ const ChatInterface = () => {
             {isAnalyzing ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
-                AI 리포팅 중...
+                AIH 리포팅 중...
               </>
             ) : (
               <>

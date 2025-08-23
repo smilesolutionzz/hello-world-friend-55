@@ -297,33 +297,33 @@ const Auth = () => {
                   </div>
                 </div>
                 
-                 <div className="space-y-2">
-                   <Label htmlFor="signup-phone">전화번호 (선택)</Label>
-                   <div className="relative">
-                     <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                     <Input
-                       id="signup-phone"
-                       type="tel"
-                       placeholder="010-1234-5678"
-                       value={signupData.phone}
-                       onChange={(e) => {
-                         const value = e.target.value;
-                         // 숫자만 입력받고 자동으로 하이픈 추가
-                         const phoneNumber = value.replace(/[^0-9]/g, '');
-                         if (phoneNumber.length <= 11) {
-                           let formattedPhone = phoneNumber;
-                           if (phoneNumber.length > 3 && phoneNumber.length <= 7) {
-                             formattedPhone = `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
-                           } else if (phoneNumber.length > 7) {
-                             formattedPhone = `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7)}`;
-                           }
-                           setSignupData(prev => ({ ...prev, phone: formattedPhone }));
-                         }
-                       }}
-                       className="pl-10"
-                     />
-                   </div>
-                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-phone">전화번호 (선택)</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="signup-phone"
+                      type="tel"
+                      placeholder="010-1234-5678"
+                      value={signupData.phone}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // 숫자만 입력받고 자동으로 하이픈 추가
+                        const phoneNumber = value.replace(/[^0-9]/g, '');
+                        if (phoneNumber.length <= 11) {
+                          let formattedPhone = phoneNumber;
+                          if (phoneNumber.length > 3 && phoneNumber.length <= 7) {
+                            formattedPhone = `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+                          } else if (phoneNumber.length > 7) {
+                            formattedPhone = `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7)}`;
+                          }
+                          setSignupData(prev => ({ ...prev, phone: formattedPhone }));
+                        }
+                      }}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="signup-birth">생년월일 (선택)</Label>
@@ -355,33 +355,33 @@ const Auth = () => {
                   </div>
                 </div>
                 
-                 <div className="space-y-2">
-                   <Label htmlFor="signup-confirm">비밀번호 확인</Label>
-                   <div className="relative">
-                     <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                     <Input
-                       id="signup-confirm"
-                       type="password"
-                       placeholder="비밀번호를 다시 입력하세요"
-                       value={signupData.confirmPassword}
-                       onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                       className={`pl-10 ${
-                         signupData.confirmPassword && signupData.password !== signupData.confirmPassword 
-                           ? 'border-red-500 focus:border-red-500' 
-                           : signupData.confirmPassword && signupData.password === signupData.confirmPassword
-                           ? 'border-green-500 focus:border-green-500'
-                           : ''
-                       }`}
-                       required
-                     />
-                   </div>
-                   {signupData.confirmPassword && signupData.password !== signupData.confirmPassword && (
-                     <p className="text-sm text-red-500">비밀번호가 일치하지 않습니다.</p>
-                   )}
-                   {signupData.confirmPassword && signupData.password === signupData.confirmPassword && (
-                     <p className="text-sm text-green-600">비밀번호가 일치합니다.</p>
-                   )}
-                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-confirm">비밀번호 확인</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="signup-confirm"
+                      type="password"
+                      placeholder="비밀번호를 다시 입력하세요"
+                      value={signupData.confirmPassword}
+                      onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      className={`pl-10 ${
+                        signupData.confirmPassword && signupData.password !== signupData.confirmPassword 
+                          ? 'border-red-500 focus:border-red-500' 
+                          : signupData.confirmPassword && signupData.password === signupData.confirmPassword
+                          ? 'border-green-500 focus:border-green-500'
+                          : ''
+                      }`}
+                      required
+                    />
+                  </div>
+                  {signupData.confirmPassword && signupData.password !== signupData.confirmPassword && (
+                    <p className="text-sm text-red-500">비밀번호가 일치하지 않습니다.</p>
+                  )}
+                  {signupData.confirmPassword && signupData.password === signupData.confirmPassword && (
+                    <p className="text-sm text-green-600">비밀번호가 일치합니다.</p>
+                  )}
+                </div>
                 
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "가입 중..." : "회원가입"}

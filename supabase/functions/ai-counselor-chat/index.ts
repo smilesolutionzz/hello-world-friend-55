@@ -70,7 +70,18 @@ serve(async (req) => {
     }
 
     const data = await response.json();
+    console.log('OpenAI API Response:', JSON.stringify(data, null, 2));
+    
+    if (!data.choices || data.choices.length === 0) {
+      throw new Error('No choices returned from OpenAI API');
+    }
+    
     const aiResponse = data.choices[0].message.content;
+    console.log('AI Response content:', aiResponse);
+    
+    if (!aiResponse || aiResponse.trim() === '') {
+      throw new Error('Empty response from OpenAI API');
+    }
 
     console.log('AI Response generated successfully');
 

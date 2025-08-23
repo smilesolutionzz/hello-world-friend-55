@@ -9,7 +9,7 @@ import { useReferrals } from '@/hooks/useReferrals';
 import { useToast } from '@/hooks/use-toast';
 
 const ReferralWidget: React.FC = () => {
-  const { referrals, loading, generateReferralCode } = useReferrals();
+  const { referrals, loading, generateReferralCode, stats, loadReferralStats } = useReferrals();
   const [showModal, setShowModal] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const { toast } = useToast();
@@ -36,10 +36,13 @@ const ReferralWidget: React.FC = () => {
     setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  const completedReferrals = referrals.filter(r => r.status === 'completed').length;
-  const totalEarned = referrals
-    .filter(r => r.status === 'completed' && r.reward_given)
-    .reduce((total, r) => total + r.reward_tokens, 0);
+  const completedReferrals = stats.referralCount;
+  const totalEarned = stats.totalTokensEarned;
+
+  // 컴포넌트 마운트 시 통계 로드
+  React.useEffect(() => {
+    loadReferralStats();
+  }, []);
 
   return (
     <>
@@ -114,36 +117,29 @@ const ReferralWidget: React.FC = () => {
                       )}
                     </Button>
 
-                    {referrals.length > 0 && (
+                    {stats.myReferralCode && (
                       <div className="space-y-2">
-                        <h5 className="text-sm font-medium">기존 추천 코드</h5>
-                        <div className="max-h-32 overflow-y-auto space-y-2">
-                          {referrals.map((referral) => (
-                            <div key={referral.id} className="flex items-center justify-between p-2 bg-muted rounded">
-                              <div className="flex items-center gap-2">
-                                <code className="text-xs font-mono bg-background px-2 py-1 rounded">
-                                  {referral.referral_code}
-                                </code>
-                                <Badge 
-                                  variant={referral.status === 'completed' ? 'default' : 'secondary'}
-                                  className="text-xs"
-                                >
-                                  {referral.status === 'completed' ? '완료' : '대기중'}
-                                </Badge>
-                              </div>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => copyReferralLink(referral.referral_code)}
-                              >
-                                {copiedCode === referral.referral_code ? (
-                                  <Check className="w-3 h-3" />
-                                ) : (
-                                  <Copy className="w-3 h-3" />
-                                )}
-                              </Button>
-                            </div>
-                          ))}
+                        <h5 className="text-sm font-medium">내 추천 코드</h5>
+                        <div className="flex items-center justify-between p-2 bg-muted rounded">
+                          <div className="flex items-center gap-2">
+                            <code className="text-xs font-mono bg-background px-2 py-1 rounded">
+                              {stats.myReferralCode}
+                            </code>
+                            <Badge variant="secondary" className="text-xs">
+                              활성화
+                            </Badge>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => copyReferralLink(stats.myReferralCode)}
+                          >
+                            {copiedCode === stats.myReferralCode ? (
+                              <Check className="w-3 h-3" />
+                            ) : (
+                              <Copy className="w-3 h-3" />
+                            )}
+                          </Button>
                         </div>
                       </div>
                     )}

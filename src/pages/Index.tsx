@@ -8,6 +8,7 @@ import TrustIndicators from "@/components/TrustIndicators";
 import ClientLogos from "@/components/ClientLogos";
 import KakaoTalkWidget from "@/components/KakaoTalkWidget";
 import ReferralWidget from "@/components/ReferralWidget";
+import ReferralCodeInput from "@/components/ReferralCodeInput";
 import ProductSidebar from "@/components/ProductSidebar";
 import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
@@ -59,8 +60,9 @@ const Index = () => {
           <HeroSection />
           <PlatformOverview />
           <ClientLogos />
-          <div className="container mx-auto px-4 py-8">
+          <div className="container mx-auto px-4 py-8 space-y-6">
             <ReferralWidget />
+            <ReferralCodeInput />
           </div>
           <VideoShowcase />
           <TrustIndicators />

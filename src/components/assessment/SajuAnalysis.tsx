@@ -50,8 +50,7 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
     }
 
     // 토큰 확인
-    const hasTokens = checkTokenAvailability(TOKENS_REQUIRED);
-    if (!hasTokens) {
+    if (!checkTokenAvailability(TOKENS_REQUIRED)) {
       toast({
         title: "토큰 부족",
         description: `사주 분석에는 ${TOKENS_REQUIRED}토큰이 필요합니다. 토큰을 충전해주세요.`,
@@ -68,22 +67,19 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
 
       if (error) {
         console.error('Supabase function error:', error);
-        throw new Error('사주 분석에 실패했습니다.');
+        throw new Error(error.message || '사주 분석에 실패했습니다.');
       }
 
       if (!data?.analysis) {
         console.error('Empty analysis received:', data);
         throw new Error('사주 분석 결과를 받지 못했습니다.');
       }
-
-      // 토큰 소모
-      await consumeTokens(TOKENS_REQUIRED);
       
       setAnalysis(data.analysis);
       
       toast({
         title: "사주 분석 완료",
-        description: "AI가 사주를 분석했습니다.",
+        description: `AI가 사주를 분석했습니다. ${TOKENS_REQUIRED}토큰이 사용되었습니다.`,
       });
     } catch (error: any) {
       console.error('Saju analysis error:', error);

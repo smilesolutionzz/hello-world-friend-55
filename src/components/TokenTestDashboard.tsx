@@ -6,7 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useTokens } from '@/hooks/useTokens';
-import { Coins, TestTube, FileText, Brain, Users, MessageCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { Coins, TestTube, FileText, Brain, Users, MessageCircle, AlertCircle, RefreshCw, Moon, Star } from 'lucide-react';
 
 const TokenTestDashboard = () => {
   const { toast } = useToast();
@@ -87,6 +87,38 @@ const TokenTestDashboard = () => {
             targetName: '테스트 아이',
             observationDate: new Date().toISOString().split('T')[0],
             tokenCost: 5
+          }
+        });
+        return { data, error };
+      }
+    },
+    {
+      id: 'dream_interpretation',
+      name: '꿈 해몽',
+      tokenCost: 5,
+      icon: <Moon className="h-4 w-4" />,
+      testFunction: async () => {
+        const { data, error } = await supabase.functions.invoke('dream-interpreter', {
+          body: {
+            dreamText: '오늘 뱀이 나와서 내 머리 위를 감싸더라. 그리고 금을 나았어.'
+          }
+        });
+        return { data, error };
+      }
+    },
+    {
+      id: 'saju_analysis',
+      name: '사주 분석',
+      tokenCost: 8,
+      icon: <Star className="h-4 w-4" />,
+      testFunction: async () => {
+        const { data, error } = await supabase.functions.invoke('saju-analyzer', {
+          body: {
+            name: '테스트',
+            birthDate: '1990-01-01',
+            birthTime: '10:00',
+            gender: 'male',
+            birthCity: '서울특별시'
           }
         });
         return { data, error };

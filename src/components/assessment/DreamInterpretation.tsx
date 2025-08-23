@@ -32,22 +32,35 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
       return;
     }
 
+    // 토큰 확인
+    if (!checkTokenAvailability(TOKENS_REQUIRED)) {
+      toast({
+        title: "토큰 부족",
+        description: `꿈해몽을 위해 ${TOKENS_REQUIRED}개의 토큰이 필요합니다.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
-
       const { data, error } = await supabase.functions.invoke('dream-interpreter', {
         body: { dreamText: dreamText.trim() }
       });
 
       if (error) {
-        throw new Error('꿈 해몽 분석에 실패했습니다.');
+        throw new Error(error.message || '꿈 해몽 분석에 실패했습니다.');
+      }
+
+      if (!data.interpretation) {
+        throw new Error('해석 결과를 받을 수 없습니다.');
       }
 
       setInterpretation(data.interpretation);
       
       toast({
         title: "꿈 해몽 완료",
-        description: "AI가 꿈을 분석했습니다.",
+        description: `AI가 꿈을 분석했습니다. ${TOKENS_REQUIRED}토큰이 사용되었습니다.`,
       });
     } catch (error: any) {
       console.error('Dream interpretation error:', error);
@@ -108,8 +121,9 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
               당신의 꿈이 담고 있는 의미를 AI가 해석해드립니다
             </p>
             <div className="flex items-center justify-center gap-2 mt-2">
-              <Badge variant="secondary" className="flex items-center gap-1 bg-green-500/20 text-green-400 border-green-400/30">
-                무료 이용 가능
+              <Badge variant="secondary" className="flex items-center gap-1 bg-purple-500/20 text-purple-300 border-purple-400/30">
+                <Coins className="w-3 h-3" />
+                {TOKENS_REQUIRED}토큰 필요
               </Badge>
             </div>
           </div>

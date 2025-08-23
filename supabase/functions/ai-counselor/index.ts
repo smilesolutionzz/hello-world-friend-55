@@ -86,17 +86,24 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-4o-mini',
         messages: messages,
-        max_completion_tokens: 1000,
+        max_tokens: 1000,
+        temperature: 0.7,
       }),
     });
 
     const data = await response.json();
-    console.log('OpenAI API response received');
+    console.log('OpenAI API response received:', JSON.stringify(data, null, 2));
 
     if (!response.ok) {
+      console.error('OpenAI API error:', data);
       throw new Error(`OpenAI API error: ${data.error?.message || 'Unknown error'}`);
+    }
+
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid OpenAI response structure:', data);
+      throw new Error('Invalid response from OpenAI API');
     }
 
     const aiResponse = data.choices[0].message.content;

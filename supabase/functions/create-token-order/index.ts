@@ -82,10 +82,7 @@ serve(async (req) => {
         {
           price_data: {
             currency: "krw",
-            product_data: { 
-              name: `${tokenPackage.name} (${tokenPackage.token_count}개 토큰)`,
-              description: tokenPackage.description
-            },
+            product: "prod_Sv9mbAMYUHCHtx",
             unit_amount: tokenPackage.price_krw,
           },
           quantity: 1,

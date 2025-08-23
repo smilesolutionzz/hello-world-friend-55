@@ -477,81 +477,6 @@ export type Database = {
         }
         Relationships: []
       }
-      subscribers: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          stripe_customer_id: string | null
-          subscribed: boolean
-          subscription_end: string | null
-          subscription_tier: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          stripe_customer_id?: string | null
-          subscribed?: boolean
-          subscription_end?: string | null
-          subscription_tier?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          stripe_customer_id?: string | null
-          subscribed?: boolean
-          subscription_end?: string | null
-          subscription_tier?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      subscription_plans: {
-        Row: {
-          created_at: string
-          features: Json | null
-          id: string
-          is_active: boolean | null
-          name: string
-          price_monthly: number | null
-          price_yearly: number | null
-          token_count: number | null
-          type: Database["public"]["Enums"]["subscription_type"]
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          features?: Json | null
-          id?: string
-          is_active?: boolean | null
-          name: string
-          price_monthly?: number | null
-          price_yearly?: number | null
-          token_count?: number | null
-          type: Database["public"]["Enums"]["subscription_type"]
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          features?: Json | null
-          id?: string
-          is_active?: boolean | null
-          name?: string
-          price_monthly?: number | null
-          price_yearly?: number | null
-          token_count?: number | null
-          type?: Database["public"]["Enums"]["subscription_type"]
-          updated_at?: string
-        }
-        Relationships: []
-      }
       subscriptions: {
         Row: {
           amount: number | null
@@ -707,89 +632,86 @@ export type Database = {
           },
         ]
       }
-      token_purchases: {
+      token_orders: {
         Row: {
           amount: number
-          created_at: string | null
+          created_at: string
           id: string
           order_id: string
-          payment_method: string | null
-          plan_id: string | null
-          status: string | null
-          toss_payment_key: string | null
-          updated_at: string | null
+          package_id: string
+          payment_key: string | null
+          status: string
+          tokens_purchased: number
+          updated_at: string
           user_id: string
         }
         Insert: {
           amount: number
-          created_at?: string | null
+          created_at?: string
           id?: string
           order_id: string
-          payment_method?: string | null
-          plan_id?: string | null
-          status?: string | null
-          toss_payment_key?: string | null
-          updated_at?: string | null
+          package_id: string
+          payment_key?: string | null
+          status?: string
+          tokens_purchased: number
+          updated_at?: string
           user_id: string
         }
         Update: {
           amount?: number
-          created_at?: string | null
+          created_at?: string
           id?: string
           order_id?: string
-          payment_method?: string | null
-          plan_id?: string | null
-          status?: string | null
-          toss_payment_key?: string | null
-          updated_at?: string | null
+          package_id?: string
+          payment_key?: string | null
+          status?: string
+          tokens_purchased?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "token_purchases_plan_id_fkey"
-            columns: ["plan_id"]
+            foreignKeyName: "token_orders_package_id_fkey"
+            columns: ["package_id"]
             isOneToOne: false
-            referencedRelation: "token_subscription_plans"
+            referencedRelation: "token_packages"
             referencedColumns: ["id"]
           },
         ]
       }
-      token_subscription_plans: {
+      token_packages: {
         Row: {
-          created_at: string | null
+          created_at: string
           description: string | null
-          features: Json | null
           id: string
           is_active: boolean | null
           is_popular: boolean | null
           name: string
           price_krw: number
           token_count: number
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           description?: string | null
-          features?: Json | null
           id?: string
           is_active?: boolean | null
           is_popular?: boolean | null
           name: string
           price_krw: number
           token_count: number
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           description?: string | null
-          features?: Json | null
           id?: string
           is_active?: boolean | null
           is_popular?: boolean | null
           name?: string
           price_krw?: number
           token_count?: number
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -850,85 +772,32 @@ export type Database = {
         }
         Relationships: []
       }
-      user_subscriptions: {
-        Row: {
-          created_at: string
-          current_period_end: string | null
-          current_period_start: string | null
-          id: string
-          plan_id: string | null
-          status: string | null
-          stripe_subscription_id: string | null
-          subscription_type: Database["public"]["Enums"]["subscription_type"]
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          current_period_end?: string | null
-          current_period_start?: string | null
-          id?: string
-          plan_id?: string | null
-          status?: string | null
-          stripe_subscription_id?: string | null
-          subscription_type?: Database["public"]["Enums"]["subscription_type"]
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          current_period_end?: string | null
-          current_period_start?: string | null
-          id?: string
-          plan_id?: string | null
-          status?: string | null
-          stripe_subscription_id?: string | null
-          subscription_type?: Database["public"]["Enums"]["subscription_type"]
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_subscriptions_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "subscription_plans"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       user_tokens: {
         Row: {
-          created_at: string | null
-          current_tokens: number | null
+          created_at: string
+          current_tokens: number
           id: string
-          last_daily_bonus_date: string | null
-          referral_bonus: number | null
-          total_purchased: number | null
-          total_used: number | null
-          updated_at: string | null
+          total_purchased: number
+          total_used: number
+          updated_at: string
           user_id: string
         }
         Insert: {
-          created_at?: string | null
-          current_tokens?: number | null
+          created_at?: string
+          current_tokens?: number
           id?: string
-          last_daily_bonus_date?: string | null
-          referral_bonus?: number | null
-          total_purchased?: number | null
-          total_used?: number | null
-          updated_at?: string | null
+          total_purchased?: number
+          total_used?: number
+          updated_at?: string
           user_id: string
         }
         Update: {
-          created_at?: string | null
-          current_tokens?: number | null
+          created_at?: string
+          current_tokens?: number
           id?: string
-          last_daily_bonus_date?: string | null
-          referral_bonus?: number | null
-          total_purchased?: number | null
-          total_used?: number | null
-          updated_at?: string | null
+          total_purchased?: number
+          total_used?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

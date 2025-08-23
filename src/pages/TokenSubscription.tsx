@@ -10,60 +10,48 @@ import { useTokens } from '@/hooks/useTokens';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import TokenBalance from '@/components/TokenBalance';
 
-interface TokenPlan {
+interface TokenPackage {
   id: string;
   name: string;
+  description: string;
   token_count: number;
   price_krw: number;
-  is_popular?: boolean;
-  description: string;
-  features: string[];
+  is_popular: boolean;
 }
 
 const TokenSubscription = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { tokenBalance } = useTokens();
-  const [plans, setPlans] = useState<TokenPlan[]>([]);
+  const [packages, setPackages] = useState<TokenPackage[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchPlans();
+    fetchPackages();
   }, []);
 
-  const fetchPlans = async () => {
+  const fetchPackages = async () => {
     try {
       const { data, error } = await supabase
-        .from('token_subscription_plans')
+        .from('token_packages')
         .select('*')
         .eq('is_active', true)
         .order('price_krw', { ascending: true });
 
       if (error) throw error;
       
-      // Transform data to match interface
-      const transformedPlans = (data || []).map(plan => ({
-        id: plan.id,
-        name: plan.name,
-        token_count: plan.token_count,
-        price_krw: plan.price_krw,
-        is_popular: plan.is_popular,
-        description: plan.description,
-        features: Array.isArray(plan.features) ? plan.features : JSON.parse(plan.features as string)
-      }));
-      
-      setPlans(transformedPlans);
+      setPackages(data || []);
     } catch (error) {
-      console.error('Error fetching plans:', error);
+      console.error('Error fetching packages:', error);
       toast({
         title: "오류",
-        description: "플랜을 불러오는 중 오류가 발생했습니다.",
+        description: "토큰 패키지를 불러오는 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }
   };
 
-  const handleSubscribe = async (planId: string, planName: string) => {
+  const handlePurchase = async (packageId: string, packageName: string) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast({ 
@@ -77,11 +65,8 @@ const TokenSubscription = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('create-token-payment', {
-        body: { 
-          planId, 
-          subscriptionType: 'one_time'
-        }
+      const { data, error } = await supabase.functions.invoke('create-token-order', {
+        body: { packageId }
       });
 
       if (error) throw error;
@@ -101,7 +86,7 @@ const TokenSubscription = () => {
           modal.innerHTML = `
             <div class="bg-white p-6 rounded-lg max-w-md w-full relative">
               <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl" onclick="this.closest('.fixed').remove()">&times;</button>
-              <h3 class="text-lg font-semibold mb-4">${planName} 토큰 충전</h3>
+              <h3 class="text-lg font-semibold mb-4">${packageName} 토큰 충전</h3>
               <div id="payment-method" class="mb-4"></div>
               <div id="agreement" class="mb-4"></div>
               <button id="pay-button" class="w-full bg-primary text-primary-foreground py-3 rounded-md font-medium hover:bg-primary/90">
@@ -189,6 +174,19 @@ const TokenSubscription = () => {
     return Math.round(price / tokenCount);
   };
 
+  const getFeatures = (tokenCount: number) => {
+    const baseFeatures = [`${tokenCount}개 토큰`, '영구 사용 가능', '안전한 결제'];
+    
+    if (tokenCount >= 200) {
+      baseFeatures.push('프리미엄 분석 지원');
+    }
+    if (tokenCount >= 1000) {
+      baseFeatures.push('전문가급 분석', '우선 지원');
+    }
+    
+    return baseFeatures;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <UnifiedNavigation />
@@ -269,17 +267,18 @@ const TokenSubscription = () => {
           <p className="text-center text-slate-600 mb-12">필요에 맞는 토큰 팩을 선택하세요. 한 번 구매로 영구 사용 가능합니다.</p>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {plans.map((plan) => {
-              const valuePerToken = getValuePerToken(plan.price_krw, plan.token_count);
+            {packages.map((pkg) => {
+              const valuePerToken = getValuePerToken(pkg.price_krw, pkg.token_count);
+              const features = getFeatures(pkg.token_count);
               
               return (
                 <Card 
-                  key={plan.id} 
+                  key={pkg.id} 
                   className={`relative transition-all duration-300 hover:shadow-xl hover:scale-105 ${
-                    plan.is_popular ? 'border-2 border-purple-500 shadow-lg' : 'border border-slate-200'
+                    pkg.is_popular ? 'border-2 border-purple-500 shadow-lg' : 'border border-slate-200'
                   }`}
                 >
-                  {plan.is_popular && (
+                  {pkg.is_popular && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                       <Badge className="bg-purple-500 text-white px-4 py-1 text-sm">
                         🔥 인기 선택
@@ -289,17 +288,17 @@ const TokenSubscription = () => {
                   
                   <CardHeader className="text-center pb-6">
                     <div className="flex justify-center mb-4">
-                      {getPlanIcon(plan.token_count)}
+                      {getPlanIcon(pkg.token_count)}
                     </div>
-                    <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                    <CardDescription className="text-base">{plan.description}</CardDescription>
+                    <CardTitle className="text-2xl font-bold">{pkg.name}</CardTitle>
+                    <CardDescription className="text-base">{pkg.description}</CardDescription>
                     
                     <div className="mt-6">
                       <div className="text-4xl font-bold text-slate-900 mb-2">
-                        ₩{formatPrice(plan.price_krw)}
+                        ₩{formatPrice(pkg.price_krw)}
                       </div>
                       <div className="text-lg font-semibold text-purple-600 mb-2">
-                        {plan.token_count}개 토큰
+                        {pkg.token_count}개 토큰
                       </div>
                       <div className="text-sm text-slate-500">
                         토큰당 ₩{valuePerToken}
@@ -308,7 +307,7 @@ const TokenSubscription = () => {
                   </CardHeader>
 
                   <CardContent className="space-y-3 pb-6">
-                    {plan.features.map((feature: string, index: number) => (
+                    {features.map((feature: string, index: number) => (
                       <div key={index} className="flex items-center gap-3">
                         <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
                         <span className="text-slate-700">{feature}</span>
@@ -319,12 +318,12 @@ const TokenSubscription = () => {
                   <div className="p-6 pt-0">
                     <Button 
                       className={`w-full py-3 text-base font-semibold ${
-                        plan.is_popular 
+                        pkg.is_popular 
                           ? 'bg-purple-600 hover:bg-purple-700 text-white' 
                           : 'bg-slate-900 hover:bg-slate-800 text-white'
                       }`}
                       disabled={loading}
-                      onClick={() => handleSubscribe(plan.id, plan.name)}
+                      onClick={() => handlePurchase(pkg.id, pkg.name)}
                     >
                       {loading ? (
                         <div className="flex items-center gap-2">

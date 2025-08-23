@@ -34,7 +34,7 @@ const TokenPaymentSuccess = () => {
       }
 
       try {
-        const { data, error } = await supabase.functions.invoke('confirm-token-payment', {
+        const { data, error } = await supabase.functions.invoke('confirm-token-order', {
           body: {
             paymentKey,
             orderId,

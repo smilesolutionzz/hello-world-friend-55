@@ -48,6 +48,7 @@ serve(async (req) => {
     ];
 
     console.log('Sending to OpenAI with system prompt length:', systemPrompt.length);
+    console.log('Messages to send:', JSON.stringify(messages, null, 2));
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -56,12 +57,15 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-4.1-2025-04-14',
         messages,
         max_completion_tokens: 800,
         stream: false
       }),
     });
+
+    console.log('OpenAI API Response Status:', response.status);
+    console.log('OpenAI API Response Headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorData = await response.text();

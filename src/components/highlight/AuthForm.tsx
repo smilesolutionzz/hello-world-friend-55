@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,43 +14,51 @@ import type { User, Session } from '@supabase/supabase-js';
 
 export const AuthForm = () => {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [gender, setGender] = useState('');
-  const [ageGroup, setAgeGroup] = useState('');
-  const [interests, setInterests] = useState<string[]>([]);
-  const [primaryConcern, setPrimaryConcern] = useState('');
-  const [relationshipToChild, setRelationshipToChild] = useState('');
+  const [error, setError] = useState('');
+  
+  // 로그인 폼 데이터
+  const [signInData, setSignInData] = useState({
+    email: '',
+    password: ''
+  });
+
+  // 회원가입 폼 데이터
+  const [signUpData, setSignUpData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    phone: '',
+    birthDate: '',
+    gender: '',
+    ageGroup: '',
+    relationshipToChild: '',
+    interests: [] as string[],
+    primaryConcern: ''
+  });
+
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Set up auth state listener
+    // 인증 상태 리스너 설정
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Only redirect on SIGNED_IN event to avoid conflicts
         if (event === 'SIGNED_IN' && session?.user) {
-          console.log('User signed in, redirecting to dashboard');
           navigate('/');
         }
       }
     );
 
-    // Check for existing session
+    // 기존 세션 확인
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       
-      // Redirect if already authenticated
       if (session?.user) {
         navigate('/');
       }
@@ -74,106 +81,88 @@ export const AuthForm = () => {
   ];
 
   const handleInterestChange = (interestId: string, checked: boolean) => {
-    if (checked) {
-      setInterests(prev => [...prev, interestId]);
-    } else {
-      setInterests(prev => prev.filter(id => id !== interestId));
-    }
+    setSignUpData(prev => ({
+      ...prev,
+      interests: checked 
+        ? [...prev.interests, interestId]
+        : prev.interests.filter(id => id !== interestId)
+    }));
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!displayName.trim()) {
-      toast({
-        title: "오류",
-        description: "이름을 입력해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!email.trim() || !password.trim()) {
-      toast({
-        title: "오류", 
-        description: "이메일과 비밀번호를 모두 입력해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (password.length < 6) {
-      toast({
-        title: "오류",
-        description: "비밀번호는 최소 6자 이상이어야 합니다.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setLoading(true);
+    setError('');
+
+    // 기본 유효성 검사
+    if (!signUpData.name.trim()) {
+      setError('이름을 입력해주세요.');
+      setLoading(false);
+      return;
+    }
+
+    if (!signUpData.email.trim()) {
+      setError('이메일을 입력해주세요.');
+      setLoading(false);
+      return;
+    }
+
+    if (!signUpData.password || signUpData.password.length < 6) {
+      setError('비밀번호는 6자 이상이어야 합니다.');
+      setLoading(false);
+      return;
+    }
 
     try {
-      console.log('회원가입 시도 중...');
+      const redirectUrl = `${window.location.origin}/`;
+      
       const { data, error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
+        email: signUpData.email.trim(),
+        password: signUpData.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: redirectUrl,
           data: {
-            display_name: displayName.trim(),
-            phone: phone.trim(),
-            birth_date: birthDate,
-            gender,
-            age_group: ageGroup,
-            interests: JSON.stringify(interests),
-            primary_concern: primaryConcern,
-            relationship_to_child: relationshipToChild
+            display_name: signUpData.name.trim(),
+            phone: signUpData.phone.trim(),
+            birth_date: signUpData.birthDate,
+            gender: signUpData.gender,
+            age_group: signUpData.ageGroup,
+            relationship_to_child: signUpData.relationshipToChild,
+            interests: signUpData.interests,
+            primary_concern: signUpData.primaryConcern
           }
         }
       });
 
-      console.log('회원가입 응답:', data, error);
+      if (error) throw error;
 
-      if (error) {
-        console.error('회원가입 오류:', error);
-        let errorMessage = error.message;
-        
-        if (error.message.includes('already registered')) {
-          errorMessage = '이미 가입된 이메일입니다. 로그인해주세요.';
-        } else if (error.message.includes('invalid email')) {
-          errorMessage = '유효하지 않은 이메일 형식입니다.';
-        } else if (error.message.includes('weak password')) {
-          errorMessage = '비밀번호가 너무 약합니다.';
-        }
-        
-        toast({
-          title: "회원가입 실패",
-          description: errorMessage,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // 회원가입 성공
-      toast({
-        title: "회원가입 성공!",
-        description: "HIGHLIGHT에 오신 것을 환영합니다! 이메일을 확인해주세요.",
-      });
-
-      // 이메일 확인이 필요한 경우와 즉시 로그인되는 경우 모두 처리
       if (data.user && !data.session) {
-        console.log('이메일 확인 필요');
+        toast({
+          title: "회원가입 완료",
+          description: "이메일을 확인하여 계정을 활성화해주세요.",
+        });
       } else if (data.session) {
-        console.log('즉시 로그인 성공');
-        // onAuthStateChange에서 자동으로 리다이렉션됨
+        toast({
+          title: "회원가입 완료", 
+          description: "환영합니다!",
+        });
       }
 
     } catch (error: any) {
-      console.error('회원가입 중 예외 발생:', error);
+      let errorMessage = '회원가입 중 오류가 발생했습니다.';
+      
+      if (error.message?.includes('User already registered')) {
+        errorMessage = '이미 등록된 이메일입니다.';
+      } else if (error.message?.includes('Invalid email')) {
+        errorMessage = '유효하지 않은 이메일 형식입니다.';
+      } else if (error.message?.includes('Password should be')) {
+        errorMessage = '비밀번호는 6자 이상이어야 합니다.';
+      }
+      
+      setError(errorMessage);
       toast({
-        title: "오류",
-        description: "회원가입 중 문제가 발생했습니다. 다시 시도해주세요.",
+        title: "회원가입 실패",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -183,58 +172,41 @@ export const AuthForm = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
     
-    if (!email.trim() || !password.trim()) {
-      toast({
-        title: "오류",
-        description: "이메일과 비밀번호를 입력해주세요.",
-        variant: "destructive",
-      });
+    if (!signInData.email.trim() || !signInData.password.trim()) {
+      setError('이메일과 비밀번호를 입력해주세요.');
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
-
     try {
-      console.log('로그인 시도 중...');
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
+        email: signInData.email.trim(),
+        password: signInData.password,
       });
 
-      console.log('로그인 응답:', data, error);
+      if (error) throw error;
 
-      if (error) {
-        console.error('로그인 오류:', error);
-        let errorMessage = error.message;
-        
-        if (error.message.includes('Invalid login credentials')) {
-          errorMessage = '이메일 또는 비밀번호가 잘못되었습니다.';
-        } else if (error.message.includes('Email not confirmed')) {
-          errorMessage = '이메일 인증이 필요합니다. 이메일을 확인해주세요.';
-        }
-        
-        toast({
-          title: "로그인 실패",
-          description: errorMessage,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      console.log('로그인 성공:', data);
       toast({
         title: "로그인 성공",
         description: "HIGHLIGHT에 오신 것을 환영합니다!",
       });
       
-      // onAuthStateChange에서 자동으로 리다이렉션됨
-
     } catch (error: any) {
-      console.error('로그인 중 예외 발생:', error);
+      let errorMessage = '로그인 중 오류가 발생했습니다.';
+      
+      if (error.message?.includes('Invalid login credentials')) {
+        errorMessage = '이메일 또는 비밀번호가 잘못되었습니다.';
+      } else if (error.message?.includes('Email not confirmed')) {
+        errorMessage = '이메일 인증이 필요합니다. 이메일을 확인해주세요.';
+      }
+      
+      setError(errorMessage);
       toast({
-        title: "오류",
-        description: "로그인 중 문제가 발생했습니다. 다시 시도해주세요.",
+        title: "로그인 실패",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -262,6 +234,12 @@ export const AuthForm = () => {
             
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
+                {error && (
+                  <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+                    {error}
+                  </div>
+                )}
+                
                 <div className="space-y-2">
                   <Label htmlFor="email">이메일</Label>
                   <div className="relative">
@@ -270,8 +248,8 @@ export const AuthForm = () => {
                       id="email"
                       type="email"
                       placeholder="your@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={signInData.email}
+                      onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
                       className="pl-10"
                       required
                     />
@@ -285,8 +263,8 @@ export const AuthForm = () => {
                       id="password"
                       type="password"
                       placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      value={signInData.password}
+                      onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
                       className="pl-10"
                       required
                     />
@@ -305,6 +283,12 @@ export const AuthForm = () => {
             
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
+                {error && (
+                  <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+                    {error}
+                  </div>
+                )}
+                
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="display-name">이름 *</Label>
@@ -314,8 +298,8 @@ export const AuthForm = () => {
                         id="display-name"
                         type="text"
                         placeholder="홍길동"
-                        value={displayName}
-                        onChange={(e) => setDisplayName(e.target.value)}
+                        value={signUpData.name}
+                        onChange={(e) => setSignUpData(prev => ({ ...prev, name: e.target.value }))}
                         className="pl-10"
                         required
                       />
@@ -330,8 +314,8 @@ export const AuthForm = () => {
                         id="phone"
                         type="tel"
                         placeholder="010-1234-5678"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        value={signUpData.phone}
+                        onChange={(e) => setSignUpData(prev => ({ ...prev, phone: e.target.value }))}
                         className="pl-10"
                       />
                     </div>
@@ -346,8 +330,24 @@ export const AuthForm = () => {
                       id="signup-email"
                       type="email"
                       placeholder="your@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={signUpData.email}
+                      onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="signup-password">비밀번호 *</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="signup-password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={signUpData.password}
+                      onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
                       className="pl-10"
                       required
                     />
@@ -362,8 +362,8 @@ export const AuthForm = () => {
                       <Input
                         id="birth-date"
                         type="date"
-                        value={birthDate}
-                        onChange={(e) => setBirthDate(e.target.value)}
+                        value={signUpData.birthDate}
+                        onChange={(e) => setSignUpData(prev => ({ ...prev, birthDate: e.target.value }))}
                         className="pl-10"
                       />
                     </div>
@@ -371,7 +371,7 @@ export const AuthForm = () => {
                   
                   <div className="space-y-2">
                     <Label htmlFor="gender">성별</Label>
-                    <Select value={gender} onValueChange={setGender}>
+                    <Select value={signUpData.gender} onValueChange={(value) => setSignUpData(prev => ({ ...prev, gender: value }))}>
                       <SelectTrigger>
                         <SelectValue placeholder="성별 선택" />
                       </SelectTrigger>
@@ -387,7 +387,7 @@ export const AuthForm = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="age-group">연령대</Label>
-                  <Select value={ageGroup} onValueChange={setAgeGroup}>
+                  <Select value={signUpData.ageGroup} onValueChange={(value) => setSignUpData(prev => ({ ...prev, ageGroup: value }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="연령대 선택" />
                     </SelectTrigger>
@@ -405,7 +405,7 @@ export const AuthForm = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="relationship">가족 관계 (자녀가 있다면)</Label>
-                  <Select value={relationshipToChild} onValueChange={setRelationshipToChild}>
+                  <Select value={signUpData.relationshipToChild} onValueChange={(value) => setSignUpData(prev => ({ ...prev, relationshipToChild: value }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="관계 선택" />
                     </SelectTrigger>
@@ -427,7 +427,7 @@ export const AuthForm = () => {
                       <div key={option.id} className="flex items-center space-x-2">
                         <Checkbox
                           id={option.id}
-                          checked={interests.includes(option.id)}
+                          checked={signUpData.interests.includes(option.id)}
                           onCheckedChange={(checked) => 
                             handleInterestChange(option.id, checked as boolean)
                           }
@@ -445,40 +445,19 @@ export const AuthForm = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="primary-concern">주요 관심사</Label>
-                  <Select value={primaryConcern} onValueChange={setPrimaryConcern}>
+                  <Select value={signUpData.primaryConcern} onValueChange={(value) => setSignUpData(prev => ({ ...prev, primaryConcern: value }))}>
                     <SelectTrigger>
                       <SelectValue placeholder="가장 관심있는 분야" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="language_delay">언어지연</SelectItem>
-                      <SelectItem value="developmental_delay">발달지연</SelectItem>
-                      <SelectItem value="psychological_counseling">심리상담</SelectItem>
-                      <SelectItem value="elderly_cognitive">노인인지</SelectItem>
-                      <SelectItem value="parent_counseling">부모상담</SelectItem>
                       <SelectItem value="adhd_assessment">ADHD 평가</SelectItem>
-                      <SelectItem value="depression_anxiety">우울/불안</SelectItem>
-                      <SelectItem value="behavioral_issues">행동문제</SelectItem>
-                      <SelectItem value="learning_difficulties">학습장애</SelectItem>
-                      <SelectItem value="autism_spectrum">자폐스펙트럼</SelectItem>
+                      <SelectItem value="language_development">언어 발달</SelectItem>
+                      <SelectItem value="behavioral_assessment">행동 평가</SelectItem>
+                      <SelectItem value="developmental_screening">발달 선별</SelectItem>
+                      <SelectItem value="psychological_evaluation">심리 평가</SelectItem>
+                      <SelectItem value="family_counseling">가족 상담</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">비밀번호 *</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10"
-                      required
-                      minLength={6}
-                    />
-                  </div>
                 </div>
                 
                 <Button 

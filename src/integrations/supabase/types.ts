@@ -472,25 +472,31 @@ export type Database = {
       }
       profiles: {
         Row: {
+          birth_date: string | null
           created_at: string
           display_name: string | null
           id: string
+          phone: string | null
           subscription_tier: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          birth_date?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          phone?: string | null
           subscription_tier?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          birth_date?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          phone?: string | null
           subscription_tier?: string | null
           updated_at?: string
           user_id?: string
@@ -916,6 +922,8 @@ export type Database = {
           created_at: string
           current_tokens: number
           id: string
+          last_daily_bonus_date: string | null
+          referral_bonus: number | null
           total_purchased: number
           total_used: number
           updated_at: string
@@ -925,6 +933,8 @@ export type Database = {
           created_at?: string
           current_tokens?: number
           id?: string
+          last_daily_bonus_date?: string | null
+          referral_bonus?: number | null
           total_purchased?: number
           total_used?: number
           updated_at?: string
@@ -934,6 +944,8 @@ export type Database = {
           created_at?: string
           current_tokens?: number
           id?: string
+          last_daily_bonus_date?: string | null
+          referral_bonus?: number | null
           total_purchased?: number
           total_used?: number
           updated_at?: string

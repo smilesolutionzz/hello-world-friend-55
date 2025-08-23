@@ -140,7 +140,7 @@ serve(async (req) => {
             content: `다음 꿈을 해석해주세요:\n\n${dreamText}`
           }
         ],
-        max_completion_tokens: 1000,
+        max_completion_tokens: 1000
       }),
     });
 

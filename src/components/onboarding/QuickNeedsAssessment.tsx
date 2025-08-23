@@ -506,7 +506,10 @@ export default function QuickNeedsAssessment() {
             <Card 
               key={recommendation.concern}
               className={`group cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-2xl ${recommendation.color} border-0 overflow-hidden relative`}
-              onClick={() => setSelectedConcern(recommendation.concern)}
+              onClick={() => {
+                console.log(`카드 클릭: ${recommendation.title}`);
+                setSelectedConcern(recommendation.concern);
+              }}
             >
               {/* 호버 효과 오버레이 */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -555,6 +558,7 @@ export default function QuickNeedsAssessment() {
                   variant="outline"
                   onClick={(e) => {
                     e.stopPropagation();
+                    console.log(`자세히보기 클릭: ${recommendation.title}`);
                     setSelectedConcern(recommendation.concern);
                   }}
                 >
@@ -582,6 +586,7 @@ export default function QuickNeedsAssessment() {
               <Button 
                 onClick={(e) => {
                   e.stopPropagation();
+                  console.log('3분 기본 검사 시작 클릭');
                   navigate('/assessment');
                 }}
                 size="lg"

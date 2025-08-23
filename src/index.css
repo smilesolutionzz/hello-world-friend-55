@@ -9,7 +9,7 @@
 @layer base {
   :root {
     /* Primary Brand Colors - 따뜻한 블루 톤 */
-    --background: 250 100% 99%;
+    --background: 0 0% 100%;
     --foreground: 220 15% 25%;
 
     --card: 0 0% 100%;

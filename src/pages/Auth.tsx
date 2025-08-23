@@ -113,15 +113,32 @@ const Auth = () => {
       setLoading(false);
       return;
     }
+
+    // 이메일 형식 검증
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(signupData.email)) {
+      setError("올바른 이메일 형식을 입력해주세요.");
+      setLoading(false);
+      return;
+    }
+
+    // 전화번호 형식 검증 (입력된 경우에만)
+    if (signupData.phone) {
+      const phoneRegex = /^01[0-9]-?[0-9]{4}-?[0-9]{4}$/;
+      if (!phoneRegex.test(signupData.phone.replace(/-/g, ''))) {
+        setError("올바른 전화번호 형식을 입력해주세요. (010-1234-5678)");
+        setLoading(false);
+        return;
+      }
+    }
     
     try {
-      const redirectUrl = `${window.location.origin}/dashboard`;
-      
+      // 먼저 Supabase Auth에 회원가입을 시도하여 중복 확인
       const { error } = await supabase.auth.signUp({
         email: signupData.email,
         password: signupData.password,
         options: {
-          emailRedirectTo: redirectUrl,
+          emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
             display_name: signupData.displayName,
             phone: signupData.phone,
@@ -131,13 +148,36 @@ const Auth = () => {
       });
       
       if (error) {
-        setError(error.message);
+        if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+          setError("이미 가입된 이메일입니다.");
+        } else if (error.message.includes('invalid email')) {
+          setError("올바른 이메일 형식을 입력해주세요.");
+        } else if (error.message.includes('weak password')) {
+          setError("비밀번호가 너무 약합니다. 더 강한 비밀번호를 사용해주세요.");
+        } else if (error.message.includes('Password should be at least')) {
+          setError("비밀번호는 최소 6자 이상이어야 합니다.");
+        } else {
+          setError(`회원가입 오류: ${error.message}`);
+        }
       } else {
         setSuccess("회원가입이 완료되었습니다! 이메일을 확인해주세요.");
-        // Auth state change listener will handle referral processing after email confirmation
+        toast({
+          title: "회원가입 성공",
+          description: "이메일 인증 후 로그인해주세요.",
+        });
+        // 폼 리셋
+        setSignupData({
+          email: "",
+          password: "",
+          confirmPassword: "",
+          displayName: "",
+          phone: "",
+          birthDate: ""
+        });
       }
     } catch (err) {
-      setError("회원가입 중 오류가 발생했습니다.");
+      console.error('Signup error:', err);
+      setError("회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
     }
     
     setLoading(false);
@@ -236,20 +276,33 @@ const Auth = () => {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="signup-phone">전화번호 (선택)</Label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="signup-phone"
-                      type="tel"
-                      placeholder="전화번호를 입력하세요"
-                      value={signupData.phone}
-                      onChange={(e) => setSignupData(prev => ({ ...prev, phone: e.target.value }))}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
+                 <div className="space-y-2">
+                   <Label htmlFor="signup-phone">전화번호 (선택)</Label>
+                   <div className="relative">
+                     <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                     <Input
+                       id="signup-phone"
+                       type="tel"
+                       placeholder="010-1234-5678"
+                       value={signupData.phone}
+                       onChange={(e) => {
+                         const value = e.target.value;
+                         // 숫자만 입력받고 자동으로 하이픈 추가
+                         const phoneNumber = value.replace(/[^0-9]/g, '');
+                         if (phoneNumber.length <= 11) {
+                           let formattedPhone = phoneNumber;
+                           if (phoneNumber.length > 3 && phoneNumber.length <= 7) {
+                             formattedPhone = `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+                           } else if (phoneNumber.length > 7) {
+                             formattedPhone = `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7)}`;
+                           }
+                           setSignupData(prev => ({ ...prev, phone: formattedPhone }));
+                         }
+                       }}
+                       className="pl-10"
+                     />
+                   </div>
+                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="signup-birth">생년월일 (선택)</Label>
@@ -281,21 +334,33 @@ const Auth = () => {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="signup-confirm">비밀번호 확인</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="signup-confirm"
-                      type="password"
-                      placeholder="비밀번호를 다시 입력하세요"
-                      value={signupData.confirmPassword}
-                      onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
+                 <div className="space-y-2">
+                   <Label htmlFor="signup-confirm">비밀번호 확인</Label>
+                   <div className="relative">
+                     <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                     <Input
+                       id="signup-confirm"
+                       type="password"
+                       placeholder="비밀번호를 다시 입력하세요"
+                       value={signupData.confirmPassword}
+                       onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                       className={`pl-10 ${
+                         signupData.confirmPassword && signupData.password !== signupData.confirmPassword 
+                           ? 'border-red-500 focus:border-red-500' 
+                           : signupData.confirmPassword && signupData.password === signupData.confirmPassword
+                           ? 'border-green-500 focus:border-green-500'
+                           : ''
+                       }`}
+                       required
+                     />
+                   </div>
+                   {signupData.confirmPassword && signupData.password !== signupData.confirmPassword && (
+                     <p className="text-sm text-red-500">비밀번호가 일치하지 않습니다.</p>
+                   )}
+                   {signupData.confirmPassword && signupData.password === signupData.confirmPassword && (
+                     <p className="text-sm text-green-600">비밀번호가 일치합니다.</p>
+                   )}
+                 </div>
                 
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "가입 중..." : "회원가입"}

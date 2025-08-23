@@ -110,7 +110,7 @@ export const AuthForm = () => {
         description: "HIGHLIGHT에 오신 것을 환영합니다!",
       });
       
-      navigate('/dashboard');
+      navigate('/');
     } catch (error: any) {
       toast({
         title: "로그인 실패",

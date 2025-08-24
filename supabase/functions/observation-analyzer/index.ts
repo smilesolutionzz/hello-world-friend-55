@@ -123,6 +123,8 @@ function getSystemPrompt(domain: string): string {
 }
 
 function getAnalysisPrompt(domain: string, ageGroup: string, data: any, observerInfo: any): string {
+  const isAdult = ageGroup === 'adult' || ageGroup === '성인';
+  
   return `
 다음 관찰 데이터를 전문가적 관점에서 분석해주세요:
 
@@ -136,19 +138,19 @@ ${JSON.stringify(data, null, 2)}
 
 **분석 요청사항**:
 
-1. **현재 상태 종합 평가**
-   - 전체적인 발달/기능 수준
+1. **${isAdult ? '현재 상태' : '발달 상태'} 종합 평가**
+   - 전체적인 ${isAdult ? '심리적/기능적' : '발달/기능'} 수준
    - 주요 강점 영역
    - 지원이 필요한 영역
 
 2. **세부 영역별 분석**
    - 각 평가 영역의 구체적 해석
-   - 연령/상황 적합성 평가
+   - ${isAdult ? '상황' : '연령/상황'} 적합성 평가
    - 특이사항 및 주의점
 
-3. **발달적/기능적 고려사항**
+3. **${isAdult ? '기능적' : '발달적/기능적'} 고려사항**
    - 현재 수준의 적절성
-   - 예상되는 발달 경로
+   ${isAdult ? '- 적응 및 기능 상태' : '- 예상되는 발달 경로'}
    - 잠재적 위험 요인
 
 4. **개입 및 지원 방향**
@@ -166,6 +168,7 @@ ${JSON.stringify(data, null, 2)}
 - 의학적 진단이나 확정적 판단은 피하고 '관찰됨', '시사됨' 등의 표현 사용
 - 긍정적이고 희망적인 관점 유지
 - 구체적이고 실행 가능한 제안 포함
+${isAdult ? '- 성인의 경우 "발달" 용어 대신 "현재 상태", "기능", "적응" 등의 용어 사용' : ''}
 
 한국어로 전문적이면서도 이해하기 쉽게 작성해주세요.
 `;

@@ -157,29 +157,31 @@ ${requestBody.analysisResult ? `- AI 분석 결과: ${requestBody.analysisResult
       try {
         logStep('Searching with query', { keyword: query.keyword });
         
-        const searchPrompt = `유튜브에서 "${query.keyword}"와 관련된 실제 존재하는 동영상을 찾아주세요. 
-        
-다음 정보를 포함해서 1-2개의 동영상을 추천해주세요:
-- 동영상 제목
-- 채널명
-- 실제 유튜브 URL (https://www.youtube.com/watch?v=형식)
-- 동영상 설명 (1-2문장)
-- 대략적인 재생 시간
+        const searchPrompt = `"${query.keyword}"에 대한 실제 유튜브 동영상을 검색해서 구체적인 영상 정보를 제공해주세요.
 
-응답은 다음 형식으로 해주세요:
-제목: [동영상 제목]
-채널: [채널명]  
-URL: [실제 유튜브 URL]
-설명: [간단한 설명]
-시간: [재생 시간]
+요청사항:
+1. 실제 존재하는 유튜브 동영상만 찾아주세요
+2. 각 동영상의 정확한 URL (https://www.youtube.com/watch?v=VIDEO_ID 형식)을 제공해주세요
+3. 현재 활성화된 동영상만 추천해주세요
+4. 1-2개의 가장 관련성 높은 동영상만 선별해주세요
+
+다음 정보를 정확히 포함해서 응답해주세요:
+
+제목: [정확한 동영상 제목]
+채널: [채널명]
+URL: [https://www.youtube.com/watch?v=정확한비디오ID]
+설명: [동영상 내용 설명 1-2문장]
+시간: [재생 시간 예: 10분 30초]
 
 ---
 
 제목: [두 번째 동영상 제목]
-채널: [채널명]
-URL: [실제 유튜브 URL]  
-설명: [간단한 설명]
-시간: [재생 시간]`;
+채널: [채널명]  
+URL: [https://www.youtube.com/watch?v=정확한비디오ID]
+설명: [동영상 내용 설명 1-2문장]
+시간: [재생 시간 예: 15분]
+
+반드시 실제 존재하는 동영상의 정확한 watch?v= URL을 제공해주세요.`;
 
         const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
           method: 'POST',

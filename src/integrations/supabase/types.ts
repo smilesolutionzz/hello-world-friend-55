@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          notification_type: string
+          priority: string
+          related_id: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          notification_type: string
+          priority?: string
+          related_id?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          notification_type?: string
+          priority?: string
+          related_id?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       assessment_enhanced_analysis: {
         Row: {
           assessment_type: string
@@ -161,6 +194,65 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      expert_feedback_requests: {
+        Row: {
+          admin_notes: string | null
+          assigned_at: string | null
+          completed_at: string | null
+          created_at: string
+          expert_id: string | null
+          expert_report: string | null
+          id: string
+          observation_id: string | null
+          priority_level: string
+          request_note: string | null
+          request_status: string
+          requested_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          assigned_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          expert_id?: string | null
+          expert_report?: string | null
+          id?: string
+          observation_id?: string | null
+          priority_level?: string
+          request_note?: string | null
+          request_status?: string
+          requested_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          assigned_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          expert_id?: string | null
+          expert_report?: string | null
+          id?: string
+          observation_id?: string | null
+          priority_level?: string
+          request_note?: string | null
+          request_status?: string
+          requested_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_feedback_requests_observation_id_fkey"
+            columns: ["observation_id"]
+            isOneToOne: false
+            referencedRelation: "observation_logs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       expert_notes: {
         Row: {

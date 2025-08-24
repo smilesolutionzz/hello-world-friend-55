@@ -17,6 +17,7 @@ interface RecommendedContent {
   title: string;
   description: string;
   youtubeUrl: string;
+  blogUrl?: string;
   category: string;
   duration: string;
   reason: string;
@@ -67,8 +68,10 @@ serve(async (req) => {
     };
 
     // Step 1: GPT로 관찰 내용 분석 및 키워드 추출
+    const isAdult = requestBody.ageGroup === 'adult';
+    
     const analysisPrompt = `
-다음 관찰 기록을 분석하여 도움이 될 만한 유튜브 컨텐츠 검색 키워드를 추천해주세요:
+다음 관찰 기록을 분석하여 도움이 될 만한 컨텐츠 검색 키워드를 추천해주세요:
 
 **관찰 정보:**
 - 연령대: ${ageGroupMap[requestBody.ageGroup]}
@@ -82,17 +85,20 @@ ${requestBody.analysisResult ? `- AI 분석 결과: ${requestBody.analysisResult
   "searchQueries": [
     {
       "keyword": "구체적인 한국어 검색어",
-      "category": "발달놀이|부모교육|치료방법|행동교정|감정조절|사회성향상 중 하나",
+      "category": "${isAdult ? '심리상담|스트레스관리|감정조절|인지치료|마음챙김|업무스트레스' : '발달놀이|부모교육|치료방법|행동교정|감정조절|사회성향상'} 중 하나",
       "purpose": "이 검색어로 찾고자 하는 컨텐츠 목적"
     }
   ]
 }
 
 검색어 예시:
-- "3세 아이 떼쓰기 대처방법"
+${isAdult ? `- "성인 불안 완화 방법"
+- "업무 스트레스 관리 기술"
+- "감정조절 훈련법"
+- "마음챙김 명상 실습"` : `- "3세 아이 떼쓰기 대처방법"
 - "유아 언어발달 놀이"
 - "ADHD 아동 집중력 높이는 방법"
-- "자폐 아동 사회성 향상 활동"
+- "자폐 아동 사회성 향상 활동"`}
 
 실제 유튜브에서 검색했을 때 관련 동영상이 많이 나올 수 있는 키워드로 작성해주세요.
 `;
@@ -110,7 +116,7 @@ ${requestBody.analysisResult ? `- AI 분석 결과: ${requestBody.analysisResult
         messages: [
           {
             role: 'system',
-            content: '당신은 아동발달, 육아, 교육 전문가입니다. 관찰 기록을 바탕으로 실제 도움이 되는 유튜브 검색 키워드를 추천합니다.'
+            content: `당신은 ${isAdult ? '심리상담, 스트레스 관리, 정신건강' : '아동발달, 육아, 교육'} 전문가입니다. 관찰 기록을 바탕으로 실제 도움이 되는 검색 키워드를 추천합니다.`
           },
           {
             role: 'user',
@@ -155,9 +161,8 @@ ${requestBody.analysisResult ? `- AI 분석 결과: ${requestBody.analysisResult
     
     for (const query of searchQueries.slice(0, 3)) { // 처리 시간을 고려해 3개로 제한
       try {
-        logStep('Searching with query', { keyword: query.keyword });
-        
-        const searchPrompt = `"${query.keyword}"에 대한 실제 유튜브 동영상을 검색해서 구체적인 영상 정보를 제공해주세요.
+        // 1차: 유튜브 동영상 검색
+        const youtubeSearchPrompt = `"${query.keyword}"에 대한 실제 유튜브 동영상을 검색해서 구체적인 영상 정보를 제공해주세요.
 
 요청사항:
 1. 실제 존재하는 유튜브 동영상만 찾아주세요
@@ -183,6 +188,33 @@ URL: [https://www.youtube.com/watch?v=정확한비디오ID]
 
 반드시 실제 존재하는 동영상의 정확한 watch?v= URL을 제공해주세요.`;
 
+        // 2차: 블로그 포스트 검색 (유튜브가 부족할 경우 대안)
+        const blogSearchPrompt = `"${query.keyword}"에 대한 도움이 되는 블로그 포스트나 전문가 글을 검색해서 정보를 제공해주세요.
+
+요청사항:
+1. 신뢰할 수 있는 블로그나 전문기관의 글만 찾아주세요
+2. 실제 존재하는 URL을 제공해주세요
+3. 1-2개의 가장 유용한 글만 선별해주세요
+
+다음 정보를 정확히 포함해서 응답해주세요:
+
+제목: [블로그 포스트 제목]
+사이트: [블로그명 또는 기관명]
+URL: [실제 블로그 URL]
+설명: [글 내용 요약 1-2문장]
+읽는시간: [예: 5분 읽기]
+
+---
+
+제목: [두 번째 블로그 포스트 제목]
+사이트: [블로그명 또는 기관명]
+URL: [실제 블로그 URL]
+설명: [글 내용 요약 1-2문장]
+읽는시간: [예: 7분 읽기]`;
+
+        // 유튜브 검색 먼저 시도
+        logStep('Searching YouTube videos', { keyword: query.keyword });
+        
         const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
           method: 'POST',
           headers: {
@@ -198,7 +230,7 @@ URL: [https://www.youtube.com/watch?v=정확한비디오ID]
               },
               {
                 role: 'user',
-                content: searchPrompt
+                content: youtubeSearchPrompt
               }
             ],
             temperature: 0.2,
@@ -213,51 +245,122 @@ URL: [https://www.youtube.com/watch?v=정확한비디오ID]
           }),
         });
 
-        if (!perplexityResponse.ok) {
-          logStep('Perplexity API error', { status: perplexityResponse.status });
-          continue;
+        let foundVideos = [];
+        
+        if (perplexityResponse.ok) {
+          const perplexityData = await perplexityResponse.json();
+          const searchResult = perplexityData.choices[0].message.content;
+          
+          // Parse YouTube response
+          foundVideos = searchResult.split('---').map(section => {
+            const lines = section.trim().split('\n');
+            const video: any = {};
+            
+            lines.forEach(line => {
+              if (line.startsWith('제목:')) video.title = line.replace('제목:', '').trim();
+              if (line.startsWith('채널:')) video.channel = line.replace('채널:', '').trim();
+              if (line.startsWith('URL:')) video.url = line.replace('URL:', '').trim();
+              if (line.startsWith('설명:')) video.description = line.replace('설명:', '').trim();
+              if (line.startsWith('시간:')) video.duration = line.replace('시간:', '').trim();
+            });
+            
+            return video;
+          }).filter(video => video.title && video.url && video.url.includes('youtube.com/watch'));
+          
+          logStep('YouTube videos found', { count: foundVideos.length });
         }
 
-        const perplexityData = await perplexityResponse.json();
-        const searchResult = perplexityData.choices[0].message.content;
-        
-        logStep('Perplexity search result', { textLength: searchResult.length });
-
-        // Parse Perplexity response
-        const videos = searchResult.split('---').map(section => {
-          const lines = section.trim().split('\n');
-          const video: any = {};
+        // 유튜브 결과가 부족하면 블로그 검색 추가
+        if (foundVideos.length === 0) {
+          logStep('No YouTube videos found, searching for blog posts', { keyword: query.keyword });
           
-          lines.forEach(line => {
-            if (line.startsWith('제목:')) video.title = line.replace('제목:', '').trim();
-            if (line.startsWith('채널:')) video.channel = line.replace('채널:', '').trim();
-            if (line.startsWith('URL:')) video.url = line.replace('URL:', '').trim();
-            if (line.startsWith('설명:')) video.description = line.replace('설명:', '').trim();
-            if (line.startsWith('시간:')) video.duration = line.replace('시간:', '').trim();
+          const blogResponse = await fetch('https://api.perplexity.ai/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${perplexityApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'llama-3.1-sonar-large-128k-online',
+              messages: [
+                {
+                  role: 'system',
+                  content: '당신은 웹 검색 전문가입니다. 사용자가 요청한 키워드로 도움이 되는 신뢰할 수 있는 블로그나 전문가 글을 찾아서 추천해주세요.'
+                },
+                {
+                  role: 'user',
+                  content: blogSearchPrompt
+                }
+              ],
+              temperature: 0.2,
+              top_p: 0.9,
+              max_tokens: 1000,
+              return_images: false,
+              return_related_questions: false,
+              search_recency_filter: 'month',
+              frequency_penalty: 1,
+              presence_penalty: 0
+            }),
           });
-          
-          return video;
-        }).filter(video => video.title && video.url && video.url.includes('youtube.com'));
 
-        // Add to recommendations
-        videos.forEach(video => {
-          if (recommendations.length < 5) {
-            recommendations.push({
-              title: video.title,
-              description: video.description || `${query.category} 관련 도움이 되는 영상입니다.`,
-              youtubeUrl: video.url,
-              category: query.category,
-              duration: video.duration || '10-15분',
-              reason: `${query.purpose}에 도움이 되는 실제 전문가 영상입니다.`
+          if (blogResponse.ok) {
+            const blogData = await blogResponse.json();
+            const blogResult = blogData.choices[0].message.content;
+            
+            // Parse blog response
+            const blogs = blogResult.split('---').map(section => {
+              const lines = section.trim().split('\n');
+              const blog: any = {};
+              
+              lines.forEach(line => {
+                if (line.startsWith('제목:')) blog.title = line.replace('제목:', '').trim();
+                if (line.startsWith('사이트:')) blog.site = line.replace('사이트:', '').trim();
+                if (line.startsWith('URL:')) blog.url = line.replace('URL:', '').trim();
+                if (line.startsWith('설명:')) blog.description = line.replace('설명:', '').trim();
+                if (line.startsWith('읽는시간:')) blog.readTime = line.replace('읽는시간:', '').trim();
+              });
+              
+              return blog;
+            }).filter(blog => blog.title && blog.url);
+
+            logStep('Blog posts found', { count: blogs.length });
+
+            // 블로그 추천을 컨텐츠로 추가
+            blogs.forEach(blog => {
+              if (recommendations.length < 5) {
+                recommendations.push({
+                  title: blog.title,
+                  description: blog.description || `${query.category} 관련 전문가 글입니다.`,
+                  youtubeUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(query.keyword)}`,
+                  blogUrl: blog.url,
+                  category: query.category,
+                  duration: blog.readTime || '5분 읽기',
+                  reason: `${query.purpose}에 도움이 되는 전문가 블로그 글입니다.`
+                });
+              }
             });
           }
-        });
+        } else {
+          // 유튜브 비디오가 있으면 추가
+          foundVideos.forEach(video => {
+            if (recommendations.length < 5) {
+              recommendations.push({
+                title: video.title,
+                description: video.description || `${query.category} 관련 도움이 되는 영상입니다.`,
+                youtubeUrl: video.url,
+                category: query.category,
+                duration: video.duration || '10-15분',
+                reason: `${query.purpose}에 도움이 되는 실제 전문가 영상입니다.`
+              });
+            }
+          });
+        }
 
         // 검색 간 짧은 딜레이
         await new Promise(resolve => setTimeout(resolve, 500));
         
       } catch (searchError) {
-        logStep('Error searching for videos', { error: searchError, keyword: query.keyword });
+        logStep('Error searching for content', { error: searchError, keyword: query.keyword });
         continue;
       }
     }

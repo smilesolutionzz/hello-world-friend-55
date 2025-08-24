@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Youtube, ExternalLink, Play, Clock } from "lucide-react";
+import { Loader2, Youtube, ExternalLink, Play, Clock, FileText } from "lucide-react";
 import YouTubePlayer from "@/components/ui/youtube-player";
 
 interface ContentRecommendation {
   title: string;
   description: string;
   youtubeUrl: string;
+  blogUrl?: string;
   category: string;
   duration: string;
   reason: string;
@@ -71,13 +72,24 @@ const ContentRecommendationPanel: React.FC<ContentRecommendationPanelProps> = ({
       '치료방법': 'bg-purple-100 text-purple-800 border-purple-200',
       '행동교정': 'bg-red-100 text-red-800 border-red-200',
       '감정조절': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      '사회성향상': 'bg-pink-100 text-pink-800 border-pink-200'
+      '사회성향상': 'bg-pink-100 text-pink-800 border-pink-200',
+      // 성인용 카테고리 추가
+      '심리상담': 'bg-indigo-100 text-indigo-800 border-indigo-200',
+      '스트레스관리': 'bg-orange-100 text-orange-800 border-orange-200',
+      '인지치료': 'bg-teal-100 text-teal-800 border-teal-200',
+      '마음챙김': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+      '업무스트레스': 'bg-slate-100 text-slate-800 border-slate-200'
     };
     return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
   const handleYoutubeClick = (url: string) => {
     // 새 탭에서 유튜브 링크 열기
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleBlogClick = (url: string) => {
+    // 새 탭에서 블로그 링크 열기
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
@@ -152,45 +164,74 @@ const ContentRecommendationPanel: React.FC<ContentRecommendationPanelProps> = ({
                   </div>
                 )}
                 
-                <div className="flex gap-2">
-                  {/* YouTube 검색 페이지인 경우 embed 대신 외부 링크로 처리 */}
-                  {content.youtubeUrl.includes('youtube.com/results') || content.youtubeUrl.includes('search_query=') ? (
-                    <Button 
-                      onClick={() => handleYoutubeClick(content.youtubeUrl)}
-                      className="bg-red-600 hover:bg-red-700 text-white flex-1"
-                    >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      YouTube에서 보기
-                    </Button>
-                  ) : (
-                    <YouTubePlayer title={content.title} youtubeUrl={content.youtubeUrl}>
-                      <Button className="bg-red-600 hover:bg-red-700 text-white flex-1">
-                        <Play className="h-4 w-4 mr-2" />
-                        동영상 재생
+                <div className="flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    {/* YouTube 검색 페이지인 경우 embed 대신 외부 링크로 처리 */}
+                    {content.youtubeUrl.includes('youtube.com/results') || content.youtubeUrl.includes('search_query=') ? (
+                      <Button 
+                        onClick={() => handleYoutubeClick(content.youtubeUrl)}
+                        className="bg-red-600 hover:bg-red-700 text-white flex-1"
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        YouTube에서 보기
                       </Button>
-                    </YouTubePlayer>
+                    ) : (
+                      <YouTubePlayer title={content.title} youtubeUrl={content.youtubeUrl}>
+                        <Button className="bg-red-600 hover:bg-red-700 text-white flex-1">
+                          <Play className="h-4 w-4 mr-2" />
+                          동영상 재생
+                        </Button>
+                      </YouTubePlayer>
+                    )}
+                    
+                    <Button
+                      variant="outline"
+                      onClick={() => handleYoutubeClick(content.youtubeUrl)}
+                      className="px-3"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        navigator.clipboard.writeText(content.youtubeUrl);
+                        toast({
+                          description: "YouTube 링크가 클립보드에 복사되었습니다.",
+                        });
+                      }}
+                      className="px-3"
+                    >
+                      <Youtube className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  {/* 블로그 링크가 있는 경우 추가 버튼 표시 */}
+                  {content.blogUrl && (
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={() => handleBlogClick(content.blogUrl!)}
+                        variant="outline" 
+                        className="flex-1 border-green-200 text-green-700 hover:bg-green-50"
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        관련 블로그 글 보기
+                      </Button>
+                      
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          navigator.clipboard.writeText(content.blogUrl!);
+                          toast({
+                            description: "블로그 링크가 클립보드에 복사되었습니다.",
+                          });
+                        }}
+                        className="px-3 border-green-200 text-green-700 hover:bg-green-50"
+                      >
+                        <FileText className="h-4 w-4" />
+                      </Button>
+                    </div>
                   )}
-                  
-                  <Button
-                    variant="outline"
-                    onClick={() => handleYoutubeClick(content.youtubeUrl)}
-                    className="px-3"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-                  
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      navigator.clipboard.writeText(content.youtubeUrl);
-                      toast({
-                        description: "링크가 클립보드에 복사되었습니다.",
-                      });
-                    }}
-                    className="px-3"
-                  >
-                    <Youtube className="h-4 w-4" />
-                  </Button>
                 </div>
               </CardContent>
             </Card>

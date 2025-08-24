@@ -8,7 +8,12 @@ import { useToast } from "@/hooks/use-toast";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { supabase } from "@/integrations/supabase/client";
 
-export default function AnimalFaceTest() {
+interface AnimalFaceTestProps {
+  onComplete: (result: any, testType: string) => void;
+  onBack: () => void;
+}
+
+export default function AnimalFaceTest({ onComplete, onBack }: AnimalFaceTestProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<'upload' | 'preview' | 'camera'>('upload');
@@ -114,12 +119,7 @@ export default function AnimalFaceTest() {
         result: data
       };
 
-      navigate('/assessment/result', { 
-        state: { 
-          result: resultData,
-          testType: 'animal_face_match'
-        }
-      });
+      onComplete(data, 'animal_face_match');
 
       toast({
         title: "분석 완료!",

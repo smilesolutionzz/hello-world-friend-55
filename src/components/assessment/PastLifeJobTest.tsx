@@ -11,6 +11,11 @@ import { useToast } from "@/hooks/use-toast";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { supabase } from "@/integrations/supabase/client";
 
+interface PastLifeJobTestProps {
+  onComplete: (result: any, testType: string) => void;
+  onBack: () => void;
+}
+
 interface Question {
   id: string;
   question: string;
@@ -140,7 +145,7 @@ const questions: Question[] = [
   }
 ];
 
-export default function PastLifeJobTest() {
+export default function PastLifeJobTest({ onComplete, onBack }: PastLifeJobTestProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -201,12 +206,7 @@ export default function PastLifeJobTest() {
         result: data
       };
 
-      navigate('/assessment/result', { 
-        state: { 
-          result: resultData,
-          testType: 'past_life_job'
-        }
-      });
+      onComplete(data, 'past_life_job');
 
       toast({
         title: "분석 완료!",

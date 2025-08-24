@@ -31,12 +31,13 @@ import ConsultationRoom from "@/components/consultation/ConsultationRoom";
 import { AIHighlightDashboard } from "@/components/highlight/AIHighlightDashboard";
 import { ExpertProfile } from "@/types/assessment";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
 
 const Assessment = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   
@@ -339,6 +340,14 @@ const Assessment = () => {
     navigate('/');
   };
 
+  const handleFunTestComplete = (result: any, testType: string) => {
+    console.log('Fun test completed:', { result, testType });
+    navigate('/assessment', { 
+      state: { result, testType, showResult: true },
+      replace: true 
+    });
+  };
+
   const handleBack = () => {
     if (currentStep === 'dream-interpretation' || currentStep === 'saju-analysis' || currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
       // 분석/매칭/상담/결과 단계에서는 처음부터 다시 시작
@@ -581,19 +590,54 @@ const Assessment = () => {
 
   
   if (currentStep === 'fun-test-selector') {
-    return <FunTestSelector />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <FunTestSelector onTestSelect={(testType) => setCurrentStep(testType as any)} />
+        </div>
+      </div>
+    );
   }
   
   if (currentStep === 'past-life-job') {
-    return <PastLifeJobTest />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <PastLifeJobTest onComplete={handleFunTestComplete} onBack={handleBack} />
+        </div>
+      </div>
+    );
   }
   
   if (currentStep === 'animal-face') {
-    return <AnimalFaceTest />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <AnimalFaceTest onComplete={handleFunTestComplete} onBack={handleBack} />
+        </div>
+      </div>
+    );
   }
   
   if (currentStep === 'inner-animal') {
-    return <InnerAnimalTest />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <InnerAnimalTest onComplete={handleFunTestComplete} onBack={handleBack} />
+        </div>
+      </div>
+    );
+  }
+
+  // Fun test results handling - check location state
+  if (location.state?.showResult && location.state?.result) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <FunTestResult />
+        </div>
+      </div>
+    );
   }
 
   if (currentStep === 'dream-interpretation') {

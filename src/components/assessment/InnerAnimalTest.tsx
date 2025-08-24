@@ -11,6 +11,11 @@ import { useToast } from "@/hooks/use-toast";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { supabase } from "@/integrations/supabase/client";
 
+interface InnerAnimalTestProps {
+  onComplete: (result: any, testType: string) => void;
+  onBack: () => void;
+}
+
 interface Question {
   id: string;
   question: string;
@@ -140,7 +145,7 @@ const questions: Question[] = [
   }
 ];
 
-export default function InnerAnimalTest() {
+export default function InnerAnimalTest({ onComplete, onBack }: InnerAnimalTestProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -201,12 +206,7 @@ export default function InnerAnimalTest() {
         result: data
       };
 
-      navigate('/assessment/result', { 
-        state: { 
-          result: resultData,
-          testType: 'inner_animal'
-        }
-      });
+      onComplete(data, 'inner_animal');
 
       toast({
         title: "분석 완료!",

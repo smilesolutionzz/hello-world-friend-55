@@ -49,11 +49,15 @@ const funTests: FunTest[] = [
   }
 ];
 
-export default function FunTestSelector() {
+interface FunTestSelectorProps {
+  onTestSelect: (testType: string) => void;
+}
+
+export default function FunTestSelector({ onTestSelect }: FunTestSelectorProps) {
   const navigate = useNavigate();
 
   const handleStartTest = (testId: string) => {
-    navigate(`/assessment?type=fun&test=${testId}`);
+    onTestSelect(testId);
   };
 
   const getPopularityBadge = (popularity: string) => {

@@ -35,6 +35,7 @@ import SubscriptionGate from './SubscriptionGate';
 import ProductRecommendation from '@/components/ProductRecommendation';
 import RecommendationPanel from './RecommendationPanel';
 import ContentRecommendationPanel from './ContentRecommendationPanel';
+import { ExpertFeedbackRequest } from './ExpertFeedbackRequest';
 import { useNavigate } from "react-router-dom";
 
 interface ObservationResultsProps {
@@ -218,18 +219,12 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
             <Download className="h-4 w-4 mr-2" />
             {generating ? 'PDF 생성 중...' : 'PDF로 저장'}
           </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => {
-              toast({
-                title: "전문가 피드백 요청",
-                description: "전문가에게 피드백을 요청했습니다. 결과는 이메일로 전송됩니다.",
-              });
-            }}
-          >
-            <MessageSquare className="h-4 w-4 mr-2" />
-            전문가 피드백 요청
-          </Button>
+          <div className="min-w-0">
+            <ExpertFeedbackRequest 
+              observationId={session.id || session.observations?.id} 
+              observationTitle={session.observations?.session_name || session.session_name}
+            />
+          </div>
           <Button variant="outline" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             돌아가기

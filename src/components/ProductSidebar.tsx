@@ -47,12 +47,12 @@ const ProductSidebar = () => {
     },
     {
       icon: <MessageCircle className="w-5 h-5" />,
-      title: "30분 상담 (카카오)",
+      title: "30분상담(비대면)",
       tokenCost: "30토큰",
       badge: "PRO전문가상담",
       badgeType: "recommended",
-      description: "카카오톡 채팅 전문가 상담",
-      route: "/experts"
+      description: "카카오톡,전화,화상 전문가 상담",
+      route: "/expert-hiring"
     },
     {
       icon: <Users className="w-5 h-5" />,
@@ -83,6 +83,8 @@ const ProductSidebar = () => {
     
     if (product.title === "AIH박사급리포팅") {
       window.open("https://smilesolution.kr/product/%ED%86%A0%EB%93%A4%EB%9F%AC%ED%8E%80-%EC%BB%AC%EB%9F%AC%ED%92%80-%EB%8F%84%ED%98%95-%EB%B8%94%EB%A1%9D/15/category/1/display/4/", "_blank");
+    } else if (product.title === "30분상담(비대면)") {
+      navigate("/expert-hiring");
     } else {
       navigate(product.route);
     }

@@ -46,9 +46,18 @@ const ProductSidebar = () => {
       route: "/premium-assessment"
     },
     {
+      icon: <Users className="w-5 h-5" />,
+      title: "가족케어 패키지",
+      tokenCost: "20토큰",
+      badge: "확장",
+      badgeType: "package",
+      description: "가족 전체 심리관리",
+      route: "/family"
+    },
+    {
       icon: <MessageCircle className="w-5 h-5" />,
       title: "30분상담(비대면)",
-      tokenCost: "30토큰",
+      tokenCost: "150토큰",
       badge: "PRO전문가상담",
       badgeType: "recommended",
       description: "카카오톡,전화,화상 전문가 상담",
@@ -57,20 +66,11 @@ const ProductSidebar = () => {
     {
       icon: <Users className="w-5 h-5" />,
       title: "AIH박사급리포팅",
-      tokenCost: "50토큰",
+      tokenCost: "200토큰",
       badge: "프리미엄",
       badgeType: "premium",
       description: "15페이지이상의 맞춤 리포팅(PDF)",
       route: "/experts"
-    },
-    {
-      icon: <Users className="w-5 h-5" />,
-      title: "가족케어 패키지",
-      tokenCost: "20토큰",
-      badge: "확장",
-      badgeType: "package",
-      description: "가족 전체 심리관리",
-      route: "/family"
     }
   ];
 

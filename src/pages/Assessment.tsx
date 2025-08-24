@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
@@ -17,6 +17,10 @@ import AdhdTestForm from "@/components/assessment/AdhdTestForm";
 import AdhdTestResult from "@/components/assessment/AdhdTestResult";
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";
+import FunTestSelector from "@/components/assessment/FunTestSelector";
+import PastLifeJobTest from "@/components/assessment/PastLifeJobTest";
+import AnimalFaceTest from "@/components/assessment/AnimalFaceTest";
+import InnerAnimalTest from "@/components/assessment/InnerAnimalTest";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
 import RealTimeChat from "@/components/counseling/RealTimeChat";
 import LegalSafetyNotice from "@/components/LegalSafetyNotice";
@@ -28,12 +32,19 @@ import { ExpertProfile } from "@/types/assessment";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useSearchParams } from "react-router-dom";
 
 const Assessment = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | 'saju' | null>(null);
+  const [searchParams] = useSearchParams();
+  
+  // URL 파라미터에서 테스트 타입 확인
+  const urlTestType = searchParams.get('type');
+  const urlTest = searchParams.get('test');
+  
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'dream-interpretation' | 'saju-analysis' | 'fun-test-selector' | 'past-life-job' | 'animal-face' | 'inner-animal' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | 'saju' | 'fun' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
@@ -47,6 +58,20 @@ const Assessment = () => {
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
   const [currentAssessmentResults, setCurrentAssessmentResults] = useState<any>(null);
+
+  // URL 파라미터에 따른 초기 설정
+  useEffect(() => {
+    if (urlTestType === 'fun' && urlTest) {
+      setTestType('fun');
+      if (urlTest === 'past-life-job') {
+        setCurrentStep('past-life-job');
+      } else if (urlTest === 'animal-face-match') {
+        setCurrentStep('animal-face');
+      } else if (urlTest === 'inner-animal') {
+        setCurrentStep('inner-animal');
+      }
+    }
+  }, [urlTestType, urlTest]);
 
   // Timeline에 검사 결과 저장하는 함수
   const saveTestToTimeline = async (testType: string, results: any) => {
@@ -139,12 +164,14 @@ const Assessment = () => {
     }
   };
 
-  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | 'saju') => {
+  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | 'saju' | 'fun') => {
     setTestType(type);
     if (type === 'dream') {
       setCurrentStep('dream-interpretation');
     } else if (type === 'saju') {
       setCurrentStep('saju-analysis');
+    } else if (type === 'fun') {
+      setCurrentStep('fun-test-selector');
     } else {
       setCurrentStep('legal-notice');
     }
@@ -519,10 +546,53 @@ const Assessment = () => {
                 <li>• 운세와 성향 해석</li>
               </ul>
             </div>
+            
+            {/* 🎯 재미있는 테스트 추가 */}
+            <div 
+              className="bg-gradient-to-br from-pink-500 to-yellow-500 hover-glow border border-pink-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative col-span-full md:col-span-2 lg:col-span-3"
+              onClick={() => handleTestTypeSelect('fun')}
+            >
+              <div className="absolute top-4 right-4">
+                <Badge className="bg-yellow-600 text-white animate-bounce">🔥 재미테스트</Badge>
+              </div>
+              <h3 className="text-3xl font-bold mb-4">🎉 재미있는 3분 테스트</h3>
+              <p className="text-pink-100 mb-4">친구들과 함께 즐기는 AI 심리 테스트! 연령별 맞춤 추천</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div className="bg-white/20 rounded-lg p-4">
+                  <h4 className="font-bold text-sm">👑 내 전생은 어떤 직업? (MZ)</h4>
+                  <p className="text-xs text-pink-100">3토큰</p>
+                </div>
+                <div className="bg-white/20 rounded-lg p-4">
+                  <h4 className="font-bold text-sm">📸 내 얼굴 닮은 동물 (초등·청소년)</h4>
+                  <p className="text-xs text-pink-100">2토큰</p>
+                </div>
+                <div className="bg-white/20 rounded-lg p-4">
+                  <h4 className="font-bold text-sm">❤️ 나의 내면 동물 (40대+)</h4>
+                  <p className="text-xs text-pink-100">3토큰</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     );
+  }
+
+  
+  if (currentStep === 'fun-test-selector') {
+    return <FunTestSelector />;
+  }
+  
+  if (currentStep === 'past-life-job') {
+    return <PastLifeJobTest />;
+  }
+  
+  if (currentStep === 'animal-face') {
+    return <AnimalFaceTest />;
+  }
+  
+  if (currentStep === 'inner-animal') {
+    return <InnerAnimalTest />;
   }
 
   if (currentStep === 'dream-interpretation') {

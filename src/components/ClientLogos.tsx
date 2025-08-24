@@ -1,20 +1,93 @@
 import React from 'react';
+import { Heart, Building2, Brain, Activity, GraduationCap, Users, Target, Leaf, Stethoscope, BookOpen, Trophy, Sparkles } from 'lucide-react';
 
 const ClientLogos = () => {
   // Partner clinics and institutions
   const clients = [
-    { name: "한점미소발달센터 남양주점", logo: "😊" },
-    { name: "한점미소발달센터 부천점", logo: "😊" },
-    { name: "인애한의원 강남점", logo: "🏥" },
-    { name: "우아함발달센터 안산점", logo: "🌟" },
-    { name: "우아함발달센터 화성점", logo: "🌟" },
-    { name: "APA발달센터", logo: "🧠" },
-    { name: "한국스포츠과학연구소", logo: "⚽" },
-    { name: "용인대학교", logo: "🎓" },
-    { name: "한국특수체육학회", logo: "🏃‍♂️" },
-    { name: "명지대학교", logo: "📚" },
-    { name: "삼성웰니스의원", logo: "💼" },
-    { name: "가까이한의원", logo: "🌿" }
+    { 
+      name: "한점미소발달센터 남양주점", 
+      icon: Heart, 
+      color: "text-pink-500",
+      bgColor: "bg-pink-50",
+      description: "아동발달 전문센터"
+    },
+    { 
+      name: "한점미소발달센터 부천점", 
+      icon: Heart, 
+      color: "text-pink-500",
+      bgColor: "bg-pink-50",
+      description: "아동발달 전문센터"
+    },
+    { 
+      name: "인애한의원 강남점", 
+      icon: Stethoscope, 
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      description: "통합의학 전문의원"
+    },
+    { 
+      name: "우아함발달센터 안산점", 
+      icon: Sparkles, 
+      color: "text-purple-500",
+      bgColor: "bg-purple-50",
+      description: "종합발달 지원센터"
+    },
+    { 
+      name: "우아함발달센터 화성점", 
+      icon: Sparkles, 
+      color: "text-purple-500",
+      bgColor: "bg-purple-50",
+      description: "종합발달 지원센터"
+    },
+    { 
+      name: "APA발달센터", 
+      icon: Brain, 
+      color: "text-indigo-600",
+      bgColor: "bg-indigo-50",
+      description: "응용행동분석 전문기관"
+    },
+    { 
+      name: "한국스포츠과학연구소", 
+      icon: Activity, 
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      description: "스포츠 과학 연구기관"
+    },
+    { 
+      name: "용인대학교", 
+      icon: GraduationCap, 
+      color: "text-amber-600",
+      bgColor: "bg-amber-50",
+      description: "교육 연구기관"
+    },
+    { 
+      name: "한국특수체육학회", 
+      icon: Trophy, 
+      color: "text-orange-500",
+      bgColor: "bg-orange-50",
+      description: "특수체육 학술단체"
+    },
+    { 
+      name: "명지대학교", 
+      icon: BookOpen, 
+      color: "text-blue-500",
+      bgColor: "bg-blue-50",
+      description: "종합 연구대학"
+    },
+    { 
+      name: "삼성웰니스의원", 
+      icon: Building2, 
+      color: "text-slate-600",
+      bgColor: "bg-slate-50",
+      description: "기업 건강관리센터"
+    },
+    { 
+      name: "가까이한의원", 
+      icon: Leaf, 
+      color: "text-emerald-500",
+      bgColor: "bg-emerald-50",
+      description: "자연치유 한의원"
+    }
   ];
 
   return (
@@ -30,19 +103,33 @@ const ClientLogos = () => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 sm:gap-8">
-          {clients.map((client, index) => (
-            <div
-              key={index}
-              className="group bg-white/60 backdrop-blur-sm border border-gray-200/60 rounded-xl p-6 sm:p-8 hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col items-center justify-center min-h-[140px] sm:min-h-[160px] hover:bg-white/80"
-            >
-              <div className="text-4xl sm:text-5xl mb-3 group-hover:scale-110 transition-transform duration-300">
-                {client.logo}
+          {clients.map((client, index) => {
+            const IconComponent = client.icon;
+            return (
+              <div
+                key={index}
+                className={`group ${client.bgColor} border border-gray-200/60 rounded-xl p-6 sm:p-8 hover:shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col items-center justify-center min-h-[160px] sm:min-h-[180px] hover:scale-105 relative overflow-hidden`}
+              >
+                {/* 배경 그라데이션 효과 */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                
+                {/* 아이콘 */}
+                <div className={`${client.bgColor} rounded-full p-4 mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg relative z-10`}>
+                  <IconComponent className={`w-8 h-8 ${client.color}`} />
+                </div>
+                
+                {/* 브랜드명 */}
+                <div className="text-sm sm:text-base font-bold text-center text-foreground/90 group-hover:text-foreground transition-colors mb-2 relative z-10">
+                  {client.name}
+                </div>
+                
+                {/* 설명 */}
+                <div className="text-xs text-center text-muted-foreground group-hover:text-foreground/70 transition-colors relative z-10">
+                  {client.description}
+                </div>
               </div>
-              <div className="text-sm sm:text-base font-medium text-center text-foreground/80 group-hover:text-foreground transition-colors">
-                {client.name}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
           <div className="text-center mt-8 sm:mt-12">

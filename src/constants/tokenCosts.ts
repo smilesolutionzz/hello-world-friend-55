@@ -21,6 +21,11 @@ export const TOKEN_COSTS = {
   PREMIUM_ASSESSMENT: 10,   // 프리미엄 종합검사
   PROFESSIONAL_REPORT: 8,   // 전문가 리포트 생성
   
+  // 재미 테스트
+  PAST_LIFE_JOB: 3,         // 전생 직업 분석
+  ANIMAL_FACE_MATCH: 2,     // 얼굴 닮은 동물 찾기
+  INNER_ANIMAL: 3,          // 내면 동물 찾기
+  
   // 기타
   CONTENT_RECOMMENDATION: 1, // 컨텐츠 추천
   CRISIS_DETECTION: 0,      // 위기감지 (무료)

@@ -113,12 +113,15 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
               </Button>
 
               {/* 추천 혜택 안내 */}
-              <div className="text-center p-2 rounded-lg bg-primary/5 border border-primary/20">
-                <div className="text-xs text-primary/80 flex items-center gap-1 justify-center">
-                  <Gift className="w-3 h-3" />
-                  친구 추천시 10토큰 무료 지급!
-                </div>
-              </div>
+              <Button
+                onClick={() => navigate('/?section=referral')}
+                variant="secondary"
+                size="sm"
+                className="w-full bg-gradient-to-r from-secondary/10 to-primary/10 hover:from-secondary/20 hover:to-primary/20 border border-secondary/20"
+              >
+                <Gift className="w-3 h-3 mr-1" />
+                친구 추천시 10토큰 무료 지급!
+              </Button>
             </CardContent>
           </Card>
         </PopoverContent>
@@ -163,10 +166,15 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                     <TrendingUp className="w-3 h-3" />
                     총 사용: {tokenBalance.total_used}개
                   </div>
-                  <div className="text-xs text-primary/60 flex items-center gap-1 justify-center">
-                    <Gift className="w-3 h-3" />
+                  <Button
+                    onClick={() => navigate('/?section=referral')}
+                    variant="ghost"
+                    size="sm"
+                    className="text-xs h-auto p-1 text-primary/60 hover:text-primary hover:bg-primary/5"
+                  >
+                    <Gift className="w-3 h-3 mr-1" />
                     친구 추천시 10토큰
-                  </div>
+                  </Button>
                 </div>
               )}
             </div>

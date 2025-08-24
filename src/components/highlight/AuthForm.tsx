@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, Lock, User as UserIcon, Phone, Calendar, Users } from 'lucide-react';
+import { Loader2, Mail, Lock, User as UserIcon, Phone, Calendar, Users, Gift } from 'lucide-react';
 import type { User, Session } from '@supabase/supabase-js';
 import { OnboardingOverlay } from '@/components/ui/onboarding-overlay';
 
@@ -35,7 +35,8 @@ export const AuthForm = () => {
     ageGroup: '',
     relationshipToChild: '',
     interests: [] as string[],
-    primaryConcern: ''
+    primaryConcern: '',
+    referralCode: ''
   });
 
   const [user, setUser] = useState<User | null>(null);
@@ -44,6 +45,12 @@ export const AuthForm = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // localStorage에서 추천 코드 확인하여 폼에 자동 입력
+    const storedReferralCode = localStorage.getItem('referralCode');
+    if (storedReferralCode) {
+      setSignUpData(prev => ({ ...prev, referralCode: storedReferralCode }));
+    }
+
     // 인증 상태 리스너 설정
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -131,7 +138,8 @@ export const AuthForm = () => {
             age_group: signUpData.ageGroup,
             relationship_to_child: signUpData.relationshipToChild,
             interests: signUpData.interests,
-            primary_concern: signUpData.primaryConcern
+            primary_concern: signUpData.primaryConcern,
+            referral_code: signUpData.referralCode.trim()
           }
         }
       });
@@ -144,12 +152,16 @@ export const AuthForm = () => {
           description: "이메일을 확인하여 계정을 활성화해주세요.",
         });
       } else if (data.session) {
+        // 추천 코드가 있는 경우 추가 토큰 안내
+        const bonusMessage = signUpData.referralCode ? "추천 보너스 5토큰 포함!" : "";
         toast({
           title: "회원가입 완료", 
-          description: "환영합니다! 10토큰이 지급되었습니다.",
+          description: `환영합니다! 10토큰이 지급되었습니다. ${bonusMessage}`,
         });
         // 신규 가입자에게 온보딩 표시
         setShowOnboarding(true);
+        // 추천 코드 localStorage에서 제거
+        localStorage.removeItem('referralCode');
       }
 
     } catch (error: any) {
@@ -463,6 +475,29 @@ export const AuthForm = () => {
                       <SelectItem value="family_counseling">가족 상담</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+
+                {/* 추천 코드 입력 */}
+                <div className="space-y-2">
+                  <Label htmlFor="referral-code" className="flex items-center gap-2">
+                    <Gift className="w-4 h-4 text-secondary" />
+                    추천 코드 (선택사항)
+                  </Label>
+                  <Input
+                    id="referral-code"
+                    type="text"
+                    placeholder="친구 추천 코드를 입력하세요"
+                    value={signUpData.referralCode}
+                    onChange={(e) => setSignUpData(prev => ({ ...prev, referralCode: e.target.value.toUpperCase() }))}
+                    maxLength={6}
+                    className="uppercase"
+                  />
+                  {signUpData.referralCode && (
+                    <p className="text-xs text-secondary flex items-center gap-1">
+                      <Gift className="w-3 h-3" />
+                      추천인에게 10토큰, 회원가입자에게 5토큰이 지급됩니다!
+                    </p>
+                  )}
                 </div>
                 
                 <Button 

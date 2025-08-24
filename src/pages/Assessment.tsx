@@ -21,6 +21,7 @@ import FunTestSelector from "@/components/assessment/FunTestSelector";
 import PastLifeJobTest from "@/components/assessment/PastLifeJobTest";
 import AnimalFaceTest from "@/components/assessment/AnimalFaceTest";
 import InnerAnimalTest from "@/components/assessment/InnerAnimalTest";
+import FunTestResult from "@/components/assessment/FunTestResult";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
 import RealTimeChat from "@/components/counseling/RealTimeChat";
 import LegalSafetyNotice from "@/components/LegalSafetyNotice";

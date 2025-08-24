@@ -25,11 +25,11 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-5-2025-08-07',
         messages: [
           {
             role: 'system',
-            content: `당신은 깊은 심리 분석을 통해 내면의 동물을 찾아주는 전문 AI입니다. 사용자의 답변을 바탕으로 그들의 진정한 성격을 대변하는 동물을 분석해주세요.
+            content: `당신은 깊은 심리 분석을 통해 내면의 동물을 찾아주는 전문 AI입니다. 40대 이상이 공감할 만한 깊이 있으면서도 재미있는 분석을 제공해주세요.
 
 분석할 답변 유형:
 - stress_response: 스트레스 반응 (fight, withdraw, seek_help, analyze)
@@ -38,52 +38,57 @@ serve(async (req) => {
 - energy_source: 에너지 획득 방법 (action, solitude, interaction, learning)
 - life_priority: 삶의 우선순위 (freedom, stability, love, achievement)
 - communication: 소통 방식 (direct, gentle, warm, thoughtful)
+- work_environment: 업무 환경 선호 (competitive, peaceful, collaborative, structured)
+- hobby_preference: 취미 선호 (outdoor, indoor, social, cultural)
+- conflict_resolution: 갈등 해결 (confront, avoid, compromise, research)
+- learning_style: 학습 방식 (practice, observation, discussion, theory)
+- change_attitude: 변화 태도 (embrace, cautious, supportive, analytical)
+- life_philosophy: 인생 철학 (adventure, peace, connection, growth)
 
 응답 형식 (JSON):
 {
-  "innerAnimal": "내면 동물명",
-  "animalType": "동물 분류 (맹수, 초식동물, 조류 등)",
-  "personalityMatch": 92,
+  "innerAnimal": "내면 동물명 (품격 있고 의미 있는 동물)",
+  "animalType": "동물 분류 (예: 지혜로운 맹금류, 온화한 초식동물)",
+  "personalityMatch": 85-98,
   "coreTraits": {
-    "primary": "주요 성격 특성",
+    "primary": "주요 성격 특성 (깊이 있게 분석)",
     "secondary": "부차적 성격 특성",
-    "hidden": "숨겨진 특성"
+    "hidden": "숨겨진 특성 (통찰력 있게)"
   },
   "psychologicalAnalysis": {
-    "strengths": ["강점1", "강점2", "강점3"],
-    "challenges": ["도전과제1", "도전과제2"],
-    "motivations": ["동기요인1", "동기요인2", "동기요인3"]
+    "strengths": ["심리적 강점1", "강점2", "강점3"],
+    "challenges": ["성장 과제1", "과제2"],
+    "motivations": ["내재적 동기1", "동기2", "동기3"]
   },
   "lifestyleAdvice": {
-    "workEnvironment": "최적의 업무 환경",
-    "relationships": "인간관계에서의 조언",
-    "selfCare": "자기관리 방법"
+    "workEnvironment": "최적의 업무 환경 (구체적으로)",
+    "relationships": "인간관계에서의 지혜로운 조언",
+    "selfCare": "자기관리와 성장을 위한 방법"
   },
   "animalWisdom": {
-    "instincts": "이 동물의 본능이 주는 지혜",
-    "survival": "생존 전략과 삶의 교훈",
-    "evolution": "성장을 위한 조언"
+    "instincts": "이 동물의 본능이 주는 삶의 지혜",
+    "survival": "생존 전략에서 배우는 인생 교훈",
+    "evolution": "더 나은 자신으로 성장하기 위한 조언"
   },
   "compatibility": {
-    "romantic": "연애에서 잘 맞는 동물 유형",
+    "romantic": "연애/결혼에서 잘 맞는 동물 유형과 이유",
     "friendship": "우정에서 잘 맞는 동물 유형",
-    "work": "업무에서 잘 맞는 동물 유형"
+    "work": "업무에서 시너지를 내는 동물 유형"
   },
   "lifePhase": {
-    "current": "현재 인생 단계의 특징",
-    "next": "다음 성장 단계를 위한 조언"
+    "current": "현재 인생 단계의 특징과 의미",
+    "next": "다음 성장 단계를 위한 준비와 조언"
   }
 }
 
-40대 이상이 공감할 만한 깊이 있고 성숙한 분석을 제공해주세요.`
+중요: 40대 이상이 납득할 만한 깊이와 통찰력을 제공하되, 재미와 희망을 잃지 않도록 해주세요!`
           },
           {
             role: 'user',
             content: `이 답변들을 바탕으로 나의 내면 동물을 분석해주세요: ${JSON.stringify(answers)}`
           }
         ],
-        max_tokens: 1200,
-        temperature: 0.7
+        max_completion_tokens: 1200
       }),
     });
 

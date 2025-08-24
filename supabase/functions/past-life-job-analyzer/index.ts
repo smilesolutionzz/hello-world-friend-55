@@ -25,11 +25,11 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-5-2025-08-07',
         messages: [
           {
             role: 'system',
-            content: `당신은 재미있는 전생 직업을 분석하는 AI입니다. 사용자의 답변을 바탕으로 흥미롭고 창의적인 전생 직업을 제시해주세요.
+            content: `당신은 재미있고 창의적인 전생 직업을 분석하는 AI입니다. MZ세대가 좋아할 만한 웃기고 흥미로운 전생 직업을 제시해주세요.
 
 분석할 답변 유형:
 - personality: 성격 특성 (leader, creative, caring, analytical)
@@ -37,32 +37,39 @@ serve(async (req) => {
 - environment: 선호 환경 (castle, nature, temple, library)
 - decision: 의사결정 기준 (power, beauty, morality, truth)
 - legacy: 후세 기억 (conqueror, artist, saint, scholar)
+- conflict: 갈등 해결 (fight, negotiate, mediate, strategize)
+- motivation: 동기 요소 (recognition, creation, service, discovery)
+- working_style: 일하는 방식 (commanding, solo, collaborative, systematic)
+- challenge: 도전 선호 (physical, artistic, social, intellectual)
+- values: 가치관 (honor, beauty, compassion, wisdom)
+- leisure: 여가 활동 (sports, arts, social, study)
+- problem_solving: 문제 해결 (action, intuition, discussion, analysis)
 
 응답 형식 (JSON):
 {
-  "pastLifeJob": "구체적인 전생 직업명",
-  "era": "시대와 지역",
-  "description": "직업에 대한 흥미로운 설명 (2-3문장)",
-  "personality": "그 직업을 가졌던 이유와 성격 분석",
+  "pastLifeJob": "구체적이고 재미있는 전생 직업명",
+  "era": "시대와 지역 (예: 조선시대 한양, 이집트 파라오 시대)",
+  "description": "직업에 대한 재미있고 드라마틱한 설명 (2-3문장)",
+  "personality": "그 직업을 가졌던 이유와 성격 분석 (유머러스하게)",
   "abilities": ["특별한 능력1", "특별한 능력2", "특별한 능력3"],
-  "lifestory": "전생에서의 삶의 이야기 (드라마틱하고 재미있게)",
-  "modernConnection": "현재 삶과의 연결점",
-  "advice": "전생에서 얻을 수 있는 지혜나 조언",
+  "lifestory": "전생에서의 삶의 이야기 (드라마틱하고 재미있게, 웃긴 에피소드 포함)",
+  "modernConnection": "현재 삶과의 연결점 (재미있는 관찰)",
+  "advice": "전생에서 얻을 수 있는 지혜나 조언 (위트 있게)",
   "compatibility": {
     "bestMatch": "가장 잘 맞는 현재 직업",
-    "worstMatch": "피해야 할 직업"
+    "worstMatch": "절대 피해야 할 직업"
   }
 }
 
-MZ세대가 좋아할 만한 재미있고 신비로운 직업들을 제시해주세요. 너무 흔한 직업보다는 특별하고 흥미로운 직업으로!`
+중요: 너무 흔한 직업(왕, 장군 등)보다는 특별하고 독특한 직업을 만들어주세요. 예: "궁중 비밀 레시피 개발자", "용의 감정 코치", "시간 여행 가이드" 등
+웃기고 창의적이면서도 그럴듯한 직업으로 만들어주세요!`
           },
           {
             role: 'user',
             content: `이 답변들을 바탕으로 나의 전생 직업을 분석해주세요: ${JSON.stringify(answers)}`
           }
         ],
-        max_tokens: 1000,
-        temperature: 0.8
+        max_completion_tokens: 1000
       }),
     });
 

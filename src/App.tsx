@@ -72,6 +72,7 @@ const App = () => (
         <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<Observation />} />
           <Route path="/expert" element={<Expert />} />
+          <Route path="/experts" element={<ExpertList />} />
           <Route path="/expert-hiring" element={<ExpertHiring />} />
           <Route path="/expert-list" element={<ExpertList />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />

@@ -159,7 +159,7 @@ ${isAdult ? `- "성인 불안 완화 방법"
     
     const recommendations: RecommendedContent[] = [];
     
-    for (const query of searchQueries.slice(0, 3)) { // 처리 시간을 고려해 3개로 제한
+    for (const query of searchQueries.slice(0, 5)) { // 5개로 확대
       try {
         // 1차: 유튜브 동영상 검색
         const youtubeSearchPrompt = `"${query.keyword}"에 대한 실제 유튜브 동영상을 검색해서 구체적인 영상 정보를 제공해주세요.

@@ -173,7 +173,7 @@ const ContentRecommendationPanel: React.FC<ContentRecommendationPanelProps> = ({
                         className="bg-red-600 hover:bg-red-700 text-white flex-1"
                       >
                         <ExternalLink className="h-4 w-4 mr-2" />
-                        YouTube에서 보기
+                        유튜브에서 제목을 검색해보세요
                       </Button>
                     ) : (
                       <YouTubePlayer title={content.title} youtubeUrl={content.youtubeUrl}>

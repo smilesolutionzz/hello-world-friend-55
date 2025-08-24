@@ -78,6 +78,16 @@ const ProductSidebar = () => {
     navigate(route);
   };
 
+  const handleDetailClick = (product: any, e: React.MouseEvent) => {
+    e.stopPropagation(); // 카드 클릭 이벤트 방지
+    
+    if (product.title === "AIH박사급리포팅") {
+      window.open("https://smilesolution.kr/product/%ED%86%A0%EB%93%A4%EB%9F%AC%ED%8E%80-%EC%BB%AC%EB%9F%AC%ED%92%80-%EB%8F%84%ED%98%95-%EB%B8%94%EB%A1%9D/15/category/1/display/4/", "_blank");
+    } else {
+      navigate(product.route);
+    }
+  };
+
   const getBadgeVariant = (type: string) => {
     switch (type) {
       case 'hot':
@@ -148,6 +158,7 @@ const ProductSidebar = () => {
                   size="sm" 
                   variant="outline"
                   className="text-xs px-3 py-1 h-7 bg-transparent border-slate-500 text-slate-200 hover:bg-slate-600"
+                  onClick={(e) => handleDetailClick(product, e)}
                 >
                   자세히보기
                 </Button>

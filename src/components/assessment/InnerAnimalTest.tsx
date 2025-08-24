@@ -77,6 +77,66 @@ const questions: Question[] = [
       { value: "warm", label: "따뜻하고 친근하게" },
       { value: "thoughtful", label: "신중하고 깊이 있게" }
     ]
+  },
+  {
+    id: "work_environment",
+    question: "선호하는 업무 환경은?",
+    options: [
+      { value: "competitive", label: "경쟁적이고 역동적인 환경" },
+      { value: "peaceful", label: "조용하고 평화로운 환경" },
+      { value: "collaborative", label: "협력적이고 화목한 환경" },
+      { value: "structured", label: "체계적이고 질서정연한 환경" }
+    ]
+  },
+  {
+    id: "hobby_preference",
+    question: "취미나 여가 활동으로 선호하는 것은?",
+    options: [
+      { value: "outdoor", label: "등산, 스포츠 등 야외 활동" },
+      { value: "indoor", label: "독서, 영화 등 실내 활동" },
+      { value: "social", label: "모임, 파티 등 사교 활동" },
+      { value: "cultural", label: "전시회, 공연 등 문화 활동" }
+    ]
+  },
+  {
+    id: "conflict_resolution",
+    question: "갈등이나 문제가 생겼을 때 어떻게 해결하시나요?",
+    options: [
+      { value: "confront", label: "즉시 해결하려고 적극적으로 나선다" },
+      { value: "avoid", label: "시간이 지나면 해결될 거라 기다린다" },
+      { value: "compromise", label: "양쪽 모두 만족할 해결책을 찾는다" },
+      { value: "research", label: "충분히 조사하고 분석한 후 해결한다" }
+    ]
+  },
+  {
+    id: "learning_style",
+    question: "새로운 것을 배울 때 선호하는 방식은?",
+    options: [
+      { value: "practice", label: "직접 해보면서 배운다" },
+      { value: "observation", label: "관찰하고 모방하면서 배운다" },
+      { value: "discussion", label: "다른 사람들과 토론하면서 배운다" },
+      { value: "theory", label: "이론을 먼저 이해하고 배운다" }
+    ]
+  },
+  {
+    id: "change_attitude",
+    question: "변화에 대한 당신의 태도는?",
+    options: [
+      { value: "embrace", label: "변화를 즐기고 적극적으로 받아들인다" },
+      { value: "cautious", label: "신중하게 접근하며 천천히 적응한다" },
+      { value: "supportive", label: "주변 사람들과 함께 변화에 적응한다" },
+      { value: "analytical", label: "변화의 필요성을 분석해서 판단한다" }
+    ]
+  },
+  {
+    id: "life_philosophy",
+    question: "인생에 대한 당신의 철학은?",
+    options: [
+      { value: "adventure", label: "인생은 모험이다, 도전하며 살자" },
+      { value: "peace", label: "인생은 평화롭게, 조화롭게 살자" },
+      { value: "connection", label: "인생은 함께, 사랑하며 살자" },
+      { value: "growth", label: "인생은 성장이다, 배우며 발전하자" }
+    ]
   }
 ];
 

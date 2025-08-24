@@ -67,6 +67,76 @@ const questions: Question[] = [
       { value: "saint", label: "성인이나 구원자로" },
       { value: "scholar", label: "현명한 학자로" }
     ]
+  },
+  {
+    id: "conflict",
+    question: "갈등 상황에서 당신의 행동은?",
+    options: [
+      { value: "fight", label: "정면으로 맞서서 해결한다" },
+      { value: "negotiate", label: "협상과 대화로 해결한다" },
+      { value: "mediate", label: "중재자 역할을 한다" },
+      { value: "strategize", label: "전략을 세워 해결한다" }
+    ]
+  },
+  {
+    id: "motivation",
+    question: "가장 큰 동기 부여 요소는?",
+    options: [
+      { value: "recognition", label: "인정과 명예" },
+      { value: "creation", label: "창작과 혁신" },
+      { value: "service", label: "봉사와 헌신" },
+      { value: "discovery", label: "발견과 탐구" }
+    ]
+  },
+  {
+    id: "working_style",
+    question: "선호하는 일하는 방식은?",
+    options: [
+      { value: "commanding", label: "리더가 되어 지휘한다" },
+      { value: "solo", label: "혼자서 집중해서 한다" },
+      { value: "collaborative", label: "팀워크로 함께 한다" },
+      { value: "systematic", label: "체계적으로 계획해서 한다" }
+    ]
+  },
+  {
+    id: "challenge",
+    question: "어떤 종류의 도전을 선호하나요?",
+    options: [
+      { value: "physical", label: "신체적이고 역동적인 도전" },
+      { value: "artistic", label: "창의적이고 예술적인 도전" },
+      { value: "social", label: "사회적이고 인간적인 도전" },
+      { value: "intellectual", label: "지적이고 학문적인 도전" }
+    ]
+  },
+  {
+    id: "values",
+    question: "가장 중요하게 여기는 가치는?",
+    options: [
+      { value: "honor", label: "명예와 용기" },
+      { value: "beauty", label: "미와 감성" },
+      { value: "compassion", label: "자비와 사랑" },
+      { value: "wisdom", label: "지혜와 진리" }
+    ]
+  },
+  {
+    id: "leisure",
+    question: "여가 시간에 가장 즐기는 활동은?",
+    options: [
+      { value: "sports", label: "스포츠나 경쟁 활동" },
+      { value: "arts", label: "예술 감상이나 창작" },
+      { value: "social", label: "사람들과의 만남" },
+      { value: "study", label: "독서나 학습" }
+    ]
+  },
+  {
+    id: "problem_solving",
+    question: "문제 해결 시 주로 사용하는 방법은?",
+    options: [
+      { value: "action", label: "즉시 행동으로 옮긴다" },
+      { value: "intuition", label: "직감과 영감에 의존한다" },
+      { value: "discussion", label: "다른 사람과 상의한다" },
+      { value: "analysis", label: "철저히 분석해서 해결한다" }
+    ]
   }
 ];
 

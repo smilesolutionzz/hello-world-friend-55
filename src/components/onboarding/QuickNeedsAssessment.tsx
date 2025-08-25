@@ -569,8 +569,23 @@ export default function QuickNeedsAssessment() {
                     e.stopPropagation();
                     console.log(`자세히보기 클릭: ${recommendation.title}`);
                     try {
-                      setSelectedConcern(recommendation.concern);
-                      console.log(`✅ 자세히보기 성공: ${recommendation.concern}`);
+                      // Navigate to specific package page instead of showing inline
+                      const packageRoutes = {
+                        'stress': '/stress-package',
+                        'depression': '/depression-package',
+                        'anxiety': '/anxiety-package',
+                        'focus': '/focus-package',
+                        'child': '/child-package',
+                        'comprehensive': '/comprehensive-package'
+                      };
+                      const route = packageRoutes[recommendation.concern as keyof typeof packageRoutes];
+                      if (route) {
+                        navigate(route);
+                        console.log(`✅ 패키지 페이지 이동: ${route}`);
+                      } else {
+                        setSelectedConcern(recommendation.concern);
+                        console.log(`✅ 자세히보기 성공: ${recommendation.concern}`);
+                      }
                     } catch (error) {
                       console.error(`❌ 자세히보기 실패:`, error);
                     }

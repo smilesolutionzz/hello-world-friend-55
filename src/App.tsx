@@ -39,6 +39,12 @@ import ExpertHiring from "./pages/ExpertHiring";
 import NotFound from "./pages/NotFound";
 import ShareView from "./pages/ShareView";
 import TokenTest from "./pages/TokenTest";
+import StressPackage from "./pages/StressPackage";
+import DepressionPackage from "./pages/DepressionPackage";
+import AnxietyPackage from "./pages/AnxietyPackage";
+import FocusPackage from "./pages/FocusPackage";
+import ChildPackage from "./pages/ChildPackage";
+import ComprehensivePackage from "./pages/ComprehensivePackage";
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import { SessionManager } from "./components/SessionManager";
 
@@ -63,6 +69,12 @@ const App = () => (
           <Route path="/ai-counselor" element={<AICounselor />} />
           <Route path="/needs-assessment" element={<NeedsAssessment />} />
           <Route path="/quick-needs" element={<QuickNeeds />} />
+          <Route path="/stress-package" element={<StressPackage />} />
+          <Route path="/depression-package" element={<DepressionPackage />} />
+          <Route path="/anxiety-package" element={<AnxietyPackage />} />
+          <Route path="/focus-package" element={<FocusPackage />} />
+          <Route path="/child-package" element={<ChildPackage />} />
+          <Route path="/comprehensive-package" element={<ComprehensivePackage />} />
           
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />

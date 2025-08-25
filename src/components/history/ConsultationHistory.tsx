@@ -72,7 +72,10 @@ const ConsultationHistory = () => {
       cancelled: { color: "bg-gray-100 text-gray-700", label: "취소" }
     };
     
-    const config = configs[status as keyof typeof configs];
+    const config = configs[status as keyof typeof configs] || { 
+      color: "bg-gray-100 text-gray-700", 
+      label: status || "알 수 없음" 
+    };
     
     return (
       <Badge className={config.color}>

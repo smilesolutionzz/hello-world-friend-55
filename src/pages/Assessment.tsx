@@ -15,6 +15,14 @@ import DepressionTestForm from "@/components/assessment/DepressionTestForm";
 import DepressionTestResult from "@/components/assessment/DepressionTestResult";
 import AdhdTestForm from "@/components/assessment/AdhdTestForm";
 import AdhdTestResult from "@/components/assessment/AdhdTestResult";
+import StressTestForm from "@/components/assessment/StressTestForm";
+import StressTestResult from "@/components/assessment/StressTestResult";
+import BigFiveTestForm from "@/components/assessment/BigFiveTestForm";
+import BigFiveTestResult from "@/components/assessment/BigFiveTestResult";
+import AttachmentStyleForm from "@/components/assessment/AttachmentStyleForm";
+import AttachmentStyleResult from "@/components/assessment/AttachmentStyleResult";
+import CareerInterestForm from "@/components/assessment/CareerInterestForm";
+import CareerInterestResult from "@/components/assessment/CareerInterestResult";
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
@@ -29,7 +37,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
-import { Sparkles, Crown, Camera, Heart, Zap } from "lucide-react";
+import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target } from "lucide-react";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -44,8 +52,8 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | 'saju' | null>(null);
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'dream' | 'saju' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
@@ -53,6 +61,10 @@ const Assessment = () => {
   const [panicResults, setPanicResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
   const [depressionResults, setDepressionResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
   const [adhdResults, setAdhdResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
+  const [stressResults, setStressResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
+  const [bigfiveResults, setBigfiveResults] = useState<{answers: Record<string, number>, scores: Record<string, number>, total: number, average: number} | null>(null);
+  const [attachmentResults, setAttachmentResults] = useState<{answers: Record<string, number>, anxietyScore: number, avoidanceScore: number, style: string, total: number, average: number} | null>(null);
+  const [careerResults, setCareerResults] = useState<{answers: Record<string, number>, scores: Record<string, number>, topTypes: string[], total: number, average: number} | null>(null);
   const [childResults, setChildResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, gameScores: Record<string, number>} | null>(null);
   const [infantResults, setInfantResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, categoryScores: Record<string, number>} | null>(null);
   const [adultResults, setAdultResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, categoryScores: Record<string, number>} | null>(null);
@@ -155,16 +167,28 @@ const Assessment = () => {
       case 'depression': return '우울감 자가체크';
       case 'panic': return '불안감 수준 확인';
       case 'language': return '언어발달 자가체크';
+      case 'stress': return '스트레스 인지 척도';
+      case 'bigfive': return '빅파이브 성격검사';
+      case 'attachment': return '애착 유형 검사';
+      case 'career': return '직업 흥미 검사';
       default: return '심리상태 체크';
     }
   };
 
-  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'dream' | 'saju') => {
+  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'dream' | 'saju') => {
     setTestType(type);
     if (type === 'dream') {
       setCurrentStep('dream-interpretation');
     } else if (type === 'saju') {
       setCurrentStep('saju-analysis');
+    } else if (type === 'stress') {
+      setCurrentStep('stress-test');
+    } else if (type === 'bigfive') {
+      setCurrentStep('bigfive-test');
+    } else if (type === 'attachment') {
+      setCurrentStep('attachment-test');
+    } else if (type === 'career') {
+      setCurrentStep('career-test');
     } else {
       setCurrentStep('legal-notice');
     }
@@ -185,6 +209,14 @@ const Assessment = () => {
       setCurrentStep('depression-test');
     } else if (testType === 'adhd') {
       setCurrentStep('adhd-test');
+    } else if (testType === 'stress') {
+      setCurrentStep('stress-test');
+    } else if (testType === 'bigfive') {
+      setCurrentStep('bigfive-test');
+    } else if (testType === 'attachment') {
+      setCurrentStep('attachment-test');
+    } else if (testType === 'career') {
+      setCurrentStep('career-test');
     } else {
       setCurrentStep('assessment');
     }
@@ -309,6 +341,49 @@ const Assessment = () => {
     setCurrentStep('adhd-result');
   };
 
+  const handleStressTestComplete = async (results: {answers: number[], total: number, average: number, severity: string}) => {
+    console.log('Stress Test Results:', results);
+    setStressResults(results);
+    
+    await saveTestToTimeline('stress', results);
+    
+    setCurrentAssessmentResults({
+      testType: 'stress',
+      ageGroup: '성인',
+      total: results.total,
+      average: results.average,
+      severity: results.severity
+    });
+    setCurrentStep('stress-result');
+  };
+
+  const handleBigfiveTestComplete = async (results: {answers: Record<string, number>, scores: Record<string, number>, total: number, average: number}) => {
+    console.log('BigFive Test Results:', results);
+    setBigfiveResults(results);
+    
+    await saveTestToTimeline('bigfive', results);
+    
+    setCurrentStep('bigfive-result');
+  };
+
+  const handleAttachmentTestComplete = async (results: {answers: Record<string, number>, anxietyScore: number, avoidanceScore: number, style: string, total: number, average: number}) => {
+    console.log('Attachment Test Results:', results);
+    setAttachmentResults(results);
+    
+    await saveTestToTimeline('attachment', results);
+    
+    setCurrentStep('attachment-result');
+  };
+
+  const handleCareerTestComplete = async (results: {answers: Record<string, number>, scores: Record<string, number>, topTypes: string[], total: number, average: number}) => {
+    console.log('Career Test Results:', results);
+    setCareerResults(results);
+    
+    await saveTestToTimeline('career', results);
+    
+    setCurrentStep('career-result');
+  };
+
   const handleStartAIChat = () => {
     setCurrentStep('ai-chat');
   };
@@ -333,7 +408,7 @@ const Assessment = () => {
 
 
   const handleBack = () => {
-    if (currentStep === 'dream-interpretation' || currentStep === 'saju-analysis' || currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
+    if (currentStep === 'dream-interpretation' || currentStep === 'saju-analysis' || currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'stress-result' || currentStep === 'bigfive-result' || currentStep === 'attachment-result' || currentStep === 'career-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
       // 분석/매칭/상담/결과 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
@@ -347,6 +422,10 @@ const Assessment = () => {
       setPanicResults(null);
       setDepressionResults(null);
       setAdhdResults(null);
+      setStressResults(null);
+      setBigfiveResults(null);
+      setAttachmentResults(null);
+      setCareerResults(null);
       setAnalysisResult("");
       setSelectedExpert(null);
     } else if (currentStep === 'age-select') {

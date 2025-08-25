@@ -565,6 +565,39 @@ export type Database = {
           },
         ]
       }
+      personalized_missions: {
+        Row: {
+          based_on_data: Json | null
+          generated_at: string
+          id: string
+          is_active: boolean
+          mission_content: Json
+          mission_type: string
+          priority_level: number
+          user_id: string
+        }
+        Insert: {
+          based_on_data?: Json | null
+          generated_at?: string
+          id?: string
+          is_active?: boolean
+          mission_content: Json
+          mission_type?: string
+          priority_level?: number
+          user_id: string
+        }
+        Update: {
+          based_on_data?: Json | null
+          generated_at?: string
+          id?: string
+          is_active?: boolean
+          mission_content?: Json
+          mission_type?: string
+          priority_level?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           birth_date: string | null
@@ -1005,6 +1038,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_preferences: {
+        Row: {
+          assessment_history: Json | null
+          created_at: string
+          health_goals: string[] | null
+          id: string
+          lifestyle_preferences: Json | null
+          primary_concerns: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assessment_history?: Json | null
+          created_at?: string
+          health_goals?: string[] | null
+          id?: string
+          lifestyle_preferences?: Json | null
+          primary_concerns?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assessment_history?: Json | null
+          created_at?: string
+          health_goals?: string[] | null
+          id?: string
+          lifestyle_preferences?: Json | null
+          primary_concerns?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_subscriptions: {
         Row: {

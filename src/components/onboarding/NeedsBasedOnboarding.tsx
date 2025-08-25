@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   ArrowRight, 
   CheckCircle, 
@@ -276,6 +277,47 @@ export default function NeedsBasedOnboarding() {
 
   const progress = ((currentStep + 1) / steps.length) * 100;
 
+  const saveUserPreferences = async () => {
+    try {
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) return;
+
+      const preferences = {
+        primary_concerns: [userNeeds.primaryConcern],
+        health_goals: [userNeeds.primaryConcern], // 관심사를 목표로도 설정
+        lifestyle_preferences: {
+          target_group: userNeeds.targetGroup,
+          experience_level: userNeeds.experienceLevel,
+          urgency_level: userNeeds.urgencyLevel,
+          preferred_style: userNeeds.preferredStyle,
+          time_availability: userNeeds.timeAvailability
+        },
+        assessment_history: {}
+      };
+
+      const { error } = await supabase
+        .from('user_preferences')
+        .upsert({
+          user_id: user.user.id,
+          ...preferences
+        }, {
+          onConflict: 'user_id'
+        });
+
+      if (error) {
+        console.error('사용자 선호도 저장 오류:', error);
+      } else {
+        console.log('✅ 사용자 선호도 저장 완료');
+        toast({
+          title: "설정 완료!",
+          description: "맞춤형 미션이 준비됩니다.",
+        });
+      }
+    } catch (error) {
+      console.error('사용자 선호도 저장 실패:', error);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div className="text-center mb-8">
@@ -313,7 +355,10 @@ export default function NeedsBasedOnboarding() {
             
             {currentStep === steps.length - 1 ? (
               <Button 
-                onClick={() => navigate('/dashboard')}
+                onClick={async () => {
+                  await saveUserPreferences();
+                  navigate('/dashboard');
+                }}
                 className="flex items-center gap-2"
               >
                 시작하기

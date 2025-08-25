@@ -75,13 +75,21 @@ export const WeeklyMissions: React.FC = () => {
 
   const loadMissions = async () => {
     try {
-      // Get current week's start date (Monday)
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) {
+        setLoading(false);
+        return;
+      }
+
+      // 1. 먼저 개인화된 미션 생성 시도
+      await generatePersonalizedMissions(user.user.id);
+
+      // 2. 현재 주 미션 로드
       const today = new Date();
       const currentWeekStart = new Date(today);
       currentWeekStart.setDate(today.getDate() - today.getDay() + 1);
       const weekStartString = currentWeekStart.toISOString().split('T')[0];
 
-      // Load missions for current week
       const { data: missionsData, error: missionsError } = await supabase
         .from('weekly_missions')
         .select('*')
@@ -94,23 +102,20 @@ export const WeeklyMissions: React.FC = () => {
         setMissions(missionsData);
 
         // Load user progress for these missions
-        const { data: user } = await supabase.auth.getUser();
-        if (user.user) {
-          const missionIds = missionsData.map(m => m.id);
-          const { data: progressData, error: progressError } = await supabase
-            .from('user_mission_progress')
-            .select('*')
-            .eq('user_id', user.user.id)
-            .in('mission_id', missionIds);
+        const missionIds = missionsData.map(m => m.id);
+        const { data: progressData, error: progressError } = await supabase
+          .from('user_mission_progress')
+          .select('*')
+          .eq('user_id', user.user.id)
+          .in('mission_id', missionIds);
 
-          if (progressError) throw progressError;
+        if (progressError) throw progressError;
 
-          const progressMap: Record<string, MissionProgress> = {};
-          progressData?.forEach(p => {
-            progressMap[p.mission_id] = p;
-          });
-          setUserProgress(progressMap);
-        }
+        const progressMap: Record<string, MissionProgress> = {};
+        progressData?.forEach(p => {
+          progressMap[p.mission_id] = p;
+        });
+        setUserProgress(progressMap);
       }
     } catch (error) {
       console.error('미션 로드 오류:', error);
@@ -121,6 +126,35 @@ export const WeeklyMissions: React.FC = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const generatePersonalizedMissions = async (userId: string) => {
+    try {
+      console.log('🤖 개인화된 미션 생성 중...');
+      
+      const { data, error } = await supabase.functions.invoke('generate-personalized-missions', {
+        body: { 
+          userId,
+          forceGenerate: false
+        }
+      });
+
+      if (error) {
+        console.warn('개인화 미션 생성 실패:', error);
+        return;
+      }
+
+      if (data?.success) {
+        console.log('✅ 개인화된 미션 생성 완료:', data.message);
+        toast({
+          title: "🎯 맞춤 미션 준비 완료!",
+          description: data.message,
+        });
+      }
+    } catch (error) {
+      console.warn('개인화 미션 생성 중 오류:', error);
+      // 실패해도 기존 미션은 표시되도록 에러를 throw하지 않음
     }
   };
 

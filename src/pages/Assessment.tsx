@@ -342,8 +342,8 @@ const Assessment = () => {
 
   const handleFunTestComplete = (result: any, testType: string) => {
     console.log('Fun test completed:', { result, testType });
-    navigate('/assessment', { 
-      state: { result, testType, showResult: true },
+    navigate('/fun-test-result', { 
+      state: { result, testType },
       replace: true 
     });
   };

@@ -206,6 +206,11 @@ export default function InnerAnimalTest({ onComplete, onBack }: InnerAnimalTestP
         result: data
       };
 
+      console.log('Fun test completed:', {
+        result: data,
+        testType: 'inner_animal'
+      });
+
       onComplete(data, 'inner_animal');
 
       toast({

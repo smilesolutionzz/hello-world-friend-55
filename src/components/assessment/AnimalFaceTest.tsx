@@ -119,6 +119,11 @@ export default function AnimalFaceTest({ onComplete, onBack }: AnimalFaceTestPro
         result: data
       };
 
+      console.log('Fun test completed:', {
+        result: data,
+        testType: 'animal_face_match'
+      });
+
       onComplete(data, 'animal_face_match');
 
       toast({

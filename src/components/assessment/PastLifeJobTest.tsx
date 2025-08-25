@@ -206,6 +206,11 @@ export default function PastLifeJobTest({ onComplete, onBack }: PastLifeJobTestP
         result: data
       };
 
+      console.log('Fun test completed:', {
+        result: data,
+        testType: 'past_life_job'
+      });
+
       onComplete(data, 'past_life_job');
 
       toast({

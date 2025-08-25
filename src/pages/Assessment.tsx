@@ -570,15 +570,15 @@ const Assessment = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 <div className="bg-white/20 rounded-lg p-4">
                   <h4 className="font-bold text-sm">👑 내 전생은 어떤 직업? (MZ)</h4>
-                  <p className="text-xs text-pink-100">3토큰</p>
+                  <p className="text-xs text-pink-100">1토큰</p>
                 </div>
                 <div className="bg-white/20 rounded-lg p-4">
                   <h4 className="font-bold text-sm">📸 내 얼굴 닮은 동물 (초등·청소년)</h4>
-                  <p className="text-xs text-pink-100">2토큰</p>
+                  <p className="text-xs text-pink-100">1토큰</p>
                 </div>
                 <div className="bg-white/20 rounded-lg p-4">
                   <h4 className="font-bold text-sm">❤️ 나의 내면 동물 (40대+)</h4>
-                  <p className="text-xs text-pink-100">3토큰</p>
+                  <p className="text-xs text-pink-100">1토큰</p>
                 </div>
               </div>
             </div>

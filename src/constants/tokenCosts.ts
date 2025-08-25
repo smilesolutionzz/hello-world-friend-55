@@ -23,9 +23,9 @@ export const TOKEN_COSTS = {
   COMPREHENSIVE_REPORT: 200, // AI 전문가 종합 리포팅
   
   // 재미 테스트
-  PAST_LIFE_JOB: 3,         // 전생 직업 분석
-  ANIMAL_FACE_MATCH: 2,     // 얼굴 닮은 동물 찾기
-  INNER_ANIMAL: 3,          // 내면 동물 찾기
+  PAST_LIFE_JOB: 1,         // 전생 직업 분석
+  ANIMAL_FACE_MATCH: 1,     // 얼굴 닮은 동물 찾기
+  INNER_ANIMAL: 1,          // 내면 동물 찾기
   
   // 기타
   CONTENT_RECOMMENDATION: 1, // 컨텐츠 추천

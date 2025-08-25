@@ -965,6 +965,47 @@ export type Database = {
         }
         Relationships: []
       }
+      user_mission_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          is_completed: boolean
+          mission_id: string
+          notes: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          is_completed?: boolean
+          mission_id: string
+          notes?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          is_completed?: boolean
+          mission_id?: string
+          notes?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_mission_progress_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "weekly_missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_subscriptions: {
         Row: {
           created_at: string
@@ -1045,6 +1086,45 @@ export type Database = {
           total_used?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      weekly_missions: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          difficulty: string
+          id: string
+          is_active: boolean
+          points: number
+          title: string
+          updated_at: string
+          week_start_date: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description: string
+          difficulty?: string
+          id?: string
+          is_active?: boolean
+          points?: number
+          title: string
+          updated_at?: string
+          week_start_date: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          difficulty?: string
+          id?: string
+          is_active?: boolean
+          points?: number
+          title?: string
+          updated_at?: string
+          week_start_date?: string
         }
         Relationships: []
       }

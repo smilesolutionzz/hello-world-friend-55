@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { WeeklyMissions } from "@/components/WeeklyMissions";
 import { 
   TrendingUp, 
   TrendingDown,
@@ -101,6 +102,11 @@ export function WeeklyInsights({
             }
           </p>
         </div>
+      </div>
+
+      {/* 주간 미션 섹션 추가 */}
+      <div className="mt-6">
+        <WeeklyMissions />
       </div>
     </Card>
   );

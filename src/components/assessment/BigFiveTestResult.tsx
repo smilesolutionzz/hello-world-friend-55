@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { RefreshCw, Download, Share2, User, Heart, Target, Brain, Lightbulb } from "lucide-react";
-import { shareTestResult } from "@/utils/shareUtils";
+import { useShareText } from "@/utils/shareUtils";
 
 interface BigFiveTestResultProps {
   result: {
@@ -66,16 +66,15 @@ const getLevelVariant = (score: number) => {
 };
 
 export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResultProps) {
+  const { shareAsText } = useShareText();
+
   const handleShare = () => {
     const scoreTexts = Object.entries(result.scores)
       .map(([factor, score]) => `${factorConfig[factor as keyof typeof factorConfig].name}: ${score.toFixed(1)}`)
       .join('\n');
     
-    shareTestResult(
-      "빅파이브 성격검사",
-      `나의 성격 특성:\n${scoreTexts}`,
-      "bigfive-test"
-    );
+    const shareContent = `빅파이브 성격검사 결과\n\n나의 성격 특성:\n${scoreTexts}`;
+    shareAsText(shareContent, "빅파이브 성격검사 결과");
   };
 
   return (

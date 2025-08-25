@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { RefreshCw, Download, Share2, Heart, Shield, UserX, Zap } from "lucide-react";
-import { shareTestResult } from "@/utils/shareUtils";
+import { useShareText } from "@/utils/shareUtils";
 
 interface AttachmentStyleResultProps {
   result: {
@@ -99,13 +99,11 @@ export default function AttachmentStyleResult({ result, onRestart }: AttachmentS
   const config = styleConfig[result.style as keyof typeof styleConfig];
   const Icon = config.icon;
   const tips = improvementTips[result.style as keyof typeof improvementTips];
+  const { shareAsText } = useShareText();
 
   const handleShare = () => {
-    shareTestResult(
-      "애착 유형 검사",
-      `나의 애착 유형: ${result.style}\n불안 점수: ${result.anxietyScore.toFixed(1)}\n회피 점수: ${result.avoidanceScore.toFixed(1)}`,
-      "attachment-test"
-    );
+    const shareContent = `애착 유형 검사 결과\n\n나의 애착 유형: ${result.style}\n불안 점수: ${result.anxietyScore.toFixed(1)}\n회피 점수: ${result.avoidanceScore.toFixed(1)}`;
+    shareAsText(shareContent, "애착 유형 검사 결과");
   };
 
   return (

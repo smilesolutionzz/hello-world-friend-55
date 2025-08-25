@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { RefreshCw, Download, Share2, Briefcase, Wrench, Microscope, Palette, Users, TrendingUp, FileText } from "lucide-react";
-import { shareTestResult } from "@/utils/shareUtils";
+import { useShareText } from "@/utils/shareUtils";
 
 interface CareerInterestResultProps {
   result: {
@@ -71,17 +71,15 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
   const topType = result.topTypes[0];
   const topConfig = typeConfig[topType as keyof typeof typeConfig];
   const TopIcon = topConfig.icon;
+  const { shareAsText } = useShareText();
 
   const handleShare = () => {
     const topThreeTypes = result.topTypes
       .map(type => typeConfig[type as keyof typeof typeConfig].name)
       .join(', ');
     
-    shareTestResult(
-      "직업 흥미 검사",
-      `나의 직업 흥미 유형:\n1순위: ${topConfig.name}\n상위 3유형: ${topThreeTypes}`,
-      "career-interest-test"
-    );
+    const shareContent = `직업 흥미 검사 결과\n\n나의 직업 흥미 유형:\n1순위: ${topConfig.name}\n상위 3유형: ${topThreeTypes}`;
+    shareAsText(shareContent, "직업 흥미 검사 결과");
   };
 
   return (

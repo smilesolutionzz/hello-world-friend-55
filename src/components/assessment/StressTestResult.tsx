@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { RefreshCw, Download, Share2, Brain, AlertTriangle, CheckCircle } from "lucide-react";
-import { shareTestResult } from "@/utils/shareUtils";
+import { useShareText } from "@/utils/shareUtils";
 
 interface StressTestResultProps {
   result: {
@@ -64,13 +64,11 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
   const config = levelConfig[result.severity as keyof typeof levelConfig];
   const Icon = config.icon;
   const progressValue = (result.total / 40) * 100;
+  const { shareAsText } = useShareText();
 
   const handleShare = () => {
-    shareTestResult(
-      "스트레스 인지 척도 검사",
-      `스트레스 수준: ${result.severity}\n총점: ${result.total}/40점\n평균: ${result.average.toFixed(1)}점`,
-      "stress-test"
-    );
+    const shareContent = `스트레스 인지 척도 검사 결과\n\n스트레스 수준: ${result.severity}\n총점: ${result.total}/40점\n평균: ${result.average.toFixed(1)}점`;
+    shareAsText(shareContent, "스트레스 인지 척도 검사 결과");
   };
 
   return (

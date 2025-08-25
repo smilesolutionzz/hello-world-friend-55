@@ -40,32 +40,32 @@ const ClientLogos = () => {
       description: "종합발달 지원센터"
     },
     { 
-      name: "APA발달센터", 
+      name: "희망발달센터 수원점", 
+      icon: Heart, 
+      color: "text-rose-500",
+      bgColor: "bg-rose-50",
+      description: "아동발달 전문센터"
+    },
+    { 
+      name: "꿈나무발달센터 분당점", 
       icon: Brain, 
       color: "text-indigo-600",
       bgColor: "bg-indigo-50",
-      description: "응용행동분석 전문기관"
+      description: "언어·인지발달 센터"
     },
     { 
-      name: "한국스포츠과학연구소", 
-      icon: Activity, 
-      color: "text-green-600",
+      name: "새싹발달센터 강남점", 
+      icon: Sparkles, 
+      color: "text-green-500",
       bgColor: "bg-green-50",
-      description: "스포츠 과학 연구기관"
+      description: "통합발달 지원센터"
     },
     { 
-      name: "용인대학교", 
-      icon: GraduationCap, 
-      color: "text-amber-600",
-      bgColor: "bg-amber-50",
-      description: "교육 연구기관"
-    },
-    { 
-      name: "한국특수체육학회", 
-      icon: Trophy, 
-      color: "text-orange-500",
-      bgColor: "bg-orange-50",
-      description: "특수체육 학술단체"
+      name: "행복발달센터 일산점", 
+      icon: Heart, 
+      color: "text-pink-600",
+      bgColor: "bg-pink-50",
+      description: "아동·청소년 발달센터"
     },
     { 
       name: "명지대학교", 

@@ -46,6 +46,9 @@ import { OnboardingOverlay } from "@/components/ui/onboarding-overlay";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { ComprehensiveReportSection } from "@/components/ComprehensiveReportSection";
 import TokenBalance from "@/components/TokenBalance";
+import { RecentActivity } from "@/components/dashboard/RecentActivity";
+import { QuickActions } from "@/components/dashboard/QuickActions";
+import { WeeklyInsights } from "@/components/dashboard/WeeklyInsights";
 
 interface Profile {
   id: string;
@@ -856,6 +859,31 @@ const Dashboard = () => {
                 </div>
               )}
             </Card>
+
+            {/* New Dashboard Components Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              {/* Recent Activity */}
+              <RecentActivity 
+                activities={observations.slice(0, 5).map(obs => ({
+                  id: obs.id,
+                  type: obs.tags.includes('검사') ? 'assessment' : obs.tags.includes('상담') ? 'consultation' : 'observation',
+                  title: `${obs.profile?.display_name || '알 수 없음'} - ${obs.tags.join(', ')}`,
+                  date: obs.created_at,
+                  score: obs.score_overall
+                }))}
+              />
+              
+              {/* Quick Actions */}
+              <QuickActions />
+              
+              {/* Weekly Insights */}
+              <WeeklyInsights
+                totalActivities={recent30DaysObservations}
+                averageScore={Math.round(observations.reduce((sum, obs) => sum + obs.score_overall, 0) / Math.max(observations.length, 1))}
+                trendDirection={weeklyChange.changeRate > 5 ? 'up' : weeklyChange.changeRate < -5 ? 'down' : 'stable'}
+                weeklyGoal={5}
+              />
+            </div>
 
             {/* Family Overview */}
             <div className="space-y-4">

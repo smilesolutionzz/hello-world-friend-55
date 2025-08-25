@@ -105,7 +105,7 @@ export function ComprehensiveReportSection({
           <FileText className="w-6 h-6 text-primary" />
         </div>
         <div>
-          <h3 className="text-lg font-bold">AI 전문가 종합 리포팅</h3>
+          <h3 className="text-lg font-bold">AIH 전문가 종합 리포팅</h3>
           <p className="text-sm text-muted-foreground">모든 데이터를 종합한 전문 분석 리포트</p>
         </div>
       </div>

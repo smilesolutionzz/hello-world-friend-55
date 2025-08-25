@@ -768,6 +768,131 @@ const Assessment = () => {
                   <li>• 운세와 성향 해석</li>
                 </ul>
               </div>
+
+              {/* 재미있는 테스트 3개 추가 */}
+              <div 
+                className="bg-gradient-to-br from-purple-500 to-pink-600 hover-glow border border-purple-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
+                onClick={() => navigate('/fun-tests?type=past-life-job')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-pink-700 text-white">🔥 HOT</Badge>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">👑 내 전생은 어떤 직업?</h3>
+                <p className="text-purple-100 mb-4">AI가 분석하는 나의 전생 직업과 운명! MZ세대가 가장 좋아하는 신비로운 테스트</p>
+                <ul className="space-y-2 text-sm text-purple-100">
+                  <li>• MZ세대</li>
+                  <li>• AI 즉시 해석</li>
+                  <li>• 심리적 의미 해석</li>
+                </ul>
+              </div>
+
+              <div 
+                className="bg-gradient-to-br from-orange-500 to-yellow-600 hover-glow border border-orange-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
+                onClick={() => navigate('/fun-tests?type=animal-face-match')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-yellow-700 text-white">📈 TREND</Badge>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">📸 내 얼굴 닮은 동물 찾기</h3>
+                <p className="text-orange-100 mb-4">카메라로 얼굴을 찍으면 AI가 닮은 동물을 찾아줘! 친구들과 비교해보며 웃음폭탄</p>
+                <ul className="space-y-2 text-sm text-orange-100">
+                  <li>• 초등·청소년</li>
+                  <li>• AI 즉시 해석</li>
+                  <li>• 운세와 성향 해석</li>
+                </ul>
+              </div>
+
+              <div 
+                className="bg-gradient-to-br from-green-500 to-blue-600 hover-glow border border-green-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
+                onClick={() => navigate('/fun-tests?type=inner-animal')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-blue-700 text-white">✨ NEW</Badge>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">💚 나의 내면 동물 찾기</h3>
+                <p className="text-green-100 mb-4">깊은 심리 분석으로 알아보는 나의 진짜 성격! 40대 이상이 가장 많이 하는 인기 테스트</p>
+                <ul className="space-y-2 text-sm text-green-100">
+                  <li>• 40대+</li>
+                  <li>• AI 즉시 해석</li>
+                  <li>• 심리적 의미 해석</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* 표준화된 전문 검사 섹션 */}
+            <div className="mt-12">
+              <div className="text-center mb-8">
+                <h3 className="text-xl font-bold text-foreground mb-2">표준화된 전문 검사</h3>
+                <p className="text-muted-foreground">
+                  국제 표준 검사 도구로 정확한 분석
+                </p>
+              </div>
+              
+              <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                <div 
+                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
+                  onClick={() => setCurrentStep('stress-test')}
+                >
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-green-500 text-white">무료</Badge>
+                  </div>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">스트레스 인지 척도</h4>
+                  <p className="text-muted-foreground text-sm mb-3">PSS-10 표준화 도구</p>
+                  <ul className="space-y-1 text-xs">
+                    <li>• 10문항 3분</li>
+                    <li>• 국제 표준</li>
+                    <li>• 즉시 결과</li>
+                  </ul>
+                </div>
+
+                <div 
+                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
+                  onClick={() => setCurrentStep('bigfive-test')}
+                >
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-green-500 text-white">무료</Badge>
+                  </div>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">빅파이브 성격검사</h4>
+                  <p className="text-muted-foreground text-sm mb-3">5요인 성격 모델</p>
+                  <ul className="space-y-1 text-xs">
+                    <li>• 44문항 5분</li>
+                    <li>• 심리학계 표준</li>
+                    <li>• 상세 분석</li>
+                  </ul>
+                </div>
+
+                <div 
+                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
+                  onClick={() => setCurrentStep('attachment-test')}
+                >
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-green-500 text-white">무료</Badge>
+                  </div>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">애착 유형 검사</h4>
+                  <p className="text-muted-foreground text-sm mb-3">관계 패턴 분석</p>
+                  <ul className="space-y-1 text-xs">
+                    <li>• 36문항 4분</li>
+                    <li>• 4가지 유형</li>
+                    <li>• 관계 조언</li>
+                  </ul>
+                </div>
+
+                <div 
+                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
+                  onClick={() => setCurrentStep('career-test')}
+                >
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-green-500 text-white">무료</Badge>
+                  </div>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">직업 흥미 검사</h4>
+                  <p className="text-muted-foreground text-sm mb-3">Holland 진로 탐색</p>
+                  <ul className="space-y-1 text-xs">
+                    <li>• 60문항 7분</li>
+                    <li>• 6가지 유형</li>
+                    <li>• 직업 추천</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -953,6 +1078,126 @@ const Assessment = () => {
             onBack={handleBack}
             onStartAIChat={handleStartAIChat}
             onStartRealTimeChat={handleStartRealTimeChat}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'stress-test') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">스트레스 인지 척도 (PSS-10)</h1>
+            <p className="text-muted-foreground">국제 표준화 도구 10문항 (3분)</p>
+          </div>
+          <StressTestForm 
+            onComplete={handleStressTestComplete}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'stress-result' && stressResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <StressTestResult 
+            result={stressResults}
+            onRestart={() => setCurrentStep('stress-test')}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'bigfive-test') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">빅파이브 성격검사</h1>
+            <p className="text-muted-foreground">5요인 성격 모델 44문항 (5분)</p>
+          </div>
+          <BigFiveTestForm 
+            onComplete={handleBigfiveTestComplete}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'bigfive-result' && bigfiveResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <BigFiveTestResult 
+            result={bigfiveResults}
+            onRestart={() => setCurrentStep('bigfive-test')}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'attachment-test') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">애착 유형 검사</h1>
+            <p className="text-muted-foreground">관계 패턴 분석 36문항 (4분)</p>
+          </div>
+          <AttachmentStyleForm 
+            onComplete={handleAttachmentTestComplete}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'attachment-result' && attachmentResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <AttachmentStyleResult 
+            result={attachmentResults}
+            onRestart={() => setCurrentStep('attachment-test')}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'career-test') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">직업 흥미 검사</h1>
+            <p className="text-muted-foreground">Holland 진로 탐색 60문항 (7분)</p>
+          </div>
+          <CareerInterestForm 
+            onComplete={handleCareerTestComplete}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'career-result' && careerResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <CareerInterestResult 
+            result={careerResults}
+            onRestart={() => setCurrentStep('career-test')}
           />
         </div>
       </div>

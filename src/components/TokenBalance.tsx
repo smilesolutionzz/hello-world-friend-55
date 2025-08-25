@@ -146,7 +146,17 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 </Alert>
               )}
 
-              {/* 대시보드 버튼 */}
+              {/* 대시보드로 돌아가기 버튼 */}
+              <Button
+                onClick={() => navigate('/dashboard')}
+                className="w-full"
+                variant="secondary"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                대시보드로 가기
+              </Button>
+
+              {/* 토큰 내역 버튼 */}
               <Button
                 onClick={() => navigate('/token-history')}
                 className="w-full"

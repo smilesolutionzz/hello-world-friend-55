@@ -138,11 +138,11 @@ const PremiumAssessmentResult = ({
   };
 
   const getScoreInterpretation = (score: number, category: string) => {
-    if (score >= 6) return { level: "높음", color: "bg-red-500", description: "매우 강한 특성" };
-    if (score >= 5) return { level: "중상", color: "bg-orange-500", description: "강한 특성" };
-    if (score >= 4) return { level: "보통", color: "bg-yellow-500", description: "일반적 특성" };
-    if (score >= 3) return { level: "중하", color: "bg-green-500", description: "약한 특성" };
-    return { level: "낮음", color: "bg-blue-500", description: "매우 약한 특성" };
+    if (score >= 6) return { level: "High (높음)", color: "bg-red-500", description: "매우 강한 특성" };
+    if (score >= 5) return { level: "Above Average (중상)", color: "bg-orange-500", description: "강한 특성" };
+    if (score >= 4) return { level: "Average (보통)", color: "bg-yellow-500", description: "일반적 특성" };
+    if (score >= 3) return { level: "Below Average (중하)", color: "bg-green-500", description: "약한 특성" };
+    return { level: "Low (낮음)", color: "bg-blue-500", description: "매우 약한 특성" };
   };
 
   const translateCategory = (category: string) => {
@@ -153,7 +153,12 @@ const PremiumAssessmentResult = ({
       'persistence': 'Persistence (인내력)',
       'self_directedness': 'Self-Directedness (자율성)',
       'cooperativeness': 'Cooperativeness (협조성)',
-      'self_transcendence': 'Self-Transcendence (자기초월)'
+      'self_transcendence': 'Self-Transcendence (자기초월)',
+      'extraversion': 'Extraversion (외향성)',
+      'agreeableness': 'Agreeableness (친화성)',
+      'conscientiousness': 'Conscientiousness (성실성)',
+      'neuroticism': 'Neuroticism (신경성)',
+      'openness': 'Openness (개방성)'
     };
     return translations[category.toLowerCase()] || category.replace(/_/g, ' ');
   };

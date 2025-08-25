@@ -28,25 +28,25 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const getOverallEvaluation = (severity: string) => {
     if (severity === "정상 범위") {
       return {
-        level: "정상 범위",
+        level: "Normal Range (정상 범위)",
         description: "ADHD 증상이 일반적인 범위 내에 있습니다.",
         color: "bg-green-100 text-green-800 border-green-200"
       };
     } else if (severity === "경계선 수준") {
       return {
-        level: "경계선 수준",
+        level: "Borderline Level (경계선 수준)",
         description: "일부 ADHD 증상이 나타날 수 있어 관찰이 필요합니다.",
         color: "bg-yellow-100 text-yellow-800 border-yellow-200"
       };
     } else if (severity === "중등도 수준") {
       return {
-        level: "중등도 수준",
+        level: "Moderate Level (중등도 수준)",
         description: "ADHD 증상이 중등도 수준으로 전문가 상담을 권장합니다.",
         color: "bg-orange-100 text-orange-800 border-orange-200"
       };
     } else {
       return {
-        level: "심각한 수준",
+        level: "Severe Level (심각한 수준)",
         description: "ADHD 증상이 심각한 수준으로 즉시 전문가 도움이 필요합니다.",
         color: "bg-red-100 text-red-800 border-red-200"
       };
@@ -59,12 +59,12 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   
   const chartData = [
     {
-      name: "부주의 증상",
+      name: "Inattention (부주의 증상)",
       value: inattentionScore,
       fullMark: 18,
     },
     {
-      name: "과잉행동/충동성",
+      name: "Hyperactivity/Impulsivity (과잉행동/충동성)",
       value: hyperactivityScore,
       fullMark: 18,
     }
@@ -156,8 +156,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
               <p className="text-lg font-medium">• 평가 결과: {evaluation.level}</p>
             </div>
             <div>
-              <p className="text-lg font-medium mb-2">• 부주의 증상: {inattentionScore}점</p>
-              <p className="text-lg font-medium">• 과잉행동/충동성: {hyperactivityScore}점</p>
+              <p className="text-lg font-medium mb-2">• Inattention (부주의 증상): {inattentionScore}점</p>
+              <p className="text-lg font-medium">• Hyperactivity/Impulsivity (과잉행동/충동성): {hyperactivityScore}점</p>
             </div>
           </div>
           

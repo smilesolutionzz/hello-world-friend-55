@@ -25,19 +25,19 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const getEvaluation = (score: number) => {
     if (score <= 24) {
       return {
-        level: "주의 필요",
+        level: "Attention Needed (주의 필요)",
         description: "전문가 상담을 권장합니다.",
         color: "text-red-600"
       };
     } else if (score <= 36) {
       return {
-        level: "경계선",
+        level: "Borderline (경계선)",
         description: "경계선 소견, 추가 평가 추천.",
         color: "text-yellow-600"
       };
     } else {
       return {
-        level: "양호",
+        level: "Good (양호)",
         description: "양호. 경과 관찰 권장.",
         color: "text-green-600"
       };
@@ -120,9 +120,9 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           
           <div className="bg-muted/30 rounded-lg p-6">
             <p className="text-lg leading-relaxed">
-              <strong>해석:</strong> {evaluation.level === "양호" 
+              <strong>해석:</strong> {evaluation.level === "Good (양호)" 
                 ? "언어발달이 연령대 기준으로 양호한 수준입니다. 현재의 언어적 상호작용과 학습 환경을 유지하며, 지속적인 언어 자극을 제공하시기 바랍니다."
-                : evaluation.level === "경계선"
+                : evaluation.level === "Borderline (경계선)"
                 ? "언어발달이 경계선 수준으로, 추가적인 관찰과 언어 자극이 필요합니다. 일상 대화를 늘리고 책 읽기 등의 활동을 통해 개선할 수 있습니다."
                 : "언어발달에 주의가 필요한 상태입니다. 전문가와의 상담을 통해 개별적인 언어치료 계획을 수립하시기를 권장드립니다."}
             </p>

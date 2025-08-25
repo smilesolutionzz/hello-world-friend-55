@@ -84,31 +84,31 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
       case "정상":
         return {
           icon: <CheckCircle className="w-6 h-6 text-green-600" />,
-          title: "정상 범위",
+          title: "Normal Range (정상 범위)",
           description: "현재 우울증상이 정상 범위에 있습니다. 건강한 정신상태를 유지하고 계십니다."
         };
       case "가벼운 우울":
         return {
           icon: <Heart className="w-6 h-6 text-yellow-600" />,
-          title: "가벼운 우울증상",
+          title: "Mild Depression (가벼운 우울증상)",
           description: "가벼운 우울증상이 있습니다. 생활습관 개선과 스트레스 관리를 통해 증상 완화가 가능합니다."
         };
       case "중등도 우울":
         return {
           icon: <AlertTriangle className="w-6 h-6 text-orange-600" />,
-          title: "중등도 우울증상",
+          title: "Moderate Depression (중등도 우울증상)",
           description: "중등도 우울증상이 확인됩니다. 전문가와의 상담을 권장하며, 치료가 필요할 수 있습니다."
         };
       case "심한 우울":
         return {
           icon: <AlertTriangle className="w-6 h-6 text-red-600" />,
-          title: "심한 우울증상",
+          title: "Severe Depression (심한 우울증상)",
           description: "즉시 전문가의 도움이 필요합니다. 정신건강의학과 전문의와 상담받으시기를 적극 권장드립니다."
         };
       default:
         return {
           icon: <Heart className="w-6 h-6 text-gray-600" />,
-          title: "검사 완료",
+          title: "Assessment Complete (검사 완료)",
           description: "검사가 완료되었습니다."
         };
     }

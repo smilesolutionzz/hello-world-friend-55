@@ -112,7 +112,7 @@ ${isAdult ? `- "성인 불안 완화 방법"
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4.1-2025-04-14',
         messages: [
           {
             role: 'system',
@@ -123,8 +123,7 @@ ${isAdult ? `- "성인 불안 완화 방법"
             content: analysisPrompt
           }
         ],
-        max_tokens: 1000,
-        temperature: 0.7,
+        max_completion_tokens: 1000,
       }),
     });
 
@@ -335,7 +334,7 @@ URL: [실제 블로그 URL]
                   blogUrl: blog.url,
                   category: query.category,
                   duration: blog.readTime || '5분 읽기',
-                  reason: `${query.purpose}에 도움이 되는 전문가 블로그 글입니다.`
+                  reason: `${query.purpose}: ${blog.description || '관련 전문 지식을 제공합니다'}. 신뢰할 수 있는 전문기관에서 검증된 정보로 구체적인 실행 방법과 효과적인 접근법을 배울 수 있습니다.`
                 });
               }
             });
@@ -350,7 +349,7 @@ URL: [실제 블로그 URL]
                 youtubeUrl: video.url,
                 category: query.category,
                 duration: video.duration || '10-15분',
-                reason: `${query.purpose}에 도움이 되는 실제 전문가 영상입니다.`
+                reason: `${query.purpose}: ${video.description || '전문가 검증된 방법을 제공합니다'}. 실제 사례와 단계별 가이드를 통해 구체적이고 실용적인 해결책을 배울 수 있어, 일상에서 바로 적용 가능한 효과적인 접근법을 익힐 수 있습니다.`
               });
             }
           });

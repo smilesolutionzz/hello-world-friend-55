@@ -46,6 +46,7 @@ import { OnboardingOverlay } from "@/components/ui/onboarding-overlay";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { ComprehensiveReportSection } from "@/components/ComprehensiveReportSection";
 import TokenBalance from "@/components/TokenBalance";
+import { SamplePDFDownload } from "@/components/SamplePDFDownload";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { WeeklyInsights } from "@/components/dashboard/WeeklyInsights";
@@ -680,7 +681,10 @@ const Dashboard = () => {
 
             {/* Token Balance and Comprehensive Report Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-              <TokenBalance compact={false} showPurchaseButton={true} />
+              <div className="space-y-6">
+                <TokenBalance compact={false} showPurchaseButton={true} />
+                <SamplePDFDownload />
+              </div>
               <div className="lg:col-span-2">
                 <ComprehensiveReportSection
                   totalAssessments={observations.filter(obs => obs.tags.includes('검사')).length}

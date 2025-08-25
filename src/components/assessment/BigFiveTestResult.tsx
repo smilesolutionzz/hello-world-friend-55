@@ -85,7 +85,7 @@ export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResu
           <CardHeader className="text-center">
             <CardTitle className="text-2xl flex items-center justify-center gap-2">
               <User className="w-8 h-8 text-primary" />
-              빅파이브 성격검사 결과
+              5차원 성격 분석 결과
             </CardTitle>
             <p className="text-muted-foreground">5가지 주요 성격 요인 분석</p>
           </CardHeader>

@@ -23,6 +23,8 @@ import AttachmentStyleForm from "@/components/assessment/AttachmentStyleForm";
 import AttachmentStyleResult from "@/components/assessment/AttachmentStyleResult";
 import CareerInterestForm from "@/components/assessment/CareerInterestForm";
 import CareerInterestResult from "@/components/assessment/CareerInterestResult";
+import SelfEsteemTestForm from "@/components/assessment/SelfEsteemTestForm";
+import SelfEsteemTestResult from "@/components/assessment/SelfEsteemTestResult";
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
@@ -52,8 +54,8 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'dream' | 'saju' | null>(null);
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
@@ -62,6 +64,7 @@ const Assessment = () => {
   const [depressionResults, setDepressionResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
   const [adhdResults, setAdhdResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
   const [stressResults, setStressResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
+  const [selfesteemResults, setSelfesteemResults] = useState<{answers: number[], total: number, average: number, level: string} | null>(null);
   const [bigfiveResults, setBigfiveResults] = useState<{answers: Record<string, number>, scores: Record<string, number>, total: number, average: number} | null>(null);
   const [attachmentResults, setAttachmentResults] = useState<{answers: Record<string, number>, anxietyScore: number, avoidanceScore: number, style: string, total: number, average: number} | null>(null);
   const [careerResults, setCareerResults] = useState<{answers: Record<string, number>, scores: Record<string, number>, topTypes: string[], total: number, average: number} | null>(null);
@@ -167,15 +170,16 @@ const Assessment = () => {
       case 'depression': return '우울감 자가체크';
       case 'panic': return '불안감 수준 확인';
       case 'language': return '언어발달 자가체크';
-      case 'stress': return '스트레스 인지 척도';
-      case 'bigfive': return '빅파이브 성격검사';
-      case 'attachment': return '애착 유형 검사';
-      case 'career': return '직업 흥미 검사';
+      case 'stress': return '마음압박지수 측정';
+      case 'bigfive': return '5차원 성격 분석';
+      case 'attachment': return '관계유형 진단';
+      case 'career': return '진로흥미 탐색';
+      case 'selfesteem': return '자아가치 측정';
       default: return '심리상태 체크';
     }
   };
 
-  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'dream' | 'saju') => {
+  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju') => {
     setTestType(type);
     if (type === 'dream') {
       setCurrentStep('dream-interpretation');
@@ -382,6 +386,16 @@ const Assessment = () => {
     await saveTestToTimeline('career', results);
     
     setCurrentStep('career-result');
+  };
+
+  const handleSelfesteemTestComplete = async (results: {answers: number[], total: number, average: number, level: string}) => {
+    console.log('Self-esteem Test Results:', results);
+    setSelfesteemResults(results);
+    
+    await saveTestToTimeline('selfesteem', results);
+    
+    setCurrentStep('selfesteem-result');
+  };
   };
 
   const handleStartAIChat = () => {
@@ -836,11 +850,11 @@ const Assessment = () => {
                   <div className="absolute top-4 right-4">
                     <Badge className="bg-green-500 text-white">무료</Badge>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">스트레스 인지 척도</h4>
-                  <p className="text-muted-foreground text-sm mb-3">PSS-10 표준화 도구</p>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">마음압박지수 측정</h4>
+                  <p className="text-muted-foreground text-sm mb-3">일상 스트레스 수준 체크</p>
                   <ul className="space-y-1 text-xs">
                     <li>• 10문항 3분</li>
-                    <li>• 국제 표준</li>
+                    <li>• 간편 측정</li>
                     <li>• 즉시 결과</li>
                   </ul>
                 </div>
@@ -852,11 +866,11 @@ const Assessment = () => {
                   <div className="absolute top-4 right-4">
                     <Badge className="bg-green-500 text-white">무료</Badge>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">빅파이브 성격검사</h4>
-                  <p className="text-muted-foreground text-sm mb-3">5요인 성격 모델</p>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">5차원 성격 분석</h4>
+                  <p className="text-muted-foreground text-sm mb-3">나의 성격 특성 탐색</p>
                   <ul className="space-y-1 text-xs">
-                    <li>• 44문항 5분</li>
-                    <li>• 심리학계 표준</li>
+                    <li>• 25문항 5분</li>
+                    <li>• 5가지 영역</li>
                     <li>• 상세 분석</li>
                   </ul>
                 </div>
@@ -868,10 +882,10 @@ const Assessment = () => {
                   <div className="absolute top-4 right-4">
                     <Badge className="bg-green-500 text-white">무료</Badge>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">애착 유형 검사</h4>
-                  <p className="text-muted-foreground text-sm mb-3">관계 패턴 분석</p>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">관계유형 진단</h4>
+                  <p className="text-muted-foreground text-sm mb-3">인간관계 패턴 분석</p>
                   <ul className="space-y-1 text-xs">
-                    <li>• 36문항 4분</li>
+                    <li>• 20문항 4분</li>
                     <li>• 4가지 유형</li>
                     <li>• 관계 조언</li>
                   </ul>
@@ -884,12 +898,28 @@ const Assessment = () => {
                   <div className="absolute top-4 right-4">
                     <Badge className="bg-green-500 text-white">무료</Badge>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">직업 흥미 검사</h4>
-                  <p className="text-muted-foreground text-sm mb-3">Holland 진로 탐색</p>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">진로흥미 탐색</h4>
+                  <p className="text-muted-foreground text-sm mb-3">나에게 맞는 직업 찾기</p>
                   <ul className="space-y-1 text-xs">
-                    <li>• 60문항 7분</li>
+                    <li>• 30문항 6분</li>
                     <li>• 6가지 유형</li>
                     <li>• 직업 추천</li>
+                  </ul>
+                </div>
+
+                <div 
+                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
+                  onClick={() => setCurrentStep('selfesteem-test')}
+                >
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-green-500 text-white">무료</Badge>
+                  </div>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">자아가치 측정</h4>
+                  <p className="text-muted-foreground text-sm mb-3">나의 자존감 수준 체크</p>
+                  <ul className="space-y-1 text-xs">
+                    <li>• 15문항 4분</li>
+                    <li>• 자존감 분석</li>
+                    <li>• 향상 가이드</li>
                   </ul>
                 </div>
               </div>
@@ -1190,6 +1220,37 @@ const Assessment = () => {
       </div>
     );
   }
+
+  if (currentStep === 'selfesteem-test') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">자아가치 측정</h1>
+            <p className="text-muted-foreground">나의 자존감 수준 체크 15문항 (4분)</p>
+          </div>
+          <SelfEsteemTestForm 
+            onComplete={handleSelfesteemTestComplete}
+            onBack={handleBack}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'selfesteem-result' && selfesteemResults) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <SelfEsteemTestResult 
+            result={selfesteemResults}
+            onRestart={() => setCurrentStep('selfesteem-test')}
+          />
+        </div>
+      </div>
+    );
+  }
+
 
   if (currentStep === 'career-result' && careerResults) {
     return (

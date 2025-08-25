@@ -79,7 +79,7 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
           <CardHeader className="text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Icon className="w-8 h-8 text-primary" />
-              <CardTitle className="text-2xl">스트레스 인지 척도 결과</CardTitle>
+              <CardTitle className="text-2xl">마음압박지수 측정 결과</CardTitle>
             </div>
             <div className="space-y-4">
               <Badge variant={config.badgeVariant} className="text-lg px-4 py-2">

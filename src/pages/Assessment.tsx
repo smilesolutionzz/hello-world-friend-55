@@ -29,6 +29,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
+import { Sparkles, Crown, Camera, Heart, Zap } from "lucide-react";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const Assessment = () => {
   const navigate = useNavigate();
@@ -422,132 +426,270 @@ const Assessment = () => {
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               어떤 체크를 받고 싶으신가요? (참고용)
             </p>
-            <div className="mt-6 p-4 bg-primary/10 rounded-xl border border-primary/20 max-w-2xl mx-auto">
-              <p className="text-sm text-muted-foreground">
-                💡 <strong>재미있는 3분 테스트</strong>를 찾으시나요? 
-                <button 
-                  onClick={() => navigate('/fun-tests')} 
-                  className="text-primary underline hover:text-primary/80 ml-1"
-                >
-                  여기를 클릭하세요!
-                </button>
+          </div>
+
+          {/* 재미있는 3분 테스트 섹션 */}
+          <div className="mb-12">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Sparkles className="w-8 h-8 text-primary animate-pulse" />
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  재미있는 3분 테스트
+                </h2>
+              </div>
+              <p className="text-muted-foreground">
+                친구들과 함께 즐기는 AI 심리 테스트! 연령별 맞춤 추천
               </p>
             </div>
+
+            <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-3 mb-8">
+              {/* 전생 직업 테스트 */}
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20">
+                <CardHeader className="pb-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="p-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                      <Crown className="w-6 h-6" />
+                    </div>
+                    <Badge variant="destructive" className="animate-pulse">🔥 HOT</Badge>
+                  </div>
+                  
+                  <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                    내 전생은 어떤 직업?
+                  </CardTitle>
+                  
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge variant="outline" className="text-xs">
+                      MZ세대
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs font-semibold">
+                      <Zap className="w-3 h-3 mr-1" />
+                      {TOKEN_COSTS.PAST_LIFE_JOB}토큰
+                    </Badge>
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="pt-0">
+                  <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+                    AI가 분석하는 나의 전생 직업과 운명! MZ세대가 가장 좋아하는 신비로운 테스트
+                  </p>
+                  
+                  <Button 
+                    onClick={() => navigate('/fun-tests?type=past-life-job')}
+                    className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300"
+                    size="lg"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    테스트 시작하기
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* 동물 얼굴 매칭 테스트 */}
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20">
+                <CardHeader className="pb-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="p-3 rounded-full bg-gradient-to-r from-orange-500 to-yellow-500 text-white">
+                      <Camera className="w-6 h-6" />
+                    </div>
+                    <Badge variant="outline" className="border-orange-500 text-orange-600">📈 TREND</Badge>
+                  </div>
+                  
+                  <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                    내 얼굴 닮은 동물 찾기
+                  </CardTitle>
+                  
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge variant="outline" className="text-xs">
+                      초등·청소년
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs font-semibold">
+                      <Zap className="w-3 h-3 mr-1" />
+                      {TOKEN_COSTS.ANIMAL_FACE_MATCH}토큰
+                    </Badge>
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="pt-0">
+                  <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+                    카메라로 얼굴을 찍으면 AI가 닮은 동물을 찾아줘! 친구들과 비교해보며 웃음폭탄
+                  </p>
+                  
+                  <Button 
+                    onClick={() => navigate('/fun-tests?type=animal-face-match')}
+                    className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300"
+                    size="lg"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    테스트 시작하기
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* 내면 동물 테스트 */}
+              <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20">
+                <CardHeader className="pb-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="p-3 rounded-full bg-gradient-to-r from-green-500 to-blue-500 text-white">
+                      <Heart className="w-6 h-6" />
+                    </div>
+                    <Badge variant="secondary" className="bg-gradient-to-r from-green-500 to-green-600 text-white">✨ NEW</Badge>
+                  </div>
+                  
+                  <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                    나의 내면 동물 찾기
+                  </CardTitle>
+                  
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge variant="outline" className="text-xs">
+                      40대+
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs font-semibold">
+                      <Zap className="w-3 h-3 mr-1" />
+                      {TOKEN_COSTS.INNER_ANIMAL}토큰
+                    </Badge>
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="pt-0">
+                  <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+                    깊은 심리 분석으로 알아보는 나의 진짜 성격! 40대 이상이 가장 많이 하는 인기 테스트
+                  </p>
+                  
+                  <Button 
+                    onClick={() => navigate('/fun-tests?type=inner-animal')}
+                    className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300"
+                    size="lg"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    테스트 시작하기
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-          
-          <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
-            <div 
-              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
-              onClick={() => handleTestTypeSelect('psychological')}
-            >
-              <div className="absolute top-4 right-4">
-                <Badge className="bg-orange-500 text-white">3토큰</Badge>
-              </div>
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">마음상태 체크</h3>
-              <p className="text-muted-foreground mb-4">연령별 맞춤 심리상태 참고 분석 (진단 아님)</p>
-              <ul className="space-y-2 text-sm">
-                <li>• 연령별 맞춤 체크</li>
-                <li>• AI 참고 분석 + 상담사 연결</li>
-                <li>• 종합적인 마음상태 확인</li>
-              </ul>
-            </div>
-            
-            <div 
-              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
-              onClick={() => handleTestTypeSelect('language')}
-            >
-              <div className="absolute top-4 right-4">
-                <Badge className="bg-blue-500 text-white">2토큰</Badge>
-              </div>
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">영유아언어발달체크</h3>
-              <p className="text-muted-foreground mb-4">연령에 맞춤 20문항으로 간단 확인 (참고용)</p>
-              <ul className="space-y-2 text-sm">
-                <li>• 연령대별 20문항</li>
-                <li>• 3분 간단 체크</li>
-                <li>• 즉시 참고결과 확인</li>
-              </ul>
+
+          {/* 전문 심리검사 섹션 */}
+          <div className="mb-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-foreground mb-2">전문 심리검사</h2>
+              <p className="text-muted-foreground">
+                표준화된 도구로 정확한 진단을 받아보세요
+              </p>
             </div>
 
-            <div 
-              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
-              onClick={() => handleTestTypeSelect('panic')}
-            >
-              <div className="absolute top-4 right-4">
-                <Badge className="bg-blue-500 text-white">2토큰</Badge>
+            <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+              <div 
+                className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
+                onClick={() => handleTestTypeSelect('psychological')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-orange-500 text-white">3토큰</Badge>
+                </div>
+                <h3 className="text-2xl font-bold text-brand-gradient mb-4">마음상태 체크</h3>
+                <p className="text-muted-foreground mb-4">연령별 맞춤 심리상태 참고 분석 (진단 아님)</p>
+                <ul className="space-y-2 text-sm">
+                  <li>• 연령별 맞춤 체크</li>
+                  <li>• AI 참고 분석 + 상담사 연결</li>
+                  <li>• 종합적인 마음상태 확인</li>
+                </ul>
               </div>
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">불안감 수준 확인</h3>
-              <p className="text-muted-foreground mb-4">불안감 증상 자가체크 (참고용)</p>
-              <ul className="space-y-2 text-sm">
-                <li>• 표준화된 21문항</li>
-                <li>• 신속한 현재상태 확인</li>
-                <li>• 수준별 참고 분석</li>
-              </ul>
-            </div>
+              
+              <div 
+                className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
+                onClick={() => handleTestTypeSelect('language')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-blue-500 text-white">2토큰</Badge>
+                </div>
+                <h3 className="text-2xl font-bold text-brand-gradient mb-4">영유아언어발달체크</h3>
+                <p className="text-muted-foreground mb-4">연령에 맞춤 20문항으로 간단 확인 (참고용)</p>
+                <ul className="space-y-2 text-sm">
+                  <li>• 연령대별 20문항</li>
+                  <li>• 3분 간단 체크</li>
+                  <li>• 즉시 참고결과 확인</li>
+                </ul>
+              </div>
 
-            <div 
-              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
-              onClick={() => handleTestTypeSelect('depression')}
-            >
-              <div className="absolute top-4 right-4">
-                <Badge className="bg-blue-500 text-white">2토큰</Badge>
+              <div 
+                className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
+                onClick={() => handleTestTypeSelect('panic')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-blue-500 text-white">2토큰</Badge>
+                </div>
+                <h3 className="text-2xl font-bold text-brand-gradient mb-4">불안감 수준 확인</h3>
+                <p className="text-muted-foreground mb-4">불안감 증상 자가체크 (참고용)</p>
+                <ul className="space-y-2 text-sm">
+                  <li>• 표준화된 21문항</li>
+                  <li>• 신속한 현재상태 확인</li>
+                  <li>• 수준별 참고 분석</li>
+                </ul>
               </div>
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">우울감 자가체크</h3>
-              <p className="text-muted-foreground mb-4">우울감 수준 확인 (참고용)</p>
-              <ul className="space-y-2 text-sm">
-                <li>• 표준화된 21문항</li>
-                <li>• AI 참고 분석</li>
-                <li>• 전문적 해석 제공</li>
-              </ul>
-            </div>
 
-            <div 
-              className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
-              onClick={() => handleTestTypeSelect('adhd')}
-            >
-              <div className="absolute top-4 right-4">
-                <Badge className="bg-blue-500 text-white">2토큰</Badge>
+              <div 
+                className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
+                onClick={() => handleTestTypeSelect('depression')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-blue-500 text-white">2토큰</Badge>
+                </div>
+                <h3 className="text-2xl font-bold text-brand-gradient mb-4">우울감 자가체크</h3>
+                <p className="text-muted-foreground mb-4">우울감 수준 확인 (참고용)</p>
+                <ul className="space-y-2 text-sm">
+                  <li>• 표준화된 21문항</li>
+                  <li>• AI 참고 분석</li>
+                  <li>• 전문적 해석 제공</li>
+                </ul>
               </div>
-              <h3 className="text-2xl font-bold text-brand-gradient mb-4">주의집중력 자가체크</h3>
-              <p className="text-muted-foreground mb-4">연령별 ADHD 증상 확인 (참고용)</p>
-              <ul className="space-y-2 text-sm">
-                <li>• 아동청소년/성인 구분</li>
-                <li>• 주의집중력 증상 체크 18문항</li>
-                <li>• 증상 영역별 분석</li>
-              </ul>
-            </div>
-            
-            <div 
-              className="bg-gradient-to-br from-indigo-500 to-purple-600 hover-glow border border-purple-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
-              onClick={() => handleTestTypeSelect('dream')}
-            >
-              <div className="absolute top-4 right-4">
-                <Badge className="bg-purple-700 text-white">5토큰</Badge>
+
+              <div 
+                className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
+                onClick={() => handleTestTypeSelect('adhd')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-blue-500 text-white">2토큰</Badge>
+                </div>
+                <h3 className="text-2xl font-bold text-brand-gradient mb-4">주의집중력 자가체크</h3>
+                <p className="text-muted-foreground mb-4">연령별 ADHD 증상 확인 (참고용)</p>
+                <ul className="space-y-2 text-sm">
+                  <li>• 아동청소년/성인 구분</li>
+                  <li>• 주의집중력 증상 체크 18문항</li>
+                  <li>• 증상 영역별 분석</li>
+                </ul>
               </div>
-              <h3 className="text-2xl font-bold mb-4">🌙 AI 꿈 해몽</h3>
-              <p className="text-purple-100 mb-4">당신의 꿈이 담고 있는 의미를 AI가 해석 (재미용)</p>
-              <ul className="space-y-2 text-sm text-purple-100">
-                <li>• 꿈 내용 입력</li>
-                <li>• AI 즉시 해몽</li>
-                <li>• 심리적 의미 해석</li>
-              </ul>
-            </div>
-            
-            <div 
-              className="bg-gradient-to-br from-orange-500 to-red-600 hover-glow border border-orange-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
-              onClick={() => handleTestTypeSelect('saju')}
-            >
-              <div className="absolute top-4 right-4">
-                <Badge className="bg-red-700 text-white">8토큰</Badge>
+              
+              <div 
+                className="bg-gradient-to-br from-indigo-500 to-purple-600 hover-glow border border-purple-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
+                onClick={() => handleTestTypeSelect('dream')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-purple-700 text-white">5토큰</Badge>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">🌙 AI 꿈 해몽</h3>
+                <p className="text-purple-100 mb-4">당신의 꿈이 담고 있는 의미를 AI가 해석 (재미용)</p>
+                <ul className="space-y-2 text-sm text-purple-100">
+                  <li>• 꿈 내용 입력</li>
+                  <li>• AI 즉시 해몽</li>
+                  <li>• 심리적 의미 해석</li>
+                </ul>
               </div>
-              <h3 className="text-2xl font-bold mb-4">🔮 AI 사주풀이</h3>
-              <p className="text-orange-100 mb-4">생년월일시로 당신의 운세와 사주를 AI가 분석 (재미용)</p>
-              <ul className="space-y-2 text-sm text-orange-100">
-                <li>• 생년월일시 입력</li>
-                <li>• AI 즉시 사주분석</li>
-                <li>• 운세와 성향 해석</li>
-              </ul>
+              
+              <div 
+                className="bg-gradient-to-br from-orange-500 to-red-600 hover-glow border border-orange-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
+                onClick={() => handleTestTypeSelect('saju')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-red-700 text-white">8토큰</Badge>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">🔮 AI 사주풀이</h3>
+                <p className="text-orange-100 mb-4">생년월일시로 당신의 운세와 사주를 AI가 분석 (재미용)</p>
+                <ul className="space-y-2 text-sm text-orange-100">
+                  <li>• 생년월일시 입력</li>
+                  <li>• AI 즉시 사주분석</li>
+                  <li>• 운세와 성향 해석</li>
+                </ul>
+              </div>
             </div>
-            
           </div>
         </div>
       </div>

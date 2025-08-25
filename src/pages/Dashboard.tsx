@@ -130,8 +130,15 @@ const Dashboard = () => {
 
   const loadDashboardData = async () => {
     try {
+      console.log('📊 Dashboard: Loading dashboard data...');
+      
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.log('❌ Dashboard: No user found');
+        return;
+      }
+
+      console.log('👤 Dashboard: User found:', user.id);
 
       // Load user profile
       const { data: profileData } = await supabase
@@ -140,9 +147,14 @@ const Dashboard = () => {
         .eq('user_id', user.id)
         .single();
 
+      console.log('👤 Dashboard: Profile data:', profileData);
       setProfile({ ...profileData, role: 'user' } as any);
 
-      if (!profileData) return;
+      if (!profileData) {
+        console.log('❌ Dashboard: No profile data');
+        setLoading(false);
+        return;
+      }
 
       // Mock family member data
       const familyMemberData = [];
@@ -175,6 +187,7 @@ const Dashboard = () => {
       setFamilies(familiesArray);
 
       // Load real assessment data - Fix column name  
+      console.log('📊 Dashboard: Loading assessments...');
       const { data: assessmentData } = await supabase
         .from('assessments')
         .select(`
@@ -184,6 +197,8 @@ const Dashboard = () => {
         .eq('profile_id', profileData.id)
         .order('created_at', { ascending: false })
         .limit(20);
+
+      console.log('📊 Dashboard: Assessment data loaded:', assessmentData?.length || 0);
 
       // Load real consultation data (use chat_rooms instead)
       // Mock consultation data
@@ -277,6 +292,7 @@ const Dashboard = () => {
       // Sort by creation date
       allObservations.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
+      console.log('📊 Dashboard: All observations processed:', allObservations.length);
       setObservations(allObservations);
 
       // Check for significant changes if we have data
@@ -299,10 +315,13 @@ const Dashboard = () => {
       };
       setUserStats(mockUserStats);
 
+      console.log('✅ Dashboard: Data loading completed');
+
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      console.error('❌ Dashboard: Error loading dashboard data:', error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleLogout = async () => {
@@ -349,6 +368,8 @@ const Dashboard = () => {
 
   // Calculate real distribution data based on assessments
   const distributionData = React.useMemo(() => {
+    console.log('🔄 Calculating distribution data, observations count:', observations.length);
+    
     if (observations.length === 0) {
       return [
         { name: '정서', value: 0, color: '#0ea5e9', description: '감정 조절 및 표현 능력' },
@@ -374,22 +395,27 @@ const Dashboard = () => {
       } else {
         // Derive category scores from overall score with some variance
         const baseScore = obs.score_overall || 75;
+        // 고정된 값을 사용하여 무한 재계산 방지
+        const variances = [5, -3, 8, -2, 1]; // 고정된 분산값
         Object.keys(totals).forEach((category, index) => {
-          const variance = (Math.random() - 0.5) * 20; // ±10 variance
+          const variance = variances[index] || 0;
           totals[category as keyof typeof totals] += Math.max(0, Math.min(100, baseScore + variance));
           counts[category as keyof typeof counts] += 1;
         });
       }
     });
 
-    return [
+    const result = [
       { name: '정서', value: Math.round(totals.정서 / Math.max(counts.정서, 1)), color: '#0ea5e9', description: '감정 조절 및 표현 능력' },
       { name: '행동', value: Math.round(totals.행동 / Math.max(counts.행동, 1)), color: '#10b981', description: '적응적 행동 패턴' },
       { name: '인지', value: Math.round(totals.인지 / Math.max(counts.인지, 1)), color: '#f59e0b', description: '사고력 및 학습 능력' },
       { name: '사회성', value: Math.round(totals.사회성 / Math.max(counts.사회성, 1)), color: '#8b5cf6', description: '대인관계 및 소통 능력' },
       { name: '신체', value: Math.round(totals.신체 / Math.max(counts.신체, 1)), color: '#ef4444', description: '신체 발달 및 건강 상태' }
     ];
-  }, [observations]);
+    
+    console.log('✅ Distribution data calculated:', result);
+    return result;
+  }, [observations.length]); // observations 배열 대신 length만 의존성으로 사용
 
   // Calculate trend data from actual observations (last 12 data points)
   const trendData = React.useMemo(() => {

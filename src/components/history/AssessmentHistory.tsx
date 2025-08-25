@@ -40,6 +40,9 @@ const AssessmentHistory = () => {
 
   const loadAssessments = async () => {
     try {
+      console.log('📊 AssessmentHistory: Loading assessments...');
+      setLoading(true);
+      
       const { data, error } = await supabase
         .from('assessments')
         .select(`
@@ -48,17 +51,26 @@ const AssessmentHistory = () => {
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ AssessmentHistory: Error loading assessments:', error);
+        throw error;
+      }
+      
+      console.log('✅ AssessmentHistory: Loaded assessments:', data?.length || 0);
+      
       // Transform data to match Assessment interface
       const assessments = data?.map(assessment => ({
         ...assessment,
         completed_at: assessment.created_at
       })) || [];
+      
       setAssessments(assessments as any);
     } catch (error) {
-      console.error('Error loading assessments:', error);
+      console.error('❌ AssessmentHistory: Error loading assessments:', error);
+    } finally {
+      console.log('🏁 AssessmentHistory: Loading completed');
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const getRiskBadge = (level?: 'low' | 'medium' | 'high') => {

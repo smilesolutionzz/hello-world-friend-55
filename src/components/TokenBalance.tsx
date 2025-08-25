@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Coins, Plus, TrendingUp, Gift, Info, BarChart3 } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Coins, Plus, TrendingUp, Gift, Info, BarChart3, Calendar, Clock, History } from 'lucide-react';
 import { useTokens } from '@/hooks/useTokens';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface TokenBalanceProps {
   showPurchaseButton?: boolean;
@@ -18,6 +21,46 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
 }) => {
   const { tokenBalance, loading } = useTokens();
   const navigate = useNavigate();
+  const [dailyBonusInfo, setDailyBonusInfo] = useState<any>(null);
+  const [showDailyBonusAlert, setShowDailyBonusAlert] = useState(false);
+
+  // 일일 보너스 정보 조회
+  useEffect(() => {
+    const checkDailyBonus = async () => {
+      if (!tokenBalance?.user_id) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('usage_tracking')
+          .select('*')
+          .eq('user_id', tokenBalance.user_id)
+          .eq('feature_type', 'daily_bonus')
+          .gte('usage_date', new Date().toISOString().split('T')[0])
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (data && data.length > 0) {
+          setDailyBonusInfo(data[0]);
+          
+          // 오늘 처음 접속하고 일일 보너스를 받았다면 알림 표시
+          const bonusTime = new Date(data[0].created_at);
+          const now = new Date();
+          const timeDiff = now.getTime() - bonusTime.getTime();
+          const minutesDiff = timeDiff / (1000 * 60);
+          
+          // 5분 이내에 받은 보너스라면 알림 표시
+          if (minutesDiff <= 5) {
+            setShowDailyBonusAlert(true);
+            toast.success(`🎉 일일 보너스 ${data[0].count}토큰이 지급되었습니다!`);
+          }
+        }
+      } catch (error) {
+        console.error('일일 보너스 정보 조회 실패:', error);
+      }
+    };
+
+    checkDailyBonus();
+  }, [tokenBalance?.user_id]);
 
   if (loading) {
     return (
@@ -92,14 +135,25 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 </div>
               )}
 
+              {/* 일일 보너스 정보 */}
+              {dailyBonusInfo && (
+                <Alert className="bg-green-50 border-green-200">
+                  <Calendar className="w-4 h-4 text-green-600" />
+                  <AlertDescription className="text-green-800">
+                    <strong>오늘의 일일 보너스</strong><br />
+                    {dailyBonusInfo.count}토큰이 지급되었습니다 ({new Date(dailyBonusInfo.created_at).toLocaleTimeString()})
+                  </AlertDescription>
+                </Alert>
+              )}
+
               {/* 대시보드 버튼 */}
               <Button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/token-history')}
                 className="w-full"
                 variant="outline"
               >
-                <BarChart3 className="w-4 h-4 mr-2" />
-                대시보드
+                <History className="w-4 h-4 mr-2" />
+                토큰 내역 보기
               </Button>
 
               {/* 충전 버튼 */}
@@ -166,6 +220,13 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                     <TrendingUp className="w-3 h-3" />
                     총 사용: {tokenBalance.total_used}개
                   </div>
+                  {/* 일일 보너스 표시 */}
+                  {tokenBalance.last_daily_bonus_date === new Date().toISOString().split('T')[0] && (
+                    <div className="flex items-center gap-1 justify-center text-green-600">
+                      <Gift className="w-3 h-3" />
+                      오늘 일일보너스 3토큰 지급됨
+                    </div>
+                  )}
                   <Button
                     onClick={() => navigate('/?section=referral')}
                     variant="ghost"

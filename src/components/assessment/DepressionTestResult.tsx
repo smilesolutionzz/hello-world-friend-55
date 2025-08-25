@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Loader2, MessageCircle, Brain } from "lucide-react";
+import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Loader2, MessageCircle, Brain, Copy } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
+import { useShareText, formatPsychTestResult } from '@/utils/shareUtils';
 
 interface DepressionTestResultProps {
   results: {
@@ -24,6 +25,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
+  const { shareAsText } = useShareText();
   
   const chartData = [
     {
@@ -77,6 +79,11 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
+  };
+
+  const handleShareText = () => {
+    const formattedText = formatPsychTestResult('depression', results, aiAnalysis);
+    shareAsText(formattedText, '우울감 수준 검사 결과');
   };
 
   const getRecommendation = (severity: string) => {
@@ -247,80 +254,90 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
       </Card>
 
       {/* Action Buttons */}
-      <div className="grid md:grid-cols-5 gap-4">
-        <Button 
-          className="btn-brand h-16"
-          onClick={() => navigate('/counseling', { state: { assessmentResults: { ...results, testType: 'depression' } } })}
-        >
-          <MessageCircle className="w-5 h-5 mr-2" />
-          <div className="text-left">
-            <div className="font-semibold">단계별 상담 시작</div>
-            <div className="text-sm opacity-90">AI → 전문가</div>
-          </div>
-        </Button>
+      <div className="space-y-4">
+        <div className="grid md:grid-cols-4 gap-4">
+          <Button 
+            className="btn-brand h-16"
+            onClick={() => navigate('/counseling', { state: { assessmentResults: { ...results, testType: 'depression' } } })}
+          >
+            <MessageCircle className="w-5 h-5 mr-2" />
+            <div className="text-left">
+              <div className="font-semibold">단계별 상담 시작</div>
+              <div className="text-sm opacity-90">AI → 전문가</div>
+            </div>
+          </Button>
 
-        <Button 
-          className="bg-blue-600 hover:bg-blue-700 text-white h-16"
-          onClick={() => navigate('/ai-counselor', { state: { assessmentResults: { ...results, testType: 'depression' } } })}
-        >
-          <Brain className="w-5 h-5 mr-2" />
-          <div className="text-left">
-            <div className="font-semibold">AI 상담만</div>
-            <div className="text-sm opacity-90">빠른 상담</div>
-          </div>
-        </Button>
+          <Button 
+            className="bg-blue-600 hover:bg-blue-700 text-white h-16"
+            onClick={() => navigate('/ai-counselor', { state: { assessmentResults: { ...results, testType: 'depression' } } })}
+          >
+            <Brain className="w-5 h-5 mr-2" />
+            <div className="text-left">
+              <div className="font-semibold">AI 상담만</div>
+              <div className="text-sm opacity-90">빠른 상담</div>
+            </div>
+          </Button>
 
-        <Button 
-          variant="outline" 
-          className="h-16"
-          onClick={() => generatePDFReport({
-            testType: '우울증 검사',
-            results: {
-              total: results.total,
-              average: results.average,
-              severity,
-              answers: results.answers
-            },
-            analysis: `우울증 검사 결과 분석: ${recommendation.description}`,
-            testInfo: {
+          <Button 
+            variant="outline" 
+            className="h-16"
+            onClick={() => generatePDFReport({
+              testType: '우울증 검사',
+              results: {
+                total: results.total,
+                average: results.average,
+                severity,
+                answers: results.answers
+              },
+              analysis: `우울증 검사 결과 분석: ${recommendation.description}`,
+              testInfo: {
+                ageGroup: 'adult',
+                generatedAt: new Date().toISOString(),
+                version: '1.0'
+              }
+            })}
+            disabled={isGeneratingPDF}
+          >
+            <div className="text-left">
+              <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
+              <div className="text-sm text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
+            </div>
+          </Button>
+
+          <Button 
+            variant="outline" 
+            className="h-16"
+            onClick={() => saveTestResult({
+              testType: '우울증 검사',
+              results: {
+                total: results.total,
+                average: results.average,
+                severity,
+                answers: results.answers
+              },
+              analysis: `우울증 검사 결과 분석: ${recommendation.description}`,
               ageGroup: 'adult',
-              generatedAt: new Date().toISOString(),
-              version: '1.0'
-            }
-          })}
-          disabled={isGeneratingPDF}
-        >
-          <div className="text-left">
-            <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
-            <div className="text-sm text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
-          </div>
-        </Button>
-
-        <Button 
-          variant="outline" 
-          className="h-16"
-          onClick={() => saveTestResult({
-            testType: '우울증 검사',
-            results: {
-              total: results.total,
-              average: results.average,
-              severity,
-              answers: results.answers
-            },
-            analysis: `우울증 검사 결과 분석: ${recommendation.description}`,
-            ageGroup: 'adult',
-            testInfo: {
-              generatedAt: new Date().toISOString(),
-              version: '1.0'
-            }
-          })}
-          disabled={isSaving}
-        >
-          <div className="text-left">
-            <div className="font-semibold">{isSaving ? '저장 중...' : '결과 저장'}</div>
-            <div className="text-sm text-muted-foreground">{isSaving ? '잠시만 기다려주세요' : '검사기록에 저장'}</div>
-          </div>
-        </Button>
+              testInfo: {
+                generatedAt: new Date().toISOString(),
+                version: '1.0'
+              }
+            })}
+            disabled={isSaving}
+          >
+            <div className="text-left">
+              <div className="font-semibold">{isSaving ? '저장 중...' : '결과 저장'}</div>
+              <div className="text-sm text-muted-foreground">{isSaving ? '잠시만 기다려주세요' : '검사기록에 저장'}</div>
+            </div>
+          </Button>
+        </div>
+        
+        {/* 텍스트 공유 버튼 */}
+        <div className="flex justify-center">
+          <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full max-w-md">
+            <Copy className="w-4 h-4 mr-2" />
+            📋 텍스트로 복사하기
+          </Button>
+        </div>
       </div>
 
       {/* 상품 추천 */}

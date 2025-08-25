@@ -1,14 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Share2, RotateCcw, Star, Users, Calendar } from "lucide-react";
+import { Crown, Share2, RotateCcw, Star, Users, Calendar, Copy } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useShareText, formatFunTestResult } from "@/utils/shareUtils";
 
 export default function FunTestResult() {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { shareAsText } = useShareText();
   const { result, testType } = location.state || {};
 
   const handleShare = async () => {
@@ -34,7 +36,12 @@ export default function FunTestResult() {
   };
 
   const handleRetry = () => {
-    navigate('/assessment?type=fun');
+    navigate('/fun-tests');
+  };
+
+  const handleShareText = () => {
+    const formattedText = formatFunTestResult(result, testType);
+    shareAsText(formattedText, getShareTitle());
   };
 
   const getShareTitle = () => {
@@ -157,14 +164,20 @@ export default function FunTestResult() {
             </div>
 
             {/* 액션 버튼들 */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-6">
-              <Button onClick={handleShare} size="lg" className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
-                <Share2 className="w-4 h-4 mr-2" />
-                친구들에게 공유하기
-              </Button>
-              <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
-                <RotateCcw className="w-4 h-4 mr-2" />
-                다른 테스트 해보기
+            <div className="flex flex-col gap-3 pt-6">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button onClick={handleShare} size="lg" className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                  <Share2 className="w-4 h-4 mr-2" />
+                  친구들에게 공유하기
+                </Button>
+                <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  다른 테스트 해보기
+                </Button>
+              </div>
+              <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full">
+                <Copy className="w-4 h-4 mr-2" />
+                📋 텍스트로 복사하기
               </Button>
             </div>
           </CardContent>
@@ -296,14 +309,20 @@ export default function FunTestResult() {
             </div>
 
             {/* 액션 버튼들 */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-6">
-              <Button onClick={handleShare} size="lg" className="flex-1 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600">
-                <Share2 className="w-4 h-4 mr-2" />
-                친구들에게 자랑하기
-              </Button>
-              <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
-                <RotateCcw className="w-4 h-4 mr-2" />
-                다른 테스트 해보기
+            <div className="flex flex-col gap-3 pt-6">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button onClick={handleShare} size="lg" className="flex-1 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600">
+                  <Share2 className="w-4 h-4 mr-2" />
+                  친구들에게 자랑하기
+                </Button>
+                <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  다른 테스트 해보기
+                </Button>
+              </div>
+              <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full">
+                <Copy className="w-4 h-4 mr-2" />
+                📋 텍스트로 복사하기
               </Button>
             </div>
           </CardContent>
@@ -443,14 +462,20 @@ export default function FunTestResult() {
             </div>
 
             {/* 액션 버튼들 */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-6">
-              <Button onClick={handleShare} size="lg" className="flex-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600">
-                <Share2 className="w-4 h-4 mr-2" />
-                지혜 공유하기
-              </Button>
-              <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
-                <RotateCcw className="w-4 h-4 mr-2" />
-                다른 테스트 해보기
+            <div className="flex flex-col gap-3 pt-6">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button onClick={handleShare} size="lg" className="flex-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600">
+                  <Share2 className="w-4 h-4 mr-2" />
+                  지혜 공유하기
+                </Button>
+                <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  다른 테스트 해보기
+                </Button>
+              </div>
+              <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full">
+                <Copy className="w-4 h-4 mr-2" />
+                📋 텍스트로 복사하기
               </Button>
             </div>
           </CardContent>

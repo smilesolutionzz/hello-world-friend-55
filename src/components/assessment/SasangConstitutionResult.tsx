@@ -4,9 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, Heart, Utensils, Dumbbell, Leaf, AlertCircle } from 'lucide-react';
+import { Loader2, Heart, Utensils, Dumbbell, Leaf, AlertCircle, Copy } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useShareText, formatMedicalTestResult } from '@/utils/shareUtils';
 
 const constitutionInfo = {
   soyang: {
@@ -119,6 +120,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
   const [analysis, setAnalysis] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { shareAsText } = useShareText();
 
   useEffect(() => {
     generateAnalysis();
@@ -148,6 +150,11 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleShareText = () => {
+    const formattedText = formatMedicalTestResult('sasang_constitution', result);
+    shareAsText(formattedText, `사상체질 진단 결과`);
   };
 
   const constitutionData = constitutionInfo[result.constitution as keyof typeof constitutionInfo];
@@ -276,13 +283,21 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
       </div>
 
       {/* 액션 버튼 */}
-      <div className="flex justify-center space-x-4">
-        <Button variant="outline" onClick={onRestart}>
-          다시 검사하기
-        </Button>
-        <Button onClick={() => window.print()}>
-          결과 저장하기
-        </Button>
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-center space-x-4">
+          <Button variant="outline" onClick={onRestart}>
+            다시 검사하기
+          </Button>
+          <Button onClick={() => window.print()}>
+            결과 저장하기
+          </Button>
+        </div>
+        <div className="flex justify-center">
+          <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full max-w-md">
+            <Copy className="w-4 h-4 mr-2" />
+            📋 텍스트로 복사하기
+          </Button>
+        </div>
       </div>
     </div>
   );

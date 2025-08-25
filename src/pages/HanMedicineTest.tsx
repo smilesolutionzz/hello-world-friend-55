@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Crown, Heart, Clock, Star } from 'lucide-react';
+import { Crown, Heart, Clock, Star, Brain, Sparkles } from 'lucide-react';
 import { SasangConstitutionTest } from '@/components/assessment/SasangConstitutionTest';
 import { SasangConstitutionResult } from '@/components/assessment/SasangConstitutionResult';
 import { HanMedicinePremiumTest } from '@/components/assessment/HanMedicinePremiumTest';
 import { HanMedicinePremiumResult } from '@/components/assessment/HanMedicinePremiumResult';
+import { MentalHealthQuickTest } from '@/components/assessment/MentalHealthQuickTest';
+import { MentalHealthQuickResult } from '@/components/assessment/MentalHealthQuickResult';
+import { PersonalityLoveTest } from '@/components/assessment/PersonalityLoveTest';
+import { PersonalityLoveResult } from '@/components/assessment/PersonalityLoveResult';
 
-type TestType = 'none' | 'quick' | 'premium';
+type TestType = 'none' | 'quick' | 'premium' | 'mental' | 'love';
 type TestState = 'select' | 'testing' | 'result';
 
 const HanMedicineTest = () => {
@@ -36,6 +40,10 @@ const HanMedicineTest = () => {
       return <SasangConstitutionTest onComplete={handleTestComplete} />;
     } else if (currentTest === 'premium') {
       return <HanMedicinePremiumTest onComplete={handleTestComplete} />;
+    } else if (currentTest === 'mental') {
+      return <MentalHealthQuickTest onComplete={handleTestComplete} />;
+    } else if (currentTest === 'love') {
+      return <PersonalityLoveTest onComplete={handleTestComplete} />;
     }
   }
 
@@ -44,6 +52,10 @@ const HanMedicineTest = () => {
       return <SasangConstitutionResult result={testResult} onRestart={handleRestart} />;
     } else if (currentTest === 'premium') {
       return <HanMedicinePremiumResult result={testResult} onRestart={handleRestart} />;
+    } else if (currentTest === 'mental') {
+      return <MentalHealthQuickResult result={testResult} onRestart={handleRestart} />;
+    } else if (currentTest === 'love') {
+      return <PersonalityLoveResult result={testResult} onRestart={handleRestart} />;
     }
   }
 
@@ -53,15 +65,15 @@ const HanMedicineTest = () => {
         {/* 헤더 */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            한의원 특화 체질 진단
+            체질체크 - AI 심리분석 센터
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            전문 한의학 AI가 당신의 사상체질을 정확히 분석하여 맞춤형 건강관리법을 제공합니다
+            전문 AI가 당신의 체질, 정신건강, 성격을 정확히 분석하여 맞춤형 솔루션을 제공합니다
           </p>
         </div>
 
         {/* 테스트 선택 카드 */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {/* 3분 간편 테스트 */}
           <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors cursor-pointer group">
             <div className="absolute top-4 right-4">
@@ -92,6 +104,74 @@ const HanMedicineTest = () => {
                 className="w-full group-hover:bg-primary/90"
               >
                 3분 진단 시작하기
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* 정신건강 3분 체크 */}
+          <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors cursor-pointer group">
+            <div className="absolute top-4 right-4">
+              <Star className="h-6 w-6 text-purple-500" />
+            </div>
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center">
+                <Brain className="h-6 w-6 mr-2 text-purple-500" />
+                정신건강 3분 체크
+              </CardTitle>
+              <CardDescription>
+                현재 정신건강 상태를 빠르게 진단해보세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Star className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm">소요시간: 3분</span>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">✓ 8개의 핵심 질문</p>
+                <p className="text-sm text-muted-foreground">✓ 스트레스 수준 분석</p>
+                <p className="text-sm text-muted-foreground">✓ 정신건강 상태 진단</p>
+                <p className="text-sm text-muted-foreground">✓ 맞춤 관리법 제시</p>
+              </div>
+              <Button 
+                onClick={() => handleTestSelection('mental')}
+                className="w-full group-hover:bg-primary/90"
+              >
+                정신건강 체크하기
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* 연애 성격 분석 */}
+          <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors cursor-pointer group">
+            <div className="absolute top-4 right-4">
+              <Sparkles className="h-6 w-6 text-pink-500" />
+            </div>
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center">
+                <Heart className="h-6 w-6 mr-2 text-pink-500" />
+                연애 성격 분석
+              </CardTitle>
+              <CardDescription>
+                나의 연애 스타일과 궁합을 알아보세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Star className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm">소요시간: 3분</span>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">✓ 연애 성격 유형 분석</p>
+                <p className="text-sm text-muted-foreground">✓ 궁합 분석</p>
+                <p className="text-sm text-muted-foreground">✓ 연애 조언</p>
+                <p className="text-sm text-muted-foreground">✓ 소통 스타일 진단</p>
+              </div>
+              <Button 
+                onClick={() => handleTestSelection('love')}
+                className="w-full group-hover:bg-primary/90"
+              >
+                연애 성격 분석하기
               </Button>
             </CardContent>
           </Card>
@@ -135,9 +215,9 @@ const HanMedicineTest = () => {
         {/* 특징 섹션 */}
         <div className="mt-16 text-center">
           <h2 className="text-2xl font-bold text-foreground mb-8">
-            왜 한의원에서 선택할까요?
+            왜 AI 심리분석 센터를 선택할까요?
           </h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
             <Card className="text-center">
               <CardContent className="pt-6">
                 <Heart className="h-8 w-8 text-red-500 mx-auto mb-4" />
@@ -149,10 +229,19 @@ const HanMedicineTest = () => {
             </Card>
             <Card className="text-center">
               <CardContent className="pt-6">
-                <Crown className="h-8 w-8 text-amber-500 mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">맞춤형 처방</h3>
+                <Brain className="h-8 w-8 text-purple-500 mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">정신건강 분석</h3>
                 <p className="text-sm text-muted-foreground">
-                  개인의 체질과 증상에 맞는 구체적인 한방 치료법과 생활요법을 안내합니다
+                  스트레스, 우울, 불안 등 정신건강 상태를 종합적으로 분석하고 관리법을 제시합니다
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <Sparkles className="h-8 w-8 text-pink-500 mx-auto mb-4" />
+                <h3 className="font-semibold mb-2">성격 & 연애분석</h3>
+                <p className="text-sm text-muted-foreground">
+                  연애 스타일과 성격 특성을 분석하여 더 나은 인간관계를 만들어갑니다
                 </p>
               </CardContent>
             </Card>
@@ -161,7 +250,7 @@ const HanMedicineTest = () => {
                 <Star className="h-8 w-8 text-yellow-500 mx-auto mb-4" />
                 <h3 className="font-semibold mb-2">실용적 가이드</h3>
                 <p className="text-sm text-muted-foreground">
-                  일상에서 바로 실천할 수 있는 식이요법, 운동법, 생활습관 개선안을 제공합니다
+                  일상에서 바로 실천할 수 있는 맞춤형 솔루션과 관리법을 제공합니다
                 </p>
               </CardContent>
             </Card>
@@ -173,7 +262,7 @@ const HanMedicineTest = () => {
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
             <span className="text-lg">✨</span>
             <span className="font-medium text-foreground">
-              <span className="text-brand-gradient font-bold">50+</span> 한의원에서 신뢰하는 AI 분석 시스템
+              <span className="text-brand-gradient font-bold">100+</span> 기관에서 신뢰하는 AI 분석 시스템
             </span>
           </div>
         </div>

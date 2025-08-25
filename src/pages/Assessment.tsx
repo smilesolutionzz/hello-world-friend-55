@@ -416,12 +416,23 @@ const Assessment = () => {
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
           <div className="text-center mb-16 space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-              <span className="block text-foreground mb-2">3분으로 시작하는</span>
-              <span className="block text-brand-gradient">마음상태 체크</span>
+              <span className="block text-foreground mb-2">전문 심리 & 한의학</span>
+              <span className="block text-brand-gradient">검사 센터</span>
             </h1>
-            <p className="text-xl text-muted-foreground">
-              어떤 체크를 받고 싶으신가요? (참고용)
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              한의원급 정확도의 체질 분석과 전문 심리검사로 정확한 진단을 받아보세요
             </p>
+            <div className="mt-6 p-4 bg-primary/10 rounded-xl border border-primary/20 max-w-2xl mx-auto">
+              <p className="text-sm text-muted-foreground">
+                💡 <strong>재미있는 3분 테스트</strong>를 찾으시나요? 
+                <button 
+                  onClick={() => navigate('/fun-tests')} 
+                  className="text-primary underline hover:text-primary/80 ml-1"
+                >
+                  여기를 클릭하세요!
+                </button>
+              </p>
+            </div>
           </div>
           
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">

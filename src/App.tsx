@@ -49,6 +49,7 @@ import ComprehensivePackage from "./pages/ComprehensivePackage";
 import TokenHistory from "./pages/TokenHistory";
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTestResult from "./components/assessment/FunTestResult";
+import FunTests from "./pages/FunTests";
 import { SessionManager } from "./components/SessionManager";
 
 const queryClient = new QueryClient();
@@ -67,6 +68,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/assessment" element={<Assessment />} />
+          <Route path="/fun-tests" element={<FunTests />} />
           <Route path="/fun-test-result" element={<FunTestResult />} />
           <Route path="/assessment-history" element={<AssessmentHistory />} />
           <Route path="/counseling" element={<CounselingFlow />} />

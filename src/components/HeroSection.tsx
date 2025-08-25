@@ -106,16 +106,25 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-lg mx-auto">
               <Button 
                 size="lg"
+                onClick={() => navigate('/fun-tests')}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-xl font-medium hover:from-pink-600 hover:to-orange-600 transition-all shadow-lg h-11 text-sm sm:text-base"
+              >
+                🎉 재미있는 3분 테스트
+              </Button>
+              <Button 
+                size="lg"
                 onClick={() => navigate('/quick-needs')}
                 className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-600 transition-all shadow-lg h-11 text-sm sm:text-base"
               >
                 맞춤 테스트 찾기
               </Button>
+            </div>
+            <div className="mt-3">
               <Button 
                 size="lg"
                 variant="outline"
                 onClick={() => navigate('/needs-assessment')}
-                className="flex-1 px-6 py-3 border border-primary text-primary rounded-xl font-medium hover:bg-primary/10 transition-colors h-11 text-sm sm:text-base"
+                className="px-6 py-3 border border-primary text-primary rounded-xl font-medium hover:bg-primary/10 transition-colors h-11 text-sm sm:text-base"
               >
                 상세 니즈 분석
               </Button>

@@ -893,7 +893,11 @@ const Dashboard = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-foreground">가족 구성원</h2>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => navigate('/family')}
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   구성원 추가
                 </Button>
@@ -930,7 +934,7 @@ const Dashboard = () => {
                   <p className="text-muted-foreground mb-4">
                     가족 구성원을 추가하여 통합 케어를 시작하세요
                   </p>
-                  <Button>
+                  <Button onClick={() => navigate('/family')}>
                     <Plus className="w-4 h-4 mr-2" />
                     첫 번째 가족 만들기
                   </Button>

@@ -41,12 +41,12 @@ export const TechBadgeShowcase: React.FC = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Sparkles className="w-6 h-6 text-primary" />
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
               최첨단 딥러닝 AI 기술
             </h2>
             <Sparkles className="w-6 h-6 text-primary" />
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-medium">
             세계 최고 수준의 딥러닝 신경망 모델이 귀하의 심리 상태를 정밀 분석합니다
           </p>
         </div>

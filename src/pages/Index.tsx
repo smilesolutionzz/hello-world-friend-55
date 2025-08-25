@@ -10,6 +10,7 @@ import KakaoTalkWidget from "@/components/KakaoTalkWidget";
 import ReferralWidget from "@/components/ReferralWidget";
 import ReferralCodeInput from "@/components/ReferralCodeInput";
 import ProductSidebar from "@/components/ProductSidebar";
+import { TechBadgeShowcase } from "@/components/TechBadgeShowcase";
 import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -74,6 +75,7 @@ const Index = () => {
         {/* Main Content */}
         <div className="flex-1 lg:ml-72">
           <HeroSection />
+          <TechBadgeShowcase />
           <PlatformOverview />
           <ClientLogos />
           <div className="container mx-auto px-4 py-8 space-y-6">

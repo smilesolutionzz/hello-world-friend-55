@@ -20,6 +20,7 @@ export const TOKEN_COSTS = {
   // 프리미엄 기능
   PREMIUM_ASSESSMENT: 10,   // 프리미엄 종합검사
   PROFESSIONAL_REPORT: 8,   // 전문가 리포트 생성
+  COMPREHENSIVE_REPORT: 200, // AI 전문가 종합 리포팅
   
   // 재미 테스트
   PAST_LIFE_JOB: 3,         // 전생 직업 분석
@@ -39,5 +40,6 @@ export const TOKEN_COST_DESCRIPTIONS = {
   8: "AI 사주 운세 분석",
   1: "AI 상담사와의 실시간 대화 또는 맞춤 컨텐츠 추천",
   10: "종합 심리검사 및 상세 분석",
+  200: "프리미엄검사, 관찰일지, AI상담 등 모든 데이터 종합 분석 리포트 (3일내 휴대폰 전송)",
   0: "위기상황 자동 감지 (무료)",
 } as const;

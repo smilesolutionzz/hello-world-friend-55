@@ -44,6 +44,8 @@ import { useToast } from "@/hooks/use-toast";
 import SubscriptionCTA from "@/components/SubscriptionCTA";
 import { OnboardingOverlay } from "@/components/ui/onboarding-overlay";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import { ComprehensiveReportSection } from "@/components/ComprehensiveReportSection";
+import TokenBalance from "@/components/TokenBalance";
 
 interface Profile {
   id: string;
@@ -672,6 +674,19 @@ const Dashboard = () => {
                 </div>
               </Card>
             )}
+
+            {/* Token Balance and Comprehensive Report Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              <TokenBalance compact={false} showPurchaseButton={true} />
+              <div className="lg:col-span-2">
+                <ComprehensiveReportSection
+                  totalAssessments={observations.filter(obs => obs.tags.includes('검사')).length}
+                  totalObservations={observations.filter(obs => obs.tags.includes('관찰일지')).length}
+                  totalConsultations={observations.filter(obs => obs.tags.includes('상담')).length}
+                  hasEnoughData={observations.length >= 3}
+                />
+              </div>
+            </div>
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

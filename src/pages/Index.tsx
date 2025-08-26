@@ -6,7 +6,7 @@ import PlatformOverview from "@/components/PlatformOverview";
 import VideoShowcase from "@/components/VideoShowcase";
 import TrustIndicators from "@/components/TrustIndicators";
 import ClientLogos from "@/components/ClientLogos";
-import KakaoTalkWidget from "@/components/KakaoTalkWidget";
+
 import ReferralWidget from "@/components/ReferralWidget";
 import ReferralCodeInput from "@/components/ReferralCodeInput";
 import ProductSidebar from "@/components/ProductSidebar";
@@ -84,7 +84,7 @@ const Index = () => {
           </div>
           <VideoShowcase />
           <TrustIndicators />
-          <KakaoTalkWidget />
+          
         </div>
       </div>
     </div>

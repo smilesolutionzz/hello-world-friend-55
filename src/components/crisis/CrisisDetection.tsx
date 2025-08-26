@@ -116,13 +116,13 @@ const CrisisDetection = ({ riskLevel, onEscalate }: CrisisDetectionProps) => {
           <div className="bg-orange-50 p-4 rounded-xl border border-orange-200 mb-4">
             <h4 className="font-semibold text-orange-700 mb-2">AIH 전문가 즉시 연결</h4>
             <p className="text-sm text-orange-600 mb-3">
-              카카오톡으로 전문가와 실시간 상담 가능
+              전문가와 실시간 상담 가능
             </p>
             <Button 
-              onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')} 
+              onClick={() => window.open('/expert-hiring', '_blank')}
               className="w-full bg-orange-600 hover:bg-orange-700"
             >
-              💬 카카오톡 전문가 연결
+              💬 전문가 상담 신청
             </Button>
           </div>
 

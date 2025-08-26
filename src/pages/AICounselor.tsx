@@ -163,8 +163,8 @@ const AICounselor = () => {
   };
 
   const connectToAIHExpert = () => {
-    // AIH 전문가 카카오톡 오픈채팅 연결
-    window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank');
+    // AIH 전문가 상담 신청 페이지로 이동
+    window.open('/expert-hiring', '_blank');
   };
 
   const getRiskBadge = (level: 'low' | 'medium' | 'high') => {
@@ -399,7 +399,7 @@ const AICounselor = () => {
             <div className="secret-help-card" onClick={connectToAIHExpert}>
               <div className="secret-card-icon">💬</div>
               <h3 className="text-white font-semibold mb-2">AIH 전문가</h3>
-              <p className="text-white/70 text-sm mb-3">카카오톡 즉시 연결</p>
+              <p className="text-white/70 text-sm mb-3">전문가 상담 신청</p>
               <Badge className="bg-orange-500/20 text-orange-300 border-orange-500/30">실시간 상담</Badge>
             </div>
             

@@ -4,11 +4,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText, Crown, Coins, Settings, ChevronDown, Plus, History } from "lucide-react";
+import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText, Crown, Coins, Settings, ChevronDown, Plus, History, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTokens } from "@/hooks/useTokens";
+import AIPlatformChat from "./AIPlatformChat";
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Navigation = () => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const { tokenBalance, loading: tokenLoading } = useTokens();
 
   useEffect(() => {
@@ -182,7 +184,38 @@ const Navigation = () => {
             </Button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {/* AI 상담 버튼 */}
+            <div className="relative">
+              {!isChatOpen ? (
+                <Button
+                  onClick={() => setIsChatOpen(true)}
+                  variant="outline"
+                  className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 
+                           hover:from-purple-600 hover:to-blue-600 text-white border-0
+                           hover:shadow-lg transition-all duration-300"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span className="hidden md:inline">질문 있나요?</span>
+                </Button>
+              ) : (
+                <div className="absolute top-12 right-0 z-50">
+                  <div className="relative">
+                    <Button
+                      onClick={() => setIsChatOpen(false)}
+                      variant="outline"
+                      size="icon"
+                      className="absolute -top-2 -right-2 z-10 bg-white shadow-md rounded-full w-8 h-8"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                    <AIPlatformChat onClose={() => setIsChatOpen(false)} />
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* 사용자 정보 */}
             {user ? (
               <div className="flex items-center gap-2">
                 <DropdownMenu>
@@ -269,6 +302,36 @@ const Navigation = () => {
       {/* Mobile Navigation */}
       {isMobile && (
         <div className="flex items-center gap-2">
+          {/* AI 상담 버튼 - 모바일 */}
+          <div className="relative">
+            {!isChatOpen ? (
+              <Button
+                onClick={() => setIsChatOpen(true)}
+                variant="outline"
+                size="sm"
+                className="bg-gradient-to-r from-purple-500 to-blue-500 
+                         hover:from-purple-600 hover:to-blue-600 text-white border-0 px-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+              </Button>
+            ) : (
+              <div className="absolute top-12 right-0 z-50">
+                <div className="relative">
+                  <Button
+                    onClick={() => setIsChatOpen(false)}
+                    variant="outline"
+                    size="icon"
+                    className="absolute -top-2 -right-2 z-10 bg-white shadow-md rounded-full w-8 h-8"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                  <AIPlatformChat onClose={() => setIsChatOpen(false)} />
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* 기존 모바일 메뉴 */}
           {/* Sign Up Button - only show if not logged in */}
           {!user && (
             <Button 

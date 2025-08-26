@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +22,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import DevelopmentalTrackingModal from './DevelopmentalTrackingModal';
 
 interface DevelopmentalData {
   id: string;
@@ -58,7 +60,10 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
   const [isLoading, setIsLoading] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedDomain, setSelectedDomain] = useState<string>('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const domains = [
     { key: 'motor', label: '대소근육 운동', icon: Target, color: 'bg-blue-100 text-blue-800' },
@@ -184,6 +189,47 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const generateDevelopmentalReport = async () => {
+    setIsGeneratingReport(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-comprehensive-report', {
+        body: {
+          developmental_data: trackingData,
+          ml_analysis: mlAnalysis,
+          student_id: studentId,
+          report_type: 'developmental_tracking'
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "리포트 생성 완료",
+        description: "발달 리포트가 성공적으로 생성되었습니다.",
+        variant: "default"
+      });
+
+      // 리포트 다운로드나 미리보기 로직 추가 가능
+      if (data.report_url) {
+        window.open(data.report_url, '_blank');
+      }
+
+    } catch (error) {
+      console.error('리포트 생성 오류:', error);
+      toast({
+        title: "리포트 생성 실패",
+        description: "리포트 생성 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+
+  const handleModalSave = () => {
+    fetchTrackingData(); // 데이터 새로고침
   };
 
   const getDomainData = (domainKey: string) => {
@@ -496,7 +542,7 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
       {/* 행동 버튼들 */}
       <div className="flex gap-3 flex-wrap">
         <Button 
-          onClick={() => {/* 새 추적 데이터 추가 모달 열기 */}}
+          onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
@@ -514,7 +560,12 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
         
         <Button 
           variant="outline"
-          onClick={() => {/* IEP 생성 페이지로 이동 */}}
+          onClick={() => navigate('/iep-generator', { 
+            state: { 
+              developmentalData: trackingData,
+              mlAnalysis: mlAnalysis 
+            } 
+          })}
           className="flex items-center gap-2"
         >
           <FileText className="w-4 h-4" />
@@ -523,13 +574,22 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
         
         <Button 
           variant="outline"
-          onClick={() => {/* 상세 리포트 생성 */}}
+          onClick={generateDevelopmentalReport}
+          disabled={isGeneratingReport || trackingData.length === 0}
           className="flex items-center gap-2"
         >
           <Calendar className="w-4 h-4" />
-          발달 리포트
+          {isGeneratingReport ? '생성 중...' : '발달 리포트'}
         </Button>
       </div>
+
+      {/* 발달 추적 추가 모달 */}
+      <DevelopmentalTrackingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleModalSave}
+        studentId={studentId}
+      />
     </div>
   );
 };

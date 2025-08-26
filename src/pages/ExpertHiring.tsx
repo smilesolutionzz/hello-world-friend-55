@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
+import { mockInstitutions } from '@/data/mockInstitutions';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -819,8 +820,140 @@ const ExpertHiring = () => {
               </CardContent>
             </Card>
 
+            {/* 제휴기관 리스트 */}
+            <div className="space-y-6">
+              {mockInstitutions.map((institution) => (
+                <Card key={institution.id} className="overflow-hidden hover-glow">
+                  <CardContent className="p-6">
+                    <div className="grid lg:grid-cols-12 gap-6">
+                      {/* 기관 기본 정보 */}
+                      <div className="lg:col-span-4">
+                        <div className="flex items-start gap-4">
+                          <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center">
+                            <Building className="w-10 h-10 text-primary" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="text-xl font-bold text-brand-gradient">{institution.name}</h3>
+                              {institution.is_voucher_approved && (
+                                <Badge variant="secondary" className="bg-green-100 text-green-700">
+                                  <CheckCircle className="w-3 h-3 mr-1" />
+                                  바우처 승인
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="flex items-center gap-1">
+                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <span className="font-semibold">{institution.rating}</span>
+                                <span className="text-sm text-muted-foreground">({institution.review_count})</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                <Users className="w-4 h-4" />
+                                {institution.total_experts}명 전문가
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <MapPin className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-sm">{institution.address}</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1 mb-3">
+                              {institution.specializations?.map((spec, index) => (
+                                <Badge key={index} variant="outline" className="text-xs">
+                                  {spec}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 바우처 정보 */}
+                      <div className="lg:col-span-3">
+                        <h4 className="font-semibold mb-3 text-primary">사용 가능한 바우처</h4>
+                        <div className="space-y-2">
+                          {institution.voucher_types?.length > 0 ? (
+                            institution.voucher_types.map((voucher, index) => (
+                              <div key={index} className="flex items-start gap-2">
+                                <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
+                                <span className="text-sm">{voucher}</span>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="text-sm text-muted-foreground">
+                              바우처 미승인 기관
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* 제공 서비스 */}
+                      <div className="lg:col-span-3">
+                        <h4 className="font-semibold mb-3 text-primary">제공 서비스</h4>
+                        <div className="space-y-2">
+                          {institution.services_offered?.map((service, index) => (
+                            <div key={index} className="flex items-start gap-2">
+                              <Heart className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
+                              <span className="text-sm">{service}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-3 pt-3 border-t">
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <Clock className="w-4 h-4" />
+                            운영시간: {institution.operating_hours?.monday || '평일 9-18시'}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 연락처 및 예약 */}
+                      <div className="lg:col-span-2">
+                        <div className="bg-muted/50 rounded-lg p-4 text-center">
+                          <div className="mb-4">
+                            <div className="text-lg font-bold text-primary mb-1">
+                              {institution.established_year}년 설립
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {institution.phone}
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2 mb-4">
+                            {institution.facilities?.slice(0, 3).map((facility, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs mr-1 mb-1">
+                                {facility}
+                              </Badge>
+                            ))}
+                          </div>
+                          
+                          <Button 
+                            onClick={() => navigate('/institutions')}
+                            className="w-full btn-brand mb-2"
+                          >
+                            <Building className="w-4 h-4 mr-2" />
+                            기관 상세보기
+                          </Button>
+                          
+                          {institution.parking_available && (
+                            <div className="text-xs text-green-600">
+                              주차 가능
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 기관 설명 */}
+                    <div className="mt-4 pt-4 border-t">
+                      <p className="text-sm text-muted-foreground">{institution.description}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
             {/* 제휴기관 혜택 */}
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">

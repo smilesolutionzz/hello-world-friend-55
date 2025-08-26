@@ -8,8 +8,9 @@ export const TOKEN_COSTS = {
   LANGUAGE_TEST: 2,         // 언어발달 자가체크
   DREAM_INTERPRETATION: 5,  // 꿈 해석
   SAJU_ANALYSIS: 8,         // 사주 분석
+  HAN_MEDICINE_TEST: 2,     // 한의학 체질 분석
   
-  // AI 상담 관련  
+  // AI 상담 관련
   AI_COUNSELOR_CHAT: 0,     // AI 상담사 채팅 (메시지당) - 무료
   AI_COACH: 3,              // AI 코치 세션
   

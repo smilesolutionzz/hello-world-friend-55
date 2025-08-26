@@ -89,9 +89,14 @@ const HanMedicineTest = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm">소요시간: 3분</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm">소요시간: 3분</span>
+                </div>
+                <div className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                  2토큰
+                </div>
               </div>
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">✓ 8개의 핵심 질문</p>
@@ -123,9 +128,14 @@ const HanMedicineTest = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm">소요시간: 3분</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm">소요시간: 3분</span>
+                </div>
+                <div className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                  2토큰
+                </div>
               </div>
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">✓ 한의학 체질 진단</p>
@@ -157,9 +167,14 @@ const HanMedicineTest = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm">소요시간: 3분</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm">소요시간: 3분</span>
+                </div>
+                <div className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                  2토큰
+                </div>
               </div>
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">✓ 오장육부 건강 진단</p>

@@ -6,6 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { TOKEN_COSTS } from '@/constants/tokenCosts';
+import { useTokens } from '@/hooks/useTokens';
 
 const questions = [
   {
@@ -99,6 +102,7 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { toast } = useToast();
+  const { tokenBalance, checkTokenAvailability } = useTokens();
 
   const handleAnswer = (questionId: string, value: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -121,6 +125,18 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
   const analyzeResults = async () => {
     setIsAnalyzing(true);
     try {
+      // 토큰 잔액 확인
+      const tokenCost = TOKEN_COSTS.HAN_MEDICINE_TEST;
+      if (!checkTokenAvailability(tokenCost)) {
+        toast({
+          title: "토큰 부족",
+          description: `사상체질 분석을 위해 ${tokenCost}개의 토큰이 필요합니다.`,
+          variant: "destructive"
+        });
+        setIsAnalyzing(false);
+        return;
+      }
+
       // 체질별 점수 계산
       const scores = { soyang: 0, soeum: 0, taeyang: 0, taeeum: 0 };
       
@@ -139,10 +155,34 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
       const maxScore = Math.max(...Object.values(scores));
       const constitution = Object.entries(scores).find(([_, score]) => score === maxScore)?.[0];
 
+      // Supabase 함수 호출 (토큰 차감 포함)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "인증 필요",
+          description: "로그인이 필요합니다.",
+          variant: "destructive"
+        });
+        setIsAnalyzing(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('sasang-analyzer', {
+        body: { constitution, scores, answers },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
       const result = {
         constitution,
         scores,
         answers,
+        analysis: data.analysis,
         testType: 'sasang_constitution',
         completedAt: new Date().toISOString()
       };

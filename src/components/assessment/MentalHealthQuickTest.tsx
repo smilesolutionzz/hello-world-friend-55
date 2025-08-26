@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Loader2, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { TOKEN_COSTS } from '@/constants/tokenCosts';
+import { useTokens } from '@/hooks/useTokens';
 
 const questions = [
   {
@@ -107,6 +109,7 @@ export const MentalHealthQuickTest: React.FC<MentalHealthQuickTestProps> = ({ on
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { toast } = useToast();
+  const { checkTokenAvailability, consumeTokens } = useTokens();
 
   const handleAnswer = (questionId: string, value: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -129,6 +132,30 @@ export const MentalHealthQuickTest: React.FC<MentalHealthQuickTestProps> = ({ on
   const analyzeResults = async () => {
     setIsAnalyzing(true);
     try {
+      // 토큰 잔액 확인
+      const tokenCost = TOKEN_COSTS.HAN_MEDICINE_TEST;
+      if (!checkTokenAvailability(tokenCost)) {
+        toast({
+          title: "토큰 부족",
+          description: `통합건강 분석을 위해 ${tokenCost}개의 토큰이 필요합니다.`,
+          variant: "destructive"
+        });
+        setIsAnalyzing(false);
+        return;
+      }
+
+      // 토큰 차감
+      const consumed = await consumeTokens(tokenCost);
+      if (!consumed) {
+        toast({
+          title: "토큰 차감 실패",
+          description: "토큰 차감 중 오류가 발생했습니다.",
+          variant: "destructive"
+        });
+        setIsAnalyzing(false);
+        return;
+      }
+
       // 점수 계산
       const scoreMap = {
         very_positive: 5, very_energetic: 5, excellent: 5, very_connected: 5, very_satisfied: 5, none: 5,

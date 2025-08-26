@@ -396,7 +396,6 @@ const Assessment = () => {
     
     setCurrentStep('selfesteem-result');
   };
-  };
 
   const handleStartAIChat = () => {
     setCurrentStep('ai-chat');

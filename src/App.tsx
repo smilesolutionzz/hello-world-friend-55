@@ -49,7 +49,7 @@ import AnxietyPackage from "./pages/AnxietyPackage";
 import FocusPackage from "./pages/FocusPackage";
 import ChildPackage from "./pages/ChildPackage";
 import ComprehensivePackage from "./pages/ComprehensivePackage";
-import TokenHistory from "./pages/TokenHistory";
+
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTestResult from "./components/assessment/FunTestResult";
 import HanMedicineTest from "./pages/HanMedicineTest";
@@ -104,7 +104,7 @@ const App = () => (
           <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />
           <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
           <Route path="/token-test" element={<TokenTest />} />
-          <Route path="/token-history" element={<TokenHistory />} />
+          
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />
           <Route path="/subscription-cancel" element={<SubscriptionCancel />} />

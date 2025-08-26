@@ -26,11 +26,11 @@ const ClientLogos = () => {
       description: "통합의학 전문의원"
     },
     { 
-      name: "희망발달센터 수원점", 
-      icon: Heart, 
-      color: "text-rose-500",
-      bgColor: "bg-rose-50",
-      description: "아동발달 전문센터"
+      name: "가까이한의원", 
+      icon: Leaf, 
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      description: "한방통합 진료센터"
     },
     { 
       name: "정관언어발달센터", 
@@ -82,11 +82,11 @@ const ClientLogos = () => {
       description: "아동발달 치료센터"
     },
     { 
-      name: "가까이한의원", 
-      icon: Leaf, 
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-      description: "한방통합 진료센터"
+      name: "희망발달센터 수원점", 
+      icon: Heart, 
+      color: "text-rose-500",
+      bgColor: "bg-rose-50",
+      description: "아동발달 전문센터"
     }
   ];
 

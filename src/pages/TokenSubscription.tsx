@@ -348,6 +348,104 @@ const TokenSubscription = () => {
             </div>
           </div>
         </div>
+
+        {/* Founder's Letter */}
+        <div className="mt-20">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-gradient-to-br from-warm-cream via-soft-lavender/30 to-gentle-peach rounded-3xl p-8 md:p-12 shadow-2xl border border-primary/10 relative overflow-hidden">
+              {/* Background decoration */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-2xl"></div>
+              
+              <div className="relative z-10">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg border border-primary/20 mb-4">
+                    <Brain className="w-5 h-5 text-primary" />
+                    <span className="text-primary font-semibold text-sm">창립자의 손편지</span>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+                    여러분께 전하는 진심
+                  </h2>
+                  <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
+                </div>
+
+                <div className="prose prose-lg max-w-none text-foreground/90 leading-relaxed space-y-6">
+                  <p className="text-lg md:text-xl text-center font-medium text-primary mb-8">
+                    "안녕하세요, AI 하이라이트 프로를 만든 개발자입니다."
+                  </p>
+                  
+                  <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/30">
+                    <p className="mb-6 text-base md:text-lg leading-relaxed">
+                      지난 몇 달 동안 매일 밤을 새워가며, 하나하나 직접 코드를 작성하고 
+                      AI 모델을 훈련시키며 이 플랫폼을 만들어왔습니다. 
+                      왜 이렇게 힘든 길을 선택했을까요?
+                    </p>
+                    
+                    <p className="mb-6 text-base md:text-lg leading-relaxed">
+                      지난 <span className="font-bold text-primary">14년 동안</span> 
+                      유소년 스포츠클럽, 발달센터, 심리상담센터, 그리고 병원 발달클리닉을 운영하며 
+                      수많은 학부모님들과 아이들을 만났습니다. 
+                      그 과정에서 저는 깨달았습니다.
+                    </p>
+                    
+                    <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 my-8 border-l-4 border-primary">
+                      <p className="text-base md:text-lg leading-relaxed font-medium italic">
+                        "우리 아이가 정상적으로 자라고 있는 걸까?"<br/>
+                        "혹시 뭔가 놓치고 있는 건 아닐까?"<br/>
+                        "전문가의 도움이 필요한데 어디서 시작해야 할까?"
+                      </p>
+                    </div>
+                    
+                    <p className="mb-6 text-base md:text-lg leading-relaxed">
+                      이런 고민들이 얼마나 절실하고 간절한지, 
+                      그리고 답을 찾기까지 얼마나 오랜 시간과 비용이 드는지 누구보다 잘 알고 있습니다.
+                      전문가를 만나기까지 몇 달을 기다려야 하고, 
+                      비싼 검사비용 때문에 망설이시는 부모님들의 마음이 너무나 잘 보였습니다.
+                    </p>
+                    
+                    <p className="mb-6 text-base md:text-lg leading-relaxed">
+                      그래서 결심했습니다. 
+                      <span className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                        "14년간 현장에서 쌓은 경험과 최첨단 AI 기술을 결합해서, 
+                        모든 부모님들이 쉽고 빠르게 전문가 수준의 분석을 받을 수 있게 하자"
+                      </span>
+                      고 말입니다.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-accent/20 to-primary/20 rounded-2xl p-6 md:p-8 shadow-lg border border-primary/20">
+                    <p className="text-base md:text-lg leading-relaxed mb-4">
+                      이 <span className="font-bold text-primary">AI 하이라이트 프로</span>가 
+                      여러분과 아이들에게 한 줄기 빛이 되기를 간절히 바랍니다.
+                    </p>
+                    
+                    <p className="text-base md:text-lg leading-relaxed mb-4">
+                      더 이상 혼자 고민하지 마세요. 
+                      더 이상 전문가를 만나기까지 몇 달을 기다리지 마세요. 
+                      바로 지금, 여기서 시작하세요.
+                    </p>
+                    
+                    <p className="text-lg md:text-xl font-bold text-center text-primary mt-6">
+                      여러분의 소중한 아이들이 행복하게 성장할 수 있도록,<br/>
+                      제가 직접 만든 이 도구가 든든한 동반자가 되겠습니다.
+                    </p>
+                  </div>
+                  
+                  <div className="text-center mt-8">
+                    <div className="inline-block">
+                      <p className="text-lg text-muted-foreground mb-2">마음을 담아</p>
+                      <div className="flex items-center gap-3 justify-center">
+                        <div className="w-8 h-0.5 bg-gradient-to-r from-transparent to-primary"></div>
+                        <span className="font-bold text-xl text-primary">AI 하이라이트 프로 창립자</span>
+                        <div className="w-8 h-0.5 bg-gradient-to-l from-transparent to-primary"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

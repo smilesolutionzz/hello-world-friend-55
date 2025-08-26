@@ -53,6 +53,7 @@ import ComprehensivePackage from "./pages/ComprehensivePackage";
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTestResult from "./components/assessment/FunTestResult";
 import HanMedicineTest from "./pages/HanMedicineTest";
+import IEPView from "./pages/IEPView";
 import FloatingChatCTA from "./components/FloatingChatCTA";
 import { SessionManager } from "./components/SessionManager";
 
@@ -87,6 +88,7 @@ const App = () => (
           <Route path="/comprehensive-package" element={<ComprehensivePackage />} />
           <Route path="/han-medicine-test" element={<HanMedicineTest />} />
           <Route path="/iep-generator" element={<IEPGenerator />} />
+          <Route path="/iep-view/:id" element={<IEPView />} />
           <Route path="/autism-screening" element={<DevelopmentalScreening />} />
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />

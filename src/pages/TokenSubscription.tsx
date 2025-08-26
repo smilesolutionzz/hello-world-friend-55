@@ -427,7 +427,7 @@ const TokenSubscription = () => {
                     <div className="text-center mb-6">
                       <p className="text-xl font-bold text-primary mb-4">짧게 남긴 기록이 데이터가 되고</p>
                       <p className="text-xl font-bold text-primary mb-4">수천번 전문검사들과 해석들을 돌려 엔진을 고도화시켜 만들어낸 AI가 빠르게 분석하고</p>
-                      <p className="text-xl font-bold text-primary">필요하다면 전문가가 함께 코멘트를 더해주는 시스템</p>
+                      <p className="text-xl font-bold text-primary">필요와 위험성이 데이터를 통해 감지되면 PRO전문가가 함께 코멘트를 더해주는 시스템</p>
                     </div>
                     
                     <p className="text-base md:text-lg leading-relaxed mb-6">
@@ -446,7 +446,7 @@ const TokenSubscription = () => {
                   <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/50">
                     <p className="text-base md:text-lg leading-relaxed mb-6">
                       저희는 단순한 기술이 아니라, <span className="font-bold text-primary">사람을 위한 도구</span>를 만들고 있습니다.
-                      아직 부족한 점이 많습니다. 하지만 저는 한 발짝이라도 먼저 내디뎌서,
+                      저는 한 발짝이라도 먼저 내디뎌서,
                       발달센터와 병원, 주간보호센터, 그리고 가족에게 
                       '신뢰할 수 있는 기록과 분석의 파트너'가 되고 싶습니다.
                     </p>

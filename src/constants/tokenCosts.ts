@@ -31,7 +31,7 @@ export const TOKEN_COSTS = {
   // 기타
   CONTENT_RECOMMENDATION: 1, // 컨텐츠 추천
   CRISIS_DETECTION: 0,      // 위기감지 (무료)
-  IEP_GENERATION: 15,       // IEP 생성
+  IEP_GENERATION: 0,       // IEP 생성 (무료)
   DEVELOPMENTAL_SCREENING: 4, // AIH 발달특성 선별체크
 } as const;
 

@@ -195,6 +195,39 @@ export type Database = {
         }
         Relationships: []
       }
+      developmental_ml_analysis: {
+        Row: {
+          analysis_results: Json
+          confidence_score: number
+          created_at: string
+          id: string
+          raw_data_summary: Json
+          student_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis_results: Json
+          confidence_score?: number
+          created_at?: string
+          id?: string
+          raw_data_summary: Json
+          student_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis_results?: Json
+          confidence_score?: number
+          created_at?: string
+          id?: string
+          raw_data_summary?: Json
+          student_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       developmental_tracking: {
         Row: {
           assessor_notes: string | null
@@ -579,6 +612,47 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      intervention_plans: {
+        Row: {
+          created_at: string
+          id: string
+          ml_analysis_id: string | null
+          plan_data: Json
+          status: string
+          student_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ml_analysis_id?: string | null
+          plan_data: Json
+          status?: string
+          student_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ml_analysis_id?: string | null
+          plan_data?: Json
+          status?: string
+          student_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intervention_plans_ml_analysis_id_fkey"
+            columns: ["ml_analysis_id"]
+            isOneToOne: false
+            referencedRelation: "developmental_ml_analysis"
             referencedColumns: ["id"]
           },
         ]

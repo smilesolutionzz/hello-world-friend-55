@@ -14,7 +14,10 @@ import {
   Calendar,
   Plus,
   Eye,
-  FileText
+  FileText,
+  Zap,
+  BarChart3,
+  AlertTriangle
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -29,6 +32,21 @@ interface DevelopmentalData {
   notes: string;
 }
 
+interface MLAnalysis {
+  id: string;
+  predicted_next_level: number;
+  development_trajectory: 'improving' | 'stable' | 'concerning';
+  risk_factors: string[];
+  intervention_recommendations: string[];
+  confidence_score: number;
+  milestone_predictions: {
+    domain: string;
+    predicted_achievement_date: string;
+    probability: number;
+  }[];
+  created_at: string;
+}
+
 interface DevelopmentalTrackingDashboardProps {
   userId?: string;
   studentId?: string;
@@ -36,7 +54,9 @@ interface DevelopmentalTrackingDashboardProps {
 
 const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrackingDashboardProps) => {
   const [trackingData, setTrackingData] = useState<DevelopmentalData[]>([]);
+  const [mlAnalysis, setMlAnalysis] = useState<MLAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedDomain, setSelectedDomain] = useState<string>('all');
   const { toast } = useToast();
 
@@ -50,6 +70,7 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
 
   useEffect(() => {
     fetchTrackingData();
+    fetchLatestMlAnalysis();
   }, [userId, studentId]);
 
   const fetchTrackingData = async () => {
@@ -76,6 +97,92 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchLatestMlAnalysis = async () => {
+    try {
+      let query = supabase
+        .from('developmental_ml_analysis')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (studentId) {
+        query = query.eq('student_id', studentId);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        const analysis = data[0];
+        const analysisResults = analysis.analysis_results as any;
+        setMlAnalysis({
+          id: analysis.id,
+          predicted_next_level: analysisResults.predicted_next_level || 3,
+          development_trajectory: analysisResults.development_trajectory || 'stable',
+          risk_factors: analysisResults.risk_factors || [],
+          intervention_recommendations: analysisResults.intervention_recommendations || [],
+          confidence_score: analysisResults.confidence_score || 0.7,
+          milestone_predictions: analysisResults.milestone_predictions || [],
+          created_at: analysis.created_at
+        });
+      }
+    } catch (error) {
+      console.error('ML 분석 데이터 조회 오류:', error);
+    }
+  };
+
+  const runMlAnalysis = async () => {
+    if (trackingData.length < 3) {
+      toast({
+        title: "데이터 부족",
+        description: "AI 분석을 위해서는 최소 3개 이상의 추적 데이터가 필요합니다.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsAnalyzing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('developmental-ml-analyzer', {
+        body: {
+          developmental_data: trackingData,
+          student_id: studentId
+        }
+      });
+
+      if (error) throw error;
+
+      const analysisData = data.analysis;
+      setMlAnalysis({
+        id: data.analysis_id,
+        predicted_next_level: analysisData.predicted_next_level || 3,
+        development_trajectory: analysisData.development_trajectory || 'stable',
+        risk_factors: analysisData.risk_factors || [],
+        intervention_recommendations: analysisData.intervention_recommendations || [],
+        confidence_score: analysisData.confidence_score || 0.7,
+        milestone_predictions: analysisData.milestone_predictions || [],
+        created_at: new Date().toISOString()
+      });
+
+      toast({
+        title: "AI 분석 완료",
+        description: "딥러닝 기반 발달 분석이 완료되었습니다.",
+        variant: "default"
+      });
+
+    } catch (error) {
+      console.error('ML 분석 실행 오류:', error);
+      toast({
+        title: "분석 실패",
+        description: "AI 분석 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -135,10 +242,94 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
   const overallProgress = getOverallProgress();
   const recentProgress = getRecentProgress();
 
+  const getTrajectoryColor = (trajectory: string) => {
+    switch (trajectory) {
+      case 'improving': return 'text-green-600';
+      case 'concerning': return 'text-red-600';
+      default: return 'text-yellow-600';
+    }
+  };
+
+  const getTrajectoryIcon = (trajectory: string) => {
+    switch (trajectory) {
+      case 'improving': return TrendingUp;
+      case 'concerning': return AlertTriangle;
+      default: return BarChart3;
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* AI 분석 현황 */}
+      {mlAnalysis && (
+        <Card className="border-l-4 border-l-primary">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="w-5 h-5 text-primary" />
+              AI 딥러닝 분석 결과
+              <Badge variant="outline" className="ml-auto">
+                신뢰도 {(mlAnalysis.confidence_score * 100).toFixed(0)}%
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">예측 다음 수준</p>
+                <p className="text-2xl font-bold text-primary">
+                  {mlAnalysis.predicted_next_level.toFixed(1)}/5
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">발달 궤도</p>
+                <div className="flex items-center justify-center gap-2">
+                  {(() => {
+                    const IconComponent = getTrajectoryIcon(mlAnalysis.development_trajectory);
+                    return <IconComponent className={`w-5 h-5 ${getTrajectoryColor(mlAnalysis.development_trajectory)}`} />;
+                  })()}
+                  <span className={`font-semibold ${getTrajectoryColor(mlAnalysis.development_trajectory)}`}>
+                    {mlAnalysis.development_trajectory === 'improving' ? '개선 중' : 
+                     mlAnalysis.development_trajectory === 'concerning' ? '주의 필요' : '안정적'}
+                  </span>
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">분석 완료</p>
+                <p className="text-sm font-medium">
+                  {new Date(mlAnalysis.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+
+            {mlAnalysis.risk_factors.length > 0 && (
+              <div className="mb-4">
+                <h4 className="font-medium mb-2 text-red-700">위험 요소</h4>
+                <div className="flex flex-wrap gap-2">
+                  {mlAnalysis.risk_factors.map((factor, index) => (
+                    <Badge key={index} variant="destructive" className="text-xs">
+                      {factor}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="mb-4">
+              <h4 className="font-medium mb-2 text-blue-700">AI 추천 개입</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {mlAnalysis.intervention_recommendations.slice(0, 4).map((rec, index) => (
+                  <div key={index} className="text-sm bg-blue-50 p-2 rounded border-l-2 border-blue-200">
+                    {rec}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* 종합 현황 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -172,6 +363,20 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
                 <p className="text-2xl font-bold">{recentProgress.improvementRate.toFixed(1)}%</p>
               </div>
               <Target className="w-8 h-8 text-purple-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">AI 분석 상태</p>
+                <p className="text-lg font-bold">
+                  {mlAnalysis ? '완료' : '대기 중'}
+                </p>
+              </div>
+              <Zap className={`w-8 h-8 ${mlAnalysis ? 'text-green-600' : 'text-gray-400'}`} />
             </div>
           </CardContent>
         </Card>
@@ -289,13 +494,22 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
       </Card>
 
       {/* 행동 버튼들 */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 flex-wrap">
         <Button 
           onClick={() => {/* 새 추적 데이터 추가 모달 열기 */}}
           className="flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
           발달 추적 추가
+        </Button>
+
+        <Button 
+          onClick={runMlAnalysis}
+          disabled={isAnalyzing || trackingData.length < 3}
+          className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+        >
+          <Brain className="w-4 h-4" />
+          {isAnalyzing ? 'AI 분석 중...' : 'AI 딥러닝 분석'}
         </Button>
         
         <Button 

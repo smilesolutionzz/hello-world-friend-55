@@ -8,15 +8,25 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // API 키 확인
+    if (!openAIApiKey) {
+      console.error('[PLATFORM-AI-CONSULTANT] OPENAI_API_KEY가 설정되지 않았습니다');
+      throw new Error('AI 서비스 설정이 완료되지 않았습니다. 잠시 후 다시 시도해주세요.');
+    }
+
     const { message, chatHistory } = await req.json();
 
-    console.log('[PLATFORM-AI-CONSULTANT] 질문 접수:', { message });
+    console.log('[PLATFORM-AI-CONSULTANT] 질문 접수:', { 
+      message: message?.substring(0, 100) + '...', 
+      historyLength: chatHistory?.length || 0 
+    });
 
     // 플랫폼 정보를 포함한 시스템 프롬프트
     const systemPrompt = `당신은 아동발달 및 심리검사 플랫폼의 전문 AI 상담사입니다. 다음 정보를 숙지하고 사용자의 질문에 친절하고 정확하게 답변해주세요:
@@ -117,11 +127,23 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[PLATFORM-AI-CONSULTANT] 오류:', error);
+    
+    let errorMessage = '죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+    
+    if (error.message?.includes('API key')) {
+      errorMessage = 'AI 서비스 인증에 문제가 있습니다. 관리자에게 문의해주세요.';
+    } else if (error.message?.includes('rate limit')) {
+      errorMessage = '현재 많은 사용자가 이용 중입니다. 잠시 후 다시 시도해주세요.';
+    } else if (error.message?.includes('insufficient_quota')) {
+      errorMessage = 'AI 서비스 한도가 초과되었습니다. 관리자에게 문의해주세요.';
+    }
+    
     return new Response(JSON.stringify({ 
       error: error.message,
-      response: '죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
+      response: errorMessage,
+      success: false
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -80,6 +80,13 @@ const ClientLogos = () => {
       color: "text-orange-500",
       bgColor: "bg-orange-50",
       description: "아동발달 치료센터"
+    },
+    { 
+      name: "가까이한의원", 
+      icon: Leaf, 
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      description: "한방통합 진료센터"
     }
   ];
 
@@ -88,7 +95,7 @@ const ClientLogos = () => {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2 sm:mb-4">
-            <span className="text-brand-gradient">신뢰받는 AIH 심리분석 플랫폼</span>
+            <span className="text-brand-gradient">신뢰받는 AIH 통합건강분석 플랫폼</span>
           </h2>
           <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
             전국 주요 의료기관과 교육기관에서 선택한 전문 AIH 분석 서비스

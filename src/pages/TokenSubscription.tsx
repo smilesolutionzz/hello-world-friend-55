@@ -426,7 +426,7 @@ const TokenSubscription = () => {
                   <div className="bg-gradient-to-br from-warm-cream to-soft-lavender/50 rounded-2xl p-6 md:p-8 shadow-lg border border-primary/20">
                     <div className="text-center mb-6">
                       <p className="text-xl font-bold text-primary mb-4">짧게 남긴 기록이 데이터가 되고</p>
-                      <p className="text-xl font-bold text-primary mb-4">AI가 빠르게 분석하고</p>
+                      <p className="text-xl font-bold text-primary mb-4">수천번 전문검사들과 해석들을 돌려 엔진을 고도화시켜 만들어낸 AI가 빠르게 분석하고</p>
                       <p className="text-xl font-bold text-primary">필요하다면 전문가가 함께 코멘트를 더해주는 시스템</p>
                     </div>
                     

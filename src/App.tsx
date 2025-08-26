@@ -37,6 +37,7 @@ import Observation from "./pages/Observation";
 import Expert from "./pages/Expert";
 import ExpertList from "./pages/ExpertList";
 import ExpertHiring from "./pages/ExpertHiring";
+import Institutions from "./pages/Institutions";
 import NotFound from "./pages/NotFound";
 import ShareView from "./pages/ShareView";
 import TokenTest from "./pages/TokenTest";
@@ -93,6 +94,7 @@ const App = () => (
           <Route path="/experts" element={<ExpertList />} />
           <Route path="/expert-hiring" element={<ExpertHiring />} />
           <Route path="/expert-list" element={<ExpertList />} />
+          <Route path="/institutions" element={<Institutions />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
           <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />

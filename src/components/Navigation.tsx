@@ -134,10 +134,25 @@ const Navigation = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/experts')}>
-              <Users className="w-4 h-4 mr-1" />
-              전문가고용
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 flex items-center gap-1">
+                  <Users className="w-4 h-4" />
+                  전문가
+                  <ChevronDown className="w-3 h-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleNavigation('/experts')}>
+                  <Users className="w-4 h-4 mr-2" />
+                  전문가 고용
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleNavigation('/institutions')}>
+                  <Users className="w-4 h-4 mr-2" />
+                  제휴기관 찾기
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/family')}>
               <Users className="w-4 h-4 mr-1" />
               가족케어
@@ -323,6 +338,15 @@ const Navigation = () => {
                   >
                     <Users className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">전문가고용</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/institutions')}
+                  >
+                    <Users className="mr-3 h-5 w-5 text-primary shrink-0" />
+                    <span className="font-medium">제휴기관</span>
                   </Button>
                   
                   <Button

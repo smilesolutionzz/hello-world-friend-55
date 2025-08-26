@@ -322,6 +322,156 @@ export type Database = {
           },
         ]
       }
+      institution_analytics: {
+        Row: {
+          average_session_duration: number | null
+          created_at: string
+          id: string
+          institution_id: string
+          month_year: string
+          new_clients: number | null
+          popular_services: Json | null
+          retention_rate: number | null
+          total_consultations: number | null
+          total_revenue: number | null
+        }
+        Insert: {
+          average_session_duration?: number | null
+          created_at?: string
+          id?: string
+          institution_id: string
+          month_year: string
+          new_clients?: number | null
+          popular_services?: Json | null
+          retention_rate?: number | null
+          total_consultations?: number | null
+          total_revenue?: number | null
+        }
+        Update: {
+          average_session_duration?: number | null
+          created_at?: string
+          id?: string
+          institution_id?: string
+          month_year?: string
+          new_clients?: number | null
+          popular_services?: Json | null
+          retention_rate?: number | null
+          total_consultations?: number | null
+          total_revenue?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_analytics_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institution_experts: {
+        Row: {
+          available_days: string[] | null
+          available_hours: string | null
+          created_at: string
+          employment_type: string | null
+          expert_id: string
+          hourly_rate: number | null
+          id: string
+          institution_id: string
+          is_primary_contact: boolean | null
+          position: string | null
+          specializations: string[] | null
+          updated_at: string
+          years_at_institution: number | null
+        }
+        Insert: {
+          available_days?: string[] | null
+          available_hours?: string | null
+          created_at?: string
+          employment_type?: string | null
+          expert_id: string
+          hourly_rate?: number | null
+          id?: string
+          institution_id: string
+          is_primary_contact?: boolean | null
+          position?: string | null
+          specializations?: string[] | null
+          updated_at?: string
+          years_at_institution?: number | null
+        }
+        Update: {
+          available_days?: string[] | null
+          available_hours?: string | null
+          created_at?: string
+          employment_type?: string | null
+          expert_id?: string
+          hourly_rate?: number | null
+          id?: string
+          institution_id?: string
+          is_primary_contact?: boolean | null
+          position?: string | null
+          specializations?: string[] | null
+          updated_at?: string
+          years_at_institution?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_experts_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institution_reviews: {
+        Row: {
+          created_at: string
+          id: string
+          institution_id: string
+          rating: number
+          review_text: string | null
+          service_type: string | null
+          updated_at: string
+          user_id: string
+          visit_date: string | null
+          would_recommend: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          institution_id: string
+          rating: number
+          review_text?: string | null
+          service_type?: string | null
+          updated_at?: string
+          user_id: string
+          visit_date?: string | null
+          would_recommend?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          institution_id?: string
+          rating?: number
+          review_text?: string | null
+          service_type?: string | null
+          updated_at?: string
+          user_id?: string
+          visit_date?: string | null
+          would_recommend?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_reviews_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       observation_domains: {
         Row: {
           color_class: string
@@ -509,6 +659,108 @@ export type Database = {
           suitable_for?: string
           template_type?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      partner_institutions: {
+        Row: {
+          accessibility_features: string[] | null
+          address: string
+          business_license: string | null
+          certification_info: Json | null
+          commission_rate: number | null
+          created_at: string
+          description: string | null
+          email: string | null
+          established_year: number | null
+          facilities: string[] | null
+          gallery_images: string[] | null
+          id: string
+          institution_type: string
+          is_voucher_approved: boolean | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          operating_hours: Json | null
+          parking_available: boolean | null
+          partnership_start_date: string | null
+          partnership_status: string | null
+          phone: string | null
+          profile_image_url: string | null
+          rating: number | null
+          review_count: number | null
+          services_offered: string[] | null
+          specializations: string[] | null
+          total_experts: number | null
+          updated_at: string
+          voucher_types: string[] | null
+          website_url: string | null
+        }
+        Insert: {
+          accessibility_features?: string[] | null
+          address: string
+          business_license?: string | null
+          certification_info?: Json | null
+          commission_rate?: number | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          established_year?: number | null
+          facilities?: string[] | null
+          gallery_images?: string[] | null
+          id?: string
+          institution_type: string
+          is_voucher_approved?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          operating_hours?: Json | null
+          parking_available?: boolean | null
+          partnership_start_date?: string | null
+          partnership_status?: string | null
+          phone?: string | null
+          profile_image_url?: string | null
+          rating?: number | null
+          review_count?: number | null
+          services_offered?: string[] | null
+          specializations?: string[] | null
+          total_experts?: number | null
+          updated_at?: string
+          voucher_types?: string[] | null
+          website_url?: string | null
+        }
+        Update: {
+          accessibility_features?: string[] | null
+          address?: string
+          business_license?: string | null
+          certification_info?: Json | null
+          commission_rate?: number | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          established_year?: number | null
+          facilities?: string[] | null
+          gallery_images?: string[] | null
+          id?: string
+          institution_type?: string
+          is_voucher_approved?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          operating_hours?: Json | null
+          parking_available?: boolean | null
+          partnership_start_date?: string | null
+          partnership_status?: string | null
+          phone?: string | null
+          profile_image_url?: string | null
+          rating?: number | null
+          review_count?: number | null
+          services_offered?: string[] | null
+          specializations?: string[] | null
+          total_experts?: number | null
+          updated_at?: string
+          voucher_types?: string[] | null
+          website_url?: string | null
         }
         Relationships: []
       }

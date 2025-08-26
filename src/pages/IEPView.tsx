@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft, Download, Share, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
 interface IEPData {
   id: string;
@@ -56,19 +56,93 @@ const IEPView = () => {
       setIepData(data);
     } catch (error) {
       console.error('IEP 데이터 조회 오류:', error);
-      toast.error('IEP 데이터를 불러올 수 없습니다.');
+      toast({
+        title: "오류",
+        description: "IEP 데이터를 불러올 수 없습니다.",
+        variant: "destructive"
+      })
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDownload = () => {
-    toast.info('PDF 다운로드 기능은 곧 추가됩니다.');
-  };
+  const { toast } = useToast()
 
-  const handleShare = () => {
-    toast.info('공유 기능은 곧 추가됩니다.');
-  };
+  const handleDownload = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-iep-pdf', {
+        body: { iepId: id }
+      })
+
+      if (error) throw error
+
+      // HTML 파일로 다운로드 (브라우저에서 PDF로 인쇄 가능)
+      const blob = new Blob([data], { type: 'text/html' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.style.display = 'none'
+      a.href = url
+      a.download = `IEP_${iepData?.student_name}_${new Date().toISOString().split('T')[0]}.html`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+      
+      toast({
+        title: "다운로드 완료",
+        description: "IEP 파일이 다운로드되었습니다. 브라우저에서 열어 PDF로 인쇄할 수 있습니다."
+      })
+    } catch (error) {
+      console.error('PDF 다운로드 오류:', error)
+      toast({
+        title: "오류",
+        description: "PDF 다운로드 중 오류가 발생했습니다.",
+        variant: "destructive"
+      })
+    }
+  }
+
+  const handleShare = async () => {
+    const currentUrl = window.location.href
+    
+    try {
+      if (navigator.share) {
+        // 모바일 브라우저의 Web Share API 사용
+        await navigator.share({
+          title: `개별교육계획서 (IEP) - ${iepData?.student_name}`,
+          text: 'AI 전문가 시스템으로 생성된 맞춤형 교육계획을 확인해보세요.',
+          url: currentUrl
+        })
+        toast({
+          title: "공유 완료",
+          description: "공유가 완료되었습니다."
+        })
+      } else {
+        // 클립보드에 URL 복사
+        await navigator.clipboard.writeText(currentUrl)
+        toast({
+          title: "링크 복사",
+          description: "링크가 클립보드에 복사되었습니다."
+        })
+      }
+    } catch (error) {
+      console.error('공유 오류:', error)
+      // fallback: 수동으로 URL 복사
+      try {
+        await navigator.clipboard.writeText(currentUrl)
+        toast({
+          title: "링크 복사",
+          description: "링크가 클립보드에 복사되었습니다."
+        })
+      } catch (clipboardError) {
+        toast({
+          title: "오류",
+          description: "공유 기능을 사용할 수 없습니다.",
+          variant: "destructive"
+        })
+      }
+    }
+  }
 
   if (loading) {
     return (
@@ -664,7 +738,7 @@ const IEPView = () => {
               <div className="grid md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">
-                    <span className="font-medium text-foreground">AI 모델:</span> GPT-4.1 (2025년 안정화 버전)
+                    <span className="font-medium text-foreground">AI 모델:</span> GPT-5 (2025년 안정화 버전)
                   </p>
                   <p className="text-muted-foreground">
                     <span className="font-medium text-foreground">검증:</span> 특수교육 전문가 감수 프롬프트

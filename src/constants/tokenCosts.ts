@@ -31,6 +31,7 @@ export const TOKEN_COSTS = {
   // 기타
   CONTENT_RECOMMENDATION: 1, // 컨텐츠 추천
   CRISIS_DETECTION: 0,      // 위기감지 (무료)
+  AUTISM_SCREENING: 4,      // 자폐스펙트럼 선별검사
 } as const;
 
 // 기능별 설명

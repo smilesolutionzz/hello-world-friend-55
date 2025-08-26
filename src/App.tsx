@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import HanMedicineTest from "./pages/HanMedicineTest";
+import AutismScreening from "./pages/AutismScreening";
 import Assessment from "./pages/Assessment";
 import PremiumAssessment from "./pages/PremiumAssessment";
 import AICounselor from "./pages/AICounselor";
@@ -83,6 +84,7 @@ const App = () => (
           <Route path="/child-package" element={<ChildPackage />} />
           <Route path="/comprehensive-package" element={<ComprehensivePackage />} />
           <Route path="/han-medicine-test" element={<HanMedicineTest />} />
+          <Route path="/autism-screening" element={<AutismScreening />} />
           
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />

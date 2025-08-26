@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Star, 
   Award, 
@@ -24,7 +25,9 @@ import {
   Shield,
   Zap,
   ChevronRight,
-  MapPin
+  MapPin,
+  Building,
+  UserCheck
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -485,31 +488,32 @@ const ExpertHiring = () => {
                 <Crown className="w-8 h-8 text-primary" />
               </div>
               <h1 className="text-5xl font-black text-foreground drop-shadow-sm">
-                전문가 고용
+                전문가 & 기관 매칭
               </h1>
               <div className="p-2 bg-secondary/10 rounded-full animate-pulse">
-                <Brain className="w-8 h-8 text-secondary" />
+                <Building className="w-8 h-8 text-secondary" />
               </div>
             </div>
             
             <div className="space-y-4">
               <h2 className="text-3xl font-bold text-foreground">
                 🤖 <span className="text-blue-600 font-extrabold">AI 맞춤 추천</span> × 
-                <span className="text-purple-600 font-extrabold"> 전문가 매칭</span>
+                <span className="text-purple-600 font-extrabold"> 개인전문가</span> × 
+                <span className="text-green-600 font-extrabold"> 제휴기관</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                당신만을 위한 전문가를 AI가 찾아드립니다
+                개인전문가부터 제휴기관까지 당신에게 최적의 선택지를 제공합니다
               </p>
               
               <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
                 <Badge className="bg-green-100 text-green-700 hover:bg-green-200 px-4 py-2">
-                  ✅ 월 15만원 이하
+                  👨‍⚕️ 개인전문가
                 </Badge>
                 <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2">
-                  🎯 AI 정밀 매칭
+                  🏢 제휴기관
                 </Badge>
                 <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-200 px-4 py-2">
-                  🕐 24시간 지원
+                  🎯 AI 맞춤매칭
                 </Badge>
               </div>
             </div>
@@ -569,199 +573,302 @@ const ExpertHiring = () => {
           </Card>
         )}
 
-        {/* 검색 및 필터 */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="전문가 이름이나 전문분야 검색"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              
-              <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="전문분야 선택" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">전체</SelectItem>
-                  <SelectItem value="아동발달">아동발달</SelectItem>
-                  <SelectItem value="언어치료">언어치료</SelectItem>
-                  <SelectItem value="행동분석">행동분석</SelectItem>
-                  <SelectItem value="청소년상담">청소년상담</SelectItem>
-                  <SelectItem value="심리상담">심리상담</SelectItem>
-                </SelectContent>
-              </Select>
+        {/* 탭 메뉴 - 개인전문가 vs 제휴기관 */}
+        <Tabs defaultValue="experts" className="mb-8">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="experts" className="flex items-center gap-2">
+              <UserCheck className="w-4 h-4" />
+              개인전문가
+            </TabsTrigger>
+            <TabsTrigger value="institutions" className="flex items-center gap-2">
+              <Building className="w-4 h-4" />
+              제휴기관
+            </TabsTrigger>
+          </TabsList>
 
-              <Select value={priceFilter} onValueChange={setPriceFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="가격대 선택" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">전체</SelectItem>
-                  <SelectItem value="low">15만원 이하</SelectItem>
-                  <SelectItem value="medium">15-25만원</SelectItem>
-                  <SelectItem value="high">25만원 이상</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={locationFilter} onValueChange={setLocationFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="지역 선택" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">전체</SelectItem>
-                  <SelectItem value="online">온라인 전용</SelectItem>
-                  <SelectItem value="서울">서울</SelectItem>
-                  <SelectItem value="경기">경기</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 전문가 리스트 */}
-        <div className="space-y-6">
-          {filteredExperts.map((expert) => (
-            <Card key={expert.id} className="overflow-hidden hover-glow">
+          <TabsContent value="experts" className="space-y-6">
+            {/* 검색 및 필터 */}
+            <Card>
               <CardContent className="p-6">
-                <div className="grid lg:grid-cols-12 gap-6">
-                  {/* 전문가 기본 정보 */}
-                  <div className="lg:col-span-4">
-                    <div className="flex items-start gap-4">
-                      <Avatar className="w-20 h-20">
-                        <AvatarImage src={expert.image} />
-                        <AvatarFallback className="text-lg">{expert.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                         <div className="flex items-center gap-2 mb-2">
-                           <h3 className="text-xl font-bold text-brand-gradient">{expert.name}</h3>
-                           <Badge variant="secondary" className="bg-primary/10 text-primary">
-                             <Award className="w-3 h-3 mr-1" />
-                             {expert.credentials[0]}
-                           </Badge>
-                         </div>
-                        <div className="flex items-center gap-4 mb-3">
-                          <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span className="font-semibold">{expert.rating}</span>
-                            <span className="text-sm text-muted-foreground">({expert.reviews})</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <Clock className="w-4 h-4" />
-                            {expert.experience} 경력
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <MapPin className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-sm">{expert.location}</span>
-                          {expert.isOnline && <Badge variant="outline">온라인 가능</Badge>}
-                        </div>
-                        <div className="flex flex-wrap gap-1 mb-3">
-                          {expert.specialty.map((spec, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {spec}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder="전문가 이름이나 전문분야 검색"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
                   </div>
+                  
+                  <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="전문분야 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="아동발달">아동발달</SelectItem>
+                      <SelectItem value="언어치료">언어치료</SelectItem>
+                      <SelectItem value="행동분석">행동분석</SelectItem>
+                      <SelectItem value="청소년상담">청소년상담</SelectItem>
+                      <SelectItem value="심리상담">심리상담</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                  {/* 포트폴리오 */}
-                  <div className="lg:col-span-3">
-                    <h4 className="font-semibold mb-3 text-primary">포트폴리오</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>상담 케이스</span>
-                        <span className="font-semibold">{expert.portfolio.cases}건</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>성공률</span>
-                        <span className="font-semibold text-green-600">{expert.portfolio.successRate}%</span>
-                      </div>
-                      <div className="text-sm">
-                        <span className="text-muted-foreground">주요 전문영역:</span>
-                        <div className="mt-1">
-                          {expert.portfolio.specializations.map((spec, index) => (
-                            <Badge key={index} variant="secondary" className="mr-1 mb-1 text-xs">
-                              {spec}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <Select value={priceFilter} onValueChange={setPriceFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="가격대 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="low">15만원 이하</SelectItem>
+                      <SelectItem value="medium">15-25만원</SelectItem>
+                      <SelectItem value="high">25만원 이상</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                  {/* 월간 서비스 */}
-                  <div className="lg:col-span-3">
-                    <h4 className="font-semibold mb-3 text-primary">월간 서비스 포함사항</h4>
-                    <div className="space-y-2">
-                      {expert.monthlyServices.map((service, index) => (
-                        <div key={index} className="flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
-                          <span className="text-sm">{service}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-3 pt-3 border-t">
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <Zap className="w-4 h-4" />
-                        응답시간: {expert.responseTime}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 가격 및 예약 */}
-                  <div className="lg:col-span-2">
-                    <div className="bg-muted/50 rounded-lg p-4 text-center">
-                      <div className="mb-4">
-                        <div className="text-2xl font-bold text-primary mb-1">
-                          월 {formatPrice(expert.monthlyPrice)}원
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          시간당 {formatPrice(expert.hourlyPrice)}원
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2 mb-4">
-                        {expert.consultationTypes.map((type, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs mr-1">
-                            {type === "화상상담" && <Video className="w-3 h-3 mr-1" />}
-                            {type === "전화상담" && <MessageCircle className="w-3 h-3 mr-1" />}
-                            {type === "방문상담" && <Calendar className="w-3 h-3 mr-1" />}
-                            {type}
-                          </Badge>
-                        ))}
-                      </div>
-                      
-                      <Button 
-                        onClick={() => handleHireExpert(expert.id)}
-                        className="w-full btn-brand mb-2"
-                      >
-                        <Crown className="w-4 h-4 mr-2" />
-                        전문가 고용하기
-                      </Button>
-                      
-                      <div className="text-xs text-muted-foreground">
-                        {expert.availability}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 전문가 설명 */}
-                <div className="mt-4 pt-4 border-t">
-                  <p className="text-sm text-muted-foreground">{expert.description}</p>
+                  <Select value={locationFilter} onValueChange={setLocationFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="지역 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="online">온라인 전용</SelectItem>
+                      <SelectItem value="서울">서울</SelectItem>
+                      <SelectItem value="경기">경기</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
+
+            {/* 개인전문가 리스트 */}
+            <div className="space-y-6">
+              {filteredExperts.map((expert) => (
+                <Card key={expert.id} className="overflow-hidden hover-glow">
+                  <CardContent className="p-6">
+                    <div className="grid lg:grid-cols-12 gap-6">
+                      {/* 전문가 기본 정보 */}
+                      <div className="lg:col-span-4">
+                        <div className="flex items-start gap-4">
+                          <Avatar className="w-20 h-20">
+                            <AvatarImage src={expert.image} />
+                            <AvatarFallback className="text-lg">{expert.name[0]}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                             <div className="flex items-center gap-2 mb-2">
+                               <h3 className="text-xl font-bold text-brand-gradient">{expert.name}</h3>
+                               <Badge variant="secondary" className="bg-primary/10 text-primary">
+                                 <Award className="w-3 h-3 mr-1" />
+                                 {expert.credentials[0]}
+                               </Badge>
+                             </div>
+                            <div className="flex items-center gap-4 mb-3">
+                              <div className="flex items-center gap-1">
+                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <span className="font-semibold">{expert.rating}</span>
+                                <span className="text-sm text-muted-foreground">({expert.reviews})</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                <Clock className="w-4 h-4" />
+                                {expert.experience} 경력
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <MapPin className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-sm">{expert.location}</span>
+                              {expert.isOnline && <Badge variant="outline">온라인 가능</Badge>}
+                            </div>
+                            <div className="flex flex-wrap gap-1 mb-3">
+                              {expert.specialty.map((spec, index) => (
+                                <Badge key={index} variant="outline" className="text-xs">
+                                  {spec}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 포트폴리오 */}
+                      <div className="lg:col-span-3">
+                        <h4 className="font-semibold mb-3 text-primary">포트폴리오</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>상담 케이스</span>
+                            <span className="font-semibold">{expert.portfolio.cases}건</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>성공률</span>
+                            <span className="font-semibold text-green-600">{expert.portfolio.successRate}%</span>
+                          </div>
+                          <div className="text-sm">
+                            <span className="text-muted-foreground">주요 전문영역:</span>
+                            <div className="mt-1">
+                              {expert.portfolio.specializations.map((spec, index) => (
+                                <Badge key={index} variant="secondary" className="mr-1 mb-1 text-xs">
+                                  {spec}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 월간 서비스 */}
+                      <div className="lg:col-span-3">
+                        <h4 className="font-semibold mb-3 text-primary">월간 서비스 포함사항</h4>
+                        <div className="space-y-2">
+                          {expert.monthlyServices.map((service, index) => (
+                            <div key={index} className="flex items-start gap-2">
+                              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
+                              <span className="text-sm">{service}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-3 pt-3 border-t">
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <Zap className="w-4 h-4" />
+                            응답시간: {expert.responseTime}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 가격 및 예약 */}
+                      <div className="lg:col-span-2">
+                        <div className="bg-muted/50 rounded-lg p-4 text-center">
+                          <div className="mb-4">
+                            <div className="text-2xl font-bold text-primary mb-1">
+                              월 {formatPrice(expert.monthlyPrice)}원
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              시간당 {formatPrice(expert.hourlyPrice)}원
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2 mb-4">
+                            {expert.consultationTypes.map((type, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs mr-1">
+                                {type === "화상상담" && <Video className="w-3 h-3 mr-1" />}
+                                {type === "전화상담" && <MessageCircle className="w-3 h-3 mr-1" />}
+                                {type === "방문상담" && <Calendar className="w-3 h-3 mr-1" />}
+                                {type}
+                              </Badge>
+                            ))}
+                          </div>
+                          
+                          <Button 
+                            onClick={() => handleHireExpert(expert.id)}
+                            className="w-full btn-brand mb-2"
+                          >
+                            <Crown className="w-4 h-4 mr-2" />
+                            전문가 고용하기
+                          </Button>
+                          
+                          <div className="text-xs text-muted-foreground">
+                            {expert.availability}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 전문가 설명 */}
+                    <div className="mt-4 pt-4 border-t">
+                      <p className="text-sm text-muted-foreground">{expert.description}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="institutions" className="space-y-6">
+            {/* 제휴기관 안내 */}
+            <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-green-700">
+                  <Building className="w-6 h-6" />
+                  전국 제휴기관 네트워크
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-green-700 mb-4">
+                  검증된 전문기관들과 제휴하여 더욱 체계적이고 전문적인 서비스를 제공합니다.
+                </p>
+                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">50+</div>
+                    <p className="text-sm text-muted-foreground">제휴기관</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">200+</div>
+                    <p className="text-sm text-muted-foreground">소속전문가</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-600">95%</div>
+                    <p className="text-sm text-muted-foreground">만족도</p>
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => navigate('/institutions')}
+                  className="w-full bg-green-600 hover:bg-green-700"
+                >
+                  <Building className="w-4 h-4 mr-2" />
+                  제휴기관 전체보기
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* 제휴기관 혜택 */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-blue-600" />
+                    기관 제휴 혜택
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">정부 인증 기관</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">바우처 사용 가능</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">다학제 팀 치료</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">체계적 프로그램</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Heart className="w-5 h-5 text-red-600" />
+                    개인 전문가 vs 기관
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="border-l-4 border-blue-500 pl-3">
+                    <p className="font-medium text-blue-700">개인 전문가</p>
+                    <p className="text-sm text-muted-foreground">1:1 맞춤 상담, 유연한 스케줄</p>
+                  </div>
+                  <div className="border-l-4 border-green-500 pl-3">
+                    <p className="font-medium text-green-700">제휴기관</p>
+                    <p className="text-sm text-muted-foreground">종합 프로그램, 다학제 접근</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
 
         {/* 구독 혜택 안내 */}
         <Card className="mt-12 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
@@ -771,7 +878,7 @@ const ExpertHiring = () => {
                 <Shield className="w-8 h-8 text-primary" />
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-brand-gradient mb-4">안전하고 신뢰할 수 있는 전문가 고용</h3>
+            <h3 className="text-2xl font-bold text-brand-gradient mb-4">안전하고 신뢰할 수 있는 전문가 매칭</h3>
             <div className="grid md:grid-cols-3 gap-6 mb-6">
               <div className="flex items-center gap-3">
                 <CheckCircle className="w-5 h-5 text-green-500" />

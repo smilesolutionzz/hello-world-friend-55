@@ -4,60 +4,78 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle, Brain, Heart, Eye, Users } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
-interface AutismScreeningResultProps {
+interface DevelopmentalScreeningResultProps {
   results: {
     answers: number[];
     total: number;
     average: number;
     ageGroup: string;
-    riskLevel: string;
-    concernAreas: string[];
+    concernLevel: string;
+    strengthAreas: string[];
+    challengeAreas: string[];
   };
   onBack: () => void;
   onNewTest: () => void;
 }
 
-const AutismScreeningResult = ({ results, onBack, onNewTest }: AutismScreeningResultProps) => {
-  const { total, ageGroup, riskLevel, concernAreas } = results;
+const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: DevelopmentalScreeningResultProps) => {
+  const { total, ageGroup, concernLevel, strengthAreas, challengeAreas } = results;
 
-  const getRiskLevelColor = (level: string) => {
+  const getConcernLevelColor = (level: string) => {
     switch (level) {
-      case "낮은 위험도": return "text-green-600 bg-green-50";
-      case "중간 위험도": return "text-yellow-600 bg-yellow-50";
-      case "높은 위험도": return "text-red-600 bg-red-50";
+      case "일반적 발달":
+      case "일반적 특성": return "text-green-600 bg-green-50";
+      case "관찰 권장":
+      case "개인적 특성": return "text-blue-600 bg-blue-50";
+      case "지원 필요":
+      case "지원 고려": return "text-yellow-600 bg-yellow-50";
+      case "전문가 상담 권장":
+      case "전문 상담 권장": return "text-orange-600 bg-orange-50";
       default: return "text-gray-600 bg-gray-50";
     }
   };
 
-  const getRiskLevelIcon = (level: string) => {
+  const getConcernLevelIcon = (level: string) => {
     switch (level) {
-      case "낮은 위험도": return <CheckCircle className="w-5 h-5 text-green-600" />;
-      case "중간 위험도": return <AlertTriangle className="w-5 h-5 text-yellow-600" />;
-      case "높은 위험도": return <AlertTriangle className="w-5 h-5 text-red-600" />;
+      case "일반적 발달":
+      case "일반적 특성": return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case "관찰 권장":
+      case "개인적 특성": return <Brain className="w-5 h-5 text-blue-600" />;
+      case "지원 필요":
+      case "지원 고려": return <Eye className="w-5 h-5 text-yellow-600" />;
+      case "전문가 상담 권장":
+      case "전문 상담 권장": return <AlertTriangle className="w-5 h-5 text-orange-600" />;
       default: return <Brain className="w-5 h-5 text-gray-600" />;
     }
   };
 
   const getRecommendations = () => {
-    if (riskLevel === "높은 위험도") {
+    if (concernLevel === "전문가 상담 권장" || concernLevel === "전문 상담 권장") {
       return [
-        "소아정신건강의학과 또는 발달센터에서 정밀 진단을 받으시기 바랍니다",
-        "조기 발견과 중재가 중요하므로 빠른 시일 내 전문가 상담을 권장합니다",
-        "행동분석치료(ABA), 언어치료, 작업치료 등을 고려해볼 수 있습니다",
-        "가족 구성원들도 자폐스펙트럼에 대한 이해를 높이시기 바랍니다"
+        "발달센터나 전문기관에서 정밀 평가를 받으시기 바랍니다",
+        "개별 맞춤형 지원 계획 수립이 필요합니다",
+        "행동지원, 사회성 향상, 감각통합 등 다각적 접근을 고려해보세요",
+        "가족과 주변 환경의 이해와 지원이 중요합니다"
       ];
-    } else if (riskLevel === "중간 위험도") {
+    } else if (concernLevel === "지원 필요" || concernLevel === "지원 고려") {
       return [
-        "발달센터나 소아청소년과에서 추가 관찰과 평가를 받아보시기 바랍니다",
-        "사회적 의사소통 기술 향상을 위한 놀이치료나 사회성 그룹을 고려해보세요",
+        "발달센터에서 추가 관찰과 평가를 받아보시기 바랍니다",
+        "사회적 기술 향상을 위한 그룹 활동이나 프로그램 참여를 고려해보세요",
         "정기적인 발달 모니터링을 통해 변화를 지켜보시기 바랍니다",
-        "환경 조성과 일상 루틴 구조화가 도움이 될 수 있습니다"
+        "환경 조성과 일상 루틴의 구조화가 도움이 될 수 있습니다"
+      ];
+    } else if (concernLevel === "관찰 권장" || concernLevel === "개인적 특성") {
+      return [
+        "현재 특별한 문제는 없으나 지속적인 관심이 필요합니다",
+        "개인의 고유한 특성으로 이해하고 강점을 활용해보세요",
+        "필요시 발달 전문가와의 상담을 고려해보시기 바랍니다",
+        "정기적인 발달 점검을 통해 성장 과정을 확인하세요"
       ];
     } else {
       return [
-        "현재 자폐스펙트럼 관련 주요 특성은 관찰되지 않습니다",
-        "그러나 다른 발달 영역에 대한 지속적인 관심이 필요합니다",
-        "정기적인 발달 검진을 통해 전반적인 성장을 확인하시기 바랍니다",
+        "현재 발달 특성이 일반적인 범위 내에 있습니다",
+        "개인의 강점을 더욱 발전시킬 수 있는 기회를 제공해보세요",
+        "다양한 경험을 통해 전반적인 성장을 지원해주세요",
         "궁금한 점이 있으시면 언제든 발달 전문가와 상담해보세요"
       ];
     }
@@ -76,8 +94,8 @@ const AutismScreeningResult = ({ results, onBack, onNewTest }: AutismScreeningRe
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            {getRiskLevelIcon(riskLevel)}
-            자폐스펙트럼 선별검사 결과
+            {getConcernLevelIcon(concernLevel)}
+            AIH 발달특성 선별체크 결과
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -87,8 +105,8 @@ const AutismScreeningResult = ({ results, onBack, onNewTest }: AutismScreeningRe
               <div className="text-sm text-muted-foreground">총점</div>
             </div>
             <div className="text-center">
-              <Badge className={getRiskLevelColor(riskLevel)}>{riskLevel}</Badge>
-              <div className="text-sm text-muted-foreground mt-1">위험도 수준</div>
+              <Badge className={getConcernLevelColor(concernLevel)}>{concernLevel}</Badge>
+              <div className="text-sm text-muted-foreground mt-1">평가 수준</div>
             </div>
             <div className="text-center">
               <div className="text-lg font-semibold">{ageGroup}</div>
@@ -96,12 +114,23 @@ const AutismScreeningResult = ({ results, onBack, onNewTest }: AutismScreeningRe
             </div>
           </div>
 
-          {concernAreas.length > 0 && (
+          {strengthAreas.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold mb-2">관심 영역:</h4>
+              <h4 className="text-sm font-semibold mb-2 text-green-700">강점 영역:</h4>
               <div className="flex flex-wrap gap-2">
-                {concernAreas.map((area, index) => (
-                  <Badge key={index} variant="secondary">{area}</Badge>
+                {strengthAreas.map((area, index) => (
+                  <Badge key={index} variant="secondary" className="bg-green-50 text-green-700">{area}</Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {challengeAreas.length > 0 && (
+            <div>
+              <h4 className="text-sm font-semibold mb-2 text-orange-700">지원 영역:</h4>
+              <div className="flex flex-wrap gap-2">
+                {challengeAreas.map((area, index) => (
+                  <Badge key={index} variant="secondary" className="bg-orange-50 text-orange-700">{area}</Badge>
                 ))}
               </div>
             </div>
@@ -122,23 +151,23 @@ const AutismScreeningResult = ({ results, onBack, onNewTest }: AutismScreeningRe
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-medium">사회적 의사소통</span>
+                <span className="text-sm font-medium">사회적 특성</span>
               </div>
-              <Progress value={Math.min((results.answers.slice(0, 5).reduce((a, b) => a + b, 0) / 5) * 100, 100)} />
+              <Progress value={Math.min((results.answers.slice(0, 4).reduce((a, b) => a + b, 0) / 4) * 100, 100)} />
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Heart className="w-4 h-4 text-purple-600" />
-                <span className="text-sm font-medium">제한적 반복행동</span>
+                <span className="text-sm font-medium">환경 적응성</span>
               </div>
-              <Progress value={Math.min((results.answers.slice(5, 10).reduce((a, b) => a + b, 0) / 5) * 100, 100)} />
+              <Progress value={Math.min((results.answers.slice(4, 8).reduce((a, b) => a + b, 0) / 4) * 100, 100)} />
             </div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Eye className="w-4 h-4 text-green-600" />
-                <span className="text-sm font-medium">감각처리</span>
+                <span className="text-sm font-medium">개별 특성</span>
               </div>
-              <Progress value={Math.min((results.answers.slice(10).reduce((a, b) => a + b, 0) / (results.answers.length - 10)) * 100, 100)} />
+              <Progress value={Math.min((results.answers.slice(8).reduce((a, b) => a + b, 0) / (results.answers.length - 8)) * 100, 100)} />
             </div>
           </div>
         </CardContent>
@@ -147,7 +176,7 @@ const AutismScreeningResult = ({ results, onBack, onNewTest }: AutismScreeningRe
       {/* 권장사항 */}
       <Card>
         <CardHeader>
-          <CardTitle>전문가 권장사항</CardTitle>
+          <CardTitle>발달 지원 권장사항</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="space-y-2">
@@ -162,7 +191,7 @@ const AutismScreeningResult = ({ results, onBack, onNewTest }: AutismScreeningRe
       </Card>
 
       {/* 발달센터 정보 */}
-      {(riskLevel === "높은 위험도" || riskLevel === "중간 위험도") && (
+      {(concernLevel === "전문가 상담 권장" || concernLevel === "전문 상담 권장" || concernLevel === "지원 필요" || concernLevel === "지원 고려") && (
         <Card>
           <CardHeader>
             <CardTitle>발달센터 연계 정보</CardTitle>
@@ -179,8 +208,8 @@ const AutismScreeningResult = ({ results, onBack, onNewTest }: AutismScreeningRe
             </div>
             <div className="mt-4 p-4 bg-blue-50 rounded-lg">
               <p className="text-sm text-blue-800">
-                💡 <strong>조기 중재의 중요성:</strong> 자폐스펙트럼은 조기 발견과 적절한 중재를 통해 
-                사회적 의사소통 능력과 적응 기능을 크게 향상시킬 수 있습니다.
+                💡 <strong>개별화 지원의 중요성:</strong> 모든 개인은 고유한 특성과 강점을 가지고 있습니다. 
+                적절한 지원과 환경 조성을 통해 개인의 잠재력을 최대한 발휘할 수 있습니다.
               </p>
             </div>
           </CardContent>
@@ -200,4 +229,4 @@ const AutismScreeningResult = ({ results, onBack, onNewTest }: AutismScreeningRe
   );
 };
 
-export default AutismScreeningResult;
+export default DevelopmentalScreeningResult;

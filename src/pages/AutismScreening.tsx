@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import AutismScreeningForm from '@/components/assessment/AutismScreeningForm';
-import AutismScreeningResult from '@/components/assessment/AutismScreeningResult';
+import DevelopmentalScreeningForm from '@/components/assessment/AutismScreeningForm';
+import DevelopmentalScreeningResult from '@/components/assessment/AutismScreeningResult';
 import AgeSelector from '@/components/assessment/AgeSelector';
 
-const AutismScreening = () => {
+const DevelopmentalScreening = () => {
   const [currentStep, setCurrentStep] = useState<'age-select' | 'screening' | 'result'>('age-select');
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
   const [ageGroup, setAgeGroup] = useState<'child' | 'adult'>('child');
@@ -38,11 +38,11 @@ const AutismScreening = () => {
           <div className="text-center space-y-8">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold text-gray-900">
-                자폐스펙트럼 선별검사
+                AIH 발달특성 선별체크
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                발달센터 전문가들이 사용하는 검증된 도구로 자폐스펙트럼 특성을 선별검사합니다.
-                조기 발견을 통한 적절한 지원이 가능합니다.
+                AIH에서 독자 개발한 발달특성 선별도구로 개인의 고유한 특성을 파악하고
+                발달센터와의 연계를 통한 맞춤형 지원 방향을 제시합니다.
               </p>
             </div>
             
@@ -51,11 +51,12 @@ const AutismScreening = () => {
                 🏥 발달센터 특화 기능
               </h3>
               <ul className="text-sm text-blue-800 space-y-2 text-left">
-                <li>• M-CHAT-R 기반 아동용 선별검사</li>
-                <li>• AQ-10 기반 성인용 선별검사</li>
-                <li>• 사회적 의사소통 및 제한적 반복행동 평가</li>
-                <li>• 발달센터 연계 정보 제공</li>
-                <li>• 조기 중재를 위한 전문가 권장사항</li>
+                <li>• AIH 독자 개발 발달특성 선별도구</li>
+                <li>• 개인의 강점과 지원 영역 분석</li>
+                <li>• 사회적 특성 및 환경 적응성 평가</li>
+                <li>• 발달센터 연계 맞춤 정보 제공</li>
+                <li>• 개별화 지원 방향 제시</li>
+                <li>• 전문적이면서도 편안한 접근</li>
               </ul>
             </div>
             
@@ -82,7 +83,7 @@ const AutismScreening = () => {
         )}
 
         {currentStep === 'screening' && (
-          <AutismScreeningForm
+          <DevelopmentalScreeningForm
             ageGroup={ageGroup}
             onComplete={handleScreeningComplete}
             onBack={handleBackToAgeSelect}
@@ -90,7 +91,7 @@ const AutismScreening = () => {
         )}
 
         {currentStep === 'result' && screeningResults && (
-          <AutismScreeningResult
+          <DevelopmentalScreeningResult
             results={screeningResults}
             onBack={handleBackToAgeSelect}
             onNewTest={handleNewTest}
@@ -101,4 +102,4 @@ const AutismScreening = () => {
   );
 };
 
-export default AutismScreening;
+export default DevelopmentalScreening;

@@ -5,19 +5,19 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft } from "lucide-react";
-import { autismScreeningQuestions } from "@/data/assessmentQuestions";
+import { developmentalScreeningQuestions } from "@/data/assessmentQuestions";
 import TokenGate from "@/components/TokenGate";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { useTokens } from "@/hooks/useTokens";
 
-interface AutismScreeningFormProps {
+interface DevelopmentalScreeningFormProps {
   ageGroup: 'child' | 'adult';
-  onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string, riskLevel: string, concernAreas: string[]}) => void;
+  onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string, concernLevel: string, strengthAreas: string[], challengeAreas: string[]}) => void;
   onBack: () => void;
 }
 
-const AutismScreeningForm = ({ ageGroup, onComplete, onBack }: AutismScreeningFormProps) => {
-  const questions = ageGroup === 'child' ? autismScreeningQuestions.child : autismScreeningQuestions.adult;
+const DevelopmentalScreeningForm = ({ ageGroup, onComplete, onBack }: DevelopmentalScreeningFormProps) => {
+  const questions = ageGroup === 'child' ? developmentalScreeningQuestions.child : developmentalScreeningQuestions.adult;
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(0));
   const [hasStarted, setHasStarted] = useState(false);
@@ -32,7 +32,7 @@ const AutismScreeningForm = ({ ageGroup, onComplete, onBack }: AutismScreeningFo
   };
 
   const handleStartTest = async () => {
-    const success = await consumeTokens(TOKEN_COSTS.AUTISM_SCREENING);
+    const success = await consumeTokens(TOKEN_COSTS.DEVELOPMENTAL_SCREENING);
     if (success) {
       setHasStarted(true);
     }
@@ -42,54 +42,70 @@ const AutismScreeningForm = ({ ageGroup, onComplete, onBack }: AutismScreeningFo
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 테스트 완료 및 결과 분석
+      // AIH 발달특성 선별체크 결과 분석
       const total = answers.reduce((sum, answer) => sum + answer, 0);
       const average = Math.round((total / answers.length) * 10) / 10;
       
-      // 위험도 수준 평가
-      let riskLevel = "";
-      let concernAreas: string[] = [];
+      // 발달특성 수준 평가 (창작형 기준)
+      let concernLevel = "";
+      let strengthAreas: string[] = [];
+      let challengeAreas: string[] = [];
       
       if (ageGroup === 'child') {
-        // 아동용 평가 기준 (M-CHAT-R 기반)
-        if (total <= 2) {
-          riskLevel = "낮은 위험도";
-        } else if (total <= 7) {
-          riskLevel = "중간 위험도";
-          concernAreas.push("추가 관찰 필요");
+        // 아동용 평가 기준
+        if (total <= 3) {
+          concernLevel = "일반적 발달";
+          strengthAreas = ["사회적 상호작용", "환경 적응"];
+        } else if (total <= 6) {
+          concernLevel = "관찰 권장";
+          strengthAreas.push("창의적 사고");
+          challengeAreas.push("사회적 상호작용 지원");
+        } else if (total <= 9) {
+          concernLevel = "지원 필요";
+          challengeAreas.push("사회성 개발", "환경 적응");
         } else {
-          riskLevel = "높은 위험도";
-          concernAreas.push("전문가 상담 권장");
+          concernLevel = "전문가 상담 권장";
+          challengeAreas.push("전반적 발달 지원", "개별화 교육");
         }
       } else {
-        // 성인용 평가 기준 (AQ-10 기반)
-        if (total <= 3) {
-          riskLevel = "낮은 위험도";
-        } else if (total <= 6) {
-          riskLevel = "중간 위험도";
-          concernAreas.push("자세한 평가 고려");
+        // 성인용 평가 기준
+        if (total <= 2) {
+          concernLevel = "일반적 특성";
+          strengthAreas = ["사회적 적응", "유연한 사고"];
+        } else if (total <= 4) {
+          concernLevel = "개인적 특성";
+          strengthAreas.push("체계적 사고");
+          challengeAreas.push("사회적 기술 향상");
+        } else if (total <= 7) {
+          concernLevel = "지원 고려";
+          challengeAreas.push("사회적 상황 적응", "감각 조절");
         } else {
-          riskLevel = "높은 위험도";
-          concernAreas.push("전문가 진단 권장");
+          concernLevel = "전문 상담 권장";
+          challengeAreas.push("포괄적 지원", "개인별 전략");
         }
       }
 
-      // 영역별 분석
-      const socialCommunicationScore = answers.slice(0, Math.floor(questions.length / 3)).reduce((a, b) => a + b, 0);
-      const repetitiveBehaviorScore = answers.slice(Math.floor(questions.length / 3), Math.floor(questions.length * 2 / 3)).reduce((a, b) => a + b, 0);
-      const sensoryScore = answers.slice(Math.floor(questions.length * 2 / 3)).reduce((a, b) => a + b, 0);
+      // 영역별 세부 분석
+      const socialScore = answers.slice(0, 4).reduce((a, b) => a + b, 0);
+      const adaptabilityScore = answers.slice(4, 8).reduce((a, b) => a + b, 0);
+      const sensoryScore = answers.slice(8).reduce((a, b) => a + b, 0);
 
-      if (socialCommunicationScore >= 3) concernAreas.push("사회적 의사소통");
-      if (repetitiveBehaviorScore >= 3) concernAreas.push("제한적 반복행동");
-      if (sensoryScore >= 3) concernAreas.push("감각처리");
+      if (socialScore >= 3) challengeAreas.push("사회적 의사소통");
+      if (adaptabilityScore >= 3) challengeAreas.push("환경 적응성");
+      if (sensoryScore >= 2) challengeAreas.push("감각 처리");
+
+      if (socialScore <= 1) strengthAreas.push("사회적 소통");
+      if (adaptabilityScore <= 1) strengthAreas.push("적응 능력");
+      if (sensoryScore <= 1) strengthAreas.push("감각 통합");
 
       onComplete({
         answers,
         total,
         average,
         ageGroup: ageGroup === 'child' ? '아동청소년' : '성인',
-        riskLevel,
-        concernAreas
+        concernLevel,
+        strengthAreas,
+        challengeAreas
       });
     }
   };
@@ -107,18 +123,19 @@ const AutismScreeningForm = ({ ageGroup, onComplete, onBack }: AutismScreeningFo
   if (!hasStarted) {
     return (
       <TokenGate
-        tokensRequired={TOKEN_COSTS.AUTISM_SCREENING}
-        featureName="자폐스펙트럼 선별검사"
+        tokensRequired={TOKEN_COSTS.DEVELOPMENTAL_SCREENING}
+        featureName="AIH 발달특성 선별체크"
         onProceed={handleStartTest}
       >
         <div className="space-y-4 text-center">
-          <div className="text-lg font-semibold">자폐스펙트럼 선별검사 특징</div>
+          <div className="text-lg font-semibold">AIH 발달특성 선별체크 특징</div>
           <ul className="space-y-2 text-sm text-muted-foreground max-w-md mx-auto">
-            <li>• {ageGroup === 'child' ? 'M-CHAT-R 기반 아동용' : 'AQ-10 기반 성인용'} 검사</li>
+            <li>• {ageGroup === 'child' ? '아동청소년용' : '성인용'} 맞춤 문항</li>
             <li>• 총 {questions.length}문항, 약 5분 소요</li>
-            <li>• 사회적 의사소통 및 반복행동 평가</li>
+            <li>• 사회적 특성 및 개인적 강점 분석</li>
             <li>• 발달센터 연계 정보 제공</li>
-            <li>• 조기 발견을 위한 선별 도구</li>
+            <li>• 개별 맞춤 지원 방향 제시</li>
+            <li>• AIH 독자 개발 선별도구</li>
           </ul>
         </div>
       </TokenGate>
@@ -201,4 +218,4 @@ const AutismScreeningForm = ({ ageGroup, onComplete, onBack }: AutismScreeningFo
   );
 };
 
-export default AutismScreeningForm;
+export default DevelopmentalScreeningForm;

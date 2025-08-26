@@ -18,6 +18,7 @@ Deno.serve(async (req) => {
 
   try {
     const { iepId } = await req.json()
+    console.log('PDF 생성 요청:', { iepId })
 
     const authHeader = req.headers.get('Authorization')!
     const token = authHeader.replace('Bearer ', '')
@@ -36,8 +37,11 @@ Deno.serve(async (req) => {
       .single()
 
     if (error || !iepData) {
+      console.error('IEP 조회 오류:', error)
       throw new Error('IEP를 찾을 수 없습니다')
     }
+    
+    console.log('IEP 데이터 조회 성공:', { studentName: iepData.student_name })
 
     // HTML PDF 템플릿 생성
     const htmlContent = `
@@ -224,7 +228,7 @@ Deno.serve(async (req) => {
       ${iepData.current_performance.strengthsAndNeeds ? `
         <div class="content-box">
           <div class="detail-label">강점 및 지원 필요 영역:</div>
-          <div class="detail-value">${iepData.current_performance.strengthsAndNeeds}</div>
+          <div class="detail-value">${Array.isArray(iepData.current_performance.strengthsAndNeeds) ? iepData.current_performance.strengthsAndNeeds.join(', ') : iepData.current_performance.strengthsAndNeeds}</div>
         </div>
       ` : ''}
       ${iepData.current_performance.communicationSkills ? `
@@ -251,18 +255,18 @@ Deno.serve(async (req) => {
         <div class="goal-item">
           <div class="goal-header">목표 ${index + 1}</div>
           ${goal.domain ? `<div class="goal-domain">${goal.domain}</div>` : ''}
-          ${goal.goal ? `
-            <div class="detail-row">
-              <span class="detail-label">목표:</span>
-              <span class="detail-value">${goal.goal}</span>
-            </div>
-          ` : ''}
-          ${goal.measurableCriteria ? `
-            <div class="detail-row">
-              <span class="detail-label">측정 기준:</span>
-              <span class="detail-value">${goal.measurableCriteria}</span>
-            </div>
-          ` : ''}
+           ${goal.goal ? `
+             <div class="detail-row">
+               <span class="detail-label">목표:</span>
+               <span class="detail-value">${goal.goal.replace(/'/g, '&#39;').replace(/"/g, '&#34;')}</span>
+             </div>
+           ` : ''}
+           ${goal.measurableCriteria ? `
+             <div class="detail-row">
+               <span class="detail-label">측정 기준:</span>
+               <span class="detail-value">${goal.measurableCriteria.replace(/'/g, '&#39;').replace(/"/g, '&#34;')}</span>
+             </div>
+           ` : ''}
           ${goal.timeframe ? `
             <div class="detail-row">
               <span class="detail-label">기간:</span>
@@ -319,6 +323,7 @@ Deno.serve(async (req) => {
 </body>
 </html>`
 
+    console.log('HTML 생성 완료, 응답 전송')
     return new Response(htmlContent, {
       headers: { 
         ...corsHeaders, 

@@ -302,36 +302,6 @@ const Navigation = () => {
       {/* Mobile Navigation */}
       {isMobile && (
         <div className="flex items-center gap-2">
-          {/* AI 상담 버튼 - 모바일 */}
-          <div className="relative">
-            {!isChatOpen ? (
-              <Button
-                onClick={() => setIsChatOpen(true)}
-                variant="outline"
-                size="sm"
-                className="bg-gradient-to-r from-purple-500 to-blue-500 
-                         hover:from-purple-600 hover:to-blue-600 text-white border-0 px-2"
-              >
-                <MessageCircle className="w-4 h-4" />
-              </Button>
-            ) : (
-              <div className="absolute top-12 right-0 z-50">
-                <div className="relative">
-                  <Button
-                    onClick={() => setIsChatOpen(false)}
-                    variant="outline"
-                    size="icon"
-                    className="absolute -top-2 -right-2 z-10 bg-white shadow-md rounded-full w-8 h-8"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                  <AIPlatformChat onClose={() => setIsChatOpen(false)} />
-                </div>
-              </div>
-            )}
-          </div>
-          
-          {/* 기존 모바일 메뉴 */}
           {/* Sign Up Button - only show if not logged in */}
           {!user && (
             <Button 
@@ -403,6 +373,36 @@ const Navigation = () => {
                     <BookOpen className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">관찰일지</span>
                   </Button>
+                  
+                  {/* AI 상담 버튼 - 모바일 햄버거 메뉴 내부 */}
+                  <div className="relative">
+                    {!isChatOpen ? (
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-left h-12 px-4 rounded-xl 
+                                 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 
+                                 text-white transition-colors"
+                        onClick={() => setIsChatOpen(true)}
+                      >
+                        <MessageCircle className="mr-3 h-5 w-5 shrink-0" />
+                        <span className="font-medium">질문 있나요?</span>
+                      </Button>
+                    ) : (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                        <div className="relative">
+                          <Button
+                            onClick={() => setIsChatOpen(false)}
+                            variant="outline"
+                            size="icon"
+                            className="absolute -top-2 -right-2 z-10 bg-white shadow-md rounded-full w-8 h-8"
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                          <AIPlatformChat onClose={() => setIsChatOpen(false)} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   
                   <Button
                     variant="ghost"

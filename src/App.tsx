@@ -53,6 +53,7 @@ import ComprehensivePackage from "./pages/ComprehensivePackage";
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTestResult from "./components/assessment/FunTestResult";
 import HanMedicineTest from "./pages/HanMedicineTest";
+import FloatingChatCTA from "./components/FloatingChatCTA";
 import { SessionManager } from "./components/SessionManager";
 
 const queryClient = new QueryClient();
@@ -113,8 +114,9 @@ const App = () => (
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+          <FloatingChatCTA />
+        </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

@@ -65,7 +65,7 @@ const HanMedicineTest = () => {
         {/* 헤더 */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            체질체크 - AIH 체질분석 센터
+            체질분석 - AIH 체질분석 센터
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             전문 AI가 당신의 체질, 정신건강, 성격을 정확히 분석하여 맞춤형 솔루션을 제공합니다

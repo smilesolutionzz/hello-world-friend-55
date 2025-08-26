@@ -35,12 +35,12 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   { icon: Home, label: '홈', path: '/' },
   { icon: TrendingUp, label: '3분테스트', path: '/assessment', requiresAuth: true },
-  { icon: Brain, label: '체질체크', path: '/han-medicine-test', requiresAuth: false },
   { icon: MessageCircle, label: '시크릿톡', path: '/ai-counselor', requiresAuth: true },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },
   { icon: FileText, label: '프리미엄테스트', path: '/premium-assessment', requiresAuth: true },
   { icon: Users, label: '가족관리', path: '/family', requiresAuth: true },
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: true },
+  { icon: Brain, label: '체질분석', path: '/han-medicine-test', requiresAuth: false },
   { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: true },
 ];
 

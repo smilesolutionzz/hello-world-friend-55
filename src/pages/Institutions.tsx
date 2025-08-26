@@ -113,7 +113,7 @@ export default function Institutions() {
     // 특정 기관은 외부 링크로 연결
     const institution = institutions.find(inst => inst.id === institutionId);
     if (institution) {
-      if (institution.name.includes('한정미소발달센터') || institution.name.includes('한점미소발달센터')) {
+      if (institution.name.includes('한점미소발달센터')) {
         window.open('https://naver.me/FgTH9V07', '_blank');
         return;
       }

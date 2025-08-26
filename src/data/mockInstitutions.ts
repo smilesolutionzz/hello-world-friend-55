@@ -1,7 +1,7 @@
 export const mockInstitutions = [
   {
     id: '1',
-    name: '한정미소발달센터 남양주점',
+    name: '한점미소발달센터 남양주점',
     institution_type: 'development_center',
     address: '경기도 남양주시 화도읍 경춘로 2110',
     phone: '031-1234-5678',
@@ -38,7 +38,7 @@ export const mockInstitutions = [
   },
   {
     id: '2',
-    name: '한정미소발달센터 부천점',
+    name: '한점미소발달센터 부천점',
     institution_type: 'development_center',
     address: '경기도 부천시 원미구 길주로 210',
     phone: '032-9876-5432',

@@ -211,156 +211,6 @@ const mockExperts: Expert[] = [
     location: '서울 서초구',
     isOnline: true,
     responseTime: '평균 3시간 이내'
-  },
-  {
-    id: '6',
-    name: '이수석',
-    specialty: ['아동발달', '심리상담', '행동분석'],
-    credentials: ['발달재활서비스 제공기관 대표', '아동심리 전문가'],
-    rating: 4.9,
-    reviews: 312,
-    experience: '18년',
-    availability: '평일 8-18시',
-    monthlyPrice: 180000,
-    hourlyPrice: 45000,
-    image: '/api/placeholder/150/150',
-    description: '18년간 아동발달 분야에서 센터를 운영하며 종합적인 발달지원을 제공합니다.',
-    languages: ['한국어', '영어'],
-    consultationTypes: ['화상상담', '방문상담', '전화상담'],
-    monthlyServices: [
-      '월 2회 종합 발달 상담',
-      '개별 치료 계획 수립',
-      '다학제 팀 케어 코디네이션',
-      '발달 평가 및 진단서 작성'
-    ],
-    portfolio: {
-      cases: 850,
-      successRate: 95,
-      specializations: ['발달센터 운영', '종합발달지원', '팀케어']
-    },
-    location: '서울 강동구',
-    isOnline: true,
-    responseTime: '평균 1시간 이내'
-  },
-  {
-    id: '7',
-    name: '조현주',
-    specialty: ['감각통합', '작업치료'],
-    credentials: ['작업치료사 면허', '감각통합 전문인증'],
-    rating: 4.7,
-    reviews: 145,
-    experience: '9년',
-    availability: '평일 10-18시',
-    monthlyPrice: 100000,
-    hourlyPrice: 25000,
-    image: '/api/placeholder/150/150',
-    description: '감각통합 어려움을 겪는 아동들의 일상생활 기능 향상을 돕습니다.',
-    languages: ['한국어'],
-    consultationTypes: ['방문상담'],
-    monthlyServices: [
-      '주 2회 감각통합치료 (월 8회)',
-      '작업치료 및 소근육 발달',
-      '가정용 감각도구 추천',
-      '부모교육 및 가정지도'
-    ],
-    portfolio: {
-      cases: 290,
-      successRate: 89,
-      specializations: ['감각통합', '작업치료', '소근육발달']
-    },
-    location: '경기 고양시',
-    isOnline: false,
-    responseTime: '평균 6시간 이내'
-  },
-  {
-    id: '8',
-    name: '백경열',
-    specialty: ['특수교육', '인지학습'],
-    credentials: ['특수교육 정교사'],
-    rating: 4.8,
-    reviews: 167,
-    experience: '11년',
-    availability: '평일 9-17시',
-    monthlyPrice: 90000,
-    hourlyPrice: 23000,
-    image: '/api/placeholder/150/150',
-    description: '발달장애 아동의 개별화 교육 프로그램을 통해 학습능력을 향상시킵니다.',
-    languages: ['한국어'],
-    consultationTypes: ['화상상담', '방문상담'],
-    monthlyServices: [
-      '주 2회 개별화 교육 (월 8회)',
-      '인지학습 프로그램',
-      '사회성 기술 훈련',
-      '교육계획 수립 및 평가'
-    ],
-    portfolio: {
-      cases: 380,
-      successRate: 87,
-      specializations: ['특수교육', '인지학습', '사회성훈련']
-    },
-    location: '서울 노원구',
-    isOnline: true,
-    responseTime: '평균 4시간 이내'
-  },
-  {
-    id: '9',
-    name: '김태현',
-    specialty: ['놀이치료', '심리상담'],
-    credentials: ['놀이치료 전문가', '아동상담사'],
-    rating: 4.6,
-    reviews: 98,
-    experience: '7년',
-    availability: '평일 15-20시',
-    monthlyPrice: 80000,
-    hourlyPrice: 20000,
-    image: '/api/placeholder/150/150',
-    description: '놀이를 통해 아동의 정서적 문제와 행동 문제를 치료합니다.',
-    languages: ['한국어'],
-    consultationTypes: ['방문상담'],
-    monthlyServices: [
-      '주 1회 놀이치료 (월 4회)',
-      '부모-아동 놀이 상담',
-      '정서조절 프로그램',
-      '놀이평가 및 보고서'
-    ],
-    portfolio: {
-      cases: 150,
-      successRate: 84,
-      specializations: ['놀이치료', '정서조절', '모래놀이']
-    },
-    location: '서울 용산구',
-    isOnline: false,
-    responseTime: '평균 5시간 이내'
-  },
-  {
-    id: '10',
-    name: '이하연',
-    specialty: ['가족상담', '심리상담'],
-    credentials: ['가족상담전문가 1급', '상담심리사'],
-    rating: 4.9,
-    reviews: 234,
-    experience: '13년',
-    availability: '평일 10-19시, 주말 오전',
-    monthlyPrice: 125000,
-    hourlyPrice: 32000,
-    image: '/api/placeholder/150/150',
-    description: '가족 시스템 전체의 건강한 소통과 관계 개선을 지원합니다.',
-    languages: ['한국어'],
-    consultationTypes: ['화상상담', '방문상담'],
-    monthlyServices: [
-      '월 2회 가족상담 (월 2회)',
-      '부부관계 개선 상담',
-      '자녀양육 코칭',
-      '가족갈등 중재 서비스'
-    ],
-    portfolio: {
-      cases: 520,
-      successRate: 93,
-      specializations: ['가족치료', '부모교육', '관계개선']
-    },
-    location: '경기 분당구',
-    isOnline: true,
-    responseTime: '평균 2시간 이내'
   }
 ];
 
@@ -380,7 +230,7 @@ const ExpertHiring = () => {
     setIsLoading(true);
     try {
       // 사용자의 최근 검사 결과를 기반으로 AI 추천
-        const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: assessments } = await supabase
           .from('assessment_enhanced_analysis')
@@ -498,56 +348,49 @@ const ExpertHiring = () => {
             
             <div className="space-y-4">
               <h2 className="text-3xl font-bold text-foreground">
-                🤖 <span className="text-blue-600 font-extrabold">AI 맞춤 추천</span> × 
-                <span className="text-purple-600 font-extrabold"> 개인전문가</span> × 
-                <span className="text-green-600 font-extrabold"> 제휴기관</span>
+                🤖 AI 맞춤 추천 × 🧑‍⚕️ 개인전문가 × 🏥 제휴기관
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                 개인전문가부터 제휴기관까지 당신에게 최적의 선택지를 제공합니다
               </p>
               
-              <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
-                <Badge className="bg-green-100 text-green-700 hover:bg-green-200 px-4 py-2">
-                  👨‍⚕️ 개인전문가
+              <div className="flex flex-wrap justify-center gap-3 mt-6">
+                <Badge variant="secondary" className="px-4 py-2 bg-green-100 text-green-700">
+                  📍 개인전문가
                 </Badge>
-                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2">
-                  🏢 제휴기관
+                <Badge variant="secondary" className="px-4 py-2 bg-blue-100 text-blue-700">
+                  🏥 제휴기관
                 </Badge>
-                <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-200 px-4 py-2">
-                  🎯 AI 맞춤매칭
+                <Badge variant="secondary" className="px-4 py-2 bg-purple-100 text-purple-700">
+                  🎫 AI 맞춤 추천
                 </Badge>
               </div>
             </div>
           </div>
         </div>
 
-        {/* AI 추천 섹션 */}
+        {/* AI 추천 전문가 섹션 */}
         {aiRecommendations.length > 0 && (
-          <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200 mb-8">
+          <Card className="mb-8 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-purple-700">
-                <Sparkles className="w-6 h-6 animate-pulse-glow" />
+                <Sparkles className="w-6 h-6" />
                 AI 맞춤 추천 전문가
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {aiRecommendations.slice(0, 3).map((expert) => (
-                  <Card key={expert.id} className="bg-white/70 border-purple-300 hover-glow">
+                  <Card key={expert.id} className="overflow-hidden">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3 mb-3">
                         <Avatar className="w-12 h-12">
                           <AvatarImage src={expert.image} />
                           <AvatarFallback>{expert.name[0]}</AvatarFallback>
                         </Avatar>
-                         <div>
-                           <div className="flex items-center gap-2">
-                             <h4 className="font-semibold text-purple-800">{expert.name}</h4>
-                             <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-700">
-                               {expert.credentials[0]}
-                             </Badge>
-                           </div>
-                           <div className="flex items-center gap-1">
+                        <div>
+                          <h4 className="font-semibold">{expert.name}</h4>
+                          <div className="flex items-center gap-1">
                             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                             <span className="text-sm">{expert.rating}</span>
                             {expert.aiMatchScore && (
@@ -798,22 +641,19 @@ const ExpertHiring = () => {
                 </p>
                 <div className="grid md:grid-cols-3 gap-4 mb-6">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">50+</div>
-                    <p className="text-sm text-muted-foreground">제휴기관</p>
+                    <div className="text-3xl font-bold text-green-600">{mockInstitutions.length}+</div>
+                    <div className="text-sm text-green-700">제휴기관</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">200+</div>
-                    <p className="text-sm text-muted-foreground">소속전문가</p>
+                    <div className="text-3xl font-bold text-blue-600">200+</div>
+                    <div className="text-sm text-green-700">소속전문가</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600">95%</div>
-                    <p className="text-sm text-muted-foreground">만족도</p>
+                    <div className="text-3xl font-bold text-purple-600">95%</div>
+                    <div className="text-sm text-green-700">만족도</div>
                   </div>
                 </div>
-                <Button 
-                  onClick={() => navigate('/institutions')}
-                  className="w-full bg-green-600 hover:bg-green-700"
-                >
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
                   <Building className="w-4 h-4 mr-2" />
                   제휴기관 전체보기
                 </Button>
@@ -821,150 +661,159 @@ const ExpertHiring = () => {
             </Card>
 
             {/* 제휴기관 리스트 */}
-            <div className="space-y-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mockInstitutions.map((institution) => (
                 <Card key={institution.id} className="overflow-hidden hover-glow">
-                  <CardContent className="p-6">
-                    <div className="grid lg:grid-cols-12 gap-6">
-                      {/* 기관 기본 정보 */}
-                      <div className="lg:col-span-4">
-                        <div className="flex items-start gap-4">
-                          <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center">
-                            <Building className="w-10 h-10 text-primary" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <h3 className="text-xl font-bold text-brand-gradient">{institution.name}</h3>
-                              {institution.is_voucher_approved && (
-                                <Badge variant="secondary" className="bg-green-100 text-green-700">
-                                  <CheckCircle className="w-3 h-3 mr-1" />
-                                  바우처 승인
-                                </Badge>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-4 mb-3">
-                              <div className="flex items-center gap-1">
-                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                <span className="font-semibold">{institution.rating}</span>
-                                <span className="text-sm text-muted-foreground">({institution.review_count})</span>
-                              </div>
-                              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                <Users className="w-4 h-4" />
-                                {institution.total_experts}명 전문가
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2 mb-2">
-                              <MapPin className="w-4 h-4 text-muted-foreground" />
-                              <span className="text-sm">{institution.address}</span>
-                            </div>
-                            <div className="flex flex-wrap gap-1 mb-3">
-                              {institution.specializations?.map((spec, index) => (
-                                <Badge key={index} variant="outline" className="text-xs">
-                                  {spec}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="font-bold text-lg mb-1">{institution.name}</h3>
+                        <div className="flex items-center gap-1 mb-2">
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <span className="text-sm font-medium">{institution.rating}</span>
+                          <span className="text-xs text-muted-foreground">({institution.review_count})</span>
                         </div>
                       </div>
+                      <Badge variant="secondary" className="bg-green-100 text-green-700">
+                        {institution.institution_type}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-start gap-2">
+                      <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                      <span className="text-sm text-muted-foreground">{institution.address}</span>
+                    </div>
 
-                      {/* 바우처 정보 */}
-                      <div className="lg:col-span-3">
-                        <h4 className="font-semibold mb-3 text-primary">사용 가능한 바우처</h4>
-                        <div className="space-y-2">
-                          {institution.voucher_types?.length > 0 ? (
-                            institution.voucher_types.map((voucher, index) => (
-                              <div key={index} className="flex items-start gap-2">
-                                <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
-                                <span className="text-sm">{voucher}</span>
-                              </div>
-                            ))
-                          ) : (
-                            <div className="text-sm text-muted-foreground">
-                              바우처 미승인 기관
-                            </div>
-                          )}
-                        </div>
+                    {/* 전문분야 */}
+                    <div>
+                      <h4 className="text-sm font-medium mb-2 text-primary">전문분야</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {institution.specializations?.slice(0, 3).map((spec, index) => (
+                          <Badge key={index} variant="outline" className="text-xs">
+                            {spec}
+                          </Badge>
+                        ))}
+                        {institution.specializations && institution.specializations.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{institution.specializations.length - 3}
+                          </Badge>
+                        )}
                       </div>
+                    </div>
 
-                      {/* 제공 서비스 */}
-                      <div className="lg:col-span-3">
-                        <h4 className="font-semibold mb-3 text-primary">제공 서비스</h4>
-                        <div className="space-y-2">
-                          {institution.services_offered?.map((service, index) => (
-                            <div key={index} className="flex items-start gap-2">
-                              <Heart className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
-                              <span className="text-sm">{service}</span>
+                    {/* 사용가능한 바우처 */}
+                    {institution.voucher_types && institution.voucher_types.length > 0 && (
+                      <div>
+                        <h4 className="text-sm font-medium mb-2 text-secondary">사용가능한 바우처</h4>
+                        <div className="space-y-1">
+                          {institution.voucher_types.map((voucher, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <CheckCircle className="w-3 h-3 text-green-500" />
+                              <span className="text-xs text-green-700 font-medium">{voucher}</span>
                             </div>
                           ))}
                         </div>
-                        <div className="mt-3 pt-3 border-t">
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <Clock className="w-4 h-4" />
-                            운영시간: {institution.operating_hours?.monday || '평일 9-18시'}
-                          </div>
-                        </div>
                       </div>
+                    )}
 
-                      {/* 연락처 및 예약 */}
-                      <div className="lg:col-span-2">
-                        <div className="bg-muted/50 rounded-lg p-4 text-center">
-                          <div className="mb-4">
-                            <div className="text-lg font-bold text-primary mb-1">
-                              {institution.established_year}년 설립
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {institution.phone}
-                            </div>
+                    {/* 제공 서비스 */}
+                    <div>
+                      <h4 className="text-sm font-medium mb-2 text-primary">제공 서비스</h4>
+                      <div className="space-y-1">
+                        {institution.services_offered?.slice(0, 3).map((service, index) => (
+                          <div key={index} className="flex items-center gap-2">
+                            <CheckCircle className="w-3 h-3 text-blue-500" />
+                            <span className="text-xs">{service}</span>
                           </div>
-                          
-                          <div className="space-y-2 mb-4">
-                            {institution.facilities?.slice(0, 3).map((facility, index) => (
-                              <Badge key={index} variant="secondary" className="text-xs mr-1 mb-1">
-                                {facility}
-                              </Badge>
-                            ))}
+                        ))}
+                        {institution.services_offered && institution.services_offered.length > 3 && (
+                          <div className="text-xs text-muted-foreground">
+                            외 {institution.services_offered.length - 3}개 서비스
                           </div>
-                          
-                          <Button 
-                            onClick={() => navigate('/institutions')}
-                            className="w-full btn-brand mb-2"
-                          >
-                            <Building className="w-4 h-4 mr-2" />
-                            기관 상세보기
-                          </Button>
-                          
-                          {institution.parking_available && (
-                            <div className="text-xs text-green-600">
-                              주차 가능
-                            </div>
-                          )}
-                        </div>
+                        )}
                       </div>
                     </div>
 
-                    {/* 기관 설명 */}
-                    <div className="mt-4 pt-4 border-t">
-                      <p className="text-sm text-muted-foreground">{institution.description}</p>
+                    {/* 연락처 */}
+                    <div className="pt-3 border-t">
+                      {institution.phone && (
+                        <div className="flex items-center gap-2 mb-1">
+                          <MessageCircle className="w-3 h-3 text-muted-foreground" />
+                          <span className="text-xs">{institution.phone}</span>
+                        </div>
+                      )}
+                      {institution.operating_hours && (
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-3 h-3 text-muted-foreground" />
+                           <span className="text-xs text-muted-foreground">
+                             운영시간: {typeof institution.operating_hours === 'object' ? institution.operating_hours.monday || '평일 9-18시' : '평일 9-18시'}
+                           </span>
+                        </div>
+                      )}
                     </div>
+
+                    <Button variant="outline" className="w-full mt-4">
+                      기관 상세보기
+                    </Button>
                   </CardContent>
                 </Card>
               ))}
             </div>
+          </TabsContent>
+        </Tabs>
 
-            {/* 제휴기관 혜택 */}
-            <div className="grid md:grid-cols-2 gap-6 mt-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-blue-600" />
-                    기관 제휴 혜택
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
+        {/* 개인전문가 vs 기관 비교 */}
+        <Card className="mt-12">
+          <CardHeader>
+            <CardTitle className="text-center text-2xl">
+              <div className="flex items-center justify-center gap-3">
+                <Heart className="w-6 h-6 text-pink-500" />
+                개인전문가 vs 기관
+                <Building className="w-6 h-6 text-blue-500" />
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-pink-600">
+                  <UserCheck className="w-5 h-5" />
+                  개인 전문가
+                </h3>
+                <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-sm">정부 인증 기관</span>
+                    <span className="text-sm">1:1 맞춤형 상담</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">유연한 스케줄 조정</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">다양한 전문가 선택</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">지속적인 관계 형성</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-blue-600">
+                  <Building className="w-5 h-5" />
+                  제휴기관
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">종합적 팀케어 지원</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">다학제 협력 치료</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
@@ -972,68 +821,11 @@ const ExpertHiring = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-sm">다학제 팀 치료</span>
+                    <span className="text-sm">체계적 프로그램 운영</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-sm">체계적 프로그램</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Heart className="w-5 h-5 text-red-600" />
-                    개인 전문가 vs 기관
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="border-l-4 border-blue-500 pl-3">
-                    <p className="font-medium text-blue-700">개인 전문가</p>
-                    <p className="text-sm text-muted-foreground">1:1 맞춤 상담, 유연한 스케줄</p>
-                  </div>
-                  <div className="border-l-4 border-green-500 pl-3">
-                    <p className="font-medium text-green-700">제휴기관</p>
-                    <p className="text-sm text-muted-foreground">종합 프로그램, 다학제 접근</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        {/* 구독 혜택 안내 */}
-        <Card className="mt-12 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
-          <CardContent className="p-8 text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-                <Shield className="w-8 h-8 text-primary" />
+                </div>
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-brand-gradient mb-4">안전하고 신뢰할 수 있는 전문가 매칭</h3>
-            <div className="grid md:grid-cols-3 gap-6 mb-6">
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span>검증된 자격증 보유</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span>100% 환불 보장</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span>24시간 고객지원</span>
-              </div>
-            </div>
-            <Button 
-              size="lg"
-              className="btn-brand"
-              onClick={() => navigate('/token-subscription')}
-            >
-              <Sparkles className="w-5 h-5 mr-2" />
-              지금 구독하고 전문가와 상담하기
-            </Button>
           </CardContent>
         </Card>
       </div>

@@ -33,25 +33,25 @@ const ClientLogos = () => {
       description: "아동발달 전문센터"
     },
     { 
-      name: "꿈나무발달센터 강남점", 
+      name: "정관언어발달센터", 
       icon: Brain, 
       color: "text-indigo-600",
       bgColor: "bg-indigo-50",
-      description: "언어·인지발달 센터"
+      description: "언어발달 전문센터"
     },
     { 
-      name: "서울아동발달센터", 
+      name: "해오름아동발달센터", 
       icon: Sparkles, 
       color: "text-green-500",
       bgColor: "bg-green-50",
-      description: "통합발달 지원센터"
+      description: "아동발달 지원센터"
     },
     { 
-      name: "새싹발달센터 강남점", 
+      name: "정아동발달센터", 
       icon: Heart, 
       color: "text-pink-600",
       bgColor: "bg-pink-50",
-      description: "조기개입 발달센터"
+      description: "아동발달 전문센터"
     },
     { 
       name: "차의과대학교 발달장애센터", 
@@ -68,18 +68,18 @@ const ClientLogos = () => {
       description: "심리상담 전문센터"
     },
     { 
-      name: "해맑은발달센터", 
-      icon: Leaf, 
+      name: "해피아이티비", 
+      icon: Activity, 
       color: "text-emerald-500",
       bgColor: "bg-emerald-50",
-      description: "전문발달 지원센터"
+      description: "아동발달 전문기관"
     },
     { 
-      name: "튼튼발달센터 인천점", 
-      icon: Activity, 
+      name: "김정임아동발달", 
+      icon: Trophy, 
       color: "text-orange-500",
       bgColor: "bg-orange-50",
-      description: "체계적 발달치료센터"
+      description: "아동발달 치료센터"
     }
   ];
 

@@ -179,79 +179,77 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-2xl">
-      <Card className="border-2 border-primary/20">
-        <CardHeader className="text-center pb-4">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-8 h-8 text-primary flex items-center justify-center">
-              ⚊⚊
-            </div>
-            <CardTitle className="text-2xl bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-              사상체질 3분 진단
-            </CardTitle>
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader className="text-center">
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <div className="w-8 h-8 text-primary flex items-center justify-center">
+            ⚊⚊
           </div>
-          <p className="text-muted-foreground">
-            간단한 질문으로 당신의 사상체질을 진단합니다
-          </p>
+          <CardTitle className="text-2xl font-bold text-foreground">
+            사상체질 3분 진단
+          </CardTitle>
+        </div>
+        <CardDescription className="text-lg text-muted-foreground">
+          간단한 질문으로 당신의 사상체질을 진단합니다
+        </CardDescription>
+        
+        <div className="mt-6">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium">진행률</span>
+            <span className="text-sm text-muted-foreground">{currentQuestion + 1} / {questions.length}</span>
+          </div>
+          <Progress value={progress} className="h-2" />
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-6">
+        <div className="space-y-6">
+          <h3 className="text-xl font-semibold text-center text-foreground">
+            {currentQ.question}
+          </h3>
+
+          <RadioGroup
+            value={currentAnswer || ''}
+            onValueChange={(value) => handleAnswer(currentQ.id, value)}
+            className="space-y-3"
+          >
+            {currentQ.options.map((option) => (
+              <div 
+                key={option.value} 
+                className="flex items-center space-x-3 p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
+              >
+                <RadioGroupItem value={option.value} id={option.value} />
+                <Label 
+                  htmlFor={option.value} 
+                  className="flex-1 cursor-pointer text-base"
+                >
+                  {option.label}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
+
+        <div className="flex justify-between pt-6">
+          <Button 
+            variant="outline" 
+            onClick={handlePrevious}
+            disabled={currentQuestion === 0}
+            size="lg"
+          >
+            이전
+          </Button>
           
-          <div className="mt-4">
-            <div className="flex justify-between text-sm text-muted-foreground mb-2">
-              <span>진행률</span>
-              <span>{currentQuestion + 1} / {questions.length}</span>
-            </div>
-            <Progress value={progress} className="h-2" />
-          </div>
-        </CardHeader>
-
-        <CardContent className="space-y-6">
-          <div className="min-h-[300px]">
-            <h3 className="text-lg font-semibold mb-6 text-center">
-              {currentQ.question}
-            </h3>
-
-            <RadioGroup
-              value={currentAnswer || ''}
-              onValueChange={(value) => handleAnswer(currentQ.id, value)}
-              className="space-y-4"
-            >
-              {currentQ.options.map((option) => (
-                <div key={option.value} className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-secondary/50 transition-colors">
-                  <RadioGroupItem value={option.value} id={option.value} />
-                  <Label 
-                    htmlFor={option.value} 
-                    className="flex-1 cursor-pointer font-medium"
-                  >
-                    {option.label}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-
-          <div className="flex justify-between pt-4">
-            <Button 
-              variant="outline" 
-              onClick={handlePrevious}
-              disabled={currentQuestion === 0}
-              className="flex items-center gap-2"
-            >
-              ← 이전
-            </Button>
-            
-            <Button 
-              onClick={handleNext}
-              disabled={!currentAnswer}
-              className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
-            >
-              {currentQuestion === questions.length - 1 ? '결과 보기' : '다음 →'}
-            </Button>
-          </div>
-
-          <div className="text-center text-sm text-muted-foreground">
-            💰 소모 토큰: 무료
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          <Button 
+            onClick={handleNext}
+            disabled={!currentAnswer}
+            size="lg"
+            className="min-w-[120px]"
+          >
+            {currentQuestion === questions.length - 1 ? '결과 확인' : '다음'}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };

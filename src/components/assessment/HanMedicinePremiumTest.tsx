@@ -340,116 +340,117 @@ export const HanMedicinePremiumTest: React.FC<HanMedicinePremiumTestProps> = ({ 
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-2xl">
-      <Card className="border-2 border-primary/20">
-        <CardHeader className="text-center pb-4">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Crown className="w-8 h-8 text-amber-500" />
-            <CardTitle className="text-2xl bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              한의학 프리미엄 종합 분석
-            </CardTitle>
-          </div>
-          <p className="text-muted-foreground">
-            {currentSectionData.title} - 상세한 정보로 정확한 체질 분석을 받아보세요
-          </p>
-          
-          <div className="mt-4">
-            <div className="flex justify-between text-sm text-muted-foreground mb-2">
-              <span>진행률</span>
-              <span>{currentSection + 1} / {sections.length} 단계</span>
-            </div>
-            <Progress value={progress} className="h-2" />
-          </div>
-        </CardHeader>
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader className="text-center">
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <Crown className="w-8 h-8 text-amber-500" />
+          <CardTitle className="text-2xl font-bold text-foreground">
+            한의학 프리미엄 종합 분석
+          </CardTitle>
+        </div>
+        <CardDescription className="text-lg text-muted-foreground">
+          {currentSectionData.title} - 상세한 정보로 정확한 체질 분석을 받아보세요
+        </CardDescription>
         
-        <CardContent className="space-y-6">
-          <div className="min-h-[400px] space-y-6">
-            {currentSectionData.questions.map((question) => (
-              <div key={question.id} className="space-y-3">
-                <h4 className="font-semibold text-lg">{question.question}</h4>
-                
-                {question.type === 'radio' && (
-                  <RadioGroup
-                    value={answers[question.id] || ''}
-                    onValueChange={(value) => handleAnswer(question.id, value)}
-                    className="space-y-3"
-                  >
-                    {question.options?.map((option) => (
-                      <div key={option.value} className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-secondary/50 transition-colors">
-                        <RadioGroupItem value={option.value} id={option.value} />
-                        <Label htmlFor={option.value} className="flex-1 cursor-pointer font-medium">
-                          {option.label}
-                        </Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                )}
-                
-                {question.type === 'checkbox' && (
-                  <div className="grid grid-cols-1 gap-3">
-                    {question.options?.map((option) => (
-                      <div key={option.value} className="flex items-center space-x-2 p-3 rounded-lg border hover:bg-secondary/50 transition-colors">
-                        <Checkbox
-                          id={option.value}
-                          checked={(answers[question.id] || []).includes(option.value)}
-                          onCheckedChange={(checked) => 
-                            handleCheckboxChange(question.id, option.value, checked as boolean)
-                          }
-                        />
-                        <Label htmlFor={option.value} className="flex-1 cursor-pointer font-medium">
-                          {option.label}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                
-                {question.type === 'textarea' && (
-                  <Textarea
-                    placeholder={question.placeholder}
-                    value={answers[question.id] || ''}
-                    onChange={(e) => handleAnswer(question.id, e.target.value)}
-                    rows={4}
-                    className="min-h-[120px]"
-                  />
-                )}
-                
-                {question.type === 'input' && (
-                  <Input
-                    placeholder={question.placeholder}
-                    value={answers[question.id] || ''}
-                    onChange={(e) => handleAnswer(question.id, e.target.value)}
-                    className="h-12"
-                  />
-                )}
-              </div>
-            ))}
+        <div className="mt-6">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium">진행률</span>
+            <span className="text-sm text-muted-foreground">{currentSection + 1} / {sections.length} 단계</span>
           </div>
+          <Progress value={progress} className="h-2" />
+        </div>
+      </CardHeader>
+      
+      <CardContent className="space-y-6">
+        <div className="space-y-6">
+          {currentSectionData.questions.map((question) => (
+            <div key={question.id} className="space-y-4">
+              <h4 className="text-xl font-semibold text-foreground">{question.question}</h4>
+              
+              {question.type === 'radio' && (
+                <RadioGroup
+                  value={answers[question.id] || ''}
+                  onValueChange={(value) => handleAnswer(question.id, value)}
+                  className="space-y-3"
+                >
+                  {question.options?.map((option) => (
+                    <div 
+                      key={option.value} 
+                      className="flex items-center space-x-3 p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
+                    >
+                      <RadioGroupItem value={option.value} id={option.value} />
+                      <Label htmlFor={option.value} className="flex-1 cursor-pointer text-base">
+                        {option.label}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              )}
+              
+              {question.type === 'checkbox' && (
+                <div className="space-y-3">
+                  {question.options?.map((option) => (
+                    <div 
+                      key={option.value} 
+                      className="flex items-center space-x-3 p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
+                    >
+                      <Checkbox
+                        id={option.value}
+                        checked={(answers[question.id] || []).includes(option.value)}
+                        onCheckedChange={(checked) => 
+                          handleCheckboxChange(question.id, option.value, checked as boolean)
+                        }
+                      />
+                      <Label htmlFor={option.value} className="flex-1 cursor-pointer text-base">
+                        {option.label}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {question.type === 'textarea' && (
+                <Textarea
+                  placeholder={question.placeholder}
+                  value={answers[question.id] || ''}
+                  onChange={(e) => handleAnswer(question.id, e.target.value)}
+                  rows={4}
+                  className="min-h-[120px] text-base"
+                />
+              )}
+              
+              {question.type === 'input' && (
+                <Input
+                  placeholder={question.placeholder}
+                  value={answers[question.id] || ''}
+                  onChange={(e) => handleAnswer(question.id, e.target.value)}
+                  className="h-12 text-base"
+                />
+              )}
+            </div>
+          ))}
+        </div>
 
-          <div className="flex justify-between pt-6">
-            <Button 
-              variant="outline" 
-              onClick={handlePrevious}
-              disabled={currentSection === 0}
-              className="flex items-center gap-2"
-            >
-              ← 이전
-            </Button>
-            
-            <Button 
-              onClick={handleNext}
-              disabled={!isCurrentSectionComplete()}
-              className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-            >
-              {currentSection === sections.length - 1 ? '분석 시작' : '다음 →'}
-            </Button>
-          </div>
-
-          <div className="text-center text-sm text-muted-foreground">
-            💰 소모 토큰: 15개
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        <div className="flex justify-between pt-6">
+          <Button 
+            variant="outline" 
+            onClick={handlePrevious}
+            disabled={currentSection === 0}
+            size="lg"
+          >
+            이전
+          </Button>
+          
+          <Button 
+            onClick={handleNext}
+            disabled={!isCurrentSectionComplete()}
+            size="lg"
+            className="min-w-[120px]"
+          >
+            {currentSection === sections.length - 1 ? '분석 시작' : '다음'}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };

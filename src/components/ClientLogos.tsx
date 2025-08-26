@@ -26,20 +26,6 @@ const ClientLogos = () => {
       description: "통합의학 전문의원"
     },
     { 
-      name: "우아함발달센터 안산점", 
-      icon: Sparkles, 
-      color: "text-purple-500",
-      bgColor: "bg-purple-50",
-      description: "종합발달 지원센터"
-    },
-    { 
-      name: "우아함발달센터 화성점", 
-      icon: Sparkles, 
-      color: "text-purple-500",
-      bgColor: "bg-purple-50",
-      description: "종합발달 지원센터"
-    },
-    { 
       name: "희망발달센터 수원점", 
       icon: Heart, 
       color: "text-rose-500",
@@ -47,46 +33,53 @@ const ClientLogos = () => {
       description: "아동발달 전문센터"
     },
     { 
-      name: "꿈나무발달센터 분당점", 
+      name: "꿈나무발달센터 강남점", 
       icon: Brain, 
       color: "text-indigo-600",
       bgColor: "bg-indigo-50",
       description: "언어·인지발달 센터"
     },
     { 
-      name: "새싹발달센터 강남점", 
+      name: "서울아동발달센터", 
       icon: Sparkles, 
       color: "text-green-500",
       bgColor: "bg-green-50",
       description: "통합발달 지원센터"
     },
     { 
-      name: "행복발달센터 일산점", 
+      name: "새싹발달센터 강남점", 
       icon: Heart, 
       color: "text-pink-600",
       bgColor: "bg-pink-50",
-      description: "아동·청소년 발달센터"
+      description: "조기개입 발달센터"
     },
     { 
-      name: "명지대학교", 
+      name: "차의과대학교 발달장애센터", 
       icon: BookOpen, 
       color: "text-blue-500",
       bgColor: "bg-blue-50",
-      description: "종합 연구대학"
+      description: "대학부설 진료센터"
     },
     { 
-      name: "삼성웰니스의원", 
+      name: "마음숲심리상담센터", 
       icon: Building2, 
       color: "text-slate-600",
       bgColor: "bg-slate-50",
-      description: "기업 건강관리센터"
+      description: "심리상담 전문센터"
     },
     { 
-      name: "가까이한의원", 
+      name: "해맑은발달센터", 
       icon: Leaf, 
       color: "text-emerald-500",
       bgColor: "bg-emerald-50",
-      description: "자연치유 한의원"
+      description: "전문발달 지원센터"
+    },
+    { 
+      name: "튼튼발달센터 인천점", 
+      icon: Activity, 
+      color: "text-orange-500",
+      bgColor: "bg-orange-50",
+      description: "체계적 발달치료센터"
     }
   ];
 

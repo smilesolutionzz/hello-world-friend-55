@@ -52,6 +52,7 @@ import ComprehensivePackage from "./pages/ComprehensivePackage";
 import TokenHistory from "./pages/TokenHistory";
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTestResult from "./components/assessment/FunTestResult";
+import HanMedicineTest from "./pages/HanMedicineTest";
 import { SessionManager } from "./components/SessionManager";
 
 const queryClient = new QueryClient();

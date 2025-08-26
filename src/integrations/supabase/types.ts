@@ -195,6 +195,54 @@ export type Database = {
         }
         Relationships: []
       }
+      developmental_tracking: {
+        Row: {
+          assessor_notes: string | null
+          created_at: string
+          current_level: number
+          domain: string
+          evidence_files: Json | null
+          id: string
+          notes: string | null
+          skill_area: string
+          student_id: string | null
+          target_level: number | null
+          tracking_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assessor_notes?: string | null
+          created_at?: string
+          current_level: number
+          domain: string
+          evidence_files?: Json | null
+          id?: string
+          notes?: string | null
+          skill_area: string
+          student_id?: string | null
+          target_level?: number | null
+          tracking_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assessor_notes?: string | null
+          created_at?: string
+          current_level?: number
+          domain?: string
+          evidence_files?: Json | null
+          id?: string
+          notes?: string | null
+          skill_area?: string
+          student_id?: string | null
+          target_level?: number | null
+          tracking_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       expert_feedback_requests: {
         Row: {
           admin_notes: string | null
@@ -321,6 +369,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      individual_education_plans: {
+        Row: {
+          annual_goals: Json
+          assessment_modifications: Json
+          assessment_results: Json
+          created_at: string
+          current_performance: Json
+          id: string
+          plan_status: string
+          related_services: Json
+          short_term_objectives: Json
+          special_education_services: Json
+          student_age: number
+          student_name: string
+          supplementary_aids: Json
+          transition_services: Json | null
+          updated_at: string
+          user_id: string
+          valid_from: string | null
+          valid_to: string | null
+        }
+        Insert: {
+          annual_goals?: Json
+          assessment_modifications?: Json
+          assessment_results?: Json
+          created_at?: string
+          current_performance?: Json
+          id?: string
+          plan_status?: string
+          related_services?: Json
+          short_term_objectives?: Json
+          special_education_services?: Json
+          student_age: number
+          student_name: string
+          supplementary_aids?: Json
+          transition_services?: Json | null
+          updated_at?: string
+          user_id: string
+          valid_from?: string | null
+          valid_to?: string | null
+        }
+        Update: {
+          annual_goals?: Json
+          assessment_modifications?: Json
+          assessment_results?: Json
+          created_at?: string
+          current_performance?: Json
+          id?: string
+          plan_status?: string
+          related_services?: Json
+          short_term_objectives?: Json
+          special_education_services?: Json
+          student_age?: number
+          student_name?: string
+          supplementary_aids?: Json
+          transition_services?: Json | null
+          updated_at?: string
+          user_id?: string
+          valid_from?: string | null
+          valid_to?: string | null
+        }
+        Relationships: []
       }
       institution_analytics: {
         Row: {

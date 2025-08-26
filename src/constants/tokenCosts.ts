@@ -31,6 +31,7 @@ export const TOKEN_COSTS = {
   // 기타
   CONTENT_RECOMMENDATION: 1, // 컨텐츠 추천
   CRISIS_DETECTION: 0,      // 위기감지 (무료)
+  IEP_GENERATION: 15,       // IEP 생성
   DEVELOPMENTAL_SCREENING: 4, // AIH 발달특성 선별체크
 } as const;
 
@@ -42,6 +43,7 @@ export const TOKEN_COST_DESCRIPTIONS = {
   8: "AI 사주 운세 분석",
   1: "AI 상담사와의 실시간 대화 또는 맞춤 컨텐츠 추천",
   10: "종합 심리검사 및 상세 분석",
+  15: "AI 기반 개별교육계획(IEP) 생성",
   200: "프리미엄검사, 관찰일지, AI상담 등 모든 데이터 종합 분석 리포트 (3일내 휴대폰 전송)",
   0: "위기상황 자동 감지 (무료)",
 } as const;

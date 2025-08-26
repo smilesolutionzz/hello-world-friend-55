@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import HanMedicineTest from "./pages/HanMedicineTest";
+import IEPGenerator from "./pages/IEPGenerator";
 import DevelopmentalScreening from "./pages/AutismScreening";
 import Assessment from "./pages/Assessment";
 import PremiumAssessment from "./pages/PremiumAssessment";
@@ -83,9 +83,9 @@ const App = () => (
           <Route path="/focus-package" element={<FocusPackage />} />
           <Route path="/child-package" element={<ChildPackage />} />
           <Route path="/comprehensive-package" element={<ComprehensivePackage />} />
-          <Route path="/han-medicine-test" element={<HanMedicineTest />} />
+          {/* <Route path="/han-medicine-test" element={<HanMedicineTest />} /> */}
+          <Route path="/iep-generator" element={<IEPGenerator />} />
           <Route path="/autism-screening" element={<DevelopmentalScreening />} />
-          
           <Route path="/family" element={<Family />} />
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/subscription" element={<Subscription />} />

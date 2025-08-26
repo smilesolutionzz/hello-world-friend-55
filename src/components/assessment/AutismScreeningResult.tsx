@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle, Brain, Heart, Eye, Users } from "lucide-react";
+import { AlertTriangle, CheckCircle, Brain, Heart, Eye, Users, FileText } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 interface DevelopmentalScreeningResultProps {
@@ -221,8 +221,18 @@ const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: Developmen
         <Button variant="outline" onClick={onBack}>
           뒤로가기
         </Button>
-        <Button onClick={onNewTest} className="btn-brand">
+        <Button onClick={onNewTest} variant="outline">
           다른 검사 하기
+        </Button>
+        <Button 
+          onClick={() => {
+            // IEP 생성 페이지로 이동하는 로직 추가
+            window.location.href = '/iep-generator';
+          }}
+          className="btn-brand flex items-center gap-2"
+        >
+          <FileText className="w-4 h-4" />
+          개별교육계획(IEP) 생성하기
         </Button>
       </div>
     </div>

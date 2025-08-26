@@ -50,6 +50,7 @@ import { SamplePDFDownload } from "@/components/SamplePDFDownload";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { WeeklyInsights } from "@/components/dashboard/WeeklyInsights";
+import DevelopmentalTrackingDashboard from "@/components/development/DevelopmentalTrackingDashboard";
 
 interface Profile {
   id: string;
@@ -913,6 +914,11 @@ const Dashboard = () => {
                 trendDirection={weeklyChange.changeRate > 5 ? 'up' : weeklyChange.changeRate < -5 ? 'down' : 'stable'}
                 weeklyGoal={5}
               />
+              
+              {/* Developmental Tracking Dashboard */}
+              <div className="lg:col-span-3">
+                <DevelopmentalTrackingDashboard />
+              </div>
             </div>
 
             {/* Family Overview */}

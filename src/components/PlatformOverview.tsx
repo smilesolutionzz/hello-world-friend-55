@@ -8,11 +8,11 @@ const PlatformOverview = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             <span className="text-brand-gradient">AIHPRO</span>와 함께하는
-            <br />정신건강 케어의 새로운 패러다임
+            <br />통합건강 케어의 새로운 패러다임
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-[1.6] text-center">
             데이터와 AIH 상담을 기반으로, 개인·기업·의료기관이 함께 만드는
-            <br />차세대 통합 정신건강 플랫폼
+            <br />차세대 통합건강 플랫폼
           </p>
         </div>
 
@@ -63,7 +63,7 @@ const PlatformOverview = () => {
               <ul className="space-y-2 text-muted-foreground ml-9">
                 <li>• 무료 기본 상담으로 부담 없이 시작</li>
                 <li>• 정확한 심리 상태 진단과 맞춤 케어</li>
-                <li>• 가족 단위 종합 정신건강 관리</li>
+                <li>• 가족 단위 종합 통합건강 관리</li>
                 <li>• 24시간 언제든 접근 가능한 AIH 상담</li>
               </ul>
             </div>
@@ -75,7 +75,7 @@ const PlatformOverview = () => {
                 <h4 className="text-lg font-semibold">기업 · 의료기관</h4>
               </div>
               <ul className="space-y-2 text-muted-foreground ml-9">
-                <li>• 직원 정신건강 관리 솔루션 제공</li>
+                <li>• 직원 통합건강 관리 솔루션 제공</li>
                 <li>• 병원 환자 케어 시스템 통합 연동</li>
                 <li>• 데이터 기반 조직 건강도 분석</li>
                 <li>• 전문 상담사 네트워크 구축 지원</li>

@@ -38,7 +38,7 @@ const CrisisDetection = ({ riskLevel, onEscalate }: CrisisDetectionProps) => {
 
   const emergencyContacts = [
     {
-      name: "정신건강위기상담전화",
+      name: "통합건강위기상담전화",
       number: "1577-0199",
       description: "24시간 위기개입 전문상담",
       priority: 1

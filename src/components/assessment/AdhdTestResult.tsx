@@ -88,7 +88,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
         <p className="text-blue-800 text-sm">
           <span className="font-semibold">📊 체크 결과 (참고용)</span><br />
-          ⚠️ 이 결과는 참고용이며 의학적 진단이 절대 아닙니다. 주의집중력 문제가 의심되면 반드시 정신건강의학과 전문의와 상담하세요.
+          ⚠️ 이 결과는 참고용이며 의학적 진단이 절대 아닙니다. 주의집중력 문제가 의심되면 반드시 통합건강의학과 전문의와 상담하세요.
         </p>
       </div>
 
@@ -292,7 +292,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
         <h4 className="font-semibold text-blue-900 mb-2">참고사항</h4>
         <p className="text-blue-800 text-sm leading-relaxed">
           이 검사는 주의집중력 증상 체크를 위한 선별도구로, 의학적 진단을 대체할 수 없습니다. 
-          정확한 진단과 치료를 위해서는 반드시 정신건강의학과 전문의와 상담하시기 바랍니다.
+          정확한 진단과 치료를 위해서는 반드시 통합건강의학과 전문의와 상담하시기 바랍니다.
         </p>
       </Card>
     </div>

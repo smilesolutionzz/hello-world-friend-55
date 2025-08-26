@@ -64,7 +64,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
         return {
           icon: <AlertTriangle className="w-6 h-6 text-red-600" />,
           title: "심각한 증상",
-          description: "즉시 전문가의 도움이 필요합니다. 정신건강의학과 전문의와 상담받으시기를 적극 권장드립니다."
+          description: "즉시 전문가의 도움이 필요합니다. 통합건강의학과 전문의와 상담받으시기를 적극 권장드립니다."
         };
       default:
         return {
@@ -168,7 +168,7 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
                 ? "가벼운 불안 증상이 있을 수 있습니다. 규칙적인 운동과 이완 기법, 스트레스 관리를 통해 증상을 완화할 수 있습니다."
                 : severity === "중등도"
                 ? "공황장애 증상이 중등도 수준으로 나타나고 있습니다. 전문가와 상담하여 적절한 치료 방법을 찾아보시는 것을 권장합니다."
-                : "심각한 공황장애 증상이 확인됩니다. 즉시 전문가의 도움이 필요하며, 정신건강의학과 전문의와 상담받으시기를 적극 권장드립니다."}
+                : "심각한 공황장애 증상이 확인됩니다. 즉시 전문가의 도움이 필요하며, 통합건강의학과 전문의와 상담받으시기를 적극 권장드립니다."}
             </p>
           </div>
           

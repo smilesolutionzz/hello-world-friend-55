@@ -200,7 +200,7 @@ export default function RealTimeHealthScore() {
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Target className="h-5 w-5" />
-              실시간 정신건강 점수
+              실시간 통합건강 점수
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Clock className="h-4 w-4" />
@@ -208,7 +208,7 @@ export default function RealTimeHealthScore() {
             </div>
           </CardTitle>
           <CardDescription>
-            AI가 실시간으로 분석한 종합 정신건강 상태입니다
+            AI가 실시간으로 분석한 종합 통합건강 상태입니다
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -229,7 +229,7 @@ export default function RealTimeHealthScore() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="text-center">
               <Heart className="h-6 w-6 mx-auto mb-2 text-red-500" />
-              <div className="text-sm text-muted-foreground">정신건강</div>
+              <div className="text-sm text-muted-foreground">통합건강</div>
               <div className={`font-bold ${getScoreColor(healthMetrics.mental_health)}`}>
                 {healthMetrics.mental_health}/100
               </div>

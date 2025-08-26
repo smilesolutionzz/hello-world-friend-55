@@ -256,7 +256,7 @@ const AICoachDashboard = () => {
               <CardHeader>
                 <CardTitle>라이프스타일 코칭</CardTitle>
                 <CardDescription>
-                  수면, 운동, 영양과 정신건강의 연관성을 분석하고 개선 방안을 제시합니다.
+                  수면, 운동, 영양과 통합건강의 연관성을 분석하고 개선 방안을 제시합니다.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">

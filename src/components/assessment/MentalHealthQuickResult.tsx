@@ -21,14 +21,14 @@ const levelConfig = {
     bgColor: 'bg-green-50 border-green-200',
     textColor: 'text-green-800',
     icon: CheckCircle,
-    message: '훌륭한 정신건강 상태입니다!'
+    message: '훌륭한 통합건강 상태입니다!'
   },
   good: {
     color: 'bg-blue-500',
     bgColor: 'bg-blue-50 border-blue-200',
     textColor: 'text-blue-800',
     icon: TrendingUp,
-    message: '양호한 정신건강 상태입니다.'
+    message: '양호한 통합건강 상태입니다.'
   },
   fair: {
     color: 'bg-yellow-500',
@@ -96,7 +96,7 @@ export const MentalHealthQuickResult: React.FC<MentalHealthQuickResultProps> = (
               <IconComponent className="h-8 w-8 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl">정신건강 검사 결과</CardTitle>
+          <CardTitle className="text-2xl">통합건강 검사 결과</CardTitle>
           <CardDescription className="text-lg">
             {config.message}
           </CardDescription>
@@ -129,7 +129,7 @@ export const MentalHealthQuickResult: React.FC<MentalHealthQuickResultProps> = (
             <p className="text-sm text-muted-foreground">
               총 {Object.keys(result.answers).length}개 항목을 종합 분석한 결과, 
               평균 {result.averageScore.toFixed(1)}점으로 '{result.levelText}' 상태입니다.
-              {result.level === 'excellent' && ' 현재 매우 안정적인 정신건강 상태를 유지하고 계십니다.'}
+              {result.level === 'excellent' && ' 현재 매우 안정적인 통합건강 상태를 유지하고 계십니다.'}
               {result.level === 'good' && ' 전반적으로 양호한 상태이지만 지속적인 관리가 필요합니다.'}
               {result.level === 'fair' && ' 일부 영역에서 주의가 필요한 상태입니다.'}
               {result.level === 'poor' && ' 전문적인 도움을 받으시는 것을 권장합니다.'}
@@ -203,7 +203,7 @@ export const MentalHealthQuickResult: React.FC<MentalHealthQuickResultProps> = (
               <div>
                 <h4 className="font-medium text-orange-800 mb-2">전문가 상담 권장</h4>
                 <p className="text-sm text-orange-700">
-                  현재 상태가 지속되거나 악화된다면 정신건강 전문가와의 상담을 받으시길 권합니다. 
+                  현재 상태가 지속되거나 악화된다면 통합건강 전문가와의 상담을 받으시길 권합니다. 
                   조기 개입이 빠른 회복에 도움이 됩니다.
                 </p>
                 <Button variant="outline" size="sm" className="mt-3">

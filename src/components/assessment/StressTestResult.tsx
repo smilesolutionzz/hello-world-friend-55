@@ -178,7 +178,7 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
                 높은 스트레스 수준이 감지되었습니다. 전문가의 도움을 받아보시기 바랍니다.
               </p>
               <div className="text-sm text-red-600">
-                <p>• 정신건강의학과 전문의 상담</p>
+                <p>• 통합건강의학과 전문의 상담</p>
                 <p>• 심리상담센터 이용</p>
                 <p>• 직장 내 상담 프로그램 활용</p>
               </div>

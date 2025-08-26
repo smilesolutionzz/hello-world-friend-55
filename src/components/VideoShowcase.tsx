@@ -12,7 +12,7 @@ const VideoShowcase = () => {
     {
       id: 1,
       title: "플랫폼 소개 영상",
-      description: "AI 정신건강 케어의 새로운 경험",
+      description: "AI 통합건강 케어의 새로운 경험",
       embedId: "t4ZkQll1WxU",
       thumbnail: "/api/placeholder/640/360"
     },
@@ -26,7 +26,7 @@ const VideoShowcase = () => {
     {
       id: 3,
       title: "전문가 인터뷰",
-      description: "정신건강 전문의가 말하는 AI 케어",
+      description: "통합건강 전문의가 말하는 AI 케어",
       embedId: "DiNcA92PGZE",
       thumbnail: "/api/placeholder/640/360"
     }
@@ -130,7 +130,7 @@ const VideoShowcase = () => {
             <p className="text-muted-foreground text-sm mb-4">
               "데이터 기반 분석으로 더 정확한 진단이 가능해졌습니다"
             </p>
-            <div className="text-xs text-muted-foreground">박○○ 정신건강의학과 전문의</div>
+            <div className="text-xs text-muted-foreground">박○○ 통합건강의학과 전문의</div>
           </div>
 
           <div className="bg-card rounded-xl p-6 shadow-lg border">

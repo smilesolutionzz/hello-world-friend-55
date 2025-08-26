@@ -110,7 +110,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
         return {
           icon: <AlertTriangle className="w-6 h-6 text-red-600" />,
           title: "Severe Depression (심한 우울증상)",
-          description: "즉시 전문가의 도움이 필요합니다. 정신건강의학과 전문의와 상담받으시기를 적극 권장드립니다."
+          description: "즉시 전문가의 도움이 필요합니다. 통합건강의학과 전문의와 상담받으시기를 적극 권장드립니다."
         };
       default:
         return {
@@ -221,7 +221,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
                     ? "가벼운 우울 증상이 확인됩니다. 일상적인 스트레스와 생활 변화로 인한 것일 수 있으며, 생활습관 개선과 스트레스 관리를 통해 증상 완화가 가능합니다."
                     : severity === "중등도 우울"
                     ? "중등도 우울 증상이 나타나고 있습니다. 일상생활에 일부 영향을 미칠 수 있어 전문가와의 상담을 통한 적극적인 관리가 필요합니다."
-                    : "심각한 우울 증상이 확인됩니다. 즉시 전문가의 도움이 필요하며, 정신건강의학과 전문의와 상담받으시기를 적극 권장드립니다."}
+                    : "심각한 우울 증상이 확인됩니다. 즉시 전문가의 도움이 필요하며, 통합건강의학과 전문의와 상담받으시기를 적극 권장드립니다."}
                 </>
               )}
             </p>

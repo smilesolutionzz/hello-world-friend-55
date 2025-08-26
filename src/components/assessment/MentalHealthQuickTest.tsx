@@ -194,9 +194,9 @@ export const MentalHealthQuickTest: React.FC<MentalHealthQuickTestProps> = ({ on
       <Card className="w-full max-w-2xl mx-auto">
         <CardContent className="flex flex-col items-center justify-center py-8">
           <Loader2 className="h-8 w-8 animate-spin mb-4" />
-          <p className="text-lg font-medium">정신건강 상태를 분석하고 있습니다...</p>
+          <p className="text-lg font-medium">통합건강 상태를 분석하고 있습니다...</p>
           <p className="text-sm text-muted-foreground mt-2">
-            AI가 당신의 정신건강 상태를 종합적으로 분석합니다.
+            AI가 당신의 통합건강 상태를 종합적으로 분석합니다.
           </p>
         </CardContent>
       </Card>
@@ -208,10 +208,10 @@ export const MentalHealthQuickTest: React.FC<MentalHealthQuickTestProps> = ({ on
       <CardHeader>
         <CardTitle className="text-center flex items-center justify-center">
           <Star className="h-5 w-5 mr-2 text-purple-500" />
-          정신건강 3분 체크
+          통합건강 3분 체크
         </CardTitle>
         <CardDescription className="text-center">
-          간단한 질문으로 현재 정신건강 상태를 확인해보세요
+          간단한 질문으로 현재 통합건강 상태를 확인해보세요
         </CardDescription>
         <Progress value={progress} className="mt-4" />
         <p className="text-sm text-center text-muted-foreground">

@@ -424,7 +424,7 @@ function ConcernStep({ userNeeds, setUserNeeds }: {
     {
       id: 'comprehensive',
       title: '종합 분석',
-      description: '전반적인 정신건강 상태를 알고 싶어요',
+      description: '전반적인 통합건강 상태를 알고 싶어요',
       icon: <Crown className="w-6 h-6" />,
       color: 'bg-violet-50 border-violet-200 text-violet-700'
     }

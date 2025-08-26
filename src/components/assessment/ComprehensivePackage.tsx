@@ -66,7 +66,7 @@ export const ComprehensivePackage = () => {
             </h1>
           </div>
           <p className="text-muted-foreground text-lg">
-            전반적인 정신건강 상태 점검에 최적화된 솔루션
+            전반적인 통합건강 상태 점검에 최적화된 솔루션
           </p>
         </div>
 

@@ -95,7 +95,7 @@ export function WeeklyInsights({
           </div>
           <p className="text-sm text-muted-foreground">
             {progress < 50 
-              ? "더 많은 활동으로 정신건강을 관리해보세요!"
+              ? "더 많은 활동으로 통합건강을 관리해보세요!"
               : progress >= 100 
               ? "훌륭해요! 꾸준한 관리가 이어지고 있어요."
               : "좋은 페이스입니다. 조금만 더 노력해보세요!"

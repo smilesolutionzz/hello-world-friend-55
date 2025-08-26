@@ -59,7 +59,7 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
           type: 'CONSULT',
           title: 'AI 상담 세션',
           summary: summary,
-          tags: ['AI상담', '정신건강'],
+          tags: ['AI상담', '통합건강'],
           files: [],
           actor: { role: 'user', name: user.email || '사용자' },
           meta: { 

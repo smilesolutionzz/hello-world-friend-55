@@ -54,8 +54,9 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
             toast.success(`🎉 일일 보너스 ${data[0].count}토큰이 지급되었습니다!`);
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('일일 보너스 정보 조회 실패:', error);
+        // 조용히 실패 처리 - 사용자에게는 보이지 않음
       }
     };
 

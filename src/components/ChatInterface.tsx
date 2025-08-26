@@ -74,11 +74,15 @@ const ChatInterface = () => {
           variant: "destructive"
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('💥 AIH 분석 오류:', error);
+      const errorMessage = error?.message?.includes('토큰') ? 
+        '토큰이 부족합니다. 토큰을 충전 후 다시 시도해주세요.' :
+        '분석 중 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+      
       toast({
         title: "❌ 분석 실패",
-        description: "문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {

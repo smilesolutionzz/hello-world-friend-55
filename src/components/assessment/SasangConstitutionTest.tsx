@@ -188,11 +188,13 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
       };
 
       onComplete(result);
-    } catch (error) {
-      console.error('분석 중 오류:', error);
+    } catch (error: any) {
+      console.error('사상체질 분석 중 오류:', error);
       toast({
-        title: "오류 발생",
-        description: "분석 중 오류가 발생했습니다. 다시 시도해주세요.",
+        title: "분석 실패",
+        description: error?.message?.includes('토큰') ? 
+          "토큰이 부족합니다. 토큰을 충전해주세요." : 
+          "체질 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
         variant: "destructive"
       });
     } finally {

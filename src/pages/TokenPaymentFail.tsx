@@ -110,11 +110,11 @@ const TokenPaymentFail = () => {
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-2 h-2 bg-blue-400 rounded-full mt-1.5 flex-shrink-0"></div>
-                <span>다른 결제 수단(다른 카드, 계좌이체 등)을 이용해 보세요</span>
+                <span>다른 결제 수단을 이용해 보세요</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-2 h-2 bg-blue-400 rounded-full mt-1.5 flex-shrink-0"></div>
-                <span>브라우저를 새로고침하거나 다른 브라우저를 사용해 보세요</span>
+                <span>잠시 후 다시 시도해 보세요</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-2 h-2 bg-blue-400 rounded-full mt-1.5 flex-shrink-0"></div>

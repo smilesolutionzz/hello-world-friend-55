@@ -86,11 +86,15 @@ export function ComprehensiveReportSection({
         duration: 5000,
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error requesting comprehensive report:', error);
+      const errorMessage = error?.message?.includes('토큰') ? 
+        '토큰이 부족합니다. 토큰을 충전해주세요.' :
+        '종합 리포팅 신청 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+      
       toast({
         title: "요청 실패",
-        description: "종합 리포팅 신청 중 오류가 발생했습니다. 다시 시도해주세요.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

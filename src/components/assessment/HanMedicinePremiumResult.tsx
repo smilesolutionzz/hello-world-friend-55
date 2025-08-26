@@ -4,7 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Loader2, Crown, Heart, Utensils, Dumbbell, Leaf, Pill, Clock, AlertTriangle } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Loader2, Crown, Heart, Utensils, Dumbbell, Leaf, Pill, Clock, AlertTriangle, MapPin, Phone, Calendar, ShoppingCart } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -96,13 +99,14 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
 
       {/* 탭 구성 */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">종합</TabsTrigger>
           <TabsTrigger value="constitution">체질</TabsTrigger>
           <TabsTrigger value="organs">오장육부</TabsTrigger>
           <TabsTrigger value="diet">식이요법</TabsTrigger>
           <TabsTrigger value="lifestyle">생활요법</TabsTrigger>
           <TabsTrigger value="treatment">처방</TabsTrigger>
+          <TabsTrigger value="consultation">진료예약</TabsTrigger>
         </TabsList>
 
         {/* 종합 분석 */}
@@ -380,7 +384,54 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                   <div key={index} className="border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="font-semibold">{prescription.name}</h4>
-                      <Badge>{prescription.type}</Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge>{prescription.type}</Badge>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button size="sm" variant="outline" className="text-xs">
+                              <ShoppingCart className="h-3 w-3 mr-1" />
+                              한약 주문
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>한약 주문하기</DialogTitle>
+                              <DialogDescription>
+                                {prescription.name} 처방을 AIH 제휴 한의원에서 조제 받으실 수 있습니다.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <label className="text-sm font-medium">복용 기간 선택</label>
+                                <Select>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="복용 기간을 선택하세요" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="1week">1주 (7첩) - 189,000원</SelectItem>
+                                    <SelectItem value="2weeks">2주 (14첩) - 356,000원</SelectItem>
+                                    <SelectItem value="1month">1개월 (30첩) - 750,000원</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div>
+                                <label className="text-sm font-medium">배송 주소</label>
+                                <Input placeholder="배송받을 주소를 입력하세요" />
+                              </div>
+                              <div>
+                                <label className="text-sm font-medium">연락처</label>
+                                <Input placeholder="연락처를 입력하세요" />
+                              </div>
+                              <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500">
+                                주문하기
+                              </Button>
+                              <p className="text-xs text-muted-foreground text-center">
+                                * 한의사 원격 상담 후 최종 처방이 결정됩니다
+                              </p>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
                     </div>
                     <p className="text-sm text-muted-foreground mb-3">{prescription.description}</p>
                     <div className="grid md:grid-cols-2 gap-4">
@@ -423,6 +474,132 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* 진료 예약 */}
+        <TabsContent value="consultation" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Calendar className="h-5 w-5 mr-2 text-blue-500" />
+                AIH 제휴 한의원 비대면 진료
+              </CardTitle>
+              <CardDescription>
+                체질 분석 결과를 바탕으로 전문 한의사와 상담하고 정확한 처방을 받아보세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="border-2 border-primary/20">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold">서울 명동 한의원</h3>
+                      <Badge className="bg-green-100 text-green-800">온라인 진료 가능</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      <MapPin className="h-4 w-4 inline mr-1" />
+                      서울시 중구 명동길 26
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center text-sm">
+                      <Phone className="h-4 w-4 mr-2" />
+                      02-1234-5678
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">전문 분야</p>
+                      <div className="flex flex-wrap gap-1">
+                        <Badge variant="secondary">사상체질</Badge>
+                        <Badge variant="secondary">소화기</Badge>
+                        <Badge variant="secondary">불면증</Badge>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">예약 가능 시간</p>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="bg-secondary/50 p-2 rounded">오늘 14:00</div>
+                        <div className="bg-secondary/50 p-2 rounded">오늘 16:30</div>
+                        <div className="bg-secondary/50 p-2 rounded">내일 10:00</div>
+                        <div className="bg-secondary/50 p-2 rounded">내일 15:00</div>
+                      </div>
+                    </div>
+                    <Button className="w-full">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      진료 예약하기
+                    </Button>
+                    <p className="text-xs text-muted-foreground text-center">
+                      진료비: 30,000원 (초진) / 20,000원 (재진)
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-2 border-primary/20">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold">부산 센텀 한의원</h3>
+                      <Badge className="bg-green-100 text-green-800">온라인 진료 가능</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      <MapPin className="h-4 w-4 inline mr-1" />
+                      부산시 해운대구 센텀중앙로 97
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center text-sm">
+                      <Phone className="h-4 w-4 mr-2" />
+                      051-9876-5432
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">전문 분야</p>
+                      <div className="flex flex-wrap gap-1">
+                        <Badge variant="secondary">체질개선</Badge>
+                        <Badge variant="secondary">스트레스</Badge>
+                        <Badge variant="secondary">피부질환</Badge>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">예약 가능 시간</p>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="bg-secondary/50 p-2 rounded">오늘 13:30</div>
+                        <div className="bg-secondary/50 p-2 rounded">오늘 17:00</div>
+                        <div className="bg-secondary/50 p-2 rounded">내일 09:30</div>
+                        <div className="bg-secondary/50 p-2 rounded">내일 14:30</div>
+                      </div>
+                    </div>
+                    <Button className="w-full">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      진료 예약하기
+                    </Button>
+                    <p className="text-xs text-muted-foreground text-center">
+                      진료비: 35,000원 (초진) / 25,000원 (재진)
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
+                <CardContent className="pt-6">
+                  <div className="text-center space-y-4">
+                    <h3 className="font-semibold text-lg">💫 특별 혜택</h3>
+                    <div className="grid md:grid-cols-3 gap-4 text-sm">
+                      <div className="space-y-1">
+                        <p className="font-medium">🎁 첫 진료 할인</p>
+                        <p className="text-muted-foreground">AIH 사용자 20% 할인</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-medium">🚚 한약 무료배송</p>
+                        <p className="text-muted-foreground">전국 어디든 무료배송</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-medium">📱 24시간 상담</p>
+                        <p className="text-muted-foreground">카카오톡 무료 상담</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
         </TabsContent>

@@ -65,7 +65,7 @@ const HanMedicineTest = () => {
         {/* 헤더 */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            체질체크 - AI 심리분석 센터
+            체질체크 - AIH 체질분석 센터
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             전문 AI가 당신의 체질, 정신건강, 성격을 정확히 분석하여 맞춤형 솔루션을 제공합니다
@@ -108,7 +108,7 @@ const HanMedicineTest = () => {
             </CardContent>
           </Card>
 
-          {/* 정신건강 3분 체크 */}
+          {/* 한의원 AI 체질 분석 */}
           <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors cursor-pointer group">
             <div className="absolute top-4 right-4">
               <Star className="h-6 w-6 text-purple-500" />
@@ -116,10 +116,10 @@ const HanMedicineTest = () => {
             <CardHeader>
               <CardTitle className="text-xl flex items-center">
                 <Brain className="h-6 w-6 mr-2 text-purple-500" />
-                정신건강 3분 체크
+                한의원 AI 체질분석
               </CardTitle>
               <CardDescription>
-                현재 정신건강 상태를 빠르게 진단해보세요
+                한의학 기반 체질 맞춤 건강관리법
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -128,21 +128,21 @@ const HanMedicineTest = () => {
                 <span className="text-sm">소요시간: 3분</span>
               </div>
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">✓ 8개의 핵심 질문</p>
-                <p className="text-sm text-muted-foreground">✓ 스트레스 수준 분석</p>
-                <p className="text-sm text-muted-foreground">✓ 정신건강 상태 진단</p>
-                <p className="text-sm text-muted-foreground">✓ 맞춤 관리법 제시</p>
+                <p className="text-sm text-muted-foreground">✓ 한의학 체질 진단</p>
+                <p className="text-sm text-muted-foreground">✓ 맞춤 한약 추천</p>
+                <p className="text-sm text-muted-foreground">✓ 생활습관 개선안</p>
+                <p className="text-sm text-muted-foreground">✓ 한의원 연계서비스</p>
               </div>
               <Button 
                 onClick={() => handleTestSelection('mental')}
                 className="w-full group-hover:bg-primary/90"
               >
-                정신건강 체크하기
+                체질분석 시작하기
               </Button>
             </CardContent>
           </Card>
 
-          {/* 연애 성격 분석 */}
+          {/* 한의학 건강 체크 */}
           <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors cursor-pointer group">
             <div className="absolute top-4 right-4">
               <Sparkles className="h-6 w-6 text-pink-500" />
@@ -150,10 +150,10 @@ const HanMedicineTest = () => {
             <CardHeader>
               <CardTitle className="text-xl flex items-center">
                 <Heart className="h-6 w-6 mr-2 text-pink-500" />
-                연애 성격 분석
+                한의학 건강체크
               </CardTitle>
               <CardDescription>
-                나의 연애 스타일과 궁합을 알아보세요
+                오장육부 상태와 기혈순환 분석
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -162,16 +162,16 @@ const HanMedicineTest = () => {
                 <span className="text-sm">소요시간: 3분</span>
               </div>
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">✓ 연애 성격 유형 분석</p>
-                <p className="text-sm text-muted-foreground">✓ 궁합 분석</p>
-                <p className="text-sm text-muted-foreground">✓ 연애 조언</p>
-                <p className="text-sm text-muted-foreground">✓ 소통 스타일 진단</p>
+                <p className="text-sm text-muted-foreground">✓ 오장육부 건강 진단</p>
+                <p className="text-sm text-muted-foreground">✓ 기혈순환 분석</p>
+                <p className="text-sm text-muted-foreground">✓ 한방 건강관리법</p>
+                <p className="text-sm text-muted-foreground">✓ 체질별 관리법</p>
               </div>
               <Button 
                 onClick={() => handleTestSelection('love')}
                 className="w-full group-hover:bg-primary/90"
               >
-                연애 성격 분석하기
+                건강체크 시작하기
               </Button>
             </CardContent>
           </Card>
@@ -215,7 +215,7 @@ const HanMedicineTest = () => {
         {/* 특징 섹션 */}
         <div className="mt-16 text-center">
           <h2 className="text-2xl font-bold text-foreground mb-8">
-            왜 AI 심리분석 센터를 선택할까요?
+            왜 AIH 체질분석 센터를 선택할까요?
           </h2>
           <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
             <Card className="text-center">
@@ -230,27 +230,27 @@ const HanMedicineTest = () => {
             <Card className="text-center">
               <CardContent className="pt-6">
                 <Brain className="h-8 w-8 text-purple-500 mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">정신건강 분석</h3>
+                <h3 className="font-semibold mb-2">맞춤 한약 처방</h3>
                 <p className="text-sm text-muted-foreground">
-                  스트레스, 우울, 불안 등 정신건강 상태를 종합적으로 분석하고 관리법을 제시합니다
+                  개인 체질에 맞는 한약 처방과 복용법을 AI가 정확히 제안해드립니다
                 </p>
               </CardContent>
             </Card>
             <Card className="text-center">
               <CardContent className="pt-6">
                 <Sparkles className="h-8 w-8 text-pink-500 mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">성격 & 연애분석</h3>
+                <h3 className="font-semibold mb-2">한의원 연계서비스</h3>
                 <p className="text-sm text-muted-foreground">
-                  연애 스타일과 성격 특성을 분석하여 더 나은 인간관계를 만들어갑니다
+                  전국 AIH 제휴 한의원과 연결하여 비대면 진료 예약까지 원스톱 서비스
                 </p>
               </CardContent>
             </Card>
             <Card className="text-center">
               <CardContent className="pt-6">
                 <Star className="h-8 w-8 text-yellow-500 mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">실용적 가이드</h3>
+                <h3 className="font-semibold mb-2">체질별 관리법</h3>
                 <p className="text-sm text-muted-foreground">
-                  일상에서 바로 실천할 수 있는 맞춤형 솔루션과 관리법을 제공합니다
+                  사상체질에 맞는 식이요법, 운동법, 생활습관 개선안을 제공합니다
                 </p>
               </CardContent>
             </Card>

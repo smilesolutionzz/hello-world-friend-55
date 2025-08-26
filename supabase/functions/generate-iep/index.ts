@@ -175,7 +175,7 @@ ${Object.keys(currentPerformance).length > 0 ? JSON.stringify(currentPerformance
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-4.1-2025-04-14',
         messages: [
           {
             role: 'system',
@@ -186,7 +186,8 @@ ${Object.keys(currentPerformance).length > 0 ? JSON.stringify(currentPerformance
             content: prompt
           }
         ],
-        max_completion_tokens: 4000
+        temperature: 0.7,
+        max_tokens: 4000
       }),
     })
 

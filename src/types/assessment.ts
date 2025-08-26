@@ -31,9 +31,9 @@ export interface ChildAssessment {
 }
 
 export interface AdultAssessment {
-  depressionScreening: AssessmentQuestion[];
-  anxietyAssessment: AssessmentQuestion[];
-  personalityFactors: AssessmentQuestion[];
+  emotionalWellnessCheck: AssessmentQuestion[];
+  mindPeaceCheck: AssessmentQuestion[];
+  personalCharacteristics: AssessmentQuestion[];
   workplaceAdaptation: AssessmentQuestion[];
 }
 

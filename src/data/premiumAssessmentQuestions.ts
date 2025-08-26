@@ -27,7 +27,7 @@ export const developmentalScreeningInfo = {
   disclaimer: "본 검사는 AIH에서 독자 개발한 창작형 선별도구입니다."
 };
 
-// 1. 마음성향 분석검사 (독창적 4차원 성격 유형 분석)
+// 1. AIH 마음성향 분석검사 (완전 창작형 4차원 성격 유형 분석)
 export const personalityTypeAssessmentQuestions = {
   social_energy: [
     {
@@ -181,7 +181,7 @@ export const personalityTypeAssessmentQuestions = {
   ]
 };
 
-// 2. 타고난 기질 분석검사 (독창적 선천적 성향 측정)
+// 2. AIH 타고난 기질 분석검사 (완전 창작형 선천적 성향 측정)
 export const temperamentAssessmentQuestions = {
   novelty_seeking: [
     {

@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft } from "lucide-react";
-import { childAdhdQuestions, adultAdhdQuestions } from "@/data/assessmentQuestions";
+import { childFocusQuestions, adultFocusQuestions } from "@/data/assessmentQuestions";
 import TokenGate from "@/components/TokenGate";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { useTokens } from "@/hooks/useTokens";
@@ -17,7 +17,7 @@ interface AdhdTestFormProps {
 }
 
 const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
-  const questions = ageGroup === 'child' ? childAdhdQuestions : adultAdhdQuestions;
+  const questions = ageGroup === 'child' ? childFocusQuestions : adultFocusQuestions;
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(2)); // 기본값 2점 (보통)
   const [hasStarted, setHasStarted] = useState(false);
@@ -32,7 +32,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   };
 
   const handleStartTest = async () => {
-    const success = await consumeTokens(TOKEN_COSTS.ADHD_TEST);
+    const success = await consumeTokens(TOKEN_COSTS.FOCUS_CHECK);
     if (success) {
       setHasStarted(true);
     }
@@ -92,17 +92,17 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   if (!hasStarted) {
     return (
       <TokenGate
-        tokensRequired={TOKEN_COSTS.ADHD_TEST}
-        featureName="ADHD 자가체크"
+        tokensRequired={TOKEN_COSTS.FOCUS_CHECK}
+        featureName="AIH 집중력 자가점검"
         onProceed={handleStartTest}
       >
         <div className="space-y-4 text-center">
-          <div className="text-lg font-semibold">ADHD 자가체크 특징</div>
+          <div className="text-lg font-semibold">AIH 집중력 자가점검 특징</div>
           <ul className="space-y-2 text-sm text-muted-foreground max-w-md mx-auto">
             <li>• {ageGroup === 'child' ? '아동청소년' : '성인'} 맞춤 문항</li>
             <li>• 총 {questions.length}문항, 약 3분 소요</li>
-            <li>• 주의집중력 수준 분석</li>
-            <li>• 전문가 연결 추천</li>
+            <li>• 개인 집중력 패턴 분석</li>
+            <li>• 맞춤형 개선 방향 제안</li>
           </ul>
         </div>
       </TokenGate>

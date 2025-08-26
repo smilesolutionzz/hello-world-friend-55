@@ -2,7 +2,7 @@
 export const TOKEN_COSTS = {
   // 심리검사 관련
   PSYCHOLOGICAL_TEST: 2,     // 마음상태 체크
-  ADHD_TEST: 2,             // ADHD 자가체크
+  FOCUS_CHECK: 2,           // AIH 집중력 자가점검
   DEPRESSION_TEST: 2,       // 우울감 자가체크  
   PANIC_TEST: 2,            // 불안감 수준 확인
   LANGUAGE_TEST: 2,         // 언어발달 자가체크

@@ -1,6 +1,6 @@
 import { InfantAssessment, ChildAssessment, AdultAssessment, AssessmentGame } from '@/types/assessment';
 
-// 영유아 발달검사 문항 (K-ASQ 기반)
+// AIH 영유아 성장관찰 체크리스트 (완전 창작형)
 export const infantAssessmentQuestions: InfantAssessment = {
   grossMotor: [
     {
@@ -199,114 +199,114 @@ export const childAssessmentGames: ChildAssessment = {
   ]
 };
 
-// 성인 임상급 심리평가 (15개 문항)
+// AIH 성인 마음건강 자가점검 (완전 창작형)
 export const adultAssessmentQuestions: AdultAssessment = {
-  depressionScreening: [
+  emotionalWellnessCheck: [
     {
-      id: "dep_01",
-      text: "지난 2주간, 거의 매일 우울하거나 절망적이라고 느꼈습니까?",
+      id: "emo_01",
+      text: "최근 일상의 작은 즐거움을 찾기가 어려웠습니까?",
       category: "emotional",
       ageRange: "성인",
       scoringCriteria: {
-        excellent: { score: 0, description: "전혀 그렇지 않다" },
-        good: { score: 1, description: "며칠 동안" },
-        needsSupport: { score: 3, description: "거의 매일" }
+        excellent: { score: 0, description: "즐거움을 잘 찾음" },
+        good: { score: 1, description: "가끔 어려움" },
+        needsSupport: { score: 3, description: "자주 어려움" }
       },
-      clinicalSignificance: "주요우울장애 핵심증상 A1"
+      clinicalSignificance: "일상 만족도 평가"
     },
     {
-      id: "dep_02", 
-      text: "지난 2주간, 평소 좋아하던 활동에 대한 흥미나 즐거움이 현저히 떨어졌습니까?",
+      id: "emo_02", 
+      text: "평소 관심 있던 활동이나 취미에 대한 열정이 줄어들었습니까?",
       category: "emotional",
       ageRange: "성인",
       scoringCriteria: {
-        excellent: { score: 0, description: "변화 없음" },
+        excellent: { score: 0, description: "열정 유지" },
         good: { score: 1, description: "약간 감소" },
-        needsSupport: { score: 3, description: "현저히 감소" }
+        needsSupport: { score: 3, description: "많이 감소" }
       },
-      clinicalSignificance: "무쾌감증 평가"
+      clinicalSignificance: "활동 참여도 평가"
     },
     {
-      id: "dep_03",
-      text: "지난 2주간, 잠들기 어렵거나 자주 깨는 등 수면 문제가 있었습니까?",
+      id: "emo_03",
+      text: "밤에 편안하게 잠들거나 깊은 잠을 자는 데 어려움이 있었습니까?",
       category: "emotional",
       ageRange: "성인",
       scoringCriteria: {
-        excellent: { score: 0, description: "수면 문제 없음" },
+        excellent: { score: 0, description: "편안한 수면" },
         good: { score: 1, description: "가끔 수면 문제" },
-        needsSupport: { score: 3, description: "심각한 수면 문제" }
+        needsSupport: { score: 3, description: "자주 수면 문제" }
       },
-      clinicalSignificance: "우울증 부수 증상"
+      clinicalSignificance: "수면 패턴 평가"
     },
     {
-      id: "dep_04",
-      text: "지난 2주간, 평소보다 피로감을 많이 느끼거나 에너지가 부족했습니까?",
+      id: "emo_04",
+      text: "하루를 시작할 때 충분한 활력과 에너지를 느끼고 계십니까?",
       category: "emotional",
       ageRange: "성인",
       scoringCriteria: {
-        excellent: { score: 0, description: "에너지 충분" },
-        good: { score: 1, description: "약간 피로감" },
-        needsSupport: { score: 3, description: "심한 피로감" }
+        excellent: { score: 0, description: "활력 충만" },
+        good: { score: 1, description: "보통 수준" },
+        needsSupport: { score: 3, description: "활력 부족" }
       },
-      clinicalSignificance: "우울증 신체증상"
+      clinicalSignificance: "일상 에너지 평가"
     }
   ],
 
-  anxietyAssessment: [
+  mindPeaceCheck: [
     {
-      id: "anx_01",
-      text: "불안이나 걱정 때문에 일상생활에 지장이 있었습니까?",
+      id: "peace_01",
+      text: "마음의 평안함을 유지하면서 일상을 보내고 계신가요?",
       category: "emotional", 
       ageRange: "성인",
       scoringCriteria: {
-        excellent: { score: 0, description: "지장 없음" },
-        good: { score: 1, description: "약간의 지장" },
-        needsSupport: { score: 3, description: "심각한 지장" }
+        excellent: { score: 0, description: "평안함 유지" },
+        good: { score: 1, description: "가끔 불안함" },
+        needsSupport: { score: 3, description: "자주 불안함" }
       },
-      clinicalSignificance: "기능 손상 정도 평가"
+      clinicalSignificance: "마음 안정도 평가"
     },
     {
-      id: "anx_02",
-      text: "심장이 두근거리거나 식은땀이 나는 등의 신체 증상이 있었습니까?",
+      id: "peace_02",
+      text: "긴장되거나 스트레스를 받을 때 몸의 변화를 느끼시나요?",
       category: "emotional",
       ageRange: "성인", 
       scoringCriteria: {
-        excellent: { score: 0, description: "증상 없음" },
-        good: { score: 1, description: "가끔 있음" },
-        needsSupport: { score: 3, description: "자주 있음" }
+        excellent: { score: 0, description: "변화 없음" },
+        good: { score: 1, description: "가끔 느낌" },
+        needsSupport: { score: 3, description: "자주 느낌" }
       },
-      clinicalSignificance: "불안의 신체적 증상 평가"
+      clinicalSignificance: "신체 반응 민감도 평가"
     },
     {
-      id: "anx_03",
-      text: "특정 상황이나 장소를 피하게 되는 경우가 있었습니까?",
+      id: "peace_03",
+      text: "어떤 상황이든 자신감을 가지고 참여하고 계신가요?",
       category: "emotional",
       ageRange: "성인",
       scoringCriteria: {
-        excellent: { score: 0, description: "회피 없음" },
-        good: { score: 1, description: "가끔 회피" },
-        needsSupport: { score: 3, description: "자주 회피" }
+        excellent: { score: 0, description: "자신감 있음" },
+        good: { score: 1, description: "대부분 자신감" },
+        needsSupport: { score: 3, description: "자신감 부족" }
       },
-      clinicalSignificance: "회피 행동 패턴 평가"
+      clinicalSignificance: "상황 대처 능력 평가"
     },
     {
-      id: "anx_04",
-      text: "갑작스럽게 극심한 불안이나 공포감을 느낀 적이 있었습니까?",
+      id: "peace_04",
+      text: "예상치 못한 상황에서도 마음의 균형을 유지할 수 있나요?",
       category: "emotional",
       ageRange: "성인",
       scoringCriteria: {
-        excellent: { score: 0, description: "전혀 없음" },
-        good: { score: 1, description: "가끔 있음" },
-        needsSupport: { score: 3, description: "자주 있음" }
+        excellent: { score: 0, description: "균형 유지" },
+        good: { score: 1, description: "대부분 유지" },
+        needsSupport: { score: 3, description: "균형 잃기 쉬움" }
       },
-      clinicalSignificance: "공황발작 선별"
+      clinicalSignificance: "정서 안정성 평가"
     }
   ],
 
-  personalityFactors: [
+  personalCharacteristics: [
     {
-      id: "per_01",
-      text: "새로운 경험이나 활동을 즐기는 편입니까?",
+      id: "char_01",
+      text: "다양한 경험과 새로운 도전을 통해 성장하고 싶어합니까?",
       category: "cognitive",
       ageRange: "성인",
       scoringCriteria: {
@@ -314,11 +314,11 @@ export const adultAssessmentQuestions: AdultAssessment = {
         good: { score: 1, description: "보통이다" },
         needsSupport: { score: 0, description: "그렇지 않다" }
       },
-      clinicalSignificance: "개방성 요인 평가"
+      clinicalSignificance: "성장 지향성 평가"
     },
     {
-      id: "per_02",
-      text: "계획을 세우고 체계적으로 일을 처리하는 편입니까?",
+      id: "char_02",
+      text: "목표를 향해 꾸준히 노력하며 단계적으로 접근하는 편입니까?",
       category: "cognitive",
       ageRange: "성인",
       scoringCriteria: {
@@ -326,11 +326,11 @@ export const adultAssessmentQuestions: AdultAssessment = {
         good: { score: 1, description: "보통이다" },
         needsSupport: { score: 0, description: "그렇지 않다" }
       },
-      clinicalSignificance: "성실성 요인 평가"
+      clinicalSignificance: "지속성 요인 평가"
     },
     {
-      id: "per_03",
-      text: "다른 사람들과 어울리기를 좋아하고 사교적인 편입니까?",
+      id: "char_03",
+      text: "사람들과의 만남에서 에너지를 얻고 활력을 느끼는 편입니까?",
       category: "social",
       ageRange: "성인",
       scoringCriteria: {
@@ -338,7 +338,7 @@ export const adultAssessmentQuestions: AdultAssessment = {
         good: { score: 1, description: "보통이다" },
         needsSupport: { score: 0, description: "그렇지 않다" }
       },
-      clinicalSignificance: "외향성 요인 평가"
+      clinicalSignificance: "사회적 에너지 평가"
     }
   ],
 
@@ -394,48 +394,48 @@ export const adultAssessmentQuestions: AdultAssessment = {
   ]
 };
 
-// 주의집중력 자가체크 질문 (아동청소년용)
-export const childAdhdQuestions = [
-  "아이가 세심한 주의를 기울이지 못하거나 학습, 과제, 기타 활동에서 부주의한 실수를 자주 한다",
-  "과제나 놀이 활동에서 지속적으로 주의를 집중하는데 어려움이 있다",
-  "직접 말을 걸어도 듣지 않는 것처럼 보인다",
-  "지시를 완수하지 못하고 학업, 잡일 또는 직장에서의 의무를 수행하지 못한다",
-  "과제와 활동을 체계화하는데 어려움이 있다",
-  "지속적인 정신적 노력을 요구하는 과제에 참여하기를 피하거나 싫어하거나 꺼린다",
-  "과제나 활동에 필요한 물건들을 잃어버린다",
-  "외부 자극에 의해 쉽게 산만해진다",
-  "일상적인 활동을 잊어버린다",
-  "손발을 가만히 두지 못하거나 의자에 앉아서도 몸을 꼼지락거린다",
-  "자리에 앉아 있어야 하는 상황에서 자리를 떠난다",
-  "부적절한 상황에서 뛰어다니거나 기어오른다",
-  "여가 활동이나 놀이에 조용히 참여하는데 어려움이 있다",
-  "'끊임없이 활동하거나' '마치 모터가 달린 것처럼' 행동한다",
-  "지나치게 수다스럽다",
-  "질문이 끝나기 전에 성급하게 대답한다",
-  "자신의 차례를 기다리는데 어려움이 있다",
-  "다른 사람을 방해하고 간섭한다"
+// AIH 아동 집중력 관찰 체크리스트 (완전 창작형)
+export const childFocusQuestions = [
+  "아이가 좋아하는 활동에 충분히 몰입하여 참여합니다",
+  "새로운 과제를 시작할 때 차근차근 접근하는 모습을 보입니다",
+  "대화할 때 상대방의 말을 끝까지 들어줍니다",
+  "시작한 일을 마무리까지 해내려고 노력합니다",
+  "자신만의 방식으로 체계적으로 일을 정리합니다",
+  "도전적인 과제에도 포기하지 않고 시도합니다",
+  "필요한 도구나 준비물을 스스로 챙깁니다",
+  "주변 상황을 파악하며 적절히 반응합니다",
+  "일상의 약속이나 규칙을 기억하고 지킵니다",
+  "앉아서 하는 활동에서 편안함을 느낍니다",
+  "정해진 자리에서 활동을 지속할 수 있습니다",
+  "실내에서 적절한 활동량을 조절합니다",
+  "조용한 활동에도 즐겁게 참여합니다",
+  "자신의 에너지를 상황에 맞게 조절합니다",
+  "대화할 때 적절한 양으로 표현합니다",
+  "상대방의 질문을 충분히 듣고 답변합니다",
+  "차례와 순서를 지키며 기다릴 수 있습니다",
+  "다른 사람과 조화롭게 어울려 활동합니다"
 ];
 
-// 주의집중력 자가체크 질문 (성인용)
-export const adultAdhdQuestions = [
-  "과제나 활동 중 세부사항에 주의를 기울이지 못하거나 부주의한 실수를 자주 한다",
-  "과제나 활동에서 지속적으로 주의를 집중하는데 어려움이 있다",
-  "직접 말을 걸어도 듣지 않는 것처럼 보인다",
-  "지시를 완수하지 못하고 일, 집안일 또는 직장에서의 의무를 수행하지 못한다",
-  "과제와 활동을 체계화하는데 어려움이 있다",
-  "지속적인 정신적 노력을 요구하는 과제에 참여하기를 피하거나 싫어하거나 꺼린다",
-  "과제나 활동에 필요한 물건들을 잃어버린다",
-  "외부 자극에 의해 쉽게 산만해진다",
-  "일상적인 활동에서 건망증을 보인다",
-  "손발을 가만히 두지 못하거나 의자에 앉아서도 몸을 꼼지락거린다",
-  "자리에 앉아 있어야 하는 상황에서 자리를 떠난다",
-  "부적절한 상황에서 안절부절못하거나 초조함을 느낀다",
-  "여가 활동에 조용히 참여하는데 어려움이 있다",
-  "'끊임없이 활동하거나' '마치 모터가 달린 것처럼' 행동한다",
-  "지나치게 수다스럽다",
-  "질문이 끝나기 전에 성급하게 대답한다",
-  "자신의 차례를 기다리는데 어려움이 있다",
-  "다른 사람을 방해하고 간섭한다"
+// AIH 성인 집중력 자가점검 (완전 창작형)
+export const adultFocusQuestions = [
+  "업무나 활동에서 꼼꼼함과 정확성을 추구합니다",
+  "중요한 일에 충분한 시간과 에너지를 투자할 수 있습니다",
+  "대화할 때 상대방에게 온전히 집중합니다",
+  "계획한 일을 단계적으로 완수해 나갑니다",
+  "업무나 활동을 나만의 시스템으로 정리합니다",
+  "어려운 과제에도 끝까지 도전하는 편입니다",
+  "필요한 자료나 도구를 미리 준비하고 관리합니다",
+  "주변 환경의 변화를 인식하고 적절히 대응합니다",
+  "중요한 약속이나 할 일을 기억하고 실행합니다",
+  "책상에 앉아서 하는 일에 편안함을 느낍니다",
+  "회의나 강의에서 자리를 지키며 참여합니다",
+  "긴장되는 상황에서도 침착함을 유지합니다",
+  "조용한 환경에서 집중하며 일할 수 있습니다",
+  "자신의 활동량을 상황에 맞게 조절합니다",
+  "말할 때 적절한 양과 속도를 유지합니다",
+  "상대방의 이야기를 끝까지 들어줍니다",
+  "회의나 토론에서 순서를 지키며 참여합니다",
+  "동료들과 협력하여 조화롭게 일합니다"
 ];
 
 // AIH 발달특성 선별체크 질문 (완전 창작형)

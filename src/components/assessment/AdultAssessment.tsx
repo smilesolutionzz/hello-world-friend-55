@@ -15,9 +15,9 @@ interface AdultAssessmentProps {
 const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
   // 모든 질문을 평면화
   const allQuestions: AssessmentQuestion[] = [
-    ...adultAssessmentQuestions.depressionScreening,
-    ...adultAssessmentQuestions.anxietyAssessment,
-    ...adultAssessmentQuestions.personalityFactors,
+    ...adultAssessmentQuestions.emotionalWellnessCheck,
+    ...adultAssessmentQuestions.mindPeaceCheck,
+    ...adultAssessmentQuestions.personalCharacteristics,
     ...adultAssessmentQuestions.workplaceAdaptation
   ];
 
@@ -54,9 +54,9 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
   };
 
   const getCategoryIcon = (questionId: string) => {
-    if (questionId.startsWith('dep_') || questionId.startsWith('anx_')) {
+    if (questionId.startsWith('emo_') || questionId.startsWith('peace_')) {
       return Heart;
-    } else if (questionId.startsWith('per_')) {
+    } else if (questionId.startsWith('char_')) {
       return Brain;
     } else if (questionId.startsWith('work_')) {
       return Briefcase;
@@ -66,24 +66,24 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
   };
 
   const getCategoryName = (questionId: string) => {
-    if (questionId.startsWith('dep_')) return "우울 스크리닝";
-    if (questionId.startsWith('anx_')) return "불안 평가";
-    if (questionId.startsWith('per_')) return "성격 5요인";
+    if (questionId.startsWith('emo_')) return "감정건강 체크";
+    if (questionId.startsWith('peace_')) return "마음평안 평가";
+    if (questionId.startsWith('char_')) return "개인특성 분석";
     if (questionId.startsWith('work_')) return "직장 적응도";
     return "심리평가";
   };
 
   const getCategoryColor = (questionId: string) => {
-    if (questionId.startsWith('dep_')) return "from-red-100 to-red-200 text-red-700";
-    if (questionId.startsWith('anx_')) return "from-orange-100 to-orange-200 text-orange-700";
-    if (questionId.startsWith('per_')) return "from-blue-100 to-blue-200 text-blue-700";
+    if (questionId.startsWith('emo_')) return "from-red-100 to-red-200 text-red-700";
+    if (questionId.startsWith('peace_')) return "from-orange-100 to-orange-200 text-orange-700";
+    if (questionId.startsWith('char_')) return "from-blue-100 to-blue-200 text-blue-700";
     if (questionId.startsWith('work_')) return "from-green-100 to-green-200 text-green-700";
     return "from-gray-100 to-gray-200 text-gray-700";
   };
 
   const getAnswerOptions = () => {
-    // 우울/불안 척도 기반 응답 옵션
-    if (currentQuestion.id.startsWith('dep_') || currentQuestion.id.startsWith('anx_')) {
+    // 감정건강/마음평안 척도 기반 응답 옵션
+    if (currentQuestion.id.startsWith('emo_') || currentQuestion.id.startsWith('peace_')) {
       return [
         { score: 0, label: "전혀 없음", description: "해당 증상이 전혀 없었습니다", color: "text-green-700 bg-green-50 border-green-200" },
         { score: 1, label: "경미함", description: "가끔 경미하게 느꼈습니다", color: "text-yellow-700 bg-yellow-50 border-yellow-200" },
@@ -224,13 +224,13 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
               <div className="bg-warm-lavender/20 p-4 rounded-xl">
                 <div className="text-sm space-y-1">
                   <p><strong>평가 도구:</strong> 
-                    {currentQuestion.id.startsWith('dep_') && " 우울증상 자가체크"}
-                    {currentQuestion.id.startsWith('anx_') && " 불안증상 자가체크"}
-                    {currentQuestion.id.startsWith('per_') && " Big Five Personality Factors"}
-                    {currentQuestion.id.startsWith('work_') && " Workplace Adaptation Scale"}
+                    {currentQuestion.id.startsWith('emo_') && " AIH 감정건강 자가체크"}
+                    {currentQuestion.id.startsWith('peace_') && " AIH 마음평안 체크"}
+                    {currentQuestion.id.startsWith('char_') && " AIH 개인특성 분석"}
+                    {currentQuestion.id.startsWith('work_') && " AIH 직장적응 척도"}
                   </p>
                   <p className="text-muted-foreground">
-                    전문적인 임상도구를 바탕으로 한 신뢰성 있는 평가입니다.
+                    AIH에서 개발한 창작형 평가도구로 신뢰성 있는 분석을 제공합니다.
                   </p>
                 </div>
               </div>

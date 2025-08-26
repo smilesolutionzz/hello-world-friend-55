@@ -19,7 +19,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
 
   // 기능별 그룹화
   const basicTests = [
-    { key: 'ADHD_TEST', name: '주의집중력 자가체크', icon: Target, category: '기본 검사' },
+    { key: 'FOCUS_CHECK', name: 'AIH 집중력 자가점검', icon: Target, category: '기본 검사' },
     { key: 'DEPRESSION_TEST', name: '우울감 자가체크', icon: Heart, category: '기본 검사' },
     { key: 'PANIC_TEST', name: '불안감 수준 확인', icon: Zap, category: '기본 검사' },
     { key: 'LANGUAGE_TEST', name: '언어발달 자가체크', icon: Brain, category: '기본 검사' },
@@ -51,7 +51,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
 
   const getRecommendedPath = () => [
     { step: 1, service: 'AI_COUNSELOR_CHAT', reason: '무료로 먼저 상담받기' },
-    { step: 2, service: 'ADHD_TEST', reason: '간단한 기본 검사로 시작' },
+    { step: 2, service: 'FOCUS_CHECK', reason: '개인 집중력 패턴 확인하기' },
     { step: 3, service: 'PSYCHOLOGICAL_TEST', reason: '종합적인 마음상태 확인' },
     { step: 4, service: 'AI_COACH', reason: '개인맞춤 코칭 받기' },
   ];

@@ -17,7 +17,7 @@ interface Service {
 
 const services: Service[] = [
   { key: 'AI_COUNSELOR_CHAT', name: 'AI 상담사 채팅', description: '무료로 마음 상담받기', category: 'free', recommended: true },
-  { key: 'ADHD_TEST', name: '주의집중력 자가체크', description: '간단한 기본 검사', category: 'basic', recommended: true },
+  { key: 'FOCUS_CHECK', name: 'AIH 집중력 자가점검', description: '개인 집중력 패턴 분석', category: 'basic', recommended: true },
   { key: 'DEPRESSION_TEST', name: '우울감 자가체크', description: '우울 수준 확인', category: 'basic' },
   { key: 'PANIC_TEST', name: '불안감 수준 확인', description: '불안 정도 측정', category: 'basic' },
   { key: 'LANGUAGE_TEST', name: '언어발달 자가체크', description: '언어 발달 상태 확인', category: 'basic' },

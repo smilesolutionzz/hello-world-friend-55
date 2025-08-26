@@ -9,6 +9,7 @@ import LanguageDevelopmentForm from "@/components/assessment/LanguageDevelopment
 import LanguageDevelopmentResult from "@/components/assessment/LanguageDevelopmentResult";
 import { 
   premiumAssessmentInfo,
+  developmentalScreeningInfo,
   personalityTypeAssessmentQuestions,
   temperamentAssessmentQuestions, 
   cognitiveAssessmentQuestions,
@@ -30,6 +31,7 @@ const PremiumAssessment = () => {
   const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
 
   const assessmentData = {
+    developmentalScreening: [], // 별도 페이지로 이동
     personality_type: Object.values(personalityTypeAssessmentQuestions).flat(),
     temperament: Object.values(temperamentAssessmentQuestions).flat(),
     cognitive: Object.values(cognitiveAssessmentQuestions).flat(),
@@ -43,6 +45,12 @@ const PremiumAssessment = () => {
   };
 
   const handleStartAssessment = (assessmentKey: string) => {
+    // 발달특성 선별체크는 별도 페이지로 이동
+    if (assessmentKey === 'developmentalScreening') {
+      navigate('/autism-screening');
+      return;
+    }
+    
     setSelectedAssessment(assessmentKey);
     setCurrentStep('assessment');
   };

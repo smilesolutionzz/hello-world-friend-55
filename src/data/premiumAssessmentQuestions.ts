@@ -1,6 +1,32 @@
 // 구독자용 심화 심리검사 데이터
 // 본 검사는 원저작과는 무관한 창작형 검사입니다.
 
+// 0. AIH 발달특성 선별체크 (발달센터 특화)
+export const developmentalScreeningInfo = {
+  title: "AIH 발달특성 선별체크",
+  subtitle: "발달센터 특화 선별도구",
+  description: "개인의 고유한 발달특성을 파악하고 강점과 지원 영역을 분석합니다",
+  features: [
+    "사회적 특성 분석",
+    "환경 적응성 평가", 
+    "개별 강점 발견",
+    "맞춤형 지원 방향 제시"
+  ],
+  duration: "5-7분",
+  targetAge: "아동청소년 및 성인",
+  category: "발달특성",
+  priority: 1,
+  highlight: true,
+  questions_count: 12,
+  premium_features: [
+    "발달특성 4영역 정밀분석",
+    "개인별 강점과 지원영역 도출",
+    "발달센터 연계 정보 제공",
+    "맞춤형 개별화 지원 방향"
+  ],
+  disclaimer: "본 검사는 AIH에서 독자 개발한 창작형 선별도구입니다."
+};
+
 // 1. 마음성향 분석검사 (독창적 4차원 성격 유형 분석)
 export const personalityTypeAssessmentQuestions = {
   social_energy: [
@@ -892,6 +918,7 @@ export const teenGrowthCapacityAssessmentQuestions = {
 // 각 검사별 표시명과 설명
 // 본 검사는 원저작과는 무관한 창작형 검사입니다.
 export const premiumAssessmentInfo = {
+  developmentalScreening: developmentalScreeningInfo,
   personality_type: {
     title: "마음성향 분석검사",
     subtitle: "창작형 4차원 성격유형 정밀분석",

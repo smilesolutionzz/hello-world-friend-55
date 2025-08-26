@@ -405,6 +405,43 @@ export const mockInstitutions = [
     partnership_status: 'active',
     partnership_start_date: '2024-02-28',
     commission_rate: 15.0
+  },
+  {
+    id: "inst-026",
+    name: "가까이한의원",
+    institution_type: "medical_center",
+    address: "서울특별시 강남구 신사동 123-45",
+    phone: "02-123-4567",
+    email: "info@gakkai-clinic.kr",
+    website_url: "https://gakkai-clinic.kr",
+    description: "한방 소아과 전문의원으로 아동의 성장발달과 정서안정을 위한 통합적 한방치료를 제공합니다.",
+    latitude: 37.5219,
+    longitude: 127.0411,
+    is_voucher_approved: true,
+    voucher_types: ["발달재활서비스", "언어발달지원"],
+    established_year: 2015,
+    total_experts: 4,
+    rating: 4.7,
+    review_count: 87,
+    profile_image_url: "/placeholder.svg",
+    gallery_images: ["/placeholder.svg", "/placeholder.svg"],
+    operating_hours: {
+      monday: "09:00-18:00",
+      tuesday: "09:00-18:00", 
+      wednesday: "09:00-18:00",
+      thursday: "09:00-18:00",
+      friday: "09:00-18:00",
+      saturday: "09:00-14:00",
+      sunday: "closed"
+    },
+    services_offered: ["한방 소아과", "성장클리닉", "한방신경정신과", "체질개선"],
+    specializations: ["소아한방치료", "성장발달", "정서안정", "체질개선"],
+    facilities: ["진료실", "침구치료실", "한약실", "상담실"],
+    parking_available: true,
+    accessibility_features: ["휠체어접근가능", "장애인화장실"],
+    partnership_status: "active",
+    partnership_start_date: "2024-03-25",
+    commission_rate: 16.0
   }
 ];
 

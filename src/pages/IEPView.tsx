@@ -565,6 +565,135 @@ const IEPView = () => {
             </Card>
           )}
         </div>
+
+        {/* AI 전문가 시스템 정보 */}
+        <Card className="mt-8 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-primary">
+              <Badge variant="default" className="bg-primary">AI 전문가</Badge>
+              개별교육계획 생성 시스템 신뢰성 정보
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* 전문가 페르소나 */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <h4 className="font-semibold text-primary flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  AI 전문가 페르소나
+                </h4>
+                <div className="bg-background/50 rounded-lg p-4 space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">경력:</span> 20년 이상의 특수교육 현장 경험
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">전문 분야:</span> 개별교육계획(IEP) 수립 및 실행
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">자격:</span> 특수교육 전문가, 교육과정 설계 전문
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">특기:</span> 학생 개개인의 특성을 고려한 맞춤형 교육계획 수립
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold text-primary flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  한국 특수교육법 준수
+                </h4>
+                <div className="bg-background/50 rounded-lg p-4 space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">법적 근거:</span> 장애인 등에 대한 특수교육법
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">준수 사항:</span> 개별화교육계획 작성 기준
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">교육과정:</span> 2022 개정 특수교육 교육과정 반영
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">품질 보장:</span> 법정 요구사항 완전 준수
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* SMART 기준 */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-primary flex items-center gap-2">
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
+                SMART 기준 목표 설정 시스템
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="bg-background/50 rounded-lg p-3 text-center">
+                  <div className="font-bold text-primary text-lg mb-1">S</div>
+                  <div className="text-sm font-medium mb-1">Specific</div>
+                  <div className="text-xs text-muted-foreground">구체적이고 명확한 목표</div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-3 text-center">
+                  <div className="font-bold text-primary text-lg mb-1">M</div>
+                  <div className="text-sm font-medium mb-1">Measurable</div>
+                  <div className="text-xs text-muted-foreground">측정 가능한 기준</div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-3 text-center">
+                  <div className="font-bold text-primary text-lg mb-1">A</div>
+                  <div className="text-sm font-medium mb-1">Achievable</div>
+                  <div className="text-xs text-muted-foreground">달성 가능한 수준</div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-3 text-center">
+                  <div className="font-bold text-primary text-lg mb-1">R</div>
+                  <div className="text-sm font-medium mb-1">Relevant</div>
+                  <div className="text-xs text-muted-foreground">연관성 있는 내용</div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-3 text-center">
+                  <div className="font-bold text-primary text-lg mb-1">T</div>
+                  <div className="text-sm font-medium mb-1">Time-bound</div>
+                  <div className="text-xs text-muted-foreground">시간 제한 설정</div>
+                </div>
+              </div>
+            </div>
+
+            {/* 품질 보장 */}
+            <div className="bg-primary/10 rounded-lg p-4">
+              <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
+                품질 보장 시스템
+              </h4>
+              <div className="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-muted-foreground">
+                    <span className="font-medium text-foreground">AI 모델:</span> GPT-5 (2025년 최신 버전)
+                  </p>
+                  <p className="text-muted-foreground">
+                    <span className="font-medium text-foreground">검증:</span> 특수교육 전문가 감수 프롬프트
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">
+                    <span className="font-medium text-foreground">업데이트:</span> 최신 교육법 및 가이드라인 반영
+                  </p>
+                  <p className="text-muted-foreground">
+                    <span className="font-medium text-foreground">정확성:</span> 연속적 품질 관리 및 개선
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 중요 안내사항 */}
+            <div className="border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/20 p-4">
+              <h5 className="font-semibold text-amber-800 dark:text-amber-200 mb-2">
+                ⚠️ 중요 안내사항
+              </h5>
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                본 AI 생성 개별교육계획은 전문적인 분석을 바탕으로 작성되었으나, 
+                <span className="font-medium"> 반드시 해당 학교의 특수교육교사 및 전문가의 검토와 승인을 받아 사용</span>하시기 바랍니다. 
+                개별 학생의 특성과 학교 환경에 따라 추가적인 수정이 필요할 수 있습니다.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

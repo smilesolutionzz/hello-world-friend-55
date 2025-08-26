@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useTokens } from "@/hooks/useTokens";
 import TokenGate from "@/components/TokenGate";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
 
 interface DreamInterpretationProps {
   onBack: () => void;
@@ -20,7 +21,7 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
   const { toast } = useToast();
   const { checkTokenAvailability, consumeTokens } = useTokens();
 
-  const TOKENS_REQUIRED = 5;
+  
 
   const handleSubmit = async () => {
     if (!dreamText.trim()) {
@@ -33,10 +34,10 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
     }
 
     // 토큰 확인
-    if (!checkTokenAvailability(TOKENS_REQUIRED)) {
+    if (!checkTokenAvailability(TOKEN_COSTS.DREAM_INTERPRETATION)) {
       toast({
         title: "토큰 부족",
-        description: `꿈해몽을 위해 ${TOKENS_REQUIRED}개의 토큰이 필요합니다.`,
+        description: `꿈해몽을 위해 ${TOKEN_COSTS.DREAM_INTERPRETATION}개의 토큰이 필요합니다.`,
         variant: "destructive"
       });
       return;
@@ -44,6 +45,17 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
 
     setIsLoading(true);
     try {
+      // 토큰 소진 먼저 진행
+      const tokenConsumed = await consumeTokens(TOKEN_COSTS.DREAM_INTERPRETATION);
+      if (!tokenConsumed) {
+        toast({
+          title: "토큰 소진 실패",
+          description: "토큰을 소진하는 중 오류가 발생했습니다.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('dream-interpreter', {
         body: { dreamText: dreamText.trim() }
       });
@@ -60,7 +72,7 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
       
       toast({
         title: "꿈 해몽 완료",
-        description: `AI가 꿈을 분석했습니다. ${TOKENS_REQUIRED}토큰이 사용되었습니다.`,
+        description: `AI가 꿈을 분석했습니다. ${TOKEN_COSTS.DREAM_INTERPRETATION}토큰이 사용되었습니다.`,
       });
     } catch (error: any) {
       console.error('Dream interpretation error:', error);
@@ -123,7 +135,7 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
             <div className="flex items-center justify-center gap-2 mt-2">
               <Badge variant="secondary" className="flex items-center gap-1 bg-purple-500/20 text-purple-300 border-purple-400/30">
                 <Coins className="w-3 h-3" />
-                {TOKENS_REQUIRED}토큰 필요
+                {TOKEN_COSTS.DREAM_INTERPRETATION}토큰 필요
               </Badge>
             </div>
           </div>

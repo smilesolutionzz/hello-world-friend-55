@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useTokens } from "@/hooks/useTokens";
 import TokenGate from "@/components/TokenGate";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
 
 interface SajuAnalysisProps {
   onBack: () => void;
@@ -27,8 +28,6 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { checkTokenAvailability, consumeTokens } = useTokens();
-
-  const TOKENS_REQUIRED = 8;
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -50,10 +49,10 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
     }
 
     // 토큰 확인
-    if (!checkTokenAvailability(TOKENS_REQUIRED)) {
+    if (!checkTokenAvailability(TOKEN_COSTS.SAJU_ANALYSIS)) {
       toast({
         title: "토큰 부족",
-        description: `사주 분석에는 ${TOKENS_REQUIRED}토큰이 필요합니다. 토큰을 충전해주세요.`,
+        description: `사주 분석에는 ${TOKEN_COSTS.SAJU_ANALYSIS}토큰이 필요합니다. 토큰을 충전해주세요.`,
         variant: "destructive"
       });
       return;
@@ -61,6 +60,17 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
 
     setIsLoading(true);
     try {
+      // 토큰 소진 먼저 진행
+      const tokenConsumed = await consumeTokens(TOKEN_COSTS.SAJU_ANALYSIS);
+      if (!tokenConsumed) {
+        toast({
+          title: "토큰 소진 실패",
+          description: "토큰을 소진하는 중 오류가 발생했습니다.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('saju-analyzer', {
         body: formData
       });
@@ -79,7 +89,7 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
       
       toast({
         title: "사주 분석 완료",
-        description: `AI가 사주를 분석했습니다. ${TOKENS_REQUIRED}토큰이 사용되었습니다.`,
+        description: `AI가 사주를 분석했습니다. ${TOKEN_COSTS.SAJU_ANALYSIS}토큰이 사용되었습니다.`,
       });
     } catch (error: any) {
       console.error('Saju analysis error:', error);
@@ -148,7 +158,7 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
             <div className="flex items-center justify-center gap-2 mt-2">
               <Badge variant="secondary" className="flex items-center gap-1 bg-orange-500/20 text-orange-300 border-orange-400/30">
                 <Coins className="w-3 h-3" />
-                {TOKENS_REQUIRED}토큰 필요
+                {TOKEN_COSTS.SAJU_ANALYSIS}토큰 필요
               </Badge>
             </div>
           </div>

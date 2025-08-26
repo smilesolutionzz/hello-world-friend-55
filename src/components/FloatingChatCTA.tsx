@@ -18,7 +18,7 @@ const FloatingChatCTA = () => {
                      transition-all duration-300 flex items-center gap-2 animate-pulse"
           >
             <MessageCircle className="w-5 h-5" />
-            <span className="font-medium">질문 있으시까지?</span>
+            <span className="font-medium">질문 있나요?</span>
           </Button>
         ) : (
           <div className="relative">

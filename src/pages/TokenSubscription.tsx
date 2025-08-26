@@ -371,58 +371,89 @@ const TokenSubscription = () => {
 
                 <div className="prose prose-lg max-w-none text-foreground/90 leading-relaxed space-y-6">
                   <p className="text-lg md:text-xl text-center font-medium text-primary mb-8">
-                    "안녕하세요, AI 하이라이트 프로를 만든 개발자입니다."
+                    "사랑하는 하이라이트 프로의 첫 번째 이용자님께"
                   </p>
                   
                   <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/30">
                     <p className="mb-6 text-base md:text-lg leading-relaxed">
-                      지난 몇 달 동안 매일 밤을 새워가며, 하나하나 직접 코드를 작성하고 
-                      AI 모델을 훈련시키며 이 플랫폼을 만들어왔습니다. 
-                      왜 이렇게 힘든 길을 선택했을까요?
+                      안녕하세요. 저는 하이라이트 프로를 밤새 개발하며 몇 달 동안 준비해온 사람입니다.
+                    </p>
+                    
+                    <p className="mb-6 text-base md:text-lg leading-relaxed">
+                      처음 이 플랫폼을 시작한 이유는 단순했습니다.<br/>
+                      <span className="font-semibold text-primary">
+                        "내 아이의 발달, 내 마음의 상태, 부모님의 건강을 조금 더 쉽게 지켜볼 수 있다면 얼마나 좋을까?"
+                      </span>
                     </p>
                     
                     <p className="mb-6 text-base md:text-lg leading-relaxed">
                       지난 <span className="font-bold text-primary">14년 동안</span> 
                       유소년 스포츠클럽, 발달센터, 심리상담센터, 그리고 병원 발달클리닉을 운영하며 
-                      수많은 학부모님들과 아이들을 만났습니다. 
-                      그 과정에서 저는 깨달았습니다.
+                      수많은 분들을 만났습니다. 그 과정에서 저는 깨달았습니다.
                     </p>
                     
                     <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 my-8 border-l-4 border-primary">
                       <p className="text-base md:text-lg leading-relaxed font-medium italic">
-                        "우리 아이가 정상적으로 자라고 있는 걸까?"<br/>
-                        "혹시 뭔가 놓치고 있는 건 아닐까?"<br/>
-                        "전문가의 도움이 필요한데 어디서 시작해야 할까?"
+                        아이의 언어 발달이 늦는 건 아닐까,<br/>
+                        친구 관계에서 힘들어하지는 않을까,<br/>
+                        직장에서의 스트레스가 너무 심한 건 아닐까,<br/>
+                        부모님이 혹시 기억력이나 생활능력에 변화를 겪고 계시지는 않을까…
                       </p>
                     </div>
                     
                     <p className="mb-6 text-base md:text-lg leading-relaxed">
-                      이런 고민들이 얼마나 절실하고 간절한지, 
-                      그리고 답을 찾기까지 얼마나 오랜 시간과 비용이 드는지 누구보다 잘 알고 있습니다.
-                      전문가를 만나기까지 몇 달을 기다려야 하고, 
-                      비싼 검사비용 때문에 망설이시는 부모님들의 마음이 너무나 잘 보였습니다.
+                      현장에서 만난 아이들, 부모님들, 그리고 치열하게 살아가는 성인과 노인분들까지…
+                      각자의 고민과 어려움이 있음에도 쉽게 도움을 받을 길이 없는 현실을 보며,
+                      제가 가진 기술과 경험으로 무엇을 바꿀 수 있을지 고민했습니다.
                     </p>
                     
                     <p className="mb-6 text-base md:text-lg leading-relaxed">
-                      그래서 결심했습니다. 
-                      <span className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        "14년간 현장에서 쌓은 경험과 최첨단 AI 기술을 결합해서, 
-                        모든 부모님들이 쉽고 빠르게 전문가 수준의 분석을 받을 수 있게 하자"
-                      </span>
-                      고 말입니다.
+                      전문가를 만나기까지 몇 달을 기다려야 하고, 
+                      비싼 검사비용 때문에 망설이시는 분들의 마음이 너무나 잘 보였습니다.
+                      그래서 마음먹었습니다.
+                    </p>
+                    
+                    <div className="bg-gradient-to-br from-accent/20 to-primary/20 rounded-xl p-6 my-8 border border-primary/30">
+                      <p className="text-lg font-bold text-center text-primary mb-4">
+                        "누구나 단 3분이면, 내 마음과 내 가족의 상태를 쉽게 확인하고 기록할 수 있게 만들자."
+                      </p>
+                      <p className="text-base md:text-lg leading-relaxed text-center">
+                        그렇게 만들어진 것이 바로 하이라이트 프로입니다.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-warm-cream to-soft-lavender/50 rounded-2xl p-6 md:p-8 shadow-lg border border-primary/20">
+                    <div className="text-center mb-6">
+                      <p className="text-xl font-bold text-primary mb-4">짧게 남긴 기록이 데이터가 되고</p>
+                      <p className="text-xl font-bold text-primary mb-4">AI가 빠르게 분석하고</p>
+                      <p className="text-xl font-bold text-primary">필요하다면 전문가가 함께 코멘트를 더해주는 시스템</p>
+                    </div>
+                    
+                    <p className="text-base md:text-lg leading-relaxed mb-6">
+                      작은 기록이 쌓여서, 어느 순간 큰 변화를 예방할 수 있다면,
+                      그것만으로도 이 플랫폼이 존재할 이유가 충분하다고 생각합니다.
+                    </p>
+                    
+                    <p className="text-base md:text-lg leading-relaxed mb-6">
+                      3분의 짧은 검사와 기록이 쌓여, 한 사람의 삶을 지켜낼 수 있다면.
+                      AI가 빠르게 해석하고, 검증된 전문가가 마지막 터치를 더해
+                      누군가에게 <span className="font-bold text-primary">"당신은 혼자가 아닙니다"</span>라는 메시지를 줄 수 있다면.
+                      그것만으로도 충분히 의미 있는 길이라고 믿습니다.
                     </p>
                   </div>
                   
-                  <div className="bg-gradient-to-br from-accent/20 to-primary/20 rounded-2xl p-6 md:p-8 shadow-lg border border-primary/20">
-                    <p className="text-base md:text-lg leading-relaxed mb-4">
-                      이 <span className="font-bold text-primary">AI 하이라이트 프로</span>가 
-                      여러분과 아이들에게 한 줄기 빛이 되기를 간절히 바랍니다.
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/50">
+                    <p className="text-base md:text-lg leading-relaxed mb-6">
+                      저희는 단순한 기술이 아니라, <span className="font-bold text-primary">사람을 위한 도구</span>를 만들고 있습니다.
+                      아직 부족한 점이 많습니다. 하지만 저는 한 발짝이라도 먼저 내디뎌서,
+                      발달센터와 병원, 주간보호센터, 그리고 가족에게 
+                      '신뢰할 수 있는 기록과 분석의 파트너'가 되고 싶습니다.
                     </p>
                     
-                    <p className="text-base md:text-lg leading-relaxed mb-4">
-                      더 이상 혼자 고민하지 마세요. 
-                      더 이상 전문가를 만나기까지 몇 달을 기다리지 마세요. 
-                      바로 지금, 여기서 시작하세요.
+                    <p className="text-base md:text-lg leading-relaxed mb-6">
+                      당신이 오늘 남긴 작은 기록이, 내일의 안심으로 이어지기를 바라며,
+                      저는 오늘도 밤을 새워 이 플랫폼을 다듬고 있습니다.
                     </p>
                     
                     <p className="text-lg md:text-xl font-bold text-center text-primary mt-6">
@@ -433,6 +464,10 @@ const TokenSubscription = () => {
                   
                   <div className="text-center mt-8">
                     <div className="inline-block">
+                      <p className="text-lg text-muted-foreground mb-4">
+                        하이라이트 프로와 함께 걸어주셔서 감사합니다.<br/>
+                        앞으로의 여정에서 더 많은 가치를 드릴 수 있도록 최선을 다하겠습니다.
+                      </p>
                       <p className="text-lg text-muted-foreground mb-2">마음을 담아</p>
                       <div className="flex items-center gap-3 justify-center">
                         <div className="w-8 h-0.5 bg-gradient-to-r from-transparent to-primary"></div>

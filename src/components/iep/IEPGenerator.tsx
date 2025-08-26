@@ -4,9 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { FileText, Brain, Target, Users, Clock, CheckCircle } from 'lucide-react';
+import { FileText, Brain, Target, Users, Clock, CheckCircle, Coins } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTokens } from '@/hooks/useTokens';
+import { TOKEN_COSTS } from '@/constants/tokenCosts';
+import TokenGate from '@/components/TokenGate';
 
 interface IEPGeneratorProps {
   assessmentResults?: Record<string, any>;
@@ -20,12 +23,24 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
   const [parentConcerns, setParentConcerns] = useState('');
   const [teacherObservations, setTeacherObservations] = useState('');
   const { toast } = useToast();
+  const { consumeTokens, checkTokenAvailability, loading: tokenLoading } = useTokens();
 
   const handleGenerateIEP = async () => {
     if (!studentName || !studentAge) {
       toast({
         title: "입력 필요",
         description: "학생 이름과 나이를 입력해주세요.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // 토큰 소진 시도
+    const tokenConsumed = await consumeTokens(TOKEN_COSTS.IEP_GENERATION);
+    if (!tokenConsumed) {
+      toast({
+        title: "토큰 부족",
+        description: `IEP 생성에는 ${TOKEN_COSTS.IEP_GENERATION}토큰이 필요합니다.`,
         variant: "destructive"
       });
       return;
@@ -50,7 +65,7 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
       if (data.success) {
         toast({
           title: "IEP 생성 완료",
-          description: "개별교육계획이 성공적으로 생성되었습니다.",
+          description: `개별교육계획이 성공적으로 생성되었습니다. (${TOKEN_COSTS.IEP_GENERATION}토큰 소진)`,
         });
         
         if (onGenerated) {
@@ -71,6 +86,18 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
       setIsGenerating(false);
     }
   };
+
+  // 토큰 확인 컴포넌트
+  if (!checkTokenAvailability(TOKEN_COSTS.IEP_GENERATION)) {
+    return (
+      <TokenGate
+        tokensRequired={TOKEN_COSTS.IEP_GENERATION}
+        featureName="IEP 생성"
+        onProceed={handleGenerateIEP}
+        category="premium"
+      />
+    );
+  }
 
   return (
     <Card className="max-w-4xl mx-auto">
@@ -193,10 +220,26 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
           </CardContent>
         </Card>
 
+        {/* 토큰 안내 */}
+        <Card className="bg-amber-50 border-amber-200">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <Coins className="w-5 h-5 text-amber-600" />
+              <div>
+                <h3 className="font-semibold text-amber-900">토큰 사용 안내</h3>
+                <p className="text-amber-800 text-sm">
+                  IEP 생성에는 <strong>{TOKEN_COSTS.IEP_GENERATION}토큰</strong>이 소진됩니다. 
+                  고품질 AI 분석으로 맞춤형 교육계획을 제공합니다.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* 생성 버튼 */}
         <Button
           onClick={handleGenerateIEP}
-          disabled={isGenerating || !studentName || !studentAge}
+          disabled={isGenerating || !studentName || !studentAge || tokenLoading}
           className="w-full py-6 text-lg"
           size="lg"
         >
@@ -208,7 +251,7 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
           ) : (
             <div className="flex items-center gap-2">
               <FileText className="w-5 h-5" />
-              개별교육계획(IEP) 생성하기
+              개별교육계획(IEP) 생성하기 ({TOKEN_COSTS.IEP_GENERATION}토큰)
             </div>
           )}
         </Button>

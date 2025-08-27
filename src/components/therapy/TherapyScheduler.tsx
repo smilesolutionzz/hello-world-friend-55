@@ -55,6 +55,7 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
   const [selectedEvent, setSelectedEvent] = useState<Appointment | null>(null);
   const [showAppointmentDialog, setShowAppointmentDialog] = useState(false);
+  const [showDeleteConfirmDialog, setShowDeleteConfirmDialog] = useState(false);
   const [showTherapistDialog, setShowTherapistDialog] = useState(false);
   const { toast } = useToast();
 
@@ -227,7 +228,7 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
     return appointments;
   };
 
-  const deleteAppointment = async () => {
+  const confirmDelete = async () => {
     if (!selectedEvent) return;
     
     try {
@@ -243,6 +244,7 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
         description: "치료 일정이 삭제되었습니다.",
       });
 
+      setShowDeleteConfirmDialog(false);
       setShowAppointmentDialog(false);
       setSelectedEvent(null);
       await fetchAppointments();
@@ -753,7 +755,7 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
             {selectedEvent && (
               <Button 
                 variant="destructive" 
-                onClick={deleteAppointment}
+                onClick={() => setShowDeleteConfirmDialog(true)}
                 className="h-12 text-base px-6"
               >
                 삭제
@@ -766,6 +768,34 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
                 setSelectedEvent(null);
               }}
               className="flex-1 h-12 text-base"
+            >
+              취소
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* 삭제 확인 다이얼로그 */}
+      <Dialog open={showDeleteConfirmDialog} onOpenChange={setShowDeleteConfirmDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>일정 삭제</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-center text-lg">진짜 삭제하시겠습니까?</p>
+          </div>
+          <div className="flex gap-3 pt-4">
+            <Button 
+              variant="destructive" 
+              onClick={confirmDelete}
+              className="flex-1"
+            >
+              확인
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowDeleteConfirmDialog(false)}
+              className="flex-1"
             >
               취소
             </Button>

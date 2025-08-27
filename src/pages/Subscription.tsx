@@ -333,7 +333,7 @@ const Subscription = () => {
               <CardContent className="space-y-4">
                 <div>
                   <h4 className="font-medium mb-2">Q. 제휴기관 수익분배는 어떻게 되나요?</h4>
-                  <p className="text-sm text-muted-foreground">상담/치료 80%, 검사/평가 70%, 관찰일지 리뷰 75%, 보고서 작성 65%가 기관 수익입니다. 월 매출에 따른 성과 보너스도 추가 제공됩니다.</p>
+                  <p className="text-sm text-muted-foreground">상담/치료 70%, 온라인전문가리포팅 보고서작성 50%, 관찰일지리뷰 50%가 기관 수익입니다. 월 매출에 따른 성과 보너스도 추가 제공됩니다.</p>
                 </div>
                 <div>
                   <h4 className="font-medium mb-2">Q. 개별 치료사 수익구조는 어떤가요?</h4>

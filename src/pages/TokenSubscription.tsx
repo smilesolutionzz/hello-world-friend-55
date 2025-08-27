@@ -370,8 +370,9 @@ const TokenSubscription = () => {
                 </div>
 
                 <div className="prose prose-lg max-w-none text-foreground/90 leading-relaxed space-y-6">
-                  <p className="text-lg md:text-xl text-center font-medium text-primary mb-8 break-keep">
-                    "사랑하는 하이라이트 프로의 첫 번째 이용자님께"
+                  <p className="text-lg md:text-xl text-center font-medium text-primary mb-8 break-keep leading-relaxed">
+                    "사랑하는 하이라이트 프로의<br className="hidden sm:block"/>
+                    <span className="sm:hidden"> </span>첫 번째 이용자님께"
                   </p>
                   
                   <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/30">

@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_analytics: {
+        Row: {
+          active_subscribers: number | null
+          id: string
+          last_updated: string | null
+          total_observations: number | null
+          total_revenue: number | null
+          total_subscribers: number | null
+          total_tests: number | null
+          total_users: number | null
+          users_with_observations: number | null
+          users_with_tests: number | null
+        }
+        Insert: {
+          active_subscribers?: number | null
+          id?: string
+          last_updated?: string | null
+          total_observations?: number | null
+          total_revenue?: number | null
+          total_subscribers?: number | null
+          total_tests?: number | null
+          total_users?: number | null
+          users_with_observations?: number | null
+          users_with_tests?: number | null
+        }
+        Update: {
+          active_subscribers?: number | null
+          id?: string
+          last_updated?: string | null
+          total_observations?: number | null
+          total_revenue?: number | null
+          total_subscribers?: number | null
+          total_tests?: number | null
+          total_users?: number | null
+          users_with_observations?: number | null
+          users_with_tests?: number | null
+        }
+        Relationships: []
+      }
       admin_notifications: {
         Row: {
           created_at: string
@@ -1918,19 +1957,7 @@ export type Database = {
       }
     }
     Views: {
-      admin_analytics: {
-        Row: {
-          active_subscribers: number | null
-          total_observations: number | null
-          total_revenue: number | null
-          total_subscribers: number | null
-          total_tests: number | null
-          total_users: number | null
-          users_with_observations: number | null
-          users_with_tests: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       add_daily_tokens: {
@@ -1948,19 +1975,6 @@ export type Database = {
       generate_referral_code: {
         Args: Record<PropertyKey, never>
         Returns: string
-      }
-      get_admin_analytics: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          active_subscribers: number
-          total_observations: number
-          total_revenue: number
-          total_subscribers: number
-          total_tests: number
-          total_users: number
-          users_with_observations: number
-          users_with_tests: number
-        }[]
       }
       get_monthly_usage: {
         Args: { p_feature_type: string; p_user_id: string }
@@ -1980,6 +1994,10 @@ export type Database = {
       process_referral_reward: {
         Args: { p_referee_id: string; p_referral_code: string }
         Returns: boolean
+      }
+      refresh_admin_analytics: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       track_feature_usage: {
         Args: { p_feature_type: string; p_user_id: string }

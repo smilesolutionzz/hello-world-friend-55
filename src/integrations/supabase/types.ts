@@ -1738,6 +1738,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      make_user_admin: {
+        Args: { target_email: string }
+        Returns: boolean
+      }
       process_referral_reward: {
         Args: { p_referee_id: string; p_referral_code: string }
         Returns: boolean

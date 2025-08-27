@@ -178,86 +178,154 @@ const Subscription = () => {
             <p className="text-lg text-muted-foreground">
               AI 기술을 활용한 전문적인 심리분석 및 발달진단 플랫폼입니다
             </p>
+            <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+              <p className="text-base font-medium text-blue-800">
+                ⚡ <strong>지금 시작하면</strong> 무료 10토큰 + 3분만에 내 마음 상태를 정확히 알 수 있습니다!
+              </p>
+            </div>
           </div>
           
           <div className="grid gap-8 md:grid-cols-2">
-            <Card>
+            <Card className="border-l-4 border-l-blue-500">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Crown className="w-5 h-5 text-primary" />
                   핵심 기능
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-4">
                 <div className="flex items-start gap-3">
                   <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium">3분 심리검사</h4>
+                    <h4 className="font-medium">⚡ 3분 심리검사</h4>
                     <p className="text-sm text-muted-foreground">빠르고 정확한 심리상태 체크</p>
+                    <div className="text-xs text-blue-600 font-medium mt-1">
+                      💡 커피 한 잔 마시는 시간에 내 마음 상태 완벽 분석!
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium">AI 분석 리포트</h4>
+                    <h4 className="font-medium">🤖 AI 분석 리포트</h4>
                     <p className="text-sm text-muted-foreground">개인 맞춤형 상세 분석 결과</p>
+                    <div className="text-xs text-blue-600 font-medium mt-1">
+                      🎯 나만의 맞춤 솔루션까지 제공!
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium">전문가 상담</h4>
+                    <h4 className="font-medium">👨‍⚕️ 전문가 상담</h4>
                     <p className="text-sm text-muted-foreground">AI → 전문가 연계 상담 시스템</p>
+                    <div className="text-xs text-blue-600 font-medium mt-1">
+                      💰 필요할 때만! 10분의 1 비용으로!
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium">가족 케어</h4>
+                    <h4 className="font-medium">👨‍👩‍👧‍👦 가족 케어</h4>
                     <p className="text-sm text-muted-foreground">가족 구성원 통합 관리</p>
+                    <div className="text-xs text-blue-600 font-medium mt-1">
+                      🏠 온 가족의 마음 건강을 한 번에!
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
             
-            <Card>
+            <Card className="border-l-4 border-l-purple-500">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Star className="w-5 h-5 text-primary" />
                   특별한 장점
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-4">
                 <div className="flex items-start gap-3">
                   <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium">AI 기반 정확성</h4>
+                    <h4 className="font-medium">🎯 AI 기반 정확성</h4>
                     <p className="text-sm text-muted-foreground">최신 AI 모델로 높은 분석 정확도</p>
+                    <div className="text-xs text-purple-600 font-medium mt-1">
+                      📊 95% 이상의 놀라운 정확도!
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium">24시간/매일 접근성</h4>
+                    <h4 className="font-medium">🕐 24시간/매일 접근성</h4>
                     <p className="text-sm text-muted-foreground">언제든지 검사 및 상담 가능</p>
+                    <div className="text-xs text-purple-600 font-medium mt-1">
+                      🌙 새벽 3시에도, 주말에도 OK!
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium">개인정보 보호</h4>
+                    <h4 className="font-medium">🔒 개인정보 보호</h4>
                     <p className="text-sm text-muted-foreground">철저한 데이터 암호화 및 보안</p>
+                    <div className="text-xs text-purple-600 font-medium mt-1">
+                      🛡️ 은행급 보안으로 100% 안전!
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium">합리적 비용</h4>
+                    <h4 className="font-medium">💝 합리적 비용</h4>
                     <p className="text-sm text-muted-foreground">전통적 상담 대비 경제적</p>
+                    <div className="text-xs text-purple-600 font-medium mt-1">
+                      💸 병원비 20만원 → 토큰 2개 (2천원)!
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
+          </div>
+          
+          {/* CTA 섹션 추가 */}
+          <div className="mt-12 text-center">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-8 shadow-xl">
+              <h3 className="text-2xl font-bold mb-4">🚀 지금 시작하지 않으면 후회할 이유</h3>
+              <div className="grid gap-4 md:grid-cols-3 mb-6">
+                <div className="bg-white/10 rounded-lg p-4">
+                  <div className="text-xl font-bold">⏰ 3분</div>
+                  <div className="text-sm">검사 시간</div>
+                </div>
+                <div className="bg-white/10 rounded-lg p-4">
+                  <div className="text-xl font-bold">💰 90% 절약</div>
+                  <div className="text-sm">병원 대비</div>
+                </div>
+                <div className="bg-white/10 rounded-lg p-4">
+                  <div className="text-xl font-bold">🎯 95% 정확도</div>
+                  <div className="text-sm">AI 분석</div>
+                </div>
+              </div>
+              <p className="text-lg mb-6">
+                <strong>매일 밤 "우리 아이 괜찮을까?" 걱정하는 시간에</strong><br/>
+                <strong>단 3분으로 확실한 답을 얻으세요!</strong>
+              </p>
+              <div className="flex justify-center gap-4">
+                <button 
+                  onClick={() => navigate('/token-subscription')}
+                  className="bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition-colors"
+                >
+                  💎 토큰 구매하고 지금 시작하기
+                </button>
+                <button 
+                  onClick={() => navigate('/assessment')}
+                  className="border-2 border-white text-white px-8 py-3 rounded-lg font-bold hover:bg-white/10 transition-colors"
+                >
+                  🆓 무료로 먼저 체험하기
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

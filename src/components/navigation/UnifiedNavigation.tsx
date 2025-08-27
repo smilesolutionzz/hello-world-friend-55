@@ -17,13 +17,15 @@ import {
   UserCheck,
   History,
   HelpCircle,
-  Mail
+  Mail,
+  X
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useTokens } from '@/hooks/useTokens';
 import { supabase } from '@/integrations/supabase/client';
 import TokenBalance from '@/components/TokenBalance';
+import AIPlatformChat from '@/components/AIPlatformChat';
 import secretTalkCharacter from '@/assets/secret-talk-character.png';
 
 interface NavigationItem {
@@ -51,6 +53,7 @@ export const UnifiedNavigation = () => {
   const location = useLocation();
   const { user } = useAuthGuard();
   const [isOpen, setIsOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -63,8 +66,8 @@ export const UnifiedNavigation = () => {
   };
 
   const handleFAQ = () => {
-    // FAQ 페이지나 도움말 섹션으로 이동
-    navigate('/faq');
+    // AI 채팅 열기
+    setIsChatOpen(true);
     setIsOpen(false);
   };
 
@@ -280,6 +283,23 @@ export const UnifiedNavigation = () => {
           </div>
         </div>
       </nav>
+      
+      {/* AI 채팅 모달 */}
+      {isChatOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="relative">
+            <Button
+              onClick={() => setIsChatOpen(false)}
+              variant="outline"
+              size="icon"
+              className="absolute -top-2 -right-2 z-10 bg-white shadow-md rounded-full w-8 h-8"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+            <AIPlatformChat onClose={() => setIsChatOpen(false)} />
+          </div>
+        </div>
+      )}
     </>
   );
 };

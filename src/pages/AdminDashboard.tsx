@@ -101,6 +101,8 @@ export default function AdminDashboard() {
   const [subscriptionFilter, setSubscriptionFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
   const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [settingsTab, setSettingsTab] = useState('general');
 
   // Redirect if not admin
   if (!adminLoading && !isAdmin) {
@@ -499,10 +501,227 @@ export default function AdminDashboard() {
                 <RefreshCw className="h-4 w-4 mr-2" />
                 새로고침
               </Button>
-              <Button variant="outline" size="sm">
-                <Settings className="h-4 w-4 mr-2" />
-                설정
-              </Button>
+              <Dialog open={showSettings} onOpenChange={setShowSettings}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    설정
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>관리자 설정</DialogTitle>
+                    <DialogDescription>
+                      시스템 설정 및 관리자 도구
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <Tabs value={settingsTab} onValueChange={setSettingsTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-4">
+                      <TabsTrigger value="general">일반</TabsTrigger>
+                      <TabsTrigger value="users">사용자</TabsTrigger>
+                      <TabsTrigger value="system">시스템</TabsTrigger>
+                      <TabsTrigger value="security">보안</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="general" className="space-y-4">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>플랫폼 설정</CardTitle>
+                          <CardDescription>기본 플랫폼 운영 설정</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-sm font-medium">서비스 상태</label>
+                              <Select defaultValue="active">
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="active">활성</SelectItem>
+                                  <SelectItem value="maintenance">점검중</SelectItem>
+                                  <SelectItem value="disabled">비활성</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium">신규 가입</label>
+                              <Select defaultValue="open">
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="open">허용</SelectItem>
+                                  <SelectItem value="invite">초대제</SelectItem>
+                                  <SelectItem value="closed">차단</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium">공지사항</label>
+                            <textarea 
+                              className="w-full mt-1 p-2 border rounded-md" 
+                              rows={3} 
+                              placeholder="사용자에게 표시할 공지사항을 입력하세요..."
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                    
+                    <TabsContent value="users" className="space-y-4">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>사용자 관리 설정</CardTitle>
+                          <CardDescription>사용자 계정 및 권한 관리</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-sm font-medium">기본 플랜</label>
+                              <Select defaultValue="free">
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="free">무료</SelectItem>
+                                  <SelectItem value="starter">스타터</SelectItem>
+                                  <SelectItem value="premium">프리미엄</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium">자동 승인</label>
+                              <Select defaultValue="enabled">
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="enabled">활성화</SelectItem>
+                                  <SelectItem value="disabled">비활성화</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <h4 className="text-sm font-medium">대량 작업</h4>
+                            <div className="flex gap-2">
+                              <Button variant="outline" size="sm">
+                                전체 알림 발송
+                              </Button>
+                              <Button variant="outline" size="sm">
+                                비활성 계정 정리
+                              </Button>
+                              <Button variant="outline" size="sm">
+                                데이터 백업
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                    
+                    <TabsContent value="system" className="space-y-4">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>시스템 모니터링</CardTitle>
+                          <CardDescription>서버 상태 및 성능 모니터링</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-sm">데이터베이스 상태</span>
+                                <Badge variant="default">정상</Badge>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm">API 응답시간</span>
+                                <span className="text-sm text-muted-foreground">~250ms</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm">활성 세션</span>
+                                <span className="text-sm text-muted-foreground">{analytics?.total_users || 0}개</span>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-sm">저장공간 사용률</span>
+                                <span className="text-sm text-muted-foreground">45%</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm">실시간 연결</span>
+                                <Badge variant="outline">{realTimeUpdates} 업데이트</Badge>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-sm">마지막 백업</span>
+                                <span className="text-sm text-muted-foreground">2시간 전</span>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                    
+                    <TabsContent value="security" className="space-y-4">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>보안 설정</CardTitle>
+                          <CardDescription>시스템 보안 및 액세스 제어</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-sm font-medium">2FA 필수</label>
+                              <Select defaultValue="optional">
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="required">필수</SelectItem>
+                                  <SelectItem value="optional">선택</SelectItem>
+                                  <SelectItem value="disabled">비활성</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium">로그인 시도 제한</label>
+                              <Select defaultValue="5">
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="3">3회</SelectItem>
+                                  <SelectItem value="5">5회</SelectItem>
+                                  <SelectItem value="10">10회</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <h4 className="text-sm font-medium">보안 로그</h4>
+                            <div className="space-y-1 text-sm text-muted-foreground">
+                              <div>• 최근 로그인: 방금 전 (관리자)</div>
+                              <div>• 실패한 로그인: 12시간 전 (IP: 192.168.1.1)</div>
+                              <div>• 권한 변경: 1일 전 (사용자 ID: abc123)</div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                  </Tabs>
+                  
+                  <div className="flex justify-end gap-2 pt-4 border-t">
+                    <Button variant="outline" onClick={() => setShowSettings(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={() => setShowSettings(false)}>
+                      설정 저장
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>

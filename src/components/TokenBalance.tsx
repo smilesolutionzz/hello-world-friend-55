@@ -158,14 +158,14 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
               </Button>
 
 
-              {/* 충전 버튼 */}
+              {/* 자주묻는질문 버튼 */}
               <Button
-                onClick={() => navigate('/token-subscription')}
+                onClick={() => navigate('/subscription#faq')}
                 className="w-full"
                 variant={isLowBalance ? "default" : "outline"}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                토큰 충전하기
+                자주묻는질문
               </Button>
 
               {/* 추천 혜택 안내 */}
@@ -209,12 +209,12 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
             <div className="space-y-2">
               <Button
                 size="sm"
-                onClick={() => navigate('/token-subscription')}
+                onClick={() => navigate('/subscription#faq')}
                 className="w-full"
                 variant={isLowBalance ? "default" : "outline"}
               >
                 <Plus className="w-3 h-3 mr-1" />
-                토큰 충전
+                자주묻는질문
               </Button>
               {tokenBalance && (
                 <div className="text-xs text-center text-muted-foreground space-y-1">

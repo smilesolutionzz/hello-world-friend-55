@@ -452,10 +452,19 @@ const Navigation = () => {
                   <Button
                     variant="ghost"
                     className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
-                    onClick={() => handleNavigation('/token-subscription')}
+                    onClick={() => handleNavigation('/subscription')}
                   >
                     <Shield className="mr-3 h-5 w-5 text-primary shrink-0" />
-                    <span className="font-medium">구독플랜</span>
+                    <span className="font-medium">ABOUT</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/subscription#faq')}
+                  >
+                    <Info className="mr-3 h-5 w-5 text-primary shrink-0" />
+                    <span className="font-medium">자주묻는질문</span>
                   </Button>
                 </div>
                 

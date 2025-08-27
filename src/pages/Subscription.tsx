@@ -297,7 +297,7 @@ const Subscription = () => {
                 </div>
                 <div>
                   <h4 className="font-medium mb-2">Q. 환불이 가능한가요?</h4>
-                  <p className="text-sm text-muted-foreground">미사용 토큰에 대해서는 14일 내 환불이 가능합니다. 자세한 환불 정책은 이용약관을 확인해 주세요.</p>
+                  <p className="text-sm text-muted-foreground">미사용 토큰은 영구 보관되며 월 구독 종료만 가능합니다. 토큰은 소멸되지 않아 언제든 다시 이용하실 수 있습니다.</p>
                 </div>
               </CardContent>
             </Card>

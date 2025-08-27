@@ -61,7 +61,7 @@ export const UnifiedNavigation = () => {
   };
 
   const handleContact = () => {
-    window.open('mailto:support@hilightpro.com?subject=문의사항', '_blank');
+    window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank');
     setIsOpen(false);
   };
 

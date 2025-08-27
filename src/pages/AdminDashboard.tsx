@@ -503,7 +503,11 @@ export default function AdminDashboard() {
               </Button>
               <Dialog open={showSettings} onOpenChange={setShowSettings}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setShowSettings(true)}
+                  >
                     <Settings className="h-4 w-4 mr-2" />
                     설정
                   </Button>

@@ -315,6 +315,14 @@ const Subscription = () => {
                   <h4 className="font-medium mb-2">Q. 상담 내용이 노출될 위험은 없나요?</h4>
                   <p className="text-sm text-muted-foreground">상담 내용은 종단간 암호화로 보호되며, 오직 본인만 확인할 수 있습니다.</p>
                 </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 앱이 작동하지 않아요</h4>
+                  <p className="text-sm text-muted-foreground">브라우저 새로고침을 먼저 시도해 보세요. 문제가 지속되면 고객센터로 연락해 주세요.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 어떤 기기에서 사용 가능한가요?</h4>
+                  <p className="text-sm text-muted-foreground">PC, 스마트폰, 태블릿 등 인터넷이 연결된 모든 기기에서 사용 가능합니다.</p>
+                </div>
               </CardContent>
             </Card>
             
@@ -346,22 +354,6 @@ const Subscription = () => {
                 <div>
                   <h4 className="font-medium mb-2">Q. 어떤 마케팅 지원을 받나요?</h4>
                   <p className="text-sm text-muted-foreground">SEO 최적화, SNS 마케팅, 구글 광고 지원, 네이버 플레이스 관리, 고객 리뷰 관리, 전문가 프로필 최적화 등 종합적인 디지털 마케팅을 지원합니다.</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">기술 지원</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-medium mb-2">Q. 앱이 작동하지 않아요</h4>
-                  <p className="text-sm text-muted-foreground">브라우저 새로고침을 먼저 시도해 보세요. 문제가 지속되면 고객센터로 연락해 주세요.</p>
-                </div>
-                <div>
-                  <h4 className="font-medium mb-2">Q. 어떤 기기에서 사용 가능한가요?</h4>
-                  <p className="text-sm text-muted-foreground">PC, 스마트폰, 태블릿 등 인터넷이 연결된 모든 기기에서 사용 가능합니다.</p>
                 </div>
               </CardContent>
             </Card>

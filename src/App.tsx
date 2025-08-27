@@ -59,10 +59,18 @@ import InstitutionAdmin from "./pages/InstitutionAdmin";
 
 import { SessionManager } from "./components/SessionManager";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -125,6 +133,7 @@ const App = () => (
         </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
+  </React.StrictMode>
 );
 
 export default App;

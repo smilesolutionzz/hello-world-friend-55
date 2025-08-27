@@ -102,7 +102,7 @@ export default function MemberDetailView({ memberId, onClose }: MemberDetailView
 
         progressData = progressTests.map(test => ({
           date: test.completed_at,
-          score: test.scores?.total_score || 0,
+          score: (test.scores as any)?.total_score || 0,
           test_type: test.test_types?.name || 'Unknown'
         }));
       }

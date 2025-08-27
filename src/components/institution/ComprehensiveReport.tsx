@@ -116,7 +116,7 @@ export default function ComprehensiveReport({ adminId, institutionInfo }: Compre
         totalObservations += memberObsCount;
 
         // 평균 점수 계산
-        const scores = tests?.map(t => t.scores?.total_score || 0).filter(s => s > 0) || [];
+        const scores = tests?.map(t => (t.scores as any)?.total_score || 0).filter(s => s > 0) || [];
         const avgScore = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
         
         if (avgScore > 0) {
@@ -131,8 +131,8 @@ export default function ComprehensiveReport({ adminId, institutionInfo }: Compre
         
         let improvementRate = 0;
         if (sortedTests.length >= 2) {
-          const firstScore = sortedTests[0].scores?.total_score || 0;
-          const lastScore = sortedTests[sortedTests.length - 1].scores?.total_score || 0;
+          const firstScore = (sortedTests[0].scores as any)?.total_score || 0;
+          const lastScore = (sortedTests[sortedTests.length - 1].scores as any)?.total_score || 0;
           if (firstScore > 0) {
             improvementRate = ((lastScore - firstScore) / firstScore) * 100;
           }

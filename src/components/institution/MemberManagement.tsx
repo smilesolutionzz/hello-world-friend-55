@@ -147,7 +147,7 @@ export default function MemberManagement({ adminId }: MemberManagementProps) {
         })
       );
 
-      setMembers(membersWithActivity);
+      setMembers(membersWithActivity as InstitutionMember[]);
     } catch (error: any) {
       console.error('Error fetching members:', error);
       toast({

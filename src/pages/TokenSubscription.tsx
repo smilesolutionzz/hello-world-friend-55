@@ -370,18 +370,18 @@ const TokenSubscription = () => {
                 </div>
 
                 <div className="prose prose-lg max-w-none text-foreground/90 leading-relaxed space-y-6">
-                  <p className="text-lg md:text-xl text-center font-medium text-primary mb-8">
+                  <p className="text-lg md:text-xl text-center font-medium text-primary mb-8 break-keep">
                     "사랑하는 하이라이트 프로의 첫 번째 이용자님께"
                   </p>
                   
                   <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/30">
-                    <p className="mb-6 text-base md:text-lg leading-relaxed">
+                    <p className="mb-6 text-base md:text-lg leading-relaxed break-keep">
                       안녕하세요. 저는 하이라이트 프로를 밤새 개발하며 몇 달 동안 준비해온 사람입니다.
                     </p>
                     
-                    <p className="mb-6 text-base md:text-lg leading-relaxed">
-                      처음 이 플랫폼을 시작한 이유는 단순했습니다.<br/>
-                      <span className="font-semibold text-primary">
+                    <p className="mb-6 text-base md:text-lg leading-relaxed break-keep">
+                      처음 이 플랫폼을 시작한 이유는 단순했습니다.<br className="hidden sm:block"/>
+                      <span className="sm:hidden"> </span><span className="font-semibold text-primary break-keep">
                         "내 아이의 발달, 내 마음의 상태, 부모님의 건강을 조금 더 쉽게 지켜볼 수 있다면 얼마나 좋을까?"
                       </span>
                     </p>
@@ -393,11 +393,11 @@ const TokenSubscription = () => {
                     </p>
                     
                     <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 my-8 border-l-4 border-primary">
-                      <p className="text-base md:text-lg leading-relaxed font-medium italic">
-                        아이의 언어 발달이 늦는 건 아닐까,<br/>
-                        친구 관계에서 힘들어하지는 않을까,<br/>
-                        직장에서의 스트레스가 너무 심한 건 아닐까,<br/>
-                        부모님이 혹시 기억력이나 생활능력에 변화를 겪고 계시지는 않을까…
+                      <p className="text-base md:text-lg leading-relaxed font-medium italic break-keep">
+                        아이의 언어 발달이 늦는 건 아닐까,<br className="hidden sm:block"/>
+                        <span className="sm:hidden"> </span>친구 관계에서 힘들어하지는 않을까,<br className="hidden sm:block"/>
+                        <span className="sm:hidden"> </span>직장에서의 스트레스가 너무 심한 건 아닐까,<br className="hidden sm:block"/>
+                        <span className="sm:hidden"> </span>부모님이 혹시 기억력이나 생활능력에 변화를 겪고 계시지는 않을까…
                       </p>
                     </div>
                     
@@ -414,12 +414,12 @@ const TokenSubscription = () => {
                     </p>
                     
                     <div className="bg-gradient-to-br from-accent/20 to-primary/20 rounded-xl p-6 my-8 border border-primary/30">
-                      <p className="text-lg font-bold text-center text-primary mb-4">
-                        "누구나 단 3분이면,<br/>
-                        내 마음과 내 가족의 상태를<br/>
-                        쉽게 확인하고 기록할 수 있게 만들자."
+                      <p className="text-lg md:text-xl font-bold text-center text-primary mb-4 leading-relaxed break-keep">
+                        "누구나 단 3분이면,<br className="hidden sm:block"/>
+                        <span className="sm:hidden"> </span>내 마음과 내 가족의 상태를<br className="hidden sm:block"/>
+                        <span className="sm:hidden"> </span>쉽게 확인하고 기록할 수 있게 만들자."
                       </p>
-                      <p className="text-base md:text-lg leading-relaxed text-center">
+                      <p className="text-base md:text-lg leading-relaxed text-center break-keep">
                         그렇게 만들어진 것이 바로 하이라이트 프로입니다.
                       </p>
                     </div>
@@ -427,12 +427,12 @@ const TokenSubscription = () => {
                   
                   <div className="bg-gradient-to-br from-warm-cream to-soft-lavender/50 rounded-2xl p-6 md:p-8 shadow-lg border border-primary/20">
                     <div className="text-center mb-6">
-                      <p className="text-xl font-bold text-primary mb-4">
-                        짧게 남긴 기록이 데이터가 되고<br/>
-                        수천번 전문검사들과 해석들을 돌려 엔진을 고도화시켜 만들어낸<br/>
-                        AI가 빠르게 분석하고<br/>
-                        필요와 위험성이 데이터를 통해 감지되면<br/>
-                        PRO전문가가 함께 코멘트를 더해주는 시스템
+                      <p className="text-lg md:text-xl font-bold text-primary mb-4 leading-relaxed break-keep">
+                        짧게 남긴 기록이 데이터가 되고<br className="hidden sm:block"/>
+                        <span className="sm:hidden"> </span>수천번 전문검사들과 해석들을 돌려 엔진을 고도화시켜 만들어낸<br className="hidden sm:block"/>
+                        <span className="sm:hidden"> </span>AI가 빠르게 분석하고<br className="hidden sm:block"/>
+                        <span className="sm:hidden"> </span>필요와 위험성이 데이터를 통해 감지되면<br className="hidden sm:block"/>
+                        <span className="sm:hidden"> </span>PRO전문가가 함께 코멘트를 더해주는 시스템
                       </p>
                     </div>
                     
@@ -462,17 +462,17 @@ const TokenSubscription = () => {
                       저는 오늘도 밤을 새워 이 플랫폼을 다듬고 있습니다.
                     </p>
                     
-                    <p className="text-lg md:text-xl font-bold text-center text-primary mt-6">
-                      여러분의 소중한 가족들이 행복하게 성장할 수 있도록,<br/>
-                      제가 직접 만든 이 도구가 든든한 동반자가 되겠습니다.
+                    <p className="text-lg md:text-xl font-bold text-center text-primary mt-6 leading-relaxed break-keep">
+                      여러분의 소중한 가족들이 행복하게 성장할 수 있도록,<br className="hidden sm:block"/>
+                      <span className="sm:hidden"> </span>제가 직접 만든 이 도구가 든든한 동반자가 되겠습니다.
                     </p>
                   </div>
                   
                   <div className="text-center mt-8">
                     <div className="inline-block">
-                      <p className="text-lg text-muted-foreground mb-4">
-                        하이라이트 프로와 함께 걸어주셔서 감사합니다.<br/>
-                        앞으로의 여정에서 더 많은 가치를 드릴 수 있도록 최선을 다하겠습니다.
+                      <p className="text-lg text-muted-foreground mb-4 leading-relaxed break-keep">
+                        하이라이트 프로와 함께 걸어주셔서 감사합니다.<br className="hidden sm:block"/>
+                        <span className="sm:hidden"> </span>앞으로의 여정에서 더 많은 가치를 드릴 수 있도록 최선을 다하겠습니다.
                       </p>
                       <p className="text-lg text-muted-foreground mb-2">마음을 담아</p>
                       <div className="flex items-center gap-3 justify-center">

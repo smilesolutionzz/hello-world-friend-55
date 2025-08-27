@@ -227,6 +227,35 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
     return appointments;
   };
 
+  const deleteAppointment = async () => {
+    if (!selectedEvent) return;
+    
+    try {
+      const { error } = await supabase
+        .from('therapy_appointments')
+        .delete()
+        .eq('id', selectedEvent.id);
+      
+      if (error) throw error;
+
+      toast({
+        title: "일정 삭제 완료",
+        description: "치료 일정이 삭제되었습니다.",
+      });
+
+      setShowAppointmentDialog(false);
+      setSelectedEvent(null);
+      await fetchAppointments();
+    } catch (error: any) {
+      console.error('Error deleting appointment:', error);
+      toast({
+        title: "삭제 실패",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const saveAppointment = async () => {
     try {
       const baseData = {
@@ -713,6 +742,15 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
             <Button onClick={saveAppointment} className="flex-1 h-12 text-base bg-blue-600 hover:bg-blue-700">
               저장
             </Button>
+            {selectedEvent && (
+              <Button 
+                variant="destructive" 
+                onClick={deleteAppointment}
+                className="h-12 text-base px-6"
+              >
+                삭제
+              </Button>
+            )}
             <Button 
               variant="outline" 
               onClick={() => {

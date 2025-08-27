@@ -182,7 +182,7 @@ const Navigation = () => {
               <Shield className="w-4 h-4 mr-1" />
               구독
             </Button>
-            <Button variant="outline" className="bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 font-medium px-3" onClick={() => handleNavigation('/faq')}>
+            <Button variant="default" className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 border-2 border-blue-600" onClick={() => handleNavigation('/faq')}>
               <Info className="w-4 h-4 mr-1" />
               FAQ
             </Button>

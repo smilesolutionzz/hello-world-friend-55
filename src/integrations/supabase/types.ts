@@ -569,6 +569,54 @@ export type Database = {
           },
         ]
       }
+      institution_members: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          custom_fields: Json | null
+          enrollment_date: string
+          id: string
+          institution_admin_id: string
+          member_email: string | null
+          member_name: string
+          member_phone: string | null
+          member_user_id: string
+          notes: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          custom_fields?: Json | null
+          enrollment_date?: string
+          id?: string
+          institution_admin_id: string
+          member_email?: string | null
+          member_name: string
+          member_phone?: string | null
+          member_user_id: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          custom_fields?: Json | null
+          enrollment_date?: string
+          id?: string
+          institution_admin_id?: string
+          member_email?: string | null
+          member_name?: string
+          member_phone?: string | null
+          member_user_id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       institution_reviews: {
         Row: {
           created_at: string
@@ -615,6 +663,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      institutions: {
+        Row: {
+          address: string | null
+          admin_id: string
+          created_at: string
+          description: string | null
+          director_name: string | null
+          email: string | null
+          established_date: string | null
+          id: string
+          institution_name: string
+          institution_type: string
+          license_number: string | null
+          logo_url: string | null
+          phone: string | null
+          settings: Json | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          admin_id: string
+          created_at?: string
+          description?: string | null
+          director_name?: string | null
+          email?: string | null
+          established_date?: string | null
+          id?: string
+          institution_name: string
+          institution_type: string
+          license_number?: string | null
+          logo_url?: string | null
+          phone?: string | null
+          settings?: Json | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          admin_id?: string
+          created_at?: string
+          description?: string | null
+          director_name?: string | null
+          email?: string | null
+          established_date?: string | null
+          id?: string
+          institution_name?: string
+          institution_type?: string
+          license_number?: string | null
+          logo_url?: string | null
+          phone?: string | null
+          settings?: Json | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
       }
       intervention_plans: {
         Row: {

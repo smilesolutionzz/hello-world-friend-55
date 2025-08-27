@@ -580,7 +580,7 @@ export type Database = {
           member_email: string | null
           member_name: string
           member_phone: string | null
-          member_user_id: string
+          member_user_id: string | null
           notes: string | null
           status: string
           updated_at: string
@@ -595,7 +595,7 @@ export type Database = {
           member_email?: string | null
           member_name: string
           member_phone?: string | null
-          member_user_id: string
+          member_user_id?: string | null
           notes?: string | null
           status?: string
           updated_at?: string
@@ -610,7 +610,7 @@ export type Database = {
           member_email?: string | null
           member_name?: string
           member_phone?: string | null
-          member_user_id?: string
+          member_user_id?: string | null
           notes?: string | null
           status?: string
           updated_at?: string

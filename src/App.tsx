@@ -49,7 +49,7 @@ import AnxietyPackage from "./pages/AnxietyPackage";
 import FocusPackage from "./pages/FocusPackage";
 import ChildPackage from "./pages/ChildPackage";
 import ComprehensivePackage from "./pages/ComprehensivePackage";
-import FAQ from "./pages/FAQ";
+
 
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTestResult from "./components/assessment/FunTestResult";
@@ -57,6 +57,7 @@ import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
 import AdminDashboard from "./pages/AdminDashboard";
 import InstitutionAdmin from "./pages/InstitutionAdmin";
+import FAQ from "./pages/FAQ";
 
 import { SessionManager } from "./components/SessionManager";
 

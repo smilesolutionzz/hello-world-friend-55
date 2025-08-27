@@ -184,7 +184,7 @@ const Navigation = () => {
             </Button>
             <Button 
               variant="default" 
-              className="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-2 rounded-lg shadow-lg border-2 border-red-600" 
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold px-6 py-2 rounded-full shadow-xl transform hover:scale-105 transition-all duration-200" 
               onClick={() => handleNavigation('/faq')}
             >
               <Info className="w-4 h-4 mr-2" />

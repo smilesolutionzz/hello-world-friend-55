@@ -36,8 +36,11 @@ import {
   Settings,
   MoreHorizontal,
   Edit,
-  Trash2
+  Trash2,
+  Building,
+  GraduationCap
 } from 'lucide-react';
+import MemberDetailView from '@/components/institution/MemberDetailView';
 
 interface AdminAnalytics {
   total_users: number;
@@ -79,6 +82,25 @@ interface PaymentRecord {
   subscription_type: string;
 }
 
+interface InstitutionMember {
+  id: string;
+  institution_admin_id: string;
+  member_user_id?: string;
+  member_name: string;
+  member_email?: string;
+  member_phone?: string;
+  birth_date?: string;
+  enrollment_date: string;
+  status: 'active' | 'inactive' | 'graduated';
+  notes?: string;
+  custom_fields: any;
+  created_at: string;
+  updated_at: string;
+  test_count?: number;
+  observation_count?: number;
+  last_activity?: string;
+}
+
 export default function AdminDashboard() {
   const { isAdmin, loading: adminLoading } = useAdminCheck();
   const navigate = useNavigate();
@@ -91,6 +113,8 @@ export default function AdminDashboard() {
   const [filteredUsers, setFilteredUsers] = useState<UserDetail[]>([]);
   const [recentTests, setRecentTests] = useState<RecentTest[]>([]);
   const [recentPayments, setRecentPayments] = useState<PaymentRecord[]>([]);
+  const [institutionMembers, setInstitutionMembers] = useState<InstitutionMember[]>([]);
+  const [filteredMembers, setFilteredMembers] = useState<InstitutionMember[]>([]);
   
   // Loading states
   const [loading, setLoading] = useState(true);
@@ -101,6 +125,10 @@ export default function AdminDashboard() {
   const [subscriptionFilter, setSubscriptionFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
   const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null);
+  const [selectedMember, setSelectedMember] = useState<InstitutionMember | null>(null);
+  const [showMemberDetail, setShowMemberDetail] = useState(false);
+  const [memberSearchTerm, setMemberSearchTerm] = useState('');
+  const [memberStatusFilter, setMemberStatusFilter] = useState('all');
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState('general');
 
@@ -180,6 +208,27 @@ export default function AdminDashboard() {
 
     setFilteredUsers(filtered);
   }, [users, searchTerm, subscriptionFilter, dateFilter]);
+
+  // Filter members based on search and filters
+  useEffect(() => {
+    let filtered = institutionMembers;
+
+    // Search filter
+    if (memberSearchTerm) {
+      filtered = filtered.filter(member => 
+        member.member_name?.toLowerCase().includes(memberSearchTerm.toLowerCase()) ||
+        member.member_email?.toLowerCase().includes(memberSearchTerm.toLowerCase()) ||
+        member.member_phone?.includes(memberSearchTerm)
+      );
+    }
+
+    // Status filter
+    if (memberStatusFilter !== 'all') {
+      filtered = filtered.filter(member => member.status === memberStatusFilter);
+    }
+
+    setFilteredMembers(filtered);
+  }, [institutionMembers, memberSearchTerm, memberStatusFilter]);
 
   const fetchAnalytics = async () => {
     try {
@@ -308,13 +357,75 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchInstitutionMembers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('institution_members')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (error) throw error;
+
+      // 각 회원의 활동 데이터도 가져오기
+      const membersWithActivity = await Promise.all(
+        data.map(async (member) => {
+          let testCount = 0;
+          let observationCount = 0;
+          let lastActivity = member.created_at;
+
+          if (member.member_user_id) {
+            // 테스트 수 조회
+            const { count: tests } = await supabase
+              .from('test_results')
+              .select('*', { count: 'exact', head: true })
+              .eq('user_id', member.member_user_id);
+
+            // 관찰일지 수 조회
+            const { count: observations } = await supabase
+              .from('observation_logs')
+              .select('*', { count: 'exact', head: true })
+              .eq('user_id', member.member_user_id);
+
+            // 최근 활동 조회
+            const { data: recentActivity } = await supabase
+              .from('test_results')
+              .select('completed_at')
+              .eq('user_id', member.member_user_id)
+              .order('completed_at', { ascending: false })
+              .limit(1);
+
+            testCount = tests || 0;
+            observationCount = observations || 0;
+            
+            if (recentActivity && recentActivity.length > 0) {
+              lastActivity = recentActivity[0].completed_at;
+            }
+          }
+
+          return {
+            ...member,
+            test_count: testCount,
+            observation_count: observationCount,
+            last_activity: lastActivity
+          };
+        })
+      );
+
+      setInstitutionMembers(membersWithActivity as InstitutionMember[]);
+    } catch (error) {
+      console.error('Error fetching institution members:', error);
+    }
+  };
+
   const loadAllData = async () => {
     setLoading(true);
     await Promise.all([
       fetchAnalytics(),
       fetchUsers(),
       fetchRecentTests(),
-      fetchRecentPayments()
+      fetchRecentPayments(),
+      fetchInstitutionMembers()
     ]);
     setLoading(false);
   };
@@ -335,6 +446,10 @@ export default function AdminDashboard() {
       case 'tests':
         data = recentTests;
         filename = 'tests_export.csv';
+        break;
+      case 'members':
+        data = filteredMembers;
+        filename = 'institution_members_export.csv';
         break;
     }
     
@@ -809,6 +924,10 @@ export default function AdminDashboard() {
               <Eye className="h-4 w-4" />
               관찰일지
             </TabsTrigger>
+            <TabsTrigger value="members" className="flex items-center gap-2">
+              <Building className="h-4 w-4" />
+              기관 회원
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users">
@@ -1131,8 +1250,168 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="members">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>기관 회원 관리</CardTitle>
+                    <CardDescription>
+                      전체 {institutionMembers.length}명 중 {filteredMembers.length}명 표시
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button onClick={() => exportData('members')} variant="outline" size="sm">
+                      <Download className="h-4 w-4 mr-2" />
+                      내보내기
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Search and Filters for Members */}
+                <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="이름, 이메일 또는 전화번호로 검색..."
+                      value={memberSearchTerm}
+                      onChange={(e) => setMemberSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Select value={memberStatusFilter} onValueChange={setMemberStatusFilter}>
+                    <SelectTrigger className="w-full sm:w-48">
+                      <SelectValue placeholder="상태" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="active">활성</SelectItem>
+                      <SelectItem value="inactive">비활성</SelectItem>
+                      <SelectItem value="graduated">졸업</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>회원 정보</TableHead>
+                      <TableHead>상태</TableHead>
+                      <TableHead>활동</TableHead>
+                      <TableHead>등록일</TableHead>
+                      <TableHead>최근 활동</TableHead>
+                      <TableHead>관리</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredMembers.map((member) => (
+                      <TableRow key={member.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white font-medium">
+                              {member.member_name?.charAt(0) || '?'}
+                            </div>
+                            <div>
+                              <div className="font-medium">{member.member_name}</div>
+                              {member.member_email && (
+                                <div className="text-sm text-muted-foreground flex items-center gap-1">
+                                  <Mail className="h-3 w-3" />
+                                  {member.member_email}
+                                </div>
+                              )}
+                              {member.member_phone && (
+                                <div className="text-sm text-muted-foreground flex items-center gap-1">
+                                  <Phone className="h-3 w-3" />
+                                  {member.member_phone}
+                                </div>
+                              )}
+                              {member.birth_date && (
+                                <div className="text-sm text-muted-foreground">
+                                  {(() => {
+                                    const today = new Date();
+                                    const birth = new Date(member.birth_date);
+                                    let age = today.getFullYear() - birth.getFullYear();
+                                    const monthDiff = today.getMonth() - birth.getMonth();
+                                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                                      age--;
+                                    }
+                                    return `${age}세`;
+                                  })()}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {(() => {
+                            switch (member.status) {
+                              case 'active':
+                                return <Badge className="bg-green-100 text-green-800"><CheckCircle className="w-3 h-3 mr-1" />활성</Badge>;
+                              case 'inactive':
+                                return <Badge variant="secondary"><AlertCircle className="w-3 h-3 mr-1" />비활성</Badge>;
+                              case 'graduated':
+                                return <Badge className="bg-blue-100 text-blue-800"><GraduationCap className="w-3 h-3 mr-1" />졸업</Badge>;
+                              default:
+                                return <Badge variant="outline">{member.status}</Badge>;
+                            }
+                          })()}
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="text-sm">테스트: {member.test_count || 0}회</div>
+                            <div className="text-sm">관찰일지: {member.observation_count || 0}개</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{formatDate(member.enrollment_date)}</TableCell>
+                        <TableCell>
+                          {member.last_activity ? (
+                            <div className="text-sm text-muted-foreground">
+                              {formatDate(member.last_activity)}
+                            </div>
+                          ) : (
+                            <div className="text-sm text-muted-foreground">활동 없음</div>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => {
+                                setSelectedMember(member);
+                                setShowMemberDetail(true);
+                              }}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
+
+      {/* Member Detail Modal */}
+      {showMemberDetail && selectedMember && (
+        <Dialog open={showMemberDetail} onOpenChange={setShowMemberDetail}>
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto p-0">
+            <MemberDetailView 
+              memberId={selectedMember.id}
+              onClose={() => {
+                setShowMemberDetail(false);
+                setSelectedMember(null);
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

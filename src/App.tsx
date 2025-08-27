@@ -58,6 +58,7 @@ import IEPView from "./pages/IEPView";
 import AdminDashboard from "./pages/AdminDashboard";
 import InstitutionAdmin from "./pages/InstitutionAdmin";
 import FAQ from "./pages/FAQ";
+import Layout from "./components/Layout";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -78,7 +79,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SessionManager />
-        <Routes>
+        <Layout>
+          <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<HighlightAuth />} />
@@ -132,8 +134,8 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>
-          
-        </BrowserRouter>
+        </Layout>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
   </React.StrictMode>

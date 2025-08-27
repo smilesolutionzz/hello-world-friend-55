@@ -105,6 +105,13 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
 
   const fetchAppointments = useCallback(async () => {
     try {
+      console.log('🗓️ 일정 조회 시작 - institutionId:', institutionId);
+      
+      const startDate = moment().startOf('month').subtract(1, 'month').toISOString();
+      const endDate = moment().endOf('month').add(2, 'month').toISOString();
+      
+      console.log('📅 조회 범위:', { startDate, endDate });
+      
       const { data, error } = await supabase
         .from('therapy_appointments')
         .select(`
@@ -112,10 +119,12 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
           therapists!inner(name, color_code)
         `)
         .eq('institution_id', institutionId)
-        .gte('start_time', moment().startOf('month').toISOString())
-        .lte('end_time', moment().endOf('month').add(1, 'month').toISOString());
+        .gte('start_time', startDate)
+        .lte('end_time', endDate);
 
       if (error) throw error;
+
+      console.log('📊 조회된 일정 데이터:', data);
 
       const formattedAppointments: Appointment[] = (data || []).map(apt => ({
         id: apt.id,
@@ -133,9 +142,10 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
         }
       }));
 
+      console.log('✅ 포맷된 일정들:', formattedAppointments);
       setAppointments(formattedAppointments);
     } catch (error: any) {
-      console.error('Error fetching appointments:', error);
+      console.error('❌ 일정 조회 실패:', error);
       toast({
         title: "일정 조회 실패",
         description: error.message,
@@ -260,6 +270,8 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
 
   const saveAppointment = async () => {
     try {
+      console.log('💾 일정 저장 시작 - 폼 데이터:', appointmentForm);
+      
       const baseData = {
         institution_id: institutionId,
         therapist_id: appointmentForm.therapist_id,
@@ -269,6 +281,8 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
         status: 'scheduled'
       };
 
+      console.log('🗂️ 기본 데이터:', baseData);
+
       if (selectedEvent) {
         // 기존 일정 수정
         const appointmentData = {
@@ -277,19 +291,29 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
           end_time: appointmentForm.start_date + 'T' + appointmentForm.end_time,
         };
         
+        console.log('✏️ 수정할 일정 데이터:', appointmentData);
+        
         const { error } = await supabase
           .from('therapy_appointments')
           .update(appointmentData)
           .eq('id', selectedEvent.id);
         if (error) throw error;
+        
+        console.log('✅ 일정 수정 완료');
       } else {
         // 새 일정 등록 (반복 포함)
         const appointments = generateRecurringAppointments(baseData);
         
-        const { error } = await supabase
+        console.log('📅 생성된 일정들:', appointments);
+        
+        const { data, error } = await supabase
           .from('therapy_appointments')
-          .insert(appointments);
+          .insert(appointments)
+          .select();
+          
         if (error) throw error;
+        
+        console.log('✅ 일정 저장 완료:', data);
       }
 
       toast({
@@ -299,9 +323,11 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
 
       setShowAppointmentDialog(false);
       setSelectedEvent(null);
+      
+      console.log('🔄 일정 다시 조회 시작');
       await fetchAppointments();
     } catch (error: any) {
-      console.error('Error saving appointment:', error);
+      console.error('❌ 일정 저장 실패:', error);
       toast({
         title: "저장 실패",
         description: error.message,

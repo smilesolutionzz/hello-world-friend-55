@@ -1382,6 +1382,123 @@ export type Database = {
         }
         Relationships: []
       }
+      therapists: {
+        Row: {
+          color_code: string
+          created_at: string
+          email: string | null
+          id: string
+          institution_id: string
+          is_active: boolean
+          name: string
+          phone: string | null
+          specialization: string
+          updated_at: string
+          working_hours: Json | null
+        }
+        Insert: {
+          color_code?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          institution_id: string
+          is_active?: boolean
+          name: string
+          phone?: string | null
+          specialization: string
+          updated_at?: string
+          working_hours?: Json | null
+        }
+        Update: {
+          color_code?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          institution_id?: string
+          is_active?: boolean
+          name?: string
+          phone?: string | null
+          specialization?: string
+          updated_at?: string
+          working_hours?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapists_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      therapy_appointments: {
+        Row: {
+          appointment_type: string
+          client_name: string
+          created_at: string
+          end_time: string
+          id: string
+          institution_id: string
+          member_id: string | null
+          notes: string | null
+          start_time: string
+          status: string
+          therapist_id: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_type?: string
+          client_name: string
+          created_at?: string
+          end_time: string
+          id?: string
+          institution_id: string
+          member_id?: string | null
+          notes?: string | null
+          start_time: string
+          status?: string
+          therapist_id: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_type?: string
+          client_name?: string
+          created_at?: string
+          end_time?: string
+          id?: string
+          institution_id?: string
+          member_id?: string | null
+          notes?: string | null
+          start_time?: string
+          status?: string
+          therapist_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapy_appointments_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "therapy_appointments_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "institution_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "therapy_appointments_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       timeline_activities: {
         Row: {
           actor: Json | null

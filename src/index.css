@@ -5,6 +5,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* React Big Calendar styles */
+@import 'react-big-calendar/lib/css/react-big-calendar.css';
+
 /* AIH Pro 심리상담 플랫폼 디자인 시스템 */
 
 @layer base {

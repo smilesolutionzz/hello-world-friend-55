@@ -29,6 +29,7 @@ import { useToast } from '@/hooks/use-toast';
 import MemberManagement from '@/components/institution/MemberManagement';
 import MemberDetailView from '@/components/institution/MemberDetailView';
 import ComprehensiveReport from '@/components/institution/ComprehensiveReport';
+import { TherapyScheduler } from '@/components/therapy/TherapyScheduler';
 
 interface InstitutionStats {
   total_members: number;
@@ -579,12 +580,17 @@ export default function InstitutionAdmin() {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="schedule">일정관리</TabsTrigger>
             <TabsTrigger value="overview">개요</TabsTrigger>
             <TabsTrigger value="members">회원 관리</TabsTrigger>
             <TabsTrigger value="reports">종합 리포트</TabsTrigger>
             <TabsTrigger value="analytics">분석</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="schedule" className="space-y-6">
+            {institutionInfo && <TherapyScheduler institutionId={institutionInfo.id} />}
+          </TabsContent>
 
           <TabsContent value="overview" className="space-y-6">
             <Card>

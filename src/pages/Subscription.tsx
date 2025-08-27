@@ -107,64 +107,57 @@ const Subscription = () => {
           </div>
         </div>
 
-        {/* 플랜 카드들 */}
-        <div className="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
-          {plans.map((plan, index) => (
-            <Card 
-              key={index} 
-              className={`relative ${plan.popular ? 'border-primary shadow-lg scale-105' : ''}`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-primary text-white">
-                    <Star className="w-3 h-3 mr-1" />
-                    인기
-                  </Badge>
-                </div>
-              )}
+        {/* 창립자의 손편지 */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100 shadow-lg">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">창립자의 메시지</h2>
+              <div className="w-16 h-0.5 bg-blue-500 mx-auto"></div>
+            </div>
+            
+            <div className="prose max-w-none text-gray-700 leading-relaxed">
+              <p className="text-lg mb-6 font-medium text-center text-blue-800">
+                "모든 아이가 자신만의 특별함을 발견하고 꽃피울 수 있는 세상을 만들고 싶습니다."
+              </p>
               
-              <CardHeader className="text-center">
-                <div className="flex items-center justify-center mb-4">
-                  {plan.name.includes('무료') && <Zap className="w-8 h-8 text-gray-500" />}
-                  {plan.name.includes('10개') && <Zap className="w-8 h-8 text-blue-500" />}
-                  {plan.name.includes('25개') && <Crown className="w-8 h-8 text-yellow-500" />}
-                </div>
-                <CardTitle className="text-xl">{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
-                <div className="mt-4">
-                  <div className="text-3xl font-bold">
-                    {plan.price === 0 ? '무료' : `₩${plan.price.toLocaleString()}`}
-                  </div>
-                  <div className="text-sm text-muted-foreground">{plan.period}</div>
-                  {plan.period === '연간' && plan.price > 0 && (
-                    <div className="text-xs text-green-600 font-medium">
-                      월 ₩{Math.round(plan.price / 12).toLocaleString()} (30% 할인)
-                    </div>
-                  )}
-                </div>
-              </CardHeader>
-              
-              <CardContent>
-                <ul className="space-y-2 mb-6">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="space-y-4 text-base">
+                <p>
+                  안녕하세요, AIHPRO 창립자입니다.
+                </p>
                 
-                <Button 
-                  className="w-full"
-                  variant={plan.popular ? "default" : "outline"}
-                  disabled={plan.disabled}
-                  onClick={() => handlePlanSelect(plan)}
-                >
-                  {plan.buttonText}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                <p>
+                  저희는 단순한 기술 회사가 아닙니다. 매일 밤, 우리 아이가 잘 자라고 있는지 걱정하는 
+                  모든 부모님들의 마음을 이해하는 사람들이 모여 만든 따뜻한 공간입니다.
+                </p>
+                
+                <p>
+                  AI 기술은 도구일 뿐입니다. 진짜 중요한 것은 아이 한 명 한 명의 고유한 가능성을 
+                  발견하고 키워주는 것이죠. 때로는 3분의 짧은 검사가, 때로는 전문가와의 상담이 
+                  한 아이의 인생을 바꿀 수 있다고 믿습니다.
+                </p>
+                
+                <p>
+                  AIHPRO는 모든 가족이 경제적 부담 없이 전문적인 도움을 받을 수 있는 세상을 
+                  꿈꿉니다. 우리의 AI가 먼저 아이를 이해하고, 꼭 필요할 때만 전문가에게 연결해드립니다. 
+                  이렇게 하면 비용은 줄이고, 효과는 높일 수 있거든요.
+                </p>
+                
+                <p>
+                  오늘도 어딘가에서 우리 아이를 더 잘 이해하고 싶어하는 부모님이 계실 겁니다. 
+                  그 분들에게 희망이 되고 싶습니다. 함께 걸어가요.
+                </p>
+              </div>
+              
+              <div className="mt-8 text-right">
+                <div className="text-lg font-semibold text-blue-800">
+                  AIHPRO 창립자 드림
+                </div>
+                <div className="text-sm text-gray-500 mt-1">
+                  "아이들의 무한한 가능성을 믿으며"
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* 서비스 소개 */}

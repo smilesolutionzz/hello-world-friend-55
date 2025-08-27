@@ -52,7 +52,7 @@ const Subscription = () => {
       yearly_price: null,
       period: '월간',
       description: '개인 사용자를 위한 완벽한 선택',
-      features: ['무제한 심리검사', 'AIH 상세 분석', '결과 저장', 'PDF 리포트', '24/7 지원'],
+      features: ['무제한 심리검사', 'AIH 상세 분석', '결과 저장', 'PDF 리포트', '24시간/매일 접근성'],
       popular: true,
       buttonText: '구독하기',
       disabled: false
@@ -234,7 +234,7 @@ const Subscription = () => {
                 <div className="flex items-start gap-3">
                   <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="font-medium">24/7 접근성</h4>
+                    <h4 className="font-medium">24시간/매일 접근성</h4>
                     <p className="text-sm text-muted-foreground">언제든지 검사 및 상담 가능</p>
                   </div>
                 </div>

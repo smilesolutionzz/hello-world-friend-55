@@ -501,12 +501,11 @@ export default function AdminDashboard() {
                 <RefreshCw className="h-4 w-4 mr-2" />
                 새로고침
               </Button>
-              <Dialog open={showSettings} onOpenChange={setShowSettings}>
+              <Dialog>
                 <DialogTrigger asChild>
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => setShowSettings(true)}
                   >
                     <Settings className="h-4 w-4 mr-2" />
                     설정

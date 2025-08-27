@@ -632,7 +632,15 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
                   onChange={(e) => setAppointmentForm({...appointmentForm, start_date: e.target.value})}
                   className="h-12 text-base flex-1"
                 />
-                <Button variant="outline" size="sm" className="px-3">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="px-3"
+                  onClick={() => setAppointmentForm({
+                    ...appointmentForm,
+                    repeat_type: appointmentForm.repeat_type === 'none' ? 'weekly' : 'none'
+                  })}
+                >
                   반복
                 </Button>
               </div>

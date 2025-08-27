@@ -216,7 +216,7 @@ export default function MemberManagement({ adminId }: MemberManagementProps) {
         .from('institution_members')
         .insert({
           institution_admin_id: adminId,
-          member_user_id: '', // 빈 문자열로 설정
+          member_user_id: null, // null로 설정
           member_name: formData.member_name,
           member_email: formData.member_email || null,
           member_phone: formData.member_phone || null,

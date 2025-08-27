@@ -178,13 +178,13 @@ const Navigation = () => {
               <Users className="w-4 h-4 mr-1" />
               가족케어
             </Button>
-            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 text-primary font-medium" onClick={() => handleNavigation('/token-subscription')}>
-              <Shield className="w-4 h-4 mr-1" />
-              구독
-            </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/faq')}>
               <Info className="w-4 h-4 mr-1" />
               FAQ
+            </Button>
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 text-primary font-medium" onClick={() => handleNavigation('/token-subscription')}>
+              <Shield className="w-4 h-4 mr-1" />
+              구독
             </Button>
           </div>
 

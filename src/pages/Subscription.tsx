@@ -329,11 +329,11 @@ const Subscription = () => {
                 </div>
                 <div>
                   <h4 className="font-medium mb-2">Q. 치료비 분배는 어떻게 되나요?</h4>
-                  <p className="text-sm text-muted-foreground">치료비의 85%는 제휴기관에, 15%는 플랫폼 운영비로 분배됩니다. 투명한 정산 시스템으로 관리합니다.</p>
+                  <p className="text-sm text-muted-foreground">온라인 치료비의 70%는 치료사에게, 30%는 플랫폼 운영비로 분배됩니다. 리포팅 서비스는 50:50으로 분배하며, 대면치료 기관 유입은 100% 기관 수입입니다.</p>
                 </div>
                 <div>
                   <h4 className="font-medium mb-2">Q. 제휴기관 혜택은 무엇인가요?</h4>
-                  <p className="text-sm text-muted-foreground">안정적인 고객 유입, 온라인 예약 시스템, 마케팅 지원, 교육 프로그램 등을 제공합니다.</p>
+                  <p className="text-sm text-muted-foreground">안정적인 고객 유입, 온라인 예약 시스템, 마케팅 지원, 교육 프로그램 등을 제공합니다. 대면치료 연계 시 수수료 없이 100% 기관 수입이 보장됩니다.</p>
                 </div>
               </CardContent>
             </Card>

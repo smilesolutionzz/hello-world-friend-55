@@ -549,14 +549,19 @@ const DevelopmentalTrackingDashboard = ({ userId, studentId }: DevelopmentalTrac
           발달 추적 추가
         </Button>
 
-        <Button 
-          onClick={runMlAnalysis}
-          disabled={isAnalyzing || trackingData.length < 3}
-          className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-        >
-          <Brain className="w-4 h-4" />
-          {isAnalyzing ? 'AI 분석 중...' : 'AI 딥러닝 분석'}
-        </Button>
+        <div className="flex flex-col gap-1">
+          <Button 
+            onClick={runMlAnalysis}
+            disabled={isAnalyzing || trackingData.length < 3}
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          >
+            <Brain className="w-4 h-4" />
+            {isAnalyzing ? 'AI 분석 중...' : 'AI 딥러닝 분석'}
+          </Button>
+          <p className="text-xs text-muted-foreground text-center">
+            최소 3개 이상의 추적 데이터가 있어야 분석 가능
+          </p>
+        </div>
         
         <Button 
           variant="outline"

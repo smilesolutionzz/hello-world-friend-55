@@ -372,6 +372,36 @@ export default function AdminDashboard() {
     }
   };
 
+  const updateUserPlan = async (userId: string, newPlan: string) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ subscription_tier: newPlan })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      
+      // Also update subscribers table if it exists
+      const userEmail = users.find(u => u.user_id === userId)?.email;
+      if (userEmail) {
+        await supabase
+          .from('subscribers')
+          .upsert({
+            email: userEmail,
+            user_id: userId,
+            subscription_tier: newPlan,
+            subscribed: newPlan !== 'free',
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'email' });
+      }
+      
+      // Refresh user list
+      await fetchUsers();
+    } catch (error) {
+      console.error('Error updating user plan:', error);
+    }
+  };
+
   useEffect(() => {
     if (isAdmin) {
       loadAllData();
@@ -409,6 +439,28 @@ export default function AdminDashboard() {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const getPlanDisplayName = (tier: string) => {
+    switch (tier) {
+      case 'free': return '무료';
+      case 'starter': return '스타터';
+      case 'premium': return '프리미엄';
+      case 'pro': return '프로';
+      case 'enterprise': return '엔터프라이즈';
+      default: return '무료';
+    }
+  };
+
+  const getPlanColor = (tier: string) => {
+    switch (tier) {
+      case 'free': return 'secondary';
+      case 'starter': return 'outline';
+      case 'premium': return 'default';
+      case 'pro': return 'destructive';
+      case 'enterprise': return 'default';
+      default: return 'secondary';
+    }
   };
 
   return (
@@ -572,8 +624,11 @@ export default function AdminDashboard() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">전체</SelectItem>
-                      <SelectItem value="premium">프리미엄</SelectItem>
                       <SelectItem value="free">무료</SelectItem>
+                      <SelectItem value="starter">스타터</SelectItem>
+                      <SelectItem value="premium">프리미엄</SelectItem>
+                      <SelectItem value="pro">프로</SelectItem>
+                      <SelectItem value="enterprise">엔터프라이즈</SelectItem>
                     </SelectContent>
                   </Select>
                   <Select value={dateFilter} onValueChange={setDateFilter}>
@@ -624,9 +679,31 @@ export default function AdminDashboard() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={user.subscription_tier === 'premium' ? 'default' : 'secondary'}>
-                            {user.subscription_tier === 'premium' ? '프리미엄' : '무료'}
-                          </Badge>
+                          <Select 
+                            value={user.subscription_tier || 'free'} 
+                            onValueChange={(value) => updateUserPlan(user.user_id, value)}
+                          >
+                            <SelectTrigger className="w-32">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="free">
+                                <Badge variant="secondary">무료</Badge>
+                              </SelectItem>
+                              <SelectItem value="starter">
+                                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">스타터</Badge>
+                              </SelectItem>
+                              <SelectItem value="premium">
+                                <Badge variant="default" className="bg-purple-100 text-purple-700 border-purple-200">프리미엄</Badge>
+                              </SelectItem>
+                              <SelectItem value="pro">
+                                <Badge variant="default" className="bg-orange-100 text-orange-700 border-orange-200">프로</Badge>
+                              </SelectItem>
+                              <SelectItem value="enterprise">
+                                <Badge variant="default" className="bg-green-100 text-green-700 border-green-200">엔터프라이즈</Badge>
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
                         </TableCell>
                         <TableCell>
                           <div className="space-y-1">
@@ -656,12 +733,12 @@ export default function AdminDashboard() {
                                       <div className="text-sm font-medium">이름</div>
                                       <div className="text-sm text-muted-foreground">{user.display_name || '없음'}</div>
                                     </div>
-                                    <div>
-                                      <div className="text-sm font-medium">구독</div>
-                                      <Badge variant={user.subscription_tier === 'premium' ? 'default' : 'secondary'}>
-                                        {user.subscription_tier === 'premium' ? '프리미엄' : '무료'}
-                                      </Badge>
-                                    </div>
+                                     <div>
+                                       <div className="text-sm font-medium">구독</div>
+                                       <Badge variant={getPlanColor(user.subscription_tier)}>
+                                         {getPlanDisplayName(user.subscription_tier)}
+                                       </Badge>
+                                     </div>
                                     <div>
                                       <div className="text-sm font-medium">테스트 횟수</div>
                                       <div className="text-sm text-muted-foreground">{user.test_count}회</div>

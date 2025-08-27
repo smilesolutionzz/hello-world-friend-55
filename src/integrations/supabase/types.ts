@@ -1949,6 +1949,19 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_admin_analytics: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          active_subscribers: number
+          total_observations: number
+          total_revenue: number
+          total_subscribers: number
+          total_tests: number
+          total_users: number
+          users_with_observations: number
+          users_with_tests: number
+        }[]
+      }
       get_monthly_usage: {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: number

@@ -100,9 +100,9 @@ const Subscription = () => {
             홈으로
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">구독 플랜</h1>
+            <h1 className="text-3xl font-bold">AIHPRO 소개</h1>
             <p className="text-muted-foreground">
-              당신에게 맞는 최적의 플랜을 선택하세요
+              AI 기반 심리분석 플랫폼에 대해 알아보세요
             </p>
           </div>
         </div>
@@ -167,13 +167,172 @@ const Subscription = () => {
           ))}
         </div>
 
-        {/* 추가 정보 */}
-        <div className="mt-12 text-center">
-          <h3 className="text-lg font-semibold mb-4">자주 묻는 질문</h3>
-          <div className="max-w-2xl mx-auto space-y-4 text-sm text-muted-foreground">
-            <p>• 구독은 언제 시작되나요? → 결제 완료 후 즉시 시작됩니다.</p>
-            <p>• 가족 구성원도 함께 사용할 수 있나요? → 네, 하나의 계정으로 가족 전체를 관리할 수 있습니다.</p>
-            <p>• 언제든지 취소할 수 있나요? → 네, 언제든지 구독을 취소할 수 있습니다.</p>
+        {/* 서비스 소개 */}
+        <div className="mt-16 max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold mb-4">AIHPRO란?</h2>
+            <p className="text-lg text-muted-foreground">
+              AI 기술을 활용한 전문적인 심리분석 및 발달진단 플랫폼입니다
+            </p>
+          </div>
+          
+          <div className="grid gap-8 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Crown className="w-5 h-5 text-primary" />
+                  핵심 기능
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-medium">3분 심리검사</h4>
+                    <p className="text-sm text-muted-foreground">빠르고 정확한 심리상태 체크</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-medium">AI 분석 리포트</h4>
+                    <p className="text-sm text-muted-foreground">개인 맞춤형 상세 분석 결과</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-medium">전문가 상담</h4>
+                    <p className="text-sm text-muted-foreground">AI → 전문가 연계 상담 시스템</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-medium">가족 케어</h4>
+                    <p className="text-sm text-muted-foreground">가족 구성원 통합 관리</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="w-5 h-5 text-primary" />
+                  특별한 장점
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-medium">AI 기반 정확성</h4>
+                    <p className="text-sm text-muted-foreground">최신 AI 모델로 높은 분석 정확도</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-medium">24/7 접근성</h4>
+                    <p className="text-sm text-muted-foreground">언제든지 검사 및 상담 가능</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-medium">개인정보 보호</h4>
+                    <p className="text-sm text-muted-foreground">철저한 데이터 암호화 및 보안</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-medium">합리적 비용</h4>
+                    <p className="text-sm text-muted-foreground">전통적 상담 대비 경제적</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* 자주 묻는 질문 */}
+        <div className="mt-16 max-w-4xl mx-auto">
+          <h2 className="text-2xl font-bold text-center mb-8">자주 묻는 질문</h2>
+          
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">서비스 이용 관련</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-medium mb-2">Q. 검사는 얼마나 정확한가요?</h4>
+                  <p className="text-sm text-muted-foreground">최신 AI 기술과 검증된 심리학 이론을 바탕으로 높은 정확도를 제공합니다. 다만 정확한 진단을 위해서는 전문의 상담을 권장합니다.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 몇 살부터 검사할 수 있나요?</h4>
+                  <p className="text-sm text-muted-foreground">만 3세부터 성인까지 연령별 맞춤 검사를 제공합니다. 유아의 경우 보호자와 함께 진행해 주세요.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 검사 결과는 얼마나 보관되나요?</h4>
+                  <p className="text-sm text-muted-foreground">검사 결과는 영구 보관되며, 언제든지 확인하실 수 있습니다. 계정 삭제 시 모든 데이터가 완전히 삭제됩니다.</p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">구독 및 결제 관련</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-medium mb-2">Q. 구독은 언제 시작되나요?</h4>
+                  <p className="text-sm text-muted-foreground">결제 완료 후 즉시 시작됩니다. 토큰 방식으로 원하는 만큼만 이용하실 수 있습니다.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 가족도 함께 사용할 수 있나요?</h4>
+                  <p className="text-sm text-muted-foreground">네, 하나의 계정으로 가족 전체를 관리할 수 있습니다. 가족 케어 기능을 통해 체계적으로 관리하세요.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 환불이 가능한가요?</h4>
+                  <p className="text-sm text-muted-foreground">미사용 토큰에 대해서는 14일 내 환불이 가능합니다. 자세한 환불 정책은 이용약관을 확인해 주세요.</p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">개인정보 및 보안</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-medium mb-2">Q. 개인정보는 안전한가요?</h4>
+                  <p className="text-sm text-muted-foreground">모든 데이터는 암호화되어 저장되며, 개인정보보호법을 준수합니다. 제3자에게 공유되지 않습니다.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 상담 내용이 노출될 위험은 없나요?</h4>
+                  <p className="text-sm text-muted-foreground">상담 내용은 종단간 암호화로 보호되며, 오직 본인만 확인할 수 있습니다.</p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">기술 지원</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-medium mb-2">Q. 앱이 작동하지 않아요</h4>
+                  <p className="text-sm text-muted-foreground">브라우저 새로고침을 먼저 시도해 보세요. 문제가 지속되면 고객센터로 연락해 주세요.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 어떤 기기에서 사용 가능한가요?</h4>
+                  <p className="text-sm text-muted-foreground">PC, 스마트폰, 태블릿 등 인터넷이 연결된 모든 기기에서 사용 가능합니다.</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

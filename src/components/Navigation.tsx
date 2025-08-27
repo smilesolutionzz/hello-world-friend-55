@@ -178,9 +178,9 @@ const Navigation = () => {
               <Users className="w-4 h-4 mr-1" />
               가족케어
             </Button>
-            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 text-primary font-medium" onClick={() => handleNavigation('/token-subscription')}>
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 text-primary font-medium" onClick={() => handleNavigation('/subscription')}>
               <Shield className="w-4 h-4 mr-1" />
-              구독
+              ABOUT
             </Button>
           </div>
 

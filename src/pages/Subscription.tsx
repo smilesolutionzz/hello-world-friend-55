@@ -266,7 +266,7 @@ const Subscription = () => {
                 </div>
                 <div>
                   <h4 className="font-medium mb-2">Q. 몇 살부터 검사할 수 있나요?</h4>
-                  <p className="text-sm text-muted-foreground">만 3세부터 성인까지 연령별 맞춤 검사를 제공합니다. 유아의 경우 보호자와 함께 진행해 주세요.</p>
+                  <p className="text-sm text-muted-foreground">1세부터 성인까지 연령별 맞춤 검사를 제공합니다. 유아의 경우 보호자와 함께 진행해 주세요.</p>
                 </div>
                 <div>
                   <h4 className="font-medium mb-2">Q. 검사 결과는 얼마나 보관되나요?</h4>

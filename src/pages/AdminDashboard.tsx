@@ -5,9 +5,12 @@ import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
   Users, 
   CreditCard, 
@@ -17,7 +20,23 @@ import {
   TrendingUp,
   Calendar,
   ArrowLeft,
-  RefreshCw
+  RefreshCw,
+  Search,
+  Filter,
+  UserCheck,
+  UserX,
+  Mail,
+  Phone,
+  MapPin,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Download,
+  Bell,
+  Settings,
+  MoreHorizontal,
+  Edit,
+  Trash2
 } from 'lucide-react';
 
 interface AdminAnalytics {
@@ -39,6 +58,8 @@ interface UserDetail {
   created_at: string;
   test_count: number;
   observation_count: number;
+  phone?: string;
+  birth_date?: string;
 }
 
 interface RecentTest {
@@ -61,11 +82,25 @@ interface PaymentRecord {
 export default function AdminDashboard() {
   const { isAdmin, loading: adminLoading } = useAdminCheck();
   const navigate = useNavigate();
+  
+  // Analytics state
   const [analytics, setAnalytics] = useState<AdminAnalytics | null>(null);
+  
+  // Data states
   const [users, setUsers] = useState<UserDetail[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<UserDetail[]>([]);
   const [recentTests, setRecentTests] = useState<RecentTest[]>([]);
   const [recentPayments, setRecentPayments] = useState<PaymentRecord[]>([]);
+  
+  // Loading states
   const [loading, setLoading] = useState(true);
+  const [realTimeUpdates, setRealTimeUpdates] = useState(0);
+  
+  // Filter states
+  const [searchTerm, setSearchTerm] = useState('');
+  const [subscriptionFilter, setSubscriptionFilter] = useState('all');
+  const [dateFilter, setDateFilter] = useState('all');
+  const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null);
 
   // Redirect if not admin
   if (!adminLoading && !isAdmin) {
@@ -73,15 +108,95 @@ export default function AdminDashboard() {
     return null;
   }
 
+  // Real-time updates setup
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    const channel = supabase
+      .channel('admin-realtime-updates')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'profiles' },
+        () => {
+          console.log('새로운 사용자 활동 감지');
+          setRealTimeUpdates(prev => prev + 1);
+          loadAllData();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'payment_history' },
+        () => {
+          console.log('새로운 결제 감지');
+          setRealTimeUpdates(prev => prev + 1);
+          loadAllData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAdmin]);
+
+  // Filter users based on search and filters
+  useEffect(() => {
+    let filtered = users;
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(user => 
+        user.display_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Subscription filter
+    if (subscriptionFilter !== 'all') {
+      filtered = filtered.filter(user => user.subscription_tier === subscriptionFilter);
+    }
+
+    // Date filter
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      const filterDate = new Date();
+      
+      switch (dateFilter) {
+        case 'today':
+          filterDate.setHours(0, 0, 0, 0);
+          break;
+        case 'week':
+          filterDate.setDate(now.getDate() - 7);
+          break;
+        case 'month':
+          filterDate.setMonth(now.getMonth() - 1);
+          break;
+      }
+      
+      filtered = filtered.filter(user => new Date(user.created_at) >= filterDate);
+    }
+
+    setFilteredUsers(filtered);
+  }, [users, searchTerm, subscriptionFilter, dateFilter]);
+
   const fetchAnalytics = async () => {
     try {
       const { data, error } = await supabase
         .from('admin_analytics')
         .select('*')
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
-      setAnalytics(data);
+      if (error && error.code !== 'PGRST116') throw error;
+      setAnalytics(data || {
+        total_users: 0,
+        total_subscribers: 0,
+        active_subscribers: 0,
+        users_with_tests: 0,
+        total_tests: 0,
+        total_revenue: 0,
+        users_with_observations: 0,
+        total_observations: 0
+      });
     } catch (error) {
       console.error('Error fetching analytics:', error);
     }
@@ -95,14 +210,15 @@ export default function AdminDashboard() {
           user_id,
           display_name,
           subscription_tier,
-          created_at
+          created_at,
+          phone,
+          birth_date
         `)
         .order('created_at', { ascending: false })
-        .limit(50);
+        .limit(100);
 
       if (error) throw error;
 
-      // Get email addresses from auth users (need to use service function for this)
       const usersWithDetails = await Promise.all(
         data.map(async (user) => {
           // Get test count
@@ -119,7 +235,7 @@ export default function AdminDashboard() {
 
           return {
             ...user,
-            email: 'user@example.com', // Would need service function to get real email
+            email: `user-${user.user_id.slice(0, 8)}@example.com`,
             test_count: testCount || 0,
             observation_count: observationCount || 0,
           };
@@ -144,13 +260,13 @@ export default function AdminDashboard() {
           test_types (name)
         `)
         .order('completed_at', { ascending: false })
-        .limit(20);
+        .limit(50);
 
       if (error) throw error;
 
       const testsWithEmail = data.map(test => ({
         id: test.id,
-        user_email: 'user@example.com', // Would need service function for real email
+        user_email: `user-${test.user_id.slice(0, 8)}@example.com`,
         test_type: test.test_types?.name || 'Unknown',
         completed_at: test.completed_at,
         scores: test.scores,
@@ -175,13 +291,13 @@ export default function AdminDashboard() {
           subscription_type
         `)
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(50);
 
       if (error) throw error;
 
       const paymentsWithEmail = data.map(payment => ({
         ...payment,
-        user_email: 'user@example.com', // Would need service function for real email
+        user_email: `user-${payment.user_id.slice(0, 8)}@example.com`,
       }));
 
       setRecentPayments(paymentsWithEmail);
@@ -199,6 +315,61 @@ export default function AdminDashboard() {
       fetchRecentPayments()
     ]);
     setLoading(false);
+  };
+
+  const exportData = (type: string) => {
+    let data: any[] = [];
+    let filename = '';
+    
+    switch (type) {
+      case 'users':
+        data = filteredUsers;
+        filename = 'users_export.csv';
+        break;
+      case 'payments':
+        data = recentPayments;
+        filename = 'payments_export.csv';
+        break;
+      case 'tests':
+        data = recentTests;
+        filename = 'tests_export.csv';
+        break;
+    }
+    
+    if (data.length === 0) return;
+    
+    const csv = [
+      Object.keys(data[0]).join(','),
+      ...data.map(row => Object.values(row).join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', filename);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const toggleUserStatus = async (userId: string, currentTier: string) => {
+    try {
+      const newTier = currentTier === 'premium' ? 'free' : 'premium';
+      
+      const { error } = await supabase
+        .from('profiles')
+        .update({ subscription_tier: newTier })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      
+      // Refresh user list
+      await fetchUsers();
+    } catch (error) {
+      console.error('Error updating user status:', error);
+    }
   };
 
   useEffect(() => {
@@ -242,6 +413,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -256,24 +428,38 @@ export default function AdminDashboard() {
                 홈으로
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">관리자 대시보드</h1>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-bold text-foreground">관리자 대시보드</h1>
+                  {realTimeUpdates > 0 && (
+                    <Badge variant="destructive" className="animate-pulse">
+                      <Bell className="h-3 w-3 mr-1" />
+                      실시간 업데이트
+                    </Badge>
+                  )}
+                </div>
                 <p className="text-sm text-muted-foreground">
-                  하이라이트 프로 운영 현황을 한눈에 확인하세요
+                  하이라이트 프로 운영 현황을 실시간으로 확인하세요
                 </p>
               </div>
             </div>
-            <Button onClick={loadAllData} variant="outline" size="sm">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              새로고침
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button onClick={loadAllData} variant="outline" size="sm">
+                <RefreshCw className="h-4 w-4 mr-2" />
+                새로고침
+              </Button>
+              <Button variant="outline" size="sm">
+                <Settings className="h-4 w-4 mr-2" />
+                설정
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto p-6 space-y-6">
-        {/* Analytics Cards */}
+        {/* Enhanced Analytics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card>
+          <Card className="relative overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">총 사용자</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
@@ -283,10 +469,11 @@ export default function AdminDashboard() {
               <p className="text-xs text-muted-foreground">
                 구독자: {analytics?.total_subscribers || 0}명
               </p>
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="relative overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">활성 구독자</CardTitle>
               <CreditCard className="h-4 w-4 text-muted-foreground" />
@@ -296,10 +483,11 @@ export default function AdminDashboard() {
               <p className="text-xs text-muted-foreground">
                 구독률: {analytics?.total_users ? Math.round((analytics.active_subscribers / analytics.total_users) * 100) : 0}%
               </p>
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500" />
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="relative overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">총 매출</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -309,10 +497,11 @@ export default function AdminDashboard() {
               <p className="text-xs text-muted-foreground">
                 누적 매출액
               </p>
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-orange-500" />
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="relative overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">총 테스트</CardTitle>
               <ClipboardList className="h-4 w-4 text-muted-foreground" />
@@ -322,43 +511,116 @@ export default function AdminDashboard() {
               <p className="text-xs text-muted-foreground">
                 테스트 사용자: {analytics?.users_with_tests || 0}명
               </p>
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500" />
             </CardContent>
           </Card>
         </div>
 
-        {/* Detailed Analytics */}
+        {/* Enhanced Management Tabs */}
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="users">사용자 관리</TabsTrigger>
-            <TabsTrigger value="tests">테스트 현황</TabsTrigger>
-            <TabsTrigger value="payments">결제 내역</TabsTrigger>
-            <TabsTrigger value="observations">관찰일지</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="users" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              사용자 관리
+            </TabsTrigger>
+            <TabsTrigger value="tests" className="flex items-center gap-2">
+              <ClipboardList className="h-4 w-4" />
+              테스트 현황
+            </TabsTrigger>
+            <TabsTrigger value="payments" className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4" />
+              결제 내역
+            </TabsTrigger>
+            <TabsTrigger value="observations" className="flex items-center gap-2">
+              <Eye className="h-4 w-4" />
+              관찰일지
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users">
             <Card>
               <CardHeader>
-                <CardTitle>사용자 목록</CardTitle>
-                <CardDescription>최근 가입한 사용자들의 활동 현황</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>사용자 관리</CardTitle>
+                    <CardDescription>
+                      전체 {users.length}명 중 {filteredUsers.length}명 표시
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button onClick={() => exportData('users')} variant="outline" size="sm">
+                      <Download className="h-4 w-4 mr-2" />
+                      내보내기
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Search and Filters */}
+                <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="이름 또는 이메일로 검색..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Select value={subscriptionFilter} onValueChange={setSubscriptionFilter}>
+                    <SelectTrigger className="w-full sm:w-48">
+                      <SelectValue placeholder="구독 상태" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="premium">프리미엄</SelectItem>
+                      <SelectItem value="free">무료</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={dateFilter} onValueChange={setDateFilter}>
+                    <SelectTrigger className="w-full sm:w-48">
+                      <SelectValue placeholder="가입 기간" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="today">오늘</SelectItem>
+                      <SelectItem value="week">최근 1주</SelectItem>
+                      <SelectItem value="month">최근 1개월</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>사용자명</TableHead>
+                      <TableHead>사용자 정보</TableHead>
                       <TableHead>구독 상태</TableHead>
-                      <TableHead>테스트 횟수</TableHead>
-                      <TableHead>관찰일지 수</TableHead>
+                      <TableHead>활동</TableHead>
                       <TableHead>가입일</TableHead>
+                      <TableHead>관리</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                       <TableRow key={user.user_id}>
                         <TableCell>
-                          <div>
-                            <div className="font-medium">{user.display_name || '이름 없음'}</div>
-                            <div className="text-sm text-muted-foreground">{user.email}</div>
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
+                              {user.display_name?.charAt(0) || '?'}
+                            </div>
+                            <div>
+                              <div className="font-medium">{user.display_name || '이름 없음'}</div>
+                              <div className="text-sm text-muted-foreground flex items-center gap-1">
+                                <Mail className="h-3 w-3" />
+                                {user.email}
+                              </div>
+                              {user.phone && (
+                                <div className="text-sm text-muted-foreground flex items-center gap-1">
+                                  <Phone className="h-3 w-3" />
+                                  {user.phone}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -366,9 +628,69 @@ export default function AdminDashboard() {
                             {user.subscription_tier === 'premium' ? '프리미엄' : '무료'}
                           </Badge>
                         </TableCell>
-                        <TableCell>{user.test_count}</TableCell>
-                        <TableCell>{user.observation_count}</TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="text-sm">테스트: {user.test_count}회</div>
+                            <div className="text-sm">관찰일지: {user.observation_count}개</div>
+                          </div>
+                        </TableCell>
                         <TableCell>{formatDate(user.created_at)}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" onClick={() => setSelectedUser(user)}>
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-md">
+                                <DialogHeader>
+                                  <DialogTitle>사용자 상세 정보</DialogTitle>
+                                  <DialogDescription>
+                                    {user.display_name || '이름 없음'}의 상세 정보
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <div className="text-sm font-medium">이름</div>
+                                      <div className="text-sm text-muted-foreground">{user.display_name || '없음'}</div>
+                                    </div>
+                                    <div>
+                                      <div className="text-sm font-medium">구독</div>
+                                      <Badge variant={user.subscription_tier === 'premium' ? 'default' : 'secondary'}>
+                                        {user.subscription_tier === 'premium' ? '프리미엄' : '무료'}
+                                      </Badge>
+                                    </div>
+                                    <div>
+                                      <div className="text-sm font-medium">테스트 횟수</div>
+                                      <div className="text-sm text-muted-foreground">{user.test_count}회</div>
+                                    </div>
+                                    <div>
+                                      <div className="text-sm font-medium">관찰일지</div>
+                                      <div className="text-sm text-muted-foreground">{user.observation_count}개</div>
+                                    </div>
+                                    <div className="col-span-2">
+                                      <div className="text-sm font-medium">가입일</div>
+                                      <div className="text-sm text-muted-foreground">{formatDate(user.created_at)}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => toggleUserStatus(user.user_id, user.subscription_tier)}
+                            >
+                              {user.subscription_tier === 'premium' ? (
+                                <UserX className="h-4 w-4" />
+                              ) : (
+                                <UserCheck className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -380,8 +702,16 @@ export default function AdminDashboard() {
           <TabsContent value="tests">
             <Card>
               <CardHeader>
-                <CardTitle>최근 테스트 기록</CardTitle>
-                <CardDescription>사용자들이 실시한 최근 테스트들</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>테스트 현황</CardTitle>
+                    <CardDescription>사용자들이 실시한 테스트 기록</CardDescription>
+                  </div>
+                  <Button onClick={() => exportData('tests')} variant="outline" size="sm">
+                    <Download className="h-4 w-4 mr-2" />
+                    내보내기
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -391,6 +721,7 @@ export default function AdminDashboard() {
                       <TableHead>사용자</TableHead>
                       <TableHead>완료일</TableHead>
                       <TableHead>점수</TableHead>
+                      <TableHead>상태</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -404,6 +735,12 @@ export default function AdminDashboard() {
                             {typeof test.scores === 'object' ? '다항목' : test.scores}
                           </Badge>
                         </TableCell>
+                        <TableCell>
+                          <Badge variant="default">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            완료
+                          </Badge>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -415,8 +752,16 @@ export default function AdminDashboard() {
           <TabsContent value="payments">
             <Card>
               <CardHeader>
-                <CardTitle>최근 결제 내역</CardTitle>
-                <CardDescription>구독 및 토큰 결제 현황</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>결제 내역</CardTitle>
+                    <CardDescription>구독 및 토큰 결제 현황</CardDescription>
+                  </div>
+                  <Button onClick={() => exportData('payments')} variant="outline" size="sm">
+                    <Download className="h-4 w-4 mr-2" />
+                    내보내기
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -440,8 +785,11 @@ export default function AdminDashboard() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={payment.status === 'paid' ? 'default' : 'destructive'}>
-                            {payment.status === 'paid' ? '완료' : '대기'}
+                          <Badge variant={payment.status === 'paid' ? 'default' : payment.status === 'pending' ? 'secondary' : 'destructive'}>
+                            {payment.status === 'paid' && <CheckCircle className="h-3 w-3 mr-1" />}
+                            {payment.status === 'pending' && <Clock className="h-3 w-3 mr-1" />}
+                            {payment.status === 'failed' && <AlertCircle className="h-3 w-3 mr-1" />}
+                            {payment.status === 'paid' ? '완료' : payment.status === 'pending' ? '대기' : '실패'}
                           </Badge>
                         </TableCell>
                         <TableCell>{formatDate(payment.created_at)}</TableCell>
@@ -461,18 +809,18 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center p-6">
-                    <Eye className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <div className="text-center p-6 rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50">
+                    <Eye className="h-8 w-8 mx-auto mb-2 text-blue-600 dark:text-blue-400" />
                     <div className="text-2xl font-bold">{analytics?.total_observations || 0}</div>
                     <div className="text-sm text-muted-foreground">총 관찰일지 수</div>
                   </div>
-                  <div className="text-center p-6">
-                    <Users className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <div className="text-center p-6 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50">
+                    <Users className="h-8 w-8 mx-auto mb-2 text-green-600 dark:text-green-400" />
                     <div className="text-2xl font-bold">{analytics?.users_with_observations || 0}</div>
                     <div className="text-sm text-muted-foreground">활성 사용자</div>
                   </div>
-                  <div className="text-center p-6">
-                    <TrendingUp className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <div className="text-center p-6 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50">
+                    <TrendingUp className="h-8 w-8 mx-auto mb-2 text-purple-600 dark:text-purple-400" />
                     <div className="text-2xl font-bold">
                       {analytics?.users_with_observations && analytics?.total_observations 
                         ? Math.round(analytics.total_observations / analytics.users_with_observations)

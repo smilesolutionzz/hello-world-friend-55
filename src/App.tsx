@@ -54,6 +54,7 @@ import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTestResult from "./components/assessment/FunTestResult";
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
+import AdminDashboard from "./pages/AdminDashboard";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -94,6 +95,7 @@ const App = () => (
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<Observation />} />

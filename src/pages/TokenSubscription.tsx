@@ -478,7 +478,10 @@ const TokenSubscription = () => {
                       <p className="text-lg text-muted-foreground mb-2">마음을 담아</p>
                       <div className="flex items-center gap-3 justify-center">
                         <div className="w-8 h-0.5 bg-gradient-to-r from-transparent to-primary"></div>
-                        <span className="font-bold text-xl text-primary">AI 하이라이트프로 창립자 이수석</span>
+                        <span className="font-bold text-lg md:text-xl text-primary break-keep leading-relaxed text-center">
+                          AI 하이라이트프로<br className="hidden sm:block"/>
+                          <span className="sm:hidden"> </span>창립자 이수석
+                        </span>
                         <div className="w-8 h-0.5 bg-gradient-to-l from-transparent to-primary"></div>
                       </div>
                     </div>

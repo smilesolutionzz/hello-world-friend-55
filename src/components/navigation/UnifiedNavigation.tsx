@@ -15,7 +15,9 @@ import {
   TrendingUp,
   User,
   UserCheck,
-  History
+  History,
+  HelpCircle,
+  Mail
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -52,6 +54,17 @@ export const UnifiedNavigation = () => {
 
   const handleNavigation = (path: string) => {
     navigate(path);
+    setIsOpen(false);
+  };
+
+  const handleContact = () => {
+    window.open('mailto:support@hilightpro.com?subject=문의사항', '_blank');
+    setIsOpen(false);
+  };
+
+  const handleFAQ = () => {
+    // FAQ 페이지나 도움말 섹션으로 이동
+    navigate('/faq');
     setIsOpen(false);
   };
 
@@ -224,19 +237,42 @@ export const UnifiedNavigation = () => {
                             </Badge>
                           )}
                         </Button>
-                    ))}
-                  </div>
+                     ))}
+                     
+                     {/* 고객 지원 섹션 - 구독 밑에 배치 */}
+                     <div className="pt-4 mt-4 border-t border-border/50">
+                       <p className="text-xs text-muted-foreground mb-2 px-2">고객 지원</p>
+                       <div className="space-y-1">
+                         <Button
+                           variant="ghost"
+                           className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+                           onClick={handleFAQ}
+                         >
+                           <HelpCircle className="w-4 h-4" />
+                           질문있나요?
+                         </Button>
+                         <Button
+                           variant="ghost"
+                           className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+                           onClick={handleContact}
+                         >
+                           <Mail className="w-4 h-4" />
+                           문의하기
+                         </Button>
+                       </div>
+                     </div>
+                   </div>
 
-                  {/* Auth Section */}
-                  <div className="border-t pt-4 mt-4">
-                    <Button
-                      variant={user ? "ghost" : "default"}
-                      className="w-full justify-start gap-3"
-                      onClick={handleAuth}
-                    >
-                      <User className="w-4 h-4" />
-                      {user ? '로그아웃' : '로그인'}
-                    </Button>
+                   {/* Auth Section */}
+                   <div className="border-t pt-4 mt-4">
+                     <Button
+                       variant={user ? "ghost" : "default"}
+                       className="w-full justify-start gap-3"
+                       onClick={handleAuth}
+                     >
+                       <User className="w-4 h-4" />
+                       {user ? '로그아웃' : '로그인'}
+                     </Button>
                   </div>
                 </div>
               </SheetContent>

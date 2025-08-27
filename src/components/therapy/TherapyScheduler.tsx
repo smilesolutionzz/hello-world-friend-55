@@ -747,28 +747,48 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
 
           {/* 버튼 영역 */}
           <div className="flex gap-3 pt-4 border-t">
-            <Button onClick={saveAppointment} className="flex-1 h-12 text-base bg-blue-600 hover:bg-blue-700">
-              저장
-            </Button>
-            {selectedEvent && (
-              <Button 
-                variant="destructive" 
-                onClick={deleteAppointment}
-                className="h-12 text-base px-6"
-              >
-                삭제
-              </Button>
+            {selectedEvent ? (
+              // 수정 모드일 때: 저장, 삭제, 취소 버튼
+              <>
+                <Button onClick={saveAppointment} className="flex-1 h-12 text-base bg-blue-600 hover:bg-blue-700">
+                  수정
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  onClick={deleteAppointment}
+                  className="h-12 text-base px-6"
+                >
+                  삭제
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setShowAppointmentDialog(false);
+                    setSelectedEvent(null);
+                  }}
+                  className="flex-1 h-12 text-base"
+                >
+                  취소
+                </Button>
+              </>
+            ) : (
+              // 새 일정 등록 모드일 때: 저장, 취소 버튼
+              <>
+                <Button onClick={saveAppointment} className="flex-1 h-12 text-base bg-blue-600 hover:bg-blue-700">
+                  저장
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setShowAppointmentDialog(false);
+                    setSelectedEvent(null);
+                  }}
+                  className="flex-1 h-12 text-base"
+                >
+                  취소
+                </Button>
+              </>
             )}
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setShowAppointmentDialog(false);
-                setSelectedEvent(null);
-              }}
-              className="flex-1 h-12 text-base"
-            >
-              취소
-            </Button>
           </div>
         </DialogContent>
       </Dialog>

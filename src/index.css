@@ -8,6 +8,146 @@
 /* React Big Calendar styles */
 @import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+/* react-big-calendar styles - 큼직하고 보기 좋게 */
+.rbc-calendar {
+  font-family: inherit;
+  border: 1px solid hsl(var(--border));
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+}
+
+.rbc-header {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.8));
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 16px 12px;
+  text-align: center;
+  border-bottom: 2px solid hsl(var(--primary));
+}
+
+.rbc-time-view .rbc-time-gutter {
+  background-color: hsl(var(--muted) / 0.3);
+  border-right: 2px solid hsl(var(--border));
+}
+
+.rbc-time-view .rbc-time-gutter .rbc-timeslot-group {
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.rbc-time-slot {
+  font-size: 14px;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+}
+
+.rbc-today {
+  background-color: hsl(var(--primary) / 0.08);
+}
+
+.rbc-current-time-indicator {
+  background-color: hsl(var(--destructive));
+  height: 3px;
+  border-radius: 2px;
+}
+
+.rbc-event {
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none !important;
+  padding: 4px 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.rbc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.rbc-selected {
+  background-color: hsl(var(--primary)) !important;
+  color: white !important;
+}
+
+.rbc-time-view .rbc-time-content {
+  border-top: 2px solid hsl(var(--border));
+}
+
+.rbc-day-slot .rbc-time-slot {
+  border-top: 1px solid hsl(var(--border) / 0.5);
+}
+
+.rbc-toolbar {
+  padding: 16px 0;
+  margin-bottom: 16px;
+  background: hsl(var(--background));
+  border-radius: 8px;
+  border: 1px solid hsl(var(--border));
+}
+
+.rbc-toolbar button {
+  background: hsl(var(--secondary));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.rbc-toolbar button:hover {
+  background: hsl(var(--secondary) / 0.8);
+  transform: translateY(-1px);
+}
+
+.rbc-toolbar button.rbc-active {
+  background: hsl(var(--primary));
+  color: white;
+  border-color: hsl(var(--primary));
+}
+
+.rbc-btn-group {
+  margin: 0 8px;
+}
+
+.rbc-toolbar-label {
+  font-size: 20px;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+}
+
+/* 시간 표시 개선 */
+.rbc-time-content > * + * > * {
+  border-left: 2px solid hsl(var(--border));
+}
+
+.rbc-timeslot-group {
+  min-height: 60px;
+}
+
+.rbc-time-header-gutter {
+  background: linear-gradient(135deg, hsl(var(--muted)), hsl(var(--muted) / 0.5));
+}
+
+/* 드래그 앤 드롭 스타일 */
+.rbc-addons-dnd .rbc-addons-dnd-row-body {
+  height: 100%;
+}
+
+.rbc-addons-dnd .rbc-addons-dnd-drag-preview {
+  opacity: 0.8;
+  transform: rotate(5deg);
+}
+
+/* 일정 텍스트 더 명확하게 */
+.rbc-event-content {
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
 /* AIH Pro 심리상담 플랫폼 디자인 시스템 */
 
 @layer base {

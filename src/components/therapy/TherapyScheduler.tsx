@@ -10,9 +10,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Users, Calendar as CalendarIcon, Clock } from "lucide-react";
+import { Plus, Users, Calendar as CalendarIcon, Clock, X } from "lucide-react";
 
 moment.locale('ko');
 const localizer = momentLocalizer(moment);
@@ -60,10 +62,15 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
   const [appointmentForm, setAppointmentForm] = useState({
     therapist_id: '',
     client_name: '',
-    appointment_type: '개별치료',
+    appointment_type: '제휴',
+    program_type: '언어-언어치료',
+    start_date: '',
     start_time: '',
     end_time: '',
-    notes: ''
+    notes: '',
+    repeat_type: 'none',
+    repeat_end_date: '',
+    repeat_days: [] as string[]
   });
 
   const [therapistForm, setTherapistForm] = useState({
@@ -150,10 +157,15 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
     setAppointmentForm({
       therapist_id: '',
       client_name: '',
-      appointment_type: '개별치료',
-      start_time: moment(slotInfo.start).format('YYYY-MM-DDTHH:mm'),
-      end_time: moment(slotInfo.end).format('YYYY-MM-DDTHH:mm'),
-      notes: ''
+      appointment_type: '제휴',
+      program_type: '언어-언어치료',
+      start_date: moment(slotInfo.start).format('YYYY-MM-DD'),
+      start_time: moment(slotInfo.start).format('HH:mm'),
+      end_time: moment(slotInfo.end).format('HH:mm'),
+      notes: '',
+      repeat_type: 'none',
+      repeat_end_date: '',
+      repeat_days: []
     });
     setShowAppointmentDialog(true);
   }, []);
@@ -164,36 +176,88 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
       therapist_id: event.resource.therapist_id,
       client_name: event.resource.client_name,
       appointment_type: event.resource.appointment_type,
-      start_time: moment(event.start).format('YYYY-MM-DDTHH:mm'),
-      end_time: moment(event.end).format('YYYY-MM-DDTHH:mm'),
-      notes: event.resource.notes || ''
+      program_type: '언어-언어치료',
+      start_date: moment(event.start).format('YYYY-MM-DD'),
+      start_time: moment(event.start).format('HH:mm'),
+      end_time: moment(event.end).format('HH:mm'),
+      notes: event.resource.notes || '',
+      repeat_type: 'none',
+      repeat_end_date: '',
+      repeat_days: []
     });
     setShowAppointmentDialog(true);
   }, []);
 
+  const generateRecurringAppointments = (baseData: any) => {
+    const appointments = [];
+    const startDate = moment(appointmentForm.start_date);
+    const endDate = appointmentForm.repeat_end_date ? moment(appointmentForm.repeat_end_date) : startDate.clone().add(6, 'months');
+    
+    if (appointmentForm.repeat_type === 'daily') {
+      let current = startDate.clone();
+      while (current.isSameOrBefore(endDate)) {
+        appointments.push({
+          ...baseData,
+          start_time: current.format('YYYY-MM-DD') + 'T' + appointmentForm.start_time,
+          end_time: current.format('YYYY-MM-DD') + 'T' + appointmentForm.end_time,
+        });
+        current.add(1, 'day');
+      }
+    } else if (appointmentForm.repeat_type === 'weekly') {
+      let current = startDate.clone();
+      while (current.isSameOrBefore(endDate)) {
+        if (appointmentForm.repeat_days.length === 0 || appointmentForm.repeat_days.includes(current.format('dddd'))) {
+          appointments.push({
+            ...baseData,
+            start_time: current.format('YYYY-MM-DD') + 'T' + appointmentForm.start_time,
+            end_time: current.format('YYYY-MM-DD') + 'T' + appointmentForm.end_time,
+          });
+        }
+        current.add(1, 'day');
+      }
+    } else {
+      // 단일 일정
+      appointments.push({
+        ...baseData,
+        start_time: appointmentForm.start_date + 'T' + appointmentForm.start_time,
+        end_time: appointmentForm.start_date + 'T' + appointmentForm.end_time,
+      });
+    }
+    
+    return appointments;
+  };
+
   const saveAppointment = async () => {
     try {
-      const appointmentData = {
+      const baseData = {
         institution_id: institutionId,
         therapist_id: appointmentForm.therapist_id,
         client_name: appointmentForm.client_name,
         appointment_type: appointmentForm.appointment_type,
-        start_time: appointmentForm.start_time,
-        end_time: appointmentForm.end_time,
         notes: appointmentForm.notes,
         status: 'scheduled'
       };
 
       if (selectedEvent) {
+        // 기존 일정 수정
+        const appointmentData = {
+          ...baseData,
+          start_time: appointmentForm.start_date + 'T' + appointmentForm.start_time,
+          end_time: appointmentForm.start_date + 'T' + appointmentForm.end_time,
+        };
+        
         const { error } = await supabase
           .from('therapy_appointments')
           .update(appointmentData)
           .eq('id', selectedEvent.id);
         if (error) throw error;
       } else {
+        // 새 일정 등록 (반복 포함)
+        const appointments = generateRecurringAppointments(baseData);
+        
         const { error } = await supabase
           .from('therapy_appointments')
-          .insert(appointmentData);
+          .insert(appointments);
         if (error) throw error;
       }
 
@@ -438,104 +502,227 @@ export function TherapyScheduler({ institutionId }: TherapySchedulerProps) {
         </CardContent>
       </Card>
 
-      {/* 일정 등록/수정 다이얼로그 */}
+      {/* 일정 등록/수정 다이얼로그 - 케어플센터 스타일 */}
       <Dialog open={showAppointmentDialog} onOpenChange={setShowAppointmentDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {selectedEvent ? '일정 수정' : '새 일정 등록'}
-            </DialogTitle>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="pb-4 border-b">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-xl font-bold">
+                일정등록 - 제휴
+              </DialogTitle>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setShowAppointmentDialog(false)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
           </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="therapist">치료사</Label>
+          
+          <div className="space-y-6 py-4">
+            {/* 일정 유형 선택 */}
+            <div className="space-y-3">
+              <RadioGroup 
+                value={appointmentForm.appointment_type} 
+                onValueChange={(value) => setAppointmentForm({...appointmentForm, appointment_type: value})}
+                className="flex gap-6"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="제휴" id="affiliate" />
+                  <Label htmlFor="affiliate" className="text-base font-medium">제휴</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="상담/평가" id="consultation" />
+                  <Label htmlFor="consultation" className="text-base font-medium">상담/평가</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="기타" id="other" />
+                  <Label htmlFor="other" className="text-base font-medium">기타</Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* 선생님 선택 */}
+            <div className="space-y-2">
+              <Label className="text-base font-medium text-red-500">* 선생님</Label>
               <Select
                 value={appointmentForm.therapist_id}
                 onValueChange={(value) => setAppointmentForm({...appointmentForm, therapist_id: value})}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="치료사를 선택하세요" />
+                <SelectTrigger className="h-12 text-base">
+                  <SelectValue placeholder="작업치료사 / 언어재활사 선택" />
                 </SelectTrigger>
                 <SelectContent>
                   {therapists.map(therapist => (
-                    <SelectItem key={therapist.id} value={therapist.id}>
+                    <SelectItem key={therapist.id} value={therapist.id} className="text-base py-3">
                       {therapist.name} - {therapist.specialization}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label htmlFor="client_name">클라이언트 이름</Label>
+
+            {/* 이용자 입력 */}
+            <div className="space-y-2">
+              <Label className="text-base font-medium text-red-500">* 이용자</Label>
               <Input
-                id="client_name"
                 value={appointmentForm.client_name}
                 onChange={(e) => setAppointmentForm({...appointmentForm, client_name: e.target.value})}
-                placeholder="클라이언트 이름"
+                placeholder="이용자를 선택하세요..."
+                className="h-12 text-base"
               />
             </div>
-            <div>
-              <Label htmlFor="appointment_type">치료 유형</Label>
+
+            {/* 프로그램 선택 */}
+            <div className="space-y-2">
+              <Label className="text-base font-medium text-red-500">* 프로그램</Label>
               <Select
-                value={appointmentForm.appointment_type}
-                onValueChange={(value) => setAppointmentForm({...appointmentForm, appointment_type: value})}
+                value={appointmentForm.program_type}
+                onValueChange={(value) => setAppointmentForm({...appointmentForm, program_type: value})}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-12 text-base">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="개별치료">개별치료</SelectItem>
-                  <SelectItem value="그룹치료">그룹치료</SelectItem>
-                  <SelectItem value="평가">평가</SelectItem>
-                  <SelectItem value="상담">상담</SelectItem>
+                  <SelectItem value="언어-언어치료" className="text-base py-3">언어-언어치료</SelectItem>
+                  <SelectItem value="작업-작업치료" className="text-base py-3">작업-작업치료</SelectItem>
+                  <SelectItem value="물리-물리치료" className="text-base py-3">물리-물리치료</SelectItem>
+                  <SelectItem value="심리-심리치료" className="text-base py-3">심리-심리치료</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <Label htmlFor="start_time">시작 시간</Label>
+
+            {/* 일자 선택 */}
+            <div className="space-y-2">
+              <Label className="text-base font-medium text-red-500">* 일자</Label>
+              <div className="flex gap-2 items-center">
                 <Input
-                  id="start_time"
-                  type="datetime-local"
+                  type="date"
+                  value={appointmentForm.start_date}
+                  onChange={(e) => setAppointmentForm({...appointmentForm, start_date: e.target.value})}
+                  className="h-12 text-base flex-1"
+                />
+                <Button variant="outline" size="sm" className="px-3">
+                  반복
+                </Button>
+              </div>
+            </div>
+
+            {/* 시간 선택 */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-base font-medium text-red-500">* 시작시간</Label>
+                <Input
+                  type="time"
                   value={appointmentForm.start_time}
                   onChange={(e) => setAppointmentForm({...appointmentForm, start_time: e.target.value})}
+                  className="h-12 text-base"
                 />
               </div>
-              <div>
-                <Label htmlFor="end_time">종료 시간</Label>
+              <div className="space-y-2">
+                <Label className="text-base font-medium text-red-500">* 종료시간</Label>
                 <Input
-                  id="end_time"
-                  type="datetime-local"
+                  type="time"
                   value={appointmentForm.end_time}
                   onChange={(e) => setAppointmentForm({...appointmentForm, end_time: e.target.value})}
+                  className="h-12 text-base"
                 />
               </div>
             </div>
-            <div>
-              <Label htmlFor="notes">메모</Label>
+
+            {/* 반복 설정 섹션 */}
+            {!selectedEvent && (
+              <div className="space-y-4 border-t pt-4">
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">반복 설정</Label>
+                  <Select
+                    value={appointmentForm.repeat_type}
+                    onValueChange={(value) => setAppointmentForm({...appointmentForm, repeat_type: value})}
+                  >
+                    <SelectTrigger className="h-12 text-base">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">반복 없음</SelectItem>
+                      <SelectItem value="daily">매일</SelectItem>
+                      <SelectItem value="weekly">매주</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {appointmentForm.repeat_type === 'weekly' && (
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">반복 요일</Label>
+                    <div className="flex gap-2">
+                      {['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'].map(day => (
+                        <div key={day} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={day}
+                            checked={appointmentForm.repeat_days.includes(day)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setAppointmentForm({
+                                  ...appointmentForm,
+                                  repeat_days: [...appointmentForm.repeat_days, day]
+                                });
+                              } else {
+                                setAppointmentForm({
+                                  ...appointmentForm,
+                                  repeat_days: appointmentForm.repeat_days.filter(d => d !== day)
+                                });
+                              }
+                            }}
+                          />
+                          <Label htmlFor={day} className="text-sm">{day.substring(0, 1)}</Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {appointmentForm.repeat_type !== 'none' && (
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">반복 종료일</Label>
+                    <Input
+                      type="date"
+                      value={appointmentForm.repeat_end_date}
+                      onChange={(e) => setAppointmentForm({...appointmentForm, repeat_end_date: e.target.value})}
+                      className="h-12 text-base"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 메모 */}
+            <div className="space-y-2">
+              <Label className="text-base font-medium">메모</Label>
               <Textarea
-                id="notes"
                 value={appointmentForm.notes}
                 onChange={(e) => setAppointmentForm({...appointmentForm, notes: e.target.value})}
-                placeholder="추가 메모"
-                rows={3}
+                placeholder="메모를 입력하세요"
+                rows={4}
+                className="text-base resize-none"
               />
             </div>
-            <div className="flex gap-2">
-              <Button onClick={saveAppointment} className="flex-1">
-                {selectedEvent ? '수정' : '등록'}
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setShowAppointmentDialog(false);
-                  setSelectedEvent(null);
-                }}
-                className="flex-1"
-              >
-                취소
-              </Button>
-            </div>
+          </div>
+
+          {/* 버튼 영역 */}
+          <div className="flex gap-3 pt-4 border-t">
+            <Button onClick={saveAppointment} className="flex-1 h-12 text-base bg-blue-600 hover:bg-blue-700">
+              저장
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setShowAppointmentDialog(false);
+                setSelectedEvent(null);
+              }}
+              className="flex-1 h-12 text-base"
+            >
+              취소
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

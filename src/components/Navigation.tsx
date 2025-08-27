@@ -182,6 +182,10 @@ const Navigation = () => {
               <Shield className="w-4 h-4 mr-1" />
               구독
             </Button>
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/faq')}>
+              <Info className="w-4 h-4 mr-1" />
+              FAQ
+            </Button>
           </div>
 
           <div className="flex items-center gap-3">
@@ -456,6 +460,15 @@ const Navigation = () => {
                   >
                     <Shield className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">구독플랜</span>
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
+                    onClick={() => handleNavigation('/faq')}
+                  >
+                    <Info className="mr-3 h-5 w-5 text-primary shrink-0" />
+                    <span className="font-medium">자주 묻는 질문</span>
                   </Button>
                 </div>
                 

@@ -1101,6 +1101,45 @@ export type Database = {
         }
         Relationships: []
       }
+      subscribers: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          subscribed: boolean | null
+          subscription_end: string | null
+          subscription_start: string | null
+          subscription_tier: string | null
+          total_paid: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          subscribed?: boolean | null
+          subscription_end?: string | null
+          subscription_start?: string | null
+          subscription_tier?: string | null
+          total_paid?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          subscribed?: boolean | null
+          subscription_end?: string | null
+          subscription_start?: string | null
+          subscription_tier?: string | null
+          total_paid?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscription_plans: {
         Row: {
           created_at: string
@@ -1509,6 +1548,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_subscriptions: {
         Row: {
           created_at: string
@@ -1633,7 +1696,19 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_analytics: {
+        Row: {
+          active_subscribers: number | null
+          total_observations: number | null
+          total_revenue: number | null
+          total_subscribers: number | null
+          total_tests: number | null
+          total_users: number | null
+          users_with_observations: number | null
+          users_with_tests: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_daily_tokens: {
@@ -1656,6 +1731,13 @@ export type Database = {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: number
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       process_referral_reward: {
         Args: { p_referee_id: string; p_referral_code: string }
         Returns: boolean
@@ -1666,6 +1748,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "expert" | "user"
       subscription_type: "free" | "token_pack" | "monthly_unlimited"
     }
     CompositeTypes: {
@@ -1794,6 +1877,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "expert", "user"],
       subscription_type: ["free", "token_pack", "monthly_unlimited"],
     },
   },

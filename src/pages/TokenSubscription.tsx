@@ -415,7 +415,9 @@ const TokenSubscription = () => {
                     
                     <div className="bg-gradient-to-br from-accent/20 to-primary/20 rounded-xl p-6 my-8 border border-primary/30">
                       <p className="text-lg font-bold text-center text-primary mb-4">
-                        "누구나 단 3분이면, 내 마음과 내 가족의 상태를 쉽게 확인하고 기록할 수 있게 만들자."
+                        "누구나 단 3분이면,<br/>
+                        내 마음과 내 가족의 상태를<br/>
+                        쉽게 확인하고 기록할 수 있게 만들자."
                       </p>
                       <p className="text-base md:text-lg leading-relaxed text-center">
                         그렇게 만들어진 것이 바로 하이라이트 프로입니다.

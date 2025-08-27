@@ -357,7 +357,7 @@ const Subscription = () => {
                 </div>
                 <div>
                   <h4 className="font-medium mb-2">Q. 어떤 마케팅 지원을 받나요?</h4>
-                  <p className="text-sm text-muted-foreground">SEO 최적화, SNS 마케팅, 구글 광고 지원, 네이버 플레이스 관리, 고객 리뷰 관리, 전문가 프로필 최적화 등 종합적인 디지털 마케팅을 지원합니다.</p>
+                  <p className="text-sm text-muted-foreground">AIHPRO 자체적인 마케팅과 광고를 통해 고객 유입을 만들어 제휴기관의 신규 고객 확보 통로 역할을 합니다. 별도의 마케팅 비용 없이 플랫폼 마케팅 효과를 공유받으실 수 있습니다.</p>
                 </div>
               </CardContent>
             </Card>

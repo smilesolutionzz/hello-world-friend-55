@@ -324,16 +324,28 @@ const Subscription = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="font-medium mb-2">Q. 제휴기관은 어떻게 선정하나요?</h4>
-                  <p className="text-sm text-muted-foreground">엄격한 심사 기준을 통해 자격증, 경력, 시설 등을 검증한 후 제휴를 맺습니다. 지속적인 품질 관리를 실시합니다.</p>
+                  <h4 className="font-medium mb-2">Q. 제휴기관 수익분배는 어떻게 되나요?</h4>
+                  <p className="text-sm text-muted-foreground">상담/치료 80%, 검사/평가 70%, 관찰일지 리뷰 75%, 보고서 작성 65%가 기관 수익입니다. 월 매출에 따른 성과 보너스도 추가 제공됩니다.</p>
                 </div>
                 <div>
-                  <h4 className="font-medium mb-2">Q. 치료비 분배는 어떻게 되나요?</h4>
-                  <p className="text-sm text-muted-foreground">온라인 치료비의 70%는 치료사에게, 30%는 플랫폼 운영비로 분배됩니다. 리포팅 서비스는 50:50으로 분배하며, 대면치료 기관 유입은 100% 기관 수입입니다.</p>
+                  <h4 className="font-medium mb-2">Q. 개별 치료사 수익구조는 어떤가요?</h4>
+                  <p className="text-sm text-muted-foreground">온라인 치료의 70%가 치료사 수익, 30%는 플랫폼 운영비입니다. 리포팅 서비스는 50:50 분배하며, 대면치료 기관 유입은 100% 기관 수익입니다.</p>
                 </div>
                 <div>
-                  <h4 className="font-medium mb-2">Q. 제휴기관 혜택은 무엇인가요?</h4>
-                  <p className="text-sm text-muted-foreground">안정적인 고객 유입, 온라인 예약 시스템, 마케팅 지원, 교육 프로그램 등을 제공합니다. 대면치료 연계 시 수수료 없이 100% 기관 수입이 보장됩니다.</p>
+                  <h4 className="font-medium mb-2">Q. 정산과 지급은 언제 되나요?</h4>
+                  <p className="text-sm text-muted-foreground">매월 말일 정산 후 익월 10일 지급됩니다. 실시간 매출 대시보드와 투명한 정산 내역서를 제공하며, 세금계산서도 자동 발행됩니다.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 초기 투자비용이 있나요?</h4>
+                  <p className="text-sm text-muted-foreground">플랫폼 입점비, 초기 설정비, 시스템 사용료 모두 무료입니다. 완전한 성과 연동형 수익 모델로 위험 부담 없이 시작하실 수 있습니다.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 성과 보너스는 어떻게 받나요?</h4>
+                  <p className="text-sm text-muted-foreground">월 매출 500만원 이상 시 +2%, 고객 만족도 4.8점 이상 시 +1%, 신규 고객 10명 이상 시 +1% 추가 보너스를 지급합니다.</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-2">Q. 어떤 마케팅 지원을 받나요?</h4>
+                  <p className="text-sm text-muted-foreground">SEO 최적화, SNS 마케팅, 구글 광고 지원, 네이버 플레이스 관리, 고객 리뷰 관리, 전문가 프로필 최적화 등 종합적인 디지털 마케팅을 지원합니다.</p>
                 </div>
               </CardContent>
             </Card>

@@ -443,10 +443,10 @@ const Navigation = () => {
                   <Button
                     variant="ghost"
                     className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
-                    onClick={() => handleNavigation('/faq')}
+                    onClick={() => handleNavigation('/family')}
                   >
-                    <Info className="mr-3 h-5 w-5 text-primary shrink-0" />
-                    <span className="font-medium">FAQ</span>
+                    <Users className="mr-3 h-5 w-5 text-primary shrink-0" />
+                    <span className="font-medium">가족케어</span>
                   </Button>
                   
                   <Button
@@ -457,7 +457,6 @@ const Navigation = () => {
                     <Shield className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">구독플랜</span>
                   </Button>
-                  
                 </div>
                 
                 {/* User Section */}

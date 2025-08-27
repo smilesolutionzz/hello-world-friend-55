@@ -50,15 +50,12 @@ import FocusPackage from "./pages/FocusPackage";
 import ChildPackage from "./pages/ChildPackage";
 import ComprehensivePackage from "./pages/ComprehensivePackage";
 
-
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTestResult from "./components/assessment/FunTestResult";
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
 import AdminDashboard from "./pages/AdminDashboard";
 import InstitutionAdmin from "./pages/InstitutionAdmin";
-import FAQ from "./pages/FAQ";
-import Layout from "./components/Layout";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -79,8 +76,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <SessionManager />
-        <Layout>
-          <Routes>
+        <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<HighlightAuth />} />
@@ -123,7 +119,6 @@ const App = () => (
           <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />
           <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
           <Route path="/token-test" element={<TokenTest />} />
-          <Route path="/faq" element={<FAQ />} />
           
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />
@@ -134,8 +129,8 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
           </Routes>
-        </Layout>
-      </BrowserRouter>
+          
+        </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
   </React.StrictMode>

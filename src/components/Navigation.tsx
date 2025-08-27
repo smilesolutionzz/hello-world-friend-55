@@ -101,6 +101,10 @@ const Navigation = () => {
               <Home className="w-4 h-4 mr-1" />
               홈
             </Button>
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/faq')}>
+              <Info className="w-4 h-4 mr-1" />
+              FAQ
+            </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/assessment')}>
               <Clock className="w-4 h-4 mr-1" />
               3분체크
@@ -177,10 +181,6 @@ const Navigation = () => {
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/family')}>
               <Users className="w-4 h-4 mr-1" />
               가족케어
-            </Button>
-            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/faq')}>
-              <Info className="w-4 h-4 mr-1" />
-              FAQ
             </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 text-primary font-medium" onClick={() => handleNavigation('/token-subscription')}>
               <Shield className="w-4 h-4 mr-1" />

@@ -140,18 +140,19 @@ const FAQ = () => {
         <div className="space-y-4">
           <div className="bg-primary/10 p-4 rounded-lg">
             <h4 className="font-semibold text-primary mb-2">개별 치료사 수익분배</h4>
-            <div className="text-2xl font-bold">치료사 70% | 플랫폼 30%</div>
-          </div>
-          <div className="bg-yellow-50 border border-yellow-200 p-3 rounded">
-            <div className="text-sm font-medium text-yellow-700">
-              제휴기관(75%) 대비 5% 낮은 이유
+            <div className="text-lg font-bold">온라인 서비스만 제공</div>
+            <div className="text-sm text-muted-foreground mt-2">
+              오프라인 상담은 제휴기관을 통해 직접 연결됩니다
             </div>
-            <ul className="text-sm text-yellow-600 mt-1 space-y-1">
-              <li>• 마케팅/홍보를 플랫폼이 전담</li>
-              <li>• 고객관리 시스템 제공</li>
-              <li>• 예약/결제 시스템 제공</li>
-              <li>• 개별 운영비 부담 없음</li>
-            </ul>
+          </div>
+          <div className="bg-blue-50 border border-blue-200 p-3 rounded">
+            <div className="text-sm font-medium text-blue-700 mb-2">
+              🏥 오프라인 상담 정책
+            </div>
+            <div className="text-sm text-blue-600">
+              오프라인 상담이 필요한 경우, 제휴기관으로 직접 연결하여<br/>
+              <strong>치료사가 100% 수익을 가져갑니다 (로열티 없음)</strong>
+            </div>
           </div>
         </div>
       )
@@ -159,22 +160,25 @@ const FAQ = () => {
     {
       question: "서비스별 수익구조가 다른가요?",
       answer: (
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-card p-3 rounded border">
-            <div className="text-sm text-muted-foreground">1:1 상담</div>
-            <div className="font-semibold text-green-600">75% / 25%</div>
-          </div>
-          <div className="bg-card p-3 rounded border">
-            <div className="text-sm text-muted-foreground">그룹 치료</div>
-            <div className="font-semibold">70% / 30%</div>
-          </div>
-          <div className="bg-card p-3 rounded border">
-            <div className="text-sm text-muted-foreground">온라인 상담</div>
-            <div className="font-semibold">65% / 35%</div>
-          </div>
-          <div className="bg-card p-3 rounded border">
-            <div className="text-sm text-muted-foreground">평가/검사</div>
-            <div className="font-semibold">60% / 40%</div>
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-3">
+            <div className="bg-green-50 border border-green-200 p-4 rounded">
+              <div className="text-sm text-muted-foreground">온라인 상담 (카톡, 화상, 전화)</div>
+              <div className="font-semibold text-green-600 text-lg">치료사 65% | 플랫폼 35%</div>
+            </div>
+            <div className="bg-orange-50 border border-orange-200 p-4 rounded">
+              <div className="text-sm text-muted-foreground">평가검사 해석</div>
+              <div className="font-semibold text-orange-600 text-lg">치료사 50% | 플랫폼 50%</div>
+            </div>
+            <div className="bg-purple-50 border border-purple-200 p-4 rounded">
+              <div className="text-sm text-muted-foreground">AIH종합리포팅 첨언 및 해석</div>
+              <div className="font-semibold text-purple-600 text-lg">치료사 50% | 플랫폼 50%</div>
+            </div>
+            <div className="bg-gray-50 border border-gray-200 p-4 rounded">
+              <div className="text-sm text-muted-foreground">오프라인 상담</div>
+              <div className="font-semibold text-gray-600">제휴기관 직접 연결 → 치료사 100%</div>
+              <div className="text-xs text-gray-500 mt-1">로열티 없음</div>
+            </div>
           </div>
         </div>
       )

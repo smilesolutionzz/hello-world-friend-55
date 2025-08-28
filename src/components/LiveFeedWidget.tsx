@@ -20,24 +20,44 @@ interface LiveStats {
 const LiveFeedWidget = () => {
   const [feedbacks, setFeedbacks] = useState<LiveFeedback[]>([]);
   const [stats, setStats] = useState<LiveStats>({
-    dailyVisitors: 1247,
+    dailyVisitors: 623,
     currentOnline: 23,
-    totalTests: 892
+    totalTests: 446
   });
   const [currentFeedback, setCurrentFeedback] = useState<LiveFeedback | null>(null);
   const [showStats, setShowStats] = useState(true);
 
+  // 다양한 시간대의 피드백 생성
+  const getRandomTimestamp = () => {
+    const now = new Date();
+    const randomMinutes = Math.floor(Math.random() * 480); // 0-8시간 전
+    return new Date(now.getTime() - randomMinutes * 60 * 1000);
+  };
+
   // 실시간 피드백 데이터 (실제로는 Supabase realtime에서 가져올 수 있음)
   const sampleFeedbacks: LiveFeedback[] = [
-    { id: "1", message: "너무 정확해서 놀랐어요! 믿고 구매합니다 ♡", emoji: "😍", timestamp: new Date(), testType: "발달검사" },
-    { id: "2", message: "AI 분석이 정말 자세하네요~", emoji: "🤩", timestamp: new Date(), testType: "ADHD검사" },
-    { id: "3", message: "아이 발달 상태를 정확히 알 수 있어서 감사해요", emoji: "🥰", timestamp: new Date(), testType: "언어발달" },
-    { id: "4", message: "전문가 수준의 해석이에요!", emoji: "💯", timestamp: new Date(), testType: "프리미엄검사" },
-    { id: "5", message: "무료로 이런 서비스를 이용할 수 있다니!", emoji: "🎉", timestamp: new Date(), testType: "기본검사" },
-    { id: "6", message: "정말 도움이 많이 됐어요 ㅠㅠ", emoji: "😭", timestamp: new Date(), testType: "스트레스검사" },
-    { id: "7", message: "친구들에게도 추천하고 싶어요", emoji: "👍", timestamp: new Date(), testType: "성격검사" },
-    { id: "8", message: "AI가 이렇게까지 발전했다니...", emoji: "🤖", timestamp: new Date(), testType: "종합검사" }
+    { id: "1", message: "너무 정확해서 놀랐어요! 믿고 구매합니다 ♡", emoji: "😍", timestamp: getRandomTimestamp(), testType: "발달검사" },
+    { id: "2", message: "AI 분석이 정말 자세하네요~", emoji: "🤩", timestamp: getRandomTimestamp(), testType: "ADHD검사" },
+    { id: "3", message: "아이 발달 상태를 정확히 알 수 있어서 감사해요", emoji: "🥰", timestamp: getRandomTimestamp(), testType: "언어발달" },
+    { id: "4", message: "전문가 수준의 해석이에요!", emoji: "💯", timestamp: getRandomTimestamp(), testType: "프리미엄검사" },
+    { id: "5", message: "무료로 이런 서비스를 이용할 수 있다니!", emoji: "🎉", timestamp: getRandomTimestamp(), testType: "기본검사" },
+    { id: "6", message: "정말 도움이 많이 됐어요 ㅠㅠ", emoji: "😭", timestamp: getRandomTimestamp(), testType: "스트레스검사" },
+    { id: "7", message: "친구들에게도 추천하고 싶어요", emoji: "👍", timestamp: getRandomTimestamp(), testType: "성격검사" },
+    { id: "8", message: "AI가 이렇게까지 발전했다니...", emoji: "🤖", timestamp: getRandomTimestamp(), testType: "종합검사" }
   ];
+
+  // 시간 차이를 한국어로 표시하는 함수
+  const getTimeAgo = (timestamp: Date) => {
+    const now = new Date();
+    const diffMs = now.getTime() - timestamp.getTime();
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMinutes / 60);
+    
+    if (diffMinutes < 5) return '방금 전';
+    if (diffMinutes < 60) return `${diffMinutes}분 전`;
+    if (diffHours < 24) return `${diffHours}시간 전`;
+    return '오늘';
+  };
 
   // 통계 실시간 업데이트
   useEffect(() => {
@@ -59,7 +79,7 @@ const LiveFeedWidget = () => {
       const newFeedback = {
         ...randomFeedback,
         id: Math.random().toString(),
-        timestamp: new Date()
+        timestamp: getRandomTimestamp()
       };
       
       setCurrentFeedback(newFeedback);
@@ -127,7 +147,7 @@ const LiveFeedWidget = () => {
                   {currentFeedback.testType}
                 </Badge>
                 <span className="text-xs text-muted-foreground">
-                  방금 전
+                  {getTimeAgo(currentFeedback.timestamp)}
                 </span>
               </div>
               <p className="text-sm text-gray-800 leading-relaxed">

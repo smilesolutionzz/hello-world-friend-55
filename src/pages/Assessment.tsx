@@ -230,58 +230,8 @@ const Assessment = () => {
     console.log('Assessment Results:', results);
     setAssessmentResults(results);
     
-    // 결과 형식에 따라 적절한 단계로 이동
-    if (selectedAgeGroup === 'child') {
-      // 아동청소년 게임검사 결과 처리
-      const gameScores = results;
-      const total = Object.values(gameScores).reduce((sum, score) => sum + score, 0);
-      const average = total / Object.keys(gameScores).length;
-      
-      const childResults = {
-        answers: results,
-        total,
-        average,
-        ageGroup: `${selectedAge}세`,
-        gameScores
-      };
-      
-      setChildResults(childResults);
-      setCurrentStep('child-result');
-    } else if (selectedAgeGroup === 'infant') {
-      // 영유아 발달검사 결과 처리
-      const categoryScores = results;
-      const total = Object.values(categoryScores).reduce((sum, score) => sum + score, 0);
-      const average = total / Object.keys(categoryScores).length;
-      
-      const infantResults = {
-        answers: results,
-        total,
-        average,
-        ageGroup: `${selectedAge}세`,
-        categoryScores
-      };
-      
-      setInfantResults(infantResults);
-      setCurrentStep('infant-result');
-    } else if (selectedAgeGroup === 'adult') {
-      // 성인 심리평가 결과 처리
-      const categoryScores = results;
-      const total = Object.values(categoryScores).reduce((sum, score) => sum + score, 0);
-      const average = total / Object.keys(categoryScores).length;
-      
-      const adultResults = {
-        answers: results,
-        total,
-        average,
-        ageGroup: `${selectedAge}세`,
-        categoryScores
-      };
-      
-      setAdultResults(adultResults);
-      setCurrentStep('adult-result');
-    } else {
-      setCurrentStep('analysis');
-    }
+    // 3분테스트는 AI 분석 단계로 이동 (토큰 차감 포함)
+    setCurrentStep('analysis');
   };
 
   const handleLanguageTestComplete = async (results: {answers: number[], total: number, average: number, ageGroup: string}) => {
@@ -404,8 +354,58 @@ const Assessment = () => {
   const handleStartRealTimeChat = () => {
     setCurrentStep('realtime-chat');
   };
-    const handleAnalysisComplete = (analysis: string) => {
-    setCurrentStep('matching');
+  const handleAnalysisComplete = (analysis: string) => {
+    setAnalysisResult(analysis);
+    
+    // 연령대별 결과 데이터 생성 및 결과 화면으로 이동
+    if (selectedAgeGroup === 'child') {
+      const gameScores = assessmentResults;
+      const total = Object.values(gameScores).reduce((sum, score) => sum + score, 0);
+      const average = total / Object.keys(gameScores).length;
+      
+      const childResults = {
+        answers: assessmentResults,
+        total,
+        average,
+        ageGroup: `${selectedAge}세`,
+        gameScores
+      };
+      
+      setChildResults(childResults);
+      setCurrentStep('child-result');
+    } else if (selectedAgeGroup === 'infant') {
+      const categoryScores = assessmentResults;
+      const total = Object.values(categoryScores).reduce((sum, score) => sum + score, 0);
+      const average = total / Object.keys(categoryScores).length;
+      
+      const infantResults = {
+        answers: assessmentResults,
+        total,
+        average,
+        ageGroup: `${selectedAge}세`,
+        categoryScores
+      };
+      
+      setInfantResults(infantResults);
+      setCurrentStep('infant-result');
+    } else if (selectedAgeGroup === 'adult') {
+      const categoryScores = assessmentResults;
+      const total = Object.values(categoryScores).reduce((sum, score) => sum + score, 0);
+      const average = total / Object.keys(categoryScores).length;
+      
+      const adultResults = {
+        answers: assessmentResults,
+        total,
+        average,
+        ageGroup: `${selectedAge}세`,
+        categoryScores
+      };
+      
+      setAdultResults(adultResults);
+      setCurrentStep('adult-result');
+    } else {
+      setCurrentStep('matching');
+    }
   };
 
   const handleExpertSelect = (expert: ExpertProfile) => {

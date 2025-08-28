@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { CalendarDays, Clock, User, FileText, Camera, Video } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
 
 interface ObservationLogProps {
   profileId: string;
@@ -202,7 +203,16 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
         {/* 관찰 내용 */}
         <div className="space-y-4">
           <div>
-            <Label htmlFor="behaviors_observed">관찰된 행동</Label>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="behaviors_observed">관찰된 행동</Label>
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = formData.behaviors_observed;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  handleInputChange('behaviors_observed', newValue);
+                }}
+              />
+            </div>
             <Textarea
               id="behaviors_observed"
               placeholder="아동이 보인 주요 행동들을 구체적으로 기록해주세요..."
@@ -213,7 +223,16 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
           </div>
 
           <div>
-            <Label htmlFor="social_interactions">사회적 상호작용</Label>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="social_interactions">사회적 상호작용</Label>
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = formData.social_interactions;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  handleInputChange('social_interactions', newValue);
+                }}
+              />
+            </div>
             <Textarea
               id="social_interactions"
               placeholder="다른 아이들이나 성인과의 상호작용 패턴을 기록해주세요..."
@@ -224,7 +243,16 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
           </div>
 
           <div>
-            <Label htmlFor="communication_patterns">의사소통 패턴</Label>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="communication_patterns">의사소통 패턴</Label>
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = formData.communication_patterns;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  handleInputChange('communication_patterns', newValue);
+                }}
+              />
+            </div>
             <Textarea
               id="communication_patterns"
               placeholder="언어적/비언어적 의사소통 방식을 기록해주세요..."

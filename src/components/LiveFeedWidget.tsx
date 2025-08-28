@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, TrendingUp, Activity, Heart, Star, ThumbsUp } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LiveFeedback {
   id: string;
@@ -19,6 +20,7 @@ interface LiveStats {
 
 const LiveFeedWidget = () => {
   const [feedbacks, setFeedbacks] = useState<LiveFeedback[]>([]);
+  const [realFeedbacks, setRealFeedbacks] = useState<LiveFeedback[]>([]);
   const [stats, setStats] = useState<LiveStats>({
     dailyVisitors: 623,
     currentOnline: 23,
@@ -27,6 +29,32 @@ const LiveFeedWidget = () => {
   const [currentFeedback, setCurrentFeedback] = useState<LiveFeedback | null>(null);
   const [showStats, setShowStats] = useState(true);
 
+  // 실제 피드백 데이터 가져오기
+  const fetchRealFeedbacks = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('user_feedback')
+        .select('*')
+        .eq('is_public', true)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+
+      const formattedFeedbacks: LiveFeedback[] = data.map(feedback => ({
+        id: feedback.id,
+        message: feedback.message,
+        timestamp: new Date(feedback.created_at),
+        emoji: feedback.emoji,
+        testType: feedback.test_type
+      }));
+
+      setRealFeedbacks(formattedFeedbacks);
+    } catch (error) {
+      console.error('Error fetching real feedbacks:', error);
+    }
+  };
+
   // 다양한 시간대의 피드백 생성
   const getRandomTimestamp = () => {
     const now = new Date();
@@ -34,7 +62,7 @@ const LiveFeedWidget = () => {
     return new Date(now.getTime() - randomMinutes * 60 * 1000);
   };
 
-  // 실시간 피드백 데이터 (실제로는 Supabase realtime에서 가져올 수 있음)
+  // 샘플 피드백 데이터 (실제 피드백이 없을 때 사용)
   const sampleFeedbacks: LiveFeedback[] = [
     { id: "1", message: "너무 정확해서 놀랐어요! 믿고 구매합니다 ♡", emoji: "😍", timestamp: getRandomTimestamp(), testType: "발달검사" },
     { id: "2", message: "AI 분석이 정말 자세하네요~", emoji: "🤩", timestamp: getRandomTimestamp(), testType: "ADHD검사" },
@@ -59,6 +87,38 @@ const LiveFeedWidget = () => {
     return '오늘';
   };
 
+  // 실시간 피드백 구독
+  useEffect(() => {
+    fetchRealFeedbacks();
+
+    // 실시간 구독 설정
+    const channel = supabase
+      .channel('user_feedback_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'user_feedback'
+        },
+        (payload) => {
+          const newFeedback: LiveFeedback = {
+            id: payload.new.id,
+            message: payload.new.message,
+            timestamp: new Date(payload.new.created_at),
+            emoji: payload.new.emoji,
+            testType: payload.new.test_type
+          };
+          setRealFeedbacks(prev => [newFeedback, ...prev.slice(0, 9)]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   // 통계 실시간 업데이트
   useEffect(() => {
     const interval = setInterval(() => {
@@ -72,14 +132,19 @@ const LiveFeedWidget = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // 피드백 슬라이드 애니메이션
+  // 피드백 슬라이드 애니메이션 (실제 피드백과 샘플 피드백 혼합)
   useEffect(() => {
     const interval = setInterval(() => {
-      const randomFeedback = sampleFeedbacks[Math.floor(Math.random() * sampleFeedbacks.length)];
+      const allFeedbacks = [...realFeedbacks, ...sampleFeedbacks];
+      if (allFeedbacks.length === 0) return;
+
+      const randomFeedback = allFeedbacks[Math.floor(Math.random() * allFeedbacks.length)];
       const newFeedback = {
         ...randomFeedback,
         id: Math.random().toString(),
-        timestamp: getRandomTimestamp()
+        timestamp: realFeedbacks.some(f => f.id === randomFeedback.id) 
+          ? randomFeedback.timestamp 
+          : getRandomTimestamp()
       };
       
       setCurrentFeedback(newFeedback);
@@ -92,7 +157,7 @@ const LiveFeedWidget = () => {
     }, 8000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [realFeedbacks]);
 
   // 통계와 피드백 번갈아 표시
   useEffect(() => {

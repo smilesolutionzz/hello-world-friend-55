@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Crown, Download, Brain, TrendingUp, FileText, Sparkles, Calendar, Target } from "lucide-react";
+import { ArrowLeft, Crown, Download, Brain, TrendingUp, FileText, Sparkles, Calendar, Target, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import FeedbackModal from "@/components/FeedbackModal";
 
 interface PremiumAssessmentResultProps {
   assessmentType: string;
@@ -26,6 +27,7 @@ const PremiumAssessmentResult = ({
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   useEffect(() => {
     generateAIAnalysis();
@@ -307,7 +309,7 @@ const PremiumAssessmentResult = ({
 
         {/* Action Buttons */}
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-4 gap-4">
             <Button
               onClick={generatePDF}
               disabled={isGeneratingPDF || isAnalyzing}
@@ -325,6 +327,16 @@ const PremiumAssessmentResult = ({
                   PDF 다운로드
                 </>
               )}
+            </Button>
+
+            <Button
+              onClick={() => setShowFeedbackModal(true)}
+              variant="outline"
+              size="lg"
+              className="flex items-center gap-2 border-green-200 text-green-700 hover:bg-green-50"
+            >
+              <MessageSquare className="w-5 h-5" />
+              후기 남기기
             </Button>
 
             <Button
@@ -348,6 +360,19 @@ const PremiumAssessmentResult = ({
             </Button>
           </div>
         </div>
+
+        {/* Feedback Modal */}
+        <FeedbackModal
+          isOpen={showFeedbackModal}
+          onClose={() => setShowFeedbackModal(false)}
+          testType={assessmentInfo.title}
+          onFeedbackSubmitted={() => {
+            toast({
+              title: "후기 작성 완료",
+              description: "소중한 후기가 다른 이용자들에게 도움이 될 것입니다!",
+            });
+          }}
+        />
 
         {/* Professional Notice */}
         <div className="max-w-6xl mx-auto mt-8">

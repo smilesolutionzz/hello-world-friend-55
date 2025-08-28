@@ -25,10 +25,10 @@ const ChatInterface = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim() || message.length < 50) {
+    if (!message.trim() || message.length < 30) {
       toast({
         title: "입력 확인",
-        description: "최소 50자 이상 구체적으로 작성해주세요.",
+        description: "최소 30자 이상 구체적으로 작성해주세요.",
         variant: "destructive"
       });
       return;
@@ -213,7 +213,7 @@ const ChatInterface = () => {
           <Textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="예시: 14개월 아기가 아직 걷지 못해요... 다른 아이들과 비교되어서 너무 걱정돼요 / 고3 아들이 극도로 예민해져서 가족 모두가 힘들어요... 입시 스트레스 때문일까요? / 육아 스트레스로 아이에게 화를 자주 내요... 나쁜 엄마가 된 것 같아서 괴로워요"
+            placeholder="예시: 14개월 아기가 아직 걷지 못해요... / 고3 아들이 극도로 예민해져서 힘들어요... / 육아 스트레스로 아이에게 화를 자주 내요..."
             className="chat-input resize-none min-h-[140px] sm:min-h-[150px] text-sm sm:text-lg leading-relaxed px-4 py-4 sm:px-6 sm:py-5"
             disabled={isAnalyzing}
             maxLength={500}
@@ -221,7 +221,7 @@ const ChatInterface = () => {
           
           {/* Character Count */}
           <div className="absolute bottom-3 sm:bottom-4 left-4 sm:left-6 text-xs sm:text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded">
-            {message.length}/500 (최소 50자)
+            {message.length}/500 (최소 30자)
           </div>
         </div>
 
@@ -229,7 +229,7 @@ const ChatInterface = () => {
         <div className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 px-1 sm:px-2">
           <p className="font-medium">📝 효과적인 리포팅을 위한 팁:</p>
           <ul className="list-disc list-inside space-y-1 ml-2">
-            <li>최소 50자 이상으로 가능한 구체적으로 상황을 설명해주세요</li>
+            <li>최소 30자 이상으로 가능한 구체적으로 상황을 설명해주세요</li>
             <li>아이의 연령, 구체적인 행동, 지속 기간 등을 포함해주세요</li>
             <li>개인정보나 민감한 정보는 포함하지 말아주세요</li>
           </ul>
@@ -239,7 +239,7 @@ const ChatInterface = () => {
         <div className={`flex ${isMobile ? 'justify-center' : 'justify-end'}`}>
           <Button
             type="submit"
-            disabled={isAnalyzing || message.length < 50}
+            disabled={isAnalyzing || message.length < 30}
             className={`btn-brand ${isMobile ? 'w-full' : 'w-auto'} min-w-[160px] h-12 text-sm sm:text-base`}
           >
             {isAnalyzing ? (

@@ -176,7 +176,7 @@ const Navigation = () => {
             </DropdownMenu>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/dashboard')}>
               <BarChart3 className="w-4 h-4 mr-1" />
-              마이데이터
+              마이페이지
             </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 text-primary font-medium" onClick={() => handleNavigation('/subscription')}>
               <Shield className="w-4 h-4 mr-1" />
@@ -275,7 +275,7 @@ const Navigation = () => {
                     
                     <DropdownMenuItem onClick={() => navigate('/dashboard')}>
                       <BarChart3 className="w-4 h-4 mr-2" />
-                      마이데이터
+                      마이페이지
                     </DropdownMenuItem>
                     
                     <DropdownMenuItem onClick={() => navigate('/assessment-history')}>

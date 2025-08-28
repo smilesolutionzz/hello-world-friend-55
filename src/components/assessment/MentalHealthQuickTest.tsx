@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, Star } from 'lucide-react';
+import { Loader2, Star, ArrowLeft, Home } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { TOKEN_COSTS } from '@/constants/tokenCosts';
 import { useTokens } from '@/hooks/useTokens';
@@ -102,14 +103,16 @@ const questions = [
 
 interface MentalHealthQuickTestProps {
   onComplete: (result: any) => void;
+  onBack?: () => void;
 }
 
-export const MentalHealthQuickTest: React.FC<MentalHealthQuickTestProps> = ({ onComplete }) => {
+export const MentalHealthQuickTest: React.FC<MentalHealthQuickTestProps> = ({ onComplete, onBack }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { toast } = useToast();
   const { checkTokenAvailability, consumeTokens } = useTokens();
+  const navigate = useNavigate();
 
   const handleAnswer = (questionId: string, value: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -233,6 +236,26 @@ export const MentalHealthQuickTest: React.FC<MentalHealthQuickTestProps> = ({ on
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
+        <div className="flex items-center justify-between mb-4">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={onBack || (() => navigate('/'))}
+            className="flex items-center"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            뒤로가기
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => navigate('/')}
+            className="flex items-center"
+          >
+            <Home className="h-4 w-4 mr-2" />
+            홈으로
+          </Button>
+        </div>
         <CardTitle className="text-center flex items-center justify-center">
           <Star className="h-5 w-5 mr-2 text-purple-500" />
           통합건강 3분 체크

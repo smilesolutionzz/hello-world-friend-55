@@ -83,7 +83,24 @@ const FamilyManagement: React.FC<FamilyManagementProps> = ({ onUpdate }) => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setFamilyMembers(data || []);
+      
+      // Map old data structure to new interface
+      const mappedData = (data || []).map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        relationship: item.relationship,
+        birth_date: item.birth_date,
+        gender: item.gender,
+        phone: item.phone,
+        email: item.email,
+        is_primary_caregiver: item.is_primary_caregiver || false,
+        notes: item.notes,
+        user_id: item.user_id,
+        created_at: item.created_at,
+        updated_at: item.updated_at
+      }));
+      
+      setFamilyMembers(mappedData);
     } catch (error) {
       console.error('Error loading family members:', error);
       toast({

@@ -75,15 +75,63 @@ const ClientLogos = () => {
       icon: Heart,
       color: "text-red-500",
       bgColor: "bg-red-50"
+    },
+    {
+      name: "이성민",
+      age: "35세 성인",
+      content: "대인관계에 어려움을 겪어 상담받았는데, AIH 분석을 통해 제 성격과 강점을 정확히 파악할 수 있었어요. 이제는 직장에서도 자신감 있게 소통하고 있습니다.",
+      rating: 5,
+      icon: Target,
+      color: "text-cyan-600",
+      bgColor: "bg-cyan-50"
+    },
+    {
+      name: "김영희",
+      age: "42세 성인",
+      content: "늦은 나이에 ADHD 진단을 받고 충격이었는데, AIH를 통해 제 특성을 이해하고 관리법을 배우니 삶의 질이 많이 향상되었어요. 진작 알았으면 좋았을 텐데...",
+      rating: 5,
+      icon: Brain,
+      color: "text-indigo-500",
+      bgColor: "bg-indigo-50"
+    },
+    {
+      name: "박종철 어르신",
+      age: "67세",
+      content: "손자 육아를 도우면서 요즘 아이들을 이해하기 어려웠는데, AIH 교육 프로그램 덕분에 손자와의 관계가 훨씬 좋아졌어요. 세대 차이를 좁힐 수 있었어요.",
+      rating: 5,
+      icon: Heart,
+      color: "text-orange-600",
+      bgColor: "bg-orange-50"
+    },
+    {
+      name: "최순자 어르신",
+      age: "72세",
+      content: "치매 예방을 위해 인지 검사를 받았는데, 제 상태를 정확히 알 수 있어서 좋았어요. 맞춤형 운동과 활동 프로그램도 추천받아서 매일 실천하고 있어요.",
+      rating: 5,
+      icon: Activity,
+      color: "text-green-600",
+      bgColor: "bg-green-50"
     }
   ];
 
-  // 기존 파트너 기관들 (간소화)
+  // 제휴 전문기관들
   const partners = [
     { name: "한점미소발달센터", count: "남양주·부천점", icon: Heart },
     { name: "차의과대학교", count: "발달장애센터", icon: BookOpen },
     { name: "인애한의원", count: "강남점", icon: Stethoscope },
-    { name: "해오름아동발달센터", count: "전문진료", icon: Sparkles }
+    { name: "해오름아동발달센터", count: "전문진료", icon: Sparkles },
+    { name: "서울대학교병원", count: "소아정신과", icon: Brain },
+    { name: "연세대 세브란스병원", count: "발달센터", icon: GraduationCap },
+    { name: "삼성서울병원", count: "아동발달클리닉", icon: Building2 },
+    { name: "고려대학교 의료원", count: "재활의학과", icon: Activity },
+    { name: "아이존발달센터", count: "강남·분당점", icon: Users },
+    { name: "우리아이발달센터", count: "목동·일산점", icon: Target },
+    { name: "소아한의원 아이조아", count: "한방발달치료", icon: Leaf },
+    { name: "푸름이나무 클리닉", count: "소아정신건강의학과", icon: Brain },
+    { name: "마음샘 정신건강의학과", count: "아동청소년 전문", icon: Heart },
+    { name: "키움아동발달센터", count: "언어·인지치료", icon: BookOpen },
+    { name: "아이사랑 소아과", count: "발달상담 전문", icon: Stethoscope },
+    { name: "꿈나무아동발달센터", count: "종합발달치료", icon: Sparkles }
   ];
 
   return (
@@ -101,7 +149,7 @@ const ClientLogos = () => {
 
         {/* 후기 카드들 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {testimonials.slice(0, 6).map((testimonial, index) => {
+          {testimonials.slice(0, 9).map((testimonial, index) => {
             const IconComponent = testimonial.icon;
             return (
               <div
@@ -152,7 +200,7 @@ const ClientLogos = () => {
             <p className="text-muted-foreground">의료진과 전문가들이 인정한 AIH 통합분석 시스템</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {partners.map((partner, index) => {
               const IconComponent = partner.icon;
               return (
@@ -174,7 +222,7 @@ const ClientLogos = () => {
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
               <span className="text-lg">✨</span>
               <span className="text-sm sm:text-base font-medium text-foreground">
-                <span className="text-brand-gradient font-bold">50+</span> 기관 · <span className="text-brand-gradient font-bold">10,000+</span> 가족이 신뢰
+                <span className="text-brand-gradient font-bold">16+</span> 전문기관 · <span className="text-brand-gradient font-bold">10,000+</span> 가족이 신뢰
               </span>
             </div>
           </div>

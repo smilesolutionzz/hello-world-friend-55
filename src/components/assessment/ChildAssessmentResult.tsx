@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface ChildAssessmentResultProps {
@@ -17,6 +18,7 @@ interface ChildAssessmentResultProps {
 
 const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) => {
   const { total, average, ageGroup, gameScores } = results;
+  const navigate = useNavigate();
   
   const getShortGameName = (gameName: string) => {
     const names = {
@@ -183,7 +185,7 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
       <div className="grid md:grid-cols-3 gap-4">
         <Button 
           className="btn-brand h-16"
-          onClick={() => window.open('https://typebot.io/hilight-consult', '_blank')}
+          onClick={() => navigate('/expert-hiring')}
         >
           <ExternalLink className="w-5 h-5 mr-2" />
           <div className="text-left">

@@ -253,7 +253,7 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
               검사 결과를 바탕으로 맞춤형 전문가를 추천해드립니다.
             </p>
             <Button 
-              onClick={() => navigate('/expert?category=정서&mode=online')}
+              onClick={() => navigate('/expert-hiring')}
               className="gap-2"
             >
               <ExternalLink className="w-4 h-4" />

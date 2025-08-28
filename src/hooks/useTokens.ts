@@ -13,6 +13,7 @@ export function useTokens() {
       return;
     }
 
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from('user_tokens')
@@ -21,21 +22,25 @@ export function useTokens() {
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching token balance:', error);
+        console.error('토큰 잔액 조회 오류:', error);
         return;
       }
 
-      setTokenBalance(data || { current_tokens: 0, total_purchased: 0, total_used: 0 });
+      const newBalance = data || { current_tokens: 0, total_purchased: 0, total_used: 0, referral_bonus: 0 };
+      setTokenBalance(newBalance);
+      console.log('토큰 잔액 업데이트:', newBalance);
     } catch (error) {
-      console.error('Error fetching token balance:', error);
+      console.error('토큰 잔액 조회 오류:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchBalance();
-  }, [user]);
+    if (user) {
+      fetchBalance();
+    }
+  }, [user?.id]);
 
   return {
     loading,
@@ -71,7 +76,10 @@ export function useTokens() {
             count: amount
           });
         
-        await fetchBalance();
+        // 토큰 잔액 실시간 새로고침
+        setTimeout(() => {
+          fetchBalance();
+        }, 500);
         console.log(`토큰 소진 완료: ${amount}토큰, 잔액: ${newBalance}`);
         return true;
       } catch (error) {

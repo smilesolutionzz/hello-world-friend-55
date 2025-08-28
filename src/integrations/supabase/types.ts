@@ -2009,6 +2009,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      admin_add_tokens: {
+        Args: { target_user_id: string; token_amount: number }
+        Returns: boolean
+      }
       apply_referral_code: {
         Args: { p_referral_code: string; p_user_id: string }
         Returns: boolean

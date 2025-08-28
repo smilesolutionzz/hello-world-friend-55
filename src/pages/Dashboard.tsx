@@ -62,20 +62,6 @@ interface Profile {
   avatar_url?: string;
 }
 
-interface FamilyMember {
-  id: string;
-  relationship: string;
-  is_primary_caregiver: boolean;
-  profile: Profile;
-}
-
-interface Family {
-  id: string;
-  name: string;
-  description?: string;
-  created_at: string;
-  family_members: FamilyMember[];
-}
 
 interface Observation {
   id: string;
@@ -101,7 +87,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [families, setFamilies] = useState<Family[]>([]);
   const [observations, setObservations] = useState<Observation[]>([]);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -157,35 +142,6 @@ const Dashboard = () => {
         return;
       }
 
-      // Mock family member data
-      const familyMemberData = [];
-
-      // 가족 데이터 구성
-      const familyMap = new Map();
-      familyMemberData?.forEach((member: any) => {
-        const family = member.families;
-        if (!family) return;
-        
-        if (!familyMap.has(family.id)) {
-          familyMap.set(family.id, {
-            ...family,
-            family_members: []
-          });
-        }
-        
-        familyMap.get(family.id).family_members.push({
-          id: member.id,
-          relationship: member.relationship,
-          is_primary_caregiver: member.is_primary_caregiver,
-          profile: {
-            ...member.profiles,
-            role: member.relationship
-          }
-        });
-      });
-
-      const familiesArray = Array.from(familyMap.values());
-      setFamilies(familiesArray);
 
       // Load real assessment data - Fix column name  
       console.log('📊 Dashboard: Loading assessments...');
@@ -921,57 +877,31 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Family Overview */}
+            {/* User Info Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-foreground">가족 구성원</h2>
+                <h2 className="text-xl font-semibold text-foreground">사용자 정보</h2>
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => navigate('/family')}
+                  onClick={() => navigate('/observation')}
                 >
                   <Plus className="w-4 h-4 mr-2" />
-                  구성원 추가
+                  관찰 추가
                 </Button>
               </div>
-
-              {families.length > 0 ? (
-                <div className="space-y-4">
-                  {families.map(family => (
-                    <Card key={family.id} className="p-6">
-                      <h3 className="font-semibold text-lg mb-4">{family.name}</h3>
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {family.family_members.map(member => (
-                          <div key={member.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                            <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
-                              {getAgeGroupIcon(member.profile.birth_date)}
-                            </div>
-                            <div className="flex-1">
-                              <p className="font-medium text-sm">{member.profile.display_name}</p>
-                              <p className="text-xs text-muted-foreground">{member.relationship}</p>
-                              <Badge variant="outline" className="text-xs">
-                                {getAgeGroupLabel(member.profile.birth_date)}
-                              </Badge>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <Card className="p-8 text-center">
-                  <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">가족을 등록해보세요</h3>
-                  <p className="text-muted-foreground mb-4">
-                    가족 구성원을 추가하여 통합 케어를 시작하세요
-                  </p>
-                  <Button onClick={() => navigate('/family')}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    첫 번째 가족 만들기
-                  </Button>
-                </Card>
-              )}
+              
+              <Card className="p-8 text-center">
+                <User className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">개인 데이터 관리</h3>
+                <p className="text-muted-foreground mb-4">
+                  검사 결과와 관찰일지를 통합 관리하세요
+                </p>
+                <Button onClick={() => navigate('/observation')}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  새 데이터 추가
+                </Button>
+              </Card>
             </div>
 
             {/* Quick Actions */}

@@ -457,14 +457,6 @@ const Navigation = () => {
                     <span className="font-medium">AIH 발달특성 선별체크</span>
                   </Button>
                   
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
-                    onClick={() => handleNavigation('/family')}
-                  >
-                    <Users className="mr-3 h-5 w-5 text-primary shrink-0" />
-                    <span className="font-medium">가족케어</span>
-                  </Button>
                   
                   <Button
                     variant="ghost"

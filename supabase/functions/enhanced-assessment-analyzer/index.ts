@@ -41,7 +41,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4.1-2025-04-14',
         messages: [
           { 
             role: 'system', 
@@ -52,10 +52,7 @@ serve(async (req) => {
             content: enhancedPrompt 
           }
         ],
-        max_tokens: 4500,
-        temperature: 0.7,
-        frequency_penalty: 0.1,
-        presence_penalty: 0.1
+        max_completion_tokens: 4500,
       }),
     });
 

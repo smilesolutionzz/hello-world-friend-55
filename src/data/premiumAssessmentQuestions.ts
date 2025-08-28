@@ -481,7 +481,7 @@ export const workStressAssessmentQuestions = {
   ]
 };
 
-// 5. 러브 케미 분석검사 (관계 애착 패턴 분석)
+// 5. 연인/부부 관계 분석검사 (관계 애착 패턴 분석)
 export const relationshipAssessmentQuestions = {
   secure: [
     {
@@ -956,7 +956,7 @@ export const premiumAssessmentInfo = {
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
   relationship: {
-    title: "러브 케미 분석검사",
+    title: "연인/부부 관계 분석검사",
     subtitle: "창작형 관계 애착패턴 심층분석",
     description: "안정형, 불안형, 회피형, 혼란형의 4가지 애착유형으로 관계 패턴을 독창적으로 분석합니다",
     duration: "약 4-6분", 

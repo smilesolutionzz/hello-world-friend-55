@@ -703,28 +703,13 @@ const Assessment = () => {
               </div>
               
               <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-                <div 
-                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
-                  onClick={() => setCurrentStep('stress-test')}
-                >
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-green-500 text-white">무료</Badge>
-                  </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">마음압박지수 측정</h4>
-                  <p className="text-muted-foreground text-sm mb-3">일상 스트레스 수준 체크</p>
-                  <ul className="space-y-1 text-xs">
-                    <li>• 10문항 3분</li>
-                    <li>• 간편 측정</li>
-                    <li>• 즉시 결과</li>
-                  </ul>
-                </div>
-
+                {/* 🔥 TOP 인기 테스트 1위 */}
                 <div 
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
                   onClick={() => setCurrentStep('bigfive-test')}
                 >
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-green-500 text-white">무료</Badge>
+                    <Badge className="bg-red-500 text-white">🔥 1위</Badge>
                   </div>
                   <h4 className="text-lg font-bold text-brand-gradient mb-3">5차원 성격 분석</h4>
                   <p className="text-muted-foreground text-sm mb-3">나의 성격 특성 탐색</p>
@@ -735,12 +720,13 @@ const Assessment = () => {
                   </ul>
                 </div>
 
+                {/* 🔥 TOP 인기 테스트 2위 */}
                 <div 
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
                   onClick={() => setCurrentStep('attachment-test')}
                 >
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-green-500 text-white">무료</Badge>
+                    <Badge className="bg-orange-500 text-white">🔥 2위</Badge>
                   </div>
                   <h4 className="text-lg font-bold text-brand-gradient mb-3">관계유형 진단</h4>
                   <p className="text-muted-foreground text-sm mb-3">인간관계 패턴 분석</p>
@@ -751,12 +737,30 @@ const Assessment = () => {
                   </ul>
                 </div>
 
+                {/* 🔥 TOP 인기 테스트 3위 */}
+                <div 
+                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
+                  onClick={() => setCurrentStep('stress-test')}
+                >
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-yellow-500 text-white">🔥 3위</Badge>
+                  </div>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">마음압박지수 측정</h4>
+                  <p className="text-muted-foreground text-sm mb-3">일상 스트레스 수준 체크</p>
+                  <ul className="space-y-1 text-xs">
+                    <li>• 10문항 3분</li>
+                    <li>• 간편 측정</li>
+                    <li>• 즉시 결과</li>
+                  </ul>
+                </div>
+
+                {/* 인기 테스트 4위 */}
                 <div 
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
                   onClick={() => setCurrentStep('career-test')}
                 >
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-green-500 text-white">무료</Badge>
+                    <Badge className="bg-blue-500 text-white">📈 4위</Badge>
                   </div>
                   <h4 className="text-lg font-bold text-brand-gradient mb-3">진로흥미 탐색</h4>
                   <p className="text-muted-foreground text-sm mb-3">나에게 맞는 직업 찾기</p>
@@ -767,12 +771,13 @@ const Assessment = () => {
                   </ul>
                 </div>
 
+                {/* 기타 인기 테스트 */}
                 <div 
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
                   onClick={() => setCurrentStep('selfesteem-test')}
                 >
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-green-500 text-white">무료</Badge>
+                    <Badge className="bg-green-500 text-white">⭐ 추천</Badge>
                   </div>
                   <h4 className="text-lg font-bold text-brand-gradient mb-3">자아가치 측정</h4>
                   <p className="text-muted-foreground text-sm mb-3">나의 자존감 수준 체크</p>

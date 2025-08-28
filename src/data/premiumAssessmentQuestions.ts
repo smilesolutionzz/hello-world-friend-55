@@ -915,10 +915,9 @@ export const teenGrowthCapacityAssessmentQuestions = {
   ]
 };
 
-// 각 검사별 표시명과 설명
-// 본 검사는 원저작과는 무관한 창작형 검사입니다.
+// 평가 정보 객체 (인기도 순으로 재배치)
 export const premiumAssessmentInfo = {
-  developmentalScreening: developmentalScreeningInfo,
+  // 🔥 TOP 인기 테스트들 (상단 배치)
   personality_type: {
     title: "마음성향 분석검사",
     subtitle: "창작형 4차원 성격유형 정밀분석",
@@ -926,33 +925,6 @@ export const premiumAssessmentInfo = {
     duration: "약 5-7분",
     questions_count: 16,
     premium_features: ["16가지 성격유형 상세 분석", "직업 적합성 추천", "인간관계 스타일 분석", "개인 맞춤 발전 방향 제시"],
-    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
-  },
-  temperament: {
-    title: "타고난 기질 분석검사", 
-    subtitle: "창작형 선천적 성향 과학적 측정",
-    description: "기질 4차원(자극추구, 위험회피, 사회적 민감성, 지속성)으로 타고난 성향을 독창적으로 분석합니다",
-    duration: "약 6-8분",
-    questions_count: 16,
-    premium_features: ["타고난 기질 4차원 분석", "스트레스 대처 방식", "심리적 취약점 평가", "성격 발달 가능성"],
-    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
-  },
-  cognitive: {
-    title: "브레인케어 인지능력 검사",
-    subtitle: "창작형 종합 인지기능 정밀평가", 
-    description: "기억력, 주의력, 실행기능, 언어능력의 4개 영역으로 인지기능을 독창적으로 평가합니다",
-    duration: "약 4-6분",
-    questions_count: 12,
-    premium_features: ["인지능력 위험도 평가", "인지기능 영역별 분석", "일상생활 영향도 평가", "인지강화 운동 추천"],
-    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
-  },
-  work_stress: {
-    title: "직장 스트레스 번아웃 검사",
-    subtitle: "직장인 정신건강 종합진단",
-    description: "감정소진, 비인격화, 성취감, 일-삶 균형의 4개 영역으로 번아웃을 정밀 측정합니다", 
-    duration: "약 5-7분",
-    questions_count: 13,
-    premium_features: ["번아웃 위험도 측정", "스트레스 원인 분석", "회복력 평가", "직장적응 개선방안"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
   relationship: {
@@ -964,6 +936,26 @@ export const premiumAssessmentInfo = {
     premium_features: ["4가지 애착유형 분석", "관계 패턴 해석", "갈등 해결 방식", "건강한 관계 가이드"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
+  work_stress: {
+    title: "직장 스트레스 번아웃 검사",
+    subtitle: "직장인 정신건강 종합진단",
+    description: "감정소진, 비인격화, 성취감, 일-삶 균형의 4개 영역으로 번아웃을 정밀 측정합니다", 
+    duration: "약 5-7분",
+    questions_count: 13,
+    premium_features: ["번아웃 위험도 측정", "스트레스 원인 분석", "회복력 평가", "직장적응 개선방안"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
+  },
+  developmentalScreening: developmentalScreeningInfo,
+  cognitive: {
+    title: "브레인케어 인지능력 검사",
+    subtitle: "창작형 종합 인지기능 정밀평가", 
+    description: "기억력, 주의력, 실행기능, 언어능력의 4개 영역으로 인지기능을 독창적으로 평가합니다",
+    duration: "약 4-6분",
+    questions_count: 12,
+    premium_features: ["인지능력 위험도 평가", "인지기능 영역별 분석", "일상생활 영향도 평가", "인지강화 운동 추천"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
+  },
+  // 📊 중간 인기 테스트들
   financialPsychology: {
     title: "금전 심리 & 소비 패턴 검사",
     subtitle: "창작형 금융 행동 심리 분석",
@@ -971,6 +963,15 @@ export const premiumAssessmentInfo = {
     duration: "약 5-7분", 
     questions_count: 16,
     premium_features: ["금전 태도 심층 분석", "소비 패턴 진단", "재정 불안 평가", "개인 맞춤 재정 관리 방향"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
+  },
+  temperament: {
+    title: "타고난 기질 분석검사", 
+    subtitle: "창작형 선천적 성향 과학적 측정",
+    description: "기질 4차원(자극추구, 위험회피, 사회적 민감성, 지속성)으로 타고난 성향을 독창적으로 분석합니다",
+    duration: "약 6-8분",
+    questions_count: 16,
+    premium_features: ["타고난 기질 4차원 분석", "스트레스 대처 방식", "심리적 취약점 평가", "성격 발달 가능성"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
   teenMentalCompass: {
@@ -982,13 +983,14 @@ export const premiumAssessmentInfo = {
     premium_features: ["4영역 마음건강 진단", "정서행동 균형 분석", "또래관계 적응력 평가", "개별 성장 가이드"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
-  teenGrowthCapacity: {
-    title: "청소년 성장역량 진단검사", 
-    subtitle: "창작형 청소년 발달잠재력 평가척도",
-    description: "내면성장, 외적표현, 집중능력, 사회역량의 4개 영역으로 청소년의 성장 잠재력을 정밀 진단합니다",
-    duration: "약 6-8분",
-    questions_count: 16, 
-    premium_features: ["성장잠재력 4영역 분석", "집중력 발달 상태 평가", "사회적 역량 강화 방안", "개인별 성장 로드맵"],
+  // 🎯 전문 분야 테스트들
+  languageDevelopment: {
+    title: "AIH 영유아 언어발달 자가체크",
+    subtitle: "심화 언어발달 진단 - 77문항",
+    description: "수용언어(39문항)와 표현언어(38문항)를 종합적으로 평가하는 전문 검사",
+    duration: "15-20분",
+    questions_count: 77,
+    premium_features: ["연령별 맞춤 문항", "수용/표현언어 분석", "발달 수준 평가", "상세 AI 해석"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
   socialDevelopmentScreening: {
@@ -1000,13 +1002,13 @@ export const premiumAssessmentInfo = {
     premium_features: ["사회성 발달 4영역 정밀분석", "의사소통 능력 평가", "감각 민감성 진단", "개별 발달 지원 방안"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   },
-  languageDevelopment: {
-    title: "AIH 영유아 언어발달 자가체크",
-    subtitle: "심화 언어발달 진단 - 77문항",
-    description: "수용언어(39문항)와 표현언어(38문항)를 종합적으로 평가하는 전문 검사",
-    duration: "15-20분",
-    questions_count: 77,
-    premium_features: ["연령별 맞춤 문항", "수용/표현언어 분석", "발달 수준 평가", "상세 AI 해석"],
+  teenGrowthCapacity: {
+    title: "청소년 성장역량 진단검사", 
+    subtitle: "창작형 청소년 발달잠재력 평가척도",
+    description: "내면성장, 외적표현, 집중능력, 사회역량의 4개 영역으로 청소년의 성장 잠재력을 정밀 진단합니다",
+    duration: "약 6-8분",
+    questions_count: 16, 
+    premium_features: ["성장잠재력 4영역 분석", "집중력 발달 상태 평가", "사회적 역량 강화 방안", "개인별 성장 로드맵"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다."
   }
 };

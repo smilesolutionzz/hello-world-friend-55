@@ -41,18 +41,18 @@ serve(async (req) => {
     }
 
     const requestBody = await req.json();
-    const { answers, testType } = requestBody;
+    const { assessmentType, results, assessmentInfo } = requestBody;
     
     // Input validation
-    if (!answers || typeof answers !== 'object') {
-      return new Response(JSON.stringify({ error: '유효하지 않은 답변 데이터입니다.' }), {
+    if (!results || typeof results !== 'object') {
+      return new Response(JSON.stringify({ error: '유효하지 않은 결과 데이터입니다.' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // 토큰 차감 처리 (프리미엄 검사는 10토큰)
-    const tokenCost = 10;
+    // 토큰 차감 처리 (테스트를 위해 1토큰으로 설정)
+    const tokenCost = 1;
     
     // 현재 토큰 잔액 확인
     const { data: tokenData, error: tokenError } = await supabaseServiceClient
@@ -94,7 +94,230 @@ serve(async (req) => {
 
     console.log(`프리미엄 검사 분석 - 토큰 차감: ${tokenCost}, 잔액: ${tokenData.current_tokens - tokenCost}`);
 
-    console.log('[PREMIUM-ASSESSMENT-ANALYZER] 프리미엄 분석 시작:', { testType, answersCount: answers ? Object.keys(answers).length : 0 });
+    console.log('[PREMIUM-ASSESSMENT-ANALYZER] 프리미엄 분석 시작:', { 
+      assessmentType, 
+      resultsCount: Object.keys(results).length,
+      assessmentInfo: assessmentInfo?.title 
+    });
+
+    // 검사 타입별 전문가 프롬프트 생성
+    const getExpertPrompt = (type: string) => {
+      const prompts = {
+        'tci': {
+          system: `당신은 세계적으로 인정받는 임상심리학 박사이자 TCI(Temperament and Character Inventory) 전문가입니다. 클로닝거(Cloninger)의 정신생물학적 성격모델에 기반하여 최고 수준의 전문가 분석을 제공해주세요.
+
+**TCI 7차원 분석 전문가 역할:**
+- 기질차원: 자극추구(NS), 위험회피(HA), 사회적민감성(RD), 인내력(P)
+- 성격차원: 자율성(SD), 협조성(C), 자기초월성(ST)
+
+**박사급 분석 요구사항:**
+1. 각 차원별 점수 해석 (1-7점 척도)
+2. 차원 간 상호작용 분석 
+3. 성격 프로파일 통합 해석
+4. 심리적 적응 및 정신건강 지표
+5. 대인관계 및 사회적 기능 예측
+6. 직업적 적성 및 발달 방향성
+7. 개인화된 성장 전략 제시
+8. 잠재적 위험요인 및 보호요인
+9. 치료적 개입 권고사항
+10. 장기 발달 예측
+
+**분석 깊이:** 3000-4000자 상당의 상세 보고서
+**전문성 수준:** 임상심리학 박사 논문 수준`,
+          
+          user: `다음 TCI 검사 결과를 박사급 수준으로 종합 분석해주세요:
+
+**검사 정보:**
+- 검사명: ${assessmentInfo?.title || 'TCI 성격검사'}
+- 검사일: ${new Date().toLocaleDateString()}
+
+**7차원 점수 결과:**
+${Object.entries(results).map(([dimension, score]) => `- ${dimension}: ${score}점/7점`).join('\n')}
+
+**분석 요청:**
+위 점수를 바탕으로 임상심리학 박사 수준의 종합적인 성격 분석을 실시해주세요. 각 차원의 의미, 차원 간 상호작용, 전반적인 성격 구조, 적응적/부적응적 측면, 발달 방향성, 그리고 구체적인 조언을 포함한 상세한 보고서를 작성해주세요.
+
+**보고서 구조:**
+1. 전반적 성격 프로파일 요약
+2. 기질 차원 상세 분석 (NS, HA, RD, P)
+3. 성격 차원 상세 분석 (SD, C, ST) 
+4. 차원 간 상호작용 및 통합 해석
+5. 심리적 강점 및 성장 가능성
+6. 주의해야 할 취약성 및 위험요인
+7. 대인관계 및 사회적 기능 예측
+8. 직업 및 진로 적성 분석
+9. 개인 성장을 위한 구체적 제언
+10. 전문가 종합 의견 및 권고사항`
+        },
+
+        'big5': {
+          system: `당신은 국제적으로 인정받는 성격심리학 박사이자 Big Five 모델 전문가입니다. Costa & McCrae의 NEO 모델에 기반하여 최고 수준의 과학적 성격 분석을 제공해주세요.
+
+**Big Five 5요인 분석 전문가 역할:**
+- 신경증(Neuroticism): 정서적 안정성
+- 외향성(Extraversion): 사회적 에너지와 긍정성
+- 개방성(Openness): 경험에 대한 개방성
+- 친화성(Agreeableness): 대인관계 협조성
+- 성실성(Conscientiousness): 자기통제와 목표지향성
+
+**박사급 분석 요구사항:**
+1. 5요인별 세부 하위차원 분석
+2. 요인 간 상호작용 패턴 분석
+3. 성격의 통합적 구조 해석
+4. 행동 예측 및 적응 패턴
+5. 정신건강 및 웰빙 지표
+6. 직업 성과 및 만족도 예측
+7. 인간관계 및 사회적 기능
+8. 개인 발달 및 변화 가능성
+9. 생활 전반의 적응 전략
+10. 전문가 임상적 권고
+
+**분석 깊이:** 4000자 이상의 심층 보고서
+**전문성 수준:** 성격심리학 박사 연구 수준`,
+          
+          user: `다음 Big Five 검사 결과를 세계 최고 수준으로 분석해주세요:
+
+**검사 정보:**
+- 검사명: ${assessmentInfo?.title || 'Big Five 성격검사'}
+- 검사일: ${new Date().toLocaleDateString()}
+
+**5요인 점수 결과:**
+${Object.entries(results).map(([factor, score]) => `- ${factor}: ${score}점/7점`).join('\n')}
+
+**심층 분석 요청:**
+위 점수를 기반으로 성격심리학 박사 수준의 종합적인 성격 분석을 수행해주세요. 각 요인의 과학적 의미, 하위차원 분석, 요인 간 상호작용, 행동 예측, 그리고 삶의 다양한 영역에서의 적응 양상을 포함한 상세한 전문가 보고서를 작성해주세요.
+
+**보고서 구성:**
+1. 전체적 성격 프로파일 개관
+2. 신경증(N) 요인 상세 분석
+3. 외향성(E) 요인 상세 분석  
+4. 개방성(O) 요인 상세 분석
+5. 친화성(A) 요인 상세 분석
+6. 성실성(C) 요인 상세 분석
+7. 5요인 상호작용 및 통합 해석
+8. 정신건강 및 적응 지표 분석
+9. 직업 및 성과 예측 분석
+10. 대인관계 및 사회적 기능 예측
+11. 개인 성장 및 발달 방향성
+12. 임상적 권고사항 및 전문가 의견`
+        },
+
+        'han_medicine': {
+          system: `당신은 한국 전통의학의 최고 권위자이자 사상의학 전문가입니다. 이제마의 사상의학과 현대 한의학을 완벽히 융합하여 최고 수준의 체질 분석을 제공해주세요.
+
+**사상의학 전문가 역할:**
+- 태양인/태음인/소양인/소음인 체질 진단
+- 장부대소론에 기반한 생리병리 분석
+- 심신상관론적 성격-체질 통합 해석
+- 체질별 맞춤 양생법 제시
+
+**박사급 분석 요구사항:**
+1. 정확한 사상체질 진단 및 근거 제시
+2. 체질별 장부 기능 상태 분석
+3. 심성과 체질의 상관관계 해석
+4. 개인별 맞춤 식이요법 상세 제시
+5. 생활양생법 및 운동처방
+6. 계절별 건강관리법
+7. 체질별 한방치료 방향성
+8. 혈자리 및 경락 요법
+9. 정신건강 및 감정 관리법
+10. 체질별 주의사항 및 금기
+
+**분석 깊이:** 4000자 이상의 전문 한의학 보고서
+**전문성 수준:** 한의학 박사 임상 수준`,
+          
+          user: `다음 체질 검사 결과를 한의학 최고 전문가 수준으로 분석해주세요:
+
+**검사 정보:**
+- 검사명: ${assessmentInfo?.title || '한의학 체질검사'}
+- 검사일: ${new Date().toLocaleDateString()}
+
+**체질 분석 점수:**
+${Object.entries(results).map(([aspect, score]) => `- ${aspect}: ${score}점`).join('\n')}
+
+**전문가 분석 요청:**
+위 점수를 바탕으로 사상의학 전문가 수준의 종합적인 체질 분석을 실시해주세요. 정확한 체질 진단, 장부 기능 상태, 심성 특징, 그리고 개인별 맞춤 양생법을 포함한 상세한 한의학적 보고서를 작성해주세요.
+
+**보고서 구성:**
+1. 사상체질 진단 결과 및 근거
+2. 체질별 생리적 특성 분석
+3. 장부대소론에 기반한 기능 상태
+4. 심성 및 성격적 특징 분석
+5. 체질별 맞춤 식이요법 
+6. 생활양생법 및 일상관리
+7. 계절별 건강관리 방법
+8. 체질별 운동 및 활동 처방
+9. 한방치료 및 약물 방향성
+10. 혈자리 요법 및 경락 관리
+11. 정신건강 및 감정 관리법
+12. 체질별 주의사항 및 전문가 권고`
+        },
+
+        'default': {
+          system: `당신은 종합적인 심리평가 전문가이자 임상심리학 박사입니다. 다양한 심리검사 도구에 대한 깊은 이해를 바탕으로 최고 수준의 전문가 분석을 제공해주세요.
+
+**종합 심리평가 전문가 역할:**
+- 심리검사 결과의 통합적 해석
+- 개인의 심리적 기능 종합 평가
+- 적응적/부적응적 양상 분석
+- 개인화된 개입 전략 수립
+
+**박사급 분석 요구사항:**
+1. 검사 결과의 신뢰성 및 타당성 평가
+2. 주요 심리적 특성 종합 분석
+3. 강점 및 취약성 균형적 평가
+4. 일상 기능 및 적응 수준 예측
+5. 정신건강 위험요인 스크리닝
+6. 개인 성장 및 발달 방향성
+7. 구체적 개입 및 치료 권고
+8. 생활 전반의 적응 전략
+9. 장기적 예후 및 모니터링
+10. 전문가 임상적 의견
+
+**분석 깊이:** 3000자 이상의 전문 보고서
+**전문성 수준:** 임상심리학 박사 종합평가 수준`,
+          
+          user: `다음 심리검사 결과를 최고 전문가 수준으로 종합 분석해주세요:
+
+**검사 정보:**
+- 검사명: ${assessmentInfo?.title || '심리평가 검사'}
+- 검사일: ${new Date().toLocaleDateString()}
+
+**검사 결과 점수:**
+${Object.entries(results).map(([domain, score]) => `- ${domain}: ${score}점`).join('\n')}
+
+**종합 분석 요청:**
+위 결과를 바탕으로 임상심리학 박사 수준의 종합적인 심리평가 보고서를 작성해주세요. 개인의 심리적 특성, 기능 수준, 적응 양상, 그리고 개인화된 권고사항을 포함한 상세한 전문가 보고서를 제공해주세요.
+
+**보고서 구성:**
+1. 전반적 심리적 기능 평가
+2. 주요 심리적 특성 분석
+3. 인지적 기능 및 능력 평가
+4. 정서적 기능 및 조절 능력
+5. 행동적 특성 및 적응 양상
+6. 대인관계 및 사회적 기능
+7. 스트레스 대처 및 회복력
+8. 개인적 강점 및 자원 활용
+9. 취약성 및 주의사항
+10. 개인화된 개입 권고사항
+11. 장기적 발달 방향성
+12. 전문가 종합 의견 및 권고`
+        }
+      };
+
+      // 검사 타입에 따른 프롬프트 선택
+      if (type.toLowerCase().includes('tci') || type.toLowerCase().includes('temperament')) {
+        return prompts.tci;
+      } else if (type.toLowerCase().includes('big') || type.toLowerCase().includes('five') || type.toLowerCase().includes('neo')) {
+        return prompts.big5;
+      } else if (type.toLowerCase().includes('han') || type.toLowerCase().includes('medicine') || type.toLowerCase().includes('체질') || type.toLowerCase().includes('한의')) {
+        return prompts.han_medicine;
+      } else {
+        return prompts.default;
+      }
+    };
+
+    const promptConfig = getExpertPrompt(assessmentType);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -103,72 +326,18 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-5-2025-08-07', // 최신 모델 사용
         messages: [
           {
             role: 'system',
-            content: `당신은 한의학 전문가입니다. 사용자의 상세한 응답을 바탕으로 종합적인 한의학 분석을 제공해주세요.
-
-분석 항목:
-1. 사상체질 진단 (소양인/소음인/태양인/태음인)
-2. 오장육부 기능 상태 분석
-3. 맞춤 식이요법 (권장음식/피해야할음식)
-4. 생활요법 (운동, 일상관리)
-5. 한방 처방 추천
-6. 혈자리 요법
-7. 계절별 관리법
-8. 주의사항
-
-결과는 반드시 다음 JSON 형태로 응답해주세요:
-{
-  "constitution": "체질명",
-  "overview": "종합 진단 내용",
-  "constitution_details": {
-    "characteristics": ["특성1", "특성2"],
-    "personality": ["성격특징1", "성격특징2"]
-  },
-  "organ_analysis": {
-    "heart": {"status": "good/weak", "status_text": "상태설명", "symptoms": ["증상1"], "care_method": "관리법"},
-    "liver": {"status": "good/weak", "status_text": "상태설명", "symptoms": ["증상1"], "care_method": "관리법"},
-    "spleen": {"status": "good/weak", "status_text": "상태설명", "symptoms": ["증상1"], "care_method": "관리법"},
-    "lung": {"status": "good/weak", "status_text": "상태설명", "symptoms": ["증상1"], "care_method": "관리법"},
-    "kidney": {"status": "good/weak", "status_text": "상태설명", "symptoms": ["증상1"], "care_method": "관리법"}
-  },
-  "diet_recommendations": {
-    "recommended": [{"category": "분류", "foods": ["음식1", "음식2"]}],
-    "avoid": [{"category": "분류", "foods": ["음식1", "음식2"]}],
-    "guidelines": ["가이드1", "가이드2"]
-  },
-  "lifestyle_recommendations": {
-    "exercise": {"recommended": ["운동1", "운동2"], "precautions": "주의사항"},
-    "daily_care": ["관리법1", "관리법2"]
-  },
-  "prescriptions": [
-    {"name": "처방명", "type": "한약/차/보조제", "description": "효능", "herbs": ["약재1", "약재2"], "usage": "복용법"}
-  ],
-  "acupuncture_points": [
-    {"name": "혈자리명", "location": "위치", "effect": "효과", "method": "방법"}
-  ],
-  "seasonal_care": {
-    "spring": ["봄관리법1"],
-    "summer": ["여름관리법1"],
-    "autumn": ["가을관리법1"],
-    "winter": ["겨울관리법1"]
-  },
-  "warnings": "주의사항 및 전문의 상담 권고사항"
-}`
+            content: promptConfig.system
           },
           {
-            role: 'user',
-            content: `다음 사용자 응답을 바탕으로 종합적인 한의학 분석을 해주세요:
-
-응답 내용: ${JSON.stringify(answers, null, 2)}
-
-위 정보를 바탕으로 사상체질을 진단하고, 오장육부 상태를 분석하여 맞춤형 한의학 처방과 생활지도를 제공해주세요. 
-응답은 반드시 위에서 제시한 JSON 형태로만 작성해주세요.`
+            role: 'user',  
+            content: promptConfig.user
           }
         ],
-        max_completion_tokens: 2000,
+        max_completion_tokens: 6000, // 긴 응답을 위해 증가
       }),
     });
 
@@ -179,70 +348,15 @@ serve(async (req) => {
       throw new Error(data.error?.message || 'OpenAI API 오류');
     }
 
-    let analysisResult;
-    try {
-      const analysisText = data.choices[0].message.content;
-      console.log('[PREMIUM-ASSESSMENT-ANALYZER] 원본 응답:', analysisText);
-      
-      // JSON 추출 시도
-      const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        analysisResult = JSON.parse(jsonMatch[0]);
-      } else {
-        throw new Error('JSON 형태를 찾을 수 없음');
-      }
-    } catch (parseError) {
-      console.error('[PREMIUM-ASSESSMENT-ANALYZER] JSON 파싱 오류:', parseError);
-      // 기본 구조 제공
-      analysisResult = {
-        constitution: "소음인",
-        overview: "상세한 분석을 위해 추가 정보가 필요합니다.",
-        constitution_details: {
-          characteristics: ["체질 분석 중"],
-          personality: ["성격 분석 중"]
-        },
-        organ_analysis: {
-          heart: {status: "normal", status_text: "정상", symptoms: [], care_method: "규칙적인 생활"},
-          liver: {status: "normal", status_text: "정상", symptoms: [], care_method: "스트레스 관리"},
-          spleen: {status: "normal", status_text: "정상", symptoms: [], care_method: "규칙적인 식사"},
-          lung: {status: "normal", status_text: "정상", symptoms: [], care_method: "충분한 휴식"},
-          kidney: {status: "normal", status_text: "정상", symptoms: [], care_method: "적당한 운동"}
-        },
-        diet_recommendations: {
-          recommended: [{category: "일반", foods: ["따뜻한 음식", "규칙적인 식사"]}],
-          avoid: [{category: "일반", foods: ["과도한 냉음", "불규칙한 식사"]}],
-          guidelines: ["규칙적인 식사를 하세요"]
-        },
-        lifestyle_recommendations: {
-          exercise: {recommended: ["가벼운 운동"], precautions: "과도한 운동 피하기"},
-          daily_care: ["충분한 휴식", "스트레스 관리"]
-        },
-        prescriptions: [{
-          name: "기본 보양차",
-          type: "차",
-          description: "기력 회복",
-          herbs: ["대추", "생강"],
-          usage: "하루 2-3회 따뜻하게"
-        }],
-        acupuncture_points: [{
-          name: "백회",
-          location: "정수리",
-          effect: "기력 회복",
-          method: "부드럽게 지압"
-        }],
-        seasonal_care: {
-          spring: ["봄철 건강관리"],
-          summer: ["여름철 건강관리"],
-          autumn: ["가을철 건강관리"],
-          winter: ["겨울철 건강관리"]
-        },
-        warnings: "정확한 진단을 위해 한의원 방문을 권장합니다."
-      };
-    }
-    
-    console.log('[PREMIUM-ASSESSMENT-ANALYZER] 분석 완료');
+    // 응답 처리 - 텍스트 형태로 직접 반환
+    const analysisText = data.choices[0].message.content;
+    console.log('[PREMIUM-ASSESSMENT-ANALYZER] 분석 완료, 텍스트 길이:', analysisText.length);
 
-    return new Response(JSON.stringify(analysisResult), {
+    return new Response(JSON.stringify({ 
+      analysis: analysisText,
+      assessment_type: assessmentType,
+      timestamp: new Date().toISOString()
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {

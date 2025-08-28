@@ -36,6 +36,7 @@ interface FamilyMember {
   notes?: string;
   user_id: string;
   created_at: string;
+  updated_at?: string;
 }
 
 interface FamilyManagementProps {

@@ -24,6 +24,8 @@ const Index = () => {
     const checkReferralCode = async () => {
       const refCode = searchParams.get('ref');
       if (refCode) {
+        console.log('📍 Referral code detected:', refCode);
+        
         // Store referral code in localStorage for later use during signup
         localStorage.setItem('referralCode', refCode);
         
@@ -38,15 +40,25 @@ const Index = () => {
           }
           
           if (user && !error) {
+            console.log('🔄 User logged in, processing referral reward...');
             // 사용자가 로그인된 상태에서만 추천 보상 처리
             const success = await processReferralReward(refCode);
+            console.log('✅ Referral reward processed:', success);
+            
             if (success !== undefined) {
               localStorage.removeItem('referralCode');
+              if (success) {
+                toast({
+                  title: "🎉 추천 보상 완료!",
+                  description: "5토큰을 받았고, 추천인은 10토큰을 받았습니다!",
+                });
+              }
             }
           } else {
+            console.log('👋 No user, showing welcome toast');
             toast({
               title: "🎉 추천 링크로 접속했습니다!",
-              description: "회원가입하시면 추천인에게 10토큰이 지급됩니다.",
+              description: "회원가입하시면 본인은 5토큰, 추천인은 10토큰을 받아요!",
             });
           }
         } catch (error) {
@@ -54,7 +66,7 @@ const Index = () => {
           // 에러가 발생해도 토스트는 표시
           toast({
             title: "🎉 추천 링크로 접속했습니다!",
-            description: "회원가입하시면 추천인에게 10토큰이 지급됩니다.",
+            description: "회원가입하시면 본인은 5토큰, 추천인은 10토큰을 받아요!",
           });
         }
       }

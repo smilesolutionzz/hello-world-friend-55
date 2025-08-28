@@ -23,9 +23,9 @@ const LiveFeedWidget = () => {
   const [feedbacks, setFeedbacks] = useState<LiveFeedback[]>([]);
   const [realFeedbacks, setRealFeedbacks] = useState<LiveFeedback[]>([]);
   const [stats, setStats] = useState<LiveStats>({
-    dailyVisitors: 623,
-    currentOnline: 23,
-    totalTests: 446
+    dailyVisitors: 865, // 더 현실적인 시작 숫자
+    currentOnline: 49,  // 더 현실적인 온라인 사용자 수
+    totalTests: 575
   });
   const [currentFeedback, setCurrentFeedback] = useState<LiveFeedback | null>(null);
   const [showStats, setShowStats] = useState(true);
@@ -163,15 +163,22 @@ const LiveFeedWidget = () => {
     };
   }, []);
 
-  // 통계 실시간 업데이트
+  // 통계 실시간 업데이트 (더 자연스럽고 느리게)
   useEffect(() => {
     const interval = setInterval(() => {
-      setStats(prev => ({
-        dailyVisitors: prev.dailyVisitors + Math.floor(Math.random() * 3),
-        currentOnline: prev.currentOnline + Math.floor(Math.random() * 5) - 2,
-        totalTests: prev.totalTests + Math.floor(Math.random() * 2)
-      }));
-    }, 5000);
+      setStats(prev => {
+        // 더 작은 변화량으로 자연스럽게 증가
+        const visitorIncrease = Math.random() < 0.7 ? 1 : Math.random() < 0.9 ? 2 : 0; // 70% 확률로 1증가, 20% 확률로 2증가
+        const onlineChange = Math.floor(Math.random() * 3) - 1; // -1, 0, 1 중 하나
+        const testsIncrease = Math.random() < 0.6 ? 1 : 0; // 60% 확률로 1증가
+        
+        return {
+          dailyVisitors: prev.dailyVisitors + visitorIncrease,
+          currentOnline: Math.max(15, Math.min(80, prev.currentOnline + onlineChange)), // 15~80명 사이
+          totalTests: prev.totalTests + testsIncrease
+        };
+      });
+    }, 12000); // 12초마다 업데이트 (기존 5초에서 더 느리게)
 
     return () => clearInterval(interval);
   }, []);

@@ -66,21 +66,33 @@ export const TestResults = () => {
   const fetchTestResult = async () => {
     try {
       const { data, error } = await supabase
-        .from('test_results')
+        .from('assessments')
         .select(`
           id,
-          scores,
-          completed_at,
-          test_types (
-            name,
-            description
-          )
+          results,
+          created_at,
+          analysis,
+          age_group,
+          profile:profiles(display_name)
         `)
         .eq('id', resultId)
         .single();
 
       if (error) throw error;
-      setResult(data);
+      
+      // Transform data to match TestResult interface
+      const transformedData = {
+        id: data.id,
+        scores: data.results || {},
+        completed_at: data.created_at,
+        test_types: {
+          name: getTestNameFromAgeGroup(data.age_group),
+          description: "심리검사 결과"
+        },
+        ai_analysis: data.analysis
+      };
+      
+      setResult(transformedData);
     } catch (error: any) {
       toast({
         title: "결과 로드 실패",
@@ -100,6 +112,15 @@ export const TestResults = () => {
         score: value,
         fullMark: 100
       }));
+  };
+
+  const getTestNameFromAgeGroup = (ageGroup: string) => {
+    const names: Record<string, string> = {
+      infant: '영유아 발달검사',
+      child: '아동/청소년 심리검사',
+      adult: '성인 심리검사'
+    };
+    return names[ageGroup] || '심리검사';
   };
 
   const getKoreanLabel = (key: string) => {

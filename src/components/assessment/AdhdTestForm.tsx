@@ -48,21 +48,23 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
       
       let severity = "";
       if (ageGroup === 'child') {
-        if (total <= 18) {
+        // 18개 문항 * 3점 = 54점 만점
+        if (total <= 24) {
           severity = "정상 범위";
-        } else if (total <= 36) {
+        } else if (total <= 32) {
           severity = "경계선 수준";
-        } else if (total <= 54) {
+        } else if (total <= 42) {
           severity = "중등도 수준";
         } else {
           severity = "심각한 수준";
         }
       } else {
+        // 18개 문항 * 3점 = 54점 만점
         if (total <= 24) {
           severity = "정상 범위";
-        } else if (total <= 42) {
+        } else if (total <= 32) {
           severity = "경계선 수준";
-        } else if (total <= 60) {
+        } else if (total <= 42) {
           severity = "중등도 수준";
         } else {
           severity = "심각한 수준";

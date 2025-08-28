@@ -42,7 +42,7 @@ const navigationItems: NavigationItem[] = [
   { icon: MessageCircle, label: '시크릿톡', path: '/ai-counselor', requiresAuth: true },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },
   { icon: FileText, label: '프리미엄테스트', path: '/premium-assessment', requiresAuth: true },
-  
+  { icon: BarChart3, label: 'MYDATA', path: '/dashboard', requiresAuth: true },
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: true },
   { icon: Brain, label: '체질분석', path: '/han-medicine-test', requiresAuth: false },
   { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: true },

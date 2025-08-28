@@ -1,7 +1,13 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+
+// Initialize Supabase client
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const supabaseServiceClient = createClient(supabaseUrl, supabaseServiceKey);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,7 +20,70 @@ serve(async (req) => {
   }
 
   try {
+    // Get the Authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: '인증이 필요합니다.' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Get user info from Supabase
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabaseServiceClient.auth.getUser(token);
+    
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: '유효하지 않은 토큰입니다.' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const { answers, testType } = await req.json();
+
+    // 토큰 차감 처리 (프리미엄 검사는 10토큰)
+    const tokenCost = 10;
+    
+    // 현재 토큰 잔액 확인
+    const { data: tokenData, error: tokenError } = await supabaseServiceClient
+      .from('user_tokens')
+      .select('current_tokens, total_used')
+      .eq('user_id', user.id)
+      .single();
+
+    if (tokenError || !tokenData) {
+      return new Response(JSON.stringify({ 
+        error: '토큰 정보를 확인할 수 없습니다.' 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (tokenData.current_tokens < tokenCost) {
+      return new Response(JSON.stringify({ 
+        error: `분석을 위해 ${tokenCost}개의 토큰이 필요합니다. 현재 토큰: ${tokenData.current_tokens}개` 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // 토큰 차감
+    const { error: updateError } = await supabaseServiceClient
+      .from('user_tokens')
+      .update({ 
+        current_tokens: tokenData.current_tokens - tokenCost,
+        total_used: tokenData.total_used + tokenCost 
+      })
+      .eq('user_id', user.id);
+
+    if (updateError) {
+      throw new Error('토큰 차감 중 오류가 발생했습니다.');
+    }
+
+    console.log(`프리미엄 검사 분석 - 토큰 차감: ${tokenCost}, 잔액: ${tokenData.current_tokens - tokenCost}`);
 
     console.log('[PREMIUM-ASSESSMENT-ANALYZER] 프리미엄 분석 시작:', { testType, answersCount: Object.keys(answers).length });
 
@@ -90,7 +159,7 @@ serve(async (req) => {
 응답은 반드시 위에서 제시한 JSON 형태로만 작성해주세요.`
           }
         ],
-        max_tokens: 2000,
+        max_completion_tokens: 2000,
       }),
     });
 

@@ -2,8 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { RefreshCw, Download, Share2, Brain, AlertTriangle, CheckCircle } from "lucide-react";
+import { RefreshCw, Download, Share2, Brain, AlertTriangle, CheckCircle, FileText, Crown } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
+import { useTestActions } from "@/hooks/useTestActions";
+import { useSubscription } from "@/hooks/useSubscription";
 
 interface StressTestResultProps {
   result: {
@@ -65,10 +67,32 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
   const Icon = config.icon;
   const progressValue = (result.total / 40) * 100;
   const { shareAsText } = useShareText();
+  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestActions();
+  const { subscribed: isSubscribed } = useSubscription();
 
   const handleShare = () => {
     const shareContent = `스트레스 인지 척도 검사 결과\n\n스트레스 수준: ${result.severity}\n총점: ${result.total}/40점\n평균: ${result.average.toFixed(1)}점`;
     shareAsText(shareContent, "스트레스 인지 척도 검사 결과");
+  };
+
+  const handlePDFGenerate = () => {
+    generatePDFReport({
+      testType: 'stress',
+      total: result.total,
+      average: result.average,
+      severity: result.severity,
+      ageGroup: 'adult'
+    }, isSubscribed);
+  };
+
+  const handleSaveResult = () => {
+    saveTestResult({
+      testType: 'stress',
+      total: result.total,
+      average: result.average,
+      severity: result.severity,
+      ageGroup: 'adult'
+    });
   };
 
   return (
@@ -199,9 +223,23 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
             <Share2 className="w-4 h-4" />
             결과 공유하기
           </Button>
-          <Button variant="secondary" className="flex items-center gap-2">
+          <Button 
+            onClick={handlePDFGenerate} 
+            variant="secondary" 
+            className="flex items-center gap-2"
+            disabled={isGeneratingPDF}
+          >
+            {isSubscribed ? <FileText className="w-4 h-4" /> : <Crown className="w-4 h-4" />}
+            {isGeneratingPDF ? "생성 중..." : isSubscribed ? "PDF 리포트" : "PDF 리포트 (프리미엄)"}
+          </Button>
+          <Button 
+            onClick={handleSaveResult}
+            variant="secondary" 
+            className="flex items-center gap-2"
+            disabled={isSaving}
+          >
             <Download className="w-4 h-4" />
-            결과 저장하기
+            {isSaving ? "저장 중..." : "결과 저장하기"}
           </Button>
         </div>
       </div>

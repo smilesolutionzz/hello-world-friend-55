@@ -201,7 +201,7 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
         >
           <div className="text-left">
             <div className="font-semibold">PDF 리포트</div>
-            <div className="text-sm text-muted-foreground">(추가 예정)</div>
+            <div className="text-sm text-muted-foreground">(프리미엄)</div>
           </div>
         </Button>
 
@@ -212,7 +212,7 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
         >
           <div className="text-left">
             <div className="font-semibold">결과 저장</div>
-            <div className="text-sm text-muted-foreground">(추가 예정)</div>
+            <div className="text-sm text-muted-foreground">(로그인 필요)</div>
           </div>
         </Button>
       </div>

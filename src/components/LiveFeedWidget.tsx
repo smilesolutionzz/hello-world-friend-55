@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, TrendingUp, Activity, Heart, Star, ThumbsUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Users, TrendingUp, Activity, Heart, Star, ThumbsUp, X, RotateCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface LiveFeedback {
@@ -28,6 +29,49 @@ const LiveFeedWidget = () => {
   });
   const [currentFeedback, setCurrentFeedback] = useState<LiveFeedback | null>(null);
   const [showStats, setShowStats] = useState(true);
+  const [isStatsHidden, setIsStatsHidden] = useState(false);
+  const [isFeedbackHidden, setIsFeedbackHidden] = useState(false);
+  const [isWidgetHidden, setIsWidgetHidden] = useState(false);
+
+  // 로컬스토리지에서 설정 불러오기
+  useEffect(() => {
+    const statsHidden = localStorage.getItem('liveStatsHidden') === 'true';
+    const feedbackHidden = localStorage.getItem('liveFeedbackHidden') === 'true';
+    const widgetHidden = localStorage.getItem('liveWidgetHidden') === 'true';
+    
+    setIsStatsHidden(statsHidden);
+    setIsFeedbackHidden(feedbackHidden);
+    setIsWidgetHidden(widgetHidden);
+  }, []);
+
+  // 통계 닫기
+  const handleCloseStats = () => {
+    setIsStatsHidden(true);
+    localStorage.setItem('liveStatsHidden', 'true');
+  };
+
+  // 피드백 닫기
+  const handleCloseFeedback = () => {
+    setIsFeedbackHidden(true);
+    localStorage.setItem('liveFeedbackHidden', 'true');
+    setCurrentFeedback(null);
+  };
+
+  // 전체 위젯 닫기
+  const handleCloseWidget = () => {
+    setIsWidgetHidden(true);
+    localStorage.setItem('liveWidgetHidden', 'true');
+  };
+
+  // 위젯 다시 보기
+  const handleRestoreWidget = () => {
+    setIsWidgetHidden(false);
+    setIsStatsHidden(false);
+    setIsFeedbackHidden(false);
+    localStorage.removeItem('liveWidgetHidden');
+    localStorage.removeItem('liveStatsHidden');
+    localStorage.removeItem('liveFeedbackHidden');
+  };
 
   // 실제 피드백 데이터 가져오기
   const fetchRealFeedbacks = async () => {
@@ -134,6 +178,8 @@ const LiveFeedWidget = () => {
 
   // 피드백 슬라이드 애니메이션 (실제 피드백과 샘플 피드백 혼합)
   useEffect(() => {
+    if (isFeedbackHidden || isWidgetHidden) return;
+    
     const interval = setInterval(() => {
       const allFeedbacks = [...realFeedbacks, ...sampleFeedbacks];
       if (allFeedbacks.length === 0) return;
@@ -157,7 +203,7 @@ const LiveFeedWidget = () => {
     }, 8000);
 
     return () => clearInterval(interval);
-  }, [realFeedbacks]);
+  }, [realFeedbacks, isFeedbackHidden, isWidgetHidden]);
 
   // 통계와 피드백 번갈아 표시
   useEffect(() => {
@@ -168,11 +214,36 @@ const LiveFeedWidget = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // 전체 위젯이 숨겨진 경우 복원 버튼만 표시
+  if (isWidgetHidden) {
+    return (
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button
+          onClick={handleRestoreWidget}
+          size="sm"
+          className="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 backdrop-blur-sm shadow-lg"
+        >
+          <RotateCcw className="w-4 h-4 mr-2" />
+          실시간 현황 보기
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed bottom-6 right-6 z-50 space-y-3">
       {/* 실시간 통계 */}
-      {showStats && (
-        <Card className="p-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-2xl animate-slide-in-right">
+      {showStats && !isStatsHidden && (
+        <Card className="p-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-2xl animate-slide-in-right relative">
+          {/* 닫기 버튼 */}
+          <Button
+            onClick={handleCloseStats}
+            size="sm"
+            variant="ghost"
+            className="absolute -top-2 -right-2 h-6 w-6 p-0 bg-white/20 hover:bg-white/30 text-white rounded-full"
+          >
+            <X className="w-3 h-3" />
+          </Button>
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/20 rounded-full">
               <Activity className="w-5 h-5" />
@@ -202,8 +273,17 @@ const LiveFeedWidget = () => {
       )}
 
       {/* 실시간 피드백 */}
-      {currentFeedback && !showStats && (
-        <Card className="p-4 bg-white border-0 shadow-2xl max-w-xs animate-slide-in-right">
+      {currentFeedback && !showStats && !isFeedbackHidden && (
+        <Card className="p-4 bg-white border-0 shadow-2xl max-w-xs animate-slide-in-right relative">
+          {/* 닫기 버튼 */}
+          <Button
+            onClick={handleCloseFeedback}
+            size="sm"
+            variant="ghost"
+            className="absolute -top-2 -right-2 h-6 w-6 p-0 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full"
+          >
+            <X className="w-3 h-3" />
+          </Button>
           <div className="flex items-start gap-3">
             <div className="text-2xl">{currentFeedback.emoji}</div>
             <div className="flex-1">
@@ -229,12 +309,32 @@ const LiveFeedWidget = () => {
       )}
 
       {/* 피드백 히스토리 (스크롤 가능) */}
-      {feedbacks.length > 0 && !currentFeedback && !showStats && (
-        <Card className="p-3 bg-white/95 backdrop-blur-sm border-0 shadow-lg max-w-xs max-h-48 overflow-y-auto animate-fade-in">
+      {feedbacks.length > 0 && !currentFeedback && !showStats && !isFeedbackHidden && (
+        <Card className="p-3 bg-white/95 backdrop-blur-sm border-0 shadow-lg max-w-xs max-h-48 overflow-y-auto animate-fade-in relative">
+          {/* 닫기 버튼 */}
+          <Button
+            onClick={handleCloseFeedback}
+            size="sm"
+            variant="ghost"
+            className="absolute -top-2 -right-2 h-6 w-6 p-0 bg-white hover:bg-gray-100 text-gray-600 rounded-full shadow-sm"
+          >
+            <X className="w-3 h-3" />
+          </Button>
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-              <TrendingUp className="w-3 h-3" />
-              <span>최근 후기</span>
+            <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-3 h-3" />
+                <span>최근 후기</span>
+              </div>
+              {/* 전체 위젯 닫기 버튼 */}
+              <Button
+                onClick={handleCloseWidget}
+                size="sm"
+                variant="ghost"
+                className="h-4 w-4 p-0 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-3 h-3" />
+              </Button>
             </div>
             {feedbacks.slice(0, 3).map((feedback) => (
               <div key={feedback.id} className="flex items-start gap-2 p-2 bg-gray-50 rounded-lg">

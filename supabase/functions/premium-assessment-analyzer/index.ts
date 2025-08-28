@@ -85,7 +85,7 @@ serve(async (req) => {
 
     console.log(`프리미엄 검사 분석 - 토큰 차감: ${tokenCost}, 잔액: ${tokenData.current_tokens - tokenCost}`);
 
-    console.log('[PREMIUM-ASSESSMENT-ANALYZER] 프리미엄 분석 시작:', { testType, answersCount: Object.keys(answers).length });
+    console.log('[PREMIUM-ASSESSMENT-ANALYZER] 프리미엄 분석 시작:', { testType, answersCount: answers ? Object.keys(answers).length : 0 });
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

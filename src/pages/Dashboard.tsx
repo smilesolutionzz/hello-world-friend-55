@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import FamilyManagement from "@/components/family/FamilyManagement";
 
 import AssessmentHistory from "@/components/history/AssessmentHistory";
 import ConsultationHistory from "@/components/history/ConsultationHistory";
@@ -517,9 +518,9 @@ const Dashboard = () => {
 
       <div className="container mx-auto px-6 py-8">
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">개요</TabsTrigger>
-            
+            <TabsTrigger value="family">가족관리</TabsTrigger>
             <TabsTrigger value="assessments">검사 기록</TabsTrigger>
             <TabsTrigger value="consultations">상담 기록</TabsTrigger>
             <TabsTrigger value="team">팀 설정</TabsTrigger>
@@ -941,6 +942,10 @@ const Dashboard = () => {
                 <SubscriptionCTA context="dashboard" />
               </div>
             </div>
+          </TabsContent>
+
+          <TabsContent value="family">
+            <FamilyManagement onUpdate={loadDashboardData} />
           </TabsContent>
 
 

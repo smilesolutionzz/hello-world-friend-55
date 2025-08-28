@@ -75,7 +75,8 @@ export default function HighlightDashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
+      // test_results 테이블에서 프리미엄 검사 결과 조회
+      const { data: testResults, error: testError } = await supabase
         .from('test_results')
         .select(`
           id,
@@ -87,8 +88,43 @@ export default function HighlightDashboard() {
         .order('completed_at', { ascending: false })
         .limit(5);
 
-      if (error) throw error;
-      setRecentTests(data || []);
+      if (testError) throw testError;
+
+      // assessments 테이블에서 프리미엄 검사 결과도 조회
+      const { data: assessmentResults, error: assessmentError } = await supabase
+        .from('assessments')
+        .select(`
+          id,
+          created_at,
+          results,
+          analysis
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (assessmentError) throw assessmentError;
+
+      // 두 결과를 합쳐서 최근 순으로 정렬
+      const allTests = [
+        ...(testResults || []).map(test => ({
+          ...test,
+          scores: test.scores || { total_score: 0 },
+          test_types: test.test_types || { name: '검사' }
+        })),
+        ...(assessmentResults || []).map(assessment => ({
+          id: assessment.id,
+          completed_at: assessment.created_at,
+          scores: { 
+            total_score: typeof assessment.results === 'object' && assessment.results 
+              ? Object.values(assessment.results as Record<string, any>).reduce((sum, val) => sum + (Number(val) || 0), 0) / Object.keys(assessment.results as Record<string, any>).length || 0
+              : 0 
+          },
+          test_types: { name: '프리미엄 검사' }
+        }))
+      ].sort((a, b) => new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime()).slice(0, 5);
+
+      setRecentTests(allTests);
     } catch (error: any) {
       toast({
         title: "최근 검사 로드 실패",
@@ -185,7 +221,13 @@ export default function HighlightDashboard() {
                       <div 
                         key={test.id}
                         className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() => navigate(`/results/${test.id}`)}
+                        onClick={() => {
+                          if (test.test_types.name === '프리미엄 검사') {
+                            navigate(`/assessment-detail/${test.id}`);
+                          } else {
+                            navigate(`/results/${test.id}`);
+                          }
+                        }}
                       >
                         <div className="flex justify-between items-start">
                           <div>

@@ -74,19 +74,23 @@ const PremiumAssessmentResult = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // 직접 SQL 쿼리 대신 RPC 호출이나 다른 방법 사용
-      // 현재는 로컬 스토리지에 임시 저장
-      const resultData = {
-        user_id: user.id,
-        assessment_type: assessmentType,
-        results: results,
-        ai_analysis: analysis,
-        assessment_info: assessmentInfo,
-        created_at: new Date().toISOString()
-      };
-      
-      localStorage.setItem(`premium_assessment_${Date.now()}`, JSON.stringify(resultData));
-      console.log('Assessment result saved locally');
+      // 검사 결과를 test_results 테이블에 저장
+      const { error } = await supabase.functions.invoke('save-test-result', {
+        body: {
+          testType: assessmentType,
+          results: results,
+          analysis: analysis,
+          testInfo: assessmentInfo,
+          ageGroup: 'adult' // 프리미엄 검사는 성인 대상
+        }
+      });
+
+      if (error) {
+        console.error('Error saving test result:', error);
+        throw error;
+      }
+
+      console.log('Assessment result saved to database');
     } catch (error) {
       console.error('Error saving assessment result:', error);
     }

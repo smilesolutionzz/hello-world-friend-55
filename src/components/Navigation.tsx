@@ -274,9 +274,26 @@ const Navigation = () => {
                     <DropdownMenuSeparator />
                     
                     <DropdownMenuItem onClick={() => navigate('/dashboard')}>
-                      <User className="w-4 h-4 mr-2" />
+                      <Settings className="w-4 h-4 mr-2" />
                       대시보드
                     </DropdownMenuItem>
+                    
+                    <DropdownMenuItem onClick={() => navigate('/assessment-history')}>
+                      <History className="w-4 h-4 mr-2" />
+                      검사 기록
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuItem onClick={() => navigate('/observation')}>
+                      <FileText className="w-4 h-4 mr-2" />
+                      관찰일지
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuItem onClick={() => navigate('/premium-assessment')}>
+                      <Crown className="w-4 h-4 mr-2 text-yellow-600" />
+                      프리미엄 검사
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuSeparator />
                     
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="w-4 h-4 mr-2" />

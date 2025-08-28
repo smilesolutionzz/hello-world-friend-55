@@ -82,11 +82,39 @@ const ClientLogos = () => {
       description: "아동발달 치료센터"
     },
     { 
-      name: "희망발달센터 수원점", 
+      name: "참소리언어심리연구소", 
+      icon: Brain, 
+      color: "text-indigo-600",
+      bgColor: "bg-indigo-50",
+      description: "언어심리 전문 연구소"
+    },
+    { 
+      name: "우아함발달센터 화성새솔점", 
       icon: Heart, 
       color: "text-rose-500",
       bgColor: "bg-rose-50",
       description: "아동발달 전문센터"
+    },
+    { 
+      name: "우아함발달센터 안산점", 
+      icon: Heart, 
+      color: "text-pink-500",
+      bgColor: "bg-pink-50",
+      description: "아동발달 전문센터"
+    },
+    { 
+      name: "넘나들언어인지학습연구소", 
+      icon: BookOpen, 
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+      description: "언어인지학습 연구소"
+    },
+    { 
+      name: "별하언어심리상담센터", 
+      icon: Stethoscope, 
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+      description: "언어심리상담 전문센터"
     }
   ];
 

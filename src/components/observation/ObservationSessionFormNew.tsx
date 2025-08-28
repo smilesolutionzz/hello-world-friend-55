@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import MediaUploader from './MediaUploader';
 import SubscriptionGate from './SubscriptionGate';
+import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
 
 interface ObservationSessionFormProps {
   template: any;
@@ -489,7 +490,16 @@ const ObservationSessionForm: React.FC<ObservationSessionFormProps> = ({ templat
           </div>
 
           <div>
-            <label className="text-sm font-medium">추가 메모</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">추가 메모</label>
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = sessionData.notes;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  handleInputChange('notes', newValue);
+                }}
+              />
+            </div>
             <Textarea
               value={sessionData.notes}
               onChange={(e) => handleInputChange('notes', e.target.value)}

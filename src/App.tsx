@@ -23,7 +23,7 @@ import HighlightSubscription from "./pages/HighlightSubscription";
 import { TypebotEmbed } from "./components/highlight/TypebotEmbed";
 import { TestResults } from "./components/highlight/TestResults";
 
-import Family from "./pages/Family";
+
 import CounselingFlow from "./pages/CounselingFlow";
 import Corporate from "./pages/Corporate";
 import Subscription from "./pages/Subscription";
@@ -101,7 +101,7 @@ const App = () => (
           <Route path="/iep-generator" element={<IEPGenerator />} />
           <Route path="/iep-view/:id" element={<IEPView />} />
           <Route path="/autism-screening" element={<DevelopmentalScreening />} />
-          <Route path="/family" element={<Family />} />
+          
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />

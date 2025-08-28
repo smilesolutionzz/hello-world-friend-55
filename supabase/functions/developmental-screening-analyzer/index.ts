@@ -75,7 +75,7 @@ serve(async (req) => {
     }
 
     // 토큰 차감 처리 (발달특성 선별체크는 4토큰)
-    const tokenCost = 4;
+    const tokenCost = 1;
     
     const { data: tokenData, error: tokenError } = await supabase
       .from('user_tokens')

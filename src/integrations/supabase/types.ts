@@ -136,6 +136,7 @@ export type Database = {
           results: Json | null
           risk_level: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           age_at_assessment?: number | null
@@ -147,6 +148,7 @@ export type Database = {
           results?: Json | null
           risk_level?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           age_at_assessment?: number | null
@@ -158,6 +160,7 @@ export type Database = {
           results?: Json | null
           risk_level?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {

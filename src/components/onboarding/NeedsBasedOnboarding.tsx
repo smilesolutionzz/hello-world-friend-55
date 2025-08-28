@@ -157,7 +157,7 @@ export default function NeedsBasedOnboarding() {
       route: '/observation',
       badge: '습관형성',
       badgeType: 'new',
-      suitableFor: ['행동관찰', '습관개선', '장기관리', '가족관리']
+      suitableFor: ['행동관찰', '습관개선', '장기관리']
     },
     {
       id: 'ai-counselor',

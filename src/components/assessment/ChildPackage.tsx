@@ -30,16 +30,6 @@ export const ChildPackage = () => {
       description: '조기개입 필요성 판단',
       path: '/premium-assessment?type=child'
     },
-    {
-      id: 3,
-      title: '가족케어 패키지',
-      duration: '종합',
-      tokens: 20,
-      status: '가족관리',
-      statusColor: 'bg-pink-500',
-      description: '전문기관 연계 서비스',
-      path: '/family'
-    }
   ];
 
   const benefits = [

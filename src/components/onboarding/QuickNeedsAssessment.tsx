@@ -236,15 +236,6 @@ export default function QuickNeedsAssessment() {
           badge: '전문평가',
           badgeColor: 'bg-gradient-to-r from-blue-500 to-cyan-600'
         },
-        {
-          id: 'family-package',
-          name: '가족케어 패키지',
-          tokenCost: '20토큰',
-          duration: '종합',
-          route: '/family',
-          badge: '가족관리',
-          badgeColor: 'bg-gradient-to-r from-pink-500 to-rose-600'
-        }
       ],
       benefits: [
         '발달단계별 정확한 평가',

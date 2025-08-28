@@ -693,12 +693,12 @@ const Assessment = () => {
               </div>
             </div>
 
-            {/* 표준화된 전문 검사 섹션 */}
+            {/* AIH 전문가 창작 검사 섹션 */}
             <div className="mt-12">
               <div className="text-center mb-8">
-                <h3 className="text-xl font-bold text-foreground mb-2">표준화된 전문 검사</h3>
+                <h3 className="text-xl font-bold text-foreground mb-2">AIH 전문가 창작 검사</h3>
                 <p className="text-muted-foreground">
-                  국제 표준 검사 도구로 정확한 분석
+                  심리전문가가 직접 개발한 신뢰도 높은 창작 검사
                 </p>
               </div>
               

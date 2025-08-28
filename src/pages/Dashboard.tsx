@@ -516,67 +516,67 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-8">
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview">개요</TabsTrigger>
-            <TabsTrigger value="family">가족관리</TabsTrigger>
-            <TabsTrigger value="assessments">검사 기록</TabsTrigger>
-            <TabsTrigger value="consultations">상담 기록</TabsTrigger>
-            <TabsTrigger value="team">팀 설정</TabsTrigger>
+      <div className="container mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        <Tabs defaultValue="overview" className="space-y-3 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-5 h-8 sm:h-10">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm px-1">개요</TabsTrigger>
+            <TabsTrigger value="family" className="text-xs sm:text-sm px-1">가족</TabsTrigger>
+            <TabsTrigger value="assessments" className="text-xs sm:text-sm px-1">검사</TabsTrigger>
+            <TabsTrigger value="consultations" className="text-xs sm:text-sm px-1">상담</TabsTrigger>
+            <TabsTrigger value="team" className="text-xs sm:text-sm px-1">팀</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="p-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                    <BarChart3 className="w-6 h-6 text-primary" />
+          <TabsContent value="overview" className="space-y-3 sm:space-y-6">
+            {/* KPI Cards - Mobile Optimized Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
+              <Card className="p-3 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-primary/20 rounded-full flex items-center justify-center">
+                    <BarChart3 className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-foreground">{totalObservations}</p>
-                    <p className="text-sm text-muted-foreground">총 관찰수</p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-foreground">{recent30DaysObservations}</p>
-                    <p className="text-sm text-muted-foreground">최근 30일 관찰수</p>
+                  <div className="min-w-0">
+                    <p className="text-lg sm:text-2xl font-bold text-foreground">{totalObservations}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">총 관찰수</p>
                   </div>
                 </div>
               </Card>
 
-              <Card className="p-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-blue-600" />
+              <Card className="p-3 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-green-600" />
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-foreground">
+                  <div className="min-w-0">
+                    <p className="text-lg sm:text-2xl font-bold text-foreground">{recent30DaysObservations}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">30일 관찰</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-3 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-lg sm:text-2xl font-bold text-foreground">
                       {userStats ? `${3 - userStats.free_uses}/3` : '로딩중'}
                     </p>
-                    <p className="text-sm text-muted-foreground">무료 분석 잔여</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">무료 잔여</p>
                   </div>
                 </div>
               </Card>
 
-              <Card className="p-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                    <CreditCard className="w-6 h-6 text-purple-600" />
+              <Card className="p-3 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                    <CreditCard className="w-4 h-4 sm:w-6 sm:h-6 text-purple-600" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getSubscriptionStatus().color}`}>
                       {getSubscriptionStatus().label}
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">구독 상태</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">구독 상태</p>
                   </div>
                 </div>
               </Card>

@@ -19,6 +19,60 @@ interface DevelopmentalScreeningResultProps {
 }
 
 const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: DevelopmentalScreeningResultProps) => {
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  // AI 분석 실행
+  useEffect(() => {
+    if (results.useAIAnalysis) {
+      generateAIAnalysis();
+    }
+  }, [results]);
+
+  const generateAIAnalysis = async () => {
+    setIsAnalyzing(true);
+    setAnalysisError(null);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('developmental-screening-analyzer', {
+        body: { 
+          results: {
+            answers: results.answers,
+            ageGroup: results.ageGroup === '아동청소년' ? 'child' : 'adult',
+            total: results.total
+          },
+          ageGroup: results.ageGroup === '아동청소년' ? 'child' : 'adult',
+          age: null
+        }
+      });
+
+      if (error) {
+        console.error('AI analysis error:', error);
+        setAnalysisError('AI 분석 중 오류가 발생했습니다.');
+        return;
+      }
+
+      setAiAnalysis(data.analysis);
+    } catch (error) {
+      console.error('Analysis error:', error);
+      setAnalysisError('분석 요청 중 오류가 발생했습니다.');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const getConcernLevelColor = (level: string) => {
+    switch (level) {
+      case "minimal": return "text-green-600 bg-green-50";
+      case "mild": return "text-blue-600 bg-blue-50";
+      case "moderate": return "text-yellow-600 bg-yellow-50";
+      case "significant": return "text-orange-600 bg-orange-50";
+      case "high": return "text-red-600 bg-red-50";
+      default: return "text-gray-600 bg-gray-50";
+    }
+  };
   const { total, ageGroup, concernLevel, strengthAreas, challengeAreas } = results;
 
   const getConcernLevelColor = (level: string) => {

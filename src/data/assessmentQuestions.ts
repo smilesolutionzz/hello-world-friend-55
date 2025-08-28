@@ -438,17 +438,131 @@ export const adultFocusQuestions = [
   "동료들과 협력하여 조화롭게 일합니다"
 ];
 
-// AIH 발달특성 선별체크 질문 (완전 창작형)
+// AIH 발달특성 선별체크 질문 (확장형 20문항 - 박사급 분석용)
 export const developmentalScreeningQuestions = {
   child: [
     {
       text: "아이가 재미있는 것을 발견했을 때 다른 사람과 함께 보려고 하나요?",
-      description: "예: 예쁜 꽃이나 재미있는 장면을 보고 '엄마 저것 봐!' 하며 시선을 함께 보려 함"
+      description: "공동 주의집중 능력 - 타인과 관심사를 공유하는 사회적 참조 행동",
+      domain: "social_communication",
+      clinicalSignificance: "자폐스펙트럼 조기 선별의 핵심 지표"
     },
     {
       text: "아이가 일상적인 놀이에서 창의적인 변화를 시도하나요?",
-      description: "예: 블록으로 집을 만들다가 갑자기 로켓으로 바꿔서 놀기"
+      description: "인지적 유연성과 상상력 - 고정된 패턴에서 벗어나 새로운 시도를 하는 능력",
+      domain: "cognitive_flexibility",
+      clinicalSignificance: "실행기능과 창의적 사고능력 평가"
     },
+    {
+      text: "아이가 새로운 환경에서도 비교적 편안하게 적응하나요?",
+      description: "환경 적응성 - 익숙하지 않은 상황에서의 정서적 안정성과 탐색 행동",
+      domain: "environmental_adaptation",
+      clinicalSignificance: "불안장애 및 적응능력 평가"
+    },
+    {
+      text: "아이가 다른 사람의 표정이나 감정을 알아차리고 반응하나요?",
+      description: "정서 인식능력 - 타인의 비언어적 신호를 해석하고 적절히 반응하는 능력",
+      domain: "emotional_intelligence",
+      clinicalSignificance: "사회적 인지능력과 공감능력 평가"
+    },
+    {
+      text: "아이가 친숙한 일상 루틴이 바뀔 때 유연하게 받아들이나요?",
+      description: "변화 수용성 - 예측 가능한 패턴의 변화에 대한 적응 반응",
+      domain: "change_tolerance",
+      clinicalSignificance: "자폐스펙트럼의 경직성 및 강박적 특성 평가"
+    },
+    {
+      text: "아이가 또래와 함께 있을 때 자연스럽게 상호작용하나요?",
+      description: "사회적 상호작용 - 동년배와의 자발적이고 상호적인 교류 능력",
+      domain: "peer_interaction",
+      clinicalSignificance: "사회성 발달과 또래관계 형성능력 평가"
+    },
+    {
+      text: "아이가 언어 이외의 방법(몸짓, 표정 등)으로도 의사소통하나요?",
+      description: "비언어적 의사소통 - 제스처, 표정, 몸짓 등을 통한 소통 능력",
+      domain: "nonverbal_communication",
+      clinicalSignificance: "의사소통 장애 및 언어발달 평가"
+    },
+    {
+      text: "아이가 하나의 활동에 적절한 시간 동안 집중할 수 있나요?",
+      description: "주의지속 능력 - 연령에 적합한 시간 동안 과제나 활동에 몰입하는 능력",
+      domain: "attention_span",
+      clinicalSignificance: "ADHD 및 주의력결핍 평가"
+    },
+    {
+      text: "아이가 자신의 감정을 적절한 방식으로 표현하나요?",
+      description: "정서 표현능력 - 내적 감정 상태를 사회적으로 수용 가능한 방식으로 드러내는 능력",
+      domain: "emotional_regulation",
+      clinicalSignificance: "정서조절장애 및 행동문제 평가"
+    },
+    {
+      text: "아이가 놀이 상황에서 순서를 지키거나 규칙을 따르나요?",
+      description: "사회적 규칙 준수 - 집단 상황에서의 규범 이해와 준수 능력",
+      domain: "rule_following",
+      clinicalSignificance: "사회성 발달과 자기조절능력 평가"
+    },
+    {
+      text: "아이가 특정 소리나 촉감에 과도하게 민감하거나 둔감하게 반응하나요?",
+      description: "감각처리 이상 - 청각, 촉각 등 감각 자극에 대한 비정상적 반응 패턴",
+      domain: "sensory_processing",
+      clinicalSignificance: "감각처리장애 및 자폐스펙트럼 평가"
+    },
+    {
+      text: "아이가 반복적인 행동이나 움직임을 자주 보이나요?",
+      description: "상동행동 - 기능적 목적이 없는 반복적이고 고정화된 행동 패턴",
+      domain: "repetitive_behavior",
+      clinicalSignificance: "자폐스펙트럼 핵심 증상 평가"
+    },
+    {
+      text: "아이가 자신만의 특별한 관심사에 과도하게 몰두하나요?",
+      description: "제한된 관심 - 특정 주제나 활동에 대한 강박적이고 배타적인 집착",
+      domain: "restricted_interests",
+      clinicalSignificance: "자폐스펙트럼의 제한적 관심사 패턴 평가"
+    },
+    {
+      text: "아이가 일상생활에서 도움이 필요한 일을 적절히 요청하나요?",
+      description: "도움 요청 행동 - 필요시 타인에게 지원을 구하는 사회적 의사소통 능력",
+      domain: "help_seeking",
+      clinicalSignificance: "의사소통 장애 및 사회적 인지능력 평가"
+    },
+    {
+      text: "아이가 예상과 다른 상황이 발생했을 때 심하게 당황하거나 화를 내나요?",
+      description: "좌절 내성 - 기대와 현실의 불일치 상황에서의 정서조절 능력",
+      domain: "frustration_tolerance",
+      clinicalSignificance: "정서조절장애 및 적응능력 평가"
+    },
+    {
+      text: "아이가 다른 사람의 관점이나 입장을 이해하려고 노력하나요?",
+      description: "마음 이론 - 타인의 생각과 감정을 추론하고 이해하는 인지능력",
+      domain: "theory_of_mind",
+      clinicalSignificance: "사회적 인지능력과 공감능력 평가"
+    },
+    {
+      text: "아이가 가상의 상황을 만들어 상상놀이를 즐기나요?",
+      description: "상징놀이 능력 - 실제가 아닌 가상의 시나리오를 구성하고 즐기는 능력",
+      domain: "symbolic_play",
+      clinicalSignificance: "언어발달 및 추상적 사고능력 평가"
+    },
+    {
+      text: "아이가 위험한 상황에서 적절한 주의나 경계심을 보이나요?",
+      description: "위험 인식능력 - 잠재적 위험 상황을 감지하고 적절히 대응하는 능력",
+      domain: "safety_awareness",
+      clinicalSignificance: "판단력과 현실 인식능력 평가"
+    },
+    {
+      text: "아이가 복잡한 지시사항을 단계별로 따라할 수 있나요?",
+      description: "다단계 지시 수행 - 여러 단계로 구성된 과제를 순서대로 완수하는 능력",
+      domain: "complex_instruction_following",
+      clinicalSignificance: "실행기능과 작업기억 평가"
+    },
+    {
+      text: "아이가 자신의 행동이 다른 사람에게 미치는 영향을 고려하나요?",
+      description: "사회적 결과 예측 - 자신의 행동이 타인에게 미칠 영향을 사전에 추론하는 능력",
+      domain: "social_consequence_awareness",
+      clinicalSignificance: "사회적 인지능력과 도덕성 발달 평가"
+    }
+  ],
+  adult: [
     {
       text: "아이가 자신만의 방식으로 감정을 표현하나요?",
       description: "기쁨, 화남, 슬픔 등을 말이나 행동으로 다양하게 나타내기"

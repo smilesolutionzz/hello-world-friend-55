@@ -42,70 +42,16 @@ const DevelopmentalScreeningForm = ({ ageGroup, onComplete, onBack }: Developmen
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // AIH 발달특성 선별체크 결과 분석
+      // AIH 발달특성 선별체크 결과 (AI 분석용 데이터 구성)
       const total = answers.reduce((sum, answer) => sum + answer, 0);
       const average = Math.round((total / answers.length) * 10) / 10;
       
-      // 발달특성 수준 평가 (창작형 기준)
-      let concernLevel = "";
-      let strengthAreas: string[] = [];
-      let challengeAreas: string[] = [];
-      
-      if (ageGroup === 'child') {
-        // 아동용 평가 기준
-        if (total <= 3) {
-          concernLevel = "일반적 발달";
-          strengthAreas = ["사회적 상호작용", "환경 적응"];
-        } else if (total <= 6) {
-          concernLevel = "관찰 권장";
-          strengthAreas.push("창의적 사고");
-          challengeAreas.push("사회적 상호작용 지원");
-        } else if (total <= 9) {
-          concernLevel = "지원 필요";
-          challengeAreas.push("사회성 개발", "환경 적응");
-        } else {
-          concernLevel = "전문가 상담 권장";
-          challengeAreas.push("전반적 발달 지원", "개별화 교육");
-        }
-      } else {
-        // 성인용 평가 기준
-        if (total <= 2) {
-          concernLevel = "일반적 특성";
-          strengthAreas = ["사회적 적응", "유연한 사고"];
-        } else if (total <= 4) {
-          concernLevel = "개인적 특성";
-          strengthAreas.push("체계적 사고");
-          challengeAreas.push("사회적 기술 향상");
-        } else if (total <= 7) {
-          concernLevel = "지원 고려";
-          challengeAreas.push("사회적 상황 적응", "감각 조절");
-        } else {
-          concernLevel = "전문 상담 권장";
-          challengeAreas.push("포괄적 지원", "개인별 전략");
-        }
-      }
-
-      // 영역별 세부 분석
-      const socialScore = answers.slice(0, 4).reduce((a, b) => a + b, 0);
-      const adaptabilityScore = answers.slice(4, 8).reduce((a, b) => a + b, 0);
-      const sensoryScore = answers.slice(8).reduce((a, b) => a + b, 0);
-
-      if (socialScore >= 3) challengeAreas.push("사회적 의사소통");
-      if (adaptabilityScore >= 3) challengeAreas.push("환경 적응성");
-      if (sensoryScore >= 2) challengeAreas.push("감각 처리");
-
-      if (socialScore <= 1) strengthAreas.push("사회적 소통");
-      if (adaptabilityScore <= 1) strengthAreas.push("적응 능력");
-      if (sensoryScore <= 1) strengthAreas.push("감각 통합");
-
       onComplete({
         answers,
         total,
         average,
         ageGroup: ageGroup === 'child' ? '아동청소년' : '성인',
-        concernLevel,
-        strengthAreas,
-        challengeAreas
+        useAIAnalysis: true  // AI 분석 사용 플래그
       });
     }
   };

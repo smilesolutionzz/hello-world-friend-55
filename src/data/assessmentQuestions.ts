@@ -562,88 +562,128 @@ export const developmentalScreeningQuestions = {
       clinicalSignificance: "사회적 인지능력과 도덕성 발달 평가"
     }
   ],
-  adult: [
+  child_extended: [
     {
       text: "아이가 자신만의 방식으로 감정을 표현하나요?",
-      description: "기쁨, 화남, 슬픔 등을 말이나 행동으로 다양하게 나타내기"
+      description: "기쁨, 화남, 슬픔 등을 말이나 행동으로 다양하게 나타내기",
+      domain: "emotional_expression",
+      clinicalSignificance: "정서 표현 및 조절 능력 평가"
     },
     {
       text: "아이가 또래 친구들과의 상호작용을 즐거워하나요?",
-      description: "함께 놀기, 순서 지키기, 간단한 협력놀이 등"
+      description: "함께 놀기, 순서 지키기, 간단한 협력놀이 등",
+      domain: "peer_interaction",
+      clinicalSignificance: "사회적 발달 및 또래관계 형성 평가"
     },
     {
       text: "아이가 예상과 다른 상황에서도 적응하려고 노력하나요?",
-      description: "계획이 바뀌거나 새로운 환경에서 시간을 두고 적응하려는 모습"
+      description: "계획이 바뀌거나 새로운 환경에서 시간을 두고 적응하려는 모습",
+      domain: "adaptability",
+      clinicalSignificance: "환경 적응성 및 유연성 평가"
     },
     {
       text: "아이가 다양한 소리와 촉감에 대해 자연스럽게 반응하나요?",
-      description: "새로운 소리나 재질에 대해 과도하게 민감하거나 둔감하지 않음"
+      description: "새로운 소리나 재질에 대해 과도하게 민감하거나 둔감하지 않음",
+      domain: "sensory_processing",
+      clinicalSignificance: "감각처리 및 조절 능력 평가"
     },
     {
       text: "아이가 대화할 때 자연스럽게 눈을 마주치나요?",
-      description: "이야기하거나 들을 때 적절한 시선 교환"
+      description: "이야기하거나 들을 때 적절한 시선 교환",
+      domain: "eye_contact",
+      clinicalSignificance: "사회적 의사소통 능력 평가"
     },
     {
       text: "아이가 일상 활동에서 유연성을 보이나요?",
-      description: "한 가지 방법이 안 되면 다른 방법을 시도해보려는 모습"
+      description: "한 가지 방법이 안 되면 다른 방법을 시도해보려는 모습",
+      domain: "cognitive_flexibility",
+      clinicalSignificance: "문제해결 능력 및 인지적 유연성 평가"
     },
     {
       text: "아이가 자신의 관심사를 다른 사람과 나누려고 하나요?",
-      description: "좋아하는 것에 대해 설명하거나 보여주려는 시도"
+      description: "좋아하는 것에 대해 설명하거나 보여주려는 시도",
+      domain: "interest_sharing",
+      clinicalSignificance: "사회적 참조 및 공유주의 평가"
     },
     {
       text: "아이가 주변 환경의 작은 변화도 잘 알아차리나요?",
-      description: "새로운 물건이나 배치 변화 등을 민감하게 감지"
+      description: "새로운 물건이나 배치 변화 등을 민감하게 감지",
+      domain: "detail_attention",
+      clinicalSignificance: "주의력 및 세부사항 처리 능력 평가"
     },
     {
       text: "아이가 자신만의 특별한 관심 분야가 있나요?",
-      description: "특정 주제나 활동에 깊은 관심과 지식을 보임"
+      description: "특정 주제나 활동에 깊은 관심과 지식을 보임",
+      domain: "special_interests",
+      clinicalSignificance: "제한적 관심사 패턴 평가"
     },
     {
       text: "아이가 일정한 패턴이나 순서를 선호하나요?",
-      description: "정해진 루틴이나 방식을 따르는 것을 편안해함"
+      description: "정해진 루틴이나 방식을 따르는 것을 편안해함",
+      domain: "routine_preference",
+      clinicalSignificance: "반복행동 및 의식행동 평가"
     }
   ],
   adult: [
     {
       text: "대화에서 상대방의 미묘한 감정 변화를 파악하기 어려우신가요?",
-      description: "표정이나 말투의 변화로 상대방 기분을 읽는 것"
+      description: "표정이나 말투의 변화로 상대방 기분을 읽는 것",
+      domain: "emotion_recognition",
+      clinicalSignificance: "사회적 인지능력 및 정서 인식 평가"
     },
     {
       text: "사회적 모임에서 적절한 대화 시점을 찾기 어려우신가요?",
-      description: "언제 말을 시작하고 끝낼지, 주제를 바꿀지 판단하는 것"
+      description: "언제 말을 시작하고 끝낼지, 주제를 바꿀지 판단하는 것",
+      domain: "conversation_timing",
+      clinicalSignificance: "사회적 의사소통 기술 평가"
     },
     {
       text: "일상의 예상치 못한 변화에 대해 강한 스트레스를 느끼시나요?",
-      description: "갑작스러운 일정 변경이나 환경 변화에 대한 반응"
+      description: "갑작스러운 일정 변경이나 환경 변화에 대한 반응",
+      domain: "change_adaptation",
+      clinicalSignificance: "변화 적응성 및 스트레스 반응 평가"
     },
     {
       text: "특정 감각(소리, 빛, 촉감)에 대해 다른 사람보다 민감하신가요?",
-      description: "일상에서 특정 자극을 피하거나 불편해하는 정도"
+      description: "일상에서 특정 자극을 피하거나 불편해하는 정도",
+      domain: "sensory_sensitivity",
+      clinicalSignificance: "감각처리 민감성 및 과민반응 평가"
     },
     {
       text: "자신만의 체계적인 방법이나 순서를 매우 중요하게 여기시나요?",
-      description: "일하거나 생활할 때 정해진 방식을 고수하는 성향"
+      description: "일하거나 생활할 때 정해진 방식을 고수하는 성향",
+      domain: "systematic_approach",
+      clinicalSignificance: "강박적 특성 및 의식행동 평가"
     },
     {
       text: "처음 만나는 사람과의 자연스러운 대화가 어려우신가요?",
-      description: "아이스브레이킹이나 가벼운 일상 대화의 어려움"
+      description: "아이스브레이킹이나 가벼운 일상 대화의 어려움",
+      domain: "social_initiation",
+      clinicalSignificance: "사회적 개시능력 및 대인관계 형성 평가"
     },
     {
       text: "농담이나 은유적 표현의 의도를 파악하기 어려우신가요?",
-      description: "문자 그대로 해석하거나 숨은 의미를 놓치는 경우"
+      description: "문자 그대로 해석하거나 숨은 의미를 놓치는 경우",
+      domain: "figurative_language",
+      clinicalSignificance: "언어 이해력 및 사회적 맥락 파악 평가"
     },
     {
       text: "특정 분야나 주제에 대해 매우 깊이 있는 지식을 갖고 계신가요?",
-      description: "한 분야에 대한 전문가 수준의 관심과 지식"
+      description: "한 분야에 대한 전문가 수준의 관심과 지식",
+      domain: "specialized_knowledge",
+      clinicalSignificance: "특수한 관심사 및 인지적 강점 평가"
     },
     {
       text: "새로운 환경이나 사람들과의 만남에서 불안감을 느끼시나요?",
-      description: "익숙하지 않은 상황에 대한 선호도와 적응"
+      description: "익숙하지 않은 상황에 대한 선호도와 적응",
+      domain: "social_anxiety",
+      clinicalSignificance: "사회불안 및 새로운 상황 적응 평가"
     },
     {
       text: "다른 사람들의 사회적 신호나 분위기를 읽기 어려우신가요?",
-      description: "그룹 내 분위기나 비언어적 메시지 파악"
+      description: "그룹 내 분위기나 비언어적 메시지 파악",
+      domain: "social_cues",
+      clinicalSignificance: "사회적 상황 인식 및 비언어적 소통 평가"
     }
   ]
 };

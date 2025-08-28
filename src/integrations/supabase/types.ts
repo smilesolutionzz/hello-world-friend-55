@@ -270,6 +270,48 @@ export type Database = {
         }
         Relationships: []
       }
+      developmental_screening_results: {
+        Row: {
+          age_group: string
+          ai_analysis: Json | null
+          confidence_score: number | null
+          created_at: string
+          id: string
+          raw_scores: number[]
+          risk_level: string | null
+          test_type: string
+          total_score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age_group: string
+          ai_analysis?: Json | null
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          raw_scores: number[]
+          risk_level?: string | null
+          test_type?: string
+          total_score: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age_group?: string
+          ai_analysis?: Json | null
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          raw_scores?: number[]
+          risk_level?: string | null
+          test_type?: string
+          total_score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       developmental_tracking: {
         Row: {
           assessor_notes: string | null

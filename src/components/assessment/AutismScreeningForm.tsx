@@ -12,7 +12,7 @@ import { useTokens } from "@/hooks/useTokens";
 
 interface DevelopmentalScreeningFormProps {
   ageGroup: 'child' | 'adult';
-  onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string, concernLevel: string, strengthAreas: string[], challengeAreas: string[]}) => void;
+  onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string, useAIAnalysis?: boolean}) => void;
   onBack: () => void;
 }
 

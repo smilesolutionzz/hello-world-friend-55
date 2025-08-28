@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { 
   Brain, 
   Menu, 
@@ -20,11 +18,7 @@ import {
   History,
   HelpCircle,
   Mail,
-  X,
-  Heart,
-  Activity,
-  Clock,
-  Target
+  X
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -60,88 +54,7 @@ export const UnifiedNavigation = () => {
   const { user } = useAuthGuard();
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [showMobileStats, setShowMobileStats] = useState(true);
-  const [dashboardStats, setDashboardStats] = useState({
-    totalActivities: 0,
-    averageScore: 0,
-    weeklyGoal: 5,
-    recentActivities: []
-  });
 
-  // 실시간현황 표시 여부를 로컬스토리지에서 불러오기
-  useEffect(() => {
-    const savedPreference = localStorage.getItem('showMobileStats');
-    if (savedPreference !== null) {
-      setShowMobileStats(savedPreference === 'true');
-    }
-  }, []);
-
-  // 실시간현황 닫기 기능
-  const handleCloseMobileStats = () => {
-    setShowMobileStats(false);
-    localStorage.setItem('showMobileStats', 'false');
-  };
-
-  // 대시보드 데이터 로드 (모바일 햄버거 메뉴용)
-  useEffect(() => {
-    if (user && isOpen && showMobileStats) {
-      loadMobileDashboardData();
-    }
-  }, [user, isOpen, showMobileStats]);
-
-  const loadMobileDashboardData = async () => {
-    try {
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (!currentUser) return;
-
-      // 사용자 프로필 로드
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .single();
-
-      if (!profileData) return;
-
-      // 평가 데이터 로드
-      const { data: assessmentData } = await supabase
-        .from('assessments')
-        .select('*')
-        .eq('profile_id', profileData.id)
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      const activities = assessmentData?.map(assessment => {
-        let score = 75; // 기본값
-        if (assessment.results && typeof assessment.results === 'object') {
-          const results = assessment.results as any;
-          score = results.total || results.totalScore || 75;
-        }
-        
-        return {
-          id: assessment.id,
-          type: 'assessment',
-          title: '심리검사',
-          date: assessment.created_at,
-          score
-        };
-      }) || [];
-
-      const totalActivities = activities.length;
-      const averageScore = activities.length > 0 
-        ? Math.round(activities.reduce((sum, act) => sum + act.score, 0) / activities.length)
-        : 0;
-
-      setDashboardStats({
-        totalActivities,
-        averageScore,
-        weeklyGoal: 5,
-        recentActivities: activities.slice(0, 3)
-      });
-    } catch (error) {
-      console.error('Mobile dashboard data loading error:', error);
-    }
-  };
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -329,106 +242,6 @@ export const UnifiedNavigation = () => {
                           )}
                         </Button>
                      ))}
-                     
-                     {/* 모바일 실시간 현황 섹션 - 로그인된 사용자에게만 표시 */}
-                     {user && showMobileStats && (
-                       <div className="pt-4 mt-4 border-t border-border/50 relative">
-                         {/* 헤더와 닫기 버튼 */}
-                         <div className="flex items-center justify-between mb-3 px-2">
-                           <p className="text-xs text-muted-foreground flex items-center gap-1">
-                             <BarChart3 className="w-3 h-3" />
-                             📊 실시간 현황
-                           </p>
-                           <Button
-                             variant="ghost"
-                             size="sm"
-                             onClick={handleCloseMobileStats}
-                             className="h-6 w-6 p-0 hover:bg-red-100 hover:text-red-600 rounded-full"
-                           >
-                             <X className="w-3 h-3" />
-                           </Button>
-                         </div>
-                         
-                         {/* 주간 목표 진행률 */}
-                         <Card className="p-4 mb-3 bg-gradient-to-r from-primary/5 to-primary/10">
-                           <div className="flex items-center justify-between mb-2">
-                             <div className="flex items-center gap-2">
-                               <Target className="w-4 h-4 text-primary" />
-                               <span className="text-sm font-medium">주간 목표</span>
-                             </div>
-                             <Badge variant="outline" className="text-xs">
-                               {dashboardStats.totalActivities}/{dashboardStats.weeklyGoal}
-                             </Badge>
-                           </div>
-                           <Progress 
-                             value={(dashboardStats.totalActivities / dashboardStats.weeklyGoal) * 100} 
-                             className="h-2 mb-2"
-                           />
-                           <p className="text-xs text-muted-foreground">
-                             목표까지 {Math.max(0, dashboardStats.weeklyGoal - dashboardStats.totalActivities)}개 남음
-                           </p>
-                         </Card>
-
-                         {/* 평균 점수 */}
-                         <Card className="p-4 mb-3 bg-gradient-to-r from-green-50 to-emerald-50">
-                           <div className="flex items-center justify-between">
-                             <div className="flex items-center gap-2">
-                               <Heart className="w-4 h-4 text-green-600" />
-                               <span className="text-sm font-medium">평균 점수</span>
-                             </div>
-                             <div className="text-right">
-                               <div className="text-lg font-bold text-green-700">{dashboardStats.averageScore}</div>
-                               <div className="text-xs text-green-600">
-                                 {dashboardStats.averageScore >= 80 ? "매우 좋음" : "양호함"}
-                               </div>
-                             </div>
-                           </div>
-                         </Card>
-
-                         {/* 최근 활동 */}
-                         {dashboardStats.recentActivities.length > 0 && (
-                           <div>
-                             <p className="text-xs text-muted-foreground mb-2 px-2">최근 활동</p>
-                             <div className="space-y-2">
-                               {dashboardStats.recentActivities.map((activity: any) => (
-                                 <div key={activity.id} className="flex items-center gap-3 p-2 bg-background/50 rounded-lg">
-                                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                                     <Brain className="w-4 h-4 text-primary" />
-                                   </div>
-                                   <div className="flex-1 min-w-0">
-                                     <p className="text-sm font-medium">{activity.title}</p>
-                                     <p className="text-xs text-muted-foreground">
-                                       {new Date(activity.date).toLocaleDateString('ko-KR')}
-                                     </p>
-                                   </div>
-                                   <Badge variant="secondary" className="text-xs">
-                                     {activity.score}점
-                                   </Badge>
-                                 </div>
-                               ))}
-                             </div>
-                           </div>
-                         )}
-                       </div>
-                     )}
-                     
-                     {/* 실시간현황이 숨겨진 경우 다시 보기 버튼 */}
-                     {user && !showMobileStats && (
-                       <div className="pt-4 mt-4 border-t border-border/50">
-                         <Button
-                           variant="outline"
-                           size="sm"
-                           onClick={() => {
-                             setShowMobileStats(true);
-                             localStorage.setItem('showMobileStats', 'true');
-                           }}
-                           className="w-full text-xs h-8 border-dashed border-primary/30 text-primary/70 hover:text-primary hover:border-primary/50"
-                         >
-                           <BarChart3 className="w-3 h-3 mr-2" />
-                           실시간 현황 보기
-                         </Button>
-                       </div>
-                     )}
                      
                      {/* 고객 지원 섹션 */}
                      <div className="pt-4 mt-4 border-t border-border/50">

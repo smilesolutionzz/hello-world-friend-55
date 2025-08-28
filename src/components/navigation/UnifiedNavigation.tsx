@@ -60,6 +60,7 @@ export const UnifiedNavigation = () => {
   const { user } = useAuthGuard();
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [showMobileStats, setShowMobileStats] = useState(true);
   const [dashboardStats, setDashboardStats] = useState({
     totalActivities: 0,
     averageScore: 0,
@@ -67,12 +68,26 @@ export const UnifiedNavigation = () => {
     recentActivities: []
   });
 
+  // 실시간현황 표시 여부를 로컬스토리지에서 불러오기
+  useEffect(() => {
+    const savedPreference = localStorage.getItem('showMobileStats');
+    if (savedPreference !== null) {
+      setShowMobileStats(savedPreference === 'true');
+    }
+  }, []);
+
+  // 실시간현황 닫기 기능
+  const handleCloseMobileStats = () => {
+    setShowMobileStats(false);
+    localStorage.setItem('showMobileStats', 'false');
+  };
+
   // 대시보드 데이터 로드 (모바일 햄버거 메뉴용)
   useEffect(() => {
-    if (user && isOpen) {
+    if (user && isOpen && showMobileStats) {
       loadMobileDashboardData();
     }
-  }, [user, isOpen]);
+  }, [user, isOpen, showMobileStats]);
 
   const loadMobileDashboardData = async () => {
     try {
@@ -316,9 +331,23 @@ export const UnifiedNavigation = () => {
                      ))}
                      
                      {/* 모바일 실시간 현황 섹션 - 로그인된 사용자에게만 표시 */}
-                     {user && (
-                       <div className="pt-4 mt-4 border-t border-border/50">
-                         <p className="text-xs text-muted-foreground mb-3 px-2">📊 실시간 현황</p>
+                     {user && showMobileStats && (
+                       <div className="pt-4 mt-4 border-t border-border/50 relative">
+                         {/* 헤더와 닫기 버튼 */}
+                         <div className="flex items-center justify-between mb-3 px-2">
+                           <p className="text-xs text-muted-foreground flex items-center gap-1">
+                             <BarChart3 className="w-3 h-3" />
+                             📊 실시간 현황
+                           </p>
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={handleCloseMobileStats}
+                             className="h-6 w-6 p-0 hover:bg-red-100 hover:text-red-600 rounded-full"
+                           >
+                             <X className="w-3 h-3" />
+                           </Button>
+                         </div>
                          
                          {/* 주간 목표 진행률 */}
                          <Card className="p-4 mb-3 bg-gradient-to-r from-primary/5 to-primary/10">
@@ -380,6 +409,24 @@ export const UnifiedNavigation = () => {
                              </div>
                            </div>
                          )}
+                       </div>
+                     )}
+                     
+                     {/* 실시간현황이 숨겨진 경우 다시 보기 버튼 */}
+                     {user && !showMobileStats && (
+                       <div className="pt-4 mt-4 border-t border-border/50">
+                         <Button
+                           variant="outline"
+                           size="sm"
+                           onClick={() => {
+                             setShowMobileStats(true);
+                             localStorage.setItem('showMobileStats', 'true');
+                           }}
+                           className="w-full text-xs h-8 border-dashed border-primary/30 text-primary/70 hover:text-primary hover:border-primary/50"
+                         >
+                           <BarChart3 className="w-3 h-3 mr-2" />
+                           실시간 현황 보기
+                         </Button>
                        </div>
                      )}
                      

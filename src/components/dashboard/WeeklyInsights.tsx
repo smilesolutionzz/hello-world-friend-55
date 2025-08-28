@@ -56,49 +56,69 @@ export function WeeklyInsights({
       </div>
 
       <div className="space-y-4">
-        {/* 주간 목표 진행률 */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium">주간 활동 목표</span>
-            <Badge variant={progress >= 100 ? 'default' : 'secondary'}>
-              {totalActivities}/{weeklyGoal}
-            </Badge>
+        {/* 모바일에서 카드 형태로 예쁘게 배치 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* 주간 목표 진행률 */}
+          <div className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl border border-primary/20">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                  <BarChart3 className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-sm font-semibold">주간 목표</span>
+              </div>
+              <Badge variant={progress >= 100 ? 'default' : 'secondary'} className="shadow-sm">
+                {totalActivities}/{weeklyGoal}
+              </Badge>
+            </div>
+            <div className="w-full bg-white/60 rounded-full h-3 overflow-hidden shadow-inner">
+              <div 
+                className="bg-gradient-to-r from-primary to-primary-glow h-3 rounded-full transition-all duration-700 ease-out shadow-sm"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground mt-2 font-medium">
+              {progress >= 100 ? "목표 달성! 🎉" : `목표까지 ${Math.max(0, weeklyGoal - totalActivities)}개 남음`}
+            </p>
           </div>
-          <div className="w-full bg-secondary rounded-full h-2">
-            <div 
-              className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
+
+          {/* 평균 점수 */}
+          <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200/50">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Heart className="w-4 h-4 text-green-600" />
+                </div>
+                <span className="text-sm font-semibold">평균 점수</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-xl text-green-700">{averageScore}</span>
+                {getTrendIcon()}
+              </div>
+            </div>
+            <p className="text-xs text-green-600 font-medium">
+              {averageScore >= 80 ? "매우 좋음" : averageScore >= 60 ? "양호함" : "개선 필요"}
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            목표까지 {Math.max(0, weeklyGoal - totalActivities)}개 남음
-          </p>
         </div>
 
-        {/* 평균 점수 */}
-        <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
-          <div className="flex items-center gap-2">
-            <Heart className="w-4 h-4 text-red-500" />
-            <span className="text-sm">평균 웰빙 점수</span>
+        {/* AI 추천사항 */}
+        <div className="p-4 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl border border-blue-200/50">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center">
+              <Brain className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-blue-900">AI 맞춤 조언</h4>
+              <p className="text-xs text-blue-600">개인화된 웰빙 가이드</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-lg">{averageScore}</span>
-            {getTrendIcon()}
-          </div>
-        </div>
-
-        {/* 추천사항 */}
-        <div className="p-3 bg-primary/5 rounded-lg border border-primary/20">
-          <div className="flex items-center gap-2 mb-1">
-            <Brain className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">AI 추천</span>
-          </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-blue-800 leading-relaxed font-medium">
             {progress < 50 
-              ? "더 많은 활동으로 통합건강을 관리해보세요!"
+              ? "💪 꾸준한 관리가 건강한 마음의 시작입니다. 오늘 하나씩 시작해보세요!"
               : progress >= 100 
-              ? "훌륭해요! 꾸준한 관리가 이어지고 있어요."
-              : "좋은 페이스입니다. 조금만 더 노력해보세요!"
+              ? "🌟 놀라운 성과예요! 이런 꾸준함이 가족의 행복을 만들어갑니다."
+              : "👏 정말 잘하고 계세요! 조금만 더 하면 목표 달성이에요."
             }
           </p>
         </div>

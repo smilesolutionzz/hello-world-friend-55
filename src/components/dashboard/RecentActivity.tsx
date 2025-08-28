@@ -58,32 +58,69 @@ export function RecentActivity({ activities }: RecentActivityProps) {
       {activities.length > 0 ? (
         <div className="space-y-3">
           {activities.slice(0, 5).map((activity) => (
-            <div key={activity.id} className="flex items-center gap-3 p-3 bg-background/50 rounded-lg hover:bg-background/80 transition-colors">
-              <div className="p-2 bg-background rounded-lg">
-                {getActivityIcon(activity.type)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <Badge variant="outline" className="text-xs">
-                    {getActivityLabel(activity.type)}
-                  </Badge>
-                  {activity.score && (
-                    <Badge variant="secondary" className="text-xs">
-                      점수: {activity.score}
-                    </Badge>
-                  )}
+            <div key={activity.id} className="group">
+              {/* 모바일에서 예쁘게 보이는 카드형 레이아웃 */}
+              <div className="flex md:hidden bg-gradient-to-r from-white to-background/80 rounded-xl border border-border/40 p-4 shadow-sm hover:shadow-md transition-all duration-200 group-hover:scale-[1.01]">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl flex items-center justify-center border border-primary/10">
+                    {getActivityIcon(activity.type)}
+                  </div>
                 </div>
-                <p className="text-sm font-medium truncate">{activity.title}</p>
-                <p className="text-xs text-muted-foreground">
-                  {new Date(activity.date).toLocaleDateString('ko-KR', { 
-                    month: 'short', 
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
-                </p>
+                <div className="ml-4 flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge variant="outline" className="text-xs bg-primary/5 border-primary/20 text-primary">
+                      {getActivityLabel(activity.type)}
+                    </Badge>
+                    {activity.score && (
+                      <Badge className="text-xs bg-green-50 text-green-700 border-green-200">
+                        {activity.score}점
+                      </Badge>
+                    )}
+                  </div>
+                  <h4 className="text-sm font-semibold text-foreground mb-1 line-clamp-1">{activity.title}</h4>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {new Date(activity.date).toLocaleDateString('ko-KR', { 
+                      month: 'short', 
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </p>
+                </div>
+                <div className="flex-shrink-0 flex items-center">
+                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
+                </div>
               </div>
-              <ArrowRight className="w-4 h-4 text-muted-foreground" />
+
+              {/* 데스크톱에서는 기존 레이아웃 */}
+              <div className="hidden md:flex items-center gap-3 p-3 bg-background/50 rounded-lg hover:bg-background/80 transition-colors">
+                <div className="p-2 bg-background rounded-lg">
+                  {getActivityIcon(activity.type)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge variant="outline" className="text-xs">
+                      {getActivityLabel(activity.type)}
+                    </Badge>
+                    {activity.score && (
+                      <Badge variant="secondary" className="text-xs">
+                        점수: {activity.score}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-sm font-medium truncate">{activity.title}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(activity.date).toLocaleDateString('ko-KR', { 
+                      month: 'short', 
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-muted-foreground" />
+              </div>
             </div>
           ))}
         </div>

@@ -13,6 +13,8 @@ interface PremiumAssessmentCardProps {
     duration: string;
     questions_count: number;
     premium_features: string[];
+    rank?: number;
+    badge?: string;
   };
   onStart: (assessmentKey: string) => void;
   isSubscribed: boolean;
@@ -53,11 +55,16 @@ const PremiumAssessmentCard = ({ assessmentKey, info, onStart, isSubscribed }: P
 
   return (
     <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]">
-      {/* Premium Badge */}
+      {/* 인기 순위 배지 */}
       <div className="absolute top-4 right-4 z-10">
-        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-0">
-          <Crown className="w-3 h-3 mr-1" />
-          프리미엄
+        <Badge className={`
+          ${info.rank && info.rank <= 3 ? 'bg-red-500 text-white' : 
+            info.rank && info.rank <= 5 ? 'bg-orange-500 text-white' :
+            info.rank && info.rank === 6 ? 'bg-blue-500 text-white' : 'bg-purple-500 text-white'}
+          border-0
+        `}>
+          {info.rank && info.rank <= 3 && <Crown className="w-3 h-3 mr-1" />}
+          {info.badge || '프리미엄'}
         </Badge>
       </div>
 

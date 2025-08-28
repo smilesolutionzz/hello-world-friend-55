@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText, Crown, Coins, Settings, ChevronDown, Plus, History, X } from "lucide-react";
+import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText, Crown, Coins, Settings, ChevronDown, Plus, History, X, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -174,9 +174,9 @@ const Navigation = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/family')}>
-              <Users className="w-4 h-4 mr-1" />
-              가족케어
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/dashboard')}>
+              <BarChart3 className="w-4 h-4 mr-1" />
+              마이데이터
             </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 text-primary font-medium" onClick={() => handleNavigation('/subscription')}>
               <Shield className="w-4 h-4 mr-1" />
@@ -274,8 +274,8 @@ const Navigation = () => {
                     <DropdownMenuSeparator />
                     
                     <DropdownMenuItem onClick={() => navigate('/dashboard')}>
-                      <Settings className="w-4 h-4 mr-2" />
-                      대시보드
+                      <BarChart3 className="w-4 h-4 mr-2" />
+                      마이데이터
                     </DropdownMenuItem>
                     
                     <DropdownMenuItem onClick={() => navigate('/assessment-history')}>

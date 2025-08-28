@@ -1025,6 +1025,10 @@ const Dashboard = () => {
             <ConsultationHistory />
           </TabsContent>
 
+          <TabsContent value="consultations">
+            <ConsultationHistory />
+          </TabsContent>
+
           <TabsContent value="team">
             <TeamSettings />
           </TabsContent>

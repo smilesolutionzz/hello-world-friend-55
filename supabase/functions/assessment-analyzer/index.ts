@@ -39,8 +39,16 @@ serve(async (req) => {
       });
     }
 
-    const { results, ageGroup, age } = await req.json();
-
+    const requestBody = await req.json();
+    const { results, ageGroup, age } = requestBody;
+    
+    // Input validation
+    if (!results || typeof results !== 'object' || !ageGroup) {
+      return new Response(JSON.stringify({ error: '유효하지 않은 요청 데이터입니다.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     // 토큰 차감 처리 (기본 심리검사는 2토큰)
     const tokenCost = 2;
     

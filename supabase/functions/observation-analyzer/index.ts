@@ -40,7 +40,16 @@ serve(async (req) => {
       });
     }
 
-    const { observationData, domain, ageGroup, observerInfo } = await req.json();
+    const requestBody = await req.json();
+    const { observationData, domain, ageGroup, observerInfo } = requestBody;
+    
+    // Input validation
+    if (!observationData || typeof observationData !== 'object') {
+      return new Response(JSON.stringify({ error: '유효하지 않은 관찰 데이터입니다.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     // 토큰 차감 처리 (관찰일지 분석은 5토큰)
     const tokenCost = 5;

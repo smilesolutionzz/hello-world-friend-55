@@ -40,7 +40,16 @@ serve(async (req) => {
       });
     }
 
-    const { answers, testType } = await req.json();
+    const requestBody = await req.json();
+    const { answers, testType } = requestBody;
+    
+    // Input validation
+    if (!answers || typeof answers !== 'object') {
+      return new Response(JSON.stringify({ error: '유효하지 않은 답변 데이터입니다.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     // 토큰 차감 처리 (프리미엄 검사는 10토큰)
     const tokenCost = 10;

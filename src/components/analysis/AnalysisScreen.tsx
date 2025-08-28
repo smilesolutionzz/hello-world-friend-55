@@ -6,6 +6,7 @@ import { Brain, Sparkles, ArrowRight, Clock, FileText } from "lucide-react";
 import { AssessmentResult } from "@/types/assessment";
 import { analyzeAssessmentResults, generateAIPredictions } from "@/services/openai";
 import PredictionEngine from "@/components/prediction/PredictionEngine";
+import LoadingEntertainment from "./LoadingEntertainment";
 
 interface AnalysisScreenProps {
   results: Record<string, number>;
@@ -272,7 +273,13 @@ ${percentage < 60 ? '우울/불안 전문가와의 즉시 상담을 권장합니
                 </div>
               </div>
 
-              {/* Completion Message */}
+              {/* 로딩 중 엔터테인먼트 콘텐츠 */}
+              {!analysisComplete && analysisProgress > 10 && (
+                <LoadingEntertainment 
+                  currentStep={currentStep}
+                  progress={analysisProgress}
+                />
+              )}
               {analysisComplete && (
                 <div className="space-y-6">
                   <div className="text-center space-y-4 pt-6 border-t">

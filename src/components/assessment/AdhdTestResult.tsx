@@ -101,7 +101,18 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">총점</span>
-                <span className="text-2xl font-bold text-brand-gradient">{total}점</span>
+                <span className="text-2xl font-bold text-brand-gradient">{total}/36점</span>
+              </div>
+              <div className="text-center text-sm text-muted-foreground">
+                최대 36점 (18문항 × 2점)
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-medium">평균점수</span>
+                <span className="text-2xl font-bold text-brand-gradient">{average.toFixed(1)}/2.0점</span>
+              </div>
+              <div className="text-center text-sm text-muted-foreground">
+                문항당 평균점수
               </div>
               
               <div className="flex justify-between items-center">

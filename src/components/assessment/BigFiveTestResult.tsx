@@ -142,7 +142,8 @@ export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResu
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-sm text-muted-foreground">전체 평균</p>
-                  <p className="text-2xl font-bold">{result.average.toFixed(1)}</p>
+                  <p className="text-2xl font-bold">{result.average.toFixed(1)}/5.0점</p>
+                  <p className="text-xs text-muted-foreground">문항당 평균</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">가장 높은 특성</p>

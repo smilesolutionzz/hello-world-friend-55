@@ -111,15 +111,18 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
               <div>
                 <p className="text-sm text-muted-foreground">총점</p>
-                <p className="text-xl font-bold">{result.total}/75</p>
+                <p className="text-xl font-bold">{result.total}/75점</p>
+                <p className="text-xs text-muted-foreground">최대 75점</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">평균점수</p>
-                <p className="text-xl font-bold">{result.average.toFixed(1)}</p>
+                <p className="text-xl font-bold">{result.average.toFixed(1)}/5.0점</p>
+                <p className="text-xs text-muted-foreground">문항당 평균</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">백분위</p>
                 <p className="text-xl font-bold">{Math.round(progressValue)}%</p>
+                <p className="text-xs text-muted-foreground">전체 대비</p>
               </div>
             </div>
           </CardContent>

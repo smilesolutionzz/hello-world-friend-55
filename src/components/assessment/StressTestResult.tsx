@@ -88,15 +88,18 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-sm text-muted-foreground">총점</p>
-                  <p className="text-2xl font-bold">{result.total}/40</p>
+                  <p className="text-2xl font-bold">{result.total}/40점</p>
+                  <p className="text-xs text-muted-foreground">최대 40점</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">평균</p>
-                  <p className="text-2xl font-bold">{result.average.toFixed(1)}</p>
+                  <p className="text-2xl font-bold">{result.average.toFixed(1)}/4.0점</p>
+                  <p className="text-xs text-muted-foreground">문항당 평균</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">백분위</p>
                   <p className="text-2xl font-bold">{Math.round(progressValue)}%</p>
+                  <p className="text-xs text-muted-foreground">전체 대비</p>
                 </div>
               </div>
               <div className="max-w-md mx-auto">

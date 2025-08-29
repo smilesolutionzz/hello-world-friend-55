@@ -7,6 +7,8 @@ import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm
 import PremiumAssessmentResult from "@/components/assessment/PremiumAssessmentResult";
 import LanguageDevelopmentForm from "@/components/assessment/LanguageDevelopmentForm";
 import LanguageDevelopmentResult from "@/components/assessment/LanguageDevelopmentResult";
+import PremiumAdhdForm from "@/components/assessment/PremiumAdhdForm";
+import PremiumAdhdResult from "@/components/assessment/PremiumAdhdResult";
 import { 
   premiumAssessmentInfo,
   developmentalScreeningInfo,
@@ -21,16 +23,18 @@ import {
   socialDevelopmentScreeningQuestions
 } from "@/data/premiumAssessmentQuestions";
 import { allLanguageDevelopmentQuestions } from "@/data/languageDevelopmentQuestions";
+import { premiumAdhdQuestions } from "@/data/premiumAdhdQuestions";
 
 const PremiumAssessment = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<'list' | 'assessment' | 'result'>('list');
   const [selectedAssessment, setSelectedAssessment] = useState<string>('');
-  const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
+  const [assessmentResults, setAssessmentResults] = useState<any>({});
   const [assessmentAnswers, setAssessmentAnswers] = useState<Record<string, string>>({});
   const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
 
   const assessmentData = {
+    premiumAdhd: Object.values(premiumAdhdQuestions).flat(),
     developmentalScreening: [], // 별도 페이지로 이동
     personality_type: Object.values(personalityTypeAssessmentQuestions).flat(),
     temperament: Object.values(temperamentAssessmentQuestions).flat(),
@@ -55,12 +59,18 @@ const PremiumAssessment = () => {
     setCurrentStep('assessment');
   };
 
-  const handleAssessmentComplete = (results: Record<string, number>, answers?: Record<string, string>) => {
+  const handleAssessmentComplete = (results: any, answers?: Record<string, string>) => {
     console.log('Premium Assessment Results:', results);
     setAssessmentResults(results);
     if (answers) {
       setAssessmentAnswers(answers);
     }
+    setCurrentStep('result');
+  };
+
+  const handleAdhdAssessmentComplete = (results: any) => {
+    console.log('Premium ADHD Assessment Results:', results);
+    setAssessmentResults(results);
     setCurrentStep('result');
   };
 
@@ -85,6 +95,15 @@ const PremiumAssessment = () => {
       );
     }
 
+    if (selectedAssessment === 'premiumAdhd') {
+      return (
+        <PremiumAdhdResult
+          results={assessmentResults}
+          onBack={handleBack}
+        />
+      );
+    }
+
     return (
       <PremiumAssessmentResult
         assessmentType={selectedAssessment}
@@ -100,6 +119,15 @@ const PremiumAssessment = () => {
       return (
         <LanguageDevelopmentForm
           onComplete={handleAssessmentComplete}
+          onBack={handleBack}
+        />
+      );
+    }
+
+    if (selectedAssessment === 'premiumAdhd') {
+      return (
+        <PremiumAdhdForm
+          onComplete={handleAdhdAssessmentComplete}
           onBack={handleBack}
         />
       );

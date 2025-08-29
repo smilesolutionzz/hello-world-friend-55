@@ -11,7 +11,7 @@ import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { useTokens } from "@/hooks/useTokens";
 
 interface PremiumAdhdFormProps {
-  ageGroup: 'child' | 'adolescent' | 'adult';
+  ageGroup?: 'child' | 'adolescent' | 'adult';
   onComplete: (results: {
     answers: Record<string, number>;
     scores: {
@@ -30,7 +30,7 @@ interface PremiumAdhdFormProps {
   onBack: () => void;
 }
 
-const PremiumAdhdForm = ({ ageGroup, onComplete, onBack }: PremiumAdhdFormProps) => {
+const PremiumAdhdForm = ({ ageGroup = 'adult', onComplete, onBack }: PremiumAdhdFormProps) => {
   // 연령에 따른 질문 조합
   const getAllQuestions = () => {
     const coreQuestions = [

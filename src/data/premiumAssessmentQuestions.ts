@@ -1,6 +1,9 @@
 // 구독자용 심화 심리검사 데이터
 // 본 검사는 원저작과는 무관한 창작형 검사입니다.
 
+// 프리미엄 ADHD 검사 정보 가져오기
+import { premiumAdhdAssessmentInfo } from "./premiumAdhdQuestions";
+
 // 0. AIH 발달특성 선별체크 (발달센터 특화)
 export const developmentalScreeningInfo = {
   title: "AIH 발달특성 선별체크",
@@ -917,6 +920,14 @@ export const teenGrowthCapacityAssessmentQuestions = {
 
 // 평가 정보 객체 (인기도 순으로 재배치)
 export const premiumAssessmentInfo = {
+  // ✨ NEW 프리미엄 ADHD 검사 (최상단 배치)
+  premiumAdhd: {
+    ...premiumAdhdAssessmentInfo,
+    rank: 0,
+    badge: "✨ NEW",
+    priority: 1,
+    highlight: true
+  },
   // 🔥 TOP 인기 테스트들 (상단 배치)
   languageDevelopment: {
     title: "AIH 영유아 언어발달 자가체크",

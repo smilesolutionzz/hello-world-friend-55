@@ -191,40 +191,124 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
         </div>
       </Card>
 
-      {/* 전문가 해석 결과 */}
+      {/* 점수 범위 안내 */}
       <Card className="p-8">
-        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 결과 요약</h3>
+        <h3 className="text-xl font-semibold mb-4">📊 우울감 점수 분류 기준</h3>
+        <div className="grid md:grid-cols-4 gap-4 mb-6">
+          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+            <p className="font-semibold text-green-800">정상 (0-13점)</p>
+            <p className="text-sm text-green-600 mt-1">건강한 상태</p>
+          </div>
+          <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+            <p className="font-semibold text-yellow-800">가벼운 우울 (14-19점)</p>
+            <p className="text-sm text-yellow-600 mt-1">경미한 증상</p>
+          </div>
+          <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+            <p className="font-semibold text-orange-800">중등도 우울 (20-28점)</p>
+            <p className="text-sm text-orange-600 mt-1">전문가 상담 권장</p>
+          </div>
+          <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+            <p className="font-semibold text-red-800">심한 우울 (29-42점)</p>
+            <p className="text-sm text-red-600 mt-1">즉시 치료 필요</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* 전문가 해석 결과 - 대폭 확장 */}
+      <Card className="p-8">
+        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 상세 분석 결과</h3>
         
-        <div className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <p className="text-lg font-medium mb-2">• 우울감 점수: {total}점 / 42점</p>
-              <p className="text-lg font-medium">• 심각도: {severity}</p>
+        <div className="space-y-8">
+          <div className="grid md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+            <div className="text-center">
+              <p className="text-lg font-semibold text-blue-800">우울감 점수</p>
+              <p className="text-3xl font-bold text-blue-900">{total}점 / 42점</p>
+              <p className="text-sm text-blue-600 mt-1">만점 대비 {Math.round((total/42)*100)}%</p>
             </div>
-            <div>
-              <p className="text-lg font-medium">• 검사일: {new Date().toLocaleDateString('ko-KR')}</p>
+            <div className="text-center">
+              <p className="text-lg font-semibold text-blue-800">심각도</p>
+              <p className={`text-2xl font-bold ${getSeverityColor(severity).includes('green') ? 'text-green-700' : 
+                getSeverityColor(severity).includes('yellow') ? 'text-yellow-700' :
+                getSeverityColor(severity).includes('orange') ? 'text-orange-700' : 'text-red-700'}`}>
+                {severity}
+              </p>
+              <p className="text-sm text-blue-600 mt-1">범위: {
+                severity === "정상" ? "0-13점" :
+                severity === "가벼운 우울" ? "14-19점" :
+                severity === "중등도 우울" ? "20-28점" : "29-42점"
+              }</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-semibold text-blue-800">검사일</p>
+              <p className="text-2xl font-bold text-blue-900">{new Date().toLocaleDateString('ko-KR')}</p>
+              <p className="text-sm text-blue-600 mt-1">참고용 결과</p>
             </div>
           </div>
           
-          <div className="bg-muted/30 rounded-lg p-6">
-            <p className="text-lg leading-relaxed">
-              {isLoading ? (
-                <div className="flex items-center gap-3">
-                  <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                  <span>전문가 해석을 생성하고 있습니다...</span>
-                </div>
-              ) : (
-                <>
-                  <strong>해석:</strong> {severity === "정상" 
-                    ? "현재 우울 증상이 정상 범위에 있습니다. 건강한 정신상태를 유지하고 계시며, 지속적인 자기관리를 통해 현재 상태를 유지하시기 바랍니다."
+          <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+            <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 상세 해석</h4>
+            <div className="prose prose-purple max-w-none">
+              <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
+                {isLoading ? (
+                  <div className="flex items-center gap-3">
+                    <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                    <span>전문가 해석을 생성하고 있습니다...</span>
+                  </div>
+                ) : (
+                  severity === "정상" 
+                    ? `현재 점수 ${total}점은 우울 증상이 정상 범위에 있는 건강한 상태를 나타냅니다. 이는 정신건강이 양호하게 유지되고 있음을 의미하며, 일상생활에서 우울감으로 인한 어려움이 최소한임을 보여줍니다.
+
+**7가지 구체적 관리 방법:**
+• **긍정적 루틴**: 규칙적인 생활 패턴과 건강한 수면 습관 유지
+• **사회적 연결**: 가족, 친구와의 의미 있는 관계 지속적 관리
+• **신체 활동**: 주 3회 이상 30분 운동으로 기분 상승 효과 유지
+• **스트레스 예방**: 업무와 휴식의 균형 잡힌 생활 패턴 구축
+• **취미 활동**: 즐거움을 주는 활동을 통한 정서적 안정 유지
+• **감사 연습**: 하루 3가지 감사한 일 찾기로 긍정적 사고 강화
+• **자기 돌봄**: 정기적인 건강 검진과 정신건강 자가 점검
+
+**재평가 권장:** 현재 건강한 상태를 유지하면서 3-6개월 후 재검사를 통해 지속적인 정신건강 관리 상태를 확인하시기 바랍니다.`
                     : severity === "가벼운 우울"
-                    ? "가벼운 우울 증상이 확인됩니다. 일상적인 스트레스와 생활 변화로 인한 것일 수 있으며, 생활습관 개선과 스트레스 관리를 통해 증상 완화가 가능합니다."
+                    ? `현재 점수 ${total}점은 가벼운 우울 증상이 있는 수준입니다. 이는 일상적인 스트레스나 생활 변화로 인해 나타날 수 있는 정도로, 적절한 자가관리와 생활습관 개선을 통해 충분히 회복할 수 있는 범위입니다.
+
+**7가지 구체적 개선 방법:**
+• **기분 추적**: 매일 기분 상태를 1-10점으로 기록하여 패턴 파악
+• **활동 계획**: 즐거운 활동을 주간 일정에 의무적으로 포함시키기
+• **수면 개선**: 규칙적인 취침시간과 7-8시간 충분한 수면 확보
+• **운동 요법**: 걷기, 요가 등 가벼운 운동을 통한 기분 개선
+• **사회적 지지**: 신뢰할 수 있는 사람과 감정 나누기
+• **인지 재구성**: 부정적 사고를 균형 잡힌 사고로 바꾸는 연습
+• **전문가 상담**: 필요시 상담사와의 정기적 면담으로 조기 개입
+
+**재평가 권장:** 생활 개선 후 3-6개월 뒤 재검사를 통해 증상 호전도를 확인하고, 지속적인 관리 방안을 점검하시기 바랍니다.`
                     : severity === "중등도 우울"
-                    ? "중등도 우울 증상이 나타나고 있습니다. 일상생활에 일부 영향을 미칠 수 있어 전문가와의 상담을 통한 적극적인 관리가 필요합니다."
-                    : "심각한 우울 증상이 확인됩니다. 즉시 전문가의 도움이 필요하며, 통합건강의학과 전문의와 상담받으시기를 적극 권장드립니다."}
-                </>
-              )}
-            </p>
+                    ? `현재 점수 ${total}점은 중등도 우울 증상을 나타냅니다. 이는 일상생활에 일부 영향을 미칠 수 있는 수준으로, 전문가의 도움을 받아 체계적인 치료와 관리가 필요한 상태입니다.
+
+**7가지 구체적 치료 방법:**
+• **전문가 치료**: 정신건강의학과 또는 임상심리사와 정기 상담
+• **인지행동치료**: CBT 기법을 통한 우울 사고 패턴 개선
+• **약물 상담**: 필요시 의사와 항우울제 치료 옵션 논의
+• **행동 활성화**: 일상 활동 증가를 통한 기분 개선 프로그램
+• **지지체계 구축**: 가족, 친구들과의 정서적 지원 네트워크 강화
+• **생활 구조화**: 규칙적인 일과와 목표 설정으로 성취감 회복
+• **위기 대응**: 심한 우울감 시 즉시 대처할 수 있는 안전 계획
+
+**재평가 권장:** 전문가 치료 시작 후 4-8주 간격으로 정기적 재평가를 통해 치료 효과를 모니터링하고 치료 계획을 조정하시기 바랍니다.`
+                    : `현재 점수 ${total}점은 심각한 우울 증상을 나타냅니다. 이는 즉시 전문가의 개입이 필요한 수준으로, 일상생활에 상당한 지장을 초래할 수 있어 신속한 치료가 필요한 상태입니다.
+
+**7가지 즉시 실행 방법:**
+• **응급 치료**: 즉시 정신건강의학과 전문의 진료 예약
+• **안전 계획**: 자해나 자살 생각 시 즉시 대처할 안전 계획 수립
+• **약물 치료**: 의사 처방에 따른 항우울제 등 적절한 약물치료
+• **집중 상담**: 주 1-2회 정기적인 전문가 상담 및 치료 시작
+• **지지체계 활성화**: 가족과 주변인들에게 상황 알리고 24시간 지원 요청
+• **생활 안전화**: 스트레스 요인 최소화하고 안정적 환경 조성
+• **위기 연락망**: 응급 상황 시 이용할 수 있는 위기상담 전화 확보
+
+**재평가 권장:** 치료 시작 후 1-2주 간격으로 집중적인 모니터링과 재평가를 통해 증상 호전도를 확인하고 치료 강도를 조정하시기 바랍니다.`
+                )}
+              </p>
+            </div>
           </div>
           
           <div className="text-center pt-4">
@@ -258,12 +342,12 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
         <div className="grid md:grid-cols-4 gap-4">
           <Button 
             className="btn-brand h-16"
-            onClick={() => navigate('/counseling', { state: { assessmentResults: { ...results, testType: 'depression' } } })}
+            onClick={() => window.open('/expert-hiring', '_self')}
           >
-            <MessageCircle className="w-5 h-5 mr-2" />
+            <ExternalLink className="w-5 h-5 mr-2" />
             <div className="text-left">
-              <div className="font-semibold">단계별 상담 시작</div>
-              <div className="text-sm opacity-90">AI → 전문가</div>
+              <div className="font-semibold">전문가 고용하기</div>
+              <div className="text-sm opacity-90">우울감 전문가</div>
             </div>
           </Button>
 

@@ -183,20 +183,118 @@ export default function AttachmentStyleResult({ result, onRestart }: AttachmentS
           </Card>
         </div>
 
-        {/* 특성 분석 */}
+        {/* 점수 범위 안내 */}
         <Card>
           <CardHeader>
-            <CardTitle>나의 애착 특성</CardTitle>
+            <CardTitle className="text-xl font-semibold">📊 애착 유형 분류 기준</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-2">
-              {config.characteristics.map((characteristic, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                  <span className="text-sm">{characteristic}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="grid md:grid-cols-2 gap-4 mb-6">
+              <div className="space-y-3">
+                <h4 className="font-semibold text-gray-800">불안 차원 (관계 불안)</h4>
+                <div className="grid gap-2">
+                  <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                    <p className="font-semibold text-green-800">낮음 (1.0-3.5점)</p>
+                    <p className="text-sm text-green-600">관계에서 안정감</p>
+                  </div>
+                  <div className="p-3 bg-red-50 rounded-lg border border-red-200">
+                    <p className="font-semibold text-red-800">높음 (3.6-7.0점)</p>
+                    <p className="text-sm text-red-600">관계에서 불안감</p>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <h4 className="font-semibold text-gray-800">회피 차원 (친밀감 회피)</h4>
+                <div className="grid gap-2">
+                  <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                    <p className="font-semibold text-green-800">낮음 (1.0-3.5점)</p>
+                    <p className="text-sm text-green-600">친밀감을 편안하게 수용</p>
+                  </div>
+                  <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
+                    <p className="font-semibold text-orange-800">높음 (3.6-7.0점)</p>
+                    <p className="text-sm text-orange-600">친밀감을 회피하는 경향</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 특성 분석 - 확장된 해석 */}
+        <Card>
+          <CardHeader>
+            <CardTitle>✨ 상세 애착 특성 분석</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 상세 해석</h4>
+                <div className="prose prose-purple max-w-none">
+                  <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
+                    {result.style === "안정형" 
+                      ? `당신의 애착 유형은 안정형입니다. 불안 점수 ${result.anxietyScore.toFixed(1)}점, 회피 점수 ${result.avoidanceScore.toFixed(1)}점으로 건강한 관계 패턴을 보여줍니다.
+
+**7가지 구체적 관계 발전 방법:**
+• **멘토링 역할**: 다른 사람들의 관계 고민에 조언자 역할 하기
+• **갈등 해결**: 주변의 갈등 상황에서 중재자 역할 수행하기
+• **감정 지지**: 가족과 친구들에게 정서적 안정감 제공하기
+• **건강한 경계**: 적절한 거리감과 친밀감의 균형 유지하기
+• **소통 모델링**: 건강한 소통 방식을 다른 사람들에게 보여주기
+• **관계 확장**: 새로운 인간관계 형성에 적극적으로 참여하기
+• **자기 성찰**: 지속적인 자기 성장과 관계 개선 노력하기
+
+**재평가 권장:** 안정적인 상태를 유지하면서 6개월 후 재검사를 통해 관계 만족도와 지속적인 성장을 확인하시기 바랍니다.`
+                      : result.style === "불안형"
+                      ? `당신의 애착 유형은 불안형입니다. 불안 점수 ${result.anxietyScore.toFixed(1)}점, 회피 점수 ${result.avoidanceScore.toFixed(1)}점으로 관계에서 불안감을 경험하는 경향이 있습니다.
+
+**7가지 구체적 개선 방법:**
+• **자기가치감 향상**: 매일 자신의 장점 3가지씩 적어보기
+• **감정 조절**: 불안할 때 즉시 반응하지 말고 10분 기다리기
+• **안정적 루틴**: 규칙적인 일상으로 내적 안정감 확보하기
+• **소통 기술**: "나 메시지"로 감정을 건설적으로 표현하기
+• **혼자 시간**: 타인에게 의존하지 않는 독립적 활동 늘리기
+• **지지체계**: 신뢰할 수 있는 사람들과의 안정적 관계 구축
+• **전문가 도움**: 필요시 상담을 통한 애착 패턴 개선
+
+**재평가 권장:** 개선 노력 후 3-6개월 뒤 재검사를 통해 불안감 감소와 관계 만족도 향상을 확인하시기 바랍니다.`
+                      : result.style === "회피형"
+                      ? `당신의 애착 유형은 회피형입니다. 불안 점수 ${result.anxietyScore.toFixed(1)}점, 회피 점수 ${result.avoidanceScore.toFixed(1)}점으로 친밀한 관계에서 거리감을 두는 경향이 있습니다.
+
+**7가지 구체적 개선 방법:**
+• **감정 인식**: 하루 3번 자신의 감정 상태 체크하고 기록하기
+• **점진적 개방**: 주 1회 신뢰하는 사람과 개인적인 이야기 나누기
+• **신체 접촉**: 포옹이나 악수 등 자연스러운 접촉 시도하기
+• **취약성 수용**: 완벽하지 않은 자신의 모습 인정하고 공유하기
+• **지속적 관계**: 일시적 관계보다 장기적 관계에 투자하기
+• **감정 표현**: 사랑, 고마움 등의 감정을 말로 표현하는 연습
+• **전문가 상담**: 과거 상처 치유를 통한 관계 패턴 개선
+
+**재평가 권장:** 친밀감 향상 노력 후 3-6개월 뒤 재검사를 통해 회피 경향 감소와 관계 만족도 변화를 확인하시기 바랍니다.`
+                      : `당신의 애착 유형은 혼란형입니다. 불안 점수 ${result.anxietyScore.toFixed(1)}점, 회피 점수 ${result.avoidanceScore.toFixed(1)}점으로 관계에서 일관성 없는 패턴을 보입니다.
+
+**7가지 구체적 안정화 방법:**
+• **전문가 치료**: 트라우마 전문 상담사와의 정기적 상담
+• **감정 안정화**: 감정 조절 기술 학습과 일관된 대응 패턴 만들기
+• **안전한 관계**: 예측 가능하고 안전한 소수의 관계에 집중하기
+• **자기 돌봄**: 스트레스 관리와 자기 안정화 기법 학습
+• **경계 설정**: 명확한 관계 경계와 기대치 설정하기
+• **단계적 접근**: 관계 형성을 서두르지 않고 천천히 진행하기
+• **지지 그룹**: 비슷한 경험을 가진 사람들과의 지지 모임 참여
+
+**재평가 권장:** 전문가 치료와 함께 3개월 간격으로 정기적 재평가를 통해 애착 안정성 향상을 모니터링하시기 바랍니다.`}
+                  </p>
+                </div>
+              </div>
+              
+              <ul className="space-y-2">
+                {config.characteristics.map((characteristic, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                    <span className="text-sm">{characteristic}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </CardContent>
         </Card>
 
@@ -263,6 +361,28 @@ export default function AttachmentStyleResult({ result, onRestart }: AttachmentS
               </div>
             </div>
           </CardContent>
+        </Card>
+
+        {/* 전문가 연결 CTA */}
+        <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0">
+              <Heart className="w-8 h-8 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-foreground mb-1">관계 전문가 상담 받기</h4>
+              <p className="text-sm text-muted-foreground mb-3">
+                애착 유형 검사 결과를 바탕으로 전문가 상담을 받아보세요.
+              </p>
+              <Button 
+                onClick={() => window.open('/expert-hiring', '_self')}
+                className="gap-2"
+              >
+                <Heart className="w-4 h-4" />
+                관계상담 전문가 고용하기
+              </Button>
+            </div>
+          </div>
         </Card>
 
         {/* 액션 버튼 */}

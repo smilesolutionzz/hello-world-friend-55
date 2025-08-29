@@ -144,16 +144,39 @@ export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResu
           })}
         </div>
 
-        {/* 종합 분석 */}
+        {/* 점수 범위 안내 */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl font-semibold">📊 점수 분류 기준</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                <p className="font-semibold text-red-800">낮음 (1.0-2.5점)</p>
+                <p className="text-sm text-red-600 mt-1">개선이 필요한 영역</p>
+              </div>
+              <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <p className="font-semibold text-yellow-800">보통 (2.6-3.5점)</p>
+                <p className="text-sm text-yellow-600 mt-1">평균 수준</p>
+              </div>
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <p className="font-semibold text-green-800">높음 (3.6-5.0점)</p>
+                <p className="text-sm text-green-600 mt-1">강점 영역</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 종합 분석 - 확장된 해석 */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Brain className="w-5 h-5" />
-              종합 성격 분석
+              ✨ 상세 성격 분석
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-sm text-muted-foreground">전체 평균</p>
@@ -182,46 +205,56 @@ export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResu
                 </div>
               </div>
               
-              <div className="p-4 bg-muted rounded-lg">
-                <h4 className="font-semibold mb-2">성격 유형 요약</h4>
-                <p className="text-muted-foreground">
-                  당신은 {result.scores.extraversion >= 3.5 ? "외향적이고" : "내향적이고"} {" "}
-                  {result.scores.agreeableness >= 3.5 ? "협력적인" : "독립적인"} 성향을 보입니다. {" "}
-                  {result.scores.conscientiousness >= 3.5 ? "성실하고 계획적이며" : "유연하고 자발적이며"} {" "}
-                  {result.scores.openness >= 3.5 ? "새로운 경험에 개방적" : "전통적이고 실용적"}입니다.
-                </p>
+              <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 종합 해석</h4>
+                <div className="prose prose-purple max-w-none">
+                  <p className="text-base leading-relaxed text-gray-800">
+                    당신의 성격 프로필은 {result.scores.extraversion >= 3.5 ? "외향적이고 사회적" : "내향적이고 신중한"} 특성을 보여줍니다. 
+                    {result.scores.agreeableness >= 3.5 ? "타인과의 협력을 중시하며" : "독립적인 판단을 선호하며"}, 
+                    {result.scores.conscientiousness >= 3.5 ? "체계적이고 계획적인 접근" : "유연하고 자발적인 접근"}을 하는 경향이 있습니다.
+                  </p>
+                  
+                  <p className="text-base leading-relaxed text-gray-800 mt-4">
+                    <strong>7가지 구체적 개발 방법:</strong>
+                    <br />• **자기인식 강화**: 매일 5분씩 감정 일기 작성하기
+                    <br />• **소통 능력 향상**: 주 2회 이상 새로운 사람과 대화하기
+                    <br />• **스트레스 관리**: 명상이나 호흡법을 통한 정서 조절
+                    <br />• **목표 설정**: SMART 기법으로 단기/장기 목표 수립
+                    <br />• **창의성 개발**: 새로운 취미나 활동 월 1회 시도
+                    <br />• **관계 개선**: 가족/친구와 깊은 대화 시간 늘리기
+                    <br />• **자기 돌봄**: 신체적/정신적 건강 관리 루틴 만들기
+                  </p>
+                  
+                  <p className="text-base leading-relaxed text-gray-800 mt-4">
+                    <strong>재평가 권장:</strong> 성격 특성은 시간과 경험에 따라 변화할 수 있으므로, 
+                    3-6개월 후 재검사를 통해 개인적 성장과 변화를 추적 관찰하시기를 권장합니다.
+                  </p>
+                </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* 개발 제안 */}
-        <Card>
-          <CardHeader>
-            <CardTitle>성격 발달 제안</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {Object.entries(result.scores).map(([factor, score]) => {
-                const config = factorConfig[factor as keyof typeof factorConfig];
-                if (score < 2.5) {
-                  return (
-                    <div key={factor} className="p-3 bg-blue-50 rounded-lg">
-                      <p className="text-sm">
-                        <span className="font-semibold">{config.name} 향상:</span> {" "}
-                        {factor === 'extraversion' && "사회적 활동이나 그룹 참여를 늘려보세요"}
-                        {factor === 'agreeableness' && "타인의 관점을 이해하려 노력해보세요"}
-                        {factor === 'conscientiousness' && "일정 관리와 목표 설정을 연습해보세요"}
-                        {factor === 'neuroticism' && "스트레스 관리 기법을 배워보세요"}
-                        {factor === 'openness' && "새로운 취미나 경험을 시도해보세요"}
-                      </p>
-                    </div>
-                  );
-                }
-                return null;
-              }).filter(Boolean)}
+        {/* 전문가 연결 CTA */}
+        <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0">
+              <User className="w-8 h-8 text-primary" />
             </div>
-          </CardContent>
+            <div className="flex-1">
+              <h4 className="font-semibold text-foreground mb-1">성격 전문가 상담 받기</h4>
+              <p className="text-sm text-muted-foreground mb-3">
+                성격검사 결과를 바탕으로 전문가 상담을 받아보세요.
+              </p>
+              <Button 
+                onClick={() => window.open('/expert-hiring', '_self')}
+                className="gap-2"
+              >
+                <User className="w-4 h-4" />
+                심리전문가 고용하기
+              </Button>
+            </div>
+          </div>
         </Card>
 
         {/* 액션 버튼 */}

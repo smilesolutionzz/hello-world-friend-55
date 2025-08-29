@@ -144,7 +144,7 @@ const Dashboard = () => {
       }
 
 
-      // Load real assessment data - Fix column name  
+      // Load real assessment data
       console.log('📊 Dashboard: Loading assessments...');
       const { data: assessmentData } = await supabase
         .from('assessments')
@@ -152,19 +152,20 @@ const Dashboard = () => {
           *,
           profile:profiles(display_name)
         `)
-        .eq('profile_id', profileData.id)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      // Load timeline activities for more comprehensive data
+      const { data: timelineData } = await supabase
+        .from('timeline_activities')
+        .select('*')
+        .eq('member_id', profileData.id)
         .order('created_at', { ascending: false })
         .limit(20);
 
       console.log('📊 Dashboard: Assessment data loaded:', assessmentData?.length || 0);
-
-      // Load real consultation data (use chat_rooms instead)
-      // Mock consultation data
-      const consultationData = [];
-
-      // Load observation session data
-      // Mock observation data
-      const observationData = [];
+      console.log('📊 Dashboard: Timeline data loaded:', timelineData?.length || 0);
 
       // Combine all data into observations format
       const allObservations: Observation[] = [];
@@ -213,39 +214,20 @@ const Dashboard = () => {
         });
       });
 
-      // Add consultations
-      consultationData?.forEach((consultation: any) => {
+      // Add timeline activities data
+      timelineData?.forEach((activity: any) => {
         allObservations.push({
-          id: consultation.id,
+          id: activity.id,
           user_id: user.id,
-          age_group: 'adult',
-          tags: ['상담', consultation.session_type || '일반상담'],
-          score_overall: 80,
-          created_at: consultation.created_at,
-          profile: {
-            ...profileData,
-            role: 'user',
-            display_name: consultation.expert_name || '전문가'
-          } as any
+          age_group: activity.meta?.ageGroup || 'adult',
+          tags: activity.tags || [activity.type],
+          score_overall: activity.score_overall || 75,
+          created_at: activity.created_at,
+          profile: { ...profileData, role: 'user' } as any,
+          categoryScores: activity.meta?.categoryScores || { 정서: 75, 행동: 75, 인지: 75, 사회성: 75, 신체: 75 }
         });
       });
 
-      // Add observation sessions
-      observationData?.forEach((observation: any) => {
-        allObservations.push({
-          id: observation.id,
-          user_id: user.id,
-          age_group: observation.domain === 'infant' ? 'infant' : observation.domain === 'child' ? 'child' : 'adult',
-          tags: ['관찰일지', observation.domain],
-          score_overall: observation.analysis_data?.score?.overall || 75,
-          created_at: observation.created_at,
-          profile: {
-            ...profileData,
-            role: 'user',
-            display_name: observation.observer_name || profileData.display_name || '관찰자'
-          } as any
-        });
-      });
 
       // Sort by creation date
       allObservations.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());

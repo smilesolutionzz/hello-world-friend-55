@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, AlertTriangle, XCircle, ArrowLeft, RefreshCw, FileText, Brain, Loader2 } from "lucide-react";
+import { CheckCircle, AlertTriangle, XCircle, ArrowLeft, RefreshCw, FileText, Brain, Loader2, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useTestResultActions } from "@/hooks/useTestResultActions";
 
 interface DevelopmentalScreeningResultProps {
   results: {
@@ -29,6 +30,7 @@ const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: Developmen
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const navigate = useNavigate();
+  const { saveTestResult, isSaving } = useTestResultActions();
 
   // AI 분석 실행
   useEffect(() => {
@@ -102,6 +104,19 @@ const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: Developmen
       strengths: results.strengthAreas || [],
       concernAreas: results.challengeAreas || []
     }
+  };
+
+  const handleSaveResult = () => {
+    saveTestResult({
+      testType: '자폐 스펙트럼 선별검사',
+      results: {
+        total: results.total,
+        ageGroup: results.ageGroup,
+        answers: results.answers,
+        aiAnalysis: aiAnalysis
+      },
+      ageGroup: results.ageGroup
+    });
   };
 
   return (
@@ -437,6 +452,15 @@ const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: Developmen
             >
               <RefreshCw className="w-4 h-4" />
               새로운 검사
+            </Button>
+            <Button
+              onClick={handleSaveResult}
+              disabled={isSaving}
+              variant="outline"
+              className="flex items-center gap-2 border-green-200 text-green-700 hover:bg-green-50"
+            >
+              <Save className="w-4 h-4" />
+              {isSaving ? '저장 중...' : '결과 저장하기'}
             </Button>
             <Button
               variant="outline"

@@ -2,8 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { RefreshCw, Download, Share2, Heart, Shield, UserX, Zap } from "lucide-react";
+import { RefreshCw, Download, Share2, Heart, Shield, UserX, Zap, Save } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
+import { useTestResultActions } from "@/hooks/useTestResultActions";
 
 interface AttachmentStyleResultProps {
   result: {
@@ -100,10 +101,26 @@ export default function AttachmentStyleResult({ result, onRestart }: AttachmentS
   const Icon = config.icon;
   const tips = improvementTips[result.style as keyof typeof improvementTips];
   const { shareAsText } = useShareText();
+  const { saveTestResult, isSaving } = useTestResultActions();
 
   const handleShare = () => {
     const shareContent = `애착 유형 검사 결과\n\n나의 애착 유형: ${result.style}\n불안 점수: ${result.anxietyScore.toFixed(1)}\n회피 점수: ${result.avoidanceScore.toFixed(1)}`;
     shareAsText(shareContent, "애착 유형 검사 결과");
+  };
+
+  const handleSaveResult = () => {
+    saveTestResult({
+      testType: '애착유형 검사',
+      results: {
+        total: result.total,
+        average: result.average,
+        style: result.style,
+        anxietyScore: result.anxietyScore,
+        avoidanceScore: result.avoidanceScore,
+        answers: result.answers
+      },
+      ageGroup: 'adult'
+    });
   };
 
   return (
@@ -258,9 +275,14 @@ export default function AttachmentStyleResult({ result, onRestart }: AttachmentS
             <Share2 className="w-4 h-4" />
             결과 공유하기
           </Button>
-          <Button variant="secondary" className="flex items-center gap-2">
-            <Download className="w-4 h-4" />
-            결과 저장하기
+          <Button 
+            onClick={handleSaveResult}
+            disabled={isSaving}
+            variant="secondary" 
+            className="flex items-center gap-2"
+          >
+            <Save className="w-4 h-4" />
+            {isSaving ? '저장 중...' : '결과 저장하기'}
           </Button>
         </div>
       </div>

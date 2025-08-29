@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink } from "lucide-react";
+import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Save, Share2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useTestResultActions } from "@/hooks/useTestResultActions";
+import { useShareText } from "@/utils/shareUtils";
 
 interface PanicTestResultProps {
   results: {
@@ -16,6 +18,8 @@ interface PanicTestResultProps {
 
 const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
   const { total, average, severity } = results;
+  const { saveTestResult, isSaving } = useTestResultActions();
+  const { shareAsText } = useShareText();
   
   const chartData = [
     {
@@ -76,6 +80,24 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
   };
 
   const recommendation = getRecommendation(severity);
+
+  const handleShare = () => {
+    const shareContent = `공황장애 자가체크 결과\n\n총점: ${total}점\n심각도: ${severity}\n\n이 결과는 참고용이며, 정확한 진단은 전문의와 상담하세요.`;
+    shareAsText(shareContent, "공황장애 자가체크 결과");
+  };
+
+  const handleSaveResult = () => {
+    saveTestResult({
+      testType: '공황장애 자가체크',
+      results: {
+        total,
+        average,
+        severity,
+        answers: results.answers
+      },
+      ageGroup: 'adult'
+    });
+  };
 
   return (
     <div className="space-y-8">
@@ -223,13 +245,15 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
         </Button>
 
         <Button 
+          onClick={handleSaveResult}
+          disabled={isSaving}
           variant="outline" 
           className="h-16"
-          disabled
         >
+          <Save className="w-5 h-5 mr-2" />
           <div className="text-left">
-            <div className="font-semibold">결과 저장</div>
-            <div className="text-sm text-muted-foreground">(로그인 필요)</div>
+            <div className="font-semibold">{isSaving ? '저장 중...' : '결과 저장'}</div>
+            <div className="text-sm text-muted-foreground">대시보드에서 확인</div>
           </div>
         </Button>
       </div>

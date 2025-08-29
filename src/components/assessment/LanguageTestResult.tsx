@@ -21,25 +21,49 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
 
-  // 점수에 따른 평가
+  // 점수에 따른 평가 (더 자세한 기준 제시)
   const getEvaluation = (score: number) => {
     if (score <= 24) {
       return {
         level: "Attention Needed (주의 필요)",
         description: "전문가 상담을 권장합니다.",
-        color: "text-red-600"
+        color: "text-red-600",
+        range: "0-24점",
+        detailedAnalysis: `현재 점수 ${score}점은 언어발달 지연이 우려되는 범위입니다. 이 단계에서는 즉각적인 전문가 개입이 필요하며, 언어치료사와의 상담을 통해 개별화된 언어발달 프로그램을 시작하시기를 강력히 권장합니다. 일상에서 아이와의 언어적 상호작용을 늘리고, 그림책 읽기, 노래 부르기, 단순한 언어 모델링을 통해 언어 자극을 제공해주세요. 발달지연의 원인을 파악하기 위한 전문적인 평가도 고려해보시기 바랍니다.`
       };
     } else if (score <= 36) {
       return {
         level: "Borderline (경계선)",
         description: "경계선 소견, 추가 평가 추천.",
-        color: "text-yellow-600"
+        color: "text-yellow-600",
+        range: "25-36점",
+        detailedAnalysis: `현재 점수 ${score}점은 언어발달 경계선 범위에 해당합니다. 이는 정상 발달과 지연 사이의 중간 단계로, 적절한 언어 자극과 환경 개선을 통해 충분히 향상될 수 있는 상태입니다. 
+
+**구체적 개선 방법:**
+• **일상 대화 늘리기**: 아이의 모든 행동에 언어로 설명해주기 ("지금 우유를 마시고 있구나", "빨간 공을 던지는구나")
+• **반복적 언어 노출**: 같은 단어나 문장을 여러 상황에서 반복 사용
+• **책 읽기 활동**: 하루 15-20분씩 그림책을 함께 보며 내용에 대해 이야기하기
+• **노래와 리듬**: 동요나 손유희를 통한 언어 리듬감 발달
+• **놀이를 통한 언어학습**: 역할놀이, 블록놀이 등에서 자연스러운 언어 사용
+
+3-6개월 후 재평가를 통해 발달 상황을 점검하시고, 개선이 미흡할 경우 언어치료 전문가와의 상담을 고려해보시기 바랍니다.`
       };
     } else {
       return {
         level: "Good (양호)",
         description: "양호. 경과 관찰 권장.",
-        color: "text-green-600"
+        color: "text-green-600",
+        range: "37-60점",
+        detailedAnalysis: `축하합니다! 현재 점수 ${score}점은 연령대 대비 양호한 언어발달 수준을 보여줍니다. 아이의 언어능력이 정상 범위 내에서 잘 발달하고 있으며, 현재의 언어적 환경과 상호작용 방식을 지속적으로 유지하시면 됩니다.
+
+**지속적 발달을 위한 권장사항:**
+• **다양한 어휘 노출**: 일상에서 풍부한 어휘를 사용하여 대화하기
+• **복문 사용 늘리기**: 단순한 문장보다는 "~하니까", "~해서" 등의 연결어를 사용한 복문으로 대화
+• **창의적 언어 활동**: 이야기 만들기, 상상놀이를 통한 언어 창의성 발달
+• **또래와의 상호작용**: 다른 아이들과의 놀이를 통한 사회적 언어 발달
+• **정기적 모니터링**: 6개월마다 언어발달 상황을 점검하여 지속적인 발달 확인
+
+현재 수준을 유지하면서 더욱 풍부한 언어 환경을 제공해주시면, 아이의 언어능력이 더욱 향상될 것입니다.`
       };
     }
   };
@@ -103,29 +127,57 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         </div>
       </Card>
 
-      {/* 전문가 해석 결과 */}
+      {/* 전문가 해석 결과 - 대폭 확장된 분석 */}
       <Card className="p-8">
-        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 결과 요약</h3>
+        <h3 className="text-2xl font-bold text-foreground mb-6">✨ 상세 분석 결과</h3>
         
-        <div className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <p className="text-lg font-medium mb-2">• 언어발달 점수: {total}점 / 60점</p>
-              <p className="text-lg font-medium">• 평가: {evaluation.level}</p>
+        <div className="space-y-8">
+          {/* 기본 정보 */}
+          <div className="grid md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+            <div className="text-center">
+              <p className="text-lg font-semibold text-blue-800">언어발달 점수</p>
+              <p className="text-3xl font-bold text-blue-900">{total}점 / 60점</p>
+              <p className="text-sm text-blue-600 mt-1">만점 대비 {Math.round((total/60)*100)}%</p>
             </div>
-            <div>
-              <p className="text-lg font-medium">• 연령대: {ageGroup}</p>
+            <div className="text-center">
+              <p className="text-lg font-semibold text-blue-800">평가 결과</p>
+              <p className={`text-2xl font-bold ${evaluation.color}`}>{evaluation.level}</p>
+              <p className="text-sm text-blue-600 mt-1">점수 범위: {evaluation.range}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-semibold text-blue-800">연령대</p>
+              <p className="text-2xl font-bold text-blue-900">{ageGroup}</p>
+              <p className="text-sm text-blue-600 mt-1">평가 기준: 연령별 표준</p>
             </div>
           </div>
           
-          <div className="bg-muted/30 rounded-lg p-6">
-            <p className="text-lg leading-relaxed">
-              <strong>해석:</strong> {evaluation.level === "Good (양호)" 
-                ? "언어발달이 연령대 기준으로 양호한 수준입니다. 현재의 언어적 상호작용과 학습 환경을 유지하며, 지속적인 언어 자극을 제공하시기 바랍니다."
-                : evaluation.level === "Borderline (경계선)"
-                ? "언어발달이 경계선 수준으로, 추가적인 관찰과 언어 자극이 필요합니다. 일상 대화를 늘리고 책 읽기 등의 활동을 통해 개선할 수 있습니다."
-                : "언어발달에 주의가 필요한 상태입니다. 전문가와의 상담을 통해 개별적인 언어치료 계획을 수립하시기를 권장드립니다."}
-            </p>
+          {/* 점수 범위 안내 */}
+          <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">📊 언어발달 점수 분류 기준</h4>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                <p className="font-semibold text-red-800">주의 필요 (0-24점)</p>
+                <p className="text-sm text-red-600 mt-1">즉시 전문가 상담 권장</p>
+              </div>
+              <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <p className="font-semibold text-yellow-800">경계선 (25-36점)</p>
+                <p className="text-sm text-yellow-600 mt-1">추가 관찰 및 자극 필요</p>
+              </div>
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <p className="font-semibold text-green-800">양호 (37-60점)</p>
+                <p className="text-sm text-green-600 mt-1">정상 발달 범위</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 상세 해석 */}
+          <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+            <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 상세 해석</h4>
+            <div className="prose prose-purple max-w-none">
+              <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
+                {evaluation.detailedAnalysis}
+              </p>
+            </div>
           </div>
           
           <div className="text-center pt-4">

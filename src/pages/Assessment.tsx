@@ -107,8 +107,8 @@ const Assessment = () => {
       const { data: assessmentData, error: assessmentError } = await supabase
         .from('assessments')
         .insert({
+          user_id: user.id,
           profile_id: profile.id,
-          family_id,
           age_group: results.ageGroup || 'adult',
           age_at_assessment: selectedAge || 30,
           results: results,
@@ -127,7 +127,6 @@ const Assessment = () => {
       const { error } = await supabase
         .from('timeline_activities')
         .insert({
-          family_id,
           member_id: profile.id,
           type: 'TEST',
           title: getTestTitle(testType),

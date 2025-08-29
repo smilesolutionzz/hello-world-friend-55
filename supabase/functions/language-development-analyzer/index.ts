@@ -117,7 +117,7 @@ ${Object.entries(answers).map(([questionId, answer]) => `문항 ${questionId}: $
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-5-mini-2025-08-07', // 빠른 분석
         messages: [
           { 
             role: 'system', 

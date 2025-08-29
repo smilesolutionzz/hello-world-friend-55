@@ -97,6 +97,8 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(0);
 
   const handleAnswer = (questionId: string, value: string) => {
     setAnswers(prev => ({
@@ -121,6 +123,14 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
 
   const analyzeResults = () => {
     setIsAnalyzing(true);
+    setTimeLeft(30); // 30초 예상
+    setAnalysisProgress(0);
+
+    // 진행률 시뮬레이션
+    const progressInterval = setInterval(() => {
+      setAnalysisProgress(prev => Math.min(prev + 3, 95));
+      setTimeLeft(prev => Math.max(0, prev - 1));
+    }, 1000);
     
     setTimeout(() => {
       let anxietyScore = 0;
@@ -173,6 +183,9 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
         average
       });
       
+      clearInterval(progressInterval);
+      setAnalysisProgress(100);
+      setTimeLeft(0);
       setIsAnalyzing(false);
     }, 2000);
   };
@@ -188,9 +201,26 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
           <CardContent className="pt-6">
             <div className="flex flex-col items-center space-y-4">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <div className="text-center">
+              <div className="text-center space-y-3">
                 <h3 className="font-semibold text-lg">애착 유형 분석 중...</h3>
                 <p className="text-muted-foreground">관계 패턴을 분석하고 있습니다</p>
+                
+                {/* 진행률 바 */}
+                <div className="bg-gray-200 rounded-full h-2 w-full max-w-xs mx-auto">
+                  <div 
+                    className="bg-primary h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${analysisProgress}%` }}
+                  ></div>
+                </div>
+                
+                {timeLeft > 0 && (
+                  <p className="text-sm font-medium text-primary">
+                    {timeLeft > 60 
+                      ? `약 ${Math.ceil(timeLeft / 60)}분 남음`
+                      : `약 ${timeLeft}초 남음`
+                    }
+                  </p>
+                )}
               </div>
             </div>
           </CardContent>

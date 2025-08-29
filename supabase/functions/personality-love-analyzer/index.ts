@@ -126,7 +126,7 @@ ${formattedAnswers}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-5-mini-2025-08-07', // 빠른 분석을 위한 mini 모델
         messages: [
           { 
             role: 'system', 

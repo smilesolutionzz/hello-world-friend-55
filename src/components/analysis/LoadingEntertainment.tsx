@@ -7,9 +7,11 @@ import { Play, Pause, SkipForward, Quote, Star, Lightbulb, Heart } from "lucide-
 interface LoadingEntertainmentProps {
   currentStep: string;
   progress: number;
+  estimatedTimeLeft?: number; // 초 단위
+  isAnalyzing?: boolean;
 }
 
-const LoadingEntertainment = ({ currentStep, progress }: LoadingEntertainmentProps) => {
+const LoadingEntertainment = ({ currentStep, progress, estimatedTimeLeft, isAnalyzing = false }: LoadingEntertainmentProps) => {
   const [currentContent, setCurrentContent] = useState(0);
   const [contentType, setContentType] = useState<'quotes' | 'tips' | 'videos'>('quotes');
   const [isPlaying, setIsPlaying] = useState(true);
@@ -226,10 +228,36 @@ const LoadingEntertainment = ({ currentStep, progress }: LoadingEntertainmentPro
       </div>
 
       {/* 진행상황 표시 */}
-      <div className="text-center">
-        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-          <Heart className="w-4 h-4 text-red-400" />
-          <span>분석이 완료될 때까지 힐링 콘텐츠를 즐겨보세요</span>
+      <div className="text-center space-y-3">
+        {/* 진행률 바 */}
+        <div className="bg-gray-200 rounded-full h-2 w-full max-w-md mx-auto">
+          <div 
+            className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${Math.min(progress, 100)}%` }}
+          ></div>
+        </div>
+        
+        {/* 진행 상태 및 예상 시간 */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <Heart className="w-4 h-4 text-red-400" />
+            <span>{currentStep}</span>
+          </div>
+          
+          {estimatedTimeLeft && estimatedTimeLeft > 0 && (
+            <div className="text-sm font-medium text-primary">
+              {estimatedTimeLeft > 60 
+                ? `약 ${Math.ceil(estimatedTimeLeft / 60)}분 남음`
+                : `약 ${estimatedTimeLeft}초 남음`
+              }
+            </div>
+          )}
+          
+          {isAnalyzing && (
+            <div className="text-xs text-muted-foreground">
+              AI가 심층 분석을 진행하고 있습니다...
+            </div>
+          )}
         </div>
       </div>
     </div>

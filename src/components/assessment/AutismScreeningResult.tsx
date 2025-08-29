@@ -26,6 +26,8 @@ const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: Developmen
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(0);
   const navigate = useNavigate();
 
   // AI 분석 실행
@@ -38,6 +40,17 @@ const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: Developmen
   const generateAIAnalysis = async () => {
     setIsAnalyzing(true);
     setAnalysisError(null);
+    setTimeLeft(45); // 45초 예상
+    setAnalysisProgress(0);
+
+    // 진행률 시뮬레이션
+    const progressInterval = setInterval(() => {
+      setAnalysisProgress(prev => {
+        const newProgress = Math.min(prev + 2, 95); // 95%까지만
+        return newProgress;
+      });
+      setTimeLeft(prev => Math.max(0, prev - 1));
+    }, 1000);
 
     try {
       const { data, error } = await supabase.functions.invoke('developmental-screening-analyzer', {
@@ -63,6 +76,9 @@ const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: Developmen
       console.error('Analysis error:', error);
       setAnalysisError('분석 요청 중 오류가 발생했습니다.');
     } finally {
+      clearInterval(progressInterval);
+      setAnalysisProgress(100);
+      setTimeLeft(0);
       setIsAnalyzing(false);
     }
   };
@@ -139,13 +155,32 @@ const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: Developmen
           {isAnalyzing && (
             <Card className="border-blue-200 bg-blue-50">
               <CardContent className="pt-6">
-                <div className="flex items-center justify-center gap-3">
+                <div className="flex items-center justify-center gap-3 mb-4">
                   <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
                   <span className="text-blue-900 font-medium">AI 박사급 분석 진행 중...</span>
                 </div>
-                <p className="text-center text-sm text-blue-700 mt-2">
-                  임상심리학 박사 수준의 전문 분석을 수행하고 있습니다.
-                </p>
+                
+                {/* 진행률 바 */}
+                <div className="bg-blue-100 rounded-full h-2 w-full mb-3">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${analysisProgress}%` }}
+                  ></div>
+                </div>
+                
+                <div className="text-center space-y-1">
+                  <p className="text-sm text-blue-700">
+                    임상심리학 박사 수준의 전문 분석을 수행하고 있습니다.
+                  </p>
+                  {timeLeft > 0 && (
+                    <p className="text-xs text-blue-600 font-medium">
+                      {timeLeft > 60 
+                        ? `약 ${Math.ceil(timeLeft / 60)}분 남음`
+                        : `약 ${timeLeft}초 남음`
+                      }
+                    </p>
+                  )}
+                </div>
               </CardContent>
             </Card>
           )}

@@ -23,9 +23,9 @@ const LiveFeedWidget = () => {
   const [feedbacks, setFeedbacks] = useState<LiveFeedback[]>([]);
   const [realFeedbacks, setRealFeedbacks] = useState<LiveFeedback[]>([]);
   const [stats, setStats] = useState<LiveStats>({
-    dailyVisitors: 865, // 더 현실적인 시작 숫자
+    dailyVisitors: 287, // 400 이하로 제한
     currentOnline: 49,  // 더 현실적인 온라인 사용자 수
-    totalTests: 575
+    totalTests: 143     // 200 이하로 제한
   });
   const [currentFeedback, setCurrentFeedback] = useState<LiveFeedback | null>(null);
   const [showStats, setShowStats] = useState(true);
@@ -167,15 +167,15 @@ const LiveFeedWidget = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setStats(prev => {
-        // 더 작은 변화량으로 자연스럽게 증가
-        const visitorIncrease = Math.random() < 0.7 ? 1 : Math.random() < 0.9 ? 2 : 0; // 70% 확률로 1증가, 20% 확률로 2증가
+        // 더 작은 변화량으로 자연스럽게 증가하되 제한 적용
+        const visitorIncrease = prev.dailyVisitors >= 400 ? 0 : (Math.random() < 0.7 ? 1 : Math.random() < 0.9 ? 2 : 0);
         const onlineChange = Math.floor(Math.random() * 3) - 1; // -1, 0, 1 중 하나
-        const testsIncrease = Math.random() < 0.6 ? 1 : 0; // 60% 확률로 1증가
+        const testsIncrease = prev.totalTests >= 200 ? 0 : (Math.random() < 0.6 ? 1 : 0);
         
         return {
-          dailyVisitors: prev.dailyVisitors + visitorIncrease,
+          dailyVisitors: Math.min(400, prev.dailyVisitors + visitorIncrease), // 400 이하로 제한
           currentOnline: Math.max(15, Math.min(80, prev.currentOnline + onlineChange)), // 15~80명 사이
-          totalTests: prev.totalTests + testsIncrease
+          totalTests: Math.min(200, prev.totalTests + testsIncrease) // 200 이하로 제한
         };
       });
     }, 12000); // 12초마다 업데이트 (기존 5초에서 더 느리게)

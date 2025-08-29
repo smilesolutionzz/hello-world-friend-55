@@ -22,10 +22,30 @@ interface LiveStats {
 const LiveFeedWidget = () => {
   const [feedbacks, setFeedbacks] = useState<LiveFeedback[]>([]);
   const [realFeedbacks, setRealFeedbacks] = useState<LiveFeedback[]>([]);
+  // 시간대별 증가를 위한 기준값 계산
+  const getHourlyTargetStats = () => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const morningStart = 9; // 오전 9시부터 시작
+    const hoursFromMorning = Math.max(0, currentHour - morningStart);
+    
+    // 오전 9시 기준값
+    const baseVisitors = 180;
+    const baseTests = 85;
+    
+    // 시간당 30씩 증가, 최대 400까지
+    const targetVisitors = Math.min(400, baseVisitors + (hoursFromMorning * 30));
+    const targetTests = Math.min(200, baseTests + (hoursFromMorning * 15)); // 비례적으로 증가
+    
+    return { targetVisitors, targetTests };
+  };
+
+  const { targetVisitors, targetTests } = getHourlyTargetStats();
+  
   const [stats, setStats] = useState<LiveStats>({
-    dailyVisitors: 287, // 400 이하로 제한
+    dailyVisitors: Math.min(targetVisitors, 287), // 현재 시간대에 맞는 값
     currentOnline: 49,  // 더 현실적인 온라인 사용자 수
-    totalTests: 143     // 200 이하로 제한
+    totalTests: Math.min(targetTests, 143)     // 비례적으로 설정
   });
   const [currentFeedback, setCurrentFeedback] = useState<LiveFeedback | null>(null);
   const [showStats, setShowStats] = useState(true);
@@ -163,22 +183,28 @@ const LiveFeedWidget = () => {
     };
   }, []);
 
-  // 통계 실시간 업데이트 (더 자연스럽고 느리게)
+  // 통계 실시간 업데이트 (시간대별 목표치를 향해 점진적 증가)
   useEffect(() => {
     const interval = setInterval(() => {
       setStats(prev => {
-        // 더 작은 변화량으로 자연스럽게 증가하되 제한 적용
-        const visitorIncrease = prev.dailyVisitors >= 400 ? 0 : (Math.random() < 0.7 ? 1 : Math.random() < 0.9 ? 2 : 0);
+        const { targetVisitors, targetTests } = getHourlyTargetStats();
+        
+        // 목표치를 향해 점진적으로 증가 (매 12초마다 1-2씩)
+        const visitorIncrease = prev.dailyVisitors < targetVisitors ? 
+          (Math.random() < 0.8 ? 1 : Math.random() < 0.9 ? 2 : 0) : 0;
+        
+        const testsIncrease = prev.totalTests < targetTests ? 
+          (Math.random() < 0.7 ? 1 : 0) : 0;
+        
         const onlineChange = Math.floor(Math.random() * 3) - 1; // -1, 0, 1 중 하나
-        const testsIncrease = prev.totalTests >= 200 ? 0 : (Math.random() < 0.6 ? 1 : 0);
         
         return {
-          dailyVisitors: Math.min(400, prev.dailyVisitors + visitorIncrease), // 400 이하로 제한
-          currentOnline: Math.max(15, Math.min(80, prev.currentOnline + onlineChange)), // 15~80명 사이
-          totalTests: Math.min(200, prev.totalTests + testsIncrease) // 200 이하로 제한
+          dailyVisitors: Math.min(targetVisitors, prev.dailyVisitors + visitorIncrease),
+          currentOnline: Math.max(15, Math.min(80, prev.currentOnline + onlineChange)),
+          totalTests: Math.min(targetTests, prev.totalTests + testsIncrease)
         };
       });
-    }, 12000); // 12초마다 업데이트 (기존 5초에서 더 느리게)
+    }, 12000); // 12초마다 업데이트
 
     return () => clearInterval(interval);
   }, []);

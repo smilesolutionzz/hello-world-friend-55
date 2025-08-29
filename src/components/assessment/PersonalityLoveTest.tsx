@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const questions = [
   {
@@ -204,15 +205,44 @@ export const PersonalityLoveTest: React.FC<PersonalityLoveTestProps> = ({ onComp
         }
       };
 
-      const result = {
-        personalityType: personalityTypes[maxTrait[0] as keyof typeof personalityTypes],
-        traits,
-        answers,
-        testType: 'personality_love',
-        completedAt: new Date().toISOString()
-      };
+      const personalityType = personalityTypes[maxTrait[0] as keyof typeof personalityTypes];
 
-      onComplete(result);
+      // AI 분석 요청
+      try {
+        const { data: aiAnalysis, error } = await supabase.functions.invoke('personality-love-analyzer', {
+          body: {
+            answers,
+            personalityType
+          }
+        });
+
+        if (error) {
+          console.error('AI 분석 오류:', error);
+        }
+
+        const result = {
+          personalityType,
+          traits,
+          answers,
+          aiAnalysis: aiAnalysis?.analysis || null,
+          testType: 'personality_love',
+          completedAt: new Date().toISOString()
+        };
+
+        onComplete(result);
+      } catch (aiError) {
+        console.error('AI 분석 실패:', aiError);
+        // AI 분석 실패 시에도 기본 결과는 제공
+        const result = {
+          personalityType,
+          traits,
+          answers,
+          aiAnalysis: null,
+          testType: 'personality_love',
+          completedAt: new Date().toISOString()
+        };
+        onComplete(result);
+      }
     } catch (error) {
       console.error('분석 중 오류:', error);
       toast({
@@ -234,9 +264,9 @@ export const PersonalityLoveTest: React.FC<PersonalityLoveTestProps> = ({ onComp
       <Card className="w-full max-w-2xl mx-auto">
         <CardContent className="flex flex-col items-center justify-center py-8">
           <Loader2 className="h-8 w-8 animate-spin mb-4" />
-          <p className="text-lg font-medium">연애 성격을 분석하고 있습니다...</p>
+          <p className="text-lg font-medium">AI가 당신의 연애 스타일을 분석하고 있습니다...</p>
           <p className="text-sm text-muted-foreground mt-2">
-            AI가 당신의 연애 스타일과 성격을 분석합니다.
+            개인 맞춤 연애 조언을 생성하고 있어요.
           </p>
         </CardContent>
       </Card>

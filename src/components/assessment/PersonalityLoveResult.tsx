@@ -64,7 +64,7 @@ export const PersonalityLoveResult: React.FC<PersonalityLoveResultProps> = ({
   result, 
   onRestart 
 }) => {
-  const { personalityType } = result;
+  const { personalityType, aiAnalysis } = result;
   const typeColor = typeColors[personalityType.type as keyof typeof typeColors] || 'from-gray-500 to-gray-600';
   const compatibility = compatibilityAdvice[personalityType.type as keyof typeof compatibilityAdvice];
 
@@ -96,6 +96,25 @@ export const PersonalityLoveResult: React.FC<PersonalityLoveResultProps> = ({
           </div>
         </CardContent>
       </Card>
+
+      {/* AI 분석 결과 */}
+      {aiAnalysis && (
+        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Sparkles className="h-5 w-5 mr-2 text-blue-500" />
+              AI 맞춤 연애 분석
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="prose prose-sm max-w-none">
+              <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                {aiAnalysis}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* 성격 특성 */}
       <div className="grid md:grid-cols-2 gap-6">

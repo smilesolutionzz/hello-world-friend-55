@@ -5,13 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, Crown, Zap, Star, Check } from 'lucide-react';
-import { TossPaymentModal } from '@/components/payment/TossPaymentModal';
+
 import { supabase } from '@/integrations/supabase/client';
 
 const Subscription = () => {
   const navigate = useNavigate();
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([]);
 
   // 하드코딩된 플랜 사용 (DB에서 가져오는 대신)
@@ -71,16 +70,36 @@ const Subscription = () => {
     }
   ];
 
-  const handlePlanSelect = (plan: any) => {
-    if (plan.disabled) return;
+  const handleSubscribe = async (planId: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
     
-    setSelectedPlan(plan);
-    setIsPaymentModalOpen(true);
-  };
+    if (!session) {
+      navigate('/auth');
+      return;
+    }
 
-  const handlePaymentModalClose = () => {
-    setIsPaymentModalOpen(false);
-    setSelectedPlan(null);
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: { 
+          planId,
+          subscriptionType: 'monthly'
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
+      console.error('Subscription error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -433,12 +452,6 @@ const Subscription = () => {
         </div>
       </div>
 
-      {/* 토스페이먼츠 결제 모달 */}
-      <TossPaymentModal
-        isOpen={isPaymentModalOpen}
-        onClose={handlePaymentModalClose}
-        plan={selectedPlan}
-      />
     </div>
   );
 };

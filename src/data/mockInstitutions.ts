@@ -960,5 +960,42 @@ export const mockInstitutions = [
     partnership_status: 'active',
     partnership_start_date: '2024-03-01',
     commission_rate: 18.0
+  },
+  {
+    id: '21',
+    name: '굿모닝언어심리발달센터',
+    institution_type: 'development_center',
+    address: '서울특별시 강남구 테헤란로 123',
+    phone: '02-555-0123',
+    email: 'info@goodmorning-center.co.kr',
+    website_url: 'https://goodmorning-center.co.kr',
+    description: '언어치료와 심리상담 전문센터로 아동과 청소년의 건강한 발달을 지원합니다.',
+    latitude: 37.5056,
+    longitude: 127.0572,
+    is_voucher_approved: true,
+    voucher_types: ['발달재활서비스', '언어치료', '심리상담', '교육청서비스', '우리아이심리지원서비스'],
+    established_year: 2020,
+    total_experts: 12,
+    rating: 4.8,
+    review_count: 87,
+    profile_image_url: '/placeholder.svg',
+    gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
+    operating_hours: {
+      monday: '09:00-19:00',
+      tuesday: '09:00-19:00',
+      wednesday: '09:00-19:00',
+      thursday: '09:00-19:00',
+      friday: '09:00-19:00',
+      saturday: '09:00-16:00',
+      sunday: 'closed'
+    },
+    services_offered: ['언어치료', '심리상담', '인지치료', '사회성훈련', '부모교육', '집단치료'],
+    specializations: ['언어발달지연', '구음장애', '조음장애', '유창성장애', '심리정서'],
+    facilities: ['개별언어치료실', '집단치료실', '심리상담실', '감각통합실', '부모대기실', '카페'],
+    parking_available: true,
+    accessibility_features: ['휠체어접근가능', '엘리베이터', '장애인화장실', '점자블록'],
+    partnership_status: 'active',
+    partnership_start_date: '2024-08-29',
+    commission_rate: 16.0
   }
 ];

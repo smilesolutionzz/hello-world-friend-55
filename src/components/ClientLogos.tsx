@@ -139,7 +139,8 @@ const ClientLogos = () => {
     { name: "창원튼튼i병원", count: "부설 아동발달센터", icon: Building2 },
     { name: "톡톡말톡톡 언어인지학습센터", count: "제주점", icon: Activity },
     { name: "가까이한의원", count: "송파점", icon: Leaf },
-    { name: "인애한의원", count: "강남점", icon: Stethoscope }
+    { name: "인애한의원", count: "강남점", icon: Stethoscope },
+    { name: "굿모닝언어심리발달센터", count: "강남점", icon: Heart }
   ];
 
   return (
@@ -230,7 +231,7 @@ const ClientLogos = () => {
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
               <span className="text-lg">✨</span>
               <span className="text-sm sm:text-base font-medium text-foreground">
-                <span className="text-brand-gradient font-bold">26+</span> 전문기관 · <span className="text-brand-gradient font-bold">15,000+</span> 가족이 신뢰
+                <span className="text-brand-gradient font-bold">27+</span> 전문기관 · <span className="text-brand-gradient font-bold">15,000+</span> 가족이 신뢰
               </span>
             </div>
           </div>

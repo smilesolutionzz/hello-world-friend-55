@@ -684,7 +684,7 @@ const Dashboard = () => {
               {/* Distribution Chart */}
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4">영역별 분포</h3>
-                {distributionData.length > 0 ? (
+                {distributionData.some(item => item.value > 0) ? (
                   <div className="h-64">
                     <ChartContainer config={{}} className="h-full w-full">
                       <ResponsiveContainer width="100%" height="100%">
@@ -713,7 +713,7 @@ const Dashboard = () => {
                             className="w-3 h-3 rounded-full" 
                             style={{ backgroundColor: item.color }}
                           />
-                          <span className="text-sm text-muted-foreground">{item.name}</span>
+                          <span className="text-sm text-muted-foreground">{item.name} ({item.value}점)</span>
                         </div>
                       ))}
                     </div>
@@ -722,7 +722,15 @@ const Dashboard = () => {
                   <div className="h-64 flex items-center justify-center text-muted-foreground">
                     <div className="text-center">
                       <BarChart3 className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                      <p>데이터가 없습니다</p>
+                      <p>첫 번째 검사를 완료하면 영역별 분포를 확인할 수 있습니다</p>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="mt-2"
+                        onClick={() => navigate('/assessment')}
+                      >
+                        검사 시작하기
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -731,7 +739,7 @@ const Dashboard = () => {
               {/* Trend Chart */}
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4">최근 12주 점수 추이</h3>
-                {trendData.length > 0 ? (
+                {trendData.some(item => item.score > 0) ? (
                   <div className="h-64">
                     <ChartContainer config={{}} className="h-full w-full">
                       <ResponsiveContainer width="100%" height="100%">
@@ -742,7 +750,7 @@ const Dashboard = () => {
                             tick={{ fontSize: 10 }}
                           />
                           <YAxis 
-                            domain={[60, 100]}
+                            domain={[0, 100]}
                             className="text-xs"
                             tick={{ fontSize: 10 }}
                           />
@@ -763,7 +771,15 @@ const Dashboard = () => {
                   <div className="h-64 flex items-center justify-center text-muted-foreground">
                     <div className="text-center">
                       <TrendingUp className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                      <p>데이터가 없습니다</p>
+                      <p>여러 번의 검사를 완료하면 점수 추이를 확인할 수 있습니다</p>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="mt-2"
+                        onClick={() => navigate('/assessment')}
+                      >
+                        검사 시작하기
+                      </Button>
                     </div>
                   </div>
                 )}

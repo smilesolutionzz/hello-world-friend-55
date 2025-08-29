@@ -131,8 +131,10 @@ export type Database = {
           age_group: string
           analysis: string | null
           created_at: string
+          family_id: string | null
           id: string
           profile_id: string
+          recommendations: string[] | null
           results: Json | null
           risk_level: string | null
           updated_at: string
@@ -143,8 +145,10 @@ export type Database = {
           age_group: string
           analysis?: string | null
           created_at?: string
+          family_id?: string | null
           id?: string
           profile_id: string
+          recommendations?: string[] | null
           results?: Json | null
           risk_level?: string | null
           updated_at?: string
@@ -155,8 +159,10 @@ export type Database = {
           age_group?: string
           analysis?: string | null
           created_at?: string
+          family_id?: string | null
           id?: string
           profile_id?: string
+          recommendations?: string[] | null
           results?: Json | null
           risk_level?: string | null
           updated_at?: string

@@ -108,7 +108,8 @@ const ParentingStyleResult = ({
 
   const radarData = chartData;
 
-  const averageScore = Object.values(results.scores as Record<string, number>).reduce((sum: number, score: number) => sum + score, 0) / Object.keys(results.scores).length;
+  const scores = Object.values(results.scores as Record<string, number>);
+  const averageScore = scores.reduce((sum, score) => sum + Number(score), 0) / scores.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden">

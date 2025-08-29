@@ -452,29 +452,50 @@ export type Database = {
       family_members: {
         Row: {
           age: number | null
+          birth_date: string | null
           created_at: string
+          email: string | null
           family_id: string | null
+          gender: string | null
           id: string
+          is_primary_caregiver: boolean | null
           name: string
+          notes: string | null
+          phone: string | null
           relationship: string | null
+          updated_at: string | null
           user_id: string
         }
         Insert: {
           age?: number | null
+          birth_date?: string | null
           created_at?: string
+          email?: string | null
           family_id?: string | null
+          gender?: string | null
           id?: string
+          is_primary_caregiver?: boolean | null
           name: string
+          notes?: string | null
+          phone?: string | null
           relationship?: string | null
+          updated_at?: string | null
           user_id: string
         }
         Update: {
           age?: number | null
+          birth_date?: string | null
           created_at?: string
+          email?: string | null
           family_id?: string | null
+          gender?: string | null
           id?: string
+          is_primary_caregiver?: boolean | null
           name?: string
+          notes?: string | null
+          phone?: string | null
           relationship?: string | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: [

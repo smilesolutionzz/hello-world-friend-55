@@ -9,6 +9,8 @@ import LanguageDevelopmentForm from "@/components/assessment/LanguageDevelopment
 import LanguageDevelopmentResult from "@/components/assessment/LanguageDevelopmentResult";
 import PremiumAdhdForm from "@/components/assessment/PremiumAdhdForm";
 import PremiumAdhdResult from "@/components/assessment/PremiumAdhdResult";
+import ParentingStyleForm from "@/components/assessment/ParentingStyleForm";
+import ParentingStyleResult from "@/components/assessment/ParentingStyleResult";
 import { 
   premiumAssessmentInfo,
   developmentalScreeningInfo,
@@ -20,7 +22,8 @@ import {
   financialPsychologyAssessmentQuestions,
   teenMentalCompassAssessmentQuestions,
   teenGrowthCapacityAssessmentQuestions,
-  socialDevelopmentScreeningQuestions
+  socialDevelopmentScreeningQuestions,
+  parentingStyleAssessmentQuestions
 } from "@/data/premiumAssessmentQuestions";
 import { allLanguageDevelopmentQuestions } from "@/data/languageDevelopmentQuestions";
 import { premiumAdhdQuestions } from "@/data/premiumAdhdQuestions";
@@ -45,7 +48,8 @@ const PremiumAssessment = () => {
     teenMentalCompass: Object.values(teenMentalCompassAssessmentQuestions).flat(),
     teenGrowthCapacity: Object.values(teenGrowthCapacityAssessmentQuestions).flat(),
     socialDevelopmentScreening: Object.values(socialDevelopmentScreeningQuestions).flat(),
-    languageDevelopment: allLanguageDevelopmentQuestions
+    languageDevelopment: allLanguageDevelopmentQuestions,
+    parentingStyle: Object.values(parentingStyleAssessmentQuestions).flat()
   };
 
   const handleStartAssessment = (assessmentKey: string) => {
@@ -104,6 +108,15 @@ const PremiumAssessment = () => {
       );
     }
 
+    if (selectedAssessment === 'parentingStyle') {
+      return (
+        <ParentingStyleResult
+          results={assessmentResults}
+          onBack={handleBack}
+        />
+      );
+    }
+
     return (
       <PremiumAssessmentResult
         assessmentType={selectedAssessment}
@@ -128,6 +141,15 @@ const PremiumAssessment = () => {
       return (
         <PremiumAdhdForm
           onComplete={handleAdhdAssessmentComplete}
+          onBack={handleBack}
+        />
+      );
+    }
+
+    if (selectedAssessment === 'parentingStyle') {
+      return (
+        <ParentingStyleForm
+          onComplete={handleAssessmentComplete}
           onBack={handleBack}
         />
       );

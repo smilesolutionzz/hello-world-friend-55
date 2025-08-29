@@ -498,6 +498,163 @@ export const relationshipAssessmentQuestions = {
       text: "파트너에게 의존하는 것을 자연스럽게 받아들입니다",
       category: "secure",
       attachment_style: "secure"
+    }
+  ]
+};
+
+// 6. 프리미엄 부모양육태도 검사 (과학적 양육태도 분석)
+export const parentingStyleAssessmentQuestions = {
+  warmth_acceptance: [
+    {
+      id: "parent_wa01",
+      text: "아이가 실수하거나 잘못했을 때도 따뜻하게 대합니다",
+      category: "warmth_acceptance",
+      subcategory: "emotional_warmth",
+      weight: 1.3
+    },
+    {
+      id: "parent_wa02",
+      text: "아이의 감정을 이해하고 공감해주려고 노력합니다",
+      category: "warmth_acceptance",
+      subcategory: "emotional_support",
+      weight: 1.4
+    },
+    {
+      id: "parent_wa03",
+      text: "아이와 함께 보내는 시간을 즐겁고 의미있게 만들려고 합니다",
+      category: "warmth_acceptance",
+      subcategory: "quality_time",
+      weight: 1.2
+    },
+    {
+      id: "parent_wa04",
+      text: "아이의 장점과 노력을 자주 칭찬해줍니다",
+      category: "warmth_acceptance",
+      subcategory: "positive_reinforcement",
+      weight: 1.1
+    },
+    {
+      id: "parent_wa05",
+      text: "아이가 힘들어할 때 먼저 다가가서 도움을 줍니다",
+      category: "warmth_acceptance",
+      subcategory: "responsive_care",
+      weight: 1.3
+    }
+  ],
+  behavioral_control: [
+    {
+      id: "parent_bc01",
+      text: "아이에게 일관된 규칙과 기준을 제시합니다",
+      category: "behavioral_control",
+      subcategory: "consistent_rules",
+      weight: 1.2
+    },
+    {
+      id: "parent_bc02",
+      text: "아이의 행동에 대해 명확한 기대치를 갖고 있습니다",
+      category: "behavioral_control",
+      subcategory: "clear_expectations",
+      weight: 1.1
+    },
+    {
+      id: "parent_bc03",
+      text: "아이가 약속을 지키지 않으면 적절한 결과를 경험하게 합니다",
+      category: "behavioral_control",
+      subcategory: "natural_consequences",
+      weight: 1.0
+    },
+    {
+      id: "parent_bc04",
+      text: "아이의 하루 일과와 활동을 적절히 관리합니다",
+      category: "behavioral_control",
+      subcategory: "structure_routine",
+      weight: 1.2
+    },
+    {
+      id: "parent_bc05",
+      text: "아이가 올바른 선택을 할 수 있도록 안내합니다",
+      category: "behavioral_control",
+      subcategory: "guidance",
+      weight: 1.3
+    }
+  ],
+  psychological_control: [
+    {
+      id: "parent_pc01",
+      text: "아이가 내 기분을 맞춰주기를 기대합니다",
+      category: "psychological_control",
+      subcategory: "guilt_induction",
+      reverse: true,
+      weight: 1.4
+    },
+    {
+      id: "parent_pc02",
+      text: "아이가 내 의견에 반대하면 화가 납니다",
+      category: "psychological_control",
+      subcategory: "invalidation",
+      reverse: true,
+      weight: 1.3
+    },
+    {
+      id: "parent_pc03",
+      text: "아이의 감정보다 행동 결과가 더 중요합니다",
+      category: "psychological_control",
+      subcategory: "emotional_dismissal",
+      reverse: true,
+      weight: 1.2
+    },
+    {
+      id: "parent_pc04",
+      text: "아이가 독립적으로 결정하는 것을 불안해합니다",
+      category: "psychological_control",
+      subcategory: "overprotection",
+      reverse: true,
+      weight: 1.1
+    },
+    {
+      id: "parent_pc05",
+      text: "아이가 내 기대에 못 미치면 실망감을 드러냅니다",
+      category: "psychological_control",
+      subcategory: "conditional_approval",
+      reverse: true,
+      weight: 1.3
+    }
+  ],
+  autonomy_support: [
+    {
+      id: "parent_as01",
+      text: "아이가 스스로 문제를 해결할 기회를 줍니다",
+      category: "autonomy_support",
+      subcategory: "independence_fostering",
+      weight: 1.4
+    },
+    {
+      id: "parent_as02",
+      text: "아이의 의견을 존중하고 함께 논의합니다",
+      category: "autonomy_support",
+      subcategory: "collaborative_decision",
+      weight: 1.3
+    },
+    {
+      id: "parent_as03",
+      text: "아이가 자신만의 관심사를 개발하도록 격려합니다",
+      category: "autonomy_support",
+      subcategory: "individual_interests",
+      weight: 1.2
+    },
+    {
+      id: "parent_as04",
+      text: "아이의 실수를 학습의 기회로 받아들입니다",
+      category: "autonomy_support",
+      subcategory: "learning_opportunity",
+      weight: 1.1
+    },
+    {
+      id: "parent_as05",
+      text: "아이가 선택한 것에 대해 책임감을 기를 수 있도록 돕습니다",
+      category: "autonomy_support",
+      subcategory: "responsibility_development",
+      weight: 1.3
     },
     {
       id: "attach_sec03",
@@ -582,6 +739,43 @@ export const relationshipAssessmentQuestions = {
       text: "관계에서 감정의 기복이 심한 편입니다",
       category: "fearful_avoidant",
       attachment_style: "fearful_avoidant"
+    }
+  ],
+  communication_support: [
+    {
+      id: "parent_cs01",
+      text: "아이가 자신의 의견을 표현할 때까지 충분히 기다려줍니다",
+      category: "communication_support",
+      subcategory: "patient_listening",
+      weight: 1.2
+    },
+    {
+      id: "parent_cs02",
+      text: "아이의 말을 끝까지 들어주고 진지하게 받아들입니다",
+      category: "communication_support",
+      subcategory: "active_listening",
+      weight: 1.4
+    },
+    {
+      id: "parent_cs03",
+      text: "아이와의 대화에서 비난보다는 이해하려고 노력합니다",
+      category: "communication_support",
+      subcategory: "empathetic_communication",
+      weight: 1.3
+    },
+    {
+      id: "parent_cs04",
+      text: "아이가 어려움을 털어놓을 수 있는 분위기를 만들어줍니다",
+      category: "communication_support",
+      subcategory: "safe_communication",
+      weight: 1.2
+    },
+    {
+      id: "parent_cs05",
+      text: "아이의 발달 수준에 맞는 언어로 대화합니다",
+      category: "communication_support",
+      subcategory: "developmentally_appropriate",
+      weight: 1.1
     }
   ]
 };
@@ -1045,6 +1239,20 @@ export const premiumAssessmentInfo = {
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
     rank: 11,
     badge: "전문"
+  },
+  // 💎 NEW 부모양육태도 검사
+  parentingStyle: {
+    title: "프리미엄 부모양육태도 검사",
+    subtitle: "과학적 양육태도 심층분석",
+    description: "온정수용, 행동통제, 심리통제, 자율성지지, 의사소통지지 5개 영역으로 양육태도를 정밀 분석합니다",
+    duration: "약 8-10분",
+    questions_count: 25,
+    premium_features: ["5영역 양육태도 정밀분석", "자녀발달 영향도 평가", "양육 강점과 개선점 도출", "개별 양육 가이드 제공"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
+    rank: 12,
+    badge: "✨ NEW",
+    priority: 2,
+    highlight: true
   }
 };
 

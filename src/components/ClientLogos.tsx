@@ -117,21 +117,29 @@ const ClientLogos = () => {
   // 제휴 전문기관들
   const partners = [
     { name: "한점미소발달센터", count: "남양주·부천점", icon: Heart },
-    { name: "차의과대학교", count: "발달장애센터", icon: BookOpen },
-    { name: "인애한의원", count: "강남점", icon: Stethoscope },
-    { name: "해오름아동발달센터", count: "전문진료", icon: Sparkles },
-    { name: "서울대학교병원", count: "소아정신과", icon: Brain },
-    { name: "연세대 세브란스병원", count: "발달센터", icon: GraduationCap },
-    { name: "삼성서울병원", count: "아동발달클리닉", icon: Building2 },
-    { name: "고려대학교 의료원", count: "재활의학과", icon: Activity },
-    { name: "아이존발달센터", count: "강남·분당점", icon: Users },
-    { name: "우리아이발달센터", count: "목동·일산점", icon: Target },
-    { name: "소아한의원 아이조아", count: "한방발달치료", icon: Leaf },
-    { name: "푸름이나무 클리닉", count: "소아정신건강의학과", icon: Brain },
-    { name: "마음샘 정신건강의학과", count: "아동청소년 전문", icon: Heart },
-    { name: "키움아동발달센터", count: "언어·인지치료", icon: BookOpen },
-    { name: "아이사랑 소아과", count: "발달상담 전문", icon: Stethoscope },
-    { name: "꿈나무아동발달센터", count: "종합발달치료", icon: Sparkles }
+    { name: "우아함발달센터", count: "안산·화성새솔점", icon: Sparkles },
+    { name: "메이플 ABA 목동센터", count: "자폐전문", icon: Users },
+    { name: "엘림아동발달센터", count: "일산점", icon: Target },
+    { name: "해웃음 심리발달센터", count: "마포점", icon: Heart },
+    { name: "핌발달센터", count: "판교점", icon: Brain },
+    { name: "정관언어발달센터", count: "부산점", icon: BookOpen },
+    { name: "해오름 아동발달센터", count: "수원광교점", icon: Sparkles },
+    { name: "넘나들 언어인지학습연구소", count: "송파점", icon: GraduationCap },
+    { name: "별하언어심리상담센터", count: "인천부평점", icon: Heart },
+    { name: "정아동발달센터", count: "대구점", icon: Building2 },
+    { name: "소리엘언어발달센터", count: "울산점", icon: Activity },
+    { name: "나아가다발달상담센터", count: "광주점", icon: Users },
+    { name: "우리aba사회성발달센터", count: "대전점", icon: Target },
+    { name: "한걸음발달 연구소", count: "춘천점", icon: Leaf },
+    { name: "참소리언어심리연구소", count: "분당점", icon: Brain },
+    { name: "산본아동발달센터", count: "군포점", icon: Heart },
+    { name: "도란도란 심리상담센터", count: "노원점", icon: BookOpen },
+    { name: "다다언어심리발달센터", count: "용인기흥점", icon: Stethoscope },
+    { name: "풍무아동청소년아동발달센터", count: "김포점", icon: Sparkles },
+    { name: "창원튼튼i병원", count: "부설 아동발달센터", icon: Building2 },
+    { name: "톡톡말톡톡 언어인지학습센터", count: "제주점", icon: Activity },
+    { name: "가까이한의원", count: "송파점", icon: Leaf },
+    { name: "인애한의원", count: "강남점", icon: Stethoscope }
   ];
 
   return (
@@ -222,7 +230,7 @@ const ClientLogos = () => {
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
               <span className="text-lg">✨</span>
               <span className="text-sm sm:text-base font-medium text-foreground">
-                <span className="text-brand-gradient font-bold">16+</span> 전문기관 · <span className="text-brand-gradient font-bold">10,000+</span> 가족이 신뢰
+                <span className="text-brand-gradient font-bold">26+</span> 전문기관 · <span className="text-brand-gradient font-bold">15,000+</span> 가족이 신뢰
               </span>
             </div>
           </div>

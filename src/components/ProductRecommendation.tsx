@@ -115,8 +115,12 @@ const ProductRecommendation = ({ category, severity, ageGroup, domain }: Product
           {recommendedProducts.map((product) => (
             <Card key={product.id} className="border border-primary/20 hover:border-primary/40 transition-colors">
               <CardContent className="p-4">
-                <div className="aspect-square bg-muted rounded-lg mb-3 flex items-center justify-center">
-                  <ShoppingCart className="h-12 w-12 text-muted-foreground" />
+                <div className="aspect-square bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100"></div>
+                  <div className="relative z-10 text-center">
+                    <ShoppingCart className="h-8 w-8 text-primary mx-auto mb-1" />
+                    <div className="text-xs text-muted-foreground font-medium">상품 이미지</div>
+                  </div>
                 </div>
                 
                 <div className="space-y-2">

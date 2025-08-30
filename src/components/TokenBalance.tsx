@@ -147,14 +147,14 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 </Alert>
               )}
 
-              {/* 대시보드로 돌아가기 버튼 */}
+              {/* 토큰충전하기 버튼 */}
               <Button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/token-subscription')}
                 className="w-full"
                 variant="secondary"
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
-                대시보드로 가기
+                토큰충전하기
               </Button>
 
 

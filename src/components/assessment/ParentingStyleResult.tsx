@@ -7,7 +7,6 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { supabase } from "@/integrations/supabase/client";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import ProductRecommendation from "../ProductRecommendation";
-import LegalSafetyNotice from "../LegalSafetyNotice";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ParentingStyleResultProps {
@@ -144,7 +143,15 @@ const ParentingStyleResult = ({
           <div className="w-20" />
         </div>
 
-        <LegalSafetyNotice onAccept={() => {}} testType="parenting_style" />
+        {/* 법적 안전 공지 */}
+        <div className="max-w-6xl mx-auto mb-8">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-blue-800 text-sm">
+              <span className="font-semibold">📊 검사 결과 (참고용)</span><br />
+              ⚠️ 이 결과는 참고용이며 의학적 진단이 절대 아닙니다. 지속적 어려움이 있으시면 반드시 전문의와 상담하세요.
+            </p>
+          </div>
+        </div>
 
         {/* Results Summary */}
         <div className="max-w-6xl mx-auto mb-8">

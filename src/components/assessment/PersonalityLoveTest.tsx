@@ -91,6 +91,77 @@ const questions = [
       { value: 'selective', label: '가까운 사람들과만 깊은 관계' },
       { value: 'adaptable', label: '상황에 따라 유연하게 적응' }
     ]
+  },
+  {
+    id: 'affection_expression',
+    question: '애정 표현을 어떻게 하시나요?',
+    options: [
+      { value: 'words', label: '달콤한 말과 편지로' },
+      { value: 'actions', label: '행동과 배려로' },
+      { value: 'gifts', label: '선물과 서프라이즈로' },
+      { value: 'time', label: '함께하는 시간으로' },
+      { value: 'touch', label: '스킨십과 포옹으로' }
+    ]
+  },
+  {
+    id: 'trust_building',
+    question: '신뢰를 쌓는 방식은?',
+    options: [
+      { value: 'gradual', label: '천천히 시간을 두고' },
+      { value: 'open', label: '처음부터 열린 마음으로' },
+      { value: 'proven', label: '행동으로 증명받아야' },
+      { value: 'intuitive', label: '직감을 믿고' }
+    ]
+  },
+  {
+    id: 'romance_importance',
+    question: '로맨스의 중요도는?',
+    options: [
+      { value: 'essential', label: '관계의 핵심 요소' },
+      { value: 'important', label: '중요하지만 균형 필요' },
+      { value: 'occasional', label: '가끔씩 있으면 좋음' },
+      { value: 'practical', label: '현실적인 것이 더 중요' }
+    ]
+  },
+  {
+    id: 'growth_mindset',
+    question: '관계 발전에 대한 믿음은?',
+    options: [
+      { value: 'constant', label: '끊임없이 발전해야 함' },
+      { value: 'stable', label: '안정적 유지가 최우선' },
+      { value: 'natural', label: '자연스럽게 흘러가야' },
+      { value: 'effort', label: '노력하면 더 좋아질 것' }
+    ]
+  },
+  {
+    id: 'stress_response',
+    question: '스트레스받을 때 관계에서는?',
+    options: [
+      { value: 'withdraw', label: '혼자 있는 시간 필요' },
+      { value: 'seek', label: '상대방에게 의지하고 싶음' },
+      { value: 'talk', label: '대화로 해결하려 함' },
+      { value: 'space', label: '서로 공간을 주고받음' }
+    ]
+  },
+  {
+    id: 'commitment_style',
+    question: '헌신과 약속에 대한 태도는?',
+    options: [
+      { value: 'total', label: '전적으로 헌신하는 타입' },
+      { value: 'balanced', label: '균형있게 헌신' },
+      { value: 'careful', label: '신중하게 약속' },
+      { value: 'flexible', label: '상황에 따라 유연하게' }
+    ]
+  },
+  {
+    id: 'intimacy_preference',
+    question: '가장 중요한 친밀감은?',
+    options: [
+      { value: 'emotional', label: '마음과 감정의 교감' },
+      { value: 'physical', label: '신체적 접촉과 스킨십' },
+      { value: 'intellectual', label: '생각과 가치관 공유' },
+      { value: 'spiritual', label: '영적·정신적 연결' }
+    ]
   }
 ];
 

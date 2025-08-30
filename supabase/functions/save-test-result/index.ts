@@ -39,11 +39,27 @@ serve(async (req) => {
 
     console.log('Saving test result:', { testType, userId: user.id, ageGroup });
 
+    // 사용자 프로필 조회 먼저
+    const { data: profile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (profileError || !profile) {
+      console.error('Profile not found:', profileError);
+      return new Response(
+        JSON.stringify({ error: '사용자 프로필을 찾을 수 없습니다.' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // 검사 결과를 assessments 테이블에 저장
     const { data: savedResult, error: saveError } = await supabaseClient
       .from('assessments')
       .insert({
-        profile_id: user.id, // 실제로는 profile_id를 사용해야 하지만 간단히 user_id 사용
+        profile_id: profile.id,
+        user_id: user.id,
         age_group: ageGroup || 'adult',
         results: {
           testType,

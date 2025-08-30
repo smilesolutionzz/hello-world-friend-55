@@ -98,6 +98,7 @@ const App = () => (
           <Route path="/focus-package" element={<FocusPackage />} />
           <Route path="/child-package" element={<ChildPackage />} />
           <Route path="/comprehensive-package" element={<ComprehensivePackage />} />
+          <Route path="/family" element={<ChildPackage />} />
           <Route path="/han-medicine-test" element={<HanMedicineTest />} />
           <Route path="/iep-generator" element={<IEPGenerator />} />
           <Route path="/iep-view/:id" element={<IEPView />} />

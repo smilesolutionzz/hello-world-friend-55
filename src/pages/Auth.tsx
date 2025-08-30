@@ -113,6 +113,28 @@ const Auth = () => {
       setLoading(false);
       return;
     }
+
+    // 전화번호 중복 체크 (선택사항이므로 입력된 경우에만)
+    if (signupData.phone) {
+      try {
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select('user_id')
+          .eq('phone', signupData.phone)
+          .single();
+        
+        if (existingProfile) {
+          setError("이미 사용 중인 전화번호입니다.");
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        // PGRST116 에러는 데이터가 없다는 뜻이므로 정상
+        if (error.code !== 'PGRST116') {
+          console.error('전화번호 중복 체크 오류:', error);
+        }
+      }
+    }
     
     try {
       const redirectUrl = `${window.location.origin}/dashboard`;
@@ -135,9 +157,13 @@ const Auth = () => {
       });
       
       if (error) {
-        setError(error.message);
+        if (error.message.includes('Phone number already exists')) {
+          setError("이미 사용 중인 전화번호입니다.");
+        } else {
+          setError(error.message);
+        }
       } else {
-        setSuccess("회원가입이 완료되었습니다! 이메일을 확인해주세요.");
+        setSuccess("회원가입이 완료되었습니다! 15토큰과 함께 시작하세요.");
         // Auth state change listener will handle referral processing after email confirmation
       }
     } catch (err) {

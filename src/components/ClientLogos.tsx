@@ -59,22 +59,22 @@ const ClientLogos = () => {
       bgColor: "bg-orange-50"
     },
     {
-      name: "윤서연 엄마",
-      age: "2세 딸",
-      content: "첫아이라 모든 게 걱정되었는데, 발달단계별 가이드를 받으니까 육아에 대한 불안감이 많이 줄었어요. 우리 아이가 정상적으로 잘 자라고 있다는 걸 알게 되어 안심이에요.",
-      rating: 5,
-      icon: Sparkles,
-      color: "text-purple-500",
-      bgColor: "bg-purple-50"
-    },
-    {
-      name: "조현우 아빠",
-      age: "9세 아들",
-      content: "아이가 감정조절을 못해서 매일 울고불고... 전문가 상담받고 가족 모두가 변했어요. 이제는 아이가 화날 때도 스스로 진정하고 대화로 해결해요. 가족이 더 가까워졌어요.",
+      name: "김미나님",
+      age: "50세 성인",
+      content: "부모님 갱년기로 감정 기복이 심해져서 가족들이 힘들어했는데, AIH 상담을 통해 갱년기 특성을 이해하고 소통법을 배웠어요. 이제는 서로를 이해하며 더 따뜻한 가족이 되었어요.",
       rating: 5,
       icon: Heart,
-      color: "text-red-500",
-      bgColor: "bg-red-50"
+      color: "text-rose-500",
+      bgColor: "bg-rose-50"
+    },
+    {
+      name: "이정수 팀장",
+      age: "45세 성인",
+      content: "팀을 이끌면서 번아웃이 심하게 와서 정말 힘들었는데, AIH를 통해 저의 리더십 스타일과 스트레스 패턴을 분석받고 나니 업무 효율도 높아지고 팀원들과의 관계도 개선되었어요.",
+      rating: 5,
+      icon: Target,
+      color: "text-indigo-600",
+      bgColor: "bg-indigo-50"
     },
     {
       name: "이성민",

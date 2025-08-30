@@ -129,6 +129,7 @@ export const useReferrals = () => {
   const applyReferralCode = async (code: string) => {
     try {
       setIsLoading(true);
+      console.log('Applying referral code:', code);
       
       const { data, error } = await supabase.functions.invoke('referral-system', {
         body: { 
@@ -136,6 +137,8 @@ export const useReferrals = () => {
           referralCode: code
         }
       });
+
+      console.log('Referral response:', { data, error });
 
       if (error) throw error;
 

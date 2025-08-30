@@ -117,6 +117,9 @@ const Auth = () => {
     try {
       const redirectUrl = `${window.location.origin}/dashboard`;
       
+      // 추천 코드가 있는지 확인
+      const referralCode = localStorage.getItem('referralCode');
+      
       const { error } = await supabase.auth.signUp({
         email: signupData.email,
         password: signupData.password,
@@ -125,7 +128,8 @@ const Auth = () => {
           data: {
             display_name: signupData.displayName,
             phone: signupData.phone,
-            birth_date: signupData.birthDate
+            birth_date: signupData.birthDate,
+            referral_code: referralCode || undefined
           }
         }
       });

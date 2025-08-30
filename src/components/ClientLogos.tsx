@@ -119,7 +119,7 @@ const ClientLogos = () => {
     { name: "한점미소발달센터", count: "남양주·부천점", icon: Heart },
     { name: "우아함발달센터", count: "안산·화성새솔점", icon: Sparkles },
     { name: "메이플 ABA 목동센터", count: "자폐전문", icon: Users },
-    { name: "엘림아동발달센터", count: "일산점", icon: Target },
+    { name: "엘림아동발달센터", count: "대구점", icon: Target },
     { name: "해웃음 심리발달센터", count: "마포점", icon: Heart },
     { name: "핌발달센터", count: "판교점", icon: Brain },
     { name: "정관언어발달센터", count: "부산점", icon: BookOpen },
@@ -140,6 +140,7 @@ const ClientLogos = () => {
     { name: "톡톡말톡톡 언어인지학습센터", count: "제주점", icon: Activity },
     { name: "가까이한의원", count: "송파점", icon: Leaf },
     { name: "인애한의원", count: "강남점", icon: Stethoscope },
+    { name: "해수원한의원", count: "부산점", icon: Leaf },
     { name: "굿모닝언어심리발달센터", count: "강남점", icon: Heart }
   ];
 

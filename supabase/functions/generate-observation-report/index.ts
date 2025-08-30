@@ -19,14 +19,13 @@ serve(async (req) => {
     // Generate HTML content for the report
     const htmlContent = generateReportHTML(sessionData, reportType);
 
-    // In a real implementation, you would use Puppeteer to generate PDF
-    // For now, we'll return the HTML content and simulate PDF generation
     const reportData = {
-      id: crypto.randomUUID(),
-      sessionId: sessionData.id,
-      reportType,
-      title: `${getDomainDisplayName(sessionData.domain)} 관찰기록서`,
-      content: {
+      success: true,
+      reportData: {
+        id: crypto.randomUUID(),
+        sessionId: sessionData.id,
+        reportType,
+        title: `${getDomainDisplayName(sessionData.domain)} 관찰기록서`,
         html: htmlContent,
         summary: generateExecutiveSummary(sessionData),
         charts: generateChartData(sessionData),

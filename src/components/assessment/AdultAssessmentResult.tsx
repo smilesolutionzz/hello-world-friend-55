@@ -25,10 +25,20 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
   
   const getCategoryName = (category: string) => {
     const names = {
-      depression: "우울 척도",
-      anxiety: "불안 척도",
-      personality: "성격 5요인",
-      workplace: "직장 적응도"
+      depression: "우울감 지수",
+      anxiety: "불안감 수준",
+      personality: "성격 특성",
+      workplace: "직장 적응도",
+      resilience: "회복력 지수",
+      leadership: "리더십 역량",
+      empathy: "공감 능력",
+      problem_solving: "문제해결력",
+      communication: "소통 능력",
+      focus: "집중력",
+      creativity: "창의성",
+      adaptability: "적응력",
+      persistence: "끈기",
+      collaboration: "협력 능력"
     };
     return names[category as keyof typeof names] || category;
   };

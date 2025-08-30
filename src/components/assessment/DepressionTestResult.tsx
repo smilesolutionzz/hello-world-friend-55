@@ -8,6 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import ProductRecommendation from "@/components/ProductRecommendation";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { useShareText, formatPsychTestResult } from '@/utils/shareUtils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface DepressionTestResultProps {
   results: {
@@ -38,19 +39,18 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
   useEffect(() => {
     const getAIAnalysis = async () => {
       try {
-        const response = await fetch('https://ybhvjfkpwjwyufaynuyq.supabase.co/functions/v1/depression-analyzer', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        const { data, error } = await supabase.functions.invoke('depression-analyzer', {
+          body: {
             results,
             answers: results.answers
-          }),
+          }
         });
 
-        if (response.ok) {
-          const data = await response.json();
+        if (error) {
+          throw error;
+        }
+        
+        if (data?.analysis) {
           setAiAnalysis(data.analysis);
         } else {
           setAiAnalysis("AI 분석을 가져오는 중 오류가 발생했습니다. 기본 분석을 제공합니다.");

@@ -43,6 +43,8 @@ serve(async (req) => {
     const requestBody = await req.json();
     const { observationData, domain, ageGroup, observerInfo } = requestBody;
     
+    console.log('Observation data received:', JSON.stringify(observationData, null, 2));
+    
     // Input validation
     if (!observationData || typeof observationData !== 'object') {
       return new Response(JSON.stringify({ error: '유효하지 않은 관찰 데이터입니다.' }), {

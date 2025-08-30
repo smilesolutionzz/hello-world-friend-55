@@ -407,7 +407,7 @@ const AICounselor = () => {
               <div className="secret-card-icon">🚨</div>
               <h3 className="text-white font-semibold mb-2">응급상담</h3>
               <p className="text-white/70 text-sm mb-3">24시간 위기상담</p>
-              <Badge className="bg-red-500/20 text-red-300 border-red-500/30">1577-0199</Badge>
+              <Badge className="bg-red-500/20 text-red-300 border-red-500/30">생명의전화</Badge>
             </div>
             
             <div className="secret-help-card" onClick={connectToExpert}>

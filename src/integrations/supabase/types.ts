@@ -917,6 +917,7 @@ export type Database = {
           is_crisis: boolean | null
           location: string | null
           media_files: Json | null
+          session_name: string | null
           severity: number | null
           tags: string[] | null
           title: string
@@ -934,6 +935,7 @@ export type Database = {
           is_crisis?: boolean | null
           location?: string | null
           media_files?: Json | null
+          session_name?: string | null
           severity?: number | null
           tags?: string[] | null
           title: string
@@ -951,6 +953,7 @@ export type Database = {
           is_crisis?: boolean | null
           location?: string | null
           media_files?: Json | null
+          session_name?: string | null
           severity?: number | null
           tags?: string[] | null
           title?: string

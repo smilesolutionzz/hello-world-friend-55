@@ -232,7 +232,7 @@ const ClientLogos = () => {
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
               <span className="text-lg">✨</span>
               <span className="text-sm sm:text-base font-medium text-foreground">
-                <span className="text-brand-gradient font-bold">27+</span> 전문기관 · <span className="text-brand-gradient font-bold">15,000+</span> 가족이 신뢰
+                <span className="text-brand-gradient font-bold">30+</span> 전문기관 · <span className="text-brand-gradient font-bold">15,000+</span> 가족이 신뢰
               </span>
             </div>
           </div>

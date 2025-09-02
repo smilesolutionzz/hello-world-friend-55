@@ -75,7 +75,9 @@ export function InstitutionPremiumSettings({
         setCurrentPlan({
           ...data,
           plan_type: data.plan_type as 'basic' | 'standard' | 'premium',
-          features: Array.isArray(data.features) ? data.features : []
+          features: Array.isArray(data.features) 
+            ? data.features.map(f => String(f))
+            : []
         });
       }
     } catch (error) {

@@ -19,7 +19,7 @@ import {
   ArrowUp,
   ArrowDown
 } from "lucide-react";
-import { EnhancedChart } from "@/components/ui/enhanced-chart";
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface AnalyticsData {
   date: string;
@@ -258,10 +258,14 @@ export function InstitutionAnalyticsDashboard({
               <CardTitle>방문자 추이</CardTitle>
             </CardHeader>
             <CardContent>
-              <EnhancedChart
-                data={chartData}
-                height={300}
-              />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                 {chartData.map((item, index) => (
+                   <div key={index} className="text-center">
+                     <div className="text-2xl font-bold text-primary">{item.value}</div>
+                     <div className="text-sm text-muted-foreground">{item.name}</div>
+                   </div>
+                 ))}
+              </div>
             </CardContent>
           </Card>
 
@@ -270,15 +274,20 @@ export function InstitutionAnalyticsDashboard({
               <CardHeader>
                 <CardTitle>문의 및 예약 현황</CardTitle>
               </CardHeader>
-              <CardContent>
-                <EnhancedChart
-                  type="bar"
-                  data={chartData}
-                  height={250}
-                  xAxisKey="date"
-                  yAxisKeys={['문의 요청', '상담 예약']}
-                />
-              </CardContent>
+               <CardContent>
+                 <div className="h-64 w-full">
+                   <ResponsiveContainer width="100%" height="100%">
+                     <BarChart data={chartData}>
+                       <CartesianGrid strokeDasharray="3 3" />
+                       <XAxis dataKey="name" />
+                       <YAxis />
+                       <Tooltip />
+                       <Bar dataKey="문의 요청" fill="#8884d8" />
+                       <Bar dataKey="상담 예약" fill="#82ca9d" />
+                     </BarChart>
+                   </ResponsiveContainer>
+                 </div>
+               </CardContent>
             </Card>
 
             <Card>
@@ -383,13 +392,17 @@ export function InstitutionAnalyticsDashboard({
               <CardTitle>전환율 추이</CardTitle>
             </CardHeader>
             <CardContent>
-              <EnhancedChart
-                type="area"
-                data={conversionChartData}
-                height={300}
-                xAxisKey="date"
-                yAxisKeys={['전환율']}
-              />
+               <div className="h-64 w-full">
+                 <ResponsiveContainer width="100%" height="100%">
+                   <LineChart data={conversionChartData}>
+                     <CartesianGrid strokeDasharray="3 3" />
+                     <XAxis dataKey="name" />
+                     <YAxis />
+                     <Tooltip />
+                     <Line type="monotone" dataKey="전환율" stroke="#8884d8" strokeWidth={2} />
+                   </LineChart>
+                 </ResponsiveContainer>
+               </div>
             </CardContent>
           </Card>
 

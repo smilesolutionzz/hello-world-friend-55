@@ -73,7 +73,7 @@ const HanMedicineTest = () => {
         </div>
 
         {/* 테스트 선택 카드 */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {/* 3분 간편 테스트 */}
           <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors cursor-pointer group">
             <div className="absolute top-4 right-4">
@@ -152,44 +152,6 @@ const HanMedicineTest = () => {
             </CardContent>
           </Card>
 
-          {/* 연애성격분석테스트 */}
-          <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors cursor-pointer group">
-            <div className="absolute top-4 right-4">
-              <Sparkles className="h-6 w-6 text-pink-500" />
-            </div>
-            <CardHeader>
-              <CardTitle className="text-xl flex items-center">
-                <Heart className="h-6 w-6 mr-2 text-pink-500" />
-                연애성격분석테스트
-              </CardTitle>
-              <CardDescription>
-                당신의 연애 성향과 이상적인 관계 스타일 분석
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm">소요시간: 5분</span>
-                </div>
-                <div className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
-                  2토큰
-                </div>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">✓ 연애 성격 유형 분석</p>
-                <p className="text-sm text-muted-foreground">✓ 이상적인 파트너 매칭</p>
-                <p className="text-sm text-muted-foreground">✓ 관계 개선 조언</p>
-                <p className="text-sm text-muted-foreground">✓ 연애 스타일 가이드</p>
-              </div>
-              <Button 
-                onClick={() => handleTestSelection('love')}
-                className="w-full group-hover:bg-primary/90"
-              >
-                연애성격분석 시작하기
-              </Button>
-            </CardContent>
-          </Card>
 
           {/* 프리미엄 종합 검사 */}
           <Card className="relative overflow-hidden border-2 border-amber-200 hover:border-amber-300 transition-colors cursor-pointer group bg-gradient-to-br from-amber-50 to-orange-50">
@@ -232,7 +194,7 @@ const HanMedicineTest = () => {
           <h2 className="text-2xl font-bold text-foreground mb-8">
             왜 AIH 체질분석 센터를 선택할까요?
           </h2>
-          <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             <Card className="text-center">
               <CardContent className="pt-6">
                 <Heart className="h-8 w-8 text-red-500 mx-auto mb-4" />
@@ -257,15 +219,6 @@ const HanMedicineTest = () => {
                 <h3 className="font-semibold mb-2">한의원 연계서비스</h3>
                 <p className="text-sm text-muted-foreground">
                   전국 AIH 제휴 한의원과 연결하여 비대면 진료 예약까지 원스톱 서비스
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <Star className="h-8 w-8 text-yellow-500 mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">체질별 관리법</h3>
-                <p className="text-sm text-muted-foreground">
-                  사상체질에 맞는 식이요법, 운동법, 생활습관 개선안을 제공합니다
                 </p>
               </CardContent>
             </Card>

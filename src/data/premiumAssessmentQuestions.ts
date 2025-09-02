@@ -1112,6 +1112,118 @@ export const teenGrowthCapacityAssessmentQuestions = {
   ]
 };
 
+// 연애성격분석테스트 질문 (체질분석페이지에서 이동)
+export const lovePersonalityAssessmentQuestions = {
+  passionate_romantic: [
+    {
+      id: "love_pr01",
+      text: "연애에서 감정적인 교감이 가장 중요합니다",
+      category: "passionate_romantic"
+    },
+    {
+      id: "love_pr02", 
+      text: "로맨틱한 분위기와 이벤트를 중요하게 생각합니다",
+      category: "passionate_romantic"
+    },
+    {
+      id: "love_pr03",
+      text: "사랑할 때 모든 것을 쏟아부치는 편입니다",
+      category: "passionate_romantic"
+    },
+    {
+      id: "love_pr04",
+      text: "첫눈에 반하는 운명적인 만남을 믿습니다",
+      category: "passionate_romantic"
+    },
+    {
+      id: "love_pr05",
+      text: "연인과 함께 있을 때 세상이 다르게 보입니다",
+      category: "passionate_romantic"
+    }
+  ],
+  stable_companion: [
+    {
+      id: "love_sc01",
+      text: "연애보다는 결혼을 고려한 안정적인 관계를 선호합니다",
+      category: "stable_companion"
+    },
+    {
+      id: "love_sc02",
+      text: "상대방의 성격과 가치관을 중요하게 생각합니다",
+      category: "stable_companion"
+    },
+    {
+      id: "love_sc03",
+      text: "갑작스런 변화보다는 예측 가능한 관계를 좋아합니다",
+      category: "stable_companion"
+    },
+    {
+      id: "love_sc04",
+      text: "연애할 때도 개인 시간과 일상을 중요하게 여깁니다",
+      category: "stable_companion"
+    },
+    {
+      id: "love_sc05",
+      text: "서로 의지하며 함께 성장해나가는 관계를 원합니다",
+      category: "stable_companion"
+    }
+  ],
+  independent_individualist: [
+    {
+      id: "love_ii01",
+      text: "연애를 하더라도 독립적인 자아를 유지하려고 합니다",
+      category: "independent_individualist"
+    },
+    {
+      id: "love_ii02",
+      text: "상대방에게 간섭받지 않는 자유로운 관계를 선호합니다",
+      category: "independent_individualist"
+    },
+    {
+      id: "love_ii03",
+      text: "연인보다는 친구 같은 편안한 관계가 좋습니다",
+      category: "independent_individualist"
+    },
+    {
+      id: "love_ii04",
+      text: "각자의 꿈과 목표를 응원하는 관계를 중요하게 생각합니다",
+      category: "independent_individualist"
+    },
+    {
+      id: "love_ii05",
+      text: "질투나 소유욕보다는 신뢰를 바탕으로 한 관계를 원합니다",
+      category: "independent_individualist"
+    }
+  ],
+  realistic_planner: [
+    {
+      id: "love_rp01",
+      text: "연애할 때도 현실적인 조건들을 고려합니다",
+      category: "realistic_planner"
+    },
+    {
+      id: "love_rp02",
+      text: "감정만으로는 오래갈 수 없다고 생각합니다",
+      category: "realistic_planner"
+    },
+    {
+      id: "love_rp03",
+      text: "결혼과 미래에 대한 구체적인 계획을 세우는 것이 중요합니다",
+      category: "realistic_planner"
+    },
+    {
+      id: "love_rp04",
+      text: "상대방의 경제력이나 직업 등을 고려합니다",
+      category: "realistic_planner"
+    },
+    {
+      id: "love_rp05",
+      text: "충동적인 연애보다는 신중하게 접근하는 편입니다",
+      category: "realistic_planner"
+    }
+  ]
+};
+
 // 평가 정보 객체 (인기도 순으로 재배치)
 export const premiumAssessmentInfo = {
   // ✨ NEW 프리미엄 ADHD 검사 (최상단 배치)
@@ -1166,6 +1278,17 @@ export const premiumAssessmentInfo = {
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
     rank: 4,
     badge: "📈 4위"
+  },
+  love_personality: {
+    title: "연애성격분석테스트",
+    subtitle: "나의 연애 스타일과 성격 유형 분석",
+    description: "열정적인 로맨티스트, 안정적인 동반자, 독립적인 개인주의자, 계획적인 현실주의자의 4가지 연애 유형으로 분석합니다",
+    duration: "약 5-7분", 
+    questions_count: 20,
+    premium_features: ["4가지 연애 유형 분석", "이상적인 파트너 매칭", "관계 개선 조언", "연애 스타일 가이드"],
+    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
+    rank: 5,
+    badge: "💕 인기"
   },
   work_stress: {
     title: "직장 스트레스 번아웃 검사",

@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, ShoppingCart, Star, Gift } from "lucide-react";
+import childCounselingImage from "@/assets/product-child-counseling.jpg";
+import adultCounselingImage from "@/assets/product-adult-counseling.jpg";
 
 interface ProductRecommendationProps {
   category: string;
@@ -12,88 +14,54 @@ interface ProductRecommendationProps {
 
 const ProductRecommendation = ({ category, severity, ageGroup, domain }: ProductRecommendationProps) => {
   const getRecommendedProducts = () => {
-    // 카테고리별 맞춤 상품 추천 로직
-    const baseProducts = [
+    // 실제 스마일솔루션 상품 정보
+    const actualProducts = [
       {
         id: 1,
-        name: "심리상담 전문서적 세트",
-        description: "전문가가 추천하는 심리건강 관리 도서",
-        price: "29,000원",
-        originalPrice: "35,000원",
-        image: "/placeholder.svg",
-        rating: 4.8,
-        category: ["depression", "anxiety", "adult", "all"]
+        name: "심리상담 패키지 (아동/청소년)",
+        description: "아동과 청소년을 위한 전문 심리상담 서비스",
+        price: "150,000원",
+        originalPrice: "200,000원",
+        image: childCounselingImage,
+        rating: 4.9,
+        category: ["child", "development", "adhd", "counseling"]
       },
       {
         id: 2,
-        name: "명상 및 마음챙김 키트",
-        description: "스트레스 해소와 정서적 안정을 위한 명상 도구",
-        price: "45,000원",
-        originalPrice: "55,000원",
-        image: "/placeholder.svg",
-        rating: 4.6,
-        category: ["anxiety", "stress", "meditation", "all"]
+        name: "심리상담 패키지 (성인)",
+        description: "흔들리는 지금, 정확한 나를 알아보는 시간",
+        price: "150,000원",
+        originalPrice: "200,000원",
+        image: adultCounselingImage,
+        rating: 4.8,
+        category: ["adult", "career", "anxiety", "depression", "counseling"]
       },
       {
         id: 3,
-        name: "아동발달 교육완구 세트",
-        description: "연령별 맞춤 발달 촉진 교육용 완구",
-        price: "68,000원",
-        originalPrice: "85,000원",
-        image: "/placeholder.svg",
-        rating: 4.9,
-        category: ["child", "development", "education"]
-      },
-      {
-        id: 4,
-        name: "집중력 향상 브레인 트레이닝 보드게임",
-        description: "ADHD 아동을 위한 집중력 개선 게임",
-        price: "32,000원",
-        originalPrice: "40,000원",
-        image: "/placeholder.svg",
+        name: "종합 심리분석 패키지",
+        description: "전문가 상담과 맞춤형 심리 솔루션 제공",
+        price: "120,000원",
+        originalPrice: "160,000원",
+        image: adultCounselingImage,
         rating: 4.7,
-        category: ["adhd", "concentration", "child"]
-      },
-      {
-        id: 5,
-        name: "감정조절 및 소통 카드 게임",
-        description: "가족 관계 개선과 감정 표현 능력 향상",
-        price: "25,000원",
-        originalPrice: "30,000원",
-        image: "/placeholder.svg",
-        rating: 4.5,
-        category: ["family", "communication", "emotion"]
-      },
-      {
-        id: 6,
-        name: "수면의 질 개선 아로마 테라피 세트",
-        description: "우울감과 불안감 완화를 위한 천연 아로마",
-        price: "38,000원",
-        originalPrice: "48,000원",
-        image: "/placeholder.svg",
-        rating: 4.4,
-        category: ["depression", "sleep", "aromatherapy"]
+        category: ["all", "comprehensive", "counseling"]
       }
     ];
 
-    // 카테고리와 심각도에 따른 필터링
-    let filteredProducts = baseProducts.filter(product => {
-      if (category === "adhd") return product.category.includes("adhd") || product.category.includes("concentration");
-      if (category === "depression") return product.category.includes("depression") || product.category.includes("meditation");
-      if (category === "anxiety") return product.category.includes("anxiety") || product.category.includes("meditation");
-      if (category === "adult") return product.category.includes("adult") || product.category.includes("all");
-      if (category === "child") return product.category.includes("child") || product.category.includes("development");
-      if (domain === "child_development") return product.category.includes("child") || product.category.includes("development");
-      if (domain === "family") return product.category.includes("family") || product.category.includes("communication");
-      return product.category.includes("all");
-    });
-
-    // 심각도가 높으면 더 전문적인 제품 우선 추천
-    if (severity === "심한 우울" || severity === "심각한 수준" || severity === "심각한 증상") {
-      filteredProducts = filteredProducts.sort((a, b) => b.rating - a.rating);
+    // 카테고리와 연령대에 따른 필터링
+    let filteredProducts = actualProducts;
+    
+    if (ageGroup === "child" || category === "child" || domain === "child_development") {
+      filteredProducts = actualProducts.filter(product => 
+        product.category.includes("child") || product.category.includes("all")
+      );
+    } else if (ageGroup === "adult" || category === "adult") {
+      filteredProducts = actualProducts.filter(product => 
+        product.category.includes("adult") || product.category.includes("all")
+      );
     }
 
-    return filteredProducts.slice(0, 3);
+    return filteredProducts.slice(0, 2);
   };
 
   const recommendedProducts = getRecommendedProducts();
@@ -115,12 +83,12 @@ const ProductRecommendation = ({ category, severity, ageGroup, domain }: Product
           {recommendedProducts.map((product) => (
             <Card key={product.id} className="border border-primary/20 hover:border-primary/40 transition-colors">
               <CardContent className="p-4">
-                <div className="aspect-square bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100"></div>
-                  <div className="relative z-10 text-center">
-                    <ShoppingCart className="h-8 w-8 text-primary mx-auto mb-1" />
-                    <div className="text-xs text-muted-foreground font-medium">상품 이미지</div>
-                  </div>
+                <div className="aspect-square rounded-lg mb-3 overflow-hidden">
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 
                 <div className="space-y-2">

@@ -112,7 +112,7 @@ const ProductSidebar = () => {
   };
 
   return (
-    <div className="w-72 bg-card text-card-foreground h-[calc(100vh-4rem)] p-4 overflow-y-auto flex flex-col border-r border-border shadow-lg">
+    <div className="w-72 h-[calc(100vh-4rem)] p-4 overflow-y-auto flex flex-col">
       {/* Hook Section */}
       <div className="mb-6 p-4 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30">
         <div className="flex items-center gap-2 mb-2">

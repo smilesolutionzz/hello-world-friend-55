@@ -22,6 +22,16 @@ export const ChildPackage = () => {
     },
     {
       id: 2,
+      title: '주의집중력 자가체크',
+      duration: '8분',
+      tokens: 2,
+      status: 'ADHD체크',
+      statusColor: 'bg-orange-500',
+      description: 'ADHD 증상 조기 발견',
+      path: '/assessment?type=adhd'
+    },
+    {
+      id: 3,
       title: '아동 종합발달검사',
       duration: '25분',
       tokens: TOKEN_COSTS.OBSERVATION_ANALYSIS,
@@ -34,6 +44,7 @@ export const ChildPackage = () => {
 
   const benefits = [
     '발달단계별 정확한 평가',
+    'ADHD 증상 조기 발견',
     '조기개입 필요성 판단',
     '가정에서 할 수 있는 훈련',
     '전문기관 연계 서비스'

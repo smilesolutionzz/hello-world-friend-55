@@ -12,41 +12,52 @@ export const FocusPackage = () => {
   const focusTests = [
     {
       id: 1,
-      title: 'ADHD 자가진단',
-      duration: '12분',
-      tokens: 3,
-      status: '집중력',
-      statusColor: 'bg-purple-500',
-      description: 'ADHD 정확한 선별진단',
+      title: '주의집중력 자가체크',
+      duration: '8분',
+      tokens: 2,
+      status: 'ADHD체크',
+      statusColor: 'bg-orange-500',
+      description: 'ADHD 증상 및 집중력 수준 측정',
       path: '/assessment?type=adhd'
     },
     {
       id: 2,
-      title: '주의력 종합평가',
-      duration: '30분',
-      tokens: TOKEN_COSTS.OBSERVATION_ANALYSIS,
-      status: '정밀진단',
-      statusColor: 'bg-indigo-500',
-      description: '집중력 향상 훈련법',
-      path: '/premium-assessment?type=attention'
+      title: '5차원 성격 분석',
+      duration: '5분',
+      tokens: 2,
+      status: '🔥 1위',
+      statusColor: 'bg-red-500',
+      description: '집중력에 영향하는 성격 특성 분석',
+      path: '/assessment?test=bigfive'
     },
     {
       id: 3,
-      title: '행동관찰 일지',
-      duration: '지속적',
-      tokens: 3,
-      status: '장기관리',
+      title: '마음압박지수 측정',
+      duration: '3분',
+      tokens: 2,
+      status: '🔥 3위',
+      statusColor: 'bg-yellow-500',
+      description: '집중 방해 요소인 스트레스 측정',
+      path: '/assessment?test=stress'
+    },
+    {
+      id: 4,
+      title: 'AI 집중력 코칭',
+      duration: '30분',
+      tokens: 0,
+      status: '맞춤코칭',
       statusColor: 'bg-green-500',
-      description: '행동패턴 분석 및 개선',
-      path: '/observation'
+      description: '개인별 집중력 향상 전략 제공',
+      path: '/ai-counselor?mode=focus'
     }
   ];
 
   const benefits = [
-    'ADHD 정확한 선별진단',
-    '집중력 향상 훈련법',
-    '행동패턴 분석 및 개선',
-    '가족 전체 관리 솔루션'
+    'ADHD 증상 조기 발견',
+    '집중력 방해 요소 파악',
+    '성격별 맞춤 학습법 제공',
+    '일상 집중력 향상 전략',
+    '전문가 연계 상담 지원'
   ];
 
   const handleStartTest = (testPath: string) => {

@@ -3,61 +3,61 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Brain, Star, CheckCircle } from 'lucide-react';
+import { Clock, Heart, Star, CheckCircle, Users } from 'lucide-react';
 import { TOKEN_COSTS } from '@/constants/tokenCosts';
 
-export const StressPackage = () => {
+export const RelationshipPackage = () => {
   const navigate = useNavigate();
 
-  const stressTests = [
+  const relationshipTests = [
     {
       id: 1,
-      title: '3분 스트레스 체크',
-      duration: '3분',
-      tokens: TOKEN_COSTS.PSYCHOLOGICAL_TEST,
-      status: '빠른체크',
-      statusColor: 'bg-blue-500',
-      description: '스트레스 수준 정확한 측정',
-      path: '/assessment'
+      title: '관계유형 진단',
+      duration: '4분',
+      tokens: 2,
+      status: '🔥 2위',
+      statusColor: 'bg-orange-500',
+      description: '나의 인간관계 패턴과 유형 분석',
+      path: '/assessment?test=attachment'
     },
     {
       id: 2,
-      title: '직장 스트레스 검사',
-      duration: '15분',
-      tokens: TOKEN_COSTS.OBSERVATION_ANALYSIS,
-      status: '직장인 추천',
-      statusColor: 'bg-purple-500',
-      description: '결과에 따라 심화 검사 제공',
-      path: '/assessment'
-    },
-    {
-      id: 3,
       title: '자아가치 측정',
       duration: '4분',
       tokens: 2,
-      status: '자존감',
-      statusColor: 'bg-green-500',
-      description: '자존감 수준과 향상 가이드',
+      status: '⭐ 추천',
+      statusColor: 'bg-purple-500',
+      description: '건강한 관계의 기초인 자존감 측정',
       path: '/assessment?test=selfesteem'
     },
     {
+      id: 3,
+      title: '5차원 성격 분석',
+      duration: '5분',
+      tokens: 2,
+      status: '🔥 1위',
+      statusColor: 'bg-red-500',
+      description: '관계에서 나타나는 성격 특성 파악',
+      path: '/assessment?test=bigfive'
+    },
+    {
       id: 4,
-      title: 'AI 스트레스 상담',
+      title: 'AI 관계 코칭',
       duration: '30분',
       tokens: 0,
-      status: '즉시상담',
+      status: '맞춤코칭',
       statusColor: 'bg-green-500',
-      description: '필요시 전문가 상담',
-      path: '/ai-counselor'
+      description: '개인별 관계 개선 전략 제공',
+      path: '/ai-counselor?mode=relationship'
     }
   ];
 
   const benefits = [
-    '스트레스 수준 정확한 측정',
-    '자존감 향상 맞춤 가이드',
-    '개인별 맞춤 해결책 제공',
-    '즉시 실행 가능한 관리법',
-    '24시간 AI 상담 지원'
+    '나의 관계 패턴 정확한 진단',
+    '건강한 관계 형성 가이드',
+    '자존감 향상 맞춤 솔루션',
+    '갈등 해결 구체적 방법',
+    '연애/결혼 상담 전문가 연계'
   ];
 
   const handleStartTest = (testPath: string) => {
@@ -67,23 +67,21 @@ export const StressPackage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="p-3 rounded-full bg-primary/10">
-              <Brain className="w-8 h-8 text-primary" />
+            <div className="p-3 rounded-full bg-pink-500/10">
+              <Heart className="w-8 h-8 text-pink-500" />
             </div>
             <h1 className="text-3xl font-bold text-foreground">
-              스트레스 관리 <span className="text-primary">맞춤 패키지</span>
+              연애/관계 <span className="text-pink-500">전문 패키지</span>
             </h1>
           </div>
           <p className="text-muted-foreground text-lg">
-            일상 스트레스, 번아웃, 피로감에 최적화된 솔루션
+            인간관계, 연애, 자존감, 소통에 특화된 종합 솔루션
           </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Left Column - Test Courses */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-6">
               <Star className="w-5 h-5 text-yellow-500" />
@@ -91,12 +89,12 @@ export const StressPackage = () => {
             </div>
             
             <div className="space-y-4">
-              {stressTests.map((test) => (
+              {relationshipTests.map((test) => (
                 <Card key={test.id} className="relative overflow-hidden border-border/50 hover:border-primary/20 transition-all duration-300">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-pink-500/10 text-pink-500 font-semibold">
                           {test.id}
                         </div>
                         <div>
@@ -114,7 +112,7 @@ export const StressPackage = () => {
                               ) : (
                                 <span className="text-green-500 font-medium">무료</span>
                               )}
-                              <span className="text-xs">📈</span>
+                              <span className="text-xs">💖</span>
                             </div>
                           </div>
                         </div>
@@ -128,7 +126,7 @@ export const StressPackage = () => {
                         </Badge>
                         <Button 
                           onClick={() => handleStartTest(test.path)}
-                          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0"
+                          className="bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white border-0"
                         >
                           시작하기
                           <span className="ml-1">→</span>
@@ -141,9 +139,7 @@ export const StressPackage = () => {
             </div>
           </div>
 
-          {/* Right Column - Benefits & Recommendations */}
           <div className="space-y-6">
-            {/* Benefits */}
             <Card className="border-border/50">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-4">
@@ -161,35 +157,31 @@ export const StressPackage = () => {
               </CardContent>
             </Card>
 
-            {/* Recommendations */}
-            <Card className="border-border/50 bg-gradient-to-br from-primary/5 to-primary/10">
+            <Card className="border-border/50 bg-gradient-to-br from-pink-500/5 to-rose-500/10">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 rounded-full bg-yellow-500/10">
-                    <Star className="w-4 h-4 text-yellow-500" />
+                  <div className="p-2 rounded-full bg-pink-500/10">
+                    <Heart className="w-4 h-4 text-pink-500" />
                   </div>
-                  <h3 className="font-semibold">추천 순서</h3>
+                  <h3 className="font-semibold">이런 분께 추천</h3>
                 </div>
                 <div className="space-y-2 text-sm text-muted-foreground">
-                  <p><strong>처음이신다면:</strong></p>
-                  <p>• 기본 검사로 시작</p>
-                  <p>• 결과에 따라 심화 검사</p>
-                  <p>• 필요시 전문가 상담</p>
+                  <p>• 연애/결혼 관계에서 어려움을 겪는 분</p>
+                  <p>• 인간관계가 항상 힘든 분</p>
+                  <p>• 자존감이 낮아 관계가 어려운 분</p>
+                  <p>• 소통과 갈등 해결이 어려운 분</p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Expert Support */}
             <Card className="border-border/50">
               <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 rounded-full bg-green-500/10 mx-auto mb-3 flex items-center justify-center">
-                  <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                    <span className="text-white text-xs">👤</span>
-                  </div>
+                <div className="w-12 h-12 rounded-full bg-pink-500/10 mx-auto mb-3 flex items-center justify-center">
+                  <Users className="w-6 h-6 text-pink-500" />
                 </div>
-                <h3 className="font-semibold mb-2">전문가 지원</h3>
+                <h3 className="font-semibold mb-2">전문가 상담</h3>
                 <p className="text-sm text-muted-foreground">
-                  모든 테스트 결과는 심리상담 전문가가 검토하여 정확한 피드백을 제공합니다.
+                  관계 전문 상담사, 부부상담사, 연애코치 등과 연계하여 실질적인 관계 개선을 도와드립니다.
                 </p>
               </CardContent>
             </Card>

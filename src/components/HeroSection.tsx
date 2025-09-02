@@ -103,7 +103,7 @@ const HeroSection = () => {
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto leading-[1.6] text-center">
               현재 가장 고민되는 상황에 맞는 전문 패키지를 선택하세요
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto mb-4">
               <Button 
                 size="lg"
                 onClick={() => navigate('/child-package')}
@@ -111,7 +111,7 @@ const HeroSection = () => {
               >
                 <span className="text-2xl">👶</span>
                 <span className="text-sm font-bold">아동발달</span>
-                <span className="text-xs opacity-90">언어·인지·사회성</span>
+                <span className="text-xs opacity-90">언어·ADHD·종합</span>
               </Button>
               <Button 
                 size="lg"
@@ -120,7 +120,7 @@ const HeroSection = () => {
               >
                 <span className="text-2xl">😰</span>
                 <span className="text-sm font-bold">스트레스</span>
-                <span className="text-xs opacity-90">직장·일상·관계</span>
+                <span className="text-xs opacity-90">직장·자존감·관리</span>
               </Button>
               <Button 
                 size="lg"
@@ -139,6 +139,35 @@ const HeroSection = () => {
                 <span className="text-2xl">😔</span>
                 <span className="text-sm font-bold">우울·감정</span>
                 <span className="text-xs opacity-90">기분장애·치유</span>
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+              <Button 
+                size="lg"
+                onClick={() => navigate('/focus-package')}
+                className="flex-1 p-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-amber-600 transition-all shadow-lg h-auto flex flex-col gap-2"
+              >
+                <span className="text-2xl">🎯</span>
+                <span className="text-sm font-bold">집중력/ADHD</span>
+                <span className="text-xs opacity-90">성격·스트레스·코칭</span>
+              </Button>
+              <Button 
+                size="lg"
+                onClick={() => navigate('/relationship-package')}
+                className="flex-1 p-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-medium hover:from-pink-600 hover:to-rose-600 transition-all shadow-lg h-auto flex flex-col gap-2"
+              >
+                <span className="text-2xl">💖</span>
+                <span className="text-sm font-bold">연애/관계</span>
+                <span className="text-xs opacity-90">관계유형·자존감</span>
+              </Button>
+              <Button 
+                size="lg"
+                onClick={() => navigate('/career-package')}
+                className="flex-1 p-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-cyan-600 transition-all shadow-lg h-auto flex flex-col gap-2"
+              >
+                <span className="text-2xl">💼</span>
+                <span className="text-sm font-bold">진로/적성</span>
+                <span className="text-xs opacity-90">흥미·성격·스트레스</span>
               </Button>
             </div>
             <div className="mt-4 text-center">

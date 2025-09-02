@@ -112,53 +112,53 @@ const ProductSidebar = () => {
   };
 
   return (
-    <div className="w-72 h-[calc(100vh-4rem)] p-4 overflow-y-auto flex flex-col">
+    <div className="w-72 bg-black text-white h-[calc(100vh-4rem)] p-4 overflow-y-auto flex flex-col border-r border-gray-700">
       {/* Hook Section */}
-      <div className="mb-6 p-4 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30">
+      <div className="mb-6 p-4 bg-gray-800/80 rounded-lg border border-gray-600">
         <div className="flex items-center gap-2 mb-2">
           <Zap className="w-5 h-5 text-yellow-400" />
           <h3 className="text-lg font-bold text-yellow-400">왜 AIHPRO인가?</h3>
         </div>
-        <div className="space-y-2 text-sm text-muted-foreground">
-          <p>✅ <span className="text-green-600 font-semibold">3분</span>만에 전문가급 분석</p>
-          <p>✅ <span className="text-blue-600 font-semibold">30+</span> 전문기관과 제휴</p>
-          <p>✅ <span className="text-purple-600 font-semibold">15,000+</span> 가족이 신뢰</p>
+        <div className="space-y-2 text-base font-medium">
+          <p className="text-gray-100">✅ <span className="text-green-400 font-bold">3분</span>만에 전문가급 분석</p>
+          <p className="text-gray-100">✅ <span className="text-blue-400 font-bold">30+</span> 전문기관과 제휴</p>
+          <p className="text-gray-100">✅ <span className="text-purple-400 font-bold">15,000+</span> 가족이 신뢰</p>
         </div>
       </div>
 
       {/* Story Section */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-brand-gradient mb-3">누구를 위한 검사인가요?</h2>
+        <h2 className="text-xl font-bold text-white mb-3">누구를 위한 검사인가요?</h2>
         <div className="grid grid-cols-1 gap-2 text-sm">
-          <div className="p-3 bg-muted/50 rounded-lg border-l-4 border-pink-500">
-            <p className="text-pink-600 font-medium">👶 우리 아이 발달</p>
-            <p className="text-muted-foreground text-xs">언어·인지·사회성 발달 체크</p>
+          <div className="p-3 bg-gray-800/60 rounded-lg border-l-4 border-pink-500">
+            <p className="text-pink-400 font-bold text-base">👶 우리 아이 발달</p>
+            <p className="text-gray-300 text-sm">언어·인지·사회성 발달 체크</p>
           </div>
-          <div className="p-3 bg-muted/50 rounded-lg border-l-4 border-blue-500">
-            <p className="text-blue-600 font-medium">👤 성인 심리상태</p>
-            <p className="text-muted-foreground text-xs">스트레스·우울·불안 관리</p>
+          <div className="p-3 bg-gray-800/60 rounded-lg border-l-4 border-blue-500">
+            <p className="text-blue-400 font-bold text-base">👤 성인 심리상태</p>
+            <p className="text-gray-300 text-sm">스트레스·우울·불안 관리</p>
           </div>
-          <div className="p-3 bg-muted/50 rounded-lg border-l-4 border-orange-500">
-            <p className="text-orange-600 font-medium">👴 부모님 인지</p>
-            <p className="text-muted-foreground text-xs">기억력·인지능력 조기 점검</p>
+          <div className="p-3 bg-gray-800/60 rounded-lg border-l-4 border-orange-500">
+            <p className="text-orange-400 font-bold text-base">👴 부모님 인지</p>
+            <p className="text-gray-300 text-sm">기억력·인지능력 조기 점검</p>
           </div>
         </div>
       </div>
 
       {/* Offer Section - 단계별 제안 */}
       <div className="space-y-3">
-        <h3 className="text-lg font-bold text-green-600 mb-3">💎 단계별 솔루션</h3>
+        <h3 className="text-lg font-bold text-white mb-3">💎 단계별 솔루션</h3>
         
         {/* STEP 1: 무료 체험 */}
-        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+        <div className="p-4 bg-gray-800/80 rounded-lg border border-gray-600">
           <div className="flex items-center gap-2 mb-2">
-            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">STEP 1</span>
-            <span className="text-green-700 font-bold">무료 체험</span>
+            <span className="bg-green-500 text-white text-sm px-3 py-1 rounded-full font-bold">STEP 1</span>
+            <span className="text-white font-bold text-base">무료 체험</span>
           </div>
           <div className="space-y-2">
             <Button 
               size="sm"
-              className="w-full bg-green-600 hover:bg-green-700 text-white text-xs"
+              className="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium"
               onClick={() => navigate('/ai-counselor')}
             >
               🤖 AI 상담사 (무료)
@@ -166,7 +166,7 @@ const ProductSidebar = () => {
             <Button 
               size="sm"
               variant="outline"
-              className="w-full border-green-500 text-green-700 hover:bg-green-100 text-xs"
+              className="w-full border-green-500 text-green-400 hover:bg-green-900/30 text-sm font-medium bg-transparent"
               onClick={() => navigate('/assessment')}
             >
               ⚡ 3분 심리검사 (2토큰)
@@ -175,22 +175,22 @@ const ProductSidebar = () => {
         </div>
 
         {/* STEP 2: 정밀 분석 */}
-        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <div className="p-4 bg-gray-800/80 rounded-lg border border-gray-600">
           <div className="flex items-center gap-2 mb-2">
-            <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-bold">STEP 2</span>
-            <span className="text-blue-700 font-bold">정밀 분석</span>
+            <span className="bg-blue-500 text-white text-sm px-3 py-1 rounded-full font-bold">STEP 2</span>
+            <span className="text-white font-bold text-base">정밀 분석</span>
           </div>
           <div className="space-y-2">
             <Button 
               size="sm"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium"
               onClick={() => navigate('/observation')}
             >
               📝 관찰일지 (3토큰)
             </Button>
             <Button 
               size="sm"
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium"
               onClick={() => navigate('/premium-assessment')}
             >
               👑 프리미엄 검사 (8토큰)
@@ -199,22 +199,22 @@ const ProductSidebar = () => {
         </div>
 
         {/* STEP 3: 전문가 상담 */}
-        <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+        <div className="p-4 bg-gray-800/80 rounded-lg border border-gray-600">
           <div className="flex items-center gap-2 mb-2">
-            <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">STEP 3</span>
-            <span className="text-orange-700 font-bold">전문가 케어</span>
+            <span className="bg-orange-500 text-white text-sm px-3 py-1 rounded-full font-bold">STEP 3</span>
+            <span className="text-white font-bold text-base">전문가 케어</span>
           </div>
           <div className="space-y-2">
             <Button 
               size="sm"
-              className="w-full bg-orange-600 hover:bg-orange-700 text-white text-xs"
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium"
               onClick={() => navigate('/expert-hiring')}
             >
               👨‍⚕️ 20분 상담 (150토큰)
             </Button>
             <Button 
               size="sm"
-              className="w-full bg-red-600 hover:bg-red-700 text-white text-xs"
+              className="w-full bg-red-600 hover:bg-red-700 text-white text-sm font-medium"
               onClick={() => navigate('/experts')}
             >
               📊 박사급 리포트 (200토큰)
@@ -232,8 +232,8 @@ const ProductSidebar = () => {
                 <Star className="w-8 h-8 text-yellow-300" />
               </div>
             </div>
-            <h3 className="font-bold mb-1">무료 체험 이벤트</h3>
-            <p className="text-xs text-purple-100 mb-3">
+            <h3 className="font-bold mb-1 text-lg">무료 체험 이벤트</h3>
+            <p className="text-sm text-purple-100 mb-3 font-medium">
               회원가입시 10토큰 지급되고
               <br />매일 로그인시 2토큰씩 추가지급됩니다. 궁금증을 해결하세요
             </p>
@@ -249,15 +249,15 @@ const ProductSidebar = () => {
       </div>
 
       {/* Bottom CTA */}
-      <div className="mt-6 pt-4 border-t border-border pb-4">
+      <div className="mt-6 pt-4 border-t border-gray-600 pb-4">
         <Button 
-          className="w-full btn-brand mb-2"
+          className="w-full btn-brand mb-2 text-base font-semibold"
           onClick={() => navigate('/token-subscription')}
         >
           <Gift className="w-4 h-4 mr-2" />
           구독 관리
         </Button>
-        <p className="text-xs text-muted-foreground text-center">
+        <p className="text-sm text-gray-300 text-center font-medium">
           토큰팩 또는 무제한 플랜으로 업그레이드하세요
         </p>
       </div>

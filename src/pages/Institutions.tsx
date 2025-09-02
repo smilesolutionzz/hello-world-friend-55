@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { InstitutionCard } from "@/components/institutions/InstitutionCard";
 import { InstitutionFilters } from "@/components/institutions/InstitutionFilters";
 import { InstitutionMap } from "@/components/institutions/InstitutionMap";
+import { supabase } from "@/integrations/supabase/client";
 import { mockInstitutions } from "@/data/mockInstitutions";
-import { Building, MapPin, Users, Award, ArrowLeft } from "lucide-react";
+import { Building, MapPin, Users, Award, ArrowLeft, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface FilterState {
@@ -21,9 +22,10 @@ interface FilterState {
 
 export default function Institutions() {
   const navigate = useNavigate();
-  const [institutions, setInstitutions] = useState(mockInstitutions);
-  const [filteredInstitutions, setFilteredInstitutions] = useState(mockInstitutions);
+  const [institutions, setInstitutions] = useState<any[]>([]);
+  const [filteredInstitutions, setFilteredInstitutions] = useState<any[]>([]);
   const [selectedInstitution, setSelectedInstitution] = useState<string | undefined>();
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     institution_type: '',
@@ -33,6 +35,33 @@ export default function Institutions() {
     accessibility_only: false,
     specialization: ''
   });
+
+  // Load institutions from Supabase
+  useEffect(() => {
+    const loadInstitutions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('public_institutions')
+          .select('*')
+          .order('name');
+
+        if (error) {
+          console.error('Error loading institutions:', error);
+          // Fallback to mock data if there's an error
+          setInstitutions(mockInstitutions);
+        } else {
+          setInstitutions(data || []);
+        }
+      } catch (error) {
+        console.error('Error loading institutions:', error);
+        setInstitutions(mockInstitutions);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInstitutions();
+  }, []);
 
   useEffect(() => {
     let filtered = institutions;
@@ -222,7 +251,14 @@ export default function Institutions() {
               </TabsList>
 
               <TabsContent value="list" className="space-y-4">
-                {filteredInstitutions.length === 0 ? (
+                {loading ? (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <Loader2 className="w-8 h-8 mx-auto animate-spin text-primary mb-4" />
+                      <h3 className="text-lg font-medium mb-2">기관 정보를 불러오는 중...</h3>
+                    </CardContent>
+                  </Card>
+                ) : filteredInstitutions.length === 0 ? (
                   <Card>
                     <CardContent className="p-8 text-center">
                       <Building className="w-12 h-12 mx-auto text-muted-foreground mb-4" />

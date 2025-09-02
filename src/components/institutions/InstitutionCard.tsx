@@ -8,7 +8,8 @@ interface Institution {
   name: string;
   institution_type: string;
   address: string;
-  phone: string;
+  phone?: string; // Made optional since contact info is now protected
+  email?: string; // Made optional since contact info is now protected
   description: string;
   is_voucher_approved: boolean;
   voucher_types: string[];
@@ -89,10 +90,12 @@ export function InstitutionCard({ institution, onViewDetails, onContactInstituti
             <MapPin className="w-4 h-4 text-muted-foreground" />
             <span className="text-muted-foreground">{institution.address}</span>
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <Phone className="w-4 h-4 text-muted-foreground" />
-            <span className="text-muted-foreground">{institution.phone}</span>
-          </div>
+          {institution.phone && (
+            <div className="flex items-center gap-2 text-sm">
+              <Phone className="w-4 h-4 text-muted-foreground" />
+              <span className="text-muted-foreground">{institution.phone}</span>
+            </div>
+          )}
         </div>
 
         {/* 운영시간 */}

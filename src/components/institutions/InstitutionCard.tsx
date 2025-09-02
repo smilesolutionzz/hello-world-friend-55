@@ -21,7 +21,7 @@ interface Institution {
   specializations: string[];
   parking_available: boolean;
   accessibility_features: string[];
-  operating_hours: Record<string, string>;
+  operating_hours?: Record<string, string>;
 }
 
 interface InstitutionCardProps {
@@ -45,6 +45,9 @@ export function InstitutionCard({ institution, onViewDetails, onContactInstituti
   };
 
   const getTodayHours = () => {
+    if (!institution.operating_hours) {
+      return 'closed';
+    }
     const today = new Date().getDay();
     const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     const todayKey = days[today];

@@ -202,7 +202,7 @@ serve(async (req) => {
 다음 관찰 기록을 전문적으로 분석해주세요:
 
 **관찰 정보:**
-- 대상자: ${requestBody.targetName || '익명'} (${ageGroupMap[requestBody.ageGroup]})
+- 대상자: ${requestBody.targetName || '대상자'} (${ageGroupMap[requestBody.ageGroup]})
 - 상황: ${contextMap[requestBody.context]}
 - 관찰 영역: ${requestBody.tags.join(', ')}
 - 날짜: ${requestBody.observationDate || '미지정'}
@@ -212,6 +212,11 @@ serve(async (req) => {
 ${requestBody.text}
 
 ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.length}개 파일 (${requestBody.files.map(f => f.type).join(', ')})` : ''}
+
+**중요 지침:**
+- 대상자의 이름은 반드시 "${requestBody.targetName || '대상자'}"로 표기해주세요
+- 연령대에 맞는 적절한 분석을 제공하되, "발달"이라는 용어보다는 "현재 상태", "특성", "행동 패턴" 등의 용어를 사용해주세요
+- 아동만이 아닌 모든 연령대에 적합한 분석을 제공해주세요
 `;
 
     const detailedPrompt = basePrompt + `
@@ -220,8 +225,8 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 **상황 분석**
 관찰된 내용을 바탕으로 현재 상황을 구체적으로 분석해주세요.
 
-**발달 상태 평가** 
-현재 발달 수준과 연령대별 기준과의 비교를 통해 발달적 상황을 평가해주세요.
+**현재 상태 평가** 
+현재 관찰된 행동 특성과 기능적 상태를 연령대별 기준과 비교하여 평가해주세요.
 
 **주요 관심 사항**
 관찰된 행동이나 특성 중 특별히 주의 깊게 관찰해야 할 사항들을 나열해주세요.
@@ -279,7 +284,14 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         messages: [
           {
             role: 'system',
-            content: '당신은 아동발달, 심리상담, 행동분석 전문가입니다. 관찰 기록을 바탕으로 전문적이고 객관적인 분석을 제공하며, 실용적인 조언과 구체적인 개선방안을 제시합니다. 응답은 반드시 요청된 형식을 정확히 따라주세요.'
+            content: `당신은 심리상담, 행동분석 전문가입니다. 모든 연령대(유아부터 노인까지)의 관찰 기록을 전문적이고 객관적으로 분석합니다.
+
+중요한 지침:
+1. 대상자의 이름은 반드시 관찰 정보에 명시된 이름을 그대로 사용하세요
+2. "발달"이라는 용어보다는 "현재 상태", "행동 특성", "기능적 상태" 등을 사용하세요
+3. 아동 중심이 아닌 연령대에 맞는 적절한 분석을 제공하세요
+4. 실용적인 조언과 구체적인 개선방안을 제시합니다
+5. 응답은 반드시 요청된 형식을 정확히 따라주세요`
           },
           {
             role: 'user',
@@ -334,7 +346,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     const situationMatch = analysisText.match(/\*\*상황 분석\*\*([\s\S]*?)(?=\*\*|$)/);
     if (situationMatch) sections.situation = situationMatch[1].trim();
 
-    const developmentMatch = analysisText.match(/\*\*발달 상태 평가\*\*([\s\S]*?)(?=\*\*|$)/);
+    const developmentMatch = analysisText.match(/\*\*현재 상태 평가\*\*([\s\S]*?)(?=\*\*|$)/);
     if (developmentMatch) sections.development = developmentMatch[1].trim();
 
     const concernsMatch = analysisText.match(/\*\*주요 관심 사항\*\*([\s\S]*?)(?=\*\*|$)/);

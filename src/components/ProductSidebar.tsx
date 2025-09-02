@@ -112,62 +112,115 @@ const ProductSidebar = () => {
   };
 
   return (
-    <div className="w-72 bg-gradient-to-b from-slate-800 to-slate-900 text-white h-[calc(100vh-4rem)] p-4 overflow-y-auto flex flex-col border-r border-slate-600">{/* 네비게이션 높이만큼 조정 */}
-      {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-brand-gradient mb-2">AIHPRO</h2>
-        <p className="text-sm text-slate-300">심리상담 전문 플랫폼</p>
-        <button 
-          onClick={() => navigate('/quick-needs')}
-          className="mt-3 w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 px-4 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-600 transition-all"
-        >
-          🎯 맞춤 테스트 찾기
-        </button>
+    <div className="w-72 bg-gradient-to-b from-slate-800 to-slate-900 text-white h-[calc(100vh-4rem)] p-4 overflow-y-auto flex flex-col border-r border-slate-600">
+      {/* Hook Section */}
+      <div className="mb-6 p-4 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30">
+        <div className="flex items-center gap-2 mb-2">
+          <Zap className="w-5 h-5 text-yellow-400" />
+          <h3 className="text-lg font-bold text-yellow-400">왜 AIHPRO인가?</h3>
+        </div>
+        <div className="space-y-2 text-sm text-slate-200">
+          <p>✅ <span className="text-green-400">3분</span>만에 전문가급 분석</p>
+          <p>✅ <span className="text-blue-400">30+</span> 전문기관과 제휴</p>
+          <p>✅ <span className="text-purple-400">15,000+</span> 가족이 신뢰</p>
+        </div>
       </div>
 
-      {/* Products */}
+      {/* Story Section */}
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-brand-gradient mb-3">🎯 누구를 위한 검사인가요?</h2>
+        <div className="grid grid-cols-1 gap-2 text-sm">
+          <div className="p-3 bg-slate-700/50 rounded-lg border-l-4 border-pink-400">
+            <p className="text-pink-300 font-medium">👶 우리 아이 발달</p>
+            <p className="text-slate-300 text-xs">언어·인지·사회성 발달 체크</p>
+          </div>
+          <div className="p-3 bg-slate-700/50 rounded-lg border-l-4 border-blue-400">
+            <p className="text-blue-300 font-medium">👤 성인 심리상태</p>
+            <p className="text-slate-300 text-xs">스트레스·우울·불안 관리</p>
+          </div>
+          <div className="p-3 bg-slate-700/50 rounded-lg border-l-4 border-orange-400">
+            <p className="text-orange-300 font-medium">👴 부모님 인지</p>
+            <p className="text-slate-300 text-xs">기억력·인지능력 조기 점검</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Offer Section - 단계별 제안 */}
       <div className="space-y-3">
-        {products.map((product, index) => (
-          <Card 
-            key={index}
-            className="bg-slate-700/50 border-slate-600 hover:bg-slate-700/70 transition-all duration-200 cursor-pointer hover-glow"
-            onClick={() => handleProductClick(product.route)}
-          >
-            <CardContent className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <div className="text-primary">
-                    {product.icon}
-                  </div>
-                  <span className="text-sm font-medium text-white">
-                    {product.title}
-                  </span>
-                </div>
-                <Badge 
-                  className={`text-xs px-2 py-1 ${getBadgeVariant(product.badgeType)}`}
-                >
-                  {product.badge}
-                </Badge>
-              </div>
-              <p className="text-xs text-slate-300 mb-2">
-                {product.description}
-              </p>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-blue-400">
-                  {product.tokenCost}
-                </span>
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  className="text-xs px-3 py-1 h-7 bg-transparent border-slate-500 text-slate-200 hover:bg-slate-600"
-                  onClick={(e) => handleDetailClick(product, e)}
-                >
-                  자세히보기
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <h3 className="text-lg font-bold text-green-400 mb-3">💎 단계별 솔루션</h3>
+        
+        {/* STEP 1: 무료 체험 */}
+        <div className="p-4 bg-gradient-to-r from-green-600/30 to-emerald-600/30 rounded-lg border border-green-500/50">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-bold">STEP 1</span>
+            <span className="text-green-300 font-bold">무료 체험</span>
+          </div>
+          <div className="space-y-2">
+            <Button 
+              size="sm"
+              className="w-full bg-green-600 hover:bg-green-700 text-white text-xs"
+              onClick={() => navigate('/ai-counselor')}
+            >
+              🤖 AI 상담사 (무료)
+            </Button>
+            <Button 
+              size="sm"
+              variant="outline"
+              className="w-full border-green-500 text-green-300 hover:bg-green-600/20 text-xs"
+              onClick={() => navigate('/assessment')}
+            >
+              ⚡ 3분 심리검사 (2토큰)
+            </Button>
+          </div>
+        </div>
+
+        {/* STEP 2: 정밀 분석 */}
+        <div className="p-4 bg-gradient-to-r from-blue-600/30 to-purple-600/30 rounded-lg border border-blue-500/50">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-bold">STEP 2</span>
+            <span className="text-blue-300 font-bold">정밀 분석</span>
+          </div>
+          <div className="space-y-2">
+            <Button 
+              size="sm"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs"
+              onClick={() => navigate('/observation')}
+            >
+              📝 관찰일지 (3토큰)
+            </Button>
+            <Button 
+              size="sm"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs"
+              onClick={() => navigate('/premium-assessment')}
+            >
+              👑 프리미엄 검사 (8토큰)
+            </Button>
+          </div>
+        </div>
+
+        {/* STEP 3: 전문가 상담 */}
+        <div className="p-4 bg-gradient-to-r from-orange-600/30 to-red-600/30 rounded-lg border border-orange-500/50">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">STEP 3</span>
+            <span className="text-orange-300 font-bold">전문가 케어</span>
+          </div>
+          <div className="space-y-2">
+            <Button 
+              size="sm"
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white text-xs"
+              onClick={() => navigate('/expert-hiring')}
+            >
+              👨‍⚕️ 20분 상담 (150토큰)
+            </Button>
+            <Button 
+              size="sm"
+              className="w-full bg-red-600 hover:bg-red-700 text-white text-xs"
+              onClick={() => navigate('/experts')}
+            >
+              📊 박사급 리포트 (200토큰)
+            </Button>
+          </div>
+        </div>
       </div>
 
       {/* Special Promotion */}

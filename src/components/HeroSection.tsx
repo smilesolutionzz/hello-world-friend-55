@@ -62,17 +62,17 @@ const HeroSection = () => {
         {/* Main Headline */}
         <div className="text-center mb-8 sm:mb-16 space-y-4 sm:space-y-6">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight">
-            <span className="block text-foreground mb-1 sm:mb-2">병원급 정확도의</span>
-            <span className="block text-brand-gradient">딥러닝AI + 전문가 멘탈분석</span>
+            <span className="block text-foreground mb-1 sm:mb-2">3분만에 확인하는</span>
+            <span className="block text-brand-gradient">우리 가족 마음 건강</span>
           </h1>
           
           <div className="space-y-4 sm:space-y-6">
             <div className="space-y-2 sm:space-y-3 text-lg sm:text-xl md:text-2xl">
               <p className="text-brand-gradient font-semibold">
-                "불안을 데이터로, 안심을 리포트로"
+                "고민을 말하면, 답을 받는다"
               </p>
               <p className="text-muted-foreground text-base sm:text-lg">
-                한 문장으로 시작해보세요
+                지금 가장 걱정되는 한 문장을 적어보세요
               </p>
             </div>
             

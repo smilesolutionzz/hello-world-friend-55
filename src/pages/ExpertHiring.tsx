@@ -746,113 +746,186 @@ const ExpertHiring = () => {
                     <div className="text-sm text-green-700">만족도</div>
                   </div>
                 </div>
-                <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+                <Button 
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  onClick={() => navigate('/institutions')}
+                >
                   <Building className="w-4 h-4 mr-2" />
                   제휴기관 전체보기
                 </Button>
               </CardContent>
             </Card>
 
-            {/* 제휴기관 리스트 */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockInstitutions.map((institution) => (
-                <Card key={institution.id} className="overflow-hidden hover-glow">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-bold text-lg mb-1">{institution.name}</h3>
-                        <div className="flex items-center gap-1 mb-2">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span className="text-sm font-medium">{institution.rating}</span>
-                          <span className="text-xs text-muted-foreground">({institution.review_count})</span>
-                        </div>
-                      </div>
-                      <Badge variant="secondary" className="bg-green-100 text-green-700">
-                        {institution.institution_type}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-start gap-2">
-                      <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
-                      <span className="text-sm text-muted-foreground">{institution.address}</span>
-                    </div>
+            {/* 지역별 제휴기관 선택 */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5" />
+                  지역별 제휴기관
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="seoul" className="space-y-4">
+                  <TabsList className="grid grid-cols-4 lg:grid-cols-8 w-full">
+                    <TabsTrigger value="seoul" className="text-xs">서울</TabsTrigger>
+                    <TabsTrigger value="busan" className="text-xs">부산</TabsTrigger>
+                    <TabsTrigger value="daegu" className="text-xs">대구</TabsTrigger>
+                    <TabsTrigger value="incheon" className="text-xs">인천</TabsTrigger>
+                    <TabsTrigger value="gwangju" className="text-xs">광주</TabsTrigger>
+                    <TabsTrigger value="daejeon" className="text-xs">대전</TabsTrigger>
+                    <TabsTrigger value="gyeonggi" className="text-xs">경기</TabsTrigger>
+                    <TabsTrigger value="others" className="text-xs">기타</TabsTrigger>
+                  </TabsList>
 
-                    {/* 전문분야 */}
-                    <div>
-                      <h4 className="text-sm font-medium mb-2 text-primary">전문분야</h4>
-                      <div className="flex flex-wrap gap-1">
-                        {institution.specializations?.slice(0, 3).map((spec, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {spec}
-                          </Badge>
-                        ))}
-                        {institution.specializations && institution.specializations.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{institution.specializations.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
+                  {['seoul', 'busan', 'daegu', 'incheon', 'gwangju', 'daejeon', 'gyeonggi', 'others'].map((region) => {
+                    // 지역별로 기관 필터링
+                    const getRegionKeyword = (region: string) => {
+                      const regionMap: Record<string, string> = {
+                        'seoul': '서울',
+                        'busan': '부산',
+                        'daegu': '대구',
+                        'incheon': '인천',
+                        'gwangju': '광주',
+                        'daejeon': '대전',
+                        'gyeonggi': '경기',
+                        'others': ''
+                      };
+                      return regionMap[region] || '';
+                    };
 
-                    {/* 사용가능한 바우처 */}
-                    {institution.voucher_types && institution.voucher_types.length > 0 && (
-                      <div>
-                        <h4 className="text-sm font-medium mb-2 text-secondary">사용가능한 바우처</h4>
-                        <div className="space-y-1">
-                          {institution.voucher_types.map((voucher, index) => (
-                            <div key={index} className="flex items-center gap-2">
-                              <CheckCircle className="w-3 h-3 text-green-500" />
-                              <span className="text-xs text-green-700 font-medium">{voucher}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    const filteredInstitutions = region === 'others' 
+                      ? mockInstitutions.filter(inst => 
+                          !inst.address.includes('서울') && 
+                          !inst.address.includes('부산') && 
+                          !inst.address.includes('대구') && 
+                          !inst.address.includes('인천') && 
+                          !inst.address.includes('광주') && 
+                          !inst.address.includes('대전') && 
+                          !inst.address.includes('경기')
+                        )
+                      : mockInstitutions.filter(inst => 
+                          inst.address.includes(getRegionKeyword(region))
+                        );
 
-                    {/* 제공 서비스 */}
-                    <div>
-                      <h4 className="text-sm font-medium mb-2 text-primary">제공 서비스</h4>
-                      <div className="space-y-1">
-                        {institution.services_offered?.slice(0, 3).map((service, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <CheckCircle className="w-3 h-3 text-blue-500" />
-                            <span className="text-xs">{service}</span>
+                    return (
+                      <TabsContent key={region} value={region} className="space-y-4">
+                        {filteredInstitutions.length === 0 ? (
+                          <div className="text-center py-8">
+                            <Building className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                            <h3 className="text-lg font-medium mb-2">해당 지역에 제휴기관이 없습니다</h3>
+                            <p className="text-muted-foreground">다른 지역을 확인해보시거나 전체보기를 이용해주세요</p>
                           </div>
-                        ))}
-                        {institution.services_offered && institution.services_offered.length > 3 && (
-                          <div className="text-xs text-muted-foreground">
-                            외 {institution.services_offered.length - 3}개 서비스
+                        ) : (
+                          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredInstitutions.map((institution) => (
+                              <Card key={institution.id} className="overflow-hidden hover-glow">
+                                <CardHeader className="pb-3">
+                                  <div className="flex items-start justify-between">
+                                    <div>
+                                      <h3 className="font-bold text-lg mb-1">{institution.name}</h3>
+                                      <div className="flex items-center gap-1 mb-2">
+                                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                        <span className="text-sm font-medium">{institution.rating}</span>
+                                        <span className="text-xs text-muted-foreground">({institution.review_count})</span>
+                                      </div>
+                                    </div>
+                                    <Badge variant="secondary" className="bg-green-100 text-green-700">
+                                      {institution.institution_type}
+                                    </Badge>
+                                  </div>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                  <div className="flex items-start gap-2">
+                                    <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                                    <span className="text-sm text-muted-foreground">{institution.address}</span>
+                                  </div>
+
+                                  {/* 전문분야 */}
+                                  <div>
+                                    <h4 className="text-sm font-medium mb-2 text-primary">전문분야</h4>
+                                    <div className="flex flex-wrap gap-1">
+                                      {institution.specializations?.slice(0, 3).map((spec, index) => (
+                                        <Badge key={index} variant="outline" className="text-xs">
+                                          {spec}
+                                        </Badge>
+                                      ))}
+                                      {institution.specializations && institution.specializations.length > 3 && (
+                                        <Badge variant="outline" className="text-xs">
+                                          +{institution.specializations.length - 3}
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* 사용가능한 바우처 */}
+                                  {institution.voucher_types && institution.voucher_types.length > 0 && (
+                                    <div>
+                                      <h4 className="text-sm font-medium mb-2 text-secondary">사용가능한 바우처</h4>
+                                      <div className="space-y-1">
+                                        {institution.voucher_types.map((voucher, index) => (
+                                          <div key={index} className="flex items-center gap-2">
+                                            <CheckCircle className="w-3 h-3 text-green-500" />
+                                            <span className="text-xs text-green-700 font-medium">{voucher}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+
+                                  {/* 제공 서비스 */}
+                                  <div>
+                                    <h4 className="text-sm font-medium mb-2 text-primary">제공 서비스</h4>
+                                    <div className="space-y-1">
+                                      {institution.services_offered?.slice(0, 3).map((service, index) => (
+                                        <div key={index} className="flex items-center gap-2">
+                                          <CheckCircle className="w-3 h-3 text-blue-500" />
+                                          <span className="text-xs">{service}</span>
+                                        </div>
+                                      ))}
+                                      {institution.services_offered && institution.services_offered.length > 3 && (
+                                        <div className="text-xs text-muted-foreground">
+                                          외 {institution.services_offered.length - 3}개 서비스
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* 연락처 */}
+                                  <div className="pt-3 border-t">
+                                    {institution.phone && (
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <MessageCircle className="w-3 h-3 text-muted-foreground" />
+                                        <span className="text-xs">{institution.phone}</span>
+                                      </div>
+                                    )}
+                                    {institution.operating_hours && (
+                                      <div className="flex items-center gap-2">
+                                        <Clock className="w-3 h-3 text-muted-foreground" />
+                                        <span className="text-xs text-muted-foreground">
+                                          운영시간: {typeof institution.operating_hours === 'object' ? institution.operating_hours.monday || '평일 9-18시' : '평일 9-18시'}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  <Button 
+                                    variant="outline" 
+                                    className="w-full mt-4"
+                                    onClick={() => navigate(`/institutions/${institution.id}`)}
+                                  >
+                                    기관 상세보기
+                                  </Button>
+                                </CardContent>
+                              </Card>
+                            ))}
                           </div>
                         )}
-                      </div>
-                    </div>
-
-                    {/* 연락처 */}
-                    <div className="pt-3 border-t">
-                      {institution.phone && (
-                        <div className="flex items-center gap-2 mb-1">
-                          <MessageCircle className="w-3 h-3 text-muted-foreground" />
-                          <span className="text-xs">{institution.phone}</span>
-                        </div>
-                      )}
-                      {institution.operating_hours && (
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-3 h-3 text-muted-foreground" />
-                           <span className="text-xs text-muted-foreground">
-                             운영시간: {typeof institution.operating_hours === 'object' ? institution.operating_hours.monday || '평일 9-18시' : '평일 9-18시'}
-                           </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <Button variant="outline" className="w-full mt-4">
-                      기관 상세보기
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      </TabsContent>
+                    );
+                  })}
+                </Tabs>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
 

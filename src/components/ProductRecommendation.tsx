@@ -145,7 +145,18 @@ const ProductRecommendation = ({ category, severity, ageGroup, domain }: Product
                   <Button 
                     size="sm" 
                     className="w-full"
-                    onClick={() => window.open('https://smilesolution.kr/', '_blank')}
+                    onClick={() => {
+                      const isChildRelated = product.category.includes("child") || 
+                                            product.category.includes("development") || 
+                                            product.category.includes("adhd") ||
+                                            ageGroup === "child";
+                      
+                      const url = isChildRelated 
+                        ? 'https://smilesolution.kr/product/%EC%8B%AC%EB%A6%AC%EC%83%81%EB%8B%B4-%ED%8C%A8%ED%82%A4%EC%A7%80/29/category/1/display/2/'
+                        : 'https://smilesolution.kr/product/%EC%8B%AC%EB%A6%AC%EC%83%81%EB%8B%B4-%ED%8C%A8%ED%82%A4%EC%A7%80-%EC%84%B1%EC%9D%B8/24/category/1/display/3/';
+                      
+                      window.open(url, '_blank');
+                    }}
                   >
                     <ExternalLink className="h-3 w-3 mr-1" />
                     구매하기

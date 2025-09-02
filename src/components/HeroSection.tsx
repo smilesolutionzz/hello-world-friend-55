@@ -97,36 +97,58 @@ const HeroSection = () => {
         
         {/* CTA Section */}
         <div className="mt-12 text-center space-y-6">
-          {/* 니즈별 맞춤 추천 섹션 */}
+          {/* 패키지 선택 섹션 */}
           <div className="bg-gradient-to-br from-primary/5 to-secondary/5 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-primary/20">
-            <h3 className="text-xl sm:text-2xl font-bold mb-2">🎯 어떤 도움이 필요하신가요?</h3>
+            <h3 className="text-xl sm:text-2xl font-bold mb-2">🎯 상황별 맞춤 패키지</h3>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto leading-[1.6] text-center">
-              당신의 니즈에 맞는 최적의 테스트를 찾아드립니다
+              현재 가장 고민되는 상황에 맞는 전문 패키지를 선택하세요
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-lg mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <Button 
                 size="lg"
-                onClick={() => navigate('/fun-tests')}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-xl font-medium hover:from-pink-600 hover:to-orange-600 transition-all shadow-lg h-11 text-sm sm:text-base"
+                onClick={() => navigate('/child-package')}
+                className="flex-1 p-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-medium hover:from-pink-600 hover:to-rose-600 transition-all shadow-lg h-auto flex flex-col gap-2"
               >
-                🎉 재미있는 3분 테스트
+                <span className="text-2xl">👶</span>
+                <span className="text-sm font-bold">아동발달</span>
+                <span className="text-xs opacity-90">언어·인지·사회성</span>
               </Button>
               <Button 
                 size="lg"
-                onClick={() => navigate('/quick-needs')}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-purple-600 transition-all shadow-lg h-11 text-sm sm:text-base"
+                onClick={() => navigate('/stress-package')}
+                className="flex-1 p-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-indigo-600 transition-all shadow-lg h-auto flex flex-col gap-2"
               >
-                맞춤 테스트 찾기
+                <span className="text-2xl">😰</span>
+                <span className="text-sm font-bold">스트레스</span>
+                <span className="text-xs opacity-90">직장·일상·관계</span>
+              </Button>
+              <Button 
+                size="lg"
+                onClick={() => navigate('/anxiety-package')}
+                className="flex-1 p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all shadow-lg h-auto flex flex-col gap-2"
+              >
+                <span className="text-2xl">😨</span>
+                <span className="text-sm font-bold">불안·공황</span>
+                <span className="text-xs opacity-90">응급지원·대처법</span>
+              </Button>
+              <Button 
+                size="lg"
+                onClick={() => navigate('/depression-package')}
+                className="flex-1 p-4 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-xl font-medium hover:from-purple-600 hover:to-violet-600 transition-all shadow-lg h-auto flex flex-col gap-2"
+              >
+                <span className="text-2xl">😔</span>
+                <span className="text-sm font-bold">우울·감정</span>
+                <span className="text-xs opacity-90">기분장애·치유</span>
               </Button>
             </div>
-            <div className="mt-3">
+            <div className="mt-4 text-center">
               <Button 
                 size="lg"
                 variant="outline"
-                onClick={() => navigate('/needs-assessment')}
+                onClick={() => navigate('/quick-needs')}
                 className="px-6 py-3 border border-primary text-primary rounded-xl font-medium hover:bg-primary/10 transition-colors h-11 text-sm sm:text-base"
               >
-                상세 니즈 분석
+                📋 맞춤 추천 받기
               </Button>
             </div>
           </div>

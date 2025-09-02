@@ -307,6 +307,13 @@ export type Database = {
             foreignKeyName: "consultations_expert_id_fkey"
             columns: ["expert_id"]
             isOneToOne: false
+            referencedRelation: "expert_stats_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultations_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
             referencedRelation: "experts"
             referencedColumns: ["id"]
           },
@@ -468,6 +475,13 @@ export type Database = {
             foreignKeyName: "expert_availability_expert_id_fkey"
             columns: ["expert_id"]
             isOneToOne: false
+            referencedRelation: "expert_stats_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_availability_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
             referencedRelation: "experts"
             referencedColumns: ["id"]
           },
@@ -579,6 +593,13 @@ export type Database = {
             columns: ["consultation_id"]
             isOneToOne: false
             referencedRelation: "consultations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_earnings_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_stats_view"
             referencedColumns: ["id"]
           },
           {
@@ -2382,6 +2403,26 @@ export type Database = {
       }
     }
     Views: {
+      admin_overview_view: {
+        Row: {
+          total_observations: number | null
+          total_tests: number | null
+          total_tokens_in_circulation: number | null
+          total_users: number | null
+        }
+        Relationships: []
+      }
+      expert_stats_view: {
+        Row: {
+          average_rating: number | null
+          consultation_count: number | null
+          full_name: string | null
+          id: string | null
+          specializations: string[] | null
+          total_sessions: number | null
+        }
+        Relationships: []
+      }
       public_institutions: {
         Row: {
           accessibility_features: string[] | null
@@ -2457,6 +2498,26 @@ export type Database = {
           total_experts?: number | null
           updated_at?: string | null
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      token_usage_view: {
+        Row: {
+          current_tokens: number | null
+          monthly_usage: number | null
+          referral_bonus: number | null
+          total_purchased: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
+      user_dashboard_view: {
+        Row: {
+          current_tokens: number | null
+          display_name: string | null
+          observation_count: number | null
+          test_count: number | null
+          user_id: string | null
         }
         Relationships: []
       }

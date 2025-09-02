@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { InstitutionCard } from "@/components/institutions/InstitutionCard";
 import { InstitutionFilters } from "@/components/institutions/InstitutionFilters";
 import { InstitutionMap } from "@/components/institutions/InstitutionMap";
+import { RegionalInstitutionView } from "@/components/institutions/RegionalInstitutionView";
 import { supabase } from "@/integrations/supabase/client";
 import { mockInstitutions } from "@/data/mockInstitutions";
 import { Building, MapPin, Users, Award, ArrowLeft, Loader2 } from "lucide-react";
@@ -240,9 +241,12 @@ export default function Institutions() {
           {/* 메인 컨텐츠 */}
           <div className="lg:col-span-3">
             <Tabs defaultValue="list" className="space-y-4">
-              <TabsList className="w-full">
+              <TabsList className="w-full grid grid-cols-3">
                 <TabsTrigger value="list" className="flex-1">
                   목록 보기
+                </TabsTrigger>
+                <TabsTrigger value="region" className="flex-1">
+                  지역별 보기
                 </TabsTrigger>
                 <TabsTrigger value="map" className="flex-1">
                   <MapPin className="w-4 h-4 mr-2" />
@@ -277,6 +281,23 @@ export default function Institutions() {
                       />
                     ))}
                   </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="region" className="space-y-4">
+                {loading ? (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <Loader2 className="w-8 h-8 mx-auto animate-spin text-primary mb-4" />
+                      <h3 className="text-lg font-medium mb-2">기관 정보를 불러오는 중...</h3>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <RegionalInstitutionView
+                    institutions={filteredInstitutions}
+                    onViewDetails={handleViewDetails}
+                    onContactInstitution={handleContactInstitution}
+                  />
                 )}
               </TabsContent>
 

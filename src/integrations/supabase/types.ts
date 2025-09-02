@@ -243,6 +243,75 @@ export type Database = {
         }
         Relationships: []
       }
+      consultations: {
+        Row: {
+          chat_room_id: string | null
+          consultation_type: string
+          created_at: string | null
+          duration_minutes: number | null
+          expert_id: string
+          id: string
+          notes: string | null
+          payment_method: string | null
+          price: number
+          rating: number | null
+          review: string | null
+          scheduled_at: string | null
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chat_room_id?: string | null
+          consultation_type?: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          expert_id: string
+          id?: string
+          notes?: string | null
+          payment_method?: string | null
+          price: number
+          rating?: number | null
+          review?: string | null
+          scheduled_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chat_room_id?: string | null
+          consultation_type?: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          expert_id?: string
+          id?: string
+          notes?: string | null
+          payment_method?: string | null
+          price?: number
+          rating?: number | null
+          review?: string | null
+          scheduled_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultations_chat_room_id_fkey"
+            columns: ["chat_room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultations_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "experts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       developmental_ml_analysis: {
         Row: {
           analysis_results: Json
@@ -366,6 +435,98 @@ export type Database = {
         }
         Relationships: []
       }
+      expert_availability: {
+        Row: {
+          created_at: string | null
+          day_of_week: number
+          end_time: string
+          expert_id: string
+          id: string
+          is_active: boolean | null
+          start_time: string
+        }
+        Insert: {
+          created_at?: string | null
+          day_of_week: number
+          end_time: string
+          expert_id: string
+          id?: string
+          is_active?: boolean | null
+          start_time: string
+        }
+        Update: {
+          created_at?: string | null
+          day_of_week?: number
+          end_time?: string
+          expert_id?: string
+          id?: string
+          is_active?: boolean | null
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_availability_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "experts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_earnings: {
+        Row: {
+          amount: number
+          commission_rate: number | null
+          consultation_id: string
+          created_at: string | null
+          expert_earning: number
+          expert_id: string
+          id: string
+          paid_at: string | null
+          platform_fee: number
+          status: string | null
+        }
+        Insert: {
+          amount: number
+          commission_rate?: number | null
+          consultation_id: string
+          created_at?: string | null
+          expert_earning: number
+          expert_id: string
+          id?: string
+          paid_at?: string | null
+          platform_fee: number
+          status?: string | null
+        }
+        Update: {
+          amount?: number
+          commission_rate?: number | null
+          consultation_id?: string
+          created_at?: string | null
+          expert_earning?: number
+          expert_id?: string
+          id?: string
+          paid_at?: string | null
+          platform_fee?: number
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_earnings_consultation_id_fkey"
+            columns: ["consultation_id"]
+            isOneToOne: false
+            referencedRelation: "consultations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_earnings_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "experts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expert_feedback_requests: {
         Row: {
           admin_notes: string | null
@@ -452,6 +613,75 @@ export type Database = {
           observation_id?: string
           text?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      experts: {
+        Row: {
+          average_rating: number | null
+          bio: string | null
+          certifications: string[] | null
+          consultation_methods: string[] | null
+          created_at: string | null
+          education_background: string[] | null
+          full_name: string
+          hourly_rate: number
+          id: string
+          is_available: boolean | null
+          is_verified: boolean | null
+          languages: string[] | null
+          license_number: string | null
+          professional_title: string
+          profile_image_url: string | null
+          specializations: string[]
+          total_sessions: number | null
+          updated_at: string | null
+          user_id: string
+          years_experience: number
+        }
+        Insert: {
+          average_rating?: number | null
+          bio?: string | null
+          certifications?: string[] | null
+          consultation_methods?: string[] | null
+          created_at?: string | null
+          education_background?: string[] | null
+          full_name: string
+          hourly_rate?: number
+          id?: string
+          is_available?: boolean | null
+          is_verified?: boolean | null
+          languages?: string[] | null
+          license_number?: string | null
+          professional_title: string
+          profile_image_url?: string | null
+          specializations?: string[]
+          total_sessions?: number | null
+          updated_at?: string | null
+          user_id: string
+          years_experience?: number
+        }
+        Update: {
+          average_rating?: number | null
+          bio?: string | null
+          certifications?: string[] | null
+          consultation_methods?: string[] | null
+          created_at?: string | null
+          education_background?: string[] | null
+          full_name?: string
+          hourly_rate?: number
+          id?: string
+          is_available?: boolean | null
+          is_verified?: boolean | null
+          languages?: string[] | null
+          license_number?: string | null
+          professional_title?: string
+          profile_image_url?: string | null
+          specializations?: string[]
+          total_sessions?: number | null
+          updated_at?: string | null
+          user_id?: string
+          years_experience?: number
         }
         Relationships: []
       }

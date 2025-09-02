@@ -38,7 +38,9 @@ import SubscriptionCancel from "./pages/SubscriptionCancel";
 import Pricing from "./pages/Pricing";
 import Observation from "./pages/Observation";
 import Expert from "./pages/Expert";
-import ExpertList from "./pages/ExpertList";
+import Experts from "./pages/Experts";
+import ExpertConsultation from "./pages/ExpertConsultation";
+import ExpertDashboard from "./pages/ExpertDashboard";
 import ExpertHiring from "./pages/ExpertHiring";
 import Institutions from "./pages/Institutions";
 import NotFound from "./pages/NotFound";
@@ -113,9 +115,10 @@ const App = () => (
         <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<Observation />} />
           <Route path="/expert" element={<Expert />} />
-          <Route path="/experts" element={<ExpertList />} />
+          <Route path="/experts" element={<Experts />} />
+          <Route path="/expert-dashboard" element={<ExpertDashboard />} />
+          <Route path="/consultation/:roomId" element={<ExpertConsultation />} />
           <Route path="/expert-hiring" element={<ExpertHiring />} />
-          <Route path="/expert-list" element={<ExpertList />} />
           <Route path="/institutions" element={<Institutions />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />

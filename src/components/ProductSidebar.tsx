@@ -128,7 +128,7 @@ const ProductSidebar = () => {
 
       {/* Story Section */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-brand-gradient mb-3">🎯 누구를 위한 검사인가요?</h2>
+        <h2 className="text-xl font-bold text-brand-gradient mb-3">누구를 위한 검사인가요?</h2>
         <div className="grid grid-cols-1 gap-2 text-sm">
           <div className="p-3 bg-slate-700/50 rounded-lg border-l-4 border-pink-400">
             <p className="text-pink-300 font-medium">👶 우리 아이 발달</p>

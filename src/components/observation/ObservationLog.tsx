@@ -263,31 +263,60 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+          <div>
+            <div className="flex items-center justify-between mb-2">
               <Label htmlFor="motor_skills_noted">운동능력</Label>
-              <Textarea
-                id="motor_skills_noted"
-                placeholder="대근육/소근육 운동 능력..."
-                value={formData.motor_skills_noted}
-                onChange={(e) => handleInputChange('motor_skills_noted', e.target.value)}
-                rows={2}
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = formData.motor_skills_noted;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  handleInputChange('motor_skills_noted', newValue);
+                }}
+                className="ml-2"
               />
             </div>
-
-            <div>
-              <Label htmlFor="emotional_responses">정서적 반응</Label>
-              <Textarea
-                id="emotional_responses"
-                placeholder="정서 표현 및 조절 능력..."
-                value={formData.emotional_responses}
-                onChange={(e) => handleInputChange('emotional_responses', e.target.value)}
-                rows={2}
-              />
-            </div>
+            <Textarea
+              id="motor_skills_noted"
+              placeholder="대근육/소근육 운동 능력..."
+              value={formData.motor_skills_noted}
+              onChange={(e) => handleInputChange('motor_skills_noted', e.target.value)}
+              rows={2}
+            />
           </div>
 
           <div>
-            <Label htmlFor="attention_focus">주의집중</Label>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="emotional_responses">정서적 반응</Label>
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = formData.emotional_responses;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  handleInputChange('emotional_responses', newValue);
+                }}
+                className="ml-2"
+              />
+            </div>
+            <Textarea
+              id="emotional_responses"
+              placeholder="정서 표현 및 조절 능력..."
+              value={formData.emotional_responses}
+              onChange={(e) => handleInputChange('emotional_responses', e.target.value)}
+              rows={2}
+            />
+          </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="attention_focus">주의집중</Label>
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = formData.attention_focus;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  handleInputChange('attention_focus', newValue);
+                }}
+              />
+            </div>
             <Textarea
               id="attention_focus"
               placeholder="주의집중 지속 시간, 집중 방해 요인 등을 기록해주세요..."
@@ -298,7 +327,16 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
           </div>
 
           <div>
-            <Label htmlFor="notable_incidents">특이사항</Label>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="notable_incidents">특이사항</Label>
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = formData.notable_incidents;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  handleInputChange('notable_incidents', newValue);
+                }}
+              />
+            </div>
             <Textarea
               id="notable_incidents"
               placeholder="특별히 주목할 만한 사건이나 행동이 있다면 기록해주세요..."
@@ -309,7 +347,16 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
           </div>
 
           <div>
-            <Label htmlFor="intervention_strategies">개입 전략</Label>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="intervention_strategies">개입 전략</Label>
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = formData.intervention_strategies;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  handleInputChange('intervention_strategies', newValue);
+                }}
+              />
+            </div>
             <Textarea
               id="intervention_strategies"
               placeholder="사용한 개입 방법이나 전략이 있다면 기록해주세요..."
@@ -320,7 +367,16 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
           </div>
 
           <div>
-            <Label htmlFor="next_steps">향후 계획</Label>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="next_steps">향후 계획</Label>
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = formData.next_steps;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  handleInputChange('next_steps', newValue);
+                }}
+              />
+            </div>
             <Textarea
               id="next_steps"
               placeholder="다음 관찰이나 개입에 대한 계획을 기록해주세요..."

@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { VoiceInputButton } from "@/components/ui/VoiceInputButton";
 
 interface InstantReport {
   report: string;
@@ -214,10 +215,19 @@ const ChatInterface = () => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="예시: 14개월 아기가 아직 걷지 못해요... / 고3 아들이 극도로 예민해져서 힘들어요... / 육아 스트레스로 아이에게 화를 자주 내요..."
-            className="chat-input resize-none min-h-[140px] sm:min-h-[150px] text-sm sm:text-lg leading-relaxed px-4 py-4 sm:px-6 sm:py-5"
+            className="chat-input resize-none min-h-[140px] sm:min-h-[150px] text-sm sm:text-lg leading-relaxed px-4 py-4 sm:px-6 sm:py-5 pr-20"
             disabled={isAnalyzing}
             maxLength={500}
           />
+          
+          {/* Voice Input Button */}
+          <div className="absolute top-3 right-3">
+            <VoiceInputButton
+              onTranscription={(text) => setMessage(prev => prev + text)}
+              disabled={isAnalyzing}
+              className="bg-primary/10 hover:bg-primary/20 text-primary border-primary/20"
+            />
+          </div>
           
           {/* Character Count */}
           <div className="absolute bottom-3 sm:bottom-4 left-4 sm:left-6 text-xs sm:text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded">

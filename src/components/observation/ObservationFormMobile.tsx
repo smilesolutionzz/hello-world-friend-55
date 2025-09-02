@@ -77,11 +77,11 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
   // Legal consent
   const [legalConsent, setLegalConsent] = useState(false);
   
-  // Character count and validation
+  // Character count and validation  
   const textLength = observationText.trim().length;
   const detailedTextLength = Object.values(detailedObservations).join('').trim().length;
   const totalTextLength = isDetailedTemplate ? textLength + detailedTextLength : textLength;
-  const minLength = isDetailedTemplate ? 150 : 50;
+  const minLength = 50; // 모든 템플릿에서 50자 이상 요구
   const isTextValid = totalTextLength >= minLength;
   const canSubmit = isTextValid && selectedTags.length > 0 && legalConsent && targetName.trim();
 
@@ -451,7 +451,7 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
         </div>
         <Progress value={Math.min((totalTextLength / minLength) * 100, 100)} />
         <div className="text-xs text-muted-foreground break-keep">
-          {isDetailedTemplate ? "최소 150자 이상 작성해주세요" : "최소 50자 이상 작성해주세요"}
+          최소 50자 이상 작성해주세요
         </div>
       </div>
 

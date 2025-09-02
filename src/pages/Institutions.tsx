@@ -29,12 +29,12 @@ export default function Institutions() {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterState>({
     search: '',
-    institution_type: '',
-    region: '',
+    institution_type: 'all',
+    region: 'all',
     voucher_only: false,
     parking_only: false,
     accessibility_only: false,
-    specialization: ''
+    specialization: 'all'
   });
 
   // Load institutions from Supabase
@@ -76,14 +76,14 @@ export default function Institutions() {
     }
 
     // 기관 유형 필터
-    if (filters.institution_type) {
+    if (filters.institution_type && filters.institution_type !== 'all') {
       filtered = filtered.filter(institution =>
         institution.institution_type === filters.institution_type
       );
     }
 
     // 지역 필터
-    if (filters.region) {
+    if (filters.region && filters.region !== 'all') {
       filtered = filtered.filter(institution =>
         institution.address.toLowerCase().includes(getRegionName(filters.region).toLowerCase())
       );
@@ -107,7 +107,7 @@ export default function Institutions() {
     }
 
     // 전문분야 필터
-    if (filters.specialization) {
+    if (filters.specialization && filters.specialization !== 'all') {
       filtered = filtered.filter(institution =>
         institution.specializations.includes(filters.specialization)
       );

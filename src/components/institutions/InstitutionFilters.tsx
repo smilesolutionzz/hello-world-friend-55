@@ -34,18 +34,18 @@ export function InstitutionFilters({ filters, onFiltersChange, resultsCount }: I
   const clearFilters = () => {
     onFiltersChange({
       search: '',
-      institution_type: '',
-      region: '',
+      institution_type: 'all',
+      region: 'all',
       voucher_only: false,
       parking_only: false,
       accessibility_only: false,
-      specialization: ''
+      specialization: 'all'
     });
   };
 
   const activeFiltersCount = Object.entries(filters).filter(([key, value]) => {
     if (key === 'search') return false;
-    return value !== '' && value !== false;
+    return value !== 'all' && value !== '' && value !== false;
   }).length;
 
   return (
@@ -97,7 +97,7 @@ export function InstitutionFilters({ filters, onFiltersChange, resultsCount }: I
               <SelectValue placeholder="전체" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">전체</SelectItem>
+              <SelectItem value="all">전체</SelectItem>
               <SelectItem value="development_center">발달센터</SelectItem>
               <SelectItem value="medical_center">의료기관</SelectItem>
               <SelectItem value="counseling_center">상담센터</SelectItem>
@@ -113,7 +113,7 @@ export function InstitutionFilters({ filters, onFiltersChange, resultsCount }: I
               <SelectValue placeholder="전체 지역" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">전체 지역</SelectItem>
+              <SelectItem value="all">전체 지역</SelectItem>
               <SelectItem value="seoul">서울특별시</SelectItem>
               <SelectItem value="busan">부산광역시</SelectItem>
               <SelectItem value="daegu">대구광역시</SelectItem>
@@ -143,7 +143,7 @@ export function InstitutionFilters({ filters, onFiltersChange, resultsCount }: I
               <SelectValue placeholder="전체" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">전체</SelectItem>
+              <SelectItem value="all">전체</SelectItem>
               <SelectItem value="자폐스펙트럼">자폐스펙트럼</SelectItem>
               <SelectItem value="ADHD">ADHD</SelectItem>
               <SelectItem value="언어발달지연">언어발달지연</SelectItem>

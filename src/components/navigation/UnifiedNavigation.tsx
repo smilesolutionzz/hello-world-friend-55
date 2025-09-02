@@ -267,17 +267,33 @@ export const UnifiedNavigation = () => {
                      </div>
                    </div>
 
-                   {/* Auth Section */}
-                   <div className="border-t pt-4 mt-4">
-                     <Button
-                       variant={user ? "ghost" : "default"}
-                       className="w-full justify-start gap-3"
-                       onClick={handleAuth}
-                     >
-                       <User className="w-4 h-4" />
-                       {user ? '로그아웃' : '로그인'}
-                     </Button>
-                  </div>
+                    {/* Auth Section */}
+                    <div className="border-t pt-4 mt-4">
+                      {user ? (
+                        <div className="space-y-2">
+                          <div className="px-2 py-1 text-xs text-muted-foreground">
+                            로그인 계정: {user.email}
+                          </div>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start gap-3 text-red-600 hover:text-red-700 hover:bg-red-50"
+                            onClick={handleAuth}
+                          >
+                            <User className="w-4 h-4" />
+                            로그아웃
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          variant="default"
+                          className="w-full justify-start gap-3"
+                          onClick={handleAuth}
+                        >
+                          <User className="w-4 h-4" />
+                          로그인
+                        </Button>
+                      )}
+                   </div>
                 </div>
               </SheetContent>
             </Sheet>

@@ -597,61 +597,76 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
                 <span className="w-2 h-2 bg-primary rounded-full"></span>
                 🔍 상세 관찰 영역
               </CardTitle>
-              <p className="text-sm text-muted-foreground">각 영역별로 구체적인 관찰 내용을 기록해주세요.</p>
+              <p className="text-sm text-muted-foreground">각 영역별로 간단히 체크하거나 메모해주세요</p>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <Label className="text-sm font-medium text-purple-700">구체적 행동 관찰 *</Label>
+                <Label className="text-sm font-medium text-purple-700">주요 행동 관찰</Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  어떤 행동을 보였나요? (예: 웃기, 울기, 뛰기, 그리기 등)
+                </p>
                 <Textarea
                   value={detailedObservations.specificBehaviors}
                   onChange={(e) => setDetailedObservations(prev => ({...prev, specificBehaviors: e.target.value}))}
-                  placeholder="구체적인 행동, 반응, 표정 등을 상세히 기록해주세요."
-                  rows={3}
-                  className="mt-2 resize-none border-purple-200 focus:border-purple-400"
+                  placeholder="예: 친구와 함께 블록을 쌓으며 즐거워했음"
+                  rows={2}
+                  className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm"
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-purple-700">환경적 요인</Label>
+                <Label className="text-sm font-medium text-purple-700">환경 영향</Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  주변 환경이 어떤 영향을 주었나요?
+                </p>
                 <Textarea
                   value={detailedObservations.environmentalFactors}
                   onChange={(e) => setDetailedObservations(prev => ({...prev, environmentalFactors: e.target.value}))}
-                  placeholder="주변 환경, 소음, 조명, 공간 등이 행동에 미친 영향을 기록해주세요."
-                  rows={3}
-                  className="mt-2 resize-none border-purple-200 focus:border-purple-400"
+                  placeholder="예: 조용한 환경에서 집중력이 높아짐"
+                  rows={2}
+                  className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm"
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-purple-700">사회적 상호작용 *</Label>
+                <Label className="text-sm font-medium text-purple-700">사람과의 상호작용</Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  다른 사람과 어떻게 소통했나요?
+                </p>
                 <Textarea
                   value={detailedObservations.socialInteractions}
                   onChange={(e) => setDetailedObservations(prev => ({...prev, socialInteractions: e.target.value}))}
-                  placeholder="타인과의 상호작용, 의사소통 방식, 사회적 반응 등을 기록해주세요."
-                  rows={3}
-                  className="mt-2 resize-none border-purple-200 focus:border-purple-400"
+                  placeholder="예: 친구에게 먼저 말을 걸고 함께 놀자고 제안함"
+                  rows={2}
+                  className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm"
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-purple-700">정서적 반응 *</Label>
+                <Label className="text-sm font-medium text-purple-700">감정 표현</Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  어떤 감정을 보였나요?
+                </p>
                 <Textarea
                   value={detailedObservations.emotionalResponse}
                   onChange={(e) => setDetailedObservations(prev => ({...prev, emotionalResponse: e.target.value}))}
-                  placeholder="감정 표현, 기분 변화, 스트레스 반응 등을 기록해주세요."
-                  rows={3}
-                  className="mt-2 resize-none border-purple-200 focus:border-purple-400"
+                  placeholder="예: 게임에서 지자 잠깐 속상해했지만 금새 괜찮아짐"
+                  rows={2}
+                  className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm"
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-purple-700">개입 효과</Label>
+                <Label className="text-sm font-medium text-purple-700">특별한 도움이나 변화</Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  특별한 도움을 주었거나 변화가 있었나요? (선택사항)
+                </p>
                 <Textarea
                   value={detailedObservations.interventionEffects}
                   onChange={(e) => setDetailedObservations(prev => ({...prev, interventionEffects: e.target.value}))}
-                  placeholder="특별한 개입이나 지원이 있었다면 그 효과를 기록해주세요."
-                  rows={3}
-                  className="mt-2 resize-none border-purple-200 focus:border-purple-400"
+                  placeholder="예: 칭찬을 해주니 더 적극적으로 참여함 (없으면 비워도 됩니다)"
+                  rows={2}
+                  className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm"
                 />
               </div>
 

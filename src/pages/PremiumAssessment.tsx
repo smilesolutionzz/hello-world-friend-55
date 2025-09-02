@@ -18,7 +18,7 @@ import {
   temperamentAssessmentQuestions, 
   cognitiveAssessmentQuestions,
   workStressAssessmentQuestions,
-  relationshipAssessmentQuestions,
+  
   lovePersonalityAssessmentQuestions,
   financialPsychologyAssessmentQuestions,
   teenMentalCompassAssessmentQuestions,
@@ -44,7 +44,7 @@ const PremiumAssessment = () => {
     temperament: Object.values(temperamentAssessmentQuestions).flat(),
     cognitive: Object.values(cognitiveAssessmentQuestions).flat(),
     work_stress: Object.values(workStressAssessmentQuestions).flat(),
-    relationship: Object.values(relationshipAssessmentQuestions).flat(),
+    
     love_personality: Object.values(lovePersonalityAssessmentQuestions || {}).flat(),
     financialPsychology: Object.values(financialPsychologyAssessmentQuestions).flat(),
     teenMentalCompass: Object.values(teenMentalCompassAssessmentQuestions).flat(),

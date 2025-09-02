@@ -484,23 +484,6 @@ export const workStressAssessmentQuestions = {
   ]
 };
 
-// 5. 연인/부부 관계 분석검사 (관계 애착 패턴 분석)
-export const relationshipAssessmentQuestions = {
-  secure: [
-    {
-      id: "attach_sec01",
-      text: "파트너와 친밀한 관계를 유지하는 것이 편안합니다",
-      category: "secure",
-      attachment_style: "secure"
-    },
-    {
-      id: "attach_sec02",
-      text: "파트너에게 의존하는 것을 자연스럽게 받아들입니다",
-      category: "secure",
-      attachment_style: "secure"
-    }
-  ]
-};
 
 // 6. 프리미엄 부모양육태도 검사 (과학적 양육태도 분석)
 export const parentingStyleAssessmentQuestions = {
@@ -655,90 +638,6 @@ export const parentingStyleAssessmentQuestions = {
       category: "autonomy_support",
       subcategory: "responsibility_development",
       weight: 1.3
-    },
-    {
-      id: "attach_sec03",
-      text: "갈등이 생겨도 대화를 통해 해결할 수 있다고 믿습니다",
-      category: "secure",
-      attachment_style: "secure"
-    },
-    {
-      id: "attach_sec04",
-      text: "파트너가 다른 사람들과 시간을 보내는 것을 편안하게 받아들입니다",
-      category: "secure",
-      attachment_style: "secure"
-    }
-  ],
-  anxious: [
-    {
-      id: "attach_anx01",
-      text: "파트너가 나를 떠날까봐 자주 걱정됩니다",
-      category: "anxious",
-      attachment_style: "anxious_preoccupied"
-    },
-    {
-      id: "attach_anx02",
-      text: "파트너의 관심과 사랑을 확인받고 싶어합니다",
-      category: "anxious",
-      attachment_style: "anxious_preoccupied"
-    },
-    {
-      id: "attach_anx03",
-      text: "파트너와 떨어져 있을 때 불안감을 느낍니다",
-      category: "anxious",
-      attachment_style: "anxious_preoccupied"
-    },
-    {
-      id: "attach_anx04",
-      text: "파트너의 작은 행동 변화에도 민감하게 반응합니다",
-      category: "anxious",
-      attachment_style: "anxious_preoccupied"
-    }
-  ],
-  avoidant: [
-    {
-      id: "attach_avo01",
-      text: "너무 가까운 관계는 부담스럽게 느껴집니다",
-      category: "avoidant",
-      attachment_style: "dismissive_avoidant"
-    },
-    {
-      id: "attach_avo02",
-      text: "파트너에게 의존하는 것이 불편합니다",
-      category: "avoidant",
-      attachment_style: "dismissive_avoidant"
-    },
-    {
-      id: "attach_avo03",
-      text: "개인적인 공간과 자유를 중요하게 생각합니다",
-      category: "avoidant",
-      attachment_style: "dismissive_avoidant"
-    },
-    {
-      id: "attach_avo04",
-      text: "감정을 표현하는 것이 어색하고 불편합니다",
-      category: "avoidant",
-      attachment_style: "dismissive_avoidant"
-    }
-  ],
-  fearful_avoidant: [
-    {
-      id: "attach_fa01",
-      text: "친밀한 관계를 원하지만 동시에 두려워합니다",
-      category: "fearful_avoidant",
-      attachment_style: "fearful_avoidant"
-    },
-    {
-      id: "attach_fa02",
-      text: "상처받을까봐 먼저 거리를 두는 경우가 있습니다",
-      category: "fearful_avoidant",
-      attachment_style: "fearful_avoidant"
-    },
-    {
-      id: "attach_fa03",
-      text: "관계에서 감정의 기복이 심한 편입니다",
-      category: "fearful_avoidant",
-      attachment_style: "fearful_avoidant"
     }
   ],
   communication_support: [
@@ -1267,17 +1166,6 @@ export const premiumAssessmentInfo = {
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
     rank: 3,
     badge: "🔥 3위"
-  },
-  relationship: {
-    title: "연인/부부 관계 분석검사",
-    subtitle: "창작형 관계 애착패턴 심층분석",
-    description: "안정형, 불안형, 회피형, 혼란형의 4가지 애착유형으로 관계 패턴을 독창적으로 분석합니다",
-    duration: "약 4-6분", 
-    questions_count: 15,
-    premium_features: ["4가지 애착유형 분석", "관계 패턴 해석", "갈등 해결 방식", "건강한 관계 가이드"],
-    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
-    rank: 4,
-    badge: "📈 4위"
   },
   love_personality: {
     title: "연애성격분석테스트",

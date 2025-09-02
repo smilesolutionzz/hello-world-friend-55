@@ -318,7 +318,7 @@ const ExpertHiring = () => {
   }, [searchTerm, specialtyFilter, priceFilter, locationFilter, experts]);
 
   const handleHireExpert = (expertId: string) => {
-    navigate(`/token-subscription?source=expert-hiring&expertId=${expertId}`);
+    navigate(`/expert-contract/${expertId}`);
   };
 
   const handleConsultExpert = async (expertId: string) => {

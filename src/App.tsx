@@ -41,6 +41,8 @@ import Expert from "./pages/Expert";
 import Experts from "./pages/Experts";
 import ExpertConsultation from "./pages/ExpertConsultation";
 import ExpertDashboard from "./pages/ExpertDashboard";
+import ExpertContract from "./pages/ExpertContract";
+import ExpertContractSuccess from "./pages/ExpertContractSuccess";
 import ExpertHiring from "./pages/ExpertHiring";
 import Institutions from "./pages/Institutions";
 import NotFound from "./pages/NotFound";
@@ -118,6 +120,8 @@ const App = () => (
           <Route path="/experts" element={<Experts />} />
           <Route path="/expert-dashboard" element={<ExpertDashboard />} />
           <Route path="/consultation/:roomId" element={<ExpertConsultation />} />
+          <Route path="/expert-contract/:expertId" element={<ExpertContract />} />
+          <Route path="/expert-contract-success" element={<ExpertContractSuccess />} />
           <Route path="/expert-hiring" element={<ExpertHiring />} />
           <Route path="/institutions" element={<Institutions />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />

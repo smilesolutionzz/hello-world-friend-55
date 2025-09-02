@@ -473,6 +473,69 @@ export type Database = {
           },
         ]
       }
+      expert_contracts: {
+        Row: {
+          additional_services: Json | null
+          contract_end_date: string
+          contract_start_date: string
+          contract_terms: Json | null
+          contract_type: string
+          created_at: string
+          duration_months: number
+          expert_id: string
+          hourly_rate: number
+          id: string
+          notes: string | null
+          payment_status: string | null
+          sessions_per_week: number
+          status: string
+          stripe_subscription_id: string | null
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          additional_services?: Json | null
+          contract_end_date: string
+          contract_start_date: string
+          contract_terms?: Json | null
+          contract_type?: string
+          created_at?: string
+          duration_months?: number
+          expert_id: string
+          hourly_rate: number
+          id?: string
+          notes?: string | null
+          payment_status?: string | null
+          sessions_per_week?: number
+          status?: string
+          stripe_subscription_id?: string | null
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          additional_services?: Json | null
+          contract_end_date?: string
+          contract_start_date?: string
+          contract_terms?: Json | null
+          contract_type?: string
+          created_at?: string
+          duration_months?: number
+          expert_id?: string
+          hourly_rate?: number
+          id?: string
+          notes?: string | null
+          payment_status?: string | null
+          sessions_per_week?: number
+          status?: string
+          stripe_subscription_id?: string | null
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       expert_earnings: {
         Row: {
           amount: number

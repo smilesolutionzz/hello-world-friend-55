@@ -23,9 +23,9 @@ const BankTransferRequest = () => {
   const { user } = useAuthGuard();
 
   const bankInfo = {
-    bankName: "국민은행",
-    accountNumber: "123456-78-901234",
-    accountHolder: "하이라이트프로"
+    bankName: "신한은행",
+    accountNumber: "110-421-048730",
+    accountHolder: "이수석"
   };
 
   const tokenPrices = [

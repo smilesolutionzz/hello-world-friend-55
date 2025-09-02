@@ -167,41 +167,6 @@ const TokenSubscription = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <UnifiedNavigation />
       
-      {/* MVP 베타 기간 안내 배너 */}
-      <div className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 text-white py-4 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 via-blue-400/20 to-purple-400/20 animate-pulse"></div>
-        <div className="container mx-auto relative z-10">
-          <div className="text-center space-y-2">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="bg-white/20 rounded-full p-2">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <h2 className="text-xl font-bold">🎉 MVP 특별 혜택</h2>
-            </div>
-            <p className="text-lg font-medium">
-              현재 MVP 베타 기간으로 무통장 입금을 통한 토큰 구매만 가능합니다
-            </p>
-            <p className="text-base">
-              무통장 입금 계좌: <span className="font-bold bg-white/20 px-3 py-1 rounded-lg">신한 110-421-048730</span>
-            </p>
-            <p className="text-base">
-              예금주명: <span className="font-bold bg-white/20 px-3 py-1 rounded-lg">이수석</span>
-            </p>
-            <p className="text-base">
-              토큰 신청 후 카카오톡으로 남겨주시면 <span className="font-bold text-yellow-300">베타기간 (60일간만) 구입 토큰의 x2배 지급</span> 합니다
-            </p>
-            <div className="mt-3">
-              <Button 
-                onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')}
-                className="bg-white text-emerald-600 hover:bg-white/90 font-bold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
-              >
-                입금후 토큰충전 신청하기 →
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-      
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-16">

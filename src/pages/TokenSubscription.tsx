@@ -319,8 +319,25 @@ const TokenSubscription = () => {
           )}
         </div>
 
-        {/* Benefits */}
+        {/* MVP 무통장입금 안내 */}
         <div className="mt-20 text-center">
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-3xl p-8 max-w-4xl mx-auto mb-8">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Coins className="w-8 h-8 text-green-600" />
+              <h2 className="text-2xl font-bold">MVP 특별 혜택</h2>
+            </div>
+            <p className="text-lg mb-6 text-muted-foreground">
+              현재 MVP 테스트 기간으로 <strong>무통장입금</strong>을 통한 토큰 구매가 가능합니다
+            </p>
+            <Button 
+              onClick={() => window.location.href = '/bank-transfer'}
+              size="lg"
+              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-8 py-3"
+            >
+              무통장입금으로 구매하기
+            </Button>
+          </div>
+          
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8 max-w-4xl mx-auto">
             <Coins className="w-12 h-12 text-blue-600 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-4">토큰 시스템의 장점</h2>

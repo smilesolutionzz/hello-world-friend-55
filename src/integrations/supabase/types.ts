@@ -178,6 +178,60 @@ export type Database = {
           },
         ]
       }
+      bank_transfer_requests: {
+        Row: {
+          admin_note: string | null
+          bank_name: string | null
+          created_at: string
+          depositor_name: string
+          id: string
+          processed_at: string | null
+          processed_by: string | null
+          request_note: string | null
+          requested_tokens: number
+          status: string
+          transfer_amount: number
+          transfer_date: string | null
+          updated_at: string
+          user_email: string
+          user_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          bank_name?: string | null
+          created_at?: string
+          depositor_name: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          request_note?: string | null
+          requested_tokens: number
+          status?: string
+          transfer_amount: number
+          transfer_date?: string | null
+          updated_at?: string
+          user_email: string
+          user_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          bank_name?: string | null
+          created_at?: string
+          depositor_name?: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          request_note?: string | null
+          requested_tokens?: number
+          status?: string
+          transfer_amount?: number
+          transfer_date?: string | null
+          updated_at?: string
+          user_email?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           created_at: string

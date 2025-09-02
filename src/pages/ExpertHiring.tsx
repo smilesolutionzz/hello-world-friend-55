@@ -321,6 +321,76 @@ const ExpertHiring = () => {
     navigate(`/token-subscription?source=expert-hiring&expertId=${expertId}`);
   };
 
+  const handleConsultExpert = async (expertId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('로그인이 필요합니다.');
+        navigate('/auth');
+        return;
+      }
+
+      // 전문가 정보 가져오기
+      const expert = mockExperts.find(e => e.id === expertId);
+      if (!expert) {
+        toast.error('전문가를 찾을 수 없습니다.');
+        return;
+      }
+
+      // 실제 DB에서 전문가 찾기 (실제 전문가 데이터가 있다면)
+      const { data: dbExpert } = await supabase
+        .from('experts')
+        .select('*')
+        .eq('id', expertId)
+        .single();
+
+      // 상담 요청 생성
+      const consultationData = {
+        user_id: user.id,
+        expert_id: dbExpert?.id || expertId,
+        consultation_type: 'text',
+        status: 'pending',
+        price: expert.hourlyPrice,
+        scheduled_at: new Date().toISOString()
+      };
+
+      const { data: consultation, error } = await supabase
+        .from('consultations')
+        .insert(consultationData)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('상담 생성 오류:', error);
+        toast.error('상담 요청 중 오류가 발생했습니다.');
+        return;
+      }
+
+      // 채팅방 생성
+      const { data: chatRoom, error: chatError } = await supabase
+        .from('chat_rooms')
+        .insert({
+          user_id: user.id,
+          expert_id: dbExpert?.id || expertId,
+          status: 'active'
+        })
+        .select()
+        .single();
+
+      if (chatError) {
+        console.error('채팅방 생성 오류:', chatError);
+        toast.error('채팅방 생성 중 오류가 발생했습니다.');
+        return;
+      }
+
+      toast.success(`${expert.name} 전문가와의 상담이 시작됩니다.`);
+      navigate(`/consultation/${chatRoom.id}`);
+    } catch (error) {
+      console.error('상담 시작 오류:', error);
+      toast.error('상담 시작 중 오류가 발생했습니다.');
+    }
+  };
+
   const formatPrice = (price: number) => {
     return price.toLocaleString('ko-KR');
   };
@@ -402,13 +472,25 @@ const ExpertHiring = () => {
                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground mb-3">{expert.specialty.join(", ")}</p>
-                      <Button 
-                        size="sm" 
-                        className="w-full bg-purple-600 hover:bg-purple-700"
-                        onClick={() => handleHireExpert(expert.id)}
-                      >
-                        상세보기
-                      </Button>
+                      <div className="space-y-2">
+                        <Button 
+                          size="sm" 
+                          className="w-full bg-green-600 hover:bg-green-700"
+                          onClick={() => handleConsultExpert(expert.id)}
+                        >
+                          <MessageCircle className="w-3 h-3 mr-1" />
+                          바로 상담하기
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => handleHireExpert(expert.id)}
+                        >
+                          <Crown className="w-3 h-3 mr-1" />
+                          상세보기
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
@@ -601,15 +683,26 @@ const ExpertHiring = () => {
                             ))}
                           </div>
                           
-                          <Button 
-                            onClick={() => handleHireExpert(expert.id)}
-                            className="w-full btn-brand mb-2"
-                          >
-                            <Crown className="w-4 h-4 mr-2" />
-                            전문가 고용하기
-                          </Button>
+                          <div className="space-y-2">
+                            <Button 
+                              onClick={() => handleConsultExpert(expert.id)}
+                              className="w-full bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              <MessageCircle className="w-4 h-4 mr-2" />
+                              바로 상담하기
+                            </Button>
+                            
+                            <Button 
+                              onClick={() => handleHireExpert(expert.id)}
+                              variant="outline"
+                              className="w-full"
+                            >
+                              <Crown className="w-4 h-4 mr-2" />
+                              전문가 고용하기
+                            </Button>
+                          </div>
                           
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-muted-foreground mt-2">
                             {expert.availability}
                           </div>
                         </div>

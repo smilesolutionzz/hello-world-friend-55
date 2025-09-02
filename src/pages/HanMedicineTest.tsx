@@ -152,7 +152,7 @@ const HanMedicineTest = () => {
             </CardContent>
           </Card>
 
-          {/* 한의학 건강 체크 */}
+          {/* 연애성격분석테스트 */}
           <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors cursor-pointer group">
             <div className="absolute top-4 right-4">
               <Sparkles className="h-6 w-6 text-pink-500" />
@@ -160,33 +160,33 @@ const HanMedicineTest = () => {
             <CardHeader>
               <CardTitle className="text-xl flex items-center">
                 <Heart className="h-6 w-6 mr-2 text-pink-500" />
-                한의학 건강체크
+                연애성격분석테스트
               </CardTitle>
               <CardDescription>
-                오장육부 상태와 기혈순환 분석
+                당신의 연애 성향과 이상적인 관계 스타일 분석
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm">소요시간: 3분</span>
+                  <span className="text-sm">소요시간: 5분</span>
                 </div>
                 <div className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
                   2토큰
                 </div>
               </div>
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">✓ 오장육부 건강 진단</p>
-                <p className="text-sm text-muted-foreground">✓ 기혈순환 분석</p>
-                <p className="text-sm text-muted-foreground">✓ 한방 건강관리법</p>
-                <p className="text-sm text-muted-foreground">✓ 체질별 관리법</p>
+                <p className="text-sm text-muted-foreground">✓ 연애 성격 유형 분석</p>
+                <p className="text-sm text-muted-foreground">✓ 이상적인 파트너 매칭</p>
+                <p className="text-sm text-muted-foreground">✓ 관계 개선 조언</p>
+                <p className="text-sm text-muted-foreground">✓ 연애 스타일 가이드</p>
               </div>
               <Button 
                 onClick={() => handleTestSelection('love')}
                 className="w-full group-hover:bg-primary/90"
               >
-                건강체크 시작하기
+                연애성격분석 시작하기
               </Button>
             </CardContent>
           </Card>

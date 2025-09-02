@@ -8,8 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Filter, Users, Star, Clock } from 'lucide-react';
 
 const Experts = () => {
-  const [selectedSpecialization, setSelectedSpecialization] = useState<string>('');
-  const [selectedConsultationType, setSelectedConsultationType] = useState<string>('');
+  const [selectedSpecialization, setSelectedSpecialization] = useState<string>('all');
+  const [selectedConsultationType, setSelectedConsultationType] = useState<string>('all');
   const [showFilters, setShowFilters] = useState(false);
 
   const specializations = [
@@ -34,8 +34,8 @@ const Experts = () => {
   ];
 
   const clearFilters = () => {
-    setSelectedSpecialization('');
-    setSelectedConsultationType('');
+    setSelectedSpecialization('all');
+    setSelectedConsultationType('all');
   };
 
   return (
@@ -104,7 +104,7 @@ const Experts = () => {
                     <SelectValue placeholder="전문 분야 선택" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">전체</SelectItem>
+                    <SelectItem value="all">전체</SelectItem>
                     {specializations.map((spec) => (
                       <SelectItem key={spec} value={spec}>{spec}</SelectItem>
                     ))}
@@ -119,7 +119,7 @@ const Experts = () => {
                     <SelectValue placeholder="상담 방식 선택" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">전체</SelectItem>
+                    <SelectItem value="all">전체</SelectItem>
                     {consultationTypes.map((type) => (
                       <SelectItem key={type.value} value={type.value}>
                         {type.icon} {type.label}
@@ -131,25 +131,25 @@ const Experts = () => {
             </div>
 
             {/* 활성 필터 표시 */}
-            {(selectedSpecialization || selectedConsultationType) && (
+            {(selectedSpecialization !== 'all' || selectedConsultationType !== 'all') && (
               <div className="flex items-center gap-2 pt-2 border-t">
                 <span className="text-sm font-medium">활성 필터:</span>
-                {selectedSpecialization && (
+                {selectedSpecialization !== 'all' && (
                   <Badge variant="secondary" className="gap-1">
                     {selectedSpecialization}
                     <button
-                      onClick={() => setSelectedSpecialization('')}
+                      onClick={() => setSelectedSpecialization('all')}
                       className="ml-1 hover:bg-destructive/20 rounded-full"
                     >
                       ×
                     </button>
                   </Badge>
                 )}
-                {selectedConsultationType && (
+                {selectedConsultationType !== 'all' && (
                   <Badge variant="secondary" className="gap-1">
                     {consultationTypes.find(t => t.value === selectedConsultationType)?.label}
                     <button
-                      onClick={() => setSelectedConsultationType('')}
+                      onClick={() => setSelectedConsultationType('all')}
                       className="ml-1 hover:bg-destructive/20 rounded-full"
                     >
                       ×
@@ -171,8 +171,8 @@ const Experts = () => {
 
         {/* 전문가 목록 */}
         <ExpertList 
-          specialization={selectedSpecialization || undefined}
-          consultationType={selectedConsultationType || undefined}
+          specialization={selectedSpecialization === 'all' ? undefined : selectedSpecialization}
+          consultationType={selectedConsultationType === 'all' ? undefined : selectedConsultationType}
         />
       </div>
     </div>

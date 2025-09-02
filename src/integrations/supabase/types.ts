@@ -1056,6 +1056,177 @@ export type Database = {
         }
         Relationships: []
       }
+      institution_premium_analytics: {
+        Row: {
+          consultation_bookings: number | null
+          contact_requests: number | null
+          conversion_rate: number | null
+          created_at: string
+          date: string
+          id: string
+          institution_id: string
+          page_views: number | null
+          profile_clicks: number | null
+          search_appearances: number | null
+          search_rankings: Json | null
+        }
+        Insert: {
+          consultation_bookings?: number | null
+          contact_requests?: number | null
+          conversion_rate?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          institution_id: string
+          page_views?: number | null
+          profile_clicks?: number | null
+          search_appearances?: number | null
+          search_rankings?: Json | null
+        }
+        Update: {
+          consultation_bookings?: number | null
+          contact_requests?: number | null
+          conversion_rate?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          institution_id?: string
+          page_views?: number | null
+          profile_clicks?: number | null
+          search_appearances?: number | null
+          search_rankings?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_premium_analytics_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "institution_premium_analytics_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "public_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institution_premium_features: {
+        Row: {
+          created_at: string
+          feature_type: string
+          id: string
+          institution_id: string
+          is_enabled: boolean
+          settings: Json | null
+          updated_at: string
+          usage_count: number | null
+          usage_limit: number | null
+        }
+        Insert: {
+          created_at?: string
+          feature_type: string
+          id?: string
+          institution_id: string
+          is_enabled?: boolean
+          settings?: Json | null
+          updated_at?: string
+          usage_count?: number | null
+          usage_limit?: number | null
+        }
+        Update: {
+          created_at?: string
+          feature_type?: string
+          id?: string
+          institution_id?: string
+          is_enabled?: boolean
+          settings?: Json | null
+          updated_at?: string
+          usage_count?: number | null
+          usage_limit?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_premium_features_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "institution_premium_features_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "public_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institution_premium_plans: {
+        Row: {
+          auto_renew: boolean
+          created_at: string
+          expires_at: string | null
+          features: Json
+          id: string
+          institution_id: string
+          is_active: boolean
+          monthly_price: number
+          payment_status: string
+          plan_name: string
+          plan_type: string
+          started_at: string
+          updated_at: string
+        }
+        Insert: {
+          auto_renew?: boolean
+          created_at?: string
+          expires_at?: string | null
+          features?: Json
+          id?: string
+          institution_id: string
+          is_active?: boolean
+          monthly_price?: number
+          payment_status?: string
+          plan_name: string
+          plan_type: string
+          started_at?: string
+          updated_at?: string
+        }
+        Update: {
+          auto_renew?: boolean
+          created_at?: string
+          expires_at?: string | null
+          features?: Json
+          id?: string
+          institution_id?: string
+          is_active?: boolean
+          monthly_price?: number
+          payment_status?: string
+          plan_name?: string
+          plan_type?: string
+          started_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_premium_plans_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "institution_premium_plans_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "public_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       institution_reviews: {
         Row: {
           created_at: string

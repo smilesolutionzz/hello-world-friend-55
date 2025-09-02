@@ -11,6 +11,8 @@ import ReferralWidget from "@/components/ReferralWidget";
 import ReferralCodeInput from "@/components/ReferralCodeInput";
 import ProductSidebar from "@/components/ProductSidebar";
 import { TechBadgeShowcase } from "@/components/TechBadgeShowcase";
+import FloatingChatCTA from "@/components/FloatingChatCTA";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
 import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -77,6 +79,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <ScrollProgressBar />
       <UnifiedNavigation />
       <div className="flex">
         {/* Product Sidebar */}
@@ -86,19 +89,33 @@ const Index = () => {
         
         {/* Main Content */}
         <div className="flex-1 lg:ml-72">
-          <HeroSection />
-          <TechBadgeShowcase />
-          <PlatformOverview />
-          <ClientLogos />
-          <div className="container mx-auto px-4 py-8 space-y-6">
+          <div className="animate-fade-in">
+            <HeroSection />
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <TechBadgeShowcase />
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <PlatformOverview />
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <ClientLogos />
+          </div>
+          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in" style={{ animationDelay: '0.4s' }}>
             <ReferralWidget />
             <ReferralCodeInput />
           </div>
-          <VideoShowcase />
-          <TrustIndicators />
-          
+          <div className="animate-fade-in" style={{ animationDelay: '0.5s' }}>
+            <VideoShowcase />
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
+            <TrustIndicators />
+          </div>
         </div>
       </div>
+      
+      {/* Floating Chat CTA */}
+      <FloatingChatCTA />
     </div>
   );
 };

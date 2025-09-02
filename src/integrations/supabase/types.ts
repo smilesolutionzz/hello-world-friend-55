@@ -622,6 +622,13 @@ export type Database = {
             referencedRelation: "partner_institutions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "institution_analytics_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "public_institutions"
+            referencedColumns: ["id"]
+          },
         ]
       }
       institution_experts: {
@@ -676,6 +683,13 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "institution_experts_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "public_institutions"
             referencedColumns: ["id"]
           },
         ]
@@ -771,6 +785,13 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "institution_reviews_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "public_institutions"
             referencedColumns: ["id"]
           },
         ]
@@ -2068,7 +2089,84 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_institutions: {
+        Row: {
+          accessibility_features: string[] | null
+          address: string | null
+          created_at: string | null
+          description: string | null
+          established_year: number | null
+          facilities: string[] | null
+          gallery_images: string[] | null
+          id: string | null
+          institution_type: string | null
+          latitude: number | null
+          longitude: number | null
+          name: string | null
+          operating_hours: Json | null
+          parking_available: boolean | null
+          partnership_status: string | null
+          profile_image_url: string | null
+          rating: number | null
+          review_count: number | null
+          services_offered: string[] | null
+          specializations: string[] | null
+          total_experts: number | null
+          updated_at: string | null
+          website_url: string | null
+        }
+        Insert: {
+          accessibility_features?: string[] | null
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          established_year?: number | null
+          facilities?: string[] | null
+          gallery_images?: string[] | null
+          id?: string | null
+          institution_type?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string | null
+          operating_hours?: Json | null
+          parking_available?: boolean | null
+          partnership_status?: string | null
+          profile_image_url?: string | null
+          rating?: number | null
+          review_count?: number | null
+          services_offered?: string[] | null
+          specializations?: string[] | null
+          total_experts?: number | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          accessibility_features?: string[] | null
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          established_year?: number | null
+          facilities?: string[] | null
+          gallery_images?: string[] | null
+          id?: string | null
+          institution_type?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string | null
+          operating_hours?: Json | null
+          parking_available?: boolean | null
+          partnership_status?: string | null
+          profile_image_url?: string | null
+          rating?: number | null
+          review_count?: number | null
+          services_offered?: string[] | null
+          specializations?: string[] | null
+          total_experts?: number | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_daily_tokens: {

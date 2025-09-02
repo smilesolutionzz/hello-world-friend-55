@@ -1,5 +1,6 @@
 import React from "react";
 import LiveFeedWidget from "@/components/LiveFeedWidget";
+import { InstitutionMarketingPresentation } from "@/components/institutions/InstitutionMarketingPresentation";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -124,6 +125,7 @@ const App = () => (
           <Route path="/expert-contract-success" element={<ExpertContractSuccess />} />
           <Route path="/expert-hiring" element={<ExpertHiring />} />
           <Route path="/institutions" element={<Institutions />} />
+          <Route path="/institution-marketing" element={<InstitutionMarketingPresentation />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
           <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />

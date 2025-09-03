@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { RefreshCw, Download, Share2, Brain, AlertTriangle, CheckCircle, FileText, Crown } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
 import { useTestActions } from "@/hooks/useTestActions";
-import { useSubscription } from "@/hooks/useSubscription";
+import { useTokens } from "@/hooks/useTokens";
 
 interface StressTestResultProps {
   result: {
@@ -68,7 +68,8 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
   const progressValue = (result.total / 40) * 100;
   const { shareAsText } = useShareText();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestActions();
-  const { subscribed: isSubscribed } = useSubscription();
+  const { balance } = useTokens();
+  const isSubscribed = false; // 토큰제로 변경됨
 
   const handleShare = () => {
     const shareContent = `스트레스 인지 척도 검사 결과\n\n스트레스 수준: ${result.severity}\n총점: ${result.total}/40점\n평균: ${result.average.toFixed(1)}점`;

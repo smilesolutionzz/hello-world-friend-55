@@ -21,7 +21,7 @@ import QuickNeeds from "./pages/QuickNeeds";
 import HighlightAuth from "./pages/HighlightAuth";
 import HighlightDashboard from "./pages/HighlightDashboard";
 import HighlightAI from "./pages/HighlightAI";
-import HighlightSubscription from "./pages/HighlightSubscription";
+
 import { TypebotEmbed } from "./components/highlight/TypebotEmbed";
 import { TestResults } from "./components/highlight/TestResults";
 
@@ -114,7 +114,7 @@ const App = () => {
           <Route path="/autism-screening" element={<DevelopmentalScreening />} />
           
           <Route path="/corporate" element={<Corporate />} />
-          <Route path="/subscription" element={<Subscription />} />
+          <Route path="/subscription" element={<TokenSubscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/institution-admin" element={<InstitutionAdmin />} />

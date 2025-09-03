@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { RefreshCw, Download, Share2, Heart, TrendingUp, AlertCircle, CheckCircle, Target, FileText, Crown } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
 import { useTestActions } from "@/hooks/useTestActions";
-import { useSubscription } from "@/hooks/useSubscription";
+import { useTokens } from "@/hooks/useTokens";
 
 interface SelfEsteemTestResultProps {
   result: {
@@ -70,7 +70,8 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
   const progressValue = (result.average / 5) * 100;
   const { shareAsText } = useShareText();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestActions();
-  const { subscribed: isSubscribed } = useSubscription();
+  const { balance } = useTokens();
+  const isSubscribed = false; // 토큰제로 변경됨
 
   const handleShare = () => {
     const shareContent = `자아가치 측정 결과\n\n자존감 수준: ${result.level}\n총점: ${result.total}/75점\n평균: ${result.average.toFixed(1)}점`;

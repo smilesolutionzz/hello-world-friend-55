@@ -3,17 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Crown, Sparkles, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-interface SubscriptionCTAProps {
+interface TokenCTAProps {
   context?: 'observation' | 'report' | 'dashboard' | 'assessment' | 'ai-counselor' | 'general';
   title?: string;
   description?: string;
 }
 
-const SubscriptionCTA = ({ 
+const TokenCTA = ({ 
   context = 'general',
   title,
   description 
-}: SubscriptionCTAProps) => {
+}: TokenCTAProps) => {
   const navigate = useNavigate();
 
   const getContextContent = () => {
@@ -21,7 +21,7 @@ const SubscriptionCTA = ({
       case 'observation':
         return {
           title: title || "더 자세한 분석이 필요하신가요?",
-          description: description || "프리미엄으로 업그레이드하고 심화 분석 리포트를 받아보세요.",
+          description: description || "토큰을 구매하고 심화 분석 리포트를 받아보세요.",
           icon: <Sparkles className="h-6 w-6" />
         };
       case 'report':
@@ -33,7 +33,7 @@ const SubscriptionCTA = ({
       case 'assessment':
         return {
           title: title || "더 정확한 분석을 원하시나요?",
-          description: description || "프리미엄 플랜으로 월 5회 상세 분석과 전문가 상담을 받아보세요",
+          description: description || "토큰으로 상세 분석과 전문가 상담을 받아보세요",
           icon: <Sparkles className="h-6 w-6" />
         };
       case 'ai-counselor':
@@ -85,7 +85,7 @@ const SubscriptionCTA = ({
             aria-label="구독 플랜 보기"
           >
             <Crown className="h-4 w-4" />
-            구독 플랜 보기
+            토큰 구매하기
           </Button>
           
           <Button 
@@ -106,4 +106,4 @@ const SubscriptionCTA = ({
   );
 };
 
-export default SubscriptionCTA;
+export default TokenCTA;

@@ -10,7 +10,7 @@ import { ChevronLeft, ChevronRight, Save, Sparkles, Clock, AlertTriangle } from 
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import MediaUploader from './MediaUploader';
-import SubscriptionGate from './SubscriptionGate';
+import TokenGateWrapper from '@/components/TokenGateWrapper';
 import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
 
 interface ObservationSessionFormProps {
@@ -360,9 +360,10 @@ const ObservationSessionForm: React.FC<ObservationSessionFormProps> = ({ templat
   if (showSubscriptionGate) {
     return (
       <div className="w-full max-w-4xl mx-auto">
-        <SubscriptionGate 
+        <TokenGateWrapper 
           onProceed={() => setShowSubscriptionGate(false)}
-          sessionCount={usageData?.usage_count || 0}
+          requiredTokens={5}
+          featureName="관찰일지 분석"
         />
       </div>
     );

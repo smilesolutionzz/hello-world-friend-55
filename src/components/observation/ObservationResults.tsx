@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import SubscriptionCTA from "@/components/SubscriptionCTA";
+import TokenCTA from "@/components/TokenCTA";
 import { 
   ArrowLeft, 
   Download, 
@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart as RechartsLineChart, Line } from 'recharts';
 import MediaDisplay from './MediaDisplay';
-import SubscriptionGate from './SubscriptionGate';
+import TokenGateWrapper from '@/components/TokenGateWrapper';
 import ProductRecommendation from '@/components/ProductRecommendation';
 import RecommendationPanel from './RecommendationPanel';
 import ContentRecommendationPanel from './ContentRecommendationPanel';
@@ -749,7 +749,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
 
       {/* Subscription CTA at bottom */}
       <div className="mt-8">
-        <SubscriptionCTA context="observation" />
+        <TokenCTA context="observation" />
       </div>
     </div>
   );

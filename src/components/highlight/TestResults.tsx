@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, Share } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useSubscriptionGuard } from '@/hooks/useSubscriptionGuard';
+import { useTokenGuard } from '@/hooks/useTokenGuard';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
 interface TestResult {
@@ -22,7 +22,7 @@ interface TestResult {
 }
 
 const PremiumFeature = ({ children }: { children: React.ReactNode }) => {
-  const { allowed, loading } = useSubscriptionGuard();
+  const { allowed, loading } = useTokenGuard(2); // 2 토큰 필요
   const navigate = useNavigate();
   
   if (loading) {
@@ -39,8 +39,8 @@ const PremiumFeature = ({ children }: { children: React.ReactNode }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button onClick={() => navigate('/subscription')}>
-            프리미엄 구독하기
+          <Button onClick={() => navigate('/token-subscription')}>
+            토큰 구매하기
           </Button>
         </CardContent>
       </Card>

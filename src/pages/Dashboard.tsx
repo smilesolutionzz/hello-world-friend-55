@@ -42,7 +42,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { EnhancedChart } from "@/components/ui/enhanced-chart";
 import { useToast } from "@/hooks/use-toast";
-import SubscriptionCTA from "@/components/SubscriptionCTA";
+import TokenCTA from "@/components/TokenCTA";
 import { OnboardingOverlay } from "@/components/ui/onboarding-overlay";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { ComprehensiveReportSection } from "@/components/ComprehensiveReportSection";
@@ -937,7 +937,7 @@ const Dashboard = () => {
 
               {/* Subscription CTA Panel */}
               <div className="lg:col-span-1 md:col-span-2">
-                <SubscriptionCTA context="dashboard" />
+                <TokenCTA context="dashboard" />
               </div>
             </div>
           </TabsContent>

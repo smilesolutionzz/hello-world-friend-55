@@ -882,6 +882,155 @@ export type Database = {
           },
         ]
       }
+      home_service_bookings: {
+        Row: {
+          booking_date: string
+          child_age: number
+          child_birth_date: string | null
+          child_name: string
+          confirmed_at: string | null
+          contact_phone: string
+          created_at: string
+          emergency_contact: string | null
+          estimated_cost: number
+          id: string
+          notes: string | null
+          payment_method: string
+          preferred_schedule: Json | null
+          self_pay_amount: number | null
+          service_address: string
+          service_id: string
+          special_requests: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          voucher_coverage: number | null
+          voucher_id: string | null
+        }
+        Insert: {
+          booking_date?: string
+          child_age: number
+          child_birth_date?: string | null
+          child_name: string
+          confirmed_at?: string | null
+          contact_phone: string
+          created_at?: string
+          emergency_contact?: string | null
+          estimated_cost?: number
+          id?: string
+          notes?: string | null
+          payment_method?: string
+          preferred_schedule?: Json | null
+          self_pay_amount?: number | null
+          service_address: string
+          service_id: string
+          special_requests?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          voucher_coverage?: number | null
+          voucher_id?: string | null
+        }
+        Update: {
+          booking_date?: string
+          child_age?: number
+          child_birth_date?: string | null
+          child_name?: string
+          confirmed_at?: string | null
+          contact_phone?: string
+          created_at?: string
+          emergency_contact?: string | null
+          estimated_cost?: number
+          id?: string
+          notes?: string | null
+          payment_method?: string
+          preferred_schedule?: Json | null
+          self_pay_amount?: number | null
+          service_address?: string
+          service_id?: string
+          special_requests?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          voucher_coverage?: number | null
+          voucher_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_home_service_bookings_service"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "institution_home_services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_home_service_bookings_voucher"
+            columns: ["voucher_id"]
+            isOneToOne: false
+            referencedRelation: "user_vouchers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      home_service_sessions: {
+        Row: {
+          actual_duration: number | null
+          booking_id: string
+          created_at: string
+          end_time: string | null
+          id: string
+          parent_signature: string | null
+          provider_signature: string | null
+          self_pay_used: number | null
+          session_date: string
+          session_notes: string | null
+          start_time: string
+          status: string
+          updated_at: string
+          voucher_used: number | null
+        }
+        Insert: {
+          actual_duration?: number | null
+          booking_id: string
+          created_at?: string
+          end_time?: string | null
+          id?: string
+          parent_signature?: string | null
+          provider_signature?: string | null
+          self_pay_used?: number | null
+          session_date: string
+          session_notes?: string | null
+          start_time: string
+          status?: string
+          updated_at?: string
+          voucher_used?: number | null
+        }
+        Update: {
+          actual_duration?: number | null
+          booking_id?: string
+          created_at?: string
+          end_time?: string | null
+          id?: string
+          parent_signature?: string | null
+          provider_signature?: string | null
+          self_pay_used?: number | null
+          session_date?: string
+          session_notes?: string | null
+          start_time?: string
+          status?: string
+          updated_at?: string
+          voucher_used?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_home_service_sessions_booking"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "home_service_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       individual_education_plans: {
         Row: {
           annual_goals: Json
@@ -1058,6 +1207,71 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "public_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institution_home_services: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          institution_id: string
+          is_active: boolean
+          max_travel_distance: number | null
+          price_per_session: number
+          requirements: Json | null
+          service_area: Json | null
+          service_name: string
+          service_type: string
+          session_duration: number
+          target_age_max: number | null
+          target_age_min: number | null
+          updated_at: string
+          voucher_types_accepted: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          institution_id: string
+          is_active?: boolean
+          max_travel_distance?: number | null
+          price_per_session?: number
+          requirements?: Json | null
+          service_area?: Json | null
+          service_name: string
+          service_type: string
+          session_duration?: number
+          target_age_max?: number | null
+          target_age_min?: number | null
+          updated_at?: string
+          voucher_types_accepted?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          institution_id?: string
+          is_active?: boolean
+          max_travel_distance?: number | null
+          price_per_session?: number
+          requirements?: Json | null
+          service_area?: Json | null
+          service_name?: string
+          service_type?: string
+          session_duration?: number
+          target_age_max?: number | null
+          target_age_min?: number | null
+          updated_at?: string
+          voucher_types_accepted?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_institution_home_services_institution"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
             referencedColumns: ["id"]
           },
         ]
@@ -2584,6 +2798,113 @@ export type Database = {
           total_used?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_vouchers: {
+        Row: {
+          created_at: string
+          expire_date: string
+          id: string
+          issue_date: string
+          notes: string | null
+          remaining_amount: number
+          remaining_sessions: number
+          status: string
+          total_amount: number
+          total_sessions: number
+          updated_at: string
+          used_amount: number
+          used_sessions: number
+          user_id: string
+          voucher_number: string
+          voucher_type_id: string
+        }
+        Insert: {
+          created_at?: string
+          expire_date: string
+          id?: string
+          issue_date: string
+          notes?: string | null
+          remaining_amount?: number
+          remaining_sessions?: number
+          status?: string
+          total_amount?: number
+          total_sessions?: number
+          updated_at?: string
+          used_amount?: number
+          used_sessions?: number
+          user_id: string
+          voucher_number: string
+          voucher_type_id: string
+        }
+        Update: {
+          created_at?: string
+          expire_date?: string
+          id?: string
+          issue_date?: string
+          notes?: string | null
+          remaining_amount?: number
+          remaining_sessions?: number
+          status?: string
+          total_amount?: number
+          total_sessions?: number
+          updated_at?: string
+          used_amount?: number
+          used_sessions?: number
+          user_id?: string
+          voucher_number?: string
+          voucher_type_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_vouchers_voucher_type"
+            columns: ["voucher_type_id"]
+            isOneToOne: false
+            referencedRelation: "voucher_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voucher_types: {
+        Row: {
+          age_max: number | null
+          age_min: number | null
+          created_at: string
+          description: string | null
+          eligibility_criteria: Json | null
+          id: string
+          is_active: boolean
+          monthly_amount: number
+          name: string
+          session_limit: number
+          updated_at: string
+        }
+        Insert: {
+          age_max?: number | null
+          age_min?: number | null
+          created_at?: string
+          description?: string | null
+          eligibility_criteria?: Json | null
+          id?: string
+          is_active?: boolean
+          monthly_amount?: number
+          name: string
+          session_limit?: number
+          updated_at?: string
+        }
+        Update: {
+          age_max?: number | null
+          age_min?: number | null
+          created_at?: string
+          description?: string | null
+          eligibility_criteria?: Json | null
+          id?: string
+          is_active?: boolean
+          monthly_amount?: number
+          name?: string
+          session_limit?: number
+          updated_at?: string
         }
         Relationships: []
       }

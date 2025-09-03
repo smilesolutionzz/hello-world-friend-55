@@ -46,6 +46,7 @@ import ExpertContract from "./pages/ExpertContract";
 import ExpertContractSuccess from "./pages/ExpertContractSuccess";
 import ExpertHiring from "./pages/ExpertHiring";
 import Institutions from "./pages/Institutions";
+import HomeService from "./pages/HomeService";
 import NotFound from "./pages/NotFound";
 import ShareView from "./pages/ShareView";
 import TokenTest from "./pages/TokenTest";
@@ -125,6 +126,7 @@ const App = () => (
           <Route path="/expert-contract-success" element={<ExpertContractSuccess />} />
           <Route path="/expert-hiring" element={<ExpertHiring />} />
           <Route path="/institutions" element={<Institutions />} />
+          <Route path="/home-service" element={<HomeService />} />
           <Route path="/institution-marketing" element={<InstitutionMarketingPresentation />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />

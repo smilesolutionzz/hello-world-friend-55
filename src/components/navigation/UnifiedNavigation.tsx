@@ -284,16 +284,29 @@ export const UnifiedNavigation = () => {
                           </Button>
                         </div>
                       ) : (
-                        <Button
-                          variant="default"
-                          className="w-full justify-start gap-3"
-                          onClick={handleAuth}
-                        >
-                          <User className="w-4 h-4" />
-                          로그인
-                        </Button>
+                        <div className="space-y-2">
+                          <Button
+                            variant="default"
+                            className="w-full justify-start gap-3"
+                            onClick={handleAuth}
+                          >
+                            <User className="w-4 h-4" />
+                            로그인
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start gap-3"
+                            onClick={() => {
+                              navigate('/auth?mode=signup');
+                              setIsOpen(false);
+                            }}
+                          >
+                            <UserCheck className="w-4 h-4" />
+                            회원가입
+                          </Button>
+                        </div>
                       )}
-                   </div>
+                    </div>
                 </div>
               </SheetContent>
             </Sheet>

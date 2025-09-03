@@ -3085,6 +3085,10 @@ export type Database = {
         Args: { observation_user_id: string }
         Returns: boolean
       }
+      check_phone_availability: {
+        Args: { phone_number: string }
+        Returns: boolean
+      }
       generate_referral_code: {
         Args: Record<PropertyKey, never>
         Returns: string

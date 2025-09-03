@@ -98,6 +98,23 @@ export const AuthForm = () => {
     }));
   };
 
+  // 전화번호 중복 체크 함수
+  const checkPhoneAvailability = async (phoneNumber: string): Promise<boolean> => {
+    if (!phoneNumber.trim()) return true;
+    
+    try {
+      const { data, error } = await supabase.rpc('check_phone_availability', {
+        phone_number: phoneNumber.trim()
+      });
+      
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('전화번호 중복 체크 중 오류:', error);
+      return true; // 에러 시 가입 허용
+    }
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -120,6 +137,16 @@ export const AuthForm = () => {
       setError('비밀번호는 6자 이상이어야 합니다.');
       setLoading(false);
       return;
+    }
+
+    // 전화번호 중복 체크 (전화번호가 입력된 경우에만)
+    if (signUpData.phone.trim()) {
+      const phoneAvailable = await checkPhoneAvailability(signUpData.phone);
+      if (!phoneAvailable) {
+        setError('이미 사용 중인 전화번호입니다.');
+        setLoading(false);
+        return;
+      }
     }
 
     try {
@@ -167,12 +194,21 @@ export const AuthForm = () => {
     } catch (error: any) {
       let errorMessage = '회원가입 중 오류가 발생했습니다.';
       
-      if (error.message?.includes('User already registered')) {
+      console.error('회원가입 에러:', error);
+      
+      // 서버에서 발생한 중복 체크 에러 처리
+      if (error.message?.includes('EMAIL_ALREADY_EXISTS')) {
+        errorMessage = '이미 사용 중인 이메일 주소입니다.';
+      } else if (error.message?.includes('PHONE_ALREADY_EXISTS')) {
+        errorMessage = '이미 사용 중인 전화번호입니다.';
+      } else if (error.message?.includes('User already registered')) {
         errorMessage = '이미 등록된 이메일입니다.';
       } else if (error.message?.includes('Invalid email')) {
         errorMessage = '유효하지 않은 이메일 형식입니다.';
       } else if (error.message?.includes('Password should be')) {
         errorMessage = '비밀번호는 6자 이상이어야 합니다.';
+      } else if (error.message?.includes('Email rate limit exceeded')) {
+        errorMessage = '이메일 전송 한도를 초과했습니다. 잠시 후 다시 시도해주세요.';
       }
       
       setError(errorMessage);

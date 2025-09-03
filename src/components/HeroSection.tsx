@@ -215,7 +215,7 @@ const HeroSection = () => {
             <div className="flex flex-col gap-3 justify-center max-w-lg mx-auto">
               <Button 
                 size="lg"
-                onClick={() => navigate('/assessment')}
+                onClick={() => navigate('/free-trial')}
                 className="w-full px-6 py-4 bg-gradient-to-r from-primary via-primary-glow to-secondary text-white rounded-xl font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-lg h-14"
               >
                 <span className="text-xl mr-2">🚀</span>

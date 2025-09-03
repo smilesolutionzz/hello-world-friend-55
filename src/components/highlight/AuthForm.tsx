@@ -251,7 +251,7 @@ export const AuthForm = () => {
               <Button 
                 variant="link" 
                 size="sm" 
-                onClick={() => navigate('/assessment')}
+                onClick={() => navigate('/free-trial')}
                 className="text-primary underline p-0 h-auto mt-1"
               >
                 → 무료 체험 바로가기

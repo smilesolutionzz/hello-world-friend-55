@@ -10,6 +10,8 @@ import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
 import DevelopmentalScreening from "./pages/AutismScreening";
 import Assessment from "./pages/Assessment";
+import FreeTrialAssessment from "./pages/FreeTrialAssessment";
+import BasicMentalHealthTest from "./components/assessment/BasicMentalHealthTest";
 import PremiumAssessment from "./pages/PremiumAssessment";
 import AICounselor from "./pages/AICounselor";
 import Auth from "./pages/Auth";
@@ -93,6 +95,8 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/assessment" element={<Assessment />} />
+          <Route path="/free-trial" element={<FreeTrialAssessment />} />
+          <Route path="/assessment/mental-health-quick-test" element={<BasicMentalHealthTest />} />
           <Route path="/assessment/:id" element={<TestResults />} />
           <Route path="/fun-tests" element={<Assessment />} />
           <Route path="/fun-test-result" element={<FunTestResult />} />

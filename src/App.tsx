@@ -75,15 +75,18 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => (
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <SessionManager />
-        <Routes>
+const App = () => {
+  console.log('🎯 App.tsx: App component rendering...');
+  
+  return (
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <SessionManager />
+          <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<HighlightAuth />} />
@@ -148,6 +151,7 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
   </React.StrictMode>
-);
+  );
+};
 
 export default App;

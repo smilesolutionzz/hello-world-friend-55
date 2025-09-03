@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, Lock, User as UserIcon, Phone, Calendar, Users, Gift, MessageCircle } from 'lucide-react';
+import { Loader2, Mail, Lock, User as UserIcon, Phone, Calendar, Users, Gift } from 'lucide-react';
 import type { User, Session } from '@supabase/supabase-js';
 import { OnboardingOverlay } from '@/components/ui/onboarding-overlay';
 
@@ -230,31 +230,6 @@ export const AuthForm = () => {
     }
   };
 
-  const handleKakaoLogin = async () => {
-    setLoading(true);
-    setError('');
-    
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'kakao',
-        options: {
-          redirectTo: `${window.location.origin}/`
-        }
-      });
-
-      if (error) throw error;
-
-    } catch (error: any) {
-      setError('카카오 로그인 중 오류가 발생했습니다.');
-      toast({
-        title: "카카오 로그인 실패",
-        description: "다시 시도해주세요.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <>
@@ -322,27 +297,6 @@ export const AuthForm = () => {
                   로그인
                 </Button>
                 
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                      또는
-                    </span>
-                  </div>
-                </div>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full bg-yellow-400 border-yellow-400 text-black hover:bg-yellow-500"
-                  onClick={handleKakaoLogin}
-                  disabled={loading}
-                >
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  카카오톡으로 간편 로그인
-                </Button>
               </form>
             </TabsContent>
             
@@ -557,27 +511,6 @@ export const AuthForm = () => {
                   회원가입
                 </Button>
                 
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                      또는
-                    </span>
-                  </div>
-                </div>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full bg-yellow-400 border-yellow-400 text-black hover:bg-yellow-500"
-                  onClick={handleKakaoLogin}
-                  disabled={loading}
-                >
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  카카오톡으로 간편 회원가입
-                </Button>
               </form>
             </TabsContent>
           </Tabs>

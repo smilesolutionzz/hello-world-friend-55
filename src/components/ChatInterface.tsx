@@ -220,8 +220,8 @@ const ChatInterface = () => {
             maxLength={500}
           />
           
-          {/* Voice Input Button */}
-          <div className="absolute top-3 right-3">
+          {/* Voice Input Button - moved to bottom right */}
+          <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4">
             <VoiceInputButton
               onTranscription={(text) => setMessage(prev => prev + text)}
               disabled={isAnalyzing}

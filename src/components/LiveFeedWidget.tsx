@@ -264,40 +264,40 @@ const LiveFeedWidget = () => {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 space-y-3">
-      {/* 실시간 통계 */}
+    <div className="fixed top-20 right-4 z-40 space-y-2">
+      {/* 실시간 통계 - 더 작고 투명하게 */}
       {showStats && !isStatsHidden && (
-        <Card className="p-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-2xl animate-slide-in-right relative">
+        <Card className="p-2 bg-gradient-to-r from-blue-500/80 to-purple-600/80 text-white border-0 shadow-lg backdrop-blur-sm animate-slide-in-right relative">
           {/* 닫기 버튼 */}
           <Button
             onClick={handleCloseStats}
             size="sm"
             variant="ghost"
-            className="absolute -top-2 -right-2 h-6 w-6 p-0 bg-white/20 hover:bg-white/30 text-white rounded-full"
+            className="absolute -top-1 -right-1 h-4 w-4 p-0 bg-white/20 hover:bg-white/30 text-white rounded-full"
           >
-            <X className="w-3 h-3" />
+            <X className="w-2 h-2" />
           </Button>
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/20 rounded-full">
-              <Activity className="w-5 h-5" />
+          <div className="flex items-center gap-2">
+            <div className="p-1 bg-white/20 rounded-full">
+              <Activity className="w-3 h-3" />
             </div>
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-sm">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                <span className="font-medium">실시간 현황</span>
+              <div className="flex items-center gap-1 text-xs">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+                <span className="font-medium">실시간</span>
               </div>
-              <div className="grid grid-cols-3 gap-3 text-xs">
+              <div className="grid grid-cols-3 gap-2 text-xs">
                 <div className="text-center">
-                  <div className="font-bold text-lg">{stats.dailyVisitors.toLocaleString()}</div>
-                  <div className="opacity-90">오늘 방문</div>
+                  <div className="font-bold text-sm">{stats.dailyVisitors.toLocaleString()}</div>
+                  <div className="opacity-90 text-xs">방문</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-lg text-green-300">{stats.currentOnline}</div>
-                  <div className="opacity-90">현재 온라인</div>
+                  <div className="font-bold text-sm text-green-300">{stats.currentOnline}</div>
+                  <div className="opacity-90 text-xs">온라인</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-lg">{stats.totalTests.toLocaleString()}</div>
-                  <div className="opacity-90">오늘 검사</div>
+                  <div className="font-bold text-sm">{stats.totalTests.toLocaleString()}</div>
+                  <div className="opacity-90 text-xs">검사</div>
                 </div>
               </div>
             </div>
@@ -305,30 +305,30 @@ const LiveFeedWidget = () => {
         </Card>
       )}
 
-      {/* 실시간 피드백 */}
+      {/* 실시간 피드백 - 더 작고 투명하게 */}
       {currentFeedback && !showStats && !isFeedbackHidden && (
-        <Card className="p-4 bg-white border-0 shadow-2xl max-w-xs animate-slide-in-right relative">
+        <Card className="p-2 bg-white/85 border-0 shadow-lg backdrop-blur-sm max-w-xs animate-slide-in-right relative">
           {/* 닫기 버튼 */}
           <Button
             onClick={handleCloseFeedback}
             size="sm"
             variant="ghost"
-            className="absolute -top-2 -right-2 h-6 w-6 p-0 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full"
+            className="absolute -top-1 -right-1 h-4 w-4 p-0 bg-gray-100/80 hover:bg-gray-200/80 text-gray-600 rounded-full"
           >
-            <X className="w-3 h-3" />
+            <X className="w-2 h-2" />
           </Button>
-          <div className="flex items-start gap-3">
-            <div className="text-2xl">{currentFeedback.emoji}</div>
+          <div className="flex items-start gap-2">
+            <div className="text-lg">{currentFeedback.emoji}</div>
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <Badge variant="secondary" className="text-xs">
+              <div className="flex items-center gap-1 mb-1">
+                <Badge variant="secondary" className="text-xs py-0 px-1">
                   {currentFeedback.testType}
                 </Badge>
                 <span className="text-xs text-muted-foreground">
                   {getTimeAgo(currentFeedback.timestamp)}
                 </span>
               </div>
-              <p className="text-sm text-gray-800 leading-relaxed">
+              <p className="text-xs text-gray-800 leading-relaxed">
                 {currentFeedback.message}
               </p>
             </div>
@@ -336,27 +336,27 @@ const LiveFeedWidget = () => {
           
           {/* 하트 애니메이션 효과 */}
           <div className="absolute -top-1 -right-1">
-            <Heart className="w-4 h-4 text-red-500 animate-pulse" fill="currentColor" />
+            <Heart className="w-3 h-3 text-red-500 animate-pulse" fill="currentColor" />
           </div>
         </Card>
       )}
 
-      {/* 피드백 히스토리 (스크롤 가능) */}
+      {/* 피드백 히스토리 - 더 작고 투명하게 */}
       {feedbacks.length > 0 && !currentFeedback && !showStats && !isFeedbackHidden && (
-        <Card className="p-3 bg-white/95 backdrop-blur-sm border-0 shadow-lg max-w-xs max-h-48 overflow-y-auto animate-fade-in relative">
+        <Card className="p-2 bg-white/80 backdrop-blur-sm border-0 shadow-lg max-w-xs max-h-32 overflow-y-auto animate-fade-in relative">
           {/* 닫기 버튼 */}
           <Button
             onClick={handleCloseFeedback}
             size="sm"
             variant="ghost"
-            className="absolute -top-2 -right-2 h-6 w-6 p-0 bg-white hover:bg-gray-100 text-gray-600 rounded-full shadow-sm"
+            className="absolute -top-1 -right-1 h-4 w-4 p-0 bg-white/80 hover:bg-gray-100/80 text-gray-600 rounded-full shadow-sm"
           >
-            <X className="w-3 h-3" />
+            <X className="w-2 h-2" />
           </Button>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-3 h-3" />
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+              <div className="flex items-center gap-1">
+                <TrendingUp className="w-2 h-2" />
                 <span>최근 후기</span>
               </div>
               {/* 전체 위젯 닫기 버튼 */}
@@ -364,21 +364,19 @@ const LiveFeedWidget = () => {
                 onClick={handleCloseWidget}
                 size="sm"
                 variant="ghost"
-                className="h-4 w-4 p-0 text-gray-400 hover:text-gray-600"
+                className="h-3 w-3 p-0 text-gray-400 hover:text-gray-600"
               >
-                <X className="w-3 h-3" />
+                <X className="w-2 h-2" />
               </Button>
             </div>
-            {feedbacks.slice(0, 3).map((feedback) => (
-              <div key={feedback.id} className="flex items-start gap-2 p-2 bg-gray-50 rounded-lg">
-                <span className="text-lg">{feedback.emoji}</span>
+            {feedbacks.slice(0, 2).map((feedback) => (
+              <div key={feedback.id} className="flex items-start gap-1 p-1 bg-gray-50/80 rounded-lg">
+                <span className="text-sm">{feedback.emoji}</span>
                 <div className="flex-1">
-                  <p className="text-xs text-gray-700">{feedback.message}</p>
-                  <div className="flex items-center gap-1 mt-1">
-                    <Badge variant="outline" className="text-xs py-0">
-                      {feedback.testType}
-                    </Badge>
-                  </div>
+                  <p className="text-xs text-gray-700 leading-tight">{feedback.message}</p>
+                  <Badge variant="outline" className="text-xs py-0 px-1 mt-0.5">
+                    {feedback.testType}
+                  </Badge>
                 </div>
               </div>
             ))}

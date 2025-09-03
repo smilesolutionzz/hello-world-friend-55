@@ -182,37 +182,67 @@ const HeroSection = () => {
             </div>
           </div>
           
-          {/* 기존 프리미엄 섹션 */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200">
-            <h3 className="text-xl sm:text-2xl font-bold mb-4">더 정확한 분석이 필요하신가요?</h3>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto leading-[1.6] text-center">
-              프리미엄 플랜으로 전문가 수준의 AIH 분석과 개인 맞춤 상담을 받아보세요
-            </p>
+          {/* 무료 체험 강조 섹션 */}
+          <div className="bg-gradient-to-br from-primary/10 via-white/90 to-secondary/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-xl border border-primary/20">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center justify-center gap-2">
+                <span className="text-2xl">🎁</span>
+                지금 무료로 체험해보세요!
+              </h3>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-[1.6]">
+                회원가입 없이도 3분 만에 AI 심리분석을 받아볼 수 있습니다
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-white/70 rounded-xl p-4 text-center">
+                <div className="text-2xl mb-2">⚡</div>
+                <h4 className="font-semibold mb-1">즉시 시작</h4>
+                <p className="text-sm text-muted-foreground">회원가입 없이 바로 체험</p>
+              </div>
+              <div className="bg-white/70 rounded-xl p-4 text-center">
+                <div className="text-2xl mb-2">🤖</div>
+                <h4 className="font-semibold mb-1">AI 분석</h4>
+                <p className="text-sm text-muted-foreground">3분 만에 정확한 결과</p>
+              </div>
+              <div className="bg-white/70 rounded-xl p-4 text-center">
+                <div className="text-2xl mb-2">🎯</div>
+                <h4 className="font-semibold mb-1">맞춤 솔루션</h4>
+                <p className="text-sm text-muted-foreground">개인별 추천 받기</p>
+              </div>
+            </div>
+            
             <div className="flex flex-col gap-3 justify-center max-w-lg mx-auto">
               <Button 
                 size="lg"
-                onClick={() => navigate('/premium-assessment')}
-                className="w-full px-6 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl font-medium hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2 h-12 sm:h-auto"
+                onClick={() => navigate('/assessment')}
+                className="w-full px-6 py-4 bg-gradient-to-r from-primary via-primary-glow to-secondary text-white rounded-xl font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-lg h-14"
               >
-                <span className="text-lg">👑</span>
-                <span className="text-sm sm:text-base">프리미엄 검사 체험</span>
+                <span className="text-xl mr-2">🚀</span>
+                무료 체험 시작하기
               </Button>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button 
-                  size="lg"
-                  onClick={() => navigate('/token-subscription')}
-                  className="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 h-11 text-sm sm:text-base"
-                >
-                  구독 플랜 보기
-                </Button>
-                <Button 
-                  size="lg"
-                  variant="outline"
-                  onClick={() => navigate('/assessment')}
-                  className="flex-1 px-6 py-3 border border-primary text-primary rounded-xl font-medium hover:bg-primary/10 transition-all duration-300 transform hover:scale-105 h-11 text-sm sm:text-base"
-                >
-                  무료 체험하기
-                </Button>
+              
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground mb-2">
+                  더 많은 기능이 필요하시다면?
+                </p>
+                <div className="flex gap-3">
+                  <Button 
+                    size="lg"
+                    onClick={() => navigate('/auth')}
+                    className="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 h-11 text-sm sm:text-base"
+                  >
+                    회원가입 (10토큰 무료)
+                  </Button>
+                  <Button 
+                    size="lg"
+                    onClick={() => navigate('/token-subscription')}
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl font-medium hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 h-11 text-sm sm:text-base"
+                  >
+                    <span className="text-lg mr-1">👑</span>
+                    토큰 구매하기
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

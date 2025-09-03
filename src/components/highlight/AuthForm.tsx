@@ -239,8 +239,24 @@ export const AuthForm = () => {
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
             HIGHLIGHT
           </CardTitle>
-          <CardDescription>
-            3분 만에 완성하는 심리 검사 플랫폼
+          <CardDescription className="space-y-2">
+            <span className="block">3분 만에 완성하는 심리 검사 플랫폼</span>
+            <div className="bg-primary/10 rounded-lg p-3 text-sm">
+              <span className="font-semibold text-primary">💡 알고계셨나요?</span>
+              <br />
+              <span className="text-muted-foreground">
+                회원가입 없이도 <strong>무료 체험</strong>이 가능합니다!
+              </span>
+              <br />
+              <Button 
+                variant="link" 
+                size="sm" 
+                onClick={() => navigate('/assessment')}
+                className="text-primary underline p-0 h-auto mt-1"
+              >
+                → 무료 체험 바로가기
+              </Button>
+            </div>
           </CardDescription>
         </CardHeader>
         <CardContent>

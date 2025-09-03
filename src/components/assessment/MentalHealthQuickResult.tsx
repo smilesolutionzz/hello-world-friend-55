@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -82,6 +83,7 @@ export const MentalHealthQuickResult: React.FC<MentalHealthQuickResultProps> = (
   result, 
   onRestart 
 }) => {
+  const navigate = useNavigate();
   const config = levelConfig[result.level as keyof typeof levelConfig];
   const IconComponent = config.icon;
   const progressValue = (result.averageScore / 5) * 100;
@@ -194,6 +196,45 @@ export const MentalHealthQuickResult: React.FC<MentalHealthQuickResultProps> = (
         </Card>
       </div>
 
+      {/* AI 전문가급 해석 안내 */}
+      <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200">
+        <CardContent className="pt-6">
+          <div className="text-center space-y-4">
+            <div className="flex justify-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+            </div>
+            <h4 className="text-lg font-bold text-purple-700">더 정확한 AI 전문가급 심층 분석을 원하시나요?</h4>
+            <p className="text-sm text-gray-600">
+              현재는 <span className="font-semibold">3분 간편 검사</span> 결과입니다.<br/>
+              <span className="font-semibold text-purple-600">회원가입 후 프리미엄 검사</span>를 이용하시면 <span className="font-semibold">AI가 전문가 수준의 상세한 해석과 맞춤형 솔루션</span>을 제공합니다.
+            </p>
+            <div className="grid grid-cols-2 gap-4 text-sm text-purple-600">
+              <div className="space-y-1">
+                <p>✨ 개인별 맞춤 심리 프로파일</p>
+                <p>🎯 전문가급 AI 분석 및 해석</p>
+              </div>
+              <div className="space-y-1">
+                <p>📋 상세한 개선 방안 제공</p>
+                <p>🔍 숨겨진 심리 패턴 발견</p>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+              <Button variant="outline" onClick={() => navigate('/free-trial')}>
+                다른 무료 테스트 해보기
+              </Button>
+              <Button 
+                onClick={() => navigate('/auth')} 
+                className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+              >
+                회원가입하고 AI 전문가 분석받기
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* 주의사항 및 안내 */}
       {(result.level === 'fair' || result.level === 'poor') && (
         <Card className="border-orange-200 bg-orange-50">
@@ -221,7 +262,7 @@ export const MentalHealthQuickResult: React.FC<MentalHealthQuickResultProps> = (
         <Button variant="outline" onClick={onRestart}>
           다시 검사하기
         </Button>
-        <Button onClick={() => window.print()}>
+        <Button variant="outline" onClick={() => window.print()}>
           결과 저장하기
         </Button>
       </div>

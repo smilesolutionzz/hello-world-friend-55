@@ -55,21 +55,21 @@ const PremiumAssessmentCard = ({ assessmentKey, info, onStart, isSubscribed }: P
 
   return (
     <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]">
-      {/* 인기 순위 배지 */}
-      <div className="absolute top-4 right-4 z-10">
+      {/* 인기 순위 배지 - 위치 조정하여 텍스트와 겹치지 않도록 */}
+      <div className="absolute top-2 right-2 z-10">
         <Badge className={`
           ${info.rank && info.rank <= 3 ? 'bg-red-500 text-white' : 
             info.rank && info.rank <= 5 ? 'bg-orange-500 text-white' :
             info.rank && info.rank === 6 ? 'bg-blue-500 text-white' : 'bg-purple-500 text-white'}
-          border-0
+          border-0 text-xs px-2 py-1
         `}>
-          {info.rank && info.rank <= 3 && <Crown className="w-3 h-3 mr-1" />}
+          {info.rank && info.rank <= 3 && <Crown className="w-2.5 h-2.5 mr-1" />}
           {info.badge || '프리미엄'}
         </Badge>
       </div>
 
-      {/* Header with Gradient */}
-      <div className={`bg-gradient-to-r ${getGradient(assessmentKey)} p-6 text-white relative`}>
+      {/* Header with Gradient - 배지와 겹치지 않도록 패딩 조정 */}
+      <div className={`bg-gradient-to-r ${getGradient(assessmentKey)} p-6 pr-20 text-white relative`}>
         <div className="absolute inset-0 bg-black/10" />
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-3">

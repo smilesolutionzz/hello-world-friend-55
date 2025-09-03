@@ -232,7 +232,7 @@ const BasicMentalHealthTest = () => {
               </div>
 
               <div className="space-y-4">
-                <h4 className="font-semibold text-lg">추천사항</h4>
+                <h4 className="font-semibold text-lg">기본 추천사항</h4>
                 <ul className="space-y-2">
                   {result.recommendations.map((rec, index) => (
                     <li key={index} className="flex items-start gap-2">
@@ -243,18 +243,40 @@ const BasicMentalHealthTest = () => {
                 </ul>
               </div>
 
+              {/* AI 전문가급 해석 안내 */}
+              <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-6">
+                <div className="text-center space-y-4">
+                  <div className="flex justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                      <Brain className="w-6 h-6 text-white" />
+                    </div>
+                  </div>
+                  <h4 className="text-lg font-bold text-purple-700">AI 전문가급 심층 분석을 원하시나요?</h4>
+                  <p className="text-sm text-gray-600">
+                    무료 체험에서는 기본 결과만 제공됩니다.<br/>
+                    <span className="font-semibold text-purple-600">회원가입 후 프리미엄 검사</span>를 이용하시면 <span className="font-semibold">AI가 전문가 수준의 상세한 해석과 맞춤형 솔루션</span>을 제공합니다.
+                  </p>
+                  <div className="space-y-2 text-sm text-purple-600">
+                    <p>✨ 개인별 맞춤 심리 프로파일 생성</p>
+                    <p>🎯 전문가급 AI 분석 및 해석</p>
+                    <p>📋 상세한 개선 방안 및 액션플랜 제공</p>
+                    <p>🔍 숨겨진 심리 패턴 발견</p>
+                  </div>
+                </div>
+              </div>
+
               <div className="bg-primary/10 rounded-lg p-4">
                 <p className="text-sm text-primary font-medium text-center">
                   💡 이 결과는 참고용이며, 정확한 진단은 전문가와 상담하시기 바랍니다.
                 </p>
               </div>
 
-              <div className="flex gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button onClick={() => navigate('/free-trial')} variant="outline">
-                  다른 테스트 해보기
+                  다른 무료 테스트 해보기
                 </Button>
-                <Button onClick={() => navigate('/auth')} className="bg-primary">
-                  회원가입하고 더 정확한 분석받기
+                <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
+                  회원가입하고 AI 전문가 분석받기
                 </Button>
               </div>
             </CardContent>

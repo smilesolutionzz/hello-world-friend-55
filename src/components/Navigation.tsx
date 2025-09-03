@@ -402,7 +402,7 @@ const Navigation = () => {
                         onClick={() => setIsChatOpen(true)}
                       >
                         <MessageCircle className="mr-3 h-5 w-5 shrink-0" />
-                        <span className="font-medium">질문 있나요?</span>
+                        <span className="font-medium">AI 상담</span>
                       </Button>
                     ) : (
                       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">

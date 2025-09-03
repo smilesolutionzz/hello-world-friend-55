@@ -191,7 +191,7 @@ const Navigation = () => {
                 <Button
                   onClick={() => setIsChatOpen(true)}
                   variant="outline"
-                  className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 
+                  className="lg:hidden flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 
                            hover:from-purple-600 hover:to-blue-600 text-white border-0
                            hover:shadow-lg transition-all duration-300"
                 >

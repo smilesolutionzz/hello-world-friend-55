@@ -9,7 +9,7 @@ const FloatingChatCTA = () => {
   return (
     <>
       {/* 플로팅 CTA 버튼 */}
-      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 lg:hidden">
         {!isOpen ? (
           <Button
             onClick={() => setIsOpen(true)}
@@ -18,7 +18,7 @@ const FloatingChatCTA = () => {
                      transition-all duration-300 flex items-center gap-2 text-sm sm:text-base"
           >
             <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="font-medium hidden lg:inline">질문 있나요?</span>
+            <span className="font-medium">질문 있나요?</span>
           </Button>
         ) : (
           <div className="relative">

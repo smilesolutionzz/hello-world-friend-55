@@ -120,6 +120,15 @@ const BasicMentalHealthTest = () => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
+    
+    // 답변 선택 시 자동으로 다음 질문으로 이동 (0.5초 딜레이)
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        setIsCompleted(true);
+      }
+    }, 500);
   };
 
   const nextQuestion = () => {
@@ -311,7 +320,7 @@ const BasicMentalHealthTest = () => {
               ))}
             </RadioGroup>
 
-            <div className="flex justify-between pt-4">
+            <div className="flex justify-start pt-4">
               <Button 
                 variant="outline" 
                 onClick={prevQuestion}
@@ -319,15 +328,6 @@ const BasicMentalHealthTest = () => {
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 이전
-              </Button>
-              
-              <Button 
-                onClick={nextQuestion}
-                disabled={answers[currentQuestion] === -1}
-                className="bg-primary"
-              >
-                {currentQuestion === questions.length - 1 ? '완료' : '다음'}
-                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
           </CardContent>

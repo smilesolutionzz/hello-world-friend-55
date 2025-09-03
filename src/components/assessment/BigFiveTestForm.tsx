@@ -186,7 +186,7 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
               </RadioGroup>
             </div>
 
-            <div className="flex justify-between pt-4">
+            <div className="flex justify-start pt-4">
               <Button
                 variant="outline"
                 onClick={handlePrevious}
@@ -195,14 +195,6 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
               >
                 <ArrowLeft className="w-4 h-4" />
                 이전
-              </Button>
-              <Button
-                onClick={handleNext}
-                disabled={!isAnswered}
-                className="flex items-center gap-2"
-              >
-                {currentQuestion === questions.length - 1 ? "결과 보기" : "다음"}
-                <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
           </CardContent>

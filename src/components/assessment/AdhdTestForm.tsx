@@ -171,20 +171,13 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between pt-6">
+        <div className="flex justify-start pt-6">
           <Button 
             variant="outline" 
             onClick={handlePrevious}
             disabled={currentQuestion === 0}
           >
             이전
-          </Button>
-          <Button 
-            onClick={handleNext}
-            disabled={!canProceed}
-            className="btn-brand"
-          >
-            {currentQuestion === questions.length - 1 ? '결과 보기' : '다음'}
           </Button>
         </div>
       </div>

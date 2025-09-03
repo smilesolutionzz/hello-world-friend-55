@@ -23,13 +23,15 @@ import {
   BarChart3,
   Award,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  UserCheck
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import MemberManagement from '@/components/institution/MemberManagement';
 import MemberDetailView from '@/components/institution/MemberDetailView';
 import ComprehensiveReport from '@/components/institution/ComprehensiveReport';
 import { TherapyScheduler } from '@/components/therapy/TherapyScheduler';
+import { InstitutionExpertManagement } from '@/components/institution/InstitutionExpertManagement';
 
 interface InstitutionStats {
   total_members: number;
@@ -580,11 +582,27 @@ export default function InstitutionAdmin() {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="schedule">일정관리</TabsTrigger>
-            <TabsTrigger value="overview">개요</TabsTrigger>
-            <TabsTrigger value="members">회원 관리</TabsTrigger>
-            <TabsTrigger value="reports">종합 리포트</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="overview">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              개요
+            </TabsTrigger>
+            <TabsTrigger value="members">
+              <Users className="h-4 w-4 mr-2" />
+              회원관리
+            </TabsTrigger>
+            <TabsTrigger value="experts">
+              <UserCheck className="h-4 w-4 mr-2" />
+              전문가고용
+            </TabsTrigger>
+            <TabsTrigger value="reports">
+              <FileText className="h-4 w-4 mr-2" />
+              종합분석
+            </TabsTrigger>
+            <TabsTrigger value="schedule">
+              <Calendar className="h-4 w-4 mr-2" />
+              일정관리
+            </TabsTrigger>
             <TabsTrigger value="analytics">분석</TabsTrigger>
           </TabsList>
 
@@ -660,6 +678,12 @@ export default function InstitutionAdmin() {
 
           <TabsContent value="members" className="space-y-6">
             <MemberManagement adminId={institutionInfo?.admin_id || ''} />
+          </TabsContent>
+
+          <TabsContent value="experts" className="space-y-6">
+            <InstitutionExpertManagement
+              institutionId={institutionInfo?.id || ''}
+            />
           </TabsContent>
 
           <TabsContent value="reports" className="space-y-6">

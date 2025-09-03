@@ -51,6 +51,8 @@ import Institutions from "./pages/Institutions";
 import HomeService from "./pages/HomeService";
 import NotFound from "./pages/NotFound";
 import ShareView from "./pages/ShareView";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TokenTest from "./pages/TokenTest";
 import StressPackage from "./pages/StressPackage";
 import DepressionPackage from "./pages/DepressionPackage";

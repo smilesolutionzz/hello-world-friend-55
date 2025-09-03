@@ -134,6 +134,10 @@ const LegalSafetyNotice = ({ onAccept, testType }: LegalSafetyNoticeProps) => {
             서비스 결과는 개인차가 클 수 있으며, 정확한 진단과 치료를 위해서는 반드시 의료기관을 방문하시기 바랍니다. 
             위기상황이나 응급상황에서는 즉시 119 또는 전문 상담기관에 연락하시기 바랍니다.
           </p>
+          <div className="mt-3 flex gap-4 text-sm">
+            <a href="/terms" className="text-blue-600 hover:underline">이용약관</a>
+            <a href="/privacy" className="text-blue-600 hover:underline">개인정보처리방침</a>
+          </div>
         </div>
 
         {/* 동의 버튼 */}

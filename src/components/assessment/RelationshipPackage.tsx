@@ -12,41 +12,61 @@ export const RelationshipPackage = () => {
   const relationshipTests = [
     {
       id: 1,
-      title: '관계유형 진단',
+      title: '관계 스타일 진단',
+      duration: '5분',
+      tokens: 2,
+      status: '🔥 NEW',
+      statusColor: 'bg-red-500',
+      description: '나의 인간관계 패턴과 소통 방식 분석',
+      path: '/assessment/relationship-style-test'
+    },
+    {
+      id: 2,
+      title: '애착 유형 검사',
       duration: '4분',
       tokens: 2,
       status: '🔥 2위',
       statusColor: 'bg-orange-500',
-      description: '나의 인간관계 패턴과 유형 분석',
+      description: '어린 시절 형성된 애착 패턴 분석',
       path: '/assessment?test=attachment'
     },
     {
-      id: 2,
-      title: '자아가치 측정',
+      id: 3,
+      title: '소통 스타일 진단',
       duration: '4분',
       tokens: 2,
       status: '⭐ 추천',
+      statusColor: 'bg-blue-500',
+      description: '의사소통 방식과 갈등 해결 패턴 파악',
+      path: '/assessment/communication-style-test'
+    },
+    {
+      id: 4,
+      title: '자아가치 측정',
+      duration: '4분',
+      tokens: 2,
+      status: '기본',
       statusColor: 'bg-purple-500',
       description: '건강한 관계의 기초인 자존감 측정',
       path: '/assessment?test=selfesteem'
     },
     {
-      id: 3,
+      id: 5,
       title: '5차원 성격 분석',
       duration: '5분',
       tokens: 2,
-      status: '🔥 1위',
-      statusColor: 'bg-red-500',
+      status: '상세분석',
+      statusColor: 'bg-green-500',
       description: '관계에서 나타나는 성격 특성 파악',
       path: '/assessment?test=bigfive'
     },
     {
-      id: 4,
+      id: 6,
       title: 'AI 관계 코칭',
       duration: '30분',
       tokens: 0,
       status: '맞춤코칭',
-      statusColor: 'bg-green-500',
+      statusColor: 'bg-emerald-500',
       description: '개인별 관계 개선 전략 제공',
       path: '/ai-counselor?mode=relationship'
     }

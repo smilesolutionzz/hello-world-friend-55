@@ -28,6 +28,8 @@ import { TypebotEmbed } from "./components/highlight/TypebotEmbed";
 import { TestResults } from "./components/highlight/TestResults";
 import { PersonalityLoveTest } from "./components/assessment/PersonalityLoveTest";
 import { PersonalityLoveResult } from "./components/assessment/PersonalityLoveResult";
+import RelationshipStyleTest from "./pages/RelationshipStyleTest";
+import CommunicationStyleTest from "./pages/CommunicationStyleTest";
 
 
 import CounselingFlow from "./pages/CounselingFlow";
@@ -61,6 +63,7 @@ import DepressionPackage from "./pages/DepressionPackage";
 import AnxietyPackage from "./pages/AnxietyPackage";
 import FocusPackage from "./pages/FocusPackage";
 import ChildPackage from "./pages/ChildPackage";
+import RelationshipPackage from "./pages/RelationshipPackage";
 import ComprehensivePackage from "./pages/ComprehensivePackage";
 
 import AssessmentHistory from "./components/history/AssessmentHistory";
@@ -107,6 +110,8 @@ const App = () => {
               console.log('Test completed:', result);
             }} />
           } />
+          <Route path="/assessment/relationship-style-test" element={<RelationshipStyleTest />} />
+          <Route path="/assessment/communication-style-test" element={<CommunicationStyleTest />} />
           <Route path="/assessment/:id" element={<TestResults />} />
           <Route path="/fun-tests" element={<Assessment />} />
           <Route path="/fun-test-result" element={<FunTestResult />} />
@@ -120,6 +125,7 @@ const App = () => {
           <Route path="/anxiety-package" element={<AnxietyPackage />} />
           <Route path="/focus-package" element={<FocusPackage />} />
           <Route path="/child-package" element={<ChildPackage />} />
+          <Route path="/relationship-package" element={<RelationshipPackage />} />
           <Route path="/comprehensive-package" element={<ComprehensivePackage />} />
           <Route path="/family" element={<ChildPackage />} />
           <Route path="/han-medicine-test" element={<HanMedicineTest />} />

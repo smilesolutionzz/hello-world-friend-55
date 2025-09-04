@@ -115,7 +115,7 @@ export default function QuickNeedsAssessment() {
           name: '전문가 30분 상담',
           tokenCost: '30토큰',
           duration: '30분',
-          route: '/expert-list',
+          route: '/expert-hiring',
           badge: '전문상담',
           badgeColor: 'bg-gradient-to-r from-amber-500 to-orange-600'
         }
@@ -274,7 +274,7 @@ export default function QuickNeedsAssessment() {
           name: 'AIH박사급리포팅',
           tokenCost: '50토큰',
           duration: '15페이지이상',
-          route: '/expert-list?type=report',
+          route: '/expert-hiring?type=report',
           badge: '프리미엄',
           badgeColor: 'bg-gradient-to-r from-amber-500 to-yellow-600'
         }
@@ -460,7 +460,7 @@ export default function QuickNeedsAssessment() {
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate('/expert-list');
+                      navigate('/expert-hiring');
                     }}
                     className="bg-white hover:bg-green-50 border-green-200 text-green-700"
                   >

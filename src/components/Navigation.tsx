@@ -145,7 +145,7 @@ const Navigation = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => handleNavigation('/experts')}>
+                <DropdownMenuItem onClick={() => handleNavigation('/expert-hiring')}>
                   <Users className="w-4 h-4 mr-2" />
                   전문가 고용
                 </DropdownMenuItem>
@@ -433,7 +433,7 @@ const Navigation = () => {
                   <Button
                     variant="ghost"
                     className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
-                    onClick={() => handleNavigation('/experts')}
+                    onClick={() => handleNavigation('/expert-hiring')}
                   >
                     <Users className="mr-3 h-5 w-5 text-primary shrink-0" />
                     <span className="font-medium">전문가고용</span>

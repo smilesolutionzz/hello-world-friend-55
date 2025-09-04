@@ -17,7 +17,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><a href="/assessment" className="hover:text-foreground">심리 검사</a></li>
               <li><a href="/ai-counselor" className="hover:text-foreground">AI 상담</a></li>
-              <li><a href="/experts" className="hover:text-foreground">전문가 연결</a></li>
+              <li><a href="/expert-hiring" className="hover:text-foreground">전문가 연결</a></li>
             </ul>
           </div>
           

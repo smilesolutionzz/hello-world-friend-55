@@ -447,7 +447,7 @@ const RelationshipStyleResult = ({ result }: RelationshipStyleResultProps) => {
                 <Button 
                   variant="outline"
                   size="sm"
-                  onClick={() => navigate('/experts?category=relationship')}
+                  onClick={() => navigate('/expert-hiring')}
                   className="w-full"
                 >
                   상담사 찾기

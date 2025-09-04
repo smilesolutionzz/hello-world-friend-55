@@ -293,7 +293,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
       {/* 액션 버튼들 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Button
-          onClick={() => navigate('/expert?category=ADHD&mode=online')}
+          onClick={() => navigate('/expert-hiring')}
           className="h-auto p-4 flex flex-col items-center gap-2"
           variant="outline"
         >

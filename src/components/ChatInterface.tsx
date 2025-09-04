@@ -156,7 +156,7 @@ const ChatInterface = () => {
             </div>
           </Card>
 
-          <Card className="p-6 hover-glow cursor-pointer" onClick={() => navigate('/experts')}>
+          <Card className="p-6 hover-glow cursor-pointer" onClick={() => navigate('/expert-hiring')}>
             <div className="flex items-center gap-4">
               <ExternalLink className="w-8 h-8 text-primary" />
               <div>
@@ -176,9 +176,9 @@ const ChatInterface = () => {
                 <p className="text-sm mt-1">
                   관찰일지를 작성하시면 전문가의 상세한 분석 리포팅을 받으실 수 있습니다.
                 </p>
-                <Button 
+                <Button
                   className="mt-3 btn-brand"
-                  onClick={() => navigate('/experts')}
+                  onClick={() => navigate('/expert-hiring')}
                 >
                   전문가 상담 받기
                 </Button>

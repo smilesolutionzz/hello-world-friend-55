@@ -38,7 +38,7 @@ export const ComprehensivePackage = () => {
       status: '프리미엄',
       statusColor: 'bg-amber-500',
       description: '3개월 추적 관리 서비스',
-      path: '/expert-list?type=report'
+      path: '/expert-hiring?type=report'
     }
   ];
 

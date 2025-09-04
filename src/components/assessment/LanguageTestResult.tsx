@@ -291,7 +291,7 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
                 언어발달 검사 결과를 바탕으로 전문가 상담을 받아보세요.
               </p>
               <Button 
-                onClick={() => navigate('/expert?category=언어&mode=online')}
+                onClick={() => navigate('/expert-hiring')}
                 className="gap-2"
               >
                 <ExternalLink className="w-4 h-4" />

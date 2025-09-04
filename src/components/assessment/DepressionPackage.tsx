@@ -38,7 +38,7 @@ export const DepressionPackage = () => {
       status: '전문상담',
       statusColor: 'bg-amber-500',
       description: '전문가 직접 상담 연결',
-      path: '/expert-list'
+      path: '/expert-hiring'
     }
   ];
 

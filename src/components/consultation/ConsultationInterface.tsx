@@ -125,7 +125,7 @@ export const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({ ro
         description: "상담방을 불러오는데 실패했습니다.",
         variant: "destructive",
       });
-      navigate('/experts');
+      navigate('/expert-hiring');
     } finally {
       setLoading(false);
     }

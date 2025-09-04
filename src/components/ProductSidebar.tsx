@@ -215,7 +215,7 @@ const ProductSidebar = () => {
             <Button 
               size="sm"
               className="w-full bg-red-600 hover:bg-red-700 text-white text-sm font-medium"
-              onClick={() => navigate('/experts')}
+              onClick={() => navigate('/expert-hiring')}
             >
               📊 박사급 리포트 (200토큰)
             </Button>

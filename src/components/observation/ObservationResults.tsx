@@ -766,13 +766,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
                        "더 정확한 진단과 전문적인 도움을 위해 전문가 상담하시는 것을 권장합니다."}
                     </p>
                     <Button 
-                      onClick={() => {
-                        // TODO: 전문가 상담 예약 기능 구현
-                        toast({
-                          title: "상담 예약",
-                          description: "전문가 상담 예약 기능을 준비 중입니다.",
-                        });
-                      }}
+                      onClick={() => navigate('/expert-hiring')}
                       className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                     >
                       상담 예약하기

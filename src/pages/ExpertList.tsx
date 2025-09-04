@@ -197,7 +197,7 @@ const ExpertList = () => {
                       <span className="text-sm">{expert.availability}</span>
                     </div>
                     <Button 
-                      onClick={() => handleConsultation(expert.id)}
+                      onClick={() => navigate('/expert-hiring')}
                       className="w-full btn-brand"
                     >
                       <Calendar className="w-4 h-4 mr-2" />

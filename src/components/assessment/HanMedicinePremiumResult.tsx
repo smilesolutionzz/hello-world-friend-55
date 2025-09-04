@@ -147,7 +147,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Heart className="h-5 w-5 mr-2 text-red-500" />
-                사상체질 분석
+                AI 체질 성향 분석
               </CardTitle>
             </CardHeader>
             <CardContent>

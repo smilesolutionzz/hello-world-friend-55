@@ -233,11 +233,11 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
             ⚊⚊
           </div>
           <CardTitle className="text-2xl font-bold text-foreground">
-            사상체질 3분 진단
+            AI 체질 성향 분석
           </CardTitle>
         </div>
         <CardDescription className="text-lg text-muted-foreground">
-          간단한 질문으로 당신의 사상체질을 진단합니다
+          간단한 질문으로 당신의 체질 성향을 분석합니다
         </CardDescription>
         
         <div className="mt-6">

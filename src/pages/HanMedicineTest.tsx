@@ -82,7 +82,7 @@ const HanMedicineTest = () => {
             <CardHeader>
               <CardTitle className="text-xl flex items-center">
                 <Heart className="h-6 w-6 mr-2 text-red-500" />
-                사상체질 3분 진단
+                AI 체질 성향 3분 분석
               </CardTitle>
               <CardDescription>
                 간단한 질문으로 빠르게 체질을 확인하세요

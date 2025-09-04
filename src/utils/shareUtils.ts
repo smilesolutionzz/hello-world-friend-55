@@ -226,16 +226,16 @@ export const formatMedicalTestResult = (testType: string, result: any): string =
       taeeum: '태음인'
     };
     
-    return `⚊⚊ 사상체질 진단 결과
+    return `⚊⚊ AI 체질 성향 분석 결과
 📅 ${timestamp}
 
 🏥 체질: ${constitutionNames[result.constitution as keyof typeof constitutionNames] || result.constitution}
 
 📊 체질별 점수:
-• 소양인: ${result.scores?.soyang || 0}점
-• 소음인: ${result.scores?.soeum || 0}점  
-• 태양인: ${result.scores?.taeyang || 0}점
-• 태음인: ${result.scores?.taeeum || 0}점
+• 실무형: ${result.scores?.soyang || 0}점
+• 분석형: ${result.scores?.soeum || 0}점  
+• 창작형: ${result.scores?.taeyang || 0}점
+• 소통형: ${result.scores?.taeeum || 0}점
 
 💡 체질 특성 및 관리법:
 (체질별 맞춤 관리법은 한의원에서 상세히 상담받으세요)
@@ -246,7 +246,7 @@ export const formatMedicalTestResult = (testType: string, result: any): string =
 • 정기적인 한의학적 관리
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🏥 한의학 체질 진단 서비스
+🏥 AI 체질 성향 분석 서비스
 정확한 체질 관리: aihpro.com`;
   }
   

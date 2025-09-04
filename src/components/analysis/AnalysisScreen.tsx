@@ -320,9 +320,9 @@ ${percentage < 60 ? '우울/불안 전문가와의 즉시 상담을 권장합니
               <div>
                 <div className="font-medium text-primary">검사 도구</div>
                 <div className="text-muted-foreground">
-                  {ageGroup === 'infant' ? 'K-ASQ 발달선별검사' : 
-                    ageGroup === 'child' ? '주의집중력/인지능력검사' : 
-                    '우울/불안 임상척도'}
+                  {ageGroup === 'infant' ? 'AIH 발달관찰 체크리스트' : 
+                    ageGroup === 'child' ? 'AIH 집중력 자가점검' : 
+                    'AIH 심리상태 자가진단'}
                 </div>
               </div>
               <div>

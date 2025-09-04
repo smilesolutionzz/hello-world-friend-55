@@ -181,7 +181,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
               {constitutionData.name}
             </Badge>
           </div>
-          <CardTitle className="text-2xl">사상체질 진단 결과</CardTitle>
+          <CardTitle className="text-2xl">AI 체질 성향 분석 결과</CardTitle>
           <CardDescription className="text-lg">
             {constitutionData.description}
           </CardDescription>

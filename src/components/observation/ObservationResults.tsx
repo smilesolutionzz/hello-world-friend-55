@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
@@ -739,6 +740,23 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
           <RecommendedContent session={session} />
         </TabsContent>
       </Tabs>
+
+      {/* AI 이미지 생성 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>관찰 기반 맞춤 이미지 생성</CardTitle>
+          <CardDescription>
+            관찰일지 내용을 바탕으로 아이의 발달과 치료에 도움이 되는 이미지를 생성해보세요
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ImageGenerator
+            initialPrompt={`${session.observations?.session_name || session.session_name}에서 관찰된 아이의 발달 상황을 표현하는 따뜻하고 격려적인 이미지`}
+            context={`관찰일지 - ${session.observations?.session_name || session.session_name}, 분석결과: ${analysisData?.summary || '긍정적 발달'}`}
+            type="observation"
+          />
+        </CardContent>
+      </Card>
 
       {/* 상품 추천 */}
       <ProductRecommendation 

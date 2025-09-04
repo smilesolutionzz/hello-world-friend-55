@@ -1,7 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { MapPin, Phone, Users, Star, Clock, Shield, Car, Accessibility } from "lucide-react";
+import { MapPin, Phone, Users, Star, Clock, Shield, Car, Accessibility, Image as ImageIcon } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 
 interface Institution {
   id: string;
@@ -187,6 +189,24 @@ export function InstitutionCard({ institution, onViewDetails, onContactInstituti
           >
             제휴 문의
           </Button>
+          
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                <ImageIcon className="w-4 h-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>{institution.name} 기관 로고 생성</DialogTitle>
+              </DialogHeader>
+              <ImageGenerator
+                initialPrompt={`${institution.name} 심리상담센터 전문적이고 신뢰감 있는 로고`}
+                context={`기관명: ${institution.name}, 전문분야: ${institution.specializations?.join(', ')}`}
+                type="institution"
+              />
+            </DialogContent>
+          </Dialog>
         </div>
       </CardContent>
     </Card>

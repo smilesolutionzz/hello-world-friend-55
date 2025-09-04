@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ExternalLink, MessageCircle, Users, Brain } from "lucide-react";
+import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
@@ -338,6 +339,19 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           </div>
         </Button>
       </div>
+
+      {/* AI 이미지 생성 */}
+      <Card className="p-8">
+        <h3 className="text-2xl font-bold text-foreground mb-6">🎨 맞춤형 치료 이미지 생성</h3>
+        <p className="text-muted-foreground mb-6">
+          ADHD 테스트 결과를 바탕으로 치료에 도움이 되는 개인화된 이미지를 생성해보세요.
+        </p>
+        <ImageGenerator
+          initialPrompt={`ADHD 치료를 위한 ${severity} 수준의 집중력 향상 이미지`}
+          context={`ADHD 테스트 결과 - 위험도: ${severity}, 점수: ${total}`}
+          type="test_result"
+        />
+      </Card>
 
       {/* 상품 추천 */}
       <ProductRecommendation 

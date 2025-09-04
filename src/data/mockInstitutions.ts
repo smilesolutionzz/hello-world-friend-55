@@ -1,3 +1,24 @@
+import hanjeomMisoLogo from '@/assets/institution-logos/hanjeom-miso-logo.jpg';
+import uahamLogo from '@/assets/institution-logos/uaham-logo.jpg';
+import mapleAbaLogo from '@/assets/institution-logos/maple-aba-logo.jpg';
+import elimLogo from '@/assets/institution-logos/elim-logo.jpg';
+import haewooTeumLogo from '@/assets/institution-logos/haewooteum-logo.jpg';
+import phimLogo from '@/assets/institution-logos/phim-logo.jpg';
+import jeongGwanLogo from '@/assets/institution-logos/jeonggwan-logo.jpg';
+import haeOreumLogo from '@/assets/institution-logos/haeoreum-logo.jpg';
+import neomnadeulLogo from '@/assets/institution-logos/neomnadeul-logo.jpg';
+import byeolhaLogo from '@/assets/institution-logos/byeolha-logo.jpg';
+import jeongChildLogo from '@/assets/institution-logos/jeong-child-logo.jpg';
+import sorielLogo from '@/assets/institution-logos/soriel-logo.jpg';
+import naagadaLogo from '@/assets/institution-logos/naagada-logo.jpg';
+import wooriAbaLogo from '@/assets/institution-logos/woori-aba-logo.jpg';
+import hangeoreumLogo from '@/assets/institution-logos/hangeoreum-logo.jpg';
+import chamsoriLogo from '@/assets/institution-logos/chamsori-logo.jpg';
+import sanbonLogo from '@/assets/institution-logos/sanbon-logo.jpg';
+import dorandoranLogo from '@/assets/institution-logos/dorandoran-logo.jpg';
+import dadaLogo from '@/assets/institution-logos/dada-logo.jpg';
+import changwonLogo from '@/assets/institution-logos/changwon-logo.jpg';
+
 export const mockInstitutions = [
   {
     id: '1',
@@ -16,7 +37,7 @@ export const mockInstitutions = [
     total_experts: 8,
     rating: 4.7,
     review_count: 95,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: hanjeomMisoLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -53,7 +74,7 @@ export const mockInstitutions = [
     total_experts: 6,
     rating: 4.6,
     review_count: 78,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: hanjeomMisoLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -90,7 +111,7 @@ export const mockInstitutions = [
     total_experts: 9,
     rating: 4.6,
     review_count: 76,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: uahamLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -127,7 +148,7 @@ export const mockInstitutions = [
     total_experts: 10,
     rating: 4.7,
     review_count: 89,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: uahamLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -164,7 +185,7 @@ export const mockInstitutions = [
     total_experts: 12,
     rating: 4.8,
     review_count: 115,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: mapleAbaLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -201,7 +222,7 @@ export const mockInstitutions = [
     total_experts: 9,
     rating: 4.7,
     review_count: 102,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: elimLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -238,7 +259,7 @@ export const mockInstitutions = [
     total_experts: 8,
     rating: 4.6,
     review_count: 87,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: haewooTeumLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '10:00-19:00',
@@ -275,7 +296,7 @@ export const mockInstitutions = [
     total_experts: 11,
     rating: 4.8,
     review_count: 124,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: phimLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -312,7 +333,7 @@ export const mockInstitutions = [
     total_experts: 7,
     rating: 4.7,
     review_count: 93,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: jeongGwanLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -349,7 +370,7 @@ export const mockInstitutions = [
     total_experts: 13,
     rating: 4.8,
     review_count: 156,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: haeOreumLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '08:30-18:30',
@@ -386,7 +407,7 @@ export const mockInstitutions = [
     total_experts: 12,
     rating: 4.8,
     review_count: 156,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: neomnadeulLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-19:00',
@@ -423,7 +444,7 @@ export const mockInstitutions = [
     total_experts: 7,
     rating: 4.7,
     review_count: 98,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: byeolhaLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '10:00-19:00',
@@ -460,7 +481,7 @@ export const mockInstitutions = [
     total_experts: 9,
     rating: 4.6,
     review_count: 84,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: jeongChildLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -497,7 +518,7 @@ export const mockInstitutions = [
     total_experts: 6,
     rating: 4.7,
     review_count: 72,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: sorielLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -534,7 +555,7 @@ export const mockInstitutions = [
     total_experts: 8,
     rating: 4.6,
     review_count: 91,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: naagadaLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '10:00-19:00',
@@ -571,7 +592,7 @@ export const mockInstitutions = [
     total_experts: 10,
     rating: 4.8,
     review_count: 108,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: wooriAbaLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -608,7 +629,7 @@ export const mockInstitutions = [
     total_experts: 7,
     rating: 4.7,
     review_count: 85,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: hangeoreumLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -645,7 +666,7 @@ export const mockInstitutions = [
     total_experts: 8,
     rating: 4.8,
     review_count: 142,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: chamsoriLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -682,7 +703,7 @@ export const mockInstitutions = [
     total_experts: 11,
     rating: 4.7,
     review_count: 96,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: sanbonLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -719,7 +740,7 @@ export const mockInstitutions = [
     total_experts: 6,
     rating: 4.6,
     review_count: 78,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: dorandoranLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '10:00-19:00',
@@ -756,7 +777,7 @@ export const mockInstitutions = [
     total_experts: 9,
     rating: 4.7,
     review_count: 105,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: dadaLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -793,7 +814,7 @@ export const mockInstitutions = [
     total_experts: 12,
     rating: 4.8,
     review_count: 89,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: phimLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-19:00',
@@ -830,7 +851,7 @@ export const mockInstitutions = [
     total_experts: 15,
     rating: 4.9,
     review_count: 187,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: changwonLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '08:00-17:00',
@@ -867,7 +888,7 @@ export const mockInstitutions = [
     total_experts: 8,
     rating: 4.7,
     review_count: 68,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: sorielLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -904,7 +925,7 @@ export const mockInstitutions = [
     total_experts: 5,
     rating: 4.6,
     review_count: 94,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: changwonLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -941,7 +962,7 @@ export const mockInstitutions = [
     total_experts: 4,
     rating: 4.8,
     review_count: 142,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: changwonLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-18:00',
@@ -978,7 +999,7 @@ export const mockInstitutions = [
     total_experts: 12,
     rating: 4.8,
     review_count: 87,
-    profile_image_url: '/placeholder.svg',
+    profile_image_url: haewooTeumLogo,
     gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     operating_hours: {
       monday: '09:00-19:00',

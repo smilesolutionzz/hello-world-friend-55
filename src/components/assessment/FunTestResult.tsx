@@ -5,6 +5,7 @@ import { Crown, Share2, RotateCcw, Star, Users, Calendar, Copy } from "lucide-re
 import { useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useShareText, formatFunTestResult } from "@/utils/shareUtils";
+import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 
 export default function FunTestResult() {
   const location = useLocation();
@@ -112,6 +113,16 @@ export default function FunTestResult() {
               </p>
             </div>
 
+            {/* AI 이미지 생성 */}
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6">
+              <h3 className="text-xl font-bold mb-4 text-purple-800">🎨 AI가 그려본 당신의 전생</h3>
+              <ImageGenerator 
+                initialPrompt={`${result.pastLifeJob} in ${result.era}, ${result.description}, professional historical illustration, detailed artwork`}
+                type="test_result"
+                context={`past_life_job_${result.pastLifeJob}`}
+              />
+            </div>
+
             {/* 성격 분석 */}
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6">
               <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
@@ -211,6 +222,16 @@ export default function FunTestResult() {
               <p className="text-lg text-muted-foreground">
                 AI가 당신의 얼굴을 분석한 결과입니다!
               </p>
+            </div>
+
+            {/* AI 이미지 생성 */}
+            <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-6">
+              <h3 className="text-xl font-bold mb-4 text-orange-800">🎨 AI가 그려본 당신과 닮은 동물</h3>
+              <ImageGenerator 
+                initialPrompt={`cute ${result.matchedAnimal}, kawaii style, adorable character illustration, friendly and approachable`}
+                type="test_result"
+                context={`animal_face_${result.matchedAnimal}`}
+              />
             </div>
 
             {/* 얼굴 특징 분석 */}
@@ -356,6 +377,16 @@ export default function FunTestResult() {
               <p className="text-lg text-muted-foreground">
                 {result.animalType}
               </p>
+            </div>
+
+            {/* AI 이미지 생성 */}
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6">
+              <h3 className="text-xl font-bold mb-4 text-green-800">🎨 AI가 표현한 당신의 내면 동물</h3>
+              <ImageGenerator 
+                initialPrompt={`spiritual ${result.innerAnimal}, mystical aura, psychology visualization, ethereal and meaningful artwork`}
+                type="test_result"
+                context={`inner_animal_${result.innerAnimal}`}
+              />
             </div>
 
             {/* 핵심 특성 */}

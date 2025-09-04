@@ -67,7 +67,8 @@ import RelationshipPackage from "./pages/RelationshipPackage";
 import ComprehensivePackage from "./pages/ComprehensivePackage";
 
 import AssessmentHistory from "./components/history/AssessmentHistory";
-import FunTestResult from "./components/assessment/FunTestResult";
+import FunTests from "./pages/FunTests";
+import FunTestResult from "./pages/FunTestResult";
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -113,8 +114,8 @@ const App = () => {
           <Route path="/assessment/relationship-style-test" element={<RelationshipStyleTest />} />
           <Route path="/assessment/communication-style-test" element={<CommunicationStyleTest />} />
           <Route path="/assessment/:id" element={<TestResults />} />
-          <Route path="/fun-tests" element={<Assessment />} />
-          <Route path="/fun-test-result" element={<FunTestResult />} />
+           <Route path="/fun-tests" element={<FunTests />} />
+           <Route path="/fun-test-result" element={<FunTestResult />} />
           <Route path="/assessment-history" element={<AssessmentHistory />} />
           <Route path="/counseling" element={<CounselingFlow />} />
           <Route path="/ai-counselor" element={<AICounselor />} />

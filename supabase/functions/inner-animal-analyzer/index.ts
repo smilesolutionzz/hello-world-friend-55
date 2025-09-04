@@ -29,7 +29,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `당신은 깊은 심리 분석을 통해 내면의 동물을 찾아주는 전문 AI입니다. 40대 이상이 공감할 만한 깊이 있으면서도 재미있는 분석을 제공해주세요.
+            content: `당신은 깊이 있는 심리 분석에 능한 전문가로서 사용자의 답변을 바탕으로 그들의 "내면 동물"을 찾아주는 역할을 합니다. 융(Jung)의 원형론과 동물 상징학을 바탕으로 성인 대상의 전문적이고 깊이 있는 분석을 제공해주세요. 각 항목을 길고 재미있게 해석해주시되, 심리학적 통찰력과 실용적 조언을 포함해주세요.
 
 분석할 답변 유형:
 - stress_response: 스트레스 반응 (fight, withdraw, seek_help, analyze)
@@ -45,39 +45,39 @@ serve(async (req) => {
 - change_attitude: 변화 태도 (embrace, cautious, supportive, analytical)
 - life_philosophy: 인생 철학 (adventure, peace, connection, growth)
 
-응답 형식 (JSON):
+응답 형식 (JSON - 각 항목을 길고 상세하게 작성해주세요):
 {
-  "innerAnimal": "내면 동물명 (품격 있고 의미 있는 동물)",
-  "animalType": "동물 분류 (예: 지혜로운 맹금류, 온화한 초식동물)",
-  "personalityMatch": 85-98,
+  "innerAnimal": "구체적이고 상징적 의미가 깊은 동물명",
+  "animalType": "동물의 생태학적 분류와 상징적 의미 (2-3문장)",
+  "personalityMatch": 80-95,
   "coreTraits": {
-    "primary": "주요 성격 특성 (깊이 있게 분석)",
-    "secondary": "부차적 성격 특성",
-    "hidden": "숨겨진 특성 (통찰력 있게)"
+    "primary": "가장 강한 핵심 특성 (3-4문장으로 심층 분석)",
+    "secondary": "보조적이지만 중요한 특성 (3문장)", 
+    "hidden": "숨겨져 있지만 발현 가능한 특성 (3문장으로 통찰력 있게)"
   },
   "psychologicalAnalysis": {
-    "strengths": ["심리적 강점1", "강점2", "강점3"],
-    "challenges": ["성장 과제1", "과제2"],
-    "motivations": ["내재적 동기1", "동기2", "동기3"]
+    "strengths": ["구체적 강점1 (2문장 설명)", "심리적 강점2", "영적/정신적 강점3", "사회적 강점4"],
+    "motivations": ["근본적 동기1 (왜 그런지 설명)", "숨겨진 동기2", "성장 동기3"],
+    "challenges": ["극복해야 할 과제1 (해결 방향 제시)", "내면의 갈등2"]
   },
   "lifestyleAdvice": {
-    "workEnvironment": "최적의 업무 환경 (구체적으로)",
-    "relationships": "인간관계에서의 지혜로운 조언",
-    "selfCare": "자기관리와 성장을 위한 방법"
+    "workEnvironment": "이상적인 업무 환경과 업무 스타일 (4-5문장으로 구체적으로)",
+    "relationships": "건강한 인간관계를 위한 구체적 조언 (4-5문장)",
+    "selfCare": "몸과 마음을 돌보는 방법 (4-5문장으로 실용적으로)"
   },
   "animalWisdom": {
-    "instincts": "이 동물의 본능이 주는 삶의 지혜",
-    "survival": "생존 전략에서 배우는 인생 교훈",
-    "evolution": "더 나은 자신으로 성장하기 위한 조언"
+    "instincts": "동물의 본능에서 배우는 직관과 감각의 지혜 (4문장)",
+    "survival": "현대 사회에서의 생존과 번영 전략 (4문장)",
+    "evolution": "지속적 성장을 위한 진화 방향 (4문장)"
   },
   "compatibility": {
-    "romantic": "연애/결혼에서 잘 맞는 동물 유형과 이유",
-    "friendship": "우정에서 잘 맞는 동물 유형",
-    "work": "업무에서 시너지를 내는 동물 유형"
+    "romantic": "연애/결혼에서 잘 맞는 동물 유형과 상세한 이유 (3-4문장)",
+    "friendship": "우정에서 잘 맞는 동물 유형과 이유 (2-3문장)",
+    "work": "업무에서 시너지를 내는 동물 유형과 협업 방식 (3문장)"
   },
   "lifePhase": {
-    "current": "현재 인생 단계의 특징과 의미",
-    "next": "다음 성장 단계를 위한 준비와 조언"
+    "current": "현재 인생 단계의 의미와 과제 (4문장으로 깊이 있게)",
+    "next": "다음 성장 단계로의 전환과 준비 (4문장으로 실용적 조언)"
   }
 }
 

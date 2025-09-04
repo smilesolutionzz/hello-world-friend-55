@@ -17,24 +17,24 @@ interface CareerInterestResultProps {
 }
 
 const typeConfig = {
-  realistic: {
-    name: "현실형 (R)",
+  technical: {
+    name: "실무형 (T)",
     icon: Wrench,
     color: "bg-brown-500",
     description: "실제적이고 체계적인 활동을 선호하며, 기계나 도구를 다루는 일을 좋아합니다.",
-    careers: ["기계공학자", "전기기술자", "건축가", "농업기술자", "자동차정비사", "요리사"],
+    careers: ["기계공학자", "전기기술자", "건축가", "IT개발자", "자동차정비사", "요리사"],
     characteristics: ["실용적", "현실적", "체계적", "솔직함"]
   },
-  investigative: {
-    name: "탐구형 (I)", 
+  analytical: {
+    name: "분석형 (A)", 
     icon: Microscope,
     color: "bg-blue-500",
     description: "과학적이고 분석적인 활동을 선호하며, 복잡한 문제를 해결하는 것을 좋아합니다.",
     careers: ["과학자", "의사", "연구원", "약사", "교수", "데이터분석가"],
     characteristics: ["분석적", "논리적", "호기심", "독립적"]
   },
-  artistic: {
-    name: "예술형 (A)",
+  creative: {
+    name: "창작형 (C)",
     icon: Palette,
     color: "bg-purple-500", 
     description: "창의적이고 자유로운 활동을 선호하며, 예술적 표현을 즐깁니다.",
@@ -42,28 +42,28 @@ const typeConfig = {
     characteristics: ["창의적", "독창적", "표현력", "감성적"]
   },
   social: {
-    name: "사회형 (S)",
+    name: "소통형 (S)",
     icon: Users,
     color: "bg-green-500",
     description: "다른 사람을 돕고 가르치는 활동을 선호하며, 사회적 상호작용을 즐깁니다.",
     careers: ["교사", "상담사", "간호사", "사회복지사", "인사담당자", "코치"],
     characteristics: ["친화적", "이해심", "협력적", "책임감"]
   },
-  enterprising: {
-    name: "진취형 (E)",
+  leadership: {
+    name: "리더형 (L)",
     icon: TrendingUp,
     color: "bg-orange-500",
-    description: "리더십을 발휘하고 설득하는 활동을 선호하며, 경영이나 판매에 관심이 많습니다.",
-    careers: ["경영자", "영업사원", "변호사", "정치인", "마케터", "기업가"],
-    characteristics: ["리더십", "설득력", "야심적", "외향적"]
+    description: "사업적이고 경쟁적인 활동을 선호하며, 리더십을 발휘하는 것을 좋아합니다.",
+    careers: ["CEO", "영업관리자", "변호사", "정치인", "마케팅전문가", "컨설턴트"],
+    characteristics: ["야심적", "설득력", "지배적", "자신감"]
   },
-  conventional: {
-    name: "관습형 (C)",
+  organized: {
+    name: "체계형 (O)",
     icon: FileText,
     color: "bg-gray-500",
-    description: "체계적이고 규칙적인 활동을 선호하며, 정확성과 질서를 중시합니다.",
-    careers: ["회계사", "은행원", "비서", "사무원", "공무원", "경리담당자"],
-    characteristics: ["체계적", "정확성", "신뢰성", "책임감"]
+    description: "체계적이고 규칙적인 활동을 선호하며, 정확성과 세심함을 중시합니다.",
+    careers: ["회계사", "은행원", "비서", "사서", "세무사", "품질관리자"],
+    characteristics: ["조직적", "정확함", "신중함", "안정지향"]
   }
 };
 
@@ -78,8 +78,8 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
       .map(type => typeConfig[type as keyof typeof typeConfig].name)
       .join(', ');
     
-    const shareContent = `직업 흥미 검사 결과\n\n나의 직업 흥미 유형:\n1순위: ${topConfig.name}\n상위 3유형: ${topThreeTypes}`;
-    shareAsText(shareContent, "직업 흥미 검사 결과");
+    const shareContent = `AI 직업 성향 분석 결과\n\n나의 직업 성향 유형:\n1순위: ${topConfig.name}\n상위 3유형: ${topThreeTypes}`;
+    shareAsText(shareContent, "AI 직업 성향 분석 결과");
   };
 
   return (
@@ -90,7 +90,7 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
           <CardHeader className="text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
               <TopIcon className="w-8 h-8 text-primary" />
-              <CardTitle className="text-2xl">직업 흥미 검사 결과</CardTitle>
+              <CardTitle className="text-2xl">AI 직업 성향 분석 결과</CardTitle>
             </div>
             <div className="space-y-4">
               <Badge variant="default" className="text-lg px-4 py-2">
@@ -108,7 +108,7 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Briefcase className="w-5 h-5" />
-              나의 상위 직업 흥미 유형
+              나의 상위 직업 성향 유형
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -154,7 +154,7 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
         {/* 전체 유형 점수 */}
         <Card>
           <CardHeader>
-            <CardTitle>전체 흥미 유형 점수</CardTitle>
+            <CardTitle>전체 성향 유형 점수</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-3">

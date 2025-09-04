@@ -7,41 +7,41 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 
 const questions = [
-  // Realistic (현실형)
-  { id: "r1", text: "기계나 도구를 다루는 일", type: "realistic" },
-  { id: "r2", text: "야외에서 하는 작업", type: "realistic" },
-  { id: "r3", text: "손으로 만들거나 조립하는 일", type: "realistic" },
-  { id: "r4", text: "체력을 사용하는 활동", type: "realistic" },
+  // 실무형 (기술/실용)
+  { id: "t1", text: "기계나 도구를 다루는 일에 흥미가 있다", type: "technical" },
+  { id: "t2", text: "야외에서 몸을 움직이는 활동을 좋아한다", type: "technical" },
+  { id: "t3", text: "손으로 무언가를 만들거나 조립하는 것을 즐긴다", type: "technical" },
+  { id: "t4", text: "체력을 사용하는 활동에 관심이 많다", type: "technical" },
   
-  // Investigative (탐구형)
-  { id: "i1", text: "과학 실험이나 연구하는 일", type: "investigative" },
-  { id: "i2", text: "복잡한 문제를 분석하고 해결하는 일", type: "investigative" },
-  { id: "i3", text: "새로운 지식을 탐구하는 일", type: "investigative" },
-  { id: "i4", text: "논리적으로 사고하는 일", type: "investigative" },
+  // 분석형 (연구/탐구)
+  { id: "a1", text: "복잡한 문제를 분석하고 해결하는 것을 즐긴다", type: "analytical" },
+  { id: "a2", text: "새로운 지식을 탐구하고 연구하는 일에 관심있다", type: "analytical" },
+  { id: "a3", text: "논리적이고 체계적으로 사고하는 것을 좋아한다", type: "analytical" },
+  { id: "a4", text: "과학이나 수학 관련 활동에 흥미가 있다", type: "analytical" },
   
-  // Artistic (예술형)
-  { id: "a1", text: "창작 활동이나 디자인하는 일", type: "artistic" },
-  { id: "a2", text: "음악, 미술, 문학 관련 일", type: "artistic" },
-  { id: "a3", text: "자유롭고 창의적인 표현을 하는 일", type: "artistic" },
-  { id: "a4", text: "아름다운 것을 만들어내는 일", type: "artistic" },
+  // 창작형 (예술/디자인)
+  { id: "c1", text: "창작 활동이나 디자인 작업을 즐긴다", type: "creative" },
+  { id: "c2", text: "음악, 미술, 문학 등 예술 분야에 관심있다", type: "creative" },
+  { id: "c3", text: "자유롭고 창의적인 표현을 하는 것을 좋아한다", type: "creative" },
+  { id: "c4", text: "아름다운 것을 만들어내는 일에 매력을 느낀다", type: "creative" },
   
-  // Social (사회형)
-  { id: "s1", text: "다른 사람을 가르치거나 훈련시키는 일", type: "social" },
-  { id: "s2", text: "사람들의 문제를 상담하고 도와주는 일", type: "social" },
-  { id: "s3", text: "팀워크를 중시하는 일", type: "social" },
-  { id: "s4", text: "봉사활동이나 사회에 기여하는 일", type: "social" },
+  // 소통형 (교육/상담)
+  { id: "s1", text: "다른 사람을 가르치거나 지도하는 것을 좋아한다", type: "social" },
+  { id: "s2", text: "사람들의 고민을 듣고 도와주는 일에 관심있다", type: "social" },
+  { id: "s3", text: "팀워크를 중시하며 협력하는 것을 즐긴다", type: "social" },
+  { id: "s4", text: "봉사활동이나 사회 기여 활동에 의미를 느낀다", type: "social" },
   
-  // Enterprising (진취형)
-  { id: "e1", text: "사업을 기획하고 운영하는 일", type: "enterprising" },
-  { id: "e2", text: "다른 사람을 이끌고 관리하는 일", type: "enterprising" },
-  { id: "e3", text: "설득하고 협상하는 일", type: "enterprising" },
-  { id: "e4", text: "경쟁적이고 도전적인 일", type: "enterprising" },
+  // 리더형 (경영/기획)
+  { id: "l1", text: "사업을 기획하고 운영하는 일에 관심있다", type: "leadership" },
+  { id: "l2", text: "다른 사람을 이끌고 관리하는 역할을 선호한다", type: "leadership" },
+  { id: "l3", text: "설득하고 협상하는 능력을 발휘하고 싶다", type: "leadership" },
+  { id: "l4", text: "경쟁적이고 도전적인 환경을 좋아한다", type: "leadership" },
   
-  // Conventional (관습형)
-  { id: "c1", text: "정확하고 꼼꼼한 사무 업무", type: "conventional" },
-  { id: "c2", text: "규칙과 절차를 따르는 일", type: "conventional" },
-  { id: "c3", text: "데이터를 정리하고 관리하는 일", type: "conventional" },
-  { id: "c4", text: "체계적이고 조직적인 일", type: "conventional" }
+  // 체계형 (사무/관리)
+  { id: "o1", text: "정확하고 꼼꼼한 사무 업무를 선호한다", type: "organized" },
+  { id: "o2", text: "규칙과 절차를 따르는 일에 편안함을 느낀다", type: "organized" },
+  { id: "o3", text: "데이터를 정리하고 관리하는 작업을 즐긴다", type: "organized" },
+  { id: "o4", text: "체계적이고 조직적인 환경에서 일하는 것을 좋아한다", type: "organized" }
 ];
 
 interface CareerInterestFormProps {
@@ -91,12 +91,12 @@ export default function CareerInterestForm({ onComplete, onBack }: CareerInteres
     
     setTimeout(() => {
       const scores = {
-        realistic: 0,
-        investigative: 0,
-        artistic: 0,
+        technical: 0,
+        analytical: 0,
+        creative: 0,
         social: 0,
-        enterprising: 0,
-        conventional: 0
+        leadership: 0,
+        organized: 0
       };
       
       // 각 유형별 점수 계산
@@ -147,8 +147,8 @@ export default function CareerInterestForm({ onComplete, onBack }: CareerInteres
             <div className="flex flex-col items-center space-y-4">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <div className="text-center">
-                <h3 className="font-semibold text-lg">직업 흥미 분석 중...</h3>
-                <p className="text-muted-foreground">Holland 6가지 유형을 분석하고 있습니다</p>
+                <h3 className="font-semibold text-lg">직업 성향 분석 중...</h3>
+                <p className="text-muted-foreground">AI가 당신의 직업 흥미도를 분석하고 있습니다</p>
               </div>
             </div>
           </CardContent>
@@ -175,7 +175,7 @@ export default function CareerInterestForm({ onComplete, onBack }: CareerInteres
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">직업 흥미 검사 (Holland)</CardTitle>
+            <CardTitle className="text-xl">AI 직업 성향 분석</CardTitle>
             <p className="text-sm text-muted-foreground">
               다음 활동에 대한 관심도를 선택해주세요
             </p>

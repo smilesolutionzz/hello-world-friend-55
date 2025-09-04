@@ -226,21 +226,13 @@ const HeroSection = () => {
                 <p className="text-sm text-muted-foreground mb-2">
                   더 많은 기능이 필요하시다면?
                 </p>
-                <div className="flex gap-3">
+                <div className="flex justify-center">
                   <Button 
                     size="lg"
                     onClick={() => navigate('/auth')}
-                    className="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 h-11 text-sm sm:text-base"
+                    className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 h-11 text-sm sm:text-base"
                   >
                     회원가입 (10토큰 무료)
-                  </Button>
-                  <Button 
-                    size="lg"
-                    onClick={() => navigate('/token-subscription')}
-                    className="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl font-medium hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 h-11 text-sm sm:text-base"
-                  >
-                    <span className="text-lg mr-1">👑</span>
-                    토큰 구매하기
                   </Button>
                 </div>
               </div>

@@ -347,7 +347,7 @@ html, body {
   }
   
   .btn-ghost {
-    @apply text-primary hover:bg-primary/10 px-6 py-2 rounded-lg
+    @apply text-primary hover:bg-primary/10 px-6 py-2 rounded-lg 
            transition-all duration-200 hover:scale-105;
   }
 }

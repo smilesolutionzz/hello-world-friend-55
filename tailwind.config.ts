@@ -18,7 +18,10 @@ export default {
 			}
 		},
 		extend: {
-			fontFamily: {
+    fontFamily: {
+      sans: ['Inter', 'Noto Sans KR', 'system-ui', 'sans-serif'],
+      korean: ['Noto Sans KR', 'sans-serif'],
+    },
 				'pretendard': ['Pretendard', 'system-ui', 'sans-serif'],
 			},
 			colors: {

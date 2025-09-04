@@ -329,7 +329,7 @@ html, body {
 
   /* Chat input styles */
   .chat-input {
-    @apply w-full px-6 py-4 bg-warm-lavender/30 rounded-2xl border border-border 
+    @apply w-full px-6 py-4 bg-secondary/30 rounded-2xl border border-border 
            focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent
            placeholder:text-muted-foreground text-lg transition-all duration-200;
     box-shadow: var(--shadow-card);
@@ -338,7 +338,7 @@ html, body {
   
   .chat-input:focus {
     box-shadow: var(--shadow-glow);
-    @apply bg-warm-lavender/40;
+    @apply bg-secondary/40;
   }
 
   /* Button variants */

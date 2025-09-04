@@ -35,7 +35,7 @@ const ReferralCodeInput: React.FC = () => {
       <CardContent className="space-y-4">
         <div className="bg-gradient-to-r from-secondary/10 to-primary/10 p-3 rounded-lg">
           <p className="text-sm text-muted-foreground">
-            친구의 추천 코드를 입력하면 5토큰을 받을 수 있어요!
+            친구의 추천 코드를 입력하면 2토큰을 즉시 받을 수 있어요!
           </p>
         </div>
         
@@ -59,7 +59,7 @@ const ReferralCodeInput: React.FC = () => {
         
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Users className="w-4 h-4" />
-          <span>추천인도 10토큰을 받아요!</span>
+          <span>추천인은 7일 후 3토큰을 받아요!</span>
         </div>
       </CardContent>
     </Card>

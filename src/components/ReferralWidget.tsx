@@ -24,7 +24,7 @@ const ReferralWidget: React.FC = () => {
       
       toast({
         title: "추천 링크 복사 완료!",
-        description: "친구들에게 공유하여 10토큰을 받아보세요!",
+        description: "친구들에게 공유하여 최대 3토큰을 받아보세요! (7일 후 지급)",
       });
     }
   };
@@ -56,7 +56,7 @@ const ReferralWidget: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">친구 추천하고 토큰 받기</h3>
-                  <p className="text-sm text-muted-foreground">친구 1명당 10토큰 적립!</p>
+                  <p className="text-sm text-muted-foreground">친구 1명당 최대 3토큰 적립! (7일 후 지급)</p>
                 </div>
               </div>
               
@@ -84,17 +84,18 @@ const ReferralWidget: React.FC = () => {
                 <DialogHeader>
                   <DialogTitle className="flex items-center gap-2">
                     <Gift className="w-5 h-5 text-primary" />
-                    친구 추천하고 10토큰 받기
+                    친구 추천하고 3토큰 받기
                   </DialogTitle>
                 </DialogHeader>
                 
                 <div className="space-y-4">
                   <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 rounded-lg">
-                    <h4 className="font-medium mb-2">✨ 혜택 안내</h4>
+                    <h4 className="font-medium mb-2">✨ 개선된 혜택 안내</h4>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• 친구가 회원가입하면 10토큰 즉시 지급</li>
-                      <li>• 가입한 친구에게도 5토큰 환영 선물</li>
-                      <li>• 무제한으로 친구를 초대할 수 있어요</li>
+                      <li>• 친구가 회원가입하면 즉시 2토큰 지급</li>
+                      <li>• 추천인은 7일 후 3토큰 지급 (활동 확인 후)</li>
+                      <li>• 하루 최대 3명까지 추천 가능</li>
+                      <li>• 부정 사용 방지를 위한 검증 시스템 적용</li>
                     </ul>
                   </div>
 

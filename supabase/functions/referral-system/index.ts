@@ -121,16 +121,26 @@ async function generateReferralCode(supabaseClient: any, userId: string) {
 
 async function applyReferralCode(supabaseClient: any, userId: string, referralCode: string) {
   try {
-    const { data: success } = await supabaseClient.rpc('apply_referral_code', {
+    // 클라이언트 IP 주소 가져오기 (간단한 구현)
+    const clientIp = '127.0.0.1'; // 실제로는 request에서 추출해야 함
+    
+    // 개선된 추천 보상 처리 함수 호출
+    const { data: result } = await supabaseClient.rpc('process_referral_reward_v2', {
       p_referral_code: referralCode,
-      p_user_id: userId
+      p_referee_id: userId,
+      p_ip_address: clientIp,
+      p_device_fingerprint: null
     });
 
-    if (success) {
+    console.log('Referral processing result:', result);
+
+    if (result && result.success) {
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: '추천 코드가 적용되었습니다! 5토큰을 받았고, 추천인은 10토큰을 받았습니다.' 
+          message: result.message,
+          referee_bonus: result.referee_bonus,
+          referrer_pending: result.referrer_pending
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -138,7 +148,7 @@ async function applyReferralCode(supabaseClient: any, userId: string, referralCo
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: '유효하지 않은 추천 코드이거나 이미 사용된 코드입니다.' 
+          error: result?.error || '추천 코드 처리 중 오류가 발생했습니다.' 
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -146,7 +156,10 @@ async function applyReferralCode(supabaseClient: any, userId: string, referralCo
   } catch (error) {
     console.error('Error applying referral code:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        success: false,
+        error: '추천 코드 처리 중 오류가 발생했습니다.' 
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
@@ -184,7 +197,10 @@ async function getReferralStats(supabaseClient: any, userId: string) {
         stats: {
           referralCount: referralCount?.length || 0,
           totalTokensEarned: totalTokens,
-          myReferralCode: myReferralCode?.referral_code || null
+          myReferralCode: myReferralCode?.referral_code || null,
+          pendingRewards: 0, // 7일 후 지급 예정인 보상 (추후 구현)
+          dailyLimit: 3,
+          todayUsed: 0 // 오늘 사용한 추천 횟수 (추후 구현)
         }
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

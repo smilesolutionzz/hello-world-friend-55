@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap');
 @import './styles/secret-talk.css';
+@import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 @tailwind base;
 @tailwind components;
@@ -30,8 +31,6 @@ html, body {
 .safe-area-pr {
   padding-right: env(safe-area-inset-right);
 }
-
-@import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 @layer base {
   :root {

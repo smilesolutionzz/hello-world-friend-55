@@ -29,6 +29,11 @@ serve(async (req) => {
 
     const { assessmentType, results, rawAnswers, ageGroup, age }: AssessmentData = await req.json();
     
+    // Validate input data
+    if (!results || typeof results !== 'object') {
+      throw new Error('Invalid results data provided');
+    }
+    
     console.log('Enhanced analysis request:', { assessmentType, resultsKeys: Object.keys(results), ageGroup, age });
 
     // Generate enhanced prompt based on assessment type

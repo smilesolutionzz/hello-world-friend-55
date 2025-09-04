@@ -208,35 +208,63 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
           </CardContent>
         </Card>
 
-        {/* 진로 개발 제안 */}
+        {/* 진로 개발 제안 - 대폭 확장 */}
         <Card>
           <CardHeader>
-            <CardTitle>진로 개발 제안</CardTitle>
+            <CardTitle>✨ 상세 진로 개발 분석</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-semibold mb-2">핵심 강점 활용</h4>
-                <p className="text-sm text-muted-foreground">
-                  {topConfig.name} 유형의 특성을 살려 관련 분야에서 전문성을 기르세요.
-                  {topConfig.characteristics.join(', ')} 등의 강점을 활용할 수 있는 기회를 찾아보세요.
-                </p>
+            <div className="space-y-6">
+              <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 진로 분석</h4>
+                <div className="prose prose-purple max-w-none">
+                  <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
+                    당신의 직업 흥미 프로필은 {topConfig.name} 유형이 가장 높게 나타났습니다. 이는 {topConfig.description.toLowerCase()}
+
+**7가지 구체적 진로 개발 전략:**
+• **핵심 역량 강화**: {topConfig.name} 유형의 핵심 특성인 {topConfig.characteristics.join(', ')} 능력을 체계적으로 개발
+• **실무 경험 확보**: 관련 분야의 인턴십, 아르바이트, 프로젝트 참여로 실제 업무 경험 쌓기
+• **네트워킹 구축**: 해당 분야 전문가들과의 멘토링, 세미나 참석으로 인맥 형성
+• **자격증 취득**: {topConfig.name} 관련 직종에서 요구되는 전문 자격증이나 인증 취득
+• **포트폴리오 구축**: 자신의 역량과 경험을 보여줄 수 있는 체계적인 포트폴리오 제작
+• **지속적 학습**: 해당 분야의 최신 트렌드와 기술 동향을 지속적으로 학습하고 업데이트
+• **다면적 접근**: 상위 2-3개 흥미 유형을 결합한 융합 분야 탐색으로 차별화된 경쟁력 확보
+
+**단계별 실행 계획 (6개월-2년):**
+1단계(1-3개월): 관심 분야 정보 수집 및 기초 지식 습득
+2단계(3-9개월): 실무 경험 및 관련 프로젝트 참여
+3단계(9-18개월): 전문 역량 강화 및 네트워크 확장  
+4단계(18-24개월): 구체적 진로 목표 설정 및 취업/진학 준비
+
+**재평가 권장:** 진로 개발 과정에서 6개월 간격으로 흥미와 적성 변화를 재평가하여 진로 방향을 조정하시기 바랍니다.
+                  </p>
+                </div>
               </div>
               
-              <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-semibold mb-2">다양한 경험 쌓기</h4>
-                <p className="text-sm text-muted-foreground">
-                  상위 흥미 유형과 관련된 인턴십, 봉사활동, 프로젝트 등에 참여해보세요.
-                  실제 경험을 통해 자신의 적성을 더 구체적으로 파악할 수 있습니다.
-                </p>
-              </div>
-              
-              <div className="p-4 bg-purple-50 rounded-lg">
-                <h4 className="font-semibold mb-2">지속적인 탐색</h4>
-                <p className="text-sm text-muted-foreground">
-                  흥미는 시간과 경험에 따라 변할 수 있습니다. 
-                  정기적으로 자신의 관심사를 점검하고 새로운 분야를 탐색해보세요.
-                </p>
+              <div className="space-y-3">
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-semibold mb-2">핵심 강점 활용</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {topConfig.name} 유형의 특성을 살려 관련 분야에서 전문성을 기르세요.
+                    {topConfig.characteristics.join(', ')} 등의 강점을 활용할 수 있는 기회를 찾아보세요.
+                  </p>
+                </div>
+                
+                <div className="p-4 bg-green-50 rounded-lg">
+                  <h4 className="font-semibold mb-2">다양한 경험 쌓기</h4>
+                  <p className="text-sm text-muted-foreground">
+                    상위 흥미 유형과 관련된 인턴십, 봉사활동, 프로젝트 등에 참여해보세요.
+                    실제 경험을 통해 자신의 적성을 더 구체적으로 파악할 수 있습니다.
+                  </p>
+                </div>
+                
+                <div className="p-4 bg-purple-50 rounded-lg">
+                  <h4 className="font-semibold mb-2">지속적인 탐색</h4>
+                  <p className="text-sm text-muted-foreground">
+                    흥미는 시간과 경험에 따라 변할 수 있습니다. 
+                    정기적으로 자신의 관심사를 점검하고 새로운 분야를 탐색해보세요.
+                  </p>
+                </div>
               </div>
             </div>
           </CardContent>

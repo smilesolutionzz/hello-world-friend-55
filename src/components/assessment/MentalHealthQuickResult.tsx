@@ -123,19 +123,69 @@ export const MentalHealthQuickResult: React.FC<MentalHealthQuickResultProps> = (
           </div>
 
           {/* 상세 분석 */}
-          <div className="bg-white/70 rounded-lg p-4 space-y-3">
-            <h4 className="font-semibold flex items-center">
-              <Brain className="h-4 w-4 mr-2 text-purple-500" />
-              AI 분석 결과
+          <div className="bg-white/70 rounded-lg p-6 space-y-4">
+            <h4 className="font-semibold flex items-center text-lg">
+              <Brain className="h-5 w-5 mr-2 text-purple-500" />
+              ✨ AI 전문가 분석 결과
             </h4>
-            <p className="text-sm text-muted-foreground">
-              총 {Object.keys(result.answers).length}개 항목을 종합 분석한 결과, 
-              평균 {result.averageScore.toFixed(1)}점으로 '{result.levelText}' 상태입니다.
-              {result.level === 'excellent' && ' 현재 매우 안정적인 통합건강 상태를 유지하고 계십니다.'}
-              {result.level === 'good' && ' 전반적으로 양호한 상태이지만 지속적인 관리가 필요합니다.'}
-              {result.level === 'fair' && ' 일부 영역에서 주의가 필요한 상태입니다.'}
-              {result.level === 'poor' && ' 전문적인 도움을 받으시는 것을 권장합니다.'}
-            </p>
+            <div className="prose max-w-none">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                총 {Object.keys(result.answers).length}개 항목을 종합 분석한 결과, 
+                평균 {result.averageScore.toFixed(1)}점으로 '{result.levelText}' 상태입니다.
+              </p>
+              
+              <div className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+                <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-line">
+                  {result.level === 'excellent' 
+                    ? `🌟 **탁월한 통합건강 상태입니다!**
+
+현재 매우 안정적이고 건강한 정신건강 상태를 유지하고 계십니다. 스트레스 관리, 감정 조절, 대인관계 등 모든 영역에서 우수한 균형을 보이고 있습니다.
+
+**유지 및 발전 방법:**
+• 현재의 건강한 패턴과 습관들을 지속적으로 유지하세요
+• 주변 사람들에게 긍정적 영향을 미치는 멘토 역할을 고려해보세요  
+• 새로운 도전과 성장 기회를 적극적으로 추구하세요
+• 정기적인 자기 점검을 통해 현재 상태를 모니터링하세요
+
+현재 상태를 자랑스러워하시고, 이를 바탕으로 더 큰 목표를 향해 나아가시기 바랍니다.`
+                    : result.level === 'good'
+                    ? `✨ **양호한 통합건강 상태입니다.**
+
+전반적으로 건강한 정신상태를 유지하고 있으나, 일부 영역에서 개선의 여지가 있습니다. 적절한 관리를 통해 더욱 안정적인 상태로 발전시킬 수 있습니다.
+
+**개선 및 발전 방법:**
+• 규칙적인 운동과 충분한 수면으로 기본 컨디션을 더욱 강화하세요
+• 스트레스 관리 기법(명상, 호흡법 등)을 학습하고 실천하세요
+• 긍정적인 인간관계를 더욱 적극적으로 발전시켜 나가세요
+• 취미나 여가 활동을 통해 정서적 만족감을 높이세요
+
+현재 상태가 양호하므로 조금만 더 노력하면 탁월한 수준에 도달할 수 있습니다.`
+                    : result.level === 'fair'
+                    ? `⚠️ **관리가 필요한 상태입니다.**
+
+일부 영역에서 어려움을 겪고 있으며, 적극적인 관리와 개선 노력이 필요한 상태입니다. 조기에 적절한 대처를 한다면 충분히 회복 가능합니다.
+
+**구체적 개선 방법:**
+• 스트레스 요인을 파악하고 단계적으로 해결해 나가세요
+• 신뢰할 수 있는 사람들과 고민을 나누고 지지를 받으세요
+• 충분한 휴식과 자기 돌봄 시간을 의무적으로 확보하세요
+• 전문가 상담을 고려해보시기 바랍니다
+
+현재 상태는 일시적일 가능성이 높으므로, 포기하지 마시고 꾸준히 관리해 나가시기 바랍니다.`
+                    : `🚨 **전문적인 도움이 필요합니다.**
+
+현재 여러 영역에서 어려움을 겪고 있는 상태로, 전문가의 도움을 받으시는 것을 강력히 권장합니다. 혼자 해결하려 하지 마시고 적절한 지원을 받으시기 바랍니다.
+
+**즉시 실행 방법:**
+• 정신건강 전문가나 상담사와 상담 일정을 잡으세요
+• 가족이나 가까운 친구들에게 현재 상황을 알리고 도움을 요청하세요
+• 기본적인 자기 관리(수면, 식사, 운동)부터 차근차근 시작하세요
+• 위기 상황 시 연락할 수 있는 지원 체계를 마련하세요
+
+어려운 시기이지만 적절한 도움을 받으면 반드시 회복할 수 있습니다. 용기를 내어 첫 걸음을 내디디세요.`}
+                </p>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

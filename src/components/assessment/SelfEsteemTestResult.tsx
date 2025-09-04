@@ -158,24 +158,98 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="w-5 h-5" />
-              개인화된 조언
+              ✨ 상세 자존감 분석
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className={`p-4 rounded-lg ${config.bgColor} mb-4`}>
-              <p className="text-sm font-medium">{config.advice}</p>
-            </div>
-            
-            <h4 className="font-semibold mb-3">자존감 향상을 위한 실천 방법</h4>
-            <div className="grid gap-3">
-              {improvementTips.map((tip, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
-                  <Badge variant="outline" className="text-xs min-w-fit">
-                    {index + 1}
-                  </Badge>
-                  <p className="text-sm">{tip}</p>
+            <div className="space-y-6">
+              <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 상세 해석</h4>
+                <div className="prose prose-purple max-w-none">
+                  <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
+                    {result.level === "매우 높음"
+                      ? `현재 자존감 점수 ${result.total}점은 매우 건강하고 안정적인 자아상을 나타냅니다. 이는 자신의 가치를 명확히 인식하고 있으며, 타인의 평가에 흔들리지 않는 내적 안정감을 갖추고 있음을 의미합니다.
+
+**7가지 구체적 발전 방법:**
+• **멘토링 역할**: 자존감이 낮은 사람들에게 긍정적 영향력 발휘하기
+• **도전 과제**: 새로운 영역에서의 성장을 통한 자기효능감 확장
+• **감사 실천**: 매일 자신과 타인에 대한 감사 표현으로 긍정성 강화
+• **목표 설정**: 개인적 성장을 위한 의미있는 장기 목표 수립
+• **리더십 개발**: 팀이나 그룹에서 긍정적 리더십 역할 적극 수행
+• **균형 유지**: 겸손과 자신감의 건강한 균형점 지속적 유지
+• **지속적 학습**: 새로운 지식과 기술 습득을 통한 자기계발 추진
+
+**재평가 권장:** 현재 상태를 유지하면서 6개월 후 재검사를 통해 지속적인 자존감 발전과 타인에게 미치는 긍정적 영향을 확인하시기 바랍니다.`
+                      : result.level === "높음"
+                      ? `현재 자존감 점수 ${result.total}점은 건강한 수준의 자존감을 나타냅니다. 전반적으로 자신에 대해 긍정적으로 인식하고 있으며, 적절한 자신감을 갖추고 있는 상태입니다.
+
+**7가지 구체적 발전 방법:**
+• **강점 활용**: 개인의 장점과 재능을 더욱 적극적으로 발휘하기
+• **도전 증가**: 안전지대를 벗어나 새로운 경험과 성취 추구
+• **관계 심화**: 기존 인간관계를 더욱 깊고 의미있게 발전시키기
+• **자기표현**: 자신의 의견과 감정을 더욱 자신있게 표현하기
+• **성취 축하**: 작은 성공들도 인정하고 축하하는 습관 기르기
+• **피드백 수용**: 건설적 비판을 성장의 기회로 받아들이기
+• **가치 명확화**: 개인의 핵심 가치와 신념을 더욱 명확히 정립
+
+**재평가 권장:** 자존감 발전 노력 후 3-6개월 뒤 재검사를 통해 성장 정도와 삶의 만족도 변화를 확인하시기 바랍니다.`
+                      : result.level === "보통"
+                      ? `현재 자존감 점수 ${result.total}점은 평균적인 수준으로, 상황에 따라 자신감이 변동될 수 있는 상태입니다. 적절한 노력을 통해 충분히 향상시킬 수 있는 범위입니다.
+
+**7가지 구체적 개선 방법:**
+• **강점 발견**: 매일 자신이 잘한 일 3가지씩 기록하고 인정하기
+• **긍정 대화**: 부정적 자기대화를 긍정적이고 현실적인 표현으로 바꾸기
+• **성취 경험**: 작은 목표들을 설정하고 달성하며 성공 경험 쌓기
+• **지지체계**: 격려와 지지를 주는 사람들과의 관계 더욱 발전시키기
+• **자기 돌봄**: 신체적, 정신적 건강을 위한 일상 루틴 구축하기
+• **비교 중단**: 타인과의 비교보다 과거의 자신과 비교하는 습관 기르기
+• **전문가 도움**: 필요시 상담을 통한 체계적인 자존감 향상 프로그램 참여
+
+**재평가 권장:** 자존감 향상 노력 후 3-6개월 뒤 재검사를 통해 개선 정도와 일상생활에서의 변화를 확인하시기 바랍니다.`
+                      : result.level === "낮음"
+                      ? `현재 자존감 점수 ${result.total}점은 낮은 수준으로, 자신에 대한 부정적 인식이 일상생활에 영향을 미칠 수 있는 상태입니다. 적극적인 개선 노력이 필요합니다.
+
+**7가지 구체적 회복 방법:**
+• **전문가 상담**: 자존감 전문 상담사와의 정기적 상담 시작
+• **인지 재구성**: 부정적 사고 패턴을 식별하고 현실적 사고로 교정
+• **작은 성공**: 달성 가능한 매우 작은 목표들부터 차근차근 달성
+• **자기 돌봄**: 기본적인 자기 관리(수면, 식사, 운동)부터 체계적 시작
+• **경계 설정**: 타인의 부정적 평가로부터 자신을 보호하는 방법 학습
+• **지지 그룹**: 비슷한 경험을 가진 사람들과의 지지 모임 참여
+• **감정 표현**: 일기 쓰기나 예술 활동을 통한 감정 표출과 정리
+
+**재평가 권장:** 전문가 도움과 함께 2-3개월 간격으로 정기적 재평가를 통해 자존감 회복 과정을 모니터링하시기 바랍니다.`
+                      : `현재 자존감 점수 ${result.total}점은 매우 낮은 수준으로, 즉시 전문적 도움이 필요한 상태입니다. 자신에 대한 부정적 인식이 심각하여 일상생활 전반에 상당한 영향을 미치고 있을 가능성이 높습니다.
+
+**7가지 즉시 실행 방법:**
+• **응급 상담**: 즉시 정신건강 전문가나 상담센터 연락하여 긴급 상담 받기
+• **안전 계획**: 자해나 극단적 생각 시 즉시 연락할 수 있는 지원체계 구축
+• **기본 돌봄**: 하루 한 가지씩 자신을 위한 작은 친절 실천하기
+• **지지 요청**: 가족이나 신뢰하는 친구에게 상황 알리고 도움 요청
+• **전문 치료**: 필요시 의료진과 상담하여 약물 치료 등 종합적 접근
+• **안전 환경**: 스트레스 요인을 최소화하고 안정적인 환경 조성
+• **단계적 회복**: 작은 변화부터 시작하여 점진적으로 자존감 회복
+
+**재평가 권장:** 전문가 치료와 함께 1-2개월 간격으로 집중적인 모니터링과 재평가를 통해 자존감 회복 과정을 세심하게 관리하시기 바랍니다.`}
+                  </p>
                 </div>
-              ))}
+              </div>
+              
+              <div className={`p-4 rounded-lg ${config.bgColor} mb-4`}>
+                <p className="text-sm font-medium">{config.advice}</p>
+              </div>
+              
+              <h4 className="font-semibold mb-3">자존감 향상을 위한 실천 방법</h4>
+              <div className="grid gap-3">
+                {improvementTips.map((tip, index) => (
+                  <div key={index} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
+                    <Badge variant="outline" className="text-xs min-w-fit">
+                      {index + 1}
+                    </Badge>
+                    <p className="text-sm">{tip}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>

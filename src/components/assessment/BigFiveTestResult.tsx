@@ -208,26 +208,32 @@ export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResu
               <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
                 <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 종합 해석</h4>
                 <div className="prose prose-purple max-w-none">
-                  <p className="text-base leading-relaxed text-gray-800">
+                  <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
                     당신의 성격 프로필은 {result.scores.extraversion >= 3.5 ? "외향적이고 사회적" : "내향적이고 신중한"} 특성을 보여줍니다. 
                     {result.scores.agreeableness >= 3.5 ? "타인과의 협력을 중시하며" : "독립적인 판단을 선호하며"}, 
                     {result.scores.conscientiousness >= 3.5 ? "체계적이고 계획적인 접근" : "유연하고 자발적인 접근"}을 하는 경향이 있습니다.
-                  </p>
-                  
-                  <p className="text-base leading-relaxed text-gray-800 mt-4">
-                    <strong>7가지 구체적 개발 방법:</strong>
-                    <br />• **자기인식 강화**: 매일 5분씩 감정 일기 작성하기
-                    <br />• **소통 능력 향상**: 주 2회 이상 새로운 사람과 대화하기
-                    <br />• **스트레스 관리**: 명상이나 호흡법을 통한 정서 조절
-                    <br />• **목표 설정**: SMART 기법으로 단기/장기 목표 수립
-                    <br />• **창의성 개발**: 새로운 취미나 활동 월 1회 시도
-                    <br />• **관계 개선**: 가족/친구와 깊은 대화 시간 늘리기
-                    <br />• **자기 돌봄**: 신체적/정신적 건강 관리 루틴 만들기
-                  </p>
-                  
-                  <p className="text-base leading-relaxed text-gray-800 mt-4">
-                    <strong>재평가 권장:</strong> 성격 특성은 시간과 경험에 따라 변화할 수 있으므로, 
-                    3-6개월 후 재검사를 통해 개인적 성장과 변화를 추적 관찰하시기를 권장합니다.
+
+**7가지 구체적 개발 방법:**
+• **자기인식 강화**: 매일 10분씩 자기성찰 시간 갖기
+• **소통 능력 향상**: 주 2회 이상 새로운 사람과 의미있는 대화하기  
+• **스트레스 관리**: 명상, 호흡법, 요가 등으로 정서 조절 능력 기르기
+• **목표 설정**: SMART 기법으로 달성 가능한 단기/장기 목표 수립
+• **창의성 개발**: 새로운 취미나 도전 과제를 월 1회 이상 시도하기
+• **관계 개선**: 가족/친구와 깊이 있는 대화와 공감 시간 늘리기
+• **자기 돌봄**: 신체적/정신적 건강을 위한 일관된 루틴 구축하기
+
+**심화 분석:**
+• 외향성 {result.scores.extraversion.toFixed(1)}점 - {result.scores.extraversion >= 4 ? "매우 활발하고 사교적이며 에너지를 타인과의 상호작용에서 얻습니다" :
+  result.scores.extraversion >= 3 ? "적절한 사교성을 갖추고 있으며 상황에 따라 내성적/외향적 특성을 보입니다" : 
+  "조용하고 신중하며 깊이 있는 소수의 관계를 선호합니다"}
+• 친화성 {result.scores.agreeableness.toFixed(1)}점 - {result.scores.agreeableness >= 4 ? "타인에 대한 신뢰와 배려가 뛰어나며 협력적 관계를 잘 형성합니다" :
+  result.scores.agreeableness >= 3 ? "균형잡힌 대인관계 접근으로 상황에 따라 협력과 독립성을 조절합니다" :
+  "독립적 판단을 선호하며 객관적이고 현실적인 관점을 유지합니다"}
+• 성실성 {result.scores.conscientiousness.toFixed(1)}점 - {result.scores.conscientiousness >= 4 ? "매우 체계적이고 책임감 있으며 목표 달성 능력이 뛰어납니다" :
+  result.scores.conscientiousness >= 3 ? "적당한 계획성과 유연성을 겸비하여 상황 적응력이 좋습니다" :
+  "자발적이고 유연한 접근을 선호하며 즉흥적 결정에 편안함을 느낍니다"}
+
+**재평가 권장:** 성격 특성은 경험과 의식적 노력을 통해 발전할 수 있으므로, 3-6개월 후 재검사를 통해 개인적 성장과 변화를 추적하시기 바랍니다.
                   </p>
                 </div>
               </div>

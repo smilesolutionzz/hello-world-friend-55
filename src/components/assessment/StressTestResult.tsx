@@ -139,11 +139,57 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Brain className="w-5 h-5" />
-              AI 분석 결과
+              ✨ 상세 스트레스 분석 결과
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-6">
+              <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 상세 해석</h4>
+                <div className="prose prose-purple max-w-none">
+                  <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
+                    {result.severity === "낮은 스트레스" 
+                      ? `현재 스트레스 점수 ${result.total}점은 건강한 스트레스 관리 상태를 나타냅니다. 이는 일상생활의 압박감을 잘 조절하고 있으며, 적절한 대처 메커니즘을 갖추고 있음을 의미합니다.
+
+**7가지 구체적 유지 방법:**
+• **현재 패턴 지속**: 효과적인 스트레스 관리 방법들을 지속적으로 실천
+• **예방적 관리**: 정기적인 자기 점검을 통한 스트레스 조기 감지
+• **건강한 루틴**: 규칙적인 운동, 수면, 식사 패턴 꾸준히 유지
+• **사회적 지지**: 긍정적인 인간관계와 지지 체계 지속 발전
+• **여가 활동**: 즐거움을 주는 취미와 휴식 활동 지속적 참여
+• **마음챙김**: 현재 순간에 집중하는 명상이나 마음챙김 연습
+• **성장 마인드**: 작은 도전들을 통한 지속적인 자기 성장 추구
+
+**재평가 권장:** 현재 상태를 유지하면서 3개월 후 재검사를 통해 지속적인 스트레스 관리 능력을 확인하시기 바랍니다.`
+                      : result.severity === "보통 스트레스"
+                      ? `현재 스트레스 점수 ${result.total}점은 일상적인 수준의 스트레스로, 적절한 관리 방법을 통해 충분히 개선할 수 있는 범위입니다. 현대인의 평균적인 스트레스 수준에 해당합니다.
+
+**7가지 구체적 개선 방법:**
+• **호흡법 연습**: 하루 3회 10분씩 4-7-8 호흡법이나 복식호흡 실시
+• **운동 루틴**: 주 3회 이상 30분 유산소 운동으로 스트레스 호르몬 감소
+• **시간 관리**: 우선순위 설정과 일정 관리를 통한 압박감 완화
+• **이완 기법**: 점진적 근육이완법이나 요가를 통한 신체적 긴장 해소
+• **수면 개선**: 규칙적인 수면 스케줄과 7-8시간 충분한 휴식 확보
+• **감정 표현**: 일기 쓰기나 신뢰하는 사람과의 대화로 감정 해소
+• **경계 설정**: 적절한 거절과 자기 보호를 위한 경계선 설정 연습
+
+**재평가 권장:** 스트레스 관리 기법 적용 후 2-3개월 뒤 재검사를 통해 개선 정도를 확인하시기 바랍니다.`
+                      : `현재 스트레스 점수 ${result.total}점은 높은 수준의 스트레스 상태로, 일상생활에 상당한 영향을 미칠 수 있어 적극적인 관리와 전문가 도움이 필요한 상태입니다.
+
+**7가지 구체적 대응 방법:**
+• **전문가 상담**: 정신건강 전문가나 상담사와 정기적 상담 시작
+• **즉시 휴식**: 과도한 업무나 스트레스 요인에서 일시적 거리두기
+• **응급 대처법**: 스트레스 상황 시 즉시 사용할 수 있는 호흡법이나 이완기법 습득
+• **지지체계 활용**: 가족, 친구, 동료들에게 상황을 알리고 도움 요청
+• **생활 구조화**: 스트레스 요인 최소화와 안정적인 일상 루틴 구축
+• **신체 관리**: 충분한 수면, 영양 섭취, 카페인 줄이기 등 기본 건강 관리
+• **단계적 회복**: 작은 목표부터 차근차근 달성하며 자신감 회복
+
+**재평가 권장:** 전문가 상담과 함께 1-2개월 간격으로 정기적 재평가를 통해 스트레스 수준 변화를 모니터링하시기 바랍니다.`}
+                  </p>
+                </div>
+              </div>
+              
               <div className="p-4 bg-muted rounded-lg">
                 <h4 className="font-semibold mb-2">{config.message}</h4>
                 <p className="text-muted-foreground">{config.description}</p>

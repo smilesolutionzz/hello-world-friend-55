@@ -243,6 +243,47 @@ export const UnifiedNavigation = () => {
                         </Button>
                      ))}
                      
+                     {/* Auth Section */}
+                     <div className="pt-4 mt-4 border-t border-border/50">
+                       {user ? (
+                         <div className="space-y-2">
+                           <div className="px-2 py-1 text-xs text-muted-foreground">
+                             로그인 계정: {user.email}
+                           </div>
+                           <Button
+                             variant="ghost"
+                             className="w-full justify-start gap-3 text-red-600 hover:text-red-700 hover:bg-red-50"
+                             onClick={handleAuth}
+                           >
+                             <User className="w-4 h-4" />
+                             로그아웃
+                           </Button>
+                         </div>
+                       ) : (
+                         <div className="space-y-2">
+                           <Button
+                             variant="default"
+                             className="w-full justify-start gap-3"
+                             onClick={handleAuth}
+                           >
+                             <User className="w-4 h-4" />
+                             로그인
+                           </Button>
+                           <Button
+                             variant="outline"
+                             className="w-full justify-start gap-3"
+                             onClick={() => {
+                               navigate('/auth?mode=signup');
+                               setIsOpen(false);
+                             }}
+                           >
+                             <UserCheck className="w-4 h-4" />
+                             회원가입
+                           </Button>
+                         </div>
+                       )}
+                     </div>
+                     
                      {/* 고객 지원 섹션 */}
                      <div className="pt-4 mt-4 border-t border-border/50">
                        <p className="text-xs text-muted-foreground mb-2 px-2">고객 지원</p>
@@ -266,47 +307,6 @@ export const UnifiedNavigation = () => {
                        </div>
                      </div>
                    </div>
-
-                    {/* Auth Section */}
-                    <div className="border-t pt-4 mt-4">
-                      {user ? (
-                        <div className="space-y-2">
-                          <div className="px-2 py-1 text-xs text-muted-foreground">
-                            로그인 계정: {user.email}
-                          </div>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start gap-3 text-red-600 hover:text-red-700 hover:bg-red-50"
-                            onClick={handleAuth}
-                          >
-                            <User className="w-4 h-4" />
-                            로그아웃
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <Button
-                            variant="default"
-                            className="w-full justify-start gap-3"
-                            onClick={handleAuth}
-                          >
-                            <User className="w-4 h-4" />
-                            로그인
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="w-full justify-start gap-3"
-                            onClick={() => {
-                              navigate('/auth?mode=signup');
-                              setIsOpen(false);
-                            }}
-                          >
-                            <UserCheck className="w-4 h-4" />
-                            회원가입
-                          </Button>
-                        </div>
-                      )}
-                    </div>
                 </div>
               </SheetContent>
             </Sheet>

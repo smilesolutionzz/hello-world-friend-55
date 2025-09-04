@@ -177,6 +177,11 @@ export const PersonalityLoveTest: React.FC<PersonalityLoveTestProps> = ({ onComp
 
   const handleAnswer = (questionId: string, value: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
+    
+    // 자동으로 다음 문항으로 이동 (0.5초 지연)
+    setTimeout(() => {
+      handleNext();
+    }, 500);
   };
 
   const handleNext = () => {

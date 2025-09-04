@@ -115,9 +115,6 @@ const Index = () => {
           </div>
         </div>
       </div>
-      
-      {/* Floating Chat CTA */}
-      <FloatingChatCTA />
     </div>
   );
 };

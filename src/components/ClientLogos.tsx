@@ -150,7 +150,7 @@ const ClientLogos = () => {
         {/* 감동적인 후기 섹션 */}
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
-            <span className="text-brand-gradient">진짜 엄마들의 진심 후기</span>
+            <span className="text-brand-gradient">진짜 부모들의 진심 후기</span>
           </h2>
           <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
             AIH와 함께 아이의 숨겨진 가능성을 발견한 가족들의 소중한 이야기

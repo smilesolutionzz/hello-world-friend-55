@@ -50,10 +50,38 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
   const [generating, setGenerating] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [observationCount, setObservationCount] = useState(0);
+  const [showExpertComments, setShowExpertComments] = useState(false);
 
   useEffect(() => {
     loadSubscriptionData();
+    checkObservationCount();
   }, []);
+
+  const checkObservationCount = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { count, error } = await supabase
+        .from('observation_logs')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      
+      const totalCount = count || 0;
+      setObservationCount(totalCount);
+      
+      // 4회차부터 전문가 코멘트 기능 자동 활성화
+      if (totalCount >= 4) {
+        setShowExpertComments(true);
+      }
+      
+    } catch (error) {
+      console.error('Error checking observation count:', error);
+    }
+  };
 
   const loadSubscriptionData = async () => {
     try {
@@ -206,10 +234,39 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
 
   return (
     <div className="space-y-6">
+      {/* 4회차 장기추적 알림 */}
+      {observationCount >= 4 && (
+        <Card className="border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                <TrendingUp className="h-5 w-5 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-green-800">🎉 장기추적 전문가 코멘트 기능 활성화!</h3>
+                <p className="text-sm text-green-700 mt-1">
+                  {observationCount}회차 기록 달성! 이제 패턴 분석과 전문가 피드백을 받을 수 있습니다.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-semibold">{session.observations?.session_name || session.session_name}</h2>
           <p className="text-muted-foreground">{getDomainDisplayName(session.observations?.domain || session.domain)} 관찰 결과</p>
+          <div className="flex items-center gap-2 mt-2">
+            <Badge variant="outline" className="text-xs">
+              {observationCount}회차 기록
+            </Badge>
+            {observationCount >= 4 && (
+              <Badge className="bg-green-100 text-green-800 text-xs">
+                장기추적 활성화
+              </Badge>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Button 
@@ -220,12 +277,15 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
             <Download className="h-4 w-4 mr-2" />
             {generating ? 'PDF 생성 중...' : 'PDF로 저장'}
           </Button>
-          <div className="min-w-0">
-            <ExpertFeedbackRequest 
-              observationId={session.id || session.observations?.id} 
-              observationTitle={session.observations?.session_name || session.session_name}
-            />
-          </div>
+          {/* 4회차부터는 전문가 피드백 자동 표시, 그 이전에는 조건부 표시 */}
+          {(showExpertComments || observationCount < 4) && (
+            <div className="min-w-0">
+              <ExpertFeedbackRequest 
+                observationId={session.id || session.observations?.id} 
+                observationTitle={session.observations?.session_name || session.session_name}
+              />
+            </div>
+          )}
           <Button variant="outline" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             돌아가기
@@ -322,7 +382,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
                           <div>
                             <h3 className="font-semibold text-amber-800">축약 리포트</h3>
                             <p className="text-sm text-amber-700">
-                              기록할수록 패턴이 보입니다. 4회차부터는 장기 추적/전문가 코멘트가 열립니다.
+                              기록할수록 패턴이 보입니다. 4회차부터는 장기 추적/전문가 코멘트가 열립니다. (현재: {observationCount}회)
                             </p>
                           </div>
                         </div>

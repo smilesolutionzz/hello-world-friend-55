@@ -26,6 +26,8 @@ import HighlightAI from "./pages/HighlightAI";
 
 import { TypebotEmbed } from "./components/highlight/TypebotEmbed";
 import { TestResults } from "./components/highlight/TestResults";
+import { PersonalityLoveTest } from "./components/assessment/PersonalityLoveTest";
+import { PersonalityLoveResult } from "./components/assessment/PersonalityLoveResult";
 
 
 import CounselingFlow from "./pages/CounselingFlow";
@@ -99,6 +101,12 @@ const App = () => {
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/free-trial" element={<FreeTrialAssessment />} />
           <Route path="/assessment/mental-health-quick-test" element={<BasicMentalHealthTest />} />
+          <Route path="/assessment/personality-love-test" element={
+            <PersonalityLoveTest onComplete={(result) => {
+              // Handle test completion - you might want to navigate to results or save data
+              console.log('Test completed:', result);
+            }} />
+          } />
           <Route path="/assessment/:id" element={<TestResults />} />
           <Route path="/fun-tests" element={<Assessment />} />
           <Route path="/fun-test-result" element={<FunTestResult />} />

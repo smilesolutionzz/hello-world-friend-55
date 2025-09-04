@@ -12,15 +12,15 @@ interface Institution {
   email?: string; // Made optional since contact info is now protected
   description: string;
   is_voucher_approved: boolean;
-  voucher_types: string[];
+  voucher_types: string[] | null;
   total_experts: number;
   rating: number;
   review_count: number;
   profile_image_url: string;
-  services_offered: string[];
-  specializations: string[];
+  services_offered: string[] | null;
+  specializations: string[] | null;
   parking_available: boolean;
-  accessibility_features: string[];
+  accessibility_features: string[] | null;
   operating_hours?: Record<string, string>;
 }
 
@@ -123,7 +123,7 @@ export function InstitutionCard({ institution, onViewDetails, onContactInstituti
               주차가능
             </Badge>
           )}
-          {institution.accessibility_features.length > 0 && (
+          {institution.accessibility_features && institution.accessibility_features.length > 0 && (
             <Badge variant="outline" className="text-xs">
               <Accessibility className="w-3 h-3 mr-1" />
               접근성 우수
@@ -138,24 +138,26 @@ export function InstitutionCard({ institution, onViewDetails, onContactInstituti
         </div>
 
         {/* 전문 분야 */}
-        <div className="space-y-1">
-          <p className="text-xs font-medium text-muted-foreground">전문분야</p>
-          <div className="flex flex-wrap gap-1">
-            {institution.specializations.slice(0, 3).map((spec, index) => (
-              <Badge key={index} variant="secondary" className="text-xs">
-                {spec}
-              </Badge>
-            ))}
-            {institution.specializations.length > 3 && (
-              <Badge variant="secondary" className="text-xs">
-                +{institution.specializations.length - 3}
-              </Badge>
-            )}
+        {institution.specializations && institution.specializations.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-muted-foreground">전문분야</p>
+            <div className="flex flex-wrap gap-1">
+              {institution.specializations.slice(0, 3).map((spec, index) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  {spec}
+                </Badge>
+              ))}
+              {institution.specializations.length > 3 && (
+                <Badge variant="secondary" className="text-xs">
+                  +{institution.specializations.length - 3}
+                </Badge>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 바우처 종류 */}
-        {institution.voucher_types.length > 0 && (
+        {institution.voucher_types && institution.voucher_types.length > 0 && (
           <div className="space-y-1">
             <p className="text-xs font-medium text-muted-foreground">지원 바우처</p>
             <div className="flex flex-wrap gap-1">

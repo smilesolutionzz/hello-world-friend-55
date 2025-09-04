@@ -35,10 +35,10 @@ const PremiumAssessmentForm = ({
       [currentQuestion.id]: parseInt(value)
     }));
     
-    // 자동으로 다음 문항으로 이동 (0.5초 지연)
+    // 자동으로 다음 문항으로 이동 (1.2초 지연)
     setTimeout(() => {
       handleNext();
-    }, 500);
+    }, 1200);
   };
 
   const handleNext = () => {
@@ -188,7 +188,7 @@ const PremiumAssessmentForm = ({
                   {isAnswered && (
                     <div className="flex items-center gap-1 text-sm text-green-600">
                       <CheckCircle className="w-4 h-4" />
-                      답변 완료
+                      <span className="animate-pulse">1.2초 후 자동 진행...</span>
                     </div>
                   )}
                 </div>

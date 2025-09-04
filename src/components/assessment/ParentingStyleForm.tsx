@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, ArrowRight, Crown, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Crown, Sparkles, CheckCircle } from "lucide-react";
 import { parentingStyleAssessmentQuestions } from "@/data/premiumAssessmentQuestions";
 import TokenGate from "../TokenGate";
 import { useTokens } from "@/hooks/useTokens";
@@ -31,6 +31,11 @@ const ParentingStyleForm = ({ onComplete, onBack }: ParentingStyleFormProps) => 
       ...prev,
       [questionId]: parseInt(value)
     }));
+    
+    // 자동으로 다음 문항으로 이동 (1.2초 지연)
+    setTimeout(() => {
+      handleNext();
+    }, 1200);
   };
 
   const handleStartTest = async () => {
@@ -238,7 +243,7 @@ const ParentingStyleForm = ({ onComplete, onBack }: ParentingStyleFormProps) => 
         </div>
 
         {/* Navigation */}
-        <div className="max-w-4xl mx-auto mt-8 flex justify-between">
+        <div className="max-w-4xl mx-auto mt-8 flex justify-between items-center">
           <Button
             variant="outline"
             onClick={handlePrevious}
@@ -248,6 +253,15 @@ const ParentingStyleForm = ({ onComplete, onBack }: ParentingStyleFormProps) => 
             <ArrowLeft className="w-4 h-4" />
             이전
           </Button>
+
+          <div className="text-center">
+            {currentAnswer && (
+              <div className="flex items-center gap-1 text-sm text-green-600">
+                <CheckCircle className="w-4 h-4" />
+                <span className="animate-pulse">1.2초 후 자동 진행...</span>
+              </div>
+            )}
+          </div>
 
           <Button
             onClick={handleNext}

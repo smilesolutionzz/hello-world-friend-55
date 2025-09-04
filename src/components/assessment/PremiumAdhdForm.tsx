@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Brain, Target, Activity } from "lucide-react";
+import { ArrowLeft, Brain, Target, Activity, CheckCircle } from "lucide-react";
 import { premiumAdhdQuestions, ageSpecificAdhdQuestions, comorbidityScreening, functionalImpairment } from "@/data/premiumAdhdQuestions";
 import TokenGate from "@/components/TokenGate";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
@@ -61,6 +61,11 @@ const PremiumAdhdForm = ({ ageGroup = 'adult', onComplete, onBack }: PremiumAdhd
       ...prev,
       [questionId]: parseInt(value)
     }));
+    
+    // 자동으로 다음 문항으로 이동 (1.2초 지연)
+    setTimeout(() => {
+      handleNext();
+    }, 1200);
   };
 
   const handleStartTest = async () => {
@@ -298,7 +303,7 @@ const PremiumAdhdForm = ({ ageGroup = 'adult', onComplete, onBack }: PremiumAdhd
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between pt-6">
+        <div className="flex justify-between items-center pt-6">
           <Button 
             variant="outline" 
             onClick={handlePrevious}
@@ -306,6 +311,16 @@ const PremiumAdhdForm = ({ ageGroup = 'adult', onComplete, onBack }: PremiumAdhd
           >
             이전
           </Button>
+          
+          <div className="text-center">
+            {canProceed && (
+              <div className="flex items-center gap-1 text-sm text-green-600">
+                <CheckCircle className="w-4 h-4" />
+                <span className="animate-pulse">1.2초 후 자동 진행...</span>
+              </div>
+            )}
+          </div>
+          
           <Button 
             onClick={handleNext}
             disabled={!canProceed}

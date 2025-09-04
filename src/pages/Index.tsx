@@ -84,33 +84,33 @@ const Index = () => {
       <ScrollProgressBar />
       <UnifiedNavigation />
       <div className="flex max-w-full">
-        {/* Product Sidebar */}
+        {/* Product Sidebar - 모바일에서는 완전히 숨김 */}
         <div className="hidden lg:block fixed left-0 top-16 z-30 h-full">
           <ProductSidebar />
         </div>
         
-        {/* Main Content */}
-        <div className="flex-1 lg:ml-72">
-          <div className="animate-fade-in">
+        {/* Main Content - 모바일에서는 여백 없음 */}
+        <div className="w-full lg:ml-72">
+          <div className="animate-fade-in w-full">
             <HeroSection />
           </div>
-          <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.1s' }}>
             <TechBadgeShowcase />
           </div>
-          <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.2s' }}>
             <PlatformOverview />
           </div>
-          <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.3s' }}>
             <ClientLogos />
           </div>
-          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
             <ReferralWidget />
             <ReferralCodeInput />
           </div>
-          <div className="animate-fade-in" style={{ animationDelay: '0.5s' }}>
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.5s' }}>
             <VideoShowcase />
           </div>
-          <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.6s' }}>
             <TrustIndicators />
           </div>
         </div>

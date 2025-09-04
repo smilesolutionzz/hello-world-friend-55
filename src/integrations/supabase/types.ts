@@ -2065,32 +2065,50 @@ export type Database = {
         Row: {
           completed_at: string | null
           created_at: string
+          daily_referral_count: number | null
+          device_fingerprint: string | null
           id: string
+          ip_address: string | null
+          is_verified: boolean | null
+          last_referral_date: string | null
           referee_id: string | null
           referral_code: string
           referrer_id: string
           status: string
           tokens_awarded: number | null
+          verified_at: string | null
         }
         Insert: {
           completed_at?: string | null
           created_at?: string
+          daily_referral_count?: number | null
+          device_fingerprint?: string | null
           id?: string
+          ip_address?: string | null
+          is_verified?: boolean | null
+          last_referral_date?: string | null
           referee_id?: string | null
           referral_code: string
           referrer_id: string
           status?: string
           tokens_awarded?: number | null
+          verified_at?: string | null
         }
         Update: {
           completed_at?: string | null
           created_at?: string
+          daily_referral_count?: number | null
+          device_fingerprint?: string | null
           id?: string
+          ip_address?: string | null
+          is_verified?: boolean | null
+          last_referral_date?: string | null
           referee_id?: string | null
           referral_code?: string
           referrer_id?: string
           status?: string
           tokens_awarded?: number | null
+          verified_at?: string | null
         }
         Relationships: []
       }
@@ -3081,8 +3099,21 @@ export type Database = {
         Args: { p_referral_code: string; p_user_id: string }
         Returns: boolean
       }
+      apply_referral_code_v2: {
+        Args: {
+          p_device_fingerprint?: string
+          p_ip_address?: string
+          p_referral_code: string
+          p_user_id: string
+        }
+        Returns: boolean
+      }
       can_access_family_observation: {
         Args: { observation_user_id: string }
+        Returns: boolean
+      }
+      check_daily_referral_limit: {
+        Args: { p_user_id: string }
         Returns: boolean
       }
       check_phone_availability: {
@@ -3111,6 +3142,19 @@ export type Database = {
       process_referral_reward: {
         Args: { p_referee_id: string; p_referral_code: string }
         Returns: boolean
+      }
+      process_referral_reward_v2: {
+        Args: {
+          p_device_fingerprint?: string
+          p_ip_address?: string
+          p_referee_id: string
+          p_referral_code: string
+        }
+        Returns: Json
+      }
+      process_verified_referral_rewards: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       refresh_admin_analytics: {
         Args: Record<PropertyKey, never>

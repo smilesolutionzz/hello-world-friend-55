@@ -21,7 +21,7 @@ export const TechBadgeShowcase: React.FC = () => {
     },
     {
       icon: Target,
-      title: '정밀 진단',
+      title: '정밀 분석',
       description: '99% 정확도의 AI 분석',
       badge: '고정밀',
       color: 'from-green-500 to-emerald-500'

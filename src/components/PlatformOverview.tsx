@@ -62,7 +62,7 @@ const PlatformOverview = () => {
               </div>
               <ul className="space-y-2 text-muted-foreground ml-9">
                 <li>• 무료 기본 상담으로 부담 없이 시작</li>
-                <li>• 정확한 심리 상태 진단과 맞춤 케어</li>
+                <li>• 정확한 심리 상태 분석과 맞춤 케어</li>
                 <li>• 가족 단위 종합 통합건강 관리</li>
                 <li>• 24시간 언제든 접근 가능한 AIH 상담</li>
               </ul>

@@ -40,7 +40,7 @@ export const premiumAdhdQuestions = {
       text: "세세한 부분에 주의를 기울이지 못하거나 학업, 업무에서 부주의한 실수를 자주 합니다",
       category: "inattention",
       subcategory: "attention_to_detail",
-      dsm5_criteria: "A1",
+      clinical_reference: "주의집중 영역 1",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },

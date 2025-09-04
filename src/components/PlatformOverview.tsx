@@ -50,49 +50,93 @@ const PlatformOverview = () => {
         </div>
 
         {/* Target Audiences */}
-        <div className="bg-card rounded-3xl p-8 shadow-lg border">
-          <h3 className="text-2xl font-bold text-center mb-8">누구나 함께할 수 있는 플랫폼</h3>
+        <div className="bg-card rounded-3xl p-6 md:p-8 shadow-lg border">
+          <h3 className="text-2xl md:text-3xl font-bold text-center mb-10 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            누구나 함께할 수 있는 플랫폼
+          </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             {/* 개인 사용자 */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Users className="w-6 h-6 text-primary" />
-                <h4 className="text-lg font-semibold">개인 사용자</h4>
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-6 border border-primary/10 hover:border-primary/20 transition-all duration-300">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <Users className="w-5 h-5 text-primary" />
+                </div>
+                <h4 className="text-xl font-bold text-foreground">개인 사용자</h4>
               </div>
-              <ul className="space-y-2 text-muted-foreground ml-9">
-                <li>• 무료 기본 상담으로 부담 없이 시작</li>
-                <li>• 정확한 심리 상태 분석과 맞춤 케어</li>
-                <li>• 가족 단위 종합 통합건강 관리</li>
-                <li>• 24시간 언제든 접근 가능한 AIH 상담</li>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">무료 기본 상담으로 부담 없이 시작</span>
+                </li>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">정확한 심리 상태 분석과 맞춤 케어</span>
+                </li>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">가족 단위 종합 통합건강 관리</span>
+                </li>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">24시간 언제든 접근 가능한 AIH 상담</span>
+                </li>
               </ul>
             </div>
 
             {/* 기업 및 의료기관 */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Building className="w-6 h-6 text-primary" />
-                <h4 className="text-lg font-semibold">기업 · 의료기관</h4>
+            <div className="bg-gradient-to-br from-accent/5 to-accent/10 rounded-2xl p-6 border border-accent/10 hover:border-accent/20 transition-all duration-300">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <Building className="w-5 h-5 text-accent-foreground" />
+                </div>
+                <h4 className="text-xl font-bold text-foreground">기업 · 의료기관</h4>
               </div>
-              <ul className="space-y-2 text-muted-foreground ml-9">
-                <li>• 직원 통합건강 관리 솔루션 제공</li>
-                <li>• 병원 환자 케어 시스템 통합 연동</li>
-                <li>• 데이터 기반 조직 건강도 분석</li>
-                <li>• 전문 상담사 네트워크 구축 지원</li>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">직원 통합건강 관리 솔루션 제공</span>
+                </li>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">병원 환자 케어 시스템 통합 연동</span>
+                </li>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">데이터 기반 조직 건강도 분석</span>
+                </li>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">전문 상담사 네트워크 구축 지원</span>
+                </li>
               </ul>
             </div>
 
             {/* 발달/상담센터 · 복지관 · 유치원 */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Award className="w-6 h-6 text-primary" />
-                <h4 className="text-lg font-semibold">발달/상담센터 · 복지관 · 유치원</h4>
+            <div className="bg-gradient-to-br from-secondary/30 to-secondary/50 rounded-2xl p-6 border border-secondary/30 hover:border-secondary/50 transition-all duration-300">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-secondary/80 rounded-xl flex items-center justify-center">
+                  <Award className="w-5 h-5 text-secondary-foreground" />
+                </div>
+                <h4 className="text-lg font-bold text-foreground leading-tight">발달/상담센터 · 복지관 · 유치원</h4>
               </div>
-              <ul className="space-y-2 text-muted-foreground ml-9">
-                <li>• 아동 발달 단계별 맞춤 검사 도구</li>
-                <li>• 전문 치료사 연계 시스템 구축</li>
-                <li>• 부모-아동 상호작용 분석 리포트</li>
-                <li>• 기관별 통합 관리 솔루션 제공</li>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-secondary rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">아동 발달 단계별 맞춤 검사 도구</span>
+                </li>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-secondary rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">전문 치료사 연계 시스템 구축</span>
+                </li>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-secondary rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">부모-아동 상호작용 분석 리포트</span>
+                </li>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-secondary rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">기관별 통합 관리 솔루션 제공</span>
+                </li>
               </ul>
             </div>
           </div>

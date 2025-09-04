@@ -240,7 +240,7 @@ const ChatInterface = () => {
           <p className="font-medium">📝 효과적인 리포팅을 위한 팁:</p>
           <ul className="list-disc list-inside space-y-1 ml-2">
             <li>최소 30자 이상으로 가능한 구체적으로 상황을 설명해주세요</li>
-            <li>아이의 연령, 구체적인 행동, 지속 기간 등을 포함해주세요</li>
+            <li>대상자의 연령, 구체적인 행동, 지속 기간 등을 포함해주세요</li>
             <li>개인정보나 민감한 정보는 포함하지 말아주세요</li>
           </ul>
         </div>

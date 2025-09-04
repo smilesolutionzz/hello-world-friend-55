@@ -36,7 +36,7 @@ html, body {
 /* React Big Calendar styles */
 @import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-/* react-big-calendar styles - 큼직하고 보기 좋게 */
+/* react-big-calendar styles */
 .rbc-calendar {
   font-family: inherit;
   border: 1px solid hsl(var(--border));

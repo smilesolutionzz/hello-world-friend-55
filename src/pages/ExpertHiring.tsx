@@ -479,7 +479,7 @@ const ExpertHiring = () => {
                       <p className="text-sm text-gray-600 mb-4 leading-relaxed">{expert.specialty.join(", ")}</p>
                       <div className="space-y-3">
                         <Button 
-                          className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-0 shadow-lg transition-all duration-300"
+                          className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-0 shadow-lg h-12 font-bold rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
                           onClick={() => handleConsultExpert(expert.id)}
                         >
                           <MessageCircle className="w-4 h-4 mr-2" />
@@ -487,7 +487,7 @@ const ExpertHiring = () => {
                         </Button>
                         <Button 
                           variant="outline"
-                          className="w-full border-purple-200 text-purple-600 hover:bg-purple-50"
+                          className="w-full border-2 border-purple-300 bg-white text-purple-600 hover:bg-purple-50 hover:border-purple-400 h-12 font-bold rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
                           onClick={() => handleHireExpert(expert.id)}
                         >
                           <Crown className="w-4 h-4 mr-2" />
@@ -686,12 +686,12 @@ const ExpertHiring = () => {
 
                       {/* 가격 및 예약 */}
                       <div className="lg:col-span-2">
-                        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 text-center border border-purple-100">
+                        <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 rounded-2xl p-6 text-center border border-purple-200 shadow-lg">
                           <div className="mb-6">
-                            <div className="text-3xl font-black text-purple-600 mb-2">
+                            <div className="text-3xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
                               월 {formatPrice(expert.monthlyPrice)}원
                             </div>
-                            <div className="text-gray-600">
+                            <div className="text-gray-600 font-semibold">
                               시간당 {formatPrice(expert.hourlyPrice)}원
                             </div>
                           </div>
@@ -710,7 +710,7 @@ const ExpertHiring = () => {
                           <div className="space-y-3">
                             <Button 
                               onClick={() => handleConsultExpert(expert.id)}
-                              className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-0 shadow-lg h-12 text-base font-semibold transition-all duration-300"
+                              className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white border-0 shadow-lg h-14 text-base font-bold rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
                             >
                               <MessageCircle className="w-5 h-5 mr-2" />
                               바로 상담하기
@@ -718,15 +718,15 @@ const ExpertHiring = () => {
                             
                             <Button 
                               onClick={() => handleHireExpert(expert.id)}
-                              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-lg h-12 text-base font-semibold transition-all duration-300"
+                              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-lg h-14 text-base font-bold rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
                             >
                               <Crown className="w-5 h-5 mr-2" />
                               전문가 고용하기
                             </Button>
                           </div>
                           
-                          <div className="text-xs text-gray-500 mt-4 p-2 bg-white/50 rounded-xl">
-                            {expert.availability}
+                          <div className="text-sm text-gray-600 mt-4 p-3 bg-white/60 backdrop-blur-sm rounded-xl font-medium border border-gray-200">
+                            📅 {expert.availability}
                           </div>
                         </div>
                       </div>

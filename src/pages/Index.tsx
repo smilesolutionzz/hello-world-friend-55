@@ -80,10 +80,10 @@ const Index = () => {
   }, [searchParams, processReferralReward, toast]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen max-w-full overflow-x-hidden">
       <ScrollProgressBar />
       <UnifiedNavigation />
-      <div className="flex">
+      <div className="flex max-w-full">
         {/* Product Sidebar */}
         <div className="hidden lg:block fixed left-0 top-16 z-30 h-full">
           <ProductSidebar />

@@ -214,6 +214,7 @@ export const CommunityFeed = () => {
   const [newPost, setNewPost] = useState({ title: '', content: '', tags: '' });
   const [showNewPost, setShowNewPost] = useState(false);
   const [newComment, setNewComment] = useState<{[key: string]: string}>({});
+  const [commentAuthor, setCommentAuthor] = useState<{[key: string]: string}>({});
 
   const handleLike = (postId: string) => {
     setPosts(posts.map(post => 
@@ -244,12 +245,13 @@ export const CommunityFeed = () => {
 
   const handleAddComment = (postId: string) => {
     const comment = newComment[postId];
+    const author = commentAuthor[postId];
     if (!comment?.trim()) return;
 
     const newCommentObj: Comment = {
       id: Date.now().toString(),
       author: {
-        name: '익명 사용자',
+        name: author?.trim() || '익명',
         isExpert: false,
         isInstitution: false
       },
@@ -265,6 +267,7 @@ export const CommunityFeed = () => {
     ));
 
     setNewComment({ ...newComment, [postId]: '' });
+    setCommentAuthor({ ...commentAuthor, [postId]: '' });
   };
 
   const handleSubmitPost = () => {
@@ -458,24 +461,32 @@ export const CommunityFeed = () => {
             )}
 
             {/* 댓글 작성 */}
-            <div className="flex gap-2 pt-2">
+            <div className="space-y-2 pt-2">
               <Input
-                placeholder="댓글을 입력하세요..."
-                value={newComment[post.id] || ''}
-                onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAddComment(post.id);
-                  }
-                }}
+                placeholder="닉네임 (선택사항)"
+                value={commentAuthor[post.id] || ''}
+                onChange={(e) => setCommentAuthor({ ...commentAuthor, [post.id]: e.target.value })}
+                className="text-sm"
               />
-              <Button 
-                onClick={() => handleAddComment(post.id)}
-                size="sm"
-                className="bg-primary"
-              >
-                작성
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="댓글을 입력하세요..."
+                  value={newComment[post.id] || ''}
+                  onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAddComment(post.id);
+                    }
+                  }}
+                />
+                <Button 
+                  onClick={() => handleAddComment(post.id)}
+                  size="sm"
+                  className="bg-primary"
+                >
+                  작성
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

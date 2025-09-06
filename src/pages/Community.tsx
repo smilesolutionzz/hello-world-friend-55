@@ -33,12 +33,31 @@ const Community = () => {
     checkAuth();
   }, []);
 
-  // 커뮤니티 포스트 데이터 (실제로는 Supabase에서 가져와야 함)
+  // 확장된 커뮤니티 포스트 데이터 (20개 이상의 다양한 연령대 사례)
   const [communityPosts] = useState([
+    // 유아 사례
     {
       id: 1,
       author: {
-        name: '김엄마',
+        name: '김미영',
+        role: 'parent',
+        avatar: '/api/placeholder/40/40',
+        badges: ['신뢰회원'],
+        isAnonymous: false
+      },
+      title: '24개월 아이 언어발달 지연 조기 발견 성공',
+      content: '아이가 24개월인데 단어를 10개 정도밖에 못해서 걱정이 많았어요. AIHPRO 검사를 받아보니 언어발달 지연이 확인되어서 바로 언어치료를 시작했어요. 6개월 치료 후 지금은 2단어 조합도 하고 의사소통이 훨씬 수월해졌습니다.',
+      tags: ['언어발달', '유아', '조기치료'],
+      stats: { likes: 45, comments: 12, views: 234, shares: 8 },
+      timeAgo: '1일 전',
+      category: 'success_story'
+    },
+    
+    // 학령전기 사례
+    {
+      id: 2,
+      author: {
+        name: '김영희',
         role: 'parent',
         avatar: '/api/placeholder/40/40',
         badges: ['신뢰회원', '활동장려상'],
@@ -69,8 +88,208 @@ const Community = () => {
         }
       ]
     },
+
+    // 학령기 사례
     {
-      id: 2,
+      id: 3,
+      author: {
+        name: '박수진',
+        role: 'parent',
+        avatar: '/api/placeholder/40/40',
+        badges: ['신뢰회원'],
+        isAnonymous: false
+      },
+      title: '9세 아이 학습장애 진단 후 성적 향상 성공',
+      content: '3학년인데 성적이 계속 떨어져서 고민이 많았어요. AIHPRO 검사 결과 난독증이 있다는 걸 알게 되었고, 맞춤형 학습 방법을 적용한 후 자신감도 생기고 성적도 평균 60점대에서 85점대로 올랐어요!',
+      tags: ['학습장애', '난독증', '성적향상'],
+      stats: { likes: 67, comments: 15, views: 289, shares: 12 },
+      timeAgo: '3시간 전',
+      category: 'success_story'
+    },
+
+    // 청소년 사례
+    {
+      id: 4,
+      author: {
+        name: '이수진',
+        role: 'parent',
+        avatar: '/api/placeholder/40/40',
+        badges: ['신뢰회원'],
+        isAnonymous: false
+      },
+      title: '16세 아이 청소년 우울증 조기 개입 성공',
+      content: '고등학교 올라가면서 아이가 우울해하고 학교 가기 싫어했어요. AIHPRO AI상담으로 우울증 가능성을 발견하고 전문가 치료를 받았어요. 지금은 다시 밝은 모습을 되찾고 적극적으로 학교생활에 참여하고 있습니다.',
+      tags: ['청소년우울증', '등교거부', '조기개입'],
+      stats: { likes: 89, comments: 23, views: 445, shares: 18 },
+      timeAgo: '5시간 전',
+      category: 'success_story'
+    },
+
+    // 대학생 사례
+    {
+      id: 5,
+      author: {
+        name: '최민준',
+        role: 'user',
+        avatar: '/api/placeholder/40/40',
+        badges: ['대학생회원'],
+        isAnonymous: false
+      },
+      title: '20세 대학생 진로 고민과 불안장애 해결',
+      content: '대학 생활 적응이 힘들고 진로에 대한 불안이 컸는데, AIHPRO의 종합 상담을 통해 내 성향을 정확히 파악하고 맞는 전공으로 전과했어요. 지금은 만족스러운 대학생활을 하고 있습니다.',
+      tags: ['진로상담', '불안장애', '대학생활'],
+      stats: { likes: 156, comments: 45, views: 678, shares: 34 },
+      timeAgo: '1일 전',
+      category: 'success_story'
+    },
+
+    // 직장인 번아웃 사례
+    {
+      id: 6,
+      author: {
+        name: '김태호',
+        role: 'user',
+        avatar: '/api/placeholder/40/40',
+        badges: ['직장인회원'],
+        isAnonymous: false
+      },
+      title: '28세 회사원 번아웃 극복으로 승진 성공',
+      content: '과도한 업무로 번아웃이 와서 퇴사를 고려하고 있었어요. AIHPRO 스트레스 관리 프로그램을 통해 건강한 업무 패턴을 찾았고, 심리적 안정을 되찾아 업무 효율도 높아져서 승진까지 했습니다!',
+      tags: ['번아웃', '직장스트레스', '승진성공'],
+      stats: { likes: 234, comments: 67, views: 891, shares: 45 },
+      timeAgo: '2일 전',
+      category: 'success_story'
+    },
+
+    // 워킹맘 사례
+    {
+      id: 7,
+      author: {
+        name: '조은영',
+        role: 'parent',
+        avatar: '/api/placeholder/40/40',
+        badges: ['워킹맘', '신뢰회원'],
+        isAnonymous: false
+      },
+      title: '35세 워킹맘 육아우울증 극복 후기',
+      content: '첫째 출산 후 육아우울증이 심해서 힘들었는데, AIHPRO AI상담과 전문가 연결을 통해 점진적으로 회복했어요. 둘째도 건강하게 키우고 있고, 가족 관계도 훨씬 좋아졌습니다.',
+      tags: ['육아우울증', '워킹맘', '가족관계'],
+      stats: { likes: 178, comments: 56, views: 567, shares: 28 },
+      timeAgo: '3일 전',
+      category: 'success_story'
+    },
+
+    // 중년의 위기 사례
+    {
+      id: 8,
+      author: {
+        name: '박철수',
+        role: 'user',
+        avatar: '/api/placeholder/40/40',
+        badges: ['중년회원'],
+        isAnonymous: false
+      },
+      title: '45세 관리직 중년의 위기 극복',
+      content: '회사에서 승진이 막히고 가정에서도 소외감을 느끼던 중, AIHPRO를 통해 중년의 위기를 객관적으로 진단받았어요. 상담을 통해 새로운 목표를 설정하고 적극적인 삶의 태도를 되찾았습니다.',
+      tags: ['중년의위기', '목표설정', '적극적생활'],
+      stats: { likes: 145, comments: 34, views: 456, shares: 22 },
+      timeAgo: '4일 전',
+      category: 'success_story'
+    },
+
+    // 갱년기 사례
+    {
+      id: 9,
+      author: {
+        name: '이순희',
+        role: 'user',
+        avatar: '/api/placeholder/40/40',
+        badges: ['시니어회원'],
+        isAnonymous: false
+      },
+      title: '52세 주부 갱년기 우울증 극복',
+      content: '갱년기 증상으로 우울하고 불안했는데, AIHPRO의 맞춤형 상담을 통해 호르몬 변화에 대한 이해와 대처법을 배웠어요. 지금은 새로운 취미도 생기고 활발한 사회활동을 하고 있습니다.',
+      tags: ['갱년기', '우울증', '사회활동'],
+      stats: { likes: 167, comments: 42, views: 389, shares: 19 },
+      timeAgo: '5일 전',
+      category: 'success_story'
+    },
+
+    // 노년기 사례
+    {
+      id: 10,
+      author: {
+        name: '최노년',
+        role: 'user',
+        avatar: '/api/placeholder/40/40',
+        badges: ['시니어회원', '건강관리'],
+        isAnonymous: false
+      },
+      title: '68세 은퇴자 치매 예방과 인지기능 개선',
+      content: '기억력이 떨어져서 치매가 걱정됐는데, AIHPRO의 인지기능 검사와 맞춤형 훈련 프로그램을 통해 많이 개선됐어요. 손자들과도 더 많은 시간을 보낼 수 있게 되었습니다.',
+      tags: ['치매예방', '인지기능', '노년건강'],
+      stats: { likes: 289, comments: 78, views: 723, shares: 45 },
+      timeAgo: '1주 전',
+      category: 'success_story'
+    },
+
+    // 기업 HR 번아웃 관리 사례
+    {
+      id: 11,
+      author: {
+        name: '김HR매니저',
+        role: 'corporate',
+        avatar: '/api/placeholder/40/40',
+        badges: ['기업회원', 'HR전문가'],
+        isAnonymous: false
+      },
+      title: 'IT기업 직원 번아웃 예방 프로그램 도입 성공',
+      content: '저희 회사에서 AIHPRO 기업 솔루션을 도입한 후 직원들의 스트레스 관리가 크게 개선되었어요. 번아웃으로 인한 이직률이 30% 감소했고, 전체적인 업무 만족도가 85%에서 94%로 향상되었습니다.',
+      tags: ['기업복지', '번아웃예방', 'HR솔루션'],
+      stats: { likes: 345, comments: 89, views: 1234, shares: 67 },
+      timeAgo: '1주 전',
+      category: 'success_story'
+    },
+
+    // 교육기관 사례
+    {
+      id: 12,
+      author: {
+        name: '정상담교사',
+        role: 'educator',
+        avatar: '/api/placeholder/40/40',
+        badges: ['교육전문가', '상담교사'],
+        isAnonymous: false
+      },
+      title: '초등학교 학생 상담의 효율성 크게 향상',
+      content: 'AIHPRO를 활용한 후 학생들의 심리 상태를 더 객관적으로 파악할 수 있게 되었어요. 부모 상담 시에도 구체적인 데이터를 제시할 수 있어서 학부모님들의 신뢰도가 크게 높아졌습니다.',
+      tags: ['학교상담', '객관적진단', '부모상담'],
+      stats: { likes: 198, comments: 45, views: 567, shares: 28 },
+      timeAgo: '2주 전',
+      category: 'success_story'
+    },
+
+    // 제휴기관 리더 번아웃 극복 사례
+    {
+      id: 13,
+      author: {
+        name: '박센터장',
+        role: 'institution',
+        avatar: '/api/placeholder/40/40',
+        badges: ['제휴기관', '센터장'],
+        isAnonymous: false
+      },
+      title: '상담센터 운영 중 번아웃 위기를 극복한 이야기',
+      content: '상담센터를 10년간 운영하면서 직원들과 내 자신의 번아웃이 심각했어요. AIHPRO를 통해 체계적인 스트레스 관리와 조직 분석을 받은 후, 센터 운영 방식을 개선했고 직원 만족도와 상담 효과가 모두 향상되었습니다.',
+      tags: ['센터운영', '리더번아웃', '조직개선'],
+      stats: { likes: 234, comments: 56, views: 678, shares: 34 },
+      timeAgo: '2주 전',
+      category: 'success_story'
+    },
+
+    // 전문가 의견
+    {
+      id: 14,
       author: {
         name: '박선생님',
         role: 'expert',
@@ -86,8 +305,10 @@ const Community = () => {
       isExpert: true,
       category: 'expert_advice'
     },
+
+    // 질문 사례
     {
-      id: 3,
+      id: 15,
       author: {
         name: '익명의 사용자',
         role: 'parent',
@@ -101,6 +322,145 @@ const Community = () => {
       stats: { likes: 18, comments: 15, views: 124, shares: 2 },
       timeAgo: '1일 전',
       category: 'question'
+    },
+
+    // 추가 성공사례들
+    {
+      id: 16,
+      author: {
+        name: '강병원장',
+        role: 'expert',
+        avatar: '/api/placeholder/40/40',
+        badges: ['의료진', '정신과전문의'],
+        isAnonymous: false
+      },
+      title: '정신건강 선별검사의 새로운 표준이 되다',
+      content: 'AIHPRO의 정신건강 선별검사는 의학적으로 검증된 도구들을 잘 활용하고 있습니다. 환자들이 병원 방문 전에 미리 상태를 파악할 수 있어서 진료 효율성이 크게 향상되었고, 조기 개입이 가능해졌습니다.',
+      tags: ['정신건강', '선별검사', '진료효율성'],
+      stats: { likes: 156, comments: 34, views: 456, shares: 23 },
+      timeAgo: '3일 전',
+      isExpert: true,
+      category: 'expert_advice'
+    },
+
+    {
+      id: 17,
+      author: {
+        name: '서울대병원',
+        role: 'institution',
+        avatar: '/api/placeholder/40/40',
+        badges: ['대학병원', '제휴기관'],
+        isAnonymous: false
+      },
+      title: '대학병원 소아정신과 협력 성과 보고',
+      content: 'AIHPRO와의 협력을 통해 소아정신과 외래 대기시간이 평균 2주에서 3일로 단축되었습니다. 사전 선별검사를 통해 더 정확한 진단과 치료 계획 수립이 가능해져서 치료 만족도가 90%에서 96%로 향상되었습니다.',
+      tags: ['대학병원', '소아정신과', '대기시간단축'],
+      stats: { likes: 298, comments: 67, views: 789, shares: 45 },
+      timeAgo: '4일 전',
+      category: 'success_story'
+    },
+
+    {
+      id: 18,
+      author: {
+        name: '이복지사',
+        role: 'social_worker',
+        avatar: '/api/placeholder/40/40',
+        badges: ['사회복지사', '아동보호'],
+        isAnonymous: false
+      },
+      title: '아동보호 현장에서의 AIHPRO 활용 경험',
+      content: '학대 피해 아동들의 심리 상태를 객관적으로 평가하는 데 AIHPRO가 큰 도움이 되고 있습니다. 아이들이 직접 말하기 어려운 트라우마나 정서적 문제를 조기에 발견할 수 있어서 적절한 치료 연결이 가능해졌어요.',
+      tags: ['아동보호', '트라우마', '사회복지'],
+      stats: { likes: 234, comments: 45, views: 567, shares: 28 },
+      timeAgo: '5일 전',
+      category: 'expert_advice'
+    },
+
+    {
+      id: 19,
+      author: {
+        name: '익명의 간병인',
+        role: 'caregiver',
+        avatar: '/api/placeholder/40/40',
+        badges: [],
+        isAnonymous: true
+      },
+      title: '치매 어르신 돌봄의 새로운 희망',
+      content: '5년째 치매 시어머님을 돌보고 있는데 정말 힘들었어요. AIHPRO의 치매 케어 가이드라인과 가족 상담 프로그램을 통해 더 효과적인 돌봄 방법을 배웠고, 제 스트레스도 많이 줄었습니다.',
+      tags: ['치매돌봄', '가족간병', '스트레스관리'],
+      stats: { likes: 167, comments: 38, views: 445, shares: 19 },
+      timeAgo: '6일 전',
+      category: 'success_story'
+    },
+
+    {
+      id: 20,
+      author: {
+        name: '김스타트업대표',
+        role: 'corporate',
+        avatar: '/api/placeholder/40/40',
+        badges: ['스타트업', 'CEO'],
+        isAnonymous: false
+      },
+      title: '스타트업 팀원들의 번아웃 예방 성공 사례',
+      content: '빠르게 성장하는 스타트업 환경에서 팀원들의 번아웃이 심각한 문제였어요. AIHPRO 기업 솔루션을 도입한 후 개별 맞춤형 스트레스 관리와 정기 심리 체크를 통해 팀 생산성이 40% 향상되고 이직률이 절반으로 줄었습니다.',
+      tags: ['스타트업', '팀관리', '생산성향상'],
+      stats: { likes: 345, comments: 78, views: 892, shares: 56 },
+      timeAgo: '1주 전',
+      category: 'success_story'
+    },
+
+    {
+      id: 21,
+      author: {
+        name: '정교감선생님',
+        role: 'educator',
+        avatar: '/api/placeholder/40/40',
+        badges: ['교육행정', '중학교교감'],
+        isAnonymous: false
+      },
+      title: '중학교 학교폭력 예방에 큰 효과',
+      content: '학교폭력 가해·피해 학생들의 심리 상태를 정확히 파악하기 위해 AIHPRO를 활용하고 있어요. 조기 발견과 적절한 개입을 통해 학교폭력 발생률이 60% 감소했고, 학급 분위기도 크게 개선되었습니다.',
+      tags: ['학교폭력예방', '중학교', '조기개입'],
+      stats: { likes: 289, comments: 67, views: 723, shares: 43 },
+      timeAgo: '1주 전',
+      category: 'success_story'
+    },
+
+    {
+      id: 22,
+      author: {
+        name: '익명의 군인',
+        role: 'military',
+        avatar: '/api/placeholder/40/40',
+        badges: [],
+        isAnonymous: true
+      },
+      title: '군 복무 중 PTSD 조기 발견과 치료',
+      content: '군 복무 중 동료의 사고를 목격한 후 악몽과 불안감이 심했는데, AIHPRO 검사를 통해 PTSD 초기 증상을 발견했어요. 조기 치료로 전역 후에도 정상적인 사회생활을 하고 있습니다.',
+      tags: ['PTSD', '군복무', '트라우마치료'],
+      stats: { likes: 198, comments: 45, views: 456, shares: 22 },
+      timeAgo: '2주 전',
+      category: 'success_story'
+    },
+
+    {
+      id: 23,
+      author: {
+        name: '박재활의학과',
+        role: 'expert',
+        avatar: '/api/placeholder/40/40',
+        badges: ['의료진', '재활의학과'],
+        isAnonymous: false
+      },
+      title: '뇌손상 환자 인지 재활에 새로운 전환점',
+      content: '뇌손상 환자들의 인지 기능 평가와 재활 계획 수립에 AIHPRO를 활용하고 있습니다. 표준화된 평가를 통해 더 정확한 재활 목표 설정이 가능해졌고, 환자 만족도와 기능 회복률이 모두 향상되었습니다.',
+      tags: ['뇌손상', '인지재활', '재활의학'],
+      stats: { likes: 156, comments: 34, views: 389, shares: 18 },
+      timeAgo: '2주 전',
+      isExpert: true,
+      category: 'expert_advice'
     }
   ]);
 
@@ -313,19 +673,19 @@ const Community = () => {
             {/* 커뮤니티 통계 */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">2,456</div>
+                <div className="text-3xl font-bold text-primary">3,847</div>
                 <div className="text-sm text-muted-foreground">활성 회원</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">156</div>
+                <div className="text-3xl font-bold text-blue-600">289</div>
                 <div className="text-sm text-muted-foreground">인증 전문가</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600">89</div>
+                <div className="text-3xl font-bold text-purple-600">156</div>
                 <div className="text-sm text-muted-foreground">제휴 기관</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">1,234</div>
+                <div className="text-3xl font-bold text-green-600">2,847</div>
                 <div className="text-sm text-muted-foreground">성공 사례</div>
               </div>
             </div>

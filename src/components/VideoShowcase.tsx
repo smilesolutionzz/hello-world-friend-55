@@ -13,7 +13,7 @@ const VideoShowcase = () => {
       id: 1,
       title: "플랫폼 소개 영상",
       description: "AI 통합건강 케어의 새로운 경험",
-      embedId: "t4ZkQll1WxU",
+      embedId: "cY_20T0UZh4",
       thumbnail: "/api/placeholder/640/360"
     },
     {

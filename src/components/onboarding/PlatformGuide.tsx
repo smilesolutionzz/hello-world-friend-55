@@ -30,7 +30,7 @@ interface GuideStep {
 const guideSteps: GuideStep[] = [
   {
     id: 1,
-    title: "AI 심리검사로 시작하세요",
+    title: "AI 맞춤형검사로 시작하세요",
     description: "3분만에 현재 심리상태를 정확히 파악할 수 있어요. 연령대별 맞춤 검사를 제공합니다.",
     icon: <Brain className="w-6 h-6" />,
     highlight: "3분 검사"
@@ -135,7 +135,7 @@ export function PlatformGuide({ onComplete }: PlatformGuideProps) {
               HIGHLIGHT PRO 둘러보기
             </h2>
             <p className="text-muted-foreground text-sm">
-              1분만에 AI 심리건강 플랫폼을 이해해보세요
+              1분만에 AI 맞춤형검사 플랫폼을 이해해보세요
             </p>
             
             {/* Progress Bar */}

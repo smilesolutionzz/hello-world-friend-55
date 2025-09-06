@@ -212,7 +212,24 @@ export default function GrowthCommunity() {
         <TabsContent value="stories" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">성장 스토리</h2>
-            <Button className="flex items-center gap-2">
+            <Button 
+              className="flex items-center gap-2"
+              onClick={() => {
+                if (!user) {
+                  toast({
+                    title: "로그인 필요",
+                    description: "스토리를 공유하려면 로그인이 필요합니다.",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                // TODO: 스토리 작성 모달 열기
+                toast({
+                  title: "준비 중",
+                  description: "스토리 작성 기능을 곧 추가할 예정입니다.",
+                });
+              }}
+            >
               <Plus className="h-4 w-4" />
               내 스토리 공유하기
             </Button>
@@ -235,7 +252,22 @@ export default function GrowthCommunity() {
               <p className="text-muted-foreground mb-4">
                 당신의 변화 과정이 다른 사람들에게 큰 힘이 될 수 있어요
               </p>
-              <Button>
+              <Button
+                onClick={() => {
+                  if (!user) {
+                    toast({
+                      title: "로그인 필요",
+                      description: "스토리를 작성하려면 로그인이 필요합니다.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  toast({
+                    title: "준비 중",
+                    description: "스토리 작성 기능을 곧 추가할 예정입니다.",
+                  });
+                }}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 스토리 작성하기
               </Button>
@@ -246,7 +278,23 @@ export default function GrowthCommunity() {
         <TabsContent value="challenges" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">고민 해결 챌린지</h2>
-            <Button className="flex items-center gap-2">
+            <Button 
+              className="flex items-center gap-2"
+              onClick={() => {
+                if (!user) {
+                  toast({
+                    title: "로그인 필요",
+                    description: "고민을 올리려면 로그인이 필요합니다.",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                toast({
+                  title: "준비 중",
+                  description: "고민 올리기 기능을 곧 추가할 예정입니다.",
+                });
+              }}
+            >
               <Plus className="h-4 w-4" />
               고민 올리기
             </Button>
@@ -269,7 +317,22 @@ export default function GrowthCommunity() {
               <p className="text-muted-foreground mb-4">
                 함께 해결하면 더 쉬워져요
               </p>
-              <Button>
+              <Button
+                onClick={() => {
+                  if (!user) {
+                    toast({
+                      title: "로그인 필요",
+                      description: "고민을 올리려면 로그인이 필요합니다.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  toast({
+                    title: "준비 중",
+                    description: "고민 올리기 기능을 곧 추가할 예정입니다.",
+                  });
+                }}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 고민 올리기
               </Button>
@@ -280,7 +343,23 @@ export default function GrowthCommunity() {
         <TabsContent value="reversals" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">반전 일기</h2>
-            <Button className="flex items-center gap-2">
+            <Button 
+              className="flex items-center gap-2"
+              onClick={() => {
+                if (!user) {
+                  toast({
+                    title: "로그인 필요",
+                    description: "반전 스토리를 쓰려면 로그인이 필요합니다.",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                toast({
+                  title: "준비 중",
+                  description: "반전 스토리 작성 기능을 곧 추가할 예정입니다.",
+                });
+              }}
+            >
               <Plus className="h-4 w-4" />
               반전 스토리 쓰기
             </Button>
@@ -303,7 +382,22 @@ export default function GrowthCommunity() {
               <p className="text-muted-foreground mb-4">
                 최악의 순간이 어떻게 최고의 순간이 되었나요?
               </p>
-              <Button>
+              <Button
+                onClick={() => {
+                  if (!user) {
+                    toast({
+                      title: "로그인 필요",
+                      description: "반전 스토리를 쓰려면 로그인이 필요합니다.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  toast({
+                    title: "준비 중",
+                    description: "반전 스토리 작성 기능을 곧 추가할 예정입니다.",
+                  });
+                }}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 반전 스토리 쓰기
               </Button>

@@ -17,6 +17,7 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 
 const Index = () => {
   console.log('🏠 Index.tsx: Index page component rendering...');
@@ -129,6 +130,11 @@ const Index = () => {
             <ReferralWidget />
             <ReferralCodeInput />
           </div>
+          {user && (
+            <div className="container mx-auto px-4 py-6 animate-fade-in w-full" style={{ animationDelay: '0.55s' }}>
+              <NextStepSuggestion />
+            </div>
+          )}
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.6s' }}>
             <TrustIndicators />
           </div>

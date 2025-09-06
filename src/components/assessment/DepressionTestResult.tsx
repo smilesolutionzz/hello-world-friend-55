@@ -7,6 +7,7 @@ import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Loader2, Me
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
+import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import { useShareText, formatPsychTestResult } from '@/utils/shareUtils';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -423,6 +424,9 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
           </Button>
         </div>
       </div>
+
+      {/* 다음 단계 제안 */}
+      <NextStepSuggestion className="mb-6" />
 
       {/* 상품 추천 */}
       <ProductRecommendation 

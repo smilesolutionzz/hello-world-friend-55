@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
+import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 
 interface AdhdTestResultProps {
   results: {
@@ -352,6 +353,9 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           type="test_result"
         />
       </Card>
+
+      {/* 다음 단계 제안 */}
+      <NextStepSuggestion className="mb-6" />
 
       {/* 상품 추천 */}
       <ProductRecommendation 

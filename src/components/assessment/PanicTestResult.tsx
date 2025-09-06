@@ -5,6 +5,7 @@ import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Save, Share
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { useShareText } from "@/utils/shareUtils";
+import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 
 interface PanicTestResultProps {
   results: {
@@ -343,6 +344,9 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
           </div>
         </Button>
       </div>
+
+      {/* 다음 단계 제안 */}
+      <NextStepSuggestion className="mb-6" />
 
       {/* Additional Information */}
       <Card className="p-6 bg-blue-50 border-blue-200">

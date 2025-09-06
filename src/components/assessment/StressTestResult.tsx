@@ -6,6 +6,7 @@ import { RefreshCw, Download, Share2, Brain, AlertTriangle, CheckCircle, FileTex
 import { useShareText } from "@/utils/shareUtils";
 import { useTestActions } from "@/hooks/useTestActions";
 import { useTokens } from "@/hooks/useTokens";
+import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 
 interface StressTestResultProps {
   result: {
@@ -259,6 +260,9 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
             </CardContent>
           </Card>
         )}
+
+        {/* 다음 단계 제안 */}
+        <NextStepSuggestion className="mb-6" />
 
         {/* 액션 버튼 */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -18,6 +18,7 @@ import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
+import { PlatformGuide } from '@/components/onboarding/PlatformGuide';
 
 const Index = () => {
   console.log('🏠 Index.tsx: Index page component rendering...');
@@ -26,6 +27,7 @@ const Index = () => {
   const { processReferralReward } = useReferrals();
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
+  const [showGuideComplete, setShowGuideComplete] = useState(false);
 
   useEffect(() => {
     // Check for current user
@@ -99,8 +101,17 @@ const Index = () => {
     checkReferralCode();
   }, [searchParams]); // searchParams만 의존성으로 추가
 
+  const handleGuideComplete = () => {
+    setShowGuideComplete(true);
+    toast({
+      title: "가이드 완료! 🎉",
+      description: "이제 HIGHLIGHT PRO와 함께 심리건강 여정을 시작해보세요!",
+    });
+  };
+
   return (
     <div className="min-h-screen max-w-full overflow-x-hidden">
+      <PlatformGuide onComplete={handleGuideComplete} />
       <ScrollProgressBar />
       <UnifiedNavigation />
       <div className="flex max-w-full">

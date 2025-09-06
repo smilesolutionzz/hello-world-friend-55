@@ -9,11 +9,21 @@ import { GrowthLeaderboard } from "@/components/growth/GrowthLeaderboard";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+interface LeaderboardEntry {
+  user_id: string;
+  total_points: number;
+  story_points: number;
+  challenge_points: number;
+  reversal_points: number;
+  current_rank: number;
+  streak_days: number;
+}
+
 export default function GrowthCommunity() {
   const [growthStories, setGrowthStories] = useState([]);
   const [challenges, setChallenges] = useState([]);
   const [reversalStories, setReversalStories] = useState([]);
-  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const { toast } = useToast();
@@ -30,17 +40,67 @@ export default function GrowthCommunity() {
 
   const fetchData = async () => {
     try {
-      const [storiesRes, challengesRes, reversalRes, leaderboardRes] = await Promise.all([
+      // Fetch growth stories, challenges, reversal stories, and secure leaderboard data
+      const [storiesRes, challengesRes, reversalRes, leaderboardRes, userGrowthRes] = await Promise.all([
         supabase.from('growth_stories').select('*').order('created_at', { ascending: false }).limit(10),
         supabase.from('challenge_posts').select('*').order('created_at', { ascending: false }).limit(10),
         supabase.from('reversal_stories').select('*').order('created_at', { ascending: false }).limit(10),
-        supabase.from('user_growth_points').select('*').order('total_points', { ascending: false }).limit(20)
+        // Use new secure function for anonymous leaderboard data
+        supabase.rpc('get_anonymous_leaderboard'),
+        // Get current user's growth data if authenticated
+        user ? supabase.rpc('get_user_growth_with_rank', { p_user_id: user.id }) : null
       ]);
 
       if (storiesRes.data) setGrowthStories(storiesRes.data);
       if (challengesRes.data) setChallenges(challengesRes.data);
       if (reversalRes.data) setReversalStories(reversalRes.data);
-      if (leaderboardRes.data) setLeaderboard(leaderboardRes.data);
+      
+      // Transform leaderboard data to include user's own data
+      let leaderboardData: LeaderboardEntry[] = [];
+      
+      // If user is authenticated and has growth data, merge it with leaderboard
+      if (user && userGrowthRes?.data?.[0]) {
+        const userData = userGrowthRes.data[0];
+        const anonymousData = leaderboardRes.data || [];
+        
+        // Add anonymous leaderboard data
+        const anonymousEntries: LeaderboardEntry[] = anonymousData.map((entry: any) => ({
+          user_id: 'anonymous',
+          current_rank: entry.rank,
+          total_points: entry.total_points,
+          story_points: entry.story_points,
+          challenge_points: entry.challenge_points,
+          reversal_points: entry.reversal_points,
+          streak_days: 0 // Not exposed in anonymous data
+        }));
+        
+        // Add current user's full data
+        const userEntry: LeaderboardEntry = {
+          user_id: userData.user_id,
+          current_rank: userData.current_rank,
+          total_points: userData.total_points,
+          story_points: userData.story_points,
+          challenge_points: userData.challenge_points,
+          reversal_points: userData.reversal_points,
+          streak_days: userData.streak_days
+        };
+        
+        leaderboardData = [...anonymousEntries, userEntry].sort((a, b) => b.total_points - a.total_points);
+      } else {
+        // For non-authenticated users, just show anonymous leaderboard
+        const anonymousData = leaderboardRes.data || [];
+        leaderboardData = anonymousData.map((entry: any): LeaderboardEntry => ({
+          user_id: 'anonymous',
+          current_rank: entry.rank,
+          total_points: entry.total_points,
+          story_points: entry.story_points,
+          challenge_points: entry.challenge_points,
+          reversal_points: entry.reversal_points,
+          streak_days: 0
+        }));
+      }
+      
+      setLeaderboard(leaderboardData);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({

@@ -3150,17 +3150,7 @@ export type Database = {
       }
     }
     Views: {
-      growth_leaderboard: {
-        Row: {
-          challenge_points: number | null
-          display_name: string | null
-          rank: number | null
-          reversal_points: number | null
-          story_points: number | null
-          total_points: number | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       add_daily_tokens: {
@@ -3221,6 +3211,16 @@ export type Database = {
           total_tests: number
           total_tokens_in_circulation: number
           total_users: number
+        }[]
+      }
+      get_anonymous_leaderboard: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          challenge_points: number
+          rank: number
+          reversal_points: number
+          story_points: number
+          total_points: number
         }[]
       }
       get_expert_stats: {

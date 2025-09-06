@@ -10,6 +10,7 @@ import { CalendarDays, Clock, User, FileText, Camera, Video } from 'lucide-react
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
+import ShareObservationButton from '@/components/observation/ShareObservationButton';
 
 interface ObservationLogProps {
   profileId: string;

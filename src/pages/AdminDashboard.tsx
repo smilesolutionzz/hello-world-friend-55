@@ -38,9 +38,11 @@ import {
   Edit,
   Trash2,
   Building,
-  GraduationCap
+  GraduationCap,
+  FileText
 } from 'lucide-react';
 import MemberDetailView from '@/components/institution/MemberDetailView';
+import { AdminNotifications } from '@/components/AdminNotifications';
 
 interface AdminAnalytics {
   total_users: number;
@@ -906,8 +908,12 @@ export default function AdminDashboard() {
         </div>
 
         {/* Enhanced Management Tabs */}
-        <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="notifications" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="notifications" className="flex items-center gap-2">
+              <Bell className="h-4 w-4" />
+              알림
+            </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               사용자 관리
@@ -924,11 +930,11 @@ export default function AdminDashboard() {
               <Eye className="h-4 w-4" />
               관찰일지
             </TabsTrigger>
-            <TabsTrigger value="members" className="flex items-center gap-2">
-              <Building className="h-4 w-4" />
-              기관 회원
-            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="notifications">
+            <AdminNotifications />
+          </TabsContent>
 
           <TabsContent value="users">
             <Card>

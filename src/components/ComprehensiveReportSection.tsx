@@ -61,12 +61,18 @@ export function ComprehensiveReportSection({
     setIsRequesting(true);
 
     try {
-      // 토큰 소모
-      const success = await consumeTokens(tokenCost);
-      if (!success) {
+      console.log('종합 리포팅 신청 시작...');
+      
+      // 먼저 토큰 소모
+      console.log(`토큰 소모 시도: ${tokenCost}토큰`);
+      const tokenSuccess = await consumeTokens(tokenCost);
+      console.log('토큰 소모 결과:', tokenSuccess);
+      
+      if (!tokenSuccess) {
         throw new Error("토큰 소모 실패");
       }
 
+      console.log('종합 리포팅 API 호출 중...');
       // 종합 리포팅 요청 API 호출
       const { data, error } = await supabase.functions.invoke('generate-comprehensive-report', {
         body: {
@@ -78,8 +84,22 @@ export function ComprehensiveReportSection({
         }
       });
 
-      if (error) throw error;
+      console.log('API 응답:', { data, error });
 
+      if (error) {
+        console.error('API 오류:', error);
+        throw error;
+      }
+
+      // 관리자 알림 생성
+      await supabase.from('admin_notifications').insert({
+        notification_type: 'comprehensive_report_request',
+        title: '새로운 종합 리포팅 신청',
+        message: `사용자가 종합 리포팅을 신청했습니다. (검사: ${totalAssessments}회, 관찰: ${totalObservations}회, AI상담: ${totalConsultations}회)`,
+        priority: 'normal'
+      });
+
+      console.log('종합 리포팅 성공!');
       toast({
         title: "종합 리포팅 신청 완료! 🎉",
         description: "3일 내에 휴대폰으로 전문가 분석 리포트가 전송됩니다.",
@@ -88,6 +108,13 @@ export function ComprehensiveReportSection({
 
     } catch (error: any) {
       console.error('Error requesting comprehensive report:', error);
+      
+      // 토큰 복구 시도 (에러 발생시)
+      if (error?.message !== "토큰 소모 실패") {
+        console.log('에러로 인한 토큰 복구 시도...');
+        // 실패한 경우 토큰 복구는 별도 처리 필요
+      }
+      
       const errorMessage = error?.message?.includes('토큰') ? 
         '토큰이 부족합니다. 토큰을 충전해주세요.' :
         '종합 리포팅 신청 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';

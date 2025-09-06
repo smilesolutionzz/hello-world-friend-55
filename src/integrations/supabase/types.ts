@@ -342,6 +342,36 @@ export type Database = {
         }
         Relationships: []
       }
+      consultation_access_log: {
+        Row: {
+          access_type: string
+          accessed_at: string | null
+          accessed_by: string
+          consultation_id: string
+          id: string
+          ip_address: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          access_type: string
+          accessed_at?: string | null
+          accessed_by: string
+          consultation_id: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          access_type?: string
+          accessed_at?: string | null
+          accessed_by?: string
+          consultation_id?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       consultations: {
         Row: {
           chat_room_id: string | null
@@ -3242,6 +3272,10 @@ export type Database = {
       }
       user_can_access_community: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      verify_consultation_access: {
+        Args: { consultation_id: string; requesting_user_id: string }
         Returns: boolean
       }
     }

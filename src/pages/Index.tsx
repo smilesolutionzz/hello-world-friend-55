@@ -102,18 +102,6 @@ const Index = () => {
     <div className="min-h-screen max-w-full overflow-x-hidden">
       <ScrollProgressBar />
       <UnifiedNavigation />
-      
-      {/* User email display */}
-      {user && (
-        <div className="bg-primary/10 border-b border-border">
-          <div className="container mx-auto px-4 py-2">
-            <div className="flex items-center justify-center text-sm text-muted-foreground">
-              <span className="font-medium text-primary">로그인됨:</span>
-              <span className="ml-2">{user.email}</span>
-            </div>
-          </div>
-        </div>
-      )}
       <div className="flex max-w-full">
         {/* Product Sidebar - 모바일에서는 완전히 숨김 */}
         <div className="hidden lg:block fixed left-0 top-16 z-30 h-full">

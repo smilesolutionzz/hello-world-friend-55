@@ -4,11 +4,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Coins, Plus, TrendingUp, Gift, Info, BarChart3, Calendar, Clock, History } from 'lucide-react';
+import { Coins, Plus, TrendingUp, Gift, Info, BarChart3, Calendar, Clock, History, User } from 'lucide-react';
 import { useTokens } from '@/hooks/useTokens';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 
 interface TokenBalanceProps {
   showPurchaseButton?: boolean;
@@ -20,6 +21,7 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
   compact = false 
 }) => {
   const { tokenBalance, loading } = useTokens();
+  const { user } = useAuthGuard();
   const navigate = useNavigate();
   const [dailyBonusInfo, setDailyBonusInfo] = useState<any>(null);
   const [showDailyBonusAlert, setShowDailyBonusAlert] = useState(false);
@@ -145,6 +147,17 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                     {dailyBonusInfo.count}토큰이 지급되었습니다 ({new Date(dailyBonusInfo.created_at).toLocaleTimeString()})
                   </AlertDescription>
                 </Alert>
+              )}
+
+              {/* 로그인 사용자 정보 */}
+              {user && (
+                <div className="p-3 rounded-lg bg-muted/20 border border-muted/30">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <User className="w-4 h-4" />
+                    <span className="font-medium">로그인됨:</span>
+                    <span className="text-primary font-medium">{user.email}</span>
+                  </div>
+                </div>
               )}
 
               {/* 토큰충전하기 버튼 */}

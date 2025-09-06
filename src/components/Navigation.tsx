@@ -88,7 +88,12 @@ const Navigation = () => {
     <nav className="flex items-center justify-between w-full max-w-full min-w-0 px-4 sm:px-6 py-4 bg-white/80 backdrop-blur-sm border-b border-border">
       {/* Logo */}
       <div className="flex items-center gap-2">
-        <div className="flex items-center gap-2 text-xl sm:text-2xl font-bold cursor-pointer" onClick={() => navigate('/')}>
+        <div className="flex items-center gap-3 text-xl sm:text-2xl font-bold cursor-pointer" onClick={() => navigate('/')}>
+          <img 
+            src="/lovable-uploads/ec886850-04ce-4489-b96e-d4ac8f73d95e.png" 
+            alt="AI Pro Logo" 
+            className="h-8 w-auto sm:h-10" 
+          />
           <span className="text-brand-gradient">AIHPRO</span>
         </div>
       </div>
@@ -341,7 +346,14 @@ const Navigation = () => {
               <div className="flex flex-col h-full">
                 {/* Header */}
                 <div className="p-6 border-b border-border/50">
-                  <h2 className="text-lg font-bold text-brand-gradient">AIHPRO</h2>
+                  <div className="flex items-center gap-3">
+                    <img 
+                      src="/lovable-uploads/ec886850-04ce-4489-b96e-d4ac8f73d95e.png" 
+                      alt="AI Pro Logo" 
+                      className="h-6 w-auto" 
+                    />
+                    <h2 className="text-lg font-bold text-brand-gradient">AIHPRO</h2>
+                  </div>
                 </div>
                 
                 {/* Navigation Links */}

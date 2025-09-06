@@ -191,8 +191,8 @@ const PremiumAdhdForm = ({ ageGroup = 'adult', onComplete, onBack }: PremiumAdhd
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
             <div className="p-4 bg-primary/5 rounded-lg">
               <Brain className="w-8 h-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-2">DSM-5 기반 정밀진단</h3>
-              <p className="text-sm text-muted-foreground">국제 표준 진단 기준에 따른 체계적 평가</p>
+              <h3 className="font-semibold mb-2">AHI-FOCUS 기반 정밀진단</h3>
+              <p className="text-sm text-muted-foreground">AIH 독창적 진단 기준에 따른 체계적 평가</p>
             </div>
             
             <div className="p-4 bg-accent/5 rounded-lg">

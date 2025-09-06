@@ -74,7 +74,7 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
 
   const handleShare = () => {
     const shareContent = `마음압박지수 측정 결과\n\n나의 마음상태: ${result.severity}\n총점: ${result.total}/48점\n평균: ${result.average.toFixed(1)}점`;
-    shareAsText(shareContent, "스트레스 인지 척도 검사 결과");
+    shareAsText(shareContent, "마음압박지수 측정 결과");
   };
 
   const handlePDFGenerate = () => {

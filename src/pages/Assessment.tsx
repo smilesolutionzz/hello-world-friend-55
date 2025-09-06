@@ -533,7 +533,7 @@ const Assessment = () => {
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-2">전문 심리검사</h2>
               <p className="text-muted-foreground">
-                표준화된 도구로 정확한 진단을 받아보세요
+                AHI 독창적 도구로 정확한 진단을 받아보세요
               </p>
             </div>
 
@@ -580,7 +580,7 @@ const Assessment = () => {
                 <h3 className="text-2xl font-bold text-brand-gradient mb-4">불안감 수준 확인</h3>
                 <p className="text-muted-foreground mb-4">불안감 증상 자가체크 (참고용)</p>
                 <ul className="space-y-2 text-sm">
-                  <li>• 표준화된 21문항</li>
+                  <li>• AHI-ANXIETY 21문항</li>
                   <li>• 신속한 현재상태 확인</li>
                   <li>• 수준별 참고 분석</li>
                 </ul>
@@ -596,7 +596,7 @@ const Assessment = () => {
                 <h3 className="text-2xl font-bold text-brand-gradient mb-4">우울감 자가체크</h3>
                 <p className="text-muted-foreground mb-4">우울감 수준 확인 (참고용)</p>
                 <ul className="space-y-2 text-sm">
-                  <li>• 표준화된 21문항</li>
+                  <li>• AHI-MOOD 21문항</li>
                   <li>• AI 참고 분석</li>
                   <li>• 전문적 해석 제공</li>
                 </ul>
@@ -867,7 +867,7 @@ const Assessment = () => {
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">불안감 수준 확인 (3분)</h1>
-            <p className="text-muted-foreground">불안감 수준 확인 21문항 (참고용)</p>
+            <p className="text-muted-foreground">AHI-ANXIETY 수준 확인 21문항 (참고용)</p>
           </div>
           <PanicTestForm 
             onComplete={handlePanicTestComplete}
@@ -884,7 +884,7 @@ const Assessment = () => {
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-brand-gradient mb-2">우울감 자가체크 (3분)</h1>
-            <p className="text-muted-foreground">우울감 자가체크 21문항 (참고용)</p>
+            <p className="text-muted-foreground">AHI-MOOD 자가체크 21문항 (참고용)</p>
           </div>
           <DepressionTestForm 
             onComplete={handleDepressionTestComplete}
@@ -1001,8 +1001,8 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">스트레스 인지 척도 (PSS-10)</h1>
-            <p className="text-muted-foreground">국제 표준화 도구 10문항 (3분)</p>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">마음압박지수 측정 (AHI-STRESS)</h1>
+            <p className="text-muted-foreground">AHI 독창적 도구 12문항 (4분)</p>
           </div>
           <StressTestForm 
             onComplete={handleStressTestComplete}

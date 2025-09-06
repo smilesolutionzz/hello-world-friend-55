@@ -32,7 +32,7 @@ const SecurityTrustIndicators = () => {
     {
       icon: <Award className="w-5 h-5 text-yellow-600" />,
       title: 'ISO 27001',
-      description: '정보보안 국제 표준 준수'
+      description: '정보보안 국제 기준 준수'
     }
   ];
 

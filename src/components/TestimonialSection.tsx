@@ -242,7 +242,7 @@ const TestimonialSection = () => {
       avatar: '/api/placeholder/50/50',
       rating: 5,
       title: '언어발달 평가의 정확성과 신속성 모두 만족',
-      content: '언어발달 지연 아동들의 정확한 진단을 위해 AIHPRO를 활용하고 있어요. 표준화된 검사 도구와 AI 분석으로 더 객관적이고 신속한 평가가 가능합니다.',
+      content: '언어발달 지연 아동들의 정확한 진단을 위해 AIHPRO를 활용하고 있어요. AHI 독창적 검사 도구와 AI 분석으로 더 객관적이고 신속한 평가가 가능합니다.',
       expertise: '언어치료 8년, 발달언어장애 전문',
       tags: ['언어치료', '발달평가', '객관적진단']
     },

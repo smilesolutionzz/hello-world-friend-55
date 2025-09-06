@@ -248,7 +248,7 @@ ${percentage < 60 ? '우울/불안 전문가와의 즉시 상담을 권장합니
                   </div>
                   <h3 className="font-semibold text-foreground">임상 데이터 분석</h3>
                   <p className="text-sm text-muted-foreground">
-                    국제 표준 검사도구 기반 정확한 점수 계산
+                    AHI 독창적 검사도구 기반 정확한 점수 계산
                   </p>
                 </div>
 

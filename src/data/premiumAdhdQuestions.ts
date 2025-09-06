@@ -49,7 +49,7 @@ export const premiumAdhdQuestions = {
       text: "과업이나 놀이 활동에서 지속적으로 주의를 집중하는 데 어려움이 있습니다",
       category: "inattention",
       subcategory: "sustained_attention",
-      dsm5_criteria: "A2",
+      ahi_criteria: "A2",
       severity_weight: 4,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -58,7 +58,7 @@ export const premiumAdhdQuestions = {
       text: "직접적으로 말을 걸어도 듣지 않는 것처럼 보입니다",
       category: "inattention", 
       subcategory: "listening",
-      dsm5_criteria: "A3",
+      ahi_criteria: "A3",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -67,7 +67,7 @@ export const premiumAdhdQuestions = {
       text: "지시를 따라하지 못하고 학업이나 업무를 끝내지 못합니다",
       category: "inattention",
       subcategory: "task_completion",
-      dsm5_criteria: "A4",
+      ahi_criteria: "A4",
       severity_weight: 4,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -76,7 +76,7 @@ export const premiumAdhdQuestions = {
       text: "과업과 활동을 체계적으로 정리하는 데 어려움이 있습니다",
       category: "inattention",
       subcategory: "organization",
-      dsm5_criteria: "A5",
+      ahi_criteria: "A5",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -85,7 +85,7 @@ export const premiumAdhdQuestions = {
       text: "지속적인 정신적 노력을 요구하는 과업을 피하거나 싫어하거나 reluctantly 참여합니다",
       category: "inattention",
       subcategory: "mental_effort_avoidance",
-      dsm5_criteria: "A6", 
+      ahi_criteria: "A6", 
       severity_weight: 4,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -94,7 +94,7 @@ export const premiumAdhdQuestions = {
       text: "과업이나 활동에 필요한 물건들을 자주 잃어버립니다",
       category: "inattention",
       subcategory: "losing_things",
-      dsm5_criteria: "A7",
+      ahi_criteria: "A7",
       severity_weight: 2,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -103,7 +103,7 @@ export const premiumAdhdQuestions = {
       text: "외부 자극에 의해 쉽게 주의가 산만해집니다",
       category: "inattention",
       subcategory: "distractibility",
-      dsm5_criteria: "A8",
+      ahi_criteria: "A8",
       severity_weight: 4,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -112,7 +112,7 @@ export const premiumAdhdQuestions = {
       text: "일상 활동에서 자주 건망증을 보입니다",
       category: "inattention",
       subcategory: "forgetfulness",
-      dsm5_criteria: "A9",
+      ahi_criteria: "A9",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -198,7 +198,7 @@ export const premiumAdhdQuestions = {
       text: "손발을 가만히 두지 못하거나 의자에 앉아서도 몸을 꼼지락거립니다",
       category: "hyperactivity",
       subcategory: "fidgeting",
-      dsm5_criteria: "B1",
+      ahi_criteria: "B1",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -207,7 +207,7 @@ export const premiumAdhdQuestions = {
       text: "앉아 있어야 하는 상황에서 자리를 떠납니다",
       category: "hyperactivity",
       subcategory: "leaving_seat",
-      dsm5_criteria: "B2",
+      ahi_criteria: "B2",
       severity_weight: 4,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -216,7 +216,7 @@ export const premiumAdhdQuestions = {
       text: "부적절한 상황에서 지나치게 뛰어다니거나 기어오릅니다",
       category: "hyperactivity",
       subcategory: "inappropriate_running_climbing",
-      dsm5_criteria: "B3",
+      ahi_criteria: "B3",
       severity_weight: 4,
       age_relevance: ["child", "adolescent"]
     },
@@ -225,7 +225,7 @@ export const premiumAdhdQuestions = {
       text: "조용한 여가 활동이나 놀이에 참여하는 것이 어렵습니다",
       category: "hyperactivity",
       subcategory: "quiet_activities_difficulty",
-      dsm5_criteria: "B4",
+      ahi_criteria: "B4",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -234,7 +234,7 @@ export const premiumAdhdQuestions = {
       text: "항상 '엔진이 돌아가는' 것처럼 행동하거나 무언가에 쫓기는 것처럼 행동합니다",
       category: "hyperactivity",
       subcategory: "driven_by_motor",
-      dsm5_criteria: "B5",
+      ahi_criteria: "B5",
       severity_weight: 4,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -243,7 +243,7 @@ export const premiumAdhdQuestions = {
       text: "말을 지나치게 많이 합니다",
       category: "hyperactivity",
       subcategory: "excessive_talking",
-      dsm5_criteria: "B6",
+      ahi_criteria: "B6",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -353,7 +353,7 @@ export const premiumAdhdQuestions = {
       text: "질문이 끝나기 전에 성급하게 대답합니다",
       category: "impulsivity",
       subcategory: "blurting_answers",
-      dsm5_criteria: "B7",
+      ahi_criteria: "B7",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -362,7 +362,7 @@ export const premiumAdhdQuestions = {
       text: "자신의 차례를 기다리는 데 어려움이 있습니다",
       category: "impulsivity",
       subcategory: "waiting_turn",
-      dsm5_criteria: "B8",
+      ahi_criteria: "B8",
       severity_weight: 4,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -371,7 +371,7 @@ export const premiumAdhdQuestions = {
       text: "다른 사람을 방해하거나 간섭합니다",
       category: "impulsivity",
       subcategory: "interrupting_intruding",
-      dsm5_criteria: "B9",
+      ahi_criteria: "B9",
       severity_weight: 4,
       age_relevance: ["child", "adolescent", "adult"]
     },

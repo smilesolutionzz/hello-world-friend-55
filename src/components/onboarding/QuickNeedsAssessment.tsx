@@ -121,7 +121,7 @@ export default function QuickNeedsAssessment() {
         }
       ],
       benefits: [
-        'DSM-5 기준 정확한 진단',
+        'AHI-MOOD 기준 정확한 진단',
         '우울 정도 단계별 분석',
         '맞춤형 치료 계획 수립',
         '전문가 직접 상담 연결'

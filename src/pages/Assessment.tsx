@@ -758,7 +758,7 @@ const Assessment = () => {
                       🔥 3위
                     </Badge>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">마음압박지수 측정</h4>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">스트레스지수 측정</h4>
                   <p className="text-muted-foreground text-sm mb-3">일상 스트레스 수준 체크</p>
                   <ul className="space-y-1 text-xs">
                     <li>• 12문항 4분</li>
@@ -1001,7 +1001,7 @@ const Assessment = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">마음압박지수 측정 (AHI-STRESS)</h1>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">스트레스지수 측정 (AHI-STRESS)</h1>
             <p className="text-muted-foreground">AHI 독창적 도구 12문항 (4분)</p>
           </div>
           <StressTestForm 

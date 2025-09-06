@@ -73,8 +73,8 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
   const isSubscribed = false; // 토큰제로 변경됨
 
   const handleShare = () => {
-    const shareContent = `마음압박지수 측정 결과\n\n나의 마음상태: ${result.severity}\n총점: ${result.total}/48점\n평균: ${result.average.toFixed(1)}점`;
-    shareAsText(shareContent, "마음압박지수 측정 결과");
+    const shareContent = `스트레스지수 측정 결과\n\n나의 마음상태: ${result.severity}\n총점: ${result.total}/48점\n평균: ${result.average.toFixed(1)}점`;
+    shareAsText(shareContent, "스트레스지수 측정 결과");
   };
 
   const handlePDFGenerate = () => {
@@ -105,7 +105,7 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
           <CardHeader className="text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Icon className="w-8 h-8 text-primary" />
-              <CardTitle className="text-2xl">마음압박지수 측정 결과</CardTitle>
+              <CardTitle className="text-2xl">스트레스지수 측정 결과</CardTitle>
             </div>
             <div className="space-y-4">
               <Badge variant={config.badgeVariant} className="text-lg px-4 py-2">
@@ -150,7 +150,7 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
                 <div className="prose prose-purple max-w-none">
                   <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
                     {result.severity === "건강한 마음상태" 
-                      ? `현재 마음압박지수 ${result.total}점은 매우 건강한 정신 상태를 나타냅니다. 일상의 크고 작은 스트레스들을 효과적으로 관리하고 있으며, 정신적 회복력이 우수한 상태입니다.
+                      ? `현재 스트레스지수 ${result.total}점은 매우 건강한 정신 상태를 나타냅니다. 일상의 크고 작은 스트레스들을 효과적으로 관리하고 있으며, 정신적 회복력이 우수한 상태입니다.
 
 **🌟 건강한 마음을 유지하는 7가지 비법:**
 • **감정 조절 능력**: 어려운 상황에서도 감정을 균형 있게 유지하는 능력이 뛰어남
@@ -163,7 +163,7 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
 
 **💡 지속 관리 방법:** 현재의 건강한 상태를 유지하기 위해 정기적인 자기 점검과 균형 잡힌 생활 패턴을 지속하시기 바랍니다.`
                       : result.severity === "주의 필요"
-                      ? `현재 마음압박지수 ${result.total}점은 일상적인 스트레스가 조금씩 누적되고 있는 상태입니다. 아직 심각한 수준은 아니지만, 적절한 관리를 통해 건강한 상태로 회복할 수 있는 중요한 시점이에요.
+                      ? `현재 스트레스지수 ${result.total}점은 일상적인 스트레스가 조금씩 누적되고 있는 상태입니다. 아직 심각한 수준은 아니지만, 적절한 관리를 통해 건강한 상태로 회복할 수 있는 중요한 시점이에요.
 
 **🔄 마음의 균형을 되찾는 7가지 방법:**
 • **일상 리듬 조정**: 수면, 식사, 활동의 규칙적인 패턴으로 마음의 안정감 확보
@@ -175,7 +175,7 @@ export default function StressTestResult({ result, onRestart }: StressTestResult
 • **현재 집중**: 미래의 걱정보다 지금 이 순간에 집중하는 마음챙김 연습
 
 **🌱 회복 기간:** 적극적인 관리를 통해 2-3개월 내 건강한 상태로 회복 가능합니다.`
-                      : `현재 마음압박지수 ${result.total}점은 상당한 수준의 심리적 부담을 받고 있는 상태입니다. 일상생활에 영향을 주는 정도로, 지금 이 순간부터 적극적인 관리와 도움이 필요합니다.
+                      : `현재 스트레스지수 ${result.total}점은 상당한 수준의 심리적 부담을 받고 있는 상태입니다. 일상생활에 영향을 주는 정도로, 지금 이 순간부터 적극적인 관리와 도움이 필요합니다.
 
 **🆘 마음의 부담을 줄이는 7가지 응급처방:**
 • **전문가 도움**: 심리상담사나 정신건강의학과 전문의의 체계적인 도움 받기

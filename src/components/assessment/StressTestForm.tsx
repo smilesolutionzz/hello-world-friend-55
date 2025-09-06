@@ -250,7 +250,7 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">마음압박지수 측정</CardTitle>
+            <CardTitle className="text-xl">스트레스지수 측정</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>

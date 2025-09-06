@@ -3251,23 +3251,12 @@ export type Database = {
         }
         Relationships: []
       }
-      token_usage_view: {
+      safe_admin_overview_view: {
         Row: {
-          current_tokens: number | null
-          monthly_usage: number | null
-          referral_bonus: number | null
-          total_purchased: number | null
-          user_id: string | null
-        }
-        Relationships: []
-      }
-      user_dashboard_view: {
-        Row: {
-          current_tokens: number | null
-          display_name: string | null
-          observation_count: number | null
-          test_count: number | null
-          user_id: string | null
+          total_observations: number | null
+          total_tests: number | null
+          total_tokens_in_circulation: number | null
+          total_users: number | null
         }
         Relationships: []
       }
@@ -3313,6 +3302,26 @@ export type Database = {
       get_monthly_usage: {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: number
+      }
+      get_user_dashboard_data: {
+        Args: { p_user_id?: string }
+        Returns: {
+          current_tokens: number
+          display_name: string
+          observation_count: number
+          test_count: number
+          user_id: string
+        }[]
+      }
+      get_user_token_usage: {
+        Args: { p_user_id?: string }
+        Returns: {
+          current_tokens: number
+          monthly_usage: number
+          referral_bonus: number
+          total_purchased: number
+          user_id: string
+        }[]
       }
       has_role: {
         Args: {

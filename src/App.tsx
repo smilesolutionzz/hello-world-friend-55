@@ -112,6 +112,7 @@ const App = () => {
               console.log('Test completed:', result);
             }} />
           } />
+          <Route path="/assessment/stress-test" element={<Assessment />} />
           <Route path="/assessment/relationship-style-test" element={<RelationshipStyleTest />} />
           <Route path="/assessment/communication-style-test" element={<CommunicationStyleTest />} />
           <Route path="/assessment/:id" element={<TestResults />} />

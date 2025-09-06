@@ -80,8 +80,16 @@ const Assessment = () => {
     // URL에서 ?type=fun인 경우 새로운 페이지로 리다이렉트
     if (urlTestType === 'fun') {
       navigate('/fun-tests', { replace: true });
+      return;
     }
-  }, [urlTestType, navigate]);
+    
+    // URL 경로에 따른 자동 테스트 시작
+    if (location.pathname === '/assessment/stress-test') {
+      console.log('🔍 Stress test path detected, starting stress test...');
+      setTestType('stress');
+      setCurrentStep('stress-test');
+    }
+  }, [urlTestType, navigate, location.pathname]);
 
   // Timeline에 검사 결과 저장하는 함수
   const saveTestToTimeline = async (testType: string, results: any) => {

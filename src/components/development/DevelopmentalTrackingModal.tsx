@@ -15,6 +15,8 @@ interface DevelopmentalTrackingModalProps {
   onClose: () => void;
   onSave: () => void;
   studentId?: string;
+  availableDomains?: any[];
+  ageGroup?: string;
 }
 
 const domains = [
@@ -25,7 +27,7 @@ const domains = [
   { key: 'adaptive', label: '적응행동' }
 ];
 
-const DevelopmentalTrackingModal = ({ isOpen, onClose, onSave, studentId }: DevelopmentalTrackingModalProps) => {
+const DevelopmentalTrackingModal = ({ isOpen, onClose, onSave, studentId, availableDomains, ageGroup }: DevelopmentalTrackingModalProps) => {
   const [formData, setFormData] = useState({
     domain: '',
     skill_area: '',

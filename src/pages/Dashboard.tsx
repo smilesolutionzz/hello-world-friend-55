@@ -48,10 +48,10 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { ComprehensiveReportSection } from "@/components/ComprehensiveReportSection";
 import TokenBalance from "@/components/TokenBalance";
 import { SamplePDFDownload } from "@/components/SamplePDFDownload";
+import LifespanDevelopmentalTracker from '@/components/development/LifespanDevelopmentalTracker';
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { WeeklyInsights } from "@/components/dashboard/WeeklyInsights";
-import DevelopmentalTrackingDashboard from "@/components/development/DevelopmentalTrackingDashboard";
 
 interface Profile {
   id: string;
@@ -870,9 +870,11 @@ const Dashboard = () => {
                 weeklyGoal={5}
               />
               
-              {/* Developmental Tracking Dashboard */}
+              {/* Lifespan Developmental Tracking */}
               <div className="lg:col-span-3">
-                <DevelopmentalTrackingDashboard />
+                <LifespanDevelopmentalTracker 
+                  birthDate={profile?.birth_date}
+                />
               </div>
             </div>
 

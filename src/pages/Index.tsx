@@ -114,20 +114,20 @@ const Index = () => {
             <HeroSection />
           </div>
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.1s' }}>
-            <TechBadgeShowcase />
+            <VideoShowcase />
           </div>
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.2s' }}>
-            <PlatformOverview />
+            <TechBadgeShowcase />
           </div>
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.3s' }}>
+            <PlatformOverview />
+          </div>
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
             <ClientLogos />
           </div>
-          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
+          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.5s' }}>
             <ReferralWidget />
             <ReferralCodeInput />
-          </div>
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.5s' }}>
-            <VideoShowcase />
           </div>
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.6s' }}>
             <TrustIndicators />

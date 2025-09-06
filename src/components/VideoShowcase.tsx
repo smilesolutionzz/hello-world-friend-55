@@ -25,9 +25,9 @@ const VideoShowcase = () => {
     },
     {
       id: 3,
-      title: "전문가 인터뷰",
-      description: "통합건강 전문의가 말하는 AI 케어",
-      embedId: "DiNcA92PGZE",
+      title: "AI아나운서 설명",
+      description: "AI가 직접 설명하는 플랫폼 이용방법",
+      embedId: "t4ZkQll1WxU",
       thumbnail: "/api/placeholder/640/360"
     }
   ];

@@ -40,6 +40,10 @@ const Index = () => {
       setUser(session?.user ?? null);
     });
 
+    return () => subscription.unsubscribe();
+  }, []); // 빈 dependency array로 한 번만 실행
+
+  useEffect(() => {
     const checkReferralCode = async () => {
       const refCode = searchParams.get('ref');
       if (refCode) {
@@ -92,9 +96,7 @@ const Index = () => {
     };
 
     checkReferralCode();
-    
-    return () => subscription.unsubscribe();
-  }, [searchParams, processReferralReward, toast]);
+  }, [searchParams]); // searchParams만 의존성으로 추가
 
   return (
     <div className="min-h-screen max-w-full overflow-x-hidden">

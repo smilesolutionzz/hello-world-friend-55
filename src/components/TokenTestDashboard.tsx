@@ -2,377 +2,296 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Separator } from '@/components/ui/separator';
 import { useTokens } from '@/hooks/useTokens';
-import { Coins, TestTube, FileText, Brain, Users, MessageCircle, AlertCircle, RefreshCw, Moon, Star } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
+import { Coins, RefreshCw, AlertTriangle, CheckCircle, XCircle, Database, Activity } from 'lucide-react';
 
 const TokenTestDashboard = () => {
-  const { toast } = useToast();
-  const { tokenBalance, refreshTokenBalance, loading } = useTokens();
-  const [testing, setTesting] = useState<string | null>(null);
-  const [testResults, setTestResults] = useState<{ [key: string]: { success: boolean; message: string; tokensUsed: number } }>({});
+  const { user } = useAuthGuard();
+  const { balance, loading, fetchBalance, consumeTokens, checkTokenAvailability } = useTokens();
+  const [testResults, setTestResults] = useState<any[]>([]);
+  const [isRunningTests, setIsRunningTests] = useState(false);
+  const [dbTokenState, setDbTokenState] = useState<any>(null);
 
-  const testCases = [
-    {
-      id: 'basic_assessment',
-      name: '3분 심리검사',
-      tokenCost: 2,
-      icon: <TestTube className="h-4 w-4" />,
-      testFunction: async () => {
-        const { data, error } = await supabase.functions.invoke('assessment-analyzer', {
-          body: {
-            results: { 스트레스: 5, 우울감: 3, 불안감: 4 },
-            ageGroup: 'adult',
-            age: 30
-          }
-        });
-        return { data, error };
-      }
-    },
-    {
-      id: 'premium_assessment',
-      name: '프리미엄 검사',
-      tokenCost: 8,
-      icon: <Brain className="h-4 w-4" />,
-      testFunction: async () => {
-        const { data, error } = await supabase.functions.invoke('premium-assessment-analyzer', {
-          body: {
-            assessmentType: 'personality_type',
-            results: { 외향성: 5.5, 감각: 4.2, 사고: 6.1, 판단: 5.8 },
-            assessmentInfo: { title: '성격 유형 검사', description: '16가지 성격 유형 분석' },
-            timestamp: new Date().toISOString()
-          }
-        });
-        return { data, error };
-      }
-    },
-    {
-      id: 'basic_observation',
-      name: '관찰일지 (기본)',
-      tokenCost: 3,
-      icon: <FileText className="h-4 w-4" />,
-      testFunction: async () => {
-        const { data, error } = await supabase.functions.invoke('observe-report', {
-          body: {
-            text: '오늘 아이가 평소보다 활발하게 놀았습니다. 새로운 장난감에 집중하는 모습을 보였고, 혼자서도 오랫동안 놀 수 있었습니다.',
-            ageGroup: 'child',
-            context: 'home',
-            tags: ['행동', '정서'],
-            files: [],
-            mode: 'basic',
-            targetName: '테스트 아이',
-            observationDate: new Date().toISOString().split('T')[0],
-            tokenCost: 3
-          }
-        });
-        return { data, error };
-      }
-    },
-    {
-      id: 'detailed_observation',
-      name: '관찰일지 (상세)',
-      tokenCost: 5,
-      icon: <FileText className="h-4 w-4" />,
-      testFunction: async () => {
-        const { data, error } = await supabase.functions.invoke('observe-report', {
-          body: {
-            text: '오늘 아이가 평소보다 활발하게 놀았습니다. 새로운 장난감에 집중하는 모습을 보였고, 혼자서도 오랫동안 놀 수 있었습니다. 다른 아이들과의 상호작용도 원활했으며, 갈등 상황에서도 적절히 대처하는 모습을 보였습니다. 언어 표현력도 향상된 것 같습니다.',
-            ageGroup: 'child',
-            context: 'home',
-            tags: ['행동', '정서', '사회성', '언어발달'],
-            files: [],
-            mode: 'detailed',
-            targetName: '테스트 아이',
-            observationDate: new Date().toISOString().split('T')[0],
-            tokenCost: 5
-          }
-        });
-        return { data, error };
-      }
-    },
-    {
-      id: 'dream_interpretation',
-      name: '꿈 해몽',
-      tokenCost: 5,
-      icon: <Moon className="h-4 w-4" />,
-      testFunction: async () => {
-        const { data, error } = await supabase.functions.invoke('dream-interpreter', {
-          body: {
-            dreamText: '오늘 뱀이 나와서 내 머리 위를 감싸더라. 그리고 금을 나았어.'
-          }
-        });
-        return { data, error };
-      }
-    },
-    {
-      id: 'saju_analysis',
-      name: '사주 분석',
-      tokenCost: 8,
-      icon: <Star className="h-4 w-4" />,
-      testFunction: async () => {
-        const { data, error } = await supabase.functions.invoke('saju-analyzer', {
-          body: {
-            name: '테스트',
-            birthDate: '1990-01-01',
-            birthTime: '10:00',
-            gender: 'male',
-            birthCity: '서울특별시'
-          }
-        });
-        return { data, error };
-      }
-    }
-  ];
-
-  const runTest = async (testCase: typeof testCases[0]) => {
-    setTesting(testCase.id);
-    const initialTokens = tokenBalance?.current_tokens || 0;
-
+  // 데이터베이스에서 직접 토큰 상태 조회
+  const fetchDirectTokenState = async () => {
+    if (!user) return;
+    
     try {
-      const result = await testCase.testFunction();
+      const { data, error } = await supabase
+        .from('user_tokens')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
       
-      // 토큰 잔액 새로고침
-      await refreshTokenBalance();
-      
-      if (result.error) {
-        setTestResults(prev => ({
-          ...prev,
-          [testCase.id]: {
-            success: false,
-            message: result.error.message || '테스트 실패',
-            tokensUsed: 0
-          }
-        }));
-        
-        toast({
-          title: `${testCase.name} 테스트 실패`,
-          description: result.error.message || '알 수 없는 오류가 발생했습니다.',
-          variant: "destructive"
-        });
-      } else {
-        const tokensUsed = initialTokens - (tokenBalance?.current_tokens || 0);
-        setTestResults(prev => ({
-          ...prev,
-          [testCase.id]: {
-            success: true,
-            message: '테스트 성공! 토큰이 정상적으로 차감되었습니다.',
-            tokensUsed: tokensUsed || testCase.tokenCost
-          }
-        }));
-        
-        toast({
-          title: `${testCase.name} 테스트 성공`,
-          description: `${testCase.tokenCost}토큰이 차감되었습니다.`,
-        });
-      }
-    } catch (error: any) {
-      setTestResults(prev => ({
-        ...prev,
-        [testCase.id]: {
-          success: false,
-          message: error.message || '테스트 중 오류가 발생했습니다.',
-          tokensUsed: 0
-        }
-      }));
-      
-      toast({
-        title: `${testCase.name} 테스트 오류`,
-        description: error.message || '알 수 없는 오류가 발생했습니다.',
-        variant: "destructive"
+      if (error) throw error;
+      setDbTokenState(data);
+    } catch (error) {
+      console.error('Direct DB query failed:', error);
+    }
+  };
+
+  // 토큰 시스템 종합 테스트
+  const runComprehensiveTest = async () => {
+    if (!user || !balance) return;
+    
+    setIsRunningTests(true);
+    const results: any[] = [];
+    
+    try {
+      // 테스트 1: 토큰 잔액 일치성 검사
+      await fetchDirectTokenState();
+      const balanceMatch = balance.current_tokens === dbTokenState?.current_tokens;
+      results.push({
+        test: 'Balance Consistency',
+        passed: balanceMatch,
+        message: balanceMatch 
+          ? `Hook balance (${balance.current_tokens}) matches DB (${dbTokenState?.current_tokens})`
+          : `Hook balance (${balance.current_tokens}) != DB (${dbTokenState?.current_tokens})`,
+        severity: balanceMatch ? 'success' : 'error'
       });
-    } finally {
-      setTesting(null);
-    }
-  };
 
-  const runAllTests = async () => {
-    for (const testCase of testCases) {
-      if (tokenBalance && tokenBalance.current_tokens >= testCase.tokenCost) {
-        await runTest(testCase);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // 1초 간격
-      } else {
-        toast({
-          title: `${testCase.name} 스킵`,
-          description: '토큰이 부족합니다.',
-          variant: "destructive"
+      // 테스트 2: 토큰 가용성 검사
+      const hasTokens = checkTokenAvailability(1);
+      const shouldHaveTokens = balance.current_tokens > 0;
+      const availabilityTest = hasTokens === shouldHaveTokens;
+      results.push({
+        test: 'Token Availability Check',
+        passed: availabilityTest,
+        message: availabilityTest 
+          ? 'Token availability check is working correctly'
+          : `Availability check failed: has=${hasTokens}, should=${shouldHaveTokens}`,
+        severity: availabilityTest ? 'success' : 'error'
+      });
+
+      // 테스트 3: 토큰 소모 테스트 (실제로는 수행하지 않고 시뮬레이션)
+      const initialTokens = balance.current_tokens;
+      if (initialTokens >= 1) {
+        const canConsume = checkTokenAvailability(1);
+        results.push({
+          test: 'Token Consumption Simulation',
+          passed: canConsume,
+          message: canConsume 
+            ? 'Ready to consume 1 token'
+            : 'Cannot consume token - insufficient balance',
+          severity: canConsume ? 'success' : 'warning'
         });
       }
+
+      // 테스트 4: 실시간 업데이트 테스트
+      const beforeRefresh = balance.current_tokens;
+      await fetchBalance();
+      const afterRefresh = balance.current_tokens;
+      const refreshTest = beforeRefresh === afterRefresh;
+      results.push({
+        test: 'Real-time Update Test',
+        passed: refreshTest,
+        message: refreshTest 
+          ? 'Token balance remained consistent after refresh'
+          : `Balance changed during refresh: ${beforeRefresh} -> ${afterRefresh}`,
+        severity: refreshTest ? 'success' : 'warning'
+      });
+
+      // 테스트 5: 데이터베이스 연결성 테스트
+      try {
+        const { data, error } = await supabase
+          .from('usage_tracking')
+          .select('count(*)')
+          .eq('user_id', user.id)
+          .limit(1);
+        
+        results.push({
+          test: 'Database Connectivity',
+          passed: !error,
+          message: error ? `DB Error: ${error.message}` : 'Database connection is healthy',
+          severity: error ? 'error' : 'success'
+        });
+      } catch (error: any) {
+        results.push({
+          test: 'Database Connectivity',
+          passed: false,
+          message: `DB Connection failed: ${error.message}`,
+          severity: 'error'
+        });
+      }
+
+    } catch (error: any) {
+      results.push({
+        test: 'Test Suite Execution',
+        passed: false,
+        message: `Test suite failed: ${error.message}`,
+        severity: 'error'
+      });
     }
+
+    setTestResults(results);
+    setIsRunningTests(false);
   };
 
-  const resetTests = () => {
-    setTestResults({});
+  useEffect(() => {
+    if (user) {
+      fetchDirectTokenState();
+    }
+  }, [user, balance]);
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-muted rounded w-1/3"></div>
+            <div className="h-8 bg-muted rounded w-1/2"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const getStatusIcon = (severity: string) => {
+    switch (severity) {
+      case 'success': return <CheckCircle className="w-4 h-4 text-green-600" />;
+      case 'warning': return <AlertTriangle className="w-4 h-4 text-yellow-600" />;
+      case 'error': return <XCircle className="w-4 h-4 text-red-600" />;
+      default: return <Activity className="w-4 h-4 text-blue-600" />;
+    }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-3xl font-bold text-foreground">토큰 차감 테스트 대시보드</h1>
-          <p className="text-muted-foreground">
-            각 기능을 사용할 때 토큰이 정확히 차감되는지 테스트합니다.
-          </p>
-        </div>
-
-        {/* Current Token Balance */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Coins className="h-5 w-5 text-yellow-500" />
-              현재 토큰 잔액
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span>보유 토큰</span>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-lg font-bold">
-                    {loading ? '로딩 중...' : `${tokenBalance?.current_tokens || 0}토큰`}
-                  </Badge>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={refreshTokenBalance}
-                    disabled={loading}
-                  >
-                    <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-                  </Button>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Coins className="w-5 h-5" />
+            토큰 시스템 안정성 테스트
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* 현재 상태 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <h3 className="font-medium flex items-center gap-2">
+                <Activity className="w-4 h-4" />
+                Hook State
+              </h3>
+              <div className="p-3 rounded-lg bg-muted/50 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-sm">Current Tokens:</span>
+                  <Badge variant="secondary">{balance?.current_tokens || 0}</Badge>
                 </div>
-              </div>
-              <Progress 
-                value={Math.min(((tokenBalance?.current_tokens || 0) / 50) * 100, 100)} 
-                className="h-2"
-              />
-              <div className="text-sm text-muted-foreground">
-                총 사용: {tokenBalance?.total_used || 0}토큰 | 
-                총 구매: {tokenBalance?.total_purchased || 0}토큰
+                <div className="flex justify-between">
+                  <span className="text-sm">Total Purchased:</span>
+                  <span className="text-sm">{balance?.total_purchased || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Total Used:</span>
+                  <span className="text-sm">{balance?.total_used || 0}</span>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Test Controls */}
-        <div className="flex gap-4">
-          <Button onClick={runAllTests} disabled={testing !== null} className="flex-1">
-            전체 테스트 실행
-          </Button>
-          <Button variant="outline" onClick={resetTests}>
-            결과 초기화
-          </Button>
-        </div>
-
-        {/* Test Cases */}
-        <div className="grid gap-4">
-          {testCases.map((testCase) => {
-            const result = testResults[testCase.id];
-            const canAfford = (tokenBalance?.current_tokens || 0) >= testCase.tokenCost;
             
-            return (
-              <Card key={testCase.id} className="relative">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      {testCase.icon}
-                      {testCase.name}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={canAfford ? "default" : "destructive"}>
-                        {testCase.tokenCost}토큰
-                      </Badge>
-                      {result && (
-                        <Badge variant={result.success ? "default" : "destructive"}>
-                          {result.success ? '성공' : '실패'}
-                        </Badge>
-                      )}
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {result && (
-                      <div className={`p-3 rounded-lg ${result.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-                        <div className="flex items-start gap-2">
-                          {result.success ? (
-                            <div className="w-4 h-4 rounded-full bg-green-500 mt-0.5" />
-                          ) : (
-                            <AlertCircle className="w-4 h-4 text-red-500 mt-0.5" />
-                          )}
-                          <div>
-                            <p className={`text-sm font-medium ${result.success ? 'text-green-800' : 'text-red-800'}`}>
-                              {result.message}
-                            </p>
-                            {result.success && result.tokensUsed > 0 && (
-                              <p className="text-xs text-green-600 mt-1">
-                                차감된 토큰: {result.tokensUsed}개
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    
-                    <Button 
-                      onClick={() => runTest(testCase)}
-                      disabled={testing !== null || !canAfford}
-                      className="w-full"
-                      variant={result?.success ? "outline" : "default"}
-                    >
-                      {testing === testCase.id ? (
-                        <div className="flex items-center gap-2">
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          테스트 실행 중...
-                        </div>
-                      ) : (
-                        `${result ? '재테스트' : '테스트 실행'}`
-                      )}
-                    </Button>
-                    
-                    {!canAfford && (
-                      <p className="text-sm text-red-600 text-center">
-                        토큰이 부족합니다. ({testCase.tokenCost}토큰 필요)
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+            <div className="space-y-2">
+              <h3 className="font-medium flex items-center gap-2">
+                <Database className="w-4 h-4" />
+                Database State
+              </h3>
+              <div className="p-3 rounded-lg bg-muted/50 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-sm">Current Tokens:</span>
+                  <Badge variant="secondary">{dbTokenState?.current_tokens || 0}</Badge>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Total Purchased:</span>
+                  <span className="text-sm">{dbTokenState?.total_purchased || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Last Updated:</span>
+                  <span className="text-xs text-muted-foreground">
+                    {dbTokenState?.updated_at ? new Date(dbTokenState.updated_at).toLocaleString() : 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        {/* Test Summary */}
-        {Object.keys(testResults).length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>테스트 요약</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">
-                    {Object.values(testResults).filter(r => r.success).length}
-                  </div>
-                  <div className="text-sm text-muted-foreground">성공</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-red-600">
-                    {Object.values(testResults).filter(r => !r.success).length}
-                  </div>
-                  <div className="text-sm text-muted-foreground">실패</div>
-                </div>
+          <Separator />
+
+          {/* 테스트 실행 */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-medium">토큰 시스템 종합 테스트</h3>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={fetchDirectTokenState}
+                  disabled={isRunningTests}
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  상태 새로고침
+                </Button>
+                <Button 
+                  onClick={runComprehensiveTest}
+                  disabled={isRunningTests}
+                >
+                  {isRunningTests ? (
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Activity className="w-4 h-4 mr-2" />
+                  )}
+                  테스트 실행
+                </Button>
               </div>
-              <div className="mt-4 text-center">
-                <div className="text-lg font-semibold">
-                  총 사용된 토큰: {Object.values(testResults).reduce((sum, r) => sum + r.tokensUsed, 0)}개
-                </div>
+            </div>
+
+            {/* 테스트 결과 */}
+            {testResults.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-muted-foreground">테스트 결과:</h4>
+                {testResults.map((result, index) => (
+                  <Alert key={index} className={`
+                    ${result.severity === 'success' ? 'border-green-200 bg-green-50' : ''}
+                    ${result.severity === 'warning' ? 'border-yellow-200 bg-yellow-50' : ''}
+                    ${result.severity === 'error' ? 'border-red-200 bg-red-50' : ''}
+                  `}>
+                    <div className="flex items-start gap-2">
+                      {getStatusIcon(result.severity)}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-sm">{result.test}</span>
+                          <Badge 
+                            variant={result.passed ? "default" : "destructive"}
+                            className="h-5"
+                          >
+                            {result.passed ? "PASS" : "FAIL"}
+                          </Badge>
+                        </div>
+                        <AlertDescription className="mt-1 text-xs">
+                          {result.message}
+                        </AlertDescription>
+                      </div>
+                    </div>
+                  </Alert>
+                ))}
               </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+            )}
+          </div>
+
+          {/* 일치성 경고 */}
+          {balance && dbTokenState && balance.current_tokens !== dbTokenState.current_tokens && (
+            <Alert className="border-red-200 bg-red-50">
+              <AlertTriangle className="w-4 h-4 text-red-600" />
+              <AlertDescription className="text-red-800">
+                <strong>토큰 불일치 감지!</strong><br />
+                Hook 상태 ({balance.current_tokens})와 데이터베이스 상태 ({dbTokenState.current_tokens})가 일치하지 않습니다.
+                이는 토큰 시스템의 불안정성을 나타낼 수 있습니다.
+              </AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

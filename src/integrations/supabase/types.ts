@@ -2987,6 +2987,15 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback_statistics: {
+        Row: {
+          average_rating: number | null
+          positive_feedback: number | null
+          test_type: string | null
+          total_feedback: number | null
+        }
+        Relationships: []
+      }
       public_institutions: {
         Row: {
           accessibility_features: string[] | null

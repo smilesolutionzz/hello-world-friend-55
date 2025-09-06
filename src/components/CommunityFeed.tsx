@@ -59,8 +59,91 @@ interface Comment {
 }
 
 const mockPosts: CommunityPost[] = [
+  // 성인 심리상담 성공사례
   {
     id: '1',
+    type: 'success',
+    author: {
+      name: '새출발하는 30대',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '우울증 극복 후기 - 6개월간의 심리상담 여정',
+    content: '직장 스트레스와 대인관계 어려움으로 심한 우울감에 시달렸습니다. AIHPRO를 통해 만난 이지영 상담사님과 6개월간 꾸준히 상담받으며 서서히 회복되고 있어요. 처음엔 상담받는 것도 부끄러웠는데, 지금은 나 자신을 더 잘 이해하게 되었습니다. 같은 고민을 하시는 분들께 용기를 드리고 싶어요.',
+    tags: ['성인상담', '우울증', '심리치료', '성공사례'],
+    timestamp: '3시간 전',
+    likes: 47,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '이지영',
+          isExpert: true,
+          isInstitution: false,
+          title: '임상심리사',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-lee-002'
+        },
+        content: '정말 많이 노력하셨어요! 앞으로도 자신을 위한 시간을 꾸준히 만들어가시길 바랍니다 💪',
+        timestamp: '2시간 전',
+        likes: 12,
+        isExpertAnswer: true
+      },
+      {
+        id: '2',
+        author: {
+          name: '익명',
+          isExpert: false,
+          isInstitution: false,
+          userId: 'user-002'
+        },
+        content: '저도 비슷한 상황인데 용기가 납니다. 이지영 상담사님께 문의드려도 될까요?',
+        timestamp: '1시간 전',
+        likes: 5
+      }
+    ]
+  },
+  // 부모님 인지 관련 질문
+  {
+    id: '2',
+    type: 'question',
+    author: {
+      name: '걱정많은 효녀',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '70대 어머니 건망증, 치매 초기인지 궁금해요',
+    content: '최근 어머니가 자주 깜빡하시고 같은 말씀을 반복하십니다. 평소보다 화도 많이 내시고요. 치매 초기 증상인지 단순 노화인지 구분이 어려워요. 어떤 검사를 받아보는 게 좋을까요? 가족들이 어떻게 대응해야 할지도 조언 부탁드립니다.',
+    tags: ['부모님', '치매', '인지검사', '노인심리'],
+    timestamp: '5시간 전',
+    likes: 23,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '김정호',
+          isExpert: true,
+          isInstitution: false,
+          title: '신경심리학 박사',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-kim-003'
+        },
+        content: '조기 발견이 중요합니다. 신경심리검사를 통해 정확한 진단을 받아보시기 바랍니다. 가까운 치매안심센터에서 무료 검사도 가능해요.',
+        timestamp: '4시간 전',
+        likes: 18,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  // 아동 발달 관련 (기존)
+  {
+    id: '3',
     type: 'success',
     author: {
       name: '민지엄마',
@@ -84,7 +167,7 @@ const mockPosts: CommunityPost[] = [
           isInstitution: false,
           title: '언어치료사',
           avatar: '/api/placeholder/30/30',
-          userId: 'expert-kim-001' // 전문가 ID
+          userId: 'expert-kim-001'
         },
         content: '민지가 정말 열심히 했어요! 앞으로도 꾸준히 연습하면 더욱 좋아질 거예요 😊',
         timestamp: '1시간 전',
@@ -97,7 +180,7 @@ const mockPosts: CommunityPost[] = [
           name: '익명',
           isExpert: false,
           isInstitution: false,
-          userId: 'user-001' // 일반 사용자 ID (테스트용)
+          userId: 'user-001'
         },
         content: '저희 아이도 비슷한 상황인데 정말 용기가 납니다. 김미영 선생님께 상담 문의드려도 될까요?',
         timestamp: '30분 전',
@@ -105,8 +188,181 @@ const mockPosts: CommunityPost[] = [
       }
     ]
   },
+  // 전문가에게 하는 질문
   {
-    id: '2',
+    id: '4',
+    type: 'question',
+    author: {
+      name: '고민많은직장인',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '번아웃 증후군인 것 같아요. 전문가님들 조언 부탁드려요',
+    content: '3년째 같은 회사에서 일하고 있는데 최근 몇 달간 무기력감이 심해졌습니다. 아침에 일어나기도 힘들고, 업무에 집중도 안 되고... 이게 번아웃인지 우울증인지 구분이 안 가네요. 어떤 도움을 받아야 할까요?',
+    tags: ['번아웃', '직장스트레스', '전문가질문', '성인상담'],
+    timestamp: '6시간 전',
+    likes: 31,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '박상훈',
+          isExpert: true,
+          isInstitution: false,
+          title: '정신건강의학과 전문의',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-park-004'
+        },
+        content: '번아웃과 우울증은 증상이 비슷할 수 있습니다. 정확한 진단을 위해 전문의 상담을 받아보시기 바랍니다. 무엇보다 충분한 휴식이 필요해요.',
+        timestamp: '5시간 전',
+        likes: 24,
+        isExpertAnswer: true
+      },
+      {
+        id: '2',
+        author: {
+          name: '이지영',
+          isExpert: true,
+          isInstitution: false,
+          title: '임상심리사',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-lee-002'
+        },
+        content: '일과 삶의 균형을 찾는 것이 중요합니다. 단계적으로 스트레스 관리법을 익혀보시는 것도 도움이 될 거예요.',
+        timestamp: '4시간 전',
+        likes: 15,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  // 성인 불안장애 성공사례
+  {
+    id: '5',
+    type: 'success',
+    author: {
+      name: '익명',
+      isAnonymous: true,
+      isExpert: false,
+      isInstitution: false
+    },
+    title: '사회불안장애 극복 후기 - 이제 사람들 앞에서 발표도 할 수 있어요',
+    content: '20대 내내 사람들과 만나는 게 두렵고 발표할 때마다 심장이 터질 것 같았습니다. AIHPRO 상담사님과 1년간 치료받으며 인지행동치료와 노출치료를 병행했어요. 이제는 회사에서 프레젠테이션도 자신있게 할 수 있게 되었습니다. 포기하지 마세요!',
+    tags: ['사회불안', '불안장애', '인지행동치료', '성인치료'],
+    timestamp: '1일 전',
+    likes: 56,
+    hasLiked: false,
+    comments: []
+  },
+  // 부모-자녀 관계 상담
+  {
+    id: '6',
+    type: 'question',
+    author: {
+      name: '중학생엄마',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '사춘기 아이와 소통이 안 돼요',
+    content: '중2 딸아이가 요즘 저와 대화를 거부하고 방문을 잠그고 지냅니다. 성적도 떨어지고 친구들과도 잘 안 어울린다고 하네요. 어떻게 접근해야 할까요? 가족상담을 받는 게 좋을까요?',
+    tags: ['사춘기', '부모자녀관계', '가족상담', '청소년'],
+    timestamp: '8시간 전',
+    likes: 28,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '최민정',
+          isExpert: true,
+          isInstitution: false,
+          title: '청소년상담사',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-choi-005'
+        },
+        content: '사춘기는 정체성을 찾아가는 중요한 시기입니다. 아이의 감정을 인정해주시고, 기다려주는 자세가 필요해요. 가족상담도 좋은 방법입니다.',
+        timestamp: '7시간 전',
+        likes: 19,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  // 부모님 건강 걱정 관련
+  {
+    id: '7',
+    type: 'question',
+    author: {
+      name: '효자아들',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '아버지가 갑자기 성격이 변하셨어요',
+    content: '평소 온화하시던 75세 아버지가 최근 짜증을 많이 내시고 의심이 많아지셨습니다. 어머니를 의심하기도 하시고, 물건을 어디 뒀는지 모르면 누가 훔쳤다고 하세요. 치매 초기 증상일까요? 어떻게 병원에 모시고 가야 할지 고민입니다.',
+    tags: ['부모님건강', '치매의심', '성격변화', '노인심리'],
+    timestamp: '4시간 전',
+    likes: 34,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '김정호',
+          isExpert: true,
+          isInstitution: false,
+          title: '신경심리학 박사',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-kim-003'
+        },
+        content: '성격 변화는 치매의 초기 증상 중 하나일 수 있습니다. 치매안심센터나 신경과에서 검사받아보시길 권합니다. 강요보다는 건강검진 형태로 접근해보세요.',
+        timestamp: '3시간 전',
+        likes: 28,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  // 성인 강박장애 질문
+  {
+    id: '8',
+    type: 'question',
+    author: {
+      name: '익명',
+      isAnonymous: true,
+      isExpert: false,
+      isInstitution: false
+    },
+    title: '강박적인 행동이 심해지고 있어요',
+    content: '손 씻기, 문단속 확인 등이 반복적으로 계속 됩니다. 머리로는 괜찮다는 걸 알지만 불안해서 계속 확인하게 되네요. 일상생활에 지장이 생길 정도로 심해졌는데, 어떤 치료를 받아야 할까요?',
+    tags: ['강박장애', '강박행동', '불안장애', '성인치료'],
+    timestamp: '7시간 전',
+    likes: 27,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '박상훈',
+          isExpert: true,
+          isInstitution: false,
+          title: '정신건강의학과 전문의',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-park-004'
+        },
+        content: '강박장애는 약물치료와 인지행동치료를 병행하면 효과가 좋습니다. 혼자 해결하려 하지 마시고 전문의 상담을 받아보세요.',
+        timestamp: '6시간 전',
+        likes: 22,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  // 기존 아동 ADHD 질문
+  {
+    id: '9',
     type: 'question',
     author: {
       name: '익명',
@@ -683,6 +939,122 @@ const mockPosts: CommunityPost[] = [
     likes: 12,
     hasLiked: false,
     comments: []
+  },
+  // 성인 공황장애 성공사례
+  {
+    id: '25',
+    type: 'success',
+    author: {
+      name: '다시시작하는30대',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '공황장애 극복 후기 - 이제 지하철도 무서워하지 않아요',
+    content: '3년 전부터 시작된 공황발작으로 외출조차 두려워했습니다. AIHPRO 상담사님과 1년간 치료받으며 단계적 노출치료와 이완요법을 배웠어요. 이제는 지하철도 혼자 탈 수 있고, 직장생활도 정상적으로 하고 있습니다. 포기하지 마세요!',
+    tags: ['공황장애', '노출치료', '성인상담', '성공사례'],
+    timestamp: '1주일 전',
+    likes: 73,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '박상훈',
+          isExpert: true,
+          isInstitution: false,
+          title: '정신건강의학과 전문의',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-park-004'
+        },
+        content: '정말 대단하세요! 꾸준한 노력의 결과입니다. 같은 어려움을 겪는 분들에게 큰 희망이 될 거예요.',
+        timestamp: '1주일 전',
+        likes: 25,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  // 부모님 알츠하이머 관련 질문
+  {
+    id: '26',
+    type: 'question',
+    author: {
+      name: '걱정많은딸',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '어머니 알츠하이머 초기, 가족들이 어떻게 대응해야 할까요?',
+    content: '68세 어머니가 최근 알츠하이머 초기 진단을 받았습니다. 아직 일상생활은 가능하지만 점점 기억력이 떨어지고 계세요. 가족들이 어떻게 케어해야 하는지, 어떤 프로그램이 도움이 될지 조언 부탁드립니다.',
+    tags: ['알츠하이머', '부모님케어', '가족상담', '치매'],
+    timestamp: '1주일 전',
+    likes: 45,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '김정호',
+          isExpert: true,
+          isInstitution: false,
+          title: '신경심리학 박사',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-kim-003'
+        },
+        content: '초기에는 인지훈련과 규칙적인 생활패턴이 중요합니다. 가족교육 프로그램 참여도 권합니다. 치매안심센터에서 다양한 지원을 받을 수 있어요.',
+        timestamp: '1주일 전',
+        likes: 32,
+        isExpertAnswer: true
+      },
+      {
+        id: '2',
+        author: {
+          name: '익명',
+          isExpert: false,
+          isInstitution: false,
+          userId: 'user-003'
+        },
+        content: '저희 아버지도 같은 상황이에요. 함께 정보 공유해요. 너무 혼자 짊어지지 마세요.',
+        timestamp: '6일 전',
+        likes: 8
+      }
+    ]
+  },
+  // 중년 우울증 질문
+  {
+    id: '27',
+    type: 'question',
+    author: {
+      name: '익명',
+      isAnonymous: true,
+      isExpert: false,
+      isInstitution: false
+    },
+    title: '40대 중년 우울증, 상담받는 게 도움이 될까요?',
+    content: '회사에서 구조조정으로 스트레스받고, 집에서도 아이들 교육비 걱정에 잠을 못 자고 있습니다. 무기력감이 심해지고 있는데, 상담치료가 실질적으로 도움이 될까요? 비용도 부담되고 시간도 내기 어려워서 고민입니다.',
+    tags: ['중년우울', '직장스트레스', '상담치료', '성인상담'],
+    timestamp: '1주일 전',
+    likes: 38,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '이지영',
+          isExpert: true,
+          isInstitution: false,
+          title: '임상심리사',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-lee-002'
+        },
+        content: '중년기 스트레스는 매우 현실적인 문제입니다. 상담을 통해 스트레스 관리법과 우선순위를 정하는 데 도움받을 수 있어요. 건강보험 적용되는 정신건강의학과도 고려해보세요.',
+        timestamp: '1주일 전',
+        likes: 29,
+        isExpertAnswer: true
+      }
+    ]
   }
 ];
 

@@ -936,6 +936,45 @@ export type Database = {
           },
         ]
       }
+      financial_access_log: {
+        Row: {
+          access_reason: string | null
+          access_type: string
+          accessed_at: string | null
+          accessed_by: string
+          accessed_record_id: string
+          accessed_table: string
+          id: string
+          ip_address: string | null
+          sensitive_fields_accessed: string[] | null
+          user_agent: string | null
+        }
+        Insert: {
+          access_reason?: string | null
+          access_type: string
+          accessed_at?: string | null
+          accessed_by: string
+          accessed_record_id: string
+          accessed_table: string
+          id?: string
+          ip_address?: string | null
+          sensitive_fields_accessed?: string[] | null
+          user_agent?: string | null
+        }
+        Update: {
+          access_reason?: string | null
+          access_type?: string
+          accessed_at?: string | null
+          accessed_by?: string
+          accessed_record_id?: string
+          accessed_table?: string
+          id?: string
+          ip_address?: string | null
+          sensitive_fields_accessed?: string[] | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       growth_stories: {
         Row: {
           after_story: string
@@ -3122,6 +3161,20 @@ export type Database = {
         Args: { target_user_id: string; token_amount: number }
         Returns: boolean
       }
+      admin_view_transfer_request: {
+        Args: { access_reason?: string; request_id: string }
+        Returns: {
+          admin_note: string
+          bank_name: string
+          created_at: string
+          depositor_name: string
+          id: string
+          requested_tokens: number
+          status: string
+          transfer_amount: number
+          user_email: string
+        }[]
+      }
       apply_referral_code: {
         Args: { p_referral_code: string; p_user_id: string }
         Returns: boolean
@@ -3212,6 +3265,16 @@ export type Database = {
           total_experts: number
           updated_at: string
           website_url: string
+        }[]
+      }
+      get_transfer_statistics: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          average_request_amount: number
+          completed_requests: number
+          pending_requests: number
+          total_amount_processed: number
+          total_requests: number
         }[]
       }
       get_user_dashboard_data: {

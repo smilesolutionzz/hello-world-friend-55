@@ -46,6 +46,8 @@ import TokenCTA from "@/components/TokenCTA";
 import { OnboardingOverlay } from "@/components/ui/onboarding-overlay";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { ComprehensiveReportSection } from "@/components/ComprehensiveReportSection";
+import { OnboardingGuide } from "@/components/onboarding/OnboardingGuide";
+import { NextStepSuggestion } from "@/components/onboarding/NextStepSuggestion";
 import TokenBalance from "@/components/TokenBalance";
 import { SamplePDFDownload } from "@/components/SamplePDFDownload";
 import LifespanDevelopmentalTracker from '@/components/development/LifespanDevelopmentalTracker';
@@ -94,6 +96,8 @@ const Dashboard = () => {
   const [showChangeModal, setShowChangeModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
+  const [onboardingCompleted, setOnboardingCompleted] = useState(false);
+  const [selectedTab, setSelectedTab] = useState("overview");
 
   useEffect(() => {
     checkAuth();
@@ -448,6 +452,8 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/10 to-soft-mint/20">
+      <OnboardingGuide onComplete={() => setOnboardingCompleted(true)} />
+      
       {/* Unified Navigation */}
       <UnifiedNavigation />
       
@@ -662,7 +668,10 @@ const Dashboard = () => {
             </div>
 
             {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          <NextStepSuggestion />
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Distribution Chart */}
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4">영역별 분포</h3>
@@ -767,6 +776,7 @@ const Dashboard = () => {
                 )}
               </Card>
             </div>
+          </div>
 
             {/* Subjects Table */}
             <Card className="p-6">

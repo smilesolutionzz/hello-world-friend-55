@@ -3350,6 +3350,10 @@ export type Database = {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: undefined
       }
+      user_can_access_community: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "expert" | "user"

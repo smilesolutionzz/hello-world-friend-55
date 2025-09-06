@@ -37,17 +37,34 @@ export default function GrowthCommunity() {
         supabase.from('user_growth_points').select('*').order('total_points', { ascending: false }).limit(20)
       ]);
 
-      if (storiesRes.data) setGrowthStories(storiesRes.data);
-      if (challengesRes.data) setChallenges(challengesRes.data);
-      if (reversalRes.data) setReversalStories(reversalRes.data);
-      if (leaderboardRes.data) setLeaderboard(leaderboardRes.data);
+      // Handle secured data - some content may not be visible due to RLS policies
+      setGrowthStories(storiesRes.data || []);
+      setChallenges(challengesRes.data || []);
+      setReversalStories(reversalRes.data || []);
+      setLeaderboard(leaderboardRes.data || []);
+
+      // If user is not logged in and no content is available, show appropriate message
+      if (!user && storiesRes.data?.length === 0 && challengesRes.data?.length === 0) {
+        toast({
+          title: "로그인하여 더 많은 콘텐츠를 확인하세요",
+          description: "회원만 볼 수 있는 성장 스토리들이 있습니다.",
+        });
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
-      toast({
-        title: "데이터 로딩 실패",
-        description: "데이터를 불러오는 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
+      // More specific error handling for RLS permission errors
+      if (error.message?.includes('RLS') || error.message?.includes('permission')) {
+        toast({
+          title: "접근 권한 필요",
+          description: "이 콘텐츠를 보려면 로그인이 필요합니다.",
+        });
+      } else {
+        toast({
+          title: "데이터 로딩 실패",
+          description: "데이터를 불러오는 중 오류가 발생했습니다.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setLoading(false);
     }

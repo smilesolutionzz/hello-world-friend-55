@@ -406,13 +406,6 @@ export type Database = {
             foreignKeyName: "consultations_expert_id_fkey"
             columns: ["expert_id"]
             isOneToOne: false
-            referencedRelation: "expert_stats_view"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "consultations_expert_id_fkey"
-            columns: ["expert_id"]
-            isOneToOne: false
             referencedRelation: "experts"
             referencedColumns: ["id"]
           },
@@ -574,13 +567,6 @@ export type Database = {
             foreignKeyName: "expert_availability_expert_id_fkey"
             columns: ["expert_id"]
             isOneToOne: false
-            referencedRelation: "expert_stats_view"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "expert_availability_expert_id_fkey"
-            columns: ["expert_id"]
-            isOneToOne: false
             referencedRelation: "experts"
             referencedColumns: ["id"]
           },
@@ -692,13 +678,6 @@ export type Database = {
             columns: ["consultation_id"]
             isOneToOne: false
             referencedRelation: "consultations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "expert_earnings_expert_id_fkey"
-            columns: ["expert_id"]
-            isOneToOne: false
-            referencedRelation: "expert_stats_view"
             referencedColumns: ["id"]
           },
           {
@@ -1229,13 +1208,6 @@ export type Database = {
             referencedRelation: "partner_institutions"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "institution_analytics_institution_id_fkey"
-            columns: ["institution_id"]
-            isOneToOne: false
-            referencedRelation: "public_institutions"
-            referencedColumns: ["id"]
-          },
         ]
       }
       institution_experts: {
@@ -1290,13 +1262,6 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "institution_experts_institution_id_fkey"
-            columns: ["institution_id"]
-            isOneToOne: false
-            referencedRelation: "public_institutions"
             referencedColumns: ["id"]
           },
         ]
@@ -1462,13 +1427,6 @@ export type Database = {
             referencedRelation: "partner_institutions"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "institution_premium_analytics_institution_id_fkey"
-            columns: ["institution_id"]
-            isOneToOne: false
-            referencedRelation: "public_institutions"
-            referencedColumns: ["id"]
-          },
         ]
       }
       institution_premium_features: {
@@ -1511,13 +1469,6 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "institution_premium_features_institution_id_fkey"
-            columns: ["institution_id"]
-            isOneToOne: false
-            referencedRelation: "public_institutions"
             referencedColumns: ["id"]
           },
         ]
@@ -1576,13 +1527,6 @@ export type Database = {
             referencedRelation: "partner_institutions"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "institution_premium_plans_institution_id_fkey"
-            columns: ["institution_id"]
-            isOneToOne: false
-            referencedRelation: "public_institutions"
-            referencedColumns: ["id"]
-          },
         ]
       }
       institution_reviews: {
@@ -1628,13 +1572,6 @@ export type Database = {
             columns: ["institution_id"]
             isOneToOne: false
             referencedRelation: "partner_institutions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "institution_reviews_institution_id_fkey"
-            columns: ["institution_id"]
-            isOneToOne: false
-            referencedRelation: "public_institutions"
             referencedColumns: ["id"]
           },
         ]
@@ -3144,113 +3081,7 @@ export type Database = {
       }
     }
     Views: {
-      admin_overview_view: {
-        Row: {
-          total_observations: number | null
-          total_tests: number | null
-          total_tokens_in_circulation: number | null
-          total_users: number | null
-        }
-        Relationships: []
-      }
-      expert_stats_view: {
-        Row: {
-          average_rating: number | null
-          consultation_count: number | null
-          full_name: string | null
-          id: string | null
-          specializations: string[] | null
-          total_sessions: number | null
-        }
-        Relationships: []
-      }
-      feedback_statistics: {
-        Row: {
-          average_rating: number | null
-          positive_feedback: number | null
-          test_type: string | null
-          total_feedback: number | null
-        }
-        Relationships: []
-      }
-      public_institutions: {
-        Row: {
-          accessibility_features: string[] | null
-          address: string | null
-          created_at: string | null
-          description: string | null
-          established_year: number | null
-          facilities: string[] | null
-          gallery_images: string[] | null
-          id: string | null
-          institution_type: string | null
-          latitude: number | null
-          longitude: number | null
-          name: string | null
-          operating_hours: Json | null
-          parking_available: boolean | null
-          partnership_status: string | null
-          profile_image_url: string | null
-          rating: number | null
-          review_count: number | null
-          services_offered: string[] | null
-          specializations: string[] | null
-          total_experts: number | null
-          updated_at: string | null
-          website_url: string | null
-        }
-        Insert: {
-          accessibility_features?: string[] | null
-          address?: string | null
-          created_at?: string | null
-          description?: string | null
-          established_year?: number | null
-          facilities?: string[] | null
-          gallery_images?: string[] | null
-          id?: string | null
-          institution_type?: string | null
-          latitude?: number | null
-          longitude?: number | null
-          name?: string | null
-          operating_hours?: Json | null
-          parking_available?: boolean | null
-          partnership_status?: string | null
-          profile_image_url?: string | null
-          rating?: number | null
-          review_count?: number | null
-          services_offered?: string[] | null
-          specializations?: string[] | null
-          total_experts?: number | null
-          updated_at?: string | null
-          website_url?: string | null
-        }
-        Update: {
-          accessibility_features?: string[] | null
-          address?: string | null
-          created_at?: string | null
-          description?: string | null
-          established_year?: number | null
-          facilities?: string[] | null
-          gallery_images?: string[] | null
-          id?: string | null
-          institution_type?: string | null
-          latitude?: number | null
-          longitude?: number | null
-          name?: string | null
-          operating_hours?: Json | null
-          parking_available?: boolean | null
-          partnership_status?: string | null
-          profile_image_url?: string | null
-          rating?: number | null
-          review_count?: number | null
-          services_offered?: string[] | null
-          specializations?: string[] | null
-          total_experts?: number | null
-          updated_at?: string | null
-          website_url?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       add_daily_tokens: {
@@ -3290,9 +3121,68 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_admin_overview: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          total_observations: number
+          total_tests: number
+          total_tokens_in_circulation: number
+          total_users: number
+        }[]
+      }
+      get_expert_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          average_rating: number
+          consultation_count: number
+          full_name: string
+          id: string
+          specializations: string[]
+          total_sessions: number
+        }[]
+      }
+      get_feedback_statistics: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          average_rating: number
+          positive_feedback: number
+          test_type: string
+          total_feedback: number
+        }[]
+      }
       get_monthly_usage: {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: number
+      }
+      get_public_institutions: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          accessibility_features: string[]
+          address: string
+          created_at: string
+          description: string
+          email: string
+          established_year: number
+          facilities: string[]
+          gallery_images: string[]
+          id: string
+          institution_type: string
+          latitude: number
+          longitude: number
+          name: string
+          operating_hours: Json
+          parking_available: boolean
+          partnership_status: string
+          phone: string
+          profile_image_url: string
+          rating: number
+          review_count: number
+          services_offered: string[]
+          specializations: string[]
+          total_experts: number
+          updated_at: string
+          website_url: string
+        }[]
       }
       get_user_dashboard_data: {
         Args: { p_user_id?: string }

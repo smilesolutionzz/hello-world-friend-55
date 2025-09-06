@@ -9,112 +9,134 @@ import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 const questions = [
   {
     id: "stress1",
-    text: "지난 한 달 동안, 예상치 못한 일들 때문에 얼마나 자주 스트레스를 받았나요?",
+    text: "갑작스럽게 생긴 일들로 인해 마음이 어수선해진 적이 얼마나 자주 있나요?",
     options: [
-      { value: "0", label: "전혀 없음" },
-      { value: "1", label: "거의 없음" },
-      { value: "2", label: "가끔" },
-      { value: "3", label: "꽤 자주" },
-      { value: "4", label: "매우 자주" }
+      { value: "0", label: "거의 없었어요" },
+      { value: "1", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "3", label: "자주 있었어요" },
+      { value: "4", label: "매일같이 있었어요" }
     ]
   },
   {
     id: "stress2", 
-    text: "지난 한 달 동안, 중요한 일들을 통제할 수 없다고 느낀 적이 얼마나 자주 있었나요?",
+    text: "중요한 상황에서 내가 아무것도 할 수 없다는 무력감을 느낀 적이 얼마나 자주 있나요?",
     options: [
-      { value: "0", label: "전혀 없음" },
-      { value: "1", label: "거의 없음" },
-      { value: "2", label: "가끔" },
-      { value: "3", label: "꽤 자주" },
-      { value: "4", label: "매우 자주" }
+      { value: "0", label: "거의 없었어요" },
+      { value: "1", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "3", label: "자주 있었어요" },
+      { value: "4", label: "매일같이 있었어요" }
     ]
   },
   {
     id: "stress3",
-    text: "지난 한 달 동안, 신경질적이고 스트레스를 받는다고 느낀 적이 얼마나 자주 있었나요?",
+    text: "작은 일에도 예민하게 반응하거나 짜증이 난 적이 얼마나 자주 있나요?",
     options: [
-      { value: "0", label: "전혀 없음" },
-      { value: "1", label: "거의 없음" },
-      { value: "2", label: "가끔" },
-      { value: "3", label: "꽤 자주" },
-      { value: "4", label: "매우 자주" }
+      { value: "0", label: "거의 없었어요" },
+      { value: "1", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "3", label: "자주 있었어요" },
+      { value: "4", label: "매일같이 있었어요" }
     ]
   },
   {
     id: "stress4",
-    text: "지난 한 달 동안, 개인적인 문제들을 성공적으로 다룰 수 있다고 느낀 적이 얼마나 자주 있었나요?",
+    text: "어려운 문제가 생겨도 '내가 해결할 수 있어'라고 자신감을 느낀 적이 얼마나 자주 있나요?",
     options: [
-      { value: "4", label: "전혀 없음" },
-      { value: "3", label: "거의 없음" },
-      { value: "2", label: "가끔" },
-      { value: "1", label: "꽤 자주" },
-      { value: "0", label: "매우 자주" }
+      { value: "4", label: "거의 없었어요" },
+      { value: "3", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "1", label: "자주 있었어요" },
+      { value: "0", label: "매일같이 있었어요" }
     ]
   },
   {
     id: "stress5",
-    text: "지난 한 달 동안, 삶이 내 뜻대로 되어간다고 느낀 적이 얼마나 자주 있었나요?",
+    text: "하루 일과를 마치며 '오늘도 잘 보냈다'는 만족감을 느낀 적이 얼마나 자주 있나요?",
     options: [
-      { value: "4", label: "전혀 없음" },
-      { value: "3", label: "거의 없음" },
-      { value: "2", label: "가끔" },
-      { value: "1", label: "꽤 자주" },
-      { value: "0", label: "매우 자주" }
+      { value: "4", label: "거의 없었어요" },
+      { value: "3", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "1", label: "자주 있었어요" },
+      { value: "0", label: "매일같이 있었어요" }
     ]
   },
   {
     id: "stress6",
-    text: "지난 한 달 동안, 해야 할 일들을 따라잡을 수 없다고 느낀 적이 얼마나 자주 있었나요?",
+    text: "해야 할 일들이 산더미처럼 쌓여서 숨이 막힐 것 같다고 느낀 적이 얼마나 자주 있나요?",
     options: [
-      { value: "0", label: "전혀 없음" },
-      { value: "1", label: "거의 없음" },
-      { value: "2", label: "가끔" },
-      { value: "3", label: "꽤 자주" },
-      { value: "4", label: "매우 자주" }
+      { value: "0", label: "거의 없었어요" },
+      { value: "1", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "3", label: "자주 있었어요" },
+      { value: "4", label: "매일같이 있었어요" }
     ]
   },
   {
     id: "stress7",
-    text: "지난 한 달 동안, 성가신 일들을 통제할 수 있다고 느낀 적이 얼마나 자주 있었나요?",
+    text: "예상치 못한 문제가 생겨도 '괜찮아, 이것도 해결된다'고 여유를 느낀 적이 얼마나 자주 있나요?",
     options: [
-      { value: "4", label: "전혀 없음" },
-      { value: "3", label: "거의 없음" },
-      { value: "2", label: "가끔" },
-      { value: "1", label: "꽤 자주" },
-      { value: "0", label: "매우 자주" }
+      { value: "4", label: "거의 없었어요" },
+      { value: "3", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "1", label: "자주 있었어요" },
+      { value: "0", label: "매일같이 있었어요" }
     ]
   },
   {
     id: "stress8",
-    text: "지난 한 달 동안, 모든 일이 잘 되어간다고 느낀 적이 얼마나 자주 있었나요?",
+    text: "잠자리에 들며 '내일도 좋은 하루가 될 거야'라는 기대감을 느낀 적이 얼마나 자주 있나요?",
     options: [
-      { value: "4", label: "전혀 없음" },
-      { value: "3", label: "거의 없음" },
-      { value: "2", label: "가끔" },
-      { value: "1", label: "꽤 자주" },
-      { value: "0", label: "매우 자주" }
+      { value: "4", label: "거의 없었어요" },
+      { value: "3", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "1", label: "자주 있었어요" },
+      { value: "0", label: "매일같이 있었어요" }
     ]
   },
   {
     id: "stress9",
-    text: "지난 한 달 동안, 통제할 수 없는 일들 때문에 화가 난 적이 얼마나 자주 있었나요?",
+    text: "내 의지와 상관없이 벌어지는 일들로 인해 속이 끓어오른 적이 얼마나 자주 있나요?",
     options: [
-      { value: "0", label: "전혀 없음" },
-      { value: "1", label: "거의 없음" },
-      { value: "2", label: "가끔" },
-      { value: "3", label: "꽤 자주" },
-      { value: "4", label: "매우 자주" }
+      { value: "0", label: "거의 없었어요" },
+      { value: "1", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "3", label: "자주 있었어요" },
+      { value: "4", label: "매일같이 있었어요" }
     ]
   },
   {
     id: "stress10",
-    text: "지난 한 달 동안, 어려움들이 쌓여서 극복할 수 없다고 느낀 적이 얼마나 자주 있었나요?",
+    text: "문제들이 계속 쌓여서 '이제 정말 한계야'라고 느낀 적이 얼마나 자주 있나요?",
     options: [
-      { value: "0", label: "전혀 없음" },
-      { value: "1", label: "거의 없음" },
-      { value: "2", label: "가끔" },
-      { value: "3", label: "꽤 자주" },
-      { value: "4", label: "매우 자주" }
+      { value: "0", label: "거의 없었어요" },
+      { value: "1", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "3", label: "자주 있었어요" },
+      { value: "4", label: "매일같이 있었어요" }
+    ]
+  },
+  {
+    id: "stress11",
+    text: "주변 사람들과의 관계에서 오해나 갈등으로 마음이 상한 적이 얼마나 자주 있나요?",
+    options: [
+      { value: "0", label: "거의 없었어요" },
+      { value: "1", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "3", label: "자주 있었어요" },
+      { value: "4", label: "매일같이 있었어요" }
+    ]
+  },
+  {
+    id: "stress12",
+    text: "몸이 피곤하고 지쳐서 일상생활을 하기 힘들다고 느낀 적이 얼마나 자주 있나요?",
+    options: [
+      { value: "0", label: "거의 없었어요" },
+      { value: "1", label: "가끔 있었어요" },
+      { value: "2", label: "종종 있었어요" },
+      { value: "3", label: "자주 있었어요" },
+      { value: "4", label: "매일같이 있었어요" }
     ]
   }
 ];
@@ -169,12 +191,12 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
       const average = total / answerValues.length;
       
       let severity: string;
-      if (total <= 13) {
-        severity = "낮은 스트레스";
-      } else if (total <= 26) {
-        severity = "보통 스트레스";
+      if (total <= 16) {
+        severity = "건강한 마음상태";
+      } else if (total <= 32) {
+        severity = "주의 필요";
       } else {
-        severity = "높은 스트레스";
+        severity = "관리 필요";
       }
       
       onComplete({

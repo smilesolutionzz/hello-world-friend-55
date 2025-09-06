@@ -761,7 +761,7 @@ const Assessment = () => {
                   <h4 className="text-lg font-bold text-brand-gradient mb-3">마음압박지수 측정</h4>
                   <p className="text-muted-foreground text-sm mb-3">일상 스트레스 수준 체크</p>
                   <ul className="space-y-1 text-xs">
-                    <li>• 10문항 3분</li>
+                    <li>• 12문항 4분</li>
                     <li>• 간편 측정</li>
                     <li>• 즉시 결과</li>
                   </ul>

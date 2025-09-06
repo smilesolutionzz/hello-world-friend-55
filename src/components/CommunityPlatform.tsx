@@ -146,19 +146,19 @@ const CommunityPlatform = () => {
           {/* 커뮤니티 통계 */}
           <div className="grid grid-cols-4 gap-4 mt-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">2,456</div>
+              <div className="text-2xl font-bold text-primary">2,459</div>
               <div className="text-xs text-muted-foreground">활성 회원</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">156</div>
+              <div className="text-2xl font-bold text-blue-600">129</div>
               <div className="text-xs text-muted-foreground">인증 전문가</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">89</div>
+              <div className="text-2xl font-bold text-purple-600">30+</div>
               <div className="text-xs text-muted-foreground">제휴 기관</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">1,234</div>
+              <div className="text-2xl font-bold text-green-600">247</div>
               <div className="text-xs text-muted-foreground">성공 사례</div>
             </div>
           </div>

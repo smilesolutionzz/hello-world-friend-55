@@ -59,6 +59,176 @@ interface Comment {
 }
 
 const mockPosts: CommunityPost[] = [
+  // AIHPRO 매커니즘 설명 - 성공 사례
+  {
+    id: '0',
+    type: 'success',
+    author: {
+      name: '시스템 관리자',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '🤖 AIHPRO 완전 활용기 - AI 상담부터 전문가 매칭까지 전 과정 후기',
+    content: `안녕하세요! AIHPRO를 6개월간 사용하며 경험한 전체 과정을 상세히 공유드려요.
+
+**1단계: AI 초기 상담 📱**
+- 고민을 플랫폼에 익명으로 작성
+- AI가 즉시 1차 분석 및 맞춤형 조언 제공
+- 전문가 추천 및 매칭 가능성 평가
+
+**2단계: 전문가 매칭 🎯**
+- AI 분석 기반으로 최적의 전문가 3명 추천
+- 각 전문가의 전문분야, 경력, 상담스타일 확인
+- 직접 선택하거나 AI 추천 수락
+
+**3단계: 온라인 상담 진행 💻**
+- 주 2회, 50분간 Zoom 화상상담 진행
+- 전문가의 개별 맞춤 치료계획 수립
+- 매 회차마다 진도 체크 및 조정
+
+**4단계: 지속적 모니터링 📈**
+- AI가 상담 진행상황 지속 분석
+- 필요시 치료법 조정 제안
+- 가족 상담, 추가 전문가 연결 등 확장 지원
+
+**결과**: 3개월 만에 우울감 70% 개선, 6개월 후 일상 복귀 완료!
+
+정말 체계적이고 과학적인 접근이었어요. 혼자 고민하지 마시고 도움받으세요! 💪`,
+    tags: ['AIHPRO활용법', '전문가매칭', 'AI상담', '시스템가이드'],
+    timestamp: '고정 게시물',
+    likes: 156,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '이지영',
+          isExpert: true,
+          isInstitution: false,
+          title: '임상심리사',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-lee-002'
+        },
+        content: 'AIHPRO의 체계적인 접근법이 잘 설명되어 있네요! 실제로 이런 과정을 통해 많은 분들이 도움받고 계십니다.',
+        timestamp: '1일 전',
+        likes: 45,
+        isExpertAnswer: true
+      },
+      {
+        id: '2',
+        author: {
+          name: '박상훈',
+          isExpert: true,
+          isInstitution: false,
+          title: '정신건강의학과 전문의',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-park-004'
+        },
+        content: 'AI와 전문가가 협업하는 새로운 치료 모델이 정말 효과적입니다. 데이터 기반 맞춤 치료의 미래를 보여주는 사례네요.',
+        timestamp: '1일 전',
+        likes: 38,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  // 구체적인 매칭 과정 사례
+  {
+    id: '0-1',
+    type: 'success',
+    author: {
+      name: '워킹맘28',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '🔍 실제 매칭 과정 상세 후기 - 우울감에서 회복까지의 여정',
+    content: `AIHPRO 매칭 과정이 궁금하신 분들을 위해 실제 경험을 자세히 공유해요!
+
+**📝 Step 1: 고민 작성 (익명)**
+"요즘 육아와 직장 병행하며 너무 힘들어요. 아침에 일어나기도 싫고..."
+→ 3분 만에 작성 완료
+
+**🤖 Step 2: AI 즉시 분석 (30초 내)**
+- 우울 경향성 중등도
+- 번아웃 증후군 의심  
+- 워킹맘 특화 상담 권장
+- 3명의 전문가 추천받음
+
+**👩‍⚕️ Step 3: 전문가 선택**
+추천받은 3명 중 "이지영 임상심리사" 선택
+→ 워킹맘 상담 경력 8년, 평점 4.9점
+
+**💻 Step 4: 온라인 상담 시작**
+- 주 2회 (화요일 오후 8시, 토요일 오전 10시)
+- 각 50분간 Zoom 상담
+- 첫 회차: 현재 상황 심층 파악
+
+**📈 Step 5: 맞춤 치료 계획**
+- 2주차: 스트레스 관리법 학습
+- 4주차: 시간 관리 코칭  
+- 6주차: 육아 스트레스 해소법
+- 8주차: 워라밸 설정 가이드
+
+**🎯 Step 6: 지속적 모니터링**
+- 매주 AI가 진도 체크
+- 필요시 상담 방향 조정 제안
+- 가족 상담 추가 권유받음
+
+**✨ 결과**: 
+8주 만에 우울감 60% 감소! 지금은 일상이 다시 즐거워졌어요.
+비용도 병원 대비 50% 절약했고, 집에서 편리하게 받을 수 있어서 최고였습니다! 🙌`,
+    tags: ['실제후기', '매칭과정', '워킹맘', '우울증극복'],
+    timestamp: '고정 게시물',
+    likes: 234,
+    hasLiked: false,
+    comments: [
+      {
+        id: '1',
+        author: {
+          name: '이지영',
+          isExpert: true,
+          isInstitution: false,
+          title: '임상심리사',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-lee-002'
+        },
+        content: '워킹맘28님 정말 열심히 하셨어요! 체계적인 접근으로 단기간에 좋은 성과를 거두셨네요. 앞으로도 건강한 워라밸 유지하시길 바라요! 💪',
+        timestamp: '12시간 전',
+        likes: 67,
+        isExpertAnswer: true
+      },
+      {
+        id: '2',
+        author: {
+          name: '비슷한상황엄마',
+          isExpert: false,
+          isInstitution: false,
+          userId: 'user-004'
+        },
+        content: '저도 워킹맘인데 정말 똑같은 상황이에요ㅠㅠ 용기내서 시작해봐야겠어요. 구체적인 과정 공유 감사해요!',
+        timestamp: '10시간 전',
+        likes: 23
+      },
+      {
+        id: '3',
+        author: {
+          name: '박상훈',
+          isExpert: true,
+          isInstitution: false,
+          title: '정신건강의학과 전문의',
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-park-004'
+        },
+        content: 'AI와 전문가의 협업 모델이 이렇게 실질적 도움이 되는 걸 보니 정말 뿌듯합니다. 맞춤형 치료의 효과를 잘 보여주는 사례네요.',
+        timestamp: '8시간 전',
+        likes: 45,
+        isExpertAnswer: true
+      }
+    ]
+  },
   // 성인 심리상담 성공사례
   {
     id: '1',
@@ -1191,7 +1361,7 @@ export const CommunityFeed = () => {
               variant="outline" 
               className="w-full h-12 text-muted-foreground hover:text-primary"
             >
-              고민이나 성공사례를 익명으로 공유해보세요...
+              고민이나 성공사례, 평소 궁금했던 질문을 전문가에게 익명으로 공유해보세요...
             </Button>
           ) : (
             <div className="space-y-4">

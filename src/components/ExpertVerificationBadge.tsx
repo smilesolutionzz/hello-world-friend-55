@@ -34,7 +34,7 @@ const ExpertVerificationBadge: React.FC<ExpertVerificationBadgeProps> = ({
       case 'expert_reviewed':
         return {
           icon: <UserCheck className="w-3 h-3" />,
-          text: '전문가 검토 완료',
+          text: '매칭된 실제 전문가 검토',
           variant: 'outline' as const,
           description: `${expertName || '전문가'}님이 검토`
         };

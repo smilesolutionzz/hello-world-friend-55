@@ -307,7 +307,7 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ data, onReport
             <div className="text-sm">
               <p className="font-medium mb-1">
                 {data.reportType === 'ai_expert_combined' 
-                  ? '전문가 검토 완료 리포트' 
+                  ? '매칭된 실제 전문가 검토 완료 리포트' 
                   : 'AI 분석 리포트'
                 }
               </p>

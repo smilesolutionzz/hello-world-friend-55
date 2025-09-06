@@ -153,7 +153,7 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               <ExpertVerificationBadge status="ai_analysis" />
               <ExpertVerificationBadge status="pending_expert" />
-              <ExpertVerificationBadge status="expert_reviewed" expertName="김소아과 원장" />
+              <ExpertVerificationBadge status="expert_reviewed" expertName="매칭된 실제 전문가" />
               <ExpertVerificationBadge status="verified" />
             </div>
           </div>

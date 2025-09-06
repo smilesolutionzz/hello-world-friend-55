@@ -34,6 +34,7 @@ import CommunicationStyleTest from "./pages/CommunicationStyleTest";
 
 import CounselingFlow from "./pages/CounselingFlow";
 import Corporate from "./pages/Corporate";
+import Community from "./pages/Community";
 import Subscription from "./pages/Subscription";
 import TokenSubscription from "./pages/TokenSubscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -135,6 +136,7 @@ const App = () => {
           <Route path="/autism-screening" element={<DevelopmentalScreening />} />
           
           <Route path="/corporate" element={<Corporate />} />
+          <Route path="/community" element={<Community />} />
           <Route path="/subscription" element={<TokenSubscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
           <Route path="/admin" element={<AdminDashboard />} />

@@ -179,6 +179,10 @@ const Navigation = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/community')}>
+              <Users className="w-4 h-4 mr-1" />
+              커뮤니티
+            </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/dashboard')}>
               <BarChart3 className="w-4 h-4 mr-1" />
               마이DATA

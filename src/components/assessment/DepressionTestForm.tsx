@@ -37,7 +37,7 @@ const depressionQuestions = [
 
 const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(21).fill(2)); // 기본값 2점 (보통)
+  const [answers, setAnswers] = useState<number[]>(new Array(21).fill(-1)); // 기본값 없음
 
   const progress = ((currentQuestion + 1) / depressionQuestions.length) * 100;
 
@@ -118,7 +118,7 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
           </h2>
 
           <RadioGroup 
-            value={currentAnswer.toString()} 
+            value={currentAnswer >= 1 ? currentAnswer.toString() : ""} 
             onValueChange={handleAnswer}
             className="space-y-4"
           >

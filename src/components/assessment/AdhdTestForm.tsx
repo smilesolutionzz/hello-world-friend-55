@@ -19,7 +19,7 @@ interface AdhdTestFormProps {
 const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   const questions = ageGroup === 'child' ? childFocusQuestions : adultFocusQuestions;
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(2)); // 기본값 2점 (보통)
+  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(0)); // 기본값 없음
   const [hasStarted, setHasStarted] = useState(false);
   const { consumeTokens } = useTokens();
 
@@ -93,7 +93,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   };
 
   const currentAnswer = answers[currentQuestion];
-  const canProceed = currentAnswer >= 1; // 1점 이상이어야 함
+  const canProceed = currentAnswer > 0; // 1점 이상이어야 함
 
   // 토큰 게이트 표시
   if (!hasStarted) {
@@ -145,7 +145,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
           </h2>
 
           <RadioGroup 
-            value={currentAnswer.toString()} 
+            value={currentAnswer > 0 ? currentAnswer.toString() : ""} 
             onValueChange={handleAnswer}
             className="space-y-4"
           >

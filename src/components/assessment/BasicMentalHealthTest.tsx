@@ -329,7 +329,7 @@ const BasicMentalHealthTest = () => {
           
           <CardContent className="space-y-4">
             <RadioGroup
-              value={answers[currentQuestion]?.toString()}
+              value={answers[currentQuestion] >= 0 ? answers[currentQuestion]?.toString() : ""}
               onValueChange={(value) => handleAnswer(parseInt(value))}
             >
               {questions[currentQuestion].options.map((option) => (

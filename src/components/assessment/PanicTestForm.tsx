@@ -37,7 +37,7 @@ const panicQuestions = [
 
 const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(21).fill(2)); // 기본값 2점 (보통)
+  const [answers, setAnswers] = useState<number[]>(new Array(21).fill(-1)); // 기본값 없음
 
   const progress = ((currentQuestion + 1) / panicQuestions.length) * 100;
 
@@ -87,7 +87,7 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
   };
 
   const currentAnswer = answers[currentQuestion];
-  const canProceed = currentAnswer !== undefined && currentAnswer > 0;
+  const canProceed = currentAnswer >= 1;
 
   return (
     <Card className="max-w-4xl mx-auto p-8">
@@ -118,7 +118,7 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
           </h2>
 
           <RadioGroup 
-            value={currentAnswer.toString()} 
+            value={currentAnswer >= 1 ? currentAnswer.toString() : ""} 
             onValueChange={handleAnswer}
             className="space-y-4"
           >

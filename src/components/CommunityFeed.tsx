@@ -15,7 +15,8 @@ import {
   ThumbsUp,
   Clock,
   User,
-  CheckCircle
+  CheckCircle,
+  X
 } from "lucide-react";
 
 interface CommunityPost {
@@ -741,6 +742,14 @@ export const CommunityFeed = () => {
     setCommentAuthor({ ...commentAuthor, [postId]: '' });
   };
 
+  const handleDeleteComment = (postId: string, commentId: string) => {
+    setPosts(posts.map(post => 
+      post.id === postId 
+        ? { ...post, comments: post.comments.filter(comment => comment.id !== commentId) }
+        : post
+    ));
+  };
+
   const handleSubmitPost = () => {
     if (!newPost.title.trim() || !newPost.content.trim()) return;
 
@@ -912,16 +921,27 @@ export const CommunityFeed = () => {
                           )}
                         </div>
                         <p className="text-sm text-gray-700 mb-2">{comment.content}</p>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <span>{comment.timestamp}</span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span>{comment.timestamp}</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleCommentLike(post.id, comment.id)}
+                              className="h-6 px-2 gap-1"
+                            >
+                              <ThumbsUp className="w-3 h-3" />
+                              {comment.likes}
+                            </Button>
+                          </div>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleCommentLike(post.id, comment.id)}
-                            className="h-6 px-2 gap-1"
+                            onClick={() => handleDeleteComment(post.id, comment.id)}
+                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-500"
+                            title="댓글 삭제"
                           >
-                            <ThumbsUp className="w-3 h-3" />
-                            {comment.likes}
+                            <X className="w-3 h-3" />
                           </Button>
                         </div>
                       </div>

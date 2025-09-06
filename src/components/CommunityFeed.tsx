@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useAuthGuard } from '@/hooks/useAuthGuard';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { 
   Heart, 
   MessageCircle, 
@@ -48,6 +50,7 @@ interface Comment {
     isAnonymous?: boolean;
     avatar?: string;
     title?: string;
+    userId?: string; // 작성자 ID 추가
   };
   content: string;
   timestamp: string;
@@ -80,7 +83,8 @@ const mockPosts: CommunityPost[] = [
           isExpert: true,
           isInstitution: false,
           title: '언어치료사',
-          avatar: '/api/placeholder/30/30'
+          avatar: '/api/placeholder/30/30',
+          userId: 'expert-kim-001' // 전문가 ID
         },
         content: '민지가 정말 열심히 했어요! 앞으로도 꾸준히 연습하면 더욱 좋아질 거예요 😊',
         timestamp: '1시간 전',
@@ -92,7 +96,8 @@ const mockPosts: CommunityPost[] = [
         author: {
           name: '익명',
           isExpert: false,
-          isInstitution: false
+          isInstitution: false,
+          userId: 'user-001' // 일반 사용자 ID (테스트용)
         },
         content: '저희 아이도 비슷한 상황인데 정말 용기가 납니다. 김미영 선생님께 상담 문의드려도 될까요?',
         timestamp: '30분 전',
@@ -682,6 +687,8 @@ const mockPosts: CommunityPost[] = [
 ];
 
 export const CommunityFeed = () => {
+  const { user } = useAuthGuard();
+  const { isAdmin } = useAdminCheck();
   const [posts, setPosts] = useState<CommunityPost[]>(mockPosts);
   const [newPost, setNewPost] = useState({ title: '', content: '', tags: '' });
   const [showNewPost, setShowNewPost] = useState(false);
@@ -725,7 +732,8 @@ export const CommunityFeed = () => {
       author: {
         name: author?.trim() || '익명',
         isExpert: false,
-        isInstitution: false
+        isInstitution: false,
+        userId: user?.id // 현재 로그인한 사용자 ID 저장
       },
       content: comment,
       timestamp: '방금 전',
@@ -743,11 +751,20 @@ export const CommunityFeed = () => {
   };
 
   const handleDeleteComment = (postId: string, commentId: string) => {
+    if (!user) return; // 로그인한 사용자만 삭제 가능
+    
     setPosts(posts.map(post => 
       post.id === postId 
         ? { ...post, comments: post.comments.filter(comment => comment.id !== commentId) }
         : post
     ));
+  };
+
+  // 댓글 삭제 권한 확인 함수
+  const canDeleteComment = (comment: Comment) => {
+    if (!user) return false;
+    // 관리자이거나 댓글 작성자인 경우 삭제 가능
+    return isAdmin || comment.author.userId === user.id;
   };
 
   const handleSubmitPost = () => {
@@ -934,15 +951,17 @@ export const CommunityFeed = () => {
                               {comment.likes}
                             </Button>
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeleteComment(post.id, comment.id)}
-                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-500"
-                            title="댓글 삭제"
-                          >
-                            <X className="w-3 h-3" />
-                          </Button>
+                          {canDeleteComment(comment) && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteComment(post.id, comment.id)}
+                              className="h-6 w-6 p-0 text-gray-400 hover:text-red-500"
+                              title="댓글 삭제"
+                            >
+                              <X className="w-3 h-3" />
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -952,33 +971,41 @@ export const CommunityFeed = () => {
             )}
 
             {/* 댓글 작성 */}
-            <div className="space-y-2 pt-2">
-              <Input
-                placeholder="닉네임 (선택사항)"
-                value={commentAuthor[post.id] || ''}
-                onChange={(e) => setCommentAuthor({ ...commentAuthor, [post.id]: e.target.value })}
-                className="text-sm"
-              />
-              <div className="flex gap-2">
+            {user ? (
+              <div className="space-y-2 pt-2">
                 <Input
-                  placeholder="댓글을 입력하세요..."
-                  value={newComment[post.id] || ''}
-                  onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      handleAddComment(post.id);
-                    }
-                  }}
+                  placeholder="닉네임 (선택사항)"
+                  value={commentAuthor[post.id] || ''}
+                  onChange={(e) => setCommentAuthor({ ...commentAuthor, [post.id]: e.target.value })}
+                  className="text-sm"
                 />
-                <Button 
-                  onClick={() => handleAddComment(post.id)}
-                  size="sm"
-                  className="bg-primary"
-                >
-                  작성
-                </Button>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="댓글을 입력하세요..."
+                    value={newComment[post.id] || ''}
+                    onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleAddComment(post.id);
+                      }
+                    }}
+                  />
+                  <Button 
+                    onClick={() => handleAddComment(post.id)}
+                    size="sm"
+                    className="bg-primary"
+                  >
+                    작성
+                  </Button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="pt-2 text-center">
+                <p className="text-sm text-muted-foreground">
+                  댓글을 작성하려면 <a href="/auth" className="text-primary hover:underline">로그인</a>이 필요합니다.
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
       ))}

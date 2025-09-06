@@ -206,6 +206,477 @@ const mockPosts: CommunityPost[] = [
         isExpertAnswer: true
       }
     ]
+  },
+  {
+    id: '5',
+    type: 'question',
+    author: {
+      name: '새콤달콤맘',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '4세 딸, 또래관계에서 소극적이에요',
+    content: '어린이집에서 친구들과 잘 놀지 못하고 혼자 있는 시간이 많다고 합니다. 집에서는 활발한데 밖에서만 소극적이라서 걱정됩니다. 사회성 향상을 위한 방법이 있을까요?',
+    tags: ['사회성', '4세', '또래관계', '질문'],
+    timestamp: '3시간 전',
+    likes: 8,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '6',
+    type: 'success',
+    author: {
+      name: '익명',
+      isAnonymous: true,
+      isExpert: false,
+      isInstitution: false
+    },
+    title: '감각통합치료 6개월 후 놀라운 변화!',
+    content: '6세 아들이 감각과민으로 힘들어했는데, 참소리센터에서 감각통합치료를 받고 일상생활이 많이 편해졌어요. 이제 새로운 음식도 시도하고, 촉감놀이도 즐겁게 합니다. 정말 감사해요!',
+    tags: ['감각통합치료', '6세', '감각과민', '성공사례'],
+    timestamp: '5시간 전',
+    likes: 22,
+    hasLiked: false,
+    comments: [
+      {
+        id: '7',
+        author: {
+          name: '참소리센터',
+          isExpert: false,
+          isInstitution: true,
+          title: '아동발달센터'
+        },
+        content: '아이가 정말 많이 발전했어요! 앞으로도 꾸준히 함께해요 😊',
+        timestamp: '3시간 전',
+        likes: 5
+      }
+    ]
+  },
+  {
+    id: '7',
+    type: 'review',
+    author: {
+      name: '하늘이네',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '창원 우리ABA센터 솔직후기',
+    content: '자폐스펙트럼 진단받은 5세 아들을 1년간 치료받았습니다. 개별 맞춤 프로그램이 정말 체계적이고, 선생님들이 아이를 진심으로 아껴주시는 게 느껴졌어요. 부모교육도 함께 해주셔서 집에서도 일관성 있게 지도할 수 있었습니다.',
+    tags: ['우리ABA센터', '창원', '자폐스펙트럼', '리뷰'],
+    timestamp: '6시간 전',
+    likes: 19,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '8',
+    type: 'question',
+    author: {
+      name: '익명',
+      isAnonymous: true,
+      isExpert: false,
+      isInstitution: false
+    },
+    title: '3세 아이 말이 늦어서 걱정이에요',
+    content: '3세 2개월인데 아직 두 단어 조합이 어려워요. 주변에서는 남자아이라 늦다고 하는데, 언제까지 기다려봐야 할까요? 언어치료를 시작해야 하는 시기가 궁금합니다.',
+    tags: ['언어발달', '3세', '말늦은아이', '질문'],
+    timestamp: '8시간 전',
+    likes: 15,
+    hasLiked: false,
+    comments: [
+      {
+        id: '8',
+        author: {
+          name: '이소영',
+          isExpert: true,
+          isInstitution: false,
+          title: '언어치료사',
+          avatar: '/api/placeholder/30/30'
+        },
+        content: '3세에 두 단어 조합이 어렵다면 언어평가를 받아보시는 걸 추천드려요. 조기 개입이 중요하니 늦지 않게 전문가 상담받아보세요.',
+        timestamp: '6시간 전',
+        likes: 12,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  {
+    id: '9',
+    type: 'success',
+    author: {
+      name: '별빛엄마',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '선택적 함묵증 극복 성공담',
+    content: '7세 딸이 집에서는 말을 잘 하는데 학교에서는 전혀 말을 하지 않았어요. 선택적 함묵증 진단 후 별하센터에서 9개월간 치료받고 이제는 학교에서도 친구들과 대화할 수 있게 되었습니다!',
+    tags: ['선택적함묵증', '7세', '별하센터', '성공사례'],
+    timestamp: '10시간 전',
+    likes: 26,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '10',
+    type: 'question',
+    author: {
+      name: '고민맘',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '틱장애 있는 9세, 어떻게 도와줘야 할까요?',
+    content: '최근 눈 깜빡임과 어깨 들썩임이 심해졌어요. 병원에서는 틱장애라고 하는데, 아이가 스트레스받지 않게 하면서도 증상 개선에 도움이 되는 방법이 있을까요?',
+    tags: ['틱장애', '9세', '스트레스', '질문'],
+    timestamp: '12시간 전',
+    likes: 11,
+    hasLiked: false,
+    comments: [
+      {
+        id: '9',
+        author: {
+          name: '정민수',
+          isExpert: true,
+          isInstitution: false,
+          title: '행동치료사',
+          avatar: '/api/placeholder/30/30'
+        },
+        content: '틱장애는 스트레스와 밀접한 관련이 있습니다. 아이의 스트레스 요인을 파악하고 이완훈련을 통해 도움을 받을 수 있어요. 상세한 상담을 추천드립니다.',
+        timestamp: '10시간 전',
+        likes: 8,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  {
+    id: '11',
+    type: 'review',
+    author: {
+      name: '행복한하루',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '엘림센터 인지치료 후기',
+    content: '경계선지능으로 학습에 어려움을 겪던 8세 아들이 엘림센터에서 1년간 인지치료를 받았습니다. 아이의 속도에 맞춰 천천히 지도해주신 덕분에 자신감도 생기고 학습능력도 향상되었어요.',
+    tags: ['엘림센터', '인지치료', '경계선지능', '리뷰'],
+    timestamp: '1일 전',
+    likes: 17,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '12',
+    type: 'success',
+    author: {
+      name: '익명',
+      isAnonymous: true,
+      isExpert: false,
+      isInstitution: false
+    },
+    title: '불안장애 청소년, 상담치료로 회복했어요',
+    content: '16세 딸이 심한 사회불안으로 학교생활이 어려웠는데, 전문상담사와 8개월간 치료받으며 점차 회복되었습니다. 이제는 발표도 할 수 있게 되었어요. 포기하지 말고 전문가의 도움을 받으시길 추천해요.',
+    tags: ['불안장애', '16세', '상담치료', '성공사례'],
+    timestamp: '1일 전',
+    likes: 21,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '13',
+    type: 'question',
+    author: {
+      name: '걱정엄마',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '5세 아이 과격한 행동, 어떻게 대처해야 할까요?',
+    content: '친구들을 때리거나 물건을 던지는 행동이 자주 일어나요. 말로 타이르면 그 순간은 듣는데 또 반복됩니다. 어떤 접근이 효과적일까요?',
+    tags: ['공격적행동', '5세', '행동수정', '질문'],
+    timestamp: '1일 전',
+    likes: 9,
+    hasLiked: false,
+    comments: [
+      {
+        id: '10',
+        author: {
+          name: '김현아',
+          isExpert: true,
+          isInstitution: false,
+          title: 'ABA치료사',
+          avatar: '/api/placeholder/30/30'
+        },
+        content: '공격적 행동의 원인을 먼저 파악하는 것이 중요해요. 감정조절 어려움, 의사소통 문제 등 다양한 원인이 있을 수 있습니다. 개별 평가 후 체계적인 행동수정 프로그램을 추천드려요.',
+        timestamp: '20시간 전',
+        likes: 7,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  {
+    id: '14',
+    type: 'review',
+    author: {
+      name: '희망가득',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '해오름센터 놀이치료 솔직 후기',
+    content: '4세 딸의 사회성 문제로 해오름센터에서 놀이치료를 받았습니다. 처음에는 효과가 있을까 의심스러웠는데, 6개월 후 아이가 먼저 친구들에게 다가가는 모습을 보고 깜짝 놀랐어요. 정말 감사합니다!',
+    tags: ['해오름센터', '놀이치료', '사회성', '리뷰'],
+    timestamp: '2일 전',
+    likes: 14,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '15',
+    type: 'success',
+    author: {
+      name: '무지개엄마',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '발달지연 3세, 통합치료로 빠른 발전!',
+    content: '운동발달과 언어발달이 모두 늦었던 아들이 해우터음센터에서 통합치료를 받고 6개월 만에 눈에 띄는 발전을 보였어요. 여러 영역을 함께 치료받으니 시너지 효과가 컸습니다.',
+    tags: ['발달지연', '3세', '통합치료', '성공사례'],
+    timestamp: '2일 전',
+    likes: 28,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '16',
+    type: 'question',
+    author: {
+      name: '익명',
+      isAnonymous: true,
+      isExpert: false,
+      isInstitution: false
+    },
+    title: '자해행동 하는 11세, 어떻게 도와줘야 할까요?',
+    content: '스트레스받을 때 자신을 때리거나 머리카락을 뽑는 행동을 합니다. 병원에서는 약물치료를 권하는데, 다른 방법은 없을까요? 정말 걱정됩니다.',
+    tags: ['자해행동', '11세', '스트레스', '질문'],
+    timestamp: '2일 전',
+    likes: 13,
+    hasLiked: false,
+    comments: [
+      {
+        id: '11',
+        author: {
+          name: '박지혜',
+          isExpert: true,
+          isInstitution: false,
+          title: '임상심리사',
+          avatar: '/api/placeholder/30/30'
+        },
+        content: '자해행동은 즉시 전문적인 개입이 필요합니다. 약물치료와 함께 인지행동치료, 감정조절 훈련 등을 병행하면 더 효과적입니다. 꼭 전문가와 상담받아보세요.',
+        timestamp: '1일 전',
+        likes: 11,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  {
+    id: '17',
+    type: 'review',
+    author: {
+      name: '사랑가득집',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '한점미소센터 언어치료 1년 후기',
+    content: '2세 때부터 언어발달이 늦었던 아들이 한점미소센터에서 3년간 치료받았습니다. 이제 7세가 되어 또래와 자연스럽게 대화하며 학교생활도 잘 하고 있어요. 긴 시간이었지만 포기하지 않길 잘했습니다.',
+    tags: ['한점미소센터', '언어치료', '장기치료', '리뷰'],
+    timestamp: '3일 전',
+    likes: 33,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '18',
+    type: 'success',
+    author: {
+      name: '희망나무',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '강박증 치료 성공 사례 공유',
+    content: '13세 아들의 강박증상(손씻기, 확인행동)이 심해져서 일상생활이 어려웠는데, 인지행동치료를 통해 6개월 만에 많이 호전되었습니다. 가족치료도 함께 받아서 전체적인 도움이 되었어요.',
+    tags: ['강박증', '13세', '인지행동치료', '성공사례'],
+    timestamp: '3일 전',
+    likes: 19,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '19',
+    type: 'question',
+    author: {
+      name: '첫째맘',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '아스퍼거 증후군 진단, 어떤 치료가 효과적일까요?',
+    content: '8세 아들이 최근 아스퍼거 증후군 진단을 받았습니다. 사회성은 부족하지만 학습능력은 뛰어난 편이에요. 어떤 치료나 교육이 도움이 될까요?',
+    tags: ['아스퍼거', '8세', '사회성', '질문'],
+    timestamp: '3일 전',
+    likes: 7,
+    hasLiked: false,
+    comments: [
+      {
+        id: '12',
+        author: {
+          name: '서영희',
+          isExpert: true,
+          isInstitution: false,
+          title: '발달장애전문가',
+          avatar: '/api/placeholder/30/30'
+        },
+        content: '아스퍼거 증후군의 경우 사회기술훈련과 감정인식 프로그램이 효과적입니다. 아이의 강점을 활용한 개별화된 접근이 중요해요.',
+        timestamp: '2일 전',
+        likes: 6,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  {
+    id: '20',
+    type: 'success',
+    author: {
+      name: '익명',
+      isAnonymous: true,
+      isExpert: false,
+      isInstitution: false
+    },
+    title: '소리엘센터에서 받은 감동적인 치료 경험',
+    content: '중증 자폐진단을 받은 4세 아들이 소리엘센터에서 2년간 ABA치료를 받았습니다. 처음에는 눈맞춤도 어려웠는데, 이제는 간단한 의사소통이 가능해졌어요. 선생님들의 전문성과 사랑에 정말 감사해요.',
+    tags: ['소리엘센터', '중증자폐', 'ABA치료', '성공사례'],
+    timestamp: '4일 전',
+    likes: 41,
+    hasLiked: false,
+    comments: [
+      {
+        id: '13',
+        author: {
+          name: '소리엘센터',
+          isExpert: false,
+          isInstitution: true,
+          title: '아동발달센터'
+        },
+        content: '아이의 발전하는 모습을 보며 저희도 큰 기쁨을 느꼈습니다. 앞으로도 함께 노력해나가요! 💪',
+        timestamp: '3일 전',
+        likes: 12
+      }
+    ]
+  },
+  {
+    id: '21',
+    type: 'review',
+    author: {
+      name: '꿈나무엄마',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '우아함센터 미술치료 후기',
+    content: '감정표현이 서툰 6세 딸이 우아함센터에서 미술치료를 받았어요. 그림을 통해 마음을 표현하는 법을 배우면서 정서적으로 많이 안정되었습니다. 창의성도 늘어나서 일석이조예요!',
+    tags: ['우아함센터', '미술치료', '감정표현', '리뷰'],
+    timestamp: '4일 전',
+    likes: 16,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '22',
+    type: 'question',
+    author: {
+      name: '초보엄마',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '2세 아이 떼쓰기가 너무 심해요',
+    content: '마트에서, 집에서 원하는 게 안 되면 바닥에 드러누워서 30분 넘게 울어요. 어떻게 대처해야 올바른 양육일까요? 주변 시선도 신경 쓰여서 스트레스가 심합니다.',
+    tags: ['떼쓰기', '2세', '양육', '질문'],
+    timestamp: '5일 전',
+    likes: 18,
+    hasLiked: false,
+    comments: [
+      {
+        id: '14',
+        author: {
+          name: '김나연',
+          isExpert: true,
+          isInstitution: false,
+          title: '아동심리상담사',
+          avatar: '/api/placeholder/30/30'
+        },
+        content: '2세는 자기조절능력이 아직 미숙한 시기예요. 일관성 있는 반응과 감정 공감이 중요합니다. 떼를 쓸 때 안전한 환경에서 감정을 수용해주되, 원하는 것을 들어주지는 않는 것이 좋아요.',
+        timestamp: '4일 전',
+        likes: 15,
+        isExpertAnswer: true
+      }
+    ]
+  },
+  {
+    id: '23',
+    type: 'success',
+    author: {
+      name: '행복이네',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '학습장애 극복 성공기',
+    content: '9세 아들의 난독증으로 인한 학습장애가 정관센터의 학습치료를 통해 많이 개선되었어요. 특수교육과 일반교육을 병행하며 아이의 자존감도 회복되었습니다. 포기하지 않으시길!',
+    tags: ['학습장애', '난독증', '정관센터', '성공사례'],
+    timestamp: '5일 전',
+    likes: 25,
+    hasLiked: false,
+    comments: []
+  },
+  {
+    id: '24',
+    type: 'review',
+    author: {
+      name: '감사한마음',
+      isAnonymous: false,
+      isExpert: false,
+      isInstitution: false,
+      avatar: '/api/placeholder/40/40'
+    },
+    title: '메이플ABA센터 체험 후기',
+    content: '자폐스펙트럼 5세 아들을 위해 여러 센터를 둘러본 중 메이플ABA센터가 가장 체계적이었어요. 개별화된 프로그램과 데이터 기반 접근법이 인상적이었습니다. 치료 시작 예정이에요!',
+    tags: ['메이플ABA센터', '자폐스펙트럼', '체험후기', '리뷰'],
+    timestamp: '6일 전',
+    likes: 12,
+    hasLiked: false,
+    comments: []
   }
 ];
 

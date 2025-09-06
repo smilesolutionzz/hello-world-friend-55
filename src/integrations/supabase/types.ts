@@ -232,6 +232,51 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_posts: {
+        Row: {
+          created_at: string
+          id: string
+          is_anonymous: boolean | null
+          points_reward: number | null
+          problem_description: string
+          solution: string | null
+          solved_at: string | null
+          solved_by: string | null
+          status: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          points_reward?: number | null
+          problem_description: string
+          solution?: string | null
+          solved_at?: string | null
+          solved_by?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          points_reward?: number | null
+          problem_description?: string
+          solution?: string | null
+          solved_at?: string | null
+          solved_by?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           created_at: string
@@ -881,6 +926,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      growth_stories: {
+        Row: {
+          after_story: string
+          before_story: string
+          category: string | null
+          created_at: string
+          id: string
+          is_anonymous: boolean | null
+          likes_count: number | null
+          media_urls: Json | null
+          title: string
+          transformation_date: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          after_story: string
+          before_story: string
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          likes_count?: number | null
+          media_urls?: Json | null
+          title: string
+          transformation_date?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          after_story?: string
+          before_story?: string
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          likes_count?: number | null
+          media_urls?: Json | null
+          title?: string
+          transformation_date?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       home_service_bookings: {
         Row: {
@@ -2112,6 +2202,51 @@ export type Database = {
         }
         Relationships: []
       }
+      reversal_stories: {
+        Row: {
+          created_at: string
+          id: string
+          lesson_learned: string | null
+          mood_after: number | null
+          mood_before: number | null
+          reactions: Json | null
+          reversal_moment: string
+          story_date: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          worst_moment: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lesson_learned?: string | null
+          mood_after?: number | null
+          mood_before?: number | null
+          reactions?: Json | null
+          reversal_moment: string
+          story_date?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          worst_moment: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lesson_learned?: string | null
+          mood_after?: number | null
+          mood_before?: number | null
+          reactions?: Json | null
+          reversal_moment?: string
+          story_date?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          worst_moment?: string
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           created_at: string
@@ -2633,6 +2768,48 @@ export type Database = {
           message?: string
           rating?: number
           test_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_growth_points: {
+        Row: {
+          challenge_points: number | null
+          created_at: string
+          current_rank: number | null
+          id: string
+          last_activity_date: string | null
+          reversal_points: number | null
+          story_points: number | null
+          streak_days: number | null
+          total_points: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_points?: number | null
+          created_at?: string
+          current_rank?: number | null
+          id?: string
+          last_activity_date?: string | null
+          reversal_points?: number | null
+          story_points?: number | null
+          streak_days?: number | null
+          total_points?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_points?: number | null
+          created_at?: string
+          current_rank?: number | null
+          id?: string
+          last_activity_date?: string | null
+          reversal_points?: number | null
+          story_points?: number | null
+          streak_days?: number | null
+          total_points?: number | null
           updated_at?: string
           user_id?: string
         }

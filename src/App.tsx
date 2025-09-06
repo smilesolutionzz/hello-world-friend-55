@@ -58,6 +58,7 @@ import NotFound from "./pages/NotFound";
 import ShareView from "./pages/ShareView";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import GrowthCommunity from "./pages/GrowthCommunity";
 import TokenTest from "./pages/TokenTest";
 import StressPackage from "./pages/StressPackage";
 import DepressionPackage from "./pages/DepressionPackage";
@@ -138,6 +139,7 @@ const App = () => {
           
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/growth-community" element={<GrowthCommunity />} />
           <Route path="/subscription" element={<TokenSubscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
           <Route path="/admin" element={<AdminDashboard />} />

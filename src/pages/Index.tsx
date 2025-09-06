@@ -7,6 +7,10 @@ import PlatformOverview from "@/components/PlatformOverview";
 import VideoShowcase from "@/components/VideoShowcase";
 import TrustIndicators from "@/components/TrustIndicators";
 import ClientLogos from "@/components/ClientLogos";
+import SecurityTrustIndicators from "@/components/SecurityTrustIndicators";
+import TestimonialSection from "@/components/TestimonialSection";
+import CommunityPlatform from "@/components/CommunityPlatform";
+import ExpertVerificationBadge from "@/components/ExpertVerificationBadge";
 
 import ReferralWidget from "@/components/ReferralWidget";
 import ReferralCodeInput from "@/components/ReferralCodeInput";
@@ -134,8 +138,39 @@ const Index = () => {
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.3s' }}>
             <PlatformOverview />
           </div>
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
+          
+          {/* 보안 및 신뢰성 섹션 */}
+          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.35s' }}>
+            <SecurityTrustIndicators />
+          </div>
+          
+          {/* 전문가 검증 데모 */}
+          <div className="container mx-auto px-4 py-4 animate-fade-in w-full" style={{ animationDelay: '0.37s' }}>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold mb-2">AI + 전문가 2단계 검증 시스템</h2>
+              <p className="text-muted-foreground">모든 분석 결과는 전문가가 2차 검토합니다</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              <ExpertVerificationBadge status="ai_analysis" />
+              <ExpertVerificationBadge status="pending_expert" />
+              <ExpertVerificationBadge status="expert_reviewed" expertName="김소아과 원장" />
+              <ExpertVerificationBadge status="verified" />
+            </div>
+          </div>
+          
+          {/* 실제 사례 및 후기 */}
+          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
+            <h2 className="text-2xl font-bold text-center mb-6">실제 이용 후기</h2>
+            <TestimonialSection />
+          </div>
+          
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.42s' }}>
             <ClientLogos />
+          </div>
+          
+          {/* 커뮤니티 플랫폼 */}
+          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.45s' }}>
+            <CommunityPlatform />
           </div>
           <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.5s' }}>
             <ReferralWidget />

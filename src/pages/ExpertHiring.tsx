@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { mockInstitutions } from '@/data/mockInstitutions';
+import { CommunityFeed } from '@/components/CommunityFeed';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -438,8 +439,11 @@ const ExpertHiring = () => {
         </Card>
 
         {/* 탭 네비게이션 - 커뮤니티 스타일 */}
-        <Tabs defaultValue="experts" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-white shadow-sm">
+        <Tabs defaultValue="community" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 bg-white shadow-sm">
+            <TabsTrigger value="community" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+              커뮤니티
+            </TabsTrigger>
             <TabsTrigger value="experts" className="data-[state=active]:bg-primary data-[state=active]:text-white">
               개인 전문가
             </TabsTrigger>
@@ -450,6 +454,11 @@ const ExpertHiring = () => {
               AI 매칭
             </TabsTrigger>
           </TabsList>
+
+          {/* 커뮤니티 피드 탭 */}
+          <TabsContent value="community" className="space-y-6">
+            <CommunityFeed />
+          </TabsContent>
 
           {/* AI 추천 전문가 탭 */}
           <TabsContent value="ai-matching" className="space-y-6">

@@ -419,7 +419,7 @@ const ExpertHiring = () => {
             {/* 통계 */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">289</div>
+                <div className="text-3xl font-bold text-primary">129</div>
                 <div className="text-sm text-muted-foreground">인증 전문가</div>
               </div>
               <div className="text-center">
@@ -431,7 +431,7 @@ const ExpertHiring = () => {
                 <div className="text-sm text-muted-foreground">만족도</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">2,847</div>
+                <div className="text-3xl font-bold text-green-600">247</div>
                 <div className="text-sm text-muted-foreground">성공 매칭</div>
               </div>
             </div>

@@ -42,9 +42,7 @@ export default function Institutions() {
     const loadInstitutions = async () => {
       try {
         const { data, error } = await supabase
-          .from('public_institutions')
-          .select('*')
-          .order('name');
+          .rpc('get_public_institutions');
 
         if (error) {
           console.error('Error loading institutions:', error);

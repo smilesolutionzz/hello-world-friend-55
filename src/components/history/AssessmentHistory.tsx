@@ -73,7 +73,7 @@ const AssessmentHistory = () => {
     }
   };
 
-  const getRiskBadge = (level?: 'low' | 'medium' | 'high') => {
+  const getRiskBadge = (level?: string) => {
     if (!level) return null;
     
     const configs = {
@@ -82,7 +82,8 @@ const AssessmentHistory = () => {
       high: { color: "bg-red-100 text-red-700", label: "높음", icon: AlertTriangle }
     };
     
-    const config = configs[level];
+    // Safely get config with fallback to 'medium' if level is not recognized
+    const config = configs[level as keyof typeof configs] || configs.medium;
     const Icon = config.icon;
     
     return (

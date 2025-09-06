@@ -3251,15 +3251,6 @@ export type Database = {
         }
         Relationships: []
       }
-      safe_admin_overview_view: {
-        Row: {
-          total_observations: number | null
-          total_tests: number | null
-          total_tokens_in_circulation: number | null
-          total_users: number | null
-        }
-        Relationships: []
-      }
     }
     Functions: {
       add_daily_tokens: {

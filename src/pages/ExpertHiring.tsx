@@ -494,7 +494,11 @@ const ExpertHiring = () => {
               제휴 기관
             </TabsTrigger>
             <TabsTrigger value="ai-matching" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-              AI 매칭
+              <div className="flex items-center gap-2">
+                <Brain className="w-4 h-4" />
+                AI 매칭
+                <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs">미션</Badge>
+              </div>
             </TabsTrigger>
           </TabsList>
 
@@ -894,14 +898,100 @@ const ExpertHiring = () => {
                   </div>
                 </div>
                 
+                {/* 매칭 진행률 미션 */}
+                <Card className="bg-white/80 backdrop-blur-sm border-primary/30 mb-6">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                          <Medal className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900">매칭 미션 완료하기</h4>
+                          <p className="text-sm text-muted-foreground">단계별로 완료하여 최적의 전문가를 찾아보세요!</p>
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="border-purple-200 text-purple-700 bg-purple-50">
+                        35% 완료
+                      </Badge>
+                    </div>
+                    
+                    {/* 진행률 바 */}
+                    <div className="w-full bg-gray-200 rounded-full h-3 mb-6">
+                      <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-500" style={{ width: '35%' }}></div>
+                    </div>
+                    
+                    {/* 미션 단계들 */}
+                    <div className="space-y-4">
+                      {/* 완료된 미션 */}
+                      <div className="flex items-center gap-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                        <div className="flex-1">
+                          <span className="font-medium text-green-800">계정 생성</span>
+                          <p className="text-sm text-green-600">AIHPRO 계정을 성공적으로 생성했습니다</p>
+                        </div>
+                        <Badge className="bg-green-100 text-green-700">완료</Badge>
+                      </div>
+                      
+                      {/* 현재 미션 */}
+                      <div className="flex items-center gap-4 p-3 bg-purple-50 rounded-lg border border-purple-200 ring-2 ring-purple-300">
+                        <div className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">2</span>
+                        </div>
+                        <div className="flex-1">
+                          <span className="font-medium text-purple-800">평가/검사 완료</span>
+                          <p className="text-sm text-purple-600">나에게 맞는 전문가 찾기 위한 첫 번째 단계입니다</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge className="bg-purple-100 text-purple-700">진행중</Badge>
+                          <span className="text-sm font-medium text-purple-600">+50점</span>
+                        </div>
+                      </div>
+                      
+                      {/* 미완료 미션들 */}
+                      <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border border-gray-200 opacity-60">
+                        <div className="w-5 h-5 bg-gray-300 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">3</span>
+                        </div>
+                        <div className="flex-1">
+                          <span className="font-medium text-gray-700">AI 매칭 결과 확인</span>
+                          <p className="text-sm text-gray-500">AI가 추천하는 전문가 3명을 확인해보세요</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="border-gray-300 text-gray-500">대기중</Badge>
+                          <span className="text-sm font-medium text-gray-500">+30점</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border border-gray-200 opacity-60">
+                        <div className="w-5 h-5 bg-gray-300 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">4</span>
+                        </div>
+                        <div className="flex-1">
+                          <span className="font-medium text-gray-700">전문가와 첫 상담</span>
+                          <p className="text-sm text-gray-500">추천받은 전문가와 실제 상담을 시작해보세요</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="border-gray-300 text-gray-500">대기중</Badge>
+                          <span className="text-sm font-medium text-gray-500">+100점</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
                 <div className="text-center">
                   <Button 
                     size="lg" 
-                    className="bg-primary hover:bg-primary/90"
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg"
                     onClick={() => navigate('/assessment')}
                   >
-                    검사 받으러 가기
+                    <Target className="w-5 h-5 mr-2" />
+                    미션 계속하기 - 검사 받으러 가기
                   </Button>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    검사 완료 시 <span className="font-medium text-purple-600">50 매칭포인트</span>를 획득합니다
+                  </p>
                 </div>
               </CardContent>
             </Card>

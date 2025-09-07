@@ -14,12 +14,28 @@ import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 const ObservationNew = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [templates, setTemplates] = useState<any[]>([]);
   const [sessions, setSessions] = useState<any[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
   const [selectedSession, setSelectedSession] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("new-observation");
   const [loading, setLoading] = useState(true);
+
+  // 단일 관찰 템플릿 정의
+  const observationTemplate = {
+    id: 'main-observation',
+    name: '관찰 템플릿',
+    description: '심도있는 행동 관찰 및 AI 분석',
+    domain: 'comprehensive',
+    duration: '5-15분',
+    features: [
+      '체계적 행동 관찰 기록',
+      '전문가급 AI 분석 및 해석',
+      '맞춤형 개선 권고사항',
+      '상세한 PDF 리포트 제공',
+      '발달 영역별 점수 분석',
+      '장기적 추적 관리'
+    ],
+    template_type: 'comprehensive'
+  };
 
   useEffect(() => {
     loadData();
@@ -29,16 +45,6 @@ const ObservationNew = () => {
     try {
       setLoading(true);
       
-      // Load templates
-      const { data: templatesData, error: templatesError } = await supabase
-        .from('observation_templates')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order');
-
-      if (templatesError) throw templatesError;
-      setTemplates(templatesData || []);
-
       // Load user sessions
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -113,8 +119,7 @@ const ObservationNew = () => {
     return texts[status as keyof typeof texts] || status;
   };
 
-  const startNewSession = (template: any) => {
-    setSelectedTemplate(template);
+  const startNewSession = () => {
     setActiveTab("start-session");
   };
 
@@ -135,7 +140,6 @@ const ObservationNew = () => {
   const handleBack = () => {
     if (activeTab === "start-session") {
       setActiveTab("new-observation");
-      setSelectedTemplate(null);
     } else if (activeTab === "view-results") {
       setActiveTab("my-observations");
       setSelectedSession(null);
@@ -151,11 +155,11 @@ const ObservationNew = () => {
   }
 
   // 세션 시작 화면
-  if (activeTab === "start-session" && selectedTemplate) {
+  if (activeTab === "start-session") {
     return (
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <ObservationFormMobile 
-          template={selectedTemplate}
+          template={observationTemplate}
           onSessionCreated={handleSessionCreated}
           onBack={handleBack}
         />
@@ -226,27 +230,30 @@ const ObservationNew = () => {
               </p>
             </div>
             
-            {/* 템플릿 목록 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl mx-auto px-2">
-              {templates.map((template) => (
-                <Card key={template.id} className="hover:shadow-xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border-2 hover:border-primary/50 relative overflow-hidden group">
+            {/* 템플릿 */}
+            <div className="max-w-2xl mx-auto px-2">
+              {(() => {
+                const template = observationTemplate;
+                return (
+                <Card className="hover:shadow-xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border-2 hover:border-primary/50 relative overflow-hidden group">
                   {/* Premium Badge */}
-                  {template.template_type === 'detailed' && (
-                    <div className="absolute top-4 right-4 z-10">
-                      <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
-                        전문가급
-                      </Badge>
-                    </div>
-                  )}
+                  <div className="absolute top-4 right-4 z-10">
+                    <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
+                      전문가급
+                    </Badge>
+                  </div>
                   
                   <CardHeader className="text-center pb-4">
-                    <div className={`w-16 h-16 ${template.template_type === 'basic' ? 'bg-gradient-to-br from-blue-500 to-blue-600' : 'bg-gradient-to-br from-purple-500 to-purple-600'} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                      <ClipboardList className="h-8 w-8 text-white" />
+                    <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                      <ClipboardList className="h-10 w-10 text-white" />
                     </div>
-                    <CardTitle className="text-xl mb-2">{template.name}</CardTitle>
+                    <CardTitle className="text-2xl mb-2">{template.name}</CardTitle>
+                    <CardDescription className="text-base mb-3">
+                      {template.description}
+                    </CardDescription>
                     <div className="flex items-center justify-center gap-2 mb-3 flex-wrap">
-                      <Badge className={getDomainColor(template.domain)} variant="secondary">
-                        {getDomainDisplayName(template.domain)}
+                      <Badge className="bg-purple-100 text-purple-800" variant="secondary">
+                        종합분석
                       </Badge>
                       <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
                         <Clock className="h-3 w-3 mr-1" />
@@ -260,9 +267,9 @@ const ObservationNew = () => {
                     <div className="space-y-3">
                       <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">포함 기능</h4>
                       <div className="space-y-2">
-                        {template.features.slice(0, 4).map((feature: string, index: number) => (
+                        {template.features.map((feature: string, index: number) => (
                           <div key={index} className="flex items-center gap-2 text-sm">
-                            <div className={`w-2 h-2 rounded-full ${template.template_type === 'basic' ? 'bg-blue-500' : 'bg-purple-500'}`} />
+                            <div className="w-2 h-2 rounded-full bg-purple-500" />
                             <span>{feature}</span>
                           </div>
                         ))}
@@ -276,8 +283,8 @@ const ObservationNew = () => {
                         <div className="text-xs text-muted-foreground">분석 시간</div>
                       </div>
                       <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className={`text-lg font-bold ${template.template_type === 'basic' ? 'text-blue-600' : 'text-purple-600'}`}>
-                          {template.template_type === 'basic' ? '3 토큰' : '5 토큰'}
+                        <div className="text-lg font-bold text-purple-600">
+                          5 토큰
                         </div>
                         <div className="text-xs text-muted-foreground">이용 비용</div>
                       </div>
@@ -285,26 +292,23 @@ const ObservationNew = () => {
 
                     {/* CTA Button */}
                     <Button 
-                      className={`w-full h-11 text-white font-semibold ${
-                        template.template_type === 'basic' 
-                          ? 'bg-blue-600 hover:bg-blue-700' 
-                          : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
-                      }`}
-                      onClick={() => startNewSession(template)}
+                      className="w-full h-11 text-white font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                      onClick={() => startNewSession()}
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      {template.template_type === 'basic' ? '빠른 분석 시작' : '전문가 분석 시작'}
+                      관찰 분석 시작하기
                     </Button>
 
                     {/* 보장 */}
                     <div className="text-center">
                       <div className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full">
-                        ✅ {template.template_type === 'basic' ? '즉시 결과 보장' : '전문가급 분석 보장'}
+                        ✅ 전문가급 심도깊은 분석 보장
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                );
+              })()}
             </div>
           </TabsContent>
 

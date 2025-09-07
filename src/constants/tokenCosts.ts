@@ -52,32 +52,27 @@ export const TOKEN_COST_DESCRIPTIONS = {
 
 // 토큰 패키지 추천
 export const TOKEN_PACKAGES = {
-  BASIC: {
-    name: "기본팩",
-    tokens: 20,
+  STARTER: {
+    name: "Starter 플랜",
+    tokens: 50,
     price: 9900,
     recommended_for: "월 2-3회 기본검사 이용자",
     best_for: ["기본 심리검사", "엔터테인먼트 테스트"]
   },
-  STANDARD: {
-    name: "스탠다드팩", 
-    tokens: 50,
+  PRO: {
+    name: "Pro 플랜 (추천)", 
+    tokens: 150,
     price: 19900,
     recommended_for: "정기적 상담 및 분석 이용자",
-    best_for: ["AI상담", "관찰일지", "고급분석"]
+    best_for: ["AI상담", "관찰일지", "고급분석"],
+    is_popular: true
   },
   PREMIUM: {
-    name: "프리미엄팩",
-    tokens: 150,
-    price: 49900,
+    name: "Premium 플랜",
+    tokens: 999999, // 무제한을 의미하는 큰 수
+    price: 39900,
     recommended_for: "전문적 분석이 필요한 이용자",
-    best_for: ["종합검사", "전문가리포트", "IEP생성"]
-  },
-  PROFESSIONAL: {
-    name: "전문가팩",
-    tokens: 300,
-    price: 99900,
-    recommended_for: "기관 또는 집중관리 대상자",
-    best_for: ["종합리포트", "모든 기능 무제한"]
+    best_for: ["종합검사", "전문가리포트", "IEP생성", "무제한 사용"],
+    is_unlimited: true
   }
 } as const;

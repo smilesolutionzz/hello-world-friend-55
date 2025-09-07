@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import WeeklyMissions from "@/components/WeeklyMissions";
+// import WeeklyMissions from "@/components/WeeklyMissions"; // 비활성화됨
 import { 
   TrendingUp, 
   TrendingDown,
@@ -124,10 +124,11 @@ export function WeeklyInsights({
         </div>
       </div>
 
-      {/* 주간 미션 섹션 추가 */}
+      {/* 주간 미션 섹션 임시 비활성화 - 구현 완료 후 활성화 예정
       <div className="mt-6">
         <WeeklyMissions />
       </div>
+      */}
     </Card>
   );
 }

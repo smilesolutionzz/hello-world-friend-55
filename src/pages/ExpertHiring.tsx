@@ -705,6 +705,11 @@ const ExpertHiring = () => {
                     <SelectItem value="medical_center">의료기관</SelectItem>
                     <SelectItem value="counseling_center">상담센터</SelectItem>
                     <SelectItem value="oriental_clinic">한의원</SelectItem>
+                    <SelectItem value="day_activity_center">주간활동센터</SelectItem>
+                    <SelectItem value="after_school_center">방과후활동센터</SelectItem>
+                    <SelectItem value="day_care_center">주간보호센터</SelectItem>
+                    <SelectItem value="welfare_center">복지관</SelectItem>
+                    <SelectItem value="nursing_home">요양원</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={institutionRegionFilter} onValueChange={setInstitutionRegionFilter}>

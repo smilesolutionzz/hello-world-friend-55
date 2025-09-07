@@ -354,10 +354,25 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
     } catch (error: any) {
       console.error('Submission error:', error);
       setFormState('error');
+      
+      // 에러 타입에 따른 구체적인 메시지 제공
+      let errorMessage = "관찰 분석 중 오류가 발생했습니다.";
+      
+      if (error.message?.includes('Edge Function returned a non-2xx status code')) {
+        errorMessage = "서버에서 요청을 처리하는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.";
+      } else if (error.message?.includes('토큰')) {
+        errorMessage = error.message;
+      } else if (error.message?.includes('최소') && error.message?.includes('자')) {
+        errorMessage = error.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
-        title: "제출 실패",
-        description: error.message || "관찰 분석 중 오류가 발생했습니다.",
+        title: "AI 분석 실패",
+        description: errorMessage,
         variant: "destructive",
+        duration: 5000,
       });
     }
   };

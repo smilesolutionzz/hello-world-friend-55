@@ -108,14 +108,16 @@ serve(async (req) => {
 
     // 토큰 차감 처리
     const tokenCost = requestBody.tokenCost || (requestBody.mode === 'detailed' ? 5 : 3);
+    let tokenData: any = null; // 에러 핸들링에서 사용할 수 있도록 상위 스코프로 이동
     
     // 현재 토큰 잔액 확인 및 차감
-    const { data: tokenData, error: tokenError } = await supabaseServiceClient
+    const { data: tokenDataResult, error: tokenError } = await supabaseServiceClient
       .from('user_tokens')
       .select('current_tokens, total_used')
       .eq('user_id', user.id)
       .single();
 
+    tokenData = tokenDataResult; // 상위 스코프 변수에 할당
     if (tokenError || !tokenData) {
       return new Response(JSON.stringify({ 
         ok: false, 
@@ -151,8 +153,8 @@ serve(async (req) => {
 
     logStep('Token deducted', { tokenCost, remainingTokens: tokenData.current_tokens - tokenCost });
 
-    // Validation
-    const minLength = requestBody.mode === 'detailed' ? 150 : 50;
+    // Validation - UI와 일치하도록 최소 글자수를 50자로 통일
+    const minLength = 50;
     if (!requestBody.text || requestBody.text.trim().length < minLength) {
       return new Response(JSON.stringify({ 
         ok: false, 
@@ -415,11 +417,35 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep('ERROR', { message: errorMessage });
+    logStep('ERROR', { message: errorMessage, stack: error instanceof Error ? error.stack : undefined });
+    
+    // 토큰을 다시 복구 (에러 발생 시 토큰을 돌려주기)
+    if (user?.id && tokenCost) {
+      try {
+        await supabaseServiceClient
+          .from('user_tokens')
+          .update({ 
+            current_tokens: tokenData.current_tokens, // 원래 토큰으로 복구
+            total_used: tokenData.total_used 
+          })
+          .eq('user_id', user.id);
+        logStep('Token refunded due to error', { refundedTokens: tokenCost });
+      } catch (refundError) {
+        logStep('Token refund failed', { error: refundError });
+      }
+    }
+    
+    // OpenAI API 에러인 경우 더 구체적인 메시지
+    let userMessage = '분석 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+    if (errorMessage.includes('OpenAI')) {
+      userMessage = 'AI 분석 서비스에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.';
+    } else if (errorMessage.includes('rate limit') || errorMessage.includes('quota')) {
+      userMessage = '현재 요청이 많아 처리가 지연되고 있습니다. 잠시 후 다시 시도해주세요.';
+    }
     
     return new Response(JSON.stringify({ 
       ok: false, 
-      message: '분석 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' 
+      message: userMessage
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

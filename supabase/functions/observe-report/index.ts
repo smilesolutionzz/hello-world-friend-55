@@ -13,11 +13,11 @@ interface ObserveReportRequest {
   context: 'home' | 'institution' | 'therapy' | 'other';
   tags: string[];
   files: { url: string; type: 'image' | 'video' }[];
-  mode: 'basic' | 'detailed' | 'free' | 'paid'; // 업데이트: basic/detailed 모드 추가
+  mode: 'basic' | 'detailed';
   targetName?: string;
   observationDate?: string;
   templateType?: string;
-  tokenCost?: number; // 토큰 비용 추가
+  tokenCost?: number;
 }
 
 interface ObserveReportResponse {
@@ -108,16 +108,14 @@ serve(async (req) => {
 
     // 토큰 차감 처리
     const tokenCost = requestBody.tokenCost || (requestBody.mode === 'detailed' ? 5 : 3);
-    let tokenData: any = null; // 에러 핸들링에서 사용할 수 있도록 상위 스코프로 이동
     
     // 현재 토큰 잔액 확인 및 차감
-    const { data: tokenDataResult, error: tokenError } = await supabaseServiceClient
+    const { data: tokenData, error: tokenError } = await supabaseServiceClient
       .from('user_tokens')
       .select('current_tokens, total_used')
       .eq('user_id', user.id)
       .single();
 
-    tokenData = tokenDataResult; // 상위 스코프 변수에 할당
     if (tokenError || !tokenData) {
       return new Response(JSON.stringify({ 
         ok: false, 
@@ -153,7 +151,7 @@ serve(async (req) => {
 
     logStep('Token deducted', { tokenCost, remainingTokens: tokenData.current_tokens - tokenCost });
 
-    // Validation - UI와 일치하도록 최소 글자수를 50자로 통일
+    // Validation
     const minLength = 50;
     if (!requestBody.text || requestBody.text.trim().length < minLength) {
       return new Response(JSON.stringify({ 
@@ -197,7 +195,6 @@ serve(async (req) => {
       other: '기타'
     };
 
-    // 분석 모드에 따른 프롬프트 조정
     const isDetailedMode = requestBody.mode === 'detailed';
     
     const basePrompt = `
@@ -222,52 +219,25 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 `;
 
     const detailedPrompt = basePrompt + `
-다음 형식으로 박사급 수준의 상세한 전문가 분석을 제공해주세요:
+다음 형식으로 상세한 전문가 분석을 제공해주세요:
 
-**종합 상황 분석**
-- 관찰된 행동의 맥락적 해석과 배경 요인 분석
-- 환경적 변인과 개인적 변인의 상호작용 평가
-- 행동의 기능과 목적에 대한 기능적 분석
+**상황 분석**
+관찰된 내용을 바탕으로 현재 상황을 구체적으로 분석해주세요.
 
-**연령별 표준 대비 현재 기능 평가**
-각 영역별로 구체적인 점수(0-100)와 함께 분석:
-- 정서조절 능력: [점수]/100 - 구체적 근거와 관찰 증거
-- 행동조절 능력: [점수]/100 - 행동의 빈도, 강도, 지속성 분석  
-- 인지기능 수준: [점수]/100 - 주의력, 기억력, 문제해결 능력 평가
-- 사회적 기능: [점수]/100 - 대인관계 및 의사소통 능력 분석
-- 신체발달 상태: [점수]/100 - 대근육 및 소근육 발달 수준 평가
+**현재 상태 평가** 
+현재 관찰된 행동 특성과 기능적 상태를 연령대별 기준과 비교하여 평가해주세요.
 
-**심층 행동 분석**
-- ABC 분석 (Antecedent-Behavior-Consequence) 적용
-- 행동의 선행조건과 후속결과 패턴 분석
-- 강화 및 소거 요인 식별
+**주요 관심 사항**
+관찰된 행동이나 특성 중 특별히 주의 깊게 관찰해야 할 사항들을 나열해주세요.
 
-**임상적 관찰 소견**
-- 주의해야 할 위험 징후나 이상 행동 패턴
-- 조기 개입이 필요한 영역 식별
-- 전문적 평가가 권장되는 구체적 사유
+**잠재적 문제점**
+현재 관찰된 내용에서 우려되는 부분이나 개선이 필요한 영역을 분석해주세요.
 
-**근거 기반 개입 전략**
-단계별 체계적 접근:
-1. 즉시 개입 (1-2주): 구체적 실행 방안
-2. 단기 목표 (1-3개월): 측정 가능한 목표 설정
-3. 중장기 목표 (3-12개월): 종합적 개선 계획
+**개선 방안**
+실제로 실행 가능한 구체적인 개선 방법들을 제시해주세요.
 
-**맞춤형 권고사항**
-- 가정환경 조성: 물리적/심리적 환경 개선 방안
-- 일상생활 구조화: 루틴 및 규칙 설정 가이드
-- 상호작용 개선: 효과적 의사소통 및 관계 형성 전략
-- 자기조절 훈련: 연령에 맞는 자기통제 기법
-
-**전문적 자원 연계**
-- 추천 전문가 유형: 임상심리사, 언어치료사, 작업치료사 등
-- 적절한 평가 도구 및 검사 권장
-- 지역사회 자원 활용 방안
-
-**추적 관찰 계획**
-- 재평가 시기 및 주기 제안
-- 관찰해야 할 핵심 지표 설정
-- 개선 정도 측정 방법 안내
+**전문가 상담 권장**
+전문적인 평가나 상담이 필요한지 여부와 그 이유를 설명해주세요.
 `;
 
     const basicPrompt = basePrompt + `
@@ -301,28 +271,21 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         messages: [
           {
             role: 'system',
-            content: `당신은 박사급 임상심리전문가이자 행동분석 전문가입니다. 모든 연령대의 관찰 기록을 최고 수준의 전문성으로 분석합니다.
+            content: `당신은 심리상담, 행동분석 전문가입니다. 모든 연령대(유아부터 노인까지)의 관찰 기록을 전문적이고 객관적으로 분석합니다.
 
-전문가 분석 지침:
-1. 대상자의 이름은 반드시 "${requestBody.targetName || '대상자'}"로 표기
-2. 연령대별 표준 기준과 비교한 객관적 평가 제공
-3. 심리학적, 행동학적 이론에 근거한 깊이있는 해석
-4. 근거 기반 개입 전략과 구체적 실행 방안 제시
-5. 정량적 점수와 정성적 분석의 균형있는 제공
-6. 예방적 관점과 치료적 관점을 모두 고려한 종합적 접근
-
-분석 품질 요구사항:
-- 각 영역별로 구체적인 점수(0-100)와 근거 제시
-- 행동의 빈도, 강도, 지속성을 고려한 정밀 분석
-- 환경적 요인과 개인적 요인의 상호작용 분석
-- 단기/중기/장기 목표를 포함한 체계적 개입 계획`
+중요한 지침:
+1. 대상자의 이름은 반드시 관찰 정보에 명시된 이름을 그대로 사용하세요
+2. "발달"이라는 용어보다는 "현재 상태", "행동 특성", "기능적 상태" 등을 사용하세요
+3. 아동 중심이 아닌 연령대에 맞는 적절한 분석을 제공하세요
+4. 실용적인 조언과 구체적인 개선방안을 제시합니다
+5. 응답은 반드시 요청된 형식을 정확히 따라주세요`
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        max_completion_tokens: isDetailedMode ? 6000 : 3000,
+        max_completion_tokens: isDetailedMode ? 4000 : 2000,
       }),
     });
 
@@ -335,74 +298,19 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     
     logStep('OpenAI response received', { textLength: analysisText.length });
 
-    // Parse the analysis response and extract domain scores
+    // Parse the analysis response
     const domainScores = { 정서: 70, 행동: 70, 인지: 70, 사회성: 70, 신체: 70 };
     
-    // Extract scores from AI response with multiple patterns
-    const patterns = [
-      /(정서조절|정서).*?(\d+)\/100/g,
-      /(행동조절|행동).*?(\d+)\/100/g,
-      /(인지기능|인지).*?(\d+)\/100/g,
-      /(사회적|사회성).*?(\d+)\/100/g,
-      /(신체발달|신체).*?(\d+)\/100/g,
-      /(정서|행동|인지|사회성|신체):\s*(\d+)/g
-    ];
-    
-    patterns.forEach(pattern => {
-      let match;
-      while ((match = pattern.exec(analysisText)) !== null) {
-        const domainName = match[1];
-        const score = parseInt(match[2]);
-        
-        // Map domain names to standard keys
-        let standardKey = '';
-        if (domainName.includes('정서')) standardKey = '정서';
-        else if (domainName.includes('행동')) standardKey = '행동';
-        else if (domainName.includes('인지')) standardKey = '인지';
-        else if (domainName.includes('사회')) standardKey = '사회성';
-        else if (domainName.includes('신체')) standardKey = '신체';
-        
-        if (standardKey && score >= 0 && score <= 100) {
-          domainScores[standardKey as keyof typeof domainScores] = score;
-        }
+    // Extract scores from AI response if present
+    const scoreRegex = /(정서|행동|인지|사회성|신체):\s*(\d+)/g;
+    let match;
+    while ((match = scoreRegex.exec(analysisText)) !== null) {
+      const domain = match[1];
+      const score = parseInt(match[2]);
+      if (domain in domainScores && score >= 0 && score <= 100) {
+        domainScores[domain as keyof typeof domainScores] = score;
       }
-    });
-
-    // Extract risk level from analysis
-    let riskLevel = '보통';
-    const riskMatches = analysisText.match(/위험도.*?:?\s*(낮음|보통|높음|매우높음)/i);
-    if (riskMatches) {
-      riskLevel = riskMatches[1];
     }
-
-    // Parse detailed sections
-    const sections = {
-      situation: '',
-      development: '',
-      concerns: '',
-      issues: '',
-      improvements: '',
-      consultation: ''
-    };
-
-    // Extract each section content
-    const situationMatch = analysisText.match(/\*\*상황 분석\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (situationMatch) sections.situation = situationMatch[1].trim();
-
-    const developmentMatch = analysisText.match(/\*\*현재 상태 평가\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (developmentMatch) sections.development = developmentMatch[1].trim();
-
-    const concernsMatch = analysisText.match(/\*\*주요 관심 사항\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (concernsMatch) sections.concerns = concernsMatch[1].trim();
-
-    const issuesMatch = analysisText.match(/\*\*잠재적 문제점\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (issuesMatch) sections.issues = issuesMatch[1].trim();
-
-    const improvementsMatch = analysisText.match(/\*\*개선 방안\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (improvementsMatch) sections.improvements = improvementsMatch[1].trim();
-
-    const consultationMatch = analysisText.match(/\*\*전문가 상담 권장\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (consultationMatch) sections.consultation = consultationMatch[1].trim();
 
     // Add media notes if files were provided
     const mediaNotes: string[] = [];
@@ -417,80 +325,50 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
       Object.values(domainScores).reduce((sum, score) => sum + score, 0) / 5
     );
 
-    // Parse detailed sections more accurately
-    // Update sections object with more comprehensive structure
-    sections.summary = '';
-    sections.basicPoints = [];
-    sections.basicTips = [];
-    sections.basicAlerts = [];
-
-    // For detailed mode
+    // Parse sections based on mode
+    let report;
+    
     if (isDetailedMode) {
-      // Extract each section content for detailed analysis
+      // Extract detailed sections
       const situationMatch = analysisText.match(/\*\*상황 분석\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (situationMatch) sections.situation = situationMatch[1].trim();
-
       const developmentMatch = analysisText.match(/\*\*현재 상태 평가\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (developmentMatch) sections.development = developmentMatch[1].trim();
-
       const concernsMatch = analysisText.match(/\*\*주요 관심 사항\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (concernsMatch) sections.concerns = concernsMatch[1].trim();
-
       const issuesMatch = analysisText.match(/\*\*잠재적 문제점\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (issuesMatch) sections.issues = issuesMatch[1].trim();
-
       const improvementsMatch = analysisText.match(/\*\*개선 방안\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (improvementsMatch) sections.improvements = improvementsMatch[1].trim();
-
       const consultationMatch = analysisText.match(/\*\*전문가 상담 권장\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (consultationMatch) sections.consultation = consultationMatch[1].trim();
+
+      report = {
+        situation: situationMatch ? situationMatch[1].trim() : '상황을 분석했습니다.',
+        points: developmentMatch ? [developmentMatch[1].trim()] : ['현재 상태를 평가했습니다.'],
+        positives: concernsMatch ? [concernsMatch[1].trim()] : ['주요 관심 사항을 확인했습니다.'],
+        tips: improvementsMatch ? [improvementsMatch[1].trim()] : ['개선 방안을 제시했습니다.'],
+        alerts: consultationMatch ? [consultationMatch[1].trim()] : [],
+        mediaNotes
+      };
     } else {
-      // For basic mode
+      // Extract basic sections
       const summaryMatch = analysisText.match(/\*\*상황 요약\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (summaryMatch) sections.summary = summaryMatch[1].trim();
-
       const pointsMatch = analysisText.match(/\*\*주요 포인트\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (pointsMatch) {
-        sections.basicPoints = pointsMatch[1].trim().split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, ''));
-      }
-
       const tipsMatch = analysisText.match(/\*\*개선 팁\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (tipsMatch) {
-        sections.basicTips = tipsMatch[1].trim().split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, ''));
-      }
-
       const alertsMatch = analysisText.match(/\*\*주의사항\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (alertsMatch) {
-        sections.basicAlerts = alertsMatch[1].trim().split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, ''));
-      }
+
+      const extractListItems = (text: string): string[] => {
+        return text.split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, '').trim());
+      };
+
+      report = {
+        situation: summaryMatch ? summaryMatch[1].trim() : '관찰 상황을 요약했습니다.',
+        points: pointsMatch ? extractListItems(pointsMatch[1]) : ['주요 포인트를 분석했습니다.'],
+        positives: [], // 기본 모드에서는 긍정적 측면 별도 표시 안함
+        tips: tipsMatch ? extractListItems(tipsMatch[1]) : ['개선 팁을 제시했습니다.'],
+        alerts: alertsMatch ? extractListItems(alertsMatch[1]) : [],
+        mediaNotes
+      };
     }
 
-    // Media notes are handled at the end to avoid duplication
-
-    // Calculate overall score
-    const overallScore = Math.round(
-      Object.values(domainScores).reduce((sum, score) => sum + score, 0) / 5
-    );
-
-    // Build result based on mode
     const result: ObserveReportResponse = {
       ok: true,
-      report: isDetailedMode ? {
-        situation: sections.situation || '상황을 분석했습니다.',
-        points: sections.development ? [sections.development] : ['현재 상태를 평가했습니다.'],
-        positives: sections.concerns ? [sections.concerns] : ['주요 관심 사항을 확인했습니다.'],
-        tips: sections.improvements ? [sections.improvements] : ['개선 방안을 제시했습니다.'],
-        alerts: (riskLevel === '높음' || riskLevel === '매우높음') && sections.consultation ? 
-          [sections.consultation] : [],
-        mediaNotes
-      } : {
-        situation: sections.summary || '관찰 상황을 요약했습니다.',
-        points: sections.basicPoints.length > 0 ? sections.basicPoints : ['주요 포인트를 분석했습니다.'],
-        positives: [], // 기본 모드에서는 긍정적 측면 별도 표시 안함
-        tips: sections.basicTips.length > 0 ? sections.basicTips : ['개선 팁을 제시했습니다.'],
-        alerts: sections.basicAlerts.length > 0 ? sections.basicAlerts : [],
-        mediaNotes
-      },
+      report,
       score: {
         overall: overallScore,
         domains: domainScores
@@ -499,8 +377,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 
     logStep('Analysis completed successfully', { 
       overallScore,
-      analysisLength: analysisText.length,
-      sectionsFound: sections.length
+      analysisLength: analysisText.length
     });
 
     return new Response(JSON.stringify(result), {
@@ -509,11 +386,12 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     });
 
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep('ERROR', { message: errorMessage, stack: error instanceof Error ? error.stack : undefined });
+    logStep('Error occurred', { error: error.message });
     
-    // 토큰을 다시 복구 (에러 발생 시 토큰을 돌려주기)
-    if (user?.id && tokenCost) {
+    const errorMessage = error.message || 'Unknown error';
+    
+    // 토큰 환불 시도
+    if (user?.id && tokenCost && tokenData) {
       try {
         await supabaseServiceClient
           .from('user_tokens')

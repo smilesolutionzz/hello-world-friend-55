@@ -45,6 +45,7 @@ import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCancel from "./pages/SubscriptionCancel";
 import Pricing from "./pages/Pricing";
 import Observation from "./pages/Observation";
+import ObservationNew from "./pages/ObservationNew";
 import Expert from "./pages/Expert";
 import Experts from "./pages/Experts";
 import ExpertConsultation from "./pages/ExpertConsultation";
@@ -146,7 +147,8 @@ const App = () => {
           <Route path="/institution-admin" element={<InstitutionAdmin />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/share/:shareId" element={<ShareView />} />
-          <Route path="/observation" element={<Observation />} />
+          <Route path="/observation" element={<ObservationNew />} />
+          <Route path="/observation-old" element={<Observation />} />
           <Route path="/expert" element={<Expert />} />
           <Route path="/experts" element={<Experts />} />
           <Route path="/expert-dashboard" element={<ExpertDashboard />} />

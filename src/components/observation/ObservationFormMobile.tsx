@@ -34,15 +34,23 @@ interface MediaFile {
 }
 
 interface ObservationFormProps {
+  template?: any;
   onBack: () => void;
-  onSuccess: (sessionId: string) => void;
+  onSuccess?: (sessionId: string) => void;
+  onSessionCreated?: () => void;
   templateType?: 'basic' | 'detailed' | string;
 }
 
 type FormState = 'idle' | 'validating' | 'uploading' | 'analyzing' | 'success' | 'error';
 
-const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, templateType = 'basic' }) => {
-  console.log('템플릿 타입:', templateType); // 디버깅용
+const ObservationForm: React.FC<ObservationFormProps> = ({ 
+  template, 
+  onBack, 
+  onSuccess, 
+  onSessionCreated,
+  templateType = 'basic' 
+}) => {
+  console.log('템플릿 타입:', templateType, '템플릿:', template); // 디버깅용
   const { toast } = useToast();
   
   // Form state
@@ -348,7 +356,11 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
 
       setTimeout(() => {
         // Call the success callback to show results in the parent component
-        onSuccess(session.id);
+        if (onSuccess) {
+          onSuccess(session.id);
+        } else if (onSessionCreated) {
+          onSessionCreated();
+        }
       }, 1500);
 
     } catch (error: any) {

@@ -227,11 +227,10 @@ const ObservationDetailView = ({ session, onBack }: ObservationDetailViewProps) 
 
       {/* 탭 컨텐츠 */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">종합 개요</TabsTrigger>
           <TabsTrigger value="analysis">AI 분석</TabsTrigger>
           <TabsTrigger value="scores">점수 분석</TabsTrigger>
-          <TabsTrigger value="media">첨부 파일</TabsTrigger>
           <TabsTrigger value="recommendations">권고사항</TabsTrigger>
         </TabsList>
 
@@ -393,50 +392,6 @@ const ObservationDetailView = ({ session, onBack }: ObservationDetailViewProps) 
           )}
         </TabsContent>
 
-        {/* 첨부 파일 */}
-        <TabsContent value="media" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>첨부된 미디어 파일</CardTitle>
-              <CardDescription>관찰 과정에서 첨부된 이미지와 영상</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {mediaFiles.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {mediaFiles.map((file: any, index: number) => (
-                    <div key={index} className="relative group">
-                      {file.type === 'image' ? (
-                        <div className="aspect-square bg-muted rounded-lg overflow-hidden">
-                          <img 
-                            src={file.url} 
-                            alt={`관찰 이미지 ${index + 1}`}
-                            className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform"
-                            onClick={() => window.open(file.url, '_blank')}
-                          />
-                          <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
-                            <ImageIcon className="h-3 w-3" />
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="aspect-square bg-muted rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/80 transition-colors"
-                             onClick={() => window.open(file.url, '_blank')}>
-                          <Play className="h-8 w-8 text-muted-foreground" />
-                          <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
-                            VIDEO
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  첨부된 미디어 파일이 없습니다.
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* 권고사항 */}
         <TabsContent value="recommendations" className="space-y-6">

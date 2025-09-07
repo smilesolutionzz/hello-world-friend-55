@@ -533,12 +533,16 @@ const LifespanDevelopmentalTracker = ({ userId, studentId, birthDate }: Developm
           {/* 영역별 발달 현황 */}
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Brain className="w-5 h-5" />
-                  {getAgeGroupLabel(ageGroup)} 영역별 현황
+                  <span className="break-words">{getAgeGroupLabel(ageGroup)} 영역별 현황</span>
                 </CardTitle>
-                <Button onClick={() => setIsModalOpen(true)}>
+                <Button 
+                  onClick={() => setIsModalOpen(true)}
+                  className="w-full sm:w-auto"
+                  size="sm"
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   새 데이터 추가
                 </Button>
@@ -546,10 +550,16 @@ const LifespanDevelopmentalTracker = ({ userId, studentId, birthDate }: Developm
             </CardHeader>
             <CardContent>
               <Tabs value={selectedDomain} onValueChange={setSelectedDomain}>
-                <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${Math.min(availableDomains.length + 1, 6)}, 1fr)` }}>
-                  <TabsTrigger value="all">전체</TabsTrigger>
+                <TabsList className="grid w-full overflow-x-auto" style={{ 
+                  gridTemplateColumns: `repeat(${Math.min(availableDomains.length + 1, 6)}, minmax(80px, 1fr))` 
+                }}>
+                  <TabsTrigger value="all" className="text-xs sm:text-sm whitespace-nowrap">전체</TabsTrigger>
                   {availableDomains.slice(0, 5).map(domain => (
-                    <TabsTrigger key={domain.key} value={domain.key}>
+                    <TabsTrigger 
+                      key={domain.key} 
+                      value={domain.key}
+                      className="text-xs sm:text-sm whitespace-nowrap"
+                    >
                       {domain.label}
                     </TabsTrigger>
                   ))}
@@ -653,21 +663,22 @@ const LifespanDevelopmentalTracker = ({ userId, studentId, birthDate }: Developm
           </Card>
 
           {/* 액션 버튼들 */}
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               onClick={runMlAnalysis}
               disabled={isAnalyzing || trackingData.length < 3}
               size="lg"
+              className="w-full sm:w-auto"
             >
               {isAnalyzing ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  AI 분석 중...
+                  <span className="truncate">AI 분석 중...</span>
                 </>
               ) : (
                 <>
                   <Zap className="w-4 h-4 mr-2" />
-                  AI 발달 분석 실행
+                  <span className="truncate">AI 발달 분석 실행</span>
                 </>
               )}
             </Button>
@@ -676,9 +687,10 @@ const LifespanDevelopmentalTracker = ({ userId, studentId, birthDate }: Developm
               variant="outline"
               onClick={() => navigate('/observation')}
               size="lg"
+              className="w-full sm:w-auto"
             >
               <FileText className="w-4 h-4 mr-2" />
-              관찰일지 작성
+              <span className="truncate">관찰일지 작성</span>
             </Button>
           </div>
         </>

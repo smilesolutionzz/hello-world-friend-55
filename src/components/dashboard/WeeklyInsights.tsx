@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 // import WeeklyMissions from "@/components/WeeklyMissions"; // 비활성화됨
@@ -12,6 +12,8 @@ import {
   Sparkles,
   Clover
 } from "lucide-react";
+import { supabase } from '@/integrations/supabase/client';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 
 interface WeeklyInsightsProps {
   totalActivities: number;
@@ -26,34 +28,70 @@ export function WeeklyInsights({
   trendDirection,
   weeklyGoal = 5 
 }: WeeklyInsightsProps) {
+  const { user } = useAuthGuard();
+  const [familyMemberCount, setFamilyMemberCount] = useState(1);
   const progress = Math.min((totalActivities / weeklyGoal) * 100, 100);
 
-  // 가족을 위한 이번 주 행운의 숫자 생성 (주간 기준으로 고정)
+  // 가족 구성원 수 가져오기
+  useEffect(() => {
+    const fetchFamilyMemberCount = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('family_members')
+          .select('id')
+          .eq('user_id', user.id);
+          
+        if (error) {
+          console.error('Error fetching family members:', error);
+          return;
+        }
+        
+        setFamilyMemberCount(Math.max(1, data?.length || 1));
+      } catch (error) {
+        console.error('Error fetching family member count:', error);
+      }
+    };
+
+    fetchFamilyMemberCount();
+  }, [user]);
+
+  // 가족 구성원 수에 따른 행운의 숫자 생성
   const generateLuckyNumbers = () => {
     const today = new Date();
     const weekStart = new Date(today);
-    weekStart.setDate(today.getDate() - today.getDay()); // 이번 주 시작일로 설정
+    weekStart.setDate(today.getDate() - today.getDay());
     
-    // 주간 시드를 기반으로 고정된 숫자 생성
     const weekSeed = Math.floor(weekStart.getTime() / (7 * 24 * 60 * 60 * 1000));
+    const numbersPerMember = 6;
+    const totalNumbers = familyMemberCount * numbersPerMember;
     const numbers = [];
     
-    for (let i = 0; i < 6; i++) {
-      // 각 숫자마다 다른 시드 사용하여 1-45 범위의 숫자 생성
+    for (let i = 0; i < totalNumbers; i++) {
       const seed = (weekSeed + i * 7) % 1000;
       const number = (seed % 45) + 1;
       
-      // 중복 방지
       if (!numbers.includes(number)) {
         numbers.push(number);
       } else {
-        // 중복시 다른 숫자로 대체
-        const alternativeNumber = ((seed + 13) % 45) + 1;
-        numbers.push(alternativeNumber);
+        const alternativeNumber = ((seed + 13 + i) % 45) + 1;
+        if (!numbers.includes(alternativeNumber)) {
+          numbers.push(alternativeNumber);
+        } else {
+          numbers.push(((seed + 29 + i) % 45) + 1);
+        }
       }
     }
     
-    return numbers.sort((a, b) => a - b);
+    // 가족 구성원별로 6개씩 그룹화
+    const groupedNumbers = [];
+    for (let i = 0; i < familyMemberCount; i++) {
+      const memberNumbers = numbers.slice(i * numbersPerMember, (i + 1) * numbersPerMember).sort((a, b) => a - b);
+      groupedNumbers.push(memberNumbers);
+    }
+    
+    return groupedNumbers;
   };
 
   const luckyNumbers = generateLuckyNumbers();
@@ -163,22 +201,31 @@ export function WeeklyInsights({
             </div>
             <div>
               <h4 className="text-sm font-semibold text-yellow-900">이번 주 행운의 숫자</h4>
-              <p className="text-xs text-yellow-600">가족 모두를 위한 특별한 숫자</p>
+              <p className="text-xs text-yellow-600">가족 {familyMemberCount}명을 위한 특별한 숫자</p>
             </div>
           </div>
           
-          <div className="flex items-center justify-center gap-3 mb-3">
-            {luckyNumbers.map((number, index) => (
-              <div 
-                key={index} 
-                className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform"
-              >
-                <span className="text-white font-bold text-sm">{number}</span>
+          <div className="space-y-3">
+            {luckyNumbers.map((memberNumbers, memberIndex) => (
+              <div key={memberIndex} className="space-y-2">
+                <p className="text-xs text-yellow-600 font-medium text-center">
+                  {memberIndex === 0 ? '본인' : `가족 ${memberIndex + 1}`}
+                </p>
+                <div className="flex items-center justify-center gap-2">
+                  {memberNumbers.map((number, numberIndex) => (
+                    <div 
+                      key={numberIndex} 
+                      className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform"
+                    >
+                      <span className="text-white font-bold text-xs">{number}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
           
-          <div className="flex items-center justify-center gap-1 text-xs text-yellow-700">
+          <div className="flex items-center justify-center gap-1 text-xs text-yellow-700 mt-3">
             <Sparkles className="w-3 h-3" />
             <span className="font-medium">행운이 가득한 한 주 되세요!</span>
             <Sparkles className="w-3 h-3" />

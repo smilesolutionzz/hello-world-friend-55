@@ -381,8 +381,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     sections.summary = '';
     sections.basicPoints = [];
     sections.basicTips = [];
-      basicAlerts: []
-    };
+    sections.basicAlerts = [];
 
     // For detailed mode
     if (isDetailedMode) {
@@ -425,13 +424,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
       }
     }
 
-    // Add media notes if files were provided
-    const mediaNotes: string[] = [];
-    if (requestBody.files.length > 0) {
-      requestBody.files.forEach((file, index) => {
-        mediaNotes.push(`${file.type === 'image' ? '이미지' : '영상'} ${index + 1}: 행동 관찰을 위한 시각적 자료로 분석에 참고되었습니다.`);
-      });
-    }
+    // Media notes are handled at the end to avoid duplication
 
     // Calculate overall score
     const overallScore = Math.round(

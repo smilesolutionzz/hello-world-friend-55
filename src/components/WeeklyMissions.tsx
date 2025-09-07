@@ -211,8 +211,6 @@ const WeeklyMissions: React.FC = () => {
       const { start } = getCurrentWeekDates();
       const completedCount = missions.filter(m => m.is_completed).length;
       
-      if (completedCount >= 7) {
-
       // Reload data
       await loadWeeklyMissions();
       await loadWeeklyStats();
@@ -222,8 +220,8 @@ const WeeklyMissions: React.FC = () => {
         description: `"${mission.mission_title}" 미션이 완료되었습니다.`,
       });
 
-      
-      if (completedCount >= 7) {
+      // Check if all missions are completed and award tokens
+      if (completedCount + 1 >= 7) {
         // Award 7 tokens for weekly completion
         await supabase.rpc('admin_add_tokens', {
           target_user_id: user.id,

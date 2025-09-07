@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +7,8 @@ import { Star, Quote, ChevronLeft, ChevronRight, Heart, Users, Award } from 'luc
 
 const TestimonialSection = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
 
   const testimonials = [
     // 유아 (1-3세)
@@ -336,6 +338,30 @@ const TestimonialSection = () => {
     );
   };
 
+  // Touch handlers for swipe gestures
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      handleNext();
+    }
+    if (isRightSwipe) {
+      handlePrevious();
+    }
+  };
+
   const currentItem = testimonials[currentTestimonial];
 
   return (
@@ -356,7 +382,12 @@ const TestimonialSection = () => {
       </div>
 
       {/* 메인 후기 */}
-      <Card className="relative overflow-hidden">
+      <Card 
+        className="relative overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <Button variant="ghost" size="icon" onClick={handlePrevious}>

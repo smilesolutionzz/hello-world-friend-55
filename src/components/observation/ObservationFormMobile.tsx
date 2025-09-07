@@ -20,6 +20,7 @@ import {
   ArrowLeft,
   ShieldCheck
 } from 'lucide-react';
+import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -81,7 +82,7 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
   const textLength = observationText.trim().length;
   const detailedTextLength = Object.values(detailedObservations).join('').trim().length;
   const totalTextLength = isDetailedTemplate ? textLength + detailedTextLength : textLength;
-  const minLength = 50; // 모든 템플릿에서 50자 이상 요구
+  const minLength = 50; // 50자로 부담 줄임
   const isTextValid = totalTextLength >= minLength;
   const canSubmit = isTextValid && selectedTags.length > 0 && legalConsent && targetName.trim();
 
@@ -451,7 +452,7 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
         </div>
         <Progress value={Math.min((totalTextLength / minLength) * 100, 100)} />
         <div className="text-xs text-muted-foreground break-keep">
-          최소 50자 이상 작성해주세요
+          최소 50자만 작성하면 됩니다 (부담 줄임!)
         </div>
       </div>
 
@@ -564,19 +565,29 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Textarea
-              value={observationText}
-              onChange={(e) => setObservationText(e.target.value)}
-              placeholder={isDetailedTemplate 
-                ? "전반적인 관찰 상황을 간략히 기록해주세요."
-                : "관찰한 행동, 반응, 상황 등을 구체적으로 기록해주세요. (최소 50자)"
-              }
-              rows={isDetailedTemplate ? 4 : 6}
-              className="resize-none"
-            />
+            <div className="flex items-center gap-2 mb-2">
+              <Textarea
+                value={observationText}
+                onChange={(e) => setObservationText(e.target.value)}
+                placeholder={isDetailedTemplate 
+                  ? "전반적인 관찰 상황을 간략히 기록해주세요."
+                  : "관찰한 행동, 반응, 상황 등을 구체적으로 기록해주세요. (최소 50자)"
+                }
+                rows={isDetailedTemplate ? 4 : 6}
+                className="resize-none flex-1"
+              />
+              <VoiceInputButton 
+                onTranscription={(text) => {
+                  const currentValue = observationText;
+                  const newValue = currentValue ? `${currentValue} ${text}` : text;
+                  setObservationText(newValue);
+                }}
+                className="self-start mt-1"
+              />
+            </div>
             <div className="flex justify-between items-center mt-2 text-sm">
               <span className={textLength < 50 ? "text-red-500" : "text-green-600"}>
-                {textLength}/{isDetailedTemplate ? '50' : '50'}자 이상
+                {textLength}/50자 이상
               </span>
               {textLength < 50 && (
                 <span className="text-red-500">
@@ -605,13 +616,23 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
                 <p className="text-xs text-muted-foreground mb-2">
                   어떤 행동을 보였나요? (예: 웃기, 울기, 뛰기, 그리기 등)
                 </p>
-                <Textarea
-                  value={detailedObservations.specificBehaviors}
-                  onChange={(e) => setDetailedObservations(prev => ({...prev, specificBehaviors: e.target.value}))}
-                  placeholder="예: 친구와 함께 블록을 쌓으며 즐거워했음"
-                  rows={2}
-                  className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm"
-                />
+                <div className="flex gap-2">
+                  <Textarea
+                    value={detailedObservations.specificBehaviors}
+                    onChange={(e) => setDetailedObservations(prev => ({...prev, specificBehaviors: e.target.value}))}
+                    placeholder="예: 친구와 함께 블록을 쌓으며 즐거워했음"
+                    rows={2}
+                    className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm flex-1"
+                  />
+                  <VoiceInputButton 
+                    onTranscription={(text) => {
+                      const currentValue = detailedObservations.specificBehaviors;
+                      const newValue = currentValue ? `${currentValue} ${text}` : text;
+                      setDetailedObservations(prev => ({...prev, specificBehaviors: newValue}));
+                    }}
+                    className="self-start mt-2"
+                  />
+                </div>
               </div>
 
               <div>
@@ -619,13 +640,23 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
                 <p className="text-xs text-muted-foreground mb-2">
                   주변 환경이 어떤 영향을 주었나요?
                 </p>
-                <Textarea
-                  value={detailedObservations.environmentalFactors}
-                  onChange={(e) => setDetailedObservations(prev => ({...prev, environmentalFactors: e.target.value}))}
-                  placeholder="예: 조용한 환경에서 집중력이 높아짐"
-                  rows={2}
-                  className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm"
-                />
+                <div className="flex gap-2">
+                  <Textarea
+                    value={detailedObservations.environmentalFactors}
+                    onChange={(e) => setDetailedObservations(prev => ({...prev, environmentalFactors: e.target.value}))}
+                    placeholder="예: 조용한 환경에서 집중력이 높아짐"
+                    rows={2}
+                    className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm flex-1"
+                  />
+                  <VoiceInputButton 
+                    onTranscription={(text) => {
+                      const currentValue = detailedObservations.environmentalFactors;
+                      const newValue = currentValue ? `${currentValue} ${text}` : text;
+                      setDetailedObservations(prev => ({...prev, environmentalFactors: newValue}));
+                    }}
+                    className="self-start mt-2"
+                  />
+                </div>
               </div>
 
               <div>
@@ -633,13 +664,23 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
                 <p className="text-xs text-muted-foreground mb-2">
                   다른 사람과 어떻게 소통했나요?
                 </p>
-                <Textarea
-                  value={detailedObservations.socialInteractions}
-                  onChange={(e) => setDetailedObservations(prev => ({...prev, socialInteractions: e.target.value}))}
-                  placeholder="예: 친구에게 먼저 말을 걸고 함께 놀자고 제안함"
-                  rows={2}
-                  className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm"
-                />
+                <div className="flex gap-2">
+                  <Textarea
+                    value={detailedObservations.socialInteractions}
+                    onChange={(e) => setDetailedObservations(prev => ({...prev, socialInteractions: e.target.value}))}
+                    placeholder="예: 친구에게 먼저 말을 걸고 함께 놀자고 제안함"
+                    rows={2}
+                    className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm flex-1"
+                  />
+                  <VoiceInputButton 
+                    onTranscription={(text) => {
+                      const currentValue = detailedObservations.socialInteractions;
+                      const newValue = currentValue ? `${currentValue} ${text}` : text;
+                      setDetailedObservations(prev => ({...prev, socialInteractions: newValue}));
+                    }}
+                    className="self-start mt-2"
+                  />
+                </div>
               </div>
 
               <div>
@@ -647,13 +688,23 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
                 <p className="text-xs text-muted-foreground mb-2">
                   어떤 감정을 보였나요?
                 </p>
-                <Textarea
-                  value={detailedObservations.emotionalResponse}
-                  onChange={(e) => setDetailedObservations(prev => ({...prev, emotionalResponse: e.target.value}))}
-                  placeholder="예: 게임에서 지자 잠깐 속상해했지만 금새 괜찮아짐"
-                  rows={2}
-                  className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm"
-                />
+                <div className="flex gap-2">
+                  <Textarea
+                    value={detailedObservations.emotionalResponse}
+                    onChange={(e) => setDetailedObservations(prev => ({...prev, emotionalResponse: e.target.value}))}
+                    placeholder="예: 게임에서 지자 잠깐 속상해했지만 금새 괜찮아짐"
+                    rows={2}
+                    className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm flex-1"
+                  />
+                  <VoiceInputButton 
+                    onTranscription={(text) => {
+                      const currentValue = detailedObservations.emotionalResponse;
+                      const newValue = currentValue ? `${currentValue} ${text}` : text;
+                      setDetailedObservations(prev => ({...prev, emotionalResponse: newValue}));
+                    }}
+                    className="self-start mt-2"
+                  />
+                </div>
               </div>
 
               <div>
@@ -661,23 +712,33 @@ const ObservationForm: React.FC<ObservationFormProps> = ({ onBack, onSuccess, te
                 <p className="text-xs text-muted-foreground mb-2">
                   특별한 도움을 주었거나 변화가 있었나요? (선택사항)
                 </p>
-                <Textarea
-                  value={detailedObservations.interventionEffects}
-                  onChange={(e) => setDetailedObservations(prev => ({...prev, interventionEffects: e.target.value}))}
-                  placeholder="예: 칭찬을 해주니 더 적극적으로 참여함 (없으면 비워도 됩니다)"
-                  rows={2}
-                  className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm"
-                />
+                <div className="flex gap-2">
+                  <Textarea
+                    value={detailedObservations.interventionEffects}
+                    onChange={(e) => setDetailedObservations(prev => ({...prev, interventionEffects: e.target.value}))}
+                    placeholder="예: 칭찬을 해주니 더 적극적으로 참여함 (없으면 비워도 됩니다)"
+                    rows={2}
+                    className="mt-2 resize-none border-purple-200 focus:border-purple-400 text-sm flex-1"
+                  />
+                  <VoiceInputButton 
+                    onTranscription={(text) => {
+                      const currentValue = detailedObservations.interventionEffects;
+                      const newValue = currentValue ? `${currentValue} ${text}` : text;
+                      setDetailedObservations(prev => ({...prev, interventionEffects: newValue}));
+                    }}
+                    className="self-start mt-2"
+                  />
+                </div>
               </div>
 
               <div className="mt-4 p-3 bg-purple-100 dark:bg-purple-950/20 rounded-lg">
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-purple-700 dark:text-purple-300 font-medium">💡 상세 관찰 작성률</span>
-                  <span className={`font-medium ${detailedTextLength >= 100 ? "text-green-600" : "text-orange-600"}`}>
-                    {detailedTextLength}/100자 이상
+                  <span className={`font-medium ${detailedTextLength >= 50 ? "text-green-600" : "text-orange-600"}`}>
+                    {detailedTextLength}/50자 이상
                   </span>
                 </div>
-                <Progress value={Math.min((detailedTextLength / 100) * 100, 100)} className="mt-2" />
+                <Progress value={Math.min((detailedTextLength / 50) * 100, 100)} className="mt-2" />
               </div>
             </CardContent>
           </Card>

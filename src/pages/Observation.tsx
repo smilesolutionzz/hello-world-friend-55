@@ -11,6 +11,7 @@ import ObservationSessionForm from "@/components/observation/ObservationSessionF
 import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
 import ObservationResults from "@/components/observation/ObservationResults";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
+import IEPGenerationMotivation from "@/components/observation/IEPGenerationMotivation";
 
 const Observation = () => {
   const navigate = useNavigate();
@@ -173,6 +174,9 @@ const Observation = () => {
         </TabsList>
 
         <TabsContent value="new-observation" className="space-y-8">
+          {/* IEP Generation Motivation */}
+          <IEPGenerationMotivation className="mx-2" />
+          
           {/* Value Proposition Header */}
           <div className="text-center space-y-2 sm:space-y-4 mb-4 sm:mb-8 px-2">
             <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-xs sm:text-sm font-medium text-blue-800">
@@ -461,6 +465,9 @@ const Observation = () => {
         </TabsContent>
 
         <TabsContent value="my-observations" className="space-y-6">
+          {/* IEP Generation Motivation */}
+          <IEPGenerationMotivation className="mx-2" />
+          
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-semibold">내 관찰 기록</h2>

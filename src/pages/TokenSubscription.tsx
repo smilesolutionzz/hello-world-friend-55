@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Zap, Star, Crown, Check, Sparkles, Brain, Coins, Rocket, Trophy } from 'lucide-react';
+import tokenBenefitsGif from '@/assets/token-benefits.gif';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
@@ -396,6 +397,17 @@ const TokenSubscription = () => {
                   <Check className="w-5 h-5 text-green-500" />
                   <span className="font-medium">언제든 추가 구매</span>
                 </div>
+              </div>
+            </div>
+            
+            {/* 토큰 시스템 GIF 추가 */}
+            <div className="mt-8 flex justify-center">
+              <div className="bg-white rounded-2xl p-4 shadow-lg border border-border">
+                <img 
+                  src={tokenBenefitsGif} 
+                  alt="토큰 시스템 사용 예시" 
+                  className="w-full max-w-md mx-auto rounded-xl"
+                />
               </div>
             </div>
           </div>

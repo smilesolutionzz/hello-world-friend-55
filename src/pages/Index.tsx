@@ -23,7 +23,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import { PlatformGuide } from '@/components/onboarding/PlatformGuide';
-import HighlightProIntro from '@/components/HighlightProIntro';
 
 const Index = () => {
   console.log('🏠 Index.tsx: Index page component rendering...');
@@ -138,11 +137,6 @@ const Index = () => {
           </div>
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.3s' }}>
             <PlatformOverview />
-          </div>
-          
-          {/* HIGHLIGHT PRO 소개 영상 */}
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.32s' }}>
-            <HighlightProIntro />
           </div>
           
           {/* 보안 및 신뢰성 섹션 */}

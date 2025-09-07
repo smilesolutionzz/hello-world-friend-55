@@ -8,7 +8,9 @@ import {
   BarChart3,
   Heart,
   Brain,
-  Users
+  Users,
+  Sparkles,
+  Clover
 } from "lucide-react";
 
 interface WeeklyInsightsProps {
@@ -25,6 +27,36 @@ export function WeeklyInsights({
   weeklyGoal = 5 
 }: WeeklyInsightsProps) {
   const progress = Math.min((totalActivities / weeklyGoal) * 100, 100);
+
+  // 가족을 위한 이번 주 행운의 숫자 생성 (주간 기준으로 고정)
+  const generateLuckyNumbers = () => {
+    const today = new Date();
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay()); // 이번 주 시작일로 설정
+    
+    // 주간 시드를 기반으로 고정된 숫자 생성
+    const weekSeed = Math.floor(weekStart.getTime() / (7 * 24 * 60 * 60 * 1000));
+    const numbers = [];
+    
+    for (let i = 0; i < 6; i++) {
+      // 각 숫자마다 다른 시드 사용하여 1-45 범위의 숫자 생성
+      const seed = (weekSeed + i * 7) % 1000;
+      const number = (seed % 45) + 1;
+      
+      // 중복 방지
+      if (!numbers.includes(number)) {
+        numbers.push(number);
+      } else {
+        // 중복시 다른 숫자로 대체
+        const alternativeNumber = ((seed + 13) % 45) + 1;
+        numbers.push(alternativeNumber);
+      }
+    }
+    
+    return numbers.sort((a, b) => a - b);
+  };
+
+  const luckyNumbers = generateLuckyNumbers();
 
   const getTrendColor = () => {
     switch (trendDirection) {
@@ -121,6 +153,36 @@ export function WeeklyInsights({
               : "👏 정말 잘하고 계세요! 조금만 더 하면 목표 달성이에요."
             }
           </p>
+        </div>
+
+        {/* 가족을 위한 행운의 숫자 */}
+        <div className="p-4 bg-gradient-to-r from-yellow-50 via-orange-50 to-red-50 rounded-xl border border-yellow-200/50">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-xl flex items-center justify-center">
+              <Clover className="w-5 h-5 text-yellow-600" />
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-yellow-900">이번 주 행운의 숫자</h4>
+              <p className="text-xs text-yellow-600">가족 모두를 위한 특별한 숫자</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center gap-3 mb-3">
+            {luckyNumbers.map((number, index) => (
+              <div 
+                key={index} 
+                className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform"
+              >
+                <span className="text-white font-bold text-sm">{number}</span>
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex items-center justify-center gap-1 text-xs text-yellow-700">
+            <Sparkles className="w-3 h-3" />
+            <span className="font-medium">행운이 가득한 한 주 되세요!</span>
+            <Sparkles className="w-3 h-3" />
+          </div>
         </div>
       </div>
 

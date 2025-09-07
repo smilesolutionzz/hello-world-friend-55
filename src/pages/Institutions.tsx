@@ -42,7 +42,7 @@ export default function Institutions() {
     const loadInstitutions = async () => {
       try {
         const { data, error } = await supabase
-          .from('public_institutions')
+          .from('partner_institutions')
           .select('*')
           .order('name');
 

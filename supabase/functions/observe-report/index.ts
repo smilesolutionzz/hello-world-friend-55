@@ -222,37 +222,52 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 `;
 
     const detailedPrompt = basePrompt + `
-다음 형식으로 상세한 전문가 분석을 제공해주세요:
+다음 형식으로 박사급 수준의 상세한 전문가 분석을 제공해주세요:
 
-**상황 분석**
-관찰된 내용을 바탕으로 현재 상황을 구체적으로 분석해주세요.
+**종합 상황 분석**
+- 관찰된 행동의 맥락적 해석과 배경 요인 분석
+- 환경적 변인과 개인적 변인의 상호작용 평가
+- 행동의 기능과 목적에 대한 기능적 분석
 
-**현재 상태 평가** 
-현재 관찰된 행동 특성과 기능적 상태를 연령대별 기준과 비교하여 평가해주세요.
+**연령별 표준 대비 현재 기능 평가**
+각 영역별로 구체적인 점수(0-100)와 함께 분석:
+- 정서조절 능력: [점수]/100 - 구체적 근거와 관찰 증거
+- 행동조절 능력: [점수]/100 - 행동의 빈도, 강도, 지속성 분석  
+- 인지기능 수준: [점수]/100 - 주의력, 기억력, 문제해결 능력 평가
+- 사회적 기능: [점수]/100 - 대인관계 및 의사소통 능력 분석
+- 신체발달 상태: [점수]/100 - 대근육 및 소근육 발달 수준 평가
 
-**주요 관심 사항**
-관찰된 행동이나 특성 중 특별히 주의 깊게 관찰해야 할 사항들을 나열해주세요.
+**심층 행동 분석**
+- ABC 분석 (Antecedent-Behavior-Consequence) 적용
+- 행동의 선행조건과 후속결과 패턴 분석
+- 강화 및 소거 요인 식별
 
-**잠재적 문제점**
-현재 관찰된 내용에서 우려되는 부분이나 개선이 필요한 영역을 분석해주세요.
+**임상적 관찰 소견**
+- 주의해야 할 위험 징후나 이상 행동 패턴
+- 조기 개입이 필요한 영역 식별
+- 전문적 평가가 권장되는 구체적 사유
 
-**개선 방안**
-실제로 실행 가능한 구체적인 개선 방법들을 제시해주세요.
+**근거 기반 개입 전략**
+단계별 체계적 접근:
+1. 즉시 개입 (1-2주): 구체적 실행 방안
+2. 단기 목표 (1-3개월): 측정 가능한 목표 설정
+3. 중장기 목표 (3-12개월): 종합적 개선 계획
 
-**권고사항 추천**
-다음과 같이 구체적인 권고사항을 제시해주세요:
-- 일상생활에서 실천할 수 있는 구체적인 방법
-- 가정에서 적용할 수 있는 환경 조성 방안
-- 단계별 개선 계획
+**맞춤형 권고사항**
+- 가정환경 조성: 물리적/심리적 환경 개선 방안
+- 일상생활 구조화: 루틴 및 규칙 설정 가이드
+- 상호작용 개선: 효과적 의사소통 및 관계 형성 전략
+- 자기조절 훈련: 연령에 맞는 자기통제 기법
 
-**교육컨텐츠 추천**
-관찰 결과에 맞는 추천 교육자료를 제시해주세요:
-- 관련 도서나 자료 추천
-- 온라인 교육 프로그램 제안
-- 전문가 상담 분야 안내
+**전문적 자원 연계**
+- 추천 전문가 유형: 임상심리사, 언어치료사, 작업치료사 등
+- 적절한 평가 도구 및 검사 권장
+- 지역사회 자원 활용 방안
 
-**전문가 상담 권장**
-전문적인 평가나 상담이 필요한지 여부와 그 이유를 설명해주세요.
+**추적 관찰 계획**
+- 재평가 시기 및 주기 제안
+- 관찰해야 할 핵심 지표 설정
+- 개선 정도 측정 방법 안내
 `;
 
     const basicPrompt = basePrompt + `
@@ -282,25 +297,32 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-5-2025-08-07',
         messages: [
           {
             role: 'system',
-            content: `당신은 심리상담, 행동분석 전문가입니다. 모든 연령대(유아부터 노인까지)의 관찰 기록을 전문적이고 객관적으로 분석합니다.
+            content: `당신은 박사급 임상심리전문가이자 행동분석 전문가입니다. 모든 연령대의 관찰 기록을 최고 수준의 전문성으로 분석합니다.
 
-중요한 지침:
-1. 대상자의 이름은 반드시 관찰 정보에 명시된 이름을 그대로 사용하세요
-2. "발달"이라는 용어보다는 "현재 상태", "행동 특성", "기능적 상태" 등을 사용하세요
-3. 아동 중심이 아닌 연령대에 맞는 적절한 분석을 제공하세요
-4. 실용적인 조언과 구체적인 개선방안을 제시합니다
-5. 응답은 반드시 요청된 형식을 정확히 따라주세요`
+전문가 분석 지침:
+1. 대상자의 이름은 반드시 "${requestBody.targetName || '대상자'}"로 표기
+2. 연령대별 표준 기준과 비교한 객관적 평가 제공
+3. 심리학적, 행동학적 이론에 근거한 깊이있는 해석
+4. 근거 기반 개입 전략과 구체적 실행 방안 제시
+5. 정량적 점수와 정성적 분석의 균형있는 제공
+6. 예방적 관점과 치료적 관점을 모두 고려한 종합적 접근
+
+분석 품질 요구사항:
+- 각 영역별로 구체적인 점수(0-100)와 근거 제시
+- 행동의 빈도, 강도, 지속성을 고려한 정밀 분석
+- 환경적 요인과 개인적 요인의 상호작용 분석
+- 단기/중기/장기 목표를 포함한 체계적 개입 계획`
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        max_completion_tokens: isDetailedMode ? 4000 : 2000,
+        max_completion_tokens: isDetailedMode ? 6000 : 3000,
       }),
     });
 
@@ -313,19 +335,38 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     
     logStep('OpenAI response received', { textLength: analysisText.length });
 
-    // Parse the analysis response properly
+    // Parse the analysis response and extract domain scores
     const domainScores = { 정서: 70, 행동: 70, 인지: 70, 사회성: 70, 신체: 70 };
     
-    // Extract scores from AI response
-    const scoreRegex = /(정서|행동|인지|사회성|신체):\s*(\d+)/g;
-    let match;
-    while ((match = scoreRegex.exec(analysisText)) !== null) {
-      const domain = match[1];
-      const score = parseInt(match[2]);
-      if (domain in domainScores && score >= 0 && score <= 100) {
-        domainScores[domain as keyof typeof domainScores] = score;
+    // Extract scores from AI response with multiple patterns
+    const patterns = [
+      /(정서조절|정서).*?(\d+)\/100/g,
+      /(행동조절|행동).*?(\d+)\/100/g,
+      /(인지기능|인지).*?(\d+)\/100/g,
+      /(사회적|사회성).*?(\d+)\/100/g,
+      /(신체발달|신체).*?(\d+)\/100/g,
+      /(정서|행동|인지|사회성|신체):\s*(\d+)/g
+    ];
+    
+    patterns.forEach(pattern => {
+      let match;
+      while ((match = pattern.exec(analysisText)) !== null) {
+        const domainName = match[1];
+        const score = parseInt(match[2]);
+        
+        // Map domain names to standard keys
+        let standardKey = '';
+        if (domainName.includes('정서')) standardKey = '정서';
+        else if (domainName.includes('행동')) standardKey = '행동';
+        else if (domainName.includes('인지')) standardKey = '인지';
+        else if (domainName.includes('사회')) standardKey = '사회성';
+        else if (domainName.includes('신체')) standardKey = '신체';
+        
+        if (standardKey && score >= 0 && score <= 100) {
+          domainScores[standardKey as keyof typeof domainScores] = score;
+        }
       }
-    }
+    });
 
     // Extract risk level from analysis
     let riskLevel = '보통';

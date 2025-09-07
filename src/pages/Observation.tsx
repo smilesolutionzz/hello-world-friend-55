@@ -10,6 +10,7 @@ import { ClipboardList, Plus, Eye, Download, Calendar, User, AlertCircle, Chevro
 import ObservationSessionForm from "@/components/observation/ObservationSessionForm";
 import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
 import ObservationResults from "@/components/observation/ObservationResults";
+import ObservationDetailView from "@/components/observation/ObservationDetailView";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import IEPGenerationMotivation from "@/components/observation/IEPGenerationMotivation";
 
@@ -629,7 +630,7 @@ const Observation = () => {
                 </Button>
               </div>
               
-              <ObservationResults
+              <ObservationDetailView
                 session={selectedSession}
                 onBack={() => setActiveTab("my-observations")}
               />

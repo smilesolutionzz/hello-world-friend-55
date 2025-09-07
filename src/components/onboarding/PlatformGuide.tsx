@@ -70,7 +70,9 @@ export function PlatformGuide({ onComplete }: PlatformGuideProps) {
   useEffect(() => {
     // 가이드를 본 적이 있는지 확인
     const seenGuide = localStorage.getItem('platform_guide_seen');
-    if (!seenGuide) {
+    const hiddenToday = localStorage.getItem('platform_guide_hidden_today');
+    
+    if (!seenGuide && !hiddenToday) {
       // 1초 후에 가이드 표시 (페이지 로드 후 자연스럽게)
       const timer = setTimeout(() => {
         setIsOpen(true);
@@ -102,6 +104,16 @@ export function PlatformGuide({ onComplete }: PlatformGuideProps) {
 
   const handleSkip = () => {
     handleComplete();
+  };
+
+  const handleHideToday = () => {
+    // 오늘 날짜로 숨김 설정 (자정까지 유효)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    localStorage.setItem('platform_guide_hidden_today', tomorrow.getTime().toString());
+    setIsOpen(false);
+    onComplete();
   };
 
   // 이미 본 사용자이거나 팝업이 열려있지 않으면 렌더링하지 않음
@@ -241,9 +253,14 @@ export function PlatformGuide({ onComplete }: PlatformGuideProps) {
               <div className="text-xs text-muted-foreground mb-1">
                 약 {Math.max(1, guideSteps.length - currentStep)}분 남음
               </div>
-              <Button variant="ghost" onClick={handleSkip} className="text-xs">
-                건너뛰기
-              </Button>
+              <div className="flex flex-col gap-1">
+                <Button variant="ghost" onClick={handleSkip} className="text-xs">
+                  건너뛰기
+                </Button>
+                <Button variant="ghost" onClick={handleHideToday} className="text-xs text-muted-foreground">
+                  오늘 다시 보지 않기
+                </Button>
+              </div>
             </div>
 
             <Button onClick={handleNext} className="min-w-[100px]">

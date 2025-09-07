@@ -50,6 +50,12 @@ const FamilyManagement: React.FC<FamilyManagementProps> = ({ onUpdate }) => {
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingMember, setEditingMember] = useState<FamilyMember | null>(null);
+  
+  // State for showing results after CTA clicks
+  const [activeSection, setActiveSection] = useState<'schedule' | 'activities' | 'careplan' | null>(null);
+  const [scheduleResults, setScheduleResults] = useState<any[]>([]);
+  const [activityResults, setActivityResults] = useState<any[]>([]);
+  const [careplanResults, setCareplanResults] = useState<any[]>([]);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -345,59 +351,101 @@ const FamilyManagement: React.FC<FamilyManagementProps> = ({ onUpdate }) => {
     }
   };
 
-  // CTA handlers with AI-powered routing
+  // CTA handlers with AI-powered routing and result display
   const handleScheduleView = () => {
-    toast({
-      title: "AI 맞춤 일정 생성 중",
-      description: "가족 구성원의 연령과 상황을 분석하여 최적의 검진 일정을 생성합니다.",
+    setActiveSection('schedule');
+    
+    // Generate detailed schedule for all family members
+    const detailedSchedules = familyMembers.map(member => {
+      const age = getAgeFromBirthDate(member.birth_date);
+      const schedule = getAgeBasedHealthSchedule(age);
+      return {
+        member: member.name,
+        age: age || '미상',
+        relationship: relationshipOptions.find(r => r.value === member.relationship)?.label,
+        frequency: schedule.frequency,
+        nextCheck: schedule.nextCheck,
+        currentStatus: age ? '정상' : '정보 필요',
+        dueDate: age ? (() => {
+          const now = new Date();
+          const dueDate = new Date(now);
+          if (age < 2) dueDate.setMonth(now.getMonth() + 1);
+          else if (age < 6) dueDate.setMonth(now.getMonth() + 3);
+          else if (age < 18) dueDate.setMonth(now.getMonth() + 6);
+          else dueDate.setFullYear(now.getFullYear() + 1);
+          return dueDate.toLocaleDateString('ko-KR');
+        })() : '생년월일 입력 필요'
+      };
     });
-    // Navigate to AI-powered schedule page
-    setTimeout(() => {
-      toast({
-        title: "맞춤 일정 완성",
-        description: `${familyMembers.length}명의 구성원을 위한 개인별 건강 검진 스케줄이 준비되었습니다.`,
-      });
-    }, 2000);
+    
+    setScheduleResults(detailedSchedules);
+    
+    toast({
+      title: "맞춤 일정 완성 ✅",
+      description: `${familyMembers.length}명의 구성원을 위한 개인별 건강 검진 스케줄이 생성되었습니다.`,
+    });
   };
 
   const handleActivityRecommendations = () => {
-    const avgAge = familyMembers.reduce((sum, member) => {
-      const age = getAgeFromBirthDate(member.birth_date);
-      return sum + (age || 0);
-    }, 0) / familyMembers.length;
+    setActiveSection('activities');
+    
+    // Generate comprehensive activity recommendations
+    const allActivities = getAgeBasedActivities(familyMembers);
+    const detailedActivities = allActivities.map((activity, index) => ({
+      ...activity,
+      duration: '30-60분',
+      difficulty: index % 2 === 0 ? '쉬움' : '보통',
+      location: index % 3 === 0 ? '실내' : index % 3 === 1 ? '실외' : '실내/실외',
+      materials: index % 2 === 0 ? '특별한 준비물 없음' : '간단한 준비물 필요',
+      frequency: '주 2-3회 권장'
+    }));
+    
+    setActivityResults(detailedActivities);
     
     toast({
-      title: "AI 활동 추천 분석 중",
-      description: `평균 연령 ${Math.round(avgAge)}세 가족을 위한 맞춤 활동을 추천합니다.`,
+      title: "활동 추천 완료 🎯",
+      description: `가족 구성원의 연령대에 최적화된 ${allActivities.length}가지 활동이 준비되었습니다.`,
     });
-    
-    setTimeout(() => {
-      toast({
-        title: "활동 추천 완료",
-        description: "가족 구성원의 연령대에 최적화된 12가지 활동이 준비되었습니다.",
-      });
-    }, 2000);
   };
 
   const handleCareplanCreation = () => {
-    const priorities = familyMembers.map(member => {
+    setActiveSection('careplan');
+    
+    // Generate detailed care plans for all family members
+    const detailedCarePlans = familyMembers.map(member => {
       const age = getAgeFromBirthDate(member.birth_date);
-      return getAgeBasedCarePlan(age, member.relationship);
+      const carePlan = getAgeBasedCarePlan(age, member.relationship);
+      return {
+        member: member.name,
+        age: age || '미상',
+        relationship: relationshipOptions.find(r => r.value === member.relationship)?.label,
+        priority: carePlan.priority,
+        focus: carePlan.focus,
+        actions: age ? (() => {
+          if (member.relationship === 'child') {
+            if (age < 3) return ['매일 30분 상호작용', '감정 반응 관찰', '발달 체크리스트 작성'];
+            else if (age < 6) return ['사회성 놀이 참여', '언어 발달 지원', '정서 표현 격려'];
+            else if (age < 13) return ['학습 스트레스 관리', '자존감 향상 활동', '친구 관계 지원'];
+            else return ['정체성 탐색 대화', '미래 계획 논의', '독립성 지원'];
+          } else if (member.relationship === 'parent') {
+            if (age < 40) return ['스트레스 관리법 학습', '자기계발 시간 확보', '육아 지원 네트워크 구축'];
+            else if (age < 65) return ['건강 검진 정기화', '취미 활동 참여', '가족 소통 강화'];
+            else return ['인지 기능 유지 활동', '사회적 연결 확대', '건강 모니터링 강화'];
+          }
+          return ['개별 상담을 통한 맞춤 계획 수립'];
+        })() : ['생년월일 입력 후 세부 계획 제공'],
+        timeline: '4주 단위 점검'
+      };
     });
     
-    const highPriorityCount = priorities.filter(p => p.priority === '최우선' || p.priority === '높음').length;
+    setCareplanResults(detailedCarePlans);
+    
+    const highPriorityCount = detailedCarePlans.filter(p => p.priority === '최우선' || p.priority === '높음').length;
     
     toast({
-      title: "AI 케어 플랜 수립 중",
-      description: `${highPriorityCount}명의 우선순위 케어가 필요한 구성원을 확인했습니다.`,
+      title: "케어 플랜 수립 완료 💎",
+      description: `${highPriorityCount}명의 우선순위 케어 계획을 포함한 개인별 맞춤 심리 케어 계획이 생성되었습니다.`,
     });
-    
-    setTimeout(() => {
-      toast({
-        title: "케어 플랜 수립 완료",
-        description: "개인별 맞춤 심리 케어 계획과 실행 방안이 생성되었습니다.",
-      });
-    }, 2000);
   };
 
   if (loading) {
@@ -765,6 +813,158 @@ const FamilyManagement: React.FC<FamilyManagementProps> = ({ onUpdate }) => {
 
             </div>
           </Card>
+
+          {/* Results Section - 결과 표시 영역 */}
+          {activeSection && (
+            <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                    {activeSection === 'schedule' && <Calendar className="w-5 h-5 text-amber-600" />}
+                    {activeSection === 'activities' && <Heart className="w-5 h-5 text-amber-600" />}
+                    {activeSection === 'careplan' && <Brain className="w-5 h-5 text-amber-600" />}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-amber-900">
+                      {activeSection === 'schedule' && '생성된 건강 검진 일정'}
+                      {activeSection === 'activities' && '추천된 가족 활동'}
+                      {activeSection === 'careplan' && '수립된 케어 플랜'}
+                    </h3>
+                    <p className="text-sm text-amber-700">
+                      AI가 분석한 맞춤형 결과를 확인하세요
+                    </p>
+                  </div>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setActiveSection(null)}
+                  className="text-amber-600 hover:text-amber-800"
+                >
+                  닫기
+                </Button>
+              </div>
+
+              {/* Schedule Results */}
+              {activeSection === 'schedule' && (
+                <div className="space-y-4">
+                  {scheduleResults.map((schedule, index) => (
+                    <Card key={index} className="p-4 bg-white/70 border border-amber-200/50">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                            <Calendar className="w-4 h-4 text-amber-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-amber-900">{schedule.member}</h4>
+                            <p className="text-sm text-amber-700">{schedule.relationship} • {schedule.age}세</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-300">
+                          {schedule.frequency} 검진
+                        </Badge>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-amber-600 font-medium">다음 검진</span>
+                          <p className="text-amber-800">{schedule.nextCheck}</p>
+                        </div>
+                        <div>
+                          <span className="text-amber-600 font-medium">예정 날짜</span>
+                          <p className="text-amber-800">{schedule.dueDate}</p>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {/* Activity Results */}
+              {activeSection === 'activities' && (
+                <div className="space-y-4">
+                  {activityResults.map((activity, index) => (
+                    <Card key={index} className="p-4 bg-white/70 border border-amber-200/50">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <Heart className="w-4 h-4 text-green-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-amber-900">{activity.name}</h4>
+                            <p className="text-sm text-amber-700">{activity.ageGroup} 대상</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-300">
+                          {activity.difficulty}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-amber-800 mb-3">{activity.benefit}</p>
+                      <div className="grid grid-cols-2 gap-4 text-xs text-amber-700">
+                        <div>
+                          <span className="font-medium">소요시간:</span> {activity.duration}
+                        </div>
+                        <div>
+                          <span className="font-medium">장소:</span> {activity.location}
+                        </div>
+                        <div>
+                          <span className="font-medium">준비물:</span> {activity.materials}
+                        </div>
+                        <div>
+                          <span className="font-medium">권장 빈도:</span> {activity.frequency}
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {/* Care Plan Results */}
+              {activeSection === 'careplan' && (
+                <div className="space-y-4">
+                  {careplanResults.map((plan, index) => (
+                    <Card key={index} className="p-4 bg-white/70 border border-amber-200/50">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                            <Brain className="w-4 h-4 text-purple-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-amber-900">{plan.member}</h4>
+                            <p className="text-sm text-amber-700">{plan.relationship} • {plan.age}세</p>
+                          </div>
+                        </div>
+                        <Badge 
+                          variant="outline" 
+                          className={`
+                            ${plan.priority === '최우선' ? 'bg-red-50 text-red-700 border-red-300' : 
+                              plan.priority === '높음' ? 'bg-orange-50 text-orange-700 border-orange-300' : 
+                              'bg-blue-50 text-blue-700 border-blue-300'}
+                          `}
+                        >
+                          {plan.priority}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-amber-800 mb-3 font-medium">{plan.focus}</p>
+                      <div className="space-y-2">
+                        <h5 className="text-xs font-semibold text-amber-700 uppercase tracking-wide">실행 계획</h5>
+                        <ul className="space-y-1">
+                          {plan.actions.map((action: string, actionIndex: number) => (
+                            <li key={actionIndex} className="text-sm text-amber-800 flex items-center gap-2">
+                              <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
+                              {action}
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-3 pt-3 border-t border-amber-200">
+                          <span className="text-xs text-amber-600 font-medium">점검 주기: {plan.timeline}</span>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </Card>
+          )}
         </div>
       )}
     </div>

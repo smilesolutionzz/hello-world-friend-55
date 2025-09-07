@@ -376,26 +376,91 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
       Object.values(domainScores).reduce((sum, score) => sum + score, 0) / 5
     );
 
-    // Build comprehensive analysis result
-    const analysisResult = {
-      situation: sections.situation || '상황 분석이 진행되었습니다.',
-      development: sections.development || '발달 상태 평가가 완료되었습니다.',
-      concerns: sections.concerns || '주요 관심 사항을 확인했습니다.',
-      issues: sections.issues || '잠재적 문제점을 분석했습니다.',
-      improvements: sections.improvements || '개선 방안을 제시했습니다.',
-      consultation: sections.consultation || '전문가 상담 권장사항을 제공했습니다.',
-      riskLevel: riskLevel,
-      fullAnalysis: analysisText
+    // Parse detailed sections more accurately
+    const sections = {
+      situation: '',
+      development: '',
+      concerns: '',
+      issues: '',
+      improvements: '',
+      consultation: '',
+      summary: '',
+      basicPoints: [],
+      basicTips: [],
+      basicAlerts: []
     };
-    
+
+    // For detailed mode
+    if (isDetailedMode) {
+      // Extract each section content for detailed analysis
+      const situationMatch = analysisText.match(/\*\*상황 분석\*\*([\s\S]*?)(?=\*\*|$)/);
+      if (situationMatch) sections.situation = situationMatch[1].trim();
+
+      const developmentMatch = analysisText.match(/\*\*현재 상태 평가\*\*([\s\S]*?)(?=\*\*|$)/);
+      if (developmentMatch) sections.development = developmentMatch[1].trim();
+
+      const concernsMatch = analysisText.match(/\*\*주요 관심 사항\*\*([\s\S]*?)(?=\*\*|$)/);
+      if (concernsMatch) sections.concerns = concernsMatch[1].trim();
+
+      const issuesMatch = analysisText.match(/\*\*잠재적 문제점\*\*([\s\S]*?)(?=\*\*|$)/);
+      if (issuesMatch) sections.issues = issuesMatch[1].trim();
+
+      const improvementsMatch = analysisText.match(/\*\*개선 방안\*\*([\s\S]*?)(?=\*\*|$)/);
+      if (improvementsMatch) sections.improvements = improvementsMatch[1].trim();
+
+      const consultationMatch = analysisText.match(/\*\*전문가 상담 권장\*\*([\s\S]*?)(?=\*\*|$)/);
+      if (consultationMatch) sections.consultation = consultationMatch[1].trim();
+    } else {
+      // For basic mode
+      const summaryMatch = analysisText.match(/\*\*상황 요약\*\*([\s\S]*?)(?=\*\*|$)/);
+      if (summaryMatch) sections.summary = summaryMatch[1].trim();
+
+      const pointsMatch = analysisText.match(/\*\*주요 포인트\*\*([\s\S]*?)(?=\*\*|$)/);
+      if (pointsMatch) {
+        sections.basicPoints = pointsMatch[1].trim().split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, ''));
+      }
+
+      const tipsMatch = analysisText.match(/\*\*개선 팁\*\*([\s\S]*?)(?=\*\*|$)/);
+      if (tipsMatch) {
+        sections.basicTips = tipsMatch[1].trim().split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, ''));
+      }
+
+      const alertsMatch = analysisText.match(/\*\*주의사항\*\*([\s\S]*?)(?=\*\*|$)/);
+      if (alertsMatch) {
+        sections.basicAlerts = alertsMatch[1].trim().split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, ''));
+      }
+    }
+
+    // Add media notes if files were provided
+    const mediaNotes: string[] = [];
+    if (requestBody.files.length > 0) {
+      requestBody.files.forEach((file, index) => {
+        mediaNotes.push(`${file.type === 'image' ? '이미지' : '영상'} ${index + 1}: 행동 관찰을 위한 시각적 자료로 분석에 참고되었습니다.`);
+      });
+    }
+
+    // Calculate overall score
+    const overallScore = Math.round(
+      Object.values(domainScores).reduce((sum, score) => sum + score, 0) / 5
+    );
+
+    // Build result based on mode
     const result: ObserveReportResponse = {
       ok: true,
-      report: {
-        situation: analysisResult.situation,
-        points: [analysisResult.development],
-        positives: [analysisResult.concerns],
-        tips: [analysisResult.improvements],
-        alerts: riskLevel === '높음' || riskLevel === '매우높음' ? [analysisResult.consultation] : [],
+      report: isDetailedMode ? {
+        situation: sections.situation || '상황을 분석했습니다.',
+        points: sections.development ? [sections.development] : ['현재 상태를 평가했습니다.'],
+        positives: sections.concerns ? [sections.concerns] : ['주요 관심 사항을 확인했습니다.'],
+        tips: sections.improvements ? [sections.improvements] : ['개선 방안을 제시했습니다.'],
+        alerts: (riskLevel === '높음' || riskLevel === '매우높음') && sections.consultation ? 
+          [sections.consultation] : [],
+        mediaNotes
+      } : {
+        situation: sections.summary || '관찰 상황을 요약했습니다.',
+        points: sections.basicPoints.length > 0 ? sections.basicPoints : ['주요 포인트를 분석했습니다.'],
+        positives: [], // 기본 모드에서는 긍정적 측면 별도 표시 안함
+        tips: sections.basicTips.length > 0 ? sections.basicTips : ['개선 팁을 제시했습니다.'],
+        alerts: sections.basicAlerts.length > 0 ? sections.basicAlerts : [],
         mediaNotes
       },
       score: {

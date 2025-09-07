@@ -158,21 +158,10 @@ const Index = () => {
             </div>
           </div>
           
-          {/* 서비스 소개 영상 */}
+          {/* 실제 사례 및 후기 */}
           <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-6">HIGHLIGHT PRO 서비스 소개</h2>
-              <div className="max-w-4xl mx-auto">
-                <video 
-                  autoPlay 
-                  loop 
-                  muted 
-                  playsInline
-                  className="w-full rounded-lg shadow-lg"
-                  src="https://mblogvideo-phinf.pstatic.net/MjAyNTA5MDRfMTAy/MDAxNzU2OTY3MzUyMjIw.1lxNFQYvs6QQf8-rqL1BTTMvdg_oGua8HwIEO9i7VKkg.aK6OFSLJp8G-WbHFVWa8HUNyNNurgt5odaoWjCneuJIg.GIF/000000000000.gif?type=mp4w800"
-                />
-              </div>
-            </div>
+            <h2 className="text-2xl font-bold text-center mb-6">실제 이용 후기</h2>
+            <TestimonialSection />
           </div>
           
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.42s' }}>

@@ -51,6 +51,9 @@ interface FilterState {
   parking_only: boolean;
   accessibility_only: boolean;
   specialization: string;
+  rating_filter: number;
+  operating_hours: string;
+  expert_count: string;
 }
 
 interface Expert {
@@ -101,7 +104,10 @@ export default function Institutions() {
     voucher_only: false,
     parking_only: false,
     accessibility_only: false,
-    specialization: 'all'
+    specialization: 'all',
+    rating_filter: 0,
+    operating_hours: 'all',
+    expert_count: 'all'
   });
 
   // Load institutions from Supabase

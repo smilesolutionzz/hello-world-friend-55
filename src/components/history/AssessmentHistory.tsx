@@ -83,6 +83,7 @@ const AssessmentHistory = () => {
     };
     
     const config = configs[level];
+    if (!config) return null;
     const Icon = config.icon;
     
     return (

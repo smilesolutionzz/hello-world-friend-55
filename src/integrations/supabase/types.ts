@@ -2093,34 +2093,55 @@ export type Database = {
       }
       personalized_missions: {
         Row: {
-          based_on_data: Json | null
-          generated_at: string
+          completed_at: string | null
+          created_at: string
+          day_of_week: number
+          difficulty_level: number
           id: string
-          is_active: boolean
-          mission_content: Json
-          mission_type: string
-          priority_level: number
+          is_completed: boolean
+          mission_description: string
+          mission_title: string
+          target_behavior: string
+          updated_at: string
           user_id: string
+          verification_note: string | null
+          verification_photo_url: string | null
+          week_end: string
+          week_start: string
         }
         Insert: {
-          based_on_data?: Json | null
-          generated_at?: string
+          completed_at?: string | null
+          created_at?: string
+          day_of_week: number
+          difficulty_level: number
           id?: string
-          is_active?: boolean
-          mission_content: Json
-          mission_type?: string
-          priority_level?: number
+          is_completed?: boolean
+          mission_description: string
+          mission_title: string
+          target_behavior: string
+          updated_at?: string
           user_id: string
+          verification_note?: string | null
+          verification_photo_url?: string | null
+          week_end: string
+          week_start: string
         }
         Update: {
-          based_on_data?: Json | null
-          generated_at?: string
+          completed_at?: string | null
+          created_at?: string
+          day_of_week?: number
+          difficulty_level?: number
           id?: string
-          is_active?: boolean
-          mission_content?: Json
-          mission_type?: string
-          priority_level?: number
+          is_completed?: boolean
+          mission_description?: string
+          mission_title?: string
+          target_behavior?: string
+          updated_at?: string
           user_id?: string
+          verification_note?: string | null
+          verification_photo_url?: string | null
+          week_end?: string
+          week_start?: string
         }
         Relationships: []
       }
@@ -3106,6 +3127,45 @@ export type Database = {
           name?: string
           session_limit?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      weekly_mission_completions: {
+        Row: {
+          completed_missions: number
+          created_at: string
+          id: string
+          is_week_completed: boolean
+          tokens_awarded: number
+          total_missions: number
+          updated_at: string
+          user_id: string
+          week_end: string
+          week_start: string
+        }
+        Insert: {
+          completed_missions?: number
+          created_at?: string
+          id?: string
+          is_week_completed?: boolean
+          tokens_awarded?: number
+          total_missions?: number
+          updated_at?: string
+          user_id: string
+          week_end: string
+          week_start: string
+        }
+        Update: {
+          completed_missions?: number
+          created_at?: string
+          id?: string
+          is_week_completed?: boolean
+          tokens_awarded?: number
+          total_missions?: number
+          updated_at?: string
+          user_id?: string
+          week_end?: string
+          week_start?: string
         }
         Relationships: []
       }

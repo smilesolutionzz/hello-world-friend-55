@@ -122,10 +122,73 @@ const AssessmentHistory = () => {
           <h2 className="text-2xl font-bold text-foreground">검사 기록</h2>
           <p className="text-muted-foreground">가족 구성원들의 심리검사 기록을 관리하세요</p>
         </div>
-        <Button onClick={() => navigate('/assessment')}>
-          <TrendingUp className="w-4 h-4 mr-2" />
-          새 검사 시작
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => navigate('/assessment')}>
+            <FileText className="w-4 h-4 mr-2" />
+            검사 예약
+          </Button>
+          <Button onClick={() => navigate('/assessment')}>
+            <TrendingUp className="w-4 h-4 mr-2" />
+            새 검사 시작
+          </Button>
+        </div>
+      </div>
+
+      {/* Assessment Analytics */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">{assessments.length}</div>
+              <div className="text-sm text-muted-foreground">총 검사 수</div>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">
+                {assessments.filter(a => a.risk_level === 'low').length}
+              </div>
+              <div className="text-sm text-muted-foreground">정상 범위</div>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+              <Clock className="w-5 h-5 text-yellow-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">
+                {assessments.filter(a => a.risk_level === 'medium').length}
+              </div>
+              <div className="text-sm text-muted-foreground">주의 필요</div>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-red-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">
+                {assessments.filter(a => a.risk_level === 'high').length}
+              </div>
+              <div className="text-sm text-muted-foreground">고위험군</div>
+            </div>
+          </div>
+        </Card>
       </div>
 
       {/* Assessment List */}

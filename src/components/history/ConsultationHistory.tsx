@@ -10,7 +10,8 @@ import {
   Users,
   UserCheck,
   Eye,
-  Plus
+  Plus,
+  CheckCircle
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -129,12 +130,114 @@ const ConsultationHistory = () => {
             <MessageCircle className="w-4 h-4 mr-2" />
             AI 상담
           </Button>
-          <Button onClick={() => navigate('/assessment')}>
+          <Button onClick={() => navigate('/experts')}>
             <Plus className="w-4 h-4 mr-2" />
             전문가 상담 예약
           </Button>
         </div>
       </div>
+
+      {/* Consultation Analytics */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <MessageCircle className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">{consultations.length}</div>
+              <div className="text-sm text-muted-foreground">총 상담 수</div>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">
+                {consultations.filter(c => c.status === 'completed').length}
+              </div>
+              <div className="text-sm text-muted-foreground">완료된 상담</div>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+              <Clock className="w-5 h-5 text-yellow-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">
+                {consultations.filter(c => c.status === 'scheduled').length}
+              </div>
+              <div className="text-sm text-muted-foreground">예정된 상담</div>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+              <User className="w-5 h-5 text-purple-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">
+                {consultations.filter(c => c.session_type === 'individual').length}
+              </div>
+              <div className="text-sm text-muted-foreground">개인 상담</div>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Quick Actions for Consultations */}
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold mb-4">상담 관리</h3>
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+            <div className="flex items-center gap-3">
+              <MessageCircle className="w-5 h-5 text-blue-600" />
+              <div>
+                <h4 className="font-medium">AI 즉시 상담</h4>
+                <p className="text-sm text-muted-foreground">24시간 이용 가능</p>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => navigate('/ai-counselor')}>
+              시작하기
+            </Button>
+          </div>
+          
+          <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+            <div className="flex items-center gap-3">
+              <Users className="w-5 h-5 text-green-600" />
+              <div>
+                <h4 className="font-medium">전문가 예약</h4>
+                <p className="text-sm text-muted-foreground">맞춤 전문가 매칭</p>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => navigate('/experts')}>
+              예약하기
+            </Button>
+          </div>
+
+          <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
+            <div className="flex items-center gap-3">
+              <UserCheck className="w-5 h-5 text-purple-600" />
+              <div>
+                <h4 className="font-medium">가족 상담</h4>
+                <p className="text-sm text-muted-foreground">가족 단위 상담</p>
+              </div>
+            </div>
+            <Button variant="outline" size="sm">
+              문의하기
+            </Button>
+          </div>
+        </div>
+      </Card>
 
       {/* Consultation List */}
       {consultations.length > 0 ? (

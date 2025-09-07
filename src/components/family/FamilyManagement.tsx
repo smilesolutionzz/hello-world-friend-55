@@ -437,24 +437,118 @@ const FamilyManagement: React.FC<FamilyManagementProps> = ({ onUpdate }) => {
         </Card>
       )}
 
-      {/* Statistics */}
+      {/* Family Analytics Dashboard */}
       {familyMembers.length > 0 && (
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card className="p-4 text-center">
-            <div className="text-2xl font-bold text-primary">{familyMembers.length}</div>
-            <div className="text-sm text-muted-foreground">등록된 구성원</div>
-          </Card>
-          <Card className="p-4 text-center">
-            <div className="text-2xl font-bold text-primary">
-              {familyMembers.filter(m => m.is_primary_caregiver).length}
+        <div className="space-y-6">
+          {/* Statistics */}
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card className="p-4 text-center">
+              <div className="text-2xl font-bold text-primary">{familyMembers.length}</div>
+              <div className="text-sm text-muted-foreground">등록된 구성원</div>
+            </Card>
+            <Card className="p-4 text-center">
+              <div className="text-2xl font-bold text-primary">
+                {familyMembers.filter(m => m.is_primary_caregiver).length}
+              </div>
+              <div className="text-sm text-muted-foreground">주 보호자</div>
+            </Card>
+            <Card className="p-4 text-center">
+              <div className="text-2xl font-bold text-primary">
+                {familyMembers.filter(m => m.relationship === 'child').length}
+              </div>
+              <div className="text-sm text-muted-foreground">자녀</div>
+            </Card>
+            <Card className="p-4 text-center">
+              <div className="text-2xl font-bold text-primary">
+                {familyMembers.filter(m => getAgeFromBirthDate(m.birth_date) && getAgeFromBirthDate(m.birth_date)! >= 60).length}
+              </div>
+              <div className="text-sm text-muted-foreground">시니어</div>
+            </Card>
+          </div>
+
+          {/* Family Health Dashboard */}
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">가족 웰빙 현황</h3>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {familyMembers.map((member) => (
+                <Card key={member.id} className="p-4 bg-gradient-to-br from-blue-50 to-green-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
+                        {getRelationshipIcon(member.relationship)}
+                      </div>
+                      <div>
+                        <h4 className="font-medium">{member.name}</h4>
+                        <p className="text-xs text-muted-foreground">
+                          {relationshipOptions.find(r => r.value === member.relationship)?.label}
+                        </p>
+                      </div>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      건강
+                    </Badge>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>최근 검사</span>
+                      <span className="text-muted-foreground">7일 전</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>웰빙 점수</span>
+                      <span className="font-medium text-green-600">85/100</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-green-500 h-2 rounded-full" style={{ width: '85%' }}></div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
             </div>
-            <div className="text-sm text-muted-foreground">주 보호자</div>
           </Card>
-          <Card className="p-4 text-center">
-            <div className="text-2xl font-bold text-primary">
-              {familyMembers.filter(m => m.relationship === 'child').length}
+
+          {/* Family Care Plan */}
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">통합 케어 플랜</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Calendar className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <h4 className="font-medium">정기 검진 스케줄</h4>
+                    <p className="text-sm text-muted-foreground">가족 구성원별 맞춤 검진 일정</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm">
+                  일정 보기
+                </Button>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Heart className="w-5 h-5 text-green-600" />
+                  <div>
+                    <h4 className="font-medium">가족 액티비티</h4>
+                    <p className="text-sm text-muted-foreground">함께하는 건강 활동 추천</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm">
+                  추천 보기
+                </Button>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Brain className="w-5 h-5 text-purple-600" />
+                  <div>
+                    <h4 className="font-medium">심리 케어 계획</h4>
+                    <p className="text-sm text-muted-foreground">개인별 맞춤 케어 방안</p>
+                  </div>
+                </div>
+                <Button variant="outline" size="sm">
+                  계획 수립
+                </Button>
+              </div>
             </div>
-            <div className="text-sm text-muted-foreground">자녀</div>
           </Card>
         </div>
       )}

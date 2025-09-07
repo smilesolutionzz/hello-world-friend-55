@@ -200,6 +200,81 @@ const TeamSettings = () => {
 
   return (
     <div className="space-y-6">
+      {/* Team Overview */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <UserPlus className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">{teamMembers.length}</div>
+              <div className="text-sm text-muted-foreground">팀 멤버 수</div>
+            </div>
+          </div>
+        </Card>
+        
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+              <Stethoscope className="w-5 h-5 text-green-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">
+                {teamMembers.filter(m => m.role === 'expert').length}
+              </div>
+              <div className="text-sm text-muted-foreground">전문가</div>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+              <Crown className="w-5 h-5 text-purple-600" />
+            </div>
+            <div>
+              <div className="text-xl font-bold">
+                {teamMembers.filter(m => m.role === 'admin').length}
+              </div>
+              <div className="text-sm text-muted-foreground">관리자</div>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Team Collaboration Features */}
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold mb-4">팀 협업 기능</h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="p-4 bg-blue-50 rounded-lg">
+            <div className="flex items-center gap-3 mb-3">
+              <Shield className="w-5 h-5 text-blue-600" />
+              <h4 className="font-medium">권한 관리</h4>
+            </div>
+            <p className="text-sm text-muted-foreground mb-3">
+              팀 멤버별 세부 권한을 설정하고 관리하세요
+            </p>
+            <Button variant="outline" size="sm">
+              권한 설정
+            </Button>
+          </div>
+          
+          <div className="p-4 bg-green-50 rounded-lg">
+            <div className="flex items-center gap-3 mb-3">
+              <Eye className="w-5 h-5 text-green-600" />
+              <h4 className="font-medium">데이터 공유</h4>
+            </div>
+            <p className="text-sm text-muted-foreground mb-3">
+              안전하게 케이스 데이터를 공유하고 협업하세요
+            </p>
+            <Button variant="outline" size="sm">
+              공유 설정
+            </Button>
+          </div>
+        </div>
+      </Card>
+
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">팀 관리</h2>

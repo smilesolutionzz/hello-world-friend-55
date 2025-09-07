@@ -13,11 +13,11 @@ interface ObserveReportRequest {
   context: 'home' | 'institution' | 'therapy' | 'other';
   tags: string[];
   files: { url: string; type: 'image' | 'video' }[];
-  mode: 'basic' | 'detailed' | 'free' | 'paid'; // 업데이트: basic/detailed 모드 추가
+  mode: 'basic' | 'detailed';
   targetName?: string;
   observationDate?: string;
   templateType?: string;
-  tokenCost?: number; // 토큰 비용 추가
+  tokenCost?: number;
 }
 
 interface ObserveReportResponse {
@@ -108,16 +108,14 @@ serve(async (req) => {
 
     // 토큰 차감 처리
     const tokenCost = requestBody.tokenCost || (requestBody.mode === 'detailed' ? 5 : 3);
-    let tokenData: any = null; // 에러 핸들링에서 사용할 수 있도록 상위 스코프로 이동
     
     // 현재 토큰 잔액 확인 및 차감
-    const { data: tokenDataResult, error: tokenError } = await supabaseServiceClient
+    const { data: tokenData, error: tokenError } = await supabaseServiceClient
       .from('user_tokens')
       .select('current_tokens, total_used')
       .eq('user_id', user.id)
       .single();
 
-    tokenData = tokenDataResult; // 상위 스코프 변수에 할당
     if (tokenError || !tokenData) {
       return new Response(JSON.stringify({ 
         ok: false, 
@@ -153,7 +151,7 @@ serve(async (req) => {
 
     logStep('Token deducted', { tokenCost, remainingTokens: tokenData.current_tokens - tokenCost });
 
-    // Validation - UI와 일치하도록 최소 글자수를 50자로 통일
+    // Validation
     const minLength = 50;
     if (!requestBody.text || requestBody.text.trim().length < minLength) {
       return new Response(JSON.stringify({ 
@@ -197,7 +195,6 @@ serve(async (req) => {
       other: '기타'
     };
 
-    // 분석 모드에 따른 프롬프트 조정
     const isDetailedMode = requestBody.mode === 'detailed';
     
     const basePrompt = `
@@ -238,18 +235,6 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 
 **개선 방안**
 실제로 실행 가능한 구체적인 개선 방법들을 제시해주세요.
-
-**권고사항 추천**
-다음과 같이 구체적인 권고사항을 제시해주세요:
-- 일상생활에서 실천할 수 있는 구체적인 방법
-- 가정에서 적용할 수 있는 환경 조성 방안
-- 단계별 개선 계획
-
-**교육컨텐츠 추천**
-관찰 결과에 맞는 추천 교육자료를 제시해주세요:
-- 관련 도서나 자료 추천
-- 온라인 교육 프로그램 제안
-- 전문가 상담 분야 안내
 
 **전문가 상담 권장**
 전문적인 평가나 상담이 필요한지 여부와 그 이유를 설명해주세요.
@@ -313,10 +298,10 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     
     logStep('OpenAI response received', { textLength: analysisText.length });
 
-    // Parse the analysis response properly
+    // Parse the analysis response
     const domainScores = { 정서: 70, 행동: 70, 인지: 70, 사회성: 70, 신체: 70 };
     
-    // Extract scores from AI response
+    // Extract scores from AI response if present
     const scoreRegex = /(정서|행동|인지|사회성|신체):\s*(\d+)/g;
     let match;
     while ((match = scoreRegex.exec(analysisText)) !== null) {
@@ -326,42 +311,6 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         domainScores[domain as keyof typeof domainScores] = score;
       }
     }
-
-    // Extract risk level from analysis
-    let riskLevel = '보통';
-    const riskMatches = analysisText.match(/위험도.*?:?\s*(낮음|보통|높음|매우높음)/i);
-    if (riskMatches) {
-      riskLevel = riskMatches[1];
-    }
-
-    // Parse detailed sections
-    const sections = {
-      situation: '',
-      development: '',
-      concerns: '',
-      issues: '',
-      improvements: '',
-      consultation: ''
-    };
-
-    // Extract each section content
-    const situationMatch = analysisText.match(/\*\*상황 분석\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (situationMatch) sections.situation = situationMatch[1].trim();
-
-    const developmentMatch = analysisText.match(/\*\*현재 상태 평가\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (developmentMatch) sections.development = developmentMatch[1].trim();
-
-    const concernsMatch = analysisText.match(/\*\*주요 관심 사항\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (concernsMatch) sections.concerns = concernsMatch[1].trim();
-
-    const issuesMatch = analysisText.match(/\*\*잠재적 문제점\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (issuesMatch) sections.issues = issuesMatch[1].trim();
-
-    const improvementsMatch = analysisText.match(/\*\*개선 방안\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (improvementsMatch) sections.improvements = improvementsMatch[1].trim();
-
-    const consultationMatch = analysisText.match(/\*\*전문가 상담 권장\*\*([\s\S]*?)(?=\*\*|$)/);
-    if (consultationMatch) sections.consultation = consultationMatch[1].trim();
 
     // Add media notes if files were provided
     const mediaNotes: string[] = [];
@@ -376,80 +325,50 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
       Object.values(domainScores).reduce((sum, score) => sum + score, 0) / 5
     );
 
-    // Parse detailed sections more accurately
-    // Update sections object with more comprehensive structure
-    sections.summary = '';
-    sections.basicPoints = [];
-    sections.basicTips = [];
-    sections.basicAlerts = [];
-
-    // For detailed mode
+    // Parse sections based on mode
+    let report;
+    
     if (isDetailedMode) {
-      // Extract each section content for detailed analysis
+      // Extract detailed sections
       const situationMatch = analysisText.match(/\*\*상황 분석\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (situationMatch) sections.situation = situationMatch[1].trim();
-
       const developmentMatch = analysisText.match(/\*\*현재 상태 평가\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (developmentMatch) sections.development = developmentMatch[1].trim();
-
       const concernsMatch = analysisText.match(/\*\*주요 관심 사항\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (concernsMatch) sections.concerns = concernsMatch[1].trim();
-
       const issuesMatch = analysisText.match(/\*\*잠재적 문제점\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (issuesMatch) sections.issues = issuesMatch[1].trim();
-
       const improvementsMatch = analysisText.match(/\*\*개선 방안\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (improvementsMatch) sections.improvements = improvementsMatch[1].trim();
-
       const consultationMatch = analysisText.match(/\*\*전문가 상담 권장\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (consultationMatch) sections.consultation = consultationMatch[1].trim();
+
+      report = {
+        situation: situationMatch ? situationMatch[1].trim() : '상황을 분석했습니다.',
+        points: developmentMatch ? [developmentMatch[1].trim()] : ['현재 상태를 평가했습니다.'],
+        positives: concernsMatch ? [concernsMatch[1].trim()] : ['주요 관심 사항을 확인했습니다.'],
+        tips: improvementsMatch ? [improvementsMatch[1].trim()] : ['개선 방안을 제시했습니다.'],
+        alerts: consultationMatch ? [consultationMatch[1].trim()] : [],
+        mediaNotes
+      };
     } else {
-      // For basic mode
+      // Extract basic sections
       const summaryMatch = analysisText.match(/\*\*상황 요약\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (summaryMatch) sections.summary = summaryMatch[1].trim();
-
       const pointsMatch = analysisText.match(/\*\*주요 포인트\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (pointsMatch) {
-        sections.basicPoints = pointsMatch[1].trim().split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, ''));
-      }
-
       const tipsMatch = analysisText.match(/\*\*개선 팁\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (tipsMatch) {
-        sections.basicTips = tipsMatch[1].trim().split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, ''));
-      }
-
       const alertsMatch = analysisText.match(/\*\*주의사항\*\*([\s\S]*?)(?=\*\*|$)/);
-      if (alertsMatch) {
-        sections.basicAlerts = alertsMatch[1].trim().split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, ''));
-      }
+
+      const extractListItems = (text: string): string[] => {
+        return text.split('\n').filter(line => line.trim()).map(line => line.replace(/^-\s*/, '').trim());
+      };
+
+      report = {
+        situation: summaryMatch ? summaryMatch[1].trim() : '관찰 상황을 요약했습니다.',
+        points: pointsMatch ? extractListItems(pointsMatch[1]) : ['주요 포인트를 분석했습니다.'],
+        positives: [], // 기본 모드에서는 긍정적 측면 별도 표시 안함
+        tips: tipsMatch ? extractListItems(tipsMatch[1]) : ['개선 팁을 제시했습니다.'],
+        alerts: alertsMatch ? extractListItems(alertsMatch[1]) : [],
+        mediaNotes
+      };
     }
 
-    // Media notes are handled at the end to avoid duplication
-
-    // Calculate overall score
-    const overallScore = Math.round(
-      Object.values(domainScores).reduce((sum, score) => sum + score, 0) / 5
-    );
-
-    // Build result based on mode
     const result: ObserveReportResponse = {
       ok: true,
-      report: isDetailedMode ? {
-        situation: sections.situation || '상황을 분석했습니다.',
-        points: sections.development ? [sections.development] : ['현재 상태를 평가했습니다.'],
-        positives: sections.concerns ? [sections.concerns] : ['주요 관심 사항을 확인했습니다.'],
-        tips: sections.improvements ? [sections.improvements] : ['개선 방안을 제시했습니다.'],
-        alerts: (riskLevel === '높음' || riskLevel === '매우높음') && sections.consultation ? 
-          [sections.consultation] : [],
-        mediaNotes
-      } : {
-        situation: sections.summary || '관찰 상황을 요약했습니다.',
-        points: sections.basicPoints.length > 0 ? sections.basicPoints : ['주요 포인트를 분석했습니다.'],
-        positives: [], // 기본 모드에서는 긍정적 측면 별도 표시 안함
-        tips: sections.basicTips.length > 0 ? sections.basicTips : ['개선 팁을 제시했습니다.'],
-        alerts: sections.basicAlerts.length > 0 ? sections.basicAlerts : [],
-        mediaNotes
-      },
+      report,
       score: {
         overall: overallScore,
         domains: domainScores
@@ -458,8 +377,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 
     logStep('Analysis completed successfully', { 
       overallScore,
-      analysisLength: analysisText.length,
-      sectionsFound: sections.length
+      analysisLength: analysisText.length
     });
 
     return new Response(JSON.stringify(result), {
@@ -468,11 +386,12 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     });
 
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep('ERROR', { message: errorMessage, stack: error instanceof Error ? error.stack : undefined });
+    logStep('Error occurred', { error: error.message });
     
-    // 토큰을 다시 복구 (에러 발생 시 토큰을 돌려주기)
-    if (user?.id && tokenCost) {
+    const errorMessage = error.message || 'Unknown error';
+    
+    // 토큰 환불 시도
+    if (user?.id && tokenCost && tokenData) {
       try {
         await supabaseServiceClient
           .from('user_tokens')

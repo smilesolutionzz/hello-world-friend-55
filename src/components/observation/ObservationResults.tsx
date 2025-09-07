@@ -32,7 +32,6 @@ import {
 } from "lucide-react";
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart as RechartsLineChart, Line } from 'recharts';
 import MediaDisplay from './MediaDisplay';
-import TokenGateWrapper from '@/components/TokenGateWrapper';
 import ProductRecommendation from '@/components/ProductRecommendation';
 import RecommendationPanel from './RecommendationPanel';
 import ContentRecommendationPanel from './ContentRecommendationPanel';
@@ -156,20 +155,17 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
       if (error) throw error;
 
       if (data && data.content && data.content.html) {
-        // Create PDF blob from HTML content
         const printWindow = window.open('', '_blank');
         if (printWindow) {
           printWindow.document.write(data.content.html);
           printWindow.document.close();
           
-          // Wait for content to load then trigger print/save as PDF
           printWindow.onload = () => {
             printWindow.focus();
             printWindow.print();
           };
         }
         
-        // Also create a downloadable HTML file as backup
         const blob = new Blob([data.content.html], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -198,7 +194,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
     }
   };
 
-  // AI 분석 데이터 추출 - 여러 경로에서 확인
+  // AI 분석 데이터 추출
   const aiAnalysis = session.observations?.analysis_data?.ai_analysis || 
                      session.observations?.ai_analysis || 
                      session.analysis_data?.ai_analysis ||
@@ -225,7 +221,6 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
     fullCategory: category
   }));
 
-  // Sample time series data for subscription users
   const timeSeriesData = [
     { date: '1주차', score: 3.2 },
     { date: '2주차', score: 3.5 },
@@ -237,7 +232,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
   const hasUsagesLeft = !subscriptionData || subscriptionData.usage_count < 3;
   const canViewAdvanced = isPremiumUser || hasUsagesLeft;
 
-  // 연령대 확인 - 성인이면 "발달" 용어 대신 다른 용어 사용
+  // 연령대 확인
   const ageGroup = session.observations?.analysis_data?.age_group || 
                    session.observations?.age_group || 
                    session.analysis_data?.age_group || 
@@ -290,7 +285,6 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
             <Download className="h-4 w-4 mr-2" />
             {generating ? 'PDF 생성 중...' : 'PDF로 저장'}
           </Button>
-          {/* 4회차부터는 전문가 피드백 자동 표시, 그 이전에는 조건부 표시 */}
           {(showExpertComments || observationCount < 4) && (
             <div className="min-w-0">
               <ExpertFeedbackRequest 
@@ -381,287 +375,149 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          {/* Basic summary for overview */}
           <Card>
             <CardHeader>
-              <CardTitle>관찰 요약</CardTitle>
-              <CardDescription>
-                {session.observations?.session_name || session.session_name}에 대한 주요 관찰 내용입니다.
-              </CardDescription>
+              <CardTitle>종합 개요</CardTitle>
+              <CardDescription>관찰 결과의 전체적인 요약입니다</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {session.observations?.summary || '요약 내용이 없습니다.'}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>미디어 첨부 파일</CardTitle>
-              <CardDescription>
-                관찰에 사용된 미디어 파일 목록입니다.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {mediaFiles.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {mediaFiles.map((file: any, index: number) => (
-                    <MediaDisplay key={index} file={file} />
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">첨부된 미디어 파일이 없습니다.</p>
-              )}
+              <div className="text-sm leading-relaxed">
+                {aiAnalysis?.situation || "관찰 결과를 분석했습니다. 전반적으로 안정적인 상태를 보이고 있습니다."}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="scores" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>영역별 점수 분석</CardTitle>
-              <CardDescription>
-                각 영역별 평균 점수를 보여주는 차트입니다.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <RadarChart data={radarData}>
-                  <PolarGrid />
-                  <PolarAngleAxis dataKey="category" />
-                  <PolarRadiusAxis angle={30} domain={[0, 5]} />
-                  <Radar dataKey="score" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-                </RadarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>세부 점수 비교</CardTitle>
-              <CardDescription>
-                영역별 점수를 막대 그래프로 시각화했습니다.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={barData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="category" />
-                  <YAxis domain={[0, 5]} />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="score" fill="#82ca9d" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {isPremiumUser && (
+          {radarData.length > 0 ? (
             <Card>
               <CardHeader>
-                <CardTitle>장기 추이 분석</CardTitle>
-                <CardDescription>
-                  구독자 전용: 장기적인 점수 변화를 보여줍니다.
-                </CardDescription>
+                <CardTitle>영역별 점수 분석</CardTitle>
+                <CardDescription>각 영역별 상세 점수와 차트를 확인하세요</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <RechartsLineChart data={timeSeriesData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis domain={[0, 5]} />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="score" stroke="#8884d8" activeDot={{ r: 8 }} />
-                  </RechartsLineChart>
-                </ResponsiveContainer>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-medium mb-4">레이더 차트</h4>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <RadarChart data={radarData}>
+                        <PolarGrid />
+                        <PolarAngleAxis dataKey="category" />
+                        <PolarRadiusAxis domain={[0, 5]} />
+                        <Radar name="점수" dataKey="score" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6} />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-4">막대 차트</h4>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={barData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="category" />
+                        <YAxis domain={[0, 5]} />
+                        <Tooltip />
+                        <Bar dataKey="score" fill="#82ca9d" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-center text-muted-foreground">
+                점수 데이터가 없습니다.
               </CardContent>
             </Card>
           )}
         </TabsContent>
 
         <TabsContent value="analysis" className="space-y-6">
-          <TokenGateWrapper
-            tokenCost={5}
-            title="AI 분석 결과"
-            description="전문적인 AI 분석 결과를 확인하세요"
-          >
-            <div className="space-y-6">
-              {/* AI 분석 결과 헤더 */}
-              <Card>
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Brain className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl">AI 전문 분석 결과</CardTitle>
-                      <CardDescription>
-                        {session.observations?.target_name || '대상자'}님의 관찰 데이터를 바탕으로 한 종합 분석입니다
-                      </CardDescription>
-                    </div>
+          <div className="space-y-6">
+            {/* AI 분석 결과 헤더 */}
+            <Card>
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Brain className="h-6 w-6 text-primary" />
                   </div>
-                </CardHeader>
-              </Card>
-
-              {/* Dynamic AI Analysis Results */}
-              {aiAnalysis ? (
-                <div className="grid gap-6">
-                  {/* 상황 분석 */}
-                  {aiAnalysis.situation && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <TrendingUp className="h-5 w-5 text-blue-600" />
-                          상황 분석
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                          {aiAnalysis.situation}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 주요 포인트/현재 상태 평가 */}
-                  {aiAnalysis.points && aiAnalysis.points.length > 0 && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Eye className="h-5 w-5 text-amber-600" />
-                          {isAdult ? '현재 상태 평가' : '주요 포인트'}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          {aiAnalysis.points.map((point: string, index: number) => (
-                            <div key={index} className="flex items-start gap-3">
-                              <div className="w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
-                              <div className="text-sm leading-relaxed">{point}</div>
-                            </div>
-                          ))
-                          }
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 긍정적 측면/관심 사항 */}
-                  {aiAnalysis.positives && aiAnalysis.positives.length > 0 && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <CheckCircle className="h-5 w-5 text-green-600" />
-                          {isAdult ? '긍정적 측면' : '주요 관심 사항'}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          {aiAnalysis.positives.map((positive: string, index: number) => (
-                            <div key={index} className="flex items-start gap-3">
-                              <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                              <div className="text-sm leading-relaxed">{positive}</div>
-                            </div>
-                          ))
-                          }
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 개선 방안 */}
-                  {aiAnalysis.tips && aiAnalysis.tips.length > 0 && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-green-600" />
-                          개선 방안
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          {aiAnalysis.tips.map((tip: string, index: number) => (
-                            <div key={index} className="flex items-start gap-3">
-                              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                              <div className="text-sm leading-relaxed">{tip}</div>
-                            </div>
-                          ))
-                          }
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 주의사항/알림 */}
-                  {aiAnalysis.alerts && aiAnalysis.alerts.length > 0 && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <AlertTriangle className="h-5 w-5 text-red-600" />
-                          주의사항
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          {aiAnalysis.alerts.map((alert: string, index: number) => (
-                            <div key={index} className="p-3 bg-red-50 rounded-lg">
-                              <div className="text-sm text-red-700 leading-relaxed">{alert}</div>
-                            </div>
-                          ))
-                          }
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 미디어 노트 */}
-                  {aiAnalysis.mediaNotes && aiAnalysis.mediaNotes.length > 0 && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <FileText className="h-5 w-5 text-purple-600" />
-                          미디어 분석 노트
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          {aiAnalysis.mediaNotes.map((note: string, index: number) => (
-                            <div key={index} className="text-sm text-muted-foreground">
-                              • {note}
-                            </div>
-                          ))
-                          }
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
+                  <div>
+                    <CardTitle className="text-xl">AI 전문 분석 결과</CardTitle>
+                    <CardDescription>
+                      {session.observations?.target_name || '대상자'}님의 관찰 데이터를 바탕으로 한 종합 분석입니다
+                    </CardDescription>
+                  </div>
                 </div>
-              ) : (
-                /* Fallback static content when no AI analysis available */
-                <div className="grid gap-6 md:grid-cols-2">
+              </CardHeader>
+            </Card>
+
+            {/* Dynamic AI Analysis Results */}
+            {aiAnalysis ? (
+              <div className="grid gap-6">
+                {/* 상황 분석 */}
+                {aiAnalysis.situation && (
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <TrendingUp className="h-5 w-5 text-blue-600" />
-                        {isAdult ? '현재 상태 평가' : '발달 상태 평가'}
+                        상황 분석
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {aiAnalysis.situation}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* 주요 포인트/현재 상태 평가 */}
+                {aiAnalysis.points && aiAnalysis.points.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Eye className="h-5 w-5 text-amber-600" />
+                        {isAdult ? '현재 상태 평가' : '주요 포인트'}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        <div className="text-sm text-muted-foreground">
-                          현재 {isAdult ? '상태' : '발달'} 수준: <span className="font-medium text-foreground">연령대 적합</span>
-                        </div>
-                        <Progress value={75} className="h-2" />
-                        <div className="text-sm">
-                          {session.observations?.target_name || '대상자'}의 전반적인 상태는 연령대에 적합한 수준을 보이고 있으며, 
-                          지속적인 관찰과 지원이 도움이 될 것입니다.
-                        </div>
+                        {aiAnalysis.points.map((point: string, index: number) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
+                            <div className="text-sm leading-relaxed">{point}</div>
+                          </div>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
+                )}
 
+                {/* 긍정적 측면/관심 사항 */}
+                {aiAnalysis.positives && aiAnalysis.positives.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        {isAdult ? '긍정적 측면' : '주요 관심 사항'}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {aiAnalysis.positives.map((positive: string, index: number) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                            <div className="text-sm leading-relaxed">{positive}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* 개선 방안 */}
+                {aiAnalysis.tips && aiAnalysis.tips.length > 0 && (
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -671,70 +527,154 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        <div className="flex items-start gap-3">
-                          <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                          <div className="text-sm">
-                            <div className="font-medium">지속적인 관찰</div>
-                            <div className="text-muted-foreground">정기적인 관찰을 통해 변화를 추적해보세요.</div>
+                        {aiAnalysis.tips.map((tip: string, index: number) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                            <div className="text-sm leading-relaxed">{tip}</div>
                           </div>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                          <div className="text-sm">
-                            <div className="font-medium">긍정적 피드백</div>
-                            <div className="text-muted-foreground">작은 성취에도 즉시적이고 구체적인 격려를 해주세요.</div>
-                          </div>
-                        </div>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
-                </div>
-              )}
+                )}
 
-              {/* 전문가 상담 권장 */}
-              <Card className="border-purple-200 bg-purple-50">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <Users className="h-6 w-6 text-purple-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-purple-800 mb-2">전문가 상담 권장</h3>
-                      <p className="text-purple-700 text-sm mb-4">
-                        현재 관찰된 내용을 바탕으로 전문가와의 상담을 통해 더 구체적인 지원 방안을 논의하는 것이 도움이 될 수 있습니다.
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        <Button
-                          size="sm"
-                          className="bg-purple-600 hover:bg-purple-700"
-                          onClick={() => navigate('/expert-consultation')}
-                        >
-                          <MessageSquare className="h-4 w-4 mr-2" />
-                          전문가 상담 신청
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-purple-300 text-purple-700"
-                          onClick={() => navigate('/assessment')}
-                        >
-                          심화 평가 받기
-                        </Button>
+                {/* 주의사항/알림 */}
+                {aiAnalysis.alerts && aiAnalysis.alerts.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <AlertTriangle className="h-5 w-5 text-red-600" />
+                        주의사항
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {aiAnalysis.alerts.map((alert: string, index: number) => (
+                          <div key={index} className="p-3 bg-red-50 rounded-lg">
+                            <div className="text-sm text-red-700 leading-relaxed">{alert}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* 미디어 노트 */}
+                {aiAnalysis.mediaNotes && aiAnalysis.mediaNotes.length > 0 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <FileText className="h-5 w-5 text-purple-600" />
+                        미디어 분석 노트
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        {aiAnalysis.mediaNotes.map((note: string, index: number) => (
+                          <div key={index} className="text-sm text-muted-foreground">
+                            • {note}
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            ) : (
+              /* Fallback static content when no AI analysis available */
+              <div className="grid gap-6 md:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-blue-600" />
+                      {isAdult ? '현재 상태 평가' : '발달 상태 평가'}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="text-sm text-muted-foreground">
+                        현재 {isAdult ? '상태' : '발달'} 수준: <span className="font-medium text-foreground">연령대 적합</span>
+                      </div>
+                      <Progress value={75} className="h-2" />
+                      <div className="text-sm">
+                        {session.observations?.target_name || '대상자'}의 전반적인 상태는 연령대에 적합한 수준을 보이고 있으며, 
+                        지속적인 관찰과 지원이 도움이 될 것입니다.
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              {/* 추천 콘텐츠 */}
-              <ProductRecommendation 
-                title="추천 상품"
-                subtitle="현재 관찰 결과에 맞는 추천 상품들입니다"
-                context={`관찰일지 - ${session.observations?.session_name || session.session_name}, 분석결과: ${analysisData?.summary || '긍정적 상태'}`}
-                hideIfEmpty={true}
-              />
-            </div>
-          </TokenGateWrapper>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Lightbulb className="h-5 w-5 text-green-600" />
+                      개선 방안
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                        <div className="text-sm">
+                          <div className="font-medium">지속적인 관찰</div>
+                          <div className="text-muted-foreground">정기적인 관찰을 통해 변화를 추적해보세요.</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                        <div className="text-sm">
+                          <div className="font-medium">긍정적 피드백</div>
+                          <div className="text-muted-foreground">작은 성취에도 즉시적이고 구체적인 격려를 해주세요.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* 전문가 상담 권장 */}
+            <Card className="border-purple-200 bg-purple-50">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <Users className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-purple-800 mb-2">전문가 상담 권장</h3>
+                    <p className="text-purple-700 text-sm mb-4">
+                      현재 관찰된 내용을 바탕으로 전문가와의 상담을 통해 더 구체적인 지원 방안을 논의하는 것이 도움이 될 수 있습니다.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        className="bg-purple-600 hover:bg-purple-700"
+                        onClick={() => navigate('/expert-consultation')}
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        전문가 상담 신청
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-purple-300 text-purple-700"
+                        onClick={() => navigate('/assessment')}
+                      >
+                        심화 평가 받기
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 추천 콘텐츠 */}
+            <ProductRecommendation 
+              category="child" 
+              domain={session.observations?.domain || session.domain}
+              severity={riskLevel}
+            />
+          </div>
         </TabsContent>
 
         <TabsContent value="recommendations" className="space-y-6">
@@ -745,6 +685,21 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
           <ContentRecommendationPanel session={session} />
         </TabsContent>
       </Tabs>
+
+      {/* Media Section */}
+      {mediaFiles && mediaFiles.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-purple-600" />
+              관찰 미디어
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MediaDisplay mediaFiles={mediaFiles} title="관찰 기록 미디어" />
+          </CardContent>
+        </Card>
+      )}
 
       {/* AI 이미지 생성 */}
       <Card>

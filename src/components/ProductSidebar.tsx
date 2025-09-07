@@ -8,6 +8,23 @@ import { Crown, FileText, Clock, Brain, Users, MessageCircle, Star, Zap, Gift } 
 const ProductSidebar = () => {
   const navigate = useNavigate();
 
+  const scrollToComprehensiveReport = () => {
+    // Find the ComprehensiveReportSection and scroll to it
+    const reportSection = document.querySelector('[data-section="comprehensive-report"]');
+    if (reportSection) {
+      reportSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      // If not found, navigate to dashboard where it should be visible
+      navigate('/dashboard');
+      setTimeout(() => {
+        const reportSection = document.querySelector('[data-section="comprehensive-report"]');
+        if (reportSection) {
+          reportSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 500);
+    }
+  };
+
   const products = [
     {
       icon: <Clock className="w-5 h-5" />,
@@ -215,7 +232,7 @@ const ProductSidebar = () => {
             <Button 
               size="sm"
               className="w-full bg-red-600 hover:bg-red-700 text-white text-sm font-medium"
-              onClick={() => navigate('/expert-hiring')}
+              onClick={scrollToComprehensiveReport}
             >
               📊 박사급 리포트 (200토큰)
             </Button>

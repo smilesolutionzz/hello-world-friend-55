@@ -130,13 +130,13 @@ export function ComprehensiveReportSection({
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary-glow/10 border-primary/20">
+    <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary-glow/10 border-primary/20" data-section="comprehensive-report">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-3 bg-primary/10 rounded-lg">
           <FileText className="w-6 h-6 text-primary" />
         </div>
         <div>
-          <h3 className="text-lg font-bold">AIH 전문가 종합 리포팅</h3>
+          <h3 className="text-lg font-bold">박사급 종합 리포팅</h3>
           <p className="text-sm text-muted-foreground">모든 데이터를 종합한 전문 분석 리포트</p>
         </div>
       </div>

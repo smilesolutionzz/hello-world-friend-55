@@ -22,7 +22,7 @@ export function SamplePDFDownload() {
         <div className="flex-1">
           <h3 className="text-lg font-bold mb-1">샘플 리포트 미리보기</h3>
           <p className="text-sm text-muted-foreground mb-3">
-            AIH 전문가 종합 리포팅의 실제 샘플을 확인해보세요
+            박사급 종합 리포팅의 실제 샘플을 확인해보세요
           </p>
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-amber-500" />

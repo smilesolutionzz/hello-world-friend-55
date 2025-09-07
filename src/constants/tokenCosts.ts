@@ -21,7 +21,7 @@ export const TOKEN_COSTS = {
   PROFESSIONAL_REPORT: 6,   // 전문가 리포트 생성 (8→6)
   
   // 최고급 서비스 (고가격대)
-  COMPREHENSIVE_REPORT: 50, // AI 전문가 종합 리포팅 (200→50)
+  COMPREHENSIVE_REPORT: 200, // 박사급 종합 리포팅 (200토큰)
   IEP_GENERATION: 15,       // IEP 생성 (0→15)
   
   // 엔터테인먼트 (최저가격대)
@@ -46,7 +46,7 @@ export const TOKEN_COST_DESCRIPTIONS = {
   6: "전문가급 분석 및 리포트 생성",
   8: "프리미엄 종합검사 및 상세 분석",
   15: "AI 기반 개별교육계획(IEP) 전문 생성",
-  50: "모든 데이터 종합 분석 리포트 (3일내 휴대폰 전송)",
+  200: "모든 데이터 종합 박사급 분석 리포트 (3일내 휴대폰 전송)",
   0: "위기상황 자동 감지 (무료)",
 } as const;
 

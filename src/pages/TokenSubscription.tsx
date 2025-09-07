@@ -27,7 +27,6 @@ const TokenSubscription = () => {
   const [loading, setLoading] = useState(false);
   const [packagesLoading, setPackagesLoading] = useState(true);
   const [purchasingPackageId, setPurchasingPackageId] = useState<string | null>(null);
-  const [showFounderLetter, setShowFounderLetter] = useState(false);
 
   useEffect(() => {
     fetchPackages();
@@ -302,15 +301,12 @@ const TokenSubscription = () => {
                   <p className="text-muted-foreground text-sm mb-4">{pkg.description}</p>
                   
                   <div className="space-y-2">
-                     <div className="text-4xl font-bold text-foreground">
-                       ₩{formatPrice(pkg.price_krw)}
-                     </div>
-                     <div 
-                       className="text-xl font-bold text-primary cursor-pointer hover:text-primary/80 transition-colors"
-                       onClick={() => setShowFounderLetter(!showFounderLetter)}
-                     >
-                       {pkg.token_count}개 토큰
-                     </div>
+                    <div className="text-4xl font-bold text-foreground">
+                      ₩{formatPrice(pkg.price_krw)}
+                    </div>
+                    <div className="text-xl font-bold text-primary">
+                      {pkg.token_count}개 토큰
+                    </div>
                   </div>
                 </CardHeader>
 
@@ -405,77 +401,8 @@ const TokenSubscription = () => {
           </div>
         </div>
 
-        {/* FAQ Section - toggleable */}
-        {!showFounderLetter && (
-          <div className="mt-20">
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-gradient-to-br from-blue-50 via-purple-50/30 to-pink-50 rounded-3xl p-8 md:p-12 shadow-2xl border border-primary/10 relative overflow-hidden">
-                {/* Background decoration */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-2xl"></div>
-                
-                <div className="relative z-10">
-                  <div className="text-center mb-8">
-                    <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg border border-primary/20 mb-4">
-                      <span className="text-2xl">❓</span>
-                      <span className="text-primary font-semibold text-sm">자주묻는질문</span>
-                    </div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                      궁금한 것이 있으신가요?
-                    </h2>
-                    <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
-                  </div>
-
-                  <div className="space-y-6">
-                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/30">
-                      <h3 className="font-bold text-lg text-primary mb-3">Q. 토큰은 어떻게 사용하나요?</h3>
-                      <p className="text-foreground/80 leading-relaxed">
-                        토큰은 AI 분석, 전문가 상담, IEP 생성 등 프리미엄 기능을 이용할 때 사용됩니다. 
-                        각 기능별로 필요한 토큰 개수가 다르며, 토큰 하나는 약 한 번의 AI 분석에 해당합니다.
-                      </p>
-                    </div>
-
-                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/30">
-                      <h3 className="font-bold text-lg text-primary mb-3">Q. 토큰에 유효기간이 있나요?</h3>
-                      <p className="text-foreground/80 leading-relaxed">
-                        아니요, 구매하신 토큰은 영구적으로 사용하실 수 있습니다. 
-                        언제든지 필요할 때 사용하세요. 토큰이 소멸되거나 만료되지 않습니다.
-                      </p>
-                    </div>
-
-                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/30">
-                      <h3 className="font-bold text-lg text-primary mb-3">Q. 환불이 가능한가요?</h3>
-                      <p className="text-foreground/80 leading-relaxed">
-                        미사용 토큰에 한해 구매 후 7일 이내에 환불 요청이 가능합니다. 
-                        이미 사용한 토큰은 환불이 불가능하며, 환불 시 해당 토큰은 계정에서 차감됩니다.
-                      </p>
-                    </div>
-
-                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/30">
-                      <h3 className="font-bold text-lg text-primary mb-3">Q. 어떤 결제 방법을 지원하나요?</h3>
-                      <p className="text-foreground/80 leading-relaxed">
-                        현재 MVP 베타 기간으로 무통장입금을 통한 결제를 지원하고 있습니다. 
-                        정식 출시 후에는 카드결제, 계좌이체 등 다양한 결제 방법을 지원할 예정입니다.
-                      </p>
-                    </div>
-
-                    <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/30">
-                      <h3 className="font-bold text-lg text-primary mb-3">Q. 전문가 상담은 어떻게 받나요?</h3>
-                      <p className="text-foreground/80 leading-relaxed">
-                        AI 분석 결과에서 전문가 상담이 필요하다고 판단되면, 
-                        토큰을 사용하여 검증된 전문가와 1:1 상담을 받으실 수 있습니다. 
-                        상담은 채팅, 화상통화 등 다양한 방식으로 진행됩니다.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Founder's Letter - toggleable */}
-        {showFounderLetter && (
+        {/* Founder's Letter */}
+        <div className="mt-20">
           <div className="max-w-4xl mx-auto">
             <div className="bg-gradient-to-br from-warm-cream via-soft-lavender/30 to-gentle-peach rounded-3xl p-8 md:p-12 shadow-2xl border border-primary/10 relative overflow-hidden">
               {/* Background decoration */}
@@ -615,7 +542,7 @@ const TokenSubscription = () => {
               </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

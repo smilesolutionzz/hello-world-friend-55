@@ -230,6 +230,13 @@ const ExpertHiring = () => {
   const [locationFilter, setLocationFilter] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [aiRecommendations, setAiRecommendations] = useState<Expert[]>([]);
+  
+  // 제휴기관 필터 상태
+  const [filteredInstitutions, setFilteredInstitutions] = useState(mockInstitutions);
+  const [institutionSearchTerm, setInstitutionSearchTerm] = useState("");
+  const [institutionTypeFilter, setInstitutionTypeFilter] = useState("all");
+  const [institutionRegionFilter, setInstitutionRegionFilter] = useState("all");
+  const [voucherOnlyFilter, setVoucherOnlyFilter] = useState(false);
 
   // AI 추천 전문가 가져오기
   const getAIRecommendations = async () => {
@@ -281,7 +288,7 @@ const ExpertHiring = () => {
     getAIRecommendations();
   }, []);
 
-  // 필터링 로직
+  // 전문가 필터링 로직
   useEffect(() => {
     let filtered = experts;
 
@@ -319,6 +326,42 @@ const ExpertHiring = () => {
 
     setFilteredExperts(filtered);
   }, [searchTerm, specialtyFilter, priceFilter, locationFilter, experts]);
+
+  // 제휴기관 필터링 로직
+  useEffect(() => {
+    let filtered = mockInstitutions;
+
+    if (institutionSearchTerm) {
+      filtered = filtered.filter(institution =>
+        institution.name.toLowerCase().includes(institutionSearchTerm.toLowerCase()) ||
+        institution.address.toLowerCase().includes(institutionSearchTerm.toLowerCase()) ||
+        institution.description.toLowerCase().includes(institutionSearchTerm.toLowerCase()) ||
+        institution.services_offered.some(service => 
+          service.toLowerCase().includes(institutionSearchTerm.toLowerCase())
+        )
+      );
+    }
+
+    if (institutionTypeFilter && institutionTypeFilter !== "all") {
+      filtered = filtered.filter(institution =>
+        institution.institution_type === institutionTypeFilter
+      );
+    }
+
+    if (institutionRegionFilter && institutionRegionFilter !== "all") {
+      filtered = filtered.filter(institution =>
+        institution.address.includes(institutionRegionFilter)
+      );
+    }
+
+    if (voucherOnlyFilter) {
+      filtered = filtered.filter(institution =>
+        institution.voucher_types && institution.voucher_types.length > 0
+      );
+    }
+
+    setFilteredInstitutions(filtered);
+  }, [institutionSearchTerm, institutionTypeFilter, institutionRegionFilter, voucherOnlyFilter]);
 
   const handleHireExpert = (expertId: string) => {
     navigate(`/expert-contract/${expertId}`);
@@ -640,8 +683,95 @@ const ExpertHiring = () => {
 
           {/* 제휴기관 탭 */}
           <TabsContent value="institutions" className="space-y-6">
+            {/* 제휴기관 검색 및 필터 */}
+            <Card className="p-6 bg-white shadow-sm">
+              <div className="grid md:grid-cols-5 gap-4">
+                <div className="relative md:col-span-2">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    placeholder="기관명, 지역, 서비스 검색..."
+                    value={institutionSearchTerm}
+                    onChange={(e) => setInstitutionSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Select value={institutionTypeFilter} onValueChange={setInstitutionTypeFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="기관 유형" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">전체</SelectItem>
+                    <SelectItem value="development_center">발달센터</SelectItem>
+                    <SelectItem value="medical_center">의료기관</SelectItem>
+                    <SelectItem value="counseling_center">상담센터</SelectItem>
+                    <SelectItem value="oriental_clinic">한의원</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={institutionRegionFilter} onValueChange={setInstitutionRegionFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="지역" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">전체 지역</SelectItem>
+                    <SelectItem value="서울">서울특별시</SelectItem>
+                    <SelectItem value="부산">부산광역시</SelectItem>
+                    <SelectItem value="대구">대구광역시</SelectItem>
+                    <SelectItem value="인천">인천광역시</SelectItem>
+                    <SelectItem value="경기">경기도</SelectItem>
+                    <SelectItem value="강원">강원도</SelectItem>
+                    <SelectItem value="충북">충청북도</SelectItem>
+                    <SelectItem value="충남">충청남도</SelectItem>
+                    <SelectItem value="전북">전라북도</SelectItem>
+                    <SelectItem value="전남">전라남도</SelectItem>
+                    <SelectItem value="경북">경상북도</SelectItem>
+                    <SelectItem value="경남">경상남도</SelectItem>
+                    <SelectItem value="제주">제주특별자치도</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2">
+                  <Badge className="bg-blue-100 text-blue-800 shrink-0">
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    바우처
+                  </Badge>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={voucherOnlyFilter}
+                      onChange={(e) => setVoucherOnlyFilter(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm font-medium text-blue-800">지원기관만</span>
+                  </label>
+                </div>
+              </div>
+              
+              {/* 필터 결과 표시 */}
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Building className="w-4 h-4" />
+                  <span>총 {filteredInstitutions.length}개 제휴기관</span>
+                </div>
+                {(institutionSearchTerm || institutionTypeFilter !== "all" || institutionRegionFilter !== "all" || voucherOnlyFilter) && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => {
+                      setInstitutionSearchTerm("");
+                      setInstitutionTypeFilter("all");
+                      setInstitutionRegionFilter("all");
+                      setVoucherOnlyFilter(false);
+                    }}
+                    className="text-muted-foreground hover:text-primary"
+                  >
+                    <Filter className="w-4 h-4 mr-1" />
+                    필터 초기화
+                  </Button>
+                )}
+              </div>
+            </Card>
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockInstitutions.slice(0, 30).map((institution) => (
+              {filteredInstitutions.map((institution) => (
                 <Card key={institution.id} className="hover:shadow-lg transition-all duration-300 border-none shadow-md">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4 mb-4">

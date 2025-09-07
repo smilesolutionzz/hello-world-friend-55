@@ -390,20 +390,21 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     
     const errorMessage = error.message || 'Unknown error';
     
-    // 토큰 환불 시도
-    if (user?.id && tokenCost && tokenData) {
-      try {
+    // 토큰 환불 시도 (에러 발생 시에만)
+    try {
+      const { data: { user: currentUser } } = await supabaseClient.auth.getUser();
+      if (currentUser?.id && tokenCost && tokenData) {
         await supabaseServiceClient
           .from('user_tokens')
           .update({ 
             current_tokens: tokenData.current_tokens, // 원래 토큰으로 복구
             total_used: tokenData.total_used 
           })
-          .eq('user_id', user.id);
+          .eq('user_id', currentUser.id);
         logStep('Token refunded due to error', { refundedTokens: tokenCost });
-      } catch (refundError) {
-        logStep('Token refund failed', { error: refundError });
       }
+    } catch (refundError) {
+      logStep('Token refund failed', { error: refundError });
     }
     
     // OpenAI API 에러인 경우 더 구체적인 메시지

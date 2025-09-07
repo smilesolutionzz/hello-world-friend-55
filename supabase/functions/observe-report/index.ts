@@ -377,16 +377,10 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     );
 
     // Parse detailed sections more accurately
-    const sections = {
-      situation: '',
-      development: '',
-      concerns: '',
-      issues: '',
-      improvements: '',
-      consultation: '',
-      summary: '',
-      basicPoints: [],
-      basicTips: [],
+    // Update sections object with more comprehensive structure
+    sections.summary = '';
+    sections.basicPoints = [];
+    sections.basicTips = [];
       basicAlerts: []
     };
 

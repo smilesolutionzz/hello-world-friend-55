@@ -711,7 +711,7 @@ const FamilyManagement: React.FC<FamilyManagementProps> = ({ onUpdate }) => {
                     <Calendar className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground">정기 건전 스케줄</h4>
+                    <h4 className="font-semibold text-foreground">정기 검진 스케줄</h4>
                     <p className="text-sm text-muted-foreground">가족 구성원별 맞춤 검진 일정</p>
                   </div>
                 </div>

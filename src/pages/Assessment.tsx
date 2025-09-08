@@ -763,8 +763,8 @@ const Assessment = () => {
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
                   onClick={() => setCurrentStep('bigfive-test')}
                 >
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-red-500 text-white font-bold">
+                  <div className="absolute top-2 right-2">
+                    <Badge className="bg-red-500 text-white font-bold text-xs px-2 py-1">
                       🔥 1위
                     </Badge>
                   </div>
@@ -782,8 +782,8 @@ const Assessment = () => {
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
                   onClick={() => setCurrentStep('attachment-test')}
                 >
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-orange-500 text-white font-bold">
+                  <div className="absolute top-2 right-2">
+                    <Badge className="bg-orange-500 text-white font-bold text-xs px-2 py-1">
                       🔥 2위
                     </Badge>
                   </div>
@@ -801,8 +801,8 @@ const Assessment = () => {
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
                   onClick={() => setCurrentStep('stress-test')}
                 >
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-yellow-500 text-white font-bold">
+                  <div className="absolute top-2 right-2">
+                    <Badge className="bg-yellow-500 text-white font-bold text-xs px-2 py-1">
                       🔥 3위
                     </Badge>
                   </div>
@@ -820,8 +820,8 @@ const Assessment = () => {
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
                   onClick={() => setCurrentStep('career-test')}
                 >
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-blue-500 text-white font-bold">
+                  <div className="absolute top-2 right-2">
+                    <Badge className="bg-blue-500 text-white font-bold text-xs px-2 py-1">
                       📈 4위
                     </Badge>
                   </div>
@@ -839,8 +839,8 @@ const Assessment = () => {
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
                   onClick={() => setCurrentStep('selfesteem-test')}
                 >
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-purple-500 text-white font-bold">
+                  <div className="absolute top-2 right-2">
+                    <Badge className="bg-purple-500 text-white font-bold text-xs px-2 py-1">
                       ⭐ 추천
                     </Badge>
                   </div>

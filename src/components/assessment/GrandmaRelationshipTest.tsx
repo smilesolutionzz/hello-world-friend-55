@@ -138,6 +138,15 @@ export default function GrandmaRelationshipTest({ onComplete, onBack }: GrandmaR
       ...prev,
       [questions[currentQuestion].id]: value
     }));
+    
+    // 자동으로 다음 문항으로 이동
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(prev => prev + 1);
+      } else {
+        handleSubmit();
+      }
+    }, 300); // 300ms 딜레이로 자연스럽게
   };
 
   const handleNext = () => {

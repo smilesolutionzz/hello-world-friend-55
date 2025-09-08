@@ -154,27 +154,20 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
 
       if (error) throw error;
 
-      if (data && data.content && data.content.html) {
+      if (data && data.reportData && data.reportData.html) {
+        // HTML을 새 창으로 열어서 PDF로 인쇄할 수 있게 함
         const printWindow = window.open('', '_blank');
         if (printWindow) {
-          printWindow.document.write(data.content.html);
+          printWindow.document.write(data.reportData.html);
           printWindow.document.close();
           
           printWindow.onload = () => {
             printWindow.focus();
-            printWindow.print();
+            setTimeout(() => {
+              printWindow.print();
+            }, 500);
           };
         }
-        
-        const blob = new Blob([data.content.html], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${session.session_name || '관찰리포트'}_${new Date().toISOString().split('T')[0]}.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
       }
 
       toast({

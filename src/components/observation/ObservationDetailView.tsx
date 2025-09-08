@@ -63,16 +63,18 @@ const ObservationDetailView = ({ session, onBack }: ObservationDetailViewProps) 
 
       if (error) throw error;
 
-      if (data && data.content && data.content.html) {
+      if (data && data.reportData && data.reportData.html) {
         // PDF 생성을 위한 새 창 열기
         const printWindow = window.open('', '_blank');
         if (printWindow) {
-          printWindow.document.write(data.content.html);
+          printWindow.document.write(data.reportData.html);
           printWindow.document.close();
           
           printWindow.onload = () => {
             printWindow.focus();
-            printWindow.print();
+            setTimeout(() => {
+              printWindow.print();
+            }, 500);
           };
         }
       }

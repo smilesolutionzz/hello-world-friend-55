@@ -226,18 +226,72 @@ function generateReportHTML(sessionData: any, reportType: string): string {
             line-height: 1.8;
         }
         
-        .risk-indicator {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
+        .ai-analysis-section {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
         }
         
-        .risk-low { background: #d1fae5; color: #065f46; }
-        .risk-medium { background: #fef3c7; color: #92400e; }
-        .risk-high { background: #fee2e2; color: #991b1b; }
+        .analysis-subsection {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .analysis-subsection h4 {
+            color: #1e40af;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .analysis-content {
+            color: #374151;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+        
+        .analysis-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .analysis-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .analysis-list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .analysis-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .icon-positive { background: #d1fae5; color: #065f46; }
+        .icon-improvement { background: #fef3c7; color: #92400e; }
+        .icon-warning { background: #fee2e2; color: #991b1b; }
+        .icon-guide { background: #e0e7ff; color: #3730a3; }
     </style>
 </head>
 <body>
@@ -304,20 +358,24 @@ function generateReportHTML(sessionData: any, reportType: string): string {
         </div>
     </div>
 
-    <!-- Detailed Analysis -->
+    <!-- AI Expert Analysis Results -->
     <div class="section page-break">
+        <h2 class="section-title">🧠 AI 전문 분석 결과</h2>
+        ${generateAIAnalysisSection(sessionData)}
+    </div>
+
+    <!-- Expert Recommendations -->
+    <div class="section">
+        <h2 class="section-title">💡 전문가 권고사항</h2>
+        ${generateExpertRecommendations(sessionData)}
+    </div>
+
+    <!-- Detailed Analysis (Original) -->
+    <div class="section">
         <h2 class="section-title">🔍 상세 분석</h2>
         <div class="analysis-text">
             ${sessionData.ai_analysis || '분석 데이터가 없습니다.'}
         </div>
-    </div>
-
-    <!-- Recommendations -->
-    <div class="section">
-        <h2 class="section-title">💡 권고사항</h2>
-        <ul class="recommendation-list">
-            ${generateRecommendationsList(sessionData.recommendations || [])}
-        </ul>
     </div>
 
     <!-- Raw Data (if comprehensive report) -->
@@ -455,4 +513,120 @@ function getTopCategories(scores: any, isStrength: boolean): string[] {
     .map(([category]) => category);
   
   return sorted.length > 0 ? sorted : ['해당없음'];
+}
+
+function generateAIAnalysisSection(sessionData: any): string {
+  const analysisData = sessionData.analysis_data || {};
+  const aiReport = analysisData.report || {};
+  
+  return `
+    <div class="ai-analysis-section">
+      <h3 style="color: #1e40af; margin-top: 0; margin-bottom: 20px;">AI 기반 종합 분석</h3>
+      
+      ${aiReport.situation ? `
+        <div class="analysis-subsection">
+          <h4>📋 상황 분석</h4>
+          <div class="analysis-content">${aiReport.situation}</div>
+        </div>
+      ` : ''}
+      
+      ${aiReport.points && aiReport.points.length > 0 ? `
+        <div class="analysis-subsection">
+          <h4>✅ 주요 관찰 포인트</h4>
+          <ul class="analysis-list">
+            ${aiReport.points.map((point: string) => `
+              <li class="analysis-list-item">
+                <span class="analysis-icon icon-positive">✓</span>
+                <span>${point}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      ` : ''}
+      
+      ${aiReport.tips && aiReport.tips.length > 0 ? `
+        <div class="analysis-subsection">
+          <h4>💡 개선 제안</h4>
+          <ul class="analysis-list">
+            ${aiReport.tips.map((tip: string) => `
+              <li class="analysis-list-item">
+                <span class="analysis-icon icon-improvement">💡</span>
+                <span>${tip}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      ` : ''}
+      
+      ${aiReport.alerts && aiReport.alerts.length > 0 ? `
+        <div class="analysis-subsection">
+          <h4>⚠️ 주의사항</h4>
+          <ul class="analysis-list">
+            ${aiReport.alerts.map((alert: string) => `
+              <li class="analysis-list-item">
+                <span class="analysis-icon icon-warning">⚠</span>
+                <span>${alert}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      ` : ''}
+      
+      ${aiReport.observationGuide && aiReport.observationGuide.length > 0 ? `
+        <div class="analysis-subsection">
+          <h4>📖 지속적 관찰 가이드</h4>
+          <ul class="analysis-list">
+            ${aiReport.observationGuide.map((guide: string) => `
+              <li class="analysis-list-item">
+                <span class="analysis-icon icon-guide">📖</span>
+                <span>${guide}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function generateExpertRecommendations(sessionData: any): string {
+  const analysisData = sessionData.analysis_data || {};
+  const aiReport = analysisData.report || {};
+  
+  let recommendationsContent = '';
+  
+  // AI 분석에서 온 권고사항들
+  if (aiReport.tips && aiReport.tips.length > 0) {
+    recommendationsContent += `
+      <div class="recommendation-section">
+        <h4 style="color: #059669; margin-bottom: 15px;">📋 전문가 권고사항</h4>
+        <ul class="recommendation-list">
+          ${aiReport.tips.map((tip: string, index: number) => `
+            <li class="recommendation-item">
+              <div class="recommendation-title">권고사항 ${index + 1}</div>
+              <div>${tip}</div>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  }
+  
+  // 기존 권고사항이 있다면 추가
+  if (sessionData.recommendations && sessionData.recommendations.length > 0) {
+    recommendationsContent += `
+      <div class="recommendation-section" style="margin-top: 30px;">
+        <h4 style="color: #059669; margin-bottom: 15px;">📝 추가 권고사항</h4>
+        <ul class="recommendation-list">
+          ${generateRecommendationsList(sessionData.recommendations)}
+        </ul>
+      </div>
+    `;
+  }
+  
+  return recommendationsContent || `
+    <div style="text-align: center; padding: 40px; color: #6b7280;">
+      현재 이용 가능한 권고사항이 없습니다.
+    </div>
+  `;
 }

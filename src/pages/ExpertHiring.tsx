@@ -777,7 +777,7 @@ const ExpertHiring = () => {
         {/* 커뮤니티 스타일 헤더 */}
         <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-none shadow-lg mb-8">
           <CardContent className="p-8">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
               <div className="flex items-center gap-4">
                 <div className="bg-primary/10 p-4 rounded-full">
                   <Users className="w-8 h-8 text-primary" />
@@ -789,6 +789,14 @@ const ExpertHiring = () => {
                   </p>
                 </div>
               </div>
+              <Button
+                onClick={() => navigate('/expert-application')}
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                전문가로 지원하기
+              </Button>
             </div>
             
             {/* 통계 */}

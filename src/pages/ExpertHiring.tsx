@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { mockInstitutions } from '@/data/mockInstitutions';
-import { CommunityFeed } from '@/components/CommunityFeed';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   Star, 
   Award, 
@@ -34,11 +35,19 @@ import {
   Globe,
   Medal,
   Target,
-  TrendingUp
+  TrendingUp,
+  Plus,
+  ThumbsUp,
+  Send,
+  Trash2,
+  MoreHorizontal,
+  User
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { formatDistanceToNow } from "date-fns";
+import { ko } from "date-fns/locale";
 
 interface Expert {
   id: string;
@@ -238,6 +247,15 @@ const ExpertHiring = () => {
   const [institutionRegionFilter, setInstitutionRegionFilter] = useState("all");
   const [voucherOnlyFilter, setVoucherOnlyFilter] = useState(false);
 
+  // 커뮤니티 상태
+  const [communityPosts, setCommunityPosts] = useState<any[]>([]);
+  const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
+  const [newPostContent, setNewPostContent] = useState("");
+  const [newPostTitle, setNewPostTitle] = useState("");
+  const [selectedPost, setSelectedPost] = useState<any>(null);
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState<{ [key: string]: any[] }>({});
+
   // AI 추천 전문가 가져오기
   const getAIRecommendations = async () => {
     setIsLoading(true);
@@ -284,8 +302,184 @@ const ExpertHiring = () => {
     }
   };
 
+  // 커뮤니티 게시물 로드
+  const loadCommunityPosts = async () => {
+    try {
+      const { data: posts, error } = await supabase
+        .from('community_posts')
+        .select('*')
+        .eq('is_public', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setCommunityPosts(posts || []);
+    } catch (error) {
+      console.error('커뮤니티 게시물 로드 오류:', error);
+    }
+  };
+
+  // 게시물 작성
+  const createPost = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('로그인이 필요합니다.');
+        return;
+      }
+
+      if (!newPostContent.trim()) {
+        toast.error('내용을 입력해주세요.');
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('community_posts')
+        .insert({
+          user_id: user.id,
+          title: newPostTitle || null,
+          content: newPostContent,
+          is_anonymous: true,
+          is_public: true
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setCommunityPosts(prev => [data, ...prev]);
+      setNewPostContent("");
+      setNewPostTitle("");
+      setIsPostDialogOpen(false);
+      toast.success('게시물이 작성되었습니다!');
+    } catch (error) {
+      console.error('게시물 작성 오류:', error);
+      toast.error('게시물 작성 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 게시물 삭제
+  const deletePost = async (postId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('community_posts')
+        .delete()
+        .eq('id', postId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      setCommunityPosts(prev => prev.filter(post => post.id !== postId));
+      toast.success('게시물이 삭제되었습니다.');
+    } catch (error) {
+      console.error('게시물 삭제 오류:', error);
+      toast.error('게시물 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 좋아요 토글
+  const toggleLike = async (postId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('로그인이 필요합니다.');
+        return;
+      }
+
+      // 이미 좋아요를 눌렀는지 확인
+      const { data: existingLike } = await supabase
+        .from('community_likes')
+        .select('id')
+        .eq('post_id', postId)
+        .eq('user_id', user.id)
+        .single();
+
+      if (existingLike) {
+        // 좋아요 취소
+        await supabase
+          .from('community_likes')
+          .delete()
+          .eq('id', existingLike.id);
+      } else {
+        // 좋아요 추가
+        await supabase
+          .from('community_likes')
+          .insert({
+            post_id: postId,
+            user_id: user.id
+          });
+      }
+
+      // 게시물 목록 새로고침
+      loadCommunityPosts();
+    } catch (error) {
+      console.error('좋아요 토글 오류:', error);
+    }
+  };
+
+  // 댓글 로드
+  const loadComments = async (postId: string) => {
+    try {
+      const { data: commentsData, error } = await supabase
+        .from('community_comments')
+        .select('*')
+        .eq('post_id', postId)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      setComments(prev => ({ ...prev, [postId]: commentsData || [] }));
+    } catch (error) {
+      console.error('댓글 로드 오류:', error);
+    }
+  };
+
+  // 댓글 작성
+  const createComment = async (postId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('로그인이 필요합니다.');
+        return;
+      }
+
+      if (!newComment.trim()) {
+        toast.error('댓글 내용을 입력해주세요.');
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('community_comments')
+        .insert({
+          post_id: postId,
+          user_id: user.id,
+          content: newComment,
+          is_anonymous: true
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setComments(prev => ({
+        ...prev,
+        [postId]: [...(prev[postId] || []), data]
+      }));
+      setNewComment("");
+      
+      // 게시물의 댓글 수 업데이트 (트리거로 자동 처리됨)
+      loadCommunityPosts();
+      toast.success('댓글이 작성되었습니다!');
+    } catch (error) {
+      console.error('댓글 작성 오류:', error);
+      toast.error('댓글 작성 중 오류가 발생했습니다.');
+    }
+  };
+
   useEffect(() => {
     getAIRecommendations();
+    loadCommunityPosts();
   }, []);
 
   // 전문가 필터링 로직
@@ -502,9 +696,198 @@ const ExpertHiring = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* 커뮤니티 피드 탭 */}
+          {/* 커뮤니티 탭 */}
           <TabsContent value="community" className="space-y-6">
-            <CommunityFeed />
+            {/* 게시물 작성 */}
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">커뮤니티</h3>
+                  <Dialog open={isPostDialogOpen} onOpenChange={setIsPostDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="bg-primary hover:bg-primary/90">
+                        <Plus className="w-4 h-4 mr-2" />
+                        게시물 작성
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl">
+                      <DialogHeader>
+                        <DialogTitle>새 게시물 작성</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <Input
+                          placeholder="제목 (선택사항)"
+                          value={newPostTitle}
+                          onChange={(e) => setNewPostTitle(e.target.value)}
+                        />
+                        <Textarea
+                          placeholder="고민이나 성공사례, 평소 궁금했던 질문을 전문가에게 익명으로 공유해보세요..."
+                          value={newPostContent}
+                          onChange={(e) => setNewPostContent(e.target.value)}
+                          rows={6}
+                        />
+                        <div className="flex justify-end gap-2">
+                          <Button 
+                            variant="outline" 
+                            onClick={() => setIsPostDialogOpen(false)}
+                          >
+                            취소
+                          </Button>
+                          <Button onClick={createPost}>
+                            게시하기
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                
+                <p className="text-muted-foreground text-sm">
+                  고민이나 성공사례, 평소 궁금했던 질문을 전문가에게 익명으로 공유해보세요. 
+                  다른 부모님들의 경험담도 들어볼 수 있습니다.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* 게시물 목록 */}
+            <div className="space-y-4">
+              {communityPosts.length === 0 ? (
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <MessageCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+                      아직 게시물이 없습니다
+                    </h3>
+                    <p className="text-muted-foreground">
+                      첫 번째 게시물을 작성해보세요!
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                communityPosts.map((post) => (
+                  <Card key={post.id} className="overflow-hidden">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarFallback className="bg-primary/10 text-primary">
+                              <User className="w-5 h-5" />
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-sm">익명 사용자</p>
+                            <p className="text-xs text-muted-foreground">
+                              {formatDistanceToNow(new Date(post.created_at), { 
+                                addSuffix: true,
+                                locale: ko 
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button variant="ghost" size="sm">
+                            <MoreHorizontal className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {post.title && (
+                        <h3 className="font-semibold text-lg mb-2">{post.title}</h3>
+                      )}
+                      
+                      <p className="text-gray-700 mb-4 whitespace-pre-wrap">
+                        {post.content}
+                      </p>
+
+                      <div className="flex items-center justify-between border-t pt-4">
+                        <div className="flex items-center gap-4">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleLike(post.id)}
+                            className="flex items-center gap-2 text-muted-foreground hover:text-primary"
+                          >
+                            <ThumbsUp className="w-4 h-4" />
+                            {post.likes_count || 0}
+                          </Button>
+                          
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedPost(post);
+                              loadComments(post.id);
+                            }}
+                            className="flex items-center gap-2 text-muted-foreground hover:text-primary"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                            {post.comments_count || 0}
+                          </Button>
+                        </div>
+
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deletePost(post.id)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+
+                      {/* 댓글 섹션 */}
+                      {selectedPost?.id === post.id && (
+                        <div className="mt-4 border-t pt-4">
+                          <div className="space-y-3 mb-4">
+                            {(comments[post.id] || []).map((comment: any) => (
+                              <div key={comment.id} className="flex gap-3">
+                                <Avatar className="w-8 h-8">
+                                  <AvatarFallback className="bg-gray-100 text-gray-600">
+                                    <User className="w-4 h-4" />
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1">
+                                  <div className="bg-gray-50 rounded-lg p-3">
+                                    <p className="font-medium text-sm mb-1">익명 사용자</p>
+                                    <p className="text-sm">{comment.content}</p>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {formatDistanceToNow(new Date(comment.created_at), { 
+                                      addSuffix: true,
+                                      locale: ko 
+                                    })}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="댓글을 입력하세요..."
+                              value={newComment}
+                              onChange={(e) => setNewComment(e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  createComment(post.id);
+                                }
+                              }}
+                              className="flex-1"
+                            />
+                            <Button
+                              size="sm"
+                              onClick={() => createComment(post.id)}
+                            >
+                              <Send className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
           </TabsContent>
 
           {/* AI 추천 전문가 탭 */}

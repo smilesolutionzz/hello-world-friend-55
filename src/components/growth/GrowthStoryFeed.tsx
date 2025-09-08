@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Heart, Calendar, ArrowRight, Sparkles, Filter, Search } from 'lucide-react';
+import { Heart, Calendar, ArrowRight, Sparkles, Filter, Search, Play } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,6 +21,8 @@ interface GrowthStory {
   likes_count: number;
   created_at: string;
   user_id: string;
+  media_files?: string[];
+  media_types?: string[];
 }
 
 interface GrowthStoryFeedProps {
@@ -277,6 +279,38 @@ const GrowthStoryFeed = ({ refreshTrigger }: GrowthStoryFeedProps) => {
                     }
                   </p>
                 </div>
+
+                {/* 미디어 파일 표시 */}
+                {story.media_files && story.media_files.length > 0 && (
+                  <div className="grid grid-cols-2 gap-2 mb-4">
+                    {story.media_files.map((mediaUrl, mediaIndex) => {
+                      const mediaType = story.media_types?.[mediaIndex];
+                      return (
+                        <div key={mediaIndex} className="relative">
+                          {mediaType === 'image' ? (
+                            <img
+                              src={mediaUrl}
+                              alt={`스토리 이미지 ${mediaIndex + 1}`}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                          ) : (
+                            <div className="relative">
+                              <video
+                                src={mediaUrl}
+                                className="w-full h-32 object-cover rounded-lg"
+                                controls
+                                preload="metadata"
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <Play className="w-8 h-8 text-white drop-shadow-lg" />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
                 {/* 액션 버튼 */}
                 <div className="flex items-center justify-between pt-4 border-t">

@@ -1112,6 +1112,8 @@ export type Database = {
           id: string
           is_anonymous: boolean | null
           likes_count: number | null
+          media_files: string[] | null
+          media_types: string[] | null
           media_urls: Json | null
           title: string
           transformation_date: string | null
@@ -1126,6 +1128,8 @@ export type Database = {
           id?: string
           is_anonymous?: boolean | null
           likes_count?: number | null
+          media_files?: string[] | null
+          media_types?: string[] | null
           media_urls?: Json | null
           title: string
           transformation_date?: string | null
@@ -1140,6 +1144,8 @@ export type Database = {
           id?: string
           is_anonymous?: boolean | null
           likes_count?: number | null
+          media_files?: string[] | null
+          media_types?: string[] | null
           media_urls?: Json | null
           title?: string
           transformation_date?: string | null

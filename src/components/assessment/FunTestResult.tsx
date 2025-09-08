@@ -6,8 +6,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useShareText, formatFunTestResult } from "@/utils/shareUtils";
 import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
-import { SeniorFunResult } from './SeniorFunResult';
-import { GrandmaAnalysisResult } from './GrandmaAnalysisResult';
 
 export default function FunTestResult() {
   const location = useLocation();
@@ -55,10 +53,6 @@ export default function FunTestResult() {
         return `내 얼굴은 ${result?.matchedAnimal} 닮음! ${result?.emoji || '🐾'}`;
       case 'inner_animal':
         return `내 내면은 ${result?.innerAnimal}! 🦋`;
-      case 'senior_test':
-        return `${result?.title}! 👴👵`;
-      case 'grandma_analysis':
-        return `할머니 진단: ${result?.analysisType}! 👵💥`;
       default:
         return "재미있는 테스트 결과!";
     }
@@ -72,10 +66,6 @@ export default function FunTestResult() {
         return `AI가 분석한 결과 ${result?.similarity}% 유사도로 ${result?.matchedAnimal}과 닮았다고! ${result?.advice}`;
       case 'inner_animal':
         return `심리 분석 결과 내 내면은 ${result?.innerAnimal}! 매칭도 ${result?.personalityMatch}%`;
-      case 'senior_test':
-        return `시니어 매력 분석: ${result?.score}점! ${result?.description}`;
-      case 'grandma_analysis':
-        return `할머니 점수 ${result?.percentage}%! "${result?.grandmaComment}"`;
       default:
         return "나도 테스트 해보러 가기!";
     }
@@ -523,14 +513,6 @@ export default function FunTestResult() {
         </Card>
       </div>
     );
-  }
-
-  if (testType === 'senior_test') {
-    return <SeniorFunResult results={result} onBack={handleRetry} />;
-  }
-
-  if (testType === 'grandma_analysis') {
-    return <GrandmaAnalysisResult results={result} onBack={handleRetry} />;
   }
 
   return null;

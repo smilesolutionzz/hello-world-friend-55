@@ -166,28 +166,26 @@ ${results.description}
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-pink-50 to-orange-50">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="min-h-screen bg-gradient-to-br from-amber-100 via-orange-100 to-yellow-100 p-6">
+      <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Coffee className="w-10 h-10 text-amber-600" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              👴👵 시니어 매력 분석 결과
-            </h1>
-            <Coffee className="w-10 h-10 text-amber-600" />
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Coffee className="w-8 h-8 text-amber-600" />
+            <h1 className="text-3xl font-bold text-amber-700">👴👵 시니어 매력 분석 결과</h1>
+            <Coffee className="w-8 h-8 text-amber-600" />
           </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* 메인 결과 카드 */}
-          <Card className="p-8 bg-gradient-to-br from-white to-amber-50 border-amber-200 md:col-span-2 shadow-xl">
+          <Card className="p-8 bg-white/90 backdrop-blur-sm border-amber-200 md:col-span-2">
             <div className="text-center mb-6">
               <div className="text-6xl mb-4">{getMainEmoji()}</div>
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-2">
+              <h2 className="text-3xl font-bold text-amber-700 mb-2">
                 {results.seniorType}
               </h2>
               <div className="flex items-center justify-center gap-2 mb-4">
-                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-lg px-4 py-2">
+                <Badge className="bg-amber-500 text-white text-lg px-4 py-2">
                   매력 지수: {Math.round((results.totalScore / 32) * 100)}%
                 </Badge>
               </div>
@@ -198,7 +196,7 @@ ${results.description}
             </div>
 
             <div className="space-y-6">
-              <div className="bg-gradient-to-r from-amber-50 to-yellow-50 p-6 rounded-xl border border-amber-200">
+              <div className="bg-amber-50 p-6 rounded-lg border border-amber-200">
                 <h3 className="text-xl font-bold text-amber-700 mb-3 flex items-center gap-2">
                   <Star className="w-5 h-5" />
                   시니어님의 매력 포인트
@@ -208,7 +206,7 @@ ${results.description}
                 </p>
               </div>
 
-              <div className="bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-xl border border-orange-200">
+              <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
                 <h3 className="text-xl font-bold text-orange-700 mb-3 flex items-center gap-2">
                   <Heart className="w-5 h-5" />
                   특별한 매력
@@ -218,7 +216,7 @@ ${results.description}
                 </p>
               </div>
 
-              <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-200">
+              <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
                 <h3 className="text-xl font-bold text-yellow-700 mb-3 flex items-center gap-2">
                   💡 인생 꿀팁
                 </h3>
@@ -230,13 +228,13 @@ ${results.description}
           </Card>
 
           {/* 재미있는 분석 */}
-          <Card className="p-6 bg-gradient-to-br from-white to-violet-50 border-violet-200 shadow-lg">
-            <h3 className="text-xl font-bold text-violet-700 mb-4 flex items-center gap-2">
+          <Card className="p-6 bg-white/90 backdrop-blur-sm border-amber-200">
+            <h3 className="text-xl font-bold text-amber-600 mb-4 flex items-center gap-2">
               😄 재미있는 분석
             </h3>
             <div className="space-y-3">
               {getFunnyComments().map((comment, index) => (
-                <div key={index} className="bg-gradient-to-r from-violet-50 to-pink-50 p-3 rounded-lg border border-violet-200">
+                <div key={index} className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
                   <p className="text-sm text-gray-700">{comment}</p>
                 </div>
               ))}
@@ -244,17 +242,17 @@ ${results.description}
           </Card>
 
           {/* 오늘의 조언 */}
-          <Card className="p-6 bg-gradient-to-br from-white to-pink-50 border-pink-200 shadow-lg">
-            <h3 className="text-xl font-bold text-pink-700 mb-4 flex items-center gap-2">
+          <Card className="p-6 bg-white/90 backdrop-blur-sm border-amber-200">
+            <h3 className="text-xl font-bold text-amber-600 mb-4 flex items-center gap-2">
               🌟 오늘의 조언
             </h3>
-            <div className="bg-gradient-to-r from-pink-50 to-orange-50 p-4 rounded-lg border border-pink-200">
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-lg border border-amber-200">
               <p className="text-gray-700 text-center font-medium">
                 {getLifeAdvice()}
               </p>
             </div>
             <div className="mt-4 text-center">
-              <Badge variant="outline" className="text-pink-600 border-pink-300">
+              <Badge variant="outline" className="text-amber-600">
                 점수: {results.totalScore}/32점
               </Badge>
             </div>
@@ -265,7 +263,7 @@ ${results.description}
         <div className="mt-8 flex flex-wrap gap-4 justify-center">
           <Button
             onClick={handleShare}
-            className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg"
+            className="bg-amber-500 hover:bg-amber-600 text-white"
           >
             <Share2 className="w-4 h-4 mr-2" />
             결과 공유하기
@@ -274,7 +272,7 @@ ${results.description}
           <Button
             onClick={handleSave}
             variant="outline"
-            className="border-amber-300 text-amber-600 hover:bg-amber-50 shadow-lg"
+            className="border-amber-300 text-amber-600 hover:bg-amber-50"
           >
             <Download className="w-4 h-4 mr-2" />
             결과 저장하기
@@ -283,7 +281,7 @@ ${results.description}
           <Button
             onClick={onBack}
             variant="outline"
-            className="border-orange-300 text-orange-600 hover:bg-orange-50 shadow-lg"
+            className="border-orange-300 text-orange-600 hover:bg-orange-50"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             다시 테스트하기
@@ -291,26 +289,26 @@ ${results.description}
         </div>
 
         {/* 따뜻한 메시지 */}
-        <Card className="mt-8 p-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200 shadow-lg">
+        <Card className="mt-8 p-6 bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-200">
           <h3 className="text-lg font-bold text-amber-600 mb-3 text-center">
             💝 시니어님께 드리는 말씀
           </h3>
           <div className="grid md:grid-cols-3 gap-4 text-center">
-            <div className="bg-white/50 p-4 rounded-lg shadow-sm">
+            <div className="bg-white/50 p-4 rounded-lg">
               <div className="text-2xl mb-2">🌺</div>
               <p className="text-sm text-gray-600">
                 살아오신 모든 순간이<br/>
                 귀중한 경험이자 지혜입니다
               </p>
             </div>
-            <div className="bg-white/50 p-4 rounded-lg shadow-sm">
+            <div className="bg-white/50 p-4 rounded-lg">
               <div className="text-2xl mb-2">🎈</div>
               <p className="text-sm text-gray-600">
                 나이는 정말 숫자일 뿐!<br/>
                 마음만은 언제나 청춘이세요
               </p>
             </div>
-            <div className="bg-white/50 p-4 rounded-lg shadow-sm">
+            <div className="bg-white/50 p-4 rounded-lg">
               <div className="text-2xl mb-2">🌈</div>
               <p className="text-sm text-gray-600">
                 앞으로도 건강하고<br/>

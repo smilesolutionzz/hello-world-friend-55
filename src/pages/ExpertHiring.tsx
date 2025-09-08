@@ -247,6 +247,7 @@ const ExpertHiring = () => {
   const [institutionTypeFilter, setInstitutionTypeFilter] = useState("all");
   const [institutionRegionFilter, setInstitutionRegionFilter] = useState("all");
   const [voucherOnlyFilter, setVoucherOnlyFilter] = useState(false);
+  const [homeServiceFilter, setHomeServiceFilter] = useState(false);
 
   // 커뮤니티 상태
   const [communityPosts, setCommunityPosts] = useState<any[]>([]);
@@ -560,8 +561,14 @@ const ExpertHiring = () => {
       );
     }
 
+    if (homeServiceFilter) {
+      filtered = filtered.filter(institution =>
+        institution.services_offered && institution.services_offered.includes('방문서비스')
+      );
+    }
+
     setFilteredInstitutions(filtered);
-  }, [institutionSearchTerm, institutionTypeFilter, institutionRegionFilter, voucherOnlyFilter]);
+  }, [institutionSearchTerm, institutionTypeFilter, institutionRegionFilter, voucherOnlyFilter, homeServiceFilter]);
 
   const handleHireExpert = (expertId: string) => {
     navigate(`/expert-contract/${expertId}`);
@@ -1164,13 +1171,32 @@ const ExpertHiring = () => {
                 </div>
               </div>
               
+              {/* 추가 필터 옵션 */}
+              <div className="mt-4">
+                <div className="flex items-center gap-2 bg-green-50 rounded-lg px-3 py-2 w-fit">
+                  <Badge className="bg-green-100 text-green-800 shrink-0">
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    방문서비스
+                  </Badge>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={homeServiceFilter}
+                      onChange={(e) => setHomeServiceFilter(e.target.checked)}
+                      className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                    />
+                    <span className="text-sm font-medium text-green-800">방문서비스가능기관</span>
+                  </label>
+                </div>
+              </div>
+              
               {/* 필터 결과 표시 */}
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Building className="w-4 h-4" />
                   <span>총 {filteredInstitutions.length}개 제휴기관</span>
                 </div>
-                {(institutionSearchTerm || institutionTypeFilter !== "all" || institutionRegionFilter !== "all" || voucherOnlyFilter) && (
+                {(institutionSearchTerm || institutionTypeFilter !== "all" || institutionRegionFilter !== "all" || voucherOnlyFilter || homeServiceFilter) && (
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -1179,6 +1205,7 @@ const ExpertHiring = () => {
                       setInstitutionTypeFilter("all");
                       setInstitutionRegionFilter("all");
                       setVoucherOnlyFilter(false);
+                      setHomeServiceFilter(false);
                     }}
                     className="text-muted-foreground hover:text-primary"
                   >

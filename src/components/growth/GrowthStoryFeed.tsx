@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { mockGrowthStories } from '@/data/mockGrowthStories';
 
 interface GrowthStory {
   id: string;
@@ -67,7 +68,9 @@ const GrowthStoryFeed = ({ refreshTrigger }: GrowthStoryFeedProps) => {
 
       if (error) throw error;
 
-      setStories(data || []);
+      // 실제 데이터가 없을 때 예시 데이터 사용
+      const storiesData = data && data.length > 0 ? data : mockGrowthStories;
+      setStories(storiesData);
     } catch (error: any) {
       console.error('성장 스토리 로딩 오류:', error);
       toast({

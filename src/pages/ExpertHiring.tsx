@@ -50,6 +50,7 @@ import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import GrowthStoryFeed from '@/components/growth/GrowthStoryFeed';
+import GrowthStoryShare from '@/components/growth/GrowthStoryShare';
 
 interface Expert {
   id: string;
@@ -260,6 +261,8 @@ const ExpertHiring = () => {
   const [comments, setComments] = useState<{ [key: string]: any[] }>({});
   const [anonymousNickname, setAnonymousNickname] = useState("");
   const [commentAnonymousNickname, setCommentAnonymousNickname] = useState("");
+  const [showStoryShare, setShowStoryShare] = useState(false);
+  const [storyRefreshTrigger, setStoryRefreshTrigger] = useState(0);
 
   // AI 추천 전문가 가져오기
   const getAIRecommendations = async () => {
@@ -307,6 +310,12 @@ const ExpertHiring = () => {
     }
   };
 
+  // 성장 스토리 공유 완료 핸들러
+  const handleStoryShared = () => {
+    setStoryRefreshTrigger(prev => prev + 1);
+    setShowStoryShare(false);
+  };
+
   // 커뮤니티 게시물 로드
   const loadCommunityPosts = async () => {
     try {
@@ -317,7 +326,122 @@ const ExpertHiring = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setCommunityPosts(posts || []);
+      
+      // 예시 데이터 추가 (실제 데이터가 없을 때)
+      const mockPosts = posts && posts.length > 0 ? posts : [
+        {
+          id: 'mock-1',
+          title: '7살 아이 언어발달 고민',
+          content: '안녕하세요. 7살 아이 엄마인데요, 아직도 발음이 부정확하고 문장을 제대로 만들지 못해서 걱정이 많아요. 언어치료를 받아야 할까요? 어떤 전문가를 만나야 할지 조언 부탁드려요.',
+          user_id: 'mock-user-1',
+          created_at: '2024-09-07T10:30:00Z',
+          likes_count: 12,
+          comments_count: 8,
+          is_anonymous: true,
+          tags: ['김엄마']
+        },
+        {
+          id: 'mock-2',
+          title: '',
+          content: '우리 아이가 ADHD 진단을 받았어요. 처음엔 너무 충격이었는데, 전문가 선생님과 상담하면서 많이 달라졌어요. 아이도 훨씬 안정적이고 집중력도 좋아졌습니다. 혹시 비슷한 고민 있으신 분들, 너무 걱정하지 마세요!',
+          user_id: 'mock-user-2',
+          created_at: '2024-09-07T09:15:00Z',
+          likes_count: 25,
+          comments_count: 15,
+          is_anonymous: true,
+          tags: ['희망맘']
+        },
+        {
+          id: 'mock-3',
+          title: '청소년 자녀와의 소통',
+          content: '중학생 아들과 대화가 안 되서 고민이에요. 학업 스트레스도 심하고 집에서도 계속 짜증내고... 가족상담을 받아볼까 하는데 효과가 있을까요? 경험 있으신 분들 조언 부탁드려요.',
+          user_id: 'mock-user-3',
+          created_at: '2024-09-07T08:45:00Z',
+          likes_count: 18,
+          comments_count: 12,
+          is_anonymous: true,
+          tags: ['고민엄마']
+        },
+        {
+          id: 'mock-4',
+          title: '',
+          content: '발달센터에서 6개월 치료받고 있는데 정말 많이 달라졌어요! 처음엔 반신반의했는데 선생님들이 너무 전문적이시고 아이 개별 특성을 잘 파악해서 맞춤 치료해주시네요. 투자한 시간과 비용이 아깝지 않아요.',
+          user_id: 'mock-user-4',
+          created_at: '2024-09-07T07:20:00Z',
+          likes_count: 31,
+          comments_count: 9,
+          is_anonymous: true,
+          tags: ['감사맘']
+        },
+        {
+          id: 'mock-5',
+          title: '성인 상담 후기',
+          content: '직장 스트레스와 대인관계로 힘들어서 상담받기 시작했어요. 처음엔 부끄럽고 망설여졌는데, 상담사 선생님이 정말 잘 들어주시고 구체적인 해결방법도 제시해주셔서 많은 도움이 되고 있어요.',
+          user_id: 'mock-user-5',
+          created_at: '2024-09-06T18:30:00Z',
+          likes_count: 22,
+          comments_count: 6,
+          is_anonymous: true,
+          tags: ['새출발']
+        },
+        {
+          id: 'mock-6',
+          title: '자폐스펙트럼 아이 양육',
+          content: '5살 아들이 자폐스펙트럼 진단받았어요. 처음엔 앞이 캄캄했는데 ABA 치료와 언어치료를 병행하면서 아이가 조금씩 변화하고 있어요. 같은 상황 계신 분들과 정보 공유하고 싶어요.',
+          user_id: 'mock-user-6',
+          created_at: '2024-09-06T16:45:00Z',
+          likes_count: 19,
+          comments_count: 14,
+          is_anonymous: true,
+          tags: ['함께가는길']
+        },
+        {
+          id: 'mock-7',
+          title: '',
+          content: '우울증으로 힘들어하던 시기에 이 플랫폼을 통해 좋은 상담사를 만나게 되었어요. AI 추천이 정말 정확하더라구요. 지금은 많이 회복되어서 일상생활이 가능해졌습니다. 도움을 요청하는 것이 부끄러운 일이 아니라는 걸 깨달았어요.',
+          user_id: 'mock-user-7',
+          created_at: '2024-09-06T14:20:00Z',
+          likes_count: 45,
+          comments_count: 18,
+          is_anonymous: true,
+          tags: ['회복중']
+        },
+        {
+          id: 'mock-8',
+          title: '부모교육 프로그램 추천',
+          content: '아이 양육하면서 제가 먼저 배워야겠다 싶어서 부모교육 프로그램 찾고 있어요. 혹시 좋은 곳 아시는 분 있나요? 온라인으로도 가능한지 궁금해요.',
+          user_id: 'mock-user-8',
+          created_at: '2024-09-06T12:10:00Z',
+          likes_count: 16,
+          comments_count: 11,
+          is_anonymous: true,
+          tags: ['배움의시작']
+        },
+        {
+          id: 'mock-9',
+          title: '',
+          content: '제휴기관 바우처 사용해서 치료받고 있는데 정말 만족해요. 경제적 부담도 줄고 전문적인 서비스도 받을 수 있어서 좋네요. 아직 망설이고 계신 분들께 적극 추천드려요!',
+          user_id: 'mock-user-9',
+          created_at: '2024-09-06T10:30:00Z',
+          likes_count: 28,
+          comments_count: 7,
+          is_anonymous: true,
+          tags: ['만족']
+        },
+        {
+          id: 'mock-10',
+          title: '가족치료 경험담',
+          content: '온 가족이 함께 상담받기 시작했어요. 처음엔 어색했는데 이제는 서로 마음을 열고 대화할 수 있게 되었습니다. 문제는 개인의 문제가 아니라 가족 전체가 함께 해결해야 한다는 걸 배웠어요.',
+          user_id: 'mock-user-10',
+          created_at: '2024-09-06T09:15:00Z',
+          likes_count: 33,
+          comments_count: 20,
+          is_anonymous: true,
+          tags: ['가족의힘']
+        }
+      ];
+      
+      setCommunityPosts(mockPosts);
     } catch (error) {
       console.error('커뮤니티 게시물 로드 오류:', error);
     }
@@ -1616,15 +1740,32 @@ const ExpertHiring = () => {
             {/* 성장 스토리 피드 통합 */}
             <div className="bg-white/90 rounded-lg p-6 backdrop-blur-sm">
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  다른 사용자들의 변화 스토리
-                </h3>
-                <p className="text-sm text-gray-600">
-                  전문가 상담을 통해 실제로 변화를 경험한 분들의 이야기입니다
-                </p>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      다른 사용자들의 변화 스토리
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      전문가 상담을 통해 실제로 변화를 경험한 분들의 이야기입니다
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => setShowStoryShare(!showStoryShare)}
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    {showStoryShare ? '피드 보기' : '스토리 작성'}
+                  </Button>
+                </div>
               </div>
               
-              <GrowthStoryFeed />
+              {showStoryShare ? (
+                <div className="space-y-6">
+                  <GrowthStoryShare onStoryShared={handleStoryShared} />
+                </div>
+              ) : (
+                <GrowthStoryFeed refreshTrigger={storyRefreshTrigger} />
+              )}
               
               {/* CTA 섹션 */}
               <div className="mt-8 p-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg text-white text-center">
@@ -1646,7 +1787,7 @@ const ExpertHiring = () => {
                     variant="outline" 
                     size="lg"
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="border-white text-white hover:bg-white/10"
+                    className="border-white text-white hover:bg-white hover:text-purple-600 transition-colors"
                   >
                     <UserCheck className="w-5 h-5 mr-2" />
                     전문가 둘러보기

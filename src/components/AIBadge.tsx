@@ -40,7 +40,7 @@ export const AIBadge: React.FC<AIBadgeProps> = ({
       {showIcon && (
         <Brain className={`${size === 'lg' ? 'w-4 h-4' : 'w-3 h-3'} mr-1`} />
       )}
-      딥러닝 AI
+      재미
       {variant === 'premium' && (
         <Sparkles className={`${size === 'lg' ? 'w-4 h-4' : 'w-3 h-3'} ml-1`} />
       )}

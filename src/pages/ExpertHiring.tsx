@@ -1061,38 +1061,42 @@ const ExpertHiring = () => {
             {isLoading ? (
               <Card className="p-8 text-center">
                 <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p>AI가 최적의 전문가를 찾고 있습니다...</p>
+                <p className="text-sm sm:text-base">AI가 최적의 전문가를 찾고 있습니다...</p>
               </Card>
             ) : aiRecommendations.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {aiRecommendations.map((expert) => (
                   <Card key={expert.id} className="hover:shadow-lg transition-all duration-300 border-none shadow-md">
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-4 mb-4">
-                        <Avatar className="w-16 h-16">
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4">
+                        <Avatar className="w-12 h-12 sm:w-16 sm:h-16 mx-auto sm:mx-0">
                           <AvatarImage src={expert.image} />
-                          <AvatarFallback className="bg-gradient-to-br from-purple-400 to-pink-400 text-white text-lg font-bold">
+                          <AvatarFallback className="bg-gradient-to-br from-purple-400 to-pink-400 text-white text-sm sm:text-lg font-bold">
                             {expert.name[0]}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1">
-                          <h4 className="font-bold text-lg text-gray-800">{expert.name}</h4>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span className="font-medium">{expert.rating}</span>
+                        <div className="flex-1 text-center sm:text-left">
+                          <h4 className="font-bold text-base sm:text-lg text-gray-800 mb-1">{expert.name}</h4>
+                          <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                            <div className="flex items-center gap-1">
+                              <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+                              <span className="font-medium text-sm">{expert.rating}</span>
+                            </div>
                             {expert.aiMatchScore && (
-                              <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
+                              <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 text-xs">
                                 매칭도 {expert.aiMatchScore}%
                               </Badge>
                             )}
                           </div>
                         </div>
                       </div>
-                      <p className="text-sm text-gray-600 mb-4">{expert.specialty.join(", ")}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 mb-4 text-center sm:text-left line-clamp-2">
+                        {expert.specialty.join(", ")}
+                      </p>
                       <div className="space-y-2">
                         <Button 
                           onClick={() => handleConsultExpert(expert.id)}
-                          className="w-full bg-primary hover:bg-primary/90"
+                          className="w-full bg-primary hover:bg-primary/90 text-sm"
                         >
                           즉시 상담하기
                         </Button>

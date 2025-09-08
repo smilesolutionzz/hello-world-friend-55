@@ -219,25 +219,31 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 `;
 
     const detailedPrompt = basePrompt + `
-다음 형식으로 상세한 전문가 분석을 제공해주세요:
+다음 형식으로 박사급 수준의 전문가 분석을 제공해주세요:
 
 **상황 분석**
-관찰된 내용을 바탕으로 현재 상황을 구체적으로 분석해주세요.
+관찰된 내용을 바탕으로 현재 상황을 구체적으로 분석하고, 행동의 맥락적 의미와 환경적 요인을 종합적으로 평가해주세요.
 
 **현재 상태 평가** 
-현재 관찰된 행동 특성과 기능적 상태를 연령대별 기준과 비교하여 평가해주세요.
+현재 관찰된 행동 특성과 기능적 상태를 연령대별 표준 기준과 비교하여 정량적·정성적으로 평가하고, 개인차를 고려한 종합적 판단을 제시해주세요.
 
 **주요 관심 사항**
-관찰된 행동이나 특성 중 특별히 주의 깊게 관찰해야 할 사항들을 나열해주세요.
+관찰된 행동이나 특성 중 지속적 모니터링이 필요한 핵심 요소들을 우선순위별로 제시하고, 각각의 임상적 의미를 설명해주세요.
 
 **잠재적 문제점**
-현재 관찰된 내용에서 우려되는 부분이나 개선이 필요한 영역을 분석해주세요.
+현재 관찰된 내용에서 우려되는 부분이나 개선이 필요한 영역을 분석하고, 방치 시 예상되는 결과와 조기 개입의 중요성을 설명해주세요.
 
-**개선 방안**
-실제로 실행 가능한 구체적인 개선 방법들을 제시해주세요.
+**전문가급 권고사항**
+- 즉시 실행 가능한 1차 개입 전략 (환경 조정, 일상 루틴 개선)
+- 중기 목표 달성을 위한 체계적 접근법 (행동 수정, 기능 향상 프로그램)
+- 장기적 발전을 위한 종합적 계획 (전문적 치료, 교육적 지원)
+- 각 권고사항의 이론적 근거와 기대 효과, 평가 지표 포함
 
 **전문가 상담 권장**
-전문적인 평가나 상담이 필요한지 여부와 그 이유를 설명해주세요.
+전문적인 평가나 상담의 필요성을 단계별로 제시하고, 추천 전문 분야(임상심리사, 언어치료사, 작업치료사 등)와 상담 시급도를 명시해주세요.
+
+**지속적 관찰 가이드**
+향후 관찰 시 중점적으로 확인해야 할 구체적 행동 지표와 기록 방법을 제시해주세요.
 `;
 
     const basicPrompt = basePrompt + `
@@ -271,21 +277,29 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         messages: [
           {
             role: 'system',
-            content: `당신은 심리상담, 행동분석 전문가입니다. 모든 연령대(유아부터 노인까지)의 관찰 기록을 전문적이고 객관적으로 분석합니다.
+            content: `당신은 박사급 심리상담·행동분석 전문가입니다. 20년 이상의 임상 경험을 바탕으로 모든 연령대의 관찰 기록을 최고 수준의 전문성으로 분석합니다.
 
-중요한 지침:
-1. 대상자의 이름은 반드시 관찰 정보에 명시된 이름을 그대로 사용하세요
-2. "발달"이라는 용어보다는 "현재 상태", "행동 특성", "기능적 상태" 등을 사용하세요
-3. 아동 중심이 아닌 연령대에 맞는 적절한 분석을 제공하세요
-4. 실용적인 조언과 구체적인 개선방안을 제시합니다
-5. 응답은 반드시 요청된 형식을 정확히 따라주세요`
+전문가 자격:
+- 임상심리학 박사 / 행동분석학 박사
+- 다학제적 접근법 (신경심리학, 발달심리학, 인지행동치료, 응용행동분석)
+- 증거기반 실무(Evidence-Based Practice) 전문가
+
+분석 지침:
+1. 대상자의 이름은 반드시 관찰 정보에 명시된 이름을 그대로 사용
+2. 연령대별 특성을 고려한 맞춤형 분석 제공
+3. 이론적 배경과 실증적 근거를 바탕으로 한 전문적 해석
+4. 구체적이고 실행 가능한 개입 전략 제시
+5. 우선순위가 명확한 단계별 권고사항 작성
+6. 각 권고사항의 근거와 기대효과 명시
+7. 정량적 평가 지표와 모니터링 방법 포함
+8. 응답은 반드시 요청된 형식을 정확히 따라주세요`
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        max_completion_tokens: isDetailedMode ? 4000 : 2000,
+        max_completion_tokens: isDetailedMode ? 6000 : 2000,
       }),
     });
 
@@ -334,15 +348,21 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
       const developmentMatch = analysisText.match(/\*\*현재 상태 평가\*\*([\s\S]*?)(?=\*\*|$)/);
       const concernsMatch = analysisText.match(/\*\*주요 관심 사항\*\*([\s\S]*?)(?=\*\*|$)/);
       const issuesMatch = analysisText.match(/\*\*잠재적 문제점\*\*([\s\S]*?)(?=\*\*|$)/);
-      const improvementsMatch = analysisText.match(/\*\*개선 방안\*\*([\s\S]*?)(?=\*\*|$)/);
+      const recommendationsMatch = analysisText.match(/\*\*전문가급 권고사항\*\*([\s\S]*?)(?=\*\*|$)/);
       const consultationMatch = analysisText.match(/\*\*전문가 상담 권장\*\*([\s\S]*?)(?=\*\*|$)/);
+      const observationGuideMatch = analysisText.match(/\*\*지속적 관찰 가이드\*\*([\s\S]*?)(?=\*\*|$)/);
+
+      const extractDetailedListItems = (text: string): string[] => {
+        return text.split(/[-•]\s+/).filter(item => item.trim()).map(item => item.trim());
+      };
 
       report = {
         situation: situationMatch ? situationMatch[1].trim() : '상황을 분석했습니다.',
         points: developmentMatch ? [developmentMatch[1].trim()] : ['현재 상태를 평가했습니다.'],
         positives: concernsMatch ? [concernsMatch[1].trim()] : ['주요 관심 사항을 확인했습니다.'],
-        tips: improvementsMatch ? [improvementsMatch[1].trim()] : ['개선 방안을 제시했습니다.'],
+        tips: recommendationsMatch ? extractDetailedListItems(recommendationsMatch[1]) : ['전문가급 권고사항을 제시했습니다.'],
         alerts: consultationMatch ? [consultationMatch[1].trim()] : [],
+        observationGuide: observationGuideMatch ? [observationGuideMatch[1].trim()] : [],
         mediaNotes
       };
     } else {

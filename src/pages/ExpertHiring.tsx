@@ -255,6 +255,8 @@ const ExpertHiring = () => {
   const [selectedPost, setSelectedPost] = useState<any>(null);
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState<{ [key: string]: any[] }>({});
+  const [anonymousNickname, setAnonymousNickname] = useState("");
+  const [commentAnonymousNickname, setCommentAnonymousNickname] = useState("");
 
   // AI 추천 전문가 가져오기
   const getAIRecommendations = async () => {
@@ -339,7 +341,8 @@ const ExpertHiring = () => {
           title: newPostTitle || null,
           content: newPostContent,
           is_anonymous: true,
-          is_public: true
+          is_public: true,
+          tags: anonymousNickname ? [anonymousNickname] : []
         })
         .select()
         .single();
@@ -349,6 +352,7 @@ const ExpertHiring = () => {
       setCommunityPosts(prev => [data, ...prev]);
       setNewPostContent("");
       setNewPostTitle("");
+      setAnonymousNickname("");
       setIsPostDialogOpen(false);
       toast.success('게시물이 작성되었습니다!');
     } catch (error) {
@@ -464,9 +468,10 @@ const ExpertHiring = () => {
 
       setComments(prev => ({
         ...prev,
-        [postId]: [...(prev[postId] || []), data]
+        [postId]: [...(prev[postId] || []), { ...data, anonymous_nickname: commentAnonymousNickname }]
       }));
       setNewComment("");
+      setCommentAnonymousNickname("");
       
       // 게시물의 댓글 수 업데이트 (트리거로 자동 처리됨)
       loadCommunityPosts();
@@ -720,6 +725,11 @@ const ExpertHiring = () => {
                           value={newPostTitle}
                           onChange={(e) => setNewPostTitle(e.target.value)}
                         />
+                        <Input
+                          placeholder="익명 닉네임 (선택사항)"
+                          value={anonymousNickname}
+                          onChange={(e) => setAnonymousNickname(e.target.value)}
+                        />
                         <Textarea
                           placeholder="고민이나 성공사례, 평소 궁금했던 질문을 전문가에게 익명으로 공유해보세요..."
                           value={newPostContent}
@@ -774,8 +784,10 @@ const ExpertHiring = () => {
                               <User className="w-5 h-5" />
                             </AvatarFallback>
                           </Avatar>
-                          <div>
-                            <p className="font-medium text-sm">익명 사용자</p>
+                           <div>
+                            <p className="font-medium text-sm">
+                              {post.tags && post.tags.length > 0 ? post.tags[0] : '익명 사용자'}
+                            </p>
                             <p className="text-xs text-muted-foreground">
                               {formatDistanceToNow(new Date(post.created_at), { 
                                 addSuffix: true,
@@ -846,11 +858,13 @@ const ExpertHiring = () => {
                                     <User className="w-4 h-4" />
                                   </AvatarFallback>
                                 </Avatar>
-                                <div className="flex-1">
-                                  <div className="bg-gray-50 rounded-lg p-3">
-                                    <p className="font-medium text-sm mb-1">익명 사용자</p>
-                                    <p className="text-sm">{comment.content}</p>
-                                  </div>
+                                  <div className="flex-1">
+                                    <div className="bg-gray-50 rounded-lg p-3">
+                                      <p className="font-medium text-sm mb-1">
+                                        {comment.anonymous_nickname || '익명 사용자'}
+                                      </p>
+                                      <p className="text-sm">{comment.content}</p>
+                                    </div>
                                   <p className="text-xs text-muted-foreground mt-1">
                                     {formatDistanceToNow(new Date(comment.created_at), { 
                                       addSuffix: true,
@@ -862,24 +876,32 @@ const ExpertHiring = () => {
                             ))}
                           </div>
                           
-                          <div className="flex gap-2">
+                          <div className="space-y-2">
                             <Input
-                              placeholder="댓글을 입력하세요..."
-                              value={newComment}
-                              onChange={(e) => setNewComment(e.target.value)}
-                              onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                  createComment(post.id);
-                                }
-                              }}
-                              className="flex-1"
+                              placeholder="익명 닉네임 (선택사항)"
+                              value={commentAnonymousNickname}
+                              onChange={(e) => setCommentAnonymousNickname(e.target.value)}
+                              className="text-sm"
                             />
-                            <Button
-                              size="sm"
-                              onClick={() => createComment(post.id)}
-                            >
-                              <Send className="w-4 h-4" />
-                            </Button>
+                            <div className="flex gap-2">
+                              <Input
+                                placeholder="댓글을 입력하세요..."
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                onKeyPress={(e) => {
+                                  if (e.key === 'Enter') {
+                                    createComment(post.id);
+                                  }
+                                }}
+                                className="flex-1"
+                              />
+                              <Button
+                                size="sm"
+                                onClick={() => createComment(post.id)}
+                              >
+                                <Send className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       )}

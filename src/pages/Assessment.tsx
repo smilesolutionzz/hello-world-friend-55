@@ -39,7 +39,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
-import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target } from "lucide-react";
+import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target, MessageCircle } from "lucide-react";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -696,6 +696,22 @@ const Assessment = () => {
                   <li>• 40대+</li>
                   <li>• AI 즉시 해석</li>
                   <li>• 심리적 의미 해석</li>
+                </ul>
+              </div>
+
+              <div 
+                className="bg-gradient-to-br from-red-500 to-orange-600 hover-glow border border-red-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
+                onClick={() => navigate('/fun-tests?type=grandma-relationship')}
+              >
+                <div className="absolute top-4 right-4">
+                  <Badge className="bg-orange-700 text-white">🔥 HOT</Badge>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">👵 욕쟁이 할머니의 연애 진단</h3>
+                <p className="text-red-100 mb-4">할머니가 직설적으로 당신들의 연애를 진단! 솔직한 조언을 들을 각오 되셨나요?</p>
+                <ul className="space-y-2 text-sm text-red-100">
+                  <li>• 커플·부부</li>
+                  <li>• AI 할머니 독설</li>
+                  <li>• 촌철살인 조언</li>
                 </ul>
               </div>
             </div>

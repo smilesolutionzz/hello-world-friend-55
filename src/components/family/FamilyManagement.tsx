@@ -704,7 +704,7 @@ const FamilyManagement: React.FC<FamilyManagementProps> = ({ onUpdate }) => {
             <h3 className="text-lg font-semibold mb-6">통합 케어 플랜</h3>
             <div className="grid gap-6 md:grid-cols-3">
               
-              {/* 정기 건전 스케줄 */}
+              {/* 정기 검진 스케줄 */}
               <Card className="p-6 bg-gradient-to-br from-primary/5 to-blue-50 hover:shadow-lg transition-all duration-300 group">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center group-hover:bg-primary/30 transition-colors">

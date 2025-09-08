@@ -8,6 +8,7 @@ import { useShareText, formatFunTestResult } from "@/utils/shareUtils";
 import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 import GrandmaRelationshipResult from "./GrandmaRelationshipResult";
 import GrandpaMarriageResult from "./GrandpaMarriageResult";
+import MZNaggingResult from "./MZNaggingResult";
 
 export default function FunTestResult() {
   const location = useLocation();
@@ -527,6 +528,10 @@ export default function FunTestResult() {
 
   if (testType === 'grandpa_marriage') {
     return <GrandpaMarriageResult result={result} onRetake={handleRetry} />;
+  }
+
+  if (testType === 'mz_nagging') {
+    return <MZNaggingResult result={result} onRetake={handleRetry} />;
   }
 
   return null;

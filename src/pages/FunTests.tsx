@@ -9,11 +9,12 @@ import AnimalFaceTest from '@/components/assessment/AnimalFaceTest';
 import InnerAnimalTest from '@/components/assessment/InnerAnimalTest';
 import GrandmaRelationshipTest from '@/components/assessment/GrandmaRelationshipTest';
 import GrandpaMarriageDiagnosis from '@/components/assessment/GrandpaMarriageDiagnosis';
+import MZNaggingTest from '@/components/assessment/MZNaggingTest';
 import { AIFeatureCard } from '@/components/AIFeatureCard';
 
 const FunTests = () => {
   const navigate = useNavigate();
-  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage'>('menu');
+  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage' | 'mz_nagging'>('menu');
 
   const handleTestComplete = (result: any, testType: string) => {
     navigate('/fun-test-result', { 
@@ -43,6 +44,10 @@ const FunTests = () => {
 
   if (currentTest === 'grandpa_marriage') {
     return <GrandpaMarriageDiagnosis onComplete={handleTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentTest === 'mz_nagging') {
+    return <MZNaggingTest onComplete={handleTestComplete} onBack={handleBack} />;
   }
 
   return (
@@ -110,6 +115,15 @@ const FunTests = () => {
             aiLevel="premium"
             onClick={() => setCurrentTest('grandpa_marriage')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
+          />
+
+          <AIFeatureCard
+            title="국밥집 이모의 MZ잔소리"
+            description="이모가 요즘 애들 걱정해서 해주는 따뜻하고 현실적인 잔소리입니다!"
+            icon={MessageCircle}
+            aiLevel="premium"
+            onClick={() => setCurrentTest('mz_nagging')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-orange-200 bg-gradient-to-br from-orange-50 to-yellow-50"
           />
         </div>
 

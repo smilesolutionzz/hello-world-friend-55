@@ -63,17 +63,105 @@ export const SeniorFunResult = ({ results, onBack }: SeniorFunResultProps) => {
     return advices[Math.floor(Math.random() * advices.length)];
   };
 
-  const handleShare = () => {
-    const text = `나의 시니어 매력 테스트 결과: ${results.seniorType}\n${results.description}`;
-    if (navigator.share) {
-      navigator.share({
-        title: '시니어 매력 테스트 결과',
-        text: text,
-        url: window.location.href
-      });
-    } else {
-      navigator.clipboard.writeText(text);
-      alert('결과가 클립보드에 복사되었습니다!');
+  const handleShare = async () => {
+    const text = `🌟 나의 시니어 매력 테스트 결과 🌟
+
+🎯 유형: ${results.seniorType}
+💫 매력 지수: ${Math.round((results.totalScore / 32) * 100)}%
+
+${results.description}
+
+✨ 특별한 매력: ${results.charm}
+
+📍 테스트 해보기: ${window.location.origin}/assessment?test=senior`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: '🌈 시니어 매력 테스트 결과',
+          text: text,
+          url: `${window.location.origin}/assessment?test=senior`
+        });
+      } else {
+        await navigator.clipboard.writeText(text);
+        alert('✅ 결과가 클립보드에 복사되었습니다!\n카카오톡이나 문자로 공유해보세요!');
+      }
+    } catch (error) {
+      console.error('공유 실패:', error);
+      // fallback으로 텍스트만 복사
+      try {
+        await navigator.clipboard.writeText(text);
+        alert('✅ 결과가 클립보드에 복사되었습니다!');
+      } catch (clipboardError) {
+        alert('❌ 공유에 실패했습니다. 다시 시도해주세요.');
+      }
+    }
+  };
+
+  const handleSave = () => {
+    try {
+      // PDF로 저장하기 위해 window.print() 사용
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        const content = `
+          <html>
+            <head>
+              <title>시니어 매력 테스트 결과</title>
+              <style>
+                body { font-family: 'Malgun Gothic', sans-serif; margin: 20px; }
+                .header { text-align: center; margin-bottom: 30px; }
+                .result-card { border: 2px solid #f59e0b; padding: 20px; margin: 20px 0; border-radius: 10px; }
+                .score { font-size: 24px; font-weight: bold; color: #f59e0b; }
+                .description { margin: 15px 0; line-height: 1.6; }
+                .charm { background: #fef3c7; padding: 15px; border-radius: 8px; margin: 10px 0; }
+                .advice { background: #fef9e7; padding: 15px; border-radius: 8px; margin: 10px 0; }
+              </style>
+            </head>
+            <body>
+              <div class="header">
+                <h1>🌟 시니어 매력 테스트 결과 🌟</h1>
+                <p>테스트 일시: ${new Date().toLocaleDateString('ko-KR')}</p>
+              </div>
+              
+              <div class="result-card">
+                <h2>${results.seniorType}</h2>
+                <div class="score">매력 지수: ${Math.round((results.totalScore / 32) * 100)}%</div>
+                
+                <div class="description">
+                  <h3>🌟 매력 포인트</h3>
+                  <p>${results.description}</p>
+                </div>
+                
+                <div class="charm">
+                  <h3>💖 특별한 매력</h3>
+                  <p>${results.charm}</p>
+                </div>
+                
+                <div class="advice">
+                  <h3>💡 인생 꿀팁</h3>
+                  <p>${results.advice}</p>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                  <p><strong>점수: ${results.totalScore}/32점</strong></p>
+                  <p style="font-size: 12px; color: #666;">심리톡톡 - 당신의 마음을 이해합니다</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+        
+        printWindow.document.write(content);
+        printWindow.document.close();
+        printWindow.focus();
+        
+        setTimeout(() => {
+          printWindow.print();
+        }, 250);
+      }
+    } catch (error) {
+      console.error('저장 실패:', error);
+      alert('❌ 저장에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -182,7 +270,7 @@ export const SeniorFunResult = ({ results, onBack }: SeniorFunResultProps) => {
           </Button>
           
           <Button
-            onClick={() => window.print()}
+            onClick={handleSave}
             variant="outline"
             className="border-amber-300 text-amber-600 hover:bg-amber-50"
           >

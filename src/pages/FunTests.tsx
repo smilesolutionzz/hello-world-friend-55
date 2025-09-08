@@ -8,11 +8,12 @@ import PastLifeJobTest from '@/components/assessment/PastLifeJobTest';
 import AnimalFaceTest from '@/components/assessment/AnimalFaceTest';
 import InnerAnimalTest from '@/components/assessment/InnerAnimalTest';
 import { SeniorFunTest } from '@/components/assessment/SeniorFunTest';
+import { GrandmaAnalysisTest } from '@/components/assessment/GrandmaAnalysisTest';
 import { AIFeatureCard } from '@/components/AIFeatureCard';
 
 const FunTests = () => {
   const navigate = useNavigate();
-  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'senior_test'>('menu');
+  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'senior_test' | 'grandma_analysis'>('menu');
 
   const handleTestComplete = (result: any, testType: string) => {
     navigate('/fun-test-result', { 
@@ -40,6 +41,10 @@ const FunTests = () => {
     return <SeniorFunTest onComplete={(results) => handleTestComplete(results, 'senior_test')} onBack={handleBack} />;
   }
 
+  if (currentTest === 'grandma_analysis') {
+    return <GrandmaAnalysisTest onComplete={(results) => handleTestComplete(results, 'grandma_analysis')} onBack={handleBack} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-pink-50 to-orange-50">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -61,7 +66,7 @@ const FunTests = () => {
         </div>
 
         {/* 테스트 카드들 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           <AIFeatureCard
             title="🏺 전생 직업 분석"
             description="당신의 전생은 무엇이었을까요? AI가 심리 분석을 통해 전생의 직업을 알려드립니다!"
@@ -88,7 +93,10 @@ const FunTests = () => {
             onClick={() => setCurrentTest('inner_animal')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
           />
+        </div>
 
+        {/* 두 번째 줄 테스트들 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <AIFeatureCard
             title="👴👵 시니어 매력 테스트"
             description="인생 선배님들의 숨겨진 매력을 발견해보세요! 따뜻하고 재미있는 분석으로 가득!"
@@ -96,6 +104,15 @@ const FunTests = () => {
             aiLevel="basic"
             onClick={() => setCurrentTest('senior_test')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+          />
+
+          <AIFeatureCard
+            title="👵💥 할머니의 독설 커플 진단"
+            description="촌철살인 욕쟁이 할머니가 커플 상태를 팩트로 분석! 연인/부부가 함께 해보세요!"
+            icon={Zap}
+            aiLevel="premium"
+            onClick={() => setCurrentTest('grandma_analysis')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl bg-gradient-to-br from-red-50 to-orange-50 border-red-200"
           />
         </div>
 

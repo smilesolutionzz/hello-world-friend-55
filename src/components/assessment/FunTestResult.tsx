@@ -1,11 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Share2, RotateCcw, Star, Users, Calendar, Copy } from "lucide-react";
+import { Crown, Share2, RotateCcw, Star, Users, Calendar, Copy, MessageCircle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useShareText, formatFunTestResult } from "@/utils/shareUtils";
 import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
+import GrandmaRelationshipResult from "./GrandmaRelationshipResult";
 
 export default function FunTestResult() {
   const location = useLocation();
@@ -53,6 +54,8 @@ export default function FunTestResult() {
         return `내 얼굴은 ${result?.matchedAnimal} 닮음! ${result?.emoji || '🐾'}`;
       case 'inner_animal':
         return `내 내면은 ${result?.innerAnimal}! 🦋`;
+      case 'grandma_relationship':
+        return `할머니가 우리 연애를 진단했다! 👵`;
       default:
         return "재미있는 테스트 결과!";
     }
@@ -66,6 +69,8 @@ export default function FunTestResult() {
         return `AI가 분석한 결과 ${result?.similarity}% 유사도로 ${result?.matchedAnimal}과 닮았다고! ${result?.advice}`;
       case 'inner_animal':
         return `심리 분석 결과 내 내면은 ${result?.innerAnimal}! 매칭도 ${result?.personalityMatch}%`;
+      case 'grandma_relationship':
+        return `궁합 점수 ${result?.compatibility_score}점! "${result?.grandma_verdict}"`;
       default:
         return "나도 테스트 해보러 가기!";
     }
@@ -513,6 +518,10 @@ export default function FunTestResult() {
         </Card>
       </div>
     );
+  }
+
+  if (testType === 'grandma_relationship') {
+    return <GrandmaRelationshipResult result={result} onRetake={handleRetry} />;
   }
 
   return null;

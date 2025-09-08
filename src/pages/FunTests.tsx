@@ -3,15 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Camera, Brain, Heart, Crown, Star, Zap } from 'lucide-react';
+import { Sparkles, Camera, Brain, Heart, Crown, Star, Zap, MessageCircle } from 'lucide-react';
 import PastLifeJobTest from '@/components/assessment/PastLifeJobTest';
 import AnimalFaceTest from '@/components/assessment/AnimalFaceTest';
 import InnerAnimalTest from '@/components/assessment/InnerAnimalTest';
+import GrandmaRelationshipTest from '@/components/assessment/GrandmaRelationshipTest';
 import { AIFeatureCard } from '@/components/AIFeatureCard';
 
 const FunTests = () => {
   const navigate = useNavigate();
-  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal'>('menu');
+  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship'>('menu');
 
   const handleTestComplete = (result: any, testType: string) => {
     navigate('/fun-test-result', { 
@@ -35,6 +36,10 @@ const FunTests = () => {
     return <InnerAnimalTest onComplete={handleTestComplete} onBack={handleBack} />;
   }
 
+  if (currentTest === 'grandma_relationship') {
+    return <GrandmaRelationshipTest onComplete={handleTestComplete} onBack={handleBack} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-pink-50 to-orange-50">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -56,7 +61,7 @@ const FunTests = () => {
         </div>
 
         {/* 테스트 카드들 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <AIFeatureCard
             title="내 전생은 어떤 직업?"
             description="답변을 토대로 AI가 분석하는 나의 전생 직업과 그 시대의 이야기. 현재와의 연결점도 발견해보세요!"
@@ -81,6 +86,15 @@ const FunTests = () => {
             icon={Brain}
             aiLevel="premium"
             onClick={() => setCurrentTest('inner_animal')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+          />
+
+          <AIFeatureCard
+            title="욕쟁이 할머니의 연애 진단"
+            description="할머니가 직설적으로 당신들의 연애를 진단해드립니다. 솔직한 조언을 들을 각오 되셨나요?"
+            icon={MessageCircle}
+            aiLevel="premium"
+            onClick={() => setCurrentTest('grandma_relationship')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
           />
         </div>

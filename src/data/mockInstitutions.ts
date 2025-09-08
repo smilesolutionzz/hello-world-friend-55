@@ -1018,5 +1018,42 @@ export const mockInstitutions = [
     partnership_status: 'active',
     partnership_start_date: '2024-08-29',
     commission_rate: 16.0
+  },
+  {
+    id: '21',
+    name: '단비언어인지학습연구소',
+    institution_type: 'research_center',
+    address: '경기도 성남시 분당구',
+    phone: '031-708-2345',
+    email: 'info@danbi-research.co.kr',
+    website_url: 'https://danbi-research.co.kr',
+    description: '언어, 인지, 학습 전문 연구소로 증거기반 치료와 연구를 통한 맞춤형 서비스를 제공합니다.',
+    latitude: 37.3595,
+    longitude: 127.1053,
+    is_voucher_approved: true,
+    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '학습치료', '교육청서비스'],
+    established_year: 2018,
+    total_experts: 10,
+    rating: 4.9,
+    review_count: 87,
+    profile_image_url: '/placeholder.svg',
+    gallery_images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
+    operating_hours: {
+      monday: '09:00-18:00',
+      tuesday: '09:00-18:00',
+      wednesday: '09:00-18:00',
+      thursday: '09:00-18:00',
+      friday: '09:00-18:00',
+      saturday: '09:00-16:00',
+      sunday: 'closed'
+    },
+    services_offered: ['언어치료', '인지치료', '학습치료', '읽기치료', '쓰기치료', '수학치료', '사회성훈련'],
+    specializations: ['언어발달지연', '학습장애', 'ADHD', '자폐스펙트럼', '읽기장애', '쓰기장애'],
+    facilities: ['언어치료실', '인지치료실', '학습치료실', '개별지도실', '그룹치료실', '연구실', '관찰실'],
+    parking_available: true,
+    accessibility_features: ['휠체어접근가능', '엘리베이터', '장애인화장실'],
+    partnership_status: 'active',
+    partnership_start_date: '2024-03-20',
+    commission_rate: 15.0
   }
 ];

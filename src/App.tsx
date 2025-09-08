@@ -68,6 +68,7 @@ import FocusPackage from "./pages/FocusPackage";
 import ChildPackage from "./pages/ChildPackage";
 import RelationshipPackage from "./pages/RelationshipPackage";
 import ComprehensivePackage from "./pages/ComprehensivePackage";
+import GrowthStories from "./pages/GrowthStories";
 
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTests from "./pages/FunTests";
@@ -142,6 +143,7 @@ const App = () => {
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/community" element={<Community />} />
           <Route path="/growth-community" element={<GrowthCommunity />} />
+          <Route path="/growth-stories" element={<GrowthStories />} />
           <Route path="/subscription" element={<TokenSubscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
           <Route path="/admin" element={<AdminDashboard />} />

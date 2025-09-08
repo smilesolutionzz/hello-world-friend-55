@@ -344,6 +344,7 @@ export type Database = {
       }
       community_comments: {
         Row: {
+          anonymous_nickname: string | null
           content: string
           created_at: string
           id: string
@@ -354,6 +355,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          anonymous_nickname?: string | null
           content: string
           created_at?: string
           id?: string
@@ -364,6 +366,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          anonymous_nickname?: string | null
           content?: string
           created_at?: string
           id?: string

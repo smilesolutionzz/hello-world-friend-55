@@ -692,6 +692,105 @@ export type Database = {
         }
         Relationships: []
       }
+      expert_applications: {
+        Row: {
+          address: string | null
+          admin_notes: string | null
+          application_reason: string | null
+          application_status: string
+          bio: string | null
+          birth_date: string | null
+          certificate_files: string[] | null
+          certifications: string[] | null
+          consultation_methods: string[]
+          created_at: string
+          education_background: string[] | null
+          email: string
+          full_name: string
+          gender: string | null
+          hourly_rate: number | null
+          id: string
+          license_number: string | null
+          phone: string
+          portfolio_files: string[] | null
+          privacy_agreed: boolean
+          profile_image_url: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          specializations: string[]
+          target_age_groups: string[]
+          terms_agreed: boolean
+          updated_at: string
+          user_id: string
+          work_experience: Json | null
+          years_experience: number
+        }
+        Insert: {
+          address?: string | null
+          admin_notes?: string | null
+          application_reason?: string | null
+          application_status?: string
+          bio?: string | null
+          birth_date?: string | null
+          certificate_files?: string[] | null
+          certifications?: string[] | null
+          consultation_methods?: string[]
+          created_at?: string
+          education_background?: string[] | null
+          email: string
+          full_name: string
+          gender?: string | null
+          hourly_rate?: number | null
+          id?: string
+          license_number?: string | null
+          phone: string
+          portfolio_files?: string[] | null
+          privacy_agreed?: boolean
+          profile_image_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          specializations?: string[]
+          target_age_groups?: string[]
+          terms_agreed?: boolean
+          updated_at?: string
+          user_id: string
+          work_experience?: Json | null
+          years_experience?: number
+        }
+        Update: {
+          address?: string | null
+          admin_notes?: string | null
+          application_reason?: string | null
+          application_status?: string
+          bio?: string | null
+          birth_date?: string | null
+          certificate_files?: string[] | null
+          certifications?: string[] | null
+          consultation_methods?: string[]
+          created_at?: string
+          education_background?: string[] | null
+          email?: string
+          full_name?: string
+          gender?: string | null
+          hourly_rate?: number | null
+          id?: string
+          license_number?: string | null
+          phone?: string
+          portfolio_files?: string[] | null
+          privacy_agreed?: boolean
+          profile_image_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          specializations?: string[]
+          target_age_groups?: string[]
+          terms_agreed?: boolean
+          updated_at?: string
+          user_id?: string
+          work_experience?: Json | null
+          years_experience?: number
+        }
+        Relationships: []
+      }
       expert_availability: {
         Row: {
           created_at: string | null

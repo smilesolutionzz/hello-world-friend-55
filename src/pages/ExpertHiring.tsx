@@ -1792,6 +1792,14 @@ const ExpertHiring = () => {
                     <UserCheck className="w-5 h-5 mr-2" />
                     전문가 둘러보기
                   </Button>
+                  <Button 
+                    size="lg"
+                    onClick={() => navigate('/expert-application')}
+                    className="bg-white text-purple-600 hover:bg-purple-50 transition-colors"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    전문가 신청하기
+                  </Button>
                 </div>
               </div>
             </div>

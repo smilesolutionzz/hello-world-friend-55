@@ -77,6 +77,7 @@ const FunTests = () => {
             description="답변을 토대로 AI가 분석하는 나의 전생 직업과 그 시대의 이야기. 현재와의 연결점도 발견해보세요!"
             icon={Crown}
             aiLevel="premium"
+            rank={1}
             onClick={() => setCurrentTest('past_life_job')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
           />
@@ -86,16 +87,8 @@ const FunTests = () => {
             description="얼굴 사진을 업로드하면 AI가 분석해서 가장 닮은 동물을 찾아드립니다. 재미있는 특징 분석도 함께!"
             icon={Camera}
             aiLevel="advanced"
+            rank={2}
             onClick={() => setCurrentTest('animal_face_match')}
-            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-          />
-
-          <AIFeatureCard
-            title="나의 내면 동물 찾기"
-            description="심리 질문을 통해 당신의 내면에 숨어있는 동물의 정체를 밝혀냅니다. 깊이있는 성격 분석까지!"
-            icon={Brain}
-            aiLevel="premium"
-            onClick={() => setCurrentTest('inner_animal')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
           />
 
@@ -104,7 +97,18 @@ const FunTests = () => {
             description="할머니가 직설적으로 당신들의 연애를 진단해드립니다. 솔직한 조언을 들을 각오 되셨나요?"
             icon={MessageCircle}
             aiLevel="premium"
+            rank={3}
             onClick={() => setCurrentTest('grandma_relationship')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+          />
+
+          <AIFeatureCard
+            title="나의 내면 동물 찾기"
+            description="심리 질문을 통해 당신의 내면에 숨어있는 동물의 정체를 밝혀냅니다. 깊이있는 성격 분석까지!"
+            icon={Brain}
+            aiLevel="premium"
+            rank={4}
+            onClick={() => setCurrentTest('inner_animal')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
           />
 
@@ -113,6 +117,7 @@ const FunTests = () => {
             description="할아버지가 부부싸움에서 누가 잘못했는지 제대로 판단해드립니다. 남편과 공유하세요!"
             icon={MessageCircle}
             aiLevel="premium"
+            rank={5}
             onClick={() => setCurrentTest('grandpa_marriage')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
           />
@@ -122,6 +127,7 @@ const FunTests = () => {
             description="이모가 요즘 애들 걱정해서 해주는 따뜻하고 현실적인 잔소리입니다!"
             icon={MessageCircle}
             aiLevel="premium"
+            rank={6}
             onClick={() => setCurrentTest('mz_nagging')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-orange-200 bg-gradient-to-br from-orange-50 to-yellow-50"
           />

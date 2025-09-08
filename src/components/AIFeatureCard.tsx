@@ -8,6 +8,7 @@ interface AIFeatureCardProps {
   description: string;
   icon: LucideIcon;
   aiLevel?: 'basic' | 'advanced' | 'premium';
+  rank?: number;
   onClick?: () => void;
   className?: string;
 }
@@ -17,6 +18,7 @@ export const AIFeatureCard: React.FC<AIFeatureCardProps> = ({
   description,
   icon: Icon,
   aiLevel = 'basic',
+  rank,
   onClick,
   className = ''
 }) => {
@@ -37,8 +39,12 @@ export const AIFeatureCard: React.FC<AIFeatureCardProps> = ({
       onClick={onClick}
     >
       <CardHeader className="relative">
-        <div className="absolute top-4 right-4">
-          <AIBadge variant={getAIBadgeVariant()} size="sm" />
+        <div className="absolute top-2 right-2 flex gap-2">
+          {rank && (
+            <span className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+              {rank}위
+            </span>
+          )}
         </div>
         <div className="flex items-center space-x-3">
           <div className="p-2 rounded-lg bg-primary/10">
@@ -54,7 +60,7 @@ export const AIFeatureCard: React.FC<AIFeatureCardProps> = ({
       </CardHeader>
       <CardContent>
         <div className="text-sm text-muted-foreground">
-          최신 딥러닝 신경망 모델로 분석됩니다
+          AI 분석으로 재미있는 결과를 제공합니다
         </div>
       </CardContent>
     </Card>

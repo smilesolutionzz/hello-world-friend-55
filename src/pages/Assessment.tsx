@@ -58,7 +58,7 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'couple-test' | 'senior-test' | 'senior-result'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
@@ -1148,6 +1148,27 @@ const Assessment = () => {
           />
         </div>
       </div>
+    );
+  }
+
+  if (currentStep === 'senior-test') {
+    return (
+      <SeniorFunTest 
+        onComplete={(results) => {
+          setCurrentAssessmentResults(results);
+          setCurrentStep('senior-result');
+        }}
+        onBack={() => setCurrentStep('test-type')}
+      />
+    );
+  }
+
+  if (currentStep === 'senior-result') {
+    return (
+      <SeniorFunResult 
+        results={currentAssessmentResults}
+        onBack={() => setCurrentStep('test-type')}
+      />
     );
   }
 

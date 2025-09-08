@@ -1787,7 +1787,7 @@ const ExpertHiring = () => {
                     variant="outline" 
                     size="lg"
                     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="border-white text-white hover:bg-white hover:text-purple-600 transition-colors"
+                    className="border-white text-purple-600 bg-white hover:bg-purple-50 transition-colors"
                   >
                     <UserCheck className="w-5 h-5 mr-2" />
                     전문가 둘러보기

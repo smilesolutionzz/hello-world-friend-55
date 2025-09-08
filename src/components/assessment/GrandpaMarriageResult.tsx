@@ -40,7 +40,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
     navigator.clipboard.writeText(shareText).then(() => {
       toast({
         title: "공유 텍스트 복사 완료!",
-        description: "남편한테 보내서 반성하게 만드세요! 😤",
+        description: "배우자한테 보내서 반성하게 만드세요! 😤",
       });
     }).catch(() => {
       toast({
@@ -259,7 +259,7 @@ export default function GrandpaMarriageResult({ result, onRetake }: GrandpaMarri
                   className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
                 >
                   <Share2 className="w-4 h-4 mr-2" />
-                  남편한테 공유하기
+                  남편/아내한테 공유하기
                 </Button>
                 
                 <Button 

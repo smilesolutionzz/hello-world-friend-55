@@ -7,12 +7,11 @@ import { Sparkles, Camera, Brain, Heart, Crown, Star, Zap } from 'lucide-react';
 import PastLifeJobTest from '@/components/assessment/PastLifeJobTest';
 import AnimalFaceTest from '@/components/assessment/AnimalFaceTest';
 import InnerAnimalTest from '@/components/assessment/InnerAnimalTest';
-import { SeniorFunTest } from '@/components/assessment/SeniorFunTest';
 import { AIFeatureCard } from '@/components/AIFeatureCard';
 
 const FunTests = () => {
   const navigate = useNavigate();
-  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'senior_test'>('menu');
+  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal'>('menu');
 
   const handleTestComplete = (result: any, testType: string) => {
     navigate('/fun-test-result', { 
@@ -36,10 +35,6 @@ const FunTests = () => {
     return <InnerAnimalTest onComplete={handleTestComplete} onBack={handleBack} />;
   }
 
-  if (currentTest === 'senior_test') {
-    return <SeniorFunTest onComplete={(results) => handleTestComplete(results, 'senior_test')} onBack={handleBack} />;
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-pink-50 to-orange-50">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -61,40 +56,31 @@ const FunTests = () => {
         </div>
 
         {/* 테스트 카드들 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           <AIFeatureCard
-            title="🏺 전생 직업 분석"
-            description="당신의 전생은 무엇이었을까요? AI가 심리 분석을 통해 전생의 직업을 알려드립니다!"
+            title="내 전생은 어떤 직업?"
+            description="답변을 토대로 AI가 분석하는 나의 전생 직업과 그 시대의 이야기. 현재와의 연결점도 발견해보세요!"
             icon={Crown}
-            aiLevel="basic"
+            aiLevel="premium"
             onClick={() => setCurrentTest('past_life_job')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
           />
-          
+
           <AIFeatureCard
-            title="📸 동물 닮은꼴 찾기"
-            description="당신의 얼굴은 어떤 동물과 닮았을까요? AI 얼굴 분석으로 재미있게 알아보세요!"
+            title="내 얼굴 닮은 동물 찾기"
+            description="얼굴 사진을 업로드하면 AI가 분석해서 가장 닮은 동물을 찾아드립니다. 재미있는 특징 분석도 함께!"
             icon={Camera}
-            aiLevel="premium"
+            aiLevel="advanced"
             onClick={() => setCurrentTest('animal_face_match')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
           />
 
           <AIFeatureCard
-            title="🦋 내면 동물 찾기"
+            title="나의 내면 동물 찾기"
             description="심리 질문을 통해 당신의 내면에 숨어있는 동물의 정체를 밝혀냅니다. 깊이있는 성격 분석까지!"
             icon={Brain}
             aiLevel="premium"
             onClick={() => setCurrentTest('inner_animal')}
-            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-          />
-
-          <AIFeatureCard
-            title="👴👵 시니어 매력 테스트"
-            description="인생 선배님들의 숨겨진 매력을 발견해보세요! 따뜻하고 재미있는 분석으로 가득!"
-            icon={Heart}
-            aiLevel="basic"
-            onClick={() => setCurrentTest('senior_test')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
           />
         </div>

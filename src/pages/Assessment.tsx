@@ -25,10 +25,6 @@ import CareerInterestForm from "@/components/assessment/CareerInterestForm";
 import CareerInterestResult from "@/components/assessment/CareerInterestResult";
 import SelfEsteemTestForm from "@/components/assessment/SelfEsteemTestForm";
 import SelfEsteemTestResult from "@/components/assessment/SelfEsteemTestResult";
-import { CoupleCompatibilityTest } from '@/components/assessment/CoupleCompatibilityTest';
-import { CoupleCompatibilityResult } from '@/components/assessment/CoupleCompatibilityResult';
-import { SeniorFunTest } from '@/components/assessment/SeniorFunTest';
-import { SeniorFunResult } from '@/components/assessment/SeniorFunResult';
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
@@ -58,7 +54,7 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'couple-test' | 'senior-test' | 'senior-result'>('test-type');
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
@@ -774,38 +770,38 @@ const Assessment = () => {
                 {/* 📈 인기 3분 테스트 4위 */}
                 <div 
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
-                  onClick={() => setCurrentStep('couple-test')}
+                  onClick={() => setCurrentStep('career-test')}
                 >
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-pink-500 text-white font-bold">
-                      💕 NEW
+                    <Badge className="bg-blue-500 text-white font-bold">
+                      📈 4위
                     </Badge>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">💕 커플 케미 테스트</h4>
-                  <p className="text-muted-foreground text-sm mb-3">연인/부부 궁합도 재미있게 체크</p>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">진로흥미 탐색</h4>
+                  <p className="text-muted-foreground text-sm mb-3">나에게 맞는 직업 찾기</p>
                   <ul className="space-y-1 text-xs">
-                    <li>• 8문항 3분</li>
-                    <li>• 알콩달콩 분석</li>
-                    <li>• 웃긴 해석</li>
+                    <li>• 30문항 6분</li>
+                    <li>• 6가지 유형</li>
+                    <li>• 직업 추천</li>
                   </ul>
                 </div>
 
                 {/* ⭐ 추천 3분 테스트 */}
                 <div 
                   className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
-                  onClick={() => setCurrentStep('senior-test')}
+                  onClick={() => setCurrentStep('selfesteem-test')}
                 >
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-amber-500 text-white font-bold">
-                      👴 NEW
+                    <Badge className="bg-purple-500 text-white font-bold">
+                      ⭐ 추천
                     </Badge>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">👴👵 시니어 매력 테스트</h4>
-                  <p className="text-muted-foreground text-sm mb-3">인생 선배님의 숨겨진 매력 발견</p>
+                  <h4 className="text-lg font-bold text-brand-gradient mb-3">자아가치 측정</h4>
+                  <p className="text-muted-foreground text-sm mb-3">나의 자존감 수준 체크</p>
                   <ul className="space-y-1 text-xs">
-                    <li>• 8문항 3분</li>
-                    <li>• 재미있는 분석</li>
-                    <li>• 따뜻한 결과</li>
+                    <li>• 15문항 4분</li>
+                    <li>• 자존감 분석</li>
+                    <li>• 향상 가이드</li>
                   </ul>
                 </div>
               </div>
@@ -1148,27 +1144,6 @@ const Assessment = () => {
           />
         </div>
       </div>
-    );
-  }
-
-  if (currentStep === 'senior-test') {
-    return (
-      <SeniorFunTest 
-        onComplete={(results) => {
-          setCurrentAssessmentResults(results);
-          setCurrentStep('senior-result');
-        }}
-        onBack={() => setCurrentStep('test-type')}
-      />
-    );
-  }
-
-  if (currentStep === 'senior-result') {
-    return (
-      <SeniorFunResult 
-        results={currentAssessmentResults}
-        onBack={() => setCurrentStep('test-type')}
-      />
     );
   }
 

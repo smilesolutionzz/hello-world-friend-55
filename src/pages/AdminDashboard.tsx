@@ -43,6 +43,7 @@ import {
 } from 'lucide-react';
 import MemberDetailView from '@/components/institution/MemberDetailView';
 import { AdminNotifications } from '@/components/AdminNotifications';
+import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
 
 interface AdminAnalytics {
   total_users: number;
@@ -909,10 +910,14 @@ export default function AdminDashboard() {
 
         {/* Enhanced Management Tabs */}
         <Tabs defaultValue="notifications" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
               알림
+            </TabsTrigger>
+            <TabsTrigger value="expert-applications" className="flex items-center gap-2">
+              <UserCheck className="h-4 w-4" />
+              전문가 신청
             </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
@@ -934,6 +939,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="notifications">
             <AdminNotifications />
+          </TabsContent>
+
+          <TabsContent value="expert-applications">
+            <ExpertApplicationManagement />
           </TabsContent>
 
           <TabsContent value="users">

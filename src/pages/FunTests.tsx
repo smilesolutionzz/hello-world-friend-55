@@ -8,11 +8,12 @@ import PastLifeJobTest from '@/components/assessment/PastLifeJobTest';
 import AnimalFaceTest from '@/components/assessment/AnimalFaceTest';
 import InnerAnimalTest from '@/components/assessment/InnerAnimalTest';
 import GrandmaRelationshipTest from '@/components/assessment/GrandmaRelationshipTest';
+import GrandpaMarriageDiagnosis from '@/components/assessment/GrandpaMarriageDiagnosis';
 import { AIFeatureCard } from '@/components/AIFeatureCard';
 
 const FunTests = () => {
   const navigate = useNavigate();
-  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship'>('menu');
+  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage'>('menu');
 
   const handleTestComplete = (result: any, testType: string) => {
     navigate('/fun-test-result', { 
@@ -38,6 +39,10 @@ const FunTests = () => {
 
   if (currentTest === 'grandma_relationship') {
     return <GrandmaRelationshipTest onComplete={handleTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentTest === 'grandpa_marriage') {
+    return <GrandpaMarriageDiagnosis onComplete={handleTestComplete} onBack={handleBack} />;
   }
 
   return (
@@ -96,6 +101,15 @@ const FunTests = () => {
             aiLevel="premium"
             onClick={() => setCurrentTest('grandma_relationship')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+          />
+
+          <AIFeatureCard
+            title="욕쟁이 할아버지의 부부금술진단"
+            description="할아버지가 부부싸움에서 누가 잘못했는지 제대로 판단해드립니다. 남편과 공유하세요!"
+            icon={MessageCircle}
+            aiLevel="premium"
+            onClick={() => setCurrentTest('grandpa_marriage')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
           />
         </div>
 

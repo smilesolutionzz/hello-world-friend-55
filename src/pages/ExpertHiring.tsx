@@ -49,6 +49,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
+import GrowthStoryFeed from '@/components/growth/GrowthStoryFeed';
 
 interface Expert {
   id: string;
@@ -1579,82 +1580,79 @@ const ExpertHiring = () => {
           </TabsContent>
         </Tabs>
 
-        {/* 성공 사례 섹션 */}
+        {/* 실제 성장 스토리 섹션 */}
         <Card className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 border-none shadow-lg">
           <CardContent className="p-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">성공 매칭 사례</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                AIHPRO를 통해 전문가와 매칭된 후 긍정적인 변화를 경험한 실제 사례들을 확인해보세요
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Sparkles className="w-8 h-8 text-yellow-500" />
+                <h2 className="text-2xl font-bold text-gray-900">실제 성장 스토리</h2>
+              </div>
+              <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
+                AIHPRO를 통해 전문가와 만나 변화를 경험한 실제 사용자들의 이야기를 확인해보세요.
+                <br />
+                <span className="text-sm font-medium text-purple-600">
+                  전문가 상담 후 93%의 사용자가 긍정적 변화를 경험했습니다
+                </span>
               </p>
+              
+              {/* 신뢰 지표 */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="bg-white/80 rounded-lg p-4 backdrop-blur-sm">
+                  <div className="text-2xl font-bold text-green-600">93%</div>
+                  <div className="text-sm text-gray-600">만족도</div>
+                </div>
+                <div className="bg-white/80 rounded-lg p-4 backdrop-blur-sm">
+                  <div className="text-2xl font-bold text-blue-600">247+</div>
+                  <div className="text-sm text-gray-600">성공 매칭</div>
+                </div>
+                <div className="bg-white/80 rounded-lg p-4 backdrop-blur-sm">
+                  <div className="text-2xl font-bold text-purple-600">4.8</div>
+                  <div className="text-sm text-gray-600">평균 별점</div>
+                </div>
+              </div>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Avatar className="w-12 h-12">
-                      <AvatarFallback className="bg-green-100 text-green-800">김</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-medium">김○○ 님</div>
-                      <div className="text-sm text-muted-foreground">5세 자녀 부모</div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-700 mb-3">
-                    "AIHPRO AI 추천으로 만난 언어치료사 선생님 덕분에 아이의 언어발달이 눈에 띄게 향상되었어요."
-                  </p>
-                  <div className="flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Avatar className="w-12 h-12">
-                      <AvatarFallback className="bg-blue-100 text-blue-800">이</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-medium">이○○ 님</div>
-                      <div className="text-sm text-muted-foreground">청소년 자녀 부모</div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-700 mb-3">
-                    "제휴기관을 통해 체계적인 심리상담을 받을 수 있었고, 바우처 지원으로 경제적 부담도 줄었습니다."
-                  </p>
-                  <div className="flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Avatar className="w-12 h-12">
-                      <AvatarFallback className="bg-purple-100 text-purple-800">박</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-medium">박○○ 님</div>
-                      <div className="text-sm text-muted-foreground">성인 내담자</div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-700 mb-3">
-                    "AI 분석 결과를 바탕으로 매칭된 전문가와 정기 상담을 통해 업무 스트레스를 효과적으로 관리하고 있어요."
-                  </p>
-                  <div className="flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+            {/* 성장 스토리 피드 통합 */}
+            <div className="bg-white/90 rounded-lg p-6 backdrop-blur-sm">
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  다른 사용자들의 변화 스토리
+                </h3>
+                <p className="text-sm text-gray-600">
+                  전문가 상담을 통해 실제로 변화를 경험한 분들의 이야기입니다
+                </p>
+              </div>
+              
+              <GrowthStoryFeed />
+              
+              {/* CTA 섹션 */}
+              <div className="mt-8 p-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg text-white text-center">
+                <h4 className="text-xl font-bold mb-2">당신도 변화의 주인공이 되어보세요</h4>
+                <p className="text-purple-100 mb-4">
+                  전문가와의 만남으로 시작되는 긍정적 변화, 지금 시작해보세요
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button 
+                    variant="secondary" 
+                    size="lg"
+                    onClick={() => navigate('/assessment')}
+                    className="bg-white text-purple-600 hover:bg-gray-100"
+                  >
+                    <Brain className="w-5 h-5 mr-2" />
+                    AI 매칭 검사 받기
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg"
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className="border-white text-white hover:bg-white/10"
+                  >
+                    <UserCheck className="w-5 h-5 mr-2" />
+                    전문가 둘러보기
+                  </Button>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

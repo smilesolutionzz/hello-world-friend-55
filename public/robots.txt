@@ -1,3 +1,5 @@
+# AI하이라이트PRO 로봇 메타 태그
+
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +12,20 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: NaverBot
+Allow: /
+
+User-agent: DaumBot
+Allow: /
+
+User-agent: Yeti
+Allow: /
+
 User-agent: *
 Allow: /
+
+# 사이트맵 위치
+Sitemap: https://aihpro.com/sitemap.xml
+
+# 크롤링 속도 조절
+Crawl-delay: 1

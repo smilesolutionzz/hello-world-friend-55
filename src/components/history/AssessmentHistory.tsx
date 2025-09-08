@@ -123,7 +123,7 @@ const AssessmentHistory = () => {
           <p className="text-muted-foreground">가족 구성원들의 심리검사 기록을 관리하세요</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => navigate('/assessment')}>
+          <Button variant="outline" onClick={() => navigate('/premium-assessment')}>
             <FileText className="w-4 h-4 mr-2" />
             검사 예약
           </Button>

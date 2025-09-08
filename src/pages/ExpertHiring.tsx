@@ -804,10 +804,10 @@ const ExpertHiring = () => {
                                 <MoreHorizontal className="w-4 h-4" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
+                            <DropdownMenuContent align="end" className="bg-white dark:bg-gray-800 z-50 border shadow-lg">
                               <DropdownMenuItem 
                                 onClick={() => deletePost(post.id)}
-                                className="text-red-600 focus:text-red-600"
+                                className="text-red-600 focus:text-red-600 cursor-pointer"
                               >
                                 <Trash2 className="w-4 h-4 mr-2" />
                                 삭제하기

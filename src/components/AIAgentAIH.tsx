@@ -108,7 +108,7 @@ const AIAgentAIH = ({ onClose }: AIAgentAIHProps) => {
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">AI Agent AIH</h3>
+              <h3 className="text-lg font-semibold text-gray-900">AIH AGENT</h3>
             </div>
           </div>
           <Button

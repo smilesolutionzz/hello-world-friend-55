@@ -9,7 +9,7 @@ const FloatingAIHAgent = () => {
   return (
     <>
       {/* 플로팅 AIH 에이전트 버튼 */}
-      <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
         {!isOpen ? (
           <Button
             onClick={() => setIsOpen(true)}
@@ -23,7 +23,7 @@ const FloatingAIHAgent = () => {
                 <div className="w-2 h-2 rounded-full bg-white"></div>
               </div>
             </div>
-            <span>AI Agent AIH</span>
+            <span>AIH AGENT</span>
           </Button>
         ) : (
           <div className="relative">

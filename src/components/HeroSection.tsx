@@ -2,9 +2,21 @@ import ChatInterface from "./ChatInterface";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { TypingAnimation } from "@/components/ui/typing-animation";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useState } from "react";
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleStartAssessment = async (path: string) => {
+    setIsLoading(true);
+    try {
+      navigate(path);
+    } finally {
+      setTimeout(() => setIsLoading(false), 1000);
+    }
+  };
   
   const typingPhrases = [
     // 영유아 (0-3세)

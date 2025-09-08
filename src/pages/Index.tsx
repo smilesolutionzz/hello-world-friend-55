@@ -11,6 +11,10 @@ import SecurityTrustIndicators from "@/components/SecurityTrustIndicators";
 import TestimonialSection from "@/components/TestimonialSection";
 import CommunityPlatform from "@/components/CommunityPlatform";
 import ExpertVerificationBadge from "@/components/ExpertVerificationBadge";
+import BackToTop from "@/components/common/BackToTop";
+import SEOHead from "@/components/common/SEOHead";
+import { PageContainer } from "@/components/ui/page-container";
+import { SkipLink } from "@/components/ui/skip-link";
 
 import ReferralWidget from "@/components/ReferralWidget";
 import ReferralCodeInput from "@/components/ReferralCodeInput";
@@ -114,18 +118,21 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen max-w-full overflow-x-hidden">
-      <PlatformGuide onComplete={handleGuideComplete} />
-      <ScrollProgressBar />
-      <UnifiedNavigation />
-      <div className="flex max-w-full">
+    <>
+      <SEOHead />
+      <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
+      <div className="min-h-screen max-w-full overflow-x-hidden">
+        <PlatformGuide onComplete={handleGuideComplete} />
+        <ScrollProgressBar />
+        <UnifiedNavigation />
+        <div className="flex max-w-full">
         {/* Product Sidebar - 모바일에서는 완전히 숨김 */}
         <div className="hidden lg:block fixed left-0 top-16 z-30 h-full">
           <ProductSidebar />
         </div>
         
         {/* Main Content - 모바일에서는 여백 없음 */}
-        <div className="w-full lg:ml-72">
+        <main id="main-content" className="w-full lg:ml-72">
           <div className="animate-fade-in w-full">
             <HeroSection />
           </div>
@@ -184,9 +191,11 @@ const Index = () => {
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.6s' }}>
             <TrustIndicators />
           </div>
-        </div>
+        </main>
       </div>
+      <BackToTop />
     </div>
+    </>
   );
 };
 

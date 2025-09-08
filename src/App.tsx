@@ -6,6 +6,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ErrorBoundary from "@/components/ui/error-boundary";
+import NetworkStatus from "@/components/common/NetworkStatus";
+import { PerformanceMonitor } from "@/components/ui/performance-monitor";
+import Analytics from "@/components/common/Analytics";
 import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
 import DevelopmentalScreening from "./pages/AutismScreening";
@@ -97,12 +101,16 @@ const App = () => {
   return (
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <SessionManager />
-          <Routes>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ErrorBoundary>
+              <PerformanceMonitor enableConsoleLogging={process.env.NODE_ENV === 'development'} />
+              <Analytics />
+              <NetworkStatus />
+              <SessionManager />
+              <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<HighlightAuth />} />
@@ -178,13 +186,14 @@ const App = () => {
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
-          </Routes>
-          <LiveFeedWidget />
-          <FloatingAIHAgent />
-        </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-  </React.StrictMode>
+              </Routes>
+              <LiveFeedWidget />
+              <FloatingAIHAgent />
+            </ErrorBoundary>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 };
 

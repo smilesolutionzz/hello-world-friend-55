@@ -70,6 +70,61 @@ const questions = [
     ]
   },
   {
+    id: "husband_daily_behavior",
+    question: "평소 남편 행동은?",
+    options: [
+      { value: "phone_zombie", label: "집에서 계속 핸드폰만 봄" },
+      { value: "tv_addict", label: "TV 보면서 누워있기만 함" },
+      { value: "friends_first", label: "친구들과 노는 게 우선" },
+      { value: "helpful", label: "나름 도와주려고 함" },
+      { value: "workaholic", label: "일만 하고 집에 안 옴" }
+    ]
+  },
+  {
+    id: "housework_division",
+    question: "집안일 분담은 어떤가?",
+    options: [
+      { value: "wife_all", label: "아내가 거의 다 함" },
+      { value: "husband_some", label: "남편이 조금 도움" },
+      { value: "equal", label: "반반 나눠서 함" },
+      { value: "argue_always", label: "매번 싸우면서 함" },
+      { value: "nobody", label: "둘 다 안 해서 집이 엉망" }
+    ]
+  },
+  {
+    id: "money_control",
+    question: "돈 관리는 누가?",
+    options: [
+      { value: "wife_strict", label: "아내가 철저히 관리" },
+      { value: "husband_waste", label: "남편이 막 써버림" },
+      { value: "separate", label: "각자 알아서" },
+      { value: "always_fight", label: "돈 때문에 맨날 싸움" },
+      { value: "no_money", label: "관리할 돈이 없음" }
+    ]
+  },
+  {
+    id: "mother_in_law",
+    question: "시어머니와 관계는?",
+    options: [
+      { value: "nightmare", label: "완전 지옥" },
+      { value: "interferes", label: "자꾸 간섭함" },
+      { value: "okay", label: "그럭저럭 괜찮음" },
+      { value: "far_away", label: "멀리 살아서 상관없음" },
+      { value: "husband_mama_boy", label: "남편이 마마보이임" }
+    ]
+  },
+  {
+    id: "sex_life",
+    question: "부부생활은... (솔직히)",
+    options: [
+      { value: "dead", label: "완전 끝남" },
+      { value: "rare", label: "가끔씩" },
+      { value: "one_sided", label: "한쪽만 원함" },
+      { value: "good", label: "좋은 편" },
+      { value: "different_needs", label: "서로 원하는 게 달라" }
+    ]
+  },
+  {
     id: "resolution",
     question: "어떻게 화해했나?",
     options: [
@@ -92,14 +147,14 @@ const questions = [
     ]
   },
   {
-    id: "main_issue",
-    question: "진짜 문제가 뭐라고 생각하나?",
+    id: "future_plan",
+    question: "앞으로 어떻게 될 것 같나?",
     options: [
-      { value: "communication", label: "소통 부족" },
-      { value: "stress", label: "둘 다 스트레스 많음" },
-      { value: "expectations", label: "서로 기대치가 다름" },
-      { value: "personality", label: "성격 차이" },
-      { value: "external", label: "외부 압박 (시댁, 직장 등)" }
+      { value: "divorce_thinking", label: "이혼 생각 중" },
+      { value: "will_improve", label: "좋아질 것 같음" },
+      { value: "same_fights", label: "계속 같은 싸움 반복" },
+      { value: "couples_therapy", label: "상담 받을 생각" },
+      { value: "give_up", label: "그냥 포기하고 살 예정" }
     ]
   }
 ];
@@ -153,55 +208,96 @@ export default function GrandpaMarriageDiagnosis({ onComplete, onBack }: Grandpa
         throw new Error("토큰 차감에 실패했습니다");
       }
 
-      // 할아버지의 다양한 진단 결과들
+      // 할아버지의 더 강력하고 웃긴 진단 결과들
       const grandpaAnalyses = [
         {
-          verdict: "완전 남편 잘못",
-          grandpa_rant: "야 이 멍청한 놈아! 아내가 얼마나 힘든데 너는 뭐하고 있었냐? 피곤하다고? 그럼 아내는 안 피곤한 줄 아냐? 애 키우고 집안일 하는 게 놀이인 줄 아냐? 이런 바보 같은 남편은 처음 봤다! 당장 아내한테 가서 무릎 꿇고 사과해라!",
-          detailed_analysis: "이 남편은 완전히 정신을 놓고 있어. 아내가 SOS 신호를 보내는데도 눈치도 못 채고, 오히려 자기가 힘들다고 징징거리고 있으니 어이가 없지. 특히 육아는 혼자 하는 게 아니라고! 둘이 만들어놓고 왜 혼자 키우라고 하냐? 이런 남편은 군대 다시 보내서 정신교육 시켜야 해!",
-          solution: "남편아, 당장 아내한테 가서 '미안해, 내가 바보였어. 앞으로는 내가 더 도울게'라고 해라. 그리고 말만 하지 말고 실제로 행동으로 보여줘. 설거지, 빨래, 아기 기저귀 갈기 - 이런 건 기본이야! 아내가 웃을 때까지 계속 노력해라!",
-          blame_percentage: { husband: 85, wife: 15 }
+          verdict: "남편 완전 쓰레기급",
+          grandpa_rant: "야 이 개새끼야! 아내가 죽어나가는데 너는 소파에서 핸드폰만 보고 있냐? 피곤하다고? 니가 뭘 해봤다고 피곤해? 아내는 24시간 일하는데 너는 회사에서 놀다 와서 집에서도 놀고... 이런 놈은 아예 결혼하지 말았어야 해! 당장 무릎 꿇고 빌어! 아니면 집에서 나가!",
+          detailed_analysis: "이 남편은 인간 쓰레기 수준이야. 아내가 혼자 애 키우고 집안일 다 하는데 '몰랐다'고? 개소리지! 눈 달린 곳이 어디야? 게다가 시어머니까지 편들고... 완전 마마보이네. 이런 놈은 아내 없으면 혼자 살지도 못할 거야. 부끄러운 줄 알아라!",
+          solution: "남편아, 당장 아내한테 가서 발가락까지 핥으면서 사과해. 그리고 앞으로 집안일 70% 이상 너가 해. 아내는 이미 충분히 했어. 시어머니한테도 아내 편들고, 친구들과 노는 시간 전부 끊어. 가족이 우선이야, 이 바보야!",
+          blame_percentage: { husband: 95, wife: 5 }
         },
         {
-          verdict: "아내도 좀 과했다",
-          grandpa_rant: "자, 아내야. 남편이 잘못한 건 맞지만 너도 좀 과격하지 않았냐? 남자들은 원래 눈치가 없어. 그걸 알고 결혼했잖아? 폭발하기 전에 차근차근 말해줘야지. 물론 남편이 더 잘못했지만 말이야. 둘 다 조금씩 양보해야 해!",
-          detailed_analysis: "이 부부는 둘 다 서로를 이해하려는 노력이 부족해. 남편은 눈치가 없고, 아내는 너무 감정적으로 반응하고. 하지만 남편이 70% 잘못했어. 아내 마음을 몰라주는 게 제일 큰 문제야. 그래도 아내도 좀 더 차분하게 말할 필요가 있어.",
-          solution: "남편은 미안하다고 하고, 아내는 앞으로는 화내기 전에 한 번 더 말해줘. 그리고 둘 다 육아는 팀워크라는 걸 명심해라. 혼자 하는 게 아니야!",
-          blame_percentage: { husband: 70, wife: 30 }
+          verdict: "남편이 핸드폰 중독자",
+          grandpa_rant: "야 이 핸드폰 좀비야! 집에 와서도 핸드폰, 화장실에서도 핸드폰, 밥 먹으면서도 핸드폰... 아내가 말해도 '응응' 하면서 핸드폰만 봐? 니가 핸드폰이랑 결혼했냐? 아내는 가구 취급하고! 이런 놈은 핸드폰 뺏어버려야 해!",
+          detailed_analysis: "요즘 남편들 문제가 이거야. SNS, 게임, 유튜브에 빠져서 현실을 못 봐. 아내가 우울해하고 아이가 아빠 관심 끌려고 애쓰는데도 모르고 있어. 이런 식으로 살면 나중에 가족 다 떠나가.",
+          solution: "핸드폰 시간 정해놓고 써라. 집에서는 가족 시간이 우선이야. 아내랑 대화하고, 아이랑 놀아줘. 핸드폰보다 중요한 게 눈앞에 있다고!",
+          blame_percentage: { husband: 80, wife: 20 }
         },
         {
-          verdict: "둘 다 미쳤다",
-          grandpa_rant: "야 너희들! 둘 다 뭐하는 거야? 애 앞에서 싸우면 되냐? 아이가 얼마나 무서워하는데! 남편은 눈치 없고, 아내는 폭발적이고... 이런 식으로 싸우면 아이 정서에 안 좋다고! 둘 다 반성하고 아이한테 먼저 사과해라!",
-          detailed_analysis: "이 부부는 둘 다 문제가 있어. 스트레스 받는 건 이해하지만, 아이 앞에서는 절대 싸우면 안 돼. 아이는 부모가 싸우는 걸 보면 자기 잘못인 줄 알고 상처받는다고. 육아 스트레스는 서로 나눠서 해결해야지, 서로한테 화풀이하면 어떡해?",
-          solution: "일단 아이한테 사과하고, 앞으로는 아이 안 보는 데서 대화해. 그리고 육아 분담표를 만들어서 확실하게 역할을 나눠라. 감정적으로 말하지 말고 차분하게!",
+          verdict: "아내가 폭발한 이유 있음",
+          grandpa_rant: "아내야, 화낼 만했어. 이 바보 남편이 도대체 뭘 해줬는지 모르겠네. 집안일은 다 아내가 하고, 육아도 다 아내가 하고... 남편은 월급쟁이 역할만 하면 끝인 줄 아나 봐. 그래도 애 앞에서는 좀 참았어야지. 근데 이해한다!",
+          detailed_analysis: "이 아내는 혼자서 다 해왔어. 그런데 남편은 고마운 줄도 모르고 '나도 힘들어'라고 하니까 폭발한 거지. 당연해! 하지만 아이한테는 미안한 일이야. 아이는 죄가 없거든.",
+          solution: "남편은 각성해라. 아내는 앞으로 좀 더 직접적으로 말해줘. '도와줘'가 아니라 '네가 해'라고 해. 그리고 둘 다 아이한테 사과하고!",
+          blame_percentage: { husband: 75, wife: 25 }
+        },
+        {
+          verdict: "둘 다 치매 걸렸나",
+          grandpa_rant: "야 너희들 정신 차려! 결혼할 때는 언제고 지금은 왜 이래? 서로 사랑해서 결혼했잖아! 돈 때문에 싸우고, 집안일 때문에 싸우고... 애는 뭐 죄야? 부모가 맨날 싸우면 아이가 어떻게 자라겠어? 정신 차리고 화해해라!",
+          detailed_analysis: "이 부부는 둘 다 원점으로 돌아가야 해. 왜 결혼했는지, 왜 아이를 낳았는지 다시 생각해봐. 작은 일로 싸우면서 큰 것들을 놓치고 있어. 가족이 제일 소중한 거 아냐?",
+          solution: "둘 다 초심으로 돌아가라. 서로에게 고마워하는 마음 잃지 말고, 아이를 위해서라도 화목하게 살아. 부부싸움은 칼로 물 베기지만 아이한테는 큰 상처야.",
           blame_percentage: { husband: 50, wife: 50 }
         },
         {
-          verdict: "남편 완전 개념없음",
-          grandpa_rant: "이 남편 진짜 답이 없다! 아내가 울면서 호소하는데도 모른 척 하고, 오히려 따지고 들어? 이런 놈은 내가 젊었을 때 같으면 한 대 때렸을 거야! 아내 마음도 모르고 자기 변명만 늘어놓고... 이런 게 남편이냐?",
-          detailed_analysis: "이 남편은 정말 심각해. 공감 능력이 제로야. 아내가 힘들어하는 걸 보면서도 '나도 힘들어'라고만 하니까 답이 없지. 이런 남편은 교육이 필요해. 아내 입장에서 생각해보는 연습부터 다시 해야 해.",
-          solution: "남편아, 네가 잘못했어. 인정해라. 그리고 아내 말을 끝까지 들어줘. 변명하지 말고 일단 들어. 그 다음에 '어떻게 도와줄까?'라고 물어봐. 이게 기본이야!",
-          blame_percentage: { husband: 90, wife: 10 }
+          verdict: "남편이 마마보이",
+          grandpa_rant: "이 마마보이 새끼야! 시어머니가 뭐라고 하면 바로 아내 탓하고... 누구편이야? 결혼하면 아내가 1순위야, 이 바보야! 시어머니 말이 무조건 맞다고 생각하는 거 자체가 병이야. 아내가 힘들어하는데 엄마 편만 들고... 이런 놈은 엄마랑 살아라!",
+          detailed_analysis: "마마보이는 치료가 안 돼. 30, 40이 되어서도 엄마 말이 법이라고 생각해. 아내는 바깥사람 취급하고... 이런 남자랑 사는 여자들이 진짜 불쌍해. 독립을 못 한 거야, 정신적으로.",
+          solution: "남편아, 이제 어른이야. 엄마 말보다 아내 말을 먼저 들어. 시어머니한테도 아내 편을 들어줘야 해. 그게 진짜 남자야. 계속 마마보이로 살면 아내가 떠날 거야.",
+          blame_percentage: { husband: 90, wife: 5, mother_in_law: 5 }
         },
         {
-          verdict: "그래도 사랑하는 부부",
-          grandpa_rant: "야 너희들, 싸우긴 했지만 서로 사랑하는 게 보여. 다만 표현이 서툴러서 그래. 남편도 나름 노력하고 있고, 아내도 가족을 위해 힘들어하고 있고. 이런 정도면 금방 화해할 수 있어. 서로 조금만 더 배려하면 돼!",
-          detailed_analysis: "이 부부는 기본적으로 서로를 사랑해. 다만 스트레스 때문에 예민해져서 작은 일로 싸운 거야. 이런 건 시간이 지나면 웃으면서 얘기할 수 있는 추억이 될 거야. 서로 노력하는 마음이 보이니까 걱정 안 해도 돼.",
-          solution: "서로 고생한다고 인정해주고, 가끔은 데이트도 하고 둘만의 시간도 가져. 육아는 중요하지만 부부 관계도 중요하거든. 서로 사랑한다는 말도 자주 해!",
-          blame_percentage: { husband: 45, wife: 35, external: 20 }
+          verdict: "부부생활도 망했네",
+          grandpa_rant: "야 너희들 부부생활은 어떻게 되는 거야? 서로 등 돌리고 자고... 이런 식으로 살면 부부가 아니라 룸메이트지! 남편은 관심 없고, 아내는 거부하고... 이런 게 결혼생활이냐? 서로 노력해야지!",
+          detailed_analysis: "부부생활이 없으면 진짜 문제야. 이건 사랑의 표현이기도 하고 스트레스 해소이기도 해. 둘 다 너무 바쁘고 피곤하다는 핑계로 서로를 외면하고 있어. 이런 식으로 가면 정말 남남이 될 거야.",
+          solution: "둘 다 노력해. 로맨스가 죽으면 부부관계도 죽어. 가끔은 데이트도 하고 서로 신경 써줘. 아이도 중요하지만 부부관계가 먼저야!",
+          blame_percentage: { husband: 60, wife: 40 }
+        },
+        {
+          verdict: "그냥 이혼해라",
+          grandpa_rant: "야 너희들 진짜 답이 없다. 매일 싸우고, 아이 앞에서 소리지르고, 서로 미워하고... 이런 식으로 살 바에야 그냥 헤어져라! 아이한테도 이런 부모보다 차라리 없는 게 낫겠다. 부부상담도 안 받고, 노력도 안 하고... 포기한 거 같은데?",
+          detailed_analysis: "이 부부는 이미 끝났어. 서로에 대한 사랑도 없고, 존중도 없고, 그냥 습관으로 사는 거야. 아이만 불쌍해. 이런 환경에서 자라면 아이도 결혼에 대해 부정적으로 생각할 거야.",
+          solution: "마지막으로 부부상담 받아봐. 그래도 안 되면 깔끔하게 정리해. 아이를 위해서라도 좋은 이별을 해. 미워하면서 사는 것보다 낫지.",
+          blame_percentage: { husband: 50, wife: 50 }
         }
       ];
 
-      // 답변에 따라 결과 선택 (랜덤 + 일부 로직)
+      // 답변에 따른 더 정교한 결과 선택 로직
       let selectedAnalysis;
       
-      if (answers.who_started === 'husband' && answers.husband_excuse !== 'silent') {
-        selectedAnalysis = grandpaAnalyses[0]; // 남편 완전 잘못
-      } else if (answers.wife_reaction === 'explosive' && answers.kids_reaction === 'hide') {
-        selectedAnalysis = grandpaAnalyses[2]; // 둘 다 미쳤다
-      } else if (answers.resolution === 'both_apologized' || answers.resolution === 'time_solved') {
-        selectedAnalysis = grandpaAnalyses[4]; // 사랑하는 부부
-      } else {
+      // 남편이 핸드폰만 보거나 TV만 본다면
+      if (answers.husband_daily_behavior === 'phone_zombie' || answers.husband_daily_behavior === 'tv_addict') {
+        selectedAnalysis = grandpaAnalyses[1]; // 핸드폰 중독자
+      }
+      // 마마보이인 경우
+      else if (answers.mother_in_law === 'husband_mama_boy' || 
+               (answers.mother_in_law === 'interferes' && answers.who_started === 'wife')) {
+        selectedAnalysis = grandpaAnalyses[4]; // 마마보이
+      }
+      // 부부생활이 끝난 경우
+      else if (answers.sex_life === 'dead' && answers.future_plan === 'divorce_thinking') {
+        selectedAnalysis = grandpaAnalyses[6]; // 그냥 이혼해라
+      }
+      // 남편이 아무것도 안 하는 경우
+      else if (answers.housework_division === 'wife_all' && 
+               answers.husband_excuse === 'tired' && 
+               answers.husband_daily_behavior !== 'helpful') {
+        selectedAnalysis = grandpaAnalyses[0]; // 남편 완전 쓰레기급
+      }
+      // 아내가 폭발한 경우
+      else if (answers.wife_reaction === 'explosive' && 
+               answers.housework_division === 'wife_all') {
+        selectedAnalysis = grandpaAnalyses[2]; // 폭발한 이유 있음
+      }
+      // 부부생활 문제가 있는 경우
+      else if (answers.sex_life === 'dead' || answers.sex_life === 'one_sided') {
+        selectedAnalysis = grandpaAnalyses[5]; // 부부생활도 망했네
+      }
+      // 아이 앞에서 싸운 경우
+      else if (answers.kids_reaction === 'hide' || answers.kids_reaction === 'interfere') {
+        selectedAnalysis = grandpaAnalyses[3]; // 둘 다 치매 걸렸나
+      }
+      // 기본적으로 랜덤
+      else {
         selectedAnalysis = grandpaAnalyses[Math.floor(Math.random() * grandpaAnalyses.length)];
       }
 

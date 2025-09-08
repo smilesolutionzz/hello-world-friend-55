@@ -35,7 +35,7 @@ export const AIFeatureCard: React.FC<AIFeatureCardProps> = ({
 
   return (
     <Card 
-      className={`cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/50 ${className}`}
+      className={`cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/50 min-h-[200px] ${className}`}
       onClick={onClick}
     >
       <CardHeader className="relative">

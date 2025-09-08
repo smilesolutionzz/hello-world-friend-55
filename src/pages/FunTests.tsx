@@ -71,7 +71,7 @@ const FunTests = () => {
         </div>
 
         {/* 테스트 카드들 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-12">
           <AIFeatureCard
             title="내 전생은 어떤 직업?"
             description="답변을 토대로 AI가 분석하는 나의 전생 직업과 그 시대의 이야기. 현재와의 연결점도 발견해보세요!"
@@ -119,7 +119,7 @@ const FunTests = () => {
             aiLevel="premium"
             rank={5}
             onClick={() => setCurrentTest('grandpa_marriage')}
-            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50"
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 w-full"
           />
 
           <AIFeatureCard
@@ -129,7 +129,7 @@ const FunTests = () => {
             aiLevel="premium"
             rank={6}
             onClick={() => setCurrentTest('mz_nagging')}
-            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-orange-200 bg-gradient-to-br from-orange-50 to-yellow-50"
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-orange-200 bg-gradient-to-br from-orange-50 to-yellow-50 w-full"
           />
         </div>
 

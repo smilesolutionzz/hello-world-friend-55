@@ -89,7 +89,10 @@ const GrowthStoryShare = ({ onStoryShared }: GrowthStoryShareProps) => {
 
         const { data, error } = await supabase.storage
           .from('growth-stories')
-          .upload(fileName, file);
+          .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
 
         if (error) {
           console.error('파일 업로드 오류:', error);
@@ -141,14 +144,19 @@ const GrowthStoryShare = ({ onStoryShared }: GrowthStoryShareProps) => {
     
     try {
       // 스토리지에서 파일 삭제
-      const fileName = fileToRemove.url.split('/').pop();
+      const urlParts = fileToRemove.url.split('/');
+      const fileName = urlParts[urlParts.length - 1];
       if (fileName) {
         const { data: user } = await supabase.auth.getUser();
         if (user.user) {
           const fullPath = `${user.user.id}/${fileName}`;
-          await supabase.storage
+          const { error } = await supabase.storage
             .from('growth-stories')
             .remove([fullPath]);
+          
+          if (error) {
+            console.error('파일 삭제 오류:', error);
+          }
         }
       }
     } catch (error) {

@@ -835,7 +835,6 @@ const ExpertHiring = () => {
             </TabsTrigger>
             <TabsTrigger value="ai-matching" className="data-[state=active]:bg-primary data-[state=active]:text-white">
               <div className="flex items-center gap-2">
-                <Brain className="w-4 h-4" />
                 AI 매칭
                 <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs">미션</Badge>
               </div>

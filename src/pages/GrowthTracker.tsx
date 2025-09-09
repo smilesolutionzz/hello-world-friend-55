@@ -33,7 +33,7 @@ const GrowthTracker = () => {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     const { data } = await supabase
-      .from('daily_checkins')
+      .from('daily_checkins' as any)
       .select('*')
       .eq('user_id', user.id)
       .gte('checkin_date', thirtyDaysAgo.toISOString().split('T')[0])
@@ -41,27 +41,27 @@ const GrowthTracker = () => {
 
     if (data) {
       // Process weekly data for charts
-      const processedData = data.map(item => ({
-        date: new Date(item.checkin_date).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }),
-        mood: item.mood_score,
-        energy: item.energy_level,
-        stress: 6 - item.stress_level, // Invert stress so higher is better
-        wellness: Math.round((item.mood_score + item.energy_level + (6 - item.stress_level)) / 3)
+      const processedData = data.map((item: any) => ({
+        date: new Date((item as any).checkin_date).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }),
+        mood: (item as any).mood_score,
+        energy: (item as any).energy_level,
+        stress: 6 - (item as any).stress_level, // Invert stress so higher is better
+        wellness: Math.round(((item as any).mood_score + (item as any).energy_level + (6 - (item as any).stress_level)) / 3)
       }));
 
       setWeeklyData(processedData);
 
       // Calculate monthly stats
       const totalDays = data.length;
-      const avgMood = data.reduce((sum, item) => sum + item.mood_score, 0) / totalDays;
-      const avgEnergy = data.reduce((sum, item) => sum + item.energy_level, 0) / totalDays;
-      const avgStress = data.reduce((sum, item) => sum + item.stress_level, 0) / totalDays;
+      const avgMood = data.reduce((sum: number, item: any) => sum + item.mood_score, 0) / totalDays;
+      const avgEnergy = data.reduce((sum: number, item: any) => sum + item.energy_level, 0) / totalDays;
+      const avgStress = data.reduce((sum: number, item: any) => sum + item.stress_level, 0) / totalDays;
 
       // Calculate current streak
       let streak = 0;
       const today = new Date();
       for (let i = data.length - 1; i >= 0; i--) {
-        const checkinDate = new Date(data[i].checkin_date);
+        const checkinDate = new Date((data[i] as any).checkin_date);
         const daysDiff = Math.floor((today.getTime() - checkinDate.getTime()) / (1000 * 60 * 60 * 24));
         if (daysDiff === (data.length - 1 - i)) {
           streak++;

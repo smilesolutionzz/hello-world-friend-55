@@ -33,17 +33,17 @@ const DailyCheckin = () => {
 
     const today = new Date().toISOString().split('T')[0];
     const { data } = await supabase
-      .from('daily_checkins')
+      .from('daily_checkins' as any)
       .select('*')
       .eq('user_id', user.id)
       .eq('checkin_date', today)
-      .single();
+      .maybeSingle();
 
     if (data) {
       setCheckinComplete(true);
-      setMood(data.mood_score);
-      setEnergy(data.energy_level);
-      setStress(data.stress_level);
+      setMood((data as any).mood_score);
+      setEnergy((data as any).energy_level);
+      setStress((data as any).stress_level);
     }
   };
 
@@ -52,7 +52,7 @@ const DailyCheckin = () => {
     if (!user) return;
 
     const { data } = await supabase
-      .from('daily_checkins')
+      .from('daily_checkins' as any)
       .select('checkin_date')
       .eq('user_id', user.id)
       .order('checkin_date', { ascending: false });
@@ -62,7 +62,7 @@ const DailyCheckin = () => {
       const today = new Date();
       
       for (let i = 0; i < data.length; i++) {
-        const checkinDate = new Date(data[i].checkin_date);
+        const checkinDate = new Date((data[i] as any).checkin_date);
         const daysDiff = Math.floor((today.getTime() - checkinDate.getTime()) / (1000 * 60 * 60 * 24));
         
         if (daysDiff === i) {
@@ -90,7 +90,7 @@ const DailyCheckin = () => {
     if (!user) return;
 
     const { error } = await supabase
-      .from('daily_checkins')
+      .from('daily_checkins' as any)
       .upsert({
         user_id: user.id,
         checkin_date: new Date().toISOString().split('T')[0],

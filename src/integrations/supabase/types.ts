@@ -277,6 +277,45 @@ export type Database = {
         }
         Relationships: []
       }
+      challenges: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          difficulty: string
+          duration_days: number
+          id: string
+          is_active: boolean
+          reward_points: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          difficulty?: string
+          duration_days?: number
+          id?: string
+          is_active?: boolean
+          reward_points?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          difficulty?: string
+          duration_days?: number
+          id?: string
+          is_active?: boolean
+          reward_points?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           created_at: string
@@ -568,6 +607,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      daily_checkins: {
+        Row: {
+          checkin_date: string
+          created_at: string
+          energy_level: number
+          id: string
+          mood_score: number
+          notes: string | null
+          stress_level: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          checkin_date: string
+          created_at?: string
+          energy_level: number
+          id?: string
+          mood_score: number
+          notes?: string | null
+          stress_level: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          checkin_date?: string
+          created_at?: string
+          energy_level?: number
+          id?: string
+          mood_score?: number
+          notes?: string | null
+          stress_level?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       developmental_ml_analysis: {
         Row: {
@@ -2997,6 +3072,53 @@ export type Database = {
         }
         Relationships: []
       }
+      user_challenges: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          joined_at: string
+          points_earned: number
+          progress: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          joined_at?: string
+          points_earned?: number
+          progress?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          joined_at?: string
+          points_earned?: number
+          progress?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenges_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_feedback: {
         Row: {
           created_at: string
@@ -3115,6 +3237,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_points: {
+        Row: {
+          created_at: string
+          id: string
+          level_name: string
+          level_number: number
+          points_this_month: number
+          total_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          level_name?: string
+          level_number?: number
+          points_this_month?: number
+          total_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          level_name?: string
+          level_number?: number
+          points_this_month?: number
+          total_points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_preferences: {
         Row: {

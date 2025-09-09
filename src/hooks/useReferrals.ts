@@ -16,17 +16,12 @@ export const useReferrals = () => {
   // 추천 통계 불러오기
   const loadReferralStats = async () => {
     try {
-      console.log('🔗 useReferrals: Loading referral stats...');
       const { data, error } = await supabase.functions.invoke('referral-system', {
         body: { action: 'getReferralStats' }
       });
 
-      if (error) {
-        console.error('🔗 useReferrals: Error from referral-system function:', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      console.log('🔗 useReferrals: Referral stats loaded successfully:', data);
       if (data.success) {
         setStats(data.stats);
         if (data.stats.myReferralCode) {
@@ -34,8 +29,7 @@ export const useReferrals = () => {
         }
       }
     } catch (error) {
-      console.error('🔗 useReferrals: Error loading referral stats:', error);
-      // 에러가 발생해도 앱이 멈추지 않도록 처리
+      console.error('Error loading referral stats:', error);
     }
   };
 

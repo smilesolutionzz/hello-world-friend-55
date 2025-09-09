@@ -1189,11 +1189,6 @@ export const premiumAssessmentInfo = {
     rank: 5,
     badge: "📈 5위"
   },
-  developmentalScreening: {
-    ...developmentalScreeningInfo,
-    rank: 6,
-    badge: "⭐ 6위"
-  },
   // 📊 중간 인기 테스트들
   cognitive: {
     title: "브레인케어 인지능력 검사",

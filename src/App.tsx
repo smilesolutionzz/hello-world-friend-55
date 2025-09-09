@@ -13,7 +13,7 @@ import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 import Analytics from "@/components/common/Analytics";
 import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
-import DevelopmentalScreening from "./pages/AutismScreening";
+
 import Assessment from "./pages/Assessment";
 import FreeTrialAssessment from "./pages/FreeTrialAssessment";
 import BasicMentalHealthTest from "./components/assessment/BasicMentalHealthTest";
@@ -149,7 +149,7 @@ const App = () => {
           <Route path="/han-medicine-test" element={<HanMedicineTest />} />
           <Route path="/iep-generator" element={<IEPGenerator />} />
           <Route path="/iep-view/:id" element={<IEPView />} />
-          <Route path="/autism-screening" element={<DevelopmentalScreening />} />
+          
           
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/community" element={<Community />} />

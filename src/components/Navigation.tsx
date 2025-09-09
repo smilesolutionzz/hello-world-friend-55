@@ -169,10 +169,6 @@ const Navigation = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => handleNavigation('/autism-screening')}>
-                  <Users className="w-4 h-4 mr-2" />
-                  AIH 발달특성 체크
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleNavigation('/han-medicine-test')}>
                   <Brain className="w-4 h-4 mr-2" />
                   한의학 체질검사
@@ -464,14 +460,6 @@ const Navigation = () => {
                     <span className="font-medium">제휴기관</span>
                   </Button>
                   
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-left h-12 px-4 rounded-xl hover:bg-muted/50 transition-colors"
-                    onClick={() => handleNavigation('/autism-screening')}
-                  >
-                    <Brain className="mr-3 h-5 w-5 text-primary shrink-0" />
-                    <span className="font-medium">AIH 발달특성 체크</span>
-                  </Button>
                   
                   
                   <Button

@@ -13,7 +13,7 @@ import ParentingStyleForm from "@/components/assessment/ParentingStyleForm";
 import ParentingStyleResult from "@/components/assessment/ParentingStyleResult";
 import { 
   premiumAssessmentInfo,
-  developmentalScreeningInfo,
+  
   personalityTypeAssessmentQuestions,
   temperamentAssessmentQuestions, 
   cognitiveAssessmentQuestions,
@@ -39,7 +39,7 @@ const PremiumAssessment = () => {
 
   const assessmentData = {
     premiumAdhd: Object.values(premiumAdhdQuestions).flat(),
-    developmentalScreening: [], // 별도 페이지로 이동
+    
     personality_type: Object.values(personalityTypeAssessmentQuestions).flat(),
     temperament: Object.values(temperamentAssessmentQuestions).flat(),
     cognitive: Object.values(cognitiveAssessmentQuestions).flat(),
@@ -55,11 +55,6 @@ const PremiumAssessment = () => {
   };
 
   const handleStartAssessment = (assessmentKey: string) => {
-    // 발달특성 선별체크는 별도 페이지로 이동
-    if (assessmentKey === 'developmentalScreening') {
-      navigate('/autism-screening');
-      return;
-    }
     
     setSelectedAssessment(assessmentKey);
     setCurrentStep('assessment');

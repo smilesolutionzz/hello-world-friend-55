@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Crown, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard";
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
 import PremiumAssessmentResult from "@/components/assessment/PremiumAssessmentResult";
@@ -186,7 +187,8 @@ const PremiumAssessment = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden">
+    <AuthenticationGuard fallbackMessage="프리미엄 심리검사를 이용하려면 로그인이 필요합니다." redirectPath="/auth">
+      <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden">
       {/* Premium Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/20 rounded-full blur-3xl animate-float" />
@@ -303,6 +305,7 @@ const PremiumAssessment = () => {
         </div>
       </div>
     </div>
+    </AuthenticationGuard>
   );
 };
 

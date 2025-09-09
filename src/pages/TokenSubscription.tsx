@@ -497,7 +497,7 @@ const TokenSubscription = () => {
                     <p className="text-base md:text-lg leading-relaxed mb-6">
                       3분의 짧은 검사와 기록이 쌓여, 한 사람의 삶을 지켜낼 수 있다면.
                       AI가 빠르게 해석하고, 검증된 전문가가 마지막 터치를 더해
-                      누군가에게 <span className="font-bold text-primary">"당신은 혼자가 아닙니다"</span>라는 메시지를 줄 수 있다면.
+                      <span className="font-bold text-primary">실질적인 도움</span>을 제공할 수 있다면.
                       그것만으로도 충분히 의미 있는 길이라고 믿습니다.
                     </p>
                   </div>

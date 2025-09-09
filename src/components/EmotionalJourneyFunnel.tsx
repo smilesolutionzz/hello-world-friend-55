@@ -11,9 +11,9 @@ const EmotionalJourneyFunnel: React.FC<EmotionalJourneyFunnelProps> = ({ stage, 
   const journeyStages = {
     discovery: {
       icon: Heart,
-      title: "숨겨진 마음을 찾아서",
-      message: "사람들은 언제나 슬퍼하는 마음을 한 공간에 숨겨두고 있습니다.",
-      subMessage: "그 마음을 조용히 꺼내어 살펴보는 것부터 시작됩니다.",
+      title: "마음의 여정 시작",
+      message: "전문적인 분석과 과학적 접근을 통해 당신을 이해합니다.",
+      subMessage: "정확한 데이터 기반의 맞춤형 솔루션을 제공합니다.",
       bgGradient: "from-rose-50 to-pink-50",
       iconColor: "text-rose-500"
     },

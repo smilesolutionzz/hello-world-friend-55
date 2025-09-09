@@ -29,9 +29,9 @@ const HeartfeltMotivation: React.FC<HeartfeltMotivationProps> = ({
       iconColor: "text-blue-500"
     },
     understanding: {
-      title: "혼자가 아닙니다",
-      main: "숨겨둔 마음의 무게를 나누어 가져주는 사람들이 있습니다.",
-      sub: "당신의 이야기를 판단하지 않고 온전히 들어드리겠습니다.",
+      title: "전문가 네트워크",
+      main: "검증된 전문가들이 과학적 데이터를 바탕으로 도움을 드립니다.",
+      sub: "체계적인 분석과 맞춤형 솔루션으로 실질적인 변화를 만들어갑니다.",
       icon: Heart,
       gradient: "from-green-100 via-emerald-50 to-white",
       iconColor: "text-green-500"

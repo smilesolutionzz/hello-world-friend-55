@@ -19,7 +19,7 @@ interface DevelopmentalScreeningFormProps {
 const DevelopmentalScreeningForm = ({ ageGroup, onComplete, onBack }: DevelopmentalScreeningFormProps) => {
   const questions = ageGroup === 'child' ? developmentalScreeningQuestions.child : developmentalScreeningQuestions.adult;
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(0));
+  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(-1));
   const [hasStarted, setHasStarted] = useState(false);
   const { consumeTokens } = useTokens();
 

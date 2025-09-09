@@ -532,6 +532,5 @@ function generateDomainAnalysis(domainScores: Record<string, number>, riskLevel:
       developmentalImplications: `이 영역의 특성은 향후 ${domain === '사회적의사소통' ? '사회적 관계 형성과 학업 성취' : domain === '인지적유연성' ? '문제해결능력과 적응력' : domain === '정서조절' ? '정신건강과 사회적 적응' : '전반적 발달'} 에 중요한 영향을 미칠 것으로 예상됩니다.`,
       recommendations: recommendations[domain as keyof typeof recommendations] || ['전문가 상담', '개별화된 지원']
     };
-  });
-}
+   });
 }

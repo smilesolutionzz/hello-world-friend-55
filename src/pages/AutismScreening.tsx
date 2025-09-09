@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import DevelopmentalScreeningForm from '@/components/assessment/AutismScreeningForm';
-import DevelopmentalScreeningResult from '@/components/assessment/AutismScreeningResult';
+import AdvancedDevelopmentalForm from '@/components/assessment/AdvancedDevelopmentalForm';
+import AdvancedDevelopmentalResult from '@/components/assessment/AdvancedDevelopmentalResult';
 import AgeSelector from '@/components/assessment/AgeSelector';
 
-const DevelopmentalScreening = () => {
+const AdvancedDevelopmentalAssessment = () => {
   const [currentStep, setCurrentStep] = useState<'age-select' | 'screening' | 'result'>('age-select');
   const [selectedAge, setSelectedAge] = useState<number | null>(null);
   const [ageGroup, setAgeGroup] = useState<'child' | 'adult'>('child');
@@ -37,45 +37,81 @@ const DevelopmentalScreening = () => {
         {currentStep === 'age-select' && (
           <div className="text-center space-y-8">
             <div className="space-y-4">
-              <h1 className="text-4xl font-bold text-gray-900">
-                AIH 발달특성 체크
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                AIH 고도화 발달특성 종합평가
               </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                AIH에서 독자 개발한 발달특성 관찰도구로 개인의 고유한 특성을 파악하고
-                발달센터와의 연계를 통한 맞춤형 지원 방향을 제시합니다.
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                임상심리학 박사급 전문성이 적용된 35문항 종합평가로, 
+                8개 핵심 발달 영역을 정밀 분석하여 개별화된 전문가급 인사이트를 제공합니다.
               </p>
             </div>
             
-            <div className="bg-blue-50 rounded-lg p-6 max-w-2xl mx-auto">
-              <h3 className="text-lg font-semibold text-blue-900 mb-3">
-                🏥 발달센터 특화 기능
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl p-8 max-w-4xl mx-auto border border-primary/10">
+              <h3 className="text-xl font-bold text-primary mb-6 text-center">
+                🧠 박사급 고도화 평가 시스템
               </h3>
-              <ul className="text-sm text-blue-800 space-y-2 text-left">
-                <li>• AIH 독자 개발 발달특성 관찰도구</li>
-                <li>• 개인의 강점과 지원 영역 분석</li>
-                <li>• 사회적 특성 및 환경 적응성 평가</li>
-                <li>• 발달센터 연계 맞춤 정보 제공</li>
-                <li>• 개별화 지원 방향 제시</li>
-                <li>• 전문적이면서도 편안한 접근</li>
-              </ul>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-foreground">🔬 과학적 정밀성</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• 35문항 다차원 종합평가</li>
+                    <li>• 8개 핵심 발달영역 정밀분석</li>
+                    <li>• DSM-5 기반 임상적 해석</li>
+                    <li>• 신경발달학적 관점 적용</li>
+                  </ul>
+                </div>
+                
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-foreground">🎯 개별화 전문성</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• 개인별 강점-도전영역 매핑</li>
+                    <li>• 맞춤형 개입전략 제시</li>
+                    <li>• 단계별 발달지원 로드맵</li>
+                    <li>• 가족-전문가 협력모델</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="mt-6 p-4 bg-white/50 rounded-lg">
+                <h4 className="font-semibold text-foreground mb-2">📊 8대 핵심 발달영역</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-muted-foreground">
+                  <span>• 사회적 의사소통</span>
+                  <span>• 인지적 유연성</span>
+                  <span>• 감각 처리</span>
+                  <span>• 정서 조절</span>
+                  <span>• 사회적 상호작용</span>
+                  <span>• 반복행동/관심</span>
+                  <span>• 실행 기능</span>
+                  <span>• 적응 기술</span>
+                </div>
+              </div>
             </div>
             
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">체크 대상자의 연령을 선택해주세요</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-center">평가 대상자의 연령대를 선택해주세요</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
                 <button
                   onClick={() => handleAgeSelect(10)}
-                  className="p-6 border rounded-lg hover:bg-blue-50 transition-colors"
+                  className="group p-8 border-2 border-primary/20 rounded-xl hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 transform hover:scale-105"
                 >
-                  <div className="text-lg font-semibold">아동청소년</div>
-                  <div className="text-sm text-muted-foreground">16개월 ~ 18세</div>
+                  <div className="space-y-2">
+                    <div className="text-4xl">👶</div>
+                    <div className="text-xl font-bold text-primary">아동·청소년</div>
+                    <div className="text-sm text-muted-foreground">만 2세 ~ 18세</div>
+                    <div className="text-xs text-muted-foreground">발달 특성과 사회적 적응 중심</div>
+                  </div>
                 </button>
                 <button
                   onClick={() => handleAgeSelect(25)}
-                  className="p-6 border rounded-lg hover:bg-blue-50 transition-colors"
+                  className="group p-8 border-2 border-primary/20 rounded-xl hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 transform hover:scale-105"
                 >
-                  <div className="text-lg font-semibold">성인</div>
-                  <div className="text-sm text-muted-foreground">19세 이상</div>
+                  <div className="space-y-2">
+                    <div className="text-4xl">🧑</div>
+                    <div className="text-xl font-bold text-primary">성인</div>
+                    <div className="text-sm text-muted-foreground">만 19세 이상</div>
+                    <div className="text-xs text-muted-foreground">일상 기능과 직업적 적응 중심</div>
+                  </div>
                 </button>
               </div>
             </div>
@@ -83,7 +119,7 @@ const DevelopmentalScreening = () => {
         )}
 
         {currentStep === 'screening' && (
-          <DevelopmentalScreeningForm
+          <AdvancedDevelopmentalForm
             ageGroup={ageGroup}
             onComplete={handleScreeningComplete}
             onBack={handleBackToAgeSelect}
@@ -91,7 +127,7 @@ const DevelopmentalScreening = () => {
         )}
 
         {currentStep === 'result' && screeningResults && (
-          <DevelopmentalScreeningResult
+          <AdvancedDevelopmentalResult
             results={screeningResults}
             onBack={handleBackToAgeSelect}
             onNewTest={handleNewTest}
@@ -102,4 +138,4 @@ const DevelopmentalScreening = () => {
   );
 };
 
-export default DevelopmentalScreening;
+export default AdvancedDevelopmentalAssessment;

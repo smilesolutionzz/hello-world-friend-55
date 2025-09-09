@@ -15,6 +15,8 @@ import BackToTop from "@/components/common/BackToTop";
 import SEOHead from "@/components/common/SEOHead";
 import { PageContainer } from "@/components/ui/page-container";
 import { SkipLink } from "@/components/ui/skip-link";
+import IndexFallback from "@/components/IndexFallback";
+import ErrorBoundary from "@/components/ui/error-boundary";
 
 import ReferralWidget from "@/components/ReferralWidget";
 import ReferralCodeInput from "@/components/ReferralCodeInput";
@@ -29,80 +31,112 @@ import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import { PlatformGuide } from '@/components/onboarding/PlatformGuide';
 
 const Index = () => {
-  console.log('🏠 Index.tsx: Index page component rendering...');
-  
-  const [searchParams] = useSearchParams();
-  const { processReferralReward } = useReferrals();
-  const { toast } = useToast();
-  const [user, setUser] = useState<User | null>(null);
-  const [showGuideComplete, setShowGuideComplete] = useState(false);
+  try {
+    console.log('🏠 Index.tsx: Index page component rendering...');
+    console.log('🏠 Index.tsx: Starting initialization...');
+    
+    const [searchParams] = useSearchParams();
+    const { processReferralReward } = useReferrals();
+    const { toast } = useToast();
+    const [user, setUser] = useState<User | null>(null);
+    const [showGuideComplete, setShowGuideComplete] = useState(false);
+
+    console.log('🏠 Index.tsx: State initialized successfully');
 
   useEffect(() => {
     // Check for current user
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      try {
+        console.log('🏠 Index.tsx: Checking user...');
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) {
+          console.error('🏠 Index.tsx: Error getting user:', error);
+        } else {
+          console.log('🏠 Index.tsx: User check successful:', user ? 'logged in' : 'not logged in');
+        }
+        setUser(user);
+      } catch (error) {
+        console.error('🏠 Index.tsx: Exception in checkUser:', error);
+      }
     };
     
     checkUser();
     
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-    });
+    try {
+      console.log('🏠 Index.tsx: Setting up auth listener...');
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        console.log('🏠 Index.tsx: Auth state changed:', event);
+        setUser(session?.user ?? null);
+      });
 
-    return () => subscription.unsubscribe();
+      return () => {
+        console.log('🏠 Index.tsx: Cleaning up auth listener...');
+        subscription.unsubscribe();
+      };
+    } catch (error) {
+      console.error('🏠 Index.tsx: Error setting up auth listener:', error);
+    }
   }, []); // 빈 dependency array로 한 번만 실행
 
   useEffect(() => {
     const checkReferralCode = async () => {
-      const refCode = searchParams.get('ref');
-      if (refCode) {
-        console.log('📍 Referral code detected:', refCode);
-        
-        // Store referral code in localStorage for later use during signup
-        localStorage.setItem('referralCode', refCode);
-        
-        try {
-          // 안전하게 유저 정보 확인
-          const { data: { user }, error } = await supabase.auth.getUser();
+      try {
+        console.log('🏠 Index.tsx: Starting referral code check...');
+        const refCode = searchParams.get('ref');
+        if (refCode) {
+          console.log('📍 Referral code detected:', refCode);
           
-          // JWT 토큰 관련 에러는 무시하고 진행
-          if (error && !error.message.includes('invalid claim') && !error.message.includes('bad_jwt')) {
-            console.error('Auth error:', error);
-            return;
-          }
+          // Store referral code in localStorage for later use during signup
+          localStorage.setItem('referralCode', refCode);
           
-          if (user && !error) {
-            console.log('🔄 User logged in, processing referral reward...');
-            // 사용자가 로그인된 상태에서만 추천 보상 처리
-            const success = await processReferralReward(refCode);
-            console.log('✅ Referral reward processed:', success);
+          try {
+            // 안전하게 유저 정보 확인
+            console.log('🏠 Index.tsx: Getting user for referral processing...');
+            const { data: { user }, error } = await supabase.auth.getUser();
             
-            if (success !== undefined) {
-              localStorage.removeItem('referralCode');
-              if (success) {
-                toast({
-                  title: "🎉 추천 보상 완료!",
-                  description: "5토큰을 받았고, 추천인은 10토큰을 받았습니다!",
-                });
-              }
+            // JWT 토큰 관련 에러는 무시하고 진행
+            if (error && !error.message.includes('invalid claim') && !error.message.includes('bad_jwt')) {
+              console.error('Auth error:', error);
+              return;
             }
-          } else {
-            console.log('👋 No user, showing welcome toast');
+            
+            if (user && !error) {
+              console.log('🔄 User logged in, processing referral reward...');
+              // 사용자가 로그인된 상태에서만 추천 보상 처리
+              const success = await processReferralReward(refCode);
+              console.log('✅ Referral reward processed:', success);
+              
+              if (success !== undefined) {
+                localStorage.removeItem('referralCode');
+                if (success) {
+                  toast({
+                    title: "🎉 추천 보상 완료!",
+                    description: "5토큰을 받았고, 추천인은 10토큰을 받았습니다!",
+                  });
+                }
+              }
+            } else {
+              console.log('👋 No user, showing welcome toast');
+              toast({
+                title: "🎉 추천 링크로 접속했습니다!",
+                description: "회원가입하시면 본인은 5토큰, 추천인은 10토큰을 받아요!",
+              });
+            }
+          } catch (error) {
+            console.error('Referral check error:', error);
+            // 에러가 발생해도 토스트는 표시
             toast({
               title: "🎉 추천 링크로 접속했습니다!",
               description: "회원가입하시면 본인은 5토큰, 추천인은 10토큰을 받아요!",
             });
           }
-        } catch (error) {
-          console.error('Referral check error:', error);
-          // 에러가 발생해도 토스트는 표시
-          toast({
-            title: "🎉 추천 링크로 접속했습니다!",
-            description: "회원가입하시면 본인은 5토큰, 추천인은 10토큰을 받아요!",
-          });
+        } else {
+          console.log('🏠 Index.tsx: No referral code in URL');
         }
+      } catch (error) {
+        console.error('🏠 Index.tsx: Error in referral code check:', error);
+        // 에러가 발생해도 페이지는 계속 로드되도록 함
       }
     };
 
@@ -117,8 +151,10 @@ const Index = () => {
     });
   };
 
+  console.log('🏠 Index.tsx: About to render component...');
+
   return (
-    <>
+    <ErrorBoundary fallback={<IndexFallback />}>
       <SEOHead />
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
       <div className="min-h-screen max-w-full overflow-x-hidden">
@@ -133,70 +169,105 @@ const Index = () => {
         
         {/* Main Content - 모바일에서는 여백 없음 */}
         <main id="main-content" className="w-full lg:ml-72">
-          <div className="animate-fade-in w-full">
-            <HeroSection />
-          </div>
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.1s' }}>
-            <VideoShowcase />
-          </div>
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.2s' }}>
-            <TechBadgeShowcase />
-          </div>
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.3s' }}>
-            <PlatformOverview />
-          </div>
+          <ErrorBoundary fallback={<div className="p-8 text-center">Hero Section 로딩 중...</div>}>
+            <div className="animate-fade-in w-full">
+              <HeroSection />
+            </div>
+          </ErrorBoundary>
+          
+          <ErrorBoundary fallback={<div className="p-8 text-center">Video Showcase 로딩 중...</div>}>
+            <div className="animate-fade-in w-full" style={{ animationDelay: '0.1s' }}>
+              <VideoShowcase />
+            </div>
+          </ErrorBoundary>
+          
+          <ErrorBoundary fallback={<div className="p-8 text-center">Tech Badge 로딩 중...</div>}>
+            <div className="animate-fade-in w-full" style={{ animationDelay: '0.2s' }}>
+              <TechBadgeShowcase />
+            </div>
+          </ErrorBoundary>
+          
+          <ErrorBoundary fallback={<div className="p-8 text-center">Platform Overview 로딩 중...</div>}>
+            <div className="animate-fade-in w-full" style={{ animationDelay: '0.3s' }}>
+              <PlatformOverview />
+            </div>
+          </ErrorBoundary>
           
           {/* 보안 및 신뢰성 섹션 */}
-          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.35s' }}>
-            <SecurityTrustIndicators />
-          </div>
+          <ErrorBoundary fallback={<div className="p-8 text-center">Security 로딩 중...</div>}>
+            <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.35s' }}>
+              <SecurityTrustIndicators />
+            </div>
+          </ErrorBoundary>
           
           {/* 전문가 검증 데모 */}
-          <div className="container mx-auto px-4 py-4 animate-fade-in w-full" style={{ animationDelay: '0.37s' }}>
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold mb-2">AI + 전문가 2단계 검증 시스템</h2>
-              <p className="text-muted-foreground">모든 분석 결과는 전문가가 2차 검토합니다</p>
+          <ErrorBoundary fallback={<div className="p-8 text-center">Expert Verification 로딩 중...</div>}>
+            <div className="container mx-auto px-4 py-4 animate-fade-in w-full" style={{ animationDelay: '0.37s' }}>
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold mb-2">AI + 전문가 2단계 검증 시스템</h2>
+                <p className="text-muted-foreground">모든 분석 결과는 전문가가 2차 검토합니다</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <ExpertVerificationBadge status="ai_analysis" />
+                <ExpertVerificationBadge status="pending_expert" />
+                <ExpertVerificationBadge status="expert_reviewed" expertName="매칭된 실제 전문가" />
+                <ExpertVerificationBadge status="verified" />
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              <ExpertVerificationBadge status="ai_analysis" />
-              <ExpertVerificationBadge status="pending_expert" />
-              <ExpertVerificationBadge status="expert_reviewed" expertName="매칭된 실제 전문가" />
-              <ExpertVerificationBadge status="verified" />
-            </div>
-          </div>
+          </ErrorBoundary>
           
           {/* 실제 사례 및 후기 */}
-          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
-            <h2 className="text-2xl font-bold text-center mb-6">실제 이용 후기</h2>
-            <TestimonialSection />
-          </div>
+          <ErrorBoundary fallback={<div className="p-8 text-center">Testimonials 로딩 중...</div>}>
+            <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
+              <h2 className="text-2xl font-bold text-center mb-6">실제 이용 후기</h2>
+              <TestimonialSection />
+            </div>
+          </ErrorBoundary>
           
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.42s' }}>
-            <ClientLogos />
-          </div>
+          <ErrorBoundary fallback={<div className="p-8 text-center">Client Logos 로딩 중...</div>}>
+            <div className="animate-fade-in w-full" style={{ animationDelay: '0.42s' }}>
+              <ClientLogos />
+            </div>
+          </ErrorBoundary>
           
           {/* 커뮤니티 플랫폼 */}
-          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.45s' }}>
-            <CommunityPlatform />
-          </div>
-          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.5s' }}>
-            <ReferralWidget />
-            <ReferralCodeInput />
-          </div>
-          {user && (
-            <div className="container mx-auto px-4 py-6 animate-fade-in w-full" style={{ animationDelay: '0.55s' }}>
-              <NextStepSuggestion />
+          <ErrorBoundary fallback={<div className="p-8 text-center">Community 로딩 중...</div>}>
+            <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.45s' }}>
+              <CommunityPlatform />
             </div>
+          </ErrorBoundary>
+          
+          <ErrorBoundary fallback={<div className="p-8 text-center">Referral 로딩 중...</div>}>
+            <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.5s' }}>
+              <ReferralWidget />
+              <ReferralCodeInput />
+            </div>
+          </ErrorBoundary>
+          
+          {user && (
+            <ErrorBoundary fallback={<div className="p-8 text-center">Next Step 로딩 중...</div>}>
+              <div className="container mx-auto px-4 py-6 animate-fade-in w-full" style={{ animationDelay: '0.55s' }}>
+                <NextStepSuggestion />
+              </div>
+            </ErrorBoundary>
           )}
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.6s' }}>
-            <TrustIndicators />
-          </div>
+          
+          <ErrorBoundary fallback={<div className="p-8 text-center">Trust Indicators 로딩 중...</div>}>
+            <div className="animate-fade-in w-full" style={{ animationDelay: '0.6s' }}>
+              <TrustIndicators />
+            </div>
+          </ErrorBoundary>
         </main>
       </div>
       <BackToTop />
     </div>
-    </>
+    </ErrorBoundary>
   );
+  } catch (error) {
+    console.error('🚨 Index.tsx: Critical error in Index component:', error);
+    // ErrorBoundary에서 처리할 수 있도록 에러를 다시 throw
+    throw error;
+  }
 };
 
 export default Index;

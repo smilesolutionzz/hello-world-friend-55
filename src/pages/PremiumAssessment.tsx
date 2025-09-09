@@ -13,7 +13,7 @@ import ParentingStyleForm from "@/components/assessment/ParentingStyleForm";
 import ParentingStyleResult from "@/components/assessment/ParentingStyleResult";
 import { 
   premiumAssessmentInfo,
-  
+  autismSpectrumScreeningQuestions,
   personalityTypeAssessmentQuestions,
   temperamentAssessmentQuestions, 
   cognitiveAssessmentQuestions,
@@ -38,6 +38,7 @@ const PremiumAssessment = () => {
   const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
 
   const assessmentData = {
+    autismSpectrumScreening: Object.values(autismSpectrumScreeningQuestions).flat(),
     premiumAdhd: Object.values(premiumAdhdQuestions).flat(),
     
     personality_type: Object.values(personalityTypeAssessmentQuestions).flat(),

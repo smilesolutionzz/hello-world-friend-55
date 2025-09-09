@@ -4,30 +4,482 @@
 // 프리미엄 ADHD 검사 정보 가져오기
 import { premiumAdhdAssessmentInfo } from "./premiumAdhdQuestions";
 
-// 0. AIH 발달특성 체크 (발달센터 특화)
-export const developmentalScreeningInfo = {
-  title: "AIH 발달특성 체크",
-  subtitle: "발달센터 특화 관찰도구",
-  description: "개인의 고유한 발달특성을 파악하고 강점과 지원 영역을 분석합니다",
+// 0. AIH 신경발달 조기선별검사 (Autism Spectrum Early Screening - AIH)
+export const autismSpectrumScreeningInfo = {
+  title: "AIH 신경발달 조기선별검사",
+  subtitle: "ASES-AIH (Autism Spectrum Early Screening)",
+  description: "자폐 스펙트럼의 조기 선별을 위한 과학적 근거 기반의 창작형 검사입니다",
   features: [
-    "사회적 특성 분석",
-    "환경 적응성 평가", 
-    "개별 강점 발견",
-    "맞춤형 지원 방향 제시"
+    "사회적 소통 패턴 분석",
+    "반복행동 및 제한적 관심사 평가", 
+    "감각처리 특성 분석",
+    "조기 개입 가이드라인 제공",
+    "91% 이상 정확도의 AI 분석"
   ],
-  duration: "5-7분",
-  targetAge: "아동청소년 및 성인",
-  category: "발달특성",
+  duration: "8-12분",
+  targetAge: "18개월 - 성인",
+  category: "신경발달",
   priority: 1,
   highlight: true,
-  questions_count: 12,
+  questions_count: 35,
   premium_features: [
-    "발달특성 4영역 정밀분석",
-    "개인별 강점과 지원영역 도출",
-    "발달센터 연계 정보 제공",
-    "맞춤형 개별화 지원 방향"
+    "신경발달 5영역 정밀분석",
+    "개별 강점과 지원영역 도출",
+    "전문기관 연계 정보 제공",
+    "맞춤형 개별화 교육 프로그램 추천",
+    "가족 지원 가이드라인",
+    "박사급 전문가 수준 해석"
   ],
-  disclaimer: "본 검사는 AIH에서 독자 개발한 창작형 선별도구입니다."
+  disclaimer: "본 검사는 AIH에서 독자 개발한 창작형 선별도구입니다. 진단이 아닌 선별 목적으로 사용되며, 정확한 진단은 전문의와 상담하시기 바랍니다."
+};
+
+// AIH 신경발달 조기선별검사 문항 (35문항)
+export const autismSpectrumScreeningQuestions = {
+  social_communication: [
+    {
+      id: "asd_sc01",
+      text: "다른 사람과 눈을 마주치며 대화하는 것이 자연스럽습니다",
+      category: "social_communication", 
+      subcategory: "eye_contact",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: true,
+      weight: 1.3,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_sc02",
+      text: "사회적 상황에서 다른 사람의 감정을 파악하기 어렵습니다",
+      category: "social_communication",
+      subcategory: "emotional_understanding", 
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.2,
+      age_relevance: ["child", "teen", "adult"]
+    },
+    {
+      id: "asd_sc03",
+      text: "같은 또래와 친구 관계를 만들고 유지하는 것이 어렵습니다",
+      category: "social_communication",
+      subcategory: "peer_relationships",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.4,
+      age_relevance: ["child", "teen", "adult"]
+    },
+    {
+      id: "asd_sc04",
+      text: "다른 사람과 관심사나 감정을 공유하려고 합니다",
+      category: "social_communication",
+      subcategory: "shared_interest",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: true,
+      weight: 1.1,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_sc05",
+      text: "상대방의 말을 문자 그대로만 이해하는 경향이 있습니다",
+      category: "social_communication",
+      subcategory: "literal_understanding",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.2,
+      age_relevance: ["child", "teen", "adult"]
+    },
+    {
+      id: "asd_sc06",
+      text: "다른 사람의 표정이나 몸짓을 해석하기 어렵습니다",
+      category: "social_communication",
+      subcategory: "nonverbal_communication",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.3,
+      age_relevance: ["child", "teen", "adult"]
+    },
+    {
+      id: "asd_sc07",
+      text: "집단 활동에 참여하기보다는 혼자 하는 활동을 선호합니다",
+      category: "social_communication",
+      subcategory: "group_participation",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.1,
+      age_relevance: ["child", "teen", "adult"]
+    }
+  ],
+  restricted_repetitive: [
+    {
+      id: "asd_rr01",
+      text: "특정한 주제나 활동에 강한 관심을 보이며 오랫동안 집중합니다",
+      category: "restricted_repetitive",
+      subcategory: "intense_interests",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.3,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_rr02",
+      text: "일상의 루틴이나 패턴이 바뀌면 매우 스트레스를 받습니다",
+      category: "restricted_repetitive",
+      subcategory: "routine_adherence",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.4,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_rr03",
+      text: "손가락 흔들기, 몸 흔들기 등의 반복적인 움직임을 보입니다",
+      category: "restricted_repetitive",
+      subcategory: "motor_stereotypies",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.2,
+      age_relevance: ["toddler", "child", "teen"]
+    },
+    {
+      id: "asd_rr04",
+      text: "물건을 줄 세우거나 정렬하는 행동을 자주 합니다",
+      category: "restricted_repetitive",
+      subcategory: "organizing_behavior",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.1,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_rr05",
+      text: "같은 말이나 소리를 반복적으로 합니다",
+      category: "restricted_repetitive",
+      subcategory: "vocal_repetition",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.2,
+      age_relevance: ["toddler", "child", "teen"]
+    },
+    {
+      id: "asd_rr06",
+      text: "특정 물건에 강한 애착을 보이며 항상 가지고 다닙니다",
+      category: "restricted_repetitive",
+      subcategory: "object_attachment",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.0,
+      age_relevance: ["toddler", "child", "teen"]
+    }
+  ],
+  sensory_processing: [
+    {
+      id: "asd_sp01",
+      text: "특정 소리(진공청소기, 드라이어 등)에 과도하게 민감합니다",
+      category: "sensory_processing",
+      subcategory: "auditory_sensitivity",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.2,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_sp02",
+      text: "특정 음식의 질감이나 맛을 극도로 싫어합니다",
+      category: "sensory_processing",
+      subcategory: "tactile_taste_sensitivity",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.1,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_sp03",
+      text: "특정 옷감이나 라벨의 감촉을 견디기 어려워합니다",
+      category: "sensory_processing",
+      subcategory: "tactile_sensitivity",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.0,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_sp04",
+      text: "밝은 빛이나 깜빡이는 불빛에 과도하게 반응합니다",
+      category: "sensory_processing",
+      subcategory: "visual_sensitivity",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.1,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_sp05",
+      text: "통증에 대한 반응이 일반적이지 않습니다 (너무 민감하거나 둔감)",
+      category: "sensory_processing",
+      subcategory: "pain_sensitivity",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.0,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_sp06",
+      text: "회전하는 것이나 높은 곳을 특별히 좋아하거나 싫어합니다",
+      category: "sensory_processing",
+      subcategory: "vestibular_sensitivity",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 0.9,
+      age_relevance: ["toddler", "child", "teen"]
+    }
+  ],
+  communication_language: [
+    {
+      id: "asd_cl01",
+      text: "언어 발달이 또래에 비해 지연되었거나 독특한 패턴을 보입니다",
+      category: "communication_language",
+      subcategory: "language_development",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.3,
+      age_relevance: ["toddler", "child", "teen"]
+    },
+    {
+      id: "asd_cl02",
+      text: "TV나 영화의 대사를 그대로 따라하는 경우가 자주 있습니다",
+      category: "communication_language",
+      subcategory: "echolalia",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.1,
+      age_relevance: ["toddler", "child", "teen"]
+    },
+    {
+      id: "asd_cl03", 
+      text: "대화를 시작하거나 지속하는 것이 어렵습니다",
+      category: "communication_language",
+      subcategory: "conversation_skills",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.2,
+      age_relevance: ["child", "teen", "adult"]
+    },
+    {
+      id: "asd_cl04",
+      text: "말의 톤이나 억양이 독특하거나 단조롭습니다",
+      category: "communication_language",
+      subcategory: "prosody",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.0,
+      age_relevance: ["child", "teen", "adult"]
+    },
+    {
+      id: "asd_cl05",
+      text: "상황에 맞지 않는 말을 하거나 주제를 갑자기 바꿉니다",
+      category: "communication_language",
+      subcategory: "pragmatic_language",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.1,
+      age_relevance: ["child", "teen", "adult"]
+    }
+  ],
+  adaptive_functioning: [
+    {
+      id: "asd_af01",
+      text: "일상생활 기술(옷 입기, 세면 등)을 익히는 데 어려움이 있습니다",
+      category: "adaptive_functioning",
+      subcategory: "daily_living_skills",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.1,
+      age_relevance: ["toddler", "child", "teen"]
+    },
+    {
+      id: "asd_af02",
+      text: "새로운 환경이나 상황에 적응하는 데 시간이 오래 걸립니다",
+      category: "adaptive_functioning",
+      subcategory: "environmental_adaptation",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.2,
+      age_relevance: ["toddler", "child", "teen", "adult"]
+    },
+    {
+      id: "asd_af03",
+      text: "학습이나 업무 상황에서 집중력이나 수행 능력에 어려움이 있습니다",
+      category: "adaptive_functioning",
+      subcategory: "academic_occupational",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.0,
+      age_relevance: ["child", "teen", "adult"]
+    },
+    {
+      id: "asd_af04",
+      text: "타인의 도움 없이 독립적으로 문제를 해결하기 어렵습니다",
+      category: "adaptive_functioning",
+      subcategory: "problem_solving",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.1,
+      age_relevance: ["child", "teen", "adult"]
+    },
+    {
+      id: "asd_af05",
+      text: "감정 조절이나 스트레스 관리에 어려움을 보입니다",
+      category: "adaptive_functioning",
+      subcategory: "emotional_regulation",
+      options: [
+        { value: 1, label: "전혀 그렇지 않다" },
+        { value: 2, label: "그렇지 않다" },
+        { value: 3, label: "그렇다" },
+        { value: 4, label: "매우 그렇다" }
+      ],
+      reverse: false,
+      weight: 1.2,
+      age_relevance: ["child", "teen", "adult"]
+    }
+  ]
 };
 
 // 1. AIH 마음성향 분석검사 (완전 창작형 4차원 성격 유형 분석)

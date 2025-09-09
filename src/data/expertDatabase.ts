@@ -11,7 +11,7 @@ export const expertDatabase: ExpertProfile[] = [
     consultationStyle: "empathetic",
     available: true,
     nextAvailableTime: "지금 바로",
-    pricePerSession: 80000,
+    pricePerSession: 50000,
     credentials: ["임상심리사 1급", "언어재활사", "발달심리전문가"],
     languages: ["한국어", "영어"],
     ageSpecialization: "infant"
@@ -25,7 +25,7 @@ export const expertDatabase: ExpertProfile[] = [
     consultationStyle: "solution_focused",
     available: true,
     nextAvailableTime: "30분 후",
-    pricePerSession: 70000,
+    pricePerSession: 45000,
     credentials: ["임상심리사 1급", "학교심리사", "인지행동치료전문가"],
     languages: ["한국어"],
     ageSpecialization: "child"
@@ -39,7 +39,7 @@ export const expertDatabase: ExpertProfile[] = [
     consultationStyle: "integrative",
     available: false,
     nextAvailableTime: "오후 3시",
-    pricePerSession: 75000,
+    pricePerSession: 50000,
     credentials: ["임상심리사 1급", "게임중독전문가", "집단치료전문가"],
     languages: ["한국어", "중국어"],
     ageSpecialization: "child"
@@ -53,7 +53,7 @@ export const expertDatabase: ExpertProfile[] = [
     consultationStyle: "analytical",
     available: true,
     nextAvailableTime: "지금 바로",
-    pricePerSession: 90000,
+    pricePerSession: 55000,
     credentials: ["정신건강임상심리사", "인지행동치료전문가", "EMDR치료사"],
     languages: ["한국어", "영어"],
     ageSpecialization: "adult"
@@ -67,7 +67,7 @@ export const expertDatabase: ExpertProfile[] = [
     consultationStyle: "empathetic",
     available: true,
     nextAvailableTime: "1시간 후",
-    pricePerSession: 65000,
+    pricePerSession: 45000,
     credentials: ["임상심리사 2급", "직업상담사", "EAP전문가"],
     languages: ["한국어"],
     ageSpecialization: "adult"
@@ -81,7 +81,7 @@ export const expertDatabase: ExpertProfile[] = [
     consultationStyle: "integrative",
     available: false,
     nextAvailableTime: "내일 오전 9시",
-    pricePerSession: 120000,
+    pricePerSession: 60000,
     credentials: ["정신건강임상심리사", "가족치료전문가", "트라우마전문가"],
     languages: ["한국어", "영어", "일본어"],
     ageSpecialization: "all"
@@ -95,7 +95,7 @@ export const expertDatabase: ExpertProfile[] = [
     consultationStyle: "analytical",
     available: true,
     nextAvailableTime: "2시간 후",
-    pricePerSession: 100000,
+    pricePerSession: 55000,
     credentials: ["정신건강임상심리사", "정신분석전문가", "대학교수"],
     languages: ["한국어", "영어"],
     ageSpecialization: "adult"
@@ -109,7 +109,7 @@ export const expertDatabase: ExpertProfile[] = [
     consultationStyle: "solution_focused",
     available: true,
     nextAvailableTime: "지금 바로",
-    pricePerSession: 60000,
+    pricePerSession: 45000,
     credentials: ["청소년상담사 1급", "진로상담사", "학교심리사"],
     languages: ["한국어"],
     ageSpecialization: "child"
@@ -127,7 +127,7 @@ export const emergencyExperts: ExpertProfile[] = [
     consultationStyle: "empathetic",
     available: true,
     nextAvailableTime: "지금 바로 (24시간)",
-    pricePerSession: 150000,
+    pricePerSession: 60000,
     credentials: ["24시간 응급대응팀", "위기개입전문가"],
     languages: ["한국어"],
     ageSpecialization: "all"

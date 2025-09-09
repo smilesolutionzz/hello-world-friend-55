@@ -634,11 +634,11 @@ const ExpertHiring = () => {
 
     if (priceFilter && priceFilter !== "all") {
       if (priceFilter === "low") {
-        filtered = filtered.filter(expert => expert.monthlyPrice <= 150000);
+        filtered = filtered.filter(expert => expert.monthlyPrice <= 100000);
       } else if (priceFilter === "medium") {
-        filtered = filtered.filter(expert => expert.monthlyPrice > 150000 && expert.monthlyPrice <= 250000);
+        filtered = filtered.filter(expert => expert.monthlyPrice > 100000 && expert.monthlyPrice <= 180000);
       } else if (priceFilter === "high") {
-        filtered = filtered.filter(expert => expert.monthlyPrice > 250000);
+        filtered = filtered.filter(expert => expert.monthlyPrice > 180000);
       }
     }
 

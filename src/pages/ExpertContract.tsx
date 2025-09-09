@@ -91,9 +91,9 @@ const ExpertContract = () => {
   ];
 
   const additionalServiceOptions = [
-    { id: 'emergency_support', label: '24시간 긴급 상담 지원', price: 50000 },
-    { id: 'family_education', label: '가족 교육 프로그램', price: 30000 },
-    { id: 'progress_report', label: '월간 진전 리포트', price: 20000 },
+    { id: 'emergency_support', label: '24시간 긴급 상담 지원', price: 25000 },
+    { id: 'family_education', label: '가족 교육 프로그램', price: 15000 },
+    { id: 'progress_report', label: '월간 진전 리포트', price: 10000 },
     { id: 'group_session', label: '그룹 세션 참여 권한', price: 15000 }
   ];
 

@@ -74,12 +74,12 @@ serve(async (req) => {
       });
     }
 
-    // 토큰 차감 처리 (발달특성 선별체크는 4토큰)
-    const tokenCost = 1;
+    // 토큰 차감 처리 (발달특성 체크는 3토큰)
+    const tokenCost = 3;
     
     const { data: tokenData, error: tokenError } = await supabase
       .from('user_tokens')
-      .select('current_tokens')
+      .select('current_tokens, total_used')
       .eq('user_id', user.id)
       .single();
 
@@ -95,7 +95,7 @@ serve(async (req) => {
       .from('user_tokens')
       .update({ 
         current_tokens: tokenData.current_tokens - tokenCost,
-        last_used_at: new Date().toISOString()
+        total_used: (tokenData.total_used || 0) + tokenCost
       })
       .eq('user_id', user.id);
 

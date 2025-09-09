@@ -140,7 +140,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
         <p className="text-blue-800 text-sm">
           <span className="font-semibold">📊 체크 결과 (참고용)</span><br />
-          ⚠️ 이 결과는 참고용이며 의학적 진단이 절대 아닙니다. 지속적 어려움이 있으시면 반드시 전문의와 상담하세요.
+          ⚠️ 이 결과는 참고용이며 전문적 평가가 절대 아닙니다. 지속적 어려움이 있으시면 반드시 전문가와 상담하세요.
         </p>
       </div>
 
@@ -438,7 +438,7 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
       <Card className="p-6 bg-blue-50 border-blue-200">
         <h4 className="font-semibold text-blue-900 mb-2">참고사항</h4>
         <p className="text-blue-800 text-sm leading-relaxed">
-          이 검사는 우울증상 자가체크를 위한 선별도구로, 의학적 진단을 대체할 수 없습니다. 
+          이 체크는 우울증상 자가관찰을 위한 참고도구로, 전문적 평가를 대체할 수 없습니다. 
           정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.
         </p>
       </Card>

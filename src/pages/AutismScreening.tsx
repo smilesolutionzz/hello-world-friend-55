@@ -38,10 +38,10 @@ const DevelopmentalScreening = () => {
           <div className="text-center space-y-8">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold text-gray-900">
-                AIH 발달특성 선별체크
+                AIH 발달특성 체크
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                AIH에서 독자 개발한 발달특성 선별도구로 개인의 고유한 특성을 파악하고
+                AIH에서 독자 개발한 발달특성 관찰도구로 개인의 고유한 특성을 파악하고
                 발달센터와의 연계를 통한 맞춤형 지원 방향을 제시합니다.
               </p>
             </div>
@@ -51,7 +51,7 @@ const DevelopmentalScreening = () => {
                 🏥 발달센터 특화 기능
               </h3>
               <ul className="text-sm text-blue-800 space-y-2 text-left">
-                <li>• AIH 독자 개발 발달특성 선별도구</li>
+                <li>• AIH 독자 개발 발달특성 관찰도구</li>
                 <li>• 개인의 강점과 지원 영역 분석</li>
                 <li>• 사회적 특성 및 환경 적응성 평가</li>
                 <li>• 발달센터 연계 맞춤 정보 제공</li>
@@ -61,7 +61,7 @@ const DevelopmentalScreening = () => {
             </div>
             
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">검사 대상자의 연령을 선택해주세요</h3>
+              <h3 className="text-lg font-semibold">체크 대상자의 연령을 선택해주세요</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
                 <button
                   onClick={() => handleAgeSelect(10)}

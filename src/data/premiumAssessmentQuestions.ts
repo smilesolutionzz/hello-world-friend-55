@@ -4,10 +4,10 @@
 // 프리미엄 ADHD 검사 정보 가져오기
 import { premiumAdhdAssessmentInfo } from "./premiumAdhdQuestions";
 
-// 0. AIH 발달특성 선별체크 (발달센터 특화)
+// 0. AIH 발달특성 체크 (발달센터 특화)
 export const developmentalScreeningInfo = {
-  title: "AIH 발달특성 선별체크",
-  subtitle: "발달센터 특화 선별도구",
+  title: "AIH 발달특성 체크",
+  subtitle: "발달센터 특화 관찰도구",
   description: "개인의 고유한 발달특성을 파악하고 강점과 지원 영역을 분석합니다",
   features: [
     "사회적 특성 분석",

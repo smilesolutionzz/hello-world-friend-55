@@ -130,8 +130,8 @@ const ChatInterface = () => {
             {/* 법적 안전 공지 */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <p className="text-blue-800 text-sm">
-                <span className="font-semibold">⚠️ 중요:</span> 이 리포팅은 참고용이며 의학적 진단이 아닙니다. 
-                정확한 진단과 치료는 반드시 의료기관에서 받으시기 바랍니다.
+                <span className="font-semibold">⚠️ 중요:</span> 이 리포팅은 참고용이며 전문적 평가가 아닙니다. 
+                정확한 평가와 지원은 반드시 전문기관에서 받으시기 바랍니다.
               </p>
             </div>
 

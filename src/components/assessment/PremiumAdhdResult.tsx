@@ -154,7 +154,7 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
           <div className="text-sm">
             <p className="font-medium text-yellow-800 mb-1">중요 안내사항</p>
             <p className="text-yellow-700">
-              본 검사 결과는 자가 평가 도구로서 참고 목적으로만 사용되며, 정식 의학적 진단을 대체할 수 없습니다. 
+              본 체크 결과는 자가 관찰 도구로서 참고 목적으로만 사용되며, 정식 전문평가를 대체할 수 없습니다. 
               정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.
             </p>
           </div>

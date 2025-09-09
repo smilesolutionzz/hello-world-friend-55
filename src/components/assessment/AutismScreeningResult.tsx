@@ -128,7 +128,7 @@ const DevelopmentalScreeningResult = ({ results, onBack, onNewTest }: Developmen
             <div className="flex items-center justify-center gap-3">
               <Brain className="w-8 h-8 text-primary" />
               <h1 className="text-3xl font-bold text-gray-900">
-                AIH 발달특성 선별체크 결과
+                AIH 발달특성 체크 결과
               </h1>
             </div>
             <p className="text-muted-foreground">

@@ -298,7 +298,7 @@ const EarlyDiagnosisSection = ({ assessmentType, results, isAnalyzing }: EarlyDi
 
           {/* 법적 고지사항 */}
           <div className="mt-4 p-3 bg-gray-50 rounded text-xs text-gray-600 border-l-4 border-gray-300">
-            <strong>중요 안내:</strong> 본 조기 위험요소 체크는 AI 기반 참고자료이며 의학적 진단을 대체하지 않습니다. 
+            <strong>중요 안내:</strong> 본 조기 위험요소 체크는 AI 기반 참고자료이며 전문적 평가를 대체하지 않습니다. 
             실제 증상이 있거나 우려사항이 있는 경우 반드시 전문의와 상담하시기 바랍니다.
           </div>
         </CardContent>

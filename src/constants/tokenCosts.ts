@@ -7,7 +7,7 @@ export const TOKEN_COSTS = {
   PANIC_TEST: 2,            // 불안감 수준 확인
   LANGUAGE_TEST: 2,         // 언어발달 자가체크
   HAN_MEDICINE_TEST: 2,     // 한의학 체질 분석
-  DEVELOPMENTAL_SCREENING: 3, // AIH 발달특성 선별체크 (4→3)
+  DEVELOPMENTAL_SCREENING: 3, // AIH 발달특성 체크 (4→3)
   
   // 고급 분석 (중가격대)
   DREAM_INTERPRETATION: 4,  // 꿈 해석 (5→4)

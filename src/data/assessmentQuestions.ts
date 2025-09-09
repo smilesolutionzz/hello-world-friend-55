@@ -438,14 +438,14 @@ export const adultFocusQuestions = [
   "동료들과 협력하여 조화롭게 일합니다"
 ];
 
-// AIH 발달특성 선별체크 질문 (확장형 20문항 - 박사급 분석용)
+// AIH 발달특성 체크 질문 (확장형 20문항 - 전문가급 분석용)
 export const developmentalScreeningQuestions = {
   child: [
     {
       text: "아이가 재미있는 것을 발견했을 때 다른 사람과 함께 보려고 하나요?",
       description: "공동 주의집중 능력 - 타인과 관심사를 공유하는 사회적 참조 행동",
       domain: "social_communication",
-      clinicalSignificance: "자폐스펙트럼 조기 선별의 핵심 지표"
+      clinicalSignificance: "발달특성 조기 파악의 핵심 지표"
     },
     {
       text: "아이가 일상적인 놀이에서 창의적인 변화를 시도하나요?",

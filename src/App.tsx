@@ -76,6 +76,12 @@ import RelationshipPackage from "./pages/RelationshipPackage";
 import ComprehensivePackage from "./pages/ComprehensivePackage";
 import GrowthStories from "./pages/GrowthStories";
 
+// New Retention Features
+import DailyCheckin from "./pages/DailyCheckin";
+import GrowthTracker from "./pages/GrowthTracker";
+import ChallengesPage from "./pages/ChallengesPage";
+import AICoachPage from "./pages/AICoachPage";
+
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTests from "./pages/FunTests";
 import FunTestResult from "./pages/FunTestResult";
@@ -149,6 +155,12 @@ const App = () => {
           <Route path="/han-medicine-test" element={<HanMedicineTest />} />
           <Route path="/iep-generator" element={<IEPGenerator />} />
           <Route path="/iep-view/:id" element={<IEPView />} />
+          
+          {/* New Retention Features */}
+          <Route path="/daily-checkin" element={<DailyCheckin />} />
+          <Route path="/growth-tracker" element={<GrowthTracker />} />
+          <Route path="/challenges" element={<ChallengesPage />} />
+          <Route path="/ai-coach" element={<AICoachPage />} />
           
           
           <Route path="/corporate" element={<Corporate />} />

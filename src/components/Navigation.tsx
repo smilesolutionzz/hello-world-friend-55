@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText, Crown, Coins, Settings, ChevronDown, Plus, History, X, BarChart3 } from "lucide-react";
+import { Home, Clock, BookOpen, MessageCircle, Info, User, LogOut, Menu, Brain, Users, Shield, FileText, Crown, Coins, Settings, ChevronDown, Plus, History, X, BarChart3, Heart, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -110,6 +110,10 @@ const Navigation = () => {
               <Clock className="w-4 h-4 mr-1" />
               3분체크
             </Button>
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 hover:from-green-100 hover:to-emerald-100" onClick={() => handleNavigation('/daily-checkin')}>
+              <Heart className="w-4 h-4 mr-1 text-green-600" />
+              <span className="text-green-700 font-medium">매일체크</span>
+            </Button>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/assessment-history')}>
               <History className="w-4 h-4 mr-1" />
               검사기록
@@ -138,6 +142,10 @@ const Navigation = () => {
                 <DropdownMenuItem onClick={() => handleNavigation('/ai-counselor')}>
                   <MessageCircle className="w-4 h-4 mr-2" />
                   AI 상담만
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleNavigation('/ai-coach')}>
+                  <Brain className="w-4 h-4 mr-2" />
+                  AI 개인코치
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -179,10 +187,29 @@ const Navigation = () => {
               <Users className="w-4 h-4 mr-1" />
               커뮤니티
             </Button>
-            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2" onClick={() => handleNavigation('/dashboard')}>
-              <BarChart3 className="w-4 h-4 mr-1" />
-              마이DATA
+            <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 hover:from-purple-100 hover:to-pink-100" onClick={() => handleNavigation('/challenges')}>
+              <Crown className="w-4 h-4 mr-1 text-purple-600" />
+              <span className="text-purple-700 font-medium">챌린지</span>
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 flex items-center gap-1">
+                  <BarChart3 className="w-4 h-4" />
+                  마이DATA
+                  <ChevronDown className="w-3 h-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleNavigation('/dashboard')}>
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  대시보드
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleNavigation('/growth-tracker')}>
+                  <TrendingUp className="w-4 h-4 mr-2" />
+                  성장 추적
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="ghost" className="btn-ghost whitespace-normal text-center px-2 text-primary font-medium" onClick={() => handleNavigation('/subscription')}>
               <Shield className="w-4 h-4 mr-1" />
               ABOUT

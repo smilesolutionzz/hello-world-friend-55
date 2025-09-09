@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useState } from "react";
-import EmotionalJourneyFunnel from './EmotionalJourneyFunnel';
-import HeartfeltMotivation from './HeartfeltMotivation';
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -106,10 +104,6 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* 감성적 퍼널 섹션 */}
-        <div className="mb-8">
-          <EmotionalJourneyFunnel stage="discovery" />
-        </div>
 
         {/* Chat Interface */}
         <ChatInterface />
@@ -258,10 +252,6 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* 감성적 마무리 메시지 */}
-          <div className="mt-8">
-            <HeartfeltMotivation variant="understanding" />
-          </div>
         </div>
       </div>
     </div>

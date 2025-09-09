@@ -155,7 +155,7 @@ const Index = () => {
 
   return (
     <ErrorBoundary fallback={<IndexFallback />}>
-      <SEOHead />
+      {/* SEOHead temporarily removed to fix HelmetProvider error */}
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
       <div className="min-h-screen max-w-full overflow-x-hidden">
         <PlatformGuide onComplete={handleGuideComplete} />

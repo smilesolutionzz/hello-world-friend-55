@@ -9,6 +9,7 @@ import { developmentalScreeningQuestions } from "@/data/assessmentQuestions";
 import TokenGate from "@/components/TokenGate";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { useTokens } from "@/hooks/useTokens";
+import HeartfeltMotivation from '../HeartfeltMotivation';
 
 interface DevelopmentalScreeningFormProps {
   ageGroup: 'child' | 'adult';
@@ -77,23 +78,28 @@ const DevelopmentalScreeningForm = ({ ageGroup, onComplete, onBack }: Developmen
   // 토큰 게이트 표시
   if (!hasStarted) {
     return (
-      <TokenGate
-        tokensRequired={TOKEN_COSTS.DEVELOPMENTAL_SCREENING}
-        featureName="AIH 발달특성 체크"
-        onProceed={handleStartTest}
-      >
-        <div className="space-y-4 text-center">
-          <div className="text-lg font-semibold">AIH 발달특성 체크 특징</div>
-          <ul className="space-y-2 text-sm text-muted-foreground max-w-md mx-auto">
-            <li>• {ageGroup === 'child' ? '아동청소년용' : '성인용'} 맞춤 문항</li>
-            <li>• 총 {questions.length}문항, 약 5분 소요</li>
-            <li>• 사회적 특성 및 개인적 강점 분석</li>
-            <li>• 발달센터 연계 정보 제공</li>
-            <li>• 개별 맞춤 지원 방향 제시</li>
-            <li>• AIH 독자 개발 선별도구</li>
-          </ul>
-        </div>
-      </TokenGate>
+      <div className="space-y-6">
+        {/* 시작 전 감성적 메시지 */}
+        <HeartfeltMotivation variant="gentle" />
+        
+        <TokenGate
+          tokensRequired={TOKEN_COSTS.DEVELOPMENTAL_SCREENING}
+          featureName="AIH 발달특성 체크"
+          onProceed={handleStartTest}
+        >
+          <div className="space-y-4 text-center">
+            <div className="text-lg font-semibold">AIH 발달특성 체크 특징</div>
+            <ul className="space-y-2 text-sm text-muted-foreground max-w-md mx-auto">
+              <li>• {ageGroup === 'child' ? '아동청소년용' : '성인용'} 맞춤 문항</li>
+              <li>• 총 {questions.length}문항, 약 5분 소요</li>
+              <li>• 사회적 특성 및 개인적 강점 분석</li>
+              <li>• 발달센터 연계 정보 제공</li>
+              <li>• 개별 맞춤 지원 방향 제시</li>
+              <li>• AIH 독자 개발 선별도구</li>
+            </ul>
+          </div>
+        </TokenGate>
+      </div>
     );
   }
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { HelmetProvider } from "react-helmet-async";
 import LiveFeedWidget from "@/components/LiveFeedWidget";
 import { InstitutionMarketingPresentation } from "@/components/institutions/InstitutionMarketingPresentation";
 import { Toaster } from "@/components/ui/toaster";
@@ -100,8 +101,9 @@ const App = () => {
   
   return (
     <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -193,6 +195,7 @@ const App = () => {
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>
+      </HelmetProvider>
     </React.StrictMode>
   );
 };

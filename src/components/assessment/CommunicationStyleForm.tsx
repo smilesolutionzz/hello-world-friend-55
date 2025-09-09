@@ -99,6 +99,11 @@ const CommunicationStyleForm = ({ onComplete }: CommunicationStyleFormProps) => 
 
   const handleAnswerChange = (value: string) => {
     setAnswers({ ...answers, [currentQuestion]: value });
+    
+    // 자동으로 다음 질문으로 이동
+    setTimeout(() => {
+      handleNext();
+    }, 500);
   };
 
   const handleNext = () => {

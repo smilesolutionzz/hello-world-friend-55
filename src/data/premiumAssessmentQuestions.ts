@@ -1577,12 +1577,35 @@ export const lovePersonalityAssessmentQuestions = {
 
 // 평가 정보 객체 (인기도 순으로 재배치)
 export const premiumAssessmentInfo = {
-  // ✨ NEW 프리미엄 ADHD 검사 (최상단 배치)
+  // 🧠 신경발달 조기선별검사 (최상단 배치)
+  autismSpectrumScreening: {
+    title: "AIH 신경발달 조기선별검사",
+    subtitle: "ASES-AIH (Autism Spectrum Early Screening)",
+    description: "자폐 스펙트럼의 조기 선별을 위한 과학적 근거 기반의 창작형 검사입니다",
+    duration: "약 8-12분",
+    questions_count: 35,
+    premium_features: [
+      "5개 영역 정밀분석 (사회적 소통, 제한적 반복행동, 감각처리, 의사소통언어, 적응기능)",
+      "91% 이상 정확도의 AI 분석",
+      "조기개입 가이드라인 제공",
+      "박사급 전문가 수준 해석",
+      "가족 지원 전략 제시",
+      "전문기관 연계 정보"
+    ],
+    disclaimer: "본 검사는 AIH에서 독자 개발한 창작형 선별도구입니다. 진단이 아닌 선별 목적으로 사용되며, 정확한 진단은 전문의와 상담하시기 바랍니다.",
+    rank: 0,
+    badge: "🧠 AI 91%",
+    priority: 1,
+    highlight: true,
+    category: "신경발달",
+    targetAge: "18개월-성인"
+  },
+  // ✨ NEW 프리미엄 ADHD 검사
   premiumAdhd: {
     ...premiumAdhdAssessmentInfo,
-    rank: 0,
+    rank: 1,
     badge: "✨ NEW",
-    priority: 1,
+    priority: 2,
     highlight: true
   },
   // 🔥 TOP 인기 테스트들 (상단 배치)

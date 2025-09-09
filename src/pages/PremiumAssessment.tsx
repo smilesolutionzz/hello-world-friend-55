@@ -11,6 +11,8 @@ import PremiumAdhdForm from "@/components/assessment/PremiumAdhdForm";
 import PremiumAdhdResult from "@/components/assessment/PremiumAdhdResult";
 import ParentingStyleForm from "@/components/assessment/ParentingStyleForm";
 import ParentingStyleResult from "@/components/assessment/ParentingStyleResult";
+import AutismSpectrumForm from "@/components/assessment/AutismSpectrumForm";
+import AutismSpectrumResult from "@/components/assessment/AutismSpectrumResult";
 import { 
   premiumAssessmentInfo,
   autismSpectrumScreeningQuestions,
@@ -97,6 +99,16 @@ const PremiumAssessment = () => {
       );
     }
 
+    if (selectedAssessment === 'autismSpectrumScreening') {
+      return (
+        <AutismSpectrumResult
+          results={assessmentResults}
+          answers={assessmentAnswers}
+          onBack={handleBack}
+        />
+      );
+    }
+
     if (selectedAssessment === 'premiumAdhd') {
       return (
         <PremiumAdhdResult
@@ -126,6 +138,15 @@ const PremiumAssessment = () => {
   }
 
   if (currentStep === 'assessment' && selectedAssessment) {
+    if (selectedAssessment === 'autismSpectrumScreening') {
+      return (
+        <AutismSpectrumForm
+          onComplete={handleAssessmentComplete}
+          onBack={handleBack}
+        />
+      );
+    }
+
     if (selectedAssessment === 'languageDevelopment') {
       return (
         <LanguageDevelopmentForm

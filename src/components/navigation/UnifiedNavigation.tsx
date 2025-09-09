@@ -98,7 +98,8 @@ export const UnifiedNavigation = () => {
   };
 
   const canAccess = (item: NavigationItem) => {
-    return true; // 모든 메뉴 항상 표시
+    if (!item.requiresAuth) return true;
+    return !!user; // 인증이 필요한 항목은 로그인 상태 확인
   };
 
   return (
@@ -215,7 +216,7 @@ export const UnifiedNavigation = () => {
 
                   {/* Navigation Items */}
                   <div className="flex-1 space-y-2">
-                    {navigationItems.map((item) => (
+                  {navigationItems.filter(canAccess).map((item) => (
                         <Button
                           key={item.path}
                           variant={isActive(item.path) ? "default" : "ghost"}

@@ -148,7 +148,7 @@ async function analyzeDevelopmentalScreening(results: ScreeningResults, ageGroup
   
   const prompt = `
 당신은 임상심리학 박사이자 발달장애 전문가로서 20년 이상의 임상 경험을 보유하고 있습니다. 
-AIH 발달특성 선별체크 결과를 박사급 수준의 심층 분석을 제공해주세요.
+AIH 발달특성 선별체크 결과를 최고 수준의 박사급 심층 분석을 제공해주세요.
 
 = 검사 정보 =
 연령군: ${ageGroup} ${age ? `(${age}세)` : ''}
@@ -167,67 +167,141 @@ ${Object.entries(domainScores).map(([domain, score]) => `${domain}: ${score}점`
 6. 반복행동 및 제한된 관심 (문항 12,13): 상동행동, 특별한 관심사
 7. 실행기능 (문항 8,19): 주의집중, 계획수립, 인지적 억제
 
-= 임상적 해석 요구사항 =
-- DSM-5 및 ICD-11 기준 적용
-- 발달 궤적 고려한 종단적 관점
-- 환경적 요인과 보호 요인 분석
-- 개별화된 지원 전략 제시
-- 가족 중심 개입 방안 포함
-
-응답은 반드시 다음 JSON 형식으로만 제공하세요:
+= 상세 분석 요구사항 =
+다음 JSON 형식으로 **최소 4000자 이상**의 극도로 상세한 박사급 분석을 제공하세요:
 
 {
   "overallRiskLevel": "minimal|mild|moderate|significant|high",
-  "clinicalInterpretation": "박사급 임상 해석 (최소 300자 이상의 상세한 분석)",
+  "executiveSummary": "전체적인 발달 상태에 대한 200자 이상의 종합 요약",
+  "clinicalInterpretation": "박사급 임상 해석 (최소 800자 이상의 매우 상세한 분석 - 발달 궤적, 신경생물학적 기반, 환경적 요인, 개별성 등 포함)",
+  "comprehensiveAnalysis": {
+    "neurodevelopmentalPerspective": "신경발달학적 관점에서의 500자 이상 심층 분석",
+    "developmentalTrajectory": "발달 궤적 및 장기 예후에 대한 400자 이상 분석",
+    "environmentalConsiderations": "환경적 요인 및 맥락적 이해 300자 이상",
+    "strengthsBasedApproach": "강점 기반 접근법과 개별적 특성 300자 이상"
+  },
   "domainAnalysis": [
     {
       "domain": "도메인명",
       "score": 점수,
-      "interpretation": "도메인별 임상적 해석 (최소 100자)",
-      "developmentalImplications": "발달적 의미와 장기적 영향",
-      "recommendations": ["구체적이고 실행 가능한 지원 방법 3-5개"]
+      "percentile": "백분위 추정",
+      "clinicalInterpretation": "해당 도메인에 대한 300자 이상의 매우 상세한 임상적 해석",
+      "neurocognitiveProfile": "신경인지적 프로파일 200자 이상",
+      "developmentalImplications": "발달적 의미와 장기적 영향 200자 이상",
+      "specificRecommendations": ["도메인별 구체적이고 실행 가능한 지원 방법 5-7개"],
+      "interventionStrategies": ["과학적 근거 기반 개입 전략 3-5개"],
+      "monitoringPlan": "지속적 모니터링 계획 150자 이상"
     }
   ],
   "developmentalProfile": {
-    "strengths": ["구체적 강점 영역 3-5개"],
-    "concernAreas": ["관심 영역 상세 설명 3-5개"],
-    "riskFactors": ["임상적 위험 요인 3-5개"],
-    "protectiveFactors": ["보호 요인 및 회복력 지표"]
+    "cognitiveStrengths": ["인지적 강점 영역 상세 설명 5-7개"],
+    "socialEmotionalStrengths": ["사회정서적 강점 상세 설명 5-7개"],
+    "adaptiveBehaviorStrengths": ["적응행동 강점 상세 설명 3-5개"],
+    "areasOfConcern": ["관심 영역 매우 상세한 설명 5-7개"],
+    "riskFactors": ["임상적 위험 요인 상세 분석 5-7개"],
+    "protectiveFactors": ["보호 요인 및 회복력 지표 상세 설명 5-7개"],
+    "uniqueCharacteristics": ["개별적 특성 및 독특함 상세 설명 3-5개"]
   },
-  "neurodevelopmentalAssessment": {
-    "cognitiveProfile": "인지능력 프로파일 분석",
-    "socialCommunicationProfile": "사회적 의사소통 패턴",
-    "behavioralProfile": "행동 특성 및 적응 기능",
-    "sensoryProfile": "감각처리 특성"
+  "comprehensiveDifferentialDiagnosis": {
+    "primaryConsiderations": [
+      {
+        "condition": "진단명",
+        "probability": "가능성 (높음/중간/낮음)",
+        "rationale": "근거 및 임상적 추론 200자 이상",
+        "additionalAssessment": "추가 평가 필요사항 150자 이상"
+      }
+    ],
+    "secondaryConsiderations": ["보조 고려 사항들 상세 설명"],
+    "ruleOutConditions": ["배제해야 할 조건들과 근거"],
+    "comorbidityConsiderations": "동반질환 가능성 분석 200자 이상"
   },
-  "differentialDiagnosis": {
-    "primaryConsiderations": ["주요 고려 진단들"],
-    "secondaryConsiderations": ["보조 고려 사항들"],
-    "ruleOutConditions": ["배제해야 할 조건들"]
+  "evidenceBasedRecommendations": {
+    "immediate": ["즉시 실행 권장사항 매우 구체적 7-10개"],
+    "shortTerm": ["1-3개월 단기 목표 구체적 7-10개"],
+    "mediumTerm": ["3-6개월 중기 계획 구체적 7-10개"],
+    "longTerm": ["6개월+ 장기 발달 지원 구체적 7-10개"],
+    "familySupport": [
+      {
+        "strategy": "가족 지원 전략",
+        "implementation": "구체적 실행 방법 200자 이상",
+        "expectedOutcome": "기대 효과 100자 이상"
+      }
+    ],
+    "educationalSupport": [
+      {
+        "intervention": "교육적 개입",
+        "methodology": "방법론 및 적용 200자 이상",
+        "schoolCollaboration": "학교 연계 방안 150자 이상"
+      }
+    ],
+    "therapeuticInterventions": [
+      {
+        "therapy": "치료적 개입명",
+        "rationale": "적용 근거 150자 이상",
+        "duration": "권장 기간",
+        "expectedProgress": "예상 진전 100자 이상"
+      }
+    ],
+    "specializedReferrals": [
+      {
+        "specialist": "전문가 유형",
+        "purpose": "의뢰 목적 100자 이상",
+        "urgency": "시급성",
+        "preparationAdvice": "의뢰 준비사항 100자 이상"
+      }
+    ]
   },
-  "recommendations": {
-    "immediate": ["즉시 실행 권장사항 5개"],
-    "shortTerm": ["1-3개월 단기 목표 5개"],
-    "mediumTerm": ["3-6개월 중기 계획 5개"],
-    "longTerm": ["6개월+ 장기 발달 지원 5개"],
-    "familySupport": ["가족 지원 및 교육 방안 3개"],
-    "educationalSupport": ["교육적 지원 및 학교 연계 3개"],
-    "referrals": ["추천 전문가/기관 상세 정보"]
+  "progressMonitoring": {
+    "shortTermIndicators": ["단기 진전 지표 5-7개"],
+    "longTermOutcomes": ["장기 성과 지표 5-7개"],
+    "assessmentSchedule": "재평가 일정 및 방법 200자 이상",
+    "parentObservationGuidelines": "부모 관찰 가이드라인 300자 이상"
   },
-  "interventionPriorities": {
-    "level1": "최우선 개입 영역",
-    "level2": "2차 우선 개입 영역", 
-    "level3": "장기 관찰 영역"
+  "riskMitigationStrategies": {
+    "identifiedRisks": ["확인된 위험요인들과 대응방안"],
+    "preventiveStrategies": ["예방적 전략들 상세 설명"],
+    "crisisPreventionPlan": "위기 예방 계획 300자 이상",
+    "supportNetworkDevelopment": "지원 네트워크 구축 방안 200자 이상"
   },
-  "prognosticFactors": {
-    "favorable": ["긍정적 예후 인자들"],
-    "concerning": ["우려스러운 요인들"],
-    "monitoring": ["지속 관찰 필요 영역들"]
+  "culturalAndContextualFactors": {
+    "culturalConsiderations": "문화적 고려사항 200자 이상",
+    "familyDynamics": "가족 역학 분석 200자 이상",
+    "socioeconomicFactors": "사회경제적 요인 고려 150자 이상",
+    "communityResources": "지역사회 자원 활용 방안 200자 이상"
   },
-  "clinicalNotes": "추가 임상적 고려사항 및 전문가 의견",
+  "professionalCollaboration": {
+    "multidisciplinaryApproach": "다학제적 접근 필요성 200자 이상",
+    "teamComposition": "권장 전문가팀 구성",
+    "communicationProtocol": "전문가 간 소통 체계 150자 이상",
+    "careCoordination": "치료 조정 방안 150자 이상"
+  },
+  "qualityOfLifeConsiderations": {
+    "currentFunctioning": "현재 기능 수준 분석 200자 이상",
+    "adaptiveSkillsDevelopment": "적응기술 발달 방안 200자 이상",
+    "socialParticipation": "사회적 참여 증진 방안 200자 이상",
+    "independenceFostering": "독립성 함양 전략 200자 이상"
+  },
+  "clinicalNotes": "추가 임상적 고려사항 및 전문가 의견 (최소 400자 이상)",
   "confidenceLevel": 0.0-1.0,
-  "recommendedFollowUp": "권장 추후 평가 일정 및 방법"
+  "recommendedFollowUp": "권장 추후 평가 일정 및 방법 (최소 300자 이상)",
+  "emergencyGuidelines": "응급상황 대응 가이드라인 200자 이상",
+  "resourceRecommendations": [
+    {
+      "resource": "추천 자료/서비스",
+      "description": "상세 설명 100자 이상",
+      "accessInfo": "접근 방법 50자 이상"
+    }
+  ]
 }
+
+**중요 지침:**
+- 각 섹션마다 명시된 최소 글자 수를 반드시 충족하세요
+- 모든 분석은 DSM-5 및 ICD-11 기준을 반영하세요
+- 과학적 근거와 최신 연구 결과를 포함하세요
+- 개별성과 강점을 강조하는 긍정적 관점을 유지하세요
+- 실행 가능하고 구체적인 권고사항을 제시하세요
+- 가족 중심적이고 문화적으로 민감한 접근을 유지하세요
+- 전체 응답이 최소 4000자가 되도록 하세요
 `;
 
   try {
@@ -242,14 +316,14 @@ ${Object.entries(domainScores).map(([domain, score]) => `${domain}: ${score}점`
         messages: [
           {
             role: 'system',
-            content: '당신은 임상심리학 박사이자 아동발달 전문가입니다. 20년 이상의 발달장애 진단 및 평가 경험을 바탕으로 정확하고 전문적인 분석을 제공합니다. 모든 분석은 DSM-5 및 최신 임상 가이드라인을 따르며, 가족 중심의 개별화된 접근을 중시합니다. 응답은 반드시 유효한 JSON 형식이어야 합니다.'
+            content: '당신은 임상심리학 박사이자 아동발달 전문가입니다. 20년 이상의 발달장애 진단 및 평가 경험을 바탕으로 극도로 상세하고 전문적인 분석을 제공합니다. 모든 분석은 DSM-5 및 최신 임상 가이드라인을 따르며, 가족 중심의 개별화된 접근을 중시합니다. 응답은 반드시 유효한 JSON 형식이어야 하며 최소 4000자 이상이어야 합니다.'
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        max_completion_tokens: 4000,
+        max_completion_tokens: 6000,
         response_format: { type: "json_object" }
       }),
     });
@@ -398,18 +472,35 @@ function generateDetailedInterpretation(totalScore: number, averageScore: number
   
   return `${ageSpecific}, 총 ${totalScore}점(평균 ${averageScore.toFixed(1)}점)으로 ${scoreInterpretation}에 해당합니다. 
   
-도메인별 분석 결과, 사회적 의사소통 영역에서 ${domainScores['사회적의사소통']}점, 인지적 유연성에서 ${domainScores['인지적유연성']}점, 정서조절에서 ${domainScores['정서조절']}점을 보였습니다. 
+이는 임상적으로 매우 중요한 정보를 제공하며, 개별적인 발달 특성과 환경적 맥락을 종합적으로 고려한 해석이 필요합니다. 
 
-임상적으로 이는 ${riskLevel === 'minimal' ? 
-  '전반적으로 안정적인 발달 패턴을 보이며, 연령에 적합한 발달 특성을 나타내고 있습니다. 그러나 지속적인 발달 모니터링을 통해 최적의 성장 환경을 제공하는 것이 중요합니다.' :
+**신경발달학적 관점에서의 분석:**
+현재 점수 패턴은 뇌의 다양한 네트워크 간의 연결성과 기능적 통합 수준을 반영합니다. 전두엽-변연계 연결, 기본 모드 네트워크의 활성화 패턴, 그리고 감각 처리 및 실행 기능 네트워크의 성숙도가 이러한 결과에 영향을 미쳤을 가능성이 높습니다.
+
+**도메인별 세부 분석 결과:**
+사회적 의사소통 영역에서 ${domainScores['사회적의사소통']}점은 거울뉴런 시스템과 사회적 뇌 네트워크의 발달 상태를 시사하며, 인지적 유연성에서의 ${domainScores['인지적유연성']}점은 실행 기능과 인지적 통제 능력의 현재 수준을 나타냅니다. 정서조절 영역의 ${domainScores['정서조절']}점은 편도체-전전두피질 연결의 성숙도와 관련이 있을 수 있습니다.
+
+**환경적 맥락과 발달 궤적:**
+가정환경, 교육환경, 사회문화적 배경이 이러한 발달 특성에 미치는 영향을 고려해야 합니다. 특히 양육 스타일, 사회적 지지 체계, 교육적 기회의 질과 양이 현재 기능 수준 형성에 중요한 역할을 했을 것으로 추정됩니다.
+
+**임상적 의미와 예후:**
+${riskLevel === 'minimal' ? 
+  '현재 결과는 전반적으로 건강한 발달 패턴을 보여주며, 연령에 적절한 신경발달학적 성숙을 나타냅니다. 그러나 개별적 특성과 강점을 더욱 발전시키고, 잠재적 취약성을 예방적으로 관리하는 것이 중요합니다. 지속적인 발달 모니터링을 통해 최적의 성장 환경을 조성하고, 개별적 요구에 맞는 맞춤형 지원을 제공한다면 매우 긍정적인 발달 결과를 기대할 수 있습니다.' :
   riskLevel === 'mild' ? 
-  '일부 영역에서 경미한 발달적 특성이 관찰되나, 적절한 지원과 환경 조성을 통해 충분히 개선 가능한 수준입니다. 조기 개입을 통한 예방적 접근이 권장됩니다.' :
+  '경미한 수준의 발달적 관심사가 확인되었으나, 이는 조기 개입과 적절한 지원을 통해 충분히 개선 가능한 범위입니다. 뇌의 가소성이 높은 시기임을 고려할 때, 표적화된 개입 프로그램과 환경적 지원을 제공한다면 상당한 발달적 향상을 기대할 수 있습니다. 특히 강점 영역을 활용한 보상적 전략과 취약 영역에 대한 체계적 지원이 결합될 때 최적의 결과를 얻을 수 있습니다.' :
   riskLevel === 'moderate' ?
-  '중등도의 발달적 관심사가 확인되어 체계적인 평가와 개별화된 지원이 필요합니다. 다학제적 접근을 통한 종합적 개입 계획 수립이 권장됩니다.' :
-  '상당한 수준의 발달적 특성이 관찰되어 즉시 전문가의 상세한 평가와 집중적인 개입이 필요합니다. 가족 중심의 포괄적 지원 체계 구축이 시급합니다.'
+  '중등도의 발달적 특성이 관찰되어 체계적이고 집중적인 평가와 개별화된 지원이 필요합니다. 다학제적 접근을 통한 종합적 개입 계획 수립이 매우 중요하며, 가족 중심의 포괄적 지원 체계가 구축되어야 합니다. 조기 개입의 효과성을 고려할 때, 즉시 전문가의 상세한 평가를 받고 개별화된 치료 계획을 수립하는 것이 장기적 예후 개선에 결정적입니다.' :
+  '상당한 수준의 발달적 특성이 관찰되어 즉시 종합적이고 집중적인 전문가 평가와 개입이 필요합니다. 이러한 특성들이 일상 기능과 사회적 적응에 미치는 영향을 최소화하고, 개별적 강점과 잠재력을 최대한 발휘할 수 있도록 하는 포괄적 지원 체계가 시급히 구축되어야 합니다. 가족 전체를 위한 교육과 지원, 학교 및 지역사회와의 긴밀한 협력이 필수적입니다.'
 }
 
-이러한 결과는 표준화된 선별 도구를 통한 1차 평가로서, 보다 정확한 진단과 개별화된 지원 계획 수립을 위해서는 전문기관에서의 포괄적 발달 평가가 필수적입니다.`;
+**개별성과 강점 기반 접근:**
+모든 개인은 고유한 신경다양성의 스펙트럼 안에서 독특한 강점과 특성을 가지고 있습니다. 이러한 개별적 차이는 병리적 관점보다는 다양성과 잠재력의 관점에서 이해되어야 하며, 강점을 활용한 보상적 전략과 개별적 요구에 맞는 맞춤형 지원이 제공되어야 합니다.
+
+**장기적 발달 전망:**
+적절한 지원과 개입이 제공될 경우, 뇌의 가소성과 발달적 잠재력을 고려할 때 상당한 기능적 향상과 적응적 성장을 기대할 수 있습니다. 지속적인 모니터링과 개별화된 지원을 통해 각 개인이 자신의 최대 잠재력을 실현할 수 있도록 도와야 합니다.
+
+**결론:**
+이러한 결과는 표준화된 선별 도구를 통한 1차 평가로서, 보다 정확한 이해와 개별화된 지원 계획 수립을 위해서는 전문기관에서의 포괄적 발달 평가가 필수적입니다. 무엇보다 중요한 것은 각 개인의 고유한 특성과 강점을 인정하고 존중하며, 이를 바탕으로 한 개별화된 지원을 제공하는 것입니다.`;
 }
 
 function generateDomainAnalysis(domainScores: Record<string, number>, riskLevel: string) {

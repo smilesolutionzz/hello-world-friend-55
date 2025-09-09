@@ -119,7 +119,11 @@ const Index = () => {
 
   return (
     <>
-      <SEOHead />
+      <SEOHead 
+        title="하이라이트 - AI 심리상담 플랫폼"
+        description="전문 AI와 함께하는 개인 맞춤형 심리상담 서비스. 언제 어디서나 안전하고 편리한 상담을 받아보세요."
+        keywords="AI상담, 심리상담, 정신건강, 온라인상담, 심리치료"
+      />
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
       <div className="min-h-screen max-w-full overflow-x-hidden">
         <PlatformGuide onComplete={handleGuideComplete} />

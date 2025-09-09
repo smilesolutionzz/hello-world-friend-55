@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import FeedbackModal from "@/components/FeedbackModal";
+import EarlyDiagnosisSection from "@/components/assessment/EarlyDiagnosisSection";
 
 interface PremiumAssessmentResultProps {
   assessmentType: string;
@@ -285,8 +286,8 @@ const PremiumAssessmentResult = ({
                   <Brain className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">AI 심층 분석 보고서</h2>
-                  <p className="text-sm text-muted-foreground">AI 기반 전문가 수준 해석</p>
+                  <h2 className="text-xl font-bold">AIH 전문 분석 보고서</h2>
+                  <p className="text-sm text-muted-foreground">AI 기반 전문가 수준 해석 + 조기 위험요소 체크</p>
                 </div>
                 <Sparkles className="w-6 h-6 text-yellow-500" />
               </CardTitle>
@@ -297,7 +298,7 @@ const PremiumAssessmentResult = ({
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
                     <p className="text-lg font-medium">AI가 심층 분석 중입니다...</p>
-                    <p className="text-sm text-muted-foreground">잠시만 기다려 주세요</p>
+                    <p className="text-sm text-muted-foreground">조기 위험요소 체크 포함</p>
                   </div>
                 </div>
               ) : (
@@ -310,6 +311,13 @@ const PremiumAssessmentResult = ({
             </CardContent>
           </Card>
         </div>
+
+        {/* AIH 조기진단 섹션 */}
+        <EarlyDiagnosisSection 
+          assessmentType={assessmentType}
+          results={results}
+          isAnalyzing={isAnalyzing}
+        />
 
         {/* Action Buttons */}
         <div className="max-w-6xl mx-auto">

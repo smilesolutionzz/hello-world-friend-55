@@ -42,15 +42,15 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   { icon: Home, label: '홈', path: '/' },
-  { icon: TrendingUp, label: '3분테스트', path: '/assessment', requiresAuth: true },
-  { icon: MessageCircle, label: 'AI어시스턴트', path: '/ai-assistant', requiresAuth: true },
-  { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },
-  { icon: FileText, label: '프리미엄테스트', path: '/premium-assessment', requiresAuth: true },
-  { icon: BarChart3, label: '나의DATA', path: '/dashboard', requiresAuth: true },
+  { icon: TrendingUp, label: '3분테스트', path: '/assessment', requiresAuth: false },
+  { icon: MessageCircle, label: 'AI어시스턴트', path: '/ai-assistant', requiresAuth: false },
+  { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
+  { icon: FileText, label: '프리미엄테스트', path: '/premium-assessment', requiresAuth: false },
+  { icon: BarChart3, label: '나의DATA', path: '/dashboard', requiresAuth: false },
   
-  { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: true },
+  { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: false },
   { icon: Brain, label: '체질분석', path: '/han-medicine-test', requiresAuth: false },
-  { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: true },
+  { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: false },
 ];
 
 export const UnifiedNavigation = () => {
@@ -61,8 +61,12 @@ export const UnifiedNavigation = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
+  const handleNavigation = (path: string, item?: NavigationItem) => {
+    if (item?.requiresAuth && !user) {
+      navigate('/auth');
+    } else {
+      navigate(path);
+    }
     setIsOpen(false);
   };
 
@@ -138,7 +142,7 @@ export const UnifiedNavigation = () => {
                     key={item.path}
                     variant={isActive(item.path) ? "default" : "ghost"}
                     size="sm"
-                    onClick={() => handleNavigation(item.path)}
+                    onClick={() => handleNavigation(item.path, item)}
                     className={`flex items-center gap-2 ${
                       item.path === '/premium-assessment' 
                         ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
@@ -150,7 +154,6 @@ export const UnifiedNavigation = () => {
                         ? 'bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 hover:from-blue-100 hover:to-cyan-100 text-blue-800 font-medium'
                         : ''
                     }`}
-                    disabled={item.requiresAuth && !user}
                   >
                     {item.path === '/ai-counselor' ? (
                       <img src={secretTalkCharacter} alt="시크릿톡" className="w-4 h-4" />
@@ -225,7 +228,7 @@ export const UnifiedNavigation = () => {
 
                   {/* Navigation Items */}
                   <div className="flex-1 space-y-2">
-                  {navigationItems.filter(canAccess).map((item) => (
+                    {navigationItems.map((item) => (
                         <Button
                           key={item.path}
                           variant={isActive(item.path) ? "default" : "ghost"}
@@ -240,8 +243,7 @@ export const UnifiedNavigation = () => {
                               ? 'bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 hover:from-blue-100 hover:to-cyan-100 text-blue-800 font-medium'
                               : ''
                           }`}
-                          onClick={() => handleNavigation(item.path)}
-                          disabled={item.requiresAuth && !user}
+                          onClick={() => handleNavigation(item.path, item)}
                         >
                           {item.path === '/ai-counselor' ? (
                             <img src={secretTalkCharacter} alt="시크릿톡" className="w-4 h-4" />

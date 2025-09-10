@@ -186,7 +186,19 @@ const Assessment = () => {
     }
   };
 
-  const handleTestTypeSelect = (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju') => {
+  const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju') => {
+    // 로그인 확인
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "로그인이 필요합니다",
+        description: "테스트를 진행하려면 먼저 로그인해주세요.",
+        variant: "destructive",
+      });
+      navigate('/auth');
+      return;
+    }
+
     setTestType(type);
     if (type === 'dream') {
       setCurrentStep('dream-interpretation');

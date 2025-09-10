@@ -1277,6 +1277,45 @@ export type Database = {
         }
         Relationships: []
       }
+      financial_data_access_log: {
+        Row: {
+          access_reason: string | null
+          access_type: string
+          accessed_at: string | null
+          accessed_by: string
+          accessed_record_id: string
+          accessed_table: string
+          id: string
+          ip_address: string | null
+          sensitive_fields_accessed: string[] | null
+          user_agent: string | null
+        }
+        Insert: {
+          access_reason?: string | null
+          access_type: string
+          accessed_at?: string | null
+          accessed_by: string
+          accessed_record_id: string
+          accessed_table: string
+          id?: string
+          ip_address?: string | null
+          sensitive_fields_accessed?: string[] | null
+          user_agent?: string | null
+        }
+        Update: {
+          access_reason?: string | null
+          access_type?: string
+          accessed_at?: string | null
+          accessed_by?: string
+          accessed_record_id?: string
+          accessed_table?: string
+          id?: string
+          ip_address?: string | null
+          sensitive_fields_accessed?: string[] | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       growth_stories: {
         Row: {
           after_story: string

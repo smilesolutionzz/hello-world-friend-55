@@ -67,9 +67,12 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
 
   if (loading) {
     return compact ? (
-      <Badge variant="secondary" className="flex items-center gap-1">
-        <Coins className="w-3 h-3 animate-pulse" />
-        <span className="animate-pulse">로딩중...</span>
+      <Badge variant="secondary" className={`
+        flex items-center gap-1.5 px-3 py-1.5 text-sm
+        animate-pulse bg-muted/50 border border-muted
+      `}>
+        <Coins className="w-4 h-4 animate-spin" />
+        <span>로딩중...</span>
       </Badge>
     ) : (
       <Card className="w-full max-w-sm">
@@ -91,11 +94,17 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
     return (
       <Badge 
         variant="outline" 
-        className="flex items-center gap-1 cursor-pointer hover:bg-muted/50"
+        className={`
+          flex items-center gap-2 cursor-pointer px-3 py-1.5 text-sm font-medium
+          transition-all duration-200 ease-in-out
+          hover:scale-105 hover:shadow-lg hover:bg-primary/10 hover:border-primary/30
+          border-2 border-muted-foreground/20 hover:border-primary/50
+          shadow-sm
+        `}
         onClick={() => navigate('/auth')}
       >
-        <User className="w-3 h-3" />
-        로그인
+        <User className="w-4 h-4" />
+        <span className="font-medium">로그인</span>
       </Badge>
     );
   }
@@ -104,18 +113,32 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
     return (
       <Popover>
         <PopoverTrigger asChild>
-          <div className="flex items-center gap-2 cursor-pointer">
+          <div className="flex items-center gap-2 cursor-pointer group">
             <Badge 
-              variant={isLowBalance ? "destructive" : "secondary"}
-              className="flex items-center gap-1 hover:opacity-80 transition-opacity"
+              variant={isLowBalance ? "destructive" : "default"}
+              className={`
+                flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium
+                transition-all duration-200 ease-in-out
+                hover:scale-105 hover:shadow-lg
+                group-hover:shadow-glow
+                ${isLowBalance 
+                  ? 'bg-gradient-to-r from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70 shadow-destructive/20' 
+                  : 'bg-gradient-to-r from-primary to-primary-glow hover:from-primary/90 hover:to-primary-glow/90 shadow-primary/20'
+                }
+                border-0 shadow-md
+              `}
             >
-              <Coins className="w-3 h-3" />
-              {currentTokens}개
+              <Coins className="w-4 h-4 animate-pulse" />
+              <span className="font-bold">{currentTokens}</span>
+              <span className="text-xs opacity-90">토큰</span>
             </Badge>
           </div>
         </PopoverTrigger>
         <PopoverContent className="w-80" side="bottom" align="start">
-          <Card className="border-0 shadow-none">
+          <div className="relative">
+            {/* 말풍선 화살표 효과 */}
+            <div className="absolute -top-2 left-4 w-4 h-4 bg-white border-l border-t border-border transform rotate-45"></div>
+            <Card className="border-0 shadow-none">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Coins className="w-5 h-5 text-primary" />
@@ -211,7 +234,8 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 친구 추천시 10토큰 무료 지급!
               </Button>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         </PopoverContent>
       </Popover>
     );

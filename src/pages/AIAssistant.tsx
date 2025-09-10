@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { MessageCircle, Zap, Send, ArrowLeft, Heart, Target, Brain, Lightbulb, Users, Calendar, Shield } from "lucide-react";
+import { MessageCircle, Zap, Send, ArrowLeft, Heart, Target, Brain, Lightbulb, Users, Calendar, Shield, Baby } from "lucide-react";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
@@ -121,6 +121,35 @@ const AIAssistant = () => {
 - 균형잡힌 라이프스타일 추구`
     },
     {
+      id: 'development',
+      title: '발달코칭',
+      description: '아동 발달과 성장을 위한 전문 코칭',
+      icon: <Baby className="w-5 h-5" />,
+      color: 'bg-gradient-to-r from-teal-50 to-cyan-50 border-teal-200',
+      systemPrompt: `당신은 아동 발달 전문가 AI 코치입니다. 아이의 건강한 성장과 발달을 지원합니다.
+
+🌱 **발달 영역:**
+- 언어 및 의사소통 발달
+- 인지 및 학습 능력 향상
+- 사회성 및 정서 발달
+- 신체 및 운동 발달
+- 자기 조절 능력 향상
+- 독립성 및 일상생활 기술
+
+👶 **연령별 맞춤 지원:**
+- 영유아기 (0-3세): 기본 발달 마일스톤
+- 유아기 (3-6세): 사회성 및 학습 준비
+- 학령기 (6-12세): 학습 및 또래 관계
+- 청소년기 (12-18세): 정체성 및 독립성
+
+🎯 **코칭 방법:**
+- 발달 단계별 맞춤 가이드
+- 부모-자녀 상호작용 개선
+- 놀이 중심 발달 활동 제안
+- 일상 속 발달 기회 발견
+- 긍정적 강화 및 격려 방법`
+    },
+    {
       id: 'secret',
       title: '시크릿톡',
       description: '완전 익명 보장, 그 누구에게도 말 못할 고민',
@@ -224,6 +253,25 @@ const AIAssistant = () => {
 - 스트레스 관리와 여가 활동
 
 어떤 부분의 라이프케어를 개선하고 싶으신가요?`,
+
+      development: `안녕하세요! 발달코칭 전문가 AI입니다! 🌱
+
+아이의 건강한 성장과 발달을 함께 도와드리겠습니다!
+
+👶 **발달코칭 영역:**
+- 언어 및 의사소통 능력 향상
+- 인지 발달 및 학습 능력 강화
+- 사회성 및 정서 조절 능력
+- 신체 발달 및 운동 능력
+- 일상생활 기술 및 독립성
+
+🎯 **맞춤형 지원:**
+- 아이의 연령과 발달 단계에 맞는 활동
+- 부모님과 함께하는 발달 촉진 방법
+- 놀이를 통한 자연스러운 학습
+- 일상 속 발달 기회 활용법
+
+아이의 어떤 발달 영역을 함께 살펴볼까요?`,
 
       secret: `안녕하세요. 시크릿톡 AI입니다. 🔒
 

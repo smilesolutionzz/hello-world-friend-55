@@ -213,6 +213,7 @@ const LifeCareHub = () => {
   };
 
   const handleJoinChallenge = async (challengeId: string) => {
+    const challenge = challenges.find(c => c.id === challengeId);
     const updatedChallenges = challenges.map(challenge =>
       challenge.id === challengeId 
         ? { ...challenge, is_joined: true, participants_count: challenge.participants_count + 1 }
@@ -220,9 +221,13 @@ const LifeCareHub = () => {
     );
     setChallenges(updatedChallenges);
 
+    // 챌린지 참가시 보너스 토큰 지급
+    const bonusTokens = Math.floor(challenge?.reward_points! / 10) || 5;
+    setUserPoints(prev => prev + bonusTokens);
+
     toast({
       title: "챌린지 참가 완료! 🎉",
-      description: "오늘부터 새로운 도전을 시작해보세요!",
+      description: `참가 보너스 ${bonusTokens}토큰을 받았습니다! 오늘부터 새로운 도전을 시작해보세요!`,
     });
   };
 
@@ -311,15 +316,83 @@ const LifeCareHub = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      {/* Header with Level and Points */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div className="lg:col-span-2">
           <h2 className="text-2xl font-bold text-foreground">라이프케어 허브</h2>
           <p className="text-muted-foreground">일상 관리와 성장을 위한 통합 대시보드</p>
         </div>
-        <Badge variant="secondary" className="flex items-center gap-2">
+        
+        {/* Current Points and Level */}
+        <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-purple-500" />
+                <span className="font-semibold text-foreground">현재 포인트</span>
+              </div>
+              <Badge variant="outline" className="text-lg font-bold text-purple-600">
+                Level 3
+              </Badge>
+            </div>
+            <div className="text-3xl font-bold text-purple-600 mb-2">{userPoints}</div>
+            <Progress value={((userPoints % 1000) / 1000) * 100} className="mb-2" />
+            <div className="text-sm text-muted-foreground">
+              다음 레벨까지 {1000 - (userPoints % 1000)}포인트
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Level Up Rewards Banner */}
+      <Card className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 text-white border-0 shadow-lg mb-6">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="bg-white/20 rounded-full p-3">
+                <Trophy className="w-8 h-8" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold mb-1">🎉 레벨업 보상 시스템</h3>
+                <p className="text-white/90">
+                  레벨이 올라갈 때마다 <strong>무료 토큰</strong>을 선물로 드려요!
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold">Level 4: 100토큰</div>
+              <div className="text-white/80">Level 5: 200토큰</div>
+            </div>
+          </div>
+          
+          <div className="mt-4 pt-4 border-t border-white/20">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="bg-white/10 rounded-lg p-3">
+                <div className="text-lg font-bold">💪 Level 1-5</div>
+                <div className="text-sm">기본 토큰 지급</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-3">
+                <div className="text-lg font-bold">🔥 Level 6-10</div>
+                <div className="text-sm">2배 보너스</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-3">
+                <div className="text-lg font-bold">⭐ Level 11-15</div>
+                <div className="text-sm">3배 보너스</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-3">
+                <div className="text-lg font-bold">👑 Level 16+</div>
+                <div className="text-sm">VIP 특혜</div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Streak Badge */}
+      <div className="flex justify-center mb-6">
+        <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2">
           <Flame className="w-4 h-4 text-orange-500" />
-          {streak}일 연속
+          {streak}일 연속 체크인 - 대단해요! 🎯
         </Badge>
       </div>
 
@@ -578,15 +651,25 @@ const LifeCareHub = () => {
                         <Users className="w-4 h-4" />
                         {challenge.participants_count.toLocaleString()}명 참여
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Target className="w-4 h-4" />
-                        완주율 {challenge.completion_rate}%
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Award className="w-4 h-4" />
-                        {challenge.reward_points} 포인트
-                      </div>
-                    </div>
+                       <div className="flex items-center gap-1">
+                         <Target className="w-4 h-4" />
+                         완주율 {challenge.completion_rate}%
+                       </div>
+                       <div className="flex items-center gap-1">
+                         <Award className="w-4 h-4" />
+                         {challenge.reward_points} 포인트 + {Math.floor(challenge.reward_points / 10)}토큰
+                       </div>
+                     </div>
+                     
+                     {/* Motivational Message */}
+                     <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3 mb-4">
+                       <p className="text-sm font-medium text-blue-800">
+                         💝 완주시 <strong>{challenge.reward_points} 포인트</strong>와 <strong>{Math.floor(challenge.reward_points / 10)} 토큰</strong>을 드려요!
+                       </p>
+                       <p className="text-xs text-blue-600 mt-1">
+                         지금까지 {challenge.participants_count.toLocaleString()}명이 도전했고, {challenge.completion_rate}%가 성공했어요 🎯
+                       </p>
+                     </div>
                     
                     <Button 
                       onClick={() => handleJoinChallenge(challenge.id)}

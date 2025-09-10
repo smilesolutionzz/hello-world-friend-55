@@ -8,6 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import ProductRecommendation from "@/components/ProductRecommendation";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
+import ShareResultButton from '@/components/ShareResultButton';
 
 interface AdhdTestResultProps {
   results: {
@@ -356,6 +357,16 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
 
       {/* 다음 단계 제안 */}
       <NextStepSuggestion className="mb-6" />
+
+      {/* 결과 공유 */}
+      <Card className="p-6 mb-6 result-content">
+        <ShareResultButton
+          title={`ADHD 자가진단 결과 - ${severity}`}
+          description={`총점 ${total}점 (평균 ${average}점) - ${severity} 수준으로 확인되었습니다.`}
+          resultData={results}
+          showScreenshot={true}
+        />
+      </Card>
 
       {/* 상품 추천 */}
       <ProductRecommendation 

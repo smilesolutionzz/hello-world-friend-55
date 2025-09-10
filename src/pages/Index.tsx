@@ -26,6 +26,7 @@ import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
+import MobileOptimizedLayout from '@/components/MobileOptimizedLayout';
 import { PlatformGuide } from '@/components/onboarding/PlatformGuide';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 

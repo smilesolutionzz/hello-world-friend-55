@@ -327,26 +327,56 @@ const TokenSubscription = () => {
                   </div>
 
                   <div className="pt-4">
-                    <Button 
-                      className="w-full py-3 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
-                      disabled={loading}
-                      onClick={() => {
-                        console.log('=== Button clicked for package:', pkg.id);
-                        handlePurchase(pkg.id);
-                      }}
-                    >
-                      {purchasingPackageId === pkg.id ? (
-                        <div className="flex items-center gap-2">
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
-                          처리중...
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <Rocket className="w-5 h-5" />
-                          지금 구매하기
-                        </div>
-                      )}
-                    </Button>
+                    <div className="space-y-2">
+                      {/* 토스페이먼츠 버튼 */}
+                      <Button 
+                        className="w-full py-3 text-lg font-bold bg-blue-600 hover:bg-blue-700 text-white"
+                        disabled={loading}
+                        onClick={() => {
+                          console.log('=== 토스페이먼츠 결제 for package:', pkg.id);
+                          // 토스페이먼츠 결제 로직 (향후 구현)
+                          toast({ 
+                            title: "준비중", 
+                            description: "토스페이먼츠 연동이 곧 완료됩니다!" 
+                          });
+                        }}
+                      >
+                        {purchasingPackageId === pkg.id ? (
+                          <div className="flex items-center gap-2">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+                            처리중...
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Rocket className="w-5 h-5" />
+                            토스페이먼츠로 결제
+                          </div>
+                        )}
+                      </Button>
+                      
+                      {/* 기존 Stripe 결제 (임시) */}
+                      <Button 
+                        variant="outline"
+                        className="w-full py-2 text-sm"
+                        disabled={loading}
+                        onClick={() => {
+                          console.log('=== Button clicked for package:', pkg.id);
+                          handlePurchase(pkg.id);
+                        }}
+                      >
+                        {purchasingPackageId === pkg.id ? (
+                          <div className="flex items-center gap-2">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+                            처리중...
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Star className="w-4 h-4" />
+                            기존 결제 (임시)
+                          </div>
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

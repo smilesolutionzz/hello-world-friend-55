@@ -43,7 +43,6 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   { icon: Home, label: '홈', path: '/' },
   { icon: TrendingUp, label: '3분테스트', path: '/assessment', requiresAuth: true },
-  { icon: Heart, label: '마이허브', path: '/wellness-hub', requiresAuth: true },
   { icon: MessageCircle, label: '시크릿톡', path: '/ai-counselor', requiresAuth: true },
   { icon: Zap, label: 'AI개인코치', path: '/ai-coach', requiresAuth: true },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },

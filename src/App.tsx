@@ -156,6 +156,9 @@ const App = () => {
           
           {/* New Retention Features */}
           <Route path="/wellness-hub" element={<WellnessHub />} />
+          <Route path="/daily-checkin" element={<DailyCheckin />} />
+          <Route path="/challenges" element={<ChallengesPage />} />
+          <Route path="/growth-tracker" element={<GrowthTracker />} />
           <Route path="/ai-coach" element={<AICoachPage />} />
           
           

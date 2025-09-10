@@ -954,50 +954,6 @@ const Dashboard = () => {
             </div>
           </TabsContent>
 
-          {/* 마이허브 Tab */}
-          <TabsContent value="wellnesshub">
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>마이허브</CardTitle>
-                  <CardDescription>
-                    매일체크, 챌린지, 성장추적을 통해 건강한 라이프스타일을 만들어보세요
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4 md:grid-cols-3">
-                    <Button 
-                      onClick={() => navigate('/daily-checkin')}
-                      className="h-24 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 hover:from-green-100 hover:to-emerald-100 text-green-800 font-medium"
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <Heart className="w-6 h-6" />
-                        <span>매일체크</span>
-                      </div>
-                    </Button>
-                    <Button 
-                      onClick={() => navigate('/challenges')}
-                      className="h-24 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 hover:from-purple-100 hover:to-indigo-100 text-purple-800 font-medium"
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <Target className="w-6 h-6" />
-                        <span>챌린지</span>
-                      </div>
-                    </Button>
-                    <Button 
-                      onClick={() => navigate('/growth-tracker')}
-                      className="h-24 bg-gradient-to-r from-pink-50 to-rose-50 border border-pink-200 hover:from-pink-100 hover:to-rose-100 text-pink-800 font-medium"
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <TrendingUp className="w-6 h-6" />
-                        <span>성장추적</span>
-                      </div>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
 
           <TabsContent value="family">
             <FamilyManagement onUpdate={loadDashboardData} />

@@ -78,7 +78,10 @@ import GrowthStories from "./pages/GrowthStories";
 
 // New Retention Features
 import WellnessHub from "./pages/WellnessHub";
-import AICoachPage from "./pages/AICoachPage";
+import DailyCheckin from "./pages/DailyCheckin";
+import ChallengesPage from "./pages/ChallengesPage";
+import GrowthTracker from "./pages/GrowthTracker";
+import AIAssistant from "./pages/AIAssistant";
 
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTests from "./pages/FunTests";
@@ -159,7 +162,9 @@ const App = () => {
           <Route path="/daily-checkin" element={<DailyCheckin />} />
           <Route path="/challenges" element={<ChallengesPage />} />
           <Route path="/growth-tracker" element={<GrowthTracker />} />
-          <Route path="/ai-coach" element={<AICoachPage />} />
+          <Route path="/ai-assistant" element={<AIAssistant />} />
+          <Route path="/ai-counselor" element={<AIAssistant />} />
+          <Route path="/ai-coach" element={<AIAssistant />} />
           
           
           <Route path="/corporate" element={<Corporate />} />

@@ -43,8 +43,7 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   { icon: Home, label: '홈', path: '/' },
   { icon: TrendingUp, label: '3분테스트', path: '/assessment', requiresAuth: true },
-  { icon: MessageCircle, label: '시크릿톡', path: '/ai-counselor', requiresAuth: true },
-  { icon: Zap, label: 'AI개인코치', path: '/ai-coach', requiresAuth: true },
+  { icon: MessageCircle, label: 'AI어시스턴트', path: '/ai-assistant', requiresAuth: true },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },
   { icon: FileText, label: '프리미엄테스트', path: '/premium-assessment', requiresAuth: true },
   { icon: BarChart3, label: '나의DATA', path: '/dashboard', requiresAuth: true },

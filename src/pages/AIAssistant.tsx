@@ -1,0 +1,442 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { MessageCircle, Zap, Send, ArrowLeft, Heart, Target, Brain, Lightbulb, Users, Calendar } from "lucide-react";
+import { TypingAnimation } from "@/components/ui/typing-animation";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+
+interface Message {
+  id: string;
+  content: string;
+  role: 'user' | 'assistant';
+  timestamp: Date;
+  category?: string;
+}
+
+interface AssistantMode {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+  systemPrompt: string;
+}
+
+const AIAssistant = () => {
+  const navigate = useNavigate();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeMode, setActiveMode] = useState<string>('counselor');
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const assistantModes: AssistantMode[] = [
+    {
+      id: 'counselor',
+      title: '심리상담',
+      description: '마음의 고민을 나누고 전문적인 상담을 받아보세요',
+      icon: <Heart className="w-5 h-5" />,
+      color: 'bg-gradient-to-r from-pink-50 to-rose-50 border-pink-200',
+      systemPrompt: `당신은 전문적인 심리상담사 AI입니다. 따뜻하고 공감적인 태도로 상담을 진행하세요.
+
+🎯 **핵심 원칙:**
+- 판단하지 말고 공감하고 경청하세요
+- 구체적이고 실행 가능한 조언을 제공하세요
+- 사용자의 감정을 충분히 인정하고 검증하세요
+- 필요시 전문가 상담을 권하세요
+
+⚠️ **중요 안내사항:**
+- 이 상담은 참고용이며 의학적 진단이 아님을 명시하세요
+- 응급상황시 119 또는 자살예방상담 1577-0199 연락을 안내하세요`
+    },
+    {
+      id: 'coach',
+      title: '개인코칭',
+      description: '목표 달성과 자기계발을 위한 맞춤형 코칭',
+      icon: <Target className="w-5 h-5" />,
+      color: 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200',
+      systemPrompt: `당신은 전문적인 개인 코치 AI입니다. 사용자의 목표 달성을 돕고 동기부여를 제공하세요.
+
+🎯 **코칭 영역:**
+- 목표 설정 및 계획 수립
+- 습관 형성 및 관리
+- 시간 관리 및 생산성
+- 스트레스 관리
+- 자기계발 및 성장
+
+💡 **코칭 방법:**
+- SMART 목표 설정법 활용
+- 구체적이고 실행 가능한 액션 플랜 제공
+- 정기적인 체크인 및 피드백
+- 긍정적 강화 및 동기부여`
+    },
+    {
+      id: 'mindfulness',
+      title: '마음챙김',
+      description: '명상과 마음챙김을 통한 내면의 평화',
+      icon: <Brain className="w-5 h-5" />,
+      color: 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200',
+      systemPrompt: `당신은 마음챙김과 명상 전문가 AI입니다. 사용자의 내면의 평화와 균형을 돕습니다.
+
+🧘 **주요 영역:**
+- 호흡 명상 가이드
+- 마음챙김 기법 교육
+- 스트레스 완화 기법
+- 감정 조절 방법
+- 현재 순간 집중법
+
+🌱 **접근 방식:**
+- 간단하고 실용적인 기법 제공
+- 일상생활 적용 가능한 연습
+- 점진적 발전 유도
+- 비판단적 자각 증진`
+    },
+    {
+      id: 'wellness',
+      title: '웰니스',
+      description: '전반적인 건강과 웰빙 관리',
+      icon: <Lightbulb className="w-5 h-5" />,
+      color: 'bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200',
+      systemPrompt: `당신은 종합적인 웰니스 코치 AI입니다. 사용자의 전반적인 건강과 웰빙을 지원합니다.
+
+🌟 **웰니스 영역:**
+- 신체 건강 관리
+- 정신 건강 증진
+- 영양 및 식습관 개선
+- 운동 및 활동 계획
+- 수면 질 향상
+- 사회적 관계 개선
+
+💪 **통합적 접근:**
+- 개인 맞춤형 웰니스 플랜
+- 작은 변화부터 시작
+- 지속 가능한 습관 형성
+- 균형잡힌 라이프스타일 추구`
+    }
+  ];
+
+  const currentMode = assistantModes.find(mode => mode.id === activeMode) || assistantModes[0];
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    // 모드 변경시 환영 메시지 추가
+    const welcomeMessage = getWelcomeMessage(currentMode);
+    setMessages([{
+      id: Date.now().toString(),
+      content: welcomeMessage,
+      role: 'assistant',
+      timestamp: new Date(),
+      category: currentMode.id
+    }]);
+  }, [activeMode]);
+
+  const scrollToBottom = () => {
+    if (scrollAreaRef.current) {
+      const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollElement) {
+        scrollElement.scrollTop = scrollElement.scrollHeight;
+      }
+    }
+  };
+
+  const getWelcomeMessage = (mode: AssistantMode): string => {
+    const welcomeMessages = {
+      counselor: `안녕하세요! 저는 당신의 심리상담 AI 어시스턴트입니다. 🌸
+
+어떤 고민이든 편안하게 말씀해 주세요. 저는 여기서 당신의 이야기를 들어드리고, 함께 해결책을 찾아가겠습니다.
+
+💝 **이런 것들을 도와드릴 수 있어요:**
+- 일상의 스트레스와 고민 상담
+- 감정 정리 및 마음 돌봄
+- 인간관계 고민 해결
+- 자아 성찰 및 성장 지원
+
+무엇이든 자유롭게 말씀해 주세요.`,
+
+      coach: `안녕하세요! 저는 당신의 개인 코치 AI입니다! 🎯
+
+목표를 향해 함께 나아가며, 더 나은 내일을 만들어가요!
+
+🚀 **이런 것들을 도와드릴게요:**
+- 명확한 목표 설정과 계획 수립
+- 생산성 향상과 시간 관리
+- 좋은 습관 형성과 유지
+- 동기부여와 지속적인 성장
+
+어떤 목표를 이루고 싶으신가요?`,
+
+      mindfulness: `안녕하세요! 마음챙김 가이드 AI입니다. 🧘‍♀️
+
+지금 이 순간, 당신의 내면과 만나는 시간을 가져보세요.
+
+🌿 **함께 할 수 있는 것들:**
+- 호흡 명상과 마음챙김 연습
+- 스트레스 해소와 감정 조절
+- 현재 순간에 집중하는 방법
+- 일상 속 평화로운 마음 찾기
+
+어떤 마음챙김 여행을 시작해볼까요?`,
+
+      wellness: `안녕하세요! 웰니스 코치 AI입니다! 🌟
+
+건강하고 균형잡힌 삶을 위한 여정을 함께 시작해요!
+
+💚 **종합적으로 관리해드려요:**
+- 신체와 정신 건강 균형
+- 영양과 운동 계획
+- 수면과 회복 관리
+- 스트레스 관리와 여가 활동
+
+어떤 부분의 웰니스를 개선하고 싶으신가요?`
+    };
+
+    return welcomeMessages[mode.id as keyof typeof welcomeMessages] || welcomeMessages.counselor;
+  };
+
+  const sendMessage = async (content: string) => {
+    if (!content.trim() || isLoading) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content,
+      role: 'user',
+      timestamp: new Date(),
+      category: currentMode.id
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+
+    try {
+      const functionName = currentMode.id === 'counselor' ? 'ai-counselor-chat' : 'ai-coach-advanced';
+      
+      const { data, error } = await supabase.functions.invoke(functionName, {
+        body: {
+          message: content,
+          sessionType: currentMode.id,
+          conversationHistory: messages.slice(-10),
+          systemPrompt: currentMode.systemPrompt
+        }
+      });
+
+      if (error) throw error;
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: data.response || data.analysis || '응답을 받지 못했습니다.',
+        role: 'assistant',
+        timestamp: new Date(),
+        category: currentMode.id
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+
+    } catch (error) {
+      console.error('AI 응답 오류:', error);
+      toast.error('AI 응답 중 오류가 발생했습니다.');
+      
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: '죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+        role: 'assistant',
+        timestamp: new Date(),
+        category: currentMode.id
+      };
+
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage(inputMessage);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <UnifiedNavigation />
+      
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="mb-8 text-center">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate(-1)}
+              className="absolute left-4 top-20"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              뒤로
+            </Button>
+            
+            <h1 className="text-4xl font-bold mb-4">
+              <TypingAnimation
+                className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                phrases={["AI 어시스턴트"]}
+              />
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              심리상담부터 개인코칭까지, 당신의 성장과 치유를 위한 종합 AI 어시스턴트입니다
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Mode Selection Sidebar */}
+            <div className="lg:col-span-1">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="w-5 h-5" />
+                    AI 모드 선택
+                  </CardTitle>
+                  <CardDescription>
+                    필요에 맞는 AI 어시스턴트 모드를 선택하세요
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {assistantModes.map((mode) => (
+                    <Button
+                      key={mode.id}
+                      variant={activeMode === mode.id ? "default" : "outline"}
+                      className={`w-full h-auto p-4 ${mode.color} ${
+                        activeMode === mode.id ? 'ring-2 ring-primary' : ''
+                      }`}
+                      onClick={() => setActiveMode(mode.id)}
+                    >
+                      <div className="flex flex-col items-center gap-2 text-center">
+                        {mode.icon}
+                        <div>
+                          <div className="font-medium">{mode.title}</div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {mode.description}
+                          </div>
+                        </div>
+                      </div>
+                    </Button>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Chat Interface */}
+            <div className="lg:col-span-2">
+              <Card className="h-[600px] flex flex-col">
+                <CardHeader className="flex-shrink-0">
+                  <div className="flex items-center gap-3">
+                    {currentMode.icon}
+                    <div>
+                      <CardTitle>{currentMode.title}</CardTitle>
+                      <CardDescription>{currentMode.description}</CardDescription>
+                    </div>
+                  </div>
+                  <Badge variant="secondary" className="w-fit">
+                    {currentMode.title} 모드 활성화
+                  </Badge>
+                </CardHeader>
+
+                <CardContent className="flex-1 flex flex-col p-0">
+                  <ScrollArea className="flex-1 px-6" ref={scrollAreaRef}>
+                    <div className="space-y-4 py-4">
+                      {messages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`flex gap-3 ${
+                            message.role === 'user' ? 'justify-end' : 'justify-start'
+                          }`}
+                        >
+                          {message.role === 'assistant' && (
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                              <MessageCircle className="w-4 h-4 text-white" />
+                            </div>
+                          )}
+                          
+                          <div
+                            className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                              message.role === 'user'
+                                ? 'bg-primary text-primary-foreground ml-auto'
+                                : 'bg-muted'
+                            }`}
+                          >
+                            <div className="text-sm whitespace-pre-wrap">
+                              {message.content}
+                            </div>
+                            <div className="text-xs opacity-70 mt-2">
+                              {message.timestamp.toLocaleTimeString()}
+                            </div>
+                          </div>
+
+                          {message.role === 'user' && (
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center flex-shrink-0">
+                              <Users className="w-4 h-4 text-white" />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+
+                      {isLoading && (
+                        <div className="flex gap-3 justify-start">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                            <MessageCircle className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="bg-muted rounded-lg px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                              <span className="text-sm text-muted-foreground ml-2">응답을 생성중입니다...</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
+
+                  <div className="border-t p-4">
+                    <div className="flex gap-2">
+                      <Input
+                        value={inputMessage}
+                        onChange={(e) => setInputMessage(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        placeholder={`${currentMode.title} AI에게 메시지를 보내세요...`}
+                        disabled={isLoading}
+                        className="flex-1"
+                      />
+                      <Button 
+                        onClick={() => sendMessage(inputMessage)}
+                        disabled={isLoading || !inputMessage.trim()}
+                        size="icon"
+                      >
+                        <Send className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    
+                    <div className="text-xs text-muted-foreground mt-2 text-center">
+                      긴급상황시 119 또는 자살예방상담 1577-0199로 연락하세요
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AIAssistant;

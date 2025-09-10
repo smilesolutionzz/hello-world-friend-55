@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, Lock, User as UserIcon, Gift } from 'lucide-react';
+import { Loader2, Mail, Lock, User as UserIcon, Gift, Phone } from 'lucide-react';
 import type { User, Session } from '@supabase/supabase-js';
 import { OnboardingOverlay } from '@/components/ui/onboarding-overlay';
 import { SocialLoginButtons } from '@/components/social/SocialLoginButtons';
@@ -28,6 +28,7 @@ export const AuthForm = () => {
     name: '',
     email: '',
     password: '',
+    phone: '',
     referralCode: ''
   });
 
@@ -83,6 +84,12 @@ export const AuthForm = () => {
       return;
     }
 
+    if (!signUpData.phone.trim()) {
+      setError('전화번호를 입력해주세요.');
+      setLoading(false);
+      return;
+    }
+
     if (!signUpData.email.trim()) {
       setError('이메일을 입력해주세요.');
       setLoading(false);
@@ -105,6 +112,7 @@ export const AuthForm = () => {
           emailRedirectTo: redirectUrl,
           data: {
             display_name: signUpData.name.trim(),
+            phone: signUpData.phone.trim(),
             referral_code: signUpData.referralCode.trim()
           }
         }
@@ -338,6 +346,23 @@ export const AuthForm = () => {
                           className="pl-10"
                           required
                           autoComplete="name"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-phone">전화번호 *</Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="signup-phone"
+                          type="tel"
+                          placeholder="010-1234-5678"
+                          value={signUpData.phone}
+                          onChange={(e) => setSignUpData(prev => ({ ...prev, phone: e.target.value }))}
+                          className="pl-10"
+                          required
+                          autoComplete="tel"
                         />
                       </div>
                     </div>

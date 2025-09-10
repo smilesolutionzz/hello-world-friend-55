@@ -354,7 +354,7 @@ const AIAssistant = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden pb-safe">
       {/* Animated Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-purple-900 to-indigo-900">
         <div className="absolute inset-0 opacity-30">
@@ -382,7 +382,7 @@ const AIAssistant = () => {
 
       <UnifiedNavigation />
       
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="relative z-10 container mx-auto px-4 py-8 pb-24 md:pb-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-8 text-center">
@@ -411,9 +411,9 @@ const AIAssistant = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
             {/* Mode Selection Sidebar */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 order-2 lg:order-1">
               <Card className="bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl animate-fade-in hover-scale">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-white">
@@ -455,8 +455,8 @@ const AIAssistant = () => {
             </div>
 
             {/* Chat Interface */}
-            <div className="lg:col-span-2">
-              <Card className="h-[700px] flex flex-col bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl animate-fade-in" style={{animationDelay: '0.2s'}}>
+            <div className="lg:col-span-2 order-1 lg:order-2">
+              <Card className="h-[calc(100vh-200px)] md:h-[700px] flex flex-col bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl animate-fade-in" style={{animationDelay: '0.2s'}}>
                 <CardHeader className="flex-shrink-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border-b border-white/20">
                   <div className="flex items-center gap-4">
                     <div className="p-3 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 shadow-lg animate-pulse">

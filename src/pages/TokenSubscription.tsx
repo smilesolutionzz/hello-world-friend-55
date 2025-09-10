@@ -86,60 +86,14 @@ const TokenSubscription = () => {
         return;
       }
 
-      // 패키지별 Stripe 결제 링크 설정
-      const pkg = packages.find(p => p.id === packageId);
-      console.log('=== Found package:', pkg);
-      
-      if (pkg) {
-        // 스타터팩 (100개 이하)
-        if (pkg.token_count <= 100) {
-          console.log('=== Redirecting to Stripe payment link for starter pack');
-          const url = 'https://buy.stripe.com/test_5kQ3cpf8ybdH5CS9HrcEw01';
-          console.log('=== Opening URL:', url);
-          window.open(url, '_blank');
-          return;
-        }
-        // 프리미엄팩 (101-500개)
-        else if (pkg.token_count <= 500) {
-          console.log('=== Redirecting to Stripe payment link for premium pack');
-          const url = 'https://buy.stripe.com/test_7sY00d1hI4Pj0iydXHcEw02';
-          console.log('=== Opening URL:', url);
-          window.open(url, '_blank');
-          return;
-        }
-        // 프로팩 (500개 초과)
-        else {
-          console.log('=== Redirecting to Stripe payment link for pro pack');
-          const url = 'https://buy.stripe.com/test_9B6dR3aSi5TnaXc6vfcEw00';
-          console.log('=== Opening URL:', url);
-          window.open(url, '_blank');
-          return;
-        }
-      }
-
-      console.log('=== Calling create-token-order function');
-      
-      const { data, error } = await supabase.functions.invoke('create-token-order', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: { packageId }
+      // MVP 기간에는 무통장입금만 사용
+      toast({
+        title: "알림",
+        description: "현재 MVP 기간으로 무통장입금만 지원됩니다. 아래 무통장입금을 이용해주세요.",
+        variant: "default",
       });
+      return;
 
-      console.log('=== Function response:', { data, error });
-
-      if (error) {
-        console.error('=== Function error:', error);
-        throw error;
-      }
-
-      if (data?.url) {
-        console.log('=== Redirecting to Stripe checkout');
-        // Stripe 체크아웃으로 리다이렉트
-        window.location.href = data.url;
-      } else {
-        throw new Error('결제 URL을 받지 못했습니다.');
-      }
     } catch (error: any) {
       console.error('=== Purchase error:', error);
       toast({ 
@@ -327,54 +281,18 @@ const TokenSubscription = () => {
                   </div>
 
                   <div className="pt-4">
-                    <div className="space-y-2">
-                      {/* 토스페이먼츠 버튼 */}
+                    <div className="pt-4">
                       <Button 
-                        className="w-full py-3 text-lg font-bold bg-blue-600 hover:bg-blue-700 text-white"
+                        className="w-full py-3 text-lg font-bold bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white"
                         disabled={loading}
                         onClick={() => {
-                          console.log('=== 토스페이먼츠 결제 for package:', pkg.id);
-                          // 토스페이먼츠 결제 로직 (향후 구현)
-                          toast({ 
-                            title: "준비중", 
-                            description: "토스페이먼츠 연동이 곧 완료됩니다!" 
-                          });
+                          window.location.href = '/bank-transfer';
                         }}
                       >
-                        {purchasingPackageId === pkg.id ? (
-                          <div className="flex items-center gap-2">
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
-                            처리중...
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <Rocket className="w-5 h-5" />
-                            토스페이먼츠로 결제
-                          </div>
-                        )}
-                      </Button>
-                      
-                      {/* 기존 Stripe 결제 (임시) */}
-                      <Button 
-                        variant="outline"
-                        className="w-full py-2 text-sm"
-                        disabled={loading}
-                        onClick={() => {
-                          console.log('=== Button clicked for package:', pkg.id);
-                          handlePurchase(pkg.id);
-                        }}
-                      >
-                        {purchasingPackageId === pkg.id ? (
-                          <div className="flex items-center gap-2">
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
-                            처리중...
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <Star className="w-4 h-4" />
-                            기존 결제 (임시)
-                          </div>
-                        )}
+                        <div className="flex items-center gap-2">
+                          <Rocket className="w-5 h-5" />
+                          무통장입금으로 구매하기
+                        </div>
                       </Button>
                     </div>
                   </div>

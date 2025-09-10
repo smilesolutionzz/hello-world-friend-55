@@ -175,14 +175,9 @@ const ExpertContract = () => {
         return;
       }
 
-      // Stripe 결제 페이지로 리다이렉션
-      if (data.sessionUrl) {
-        window.open(data.sessionUrl, '_blank');
-      } else {
-        toast.error('결제 페이지를 생성할 수 없습니다.');
-      }
-
-    } catch (error) {
+      // MVP 기간에는 무통장입금만 지원
+      toast.success("현재 MVP 기간으로 무통장입금만 지원됩니다.");
+    } catch (error: any) {
       console.error('Error creating contract:', error);
       toast.error('계약 생성 중 오류가 발생했습니다.');
     } finally {
@@ -473,15 +468,15 @@ const ExpertContract = () => {
                     ) : (
                       <div className="flex items-center gap-2">
                         <Zap className="w-5 h-5" />
-                        Stripe로 안전하게 결제하기
+                        무통장입금으로 결제하기
                       </div>
                     )}
                   </Button>
                   
                   <p className="text-xs text-center text-muted-foreground mt-2">
-                    Stripe 보안 결제 시스템을 통해 안전하게 결제됩니다.
+                    현재 MVP 기간으로 무통장입금만 지원됩니다.
                     <br />
-                    언제든지 구독을 취소할 수 있습니다.
+                    언제든지 계약을 취소할 수 있습니다.
                   </p>
                 </div>
               </CardContent>

@@ -184,7 +184,7 @@ const ExpertContractSuccess = () => {
                 <div className="pt-4 border-t">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">
-                      Stripe를 통해 안전하게 처리되었습니다
+                      무통장입금으로 안전하게 처리되었습니다
                     </span>
                     <Button variant="outline" size="sm">
                       <Download className="w-4 h-4 mr-2" />

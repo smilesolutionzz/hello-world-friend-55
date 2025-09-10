@@ -170,7 +170,7 @@ const TokenPaymentSuccess = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">결제 방식:</span>
-                <span className="font-semibold">Stripe 카드 결제</span>
+                <span className="font-semibold">무통장입금</span>
               </div>
             </div>
           </div>

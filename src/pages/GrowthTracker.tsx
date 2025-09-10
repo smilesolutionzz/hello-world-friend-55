@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, Calendar, Target, Award, Heart, Zap, Brain } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
-import Navigation from "@/components/Navigation";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 
 const GrowthTracker = () => {
@@ -94,7 +94,7 @@ const GrowthTracker = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navigation />
+      <UnifiedNavigation />
       
       <div className="container mx-auto px-4 pt-8 pb-12">
         <div className="max-w-6xl mx-auto">

@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, Brain, Heart, Target, Lightbulb, Send, Bot, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import Navigation from "@/components/Navigation";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 
 interface Message {
@@ -168,7 +168,7 @@ const AICoachPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Navigation />
+      <UnifiedNavigation />
       
       <div className="container mx-auto px-4 pt-8 pb-12">
         <div className="max-w-6xl mx-auto">

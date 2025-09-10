@@ -7,11 +7,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Calendar, Heart, Brain, Zap, CheckCircle, Flame, 
   Trophy, Target, Users, Star, TrendingUp, Award,
-  LineChart as LineChartIcon, BarChart3
+  LineChart as LineChartIcon, BarChart3, User, 
+  BookOpen, Lightbulb, Baby
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import DevelopmentalTrackingDashboard from "@/components/development/DevelopmentalTrackingDashboard";
 
 interface Challenge {
   id: string;
@@ -323,10 +325,14 @@ const LifeCareHub = () => {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="checkin" className="flex items-center gap-2">
             <Heart className="w-4 h-4" />
             매일체크
+          </TabsTrigger>
+          <TabsTrigger value="development" className="flex items-center gap-2">
+            <Brain className="w-4 h-4" />
+            아동발달
           </TabsTrigger>
           <TabsTrigger value="challenges" className="flex items-center gap-2">
             <Target className="w-4 h-4" />
@@ -462,6 +468,26 @@ const LifeCareHub = () => {
                 </Button>
               </div>
             )}
+          </div>
+        </TabsContent>
+
+        {/* Development Tab */}
+        <TabsContent value="development" className="space-y-6">
+          <div className="max-w-full">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Baby className="w-6 h-6 text-blue-500" />
+                  아동발달 추적 및 관리
+                </CardTitle>
+                <CardDescription>
+                  아이의 발달 단계를 체계적으로 추적하고 맞춤형 발달 계획을 수립하세요
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <DevelopmentalTrackingDashboard />
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
 

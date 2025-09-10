@@ -8,8 +8,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { MessageCircle, Zap, Send, ArrowLeft, Heart, Target, Brain, Lightbulb, Users, Calendar, Shield, Baby } from "lucide-react";
+import { MessageCircle, Zap, Send, ArrowLeft, Heart, Target, Brain, Lightbulb, Users, Calendar, Shield, Baby, Menu, ChevronDown, ExternalLink, FileText, Calendar as CalendarIcon, BarChart3 } from "lucide-react";
 import { TypingAnimation } from "@/components/ui/typing-animation";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
 interface Message {
@@ -27,6 +28,12 @@ interface AssistantMode {
   icon: React.ReactNode;
   color: string;
   systemPrompt: string;
+  ctaButtons?: {
+    label: string;
+    icon: React.ReactNode;
+    route: string;
+    description: string;
+  }[];
 }
 
 const AIAssistant = () => {
@@ -44,6 +51,26 @@ const AIAssistant = () => {
       description: '💊 심리학 전문 딥러닝 엔진으로 당신의 마음을 깊이 이해해요',
       icon: <Heart className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-pink-50 to-rose-50 border-pink-200',
+      ctaButtons: [
+        {
+          label: '심리검사 받기',
+          icon: <FileText className="w-4 h-4" />,
+          route: '/psychological-test',
+          description: '전문 심리검사로 정확한 상태 파악하기'
+        },
+        {
+          label: '상담 일지 작성',
+          icon: <CalendarIcon className="w-4 h-4" />,
+          route: '/counseling-journal',
+          description: '매일의 마음 상태를 기록하고 관리하기'
+        },
+        {
+          label: '감정 분석 리포트',
+          icon: <BarChart3 className="w-4 h-4" />,
+          route: '/emotion-analysis',
+          description: 'AI 기반 감정 패턴 분석 및 개선방안'
+        }
+      ],
       systemPrompt: `안녕하세요! 저는 AIH 심리상담사입니다. 
 
 🧠 **전문 AI 엔진 기반 상담:**
@@ -72,6 +99,26 @@ const AIAssistant = () => {
       description: '🏥 의학 데이터 기반 AI로 과학적인 건강 솔루션을 제공해요',
       icon: <Lightbulb className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200',
+      ctaButtons: [
+        {
+          label: '건강검진 받기',
+          icon: <FileText className="w-4 h-4" />,
+          route: '/health-checkup',
+          description: '종합적인 건강상태 체크 및 분석'
+        },
+        {
+          label: '생활습관 기록',
+          icon: <CalendarIcon className="w-4 h-4" />,
+          route: '/lifestyle-log',
+          description: '식단, 운동, 수면 패턴 일일 기록'
+        },
+        {
+          label: '건강 리포트',
+          icon: <BarChart3 className="w-4 h-4" />,
+          route: '/health-report',
+          description: '개인맞춤 건강관리 계획 및 개선방안'
+        }
+      ],
       systemPrompt: `안녕하세요! 저는 AIH 헬스관리인이에요. 
 
 🔬 **의학 전문 AI 엔진:**
@@ -101,6 +148,26 @@ const AIAssistant = () => {
       description: '👶 아동발달학 전문 AI로 우리 아이 성장을 과학적으로 분석해요',
       icon: <Baby className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200',
+      ctaButtons: [
+        {
+          label: '발달검사 받기',
+          icon: <FileText className="w-4 h-4" />,
+          route: '/development-test',
+          description: '전문 발달검사로 우리 아이 성장 단계 확인'
+        },
+        {
+          label: '관찰일지 작성',
+          icon: <CalendarIcon className="w-4 h-4" />,
+          route: '/observation-journal',
+          description: '아이의 일상 행동과 발달 과정 기록'
+        },
+        {
+          label: '발달 리포트',
+          icon: <BarChart3 className="w-4 h-4" />,
+          route: '/development-report',
+          description: '개인맞춤 발달 자극 계획 및 활동 가이드'
+        }
+      ],
       systemPrompt: `안녕하세요! 저는 AIH 발달센터장이에요. 
 
 🧬 **아동발달 전문 AI 엔진:**
@@ -130,6 +197,20 @@ const AIAssistant = () => {
       description: '🔒 완전 익명 보장 AI로 그 누구에게도 말 못할 고민을 안전하게',
       icon: <MessageCircle className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200',
+      ctaButtons: [
+        {
+          label: '익명 검사 받기',
+          icon: <Shield className="w-4 h-4" />,
+          route: '/anonymous-test',
+          description: '완전 익명으로 심리상태 체크'
+        },
+        {
+          label: '비밀 일기 작성',
+          icon: <CalendarIcon className="w-4 h-4" />,
+          route: '/secret-diary',
+          description: '암호화된 개인 일기로 마음 정리'
+        }
+      ],
       systemPrompt: `안녕하세요. 저는 AIH 시크릿톡 상담사입니다. 
 
 🛡️ **프라이버시 특화 AI 엔진:**

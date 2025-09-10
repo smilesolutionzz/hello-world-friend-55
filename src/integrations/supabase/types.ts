@@ -3671,6 +3671,10 @@ export type Database = {
           total_points: number
         }[]
       }
+      get_comment_likes_count: {
+        Args: { comment_id: string }
+        Returns: number
+      }
       get_expert_stats: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -3693,6 +3697,10 @@ export type Database = {
       }
       get_monthly_usage: {
         Args: { p_feature_type: string; p_user_id: string }
+        Returns: number
+      }
+      get_post_likes_count: {
+        Args: { post_id: string }
         Returns: number
       }
       get_public_institutions: {
@@ -3807,6 +3815,14 @@ export type Database = {
       }
       user_can_access_community: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      user_has_liked_comment: {
+        Args: { comment_id: string }
+        Returns: boolean
+      }
+      user_has_liked_post: {
+        Args: { post_id: string }
         Returns: boolean
       }
       verify_consultation_access: {

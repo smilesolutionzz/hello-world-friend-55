@@ -66,8 +66,13 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
   }, [tokenBalance?.user_id]);
 
   if (loading) {
-    return (
-      <Card className={`${compact ? 'w-auto' : 'w-full max-w-sm'}`}>
+    return compact ? (
+      <Badge variant="secondary" className="flex items-center gap-1">
+        <Coins className="w-3 h-3 animate-pulse" />
+        <span className="animate-pulse">로딩중...</span>
+      </Badge>
+    ) : (
+      <Card className="w-full max-w-sm">
         <CardContent className="p-4">
           <div className="animate-pulse space-y-2">
             <div className="h-4 bg-muted rounded w-20"></div>
@@ -80,6 +85,20 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
 
   const currentTokens = tokenBalance?.current_tokens || 0;
   const isLowBalance = currentTokens <= 5;
+  
+  // 로그인하지 않은 사용자는 로그인 안내 표시
+  if (!user && compact) {
+    return (
+      <Badge 
+        variant="outline" 
+        className="flex items-center gap-1 cursor-pointer hover:bg-muted/50"
+        onClick={() => navigate('/auth')}
+      >
+        <User className="w-3 h-3" />
+        로그인
+      </Badge>
+    );
+  }
 
   if (compact) {
     return (

@@ -129,10 +129,8 @@ export const UnifiedNavigation = () => {
                 <span className="text-lg font-bold text-foreground">AIHPRO</span>
               </div>
               
-              {/* Token Balance for logged in users */}
-              {user && (
-                <TokenBalance compact showPurchaseButton={false} />
-              )}
+              {/* Token Balance - Always visible */}
+              <TokenBalance compact showPurchaseButton={false} />
             </div>
 
             {/* Desktop Menu */}
@@ -200,10 +198,8 @@ export const UnifiedNavigation = () => {
                 <span className="text-base font-bold text-foreground">AIHPRO</span>
               </div>
               
-              {/* Token Balance for mobile */}
-              {user && (
-                <TokenBalance compact showPurchaseButton={false} />
-              )}
+              {/* Token Balance - Always visible on mobile */}
+              <TokenBalance compact showPurchaseButton={false} />
             </div>
 
             {/* Mobile Menu Toggle */}

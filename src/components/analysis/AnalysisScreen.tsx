@@ -7,6 +7,9 @@ import { AssessmentResult } from "@/types/assessment";
 import { analyzeAssessmentResults, generateAIPredictions } from "@/services/openai";
 import PredictionEngine from "@/components/prediction/PredictionEngine";
 import LoadingEntertainment from "./LoadingEntertainment";
+import { useTokens } from "@/hooks/useTokens";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
+import { useToast } from "@/hooks/use-toast";
 
 interface AnalysisScreenProps {
   results: Record<string, number>;
@@ -22,6 +25,8 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
   const [analysis, setAnalysis] = useState<string>("");
   const [predictions, setPredictions] = useState<any>(null);
   const [predictionConfidence, setPredictionConfidence] = useState<string>("");
+  const { consumeTokens, checkTokenAvailability } = useTokens();
+  const { toast } = useToast();
 
   // 분석 단계들
   const analysisSteps = [
@@ -39,6 +44,27 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
   }, []);
 
   const runAnalysis = async () => {
+    // 토큰 확인 및 소비
+    const tokenCost = TOKEN_COSTS.PSYCHOLOGICAL_TEST;
+    if (!checkTokenAvailability(tokenCost)) {
+      toast({
+        title: "토큰 부족",
+        description: `분석을 위해 ${tokenCost}토큰이 필요합니다. 토큰을 충전해주세요.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const tokenSuccess = await consumeTokens(tokenCost);
+    if (!tokenSuccess) {
+      toast({
+        title: "토큰 소비 실패",
+        description: "토큰 소비 중 오류가 발생했습니다. 다시 시도해주세요.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     // 단계별 진행 시뮬레이션
     let currentProgress = 0;
     const totalSteps = analysisSteps.length;

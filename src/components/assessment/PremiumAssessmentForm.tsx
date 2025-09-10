@@ -6,6 +6,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, ArrowRight, CheckCircle, Crown } from "lucide-react";
 import { fourChoiceOptions } from "@/data/premiumAssessmentQuestions";
+import { useTokens } from "@/hooks/useTokens";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
+import { useToast } from "@/hooks/use-toast";
 
 interface PremiumAssessmentFormProps {
   assessmentType: string;
@@ -24,6 +27,8 @@ const PremiumAssessmentForm = ({
 }: PremiumAssessmentFormProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  const { consumeTokens, checkTokenAvailability } = useTokens();
+  const { toast } = useToast();
 
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
@@ -41,8 +46,35 @@ const PremiumAssessmentForm = ({
     }, 1200);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (isLastQuestion) {
+      // 토큰 확인 및 소비 (마지막 문항에서만)
+      const tokenCost = TOKEN_COSTS.PREMIUM_ASSESSMENT;
+      if (!checkTokenAvailability(tokenCost)) {
+        toast({
+          title: "토큰 부족",
+          description: `프리미엄 검사 분석을 위해 ${tokenCost}토큰이 필요합니다. 토큰을 충전해주세요.`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const tokenSuccess = await consumeTokens(tokenCost);
+      if (!tokenSuccess) {
+        toast({
+          title: "토큰 소비 실패",
+          description: "토큰 소비 중 오류가 발생했습니다. 다시 시도해주세요.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // 토큰 소비 성공 알림
+      toast({
+        title: "검사 완료",
+        description: `${tokenCost}토큰이 사용되어 전문가급 분석을 시작합니다.`,
+      });
+
       // 카테고리별 점수 계산
       const categoryScores: Record<string, number> = {};
       const categories = [...new Set(questions.map(q => q.category))];

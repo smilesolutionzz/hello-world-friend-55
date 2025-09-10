@@ -96,7 +96,7 @@ const ChildAssessmentSimplified = ({ age, onComplete, onBack }: ChildAssessmentS
   const isAnswered = answers[currentQuestion.id] !== undefined;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-soft-mint/30 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-background via-calm-blue/20 to-soft-mint/30 relative overflow-hidden py-8 min-h-[calc(100vh-64px)]">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-calm-blue/20 rounded-full blur-3xl animate-float" />

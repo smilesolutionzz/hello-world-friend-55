@@ -101,7 +101,7 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/10 to-primary-glow/20 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-background via-primary/10 to-primary-glow/20 relative overflow-hidden py-8 min-h-[calc(100vh-64px)]">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />

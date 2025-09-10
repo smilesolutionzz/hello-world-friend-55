@@ -295,23 +295,79 @@ const AIAssistant = () => {
     }
   };
 
+  // 각 모드별 배경 스타일 정의
+  const getBackgroundByMode = (mode: string) => {
+    const backgrounds = {
+      counselor: 'bg-gradient-to-br from-pink-900 via-rose-900 to-purple-900',
+      health_manager: 'bg-gradient-to-br from-green-900 via-emerald-900 to-teal-900',
+      development_director: 'bg-gradient-to-br from-blue-900 via-cyan-900 to-sky-900',
+      secret: 'bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-900'
+    };
+    return backgrounds[mode as keyof typeof backgrounds] || backgrounds.counselor;
+  };
+
+  const getFloatingParticles = (mode: string) => {
+    const particleConfigs = {
+      counselor: { count: window.innerWidth < 768 ? 8 : 15, colors: ['bg-pink-400/30', 'bg-rose-400/30', 'bg-purple-400/30'] },
+      health_manager: { count: window.innerWidth < 768 ? 6 : 12, colors: ['bg-green-400/30', 'bg-emerald-400/30', 'bg-teal-400/30'] },
+      development_director: { count: window.innerWidth < 768 ? 10 : 18, colors: ['bg-blue-400/30', 'bg-cyan-400/30', 'bg-sky-400/30'] },
+      secret: { count: window.innerWidth < 768 ? 5 : 10, colors: ['bg-purple-400/30', 'bg-indigo-400/30', 'bg-violet-400/30'] }
+    };
+    return particleConfigs[mode as keyof typeof particleConfigs] || particleConfigs.counselor;
+  };
+
+  const getAnimatedShapes = (mode: string) => {
+    const shapeConfigs = {
+      counselor: [
+        { size: 'w-64 h-64 md:w-96 md:h-96', gradient: 'from-pink-500 to-rose-500', position: 'top-10 left-10' },
+        { size: 'w-48 h-48 md:w-80 md:h-80', gradient: 'from-rose-500 to-purple-500', position: 'bottom-10 right-10', delay: '2s' },
+        { size: 'w-32 h-32 md:w-64 md:h-64', gradient: 'from-purple-500 to-pink-500', position: 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2', delay: '4s' }
+      ],
+      health_manager: [
+        { size: 'w-64 h-64 md:w-96 md:h-96', gradient: 'from-green-500 to-emerald-500', position: 'top-10 left-10' },
+        { size: 'w-48 h-48 md:w-80 md:h-80', gradient: 'from-emerald-500 to-teal-500', position: 'bottom-10 right-10', delay: '2s' },
+        { size: 'w-32 h-32 md:w-64 md:h-64', gradient: 'from-teal-500 to-green-500', position: 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2', delay: '4s' }
+      ],
+      development_director: [
+        { size: 'w-64 h-64 md:w-96 md:h-96', gradient: 'from-blue-500 to-cyan-500', position: 'top-10 left-10' },
+        { size: 'w-48 h-48 md:w-80 md:h-80', gradient: 'from-cyan-500 to-sky-500', position: 'bottom-10 right-10', delay: '2s' },
+        { size: 'w-32 h-32 md:w-64 md:h-64', gradient: 'from-sky-500 to-blue-500', position: 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2', delay: '4s' }
+      ],
+      secret: [
+        { size: 'w-64 h-64 md:w-96 md:h-96', gradient: 'from-purple-500 to-indigo-500', position: 'top-10 left-10' },
+        { size: 'w-48 h-48 md:w-80 md:h-80', gradient: 'from-indigo-500 to-violet-500', position: 'bottom-10 right-10', delay: '2s' },
+        { size: 'w-32 h-32 md:w-64 md:h-64', gradient: 'from-violet-500 to-purple-500', position: 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2', delay: '4s' }
+      ]
+    };
+    return shapeConfigs[mode as keyof typeof shapeConfigs] || shapeConfigs.counselor;
+  };
+
+  const particleConfig = getFloatingParticles(activeMode);
+  const shapes = getAnimatedShapes(activeMode);
+
   return (
-    <div className="min-h-screen relative overflow-hidden pb-safe">
-      {/* Animated Background - 모바일에서 성능 최적화 */}
-      <div className="fixed inset-0 bg-gradient-to-br from-violet-900 via-purple-900 to-indigo-900">
+    <div className="min-h-screen relative overflow-hidden pb-safe transition-all duration-1000 ease-in-out">
+      {/* Dynamic Background based on mode */}
+      <div className={`fixed inset-0 transition-all duration-1000 ease-in-out ${getBackgroundByMode(activeMode)}`}>
         <div className="absolute inset-0 opacity-20 md:opacity-30">
-          <div className="absolute w-64 h-64 md:w-96 md:h-96 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full blur-3xl animate-pulse top-10 left-10"></div>
-          <div className="absolute w-48 h-48 md:w-80 md:h-80 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-3xl animate-pulse bottom-10 right-10" style={{animationDelay: '2s'}}></div>
-          <div className="absolute w-32 h-32 md:w-64 md:h-64 bg-gradient-to-r from-pink-500 to-cyan-500 rounded-full blur-3xl animate-pulse top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{animationDelay: '4s'}}></div>
+          {shapes.map((shape, index) => (
+            <div 
+              key={index}
+              className={`absolute ${shape.size} bg-gradient-to-r ${shape.gradient} rounded-full blur-3xl animate-pulse ${shape.position}`}
+              style={{animationDelay: shape.delay || '0s'}}
+            ></div>
+          ))}
         </div>
       </div>
       
-      {/* Floating particles - 모바일에서 개수 줄임 */}
+      {/* Dynamic Floating particles based on mode */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(window.innerWidth < 768 ? 8 : 15)].map((_, i) => (
+        {[...Array(particleConfig.count)].map((_, i) => (
           <div
-            key={i}
-            className="absolute w-1 h-1 bg-white/30 rounded-full animate-bounce"
+            key={`${activeMode}-${i}`}
+            className={`absolute w-1 h-1 rounded-full animate-bounce transition-all duration-1000 ${
+              particleConfig.colors[i % particleConfig.colors.length]
+            }`}
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,

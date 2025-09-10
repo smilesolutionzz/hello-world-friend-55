@@ -77,7 +77,7 @@ ${analysis}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-5-2025-08-07',
         messages: [
           { 
             role: 'system', 
@@ -85,7 +85,7 @@ ${analysis}
           },
           { role: 'user', content: predictionPrompt }
         ],
-        max_completion_tokens: 2000,
+        max_completion_tokens: 3000,
       }),
     });
 

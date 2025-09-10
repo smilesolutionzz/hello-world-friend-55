@@ -77,9 +77,7 @@ import ComprehensivePackage from "./pages/ComprehensivePackage";
 import GrowthStories from "./pages/GrowthStories";
 
 // New Retention Features
-import DailyCheckin from "./pages/DailyCheckin";
-import GrowthTracker from "./pages/GrowthTracker";
-import ChallengesPage from "./pages/ChallengesPage";
+import WellnessHub from "./pages/WellnessHub";
 import AICoachPage from "./pages/AICoachPage";
 
 import AssessmentHistory from "./components/history/AssessmentHistory";
@@ -157,9 +155,7 @@ const App = () => {
           <Route path="/iep-view/:id" element={<IEPView />} />
           
           {/* New Retention Features */}
-          <Route path="/daily-checkin" element={<DailyCheckin />} />
-          <Route path="/growth-tracker" element={<GrowthTracker />} />
-          <Route path="/challenges" element={<ChallengesPage />} />
+          <Route path="/wellness-hub" element={<WellnessHub />} />
           <Route path="/ai-coach" element={<AICoachPage />} />
           
           

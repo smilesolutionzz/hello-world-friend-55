@@ -43,14 +43,13 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   { icon: Home, label: '홈', path: '/' },
   { icon: TrendingUp, label: '3분테스트', path: '/assessment', requiresAuth: true },
-  { icon: Calendar, label: '매일체크', path: '/daily-checkin', requiresAuth: true },
-  { icon: Target, label: '챌린지', path: '/challenges', requiresAuth: true },
+  { icon: Heart, label: '웰니스허브', path: '/wellness-hub', requiresAuth: true },
   { icon: MessageCircle, label: '시크릿톡', path: '/ai-counselor', requiresAuth: true },
   { icon: Zap, label: 'AI개인코치', path: '/ai-coach', requiresAuth: true },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: true },
   { icon: FileText, label: '프리미엄테스트', path: '/premium-assessment', requiresAuth: true },
   { icon: BarChart3, label: '나의DATA', path: '/dashboard', requiresAuth: true },
-  { icon: Heart, label: '성장추적', path: '/growth-tracker', requiresAuth: true },
+  
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: true },
   { icon: Brain, label: '체질분석', path: '/han-medicine-test', requiresAuth: false },
   { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: true },
@@ -147,14 +146,10 @@ export const UnifiedNavigation = () => {
                         ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
                         : item.path === '/ai-counselor'
                         ? 'bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 hover:from-purple-100 hover:to-indigo-100 text-purple-800 font-medium'
-                        : item.path === '/daily-checkin'
+                        : item.path === '/wellness-hub'
                         ? 'bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 hover:from-green-100 hover:to-emerald-100 text-green-800 font-medium'
-                        : item.path === '/challenges'
-                        ? 'bg-gradient-to-r from-purple-50 to-violet-50 border border-purple-200 hover:from-purple-100 hover:to-violet-100 text-purple-800 font-medium'
                         : item.path === '/ai-coach'
                         ? 'bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 hover:from-blue-100 hover:to-cyan-100 text-blue-800 font-medium'
-                        : item.path === '/growth-tracker'
-                        ? 'bg-gradient-to-r from-pink-50 to-rose-50 border border-pink-200 hover:from-pink-100 hover:to-rose-100 text-pink-800 font-medium'
                         : ''
                     }`}
                     disabled={item.requiresAuth && !user}
@@ -241,14 +236,10 @@ export const UnifiedNavigation = () => {
                               ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
                               : item.path === '/ai-counselor'
                               ? 'bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 hover:from-purple-100 hover:to-indigo-100 text-purple-800 font-medium'
-                              : item.path === '/daily-checkin'
+                              : item.path === '/wellness-hub'
                               ? 'bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 hover:from-green-100 hover:to-emerald-100 text-green-800 font-medium'
-                              : item.path === '/challenges'
-                              ? 'bg-gradient-to-r from-purple-50 to-violet-50 border border-purple-200 hover:from-purple-100 hover:to-violet-100 text-purple-800 font-medium'
                               : item.path === '/ai-coach'
                               ? 'bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 hover:from-blue-100 hover:to-cyan-100 text-blue-800 font-medium'
-                              : item.path === '/growth-tracker'
-                              ? 'bg-gradient-to-r from-pink-50 to-rose-50 border border-pink-200 hover:from-pink-100 hover:to-rose-100 text-pink-800 font-medium'
                               : ''
                           }`}
                           onClick={() => handleNavigation(item.path)}

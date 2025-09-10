@@ -268,61 +268,96 @@ const AIAssistant = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-purple-900 to-indigo-900">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute w-96 h-96 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full blur-3xl animate-pulse top-10 left-10"></div>
+          <div className="absolute w-80 h-80 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-3xl animate-pulse bottom-10 right-10" style={{animationDelay: '2s'}}></div>
+          <div className="absolute w-64 h-64 bg-gradient-to-r from-pink-500 to-cyan-500 rounded-full blur-3xl animate-pulse top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{animationDelay: '4s'}}></div>
+        </div>
+      </div>
+      
+      {/* Floating particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-white/30 rounded-full animate-bounce"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${i * 0.5}s`,
+              animationDuration: `${3 + Math.random() * 2}s`
+            }}
+          ></div>
+        ))}
+      </div>
+
       <UnifiedNavigation />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-8 text-center">
             <Button 
               variant="ghost" 
               onClick={() => navigate(-1)}
-              className="absolute left-4 top-20"
+              className="absolute left-4 top-20 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-white/20 hover-scale"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               뒤로
             </Button>
             
-            <h1 className="text-4xl font-bold mb-4">
-              <TypingAnimation
-                className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
-                phrases={["AI 어시스턴트"]}
-              />
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              심리상담부터 개인코칭까지, 당신의 성장과 치유를 위한 종합 AI 어시스턴트입니다
+            <div className="relative">
+              <h1 className="text-5xl font-bold mb-6 animate-fade-in">
+                <TypingAnimation
+                  className="text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg"
+                  phrases={["AI 어시스턴트 🚀"]}
+                />
+              </h1>
+              <div className="absolute -top-2 -left-2 w-20 h-20 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
+              <div className="absolute -top-2 -right-2 w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-30 animate-pulse" style={{animationDelay: '1s'}}></div>
+            </div>
+            
+            <p className="text-xl text-white/90 max-w-2xl mx-auto animate-fade-in font-medium" style={{animationDelay: '0.3s'}}>
+              ✨ 심리상담부터 개인코칭까지, 당신의 성장과 치유를 위한 종합 AI 어시스턴트입니다 ✨
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Mode Selection Sidebar */}
             <div className="lg:col-span-1">
-              <Card>
+              <Card className="bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl animate-fade-in hover-scale">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Zap className="w-5 h-5" />
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Zap className="w-5 h-5 text-yellow-400 animate-pulse" />
                     AI 모드 선택
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-white/80">
                     필요에 맞는 AI 어시스턴트 모드를 선택하세요
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  {assistantModes.map((mode) => (
+                <CardContent className="space-y-4">
+                  {assistantModes.map((mode, index) => (
                     <Button
                       key={mode.id}
                       variant={activeMode === mode.id ? "default" : "outline"}
-                      className={`w-full h-auto p-4 ${mode.color} ${
-                        activeMode === mode.id ? 'ring-2 ring-primary' : ''
+                      className={`w-full h-auto p-6 transition-all duration-300 hover-scale animate-fade-in ${
+                        activeMode === mode.id 
+                          ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ring-2 ring-cyan-400 shadow-lg scale-105' 
+                          : 'bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50'
                       }`}
                       onClick={() => setActiveMode(mode.id)}
+                      style={{animationDelay: `${index * 0.1}s`}}
                     >
-                      <div className="flex flex-col items-center gap-2 text-center">
-                        {mode.icon}
+                      <div className="flex flex-col items-center gap-3 text-center">
+                        <div className={`p-2 rounded-full ${activeMode === mode.id ? 'bg-white/20' : 'bg-white/10'}`}>
+                          {mode.icon}
+                        </div>
                         <div>
-                          <div className="font-medium">{mode.title}</div>
-                          <div className="text-xs text-muted-foreground mt-1">
+                          <div className="font-semibold text-lg">{mode.title}</div>
+                          <div className="text-sm opacity-80 mt-1">
                             {mode.description}
                           </div>
                         </div>
@@ -335,70 +370,74 @@ const AIAssistant = () => {
 
             {/* Chat Interface */}
             <div className="lg:col-span-2">
-              <Card className="h-[600px] flex flex-col">
-                <CardHeader className="flex-shrink-0">
-                  <div className="flex items-center gap-3">
-                    {currentMode.icon}
+              <Card className="h-[700px] flex flex-col bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl animate-fade-in" style={{animationDelay: '0.2s'}}>
+                <CardHeader className="flex-shrink-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border-b border-white/20">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 shadow-lg animate-pulse">
+                      {currentMode.icon}
+                    </div>
                     <div>
-                      <CardTitle>{currentMode.title}</CardTitle>
-                      <CardDescription>{currentMode.description}</CardDescription>
+                      <CardTitle className="text-white text-xl">{currentMode.title}</CardTitle>
+                      <CardDescription className="text-white/80">{currentMode.description}</CardDescription>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="w-fit">
-                    {currentMode.title} 모드 활성화
+                  <Badge className="w-fit bg-gradient-to-r from-green-400 to-emerald-400 text-white border-0 animate-pulse">
+                    ✨ {currentMode.title} 모드 활성화
                   </Badge>
                 </CardHeader>
 
                 <CardContent className="flex-1 flex flex-col p-0">
                   <ScrollArea className="flex-1 px-6" ref={scrollAreaRef}>
-                    <div className="space-y-4 py-4">
-                      {messages.map((message) => (
+                    <div className="space-y-6 py-6">
+                      {messages.map((message, index) => (
                         <div
                           key={message.id}
-                          className={`flex gap-3 ${
+                          className={`flex gap-4 animate-fade-in ${
                             message.role === 'user' ? 'justify-end' : 'justify-start'
                           }`}
+                          style={{animationDelay: `${index * 0.1}s`}}
                         >
                           {message.role === 'assistant' && (
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                              <MessageCircle className="w-4 h-4 text-white" />
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
+                              <MessageCircle className="w-5 h-5 text-white" />
                             </div>
                           )}
                           
                           <div
-                            className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                            className={`max-w-[80%] rounded-2xl px-6 py-4 shadow-lg transition-all duration-300 hover-scale ${
                               message.role === 'user'
-                                ? 'bg-primary text-primary-foreground ml-auto'
-                                : 'bg-muted'
+                                ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ml-auto'
+                                : 'bg-white/20 backdrop-blur-sm text-white border border-white/30'
                             }`}
                           >
-                            <div className="text-sm whitespace-pre-wrap">
+                            <div className="text-sm whitespace-pre-wrap leading-relaxed">
                               {message.content}
                             </div>
-                            <div className="text-xs opacity-70 mt-2">
+                            <div className="text-xs opacity-70 mt-3 flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
                               {message.timestamp.toLocaleTimeString()}
                             </div>
                           </div>
 
                           {message.role === 'user' && (
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                              <Users className="w-4 h-4 text-white" />
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
+                              <Users className="w-5 h-5 text-white" />
                             </div>
                           )}
                         </div>
                       ))}
 
                       {isLoading && (
-                        <div className="flex gap-3 justify-start">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                            <MessageCircle className="w-4 h-4 text-white" />
+                        <div className="flex gap-4 justify-start animate-fade-in">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
+                            <MessageCircle className="w-5 h-5 text-white" />
                           </div>
-                          <div className="bg-muted rounded-lg px-4 py-3">
-                            <div className="flex items-center gap-2">
-                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                              <span className="text-sm text-muted-foreground ml-2">응답을 생성중입니다...</span>
+                          <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl px-6 py-4 shadow-lg">
+                            <div className="flex items-center gap-3">
+                              <div className="w-3 h-3 bg-cyan-400 rounded-full animate-bounce"></div>
+                              <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                              <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                              <span className="text-sm text-white/90 ml-2 font-medium">✨ AI가 응답을 생성중입니다...</span>
                             </div>
                           </div>
                         </div>
@@ -406,27 +445,28 @@ const AIAssistant = () => {
                     </div>
                   </ScrollArea>
 
-                  <div className="border-t p-4">
-                    <div className="flex gap-2">
+                  <div className="border-t border-white/20 p-6 bg-white/5 backdrop-blur-sm">
+                    <div className="flex gap-3">
                       <Input
                         value={inputMessage}
                         onChange={(e) => setInputMessage(e.target.value)}
                         onKeyPress={handleKeyPress}
-                        placeholder={`${currentMode.title} AI에게 메시지를 보내세요...`}
+                        placeholder={`💬 ${currentMode.title} AI에게 메시지를 보내세요...`}
                         disabled={isLoading}
-                        className="flex-1"
+                        className="flex-1 bg-white/10 backdrop-blur-sm border-white/30 text-white placeholder:text-white/60 focus:border-cyan-400 focus:ring-cyan-400/20 rounded-xl h-12"
                       />
                       <Button 
                         onClick={() => sendMessage(inputMessage)}
                         disabled={isLoading || !inputMessage.trim()}
-                        size="icon"
+                        className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 rounded-xl h-12 px-6 shadow-lg hover-scale"
                       >
-                        <Send className="w-4 h-4" />
+                        <Send className="w-5 h-5" />
+                        <span className="ml-2 hidden sm:inline">전송</span>
                       </Button>
                     </div>
                     
-                    <div className="text-xs text-muted-foreground mt-2 text-center">
-                      긴급상황시 119 또는 자살예방상담 1577-0199로 연락하세요
+                    <div className="text-xs text-white/70 mt-4 text-center bg-white/10 rounded-lg p-2 backdrop-blur-sm">
+                      🚨 긴급상황시 119 또는 자살예방상담 1577-0199로 연락하세요
                     </div>
                   </div>
                 </CardContent>

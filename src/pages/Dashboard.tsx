@@ -54,6 +54,7 @@ import LifespanDevelopmentalTracker from '@/components/development/LifespanDevel
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { WeeklyInsights } from "@/components/dashboard/WeeklyInsights";
+import LifeCareHub from "@/components/LifeCareHub";
 
 interface Profile {
   id: string;
@@ -506,11 +507,12 @@ const Dashboard = () => {
 
       <div className="container mx-auto px-3 sm:px-6 py-4 sm:py-8">
         <Tabs defaultValue="overview" className="space-y-3 sm:space-y-6">
-          <TabsList className="grid w-full grid-cols-5 h-8 sm:h-10">
+          <TabsList className="grid w-full grid-cols-6 h-8 sm:h-10">
             <TabsTrigger value="overview" className="text-xs sm:text-sm px-1">개요</TabsTrigger>
             <TabsTrigger value="family" className="text-xs sm:text-sm px-1">가족</TabsTrigger>
             <TabsTrigger value="assessments" className="text-xs sm:text-sm px-1">검사</TabsTrigger>
             <TabsTrigger value="consultations" className="text-xs sm:text-sm px-1">상담</TabsTrigger>
+            <TabsTrigger value="lifecare" className="text-xs sm:text-sm px-1">라이프케어</TabsTrigger>
             <TabsTrigger value="team" className="text-xs sm:text-sm px-1">팀</TabsTrigger>
           </TabsList>
 
@@ -966,6 +968,10 @@ const Dashboard = () => {
 
           <TabsContent value="consultations">
             <ConsultationHistory />
+          </TabsContent>
+
+          <TabsContent value="lifecare">
+            <LifeCareHub />
           </TabsContent>
 
           <TabsContent value="team">

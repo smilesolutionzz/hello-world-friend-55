@@ -430,81 +430,6 @@ const AIAssistant = () => {
                       )}
                     </div>
                   </ScrollArea>
-                <CardHeader className="flex-shrink-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border-b border-white/20">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 shadow-lg animate-pulse">
-                      {currentMode.icon}
-                    </div>
-                    <div>
-                      <CardTitle className="text-white text-xl">{currentMode.title}</CardTitle>
-                      <CardDescription className="text-white/80">{currentMode.description}</CardDescription>
-                    </div>
-                  </div>
-                  <Badge className="w-fit bg-gradient-to-r from-green-400 to-emerald-400 text-white border-0 animate-pulse">
-                    ✨ {currentMode.title} 모드 활성화
-                  </Badge>
-                </CardHeader>
-
-                <CardContent className="flex-1 flex flex-col p-0">
-                  <ScrollArea className="flex-1 px-6" ref={scrollAreaRef}>
-                    <div className="space-y-6 py-6">
-                      {messages.map((message, index) => (
-                        <div
-                          key={message.id}
-                          className={`flex gap-4 animate-fade-in ${
-                            message.role === 'user' ? 'justify-end' : 'justify-start'
-                          }`}
-                          style={{animationDelay: `${index * 0.1}s`}}
-                        >
-                          {message.role === 'assistant' && (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
-                              <MessageCircle className="w-5 h-5 text-white" />
-                            </div>
-                          )}
-                          
-                          <div
-                            className={`max-w-[80%] rounded-2xl px-6 py-4 shadow-lg transition-all duration-300 hover-scale ${
-                              message.role === 'user'
-                                ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ml-auto'
-                                : 'bg-white/20 backdrop-blur-sm text-white border border-white/30'
-                            }`}
-                          >
-                            <div className="text-sm whitespace-pre-wrap leading-relaxed">
-                              {message.content}
-                            </div>
-                            <div className="text-xs opacity-70 mt-3 flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {message.timestamp.toLocaleTimeString()}
-                            </div>
-                          </div>
-
-                          {message.role === 'user' && (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
-                              <Users className="w-5 h-5 text-white" />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-
-                      {isLoading && (
-                        <div className="flex gap-4 justify-start animate-fade-in">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
-                            <MessageCircle className="w-5 h-5 text-white" />
-                          </div>
-                          <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl px-6 py-4 shadow-lg">
-                            <div className="flex items-center gap-3">
-                              <div className="w-3 h-3 bg-cyan-400 rounded-full animate-bounce"></div>
-                              <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                              <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                              <span className="text-sm text-white/90 ml-2 font-medium">✨ AI가 응답을 생성중입니다...</span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </ScrollArea>
-
-                  <div className="border-t border-white/20 p-3 md:p-6 bg-white/5 backdrop-blur-sm">
 
                   <div className="border-t border-white/20 p-3 md:p-6 bg-white/5 backdrop-blur-sm">
                     <div className="flex gap-2 md:gap-3">
@@ -530,9 +455,6 @@ const AIAssistant = () => {
                       🚨 긴급상황시 119 또는 자살예방상담 1577-0199로 연락하세요
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
                 </CardContent>
               </Card>
             </div>

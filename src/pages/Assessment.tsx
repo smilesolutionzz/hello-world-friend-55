@@ -528,329 +528,365 @@ const Assessment = () => {
           </div>
 
 
-          {/* 전문 심리검사 섹션 */}
+          {/* 최고 중요도 - 전문 심리검사 섹션 */}
+          <div className="mb-12">
+            {/* 최고 중요도 레이어 */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 via-orange-500/20 to-red-500/20 rounded-3xl blur-sm"></div>
+              <div className="relative bg-gradient-to-r from-red-50 via-orange-50 to-red-50 dark:from-red-950/30 dark:via-orange-950/30 dark:to-red-950/30 rounded-2xl p-8 border-2 border-red-200 dark:border-red-800">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full font-bold text-sm mb-4">
+                    🔥 최고 중요도 - 전문 검사
+                  </div>
+                  <h2 className="text-3xl font-bold text-foreground mb-2">전문 심리검사</h2>
+                  <p className="text-muted-foreground text-lg">
+                    AHI 독창적 도구로 정확한 진단을 받아보세요
+                  </p>
+                </div>
+
+                <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border-2 border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
+                    onClick={() => handleTestTypeSelect('psychological')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-orange-500 text-white text-xs px-2 py-1 opacity-80">3토큰</Badge>
+                    </div>
+                    <h3 className="text-xl font-bold text-brand-gradient mb-3">마음상태 체크</h3>
+                    <p className="text-muted-foreground mb-3 text-sm">연령별 맞춤 심리상태 참고 분석 (진단 아님)</p>
+                    <ul className="space-y-1 text-sm">
+                      <li>• 연령별 맞춤 체크</li>
+                      <li>• AI 참고 분석 + 상담사 연결</li>
+                      <li>• 종합적인 마음상태 확인</li>
+                    </ul>
+                  </div>
+                  
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border-2 border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
+                    onClick={() => handleTestTypeSelect('language')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
+                    </div>
+                    <h3 className="text-xl font-bold text-brand-gradient mb-3">영유아언어발달체크</h3>
+                    <p className="text-muted-foreground mb-3 text-sm">연령에 맞춤 20문항으로 간단 확인 (참고용)</p>
+                    <ul className="space-y-1 text-sm">
+                      <li>• 연령대별 20문항</li>
+                      <li>• 3분 간단 체크</li>
+                      <li>• 즉시 참고결과 확인</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border-2 border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
+                    onClick={() => handleTestTypeSelect('panic')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
+                    </div>
+                    <h3 className="text-xl font-bold text-brand-gradient mb-3">불안감 수준 확인</h3>
+                    <p className="text-muted-foreground mb-3 text-sm">불안감 증상 자가체크 (참고용)</p>
+                    <ul className="space-y-1 text-sm">
+                      <li>• AHI-ANXIETY 21문항</li>
+                      <li>• 신속한 현재상태 확인</li>
+                      <li>• 수준별 참고 분석</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border-2 border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
+                    onClick={() => handleTestTypeSelect('depression')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
+                    </div>
+                    <h3 className="text-xl font-bold text-brand-gradient mb-3">우울감 자가체크</h3>
+                    <p className="text-muted-foreground mb-3 text-sm">우울감 수준 확인 (참고용)</p>
+                    <ul className="space-y-1 text-sm">
+                      <li>• AHI-MOOD 21문항</li>
+                      <li>• AI 참고 분석</li>
+                      <li>• 전문적 해석 제공</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border-2 border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
+                    onClick={() => handleTestTypeSelect('adhd')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
+                    </div>
+                    <h3 className="text-xl font-bold text-brand-gradient mb-3">주의집중력 자가체크</h3>
+                    <p className="text-muted-foreground mb-3 text-sm">연령별 ADHD 증상 확인 (참고용)</p>
+                    <ul className="space-y-1 text-sm">
+                      <li>• 아동청소년/성인 구분</li>
+                      <li>• 주의집중력 증상 체크 18문항</li>
+                      <li>• 증상 영역별 분석</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 중간 중요도 - AIH 전문가 창작 검사 섹션 */}
+          <div className="mb-12">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/15 via-purple-500/15 to-blue-500/15 rounded-3xl blur-sm"></div>
+              <div className="relative bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-blue-950/20 rounded-2xl p-8 border border-blue-200 dark:border-blue-800">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-full font-bold text-sm mb-4">
+                    ⭐ 높은 중요도 - 3분 검사
+                  </div>
+                  <h3 className="text-2xl font-bold text-foreground mb-2">AIH 전문가 창작 검사</h3>
+                  <p className="text-muted-foreground">
+                    심리전문가가 직접 개발한 신뢰도 높은 창작 검사
+                  </p>
+                </div>
+                
+                <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                  {/* 🔥 TOP 인기 3분 테스트 1위 */}
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => setCurrentStep('bigfive-test')}
+                  >
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-red-500 text-white font-bold text-xs px-2 py-1">
+                        🔥 1위
+                      </Badge>
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">5차원 성격 분석</h4>
+                    <p className="text-muted-foreground text-sm mb-3">나의 성격 특성 탐색</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 25문항 5분</li>
+                      <li>• 5가지 영역</li>
+                      <li>• 상세 분석</li>
+                    </ul>
+                  </div>
+
+                  {/* 🔥 TOP 인기 3분 테스트 2위 */}
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => setCurrentStep('attachment-test')}
+                  >
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-orange-500 text-white font-bold text-xs px-2 py-1">
+                        🔥 2위
+                      </Badge>
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">관계유형 진단</h4>
+                    <p className="text-muted-foreground text-sm mb-3">인간관계 패턴 분석</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 20문항 4분</li>
+                      <li>• 4가지 유형</li>
+                      <li>• 관계 조언</li>
+                    </ul>
+                  </div>
+
+                  {/* 🔥 TOP 인기 3분 테스트 3위 */}
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => setCurrentStep('stress-test')}
+                  >
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-yellow-500 text-white font-bold text-xs px-2 py-1">
+                        🔥 3위
+                      </Badge>
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">스트레스지수 측정</h4>
+                    <p className="text-muted-foreground text-sm mb-3">일상 스트레스 수준 체크</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 12문항 4분</li>
+                      <li>• 간편 측정</li>
+                      <li>• 즉시 결과</li>
+                    </ul>
+                  </div>
+
+                  {/* 📈 인기 3분 테스트 4위 */}
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => setCurrentStep('career-test')}
+                  >
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-blue-500 text-white font-bold text-xs px-2 py-1">
+                        📈 4위
+                      </Badge>
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">진로흥미 탐색</h4>
+                    <p className="text-muted-foreground text-sm mb-3">나에게 맞는 직업 찾기</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 30문항 6분</li>
+                      <li>• 6가지 유형</li>
+                      <li>• 직업 추천</li>
+                    </ul>
+                  </div>
+
+                  {/* ⭐ 추천 3분 테스트 */}
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => setCurrentStep('selfesteem-test')}
+                  >
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-purple-500 text-white font-bold text-xs px-2 py-1">
+                        ⭐ 추천
+                      </Badge>
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">자아가치 측정</h4>
+                    <p className="text-muted-foreground text-sm mb-3">나의 자존감 수준 체크</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 15문항 4분</li>
+                      <li>• 자존감 분석</li>
+                      <li>• 향상 가이드</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 재미용 검사 섹션 - 맨 아래로 이동 */}
           <div className="mb-8">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-foreground mb-2">전문 심리검사</h2>
-              <p className="text-muted-foreground">
-                AHI 독창적 도구로 정확한 진단을 받아보세요
-              </p>
-            </div>
-
-            <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
-              <div 
-                className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
-                onClick={() => handleTestTypeSelect('psychological')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-orange-500 text-white text-xs px-2 py-1 opacity-80">3토큰</Badge>
-                </div>
-                <h3 className="text-2xl font-bold text-brand-gradient mb-4">마음상태 체크</h3>
-                <p className="text-muted-foreground mb-4">연령별 맞춤 심리상태 참고 분석 (진단 아님)</p>
-                <ul className="space-y-2 text-sm">
-                  <li>• 연령별 맞춤 체크</li>
-                  <li>• AI 참고 분석 + 상담사 연결</li>
-                  <li>• 종합적인 마음상태 확인</li>
-                </ul>
-              </div>
-              
-              <div 
-                className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
-                onClick={() => handleTestTypeSelect('language')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
-                </div>
-                <h3 className="text-2xl font-bold text-brand-gradient mb-4">영유아언어발달체크</h3>
-                <p className="text-muted-foreground mb-4">연령에 맞춤 20문항으로 간단 확인 (참고용)</p>
-                <ul className="space-y-2 text-sm">
-                  <li>• 연령대별 20문항</li>
-                  <li>• 3분 간단 체크</li>
-                  <li>• 즉시 참고결과 확인</li>
-                </ul>
-              </div>
-
-              <div 
-                className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
-                onClick={() => handleTestTypeSelect('panic')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
-                </div>
-                <h3 className="text-2xl font-bold text-brand-gradient mb-4">불안감 수준 확인</h3>
-                <p className="text-muted-foreground mb-4">불안감 증상 자가체크 (참고용)</p>
-                <ul className="space-y-2 text-sm">
-                  <li>• AHI-ANXIETY 21문항</li>
-                  <li>• 신속한 현재상태 확인</li>
-                  <li>• 수준별 참고 분석</li>
-                </ul>
-              </div>
-
-              <div 
-                className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
-                onClick={() => handleTestTypeSelect('depression')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
-                </div>
-                <h3 className="text-2xl font-bold text-brand-gradient mb-4">우울감 자가체크</h3>
-                <p className="text-muted-foreground mb-4">우울감 수준 확인 (참고용)</p>
-                <ul className="space-y-2 text-sm">
-                  <li>• AHI-MOOD 21문항</li>
-                  <li>• AI 참고 분석</li>
-                  <li>• 전문적 해석 제공</li>
-                </ul>
-              </div>
-
-              <div 
-                className="bg-card hover-glow border border-border rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 relative"
-                onClick={() => handleTestTypeSelect('adhd')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
-                </div>
-                <h3 className="text-2xl font-bold text-brand-gradient mb-4">주의집중력 자가체크</h3>
-                <p className="text-muted-foreground mb-4">연령별 ADHD 증상 확인 (참고용)</p>
-                <ul className="space-y-2 text-sm">
-                  <li>• 아동청소년/성인 구분</li>
-                  <li>• 주의집중력 증상 체크 18문항</li>
-                  <li>• 증상 영역별 분석</li>
-                </ul>
-              </div>
-              
-              <div 
-                className="bg-gradient-to-br from-indigo-500 to-purple-600 hover-glow border border-purple-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
-                onClick={() => handleTestTypeSelect('dream')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-purple-700 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">🌙 AI 꿈 해몽</h3>
-                <p className="text-purple-100 mb-4">당신의 꿈이 담고 있는 의미를 AI가 해석 (재미용)</p>
-                <ul className="space-y-2 text-sm text-purple-100">
-                  <li>• 꿈 내용 입력</li>
-                  <li>• AI 즉시 해몽</li>
-                  <li>• 심리적 의미 해석</li>
-                </ul>
-              </div>
-              
-              <div 
-                className="bg-gradient-to-br from-orange-500 to-red-600 hover-glow border border-orange-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
-                onClick={() => handleTestTypeSelect('saju')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-red-700 text-white text-xs px-2 py-1 opacity-80">8토큰</Badge>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">🔮 AI 사주풀이</h3>
-                <p className="text-orange-100 mb-4">생년월일시로 당신의 운세와 사주를 AI가 분석 (재미용)</p>
-                <ul className="space-y-2 text-sm text-orange-100">
-                  <li>• 생년월일시 입력</li>
-                  <li>• AI 즉시 사주분석</li>
-                  <li>• 운세와 성향 해석</li>
-                </ul>
-              </div>
-
-              {/* 재미있는 테스트 3개 추가 */}
-              <div 
-                className="bg-gradient-to-br from-purple-500 to-pink-600 hover-glow border border-purple-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
-                onClick={() => navigate('/fun-tests?type=past-life-job')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-pink-700 text-white text-xs px-2 py-1 opacity-80">🔥 HOT</Badge>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">👑 내 전생은 어떤 직업?</h3>
-                <p className="text-purple-100 mb-4">AI가 분석하는 나의 전생 직업과 운명! MZ세대가 가장 좋아하는 신비로운 테스트</p>
-                <ul className="space-y-2 text-sm text-purple-100">
-                  <li>• MZ세대</li>
-                  <li>• AI 즉시 해석</li>
-                  <li>• 심리적 의미 해석</li>
-                </ul>
-              </div>
-
-              <div 
-                className="bg-gradient-to-br from-orange-500 to-yellow-600 hover-glow border border-orange-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
-                onClick={() => navigate('/fun-tests?type=animal-face-match')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-yellow-700 text-white text-xs px-2 py-1 opacity-80">📈 TREND</Badge>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">📸 내 얼굴 닮은 동물 찾기</h3>
-                <p className="text-orange-100 mb-4">카메라로 얼굴을 찍으면 AI가 닮은 동물을 찾아줘! 친구들과 비교해보며 웃음폭탄</p>
-                <ul className="space-y-2 text-sm text-orange-100">
-                  <li>• 초등·청소년</li>
-                  <li>• AI 즉시 해석</li>
-                  <li>• 운세와 성향 해석</li>
-                </ul>
-              </div>
-
-              <div 
-                className="bg-gradient-to-br from-green-500 to-blue-600 hover-glow border border-green-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
-                onClick={() => navigate('/fun-tests?type=inner-animal')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-blue-700 text-white text-xs px-2 py-1 opacity-80">✨ NEW</Badge>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">💚 나의 내면 동물 찾기</h3>
-                <p className="text-green-100 mb-4">깊은 심리 분석으로 알아보는 나의 진짜 성격! 40대 이상이 가장 많이 하는 인기 테스트</p>
-                <ul className="space-y-2 text-sm text-green-100">
-                  <li>• 40대+</li>
-                  <li>• AI 즉시 해석</li>
-                  <li>• 심리적 의미 해석</li>
-                </ul>
-              </div>
-
-              <div 
-                className="bg-gradient-to-br from-red-500 to-orange-600 hover-glow border border-red-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
-                onClick={() => navigate('/fun-tests?type=grandma-relationship')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-orange-700 text-white text-xs px-2 py-1 opacity-80">🔥 HOT</Badge>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">👵 욕쟁이 할머니의 연애 진단</h3>
-                <p className="text-red-100 mb-4">할머니가 직설적으로 당신들의 연애를 진단! 솔직한 조언을 들을 각오 되셨나요?</p>
-                <ul className="space-y-2 text-sm text-red-100">
-                  <li>• 커플·부부</li>
-                  <li>• AI 할머니 독설</li>
-                  <li>• 촌철살인 조언</li>
-                </ul>
-              </div>
-
-              <div 
-                className="bg-gradient-to-br from-blue-500 to-indigo-600 hover-glow border border-blue-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
-                onClick={() => navigate('/fun-tests?type=grandpa-marriage')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-indigo-700 text-white text-xs px-2 py-1 opacity-80">🆕 NEW</Badge>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">👴 욕쟁이 할아버지의 부부금술진단</h3>
-                <p className="text-blue-100 mb-4">할아버지가 부부싸움에서 누가 잘못했는지 제대로 판단해드립니다!</p>
-                <ul className="space-y-2 text-sm text-blue-100">
-                  <li>• 부부싸움 분석</li>
-                  <li>• 할아버지 독설</li>
-                  <li>• 배우자 공유 가능</li>
-                </ul>
-              </div>
-
-              <div 
-                className="bg-gradient-to-br from-orange-500 to-yellow-600 hover-glow border border-orange-300 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 text-white relative"
-                onClick={() => navigate('/fun-tests?type=mz_nagging')}
-              >
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-yellow-700 text-white text-xs px-2 py-1 opacity-80">🔥 TREND</Badge>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">🍲 국밥집 이모의 MZ잔소리</h3>
-                <p className="text-orange-100 mb-4">이모가 요즘 애들 걱정해서 해주는 따뜻하고 현실적인 잔소리!</p>
-                <ul className="space-y-2 text-sm text-orange-100">
-                  <li>• MZ세대 맞춤</li>
-                  <li>• 현실적인 조언</li>
-                  <li>• 이모의 따뜻한 걱정</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* AIH 전문가 창작 검사 섹션 */}
-            <div className="mt-12">
-              <div className="text-center mb-8">
-                <h3 className="text-xl font-bold text-foreground mb-2">AIH 전문가 창작 검사</h3>
-                <p className="text-muted-foreground">
-                  심리전문가가 직접 개발한 신뢰도 높은 창작 검사
-                </p>
-              </div>
-              
-              <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-                {/* 🔥 TOP 인기 3분 테스트 1위 */}
-                <div 
-                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
-                  onClick={() => setCurrentStep('bigfive-test')}
-                >
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-red-500 text-white font-bold text-xs px-2 py-1">
-                      🔥 1위
-                    </Badge>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl blur-sm"></div>
+              <div className="relative bg-gradient-to-r from-green-50 via-purple-50 to-pink-50 dark:from-green-950/10 dark:via-purple-950/10 dark:to-pink-950/10 rounded-2xl p-8 border border-green-200 dark:border-green-800">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-full font-bold text-sm mb-4">
+                    🎮 재미용 - 엔터테인먼트
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">5차원 성격 분석</h4>
-                  <p className="text-muted-foreground text-sm mb-3">나의 성격 특성 탐색</p>
-                  <ul className="space-y-1 text-xs">
-                    <li>• 25문항 5분</li>
-                    <li>• 5가지 영역</li>
-                    <li>• 상세 분석</li>
-                  </ul>
+                  <h3 className="text-2xl font-bold text-foreground mb-2">재미있는 AI 검사</h3>
+                  <p className="text-muted-foreground">
+                    친구들과 함께 즐길 수 있는 재미있는 AI 검사들
+                  </p>
                 </div>
-
-                {/* 🔥 TOP 인기 3분 테스트 2위 */}
-                <div 
-                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
-                  onClick={() => setCurrentStep('attachment-test')}
-                >
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-orange-500 text-white font-bold text-xs px-2 py-1">
-                      🔥 2위
-                    </Badge>
+                
+                <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  <div 
+                    className="bg-gradient-to-br from-indigo-500 to-purple-600 hover-glow border border-purple-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => handleTestTypeSelect('dream')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-purple-700 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">🌙 AI 꿈 해몽</h3>
+                    <p className="text-purple-100 mb-3 text-sm">당신의 꿈이 담고 있는 의미를 AI가 해석 (재미용)</p>
+                    <ul className="space-y-1 text-sm text-purple-100">
+                      <li>• 꿈 내용 입력</li>
+                      <li>• AI 즉시 해몽</li>
+                      <li>• 심리적 의미 해석</li>
+                    </ul>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">관계유형 진단</h4>
-                  <p className="text-muted-foreground text-sm mb-3">인간관계 패턴 분석</p>
-                  <ul className="space-y-1 text-xs">
-                    <li>• 20문항 4분</li>
-                    <li>• 4가지 유형</li>
-                    <li>• 관계 조언</li>
-                  </ul>
-                </div>
-
-                {/* 🔥 TOP 인기 3분 테스트 3위 */}
-                <div 
-                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
-                  onClick={() => setCurrentStep('stress-test')}
-                >
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-yellow-500 text-white font-bold text-xs px-2 py-1">
-                      🔥 3위
-                    </Badge>
+                  
+                  <div 
+                    className="bg-gradient-to-br from-orange-500 to-red-600 hover-glow border border-orange-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => handleTestTypeSelect('saju')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-red-700 text-white text-xs px-2 py-1 opacity-80">8토큰</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">🔮 AI 사주풀이</h3>
+                    <p className="text-orange-100 mb-3 text-sm">생년월일시로 당신의 운세와 사주를 AI가 분석 (재미용)</p>
+                    <ul className="space-y-1 text-sm text-orange-100">
+                      <li>• 생년월일시 입력</li>
+                      <li>• AI 즉시 사주분석</li>
+                      <li>• 운세와 성향 해석</li>
+                    </ul>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">스트레스지수 측정</h4>
-                  <p className="text-muted-foreground text-sm mb-3">일상 스트레스 수준 체크</p>
-                  <ul className="space-y-1 text-xs">
-                    <li>• 12문항 4분</li>
-                    <li>• 간편 측정</li>
-                    <li>• 즉시 결과</li>
-                  </ul>
-                </div>
 
-                {/* 📈 인기 3분 테스트 4위 */}
-                <div 
-                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
-                  onClick={() => setCurrentStep('career-test')}
-                >
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-blue-500 text-white font-bold text-xs px-2 py-1">
-                      📈 4위
-                    </Badge>
+                  <div 
+                    className="bg-gradient-to-br from-purple-500 to-pink-600 hover-glow border border-purple-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => navigate('/fun-tests?type=past-life-job')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-pink-700 text-white text-xs px-2 py-1 opacity-80">🔥 HOT</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">👑 내 전생은 어떤 직업?</h3>
+                    <p className="text-purple-100 mb-3 text-sm">AI가 분석하는 나의 전생 직업과 운명!</p>
+                    <ul className="space-y-1 text-sm text-purple-100">
+                      <li>• MZ세대 인기</li>
+                      <li>• AI 즉시 해석</li>
+                      <li>• 신비로운 결과</li>
+                    </ul>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">진로흥미 탐색</h4>
-                  <p className="text-muted-foreground text-sm mb-3">나에게 맞는 직업 찾기</p>
-                  <ul className="space-y-1 text-xs">
-                    <li>• 30문항 6분</li>
-                    <li>• 6가지 유형</li>
-                    <li>• 직업 추천</li>
-                  </ul>
-                </div>
 
-                {/* ⭐ 추천 3분 테스트 */}
-                <div 
-                  className="bg-card hover-glow border border-border rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative"
-                  onClick={() => setCurrentStep('selfesteem-test')}
-                >
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-purple-500 text-white font-bold text-xs px-2 py-1">
-                      ⭐ 추천
-                    </Badge>
+                  <div 
+                    className="bg-gradient-to-br from-orange-500 to-yellow-600 hover-glow border border-orange-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => navigate('/fun-tests?type=animal-face-match')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-yellow-700 text-white text-xs px-2 py-1 opacity-80">📈 TREND</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">📸 내 얼굴 닮은 동물 찾기</h3>
+                    <p className="text-orange-100 mb-3 text-sm">카메라로 얼굴을 찍으면 AI가 닮은 동물을 찾아줘!</p>
+                    <ul className="space-y-1 text-sm text-orange-100">
+                      <li>• 초등·청소년 인기</li>
+                      <li>• AI 즉시 분석</li>
+                      <li>• 친구들과 비교</li>
+                    </ul>
                   </div>
-                  <h4 className="text-lg font-bold text-brand-gradient mb-3">자아가치 측정</h4>
-                  <p className="text-muted-foreground text-sm mb-3">나의 자존감 수준 체크</p>
-                  <ul className="space-y-1 text-xs">
-                    <li>• 15문항 4분</li>
-                    <li>• 자존감 분석</li>
-                    <li>• 향상 가이드</li>
-                  </ul>
+
+                  <div 
+                    className="bg-gradient-to-br from-green-500 to-blue-600 hover-glow border border-green-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => navigate('/fun-tests?type=inner-animal')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-blue-700 text-white text-xs px-2 py-1 opacity-80">✨ NEW</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">💚 나의 내면 동물 찾기</h3>
+                    <p className="text-green-100 mb-3 text-sm">깊은 심리 분석으로 알아보는 나의 진짜 성격!</p>
+                    <ul className="space-y-1 text-sm text-green-100">
+                      <li>• 40대+ 인기</li>
+                      <li>• AI 심리 분석</li>
+                      <li>• 성격 탐구</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-gradient-to-br from-red-500 to-orange-600 hover-glow border border-red-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => navigate('/fun-tests?type=grandma-relationship')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-orange-700 text-white text-xs px-2 py-1 opacity-80">🔥 HOT</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">👵 욕쟁이 할머니의 연애 진단</h3>
+                    <p className="text-red-100 mb-3 text-sm">할머니가 직설적으로 당신들의 연애를 진단!</p>
+                    <ul className="space-y-1 text-sm text-red-100">
+                      <li>• 커플·부부</li>
+                      <li>• 할머니 독설</li>
+                      <li>• 촌철살인 조언</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-gradient-to-br from-blue-500 to-indigo-600 hover-glow border border-blue-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => navigate('/fun-tests?type=grandpa-marriage')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-indigo-700 text-white text-xs px-2 py-1 opacity-80">🆕 NEW</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">👴 욕쟁이 할아버지의 부부금술진단</h3>
+                    <p className="text-blue-100 mb-3 text-sm">할아버지가 부부싸움에서 누가 잘못했는지 제대로 판단!</p>
+                    <ul className="space-y-1 text-sm text-blue-100">
+                      <li>• 부부싸움 분석</li>
+                      <li>• 할아버지 독설</li>
+                      <li>• 배우자 공유 가능</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-gradient-to-br from-orange-500 to-yellow-600 hover-glow border border-orange-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => navigate('/fun-tests?type=mz_nagging')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-yellow-700 text-white text-xs px-2 py-1 opacity-80">🔥 TREND</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">🍲 국밥집 이모의 MZ잔소리</h3>
+                    <p className="text-orange-100 mb-3 text-sm">이모가 요즘 애들 걱정해서 해주는 따뜻하고 현실적인 잔소리!</p>
+                    <ul className="space-y-1 text-sm text-orange-100">
+                      <li>• MZ세대 맞춤</li>
+                      <li>• 현실적인 조언</li>
+                      <li>• 이모의 따뜻한 걱정</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>

@@ -268,7 +268,7 @@ export const AuthForm = () => {
                     )}
                     
                     <div className="space-y-2">
-                      <Label htmlFor="email">이메일</Label>
+                      <Label htmlFor="email">이메일 ID</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -368,7 +368,7 @@ export const AuthForm = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email">이메일 *</Label>
+                      <Label htmlFor="signup-email">이메일 ID *</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input

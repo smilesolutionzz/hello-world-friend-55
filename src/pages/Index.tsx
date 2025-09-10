@@ -27,6 +27,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import { PlatformGuide } from '@/components/onboarding/PlatformGuide';
+import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 
 const Index = () => {
   console.log('🏠 Index.tsx: Index page component rendering...');
@@ -36,12 +37,18 @@ const Index = () => {
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [showGuideComplete, setShowGuideComplete] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     // Check for current user
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+      
+      // 신규 사용자 또는 첫 방문자에게 온보딩 표시
+      if (user && !localStorage.getItem('onboarding_completed')) {
+        setShowOnboarding(true);
+      }
     };
     
     checkUser();
@@ -115,6 +122,11 @@ const Index = () => {
       title: "가이드 완료! 🎉",
       description: "이제 HIGHLIGHT PRO와 함께 심리건강 여정을 시작해보세요!",
     });
+  };
+
+  const handleOnboardingClose = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('onboarding_completed', 'true');
   };
 
   return (
@@ -198,6 +210,12 @@ const Index = () => {
         </main>
       </div>
       <BackToTop />
+      
+      {/* 온보딩 모달 */}
+      <WelcomeOnboarding 
+        isOpen={showOnboarding} 
+        onClose={handleOnboardingClose} 
+      />
     </div>
     </>
   );

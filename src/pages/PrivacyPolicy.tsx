@@ -1,29 +1,36 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const PrivacyPolicy = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-6">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate(-1)}
-            className="mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            뒤로가기
-          </Button>
-        </div>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate(-1)}
+          className="mb-6"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          뒤로가기
+        </Button>
 
-        <Card className="p-8">
-          <h1 className="text-3xl font-bold mb-8 text-center">개인정보처리방침</h1>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-center">
+              개인정보처리방침
+            </CardTitle>
+            <p className="text-center text-muted-foreground">
+              최종 업데이트: 2024년 12월 10일
+            </p>
+          </CardHeader>
           
-          <div className="space-y-8 text-sm leading-relaxed">
+          <CardContent className="space-y-6">
+            <div className="space-y-8 text-sm leading-relaxed">
             <section>
               <h2 className="text-xl font-semibold mb-4">제1조 (개인정보의 처리목적)</h2>
               <p>
@@ -135,7 +142,8 @@ const PrivacyPolicy = () => {
               <h2 className="text-xl font-semibold mb-4">부칙</h2>
               <p>이 개인정보처리방침은 2024년 1월 1일부터 적용됩니다.</p>
             </section>
-          </div>
+            </div>
+          </CardContent>
         </Card>
       </div>
     </div>

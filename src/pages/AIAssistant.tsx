@@ -100,13 +100,13 @@ const AIAssistant = () => {
     },
     {
       id: 'wellness',
-      title: '웰니스',
-      description: '전반적인 건강과 웰빙 관리',
+      title: '라이프케어',
+      description: '전반적인 건강과 생활 관리',
       icon: <Lightbulb className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200',
-      systemPrompt: `당신은 종합적인 웰니스 코치 AI입니다. 사용자의 전반적인 건강과 웰빙을 지원합니다.
+      systemPrompt: `당신은 종합적인 라이프케어 코치 AI입니다. 사용자의 전반적인 건강과 생활을 지원합니다.
 
-🌟 **웰니스 영역:**
+🌟 **라이프케어 영역:**
 - 신체 건강 관리
 - 정신 건강 증진
 - 영양 및 식습관 개선
@@ -115,7 +115,7 @@ const AIAssistant = () => {
 - 사회적 관계 개선
 
 💪 **통합적 접근:**
-- 개인 맞춤형 웰니스 플랜
+- 개인 맞춤형 라이프케어 플랜
 - 작은 변화부터 시작
 - 지속 가능한 습관 형성
 - 균형잡힌 라이프스타일 추구`
@@ -124,7 +124,7 @@ const AIAssistant = () => {
       id: 'secret',
       title: '시크릿톡',
       description: '완전 익명 보장, 그 누구에게도 말 못할 고민',
-      icon: <Shield className="w-5 h-5" />,
+      icon: <MessageCircle className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200',
       systemPrompt: `당신은 완전 익명이 보장되는 시크릿톡 AI입니다. 그 누구에게도 말하지 못했던 깊은 고민을 들어드립니다.
 
@@ -213,7 +213,7 @@ const AIAssistant = () => {
 
 어떤 마음챙김 여행을 시작해볼까요?`,
 
-      wellness: `안녕하세요! 웰니스 코치 AI입니다! 🌟
+      wellness: `안녕하세요! 라이프케어 코치 AI입니다! 🌟
 
 건강하고 균형잡힌 삶을 위한 여정을 함께 시작해요!
 
@@ -223,7 +223,7 @@ const AIAssistant = () => {
 - 수면과 회복 관리
 - 스트레스 관리와 여가 활동
 
-어떤 부분의 웰니스를 개선하고 싶으신가요?`,
+어떤 부분의 라이프케어를 개선하고 싶으신가요?`,
 
       secret: `안녕하세요. 시크릿톡 AI입니다. 🔒
 

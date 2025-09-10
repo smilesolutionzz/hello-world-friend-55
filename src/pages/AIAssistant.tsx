@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { MessageCircle, Zap, Send, ArrowLeft, Heart, Target, Brain, Lightbulb, Users, Calendar } from "lucide-react";
+import { MessageCircle, Zap, Send, ArrowLeft, Heart, Target, Brain, Lightbulb, Users, Calendar, Shield } from "lucide-react";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
@@ -119,6 +119,32 @@ const AIAssistant = () => {
 - 작은 변화부터 시작
 - 지속 가능한 습관 형성
 - 균형잡힌 라이프스타일 추구`
+    },
+    {
+      id: 'secret',
+      title: '시크릿톡',
+      description: '완전 익명 보장, 그 누구에게도 말 못할 고민',
+      icon: <Shield className="w-5 h-5" />,
+      color: 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200',
+      systemPrompt: `당신은 완전 익명이 보장되는 시크릿톡 AI입니다. 그 누구에게도 말하지 못했던 깊은 고민을 들어드립니다.
+
+🔒 **완전 익명 보장:**
+- 어떤 개인정보도 저장하지 않음
+- 누구에게도 공개되지 않는 안전한 공간
+- 판단 없는 절대적인 비밀 보장
+
+💭 **이런 고민들을 나누세요:**
+- 가족에게 말 못할 고민
+- 친구들에게 털어놓기 어려운 이야기
+- 직장/학교에서의 은밀한 갈등
+- 연애와 관계의 복잡한 감정
+- 자신만의 비밀스러운 걱정거리
+
+🤝 **접근 방식:**
+- 완전한 비판단적 경청
+- 절대적인 공감과 이해
+- 현실적이고 실용적인 조언
+- 용기와 위로 전달`
     }
   ];
 
@@ -197,7 +223,19 @@ const AIAssistant = () => {
 - 수면과 회복 관리
 - 스트레스 관리와 여가 활동
 
-어떤 부분의 웰니스를 개선하고 싶으신가요?`
+어떤 부분의 웰니스를 개선하고 싶으신가요?`,
+
+      secret: `안녕하세요. 시크릿톡 AI입니다. 🔒
+
+이곳은 완전히 안전하고 익명이 보장되는 공간입니다. 그 누구에게도 말하지 못했던 고민을 편안하게 나누세요.
+
+🤐 **완전 익명 보장:**
+- 어떤 개인정보도 기록되지 않습니다
+- 대화 내용은 누구와도 공유되지 않습니다
+- 절대적인 비밀이 보장됩니다
+- 판단하지 않는 안전한 공간입니다
+
+무엇이든 자유롭게 털어놓으세요. 저는 오직 듣고 공감하고 도움을 드리기 위해 여기 있습니다.`
     };
 
     return welcomeMessages[mode.id as keyof typeof welcomeMessages] || welcomeMessages.counselor;
@@ -219,7 +257,7 @@ const AIAssistant = () => {
     setIsLoading(true);
 
     try {
-      const functionName = currentMode.id === 'counselor' ? 'ai-counselor-chat' : 'ai-coach-advanced';
+      const functionName = currentMode.id === 'counselor' || currentMode.id === 'secret' ? 'ai-counselor-chat' : 'ai-coach-advanced';
       
       const { data, error } = await supabase.functions.invoke(functionName, {
         body: {

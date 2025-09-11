@@ -24,7 +24,9 @@ import {
   Award,
   AlertCircle,
   CheckCircle,
-  UserCheck
+  UserCheck,
+  Bot,
+  MessageSquare
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import MemberManagement from '@/components/institution/MemberManagement';
@@ -32,6 +34,9 @@ import MemberDetailView from '@/components/institution/MemberDetailView';
 import ComprehensiveReport from '@/components/institution/ComprehensiveReport';
 import { TherapyScheduler } from '@/components/therapy/TherapyScheduler';
 import { InstitutionExpertManagement } from '@/components/institution/InstitutionExpertManagement';
+import TherapistManagement from '@/components/institution/TherapistManagement';
+import ConsultationRequestManager from '@/components/institution/ConsultationRequestManager';
+import AutomatedInstitutionDashboard from '@/components/institution/AutomatedInstitutionDashboard';
 
 interface InstitutionStats {
   total_members: number;
@@ -582,7 +587,11 @@ export default function InstitutionAdmin() {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-8">
+            <TabsTrigger value="automation">
+              <Bot className="h-4 w-4 mr-2" />
+              자동운영
+            </TabsTrigger>
             <TabsTrigger value="overview">
               <BarChart3 className="h-4 w-4 mr-2" />
               개요
@@ -591,20 +600,39 @@ export default function InstitutionAdmin() {
               <Users className="h-4 w-4 mr-2" />
               회원관리
             </TabsTrigger>
-            <TabsTrigger value="experts">
+            <TabsTrigger value="therapists">
               <UserCheck className="h-4 w-4 mr-2" />
-              전문가고용
+              치료사
             </TabsTrigger>
-            <TabsTrigger value="reports">
-              <FileText className="h-4 w-4 mr-2" />
-              종합분석
+            <TabsTrigger value="consultations">
+              <MessageSquare className="h-4 w-4 mr-2" />
+              상담요청
+            </TabsTrigger>
+            <TabsTrigger value="experts">
+              <Award className="h-4 w-4 mr-2" />
+              전문가
             </TabsTrigger>
             <TabsTrigger value="schedule">
               <Calendar className="h-4 w-4 mr-2" />
-              일정관리
+              일정
             </TabsTrigger>
-            <TabsTrigger value="analytics">분석</TabsTrigger>
+            <TabsTrigger value="reports">
+              <FileText className="h-4 w-4 mr-2" />
+              보고서
+            </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="automation" className="space-y-6">
+            {institutionInfo && <AutomatedInstitutionDashboard institutionId={institutionInfo.id} />}
+          </TabsContent>
+
+          <TabsContent value="therapists" className="space-y-6">
+            {institutionInfo && <TherapistManagement institutionId={institutionInfo.id} />}
+          </TabsContent>
+
+          <TabsContent value="consultations" className="space-y-6">
+            {institutionInfo && <ConsultationRequestManager institutionId={institutionInfo.id} />}
+          </TabsContent>
 
           <TabsContent value="schedule" className="space-y-6">
             {institutionInfo && <TherapyScheduler institutionId={institutionInfo.id} />}
@@ -693,28 +721,11 @@ export default function InstitutionAdmin() {
             />
           </TabsContent>
 
-          <TabsContent value="analytics" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>상세 분석</CardTitle>
-                <CardDescription>
-                  고급 분석 기능은 곧 추가될 예정입니다
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <BarChart3 className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">고급 분석 기능</h3>
-                  <p className="text-muted-foreground mb-4">
-                    회원별 상세 분석, 예측 모델, 비교 분석 등의<br />
-                    고급 기능이 준비 중입니다.
-                  </p>
-                  <Button variant="outline" disabled>
-                    준비 중
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+          <TabsContent value="reports" className="space-y-6">
+            <ComprehensiveReport 
+              adminId={institutionInfo?.admin_id || ''} 
+              institutionInfo={institutionInfo}
+            />
           </TabsContent>
         </Tabs>
       </div>

@@ -28,6 +28,7 @@ export const AuthForm = () => {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     phone: '',
     referralCode: ''
   });
@@ -98,6 +99,12 @@ export const AuthForm = () => {
 
     if (!signUpData.password || signUpData.password.length < 6) {
       setError('비밀번호는 6자 이상이어야 합니다.');
+      setLoading(false);
+      return;
+    }
+
+    if (signUpData.password !== signUpData.confirmPassword) {
+      setError('비밀번호가 일치하지 않습니다.');
       setLoading(false);
       return;
     }
@@ -399,6 +406,26 @@ export const AuthForm = () => {
                           autoComplete="new-password"
                         />
                       </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm-password">비밀번호 확인 *</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="confirm-password"
+                          type="password"
+                          placeholder="••••••••"
+                          value={signUpData.confirmPassword}
+                          onChange={(e) => setSignUpData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                          className="pl-10"
+                          required
+                          autoComplete="new-password"
+                        />
+                      </div>
+                      {signUpData.confirmPassword && signUpData.password !== signUpData.confirmPassword && (
+                        <p className="text-xs text-destructive">비밀번호가 일치하지 않습니다.</p>
+                      )}
                     </div>
                     
                     <div className="space-y-2">

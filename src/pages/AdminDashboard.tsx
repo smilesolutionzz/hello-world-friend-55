@@ -46,6 +46,9 @@ import MemberDetailView from '@/components/institution/MemberDetailView';
 import { AdminNotifications } from '@/components/AdminNotifications';
 import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
 import { UserDataViewer } from '@/components/admin/UserDataViewer';
+import { EnhancedUserDataViewer } from '@/components/admin/EnhancedUserDataViewer';
+import { ExpertManagement } from '@/components/admin/ExpertManagement';
+import { InstitutionManagement } from '@/components/admin/InstitutionManagement';
 import AdminTokenAdd from '@/components/AdminTokenAdd';
 import { SystemMonitoring } from '@/components/admin/SystemMonitoring';
 import { AutomatedModeration } from '@/components/admin/AutomatedModeration';
@@ -984,17 +987,14 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="user-data">
-            <Card>
-              <CardHeader>
-                <CardTitle>사용자 데이터 조회</CardTitle>
-                <CardDescription>
-                  특정 사용자의 검사 결과와 관찰일지를 조회할 수 있습니다.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <UserDataViewer />
-              </CardContent>
-            </Card>
+            <EnhancedUserDataViewer />
+          </TabsContent>
+
+          <TabsContent value="users">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <ExpertManagement />
+              <InstitutionManagement />
+            </div>
           </TabsContent>
 
           <TabsContent value="users">

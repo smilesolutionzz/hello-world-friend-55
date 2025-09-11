@@ -373,44 +373,46 @@ export default function InstitutionAdmin() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      {/* Header - Mobile Optimized */}
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
+            <div className="flex items-center gap-3 md:gap-4">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate('/')}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 text-xs md:text-sm"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowLeft className="h-3 w-3 md:h-4 md:w-4" />
                 홈으로
               </Button>
               <div>
                 <div className="flex items-center gap-2">
-                  <Building className="h-6 w-6 text-primary" />
-                  <h1 className="text-2xl font-bold text-foreground">
+                  <Building className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                  <h1 className="text-lg md:text-2xl font-bold text-foreground">
                     {institutionInfo?.institution_name || '제휴기관 관리자'}
                   </h1>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground">
                   회원 관리 및 종합 분석 대시보드
                 </p>
               </div>
             </div>
             
             <div className="flex items-center gap-2">
-              <Button onClick={() => loadInstitutionData(institutionInfo?.admin_id || '')} variant="outline" size="sm">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                새로고침
+              <Button onClick={() => loadInstitutionData(institutionInfo?.admin_id || '')} variant="outline" size="sm" className="text-xs md:text-sm">
+                <RefreshCw className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                <span className="hidden md:inline">새로고침</span>
+                <span className="md:hidden">갱신</span>
               </Button>
               
               <Dialog open={showSettings} onOpenChange={setShowSettings}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    기관 설정
+                  <Button variant="outline" size="sm" className="text-xs md:text-sm">
+                    <Settings className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    <span className="hidden md:inline">기관 설정</span>
+                    <span className="md:hidden">설정</span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
@@ -527,199 +529,247 @@ export default function InstitutionAdmin() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
+        {/* Stats Cards - Mobile Optimized */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
+          <Card className="bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">총 회원수</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs md:text-sm font-medium text-blue-800">총 회원수</CardTitle>
+              <Users className="h-3 w-3 md:h-4 md:w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.total_members || 0}</div>
-              <p className="text-xs text-muted-foreground">
-                활성 회원 {stats?.active_members || 0}명
+              <div className="text-lg md:text-2xl font-bold text-blue-900">{stats?.total_members || 0}</div>
+              <p className="text-xs text-blue-700">
+                활성 {stats?.active_members || 0}명
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">총 검사</CardTitle>
-              <ClipboardList className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs md:text-sm font-medium text-green-800">총 검사</CardTitle>
+              <ClipboardList className="h-3 w-3 md:h-4 md:w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.total_tests || 0}</div>
-              <p className="text-xs text-muted-foreground">
-                이번 달 {stats?.this_month_tests || 0}건
+              <div className="text-lg md:text-2xl font-bold text-green-900">{stats?.total_tests || 0}</div>
+              <p className="text-xs text-green-700">
+                이달 {stats?.this_month_tests || 0}건
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">평균 점수</CardTitle>
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs md:text-sm font-medium text-purple-800">평균 점수</CardTitle>
+              <BarChart3 className="h-3 w-3 md:h-4 md:w-4 text-purple-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.avg_score.toFixed(1) || '0.0'}</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="text-lg md:text-2xl font-bold text-purple-900">{stats?.avg_score.toFixed(1) || '0.0'}</div>
+              <p className="text-xs text-purple-700">
                 전체 평균
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-r from-orange-50 to-orange-100 border-orange-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">개선율</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs md:text-sm font-medium text-orange-800">개선율</CardTitle>
+              <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-orange-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-lg md:text-2xl font-bold text-orange-900">
                 {stats?.improvement_rate ? stats.improvement_rate.toFixed(1) : '0.0'}%
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-orange-700">
                 평균 개선도
               </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Content Tabs */}
+        {/* Main Content Tabs - Consolidated for mobile */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-8">
-            <TabsTrigger value="automation">
-              <Bot className="h-4 w-4 mr-2" />
-              자동운영
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
+            <TabsTrigger value="overview" className="flex flex-col gap-1 h-16 md:h-10 md:flex-row">
+              <BarChart3 className="h-4 w-4" />
+              <span className="text-xs md:text-sm">개요 & 자동운영</span>
             </TabsTrigger>
-            <TabsTrigger value="overview">
-              <BarChart3 className="h-4 w-4 mr-2" />
-              개요
+            <TabsTrigger value="management" className="flex flex-col gap-1 h-16 md:h-10 md:flex-row">
+              <Users className="h-4 w-4" />
+              <span className="text-xs md:text-sm">회원 & 치료사</span>
             </TabsTrigger>
-            <TabsTrigger value="members">
-              <Users className="h-4 w-4 mr-2" />
-              회원관리
+            <TabsTrigger value="operations" className="flex flex-col gap-1 h-16 md:h-10 md:flex-row">
+              <Calendar className="h-4 w-4" />
+              <span className="text-xs md:text-sm">일정 & 상담</span>
             </TabsTrigger>
-            <TabsTrigger value="therapists">
-              <UserCheck className="h-4 w-4 mr-2" />
-              치료사
-            </TabsTrigger>
-            <TabsTrigger value="consultations">
-              <MessageSquare className="h-4 w-4 mr-2" />
-              상담요청
-            </TabsTrigger>
-            <TabsTrigger value="vouchers">
-              <FileText className="h-4 w-4 mr-2" />
-              바우처일지
-            </TabsTrigger>
-            <TabsTrigger value="schedule">
-              <Calendar className="h-4 w-4 mr-2" />
-              일정
-            </TabsTrigger>
-            <TabsTrigger value="reports">
-              <ClipboardList className="h-4 w-4 mr-2" />
-              보고서
+            <TabsTrigger value="reports" className="flex flex-col gap-1 h-16 md:h-10 md:flex-row">
+              <FileText className="h-4 w-4" />
+              <span className="text-xs md:text-sm">보고서 & 일지</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="automation" className="space-y-6">
-            {institutionInfo && <AutomatedInstitutionDashboard institutionId={institutionInfo.id} />}
-          </TabsContent>
-
-          <TabsContent value="therapists" className="space-y-6">
-            {institutionInfo && <TherapistManagement institutionId={institutionInfo.id} />}
-          </TabsContent>
-
-          <TabsContent value="vouchers" className="space-y-6">
-            {institutionInfo && <VoucherReportGenerator institutionId={institutionInfo.id} />}
-          </TabsContent>
-
-          <TabsContent value="schedule" className="space-y-6">
-            {institutionInfo && <TherapyScheduler institutionId={institutionInfo.id} />}
-          </TabsContent>
-
+          {/* 개요 & 자동운영 */}
           <TabsContent value="overview" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>기관 현황 요약</CardTitle>
-                <CardDescription>
-                  최근 활동 및 주요 지표
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-2">
-                    <h4 className="font-medium">이번 달 활동</h4>
-                    <div className="space-y-1">
-                      <div className="flex justify-between">
-                        <span className="text-sm">신규 검사</span>
-                        <span className="text-sm font-medium">{stats?.this_month_tests || 0}건</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm">신규 관찰일지</span>
-                        <span className="text-sm font-medium">{stats?.this_month_observations || 0}건</span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 기관 현황 요약 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    기관 현황 요약
+                  </CardTitle>
+                  <CardDescription>
+                    최근 활동 및 주요 지표
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <h4 className="font-medium">이번 달 활동</h4>
+                      <div className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-sm">신규 검사</span>
+                          <span className="text-sm font-medium">{stats?.this_month_tests || 0}건</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm">신규 관찰일지</span>
+                          <span className="text-sm font-medium">{stats?.this_month_observations || 0}건</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <h4 className="font-medium">운영 현황</h4>
-                    <div className="space-y-1">
-                      <div className="flex justify-between">
-                        <span className="text-sm">활성 회원률</span>
-                        <span className="text-sm font-medium">
-                          {stats?.total_members ? 
-                            ((stats.active_members / stats.total_members) * 100).toFixed(1) : 0}%
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm">평균 검사 횟수</span>
-                        <span className="text-sm font-medium">
-                          {stats?.total_members ? 
-                            (stats.total_tests / stats.total_members).toFixed(1) : 0}회
-                        </span>
+                    <div className="space-y-2">
+                      <h4 className="font-medium">운영 현황</h4>
+                      <div className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-sm">활성 회원률</span>
+                          <span className="text-sm font-medium">
+                            {stats?.total_members ? 
+                              ((stats.active_members / stats.total_members) * 100).toFixed(1) : 0}%
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm">평균 검사 횟수</span>
+                          <span className="text-sm font-medium">
+                            {stats?.total_members ? 
+                              (stats.total_tests / stats.total_members).toFixed(1) : 0}회
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <h4 className="font-medium">성과 지표</h4>
-                    <div className="space-y-1">
-                      <div className="flex justify-between">
-                        <span className="text-sm">평균 점수</span>
-                        <Badge variant={stats?.avg_score && stats.avg_score > 70 ? "default" : "secondary"}>
-                          {stats?.avg_score.toFixed(1) || '0.0'}점
-                        </Badge>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm">개선율</span>
-                        <Badge variant={stats?.improvement_rate && stats.improvement_rate > 0 ? "default" : "secondary"}>
-                          {stats?.improvement_rate ? stats.improvement_rate.toFixed(1) : '0.0'}%
-                        </Badge>
+                    <div className="space-y-2">
+                      <h4 className="font-medium">성과 지표</h4>
+                      <div className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-sm">평균 점수</span>
+                          <Badge variant={stats?.avg_score && stats.avg_score > 70 ? "default" : "secondary"}>
+                            {stats?.avg_score.toFixed(1) || '0.0'}점
+                          </Badge>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm">개선율</span>
+                          <Badge variant={stats?.improvement_rate && stats.improvement_rate > 0 ? "default" : "secondary"}>
+                            {stats?.improvement_rate ? stats.improvement_rate.toFixed(1) : '0.0'}%
+                          </Badge>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              {/* 자동운영 대시보드 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bot className="h-5 w-5" />
+                    AI 자동운영
+                  </CardTitle>
+                  <CardDescription>
+                    AI 기반 모니터링 및 자동화
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {institutionInfo && <AutomatedInstitutionDashboard institutionId={institutionInfo.id} />}
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
-          <TabsContent value="members" className="space-y-6">
-            <MemberManagement adminId={institutionInfo?.admin_id || ''} />
+          {/* 회원 & 치료사 관리 */}
+          <TabsContent value="management" className="space-y-6">
+            <Tabs defaultValue="members" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="members" className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  회원 관리
+                </TabsTrigger>
+                <TabsTrigger value="therapists" className="flex items-center gap-2">
+                  <UserCheck className="h-4 w-4" />
+                  치료사 관리
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="members" className="mt-6">
+                <MemberManagement adminId={institutionInfo?.admin_id || ''} />
+              </TabsContent>
+              
+              <TabsContent value="therapists" className="mt-6">
+                {institutionInfo && <TherapistManagement institutionId={institutionInfo.id} />}
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
+          {/* 일정 & 상담 */}
+          <TabsContent value="operations" className="space-y-6">
+            <Tabs defaultValue="schedule" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="schedule" className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  일정 관리
+                </TabsTrigger>
+                <TabsTrigger value="consultations" className="flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4" />
+                  상담 요청
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="schedule" className="mt-6">
+                {institutionInfo && <TherapyScheduler institutionId={institutionInfo.id} />}
+              </TabsContent>
+              
+              <TabsContent value="consultations" className="mt-6">
+                {institutionInfo && <ConsultationRequestManager institutionId={institutionInfo.id} />}
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+
+          {/* 보고서 & 바우처일지 */}
           <TabsContent value="reports" className="space-y-6">
-            <ComprehensiveReport 
-              adminId={institutionInfo?.admin_id || ''} 
-              institutionInfo={institutionInfo}
-            />
-          </TabsContent>
-
-          <TabsContent value="reports" className="space-y-6">
-            <ComprehensiveReport 
-              adminId={institutionInfo?.admin_id || ''} 
-              institutionInfo={institutionInfo}
-            />
+            <Tabs defaultValue="vouchers" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="vouchers" className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  바우처 일지
+                </TabsTrigger>
+                <TabsTrigger value="comprehensive" className="flex items-center gap-2">
+                  <ClipboardList className="h-4 w-4" />
+                  종합 보고서
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="vouchers" className="mt-6">
+                {institutionInfo && <VoucherReportGenerator institutionId={institutionInfo.id} />}
+              </TabsContent>
+              
+              <TabsContent value="comprehensive" className="mt-6">
+                <ComprehensiveReport 
+                  adminId={institutionInfo?.admin_id || ''} 
+                  institutionInfo={institutionInfo}
+                />
+              </TabsContent>
+            </Tabs>
           </TabsContent>
         </Tabs>
       </div>

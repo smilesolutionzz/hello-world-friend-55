@@ -33,10 +33,10 @@ import MemberManagement from '@/components/institution/MemberManagement';
 import MemberDetailView from '@/components/institution/MemberDetailView';
 import ComprehensiveReport from '@/components/institution/ComprehensiveReport';
 import { TherapyScheduler } from '@/components/therapy/TherapyScheduler';
-import { InstitutionExpertManagement } from '@/components/institution/InstitutionExpertManagement';
 import TherapistManagement from '@/components/institution/TherapistManagement';
 import ConsultationRequestManager from '@/components/institution/ConsultationRequestManager';
 import AutomatedInstitutionDashboard from '@/components/institution/AutomatedInstitutionDashboard';
+import VoucherReportGenerator from '@/components/institution/VoucherReportGenerator';
 
 interface InstitutionStats {
   total_members: number;
@@ -608,16 +608,16 @@ export default function InstitutionAdmin() {
               <MessageSquare className="h-4 w-4 mr-2" />
               상담요청
             </TabsTrigger>
-            <TabsTrigger value="experts">
-              <Award className="h-4 w-4 mr-2" />
-              전문가
+            <TabsTrigger value="vouchers">
+              <FileText className="h-4 w-4 mr-2" />
+              바우처일지
             </TabsTrigger>
             <TabsTrigger value="schedule">
               <Calendar className="h-4 w-4 mr-2" />
               일정
             </TabsTrigger>
             <TabsTrigger value="reports">
-              <FileText className="h-4 w-4 mr-2" />
+              <ClipboardList className="h-4 w-4 mr-2" />
               보고서
             </TabsTrigger>
           </TabsList>
@@ -630,8 +630,8 @@ export default function InstitutionAdmin() {
             {institutionInfo && <TherapistManagement institutionId={institutionInfo.id} />}
           </TabsContent>
 
-          <TabsContent value="consultations" className="space-y-6">
-            {institutionInfo && <ConsultationRequestManager institutionId={institutionInfo.id} />}
+          <TabsContent value="vouchers" className="space-y-6">
+            {institutionInfo && <VoucherReportGenerator institutionId={institutionInfo.id} />}
           </TabsContent>
 
           <TabsContent value="schedule" className="space-y-6">
@@ -706,12 +706,6 @@ export default function InstitutionAdmin() {
 
           <TabsContent value="members" className="space-y-6">
             <MemberManagement adminId={institutionInfo?.admin_id || ''} />
-          </TabsContent>
-
-          <TabsContent value="experts" className="space-y-6">
-            <InstitutionExpertManagement
-              institutionId={institutionInfo?.id || ''}
-            />
           </TabsContent>
 
           <TabsContent value="reports" className="space-y-6">

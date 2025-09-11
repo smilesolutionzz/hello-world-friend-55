@@ -96,6 +96,8 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
         구글로 계속하기
       </Button>
 
+      {/* 카카오 로그인은 앱 심사 거절로 인해 임시 비활성화 */}
+      {/* 
       <Button
         type="button"
         variant="outline"
@@ -111,6 +113,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
         </svg>
         카카오로 계속하기
       </Button>
+      */}
     </div>
   );
 };

@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { 
   FileText,
@@ -21,7 +22,9 @@ import {
   Zap,
   Filter,
   Search,
-  Plus
+  Plus,
+  Eye,
+  Copy
 } from 'lucide-react';
 
 interface VoucherType {
@@ -53,6 +56,8 @@ interface GeneratedReport {
   total_sessions: number;
   generated_at: string;
   status: string;
+  content?: string;
+  ai_response?: any;
 }
 
 interface VoucherReportGeneratorProps {
@@ -118,6 +123,7 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
   const [generationProgress, setGenerationProgress] = useState<number>(0);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
+  const [selectedReport, setSelectedReport] = useState<GeneratedReport | null>(null);
   const { toast } = useToast();
 
   const [reportForm, setReportForm] = useState({
@@ -278,7 +284,9 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
         period_end: reportForm.period_end,
         total_sessions: relevantSessions.length,
         generated_at: new Date().toISOString().split('T')[0],
-        status: 'completed'
+        status: 'completed',
+        content: response.data?.content || '',
+        ai_response: response.data
       };
 
       setGeneratedReports(prev => [newReport, ...prev]);
@@ -313,45 +321,18 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
 
   const downloadReport = async (reportId: string) => {
     try {
-      toast({
-        title: "다운로드 시작",
-        description: "PDF 보고서를 생성하고 있습니다...",
-      });
-
       const report = generatedReports.find(r => r.id === reportId);
       if (!report) {
         throw new Error('보고서를 찾을 수 없습니다.');
       }
 
-      // 해당 보고서 기간의 세션 데이터 수집
-      const relevantSessions = sessionRecords.filter(session => 
-        session.voucher_type === report.voucher_type &&
-        session.session_date >= report.period_start &&
-        session.session_date <= report.period_end
-      );
-
-      // PDF 생성을 위한 Edge Function 호출
-      const response = await supabase.functions.invoke('generate-voucher-report-pdf', {
-        body: {
-          reportData: {
-            ...report,
-            sessions: relevantSessions,
-            institutionId: institutionId
-          }
-        }
-      });
-
-      if (response.error) {
-        throw new Error(response.error.message || 'PDF 생성 실패');
-      }
-
-      // PDF 다운로드
-      const { pdfData } = response.data;
-      const blob = new Blob([new Uint8Array(pdfData)], { type: 'application/pdf' });
+      // 텍스트 파일로 다운로드
+      const reportContent = generateReportText(report);
+      const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${report.voucher_type}_보고서_${report.period_start}_${report.period_end}.pdf`;
+      link.download = `${report.voucher_type}_보고서_${report.period_start}_${report.period_end}.txt`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -359,7 +340,7 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
 
       toast({
         title: "다운로드 완료",
-        description: "PDF 보고서가 다운로드되었습니다.",
+        description: "보고서가 텍스트 파일로 다운로드되었습니다.",
       });
       
     } catch (error: any) {
@@ -370,6 +351,60 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
         variant: "destructive",
       });
     }
+  };
+
+  const copyReportContent = async (report: GeneratedReport) => {
+    try {
+      const content = generateReportText(report);
+      await navigator.clipboard.writeText(content);
+      toast({
+        title: "복사 완료",
+        description: "보고서 내용이 클립보드에 복사되었습니다.",
+      });
+    } catch (error) {
+      toast({
+        title: "복사 실패",
+        description: "클립보드 복사 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const generateReportText = (report: GeneratedReport) => {
+    const sessions = sessionRecords.filter(session => 
+      session.voucher_type === report.voucher_type &&
+      session.session_date >= report.period_start &&
+      session.session_date <= report.period_end
+    );
+
+    return `
+=== ${report.voucher_type} 치료 보고서 ===
+
+보고 기간: ${report.period_start} ~ ${report.period_end}
+총 세션 수: ${report.total_sessions}회
+생성일: ${report.generated_at}
+
+=== 세션 상세 내역 ===
+${sessions.map(session => `
+• 날짜: ${session.session_date}
+• 대상자: ${session.client_name}
+• 담당자: ${session.therapist_name}
+• 시간: ${session.duration}분
+• 출석: ${session.attendance_status}
+• 내용: ${session.session_notes}
+• 진전사항: ${session.progress_notes}
+`).join('\n')}
+
+=== AI 생성 내용 ===
+${report.content || 'AI 생성 내용이 없습니다.'}
+
+=== 바우처 요구사항 ===
+${report.ai_response?.metadata?.sections?.map((section: string) => `• ${section}`).join('\n') || ''}
+
+필수 항목: ${report.ai_response?.metadata?.requiredFields?.join(', ') || ''}
+
+생성 시간: ${report.ai_response?.metadata?.generatedAt || ''}
+    `.trim();
   };
 
   const getVoucherBadgeColor = (category: string) => {
@@ -584,15 +619,52 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
                     </div>
 
                     <div className="flex gap-2 self-start md:self-center">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => downloadReport(report.id)}
-                        className="bg-white hover:bg-gray-50"
-                      >
-                        <Download className="w-4 h-4 mr-2" />
-                        PDF 다운로드
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setSelectedReport(report)}
+                            className="bg-white hover:bg-gray-50"
+                          >
+                            <Eye className="w-4 h-4 mr-2" />
+                            상세보기
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>{report.voucher_type} 보고서</DialogTitle>
+                            <DialogDescription>
+                              {report.period_start} ~ {report.period_end}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => copyReportContent(report)}
+                              >
+                                <Copy className="w-4 h-4 mr-2" />
+                                복사
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => downloadReport(report.id)}
+                              >
+                                <Download className="w-4 h-4 mr-2" />
+                                텍스트 다운로드
+                              </Button>
+                            </div>
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                              <pre className="whitespace-pre-wrap text-sm">
+                                {generateReportText(report)}
+                              </pre>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </div>
                 </CardContent>

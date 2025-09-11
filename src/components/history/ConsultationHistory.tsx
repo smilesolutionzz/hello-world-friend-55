@@ -42,23 +42,41 @@ const ConsultationHistory = () => {
 
   const loadConsultations = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
-        .from('chat_rooms')
-        .select('*')
+        .from('consultations')
+        .select(`
+          *,
+          experts (
+            full_name,
+            specializations
+          )
+        `)
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      // Transform chat rooms to consultation format
-      const consultations = data?.map(room => ({
-        id: room.id,
-        expert_name: '온라인 상담사',
+      
+      // Transform consultations to expected format
+      const consultations = data?.map(consultation => ({
+        id: consultation.id,
+        expert_name: consultation.experts?.full_name || 'AI 상담사',
+        expert_specialization: consultation.experts?.specializations?.[0] || 'AI 통합상담',
         session_type: 'individual' as const,
-        status: room.status as 'scheduled' | 'completed' | 'cancelled',
-        created_at: room.created_at,
+        status: consultation.status as 'scheduled' | 'completed' | 'cancelled',
+        duration_minutes: consultation.duration_minutes,
+        notes: consultation.notes,
+        created_at: consultation.created_at,
         profile: {
           display_name: '사용자'
         }
       })) || [];
+      
       setConsultations(consultations);
     } catch (error) {
       console.error('Error loading consultations:', error);

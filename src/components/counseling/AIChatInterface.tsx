@@ -29,49 +29,69 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  // Save consultation to timeline
-  const saveConsultationToTimeline = async (sessionId: string, summary: string) => {
+  // Save consultation to database
+  const saveConsultationToDatabase = async (sessionId: string, summary: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // 사용자 프로필 조회
+      // Create consultation record
+      const { data: consultation, error: consultationError } = await supabase
+        .from('consultations')
+        .insert({
+          user_id: user.id,
+          expert_id: null, // AI consultation
+          consultation_type: 'text',
+          status: 'completed',
+          notes: summary,
+          duration_minutes: Math.ceil(messages.length * 2), // Estimate duration
+          price: 0 // Free AI consultation
+        })
+        .select()
+        .single();
+
+      if (consultationError) {
+        console.error('Error saving consultation:', consultationError);
+        return;
+      }
+
+      // Also save to timeline activities
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
         .eq('user_id', user.id)
         .single();
 
-      if (!profile) return;
+      if (profile) {
+        const { data: familyMember } = await supabase
+          .from('family_members')
+          .select('family_id')
+          .eq('user_id', user.id)
+          .maybeSingle();
 
-      // 가족 정보 조회
-      const { data: familyMember } = await supabase
-        .from('family_members')
-        .select('family_id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+        await supabase
+          .from('timeline_activities')
+          .insert({
+            family_id: familyMember?.family_id || null,
+            member_id: profile.id,
+            type: 'CONSULT',
+            title: 'AI 상담 세션',
+            summary: summary,
+            tags: ['AI상담', '통합건강'],
+            files: [],
+            actor: { role: 'user', name: user.email || '사용자' },
+            meta: { 
+              consultation_id: consultation.id,
+              session_id: sessionId, 
+              message_count: messages.length,
+              session_date: new Date().toISOString()
+            }
+          });
+      }
 
-      await supabase
-        .from('timeline_activities')
-        .insert({
-          family_id: familyMember?.family_id || null,
-          member_id: profile.id,
-          type: 'CONSULT',
-          title: 'AI 상담 세션',
-          summary: summary,
-          tags: ['AI상담', '통합건강'],
-          files: [],
-          actor: { role: 'user', name: user.email || '사용자' },
-          meta: { 
-            session_id: sessionId, 
-            message_count: messages.length,
-            session_date: new Date().toISOString()
-          }
-        });
-
-      console.log('Consultation saved to timeline');
+      console.log('Consultation saved successfully');
     } catch (error) {
-      console.error('Error saving consultation to timeline:', error);
+      console.error('Error saving consultation:', error);
     }
   };
 
@@ -180,10 +200,10 @@ const AIChatInterface = ({ assessmentResults, onClose }: AIChatInterfaceProps) =
       setIsLoading(false);
       
       // Save consultation if it's been going for a while
-      if (messages.length >= 5) {
+      if (messages.length >= 4) {
         const sessionId = crypto.randomUUID();
-        const summary = `총 ${messages.length}개의 메시지로 구성된 AI 상담 세션이 완료되었습니다.`;
-        await saveConsultationToTimeline(sessionId, summary);
+        const summary = `총 ${messages.length + 1}개의 메시지로 구성된 AI 상담 세션이 완료되었습니다. 마지막 상담 내용: "${userMessage.content.substring(0, 50)}..."`;
+        await saveConsultationToDatabase(sessionId, summary);
       }
     }
   };

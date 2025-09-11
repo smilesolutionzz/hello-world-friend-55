@@ -37,17 +37,17 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   const handleKakaoLogin = async () => {
     try {
       setIsLoading?.(true);
-      
-      // 카카오 로그인 구현 예정 알림
-      toast.info('카카오 로그인은 곧 지원 예정입니다.');
-      
-      // 카카오 로그인 구현 시:
-      // const { data, error } = await supabase.auth.signInWithOAuth({
-      //   provider: 'kakao',
-      //   options: {
-      //     redirectTo: `${window.location.origin}/auth`,
-      //   }
-      // });
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'kakao',
+        options: {
+          redirectTo: `${window.location.origin}/auth`,
+        }
+      });
+
+      if (error) {
+        console.error('Kakao login error:', error);
+        toast.error('카카오 로그인 중 오류가 발생했습니다.');
+      }
     } catch (error) {
       console.error('Kakao login error:', error);
       toast.error('카카오 로그인 중 오류가 발생했습니다.');

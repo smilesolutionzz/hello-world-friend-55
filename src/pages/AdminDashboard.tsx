@@ -45,6 +45,7 @@ import MemberDetailView from '@/components/institution/MemberDetailView';
 import { AdminNotifications } from '@/components/AdminNotifications';
 import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
 import { UserDataViewer } from '@/components/admin/UserDataViewer';
+import AdminTokenAdd from '@/components/AdminTokenAdd';
 
 interface AdminAnalytics {
   total_users: number;
@@ -647,6 +648,22 @@ export default function AdminDashboard() {
                     </TabsList>
                     
                     <TabsContent value="general" className="space-y-4">
+                      <div className="grid gap-6">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle>토큰 관리</CardTitle>
+                            <CardDescription>
+                              사용자에게 토큰을 직접 지급할 수 있습니다.
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <AdminTokenAdd />
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </TabsContent>
+                    
+                    <TabsContent value="users" className="space-y-4">
                       <Card>
                         <CardHeader>
                           <CardTitle>플랫폼 설정</CardTitle>

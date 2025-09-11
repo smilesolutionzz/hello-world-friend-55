@@ -25,9 +25,9 @@ serve(async (req) => {
       }
     );
 
-    const { email, tokens } = await req.json();
+    const { targetEmail, tokenAmount } = await req.json();
 
-    console.log('Adding tokens:', { email, tokens });
+    console.log('Adding tokens:', { targetEmail, tokenAmount });
 
     // Find user by email
     const { data: user, error: userError } = await supabase.auth.admin.listUsers();
@@ -36,10 +36,10 @@ serve(async (req) => {
       throw new Error(`Failed to fetch users: ${userError.message}`);
     }
 
-    const targetUser = user.users.find(u => u.email === email);
+    const targetUser = user.users.find(u => u.email === targetEmail);
     
     if (!targetUser) {
-      throw new Error(`User with email ${email} not found`);
+      throw new Error(`User with email ${targetEmail} not found`);
     }
 
     console.log('Found user:', targetUser.id);
@@ -47,7 +47,7 @@ serve(async (req) => {
     // Add tokens using the admin function
     const { data: result, error: tokenError } = await supabase.rpc('admin_add_tokens', {
       target_user_id: targetUser.id,
-      token_amount: tokens
+      token_amount: tokenAmount
     });
 
     if (tokenError) {
@@ -59,7 +59,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Successfully added ${tokens} tokens to ${email}`,
+        message: `Successfully added ${tokenAmount} tokens to ${targetEmail}`,
         user_id: targetUser.id
       }),
       { 

@@ -35,7 +35,7 @@ import ComprehensiveReport from '@/components/institution/ComprehensiveReport';
 import { TherapyScheduler } from '@/components/therapy/TherapyScheduler';
 import TherapistManagement from '@/components/institution/TherapistManagement';
 import ConsultationRequestManager from '@/components/institution/ConsultationRequestManager';
-import AutomatedInstitutionDashboard from '@/components/institution/AutomatedInstitutionDashboard';
+import { AutomatedInstitutionDashboard } from '@/components/institution/AutomatedInstitutionDashboard';
 import VoucherReportGenerator from '@/components/institution/VoucherReportGenerator';
 
 interface InstitutionStats {

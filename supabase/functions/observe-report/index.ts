@@ -273,7 +273,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
@@ -299,7 +299,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
             content: prompt
           }
         ],
-        max_completion_tokens: isDetailedMode ? 6000 : 2000,
+        max_tokens: isDetailedMode ? 6000 : 2000,
       }),
     });
 
@@ -308,7 +308,17 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     }
 
     const aiResponse = await response.json();
+    logStep('Full OpenAI response', { response: aiResponse });
+    
+    if (!aiResponse.choices || !aiResponse.choices[0] || !aiResponse.choices[0].message) {
+      throw new Error('Invalid OpenAI response structure');
+    }
+    
     const analysisText = aiResponse.choices[0].message.content;
+    
+    if (!analysisText || typeof analysisText !== 'string') {
+      throw new Error('OpenAI returned empty or invalid content');
+    }
     
     logStep('OpenAI response received', { textLength: analysisText.length });
 

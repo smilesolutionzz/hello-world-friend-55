@@ -149,33 +149,39 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
 
   const fetchSessionRecords = async () => {
     try {
-      // 샘플 데이터 - 실제 구현시 데이터베이스 연동
-      const sampleRecords: SessionRecord[] = [
-        {
-          id: '1',
-          client_name: '김철수',
-          therapist_name: '박치료사',
-          session_date: '2024-01-15',
-          duration: 50,
-          voucher_type: '언어발달지원',
-          session_notes: '언어 표현 능력 향상 훈련',
-          progress_notes: '단어 조합 능력 개선됨',
-          attendance_status: '출석'
-        },
-        {
-          id: '2',
-          client_name: '이영희',
-          therapist_name: '최치료사',
-          session_date: '2024-01-16',
-          duration: 40,
-          voucher_type: '발달재활서비스',
-          session_notes: '인지능력 발달 프로그램',
-          progress_notes: '집중력 향상 관찰',
-          attendance_status: '출석'
-        }
-      ];
+      // 기관 회원 데이터 가져오기
+      const { data: members, error } = await supabase
+        .from('institution_members')
+        .select(`
+          id,
+          member_name,
+          member_email,
+          birth_date,
+          enrollment_date,
+          status,
+          notes,
+          custom_fields
+        `)
+        .eq('institution_admin_id', institutionId)
+        .eq('status', 'active')
+        .order('enrollment_date', { ascending: false });
+
+      if (error) throw error;
+
+      // 회원 데이터를 세션 기록 형태로 변환
+      const sessionRecords: SessionRecord[] = members?.map(member => ({
+        id: member.id,
+        client_name: member.member_name || '미지정',
+        therapist_name: '치료사 배정 예정',
+        session_date: new Date().toISOString().split('T')[0],
+        duration: 50,
+        voucher_type: '언어발달지원',
+        session_notes: member.notes || '',
+        progress_notes: '진행 상황 기록 대기',
+        attendance_status: '출석'
+      })) || [];
       
-      setSessionRecords(sampleRecords);
+      setSessionRecords(sessionRecords);
     } catch (error: any) {
       console.error('Error fetching session records:', error);
     }
@@ -309,11 +315,52 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
     try {
       toast({
         title: "다운로드 시작",
-        description: "보고서를 다운로드합니다.",
+        description: "PDF 보고서를 생성하고 있습니다...",
       });
-      
-      // 실제 구현에서는 PDF 생성 후 다운로드
-      console.log('Downloading report:', reportId);
+
+      const report = generatedReports.find(r => r.id === reportId);
+      if (!report) {
+        throw new Error('보고서를 찾을 수 없습니다.');
+      }
+
+      // 해당 보고서 기간의 세션 데이터 수집
+      const relevantSessions = sessionRecords.filter(session => 
+        session.voucher_type === report.voucher_type &&
+        session.session_date >= report.period_start &&
+        session.session_date <= report.period_end
+      );
+
+      // PDF 생성을 위한 Edge Function 호출
+      const response = await supabase.functions.invoke('generate-voucher-report-pdf', {
+        body: {
+          reportData: {
+            ...report,
+            sessions: relevantSessions,
+            institutionId: institutionId
+          }
+        }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'PDF 생성 실패');
+      }
+
+      // PDF 다운로드
+      const { pdfData } = response.data;
+      const blob = new Blob([new Uint8Array(pdfData)], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${report.voucher_type}_보고서_${report.period_start}_${report.period_end}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "다운로드 완료",
+        description: "PDF 보고서가 다운로드되었습니다.",
+      });
       
     } catch (error: any) {
       console.error('Error downloading report:', error);
@@ -506,44 +553,45 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
           </Card>
         </TabsContent>
 
-        <TabsContent value="history" className="space-y-4">
+        <TabsContent value="history" className="space-y-4 mt-6">
           <div className="space-y-4">
             {generatedReports.map((report) => (
-              <Card key={report.id}>
+              <Card key={report.id} className="shadow-sm">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-4 mb-2">
-                        <h3 className="font-semibold">{report.voucher_type}</h3>
-                        <Badge variant="outline">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex-1 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-semibold text-lg">{report.voucher_type}</h3>
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                           {report.status === 'completed' ? '완료' : '진행중'}
                         </Badge>
                       </div>
                       
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-muted-foreground">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          {report.period_start} ~ {report.period_end}
+                          <Calendar className="w-4 h-4 text-blue-500" />
+                          <span>{report.period_start} ~ {report.period_end}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4" />
-                          세션 {report.total_sessions}회
+                          <Clock className="w-4 h-4 text-green-500" />
+                          <span>세션 {report.total_sessions}회</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <FileText className="w-4 h-4" />
-                          생성일: {report.generated_at}
+                          <FileText className="w-4 h-4 text-purple-500" />
+                          <span>생성일: {report.generated_at}</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 self-start md:self-center">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => downloadReport(report.id)}
+                        className="bg-white hover:bg-gray-50"
                       >
                         <Download className="w-4 h-4 mr-2" />
-                        다운로드
+                        PDF 다운로드
                       </Button>
                     </div>
                   </div>
@@ -565,11 +613,11 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
           )}
         </TabsContent>
 
-        <TabsContent value="templates" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <TabsContent value="templates" className="space-y-4 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {voucherTypes.map((voucher) => (
-              <Card key={voucher.id}>
-                <CardHeader>
+              <Card key={voucher.id} className="shadow-sm hover:shadow-md transition-shadow">
+                <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">{voucher.name}</CardTitle>
                     <Badge className={getVoucherBadgeColor(voucher.category)}>
@@ -577,10 +625,10 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
                     </Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-4">
                   <div>
-                    <Label className="text-sm font-medium">보고 주기</Label>
-                    <p className="text-sm text-muted-foreground capitalize">
+                    <Label className="text-sm font-medium text-gray-700">보고 주기</Label>
+                    <p className="text-sm text-muted-foreground mt-1">
                       {voucher.reporting_period === 'monthly' ? '월간' : 
                        voucher.reporting_period === 'weekly' ? '주간' :
                        voucher.reporting_period === 'daily' ? '일간' :
@@ -589,10 +637,10 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
                   </div>
                   
                   <div>
-                    <Label className="text-sm font-medium">필수 항목</Label>
-                    <div className="flex flex-wrap gap-1 mt-1">
+                    <Label className="text-sm font-medium text-gray-700">필수 항목</Label>
+                    <div className="flex flex-wrap gap-1 mt-2">
                       {voucher.required_fields.map((field, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
+                        <Badge key={index} variant="secondary" className="text-xs py-1">
                           {field}
                         </Badge>
                       ))}
@@ -600,8 +648,8 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
                   </div>
 
                   <div>
-                    <Label className="text-sm font-medium">양식 형태</Label>
-                    <p className="text-sm text-muted-foreground capitalize">
+                    <Label className="text-sm font-medium text-gray-700">양식 형태</Label>
+                    <p className="text-sm text-muted-foreground mt-1">
                       {voucher.template_format === 'standard' ? '표준' :
                        voucher.template_format === 'detailed' ? '상세' : 
                        voucher.template_format === 'comprehensive' ? '종합' : voucher.template_format}

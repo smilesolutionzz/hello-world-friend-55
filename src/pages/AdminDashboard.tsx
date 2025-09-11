@@ -39,13 +39,17 @@ import {
   Trash2,
   Building,
   GraduationCap,
-  FileText
+  FileText,
+  Shield
 } from 'lucide-react';
 import MemberDetailView from '@/components/institution/MemberDetailView';
 import { AdminNotifications } from '@/components/AdminNotifications';
 import { ExpertApplicationManagement } from '@/components/admin/ExpertApplicationManagement';
 import { UserDataViewer } from '@/components/admin/UserDataViewer';
 import AdminTokenAdd from '@/components/AdminTokenAdd';
+import { SystemMonitoring } from '@/components/admin/SystemMonitoring';
+import { AutomatedModeration } from '@/components/admin/AutomatedModeration';
+import { FinancialAutomation } from '@/components/admin/FinancialAutomation';
 
 interface AdminAnalytics {
   total_users: number;
@@ -928,14 +932,14 @@ export default function AdminDashboard() {
 
         {/* Enhanced Management Tabs */}
         <Tabs defaultValue="notifications" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-6 md:grid-cols-10">
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
               알림
             </TabsTrigger>
             <TabsTrigger value="expert-applications" className="flex items-center gap-2">
               <UserCheck className="h-4 w-4" />
-              전문가 신청
+              전문가
             </TabsTrigger>
             <TabsTrigger value="user-data" className="flex items-center gap-2">
               <Search className="h-4 w-4" />
@@ -956,6 +960,18 @@ export default function AdminDashboard() {
             <TabsTrigger value="observations" className="flex items-center gap-2">
               <Eye className="h-4 w-4" />
               관찰일지
+            </TabsTrigger>
+            <TabsTrigger value="monitoring" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              모니터링
+            </TabsTrigger>
+            <TabsTrigger value="moderation" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              자동조정
+            </TabsTrigger>
+            <TabsTrigger value="financial" className="flex items-center gap-2">
+              <DollarSign className="h-4 w-4" />
+              금융자동화
             </TabsTrigger>
           </TabsList>
 
@@ -1300,6 +1316,18 @@ export default function AdminDashboard() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="monitoring">
+            <SystemMonitoring />
+          </TabsContent>
+
+          <TabsContent value="moderation">
+            <AutomatedModeration />
+          </TabsContent>
+
+          <TabsContent value="financial">
+            <FinancialAutomation />
           </TabsContent>
 
           <TabsContent value="members">

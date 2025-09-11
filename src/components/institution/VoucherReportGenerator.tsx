@@ -65,25 +65,49 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
       id: '1',
       name: '언어발달지원',
       category: '정부바우처',
-      required_fields: ['session_duration', 'progress_notes', 'attendance'],
-      template_format: 'standard',
+      required_fields: ['출석확인', '활동시간', '진도체크', '평가의견'],
+      template_format: '정부바우처 표준양식',
       reporting_period: 'monthly'
     },
     {
       id: '2', 
       name: '발달재활서비스',
       category: '정부바우처',
-      required_fields: ['assessment_results', 'goal_progress', 'family_consultation'],
-      template_format: 'detailed',
+      required_fields: ['서비스시간', '목표달성도', '가족상담', '특이사항'],
+      template_format: '보건복지부 양식',
       reporting_period: 'monthly'
     },
     {
       id: '3',
-      name: '장애아동복지지원',
+      name: '교육청서비스',
+      category: '교육청',
+      required_fields: ['수업시수', 'IEP목표', '성취수준', '행동관찰', '연계활동'],
+      template_format: '교육청 개별화교육 양식',
+      reporting_period: 'weekly'
+    },
+    {
+      id: '4',
+      name: '지역사회서비스',
       category: '지역바우처',
-      required_fields: ['individual_plan', 'service_provision', 'outcome_evaluation'],
-      template_format: 'comprehensive',
-      reporting_period: 'quarterly'
+      required_fields: ['서비스시간', '만족도조사', '사회적응도', '연계기관'],
+      template_format: '지역사회서비스투자사업 양식',
+      reporting_period: 'monthly'
+    },
+    {
+      id: '5',
+      name: '주간활동서비스',
+      category: '장애인복지',
+      required_fields: ['출석체크', '활동참여도', '건강상태', '안전점검', '보호자소통'],
+      template_format: '장애인활동지원 표준양식',
+      reporting_period: 'daily'
+    },
+    {
+      id: '6',
+      name: '키즈노트일지',
+      category: '어린이집',
+      required_fields: ['사진첨부', '활동시간', '건강체크', '알림장', '준비물'],
+      template_format: '키즈노트 앱 연동형식',
+      reporting_period: 'daily'
     }
   ]);
 
@@ -203,9 +227,41 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
         });
       }, 500);
 
-      // 실제 보고서 생성 로직 (AI 기반)
-      await new Promise(resolve => setTimeout(resolve, 3000)); // 시뮬레이션
+      // 해당 기간의 세션 데이터 수집
+      const relevantSessions = sessionRecords.filter(session => 
+        session.voucher_type === reportForm.voucher_type &&
+        session.session_date >= reportForm.period_start &&
+        session.session_date <= reportForm.period_end
+      );
 
+      // 클라이언트 정보 (샘플)
+      const clientInfo = {
+        name: "김철수",
+        age: 7,
+        diagnosis: "언어발달지연",
+        goals: ["어휘력 향상", "문장 구성 능력 개발", "의사소통 기술 향상"]
+      };
+
+      console.log('Edge function 호출 시작');
+
+      // Edge function 호출
+      const response = await supabase.functions.invoke('generate-voucher-report', {
+        body: {
+          voucherType: reportForm.voucher_type,
+          sessionData: relevantSessions,
+          periodStart: reportForm.period_start,
+          periodEnd: reportForm.period_end,
+          clientInfo: clientInfo,
+          customNotes: reportForm.custom_notes
+        }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || '보고서 생성 실패');
+      }
+
+      console.log('AI 보고서 생성 완료:', response.data);
+      
       setGenerationProgress(100);
       
       // 새 보고서 추가
@@ -214,11 +270,7 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
         voucher_type: reportForm.voucher_type,
         period_start: reportForm.period_start,
         period_end: reportForm.period_end,
-        total_sessions: sessionRecords.filter(r => 
-          r.voucher_type === reportForm.voucher_type &&
-          r.session_date >= reportForm.period_start &&
-          r.session_date <= reportForm.period_end
-        ).length,
+        total_sessions: relevantSessions.length,
         generated_at: new Date().toISOString().split('T')[0],
         status: 'completed'
       };
@@ -226,8 +278,8 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
       setGeneratedReports(prev => [newReport, ...prev]);
 
       toast({
-        title: "보고서 생성 완료",
-        description: "바우처 일지가 성공적으로 생성되었습니다.",
+        title: "AI 보고서 생성 완료",
+        description: `${reportForm.voucher_type} 서식에 맞는 치료일지가 생성되었습니다.`,
       });
 
       // 폼 초기화
@@ -244,7 +296,7 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
       console.error('Error generating report:', error);
       toast({
         title: "생성 실패",
-        description: error.message,
+        description: error.message || '보고서 생성 중 오류가 발생했습니다.',
         variant: "destructive",
       });
     } finally {
@@ -279,6 +331,12 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
         return 'bg-blue-100 text-blue-800';
       case '지역바우처':
         return 'bg-green-100 text-green-800';
+      case '교육청':
+        return 'bg-purple-100 text-purple-800';
+      case '장애인복지':
+        return 'bg-orange-100 text-orange-800';
+      case '어린이집':
+        return 'bg-pink-100 text-pink-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -524,6 +582,8 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
                     <Label className="text-sm font-medium">보고 주기</Label>
                     <p className="text-sm text-muted-foreground capitalize">
                       {voucher.reporting_period === 'monthly' ? '월간' : 
+                       voucher.reporting_period === 'weekly' ? '주간' :
+                       voucher.reporting_period === 'daily' ? '일간' :
                        voucher.reporting_period === 'quarterly' ? '분기' : voucher.reporting_period}
                     </p>
                   </div>

@@ -15,10 +15,15 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   const handleGoogleLogin = async () => {
     try {
       setIsLoading?.(true);
+      
+      // 현재 URL이 auth 페이지인지 확인
+      const isAuthPage = window.location.pathname.includes('/auth') || 
+                        window.location.pathname.includes('/highlight-auth');
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: isAuthPage ? `${window.location.origin}/` : window.location.href,
         }
       });
 
@@ -37,10 +42,15 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
   const handleKakaoLogin = async () => {
     try {
       setIsLoading?.(true);
+      
+      // 현재 URL이 auth 페이지인지 확인
+      const isAuthPage = window.location.pathname.includes('/auth') || 
+                        window.location.pathname.includes('/highlight-auth');
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'kakao',
         options: {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: isAuthPage ? `${window.location.origin}/` : window.location.href,
         }
       });
 

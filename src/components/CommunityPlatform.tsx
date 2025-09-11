@@ -23,41 +23,56 @@ const CommunityPlatform = () => {
         avatar: '/api/placeholder/40/40',
         badges: ['신뢰회원', '활동장려상']
       },
-      title: '5세 아이 언어발달 고민 해결 후기',
-      content: 'AIHPRO 검사를 통해 언어치료를 시작했는데 3개월 만에 놀라운 변화가...',
-      tags: ['언어발달', '5세', '성공후기'],
-      stats: { likes: 24, comments: 8, views: 156 },
+      title: '7살 아이 언어발달 고민',
+      content: '7살 아이 언어발달 고민이에요. 아직도 발음이 부정확하고 문장을 제대로 만들지 못해서 걱정이 많아요. 언어치료를 받아야 할까요? 어떤 전문가를 만나야 할지 조언 부탁드려요.',
+      tags: ['언어발달', '7세'],
+      stats: { likes: 12, comments: 8, views: 156 },
       timeAgo: '2시간 전',
-      isVerified: true
+      isVerified: false
     },
     {
       id: 2,
       author: {
-        name: '박선생님',
+        name: '김미영 아동발달전문가',
         role: 'expert',
         avatar: '/api/placeholder/40/40',
         badges: ['인증전문가', 'TOP기여자']
       },
-      title: '겨울철 아동 우울증 예방법',
-      content: '일조량이 부족한 겨울철, 아이들의 정서적 변화를 주의깊게 관찰해야...',
-      tags: ['아동우울증', '겨울철', '예방법'],
-      stats: { likes: 45, comments: 12, views: 289 },
-      timeAgo: '5시간 전',
+      title: 'ADHD 치료 성공 후기',
+      content: '우리 아이가 ADHD 진단을 받았어요. 처음엔 너무 충격이었는데, 전문가 선생님과 상담하면서 많이 달라졌어요. 아이도 훨씬 안정적이고 집중력도 좋아졌습니다. 혹시 비슷한 고민 있으신 분들, 너무 걱정하지 마세요!',
+      tags: ['ADHD', '전문가상담'],
+      stats: { likes: 25, comments: 15, views: 289 },
+      timeAgo: '4시간 전',
       isExpert: true
     },
     {
       id: 3,
       author: {
-        name: '서울발달센터',
+        name: '박상훈 행동분석사',
+        role: 'expert',
+        avatar: '/api/placeholder/40/40',
+        badges: ['인증전문가', 'BCBA']
+      },
+      title: '자폐스펙트럼 ABA 치료 효과',
+      content: '자폐스펙트럼 아동의 ABA 치료 효과에 대해 많은 부모님들이 궁금해하시는데, 체계적인 접근을 통해 상당한 개선을 볼 수 있습니다. 무엇보다 가족의 꾸준한 지지가 중요해요.',
+      tags: ['자폐스펙트럼', 'ABA치료'],
+      stats: { likes: 31, comments: 18, views: 445 },
+      timeAgo: '5시간 전',
+      isExpert: true
+    },
+    {
+      id: 4,
+      author: {
+        name: '한점미소발달센터',
         role: 'institution',
         avatar: '/api/placeholder/40/40',
         badges: ['제휴기관', '우수기관']
       },
-      title: '발달평가 무료 상담 이벤트 안내',
-      content: '2월 한 달간 AIHPRO 회원 대상으로 발달평가 무료 상담을 진행합니다...',
-      tags: ['무료상담', '발달평가', '이벤트'],
-      stats: { likes: 67, comments: 23, views: 445 },
-      timeAgo: '1일 전',
+      title: '발달재활서비스 바우처 이용 안내',
+      content: '발달재활서비스 바우처를 통해 경제적 부담 없이 전문적인 치료를 받으실 수 있습니다. 언어치료, 인지치료, 작업치료 등 다양한 서비스를 제공하고 있어요.',
+      tags: ['바우처', '발달재활서비스', '지원'],
+      stats: { likes: 42, comments: 12, views: 567 },
+      timeAgo: '6시간 전',
       isInstitution: true
     }
   ];
@@ -65,48 +80,112 @@ const CommunityPlatform = () => {
   // 전문가 목록
   const expertsList = [
     {
-      name: '김소아과 원장',
-      specialty: '소아청소년정신과',
-      experience: '15년',
-      rating: 4.9,
-      consultations: 1234,
-      online: true
-    },
-    {
-      name: '이심리사',
-      specialty: '임상심리학',
-      experience: '8년',
-      rating: 4.8,
-      consultations: 856,
-      online: false
-    },
-    {
-      name: '박언어치료사',
-      specialty: '언어발달치료',
+      name: '김미영',
+      specialty: '아동발달 전문가',
       experience: '12년',
       rating: 4.9,
-      consultations: 967,
-      online: true
+      consultations: 450,
+      online: true,
+      credentials: ['아동발달 전문의', '언어재활사 1급'],
+      description: '12년간 아동발달센터에서 근무하며 수백 명의 아이들을 치료해온 경험이 있습니다.'
+    },
+    {
+      name: '박상훈',
+      specialty: 'BCBA 행동분석사',
+      experience: '8년',
+      rating: 4.8,
+      consultations: 280,
+      online: true,
+      credentials: ['BCBA 자격증', '행동분석사'],
+      description: 'ABA 치료 전문가로 자폐스펙트럼 아동의 행동 개선에 특화되어 있습니다.'
+    },
+    {
+      name: '이정아',
+      specialty: '언어재활사',
+      experience: '6년',
+      rating: 4.7,
+      consultations: 320,
+      online: false,
+      credentials: ['1급 언어재활사'],
+      description: '언어발달지연 아동의 언어능력 향상을 위한 맞춤형 치료를 제공합니다.'
+    },
+    {
+      name: '박하진',
+      specialty: '청소년상담사',
+      experience: '10년',
+      rating: 4.9,
+      consultations: 180,
+      online: true,
+      credentials: ['청소년상담사 1급', '상담심리사'],
+      description: '청소년기 정서적 어려움과 학업 스트레스 상담을 전문으로 합니다.'
+    },
+    {
+      name: '강은미',
+      specialty: '임상심리사',
+      experience: '14년',
+      rating: 4.8,
+      consultations: 420,
+      online: true,
+      credentials: ['임상심리사 1급'],
+      description: '아동 및 청소년의 심리적 어려움을 전문적으로 평가하고 치료합니다.'
     }
   ];
 
   // 제휴기관 목록
   const institutionsList = [
     {
-      name: '서울아동발달센터',
+      name: '한점미소발달센터 남양주점',
       type: '발달센터',
-      location: '서울 강남구',
-      rating: 4.8,
-      members: 45,
-      programs: ['발달평가', '언어치료', '인지치료']
+      location: '경기도 남양주시',
+      rating: 4.7,
+      members: 8,
+      programs: ['언어치료', '인지치료', '작업치료', '사회성훈련', '부모상담'],
+      voucher_types: ['발달재활서비스', '언어치료', '인지치료', '교육청서비스', '우리아이심리지원서비스']
     },
     {
-      name: '행복한육아상담소',
+      name: '메이플 ABA 목동센터',
+      type: '발달센터',
+      location: '서울시 양천구',
+      rating: 4.8,
+      members: 12,
+      programs: ['ABA치료', '행동중재', '사회성훈련', '부모교육', '개별교육'],
+      voucher_types: ['발달재활서비스', 'ABA치료', '행동중재', '교육청서비스']
+    },
+    {
+      name: '해오름 아동발달센터',
+      type: '발달센터',
+      location: '경기도 수원시',
+      rating: 4.8,
+      members: 13,
+      programs: ['언어치료', '인지치료', '작업치료', '물리치료', '사회성훈련', '감각통합치료'],
+      voucher_types: ['발달재활서비스', '언어치료', '인지치료', '작업치료', '교육청서비스']
+    },
+    {
+      name: '핌발달센터',
+      type: '발달센터',
+      location: '경기도 성남시',
+      rating: 4.8,
+      members: 11,
+      programs: ['언어치료', '인지치료', '작업치료', '사회성훈련', '학습치료'],
+      voucher_types: ['발달재활서비스', '언어치료', '인지치료', '작업치료']
+    },
+    {
+      name: '해웃음 심리발달센터',
       type: '상담센터',
-      location: '부산 해운대구',
-      rating: 4.7,
-      members: 32,
-      programs: ['부모상담', '가족치료', '놀이치료']
+      location: '서울시 마포구',
+      rating: 4.6,
+      members: 8,
+      programs: ['심리상담', '언어치료', '놀이치료', '가족상담', '부모교육'],
+      voucher_types: ['발달재활서비스', '심리상담', '우리아이심리지원서비스']
+    },
+    {
+      name: '넘나들 언어인지학습연구소',
+      type: '연구소',
+      location: '서울시 송파구',
+      rating: 4.8,
+      members: 12,
+      programs: ['언어치료', '인지치료', '학습치료', '사회성훈련', '부모교육'],
+      voucher_types: ['발달재활서비스', '언어치료', '인지치료', '교육청서비스']
     }
   ];
 

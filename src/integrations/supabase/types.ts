@@ -767,6 +767,50 @@ export type Database = {
         }
         Relationships: []
       }
+      expert_application_access_log: {
+        Row: {
+          access_reason: string | null
+          access_type: string
+          accessed_at: string | null
+          accessed_by: string
+          application_id: string | null
+          id: string
+          ip_address: string | null
+          sensitive_fields_accessed: string[] | null
+          user_agent: string | null
+        }
+        Insert: {
+          access_reason?: string | null
+          access_type: string
+          accessed_at?: string | null
+          accessed_by: string
+          application_id?: string | null
+          id?: string
+          ip_address?: string | null
+          sensitive_fields_accessed?: string[] | null
+          user_agent?: string | null
+        }
+        Update: {
+          access_reason?: string | null
+          access_type?: string
+          accessed_at?: string | null
+          accessed_by?: string
+          application_id?: string | null
+          id?: string
+          ip_address?: string | null
+          sensitive_fields_accessed?: string[] | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_application_access_log_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "expert_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expert_applications: {
         Row: {
           address: string | null
@@ -3648,6 +3692,20 @@ export type Database = {
         Args: { target_user_id: string; token_amount: number }
         Returns: boolean
       }
+      admin_view_expert_application: {
+        Args: { access_reason?: string; application_id: string }
+        Returns: {
+          application_status: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          specializations: string[]
+          updated_at: string
+          user_id: string
+          years_experience: number
+        }[]
+      }
       admin_view_transfer_request: {
         Args: { access_reason?: string; request_id: string }
         Returns: {
@@ -3686,6 +3744,10 @@ export type Database = {
       check_phone_availability: {
         Args: { phone_number: string }
         Returns: boolean
+      }
+      cleanup_expert_access_logs: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       generate_referral_code: {
         Args: Record<PropertyKey, never>
@@ -3737,6 +3799,17 @@ export type Database = {
       get_monthly_usage: {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: number
+      }
+      get_my_application_status: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          admin_notes: string
+          application_status: string
+          created_at: string
+          id: string
+          specializations: string[]
+          updated_at: string
+        }[]
       }
       get_post_likes_count: {
         Args: { post_id: string }

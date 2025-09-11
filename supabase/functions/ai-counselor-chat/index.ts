@@ -59,7 +59,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4.1-2025-04-14',
         messages,
-        max_completion_tokens: 800,
+        max_completion_tokens: 300,
         stream: false
       }),
     });
@@ -125,12 +125,11 @@ function createSystemPrompt(assessmentResults?: AssessmentResults): string {
 - 이 상담은 참고용이며 의학적 진단이 아님을 명시하세요
 - 응급상황시 119 또는 자살예방상담 1577-0199 연락을 안내하세요
 
-📋 **상담 가이드라인:**
-1. 사용자의 상황과 감정을 충분히 탐색하세요
-2. 검사 결과와 연관된 맞춤형 조언을 제공하세요
-3. 구체적인 대처 방법과 실생활 적용법을 제안하세요
-4. 긍정적인 자원과 강점을 발견하도록 도우세요
-5. 필요시 단계적 목표 설정을 도와주세요`;
+📋 **응답 스타일:**
+- 3-4문장으로 간결하고 친근하게 답변하세요
+- 긴 설명보다는 공감과 핵심 조언에 집중하세요
+- 대화하듯 자연스럽고 따뜻한 톤을 유지하세요
+- 마크다운이나 복잡한 서식은 최소화하세요`;
 
   if (assessmentResults) {
     const { testType, ageGroup, total, average, severity } = assessmentResults;

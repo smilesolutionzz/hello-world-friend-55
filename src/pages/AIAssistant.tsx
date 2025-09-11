@@ -74,22 +74,17 @@ const AIAssistant = () => {
       systemPrompt: `안녕하세요! 저는 AIH 심리상담사입니다. 
 
 🧠 **전문 AI 엔진 기반 상담:**
-- 10만+ 심리상담 케이스 데이터로 학습된 딥러닝 모델
-- 인지행동치료(CBT), 정신분석, 인본주의 상담 이론 통합 분석
-- 감정 패턴 인식 및 개인화된 치료적 개입 제공
-- 실시간 심리상태 분석을 통한 맞춤형 상담
+- 10만+ 심리상담 케이스 데이터로 학습된 딥러닝 모델로 개인화된 상담 제공
 
 💝 **저의 대화 스타일:**
 - "어머, 정말 힘드셨겠어요..." 하며 진심으로 공감해드려요
 - "그럴 때는 이렇게 해보시는 건 어때요?" 하며 부드럽게 조언드려요  
 - "괜찮아요, 누구나 그런 마음 들 수 있어요" 하며 따뜻하게 위로해드려요
-- "혹시 이런 기분이신가요?" 하며 세심하게 마음을 읽어드려요
 
-🌸 **AI 기반 전문 상담 영역:**
-- 우울, 불안, 스트레스 패턴 분석 및 맞춤 솔루션
-- 대인관계 갈등 해결을 위한 커뮤니케이션 전략
-- 트라우마 및 정서적 어려움에 대한 치료적 접근
-- 자존감 향상 및 심리적 성장을 위한 개인화 프로그램
+🌸 **상담 원칙:**
+- 3-4문장 내로 간결하고 친근하게 답변해요
+- 핵심만 담아서 대화하듯 자연스럽게 응답해요
+- 너무 긴 설명보다는 공감과 실용적 조언을 우선해요
 
 ⚠️ **참고사항:** 전문 AI 엔진이지만 의학적 진단은 할 수 없어요. 정말 힘드시면 전문의와 상담받아보시길 권해드려요.`
     },
@@ -122,23 +117,17 @@ const AIAssistant = () => {
       systemPrompt: `안녕하세요! 저는 AIH 헬스관리인이에요. 
 
 🔬 **의학 전문 AI 엔진:**
-- 50만+ 건강관리 데이터와 의학 논문으로 훈련된 딥러닝 모델
-- 생활습관의학, 예방의학, 영양학 전문 지식 기반 분석
-- 개인별 건강 패턴 인식 및 맞춤형 생활습관 개선 프로그램
-- 실시간 건강 위험도 평가 및 예방적 건강관리 솔루션
+- 50만+ 건강관리 데이터와 의학 논문으로 훈련된 딥러닝 모델로 맞춤형 건강 솔루션 제공
 
 💪 **저의 대화 스타일:**
 - "오늘 어떻게 지내셨어요?" 하며 친근하게 안부 물어요
 - "아! 그러면 이런 방법은 어때요?" 하며 실용적인 팁 알려드려요
 - "와, 정말 잘하고 계시네요!" 하며 열심히 격려해드려요
-- "음... 이건 좀 걱정되는데..." 하며 솔직하게 조언드려요
 
-🌟 **AI 기반 건강관리 영역:**
-- 수면 패턴 분석 및 최적화된 수면 솔루션
-- 영양학적 식단 분석 및 개인 맞춤 식단 설계
-- 운동 처방 및 체력 향상 프로그램 제공
-- 스트레스 지표 모니터링 및 멘탈 헬스 관리
-- 만성질환 예방을 위한 생활습관 개선 가이드
+🌟 **상담 원칙:**
+- 3-4문장으로 간결하고 실용적인 건강 조언 제공
+- 복잡한 설명보다 바로 실천할 수 있는 팁 우선
+- 친근하고 격려하는 톤으로 동기부여
 
 💡 **과학적 근거 기반 건강 코칭을 경험해보세요!**`
     },
@@ -526,71 +515,73 @@ const AIAssistant = () => {
                   </Badge>
                 </CardHeader>
 
-                <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
-                  <ScrollArea className="flex-1 px-3 md:px-6 h-full" ref={scrollAreaRef}>
-                    <div className="space-y-3 md:space-y-4 py-3 md:py-6 min-h-0">
-                      {messages.map((message, index) => (
-                        <div
-                          key={message.id}
-                          className={`flex gap-2 md:gap-3 animate-fade-in ${
-                            message.role === 'user' ? 'justify-end' : 'justify-start'
-                          }`}
-                          style={{animationDelay: `${index * 0.1}s`}}
-                        >
-                          {message.role === 'assistant' && (
+                <CardContent className="flex-1 flex flex-col p-0 overflow-hidden min-h-0">
+                  <div className="flex-1 overflow-hidden">
+                    <ScrollArea className="h-full w-full" ref={scrollAreaRef}>
+                      <div className="space-y-3 md:space-y-4 p-3 md:p-6">
+                        {messages.map((message, index) => (
+                          <div
+                            key={message.id}
+                            className={`flex gap-2 md:gap-3 animate-fade-in ${
+                              message.role === 'user' ? 'justify-end' : 'justify-start'
+                            }`}
+                            style={{animationDelay: `${index * 0.1}s`}}
+                          >
+                            {message.role === 'assistant' && (
+                              <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
+                                <MessageCircle className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                              </div>
+                            )}
+                            
+                            <div
+                              className={`max-w-[75%] md:max-w-[70%] rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-lg transition-all duration-300 hover-scale ${
+                                message.role === 'user'
+                                  ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ml-auto'
+                                  : 'bg-white/20 backdrop-blur-sm text-white border border-white/30'
+                              }`}
+                              style={{
+                                wordBreak: 'break-word',
+                                overflowWrap: 'break-word',
+                                hyphens: 'auto'
+                              }}
+                            >
+                              <div className="text-xs md:text-sm whitespace-pre-wrap leading-relaxed break-words">
+                                {message.content}
+                              </div>
+                              <div className="text-xs opacity-70 mt-1 md:mt-2 flex items-center gap-1">
+                                <Calendar className="w-2 h-2 md:w-3 md:h-3 flex-shrink-0" />
+                                <span className="truncate">
+                                  {message.timestamp.toLocaleTimeString()}
+                                </span>
+                              </div>
+                            </div>
+
+                            {message.role === 'user' && (
+                              <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
+                                <Users className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                              </div>
+                            )}
+                          </div>
+                        ))}
+
+                        {isLoading && (
+                          <div className="flex gap-2 md:gap-3 justify-start animate-fade-in">
                             <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
                               <MessageCircle className="w-3 h-3 md:w-4 md:h-4 text-white" />
                             </div>
-                          )}
-                          
-                          <div
-                            className={`max-w-[75%] md:max-w-[70%] rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-lg transition-all duration-300 hover-scale ${
-                              message.role === 'user'
-                                ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ml-auto'
-                                : 'bg-white/20 backdrop-blur-sm text-white border border-white/30'
-                            }`}
-                            style={{
-                              wordBreak: 'break-word',
-                              overflowWrap: 'break-word',
-                              hyphens: 'auto'
-                            }}
-                          >
-                            <div className="text-xs md:text-sm whitespace-pre-wrap leading-relaxed break-words">
-                              {message.content}
-                            </div>
-                            <div className="text-xs opacity-70 mt-1 md:mt-2 flex items-center gap-1">
-                              <Calendar className="w-2 h-2 md:w-3 md:h-3 flex-shrink-0" />
-                              <span className="truncate">
-                                {message.timestamp.toLocaleTimeString()}
-                              </span>
+                            <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-lg">
+                              <div className="flex items-center gap-2 md:gap-3">
+                                <div className="w-2 h-2 md:w-3 md:h-3 bg-cyan-400 rounded-full animate-bounce"></div>
+                                <div className="w-2 h-2 md:w-3 md:h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                                <div className="w-2 h-2 md:w-3 md:h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                                <span className="text-xs md:text-sm text-white/90 ml-1 md:ml-2 font-medium">✨ AI가 응답을 생성중입니다...</span>
+                              </div>
                             </div>
                           </div>
-
-                          {message.role === 'user' && (
-                            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
-                              <Users className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-
-                      {isLoading && (
-                        <div className="flex gap-2 md:gap-3 justify-start animate-fade-in">
-                          <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
-                            <MessageCircle className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                          </div>
-                          <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-lg">
-                            <div className="flex items-center gap-2 md:gap-3">
-                              <div className="w-2 h-2 md:w-3 md:h-3 bg-cyan-400 rounded-full animate-bounce"></div>
-                              <div className="w-2 h-2 md:w-3 md:h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                              <div className="w-2 h-2 md:w-3 md:h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                              <span className="text-xs md:text-sm text-white/90 ml-1 md:ml-2 font-medium">✨ AI가 응답을 생성중입니다...</span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </ScrollArea>
+                        )}
+                      </div>
+                    </ScrollArea>
+                  </div>
 
                   <div className="border-t border-white/20 p-3 md:p-6 bg-white/5 backdrop-blur-sm">
                     <div className="flex gap-2 md:gap-3">

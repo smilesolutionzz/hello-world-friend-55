@@ -70,11 +70,35 @@ const GrowthStoryFeed = ({ refreshTrigger }: GrowthStoryFeedProps) => {
 
       if (error) throw error;
 
-      // 실제 데이터가 없을 때 예시 데이터 사용
-      const storiesData = data && data.length > 0 ? data : mockGrowthStories;
+      // 실제 데이터 우선 사용 (기존 데이터 유지)
+      let storiesData = data || [];
+      
+      // 실제 데이터가 적을 때만 예시 데이터를 추가로 보여줌
+      if (storiesData.length < 3) {
+        const missingCount = 3 - storiesData.length;
+        const sampleMockData = mockGrowthStories.slice(0, missingCount).map(mockStory => ({
+          ...mockStory,
+          // 누락된 필드들을 기본값으로 추가
+          media_files: [] as string[],
+          media_types: [] as string[],
+          media_urls: [] as any,
+          updated_at: mockStory.created_at
+        }));
+        storiesData = [...storiesData, ...sampleMockData];
+      }
+      
       setStories(storiesData);
     } catch (error: any) {
       console.error('성장 스토리 로딩 오류:', error);
+      // 에러 발생 시에만 Mock 데이터 사용 (타입 변환 포함)
+      const convertedMockData = mockGrowthStories.map(mockStory => ({
+        ...mockStory,
+        media_files: [] as string[],
+        media_types: [] as string[],
+        media_urls: [] as any,
+        updated_at: mockStory.created_at
+      }));
+      setStories(convertedMockData);
       toast({
         title: "로딩 오류",
         description: "성장 스토리를 불러오는 중 오류가 발생했습니다.",

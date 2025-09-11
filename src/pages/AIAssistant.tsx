@@ -510,7 +510,7 @@ const AIAssistant = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-8">
             {/* Chat Interface - 모바일에서 먼저 표시 */}
             <div className="lg:col-span-2 order-1 lg:order-2">
-              <Card className="h-[70vh] md:h-[calc(100vh-200px)] lg:h-[700px] flex flex-col bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl animate-fade-in" style={{animationDelay: '0.2s'}}>
+              <Card className="h-[75vh] md:h-[calc(100vh-200px)] lg:h-[700px] flex flex-col bg-white/10 backdrop-blur-lg border-white/20 shadow-2xl animate-fade-in overflow-hidden" style={{animationDelay: '0.2s'}}>
                 <CardHeader className="flex-shrink-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border-b border-white/20 p-3 md:p-6">
                   <div className="flex items-center gap-2 md:gap-4">
                     <div className="p-2 md:p-3 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 shadow-lg animate-pulse">
@@ -526,53 +526,60 @@ const AIAssistant = () => {
                   </Badge>
                 </CardHeader>
 
-                <CardContent className="flex-1 flex flex-col p-0">
-                  <ScrollArea className="flex-1 px-3 md:px-6" ref={scrollAreaRef}>
-                    <div className="space-y-3 md:space-y-6 py-3 md:py-6">
+                <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
+                  <ScrollArea className="flex-1 px-3 md:px-6 h-full" ref={scrollAreaRef}>
+                    <div className="space-y-3 md:space-y-4 py-3 md:py-6 min-h-0">
                       {messages.map((message, index) => (
                         <div
                           key={message.id}
-                          className={`flex gap-2 md:gap-4 animate-fade-in ${
+                          className={`flex gap-2 md:gap-3 animate-fade-in ${
                             message.role === 'user' ? 'justify-end' : 'justify-start'
                           }`}
                           style={{animationDelay: `${index * 0.1}s`}}
                         >
                           {message.role === 'assistant' && (
-                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
-                              <MessageCircle className="w-3 h-3 md:w-5 md:h-5 text-white" />
+                            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
+                              <MessageCircle className="w-3 h-3 md:w-4 md:h-4 text-white" />
                             </div>
                           )}
                           
                           <div
-                            className={`max-w-[85%] md:max-w-[80%] rounded-2xl px-3 py-2 md:px-6 md:py-4 shadow-lg transition-all duration-300 hover-scale ${
+                            className={`max-w-[75%] md:max-w-[70%] rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-lg transition-all duration-300 hover-scale ${
                               message.role === 'user'
                                 ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ml-auto'
                                 : 'bg-white/20 backdrop-blur-sm text-white border border-white/30'
                             }`}
+                            style={{
+                              wordBreak: 'break-word',
+                              overflowWrap: 'break-word',
+                              hyphens: 'auto'
+                            }}
                           >
-                            <div className="text-xs md:text-sm whitespace-pre-wrap leading-relaxed">
+                            <div className="text-xs md:text-sm whitespace-pre-wrap leading-relaxed break-words">
                               {message.content}
                             </div>
-                            <div className="text-xs opacity-70 mt-2 md:mt-3 flex items-center gap-1">
-                              <Calendar className="w-2 h-2 md:w-3 md:h-3" />
-                              {message.timestamp.toLocaleTimeString()}
+                            <div className="text-xs opacity-70 mt-1 md:mt-2 flex items-center gap-1">
+                              <Calendar className="w-2 h-2 md:w-3 md:h-3 flex-shrink-0" />
+                              <span className="truncate">
+                                {message.timestamp.toLocaleTimeString()}
+                              </span>
                             </div>
                           </div>
 
                           {message.role === 'user' && (
-                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
-                              <Users className="w-3 h-3 md:w-5 md:h-5 text-white" />
+                            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
+                              <Users className="w-3 h-3 md:w-4 md:h-4 text-white" />
                             </div>
                           )}
                         </div>
                       ))}
 
                       {isLoading && (
-                        <div className="flex gap-2 md:gap-4 justify-start animate-fade-in">
-                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
-                            <MessageCircle className="w-3 h-3 md:w-5 md:h-5 text-white" />
+                        <div className="flex gap-2 md:gap-3 justify-start animate-fade-in">
+                          <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg animate-pulse">
+                            <MessageCircle className="w-3 h-3 md:w-4 md:h-4 text-white" />
                           </div>
-                          <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl px-3 py-2 md:px-6 md:py-4 shadow-lg">
+                          <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-3 py-2 md:px-4 md:py-3 shadow-lg">
                             <div className="flex items-center gap-2 md:gap-3">
                               <div className="w-2 h-2 md:w-3 md:h-3 bg-cyan-400 rounded-full animate-bounce"></div>
                               <div className="w-2 h-2 md:w-3 md:h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>

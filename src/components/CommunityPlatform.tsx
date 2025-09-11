@@ -401,15 +401,210 @@ const CommunityPlatform = () => {
         </TabsContent>
 
         {/* 성공사례 탭 */}
-        <TabsContent value="success">
+        <TabsContent value="success" className="space-y-4">
+          {/* 성공사례 헤더 */}
+          <Card className="bg-gradient-to-r from-green-50 to-blue-50">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-green-100 p-2 rounded-full">
+                  <Award className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">성공사례 모음집</h3>
+                  <p className="text-sm text-muted-foreground">실제 치료 성공 후기와 변화 스토리</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 성공사례 목록 */}
           <Card>
-            <CardContent className="p-6 text-center">
-              <TrendingUp className="w-12 h-12 mx-auto mb-4 text-green-600" />
-              <h3 className="text-lg font-semibold mb-2">성공사례 모음집</h3>
-              <p className="text-muted-foreground mb-4">
-                AIHPRO를 통해 긍정적인 변화를 경험한 가족들의 이야기
-              </p>
-              <Button>성공사례 보기</Button>
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback>김</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">김지혜</span>
+                    <Badge className="bg-green-100 text-green-800">성공사례</Badge>
+                    <span className="text-xs text-muted-foreground">3일 전</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">7세 아들 언어발달지연 극복 후기</h4>
+                    <p className="text-sm text-muted-foreground">
+                      6개월간 언어치료를 받으며 아들이 놀라운 변화를 보였어요. 한점미소발달센터 선생님들 덕분에 이제 또래들과 대화도 잘하고 자신감도 생겼답니다.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    <Badge variant="secondary" className="text-xs">#언어치료</Badge>
+                    <Badge variant="secondary" className="text-xs">#7세</Badge>
+                    <Badge variant="secondary" className="text-xs">#한점미소센터</Badge>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Heart className="w-4 h-4" />
+                      47
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="w-4 h-4" />
+                      12
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback>박</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">박민수</span>
+                    <Badge className="bg-green-100 text-green-800">성공사례</Badge>
+                    <span className="text-xs text-muted-foreground">5일 전</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">ADHD 아들, ABA 치료로 집중력 향상</h4>
+                    <p className="text-sm text-muted-foreground">
+                      메이플 ABA센터에서 1년간 치료받으며 아들의 집중력과 충동성이 크게 개선됐어요. 이제 학교에서도 안정적으로 수업을 듣고 있답니다.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    <Badge variant="secondary" className="text-xs">#ADHD</Badge>
+                    <Badge variant="secondary" className="text-xs">#ABA치료</Badge>
+                    <Badge variant="secondary" className="text-xs">#메이플센터</Badge>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Heart className="w-4 h-4" />
+                      38
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="w-4 h-4" />
+                      9
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback>이</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">이현주</span>
+                    <Badge className="bg-green-100 text-green-800">성공사례</Badge>
+                    <span className="text-xs text-muted-foreground">1주 전</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">3세 딸 자폐스펙트럼, 조기개입으로 눈에 띄는 발전</h4>
+                    <p className="text-sm text-muted-foreground">
+                      해오름센터에서 조기개입 치료를 시작한 지 8개월, 아이가 눈맞춤도 하고 간단한 단어들을 말하기 시작했어요. 희망을 잃지 않길 바라요.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    <Badge variant="secondary" className="text-xs">#자폐스펙트럼</Badge>
+                    <Badge variant="secondary" className="text-xs">#조기개입</Badge>
+                    <Badge variant="secondary" className="text-xs">#해오름센터</Badge>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Heart className="w-4 h-4" />
+                      62
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="w-4 h-4" />
+                      18
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback>최</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">최미나</span>
+                    <Badge className="bg-green-100 text-green-800">성공사례</Badge>
+                    <span className="text-xs text-muted-foreground">2주 전</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">5세 아들 감각통합장애, 작업치료로 일상생활 개선</h4>
+                    <p className="text-sm text-muted-foreground">
+                      핌발달센터에서 감각통합치료를 받으며 아이가 예전에 못하던 일들을 하나씩 해내고 있어요. 식사도 잘하고 놀이도 즐겁게 참여해요.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    <Badge variant="secondary" className="text-xs">#감각통합장애</Badge>
+                    <Badge variant="secondary" className="text-xs">#작업치료</Badge>
+                    <Badge variant="secondary" className="text-xs">#핌발달센터</Badge>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Heart className="w-4 h-4" />
+                      29
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="w-4 h-4" />
+                      7
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback>정</AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">정예린</span>
+                    <Badge className="bg-green-100 text-green-800">성공사례</Badge>
+                    <span className="text-xs text-muted-foreground">3주 전</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">15세 딸 우울증, 상담치료로 학교생활 회복</h4>
+                    <p className="text-sm text-muted-foreground">
+                      해웃음센터에서 심리상담을 받으며 딸이 다시 웃음을 찾았어요. 친구들과의 관계도 회복되고 성적도 점점 올라가고 있어요.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    <Badge variant="secondary" className="text-xs">#청소년우울증</Badge>
+                    <Badge variant="secondary" className="text-xs">#심리상담</Badge>
+                    <Badge variant="secondary" className="text-xs">#해웃음센터</Badge>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Heart className="w-4 h-4" />
+                      41
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MessageCircle className="w-4 h-4" />
+                      13
+                    </div>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

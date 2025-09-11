@@ -187,15 +187,15 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
     }
   };
 
-  // AI 분석 데이터 추출
-  const aiAnalysis = session.observations?.analysis_data?.ai_analysis || 
-                     session.observations?.ai_analysis || 
-                     session.analysis_data?.ai_analysis ||
-                     session.ai_analysis;
+  // AI 분석 데이터 추출 - 올바른 경로로 수정
+  const aiAnalysis = session.observations?.ai_analysis || 
+                      session.observations?.analysis_data?.ai_analysis || 
+                      session.analysis_data?.ai_analysis ||
+                      session.ai_analysis;
   
-  const analysisData = session.observations?.analysis_data || {};
-  const scores = analysisData.scores || {};
-  const riskLevel = analysisData.riskLevel || 'medium';
+  const analysisData = session.observations?.analysis_data || session.observations || {};
+  const scores = analysisData.scores || session.observations?.scores || {};
+  const riskLevel = analysisData.riskLevel || session.observations?.riskLevel || 'medium';
   const riskInfo = getRiskLevelInfo(riskLevel);
 
   // Parse media files from session  
@@ -376,7 +376,10 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
             </CardHeader>
             <CardContent>
               <div className="text-sm leading-relaxed">
-                {aiAnalysis?.situation || "관찰 결과를 분석했습니다. 전반적으로 안정적인 상태를 보이고 있습니다."}
+                {typeof aiAnalysis === 'string' 
+                  ? aiAnalysis.substring(0, 500) + (aiAnalysis.length > 500 ? '...' : '')
+                  : aiAnalysis?.situation || "관찰 결과를 분석했습니다. 전반적으로 안정적인 상태를 보이고 있습니다."
+                }
               </div>
             </CardContent>
           </Card>
@@ -448,225 +451,71 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
             {/* Dynamic AI Analysis Results */}
             {aiAnalysis ? (
               <div className="grid gap-6">
-                {/* 상황 분석 */}
-                {aiAnalysis.situation && (
+                {/* AI 분석이 문자열인 경우 전체 텍스트 표시 */}
+                {typeof aiAnalysis === 'string' ? (
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
-                        <TrendingUp className="h-5 w-5 text-blue-600" />
-                        상황 분석
+                        <Brain className="h-5 w-5 text-blue-600" />
+                        전문가 분석 결과
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                        {aiAnalysis.situation}
+                        {aiAnalysis}
                       </div>
                     </CardContent>
                   </Card>
-                )}
-
-                {/* 주요 포인트/현재 상태 평가 */}
-                {aiAnalysis.points && aiAnalysis.points.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Eye className="h-5 w-5 text-amber-600" />
-                        {isAdult ? '현재 상태 평가' : '주요 포인트'}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {aiAnalysis.points.map((point: string, index: number) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <div className="w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
-                            <div className="text-sm leading-relaxed">{point}</div>
+                ) : (
+                  <>
+                    {/* 상황 분석 */}
+                    {aiAnalysis.situation && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <TrendingUp className="h-5 w-5 text-blue-600" />
+                            상황 분석
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                            {aiAnalysis.situation}
                           </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
+                        </CardContent>
+                      </Card>
+                    )}
 
-                {/* 긍정적 측면/관심 사항 */}
-                {aiAnalysis.positives && aiAnalysis.positives.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <CheckCircle className="h-5 w-5 text-green-600" />
-                        {isAdult ? '긍정적 측면' : '주요 관심 사항'}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {aiAnalysis.positives.map((positive: string, index: number) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                            <div className="text-sm leading-relaxed">{positive}</div>
+                    {/* 주요 포인트/현재 상태 평가 */}
+                    {aiAnalysis.points && aiAnalysis.points.length > 0 && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Eye className="h-5 w-5 text-amber-600" />
+                            {isAdult ? '현재 상태 평가' : '주요 포인트'}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            {aiAnalysis.points.map((point: string, index: number) => (
+                              <div key={index} className="flex items-start gap-3">
+                                <div className="w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
+                                <div className="text-sm leading-relaxed">{point}</div>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* 개선 방안 */}
-                {aiAnalysis.tips && aiAnalysis.tips.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Lightbulb className="h-5 w-5 text-green-600" />
-                        개선 방안
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {aiAnalysis.tips.map((tip: string, index: number) => (
-                          <div key={index} className="flex items-start gap-3">
-                            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                            <div className="text-sm leading-relaxed">{tip}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* 주의사항/알림 */}
-                {aiAnalysis.alerts && aiAnalysis.alerts.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <AlertTriangle className="h-5 w-5 text-red-600" />
-                        주의사항
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {aiAnalysis.alerts.map((alert: string, index: number) => (
-                          <div key={index} className="p-3 bg-red-50 rounded-lg">
-                            <div className="text-sm text-red-700 leading-relaxed">{alert}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* 미디어 노트 */}
-                {aiAnalysis.mediaNotes && aiAnalysis.mediaNotes.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <FileText className="h-5 w-5 text-purple-600" />
-                        미디어 분석 노트
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        {aiAnalysis.mediaNotes.map((note: string, index: number) => (
-                          <div key={index} className="text-sm text-muted-foreground">
-                            • {note}
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </>
                 )}
               </div>
             ) : (
-              /* Fallback static content when no AI analysis available */
-              <div className="grid gap-6 md:grid-cols-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-blue-600" />
-                      {isAdult ? '현재 상태 평가' : '발달 상태 평가'}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="text-sm text-muted-foreground">
-                        현재 {isAdult ? '상태' : '발달'} 수준: <span className="font-medium text-foreground">연령대 적합</span>
-                      </div>
-                      <Progress value={75} className="h-2" />
-                      <div className="text-sm">
-                        {session.observations?.target_name || '대상자'}의 전반적인 상태는 연령대에 적합한 수준을 보이고 있으며, 
-                        지속적인 관찰과 지원이 도움이 될 것입니다.
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Lightbulb className="h-5 w-5 text-green-600" />
-                      개선 방안
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                        <div className="text-sm">
-                          <div className="font-medium">지속적인 관찰</div>
-                          <div className="text-muted-foreground">정기적인 관찰을 통해 변화를 추적해보세요.</div>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                        <div className="text-sm">
-                          <div className="font-medium">긍정적 피드백</div>
-                          <div className="text-muted-foreground">작은 성취에도 즉시적이고 구체적인 격려를 해주세요.</div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <Card>
+                <CardContent className="p-6 text-center text-muted-foreground">
+                  분석 데이터가 없습니다. 관찰일지를 다시 분석 요청해주세요.
+                </CardContent>
+              </Card>
             )}
-
-            {/* 전문가 상담 권장 */}
-            <Card className="border-purple-200 bg-purple-50">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-purple-100 rounded-lg">
-                    <Users className="h-6 w-6 text-purple-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-purple-800 mb-2">전문가 상담 권장</h3>
-                    <p className="text-purple-700 text-sm mb-4">
-                      현재 관찰된 내용을 바탕으로 전문가와의 상담을 통해 더 구체적인 지원 방안을 논의하는 것이 도움이 될 수 있습니다.
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        size="sm"
-                        className="bg-purple-600 hover:bg-purple-700"
-                        onClick={() => navigate('/expert-consultation')}
-                      >
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        전문가 상담 신청
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-purple-300 text-purple-700"
-                        onClick={() => navigate('/assessment')}
-                      >
-                        심화 평가 받기
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 추천 콘텐츠 */}
-            <ProductRecommendation 
-              category="child" 
-              domain={session.observations?.domain || session.domain}
-              severity={riskLevel}
-            />
           </div>
         </TabsContent>
 
@@ -679,44 +528,18 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
         </TabsContent>
       </Tabs>
 
-      {/* Media Section */}
-      {mediaFiles && mediaFiles.length > 0 && (
+      {/* Media Files Display */}
+      {mediaFiles.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-purple-600" />
-              관찰 미디어
-            </CardTitle>
+            <CardTitle>첨부된 미디어</CardTitle>
+            <CardDescription>관찰 중 촬영된 사진과 동영상입니다</CardDescription>
           </CardHeader>
           <CardContent>
-            <MediaDisplay mediaFiles={mediaFiles} title="관찰 기록 미디어" />
+            <MediaDisplay mediaFiles={mediaFiles} />
           </CardContent>
         </Card>
       )}
-
-      {/* AI 이미지 생성 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>관찰 기반 맞춤 이미지 생성</CardTitle>
-          <CardDescription>
-            관찰일지 내용을 바탕으로 {isAdult ? '대상자' : '아이'}의 {isAdult ? '상태' : '발달'}와 치료에 도움이 되는 이미지를 생성해보세요
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ImageGenerator
-            initialPrompt={`${session.observations?.session_name || session.session_name}에서 관찰된 ${isAdult ? '대상자' : '아이'}의 ${isAdult ? '상태' : '발달'} 상황을 표현하는 따뜻하고 격려적인 이미지`}
-            context={`관찰일지 - ${session.observations?.session_name || session.session_name}, 분석결과: ${analysisData?.summary || '긍정적 상태'}`}
-            type="observation"
-          />
-        </CardContent>
-      </Card>
-
-      {/* 상품 추천 */}
-      <ProductRecommendation 
-        category="child" 
-        domain={session.observations?.domain || session.domain}
-        severity={riskLevel}
-      />
 
       {/* Subscription CTA at bottom */}
       <div className="mt-8">

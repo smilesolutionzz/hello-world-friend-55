@@ -448,28 +448,21 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
               </CardHeader>
             </Card>
 
-            {/* Dynamic AI Analysis Results */}
-            {aiAnalysis ? (
-              <div className="grid gap-6">
-                {/* AI 분석이 문자열인 경우 전체 텍스트 표시 */}
-                {typeof aiAnalysis === 'string' ? (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Brain className="h-5 w-5 text-blue-600" />
-                        전문가 분석 결과
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                        {aiAnalysis}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <>
+            {/* AI 분석 결과 파싱 - 새로운 접근법 */}
+            {(() => {
+              // 분석 데이터 추출 - 여러 경로에서 시도
+              const reportData = session.observations?.analysis_data?.report || 
+                                session.observations?.report ||
+                                session.analysis_data?.report ||
+                                session.report;
+              
+              console.log('Analysis Report Data:', reportData);
+              
+              if (reportData) {
+                return (
+                  <div className="grid gap-6">
                     {/* 상황 분석 */}
-                    {aiAnalysis.situation && (
+                    {reportData.situation && (
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
@@ -478,27 +471,27 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                            {aiAnalysis.situation}
+                          <div className="text-sm leading-relaxed whitespace-pre-wrap bg-blue-50 p-4 rounded-lg">
+                            {reportData.situation}
                           </div>
                         </CardContent>
                       </Card>
                     )}
 
-                    {/* 주요 포인트/현재 상태 평가 */}
-                    {aiAnalysis.points && aiAnalysis.points.length > 0 && (
+                    {/* 주요 관찰 포인트 */}
+                    {reportData.points && reportData.points.length > 0 && (
                       <Card>
                         <CardHeader>
                           <CardTitle className="flex items-center gap-2">
-                            <Eye className="h-5 w-5 text-amber-600" />
-                            {isAdult ? '현재 상태 평가' : '주요 포인트'}
+                            <Target className="h-5 w-5 text-green-600" />
+                            🎯 주요 관찰 포인트
                           </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-3">
-                            {aiAnalysis.points.map((point: string, index: number) => (
-                              <div key={index} className="flex items-start gap-3">
-                                <div className="w-2 h-2 bg-amber-500 rounded-full mt-2"></div>
+                            {reportData.points.map((point: string, index: number) => (
+                              <div key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                                <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                                 <div className="text-sm leading-relaxed">{point}</div>
                               </div>
                             ))}
@@ -506,16 +499,125 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
                         </CardContent>
                       </Card>
                     )}
-                  </>
-                )}
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="p-6 text-center text-muted-foreground">
-                  분석 데이터가 없습니다. 관찰일지를 다시 분석 요청해주세요.
-                </CardContent>
-              </Card>
-            )}
+
+                    {/* 개선 제안 */}
+                    {reportData.tips && reportData.tips.length > 0 && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Lightbulb className="h-5 w-5 text-yellow-600" />
+                            💡 개선 제안
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            {reportData.tips.map((tip: string, index: number) => (
+                              <div key={index} className="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg">
+                                <Lightbulb className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                                <div className="text-sm leading-relaxed">{tip}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* 긍정적 측면 (상세 모드에서만) */}
+                    {reportData.positives && reportData.positives.length > 0 && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <CheckCircle className="h-5 w-5 text-emerald-600" />
+                            ✨ 긍정적 측면
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            {reportData.positives.map((positive: string, index: number) => (
+                              <div key={index} className="flex items-start gap-3 p-3 bg-emerald-50 rounded-lg">
+                                <CheckCircle className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                <div className="text-sm leading-relaxed">{positive}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* 주의사항 */}
+                    {reportData.alerts && reportData.alerts.length > 0 && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <AlertTriangle className="h-5 w-5 text-red-600" />
+                            ⚠️ 주의사항
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            {reportData.alerts.map((alert: string, index: number) => (
+                              <div key={index} className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
+                                <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
+                                <div className="text-sm leading-relaxed">{alert}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* 미디어 노트 */}
+                    {reportData.mediaNotes && reportData.mediaNotes.length > 0 && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <FileText className="h-5 w-5 text-purple-600" />
+                            📎 미디어 분석 노트
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-2">
+                            {reportData.mediaNotes.map((note: string, index: number) => (
+                              <div key={index} className="text-sm p-2 bg-purple-50 rounded">
+                                {note}
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                );
+              }
+
+              // 기존 AI 분석이 있는 경우 (문자열)
+              if (aiAnalysis && typeof aiAnalysis === 'string') {
+                return (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Brain className="h-5 w-5 text-blue-600" />
+                        전문가 분석 결과
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-sm leading-relaxed whitespace-pre-wrap bg-blue-50 p-4 rounded-lg">
+                        {aiAnalysis}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              }
+
+              // 데이터가 없는 경우
+              return (
+                <Card>
+                  <CardContent className="p-6 text-center text-muted-foreground">
+                    분석 데이터가 없습니다. 관찰일지를 다시 분석 요청해주세요.
+                  </CardContent>
+                </Card>
+              );
+            })()}
           </div>
         </TabsContent>
 

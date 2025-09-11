@@ -18,7 +18,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth`,
+          redirectTo: `${window.location.origin}/`,
         }
       });
 
@@ -40,7 +40,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'kakao',
         options: {
-          redirectTo: `${window.location.origin}/auth`,
+          redirectTo: `${window.location.origin}/`,
         }
       });
 

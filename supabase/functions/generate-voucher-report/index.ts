@@ -178,13 +178,12 @@ ${customNotes || '없음'}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-5-2025-08-07',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        max_tokens: 3000,
-        temperature: 0.7,
+        max_completion_tokens: 3000,
       }),
     });
 

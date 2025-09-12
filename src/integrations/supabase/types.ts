@@ -86,6 +86,48 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_interactions: {
+        Row: {
+          agent_id: string
+          collaboration_agents: string[] | null
+          confidence_score: number | null
+          created_at: string
+          id: string
+          interaction_type: string
+          message: string | null
+          response: string | null
+          urgency_level: string | null
+          user_id: string
+          was_accepted: boolean | null
+        }
+        Insert: {
+          agent_id: string
+          collaboration_agents?: string[] | null
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          message?: string | null
+          response?: string | null
+          urgency_level?: string | null
+          user_id: string
+          was_accepted?: boolean | null
+        }
+        Update: {
+          agent_id?: string
+          collaboration_agents?: string[] | null
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          message?: string | null
+          response?: string | null
+          urgency_level?: string | null
+          user_id?: string
+          was_accepted?: boolean | null
+        }
+        Relationships: []
+      }
       assessment_enhanced_analysis: {
         Row: {
           assessment_type: string
@@ -1151,6 +1193,45 @@ export type Database = {
           observation_id?: string
           text?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      expert_reviews: {
+        Row: {
+          consultation_id: string | null
+          created_at: string
+          expert_id: string
+          id: string
+          is_anonymous: boolean | null
+          is_public: boolean | null
+          rating: number
+          review_text: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          consultation_id?: string | null
+          created_at?: string
+          expert_id: string
+          id?: string
+          is_anonymous?: boolean | null
+          is_public?: boolean | null
+          rating: number
+          review_text?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          consultation_id?: string | null
+          created_at?: string
+          expert_id?: string
+          id?: string
+          is_anonymous?: boolean | null
+          is_public?: boolean | null
+          rating?: number
+          review_text?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -2665,6 +2746,45 @@ export type Database = {
         }
         Relationships: []
       }
+      service_reviews: {
+        Row: {
+          created_at: string
+          id: string
+          is_anonymous: boolean | null
+          is_public: boolean | null
+          rating: number
+          review_text: string | null
+          service_id: string | null
+          service_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          is_public?: boolean | null
+          rating: number
+          review_text?: string | null
+          service_id?: string | null
+          service_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          is_public?: boolean | null
+          rating?: number
+          review_text?: string | null
+          service_id?: string | null
+          service_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           created_at: string
@@ -3275,6 +3395,36 @@ export type Database = {
           story_points?: number | null
           streak_days?: number | null
           total_points?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_memory: {
+        Row: {
+          created_at: string
+          family_context: Json | null
+          id: string
+          long_term_memory: Json | null
+          short_term_memory: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          family_context?: Json | null
+          id?: string
+          long_term_memory?: Json | null
+          short_term_memory?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          family_context?: Json | null
+          id?: string
+          long_term_memory?: Json | null
+          short_term_memory?: Json | null
           updated_at?: string
           user_id?: string
         }

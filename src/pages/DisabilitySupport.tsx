@@ -14,10 +14,11 @@ import {
   Calculator, Heart, Home, GraduationCap, Car, Utensils, MessageCircle, Phone, 
   Coffee, Clock, Smile, Frown, Meh, Brain, Target, Users, BookOpen, 
   Activity, MapPin, Calendar, FileText, Search, ExternalLink, Lightbulb,
-  Shield, Award, Gift, Stethoscope, Building2, UserCheck
+  Shield, Award, Gift, Stethoscope, Building2, UserCheck, Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { chatWithAICounselor } from '@/services/openai';
+import ProactiveAgentDashboard from '@/components/agents/ProactiveAgentDashboard';
 
 interface BenefitResult {
   name: string;
@@ -221,8 +222,12 @@ const DisabilitySupport = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="benefits" className="w-full">
-          <TabsList className="grid w-full grid-cols-7 h-auto p-1">
+        <Tabs defaultValue="ai-agents" className="w-full">
+          <TabsList className="grid w-full grid-cols-8 h-auto p-1">
+            <TabsTrigger value="ai-agents" className="flex flex-col gap-1 py-3">
+              <Sparkles className="w-5 h-5" />
+              <span className="text-xs">AI 에이전트</span>
+            </TabsTrigger>
             <TabsTrigger value="benefits" className="flex flex-col gap-1 py-3">
               <Calculator className="w-5 h-5" />
               <span className="text-xs">혜택계산</span>
@@ -254,6 +259,14 @@ const DisabilitySupport = () => {
           </TabsList>
 
           {/* 혜택 계산기 탭 */}
+        <TabsContent value="ai-agents" className="space-y-6">
+          <ProactiveAgentDashboard />
+        </TabsContent>
+
+          <TabsContent value="ai-agents" className="space-y-6">
+            <ProactiveAgentDashboard />
+          </TabsContent>
+
           <TabsContent value="benefits" className="space-y-6">
             <Card className="border-0 shadow-lg">
               <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">

@@ -87,23 +87,42 @@ export class AIAgentService {
     return AIAgentService.instance;
   }
 
-  // 사용자 메모리 로드/저장
+  // 사용자 메모리 로드/저장 (임시 저장소 사용)
   async loadUserMemory(userId: string): Promise<UserMemory | null> {
     try {
-      const { data, error } = await supabase
-        .from('user_memory')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-
-      if (error || !data) return null;
-
+      // 임시로 로컬 스토리지나 메모리에서 데이터 가져오기
+      const key = `user_memory_${userId}`;
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        const data = JSON.parse(stored);
+        return {
+          userId,
+          shortTermMemory: data.shortTermMemory || {},
+          longTermMemory: data.longTermMemory || {},
+          familyContext: data.familyContext || {},
+          lastUpdated: new Date(data.lastUpdated || Date.now())
+        };
+      }
+      
+      // 기본 메모리 구조 반환
       return {
         userId,
-        shortTermMemory: data.short_term_memory || {},
-        longTermMemory: data.long_term_memory || {},
-        familyContext: data.family_context || {},
-        lastUpdated: new Date(data.updated_at)
+        shortTermMemory: {
+          emotionalEntries: [],
+          stressLevel: 0,
+          milestones: [],
+          learningProgress: {}
+        },
+        longTermMemory: {
+          developmentProgress: {},
+          educationGoals: [],
+          medicalSchedule: []
+        },
+        familyContext: {
+          members: [],
+          stressLevel: 0
+        },
+        lastUpdated: new Date()
       };
     } catch (error) {
       console.error('Error loading user memory:', error);
@@ -113,17 +132,12 @@ export class AIAgentService {
 
   async updateUserMemory(memory: UserMemory): Promise<void> {
     try {
-      const { error } = await supabase
-        .from('user_memory')
-        .upsert({
-          user_id: memory.userId,
-          short_term_memory: memory.shortTermMemory,
-          long_term_memory: memory.longTermMemory,
-          family_context: memory.familyContext,
-          updated_at: new Date().toISOString()
-        });
-
-      if (error) throw error;
+      // 임시로 로컬 스토리지에 저장
+      const key = `user_memory_${memory.userId}`;
+      localStorage.setItem(key, JSON.stringify({
+        ...memory,
+        lastUpdated: memory.lastUpdated.toISOString()
+      }));
     } catch (error) {
       console.error('Error updating user memory:', error);
     }

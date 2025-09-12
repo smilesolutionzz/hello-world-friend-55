@@ -40,20 +40,39 @@ html, body {
     --card-foreground: 220 15% 25%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 25%;
-    --primary: 230 80% 65%;
+    --primary: 258 90% 66%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 60% 96%;
+    --primary-glow: 270 100% 85%;
+    --secondary: 280 40% 96%;
     --secondary-foreground: 220 15% 25%;
     --muted: 220 20% 96%;
     --muted-foreground: 220 10% 55%;
-    --accent: 180 50% 90%;
-    --accent-foreground: 180 30% 30%;
+    --accent: 316 73% 90%;
+    --accent-foreground: 316 30% 30%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 220 30% 92%;
     --input: 220 30% 95%;
-    --ring: 230 80% 65%;
+    --ring: 258 90% 66%;
     --radius: 0.75rem;
+    
+    /* Innovation AI colors */
+    --ai-gradient-start: 258 90% 66%;
+    --ai-gradient-end: 316 73% 69%;
+    --neural-blue: 217 100% 70%;
+    --cyber-purple: 270 100% 75%;
+    --future-mint: 180 100% 85%;
+    --innovation-gold: 45 90% 60%;
+    
+    /* Glassmorphism effects */
+    --glass-bg: 0 0% 100% / 0.1;
+    --glass-border: 0 0% 100% / 0.2;
+    --backdrop-blur: blur(20px);
+    
+    /* Advanced shadows */
+    --shadow-neural: 0 20px 50px -15px hsl(var(--ai-gradient-start) / 0.4);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.6);
+    --shadow-innovation: 0 25px 60px -20px hsl(var(--cyber-purple) / 0.3);
   }
 
   .dark {

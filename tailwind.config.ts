@@ -68,11 +68,17 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom brand colors
-				'calm-blue': 'hsl(var(--calm-blue))',
-				'warm-lavender': 'hsl(var(--warm-lavender))',
-				'soft-mint': 'hsl(var(--soft-mint))',
-				'gentle-peach': 'hsl(var(--gentle-peach))'
+				// AI Innovation colors
+				'ai-gradient-start': 'hsl(var(--ai-gradient-start))',
+				'ai-gradient-end': 'hsl(var(--ai-gradient-end))',
+				'neural-blue': 'hsl(var(--neural-blue))',
+				'cyber-purple': 'hsl(var(--cyber-purple))',
+				'future-mint': 'hsl(var(--future-mint))',
+				'innovation-gold': 'hsl(var(--innovation-gold))',
+				
+				// Glass effects
+				'glass-bg': 'hsl(var(--glass-bg))',
+				'glass-border': 'hsl(var(--glass-border))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -95,11 +101,54 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'neural-pulse': {
+					'0%, 100%': {
+						opacity: '1',
+						transform: 'scale(1)'
+					},
+					'50%': {
+						opacity: '0.8',
+						transform: 'scale(1.05)'
+					}
+				},
+				'ai-glow': {
+					'0%, 100%': {
+						'box-shadow': '0 0 20px hsl(var(--primary-glow) / 0.4)'
+					},
+					'50%': {
+						'box-shadow': '0 0 40px hsl(var(--primary-glow) / 0.8), 0 0 60px hsl(var(--cyber-purple) / 0.3)'
+					}
+				},
+				'float': {
+					'0%, 100%': {
+						transform: 'translateY(0px)'
+					},
+					'50%': {
+						transform: 'translateY(-10px)'
+					}
+				},
+				'shimmer': {
+					'0%': {
+						backgroundPosition: '-200% 0'
+					},
+					'100%': {
+						backgroundPosition: '200% 0'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'neural-pulse': 'neural-pulse 2s ease-in-out infinite',
+				'ai-glow': 'ai-glow 3s ease-in-out infinite',
+				'float': 'float 6s ease-in-out infinite',
+				'shimmer': 'shimmer 2s linear infinite'
+			},
+			backgroundImage: {
+				'gradient-neural': 'linear-gradient(135deg, hsl(var(--ai-gradient-start)), hsl(var(--ai-gradient-end)))',
+				'gradient-innovation': 'linear-gradient(135deg, hsl(var(--neural-blue)), hsl(var(--cyber-purple)), hsl(var(--future-mint)))',
+				'gradient-shimmer': 'linear-gradient(90deg, transparent, hsl(var(--primary-glow) / 0.4), transparent)'
 			}
 		}
 	},

@@ -123,3 +123,6 @@ verify_jwt = false
 
 [functions.huggingface-image-generator]
 verify_jwt = true
+
+[functions.advanced-disability-analyzer]
+verify_jwt = true

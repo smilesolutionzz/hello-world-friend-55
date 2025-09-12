@@ -19,6 +19,7 @@ import {
 import { toast } from 'sonner';
 import { chatWithAICounselor } from '@/services/openai';
 import ProactiveAgentDashboard from '@/components/agents/ProactiveAgentDashboard';
+import TherapyInstitutionSearch from '@/components/therapy/TherapyInstitutionSearch';
 
 interface BenefitResult {
   name: string;
@@ -848,117 +849,9 @@ const DisabilitySupport = () => {
             </Card>
           </TabsContent>
 
-          {/* 치료기관 찾기 & 감각통합평가 */}
+          {/* 치료기관 찾기 */}
           <TabsContent value="therapy" className="space-y-6">
-            <Card className="border-0 shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-t-lg">
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="w-6 h-6" />
-                  치료기관 찾기 & 감각통합평가
-                </CardTitle>
-                <CardDescription className="text-teal-100">
-                  우리 아이에게 필요한 전문 치료를 찾아보세요
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card className="bg-blue-50 border-blue-200">
-                    <CardHeader>
-                      <CardTitle className="text-blue-800 flex items-center gap-2">
-                        <MapPin className="w-5 h-5" />
-                        내 주변 치료기관 찾기
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>치료 종류 선택</Label>
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="치료 종류를 선택하세요" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="speech">언어치료</SelectItem>
-                            <SelectItem value="occupational">작업치료</SelectItem>
-                            <SelectItem value="physical">물리치료</SelectItem>
-                            <SelectItem value="behavioral">행동치료</SelectItem>
-                            <SelectItem value="music">음악치료</SelectItem>
-                            <SelectItem value="art">미술치료</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>지역 선택</Label>
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="지역을 선택하세요" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="seoul">서울특별시</SelectItem>
-                            <SelectItem value="busan">부산광역시</SelectItem>
-                            <SelectItem value="daegu">대구광역시</SelectItem>
-                            <SelectItem value="incheon">인천광역시</SelectItem>
-                            <SelectItem value="gyeonggi">경기도</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <Button className="w-full">
-                        <Search className="w-4 h-4 mr-2" />
-                        치료기관 검색
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-green-50 border-green-200">
-                    <CardHeader>
-                      <CardTitle className="text-green-800 flex items-center gap-2">
-                        <Activity className="w-5 h-5" />
-                        감각통합평가 도구
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-green-700">
-                        우리 아이의 감각 처리 능력을 간단히 체크해보세요
-                      </p>
-                      <div className="space-y-2">
-                        {[
-                          '큰 소리에 과도하게 반응한다',
-                          '특정 질감을 극도로 싫어한다',
-                          '균형감각이 부족해 보인다',
-                          '집중력이 떨어진다',
-                          '움직임을 지나치게 추구한다'
-                        ].map((item, index) => (
-                          <div key={index} className="flex items-center space-x-2">
-                            <Checkbox id={`sensory-${index}`} />
-                            <Label htmlFor={`sensory-${index}`} className="text-sm">{item}</Label>
-                          </div>
-                        ))}
-                      </div>
-                      <Button variant="outline" className="w-full">
-                        <Brain className="w-4 h-4 mr-2" />
-                        AI 감각통합 분석받기
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card className="bg-orange-50 border-orange-200">
-                  <CardContent className="pt-6">
-                    <div className="text-center space-y-3">
-                      <h3 className="text-lg font-semibold text-orange-800">
-                        🎯 맞춤형 치료 계획
-                      </h3>
-                      <p className="text-orange-700">
-                        우리 아이의 평가 결과를 바탕으로 전문가가 최적의 치료 계획을 제안해드립니다.
-                      </p>
-                      <Button className="bg-orange-600 hover:bg-orange-700">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        전문가 상담 예약하기
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </CardContent>
-            </Card>
+            <TherapyInstitutionSearch />
           </TabsContent>
         </Tabs>
       </div>

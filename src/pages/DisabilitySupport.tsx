@@ -275,14 +275,40 @@ const DisabilitySupport = () => {
         {/* 헤더 */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
-            <Shield className="w-10 h-10 text-primary" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              장애아동 종합 지원 센터
-            </h1>
+            <Brain className="w-10 h-10 text-primary animate-pulse" />
+            <div className="space-y-1">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-purple-600 to-secondary bg-clip-text text-transparent">
+                AI 심리발달교육복지
+              </h1>
+              <div className="text-2xl font-semibold text-primary/80">
+                혁신 종합플랫폼
+              </div>
+            </div>
+            <Sparkles className="w-8 h-8 text-secondary animate-pulse" />
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            우리 아이와 가족을 위한 맞춤형 지원 서비스를 한 곳에서 만나보세요
-          </p>
+          <div className="space-y-2">
+            <p className="text-lg font-medium text-primary flex items-center justify-center gap-2">
+              <span className="text-2xl">🚀</span>
+              차세대 AI 기술로 혁신하는 아동 발달 지원 생태계
+            </p>
+            <p className="text-md text-muted-foreground max-w-3xl mx-auto">
+              머신러닝 기반 개인화 분석 • 실시간 AI 상담 • 예측적 개입 시스템
+            </p>
+            <div className="flex items-center justify-center gap-6 text-sm text-primary/70">
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                실시간 AI 분석
+              </span>
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                개인 맞춤형
+              </span>
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                맞춤형 솔루션
+              </span>
+            </div>
+          </div>
         </div>
 
         <Tabs defaultValue="ai-agents" className="w-full">

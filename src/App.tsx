@@ -89,9 +89,7 @@ import FunTestResult from "./pages/FunTestResult";
 import JoseonNameTest from "./pages/JoseonNameTest";
 import JoseonJobTest from "./pages/JoseonJobTest";
 import JoseonStatusTest from "./pages/JoseonStatusTest";
-import DisabilityBenefitsCalculator from "./pages/DisabilityBenefitsCalculator";
-import DevelopmentalMilestones from "./pages/DevelopmentalMilestones";
-import EmotionalSupport from "./pages/EmotionalSupport";
+import DisabilitySupport from "./pages/DisabilitySupport";
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -149,9 +147,7 @@ const App = () => {
            <Route path="/joseon-name-test" element={<JoseonNameTest />} />
            <Route path="/joseon-job-test" element={<JoseonJobTest />} />
            <Route path="/joseon-status-test" element={<JoseonStatusTest />} />
-           <Route path="/disability-benefits" element={<DisabilityBenefitsCalculator />} />
-           <Route path="/developmental-milestones" element={<DevelopmentalMilestones />} />
-           <Route path="/emotional-support" element={<EmotionalSupport />} />
+          <Route path="/disability-support" element={<DisabilitySupport />} />
           <Route path="/assessment-history" element={<AssessmentHistory />} />
           <Route path="/counseling" element={<CounselingFlow />} />
           <Route path="/ai-counselor" element={<AICounselor />} />

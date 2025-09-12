@@ -53,9 +53,7 @@ const navigationItems: NavigationItem[] = [
   { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: false },
   
   // 장애인 부모 특화 기능
-  { icon: Target, label: '혜택계산기', path: '/disability-benefits', requiresAuth: false },
-  { icon: Calendar, label: '발달체크', path: '/developmental-milestones', requiresAuth: false },
-  { icon: Heart, label: '마음돌봄', path: '/emotional-support', requiresAuth: false },
+  { icon: Heart, label: '장애아동지원', path: '/disability-support', requiresAuth: false },
 ];
 
 export const UnifiedNavigation = () => {

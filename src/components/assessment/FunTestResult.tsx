@@ -56,6 +56,12 @@ export default function FunTestResult() {
         return `내 얼굴은 ${result?.matchedAnimal} 닮음! ${result?.emoji || '🐾'}`;
       case 'inner_animal':
         return `내 내면은 ${result?.innerAnimal}! 🦋`;
+      case 'joseon_name':
+        return `내 조선시대 이름은 ${result?.joseonName}! 🏯`;
+      case 'joseon_job':
+        return `내 조선시대 직업은 ${result?.job}! 👨‍💼`;
+      case 'joseon_status':
+        return `내 조선시대 신분은 ${result?.status}! 👑`;
       case 'grandma_relationship':
         return `할머니가 우리 연애를 진단했다! 👵`;
       default:
@@ -532,6 +538,182 @@ export default function FunTestResult() {
 
   if (testType === 'mz_nagging') {
     return <MZNaggingResult result={result} onRetake={handleRetry} />;
+  }
+
+  // 조선시대 테스트 결과들
+  if (testType === 'joseon_name') {
+    return (
+      <div className="space-y-6">
+        <Card className="w-full max-w-2xl mx-auto">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              🏯 당신의 조선시대 이름 🏯
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="text-center p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg">
+              <h2 className="text-3xl font-bold mb-2">{result.joseonName}</h2>
+              <p className="text-lg text-muted-foreground">{result.meaning}</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-muted rounded-lg">
+                <h3 className="font-semibold mb-2">🏛️ 예상 신분</h3>
+                <p>{result.status}</p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <h3 className="font-semibold mb-2">💼 예상 직업</h3>
+                <p>{result.job}</p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-muted rounded-lg">
+              <h3 className="font-semibold mb-2">💡 현대 조언</h3>
+              <p>{result.modernAdvice}</p>
+            </div>
+
+            <div className="flex gap-2 justify-center">
+              <Button onClick={handleShare} variant="outline" className="flex items-center gap-2">
+                <Share2 className="h-4 w-4" />
+                공유하기
+              </Button>
+              <Button onClick={handleShareText} variant="outline">
+                텍스트 공유
+              </Button>
+              <Button onClick={handleRetry} variant="default">
+                다시 테스트
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (testType === 'joseon_job') {
+    return (
+      <div className="space-y-6">
+        <Card className="w-full max-w-2xl mx-auto">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              👨‍💼 당신의 조선시대 직업 👩‍💼
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="text-center p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg">
+              <h2 className="text-3xl font-bold mb-2">{result.job}</h2>
+              <p className="text-lg text-muted-foreground">{result.description}</p>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="p-4 bg-muted rounded-lg">
+                <h3 className="font-semibold mb-2">📋 주요 업무</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  {result.duties?.map((duty: string, index: number) => (
+                    <li key={index}>{duty}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-muted rounded-lg">
+                  <h3 className="font-semibold mb-2">💰 예상 수입</h3>
+                  <p>{result.salary}</p>
+                </div>
+                <div className="p-4 bg-muted rounded-lg">
+                  <h3 className="font-semibold mb-2">🏅 관직 품계</h3>
+                  <p>{result.status}</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-muted rounded-lg">
+                <h3 className="font-semibold mb-2">💡 현대 조언</h3>
+                <p>{result.modernAdvice}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-2 justify-center">
+              <Button onClick={handleShare} variant="outline" className="flex items-center gap-2">
+                <Share2 className="h-4 w-4" />
+                공유하기
+              </Button>
+              <Button onClick={handleShareText} variant="outline">
+                텍스트 공유
+              </Button>
+              <Button onClick={handleRetry} variant="default">
+                다시 테스트
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (testType === 'joseon_status') {
+    return (
+      <div className="space-y-6">
+        <Card className="w-full max-w-2xl mx-auto">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              👑 당신의 조선시대 신분 👑
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="text-center p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg">
+              <h2 className="text-3xl font-bold mb-2">{result.status}</h2>
+              <p className="text-lg text-muted-foreground">{result.level}</p>
+              <p className="mt-2">{result.description}</p>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="p-4 bg-muted rounded-lg">
+                <h3 className="font-semibold mb-2">🏅 신분 특권</h3>
+                <ul className="list-disc list-inside space-y-1">
+                  {result.privileges?.map((privilege: string, index: number) => (
+                    <li key={index}>{privilege}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-4 bg-muted rounded-lg">
+                <h3 className="font-semibold mb-2">🏠 생활 방식</h3>
+                <p>{result.lifestyle}</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-muted rounded-lg">
+                  <h3 className="font-semibold mb-2">🎯 현대 직업</h3>
+                  <p>{result.modernEquivalent}</p>
+                </div>
+                <div className="p-4 bg-muted rounded-lg">
+                  <h3 className="font-semibold mb-2">📊 인구 비율</h3>
+                  <p>{result.percentage}</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-muted rounded-lg">
+                <h3 className="font-semibold mb-2">💡 현대 조언</h3>
+                <p>{result.modernAdvice}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-2 justify-center">
+              <Button onClick={handleShare} variant="outline" className="flex items-center gap-2">
+                <Share2 className="h-4 w-4" />
+                공유하기
+              </Button>
+              <Button onClick={handleShareText} variant="outline">
+                텍스트 공유
+              </Button>
+              <Button onClick={handleRetry} variant="default">
+                다시 테스트
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return null;

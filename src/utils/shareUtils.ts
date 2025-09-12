@@ -126,6 +126,33 @@ ${result.currentLifePhase}
 🔮 AI 내면 동물 분석 서비스
 나의 진정한 모습을 발견: aihpro.com`;
 
+    case 'joseon_name':
+      return `🏯 조선시대 내 이름: ${result.joseonName}
+✨ 이름의 의미: ${result.meaning}
+👑 예상 신분: ${result.status}
+💼 예상 직업: ${result.job}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏯 조선시대 이름 분석 서비스`;
+
+    case 'joseon_job':
+      return `👨‍💼 조선시대 내 직업: ${result.job}
+📜 직업 설명: ${result.description}
+💰 예상 수입: ${result.salary}
+🏅 관직 품계: ${result.status}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏛️ 조선시대 직업 분석 서비스`;
+
+    case 'joseon_status':
+      return `👑 조선시대 내 신분: ${result.status}
+📊 신분 계층: ${result.level}
+🎯 현대 직업: ${result.modernEquivalent}
+📈 인구 비율: ${result.percentage}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏰 조선시대 신분 분석 서비스`;
+
     default:
       return `테스트 결과
 📅 ${timestamp}

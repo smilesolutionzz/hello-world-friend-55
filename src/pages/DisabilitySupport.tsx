@@ -19,7 +19,6 @@ import {
 import { toast } from 'sonner';
 import { chatWithAICounselor } from '@/services/openai';
 import ProactiveAgentDashboard from '@/components/agents/ProactiveAgentDashboard';
-import TherapyInstitutionSearch from '@/components/therapy/TherapyInstitutionSearch';
 
 interface BenefitResult {
   name: string;
@@ -208,157 +207,77 @@ const DisabilitySupport = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-innovation bg-fixed relative overflow-hidden">
-      {/* 배경 효과 */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--neural-blue)/0.15),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,hsl(var(--cyber-purple)/0.15),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--future-mint)/0.1),transparent_70%)]" />
-      
-      {/* 플로팅 요소들 */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-neural-blue/20 rounded-full blur-xl animate-float" />
-      <div className="absolute bottom-20 right-10 w-40 h-40 bg-cyber-purple/20 rounded-full blur-xl animate-float" style={{animationDelay: '2s'}} />
-      <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-future-mint/20 rounded-full blur-xl animate-float" style={{animationDelay: '4s'}} />
-      
-      <div className="relative z-10 max-w-7xl mx-auto space-y-8 p-4">
-        {/* 혁신적인 헤더 */}
-        <div className="text-center space-y-6">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-neural rounded-full blur-md opacity-60 animate-ai-glow" />
-              <Brain className="relative w-16 h-16 text-white z-10 animate-neural-pulse" />
-            </div>
-            <div className="space-y-2">
-              <h1 className="text-5xl font-bold bg-gradient-neural bg-clip-text text-transparent leading-tight">
-                AI 심리발달교육복지
-              </h1>
-              <h2 className="text-3xl font-semibold text-white/90">
-                혁신 종합플랫폼
-              </h2>
-            </div>
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-neural rounded-full blur-md opacity-60 animate-ai-glow" style={{animationDelay: '1s'}} />
-              <Sparkles className="relative w-16 h-16 text-innovation-gold z-10 animate-neural-pulse" style={{animationDelay: '1s'}} />
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* 헤더 */}
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-3">
+            <Shield className="w-10 h-10 text-primary" />
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              장애아동 종합 지원 센터
+            </h1>
           </div>
-          
-          <div className="relative max-w-4xl mx-auto">
-            <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20" />
-            <div className="relative p-8 space-y-4">
-              <p className="text-xl text-white/90 font-medium">
-                🚀 차세대 AI 기술로 혁신하는 아동 발달 지원 생태계
-              </p>
-              <p className="text-lg text-white/80">
-                머신러닝 기반 개인화 분석 • 실시간 AI 상담 • 예측적 개입 시스템
-              </p>
-              <div className="flex justify-center gap-6 mt-6">
-                <div className="flex items-center gap-2 text-neural-blue">
-                  <div className="w-2 h-2 rounded-full bg-neural-blue animate-ping" />
-                  <span className="text-sm font-medium">실시간 AI 분석</span>
-                </div>
-                <div className="flex items-center gap-2 text-cyber-purple">
-                  <div className="w-2 h-2 rounded-full bg-cyber-purple animate-ping" style={{animationDelay: '0.5s'}} />
-                  <span className="text-sm font-medium">예측적 개입</span>
-                </div>
-                <div className="flex items-center gap-2 text-future-mint">
-                  <div className="w-2 h-2 rounded-full bg-future-mint animate-ping" style={{animationDelay: '1s'}} />
-                  <span className="text-sm font-medium">맞춤형 솔루션</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            우리 아이와 가족을 위한 맞춤형 지원 서비스를 한 곳에서 만나보세요
+          </p>
         </div>
 
-        {/* 혁신적인 탭 시스템 */}
-        <div className="relative">
-          <div className="absolute inset-0 bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10" />
-          <div className="relative p-2">
-            <Tabs defaultValue="ai-agents" className="w-full">
-              <TabsList className="grid w-full grid-cols-8 h-auto p-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl">
-                <TabsTrigger 
-                  value="ai-agents" 
-                  className="flex flex-col gap-2 py-4 px-3 rounded-xl transition-all duration-300 hover:bg-white/20 data-[state=active]:bg-gradient-neural data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:animate-ai-glow"
-                >
-                  <div className="relative">
-                    <Sparkles className="w-6 h-6 animate-neural-pulse" />
-                    <div className="absolute inset-0 bg-innovation-gold/30 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  <span className="text-xs font-medium">AI 에이전트</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="benefits" 
-                  className="flex flex-col gap-2 py-4 px-3 rounded-xl transition-all duration-300 hover:bg-white/20 data-[state=active]:bg-gradient-neural data-[state=active]:text-white data-[state=active]:shadow-lg"
-                >
-                  <Calculator className="w-6 h-6" />
-                  <span className="text-xs font-medium">혜택계산</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="milestones" 
-                  className="flex flex-col gap-2 py-4 px-3 rounded-xl transition-all duration-300 hover:bg-white/20 data-[state=active]:bg-gradient-neural data-[state=active]:text-white data-[state=active]:shadow-lg"
-                >
-                  <Target className="w-6 h-6" />
-                  <span className="text-xs font-medium">발달확인</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="emotional" 
-                  className="flex flex-col gap-2 py-4 px-3 rounded-xl transition-all duration-300 hover:bg-white/20 data-[state=active]:bg-gradient-neural data-[state=active]:text-white data-[state=active]:shadow-lg"
-                >
-                  <Heart className="w-6 h-6" />
-                  <span className="text-xs font-medium">마음돌봄</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="independence" 
-                  className="flex flex-col gap-2 py-4 px-3 rounded-xl transition-all duration-300 hover:bg-white/20 data-[state=active]:bg-gradient-neural data-[state=active]:text-white data-[state=active]:shadow-lg"
-                >
-                  <Award className="w-6 h-6" />
-                  <span className="text-xs font-medium">자립준비</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="siblings" 
-                  className="flex flex-col gap-2 py-4 px-3 rounded-xl transition-all duration-300 hover:bg-white/20 data-[state=active]:bg-gradient-neural data-[state=active]:text-white data-[state=active]:shadow-lg"
-                >
-                  <Users className="w-6 h-6" />
-                  <span className="text-xs font-medium">형제케어</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="education" 
-                  className="flex flex-col gap-2 py-4 px-3 rounded-xl transition-all duration-300 hover:bg-white/20 data-[state=active]:bg-gradient-neural data-[state=active]:text-white data-[state=active]:shadow-lg"
-                >
-                  <BookOpen className="w-6 h-6" />
-                  <span className="text-xs font-medium">특수교육</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="therapy" 
-                  className="flex flex-col gap-2 py-4 px-3 rounded-xl transition-all duration-300 hover:bg-white/20 data-[state=active]:bg-gradient-neural data-[state=active]:text-white data-[state=active]:shadow-lg"
-                >
-                  <Activity className="w-6 h-6" />
-                  <span className="text-xs font-medium">치료기관</span>
-                </TabsTrigger>
-              </TabsList>
+        <Tabs defaultValue="ai-agents" className="w-full">
+          <TabsList className="grid w-full grid-cols-8 h-auto p-1">
+            <TabsTrigger value="ai-agents" className="flex flex-col gap-1 py-3">
+              <Sparkles className="w-5 h-5" />
+              <span className="text-xs">AI 에이전트</span>
+            </TabsTrigger>
+            <TabsTrigger value="benefits" className="flex flex-col gap-1 py-3">
+              <Calculator className="w-5 h-5" />
+              <span className="text-xs">혜택계산</span>
+            </TabsTrigger>
+            <TabsTrigger value="milestones" className="flex flex-col gap-1 py-3">
+              <Target className="w-5 h-5" />
+              <span className="text-xs">발달확인</span>
+            </TabsTrigger>
+            <TabsTrigger value="emotional" className="flex flex-col gap-1 py-3">
+              <Heart className="w-5 h-5" />
+              <span className="text-xs">마음돌봄</span>
+            </TabsTrigger>
+            <TabsTrigger value="independence" className="flex flex-col gap-1 py-3">
+              <Award className="w-5 h-5" />
+              <span className="text-xs">자립준비</span>
+            </TabsTrigger>
+            <TabsTrigger value="siblings" className="flex flex-col gap-1 py-3">
+              <Users className="w-5 h-5" />
+              <span className="text-xs">형제케어</span>
+            </TabsTrigger>
+            <TabsTrigger value="education" className="flex flex-col gap-1 py-3">
+              <BookOpen className="w-5 h-5" />
+              <span className="text-xs">특수교육</span>
+            </TabsTrigger>
+            <TabsTrigger value="therapy" className="flex flex-col gap-1 py-3">
+              <Activity className="w-5 h-5" />
+              <span className="text-xs">치료기관</span>
+            </TabsTrigger>
+          </TabsList>
 
-           {/* AI 에이전트 탭 */}
+          {/* 혜택 계산기 탭 */}
+        <TabsContent value="ai-agents" className="space-y-6">
+          <ProactiveAgentDashboard />
+        </TabsContent>
+
           <TabsContent value="ai-agents" className="space-y-6">
             <ProactiveAgentDashboard />
           </TabsContent>
 
           <TabsContent value="benefits" className="space-y-6">
-            <div className="relative">
-              <div className="absolute inset-0 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20" />
-              <Card className="relative border-0 bg-transparent shadow-none">
-                <CardHeader className="bg-gradient-neural text-white rounded-t-3xl relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-shimmer animate-shimmer opacity-30" />
-                  <div className="relative z-10">
-                    <CardTitle className="flex items-center gap-3 text-2xl">
-                      <div className="relative">
-                        <Calculator className="w-8 h-8 animate-neural-pulse" />
-                        <div className="absolute inset-0 bg-innovation-gold/30 rounded-full blur-sm" />
-                      </div>
-                      AI 혜택 계산 시스템
-                    </CardTitle>
-                    <CardDescription className="text-white/90 text-lg mt-2">
-                      🤖 머신러닝 기반으로 개인 맞춤형 지원금과 혜택을 실시간 분석합니다
-                    </CardDescription>
-                  </div>
-                </CardHeader>
+            <Card className="border-0 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="w-6 h-6" />
+                  정부 지원 혜택 계산기
+                </CardTitle>
+                <CardDescription className="text-blue-100">
+                  우리 아이가 받을 수 있는 모든 지원금과 혜택을 확인하세요
+                </CardDescription>
+              </CardHeader>
               <CardContent className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -467,8 +386,7 @@ const DisabilitySupport = () => {
                   혜택 계산하기
                 </Button>
               </CardContent>
-              </Card>
-            </div>
+            </Card>
 
             {showBenefitResults && (
               <div className="space-y-6">
@@ -930,13 +848,119 @@ const DisabilitySupport = () => {
             </Card>
           </TabsContent>
 
-          {/* 치료기관 찾기 */}
+          {/* 치료기관 찾기 & 감각통합평가 */}
           <TabsContent value="therapy" className="space-y-6">
-            <TherapyInstitutionSearch />
+            <Card className="border-0 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-t-lg">
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="w-6 h-6" />
+                  치료기관 찾기 & 감각통합평가
+                </CardTitle>
+                <CardDescription className="text-teal-100">
+                  우리 아이에게 필요한 전문 치료를 찾아보세요
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card className="bg-blue-50 border-blue-200">
+                    <CardHeader>
+                      <CardTitle className="text-blue-800 flex items-center gap-2">
+                        <MapPin className="w-5 h-5" />
+                        내 주변 치료기관 찾기
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label>치료 종류 선택</Label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="치료 종류를 선택하세요" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="speech">언어치료</SelectItem>
+                            <SelectItem value="occupational">작업치료</SelectItem>
+                            <SelectItem value="physical">물리치료</SelectItem>
+                            <SelectItem value="behavioral">행동치료</SelectItem>
+                            <SelectItem value="music">음악치료</SelectItem>
+                            <SelectItem value="art">미술치료</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label>지역 선택</Label>
+                        <Select>
+                          <SelectTrigger>
+                            <SelectValue placeholder="지역을 선택하세요" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="seoul">서울특별시</SelectItem>
+                            <SelectItem value="busan">부산광역시</SelectItem>
+                            <SelectItem value="daegu">대구광역시</SelectItem>
+                            <SelectItem value="incheon">인천광역시</SelectItem>
+                            <SelectItem value="gyeonggi">경기도</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <Button className="w-full">
+                        <Search className="w-4 h-4 mr-2" />
+                        치료기관 검색
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-green-50 border-green-200">
+                    <CardHeader>
+                      <CardTitle className="text-green-800 flex items-center gap-2">
+                        <Activity className="w-5 h-5" />
+                        감각통합평가 도구
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm text-green-700">
+                        우리 아이의 감각 처리 능력을 간단히 체크해보세요
+                      </p>
+                      <div className="space-y-2">
+                        {[
+                          '큰 소리에 과도하게 반응한다',
+                          '특정 질감을 극도로 싫어한다',
+                          '균형감각이 부족해 보인다',
+                          '집중력이 떨어진다',
+                          '움직임을 지나치게 추구한다'
+                        ].map((item, index) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <Checkbox id={`sensory-${index}`} />
+                            <Label htmlFor={`sensory-${index}`} className="text-sm">{item}</Label>
+                          </div>
+                        ))}
+                      </div>
+                      <Button variant="outline" className="w-full">
+                        <Brain className="w-4 h-4 mr-2" />
+                        AI 감각통합 분석받기
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="bg-orange-50 border-orange-200">
+                  <CardContent className="pt-6">
+                    <div className="text-center space-y-3">
+                      <h3 className="text-lg font-semibold text-orange-800">
+                        🎯 맞춤형 치료 계획
+                      </h3>
+                      <p className="text-orange-700">
+                        우리 아이의 평가 결과를 바탕으로 전문가가 최적의 치료 계획을 제안해드립니다.
+                      </p>
+                      <Button className="bg-orange-600 hover:bg-orange-700">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        전문가 상담 예약하기
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </CardContent>
+            </Card>
           </TabsContent>
-            </Tabs>
-          </div>
-        </div>
+        </Tabs>
       </div>
     </div>
   );

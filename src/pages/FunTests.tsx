@@ -14,7 +14,7 @@ import { AIFeatureCard } from '@/components/AIFeatureCard';
 
 const FunTests = () => {
   const navigate = useNavigate();
-  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage' | 'mz_nagging'>('menu');
+  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage' | 'mz_nagging' | 'joseon_name' | 'joseon_job' | 'joseon_status'>('menu');
 
   const handleTestComplete = (result: any, testType: string) => {
     navigate('/fun-test-result', { 
@@ -48,6 +48,21 @@ const FunTests = () => {
 
   if (currentTest === 'mz_nagging') {
     return <MZNaggingTest onComplete={handleTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentTest === 'joseon_name') {
+    navigate('/joseon-name-test');
+    return null;
+  }
+
+  if (currentTest === 'joseon_job') {
+    navigate('/joseon-job-test');
+    return null;
+  }
+
+  if (currentTest === 'joseon_status') {
+    navigate('/joseon-status-test');
+    return null;
   }
 
   return (
@@ -130,6 +145,36 @@ const FunTests = () => {
             rank={6}
             onClick={() => setCurrentTest('mz_nagging')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-orange-200 bg-gradient-to-br from-orange-50 to-yellow-50 w-full"
+          />
+
+          <AIFeatureCard
+            title="🏯 조선시대 내 이름은?"
+            description="태어난 월일로 알아보는 나의 조선시대 이름과 신분, 직업까지! 친구들과 함께 비교해보세요"
+            icon={Crown}
+            aiLevel="basic"
+            rank={7}
+            onClick={() => setCurrentTest('joseon_name')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50 w-full"
+          />
+
+          <AIFeatureCard
+            title="⚔️ 조선시대 내 직업은?"
+            description="성격 테스트로 알아보는 조선시대 나의 직업! 학자? 무관? 상인? 당신의 운명을 확인하세요"
+            icon={Brain}
+            aiLevel="basic"
+            rank={8}
+            onClick={() => setCurrentTest('joseon_job')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50 w-full"
+          />
+
+          <AIFeatureCard
+            title="👑 조선시대 내 신분은?"
+            description="라이프스타일 분석으로 알아보는 조선시대 나의 신분! 양반? 중인? 평민? 신분상승 가능성까지"
+            icon={Star}
+            aiLevel="basic"
+            rank={9}
+            onClick={() => setCurrentTest('joseon_status')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-purple-200 bg-gradient-to-br from-purple-50 to-violet-50 w-full"
           />
         </div>
 

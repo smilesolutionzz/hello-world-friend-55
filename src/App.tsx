@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "@/components/layout/MainLayout";
 import ErrorBoundary from "@/components/ui/error-boundary";
 import NetworkStatus from "@/components/common/NetworkStatus";
 import { PerformanceMonitor } from "@/components/ui/performance-monitor";
@@ -124,13 +125,13 @@ const App = () => {
               <NetworkStatus />
               <SessionManager />
               <Routes>
-          {/* Main Routes - Simplified User Journey */}
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<HighlightAuth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/premium-assessment" element={<PremiumAssessment />} />
-          <Route path="/assessment" element={<Assessment />} />
-          <Route path="/free-trial" element={<FreeTrialAssessment />} />
+                <Route path="/" element={<MainLayout />}>
+                  {/* Main Routes - Simplified User Journey */}
+          <Route index element={<Index />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="premium-assessment" element={<PremiumAssessment />} />
+          <Route path="assessment" element={<Assessment />} />
+          <Route path="free-trial" element={<FreeTrialAssessment />} />
           <Route path="/assessment/mental-health-quick-test" element={<BasicMentalHealthTest />} />
           <Route path="/assessment/personality-love-test" element={
             <PersonalityLoveTest onComplete={(result) => {
@@ -212,10 +213,18 @@ const App = () => {
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
-              </Routes>
-              <LiveFeedWidget />
-              <FloatingAIHAgent />
-            </ErrorBoundary>
+        </Route>
+        
+        {/* Routes without layout (auth pages) */}
+        <Route path="/auth" element={<HighlightAuth />} />
+        <Route path="/highlight-auth" element={<HighlightAuth />} />
+        <Route path="/highlight-dashboard" element={<HighlightDashboard />} />
+        <Route path="/highlight-ai" element={<HighlightAI />} />
+        <Route path="/typebot-embed" element={<TypebotEmbed />} />
+        </Routes>
+        <LiveFeedWidget />
+        <FloatingAIHAgent />
+      </ErrorBoundary>
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>

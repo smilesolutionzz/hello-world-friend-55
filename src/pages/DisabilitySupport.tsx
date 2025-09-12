@@ -347,11 +347,7 @@ const DisabilitySupport = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* 혜택 계산기 탭 */}
-        <TabsContent value="ai-agents" className="space-y-6">
-          <ProactiveAgentDashboard />
-        </TabsContent>
-
+          {/* AI 에이전트 탭 */}
           <TabsContent value="ai-agents" className="space-y-6">
             <ProactiveAgentDashboard />
           </TabsContent>

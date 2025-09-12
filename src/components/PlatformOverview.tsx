@@ -127,6 +127,10 @@ const PlatformOverview = () => {
                 </li>
                 <li className="flex items-start gap-2 text-muted-foreground">
                   <span className="w-1.5 h-1.5 bg-secondary rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="leading-relaxed">장애아동 부모 특화 지원 서비스</span>
+                </li>
+                <li className="flex items-start gap-2 text-muted-foreground">
+                  <span className="w-1.5 h-1.5 bg-secondary rounded-full mt-2 flex-shrink-0"></span>
                   <span className="leading-relaxed">전문 치료사 연계 시스템 구축</span>
                 </li>
                 <li className="flex items-start gap-2 text-muted-foreground">

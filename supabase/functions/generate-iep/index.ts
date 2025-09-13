@@ -202,7 +202,7 @@ ${Object.keys(currentPerformance).length > 0 ? JSON.stringify(currentPerformance
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-5-2025-08-07', // IEP 생성용 고품질 모델
         messages: [
           {
             role: 'system',

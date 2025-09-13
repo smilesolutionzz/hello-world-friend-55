@@ -107,7 +107,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-5-2025-08-07', // 관찰일지 분석용 고품질 모델
         messages: [
           {
             role: 'system',

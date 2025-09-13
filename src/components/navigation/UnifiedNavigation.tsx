@@ -52,8 +52,6 @@ const navigationItems: NavigationItem[] = [
   { icon: Brain, label: '체질분석', path: '/han-medicine-test', requiresAuth: false },
   { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: false },
   
-  // 장애인 부모 특화 기능
-  { icon: Heart, label: '장애아동지원', path: '/disability-support', requiresAuth: false },
 ];
 
 export const UnifiedNavigation = () => {

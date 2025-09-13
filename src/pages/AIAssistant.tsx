@@ -742,28 +742,28 @@ const AIAssistant = () => {
                 <CardContent className="space-y-3 md:space-y-4 p-3 md:p-6 pt-0">
                   {assistantModes.map((mode, index) => (
                      <Button
-                      key={mode.id}
-                      variant={activeMode === mode.id ? "default" : "outline"}
-                      className={`w-full h-auto p-2 md:p-3 transition-all duration-300 hover-scale animate-fade-in min-h-[90px] md:min-h-[110px] ${
-                        activeMode === mode.id 
-                          ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ring-2 ring-cyan-400 shadow-lg scale-105' 
-                          : 'bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50'
-                      }`}
-                      onClick={() => setActiveMode(mode.id)}
-                      style={{animationDelay: `${index * 0.1}s`}}
-                    >
-                      <div className="flex flex-col items-center gap-1 md:gap-2 text-center w-full max-w-full">
-                        <div className={`p-1 md:p-2 rounded-full flex-shrink-0 ${activeMode === mode.id ? 'bg-white/20' : 'bg-white/10'}`}>
-                          {mode.icon}
-                        </div>
-                        <div className="min-w-0 w-full px-1">
-                          <div className="font-semibold text-xs md:text-sm leading-tight break-words hyphens-auto">{mode.title}</div>
-                          <div className="text-[10px] md:text-xs opacity-80 mt-0.5 md:mt-1 leading-tight break-words hyphens-auto overflow-hidden">
-                            {mode.description}
-                          </div>
-                        </div>
-                      </div>
-                    </Button>
+                       key={mode.id}
+                       variant={activeMode === mode.id ? "default" : "outline"}
+                       className={`w-full h-auto p-2 md:p-4 transition-all duration-300 hover-scale animate-fade-in min-h-[90px] md:min-h-[120px] overflow-hidden ${
+                         activeMode === mode.id 
+                           ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ring-2 ring-cyan-400 shadow-lg scale-105' 
+                           : 'bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50'
+                       }`}
+                       onClick={() => setActiveMode(mode.id)}
+                       style={{animationDelay: `${index * 0.1}s`}}
+                     >
+                       <div className="flex flex-col items-center gap-1 md:gap-2 text-center w-full h-full justify-center overflow-hidden">
+                         <div className={`p-1 md:p-2 rounded-full flex-shrink-0 ${activeMode === mode.id ? 'bg-white/20' : 'bg-white/10'}`}>
+                           {mode.icon}
+                         </div>
+                         <div className="min-w-0 w-full px-1 md:px-2 flex-1 flex flex-col justify-center overflow-hidden">
+                           <div className="font-semibold text-xs md:text-base leading-tight truncate mb-1">{mode.title}</div>
+                           <div className="text-[10px] md:text-sm opacity-80 leading-snug line-clamp-2 md:line-clamp-3 break-words hyphens-auto">
+                             {mode.description}
+                           </div>
+                         </div>
+                       </div>
+                     </Button>
                   ))}
                 </CardContent>
               </Card>

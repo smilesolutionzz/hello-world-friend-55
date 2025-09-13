@@ -45,6 +45,37 @@ const AIAssistant = () => {
   const [activeMode, setActiveMode] = useState<string>('counselor');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
+  // 모드별 대화 내역을 유지하기 위한 상태
+  const [conversationsByMode, setConversationsByMode] = useState<Record<string, Message[]>>({});
+
+  // 현재 모드의 대화 내역 가져오기
+  const currentMessages = conversationsByMode[activeMode] || [];
+
+  // 모드 변경 시 현재 메시지를 저장하고 새 모드의 메시지 로드
+  useEffect(() => {
+    // 현재 메시지를 이전 모드에 저장
+    if (messages.length > 0) {
+      setConversationsByMode(prev => ({
+        ...prev,
+        [activeMode]: messages
+      }));
+    }
+    
+    // 새 모드의 메시지 로드
+    const newModeMessages = conversationsByMode[activeMode] || [];
+    setMessages(newModeMessages);
+  }, [activeMode]);
+
+  // 메시지 업데이트 시 현재 모드에 저장
+  useEffect(() => {
+    if (messages.length > 0) {
+      setConversationsByMode(prev => ({
+        ...prev,
+        [activeMode]: messages
+      }));
+    }
+  }, [messages, activeMode]);
+
   const assistantModes: AssistantMode[] = [
     {
       id: 'counselor',
@@ -710,10 +741,10 @@ const AIAssistant = () => {
                 </CardHeader>
                 <CardContent className="space-y-3 md:space-y-4 p-3 md:p-6 pt-0">
                   {assistantModes.map((mode, index) => (
-                    <Button
+                     <Button
                       key={mode.id}
                       variant={activeMode === mode.id ? "default" : "outline"}
-                      className={`w-full h-auto p-3 md:p-4 transition-all duration-300 hover-scale animate-fade-in min-h-[80px] md:min-h-[100px] ${
+                      className={`w-full h-auto p-2 md:p-3 transition-all duration-300 hover-scale animate-fade-in min-h-[90px] md:min-h-[110px] ${
                         activeMode === mode.id 
                           ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ring-2 ring-cyan-400 shadow-lg scale-105' 
                           : 'bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50'
@@ -721,13 +752,13 @@ const AIAssistant = () => {
                       onClick={() => setActiveMode(mode.id)}
                       style={{animationDelay: `${index * 0.1}s`}}
                     >
-                      <div className="flex flex-col items-center gap-2 md:gap-3 text-center">
-                        <div className={`p-1 md:p-2 rounded-full ${activeMode === mode.id ? 'bg-white/20' : 'bg-white/10'}`}>
+                      <div className="flex flex-col items-center gap-1 md:gap-2 text-center w-full max-w-full">
+                        <div className={`p-1 md:p-2 rounded-full flex-shrink-0 ${activeMode === mode.id ? 'bg-white/20' : 'bg-white/10'}`}>
                           {mode.icon}
                         </div>
-                        <div>
-                          <div className="font-semibold text-sm md:text-base leading-tight">{mode.title}</div>
-                          <div className="text-xs md:text-sm opacity-80 mt-1 leading-tight break-words hyphens-auto">
+                        <div className="min-w-0 w-full px-1">
+                          <div className="font-semibold text-xs md:text-sm leading-tight break-words hyphens-auto">{mode.title}</div>
+                          <div className="text-[10px] md:text-xs opacity-80 mt-0.5 md:mt-1 leading-tight break-words hyphens-auto overflow-hidden">
                             {mode.description}
                           </div>
                         </div>

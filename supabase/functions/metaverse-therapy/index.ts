@@ -123,7 +123,7 @@ ${JSON.stringify(environments, null, 2)}
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-5-2025-08-07',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: recommendationPrompt }],
       max_completion_tokens: 1500,
     }),
@@ -345,7 +345,7 @@ async function generateAITherapistResponse(data: any) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-5-2025-08-07',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: therapistPrompt }],
       max_completion_tokens: 2000,
     }),
@@ -451,7 +451,7 @@ async function analyzeUserEmotion(data: any) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-5-2025-08-07',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: emotionPrompt }],
       max_completion_tokens: 1500,
     }),
@@ -548,7 +548,7 @@ ${JSON.stringify(environments, null, 2)}
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-5-2025-08-07',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: suggestionPrompt }],
       max_completion_tokens: 1500,
     }),

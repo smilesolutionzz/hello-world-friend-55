@@ -326,7 +326,7 @@ ${Object.entries(results).map(([domain, score]) => `- ${domain}: ${score}점`).j
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07', // 최신 모델 사용
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',

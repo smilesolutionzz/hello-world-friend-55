@@ -156,7 +156,7 @@ async function analyzeEmotion(supabase: any, openAIApiKey: string, profileId: st
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-5-2025-08-07',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: 'You are an expert AI psychology coach with deep knowledge of CBT, DBT, and emotion regulation techniques.' },
         { role: 'user', content: prompt }
@@ -282,7 +282,7 @@ async function chatWithCoach(supabase: any, openAIApiKey: string, profileId: str
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-5-2025-08-07',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: fullPrompt }
@@ -389,7 +389,7 @@ async function generateCBTHomework(supabase: any, openAIApiKey: string, profileI
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-5-2025-08-07',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: 'You are an expert CBT therapist creating personalized homework assignments.' },
         { role: 'user', content: prompt }
@@ -474,7 +474,7 @@ async function analyzeRelationship(supabase: any, openAIApiKey: string, profileI
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-5-2025-08-07',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: 'You are an expert relationship coach with deep knowledge of communication patterns and conflict resolution.' },
         { role: 'user', content: prompt }
@@ -579,7 +579,7 @@ async function lifestyleCoaching(supabase: any, openAIApiKey: string, profileId:
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-5-2025-08-07',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: 'You are an expert lifestyle coach specializing in the connection between physical health and mental wellbeing.' },
         { role: 'user', content: prompt }
@@ -689,7 +689,7 @@ async function getPersonalizedIntervention(supabase: any, openAIApiKey: string, 
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-5-2025-08-07',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: 'You are an expert crisis intervention specialist with deep knowledge of evidence-based coping strategies.' },
         { role: 'user', content: prompt }

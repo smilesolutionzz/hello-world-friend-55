@@ -713,7 +713,7 @@ const AIAssistant = () => {
                     <Button
                       key={mode.id}
                       variant={activeMode === mode.id ? "default" : "outline"}
-                      className={`w-full h-auto p-3 md:p-6 transition-all duration-300 hover-scale animate-fade-in ${
+                      className={`w-full h-auto p-3 md:p-4 transition-all duration-300 hover-scale animate-fade-in min-h-[80px] md:min-h-[100px] ${
                         activeMode === mode.id 
                           ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ring-2 ring-cyan-400 shadow-lg scale-105' 
                           : 'bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50'
@@ -726,8 +726,8 @@ const AIAssistant = () => {
                           {mode.icon}
                         </div>
                         <div>
-                          <div className="font-semibold text-sm md:text-lg">{mode.title}</div>
-                          <div className="text-xs md:text-sm opacity-80 mt-1">
+                          <div className="font-semibold text-sm md:text-base leading-tight">{mode.title}</div>
+                          <div className="text-xs md:text-sm opacity-80 mt-1 leading-tight break-words hyphens-auto">
                             {mode.description}
                           </div>
                         </div>

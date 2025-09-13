@@ -753,7 +753,7 @@ const AIAssistant = () => {
                      <Button
                        key={mode.id}
                        variant={activeMode === mode.id ? "default" : "outline"}
-                       className={`w-full h-auto p-2 md:p-4 transition-all duration-300 hover-scale animate-fade-in min-h-[90px] md:min-h-[120px] overflow-hidden ${
+                       className={`w-full h-auto p-3 md:p-4 transition-all duration-300 hover-scale animate-fade-in min-h-[70px] md:min-h-[80px] overflow-hidden ${
                          activeMode === mode.id 
                            ? 'bg-gradient-to-r from-cyan-500 to-purple-500 text-white ring-2 ring-cyan-400 shadow-lg scale-105' 
                            : 'bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50'
@@ -761,16 +761,11 @@ const AIAssistant = () => {
                        onClick={() => setActiveMode(mode.id)}
                        style={{animationDelay: `${index * 0.1}s`}}
                      >
-                       <div className="flex flex-col items-center gap-1 md:gap-2 text-center w-full h-full justify-center overflow-hidden">
-                         <div className={`p-1 md:p-2 rounded-full flex-shrink-0 ${activeMode === mode.id ? 'bg-white/20' : 'bg-white/10'}`}>
+                       <div className="flex flex-col items-center gap-2 md:gap-3 text-center w-full h-full justify-center">
+                         <div className={`p-2 md:p-3 rounded-full flex-shrink-0 ${activeMode === mode.id ? 'bg-white/20' : 'bg-white/10'}`}>
                            {mode.icon}
                          </div>
-                         <div className="min-w-0 w-full px-1 md:px-2 flex-1 flex flex-col justify-center overflow-hidden">
-                           <div className="font-semibold text-xs md:text-base leading-tight truncate mb-1">{mode.title}</div>
-                           <div className="text-[10px] md:text-sm opacity-80 leading-snug break-words hyphens-auto max-h-8 md:max-h-10 overflow-hidden">
-                             {mode.description}
-                           </div>
-                         </div>
+                         <div className="font-semibold text-sm md:text-lg leading-tight">{mode.title}</div>
                        </div>
                      </Button>
                   ))}

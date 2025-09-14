@@ -527,62 +527,69 @@ const TokenSubscription = () => {
 
         {/* 창립자의 손편지 */}
         <div className="mt-20">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-8 shadow-lg border border-amber-200">
+          <div className="max-w-6xl mx-auto">
+            <div className="bg-gradient-to-br from-orange-100 via-amber-50 to-yellow-100 rounded-3xl p-8 shadow-lg border border-orange-200">
               <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Star className="w-8 h-8 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2">창립자의 손편지</h2>
                 <p className="text-muted-foreground">아이들의 미래를 위한 진심어린 메시지</p>
               </div>
               
-              <div className="bg-white/60 rounded-2xl p-6 shadow-sm">
-                <div className="flex flex-col md:flex-row gap-6 items-start">
+              <div className="bg-white/70 rounded-2xl p-6 shadow-sm">
+                <div className="flex flex-col lg:flex-row gap-8 items-start">
                   <div className="flex-1">
-                    <p className="text-lg leading-relaxed mb-4">
+                    <p className="text-lg leading-relaxed mb-4 text-orange-800">
                       안녕하세요, 아이심리연구소 창립자 이수석입니다.
                     </p>
                     <p className="text-base leading-relaxed mb-4">
-                      제가 이 서비스를 만든 이유는 간단합니다. 아이들이 스스로를 이해하고 자신의 잠재력을 발견할 수 있도록 돕고 싶었기 때문입니다.
+                      용인대학교에서 특수체육교육을 전공하고, 스포츠과학대학원에서 발달재활 특수체육 석사학위를 취득했습니다.
+                      13년 이상 아이플러스발달지원센터 센터장으로 활동하며 5000명 이상의 아이들과 부모님들을 상담해왔습니다.
                     </p>
                     <p className="text-base leading-relaxed mb-4">
-                      많은 부모님들이 아이의 마음을 이해하고 싶어 하지만, 어디서부터 시작해야 할지 막막해합니다. 
-                      전문적인 심리 상담은 비용이 부담스럽고, 시간도 많이 걸리죠.
+                      현장에서 만난 수많은 아이들을 보며, 각자가 가진 고유한 특성과 잠재력을 발견하는 것이 얼마나 중요한지 깨달았습니다. 
+                      하지만 전문적인 상담을 받기에는 시간적, 경제적 부담이 큰 것이 현실이었죠.
                     </p>
                     <p className="text-base leading-relaxed mb-4">
-                      그래서 AI 기술을 활용한 심리 검사와 분석 서비스를 개발했습니다. 
-                      전문가 수준의 분석을 더 쉽고 저렴하게 받을 수 있도록 말이죠.
+                      그래서 AI 기술을 활용해 더 많은 가정이 부담 없이 전문적인 심리 분석을 받을 수 있는 서비스를 만들었습니다. 
+                      13년간의 현장 경험과 5000명의 상담 노하우를 AI에 담아, 언제 어디서나 아이의 마음을 이해할 수 있도록 도움을 드리고 싶습니다.
                     </p>
                     <p className="text-base leading-relaxed mb-4">
-                      하이브리드 모델도 이런 고민에서 나왔습니다. 
-                      가끔 필요한 분들은 토큰으로, 정기적으로 이용하시는 분들은 구독으로. 
-                      각자의 상황에 맞는 선택지를 제공하고 싶었습니다.
+                      하이브리드 모델을 통해 각 가정의 상황에 맞는 선택을 할 수 있도록 했습니다. 
+                      토큰제로 부담 없이 시작하거나, 구독제로 지속적인 관리를 받으실 수 있습니다.
                     </p>
-                    <p className="text-base leading-relaxed text-amber-800 font-medium">
-                      모든 아이가 자신만의 빛을 발견하고, 그 빛이 세상을 더 밝게 만들 수 있기를 진심으로 바랍니다.
+                    <p className="text-base leading-relaxed text-orange-800 font-medium">
+                      모든 아이가 자신만의 빛을 발견하고, 그 빛으로 세상을 더 밝게 만들어가기를 진심으로 바랍니다.
                     </p>
                     <div className="text-right mt-6">
                       <p className="text-sm text-muted-foreground">아이심리연구소 창립자 이수석 드림</p>
                     </div>
                   </div>
                   
-                  <div className="flex-shrink-0 w-full md:w-80">
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
+                  <div className="flex-shrink-0 w-full lg:w-80">
+                    <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border border-orange-200">
                       <video 
                         autoPlay 
                         loop 
                         muted 
                         playsInline
-                        className="w-full h-auto rounded-lg shadow-md"
-                        poster=""
+                        className="w-full h-auto rounded-lg shadow-md mb-4"
                       >
                         <source src="https://mblogvideo-phinf.pstatic.net/MjAyNTA5MDNfMTk4/MDAxNzU2ODkwNTQyMzQz.Ua0h5RL5N1pPZ7w3uqybKp1edW_6VbbibvXlc3Tu1c4g.55XWOPb5qQ6r9T-x0rmkGRMGdiN5x5a2KmTyDq3Oh9og.GIF/aihpro-%EB%8C%80%ED%91%9C-%EC%9D%B4%EC%88%98%EC%84%9D.gif?type=mp4w800" type="video/mp4" />
                         <p className="text-center text-gray-500 py-4">동영상을 로드할 수 없습니다.</p>
                       </video>
-                      <p className="text-center text-xs text-gray-600 mt-2">창립자 이수석</p>
                     </div>
                   </div>
+                </div>
+                
+                {/* 창립자 경력사항 */}
+                <div className="mt-8 text-center">
+                  <img 
+                    src="/src/assets/founder-profile.png" 
+                    alt="이수석 대표 경력사항" 
+                    className="mx-auto max-w-md w-full rounded-xl shadow-lg"
+                  />
                 </div>
               </div>
             </div>

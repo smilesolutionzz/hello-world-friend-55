@@ -32,7 +32,12 @@ const PaymentSuccess = () => {
       try {
         console.log('Confirming payment:', { paymentKey, orderId, amount });
         
-        const { data, error } = await supabase.functions.invoke('confirm-toss-payment', {
+        // 주문 ID를 통해 토큰 결제인지 구독 결제인지 판단
+        const isTokenPayment = orderId.startsWith('token_');
+        
+        const functionName = isTokenPayment ? 'confirm-token-payment' : 'confirm-toss-payment';
+        
+        const { data, error } = await supabase.functions.invoke(functionName, {
           body: { paymentKey, orderId, amount: parseInt(amount) }
         });
 
@@ -40,10 +45,18 @@ const PaymentSuccess = () => {
 
         if (data.success) {
           setPaymentConfirmed(true);
-          toast({
-            title: "결제 완료",
-            description: "구독이 성공적으로 활성화되었습니다!",
-          });
+          
+          if (isTokenPayment) {
+            toast({
+              title: "토큰 구매 완료",
+              description: `${data.tokenAmount}개의 토큰이 지급되었습니다!`,
+            });
+          } else {
+            toast({
+              title: "결제 완료",
+              description: "구독이 성공적으로 활성화되었습니다!",
+            });
+          }
         } else {
           throw new Error(data.error || "결제 확인에 실패했습니다.");
         }

@@ -86,8 +86,8 @@ const TokenSubscription = () => {
         return;
       }
 
-      // 토큰팩 토스페이먼츠 결제 처리
-      await handleTossPayment('token-pack', 'tokens');
+      // 토큰 패키지 토스페이먼츠 결제 처리
+      await handleTokenPayment(packageId);
 
     } catch (error: any) {
       console.error('=== Token purchase error:', error);
@@ -131,6 +131,58 @@ const TokenSubscription = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTokenPayment = async (packageId: string) => {
+    try {
+      // 토큰 패키지 토스페이먼츠 결제 요청
+      const { data, error } = await supabase.functions.invoke('create-token-payment', {
+        body: { 
+          packageId: packageId,
+          paymentType: 'token' 
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        const paymentData = data.paymentData;
+        const clientKey = data.clientKey;
+        
+        // 토스페이먼츠 SDK 로드 후 결제 진행
+        const loadTossPayments = () => {
+          return new Promise<void>((resolve) => {
+            if ((window as any).TossPayments) {
+              resolve();
+              return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://js.tosspayments.com/v1/payment';
+            script.onload = () => resolve();
+            document.head.appendChild(script);
+          });
+        };
+
+        await loadTossPayments();
+        
+        // 토스페이먼츠 결제 요청
+        const tossPayments = (window as any).TossPayments(clientKey);
+        
+        await tossPayments.requestPayment('카드', {
+          amount: paymentData.amount,
+          orderId: paymentData.orderId,
+          orderName: paymentData.orderName,
+          customerEmail: paymentData.customerEmail,
+          customerName: paymentData.customerName,
+          successUrl: paymentData.successUrl,
+          failUrl: paymentData.failUrl,
+        });
+      }
+    } catch (error) {
+      console.error('Token payment error:', error);
+      throw error;
     }
   };
 

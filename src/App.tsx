@@ -179,7 +179,7 @@ const App = () => {
           <Route path="/community" element={<Community />} />
           <Route path="/growth-community" element={<GrowthCommunity />} />
           <Route path="/growth-stories" element={<GrowthStories />} />
-          <Route path="/subscription" element={<TokenSubscription />} />
+          <Route path="/subscription" element={<Subscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/institution-admin" element={<InstitutionAdmin />} />

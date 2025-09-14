@@ -362,6 +362,12 @@ const TokenSubscription = () => {
                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                     <Check className="w-4 h-4 text-white" />
                   </div>
+                  <span className="text-sm font-medium">📝 무제한 관찰일지 분석</span>
+                </div>
+                <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
                   <span className="text-sm font-medium">👨‍⚕️ 전담 상담사 배정</span>
                 </div>
                 <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
@@ -382,6 +388,12 @@ const TokenSubscription = () => {
                   </div>
                   <span className="text-sm font-bold text-yellow-900">🎁 VIP 전용 혜택</span>
                 </div>
+                <div className="flex items-center gap-3 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg p-2">
+                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-sm font-bold text-blue-900">🆓 첫 달 무료 체험</span>
+                </div>
               </div>
 
               <div className="text-center mb-4">
@@ -389,22 +401,45 @@ const TokenSubscription = () => {
                   <div className="text-red-600 font-bold text-sm">⏰ 런칭 특가 종료까지</div>
                   <div className="text-red-800 font-black text-lg">7일 남음</div>
                 </div>
+                <div className="bg-blue-100 border border-blue-300 rounded-lg p-3 mb-3">
+                  <div className="text-blue-800 font-bold text-sm">💰 1년 결제 시 추가 할인</div>
+                  <div className="text-blue-900 text-lg">연간 179,000원 (월 14,916원)</div>
+                  <div className="text-blue-600 text-xs">월 결제 대비 25% 절약!</div>
+                </div>
               </div>
 
-              <Button 
-                onClick={async () => {
-                  const { data: { session } } = await supabase.auth.getSession();
-                  if (!session) {
-                    navigate('/auth');
-                    return;
-                  }
-                  // 토스페이먼츠 연동 로직 여기에 추가
-                  handleSubscriptionPurchase('basic');
-                }}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
-              >
-                🚀 지금 시작하기
-              </Button>
+              <div className="grid grid-cols-1 gap-2 mb-4">
+                <Button 
+                  onClick={async () => {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) {
+                      navigate('/auth');
+                      return;
+                    }
+                    // 월 결제 토스페이먼츠 연동 로직
+                    handleSubscriptionPurchase('basic');
+                  }}
+                  className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
+                >
+                  🚀 월 결제로 시작하기
+                </Button>
+                
+                <Button 
+                  onClick={async () => {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) {
+                      navigate('/auth');
+                      return;
+                    }
+                    // 연간 결제 토스페이먼츠 연동 로직
+                    handleSubscriptionPurchase('basic-annual');
+                  }}
+                  variant="outline"
+                  className="w-full border-2 border-green-500 text-green-700 hover:bg-green-50 font-bold py-3 shadow-lg transform hover:scale-105 transition-all duration-200"
+                >
+                  💎 연간 결제로 25% 절약하기
+                </Button>
+              </div>
               
               <div className="text-center mt-3">
                 <p className="text-xs text-green-700 font-medium">

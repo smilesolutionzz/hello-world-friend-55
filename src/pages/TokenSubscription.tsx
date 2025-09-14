@@ -69,7 +69,7 @@ const TokenSubscription = () => {
   };
 
   const handlePurchase = async (packageId: string) => {
-    console.log('=== Purchase started for package:', packageId);
+    console.log('=== Token purchase started for package:', packageId);
     
     setPurchasingPackageId(packageId);
     setLoading(true);
@@ -86,16 +86,11 @@ const TokenSubscription = () => {
         return;
       }
 
-      // MVP 기간에는 무통장입금만 사용
-      toast({
-        title: "알림",
-        description: "현재 MVP 기간으로 무통장입금만 지원됩니다. 아래 무통장입금을 이용해주세요.",
-        variant: "default",
-      });
-      return;
+      // 토큰팩 토스페이먼츠 결제 처리
+      await handleTossPayment('token-pack', 'tokens');
 
     } catch (error: any) {
-      console.error('=== Purchase error:', error);
+      console.error('=== Token purchase error:', error);
       toast({ 
         title: "오류", 
         description: error.message || "결제 처리 중 오류가 발생했습니다.", 
@@ -104,6 +99,85 @@ const TokenSubscription = () => {
     } finally {
       setLoading(false);
       setPurchasingPackageId(null);
+    }
+  };
+
+  const handleSubscriptionPurchase = async (planType: string) => {
+    console.log('=== Subscription purchase started for plan:', planType);
+    
+    setLoading(true);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({ 
+          title: "로그인 필요", 
+          description: "구독하려면 먼저 로그인해주세요." 
+        });
+        navigate('/auth');
+        return;
+      }
+
+      // 구독 토스페이먼츠 결제 처리
+      await handleTossPayment(planType, 'subscription');
+
+    } catch (error: any) {
+      console.error('=== Subscription purchase error:', error);
+      toast({ 
+        title: "오류", 
+        description: error.message || "결제 처리 중 오류가 발생했습니다.", 
+        variant: "destructive" 
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTossPayment = async (planId: string, subscriptionType: string) => {
+    try {
+      // 토스페이먼츠 결제 요청
+      const { data, error } = await supabase.functions.invoke('create-toss-payment', {
+        body: { 
+          planId: planId,
+          subscriptionType: subscriptionType 
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        // 토스페이먼츠 SDK 동적 로딩
+        const script = document.createElement('script');
+        script.src = 'https://js.tosspayments.com/v1/payment-widget';
+        script.onload = () => {
+          const clientKey = data.clientKey;
+          const paymentWidget = (window as any).PaymentWidget(clientKey, (window as any).PaymentWidget.ANONYMOUS);
+          
+          // 결제 위젯 렌더링
+          paymentWidget.renderPaymentMethods('#payment-widget', data.amount);
+          
+          // 결제 버튼 클릭 처리
+          document.getElementById('payment-button')?.addEventListener('click', () => {
+            paymentWidget.requestPayment({
+              orderId: data.orderId,
+              orderName: data.orderName,
+              successUrl: window.location.origin + '/payment/success',
+              failUrl: window.location.origin + '/payment/fail',
+            });
+          });
+        };
+        document.head.appendChild(script);
+
+        // 결제 위젯 표시
+        const paymentContainer = document.getElementById('payment-container');
+        if (paymentContainer) {
+          paymentContainer.style.display = 'block';
+        }
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      throw error;
     }
   };
 
@@ -173,20 +247,96 @@ const TokenSubscription = () => {
         {/* 하이브리드 선택 섹션 */}
         <div className="mt-16 text-center">
           <h2 className="text-3xl font-bold mb-8">어떤 방식이 나에게 맞을까요?</h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-            <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl p-8 border border-green-200">
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-12">
+            {/* 무료 체험 */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 border border-blue-200">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">무료 체험</h3>
+                <div className="text-2xl font-bold text-blue-600 mb-2">무료</div>
+                <p className="text-muted-foreground">월 1회 체험</p>
+              </div>
+              <div className="space-y-2 text-left mb-6">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-blue-500" />
+                  <span className="text-sm">월 1회 무료 검사</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-blue-500" />
+                  <span className="text-sm">AI 기본 분석</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-blue-500" />
+                  <span className="text-sm">결과 요약 제공</span>
+                </div>
+              </div>
+              <Button 
+                onClick={() => navigate('/tests')}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3"
+              >
+                무료 체험 시작
+              </Button>
+            </div>
+            
+            {/* 토큰팩 */}
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border border-purple-200">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Coins className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">토큰팩</h3>
+                <div className="text-2xl font-bold text-purple-600 mb-2">9,900원</div>
+                <p className="text-muted-foreground">50토큰</p>
+              </div>
+              <div className="space-y-2 text-left mb-6">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm">필요한 만큼만 결제</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm">토큰 영구 보관</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm">서비스 체험용</span>
+                </div>
+              </div>
+              <Button 
+                onClick={async () => {
+                  const { data: { session } } = await supabase.auth.getSession();
+                  if (!session) {
+                    navigate('/auth');
+                    return;
+                  }
+                  // 토스페이먼츠 연동 로직 여기에 추가
+                  handlePurchase('token-pack');
+                }}
+                className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3"
+              >
+                토큰팩 구매하기
+              </Button>
+            </div>
+            
+            {/* 프로 구독 */}
+            <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl p-8 border border-green-200 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <Badge className="bg-green-500 text-white px-4 py-1">추천</Badge>
+              </div>
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Crown className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">베이직 구독 (추천)</h3>
+                <h3 className="text-xl font-bold mb-2">프로 구독</h3>
                 <div className="text-2xl font-bold text-green-600 mb-2">19,900원/월</div>
-                <p className="text-muted-foreground">무제한 이용 가능</p>
+                <p className="text-muted-foreground">무제한 이용</p>
               </div>
-              <div className="space-y-2 text-left">
+              <div className="space-y-2 text-left mb-6">
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">매월 무제한 검사</span>
+                  <span className="text-sm">무제한 검사</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-500" />
@@ -194,7 +344,7 @@ const TokenSubscription = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">전문가 상담 연결</span>
+                  <span className="text-sm">전문가 상담</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-500" />
@@ -202,52 +352,19 @@ const TokenSubscription = () => {
                 </div>
               </div>
               <Button 
-                onClick={() => navigate('/subscription')}
-                className="w-full mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-3"
+                onClick={async () => {
+                  const { data: { session } } = await supabase.auth.getSession();
+                  if (!session) {
+                    navigate('/auth');
+                    return;
+                  }
+                  // 토스페이먼츠 연동 로직 여기에 추가
+                  handleSubscriptionPurchase('basic');
+                }}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3"
               >
-                베이직 구독 시작하기
+                구독 시작하기
               </Button>
-              <p className="text-xs text-muted-foreground mt-2 text-center">
-                매월 10회 이상 이용하시면 더 경제적입니다
-              </p>
-            </div>
-            
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border border-purple-200">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Coins className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">토큰팩 (시험용)</h3>
-                <div className="text-2xl font-bold text-purple-600 mb-2">9,900원</div>
-                <p className="text-muted-foreground">50토큰 (토큰당 198원)</p>
-              </div>
-              <div className="space-y-2 text-left">
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm">필요한 만큼만 결제</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm">토큰 영구 사용 가능</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm">서비스 체험용</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm">무통장입금 지원</span>
-                </div>
-              </div>
-              <Button 
-                onClick={() => window.location.href = '/bank-transfer'}
-                className="w-full mt-6 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3"
-              >
-                토큰팩 구매하기
-              </Button>
-              <p className="text-xs text-muted-foreground mt-2 text-center">
-                월 9회 이하 이용시 경제적입니다
-              </p>
             </div>
           </div>
         </div>
@@ -324,140 +441,40 @@ const TokenSubscription = () => {
           </div>
         </div>
 
-        {/* 기존 토큰 패키지들 (참고용) */}
+        {/* 창립자의 손편지 */}
         <div className="mt-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">토큰 패키지 상세</h2>
-            <p className="text-muted-foreground">
-              현재 시험 운영 중인 토큰 패키지입니다
-            </p>
-          </div>
-
-          {/* Packages */}
-          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {packagesLoading ? (
-              // Loading state
-              Array.from({ length: 3 }).map((_, index) => (
-                <Card key={index} className="animate-pulse">
-                  <CardHeader className="text-center pb-6 pt-12">
-                    <div className="flex justify-center mb-4">
-                      <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="h-6 bg-gray-200 rounded mx-auto w-24"></div>
-                      <div className="h-4 bg-gray-200 rounded mx-auto w-32"></div>
-                      <div className="h-8 bg-gray-200 rounded mx-auto w-20"></div>
-                      <div className="h-6 bg-gray-200 rounded mx-auto w-16"></div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4 pb-8">
-                    <div className="space-y-3">
-                      {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="flex items-center gap-3">
-                          <div className="w-5 h-5 bg-gray-200 rounded"></div>
-                          <div className="h-4 bg-gray-200 rounded flex-1"></div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="pt-4">
-                      <div className="w-full h-12 bg-gray-200 rounded"></div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : packages.length === 0 ? (
-              // No packages state
-              <div className="col-span-full text-center py-16">
-                <div className="bg-card border border-border rounded-2xl p-8 max-w-md mx-auto">
-                  <div className="text-muted-foreground mb-4">
-                    <Coins className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">토큰 패키지가 없습니다</h3>
-                  <p className="text-muted-foreground mb-4">
-                    현재 사용 가능한 토큰 패키지가 없습니다.
-                  </p>
-                  <Button 
-                    onClick={fetchPackages}
-                    variant="outline"
-                    className="mx-auto"
-                  >
-                    다시 시도
-                  </Button>
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-8 shadow-lg border border-amber-200">
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Star className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold mb-2">창립자의 손편지</h2>
+                <p className="text-muted-foreground">아이들의 미래를 위한 진심어린 메시지</p>
+              </div>
+              
+              <div className="bg-white/60 rounded-2xl p-6 shadow-sm">
+                <p className="text-lg leading-relaxed mb-4">
+                  안녕하세요, 아이심리연구소 창립자입니다.
+                </p>
+                <p className="text-base leading-relaxed mb-4">
+                  우리 아이들이 건강하게 성장할 수 있도록 돕고 싶어 이 서비스를 시작했습니다. 
+                  전문적인 심리 검사와 AI 분석을 통해 부모님들이 아이를 더 잘 이해하고, 
+                  적절한 도움을 받을 수 있기를 바랍니다.
+                </p>
+                <p className="text-base leading-relaxed mb-4">
+                  하이브리드 모델을 통해 더 많은 가정이 부담 없이 서비스를 이용할 수 있도록 
+                  노력하고 있습니다. 무료 체험부터 시작해서 필요에 따라 토큰팩이나 구독을 
+                  선택하실 수 있습니다.
+                </p>
+                <p className="text-base leading-relaxed text-amber-800 font-medium">
+                  모든 아이가 자신만의 특별함을 발견하고 성장할 수 있기를 응원합니다.
+                </p>
+                <div className="text-right mt-6">
+                  <p className="text-sm text-muted-foreground">아이심리연구소 창립자 드림</p>
                 </div>
               </div>
-            ) : (
-              packages.map((pkg) => (
-                <Card 
-                  key={pkg.id} 
-                  className={`relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                    pkg.is_popular 
-                      ? 'border-2 border-purple-400 shadow-lg scale-105' 
-                      : 'border border-border hover:border-primary/20'
-                  }`}
-                  style={{ overflow: 'visible' }}
-                >
-                  {pkg.is_popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
-                        🔥 인기 선택
-                      </Badge>
-                    </div>
-                  )}
-                  
-                  <CardHeader className="text-center pb-6 pt-12">
-                    <div className="flex justify-center mb-4">
-                      <div className="p-4 rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
-                        {getPlanIcon(pkg.token_count)}
-                      </div>
-                    </div>
-                    
-                    <CardTitle className="text-2xl mb-2">{pkg.name}</CardTitle>
-                    <p className="text-muted-foreground text-sm mb-4">{pkg.description}</p>
-                    
-                    <div className="space-y-2">
-                      <div className="text-4xl font-bold text-foreground">
-                        ₩{formatPrice(pkg.price_krw)}
-                      </div>
-                      <div className="text-xl font-bold text-primary">
-                        {pkg.token_count}개 토큰
-                      </div>
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="space-y-4 pb-8">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <Check className="h-5 w-5 text-green-500" />
-                        <span className="text-sm">{pkg.token_count}개 토큰 즉시 지급</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Check className="h-5 w-5 text-green-500" />
-                        <span className="text-sm">영구 사용 가능</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Check className="h-5 w-5 text-green-500" />
-                        <span className="text-sm">안전한 결제 시스템</span>
-                      </div>
-                    </div>
-
-                    <div className="pt-4">
-                      <Button 
-                        className="w-full py-3 text-lg font-bold bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white"
-                        disabled={loading}
-                        onClick={() => {
-                          window.location.href = '/bank-transfer';
-                        }}
-                      >
-                        <div className="flex items-center gap-2">
-                          <Rocket className="w-5 h-5" />
-                          무통장입금으로 구매하기
-                        </div>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
+            </div>
           </div>
         </div>
 
@@ -487,6 +504,21 @@ const TokenSubscription = () => {
                   토큰은 영구 보관되므로 구독으로 변경 후에도 기존 토큰을 사용할 수 있습니다.
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 토스페이먼츠 결제 위젯 */}
+        <div id="payment-container" style={{ display: 'none' }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-bold mb-4">결제하기</h3>
+            <div id="payment-widget"></div>
+            <div className="flex gap-2 mt-4">
+              <Button id="payment-button" className="flex-1">결제하기</Button>
+              <Button variant="outline" onClick={() => {
+                const container = document.getElementById('payment-container');
+                if (container) container.style.display = 'none';
+              }}>취소</Button>
             </div>
           </div>
         </div>

@@ -53,26 +53,46 @@ export const TOKEN_COST_DESCRIPTIONS = {
 // 토큰 패키지 추천
 export const TOKEN_PACKAGES = {
   STARTER: {
-    name: "Starter 플랜",
+    name: "토큰팩 50",
     tokens: 50,
     price: 9900,
-    recommended_for: "월 2-3회 기본검사 이용자",
-    best_for: ["기본 심리검사", "엔터테인먼트 테스트"]
+    recommended_for: "기본 검사 및 분석",
+    best_for: ["기본 심리검사 25회", "엔터테인먼트 테스트 50회", "AI 상담 50메시지", "꿈해석 12회", "관찰일지 분석 12회"],
+    value_highlight: "기본 심리검사 최대 25회 이용 가능",
+    features: [
+      "✓ 필요한 만큼 결제",
+      "✓ 토큰 영구 보관", 
+      "✓ 서비스 체험용",
+      "✓ 부담 없는 시작"
+    ]
   },
   PRO: {
-    name: "Pro 플랜 (추천)", 
+    name: "토큰팩 150 (추천)", 
     tokens: 150,
     price: 19900,
-    recommended_for: "정기적 상담 및 분석 이용자",
-    best_for: ["AI상담", "관찰일지", "고급분석"],
+    recommended_for: "정기적 상담 및 분석",
+    best_for: ["기본 심리검사 75회", "AI 상담 150메시지", "관찰일지 분석 37회", "사주분석 25회", "꿈해석 37회"],
+    value_highlight: "1토큰당 132원으로 가장 합리적",
+    features: [
+      "✓ 가장 인기있는 선택",
+      "✓ 정기적 이용에 최적",
+      "✓ 다양한 기능 체험",
+      "✓ 높은 가성비"
+    ],
     is_popular: true
   },
   PREMIUM: {
-    name: "Premium 플랜",
-    tokens: 999999, // 무제한을 의미하는 큰 수
+    name: "토큰팩 400",
+    tokens: 400,
     price: 39900,
-    recommended_for: "전문적 분석이 필요한 이용자",
-    best_for: ["종합검사", "전문가리포트", "IEP생성", "무제한 사용"],
-    is_unlimited: true
+    recommended_for: "전문적 분석 및 집중 케어",
+    best_for: ["기본 심리검사 200회", "프리미엄 검사 50회", "IEP 생성 8회", "종합리포트 2회", "모든 기능 자유 이용"],
+    value_highlight: "토큰당 99원으로 최고 할인율",
+    features: [
+      "✓ 최고 할인율 적용",
+      "✓ 장기간 안심 이용",
+      "✓ 전문가급 서비스",
+      "✓ 모든 기능 체험"
+    ]
   }
 } as const;

@@ -367,7 +367,7 @@ const TokenSubscription = () => {
                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                     <Check className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-sm font-medium">🤖 초개인화에이전트 모드 제공</span>
+                  <span className="text-sm font-medium">🤖 초개인화에이전트 모드 (데이터 축적시 AI가 먼저 제안)</span>
                 </div>
                 <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
@@ -613,14 +613,24 @@ const TokenSubscription = () => {
                   <p className="text-sm text-muted-foreground">AI 하이라이트 프로 창립자 이수석 드림</p>
                 </div>
                 
-                {/* 창립자 상세 경력사항 */}
-                <div className="mt-8 text-center">
-                  <h4 className="text-lg font-bold text-orange-800 mb-3">이수석 대표가 걸어온 길</h4>
-                  <img 
-                    src="/src/assets/founder-detailed-career.png" 
-                    alt="이수석 대표 상세 경력사항" 
-                    className="mx-auto max-w-lg w-full rounded-xl shadow-lg"
-                  />
+                {/* 창립자 경력사항과 소개 이미지 */}
+                <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="text-center">
+                    <h4 className="text-lg font-bold text-orange-800 mb-3">이수석 대표가 걸어온 길</h4>
+                    <img 
+                      src="/src/assets/founder-detailed-career.png" 
+                      alt="이수석 대표 상세 경력사항" 
+                      className="w-full rounded-xl shadow-lg"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <h4 className="text-lg font-bold text-orange-800 mb-3">AI 하이라이트 프로의 비전</h4>
+                    <img 
+                      src="/src/assets/founder-profile-intro.png" 
+                      alt="이수석 대표 프로필 소개" 
+                      className="w-full rounded-xl shadow-lg"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -639,6 +649,21 @@ const TokenSubscription = () => {
                   사용 패턴에 따라 본인에게 맞는 방식을 선택할 수 있어 더욱 경제적입니다.
                 </p>
               </div>
+              
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">AI 초개인화에이전트 모드란 무엇인가요?</h3>
+                <p className="text-muted-foreground mb-3">
+                  프로 구독 전용 기능으로, 사용자의 검사 데이터가 축적되면 AI가 패턴을 분석하여 
+                  능동적으로 맞춤형 제안을 해드리는 차별화된 서비스입니다.
+                </p>
+                <ul className="text-sm text-muted-foreground space-y-1 ml-4">
+                  <li>• 개인별 행동 패턴 학습 및 분석</li>
+                  <li>• 변화 징후 사전 감지 및 알림</li>
+                  <li>• 맞춤형 관리 방법 능동적 제안</li>
+                  <li>• 실시간 상태 모니터링</li>
+                </ul>
+              </div>
+
               <div className="bg-card rounded-lg p-6 border border-border">
                 <h3 className="font-semibold text-lg mb-2">어떤 방식을 선택해야 하나요?</h3>
                 <p className="text-muted-foreground">
@@ -646,11 +671,64 @@ const TokenSubscription = () => {
                   월 9회 이하 또는 가끔 이용하시면 토큰팩이 더 경제적입니다.
                 </p>
               </div>
+
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">환불이 가능한가요?</h3>
+                <p className="text-muted-foreground">
+                  디지털 서비스 특성상 환불은 불가합니다. 단, 구독은 언제든지 해지 가능하며, 
+                  결제된 토큰은 영구적으로 보관되어 언제든 사용하실 수 있습니다.
+                </p>
+              </div>
+
               <div className="bg-card rounded-lg p-6 border border-border">
                 <h3 className="font-semibold text-lg mb-2">나중에 방식을 변경할 수 있나요?</h3>
                 <p className="text-muted-foreground">
                   네, 언제든지 변경 가능합니다. 
                   토큰은 영구 보관되므로 구독으로 변경 후에도 기존 토큰을 사용할 수 있습니다.
+                </p>
+              </div>
+
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">전문가는 누구인가요?</h3>
+                <p className="text-muted-foreground">
+                  실제 제휴기관의 검증된 프로 전문가들로만 구성되어 있습니다. 
+                  모든 전문가는 관련 자격증과 임상 경험을 보유하고 있으며, 
+                  정기적인 교육과 평가를 통해 서비스 품질을 관리하고 있습니다.
+                </p>
+              </div>
+
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">개인정보는 안전한가요?</h3>
+                <p className="text-muted-foreground">
+                  모든 개인정보는 암호화되어 저장되며, 개인정보보호법에 따라 엄격하게 관리됩니다. 
+                  검사 결과는 본인과 담당 전문가에게만 제공되며, 제3자와 공유되지 않습니다.
+                </p>
+              </div>
+
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">AI 분석의 정확도는 얼마나 되나요?</h3>
+                <p className="text-muted-foreground">
+                  병원급 정밀도를 가진 딥러닝 AI를 사용하며, 13년간의 임상 데이터와 
+                  5000명 이상의 상담 경험을 바탕으로 개발되었습니다. 
+                  지속적인 학습을 통해 정확도를 개선하고 있습니다.
+                </p>
+              </div>
+
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">결과를 가족과 공유할 수 있나요?</h3>
+                <p className="text-muted-foreground">
+                  네, 검사 결과는 PDF 형태로 다운로드 가능하며, 
+                  가족 구성원과 안전하게 공유할 수 있는 기능을 제공합니다. 
+                  단, 개인정보보호를 위해 본인의 동의 하에만 가능합니다.
+                </p>
+              </div>
+
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">검사는 얼마나 자주 받는 것이 좋나요?</h3>
+                <p className="text-muted-foreground">
+                  일반적으로 월 1-2회 정기 검사를 권장하며, 
+                  특별한 상황이나 변화가 있을 때는 추가 검사를 받으시는 것이 좋습니다. 
+                  AI 에이전트가 개인별 최적 주기를 제안해드립니다.
                 </p>
               </div>
             </div>

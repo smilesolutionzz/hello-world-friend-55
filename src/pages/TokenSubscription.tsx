@@ -325,7 +325,7 @@ const TokenSubscription = () => {
                 </div>
               </div>
               <Button 
-                onClick={() => navigate('/tests')}
+                onClick={() => navigate('/')}
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3"
               >
                 무료 체험 시작

@@ -311,7 +311,6 @@ const TokenSubscription = () => {
                     navigate('/auth');
                     return;
                   }
-                  // 토스페이먼츠 연동 로직 여기에 추가
                   handlePurchase('token-pack');
                 }}
                 className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3"
@@ -368,7 +367,7 @@ const TokenSubscription = () => {
                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                     <Check className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-sm font-medium">👨‍⚕️ 전담 상담사 배정</span>
+                  <span className="text-sm font-medium">🤖 초개인화에이전트 모드 제공</span>
                 </div>
                 <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
                   <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
@@ -416,7 +415,6 @@ const TokenSubscription = () => {
                       navigate('/auth');
                       return;
                     }
-                    // 월 결제 토스페이먼츠 연동 로직
                     handleSubscriptionPurchase('basic');
                   }}
                   className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
@@ -431,7 +429,6 @@ const TokenSubscription = () => {
                       navigate('/auth');
                       return;
                     }
-                    // 연간 결제 토스페이먼츠 연동 로직
                     handleSubscriptionPurchase('basic-annual');
                   }}
                   variant="outline"
@@ -444,9 +441,6 @@ const TokenSubscription = () => {
               <div className="text-center mt-3">
                 <p className="text-xs text-green-700 font-medium">
                   💰 매월 10회 이상 이용시 <span className="font-bold">40% 절약</span>
-                </p>
-                <p className="text-xs text-gray-600 mt-1">
-                  언제든 해지 가능 • 첫 달 무료 체험
                 </p>
               </div>
             </div>
@@ -538,124 +532,95 @@ const TokenSubscription = () => {
               </div>
               
               <div className="bg-white/70 rounded-2xl p-6 shadow-sm">
-                <div className="flex flex-col lg:flex-row gap-8 items-start">
-                  <div className="flex-1">
-                    <div className="text-center mb-6">
-                      <h3 className="text-2xl font-bold text-orange-800 mb-2">데이터로 읽는 마음,</h3>
-                      <h2 className="text-3xl font-bold text-orange-900 mb-1">AI 하이라이트 프로</h2>
-                      <p className="text-lg text-orange-700 font-semibold">불안을 데이터로 안심을 리포트로</p>
-                    </div>
-                    
-                    <p className="text-lg leading-relaxed mb-4 text-orange-800">
-                      안녕하세요.<br />
-                      AI 하이라이트 프로 창립자 이수석입니다.
-                    </p>
-                    
-                    <p className="text-base leading-relaxed mb-4">
-                      저는 지난 14년 동안 유소년 스포츠클럽, 발달센터, 심리상담센터, 
-                      그리고 병원 발달클리닉을 운영하며 수많은 아이들과 부모님, 
-                      성인과 어르신들을 만나왔습니다. 그 과정에서 늘 같은 고민을 들었습니다.
-                    </p>
-                    
-                    <div className="bg-orange-50 p-4 rounded-lg mb-4 border-l-4 border-orange-400">
-                      <p className="text-sm text-orange-800 italic">
-                        "아이의 언어 발달이 늦는 건 아닐까?"<br />
-                        "직장 스트레스 때문에 무너지지 않을까?"<br />
-                        "부모님이 혹시 기억력이나 생활 능력에 변화를 겪고 계시진 않을까?"
-                      </p>
-                    </div>
-                    
-                    <p className="text-base leading-relaxed mb-4">
-                      누구나 한 번쯤은 이런 걱정을 하지만, 막상 전문가를 찾기까지는 쉽지 않았습니다. 
-                      몇 달을 기다려야 하는 예약, 부담스러운 검사 비용, 상담실을 향한 두려움... 
-                      이런 이유로 많은 분들이 마음 건강을 챙기지 못하고 계셨습니다.
-                    </p>
-                    
-                    <p className="text-base leading-relaxed mb-4">
-                      저는 이 현실을 바꾸고 싶었습니다. 그래서 직접 100% 개발하며 밤을 새워 만든 것이 바로 
-                      <span className="font-bold text-orange-800">AIHPRO(하이라이트 프로)</span> 입니다. 
-                      <span className="font-bold text-blue-600">단 3분이면 충분합니다.</span>
-                    </p>
-                    
-                    <p className="text-base leading-relaxed mb-4">
-                      AIHPRO는 병원급 정밀도를 가진 딥러닝 AI가 단 3분 만에 마음 상태를 분석하고, 
-                      필요하다면 검증된 전문가가 마지막으로 코멘트를 더해주는 새로운 방식의 심리케어 플랫폼입니다.
-                    </p>
-                    
-                    <p className="text-base leading-relaxed mb-4">
-                      작은 기록이 쌓이면, 큰 변화를 미리 막을 수 있습니다. 
-                      AIHPRO는 그 변화를 빠르게 감지하고, 필요할 때 전문가가 연결해 드립니다.
-                    </p>
-                    
-                    <div className="bg-amber-50 p-4 rounded-lg mb-4 border-l-4 border-amber-400">
-                      <p className="text-base text-amber-800 italic font-medium">
-                        "기술은 차갑지만, 치유는 따뜻해야 한다"<br />
-                        는 마음으로 시작했습니다.
-                      </p>
-                    </div>
-                    
-                    <p className="text-base leading-relaxed mb-4">
-                      AI가 먼저 빠르고 정확하게 마음을 읽어내고, 전문가는 그 위에 따뜻한 손길을 얹습니다. 
-                      이 과정에서 고객님은 "나는 혼자가 아니구나"라는 안도감을 느끼실 수 있습니다.
-                    </p>
-                    
-                    <p className="text-base leading-relaxed mb-4">
-                      저희의 목표는 거창하지 않습니다. 단지 모든 가족이, 모든 사람의 마음의 무게를 
-                      혼자 지지 않아도 되는 세상을 만드는 것입니다.
-                    </p>
-                    
-                    <p className="text-base leading-relaxed text-orange-800 font-medium mb-6">
-                      오늘 남긴 짧은 기록이 내일의 안심으로 이어지기를, 
-                      그렇게 가족이 건강하게 성장하고, 행복하게 살아가시기를 바라는 마음으로 
-                      AIHPRO를 만들었습니다.
-                    </p>
-                    
-                    <div className="bg-gradient-to-r from-orange-100 to-amber-100 p-4 rounded-lg">
-                      <p className="text-base text-orange-900 font-bold text-center">
-                        당신의 마음과 가족의 행복을 지키는 든든한 동반자,<br />
-                        AI 하이라이트 프로가 늘 함께하겠습니다.
-                      </p>
-                    </div>
-                    
-                    <div className="text-right mt-6">
-                      <p className="text-sm text-muted-foreground">AI 하이라이트 프로 창립자 이수석 드림</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex-shrink-0 w-full lg:w-80">
-                    <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border border-orange-200 mb-4">
-                      <video 
-                        autoPlay 
-                        loop 
-                        muted 
-                        playsInline
-                        className="w-full h-auto rounded-lg shadow-md mb-4"
-                      >
-                        <source src="https://mblogvideo-phinf.pstatic.net/MjAyNTA5MDNfMTk4/MDAxNzU2ODkwNTQyMzQz.Ua0h5RL5N1pPZ7w3uqybKp1edW_6VbbibvXlc3Tu1c4g.55XWOPb5qQ6r9T-x0rmkGRMGdiN5x5a2KmTyDq3Oh9og.GIF/aihpro-%EB%8C%80%ED%91%9C-%EC%9D%B4%EC%88%98%EC%84%9D.gif?type=mp4w800" type="video/mp4" />
-                        <p className="text-center text-gray-500 py-4">동영상을 로드할 수 없습니다.</p>
-                      </video>
-                    </div>
-                  </div>
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-orange-800 mb-2">데이터로 읽는 마음,</h3>
+                  <h2 className="text-3xl font-bold text-orange-900 mb-1">AI 하이라이트 프로</h2>
+                  <p className="text-lg text-orange-700 font-semibold">불안을 데이터로 안심을 리포트로</p>
                 </div>
                 
-                {/* 창립자 경력사항과 소개 이미지 */}
-                <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="text-center">
-                    <h4 className="text-lg font-bold text-orange-800 mb-3">이수석 대표가 걸어온 길</h4>
-                    <img 
-                      src="/src/assets/founder-career-path.png" 
-                      alt="이수석 대표 경력사항" 
-                      className="w-full rounded-xl shadow-lg"
-                    />
-                  </div>
-                  <div className="text-center">
-                    <h4 className="text-lg font-bold text-orange-800 mb-3">창립자 소개</h4>
-                    <img 
-                      src="/src/assets/founder-introduction.png" 
-                      alt="이수석 대표 소개" 
-                      className="w-full rounded-xl shadow-lg"
-                    />
-                  </div>
+                <p className="text-lg leading-relaxed mb-4 text-orange-800">
+                  안녕하세요.<br />
+                  AI 하이라이트 프로 창립자 이수석입니다.
+                </p>
+                
+                <p className="text-base leading-relaxed mb-4">
+                  저는 지난 14년 동안 유소년 스포츠클럽, 발달센터, 심리상담센터, 
+                  그리고 병원 발달클리닉을 운영하며 수많은 아이들과 부모님, 
+                  성인과 어르신들을 만나왔습니다. 그 과정에서 늘 같은 고민을 들었습니다.
+                </p>
+                
+                <div className="bg-orange-50 p-4 rounded-lg mb-4 border-l-4 border-orange-400">
+                  <p className="text-sm text-orange-800 italic">
+                    "아이의 언어 발달이 늦는 건 아닐까?"<br />
+                    "직장 스트레스 때문에 무너지지 않을까?"<br />
+                    "부모님이 혹시 기억력이나 생활 능력에 변화를 겪고 계시진 않을까?"
+                  </p>
+                </div>
+                
+                <p className="text-base leading-relaxed mb-4">
+                  누구나 한 번쯤은 이런 걱정을 하지만, 막상 전문가를 찾기까지는 쉽지 않았습니다. 
+                  몇 달을 기다려야 하는 예약, 부담스러운 검사 비용, 상담실을 향한 두려움... 
+                  이런 이유로 많은 분들이 마음 건강을 챙기지 못하고 계셨습니다.
+                </p>
+                
+                <p className="text-base leading-relaxed mb-4">
+                  저는 이 현실을 바꾸고 싶었습니다. 그래서 직접 100% 개발하며 밤을 새워 만든 것이 바로 
+                  <span className="font-bold text-orange-800">AIHPRO(하이라이트 프로)</span> 입니다. 
+                  <span className="font-bold text-blue-600">단 3분이면 충분합니다.</span>
+                </p>
+                
+                <p className="text-base leading-relaxed mb-4">
+                  AIHPRO는 병원급 정밀도를 가진 딥러닝 AI가 단 3분 만에 마음 상태를 분석하고, 
+                  필요하다면 검증된 전문가가 마지막으로 코멘트를 더해주는 새로운 방식의 심리케어 플랫폼입니다.
+                </p>
+                
+                <p className="text-base leading-relaxed mb-4">
+                  작은 기록이 쌓이면, 큰 변화를 미리 막을 수 있습니다. 
+                  AIHPRO는 그 변화를 빠르게 감지하고, 필요할 때 전문가가 연결해 드립니다.
+                </p>
+                
+                <div className="bg-amber-50 p-4 rounded-lg mb-4 border-l-4 border-amber-400">
+                  <p className="text-base text-amber-800 italic font-medium">
+                    "기술은 차갑지만, 치유는 따뜻해야 한다"<br />
+                    는 마음으로 시작했습니다.
+                  </p>
+                </div>
+                
+                <p className="text-base leading-relaxed mb-4">
+                  AI가 먼저 빠르고 정확하게 마음을 읽어내고, 전문가는 그 위에 따뜻한 손길을 얹습니다. 
+                  이 과정에서 고객님은 "나는 혼자가 아니구나"라는 안도감을 느끼실 수 있습니다.
+                </p>
+                
+                <p className="text-base leading-relaxed mb-4">
+                  저희의 목표는 거창하지 않습니다. 단지 모든 가족이, 모든 사람의 마음의 무게를 
+                  혼자 지지 않아도 되는 세상을 만드는 것입니다.
+                </p>
+                
+                <p className="text-base leading-relaxed text-orange-800 font-medium mb-6">
+                  오늘 남긴 짧은 기록이 내일의 안심으로 이어지기를, 
+                  그렇게 가족이 건강하게 성장하고, 행복하게 살아가시기를 바라는 마음으로 
+                  AIHPRO를 만들었습니다.
+                </p>
+                
+                <div className="bg-gradient-to-r from-orange-100 to-amber-100 p-4 rounded-lg">
+                  <p className="text-base text-orange-900 font-bold text-center">
+                    당신의 마음과 가족의 행복을 지키는 든든한 동반자,<br />
+                    AI 하이라이트 프로가 늘 함께하겠습니다.
+                  </p>
+                </div>
+                
+                <div className="text-right mt-6">
+                  <p className="text-sm text-muted-foreground">AI 하이라이트 프로 창립자 이수석 드림</p>
+                </div>
+                
+                {/* 창립자 상세 경력사항 */}
+                <div className="mt-8 text-center">
+                  <h4 className="text-lg font-bold text-orange-800 mb-3">이수석 대표가 걸어온 길</h4>
+                  <img 
+                    src="/src/assets/founder-detailed-career.png" 
+                    alt="이수석 대표 상세 경력사항" 
+                    className="mx-auto max-w-lg w-full rounded-xl shadow-lg"
+                  />
                 </div>
               </div>
             </div>

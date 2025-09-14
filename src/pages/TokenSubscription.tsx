@@ -542,7 +542,13 @@ const TokenSubscription = () => {
                   안녕하세요, 아이심리연구소 창립자 이수석입니다.
                 </p>
                 <p className="text-base leading-relaxed mb-4">
-                  제가 이 서비스를 만든 이유는 간단합니다. 아이들이 스스로를 이해하고 자신의 잠재력을 발견할 수 있도록 돕고 싶었기 때문입니다.
+                  저는 강준식 병원장과 함께 대한근골격초음파학회 전문가 과정을 이수하며, 
+                  정확한 진단과 안전한 치료를 위한 의료진으로 활동해왔습니다.
+                </p>
+                <p className="text-base leading-relaxed mb-4">
+                  삼성웰니스의원에서 쌓은 임상 경험을 바탕으로, 이제는 아이들의 마음 건강에 집중하고자 합니다.
+                  초음파 가이드 통사주사 클리닉에서 정밀한 치료를 해왔던 것처럼, 
+                  아이들의 심리 상태도 정확하고 세심하게 분석하고 도움을 드리고 싶습니다.
                 </p>
                 <p className="text-base leading-relaxed mb-4">
                   많은 부모님들이 아이의 마음을 이해하고 싶어 하지만, 어디서부터 시작해야 할지 막막해합니다. 
@@ -550,7 +556,7 @@ const TokenSubscription = () => {
                 </p>
                 <p className="text-base leading-relaxed mb-4">
                   그래서 AI 기술을 활용한 심리 검사와 분석 서비스를 개발했습니다. 
-                  전문가 수준의 분석을 더 쉽고 저렴하게 받을 수 있도록 말이죠.
+                  의료진의 정밀함과 전문성을 바탕으로, 더 쉽고 저렴하게 전문가 수준의 분석을 받을 수 있도록 말이죠.
                 </p>
                 <p className="text-base leading-relaxed mb-4">
                   하이브리드 모델도 이런 고민에서 나왔습니다. 
@@ -558,10 +564,11 @@ const TokenSubscription = () => {
                   각자의 상황에 맞는 선택지를 제공하고 싶었습니다.
                 </p>
                 <p className="text-base leading-relaxed text-amber-800 font-medium">
-                  모든 아이가 자신만의 빛을 발견하고, 그 빛이 세상을 더 밝게 만들 수 있기를 진심으로 바랍니다.
+                  의료진의 정밀함으로 모든 아이가 자신만의 빛을 발견하고, 그 빛이 세상을 더 밝게 만들 수 있기를 진심으로 바랍니다.
                 </p>
                 <div className="text-right mt-6">
                   <p className="text-sm text-muted-foreground">아이심리연구소 창립자 이수석 드림</p>
+                  <p className="text-xs text-muted-foreground mt-1">전 삼성웰니스의원 강준식 병원장과 함께</p>
                 </div>
               </div>
             </div>

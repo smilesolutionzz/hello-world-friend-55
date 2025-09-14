@@ -321,36 +321,76 @@ const TokenSubscription = () => {
             </div>
             
             {/* 프로 구독 */}
-            <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl p-8 border border-green-200 relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-green-500 text-white px-4 py-1">추천</Badge>
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border-2 border-green-300 relative transform hover:scale-105 transition-all duration-300 shadow-2xl">
+              {/* 최고 인기 배지 */}
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg animate-pulse">
+                  🔥 최고 인기
+                </div>
               </div>
+              
+              {/* 한정 특가 배지 */}
+              <div className="absolute -top-2 -right-2">
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-bounce">
+                  💎 한정특가
+                </div>
+              </div>
+
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Crown className="w-8 h-8 text-white" />
+                <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Crown className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">프로 구독</h3>
-                <div className="text-2xl font-bold text-green-600 mb-2">19,900원/월</div>
-                <p className="text-muted-foreground">무제한 이용</p>
+                <h3 className="text-2xl font-bold mb-2 text-green-800">프로 구독</h3>
+                <div className="mb-3">
+                  <span className="text-lg text-gray-500 line-through">39,800원</span>
+                  <div className="text-3xl font-black text-green-600 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    19,900원/월
+                  </div>
+                  <div className="text-red-600 font-bold text-sm">⚡ 50% 런칭 할인</div>
+                </div>
+                <p className="text-green-700 font-semibold">무제한 + VIP 혜택</p>
               </div>
-              <div className="space-y-2 text-left mb-6">
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">무제한 검사</span>
+
+              <div className="space-y-3 text-left mb-6">
+                <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-sm font-medium">🔥 무제한 검사 + 심화분석</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">AI 상세 분석</span>
+                <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-sm font-medium">👨‍⚕️ 전담 상담사 배정</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">전문가 상담</span>
+                <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-sm font-medium">📊 월간 성장 리포트</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">24/7 지원</span>
+                <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-sm font-medium">⚡ 우선 예약 + 빠른 상담</span>
+                </div>
+                <div className="flex items-center gap-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-2">
+                  <div className="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-sm font-bold text-yellow-900">🎁 VIP 전용 혜택</span>
                 </div>
               </div>
+
+              <div className="text-center mb-4">
+                <div className="bg-red-100 border border-red-300 rounded-lg p-2 mb-3">
+                  <div className="text-red-600 font-bold text-sm">⏰ 런칭 특가 종료까지</div>
+                  <div className="text-red-800 font-black text-lg">7일 남음</div>
+                </div>
+              </div>
+
               <Button 
                 onClick={async () => {
                   const { data: { session } } = await supabase.auth.getSession();
@@ -361,10 +401,19 @@ const TokenSubscription = () => {
                   // 토스페이먼츠 연동 로직 여기에 추가
                   handleSubscriptionPurchase('basic');
                 }}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3"
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
               >
-                구독 시작하기
+                🚀 지금 시작하기
               </Button>
+              
+              <div className="text-center mt-3">
+                <p className="text-xs text-green-700 font-medium">
+                  💰 매월 10회 이상 이용시 <span className="font-bold">40% 절약</span>
+                </p>
+                <p className="text-xs text-gray-600 mt-1">
+                  언제든 해지 가능 • 첫 달 무료 체험
+                </p>
+              </div>
             </div>
           </div>
         </div>

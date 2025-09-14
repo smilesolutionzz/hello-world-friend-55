@@ -2521,6 +2521,8 @@ export type Database = {
           status: string
           subscription_id: string | null
           subscription_type: string | null
+          token_amount: number | null
+          token_package_id: string | null
           toss_order_id: string
           updated_at: string
           user_id: string
@@ -2535,6 +2537,8 @@ export type Database = {
           status?: string
           subscription_id?: string | null
           subscription_type?: string | null
+          token_amount?: number | null
+          token_package_id?: string | null
           toss_order_id: string
           updated_at?: string
           user_id: string
@@ -2549,6 +2553,8 @@ export type Database = {
           status?: string
           subscription_id?: string | null
           subscription_type?: string | null
+          token_amount?: number | null
+          token_package_id?: string | null
           toss_order_id?: string
           updated_at?: string
           user_id?: string
@@ -2559,6 +2565,13 @@ export type Database = {
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_history_token_package_id_fkey"
+            columns: ["token_package_id"]
+            isOneToOne: false
+            referencedRelation: "token_packages"
             referencedColumns: ["id"]
           },
         ]

@@ -538,37 +538,51 @@ const TokenSubscription = () => {
               </div>
               
               <div className="bg-white/60 rounded-2xl p-6 shadow-sm">
-                <p className="text-lg leading-relaxed mb-4">
-                  안녕하세요, 아이심리연구소 창립자 이수석입니다.
-                </p>
-                <p className="text-base leading-relaxed mb-4">
-                  저는 강준식 병원장과 함께 대한근골격초음파학회 전문가 과정을 이수하며, 
-                  정확한 진단과 안전한 치료를 위한 의료진으로 활동해왔습니다.
-                </p>
-                <p className="text-base leading-relaxed mb-4">
-                  삼성웰니스의원에서 쌓은 임상 경험을 바탕으로, 이제는 아이들의 마음 건강에 집중하고자 합니다.
-                  초음파 가이드 통사주사 클리닉에서 정밀한 치료를 해왔던 것처럼, 
-                  아이들의 심리 상태도 정확하고 세심하게 분석하고 도움을 드리고 싶습니다.
-                </p>
-                <p className="text-base leading-relaxed mb-4">
-                  많은 부모님들이 아이의 마음을 이해하고 싶어 하지만, 어디서부터 시작해야 할지 막막해합니다. 
-                  전문적인 심리 상담은 비용이 부담스럽고, 시간도 많이 걸리죠.
-                </p>
-                <p className="text-base leading-relaxed mb-4">
-                  그래서 AI 기술을 활용한 심리 검사와 분석 서비스를 개발했습니다. 
-                  의료진의 정밀함과 전문성을 바탕으로, 더 쉽고 저렴하게 전문가 수준의 분석을 받을 수 있도록 말이죠.
-                </p>
-                <p className="text-base leading-relaxed mb-4">
-                  하이브리드 모델도 이런 고민에서 나왔습니다. 
-                  가끔 필요한 분들은 토큰으로, 정기적으로 이용하시는 분들은 구독으로. 
-                  각자의 상황에 맞는 선택지를 제공하고 싶었습니다.
-                </p>
-                <p className="text-base leading-relaxed text-amber-800 font-medium">
-                  의료진의 정밀함으로 모든 아이가 자신만의 빛을 발견하고, 그 빛이 세상을 더 밝게 만들 수 있기를 진심으로 바랍니다.
-                </p>
-                <div className="text-right mt-6">
-                  <p className="text-sm text-muted-foreground">아이심리연구소 창립자 이수석 드림</p>
-                  <p className="text-xs text-muted-foreground mt-1">전 삼성웰니스의원 강준식 병원장과 함께</p>
+                <div className="flex flex-col md:flex-row gap-6 items-start">
+                  <div className="flex-1">
+                    <p className="text-lg leading-relaxed mb-4">
+                      안녕하세요, 아이심리연구소 창립자 이수석입니다.
+                    </p>
+                    <p className="text-base leading-relaxed mb-4">
+                      제가 이 서비스를 만든 이유는 간단합니다. 아이들이 스스로를 이해하고 자신의 잠재력을 발견할 수 있도록 돕고 싶었기 때문입니다.
+                    </p>
+                    <p className="text-base leading-relaxed mb-4">
+                      많은 부모님들이 아이의 마음을 이해하고 싶어 하지만, 어디서부터 시작해야 할지 막막해합니다. 
+                      전문적인 심리 상담은 비용이 부담스럽고, 시간도 많이 걸리죠.
+                    </p>
+                    <p className="text-base leading-relaxed mb-4">
+                      그래서 AI 기술을 활용한 심리 검사와 분석 서비스를 개발했습니다. 
+                      전문가 수준의 분석을 더 쉽고 저렴하게 받을 수 있도록 말이죠.
+                    </p>
+                    <p className="text-base leading-relaxed mb-4">
+                      하이브리드 모델도 이런 고민에서 나왔습니다. 
+                      가끔 필요한 분들은 토큰으로, 정기적으로 이용하시는 분들은 구독으로. 
+                      각자의 상황에 맞는 선택지를 제공하고 싶었습니다.
+                    </p>
+                    <p className="text-base leading-relaxed text-amber-800 font-medium">
+                      모든 아이가 자신만의 빛을 발견하고, 그 빛이 세상을 더 밝게 만들 수 있기를 진심으로 바랍니다.
+                    </p>
+                    <div className="text-right mt-6">
+                      <p className="text-sm text-muted-foreground">아이심리연구소 창립자 이수석 드림</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex-shrink-0 w-full md:w-80">
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
+                      <video 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline
+                        className="w-full h-auto rounded-lg shadow-md"
+                        poster=""
+                      >
+                        <source src="https://mblogvideo-phinf.pstatic.net/MjAyNTA5MDNfMTk4/MDAxNzU2ODkwNTQyMzQz.Ua0h5RL5N1pPZ7w3uqybKp1edW_6VbbibvXlc3Tu1c4g.55XWOPb5qQ6r9T-x0rmkGRMGdiN5x5a2KmTyDq3Oh9og.GIF/aihpro-%EB%8C%80%ED%91%9C-%EC%9D%B4%EC%88%98%EC%84%9D.gif?type=mp4w800" type="video/mp4" />
+                        <p className="text-center text-gray-500 py-4">동영상을 로드할 수 없습니다.</p>
+                      </video>
+                      <p className="text-center text-xs text-gray-600 mt-2">창립자 이수석</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

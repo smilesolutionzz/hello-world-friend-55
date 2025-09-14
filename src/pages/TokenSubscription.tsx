@@ -121,7 +121,7 @@ const TokenSubscription = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <UnifiedNavigation />
       
-      {/* MVP 베타 기간 안내 배너 */}
+      {/* 하이브리드 모델 1단계 안내 배너 */}
       <div className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 text-white py-4 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 via-blue-400/20 to-purple-400/20 animate-pulse"></div>
         <div className="container mx-auto relative z-10">
@@ -130,27 +130,24 @@ const TokenSubscription = () => {
               <div className="bg-white/20 rounded-full p-2">
                 <Sparkles className="w-5 h-5" />
               </div>
-              <h2 className="text-xl font-bold">🎉 MVP 특별 혜택</h2>
+              <h2 className="text-xl font-bold">🎯 1단계: 하이브리드 모델 런칭!</h2>
             </div>
             <p className="text-lg font-medium">
-              현재 MVP 베타 기간으로 무통장 입금을 통한 토큰 구매만 가능합니다
+              토큰제와 구독제를 모두 제공합니다. 본인에게 맞는 방식을 선택하세요!
             </p>
-            <p className="text-base">
-              무통장 입금 계좌: <span className="font-bold bg-white/20 px-3 py-1 rounded-lg">신한 110-421-048730</span>
-            </p>
-            <p className="text-base">
-              예금주명: <span className="font-bold bg-white/20 px-3 py-1 rounded-lg">이수석</span>
-            </p>
-            <p className="text-base">
-              토큰 신청 후 카카오톡으로 남겨주시면 <span className="font-bold text-yellow-300">베타기간 (60일간만) 구입 토큰의 x2배 지급</span> 합니다
-            </p>
-            <div className="mt-3">
-              <Button 
-                onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')}
-                className="bg-white text-emerald-600 hover:bg-white/90 font-bold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
-              >
-                입금후 토큰충전 신청하기 →
-              </Button>
+            <div className="grid md:grid-cols-3 gap-4 mt-4 text-sm">
+              <div className="bg-white/10 rounded-lg p-3">
+                <div className="font-bold">🆓 무료 체험</div>
+                <div>월 1회 무료 체험</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-3">
+                <div className="font-bold">🪙 토큰팩</div>
+                <div>9,900원/50토큰 (시험용)</div>
+              </div>
+              <div className="bg-white/10 rounded-lg p-3">
+                <div className="font-bold">💎 베이직</div>
+                <div>19,900원/월 무제한</div>
+              </div>
             </div>
           </div>
         </div>
@@ -160,10 +157,10 @@ const TokenSubscription = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            AI 토큰 구매
+            하이브리드 모델 선택
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            필요한 만큼만 구매하여 AI 분석 서비스를 이용하세요
+            토큰제와 구독제 중 본인에게 맞는 방식을 선택하세요
           </p>
           
           <div className="flex justify-center mb-8">
@@ -173,114 +170,276 @@ const TokenSubscription = () => {
           </div>
         </div>
 
-        {/* Packages */}
-        <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {packagesLoading ? (
-            // Loading state
-            Array.from({ length: 3 }).map((_, index) => (
-              <Card key={index} className="animate-pulse">
-                <CardHeader className="text-center pb-6 pt-12">
-                  <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-6 bg-gray-200 rounded mx-auto w-24"></div>
-                    <div className="h-4 bg-gray-200 rounded mx-auto w-32"></div>
-                    <div className="h-8 bg-gray-200 rounded mx-auto w-20"></div>
-                    <div className="h-6 bg-gray-200 rounded mx-auto w-16"></div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4 pb-8">
-                  <div className="space-y-3">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="w-5 h-5 bg-gray-200 rounded"></div>
-                        <div className="h-4 bg-gray-200 rounded flex-1"></div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="pt-4">
-                    <div className="w-full h-12 bg-gray-200 rounded"></div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : packages.length === 0 ? (
-            // No packages state
-            <div className="col-span-full text-center py-16">
-              <div className="bg-card border border-border rounded-2xl p-8 max-w-md mx-auto">
-                <div className="text-muted-foreground mb-4">
-                  <Coins className="w-16 h-16 mx-auto mb-4 opacity-50" />
+        {/* 하이브리드 선택 섹션 */}
+        <div className="mt-16 text-center">
+          <h2 className="text-3xl font-bold mb-8">어떤 방식이 나에게 맞을까요?</h2>
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+            <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl p-8 border border-green-200">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Crown className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">토큰 패키지가 없습니다</h3>
-                <p className="text-muted-foreground mb-4">
-                  현재 사용 가능한 토큰 패키지가 없습니다.
+                <h3 className="text-xl font-bold mb-2">베이직 구독 (추천)</h3>
+                <div className="text-2xl font-bold text-green-600 mb-2">19,900원/월</div>
+                <p className="text-muted-foreground">무제한 이용 가능</p>
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  <span className="text-sm">매월 무제한 검사</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  <span className="text-sm">AI 상세 분석</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  <span className="text-sm">전문가 상담 연결</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500" />
+                  <span className="text-sm">24/7 지원</span>
+                </div>
+              </div>
+              <Button 
+                onClick={() => navigate('/subscription')}
+                className="w-full mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-3"
+              >
+                베이직 구독 시작하기
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                매월 10회 이상 이용하시면 더 경제적입니다
+              </p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border border-purple-200">
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Coins className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">토큰팩 (시험용)</h3>
+                <div className="text-2xl font-bold text-purple-600 mb-2">9,900원</div>
+                <p className="text-muted-foreground">50토큰 (토큰당 198원)</p>
+              </div>
+              <div className="space-y-2 text-left">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm">필요한 만큼만 결제</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm">토큰 영구 사용 가능</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm">서비스 체험용</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500" />
+                  <span className="text-sm">무통장입금 지원</span>
+                </div>
+              </div>
+              <Button 
+                onClick={() => window.location.href = '/bank-transfer'}
+                className="w-full mt-6 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3"
+              >
+                토큰팩 구매하기
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                월 9회 이하 이용시 경제적입니다
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 토큰제 vs 구독제 비교 */}
+        <div className="mt-20">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12">하이브리드 모델 1단계 비교</h2>
+            <div className="bg-gradient-to-br from-background to-muted/30 rounded-3xl p-8 shadow-lg border border-border">
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold mb-2">🆓 무료 체험</div>
+                  <div className="text-sm text-muted-foreground mb-4">
+                    월 1회 무료로 체험하세요
+                  </div>
+                  <ul className="text-sm space-y-1 text-left">
+                    <li>• 월 1회 심리검사</li>
+                    <li>• AI 기본 분석</li>
+                    <li>• 결과 요약 제공</li>
+                  </ul>
+                </div>
+                
+                <div className="text-center border-l border-r border-border px-6">
+                  <div className="text-2xl font-bold mb-2">🪙 토큰팩</div>
+                  <div className="text-sm text-muted-foreground mb-4">
+                    9,900원으로 50토큰 (시험용)
+                  </div>
+                  <ul className="text-sm space-y-1 text-left">
+                    <li>• 필요한 만큼만 결제</li>
+                    <li>• 토큰 영구 보관</li>
+                    <li>• 서비스 체험에 최적</li>
+                    <li>• 무통장입금 지원</li>
+                  </ul>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-2xl font-bold mb-2">💎 베이직 구독</div>
+                  <div className="text-sm text-muted-foreground mb-4">
+                    19,900원/월 무제한 이용
+                  </div>
+                  <ul className="text-sm space-y-1 text-left">
+                    <li>• 무제한 검사 및 분석</li>
+                    <li>• 전문가 상담 연결</li>
+                    <li>• 24/7 고객 지원</li>
+                    <li>• 정기 이용자에게 최적</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="mt-8 text-center">
+                <p className="text-lg font-semibold text-primary mb-4">
+                  🎯 어떤 방식이 나에게 맞을까요?
                 </p>
-                <Button 
-                  onClick={fetchPackages}
-                  variant="outline"
-                  className="mx-auto"
-                >
-                  다시 시도
-                </Button>
+                <div className="grid md:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-purple-50 rounded-lg p-4">
+                    <div className="font-bold text-purple-800 mb-2">토큰팩이 적합한 분</div>
+                    <ul className="text-purple-700 space-y-1">
+                      <li>• 월 9회 이하 이용 예정</li>
+                      <li>• 서비스를 먼저 체험하고 싶은 분</li>
+                      <li>• 필요할 때만 결제하고 싶은 분</li>
+                    </ul>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-4">
+                    <div className="font-bold text-green-800 mb-2">베이직 구독이 적합한 분</div>
+                    <ul className="text-green-700 space-y-1">
+                      <li>• 월 10회 이상 이용 예정</li>
+                      <li>• 정기적인 관리가 필요한 분</li>
+                      <li>• 전문가 상담까지 원하는 분</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
-          ) : (
-            packages.map((pkg) => (
-              <Card 
-                key={pkg.id} 
-                className={`relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                  pkg.is_popular 
-                    ? 'border-2 border-purple-400 shadow-lg scale-105' 
-                    : 'border border-border hover:border-primary/20'
-                }`}
-                style={{ overflow: 'visible' }}
-              >
-                {pkg.is_popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                    <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
-                      🔥 인기 선택
-                    </Badge>
-                  </div>
-                )}
-                
-                <CardHeader className="text-center pb-6 pt-12">
-                  <div className="flex justify-center mb-4">
-                    <div className="p-4 rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
-                      {getPlanIcon(pkg.token_count)}
-                    </div>
-                  </div>
-                  
-                  <CardTitle className="text-2xl mb-2">{pkg.name}</CardTitle>
-                  <p className="text-muted-foreground text-sm mb-4">{pkg.description}</p>
-                  
-                  <div className="space-y-2">
-                    <div className="text-4xl font-bold text-foreground">
-                      ₩{formatPrice(pkg.price_krw)}
-                    </div>
-                    <div className="text-xl font-bold text-primary">
-                      {pkg.token_count}개 토큰
-                    </div>
-                  </div>
-                </CardHeader>
+          </div>
+        </div>
 
-                <CardContent className="space-y-4 pb-8">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <Check className="h-5 w-5 text-green-500" />
-                      <span className="text-sm">{pkg.token_count}개 토큰 즉시 지급</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Check className="h-5 w-5 text-green-500" />
-                      <span className="text-sm">영구 사용 가능</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Check className="h-5 w-5 text-green-500" />
-                      <span className="text-sm">안전한 결제 시스템</span>
-                    </div>
-                  </div>
+        {/* 기존 토큰 패키지들 (참고용) */}
+        <div className="mt-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">토큰 패키지 상세</h2>
+            <p className="text-muted-foreground">
+              현재 시험 운영 중인 토큰 패키지입니다
+            </p>
+          </div>
 
-                  <div className="pt-4">
+          {/* Packages */}
+          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {packagesLoading ? (
+              // Loading state
+              Array.from({ length: 3 }).map((_, index) => (
+                <Card key={index} className="animate-pulse">
+                  <CardHeader className="text-center pb-6 pt-12">
+                    <div className="flex justify-center mb-4">
+                      <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-6 bg-gray-200 rounded mx-auto w-24"></div>
+                      <div className="h-4 bg-gray-200 rounded mx-auto w-32"></div>
+                      <div className="h-8 bg-gray-200 rounded mx-auto w-20"></div>
+                      <div className="h-6 bg-gray-200 rounded mx-auto w-16"></div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4 pb-8">
+                    <div className="space-y-3">
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <div className="w-5 h-5 bg-gray-200 rounded"></div>
+                          <div className="h-4 bg-gray-200 rounded flex-1"></div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pt-4">
+                      <div className="w-full h-12 bg-gray-200 rounded"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : packages.length === 0 ? (
+              // No packages state
+              <div className="col-span-full text-center py-16">
+                <div className="bg-card border border-border rounded-2xl p-8 max-w-md mx-auto">
+                  <div className="text-muted-foreground mb-4">
+                    <Coins className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">토큰 패키지가 없습니다</h3>
+                  <p className="text-muted-foreground mb-4">
+                    현재 사용 가능한 토큰 패키지가 없습니다.
+                  </p>
+                  <Button 
+                    onClick={fetchPackages}
+                    variant="outline"
+                    className="mx-auto"
+                  >
+                    다시 시도
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              packages.map((pkg) => (
+                <Card 
+                  key={pkg.id} 
+                  className={`relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                    pkg.is_popular 
+                      ? 'border-2 border-purple-400 shadow-lg scale-105' 
+                      : 'border border-border hover:border-primary/20'
+                  }`}
+                  style={{ overflow: 'visible' }}
+                >
+                  {pkg.is_popular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
+                        🔥 인기 선택
+                      </Badge>
+                    </div>
+                  )}
+                  
+                  <CardHeader className="text-center pb-6 pt-12">
+                    <div className="flex justify-center mb-4">
+                      <div className="p-4 rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
+                        {getPlanIcon(pkg.token_count)}
+                      </div>
+                    </div>
+                    
+                    <CardTitle className="text-2xl mb-2">{pkg.name}</CardTitle>
+                    <p className="text-muted-foreground text-sm mb-4">{pkg.description}</p>
+                    
+                    <div className="space-y-2">
+                      <div className="text-4xl font-bold text-foreground">
+                        ₩{formatPrice(pkg.price_krw)}
+                      </div>
+                      <div className="text-xl font-bold text-primary">
+                        {pkg.token_count}개 토큰
+                      </div>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="space-y-4 pb-8">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Check className="h-5 w-5 text-green-500" />
+                        <span className="text-sm">{pkg.token_count}개 토큰 즉시 지급</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Check className="h-5 w-5 text-green-500" />
+                        <span className="text-sm">영구 사용 가능</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Check className="h-5 w-5 text-green-500" />
+                        <span className="text-sm">안전한 결제 시스템</span>
+                      </div>
+                    </div>
+
                     <div className="pt-4">
                       <Button 
                         className="w-full py-3 text-lg font-bold bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white"
@@ -295,198 +454,38 @@ const TokenSubscription = () => {
                         </div>
                       </Button>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
-
-        {/* MVP 무통장입금 안내 */}
-        <div className="mt-20 text-center">
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-3xl p-8 max-w-4xl mx-auto mb-8">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Coins className="w-8 h-8 text-green-600" />
-              <h2 className="text-2xl font-bold">MVP 특별 혜택</h2>
-            </div>
-            <p className="text-lg mb-6 text-muted-foreground">
-              현재 MVP 테스트 기간으로 <strong>무통장입금</strong>을 통한 토큰 구매가 가능합니다
-            </p>
-            <Button 
-              onClick={() => window.location.href = '/bank-transfer'}
-              size="lg"
-              className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-8 py-3"
-            >
-              무통장입금으로 구매하기
-            </Button>
-          </div>
-          
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8 max-w-4xl mx-auto">
-            <Coins className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-4">토큰 시스템의 장점</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="text-left space-y-2">
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="font-medium">필요한 만큼만 결제</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="font-medium">영구 사용 가능</span>
-                </div>
-              </div>
-              <div className="text-left space-y-2">
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="font-medium">투명한 가격 체계</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="font-medium">언제든 추가 구매</span>
-                </div>
-              </div>
-            </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </div>
 
-        {/* Founder's Letter */}
-        <div className="mt-20">
+        {/* FAQ Section */}
+        <div className="mt-20" id="faq">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-gradient-to-br from-warm-cream via-soft-lavender/30 to-gentle-peach rounded-3xl p-8 md:p-12 shadow-2xl border border-primary/10 relative overflow-hidden">
-              {/* Background decoration */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/5 to-transparent rounded-full blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-2xl"></div>
-              
-              <div className="relative z-10">
-                <div className="text-center mb-8">
-                  <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg border border-primary/20 mb-4">
-                    <Brain className="w-5 h-5 text-primary" />
-                    <span className="text-primary font-semibold text-sm">창립자의 손편지</span>
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                    여러분께 전하는 진심
-                  </h2>
-                  <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
-                </div>
-
-                <div className="prose prose-lg max-w-none text-foreground/90 leading-relaxed space-y-6">
-                  <p className="text-lg md:text-xl text-center font-medium text-primary mb-8 break-keep leading-relaxed">
-                    "사랑하는 하이라이트 프로의 <br className="hidden sm:block"/>
-                    <span className="sm:hidden"> </span>첫 번째 이용자님께"
-                  </p>
-                  
-                  <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/30">
-                    <p className="mb-6 text-base md:text-lg leading-relaxed break-keep">
-                      안녕하세요. 저는 하이라이트 프로를 밤새 개발하며 몇 달 동안 준비해온 사람입니다.
-                    </p>
-                    
-                    <p className="mb-6 text-base md:text-lg leading-relaxed break-keep">
-                      처음 이 플랫폼을 시작한 이유는 단순했습니다.<br className="hidden sm:block"/>
-                      <span className="sm:hidden"> </span><span className="font-semibold text-primary break-keep">
-                        "내 아이의 발달, 내 마음의 상태, 부모님의 건강을 조금 더 쉽게 지켜볼 수 있다면 얼마나 좋을까?"
-                      </span>
-                    </p>
-                    
-                    <p className="mb-6 text-base md:text-lg leading-relaxed">
-                      지난 <span className="font-bold text-primary">14년 동안</span> 
-                      유소년 스포츠클럽, 발달센터, 심리상담센터, 그리고 병원 발달클리닉을 운영하며 
-                      수많은 분들을 만났습니다. 그 과정에서 저는 깨달았습니다.
-                    </p>
-                    
-                    <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-6 my-8 border-l-4 border-primary">
-                      <p className="text-base md:text-lg leading-relaxed font-medium italic break-keep">
-                        아이의 언어 발달이 늦는 건 아닐까,<br className="hidden sm:block"/>
-                        <span className="sm:hidden"> </span>친구 관계에서 힘들어하지는 않을까,<br className="hidden sm:block"/>
-                        <span className="sm:hidden"> </span>직장에서의 스트레스가 너무 심한 건 아닐까,<br className="hidden sm:block"/>
-                        <span className="sm:hidden"> </span>부모님이 혹시 기억력이나 생활능력에 변화를 겪고 계시지는 않을까…
-                      </p>
-                    </div>
-                    
-                    <p className="mb-6 text-base md:text-lg leading-relaxed">
-                      현장에서 만난 아이들, 부모님들, 그리고 치열하게 살아가는 성인과 노인분들까지…
-                      각자의 고민과 어려움이 있음에도 쉽게 도움을 받을 길이 없는 현실을 보며,
-                      제가 가진 기술과 경험으로 무엇을 바꿀 수 있을지 고민했습니다.
-                    </p>
-                    
-                    <p className="mb-6 text-base md:text-lg leading-relaxed">
-                      전문가를 만나기까지 몇 달을 기다려야 하고, 
-                      비싼 검사비용 때문에 망설이시는 분들의 마음이 너무나 잘 보였습니다.
-                      그래서 마음먹었습니다.
-                    </p>
-                    
-                    <div className="bg-gradient-to-br from-accent/20 to-primary/20 rounded-xl p-6 my-8 border border-primary/30">
-                      <p className="text-lg md:text-xl font-bold text-center text-primary mb-4 leading-relaxed break-keep">
-                        "누구나 단 3분이면,<br className="hidden sm:block"/>
-                        <span className="sm:hidden"> </span>내 마음과 내 가족의 상태를<br className="hidden sm:block"/>
-                        <span className="sm:hidden"> </span>쉽게 확인하고 기록할 수 있게 만들자."
-                      </p>
-                      <p className="text-base md:text-lg leading-relaxed text-center break-keep">
-                        그렇게 만들어진 것이 바로 하이라이트 프로입니다.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-warm-cream to-soft-lavender/50 rounded-2xl p-6 md:p-8 shadow-lg border border-primary/20">
-                    <div className="text-center mb-6">
-                      <p className="text-lg md:text-xl font-bold text-primary mb-4 leading-relaxed break-keep">
-                        짧게 남긴 기록이 데이터가 되고<br className="hidden sm:block"/>
-                        <span className="sm:hidden"> </span>수천번 전문검사들과 해석들을 돌려 엔진을 고도화시켜 만들어낸<br className="hidden sm:block"/>
-                        <span className="sm:hidden"> </span>AI가 빠르게 분석하고<br className="hidden sm:block"/>
-                        <span className="sm:hidden"> </span>필요와 위험성이 데이터를 통해 감지되면<br className="hidden sm:block"/>
-                        <span className="sm:hidden"> </span>PRO전문가가 함께 코멘트를 더해주는 시스템
-                      </p>
-                    </div>
-                    
-                    <p className="text-base md:text-lg leading-relaxed mb-6">
-                      작은 기록이 쌓여서, 어느 순간 큰 변화를 예방할 수 있다면,
-                      그것만으로도 이 플랫폼이 존재할 이유가 충분하다고 생각합니다.
-                    </p>
-                    
-                    <p className="text-base md:text-lg leading-relaxed mb-6">
-                      3분의 짧은 검사와 기록이 쌓여, 한 사람의 삶을 지켜낼 수 있다면.
-                      AI가 빠르게 해석하고, 검증된 전문가가 마지막 터치를 더해
-                      <span className="font-bold text-primary">실질적인 도움</span>을 제공할 수 있다면.
-                      그것만으로도 충분히 의미 있는 길이라고 믿습니다.
-                    </p>
-                  </div>
-                  
-                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-lg border border-white/50">
-                    <p className="text-base md:text-lg leading-relaxed mb-6">
-                      저희는 단순한 기술이 아니라, <span className="font-bold text-primary">사람을 위한 도구</span>를 만들고 있습니다.
-                      저는 한 발짝이라도 먼저 내디뎌서,
-                      발달센터와 병원, 주간보호센터, 그리고 가족에게 
-                      '신뢰할 수 있는 기록과 분석의 파트너'가 되고 싶습니다.
-                    </p>
-                    
-                    <p className="text-base md:text-lg leading-relaxed mb-6">
-                      당신이 오늘 남긴 작은 기록이, 내일의 안심으로 이어지기를 바라며,
-                      저는 오늘도 밤을 새워 이 플랫폼을 다듬고 있습니다.
-                    </p>
-                    
-                    <p className="text-lg md:text-xl font-bold text-center text-primary mt-6 leading-relaxed break-keep">
-                      여러분의 소중한 가족들이 행복하게 성장할 수 있도록,<br className="hidden sm:block"/>
-                      <span className="sm:hidden"> </span>제가 직접 만든 이 도구가 든든한 동반자가 되겠습니다.
-                    </p>
-                  </div>
-                  
-                  <div className="text-center mt-8">
-                    <div className="inline-block">
-                      <p className="text-lg text-muted-foreground mb-4 leading-relaxed break-keep">
-                        하이라이트 프로와 함께 걸어주셔서 감사합니다.<br className="hidden sm:block"/>
-                        <span className="sm:hidden"> </span>앞으로의 여정에서 더 많은 가치를 드릴 수 있도록 최선을 다하겠습니다.
-                      </p>
-                      <p className="text-lg text-muted-foreground mb-2">마음을 담아</p>
-                      <div className="flex items-center gap-3 justify-center">
-                        <div className="w-8 h-0.5 bg-gradient-to-r from-transparent to-primary"></div>
-                        <span className="font-bold text-lg md:text-xl text-primary break-keep leading-relaxed text-center">
-                          AI 하이라이트프로<br className="hidden sm:block"/>
-                          <span className="sm:hidden"> </span>창립자 이수석
-                        </span>
-                        <div className="w-8 h-0.5 bg-gradient-to-l from-transparent to-primary"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <h2 className="text-3xl font-bold text-center mb-12">자주 묻는 질문</h2>
+            <div className="space-y-6">
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">하이브리드 모델이란 무엇인가요?</h3>
+                <p className="text-muted-foreground">
+                  토큰제와 구독제를 모두 제공하는 시스템입니다. 
+                  사용 패턴에 따라 본인에게 맞는 방식을 선택할 수 있어 더욱 경제적입니다.
+                </p>
+              </div>
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">어떤 방식을 선택해야 하나요?</h3>
+                <p className="text-muted-foreground">
+                  월 10회 이상 이용 예정이시면 베이직 구독이, 
+                  월 9회 이하 또는 가끔 이용하시면 토큰팩이 더 경제적입니다.
+                </p>
+              </div>
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">나중에 방식을 변경할 수 있나요?</h3>
+                <p className="text-muted-foreground">
+                  네, 언제든지 변경 가능합니다. 
+                  토큰은 영구 보관되므로 구독으로 변경 후에도 기존 토큰을 사용할 수 있습니다.
+                </p>
               </div>
             </div>
           </div>

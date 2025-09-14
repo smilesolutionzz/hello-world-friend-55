@@ -504,23 +504,29 @@ const TokenSubscription = () => {
               
               <div className="bg-white/60 rounded-2xl p-6 shadow-sm">
                 <p className="text-lg leading-relaxed mb-4">
-                  안녕하세요, 아이심리연구소 창립자입니다.
+                  안녕하세요, 아이심리연구소 창립자 이수석입니다.
                 </p>
                 <p className="text-base leading-relaxed mb-4">
-                  우리 아이들이 건강하게 성장할 수 있도록 돕고 싶어 이 서비스를 시작했습니다. 
-                  전문적인 심리 검사와 AI 분석을 통해 부모님들이 아이를 더 잘 이해하고, 
-                  적절한 도움을 받을 수 있기를 바랍니다.
+                  제가 이 서비스를 만든 이유는 간단합니다. 아이들이 스스로를 이해하고 자신의 잠재력을 발견할 수 있도록 돕고 싶었기 때문입니다.
                 </p>
                 <p className="text-base leading-relaxed mb-4">
-                  하이브리드 모델을 통해 더 많은 가정이 부담 없이 서비스를 이용할 수 있도록 
-                  노력하고 있습니다. 무료 체험부터 시작해서 필요에 따라 토큰팩이나 구독을 
-                  선택하실 수 있습니다.
+                  많은 부모님들이 아이의 마음을 이해하고 싶어 하지만, 어디서부터 시작해야 할지 막막해합니다. 
+                  전문적인 심리 상담은 비용이 부담스럽고, 시간도 많이 걸리죠.
+                </p>
+                <p className="text-base leading-relaxed mb-4">
+                  그래서 AI 기술을 활용한 심리 검사와 분석 서비스를 개발했습니다. 
+                  전문가 수준의 분석을 더 쉽고 저렴하게 받을 수 있도록 말이죠.
+                </p>
+                <p className="text-base leading-relaxed mb-4">
+                  하이브리드 모델도 이런 고민에서 나왔습니다. 
+                  가끔 필요한 분들은 토큰으로, 정기적으로 이용하시는 분들은 구독으로. 
+                  각자의 상황에 맞는 선택지를 제공하고 싶었습니다.
                 </p>
                 <p className="text-base leading-relaxed text-amber-800 font-medium">
-                  모든 아이가 자신만의 특별함을 발견하고 성장할 수 있기를 응원합니다.
+                  모든 아이가 자신만의 빛을 발견하고, 그 빛이 세상을 더 밝게 만들 수 있기를 진심으로 바랍니다.
                 </p>
                 <div className="text-right mt-6">
-                  <p className="text-sm text-muted-foreground">아이심리연구소 창립자 드림</p>
+                  <p className="text-sm text-muted-foreground">아이심리연구소 창립자 이수석 드림</p>
                 </div>
               </div>
             </div>

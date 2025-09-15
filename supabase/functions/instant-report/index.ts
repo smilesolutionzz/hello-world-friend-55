@@ -57,25 +57,17 @@ serve(async (req) => {
 
     console.log('🤖 OpenAI API 호출 시작');
 
-    // OpenAI API 호출
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14', // 안정 모델로 전환 (GPT-5 제외)
-        messages: [
-          {
-            role: 'system',
-            content: `당신은 육아 및 발달 전문 상담가입니다. 
+    // 공통 메시지 구성
+    const messages = [
+      {
+        role: 'system',
+        content: `당신은 육아 및 발달 전문 상담가입니다. 
 부모의 고민을 듣고 따뜻하고 전문적인 조언을 제공하세요.
 항상 "참고용"임을 명시하고, 필요시 전문가 상담을 권하세요.`
-          },
-          {
-            role: 'user',
-            content: `다음 육아 고민에 대해 전문적이고 따뜻한 조언을 해주세요:
+      },
+      {
+        role: 'user',
+        content: `다음 육아 고민에 대해 전문적이고 따뜻한 조언을 해주세요:
 
 "${message}"
 
@@ -97,36 +89,67 @@ serve(async (req) => {
 따뜻한 격려와 지지의 메시지를 전해주세요.
 
 ⚠️ 이는 참고용 정보이며 의학적 진단이 아닙니다. 필요시 전문가 상담을 받으시기 바랍니다.`
-          }
-        ],
-        max_completion_tokens: 1000
-      }),
-    });
+      }
+    ];
 
-    console.log('📡 OpenAI 응답 상태:', openaiResponse.status);
+    const timeoutMs = 10_000;
 
-    if (!openaiResponse.ok) {
-      const errorText = await openaiResponse.text();
-      console.error('❌ OpenAI API 오류:', errorText);
-      
-      return new Response(JSON.stringify({
-        success: false,
-        error: `OpenAI API error: ${openaiResponse.status}`,
-        report: '🔍 **일시적 오류**\n\nAI 분석 서비스에 일시적인 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.',
-        riskLevel: 'medium',
-        needsExpertConsultation: true,
-        timestamp: new Date().toISOString()
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      });
+    // OpenAI 호출 유틸 (신형 모델 vs 레거시 모델 파라미터 차이 처리)
+    const callOpenAI = async (model: string, legacyParams = false) => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort('timeout'), timeoutMs);
+      try {
+        const body = legacyParams
+          ? { model, messages, max_tokens: 800 } // gpt-4o(-mini) 등 레거시 파라미터
+          : { model, messages, max_completion_tokens: 1000 }; // gpt-4.1+ 파라미터
+
+        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+          signal: controller.signal,
+        });
+
+        console.log('📡 OpenAI 응답 상태:', res.status);
+
+        if (!res.ok) {
+          const errorText = await res.text().catch(() => '');
+          console.error('❌ OpenAI API 오류:', errorText);
+          return { ok: false as const, report: undefined };
+        }
+
+        const data = await res.json();
+        const report = data?.choices?.[0]?.message?.content as string | undefined;
+        return { ok: Boolean(report) as const, report };
+      } catch (err) {
+        console.error('⚠️ OpenAI 호출 예외:', err);
+        return { ok: false as const, report: undefined };
+      } finally {
+        clearTimeout(timer);
+      }
+    };
+
+    // 1차: 안정 모델(gpt-4.1)
+    console.log('🧪 1차 시도: gpt-4.1-2025-04-14');
+    let result = await callOpenAI('gpt-4.1-2025-04-14', false);
+
+    // 2차: 같은 모델로 1회 재시도
+    if (!result.ok) {
+      console.log('🔁 재시도: gpt-4.1-2025-04-14');
+      result = await callOpenAI('gpt-4.1-2025-04-14', false);
     }
 
-    const data = await openaiResponse.json();
-    const report = data.choices?.[0]?.message?.content;
+    // 3차: 폴백(gpt-4o-mini, 레거시 파라미터 사용)
+    if (!result.ok) {
+      console.log('🛟 폴백 시도: gpt-4o-mini');
+      result = await callOpenAI('gpt-4o-mini', true);
+    }
 
-    if (!report) {
-      console.error('❌ 빈 응답 받음');
+    if (!result.ok || !result.report) {
+      console.error('❌ 빈 응답 받음 또는 모든 시도 실패');
       return new Response(JSON.stringify({
         success: false,
         error: 'Empty response',
@@ -139,6 +162,8 @@ serve(async (req) => {
         status: 200
       });
     }
+
+    const report = result.report;
 
     console.log('✅ AI 분석 성공');
 

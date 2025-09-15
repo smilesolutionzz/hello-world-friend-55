@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Heart, 
   MessageCircle, 
@@ -1205,11 +1206,50 @@ AI가 전문가 3명 추천해줬는데, 각자 전문분야랑 경력, 어떤 �
 export const CommunityFeed = () => {
   const { user } = useAuthGuard();
   const { isAdmin } = useAdminCheck();
-  const [posts, setPosts] = useState<CommunityPost[]>(mockPosts);
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
+  const [loading, setLoading] = useState(true);
   const [newPost, setNewPost] = useState({ title: '', content: '', tags: '' });
   const [showNewPost, setShowNewPost] = useState(false);
   const [newComment, setNewComment] = useState<{[key: string]: string}>({});
   const [commentAuthor, setCommentAuthor] = useState<{[key: string]: string}>({});
+
+  // Load posts using secure function
+  const loadPosts = async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_community_posts_safe');
+      if (error) throw error;
+      
+      // Transform the secure data to match the component interface
+      const transformedPosts = data?.map((post: any) => ({
+        id: post.id,
+        type: 'question' as const,
+        author: {
+          name: post.author_display || '익명의 사용자',
+          isAnonymous: post.is_anonymous || !post.user_id,
+          isExpert: false,
+          isInstitution: false
+        },
+        title: post.title,
+        content: post.content,
+        tags: post.tags || [],
+        timestamp: new Date(post.created_at).toLocaleString(),
+        likes: post.likes_count || 0,
+        comments: [],
+        hasLiked: false
+      })) || [];
+      
+      setPosts([...mockPosts, ...transformedPosts]);
+    } catch (error) {
+      console.error('Error loading posts:', error);
+      setPosts(mockPosts); // Fallback to mock data
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPosts();
+  }, []);
 
   const handleLike = (postId: string) => {
     setPosts(posts.map(post => 

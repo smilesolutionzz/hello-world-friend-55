@@ -4005,6 +4005,24 @@ export type Database = {
         Args: { comment_id: string }
         Returns: number
       }
+      get_community_posts_safe: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          author_display: string
+          comments_count: number
+          content: string
+          created_at: string
+          id: string
+          is_anonymous: boolean
+          is_public: boolean
+          likes_count: number
+          media_urls: Json
+          tags: string[]
+          title: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
       get_expert_stats: {
         Args: Record<PropertyKey, never>
         Returns: {

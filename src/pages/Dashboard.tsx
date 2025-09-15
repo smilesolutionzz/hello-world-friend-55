@@ -438,18 +438,7 @@ const Dashboard = () => {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/10 to-soft-mint/20 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <Heart className="w-8 h-8 text-white" />
-          </div>
-          <p className="text-muted-foreground">로딩 중...</p>
-        </div>
-      </div>
-    );
-  }
+  // Loading state removed as requested by user
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/10 to-soft-mint/20">

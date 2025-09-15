@@ -65,7 +65,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07', // AIH 즉시 리포팅용 고품질 모델
+        model: 'gpt-4.1-2025-04-14', // 안정 모델로 전환 (GPT-5 제외)
         messages: [
           {
             role: 'system',

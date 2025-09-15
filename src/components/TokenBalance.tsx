@@ -215,7 +215,7 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
 
               {/* 자주묻는질문 버튼 */}
               <Button
-                onClick={() => navigate('/subscription#faq')}
+                onClick={() => navigate('/token-subscription')}
                 className="w-full"
                 variant={isLowBalance ? "default" : "outline"}
               >
@@ -265,7 +265,7 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
             <div className="space-y-2">
               <Button
                 size="sm"
-                onClick={() => navigate('/subscription#faq')}
+                onClick={() => navigate('/token-subscription')}
                 className="w-full"
                 variant={isLowBalance ? "default" : "outline"}
               >

@@ -99,8 +99,7 @@ serve(async (req) => {
 ⚠️ 이는 참고용 정보이며 의학적 진단이 아닙니다. 필요시 전문가 상담을 받으시기 바랍니다.`
           }
         ],
-        max_tokens: 1000,
-        temperature: 0.7
+        max_completion_tokens: 1000
       }),
     });
 

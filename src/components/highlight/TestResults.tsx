@@ -51,17 +51,17 @@ const PremiumFeature = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const TestResults = () => {
-  const { resultId } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [result, setResult] = useState<TestResult | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (resultId) {
+    if (id) {
       fetchTestResult();
     }
-  }, [resultId]);
+  }, [id]);
 
   const fetchTestResult = async () => {
     try {
@@ -75,7 +75,7 @@ export const TestResults = () => {
           age_group,
           profile:profiles(display_name)
         `)
-        .eq('id', resultId)
+.eq('id', id)
         .single();
 
       if (error) throw error;

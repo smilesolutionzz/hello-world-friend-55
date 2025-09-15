@@ -126,14 +126,77 @@ serve(async (req) => {
     }
 
     const data = await openaiResponse.json();
-    const report = data.choices?.[0]?.message?.content;
+
+    // 견고한 응답 추출 로직 (여러 포맷 지원)
+    let report: string | undefined = data?.choices?.[0]?.message?.content;
+    if (!report) {
+      const maybeContent = data?.choices?.[0]?.message?.content;
+      if (Array.isArray(maybeContent)) {
+        try {
+          const textParts = maybeContent
+            .map((p: any) => typeof p === 'string' ? p : (p?.text ?? p?.output_text ?? p?.content ?? ''))
+            .filter(Boolean)
+            .join('\n')
+            .trim();
+          if (textParts) report = textParts;
+        } catch { /* noop */ }
+      }
+      if (!report && data?.choices?.[0]?.text) {
+        report = data.choices[0].text;
+      }
+    }
+
+    // 2차 재시도: gpt-4.1 (새 모델 계열, temperature 미사용)
+    if (!report) {
+      console.warn('⚠️ 빈 응답 - gpt-4.1로 재시도');
+      const retryResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4.1-2025-04-14',
+          messages,
+          max_completion_tokens: 900,
+        }),
+      });
+      console.log('📡 OpenAI 2차(gpt-4.1) 응답 상태:', retryResponse.status);
+      if (retryResponse.ok) {
+        const retryData = await retryResponse.json();
+        report = retryData?.choices?.[0]?.message?.content || retryData?.choices?.[0]?.text;
+      }
+    }
+
+    // 3차 재시도: gpt-4o-mini (레거시 안정 모델)
+    if (!report) {
+      console.warn('⚠️ 빈 응답 - gpt-4o-mini로 최종 재시도');
+      const legacyResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages,
+          temperature: 0.7,
+          max_tokens: 900,
+        }),
+      });
+      console.log('📡 OpenAI 3차(gpt-4o-mini) 응답 상태:', legacyResponse.status);
+      if (legacyResponse.ok) {
+        const legacyData = await legacyResponse.json();
+        report = legacyData?.choices?.[0]?.message?.content || legacyData?.choices?.[0]?.text;
+      }
+    }
 
     if (!report) {
-      console.error('❌ 빈 응답 받음');
+      console.error('❌ 모든 모델에서 빈 응답');
       return new Response(JSON.stringify({
         success: false,
-        error: 'Empty response',
-        report: 'AI 분석 결과가 생성되지 않았습니다. 다시 시도해주세요.',
+        error: 'Empty response from all models',
+        report: 'AI 분석 결과가 생성되지 않았습니다. 잠시 후 다시 시도해주세요.',
         riskLevel: 'medium',
         needsExpertConsultation: true,
         timestamp: new Date().toISOString()

@@ -141,12 +141,26 @@ export function WeeklyInsights({
                 {totalActivities}/{weeklyGoal}
               </Badge>
             </div>
-            <div className="w-full bg-white/60 rounded-full h-3 overflow-hidden shadow-inner">
-              <div 
-                className="bg-gradient-to-r from-primary to-primary-glow h-3 rounded-full transition-all duration-700 ease-out shadow-sm"
-                style={{ width: `${progress}%` }}
-              />
+            
+            <div className="mb-2">
+              <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
+                <span>감정 체크인 달성도</span>
+                <span>{Math.round(progress)}%</span>
+              </div>
+              <div className="w-full bg-white/60 rounded-full h-3 overflow-hidden shadow-inner">
+                <div 
+                  className="bg-gradient-to-r from-primary to-primary-glow h-3 rounded-full transition-all duration-700 ease-out shadow-sm relative"
+                  style={{ width: `${Math.max(progress, 8)}%` }}
+                >
+                  {progress > 0 && (
+                    <div className="absolute right-1 top-0 h-full flex items-center">
+                      <div className="w-1 h-1 bg-white rounded-full opacity-60"></div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
+            
             <p className="text-xs text-muted-foreground mt-2 font-medium">
               {progress >= 100 ? "목표 달성! 🎉" : `목표까지 ${Math.max(0, weeklyGoal - totalActivities)}개 남음`}
             </p>
@@ -229,6 +243,46 @@ export function WeeklyInsights({
             <Sparkles className="w-3 h-3" />
             <span className="font-medium">행운이 가득한 한 주 되세요!</span>
             <Sparkles className="w-3 h-3" />
+          </div>
+        </div>
+
+        {/* 주간 미션 */}
+        <div className="p-4 bg-gradient-to-r from-purple-50 via-pink-50 to-rose-50 rounded-xl border border-purple-200/50">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-purple-600" />
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-purple-900">이번 주 미션</h4>
+              <p className="text-xs text-purple-600">마음 건강을 위한 특별한 도전</p>
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 p-2 bg-white/50 rounded-lg">
+              <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                <span className="text-xs font-bold text-purple-600">1</span>
+              </div>
+              <span className="text-sm text-purple-800 font-medium">하루 5분 감정 일기 쓰기</span>
+            </div>
+            <div className="flex items-center gap-2 p-2 bg-white/50 rounded-lg">
+              <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                <span className="text-xs font-bold text-purple-600">2</span>
+              </div>
+              <span className="text-sm text-purple-800 font-medium">가족과 함께 감정 공유하기</span>
+            </div>
+            <div className="flex items-center gap-2 p-2 bg-white/50 rounded-lg">
+              <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                <span className="text-xs font-bold text-purple-600">3</span>
+              </div>
+              <span className="text-sm text-purple-800 font-medium">스트레스 해소 활동 실천하기</span>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center gap-1 text-xs text-purple-700 mt-3">
+            <Heart className="w-3 h-3" />
+            <span className="font-medium">작은 실천이 큰 변화를 만듭니다!</span>
+            <Heart className="w-3 h-3" />
           </div>
         </div>
       </div>

@@ -225,7 +225,7 @@ export default function HighlightDashboard() {
                           if (test.test_types.name === '프리미엄 검사') {
                             navigate(`/assessment-detail/${test.id}`);
                           } else {
-                            navigate(`/results/${test.id}`);
+                            navigate(`/assessment/${test.id}`);
                           }
                         }}
                       >

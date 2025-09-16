@@ -220,8 +220,8 @@ const AssessmentHistory = () => {
                   variant="outline" 
                   size="sm"
                   onClick={() => {
-                    // Navigate to assessment result with the specific assessment data
-                    navigate(`/assessment/${assessment.id}`, { 
+                    // Navigate to assessment detail page for assessments
+                    navigate(`/assessment-detail/${assessment.id}`, { 
                       state: { 
                         assessment: assessment,
                         showResults: true 

@@ -35,7 +35,7 @@ import { PersonalityLoveTest } from "./components/assessment/PersonalityLoveTest
 import { PersonalityLoveResult } from "./components/assessment/PersonalityLoveResult";
 import RelationshipStyleTest from "./pages/RelationshipStyleTest";
 import CommunicationStyleTest from "./pages/CommunicationStyleTest";
-
+import AssessmentDetail from "./pages/AssessmentDetail";
 
 import CounselingFlow from "./pages/CounselingFlow";
 import Corporate from "./pages/Corporate";
@@ -142,6 +142,7 @@ const App = () => {
           <Route path="/assessment/relationship-style-test" element={<RelationshipStyleTest />} />
           <Route path="/assessment/communication-style-test" element={<CommunicationStyleTest />} />
           <Route path="/assessment/:id" element={<TestResults />} />
+          <Route path="/assessment-detail/:id" element={<AssessmentDetail />} />
           <Route path="/fun-tests" element={<FunTests />} />
            <Route path="/fun-test-result" element={<FunTestResult />} />
            <Route path="/joseon-name-test" element={<JoseonNameTest />} />

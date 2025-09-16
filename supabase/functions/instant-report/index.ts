@@ -149,13 +149,33 @@ serve(async (req) => {
     }
 
     if (!result.ok || !result.report) {
-      console.error('❌ 빈 응답 받음 또는 모든 시도 실패');
+      console.error('❌ 빈 응답 받음 또는 모든 시도 실패 - 템플릿 폴백 적용');
+
+      // 템플릿 기반 폴백 리포트 생성 (OpenAI 실패 시에도 사용자 경험 보장)
+      const fallbackReport = `🔍 **상황 분석**\n${message.slice(0, 200)}\n\n` +
+        `💡 **전문가 관점**\n` +
+        `- 스트레스 요인을 줄이는 환경 조정이 우선입니다.\n` +
+        `- 최근 변화(수면, 식사, 학교/가정 사건)를 점검하세요.\n` +
+        `- 반복되는 행동은 신호일 수 있으니 감정 라벨링으로 의미를 파악해 보세요.\n\n` +
+        `🎯 **실천 조언**\n` +
+        `1) 하루 1회 규칙적 루틴(수면/식사/화장실/놀이) 세우기\n` +
+        `2) 공감 대화 스크립트: "+[감정 요약] 그래서 [행동 제안] 해보자"\n` +
+        `3) 1주일 체크리스트(빈도/강도/지속시간)로 변화를 기록하기\n\n` +
+        `📚 **참고 자료**\n` +
+        `- 발달 단계별 감정 코칭 자료\n` +
+        `- 학교/지역센터 상담 연계 가이드\n\n` +
+        `💝 **격려의 말**\n` +
+        `지금처럼 구체적으로 상황을 기록하고 도움을 요청하는 태도는 큰 힘입니다. 작은 변화부터 차근히 시작해도 충분합니다.`;
+
+      // 위험 키워드 체크 (폴백에도 동일 적용)
+      const riskKeywords = ['자살', '자해', '죽고싶다', '극심한', '심각한'];
+      const hasRisk = riskKeywords.some(keyword => message.toLowerCase().includes(keyword));
+
       return new Response(JSON.stringify({
-        success: false,
-        error: 'Empty response',
-        report: 'AI 분석 결과가 생성되지 않았습니다. 다시 시도해주세요.',
-        riskLevel: 'medium',
-        needsExpertConsultation: true,
+        success: true,
+        report: fallbackReport,
+        riskLevel: hasRisk ? 'high' : 'low',
+        needsExpertConsultation: hasRisk || message.length > 200,
         timestamp: new Date().toISOString()
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -190,8 +190,8 @@ export const WelfareGuideWidget: React.FC<WelfareGuideWidgetProps> = ({
                           <div className="flex items-center gap-4 text-xs text-muted-foreground">
                             <div className="flex items-center gap-1">
                               <Users className="w-3 h-3" />
-                              {service.target_audience.slice(0, 2).join(', ')}
-                              {service.target_audience.length > 2 && '...'}
+                              {(service.target_audience ?? []).slice(0, 2).join(', ')}
+                              {(service.target_audience ?? []).length > 2 && '...'}
                             </div>
                             <div className="flex items-center gap-1">
                               <DollarSign className="w-3 h-3" />
@@ -233,8 +233,8 @@ export const WelfareGuideWidget: React.FC<WelfareGuideWidgetProps> = ({
                           <div className="flex items-center gap-4 text-xs text-muted-foreground">
                             <div className="flex items-center gap-1">
                               <Users className="w-3 h-3" />
-                              {policy.target_group.slice(0, 2).join(', ')}
-                              {policy.target_group.length > 2 && '...'}
+                              {(policy.target_group ?? []).slice(0, 2).join(', ')}
+                              {(policy.target_group ?? []).length > 2 && '...'}
                             </div>
                             <div className="flex items-center gap-1">
                               <Building2 className="w-3 h-3" />
@@ -276,13 +276,13 @@ export const WelfareGuideWidget: React.FC<WelfareGuideWidgetProps> = ({
                           <div className="flex items-center gap-4 text-xs text-muted-foreground">
                             <div className="flex items-center gap-1">
                               <Users className="w-3 h-3" />
-                              {service.target_audience.slice(0, 2).join(', ')}
-                              {service.target_audience.length > 2 && '...'}
+                              {(service.target_audience ?? []).slice(0, 2).join(', ')}
+                              {(service.target_audience ?? []).length > 2 && '...'}
                             </div>
                             <div className="flex items-center gap-1">
                               <MapPin className="w-3 h-3" />
-                              {service.coverage_area.slice(0, 2).join(', ')}
-                              {service.coverage_area.length > 2 && '...'}
+                              {(service.coverage_area ?? []).slice(0, 2).join(', ')}
+                              {(service.coverage_area ?? []).length > 2 && '...'}
                             </div>
                           </div>
                         </div>

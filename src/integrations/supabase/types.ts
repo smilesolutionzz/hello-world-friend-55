@@ -1441,6 +1441,75 @@ export type Database = {
         }
         Relationships: []
       }
+      government_policies: {
+        Row: {
+          age_range: string | null
+          announcement_date: string | null
+          application_end_date: string | null
+          application_process: string | null
+          application_start_date: string | null
+          budget_amount: number | null
+          contact_info: Json | null
+          created_at: string
+          id: string
+          is_active: boolean
+          ministry: string | null
+          policy_details: string
+          policy_name: string
+          policy_type: string
+          region: string | null
+          related_links: string[] | null
+          required_documents: string[] | null
+          support_period: string | null
+          target_group: string
+          updated_at: string
+        }
+        Insert: {
+          age_range?: string | null
+          announcement_date?: string | null
+          application_end_date?: string | null
+          application_process?: string | null
+          application_start_date?: string | null
+          budget_amount?: number | null
+          contact_info?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          ministry?: string | null
+          policy_details: string
+          policy_name: string
+          policy_type: string
+          region?: string | null
+          related_links?: string[] | null
+          required_documents?: string[] | null
+          support_period?: string | null
+          target_group: string
+          updated_at?: string
+        }
+        Update: {
+          age_range?: string | null
+          announcement_date?: string | null
+          application_end_date?: string | null
+          application_process?: string | null
+          application_start_date?: string | null
+          budget_amount?: number | null
+          contact_info?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          ministry?: string | null
+          policy_details?: string
+          policy_name?: string
+          policy_type?: string
+          region?: string | null
+          related_links?: string[] | null
+          required_documents?: string[] | null
+          support_period?: string | null
+          target_group?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       growth_stories: {
         Row: {
           after_story: string
@@ -2509,6 +2578,65 @@ export type Database = {
           website_url?: string | null
         }
         Relationships: []
+      }
+      partner_service_info: {
+        Row: {
+          available_slots: number | null
+          created_at: string
+          id: string
+          institution_id: string
+          insurance_coverage: string | null
+          is_active: boolean
+          pricing_info: Json | null
+          service_category: string
+          service_description: string
+          special_programs: string[] | null
+          staff_qualifications: string[] | null
+          target_age_group: string | null
+          updated_at: string
+          waiting_period: string | null
+        }
+        Insert: {
+          available_slots?: number | null
+          created_at?: string
+          id?: string
+          institution_id: string
+          insurance_coverage?: string | null
+          is_active?: boolean
+          pricing_info?: Json | null
+          service_category: string
+          service_description: string
+          special_programs?: string[] | null
+          staff_qualifications?: string[] | null
+          target_age_group?: string | null
+          updated_at?: string
+          waiting_period?: string | null
+        }
+        Update: {
+          available_slots?: number | null
+          created_at?: string
+          id?: string
+          institution_id?: string
+          insurance_coverage?: string | null
+          is_active?: boolean
+          pricing_info?: Json | null
+          service_category?: string
+          service_description?: string
+          special_programs?: string[] | null
+          staff_qualifications?: string[] | null
+          target_age_group?: string | null
+          updated_at?: string
+          waiting_period?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_service_info_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payment_history: {
         Row: {
@@ -3905,6 +4033,72 @@ export type Database = {
           title?: string
           updated_at?: string
           week_start_date?: string
+        }
+        Relationships: []
+      }
+      welfare_services: {
+        Row: {
+          age_range: string | null
+          application_deadline: string | null
+          application_method: string | null
+          benefits: string
+          budget_info: string | null
+          contact_info: Json | null
+          created_at: string
+          description: string
+          eligibility_criteria: string
+          id: string
+          is_active: boolean
+          region: string | null
+          required_documents: string[] | null
+          service_name: string
+          service_period: string | null
+          service_type: string
+          target_group: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          age_range?: string | null
+          application_deadline?: string | null
+          application_method?: string | null
+          benefits: string
+          budget_info?: string | null
+          contact_info?: Json | null
+          created_at?: string
+          description: string
+          eligibility_criteria: string
+          id?: string
+          is_active?: boolean
+          region?: string | null
+          required_documents?: string[] | null
+          service_name: string
+          service_period?: string | null
+          service_type: string
+          target_group: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          age_range?: string | null
+          application_deadline?: string | null
+          application_method?: string | null
+          benefits?: string
+          budget_info?: string | null
+          contact_info?: Json | null
+          created_at?: string
+          description?: string
+          eligibility_criteria?: string
+          id?: string
+          is_active?: boolean
+          region?: string | null
+          required_documents?: string[] | null
+          service_name?: string
+          service_period?: string | null
+          service_type?: string
+          target_group?: string
+          updated_at?: string
+          website_url?: string | null
         }
         Relationships: []
       }

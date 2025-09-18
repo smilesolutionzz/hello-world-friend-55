@@ -1324,6 +1324,7 @@ const Assessment = () => {
         </div>
       </div>
     );
+  }
   
   // 발달 검사 렌더링
   if (currentStep === 'developmental-delay-test') {

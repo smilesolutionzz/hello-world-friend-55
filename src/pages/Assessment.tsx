@@ -29,6 +29,10 @@ import DevelopmentalDelayTestForm from "@/components/assessment/DevelopmentalDel
 import SensoryIntegrationTestForm from "@/components/assessment/SensoryIntegrationTestForm";
 import LearningDisabilityTestForm from "@/components/assessment/LearningDisabilityTestForm";
 import SocialDevelopmentTestForm from "@/components/assessment/SocialDevelopmentTestForm";
+import DevelopmentalDelayTestResult from "@/components/assessment/DevelopmentalDelayTestResult";
+import SensoryIntegrationTestResult from "@/components/assessment/SensoryIntegrationTestResult";
+import LearningDisabilityTestResult from "@/components/assessment/LearningDisabilityTestResult";
+import SocialDevelopmentTestResult from "@/components/assessment/SocialDevelopmentTestResult";
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
@@ -1353,6 +1357,39 @@ const Assessment = () => {
       setSocialDevelopmentResults(results);
       setCurrentStep('social-development-result');
     }} onBack={handleBack} />;
+  }
+
+  // 발달 검사 결과 렌더링
+  if (currentStep === 'developmental-delay-result' && developmentalDelayResults) {
+    return <DevelopmentalDelayTestResult 
+      results={developmentalDelayResults} 
+      onBack={handleBack} 
+      onRestart={() => setCurrentStep('developmental-delay-test')} 
+    />;
+  }
+
+  if (currentStep === 'sensory-integration-result' && sensoryIntegrationResults) {
+    return <SensoryIntegrationTestResult 
+      results={sensoryIntegrationResults} 
+      onBack={handleBack} 
+      onRestart={() => setCurrentStep('sensory-integration-test')} 
+    />;
+  }
+
+  if (currentStep === 'learning-disability-result' && learningDisabilityResults) {
+    return <LearningDisabilityTestResult 
+      results={learningDisabilityResults} 
+      onBack={handleBack} 
+      onRestart={() => setCurrentStep('learning-disability-test')} 
+    />;
+  }
+
+  if (currentStep === 'social-development-result' && socialDevelopmentResults) {
+    return <SocialDevelopmentTestResult 
+      results={socialDevelopmentResults} 
+      onBack={handleBack} 
+      onRestart={() => setCurrentStep('social-development-test')} 
+    />;
   }
 
 

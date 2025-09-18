@@ -18,7 +18,7 @@ import { SkipLink } from "@/components/ui/skip-link";
 
 import ReferralWidget from "@/components/ReferralWidget";
 import ReferralCodeInput from "@/components/ReferralCodeInput";
-import ProductSidebar from "@/components/ProductSidebar";
+import ProfessionalSidebar from "@/components/ProfessionalSidebar";
 import { TechBadgeShowcase } from "@/components/TechBadgeShowcase";
 import FloatingChatCTA from "@/components/FloatingChatCTA";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
@@ -145,7 +145,7 @@ const Index = () => {
         <div className="flex max-w-full">
         {/* Product Sidebar - 모바일에서는 완전히 숨김 */}
         <div className="hidden lg:block fixed left-0 top-16 z-30 h-full">
-          <ProductSidebar />
+          <ProfessionalSidebar />
         </div>
         
         {/* Main Content - 모바일에서는 여백 없음 */}

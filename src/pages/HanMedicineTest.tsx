@@ -13,6 +13,7 @@ import { AutismTest } from '@/components/assessment/AutismTest';
 import { AdhdTest } from '@/components/assessment/AdhdTest';
 import { IntellectualDisabilityTest } from '@/components/assessment/IntellectualDisabilityTest';
 import { AtopyTest } from '@/components/assessment/AtopyTest';
+import { HanMedicineResult } from '@/components/assessment/HanMedicineResult';
 import { StressTest } from '@/components/assessment/StressTest';
 
 type TestType = 'none' | 'quick' | 'premium' | 'diet' | 'autism' | 'adhd' | 'intellectual' | 'atopy' | 'stress';
@@ -67,7 +68,7 @@ const HanMedicineTest = () => {
     } else if (currentTest === 'diet') {
       return <DietAnalysisResult result={testResult} onRestart={handleRestart} />;
     } else if (['autism', 'adhd', 'intellectual', 'atopy', 'stress'].includes(currentTest)) {
-      return <HanMedicinePremiumResult result={testResult} onRestart={handleRestart} />;
+      return <HanMedicineResult result={testResult} onRestart={handleRestart} />;
     }
   }
 

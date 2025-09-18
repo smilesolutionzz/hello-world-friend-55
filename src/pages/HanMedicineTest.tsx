@@ -9,6 +9,11 @@ import { HanMedicinePremiumTest } from '@/components/assessment/HanMedicinePremi
 import { HanMedicinePremiumResult } from '@/components/assessment/HanMedicinePremiumResult';
 import { DietAnalysisTest } from '@/components/assessment/DietAnalysisTest';
 import { DietAnalysisResult } from '@/components/assessment/DietAnalysisResult';
+import { AutismTest } from '@/components/assessment/AutismTest';
+import { AdhdTest } from '@/components/assessment/AdhdTest';
+import { IntellectualDisabilityTest } from '@/components/assessment/IntellectualDisabilityTest';
+import { AtopyTest } from '@/components/assessment/AtopyTest';
+import { StressTest } from '@/components/assessment/StressTest';
 
 type TestType = 'none' | 'quick' | 'premium' | 'diet' | 'autism' | 'adhd' | 'intellectual' | 'atopy' | 'stress';
 type TestState = 'select' | 'testing' | 'result';
@@ -41,18 +46,28 @@ const HanMedicineTest = () => {
       return <HanMedicinePremiumTest onComplete={handleTestComplete} />;
     } else if (currentTest === 'diet') {
       return <DietAnalysisTest onComplete={handleTestComplete} />;
-    } else if (['autism', 'adhd', 'intellectual', 'atopy', 'stress'].includes(currentTest)) {
-      return <HanMedicinePremiumTest onComplete={handleTestComplete} />;
+    } else if (currentTest === 'autism') {
+      return <AutismTest onComplete={handleTestComplete} onBack={handleRestart} />;
+    } else if (currentTest === 'adhd') {
+      return <AdhdTest onComplete={handleTestComplete} onBack={handleRestart} />;
+    } else if (currentTest === 'intellectual') {
+      return <IntellectualDisabilityTest onComplete={handleTestComplete} onBack={handleRestart} />;
+    } else if (currentTest === 'atopy') {
+      return <AtopyTest onComplete={handleTestComplete} onBack={handleRestart} />;
+    } else if (currentTest === 'stress') {
+      return <StressTest onComplete={handleTestComplete} onBack={handleRestart} />;
     }
   }
 
   if (testState === 'result' && testResult) {
     if (currentTest === 'quick') {
       return <SasangConstitutionResult result={testResult} onRestart={handleRestart} />;
-    } else if (currentTest === 'premium' || ['autism', 'adhd', 'intellectual', 'atopy', 'stress'].includes(currentTest)) {
+    } else if (currentTest === 'premium') {
       return <HanMedicinePremiumResult result={testResult} onRestart={handleRestart} />;
     } else if (currentTest === 'diet') {
       return <DietAnalysisResult result={testResult} onRestart={handleRestart} />;
+    } else if (['autism', 'adhd', 'intellectual', 'atopy', 'stress'].includes(currentTest)) {
+      return <HanMedicinePremiumResult result={testResult} onRestart={handleRestart} />;
     }
   }
 

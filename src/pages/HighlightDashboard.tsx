@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { User, LogOut, History, Crown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 interface Profile {
   display_name: string;
@@ -148,138 +150,147 @@ export default function HighlightDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
-      {/* Header */}
-      <div className="border-b bg-background/95 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              HIGHLIGHT
-            </h1>
-            {profile && (
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium">{profile.display_name || '사용자'}</span>
-                <Badge variant={profile.subscription_tier === 'premium' ? 'default' : 'secondary'}>
-                  {profile.subscription_tier === 'premium' ? (
-                    <>
-                      <Crown className="w-3 h-3 mr-1" />
-                      프리미엄
-                    </>
-                  ) : (
-                    '무료'
-                  )}
-                </Badge>
-              </div>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate('/subscription')}
-            >
-              구독 관리
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={handleSignOut}
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              로그아웃
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            <TestSelector />
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Recent Tests */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <History className="w-5 h-5" />
-                  최근 검사
-                </CardTitle>
-                <CardDescription>
-                  최근 완료한 검사 결과를 확인하세요
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {recentTests.length > 0 ? (
-                  <div className="space-y-3">
-                    {recentTests.map((test) => (
-                      <div 
-                        key={test.id}
-                        className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() => {
-                          if (test.test_types.name === '프리미엄 검사') {
-                            navigate(`/assessment-detail/${test.id}`);
-                          } else {
-                            navigate(`/assessment/${test.id}`);
-                          }
-                        }}
-                      >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-medium text-sm">{test.test_types.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {new Date(test.completed_at).toLocaleDateString('ko-KR')}
-                            </p>
-                          </div>
-                          <Badge variant="outline" className="text-xs">
-                            {test.scores.total_score || 0}점
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <div className="border-b bg-background/95 backdrop-blur-sm">
+            <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <SidebarTrigger className="mr-2" />
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                  HIGHLIGHT
+                </h1>
+                {profile && (
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">{profile.display_name || '사용자'}</span>
+                    <Badge variant={profile.subscription_tier === 'premium' ? 'default' : 'secondary'}>
+                      {profile.subscription_tier === 'premium' ? (
+                        <>
+                          <Crown className="w-3 h-3 mr-1" />
+                          프리미엄
+                        </>
+                      ) : (
+                        '무료'
+                      )}
+                    </Badge>
                   </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground text-center py-4">
-                    아직 완료한 검사가 없습니다
-                  </p>
                 )}
-              </CardContent>
-            </Card>
-
-            {/* Subscription Info */}
-            {profile?.subscription_tier === 'free' && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>프리미엄 업그레이드</CardTitle>
-                  <CardDescription>
-                    더 많은 기능을 이용해보세요
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="text-sm space-y-2 mb-4">
-                    <li>• 무제한 검사</li>
-                    <li>• 전문가 피드백</li>
-                    <li>• PDF 리포트 다운로드</li>
-                    <li>• 카카오 알림톡</li>
-                  </ul>
-                  <Button 
-                    className="w-full"
-                    onClick={() => navigate('/subscription')}
-                  >
-                    <Crown className="w-4 h-4 mr-2" />
-                    프리미엄 구독하기
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => navigate('/subscription')}
+                >
+                  구독 관리
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  로그아웃
+                </Button>
+              </div>
+            </div>
           </div>
+
+          <main className="flex-1 bg-gradient-to-br from-background to-muted">
+            <div className="container mx-auto px-4 py-8">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Main Content */}
+                <div className="lg:col-span-2">
+                  <TestSelector />
+                </div>
+
+                {/* Sidebar */}
+                <div className="space-y-6">
+                  {/* Recent Tests */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <History className="w-5 h-5" />
+                        최근 검사
+                      </CardTitle>
+                      <CardDescription>
+                        최근 완료한 검사 결과를 확인하세요
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      {recentTests.length > 0 ? (
+                        <div className="space-y-3">
+                          {recentTests.map((test) => (
+                            <div 
+                              key={test.id}
+                              className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                              onClick={() => {
+                                if (test.test_types.name === '프리미엄 검사') {
+                                  navigate(`/assessment-detail/${test.id}`);
+                                } else {
+                                  navigate(`/assessment/${test.id}`);
+                                }
+                              }}
+                            >
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <p className="font-medium text-sm">{test.test_types.name}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {new Date(test.completed_at).toLocaleDateString('ko-KR')}
+                                  </p>
+                                </div>
+                                <Badge variant="outline" className="text-xs">
+                                  {test.scores.total_score || 0}점
+                                </Badge>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                          아직 완료한 검사가 없습니다
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Subscription Info */}
+                  {profile?.subscription_tier === 'free' && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>프리미엄 업그레이드</CardTitle>
+                        <CardDescription>
+                          더 많은 기능을 이용해보세요
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="text-sm space-y-2 mb-4">
+                          <li>• 무제한 검사</li>
+                          <li>• 전문가 피드백</li>
+                          <li>• PDF 리포트 다운로드</li>
+                          <li>• 카카오 알림톡</li>
+                        </ul>
+                        <Button 
+                          className="w-full"
+                          onClick={() => navigate('/subscription')}
+                        >
+                          <Crown className="w-4 h-4 mr-2" />
+                          프리미엄 구독하기
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              </div>
+            </div>
+          </main>
         </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

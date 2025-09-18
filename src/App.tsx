@@ -36,6 +36,7 @@ import { PersonalityLoveResult } from "./components/assessment/PersonalityLoveRe
 import RelationshipStyleTest from "./pages/RelationshipStyleTest";
 import CommunicationStyleTest from "./pages/CommunicationStyleTest";
 import AssessmentDetail from "./pages/AssessmentDetail";
+import ComprehensiveReporting from "./pages/ComprehensiveReporting";
 
 import CounselingFlow from "./pages/CounselingFlow";
 import Corporate from "./pages/Corporate";
@@ -188,6 +189,7 @@ const App = () => {
         <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<ObservationNew />} />
           <Route path="/observation-old" element={<Observation />} />
+          <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
           <Route path="/expert" element={<Expert />} />
           <Route path="/experts" element={<Experts />} />
           <Route path="/expert-dashboard" element={<ExpertDashboard />} />

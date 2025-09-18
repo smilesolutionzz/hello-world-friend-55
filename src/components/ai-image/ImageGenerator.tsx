@@ -31,7 +31,7 @@ export function ImageGenerator({
 
     setIsGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('huggingface-image-generator', {
+      const { data, error } = await supabase.functions.invoke('openai-image-generator', {
         body: {
           prompt: prompt.trim(),
           context,

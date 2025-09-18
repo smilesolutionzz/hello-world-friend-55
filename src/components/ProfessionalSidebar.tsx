@@ -64,6 +64,17 @@ const ProfessionalSidebar = () => {
       bgColor: "bg-orange-50",
       textColor: "text-orange-700",
       buttonColor: "bg-orange-600 hover:bg-orange-700"
+    },
+    {
+      id: 5,
+      title: "나만의 맞춤리포팅 신청",
+      description: "개인화된 종합 분석 보고서",
+      icon: <FileText className="w-5 h-5" />,
+      action: "신청하기",
+      route: "/comprehensive-report",
+      bgColor: "bg-pink-50",
+      textColor: "text-pink-700",
+      buttonColor: "bg-pink-600 hover:bg-pink-700"
     }
   ];
 
@@ -83,7 +94,7 @@ const ProfessionalSidebar = () => {
             <Heart className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="font-bold text-gray-900">하이라이트</h2>
+            <h2 className="font-bold text-gray-900">AI하이라이트PRO</h2>
             <p className="text-sm text-gray-500">AI 심리상담 플랫폼</p>
           </div>
         </div>

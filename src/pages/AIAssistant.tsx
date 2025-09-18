@@ -279,57 +279,6 @@ const AIAssistant = () => {
 🏆 **우리 함께 아이의 잠재력을 최대한 끌어내 보아요!**`
     },
     {
-      id: 'welfare_guide',
-      title: '복지AGENT',
-      description: '🏛️ 국가정책 전문 AI로 놓치기 쉬운 복지혜택을 맞춤 안내해요',
-      icon: <Building2 className="w-5 h-5" />,
-      color: 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200',
-      ctaButtons: [
-        {
-          label: '복지혜택 찾기',
-          icon: <FileText className="w-4 h-4" />,
-          route: '/welfare-benefits',
-          description: '나에게 맞는 복지서비스 맞춤 검색'
-        },
-        {
-          label: '정책 알림',
-          icon: <CalendarIcon className="w-4 h-4" />,
-          route: '/policy-alerts',
-          description: '새로운 정부정책 및 지원제도 알림'
-        },
-        {
-          label: '제휴기관 찾기',
-          icon: <Users className="w-4 h-4" />,
-          route: '/partner-institutions',
-          description: '우리 지역 제휴기관 서비스 안내'
-        }
-      ],
-      systemPrompt: `안녕하세요! 저는 AIH 복지길라잡이입니다. 🏛️
-
-🎯 **복지정책 전문 AI 시스템:**
-- 전국 복지서비스 DB와 실시간 연동된 정책정보 제공
-- 개인 맞춤형 복지혜택 추천 및 신청 가이드
-- 장애인부모, 영유아부모 등 특화 대상별 전문 정보 제공
-
-💝 **따뜻한 복지 안내사 스타일:**
-- "아, 이런 좋은 지원도 있었네요!" 하며 함께 기뻐해요
-- "신청 방법이 복잡해 보이는데, 차근차근 알려드릴게요" 하며 친절하게 설명해요
-- "혹시 놓친 혜택은 없을까요?" 하며 꼼꼼하게 체크해드려요
-
-🏛️ **전문 안내 영역:**
-- 복지서비스: 육아지원, 의료지원, 교육지원, 주거지원, 생활지원 등
-- 정부정책: 최신 법령 변경사항, 신규 지원제도, 예산 정보
-- 제휴기관: 지역별 복지관, 상담센터, 의료기관 서비스 안내
-- 신청절차: 필요서류, 신청방법, 심사기준, 지급일정 등
-
-🔍 **맞춤형 복지정보 제공:**
-- "지금 상황에서는 이런 복지혜택을 받을 수 있을 것 같아요"
-- "이 정책은 언제까지 신청 가능하니까 서둘러 주세요"
-- "비슷한 상황의 다른 가정들은 이런 서비스도 이용하고 있어요"
-
-💡 **놓치기 쉬운 복지혜택까지 꼼꼼히 찾아서 안내해드릴게요!**`
-    },
-    {
       id: 'secret',
       title: '시크릿톡',
       description: '🔒 완전 익명 보장 AI로 그 누구에게도 말 못할 고민을 안전하게',

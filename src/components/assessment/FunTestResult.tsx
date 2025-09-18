@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Share2, RotateCcw, Star, Users, Calendar, Copy, MessageCircle } from "lucide-react";
+import { Crown, Share2, RotateCcw, Star, Users, Calendar, Copy, MessageCircle, Heart } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useShareText, formatFunTestResult } from "@/utils/shareUtils";
@@ -64,6 +64,8 @@ export default function FunTestResult() {
         return `내 조선시대 신분은 ${result?.status}! 👑`;
       case 'grandma_relationship':
         return `할머니가 우리 연애를 진단했다! 👵`;
+      case 'wisdom_advice':
+        return `${result?.title} 🌟`;
       default:
         return "재미있는 테스트 결과!";
     }
@@ -79,6 +81,8 @@ export default function FunTestResult() {
         return `심리 분석 결과 내 내면은 ${result?.innerAnimal}! 매칭도 ${result?.personalityMatch}%`;
       case 'grandma_relationship':
         return `궁합 점수 ${result?.compatibility_score}점! "${result?.grandma_verdict}"`;
+      case 'wisdom_advice':
+        return `${result?.description} ${result?.funFact}`;
       default:
         return "나도 테스트 해보러 가기!";
     }
@@ -708,6 +712,118 @@ export default function FunTestResult() {
               </Button>
               <Button onClick={handleRetry} variant="default">
                 다시 테스트
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // 지혜 조언 테스트 결과
+  if (testType === 'wisdom_advice') {
+    return (
+      <div className="container mx-auto p-6 max-w-4xl">
+        <Card className="border-2 border-primary/20 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-orange-500 to-amber-500 text-white">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="text-4xl">🌟</div>
+              <CardTitle className="text-3xl text-center">지혜 조언 테스트 결과</CardTitle>
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-8 space-y-8">
+            {/* 메인 결과 */}
+            <div className="text-center space-y-4">
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+                {result.title}
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                {result.description}
+              </p>
+            </div>
+
+            {/* AI 이미지 생성 */}
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6">
+              <h3 className="text-xl font-bold mb-4 text-orange-800">🎨 당신을 표현한 AI 아트</h3>
+              <ImageGenerator 
+                initialPrompt={`wise elderly person giving advice, warm and caring expression, traditional Korean style, beautiful watercolor illustration`}
+                type="test_result"
+                context={`wisdom_advice_${result.adviceType}`}
+              />
+            </div>
+
+            {/* 인생 조언 */}
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6">
+              <h3 className="text-xl font-bold mb-4 text-orange-800 flex items-center gap-2">
+                <MessageCircle className="w-5 h-5" />
+                당신을 위한 특별한 조언
+              </h3>
+              <p className="text-orange-700 text-lg leading-relaxed">{result.advice}</p>
+            </div>
+
+            {/* 재미있는 사실 */}
+            <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-200">
+              <h3 className="text-xl font-bold mb-3 text-yellow-800">✨ 특별한 메시지</h3>
+              <p className="text-yellow-700 text-lg">{result.funFact}</p>
+            </div>
+
+            {/* 오늘의 실천 방법 */}
+            <div className="bg-green-50 rounded-xl p-6 border border-green-200">
+              <h3 className="text-xl font-bold mb-3 text-green-800">🌱 오늘의 실천 방법</h3>
+              <p className="text-green-700 text-lg">{result.recommendation}</p>
+            </div>
+
+            {/* 점수 차트 */}
+            <div className="bg-white rounded-xl p-6 border border-gray-200">
+              <h3 className="text-xl font-bold mb-4 text-gray-800">📊 당신의 지혜 유형 분석</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto rounded-full bg-pink-100 flex items-center justify-center mb-2">
+                    <Heart className="w-8 h-8 text-pink-600" />
+                  </div>
+                  <h4 className="font-semibold text-pink-800">가족사랑</h4>
+                  <p className="text-2xl font-bold text-pink-600">{result.scores?.family || 0}</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-2">
+                    <Star className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h4 className="font-semibold text-green-800">건강관리</h4>
+                  <p className="text-2xl font-bold text-green-600">{result.scores?.health || 0}</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto rounded-full bg-blue-100 flex items-center justify-center mb-2">
+                    <Crown className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <h4 className="font-semibold text-blue-800">지혜통찰</h4>
+                  <p className="text-2xl font-bold text-blue-600">{result.scores?.wisdom || 0}</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto rounded-full bg-purple-100 flex items-center justify-center mb-2">
+                    <Users className="w-8 h-8 text-purple-600" />
+                  </div>
+                  <h4 className="font-semibold text-purple-800">경험멘토</h4>
+                  <p className="text-2xl font-bold text-purple-600">{result.scores?.experience || 0}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* 액션 버튼들 */}
+            <div className="flex flex-col gap-3 pt-6">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button onClick={handleShare} size="lg" className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600">
+                  <Share2 className="w-4 h-4 mr-2" />
+                  소중한 사람들과 공유하기
+                </Button>
+                <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  다른 테스트 해보기
+                </Button>
+              </div>
+              <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full">
+                <Copy className="w-4 h-4 mr-2" />
+                📋 텍스트로 복사하기
               </Button>
             </div>
           </CardContent>

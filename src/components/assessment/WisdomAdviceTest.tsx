@@ -5,6 +5,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Lightbulb, Users, Heart, BookOpen } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Question {
   id: string;
@@ -62,6 +63,56 @@ const questions: Question[] = [
       '건강관리를 철저히 하라',
       '작은 행복을 놓치지 말라'
     ]
+  },
+  {
+    id: '6',
+    question: '하루 중 가장 행복한 순간은 언제인가요?',
+    options: [
+      '가족들과 함께 식사할 때',
+      '혼자만의 조용한 시간을 가질 때',
+      '운동이나 산책을 할 때',
+      '새로운 것을 배우거나 경험할 때'
+    ]
+  },
+  {
+    id: '7',
+    question: '요즘 젊은 사람들에게 가장 부러운 점은?',
+    options: [
+      '체력과 건강함',
+      '새로운 기술을 쉽게 배우는 능력',
+      '무한한 가능성과 꿈',
+      '자유로운 사고방식'
+    ]
+  },
+  {
+    id: '8',
+    question: '스트레스를 받을 때 가장 효과적인 해소 방법은?',
+    options: [
+      '가족이나 친구와 대화하기',
+      '좋아하는 음악 듣기나 책 읽기',
+      '산책이나 가벼운 운동하기',
+      '취미활동에 집중하기'
+    ]
+  },
+  {
+    id: '9',
+    question: '만약 젊은 시절로 돌아간다면 가장 하고 싶은 일은?',
+    options: [
+      '가족과 더 많은 시간 보내기',
+      '건강관리를 더 철저히 하기',
+      '더 많이 공부하고 배우기',
+      '다양한 경험과 여행하기'
+    ]
+  },
+  {
+    id: '10',
+    question: '현재 가장 관심 있는 활동이나 취미는?',
+    options: [
+      '요리나 원예 같은 생활 취미',
+      '독서나 문화 활동',
+      '운동이나 건강 관리',
+      '새로운 기술이나 학습'
+    ]
   }
 ];
 
@@ -93,98 +144,163 @@ const WisdomAdviceTest: React.FC<WisdomAdviceTestProps> = ({ onComplete, onBack 
   const handleSubmit = async () => {
     setLoading(true);
     
-    // 답변 분석
-    const scores = {
-      family: 0,
-      health: 0,
-      wisdom: 0,
-      experience: 0
-    };
+    try {
+      // 답변 분석 - 확장된 점수 계산
+      const scores = {
+        family: 0,
+        health: 0,
+        wisdom: 0,
+        experience: 0
+      };
 
-    Object.values(answers).forEach((answer, index) => {
-      switch (index) {
-        case 0: // 첫 번째 질문
-          if (answer === '가족과의 화목한 시간') scores.family += 2;
-          if (answer === '건강한 몸과 마음') scores.health += 2;
-          if (answer === '경제적 안정과 여유') scores.wisdom += 2;
-          if (answer === '꿈과 목표를 향한 도전') scores.experience += 2;
-          break;
-        case 1: // 두 번째 질문
-          if (answer === '주변 사람들과 상의한다') scores.family += 2;
-          if (answer === '혼자 차분히 생각해본다') scores.wisdom += 2;
-          if (answer === '일단 행동부터 시작한다') scores.experience += 2;
-          if (answer === '과거 경험을 떠올려본다') scores.wisdom += 1;
-          break;
-        case 2: // 세 번째 질문
-          if (answer === '너무 성급하고 조급해한다') scores.wisdom += 2;
-          if (answer === '인간관계가 너무 가볍다') scores.family += 2;
-          if (answer === '건강을 소홀히 한다') scores.health += 2;
-          if (answer === '돈과 성공만 추구한다') scores.experience += 2;
-          break;
-        case 3: // 네 번째 질문
-          if (answer === '시간의 소중함') scores.wisdom += 2;
-          if (answer === '사람 관계의 중요성') scores.family += 2;
-          if (answer === '건강이 최고의 재산') scores.health += 2;
-          if (answer === '작은 것에도 감사하는 마음') scores.experience += 2;
-          break;
-        case 4: // 다섯 번째 질문
-          if (answer === '실패를 두려워하지 말고 도전하라') scores.experience += 2;
-          if (answer === '사람을 소중히 여기고 진실하게 살아라') scores.family += 2;
-          if (answer === '건강관리를 철저히 하라') scores.health += 2;
-          if (answer === '작은 행복을 놓치지 말라') scores.wisdom += 2;
-          break;
+      // 각 질문별 점수 계산 로직 개선
+      Object.entries(answers).forEach(([questionId, answer]) => {
+        const questionIndex = parseInt(questionId) - 1;
+        
+        switch (questionIndex) {
+          case 0: // 인생에서 가장 소중한 것
+            if (answer.includes('가족')) scores.family += 3;
+            if (answer.includes('건강')) scores.health += 3;
+            if (answer.includes('경제적') || answer.includes('안정')) scores.wisdom += 3;
+            if (answer.includes('꿈') || answer.includes('도전')) scores.experience += 3;
+            break;
+          case 1: // 어려운 상황 대처
+            if (answer.includes('사람들과') || answer.includes('상의')) scores.family += 3;
+            if (answer.includes('차분히') || answer.includes('생각')) scores.wisdom += 3;
+            if (answer.includes('행동')) scores.experience += 3;
+            if (answer.includes('경험')) scores.wisdom += 2;
+            break;
+          case 2: // 젊은 세대 걱정
+            if (answer.includes('성급') || answer.includes('조급')) scores.wisdom += 3;
+            if (answer.includes('인간관계') || answer.includes('가볍다')) scores.family += 3;
+            if (answer.includes('건강')) scores.health += 3;
+            if (answer.includes('돈') || answer.includes('성공')) scores.experience += 3;
+            break;
+          case 3: // 나이 들면서 깨달은 것
+            if (answer.includes('시간')) scores.wisdom += 3;
+            if (answer.includes('관계') || answer.includes('사람')) scores.family += 3;
+            if (answer.includes('건강')) scores.health += 3;
+            if (answer.includes('감사') || answer.includes('작은')) scores.experience += 3;
+            break;
+          case 4: // 후배에게 전하고 싶은 말
+            if (answer.includes('도전') || answer.includes('실패')) scores.experience += 3;
+            if (answer.includes('사람') || answer.includes('진실')) scores.family += 3;
+            if (answer.includes('건강')) scores.health += 3;
+            if (answer.includes('행복')) scores.wisdom += 3;
+            break;
+          case 5: // 가장 행복한 순간
+            if (answer.includes('가족') || answer.includes('식사')) scores.family += 2;
+            if (answer.includes('조용한') || answer.includes('혼자')) scores.wisdom += 2;
+            if (answer.includes('운동') || answer.includes('산책')) scores.health += 2;
+            if (answer.includes('새로운') || answer.includes('배우')) scores.experience += 2;
+            break;
+          case 6: // 젊은 사람들에게 부러운 점
+            if (answer.includes('체력') || answer.includes('건강')) scores.health += 2;
+            if (answer.includes('기술') || answer.includes('배우')) scores.wisdom += 2;
+            if (answer.includes('가능성') || answer.includes('꿈')) scores.experience += 2;
+            if (answer.includes('자유') || answer.includes('사고')) scores.experience += 1;
+            break;
+          case 7: // 스트레스 해소 방법
+            if (answer.includes('대화') || answer.includes('친구')) scores.family += 2;
+            if (answer.includes('음악') || answer.includes('책')) scores.wisdom += 2;
+            if (answer.includes('산책') || answer.includes('운동')) scores.health += 2;
+            if (answer.includes('취미')) scores.experience += 2;
+            break;
+          case 8: // 젊은 시절로 돌아간다면
+            if (answer.includes('가족') || answer.includes('시간')) scores.family += 2;
+            if (answer.includes('건강')) scores.health += 2;
+            if (answer.includes('공부') || answer.includes('배우')) scores.wisdom += 2;
+            if (answer.includes('경험') || answer.includes('여행')) scores.experience += 2;
+            break;
+          case 9: // 현재 관심 있는 활동
+            if (answer.includes('요리') || answer.includes('원예')) scores.family += 2;
+            if (answer.includes('독서') || answer.includes('문화')) scores.wisdom += 2;
+            if (answer.includes('운동') || answer.includes('건강')) scores.health += 2;
+            if (answer.includes('기술') || answer.includes('학습')) scores.experience += 2;
+            break;
+        }
+      });
+
+      console.log('Calculated scores:', scores);
+
+      // OpenAI API로 재미있는 결과 생성
+      const { data: aiResult, error } = await supabase.functions.invoke('generate-wisdom-advice', {
+        body: { answers, scores }
+      });
+
+      if (error) {
+        console.error('AI 생성 오류:', error);
+        throw error;
       }
-    });
 
-    // 가장 높은 점수의 타입 결정
-    const maxScore = Math.max(...Object.values(scores));
-    let adviceType = 'balance';
-    let icon = BookOpen;
-    let title = '';
-    let description = '';
-    let advice = '';
+      console.log('AI generated result:', aiResult);
 
-    if (scores.family === maxScore) {
-      adviceType = 'family';
-      icon = Heart;
-      title = '따뜻한 마음의 가족 지킴이';
-      description = '당신은 가족과 인간관계를 가장 소중히 여기는 분입니다. 사람들과의 따뜻한 유대관계가 인생의 가장 큰 보물이라고 생각하시는군요.';
-      advice = '가족들과 더 많은 시간을 보내시고, 주변 사람들에게 당신의 따뜻한 마음을 계속 나누어 주세요. 당신의 사랑이 많은 사람들에게 힘이 됩니다.';
-    } else if (scores.health === maxScore) {
-      adviceType = 'health';
-      icon = Lightbulb;
-      title = '건강한 삶의 지혜로운 관리자';
-      description = '당신은 건강의 소중함을 누구보다 잘 아시는 분입니다. 몸과 마음의 건강이 모든 행복의 기초라는 것을 깊이 이해하고 계시네요.';
-      advice = '꾸준한 운동과 건강한 식습관을 유지하시고, 주변 분들에게도 건강관리의 중요성을 알려주세요. 당신의 건강한 라이프스타일이 좋은 본보기가 됩니다.';
-    } else if (scores.wisdom === maxScore) {
-      adviceType = 'wisdom';
-      icon = BookOpen;
-      title = '깊은 통찰력의 지혜로운 현자';
-      description = '당신은 인생의 깊은 지혜를 터득하신 분입니다. 시간과 경험을 통해 얻은 통찰력으로 현명한 판단을 하시는군요.';
-      advice = '당신의 지혜와 경험을 젊은 세대와 나누어 주세요. 책을 읽거나 새로운 것을 배우는 것도 계속하시면서 평생학습의 모범을 보여주세요.';
-    } else {
-      adviceType = 'experience';
-      icon = Users;
-      title = '풍부한 경험의 인생 멘토';
-      description = '당신은 다양한 인생 경험을 통해 성장해온 분입니다. 실패와 성공을 모두 겪으며 얻은 경험이 큰 자산이 되고 있어요.';
-      advice = '당신의 경험담을 주변 사람들과 나누어 주세요. 특히 어려움을 겪는 사람들에게 용기와 희망을 주는 조언자 역할을 해주시면 좋겠어요.';
+      // 기본 아이콘과 타입 결정
+      const maxScore = Math.max(...Object.values(scores));
+      let adviceType = 'balance';
+      let icon = BookOpen;
+
+      if (scores.family === maxScore) {
+        adviceType = 'family';
+        icon = Heart;
+      } else if (scores.health === maxScore) {
+        adviceType = 'health';
+        icon = Lightbulb;
+      } else if (scores.wisdom === maxScore) {
+        adviceType = 'wisdom';
+        icon = BookOpen;
+      } else {
+        adviceType = 'experience';
+        icon = Users;
+      }
+
+      const result = {
+        adviceType,
+        icon: icon.name,
+        title: aiResult.title || '지혜로운 인생의 멘토',
+        description: aiResult.description || '당신은 풍부한 인생 경험을 가진 분입니다.',
+        advice: aiResult.advice || '당신의 경험과 지혜를 주변과 나누어 주세요.',
+        funFact: aiResult.funFact || '당신같은 분이 있어서 세상이 더 따뜻해집니다!',
+        recommendation: aiResult.recommendation || '오늘 하루 여유롭게 보내보세요.',
+        scores,
+        answers,
+        timestamp: new Date().toISOString()
+      };
+
+      setTimeout(() => {
+        setLoading(false);
+        onComplete(result, 'wisdom_advice');
+      }, 2000);
+
+    } catch (error) {
+      console.error('결과 생성 오류:', error);
+      
+      // 오류 시 기본 결과 제공
+      const basicScores = {
+        family: Object.values(answers).filter(a => a.includes('가족')).length * 2,
+        health: Object.values(answers).filter(a => a.includes('건강')).length * 2,
+        wisdom: Object.values(answers).filter(a => a.includes('지혜') || a.includes('생각')).length * 2,
+        experience: Object.values(answers).filter(a => a.includes('경험') || a.includes('도전')).length * 2
+      };
+
+      const result = {
+        adviceType: 'wisdom',
+        icon: 'BookOpen',
+        title: '지혜로운 인생의 선배 🌟',
+        description: '당신은 인생의 소중한 가치들을 잘 아시는 분입니다.',
+        advice: '당신의 따뜻한 마음과 경험을 주변 사람들과 나누어 주세요.',
+        funFact: '당신 같은 분이 있어서 세상이 더 따뜻해집니다! 😊',
+        recommendation: '오늘 하루는 평소보다 조금 더 여유롭게 보내보세요.',
+        scores: basicScores,
+        answers,
+        timestamp: new Date().toISOString()
+      };
+
+      setTimeout(() => {
+        setLoading(false);
+        onComplete(result, 'wisdom_advice');
+      }, 2000);
     }
-
-    const result = {
-      adviceType,
-      icon: icon.name,
-      title,
-      description,
-      advice,
-      scores,
-      answers,
-      timestamp: new Date().toISOString()
-    };
-
-    setTimeout(() => {
-      setLoading(false);
-      onComplete(result, 'wisdom_advice');
-    }, 2000);
   };
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;

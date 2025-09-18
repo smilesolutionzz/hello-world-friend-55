@@ -14,16 +14,15 @@ const FloatingAIHAgent = () => {
           <Button
             onClick={() => setIsOpen(true)}
             className="bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 
-                     text-white rounded-full px-4 py-3 sm:px-6 sm:py-4 shadow-xl hover:shadow-2xl 
-                     transform hover:scale-105 transition-all duration-300 flex items-center gap-3 
-                     text-sm sm:text-base font-medium"
+                     text-white rounded-full w-14 h-14 shadow-xl hover:shadow-2xl 
+                     transform hover:scale-105 transition-all duration-300 flex items-center justify-center 
+                     p-0"
           >
             <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
               <div className="w-5 h-5 rounded-full bg-white/40 flex items-center justify-center">
                 <div className="w-2 h-2 rounded-full bg-white"></div>
               </div>
             </div>
-            <span>AIH AGENT</span>
           </Button>
         ) : (
           <div className="relative">

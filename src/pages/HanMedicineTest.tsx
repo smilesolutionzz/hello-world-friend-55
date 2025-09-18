@@ -264,9 +264,9 @@ const HanMedicineTest = () => {
             <Card className="text-center">
               <CardContent className="pt-6">
                 <Sparkles className="h-8 w-8 text-pink-500 mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">한의원 연계서비스</h3>
+                <h3 className="font-semibold mb-2">가까이한의원 연계서비스</h3>
                 <p className="text-sm text-muted-foreground">
-                  전국 AIH 제휴 한의원과 연결하여 지속적인 다이어트 관리까지 원스톱 서비스
+                  가까이한의원과 연결하여 지속적인 다이어트 관리까지 원스톱 서비스
                 </p>
               </CardContent>
             </Card>

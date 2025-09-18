@@ -359,6 +359,12 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
           <Button onClick={() => window.print()}>
             결과 저장하기
           </Button>
+          <Button 
+            onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            맞춤한방 전화상담받기
+          </Button>
         </div>
         <div className="flex justify-center">
           <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full max-w-md">

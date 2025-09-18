@@ -160,9 +160,10 @@ const DietAnalysisResult: React.FC<DietAnalysisResultProps> = ({ result, onResta
                 <CardTitle className="text-lg">다음 단계</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600">
+                <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+                  onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}>
                   <Phone className="h-4 w-4 mr-2" />
-                  전문가 상담 예약
+                  맞춤한방 전화상담받기
                 </Button>
                 <Button variant="outline" className="w-full">
                   <Calendar className="h-4 w-4 mr-2" />
@@ -175,19 +176,23 @@ const DietAnalysisResult: React.FC<DietAnalysisResultProps> = ({ result, onResta
               </CardContent>
             </Card>
 
-            {/* 제휴 한의원 */}
+            {/* 가까이한의원 연계 */}
             <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
               <CardHeader>
-                <CardTitle className="text-lg text-blue-800">제휴 한의원 연계</CardTitle>
+                <CardTitle className="text-lg text-blue-800">가까이한의원 연계</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="bg-white p-3 rounded-lg">
-                    <h4 className="font-semibold text-sm text-blue-700">전국 300+ 제휴 한의원</h4>
-                    <p className="text-xs text-blue-600">체질별 다이어트 전문</p>
+                    <h4 className="font-semibold text-sm text-blue-700">가까이한의원</h4>
+                    <p className="text-xs text-blue-600">체질별 다이어트 전문 상담</p>
                   </div>
-                  <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
-                    근처 한의원 찾기
+                  <Button 
+                    size="sm" 
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}
+                  >
+                    맞춤한방 전화상담받기
                   </Button>
                 </div>
               </CardContent>

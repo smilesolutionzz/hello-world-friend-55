@@ -484,7 +484,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Calendar className="h-5 w-5 mr-2 text-blue-500" />
-                AIH 제휴 한의원 비대면 진료
+                가까이한의원 맞춤상담
               </CardTitle>
               <CardDescription>
                 체질 분석 결과를 바탕으로 전문 한의사와 상담하고 정확한 처방을 받아보세요
@@ -495,7 +495,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                 <Card className="border-2 border-primary/20">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <h3 className="font-semibold">서울 명동 한의원</h3>
+                      <h3 className="font-semibold">가까이한의원</h3>
                       <Badge className="bg-green-100 text-green-800">온라인 진료 가능</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -525,9 +525,12 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                         <div className="bg-secondary/50 p-2 rounded">내일 15:00</div>
                       </div>
                     </div>
-                    <Button className="w-full">
+                    <Button 
+                      className="w-full"
+                      onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}
+                    >
                       <Calendar className="h-4 w-4 mr-2" />
-                      진료 예약하기
+                      맞춤한방 전화상담받기
                     </Button>
                     <p className="text-xs text-muted-foreground text-center">
                       진료비: 30,000원 (초진) / 20,000원 (재진)
@@ -538,7 +541,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                 <Card className="border-2 border-primary/20">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <h3 className="font-semibold">부산 센텀 한의원</h3>
+                      <h3 className="font-semibold">가까이한의원 분점</h3>
                       <Badge className="bg-green-100 text-green-800">온라인 진료 가능</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -568,9 +571,12 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                         <div className="bg-secondary/50 p-2 rounded">내일 14:30</div>
                       </div>
                     </div>
-                    <Button className="w-full">
+                    <Button 
+                      className="w-full"
+                      onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}
+                    >
                       <Calendar className="h-4 w-4 mr-2" />
-                      진료 예약하기
+                      맞춤한방 전화상담받기
                     </Button>
                     <p className="text-xs text-muted-foreground text-center">
                       진료비: 35,000원 (초진) / 25,000원 (재진)

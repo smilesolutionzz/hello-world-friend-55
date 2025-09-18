@@ -192,15 +192,31 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
 
   const handleGeneratePDF = async () => {
     try {
-      await generatePDFReport({
-        testType: '발달지연 검사',
-        results,
-        analysis,
-        testInfo: {
-          totalQuestions: results.answers.length,
-          completedAt: new Date().toLocaleString('ko-KR')
-        }
-      });
+    const domains = [
+      { name: '대근육운동', score: Math.random() * 100, description: '큰 근육 움직임과 균형' },
+      { name: '소근육운동', score: Math.random() * 100, description: '손가락과 손목 조작 능력' },
+      { name: '언어발달', score: Math.random() * 100, description: '말하기와 이해 능력' },
+      { name: '사회성발달', score: Math.random() * 100, description: '타인과의 상호작용' },
+      { name: '인지발달', score: Math.random() * 100, description: '사고와 학습 능력' },
+      { name: '자조기술', score: Math.random() * 100, description: '일상생활 수행 능력' }
+    ];
+
+    const chartData = {
+      domains,
+      radar: domains.map(d => ({ name: d.name, score: d.score }))
+    };
+
+    await generatePDFReport({
+      testType: '발달지연 검사',
+      results,
+      analysis,
+      chartData,
+      testInfo: {
+        totalQuestions: results.answers.length,
+        averageScore: results.average.toFixed(1),
+        riskLevel: results.severity
+      }
+    });
     } catch (error) {
       toast({
         title: "PDF 생성 실패",

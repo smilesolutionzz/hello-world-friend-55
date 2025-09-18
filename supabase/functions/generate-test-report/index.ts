@@ -35,15 +35,14 @@ serve(async (req) => {
       );
     }
 
-    const { testType, results, analysis, testInfo } = await req.json();
+    const { testType, results, analysis, testInfo, chartData } = await req.json();
 
     console.log('Generating PDF for test result:', { testType, userId: user.id });
 
-    // PDF 생성 로직 (현재는 모의 구현)
-    const pdfData = generatePDFContent(testType, results, analysis, testInfo);
+    const pdfData = generatePDFContent(testType, results, analysis, testInfo, chartData);
     
     // 실제 PDF 생성은 추후 구현 (현재는 HTML 기반 레포트)
-    const reportHtml = generateHTMLReport(testType, results, analysis, testInfo);
+    const reportHtml = generateHTMLReport(testType, results, analysis, testInfo, chartData);
 
     return new Response(JSON.stringify({
       success: true,
@@ -66,18 +65,19 @@ serve(async (req) => {
   }
 });
 
-function generatePDFContent(testType: string, results: any, analysis: string, testInfo: any) {
+function generatePDFContent(testType: string, results: any, analysis: string, testInfo: any, chartData?: any) {
   return {
     testType,
     results,
     analysis,
     testInfo,
+    chartData,
     generatedAt: new Date().toISOString(),
     version: '1.0'
   };
 }
 
-function generateHTMLReport(testType: string, results: any, analysis: string, testInfo: any) {
+function generateHTMLReport(testType: string, results: any, analysis: string, testInfo: any, chartData?: any) {
   const currentDate = new Date().toLocaleDateString('ko-KR');
   
   return `
@@ -269,6 +269,60 @@ function generateHTMLReport(testType: string, results: any, analysis: string, te
             position: absolute;
             left: 0;
         }
+        .chart-container {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        .chart-svg {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+        }
+        .radar-chart {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .domain-bar {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f9fafb;
+        }
+        .domain-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #374151;
+        }
+        .domain-score {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .score-bar-bg {
+            flex: 1;
+            height: 20px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        .score-low { background: #ef4444; }
+        .score-moderate { background: #f59e0b; }
+        .score-high { background: #10b981; }
+        .score-text {
+            min-width: 60px;
+            font-weight: bold;
+            text-align: right;
+        }
         .footer {
             margin-top: 40px;
             padding-top: 20px;
@@ -383,4 +437,141 @@ function generateHTMLReport(testType: string, results: any, analysis: string, te
 </body>
 </html>
   `.trim();
+}
+
+function generateChartsHTML(chartData: any, results: any) {
+  const domains = chartData.domains || [];
+  const radarData = chartData.radar || [];
+  
+  return `
+    <div class="charts-section">
+      ${domains.length > 0 ? `
+        <h3>영역별 분석</h3>
+        <div class="domain-bars">
+          ${domains.map((domain: any) => {
+            const score = domain.score || 0;
+            const percentage = Math.min((score / 100) * 100, 100);
+            const riskLevel = score >= 70 ? 'high' : score >= 40 ? 'moderate' : 'low';
+            
+            return `
+              <div class="domain-bar">
+                <div class="domain-name">${domain.name}</div>
+                <div class="domain-score">
+                  <div class="score-bar-bg">
+                    <div class="score-bar-fill score-${riskLevel}" style="width: ${percentage}%"></div>
+                  </div>
+                  <div class="score-text">${score.toFixed(1)}점</div>
+                </div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 5px;">
+                  ${domain.description || ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      ` : ''}
+      
+      ${radarData.length > 0 ? `
+        <h3 style="margin-top: 30px;">종합 프로필</h3>
+        <div class="radar-chart">
+          ${generateRadarChartSVG(radarData)}
+        </div>
+      ` : ''}
+      
+      <div style="margin-top: 20px; padding: 15px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
+        <p style="margin: 0; font-size: 12px; color: #92400e;">
+          <strong>해석 안내:</strong> 낮은 점수는 해당 영역에서 어려움이 적음을, 높은 점수는 더 많은 관심과 지원이 필요함을 의미합니다.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+function generateRadarChartSVG(radarData: any[]) {
+  const size = 300;
+  const center = size / 2;
+  const radius = 100;
+  const maxScore = 100;
+  
+  // 각도 계산 (상단부터 시계방향)
+  const angleStep = (2 * Math.PI) / radarData.length;
+  
+  // 배경 격자 생성
+  const gridLines = [20, 40, 60, 80, 100].map(value => {
+    const r = (value / maxScore) * radius;
+    const points = radarData.map((_, index) => {
+      const angle = index * angleStep - Math.PI / 2;
+      const x = center + Math.cos(angle) * r;
+      const y = center + Math.sin(angle) * r;
+      return `${x},${y}`;
+    }).join(' ');
+    
+    return `<polygon points="${points}" fill="none" stroke="#e5e7eb" stroke-width="1"/>`;
+  }).join('');
+  
+  // 축 라인 생성
+  const axisLines = radarData.map((_, index) => {
+    const angle = index * angleStep - Math.PI / 2;
+    const x = center + Math.cos(angle) * radius;
+    const y = center + Math.sin(angle) * radius;
+    return `<line x1="${center}" y1="${center}" x2="${x}" y2="${y}" stroke="#d1d5db" stroke-width="1"/>`;
+  }).join('');
+  
+  // 데이터 폴리곤 생성
+  const dataPoints = radarData.map((item, index) => {
+    const score = Math.min(item.score || 0, maxScore);
+    const angle = index * angleStep - Math.PI / 2;
+    const r = (score / maxScore) * radius;
+    const x = center + Math.cos(angle) * r;
+    const y = center + Math.sin(angle) * r;
+    return `${x},${y}`;
+  }).join(' ');
+  
+  // 라벨 생성
+  const labels = radarData.map((item, index) => {
+    const angle = index * angleStep - Math.PI / 2;
+    const labelRadius = radius + 20;
+    const x = center + Math.cos(angle) * labelRadius;
+    const y = center + Math.sin(angle) * labelRadius;
+    
+    return `
+      <text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" 
+            font-size="10" font-weight="bold" fill="#374151">
+        ${item.name}
+      </text>
+      <text x="${x}" y="${y + 12}" text-anchor="middle" dominant-baseline="middle" 
+            font-size="8" fill="#6b7280">
+        ${(item.score || 0).toFixed(1)}
+      </text>
+    `;
+  }).join('');
+  
+  return `
+    <svg class="chart-svg" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+      <!-- 배경 격자 -->
+      ${gridLines}
+      
+      <!-- 축 라인 -->
+      ${axisLines}
+      
+      <!-- 데이터 영역 -->
+      <polygon points="${dataPoints}" fill="rgba(59, 130, 246, 0.3)" stroke="#3b82f6" stroke-width="2"/>
+      
+      <!-- 데이터 포인트 -->
+      ${radarData.map((item, index) => {
+        const score = Math.min(item.score || 0, maxScore);
+        const angle = index * angleStep - Math.PI / 2;
+        const r = (score / maxScore) * radius;
+        const x = center + Math.cos(angle) * r;
+        const y = center + Math.sin(angle) * r;
+        return `<circle cx="${x}" cy="${y}" r="4" fill="#3b82f6" stroke="white" stroke-width="2"/>`;
+      }).join('')}
+      
+      <!-- 라벨 -->
+      ${labels}
+      
+      <!-- 중심점 -->
+      <circle cx="${center}" cy="${center}" r="2" fill="#374151"/>
+    </svg>
+  `;
 }

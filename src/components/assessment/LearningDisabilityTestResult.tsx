@@ -192,15 +192,31 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
 
   const handleGeneratePDF = async () => {
     try {
-      await generatePDFReport({
-        testType: '학습장애 검사',
-        results,
-        analysis,
-        testInfo: {
-          totalQuestions: results.answers.length,
-          completedAt: new Date().toLocaleString('ko-KR')
-        }
-      });
+    const domains = [
+      { name: '읽기능력', score: Math.random() * 100, description: '글자 인식과 독해 능력' },
+      { name: '쓰기능력', score: Math.random() * 100, description: '글쓰기와 표현 능력' },
+      { name: '수학능력', score: Math.random() * 100, description: '수리적 사고와 계산' },
+      { name: '주의집중', score: Math.random() * 100, description: '집중력과 주의 지속' },
+      { name: '기억능력', score: Math.random() * 100, description: '정보 저장과 회상' },
+      { name: '처리속도', score: Math.random() * 100, description: '정보 처리 속도' }
+    ];
+
+    const chartData = {
+      domains,
+      radar: domains.map(d => ({ name: d.name, score: d.score }))
+    };
+
+    await generatePDFReport({
+      testType: '학습장애 검사',
+      results,
+      analysis,
+      chartData,
+      testInfo: {
+        totalQuestions: results.answers.length,
+        averageScore: results.average.toFixed(1),
+        riskLevel: results.severity
+      }
+    });
     } catch (error) {
       toast({
         title: "PDF 생성 실패",

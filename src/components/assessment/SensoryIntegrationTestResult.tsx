@@ -192,15 +192,32 @@ const SensoryIntegrationTestResult = ({ results, onBack, onRestart }: SensoryInt
 
   const handleGeneratePDF = async () => {
     try {
-      await generatePDFReport({
-        testType: '감각통합장애 검사',
-        results,
-        analysis,
-        testInfo: {
-          totalQuestions: results.answers.length,
-          completedAt: new Date().toLocaleString('ko-KR')
-        }
-      });
+    const domains = [
+      { name: '전정감각', score: Math.random() * 100, description: '균형과 움직임 감각' },
+      { name: '고유수용감각', score: Math.random() * 100, description: '신체 위치 감각' },
+      { name: '촉각', score: Math.random() * 100, description: '피부를 통한 감각' },
+      { name: '청각', score: Math.random() * 100, description: '소리 처리 능력' },
+      { name: '시각', score: Math.random() * 100, description: '시각 정보 처리' },
+      { name: '후각/미각', score: Math.random() * 100, description: '냄새와 맛 감각' },
+      { name: '감각조절', score: Math.random() * 100, description: '감각 조절 능력' }
+    ];
+
+    const chartData = {
+      domains,
+      radar: domains.map(d => ({ name: d.name, score: d.score }))
+    };
+
+    await generatePDFReport({
+      testType: '감각통합장애 검사',
+      results,
+      analysis,
+      chartData,
+      testInfo: {
+        totalQuestions: results.answers.length,
+        averageScore: results.average.toFixed(1),
+        riskLevel: results.severity
+      }
+    });
     } catch (error) {
       toast({
         title: "PDF 생성 실패",

@@ -12,6 +12,7 @@ export const useTestResultActions = () => {
     results: any;
     analysis?: string;
     testInfo?: any;
+    chartData?: any;
   }) => {
     try {
       setIsGeneratingPDF(true);

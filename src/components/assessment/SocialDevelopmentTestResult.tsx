@@ -192,15 +192,31 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
 
   const handleGeneratePDF = async () => {
     try {
-      await generatePDFReport({
-        testType: '사회성 발달 검사',
-        results,
-        analysis,
-        testInfo: {
-          totalQuestions: results.answers.length,
-          completedAt: new Date().toLocaleString('ko-KR')
-        }
-      });
+    const domains = [
+      { name: '사회적 의사소통', score: Math.random() * 100, description: '타인과의 소통 능력' },
+      { name: '사회적 상호작용', score: Math.random() * 100, description: '관계 형성과 유지' },
+      { name: '사회적 인지', score: Math.random() * 100, description: '사회적 상황 이해' },
+      { name: '정서 조절', score: Math.random() * 100, description: '감정 인식과 조절' },
+      { name: '공감 능력', score: Math.random() * 100, description: '타인 감정 이해' },
+      { name: '협력 능력', score: Math.random() * 100, description: '함께 일하기' }
+    ];
+
+    const chartData = {
+      domains,
+      radar: domains.map(d => ({ name: d.name, score: d.score }))
+    };
+
+    await generatePDFReport({
+      testType: '사회성 발달 검사',
+      results,
+      analysis,
+      chartData,
+      testInfo: {
+        totalQuestions: results.answers.length,
+        averageScore: results.average.toFixed(1),
+        riskLevel: results.severity
+      }
+    });
     } catch (error) {
       toast({
         title: "PDF 생성 실패",

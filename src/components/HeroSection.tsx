@@ -120,7 +120,7 @@ const HeroSection = () => {
               <Button 
                 size="lg"
                 onClick={() => navigate('/child-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-medium hover:from-pink-600 hover:to-rose-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
+                className="flex-1 p-4 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 rounded-xl font-medium hover:from-purple-200 hover:to-purple-300 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
               >
                 <span className="text-2xl">👶</span>
                 <span className="text-sm font-bold">아동발달</span>
@@ -129,7 +129,7 @@ const HeroSection = () => {
               <Button 
                 size="lg"
                 onClick={() => navigate('/stress-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
+                className="flex-1 p-4 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-xl font-medium hover:from-blue-200 hover:to-blue-300 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
               >
                 <span className="text-2xl">😰</span>
                 <span className="text-sm font-bold">스트레스</span>
@@ -138,7 +138,7 @@ const HeroSection = () => {
               <Button 
                 size="lg"
                 onClick={() => navigate('/anxiety-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
+                className="flex-1 p-4 bg-gradient-to-r from-green-100 to-green-200 text-green-800 rounded-xl font-medium hover:from-green-200 hover:to-green-300 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
               >
                 <span className="text-2xl">😨</span>
                 <span className="text-sm font-bold">불안·공황</span>
@@ -147,7 +147,7 @@ const HeroSection = () => {
               <Button 
                 size="lg"
                 onClick={() => navigate('/depression-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-xl font-medium hover:from-purple-600 hover:to-violet-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
+                className="flex-1 p-4 bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 rounded-xl font-medium hover:from-orange-200 hover:to-orange-300 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
               >
                 <span className="text-2xl">😔</span>
                 <span className="text-sm font-bold">우울·감정</span>
@@ -158,7 +158,7 @@ const HeroSection = () => {
               <Button 
                 size="lg"
                 onClick={() => navigate('/focus-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
+                className="flex-1 p-4 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 rounded-xl font-medium hover:from-yellow-200 hover:to-yellow-300 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
               >
                 <span className="text-2xl">🎯</span>
                 <span className="text-sm font-bold">집중력/ADHD</span>
@@ -167,7 +167,7 @@ const HeroSection = () => {
               <Button 
                 size="lg"
                 onClick={() => navigate('/relationship-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-xl font-medium hover:from-pink-600 hover:to-rose-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
+                className="flex-1 p-4 bg-gradient-to-r from-pink-100 to-pink-200 text-pink-800 rounded-xl font-medium hover:from-pink-200 hover:to-pink-300 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
               >
                 <span className="text-2xl">💖</span>
                 <span className="text-sm font-bold">연애/관계</span>
@@ -176,7 +176,7 @@ const HeroSection = () => {
               <Button 
                 size="lg"
                 onClick={() => navigate('/career-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-medium hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
+                className="flex-1 p-4 bg-gradient-to-r from-teal-100 to-teal-200 text-teal-800 rounded-xl font-medium hover:from-teal-200 hover:to-teal-300 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 h-auto flex flex-col gap-2"
               >
                 <span className="text-2xl">💼</span>
                 <span className="text-sm font-bold">진로/적성</span>

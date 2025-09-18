@@ -42,12 +42,12 @@ export const TechBadgeShowcase: React.FC = () => {
           <div className="flex items-center justify-center gap-2 mb-4">
             <Sparkles className="w-6 h-6 text-primary" />
             <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">
-              재미있는 AI 기술
+              딥러닝 AIH 모델
             </h2>
             <Sparkles className="w-6 h-6 text-primary" />
           </div>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-medium">
-            재미있는 AI 모델이 당신의 성격과 특성을 흥미롭게 분석합니다
+            딥러닝 AIH 모델이 당신의 성격과 특성을 정밀하게 분석합니다
           </p>
         </div>
 
@@ -75,7 +75,7 @@ export const TechBadgeShowcase: React.FC = () => {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full border border-primary/20">
             <Zap className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-primary">
-              모든 분석 과정에 재미있는 AI 기술이 적용됩니다
+              모든 분석 과정에 딥러닝 AIH 모델이 적용됩니다
             </span>
           </div>
         </div>

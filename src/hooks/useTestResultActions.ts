@@ -68,40 +68,55 @@ export const useTestResultActions = () => {
     try {
       setIsSaving(true);
       
-      // 검사 카테고리 결정
-      const getTestCategory = (testType: string) => {
-        if (testType.includes('발달') || testType.includes('언어') || testType.includes('감각') || testType.includes('학습') || testType.includes('사회성')) {
-          return '발달평가';
+      // 먼저 test_type을 찾거나 생성
+      let testTypeId = '';
+      
+      // 기존 test_type 확인
+      const { data: existingTestType } = await supabase
+        .from('test_types')
+        .select('id')
+        .eq('name', testData.testType)
+        .single();
+      
+      if (existingTestType) {
+        testTypeId = existingTestType.id;
+      } else {
+        // 새로운 test_type 생성
+        const { data: newTestType, error: createError } = await supabase
+          .from('test_types')
+          .insert({
+            name: testData.testType,
+            description: `${testData.testType} 검사`
+          })
+          .select('id')
+          .single();
+        
+        if (createError) throw createError;
+        testTypeId = newTestType.id;
+      }
+
+      // 검사 결과를 기존 test_results 테이블 구조에 맞게 저장
+      const testResultData = {
+        test_type_id: testTypeId,
+        user_id: (await supabase.auth.getUser()).data.user?.id,
+        scores: {
+          results: testData.results,
+          analysis: testData.analysis,
+          chartData: testData.chartData,
+          testInfo: testData.testInfo,
+          ageGroup: testData.ageGroup,
+          riskLevel: testData.results?.severity || testData.results?.riskLevel || 'unknown',
+          scoreSummary: {
+            average: testData.results?.average,
+            total: testData.results?.total,
+            severity: testData.results?.severity
+          }
         }
-        if (testType.includes('ADHD') || testType.includes('주의력')) {
-          return 'ADHD';
-        }
-        if (testType.includes('우울') || testType.includes('불안') || testType.includes('스트레스')) {
-          return '정신건강';
-        }
-        if (testType.includes('자폐') || testType.includes('스펙트럼')) {
-          return '자폐스펙트럼';
-        }
-        return '기타검사';
       };
 
       const { data, error } = await supabase
         .from('test_results')
-        .insert({
-          test_type: testData.testType,
-          test_category: getTestCategory(testData.testType),
-          results: testData.results,
-          analysis: testData.analysis,
-          chart_data: testData.chartData,
-          test_info: testData.testInfo,
-          risk_level: testData.results?.severity || testData.results?.riskLevel || 'unknown',
-          score_summary: {
-            average: testData.results?.average,
-            total: testData.results?.total,
-            severity: testData.results?.severity,
-            ageGroup: testData.ageGroup || testData.results?.ageGroup
-          }
-        })
+        .insert(testResultData)
         .select()
         .single();
 

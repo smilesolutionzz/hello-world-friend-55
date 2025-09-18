@@ -72,6 +72,34 @@ export const TestSelector = () => {
           duration_minutes: 3
         },
         {
+          id: 'sensory-integration-test',
+          name: '감각통합장애 검사',
+          description: '감각처리 및 통합능력 평가',
+          typebot_url: '',
+          duration_minutes: 3
+        },
+        {
+          id: 'learning-disability-test',
+          name: '학습장애 검사',
+          description: '학습능력 및 인지기능 평가',
+          typebot_url: '',
+          duration_minutes: 3
+        },
+        {
+          id: 'social-development-test',
+          name: '사회성 발달 검사',
+          description: '사회적 상호작용 및 적응 평가',
+          typebot_url: '',
+          duration_minutes: 3
+        },
+        {
+          id: 'tic-disorder-test',
+          name: '틱장애 검사',
+          description: '틱 증상 및 행동패턴 평가',
+          typebot_url: '',
+          duration_minutes: 3
+        },
+        {
           id: 'premium-assessment',
           name: '프리미엄 종합검사',
           description: '전문가급 종합 심리 평가',

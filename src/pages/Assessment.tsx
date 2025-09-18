@@ -562,7 +562,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('psychological')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-orange-500 text-white text-xs px-2 py-1 opacity-80">3토큰</Badge>
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
                     </div>
                     <h3 className="text-xl font-bold text-brand-gradient mb-3">마음상태 체크</h3>
                     <p className="text-muted-foreground mb-3 text-sm">연령별 맞춤 심리상태 참고 분석 (진단 아님)</p>
@@ -573,22 +573,6 @@ const Assessment = () => {
                     </ul>
                   </div>
                   
-                  <div 
-                    className="bg-white dark:bg-card hover-glow border-2 border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
-                    onClick={() => handleTestTypeSelect('language')}
-                  >
-                    <div className="absolute top-3 right-3">
-                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
-                    </div>
-                    <h3 className="text-xl font-bold text-brand-gradient mb-3">영유아언어발달체크</h3>
-                    <p className="text-muted-foreground mb-3 text-sm">연령에 맞춤 20문항으로 간단 확인 (참고용)</p>
-                    <ul className="space-y-1 text-sm">
-                      <li>• 연령대별 20문항</li>
-                      <li>• 3분 간단 체크</li>
-                      <li>• 즉시 참고결과 확인</li>
-                    </ul>
-                  </div>
-
                   <div 
                     className="bg-white dark:bg-card hover-glow border-2 border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
                     onClick={() => handleTestTypeSelect('panic')}
@@ -634,6 +618,22 @@ const Assessment = () => {
                       <li>• 아동청소년/성인 구분</li>
                       <li>• 주의집중력 증상 체크 18문항</li>
                       <li>• 증상 영역별 분석</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border-2 border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
+                    onClick={() => handleTestTypeSelect('language')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
+                    </div>
+                    <h3 className="text-xl font-bold text-brand-gradient mb-3">영유아언어발달체크</h3>
+                    <p className="text-muted-foreground mb-3 text-sm">연령에 맞춤 20문항으로 간단 확인 (참고용)</p>
+                    <ul className="space-y-1 text-sm">
+                      <li>• 연령대별 20문항</li>
+                      <li>• 3분 간단 체크</li>
+                      <li>• 즉시 참고결과 확인</li>
                     </ul>
                   </div>
                 </div>

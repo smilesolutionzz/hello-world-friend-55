@@ -26,6 +26,12 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
   const [showClinicalInfo, setShowClinicalInfo] = useState(false);
 
   const currentQuestion = allQuestions[currentQuestionIndex];
+  
+  // 질문이 없는 경우 처리
+  if (!currentQuestion) {
+    return <div>Loading...</div>;
+  }
+  
   const progress = ((currentQuestionIndex + 1) / allQuestions.length) * 100;
   const isLastQuestion = currentQuestionIndex === allQuestions.length - 1;
 

@@ -97,7 +97,6 @@ import AdminDashboard from "./pages/AdminDashboard";
 import InstitutionAdmin from "./pages/InstitutionAdmin";
 
 import { SessionManager } from "./components/SessionManager";
-import FloatingAIHAgent from "./components/FloatingAIHAgent";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -217,7 +216,6 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
               </Routes>
               <LiveFeedWidget />
-              <FloatingAIHAgent />
             </ErrorBoundary>
           </BrowserRouter>
         </TooltipProvider>

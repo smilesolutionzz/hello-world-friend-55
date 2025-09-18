@@ -143,7 +143,6 @@ const Index = () => {
         <PlatformGuide onComplete={handleGuideComplete} />
         <ScrollProgressBar />
         <UnifiedNavigation />
-        <ExpertValidationBanner />
         <div className="flex max-w-full">
         {/* Product Sidebar - 모바일에서는 완전히 숨김 */}
         <div className="hidden lg:block fixed left-0 top-16 z-30 h-full">
@@ -152,26 +151,38 @@ const Index = () => {
         
         {/* Main Content - 모바일에서는 여백 없음 */}
         <main id="main-content" className="w-full lg:ml-72">
+          {/* 1. Hero Section - 서비스 소개 */}
           <div className="animate-fade-in w-full">
             <HeroSection />
           </div>
+          
+          {/* 2. 차별점 섹션 - "왜 우리가 다른지" */}
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.1s' }}>
+            <ExpertValidationBanner />
+          </div>
+          
+          {/* 3. VideoShowcase - 시각적 설명 */}
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.2s' }}>
             <VideoShowcase />
           </div>
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.2s' }}>
+          
+          {/* 4. 기술 배지 - 신뢰성 강화 */}
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.3s' }}>
             <TechBadgeShowcase />
           </div>
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.3s' }}>
+          
+          {/* 5. 플랫폼 개요 - 주요 기능들 */}
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
             <PlatformOverview />
           </div>
           
           {/* 보안 및 신뢰성 섹션 */}
-          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.35s' }}>
+          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.5s' }}>
             <SecurityTrustIndicators />
           </div>
           
           {/* 전문가 검증 데모 */}
-          <div className="container mx-auto px-4 py-4 animate-fade-in w-full" style={{ animationDelay: '0.37s' }}>
+          <div className="container mx-auto px-4 py-4 animate-fade-in w-full" style={{ animationDelay: '0.55s' }}>
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold mb-2">AI + 전문가 2단계 검증 시스템</h2>
               <p className="text-muted-foreground">모든 분석 결과는 전문가가 2차 검토합니다</p>
@@ -185,29 +196,29 @@ const Index = () => {
           </div>
           
           {/* 실제 사례 및 후기 */}
-          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
+          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.6s' }}>
             <h2 className="text-2xl font-bold text-center mb-6">실제 이용 후기</h2>
             <TestimonialSection />
           </div>
           
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.42s' }}>
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.65s' }}>
             <ClientLogos />
           </div>
           
           {/* 커뮤니티 플랫폼 */}
-          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.45s' }}>
+          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.7s' }}>
             <CommunityPlatform />
           </div>
-          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.5s' }}>
+          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.75s' }}>
             <ReferralWidget />
             <ReferralCodeInput />
           </div>
           {user && (
-            <div className="container mx-auto px-4 py-6 animate-fade-in w-full" style={{ animationDelay: '0.55s' }}>
+            <div className="container mx-auto px-4 py-6 animate-fade-in w-full" style={{ animationDelay: '0.8s' }}>
               <NextStepSuggestion />
             </div>
           )}
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.6s' }}>
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.85s' }}>
             <TrustIndicators />
           </div>
         </main>

@@ -74,55 +74,34 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
   ];
 
   const handleStartFeature = (feature: typeof coreFeatures[0]) => {
+    console.log('🔥 SimplifiedFlow: Starting feature', feature.title, feature.route);
+    
     // 단계 완료 체크
     if (!completedSteps.includes(feature.id)) {
       setCompletedSteps([...completedSteps, feature.id]);
       onStepComplete?.(feature.id);
     }
 
-    // 사용자 여정 안내 및 단계별 제약 조건 검사
+    // 사용자 여정 안내
     if (feature.id === 1) {
       toast({
         title: "🎯 첫 번째 단계 시작!",
         description: "관찰일지, 3분테스트, 프리미엄테스트로 데이터를 쌓아보세요",
       });
-      // 1단계는 여러 옵션 중 선택 가능하도록 드롭다운 표시 (추후 구현)
-      navigate(feature.route);
     } else if (feature.id === 2) {
-      // 데이터 축적 조건 확인
-      const hasEnoughData = completedSteps.includes(1); // 간단한 조건
-      if (!hasEnoughData) {
-        toast({
-          title: "⚠️ 데이터가 부족합니다",
-          description: "먼저 관찰일지나 테스트를 3개 이상 완료해주세요",
-          variant: "destructive"
-        });
-        return;
-      }
-      
       toast({
         title: "🧠 AI 분석으로 업그레이드",
         description: "쌓인 데이터를 바탕으로 전문가 수준의 분석을 받아보세요",
       });
-      navigate(feature.route);
     } else if (feature.id === 3) {
-      // AI 분석 완료 조건 확인
-      const hasAIAnalysis = completedSteps.includes(2);
-      if (!hasAIAnalysis) {
-        toast({
-          title: "⚠️ AI 분석이 필요합니다",
-          description: "먼저 AI 분석 리포트를 받은 후 전문가 상담을 신청해주세요",
-          variant: "destructive"
-        });
-        return;
-      }
-      
       toast({
         title: "👨‍⚕️ 전문가 검증 및 상담",
         description: "AI 분석 결과를 전문가가 검증하고 개인 맞춤 상담을 제공합니다",
       });
-      navigate(feature.route);
     }
+
+    // 항상 네비게이션 수행
+    navigate(feature.route);
   };
 
   const progressPercentage = (completedSteps.length / coreFeatures.length) * 100;
@@ -224,9 +203,14 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
                           key={idx}
                           variant="outline"
                           size="sm"
-                          className="justify-start text-xs h-8"
+                          className="justify-start text-xs h-8 hover:bg-primary/10"
                           onClick={(e) => {
                             e.stopPropagation();
+                            console.log('🔥 Navigating to step:', step.path);
+                            toast({
+                              title: `${step.name} 시작!`,
+                              description: "데이터를 쌓아서 더 정확한 분석을 받아보세요",
+                            });
                             navigate(step.path);
                           }}
                         >
@@ -265,7 +249,6 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
                     isNext ? 'bg-primary hover:bg-primary/90' : ''
                   }`}
                   variant={isCompleted ? 'outline' : isNext ? 'default' : 'secondary'}
-                  disabled={feature.id > 1 && !completedSteps.includes(feature.id - 1)}
                 >
                   {isCompleted ? '다시 이용하기' : feature.ctaText}
                   <ArrowRight className="w-4 h-4 ml-2" />

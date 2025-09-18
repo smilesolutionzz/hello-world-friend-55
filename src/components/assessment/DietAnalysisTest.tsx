@@ -13,6 +13,7 @@ import {
   TrendingDown,
   Heart,
   ChevronRight,
+  ChevronLeft,
   Pill
 } from 'lucide-react';
 
@@ -23,6 +24,12 @@ interface DietAnalysisTestProps {
 const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
+
+  const handleBack = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    }
+  };
 
   const questions = [
     {
@@ -101,6 +108,39 @@ const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
         "규칙적으로 잘 잠",
         "스트레스 받으면 잠을 못잠"
       ]
+    },
+    {
+      id: 7,
+      question: "평소 스트레스 수준은?",
+      type: "multiple",
+      options: [
+        "매우 높음 (업무, 인간관계 등)",
+        "보통 수준",
+        "낮은 편",
+        "거의 스트레스 없음"
+      ]
+    },
+    {
+      id: 8,
+      question: "물 섭취량은 하루에 얼마나 되나요?",
+      type: "multiple",
+      options: [
+        "500ml 이하",
+        "500ml-1L",
+        "1L-2L",
+        "2L 이상"
+      ]
+    },
+    {
+      id: 9,
+      question: "과거 다이어트 경험은?",
+      type: "multiple",
+      options: [
+        "한 번도 시도한 적 없음",
+        "몇 번 시도했지만 실패",
+        "성공했지만 요요현상 경험",
+        "꾸준히 관리하고 있음"
+      ]
     }
   ];
 
@@ -118,7 +158,7 @@ const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
   };
 
   const generateDietAnalysis = (userAnswers: { [key: number]: string }) => {
-    // 답변 분석 로직
+    // 답변 분석 로직 - 더 정교한 분석
     const weightGoal = userAnswers[0];
     const eatingPattern = userAnswers[1]; 
     const exerciseLevel = userAnswers[2];
@@ -126,38 +166,61 @@ const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
     const difficulty = userAnswers[4];
     const foodPreference = userAnswers[5];
     const sleepPattern = userAnswers[6];
+    const stressLevel = userAnswers[7];
+    const waterIntake = userAnswers[8];
+    const dietHistory = userAnswers[9];
 
-    // 체질 판단
+    // 체질 판단 - 더 정교한 로직
     let constitutionType = "소양인";
-    if (constitution.includes("소화가 잘 안되고")) constitutionType = "소음인";
-    else if (constitution.includes("열이 많고")) constitutionType = "태양인";
-    else if (constitution.includes("쉽게 살이 찌고")) constitutionType = "태음인";
+    let score = { taeeum: 0, soyang: 0, soeum: 0, taeyang: 0 };
+    
+    // 각 답변에 따른 체질 점수 계산
+    if (constitution.includes("쉽게 살이 찌고")) score.taeeum += 2;
+    if (constitution.includes("소화가 잘 안되고")) score.soeum += 2;
+    if (constitution.includes("열이 많고")) score.soyang += 2;
+    if (constitution.includes("스트레스")) score.soyang += 1;
+    
+    if (foodPreference.includes("매운 음식")) score.soyang += 1;
+    if (foodPreference.includes("달고 기름진")) score.taeeum += 1;
+    if (foodPreference.includes("시원하고 담백한")) score.taeyang += 1;
+    if (foodPreference.includes("따뜻하고 부드러운")) score.soeum += 1;
+    
+    // 최고 점수 체질 선택
+    const maxScore = Math.max(...Object.values(score));
+    if (score.taeeum === maxScore) constitutionType = "태음인";
+    else if (score.soyang === maxScore) constitutionType = "소양인";
+    else if (score.soeum === maxScore) constitutionType = "소음인";
+    else constitutionType = "태양인";
 
-    // 다이어트 처방 생성
+    // 다이어트 처방 생성 - 더 상세한 분석
     const prescriptions = {
       "태음인": {
-        herbs: ["율무", "백출", "진피", "후박"],
-        diet: "고단백 저탄수화물, 견과류 섭취",
-        exercise: "유산소 운동 위주",
-        caution: "과식 주의, 규칙적인 식사"
+        herbs: ["율무", "백출", "진피", "후박", "창출", "적복령"],
+        diet: "고단백 저탄수화물, 견과류 섭취, 현미밥 위주",
+        exercise: "유산소 운동 위주 (주 4-5회, 30분 이상)",
+        caution: "과식 주의, 규칙적인 식사, 당분 제한",
+        detailedAdvice: "체중감량에 가장 효과적인 체질로, 꾸준한 운동과 식단 관리가 중요합니다."
       },
       "소양인": {
-        herbs: ["맥문동", "오미자", "생지황", "모과"],
-        diet: "시원한 성질의 음식, 충분한 수분 섭취",
-        exercise: "격렬하지 않은 운동",
-        caution: "매운 음식 피하기"
+        herbs: ["맥문동", "오미자", "생지황", "모과", "석곡", "천문동"],
+        diet: "시원한 성질의 음식, 충분한 수분 섭취, 해산물 위주",
+        exercise: "격렬하지 않은 운동 (요가, 수영, 걷기)",
+        caution: "매운 음식 피하기, 과로 금지, 충분한 휴식",
+        detailedAdvice: "열 체질이므로 서두르지 말고 꾸준히 관리하는 것이 중요합니다."
       },
       "소음인": {
-        herbs: ["인삼", "계피", "생강", "대추"],
-        diet: "따뜻한 성질의 음식, 소량씩 자주",
-        exercise: "가벼운 운동으로 시작",
-        caution: "차가운 음식 피하기"
+        herbs: ["인삼", "계피", "생강", "대추", "황기", "당귀"],
+        diet: "따뜻한 성질의 음식, 소량씩 자주, 닭고기, 양고기",
+        exercise: "가벼운 운동으로 시작 (산책, 스트레칭)",
+        caution: "차가운 음식 피하기, 무리한 다이어트 금지",
+        detailedAdvice: "소화기능이 약하므로 급하게 살을 빼기보다 체력을 기르면서 서서히 감량하세요."
       },
       "태양인": {
-        herbs: ["오가피", "모과", "포도", "감초"],
-        diet: "담백하고 시원한 음식",
-        exercise: "꾸준한 유산소 운동",
-        caution: "기름진 음식 제한"
+        herbs: ["오가피", "모과", "포도", "감초", "갈근", "승마"],
+        diet: "담백하고 시원한 음식, 해조류, 생선류",
+        exercise: "꾸준한 유산소 운동 (조깅, 자전거)",
+        caution: "기름진 음식 제한, 알코올 절제",
+        detailedAdvice: "간 기능을 보호하면서 점진적인 체중감량이 효과적입니다."
       }
     };
 
@@ -166,11 +229,16 @@ const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
       targetWeight: weightGoal,
       dietPlan: prescriptions[constitutionType as keyof typeof prescriptions],
       analysisDate: new Date().toISOString(),
+      stressLevel,
+      waterIntake,
+      dietHistory,
+      detailedScore: score,
       recommendations: {
         herbs: prescriptions[constitutionType as keyof typeof prescriptions].herbs,
         diet: prescriptions[constitutionType as keyof typeof prescriptions].diet,
         exercise: prescriptions[constitutionType as keyof typeof prescriptions].exercise,
-        caution: prescriptions[constitutionType as keyof typeof prescriptions].caution
+        caution: prescriptions[constitutionType as keyof typeof prescriptions].caution,
+        detailedAdvice: prescriptions[constitutionType as keyof typeof prescriptions].detailedAdvice
       }
     };
   };
@@ -234,6 +302,19 @@ const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
                 </Button>
               ))}
             </div>
+            
+            {/* 네비게이션 버튼 */}
+            {currentQuestion > 0 && (
+              <div className="mt-6 pt-4 border-t">
+                <Button 
+                  variant="ghost" 
+                  onClick={handleBack}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  ← 이전 질문으로
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -242,7 +323,7 @@ const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
           <div className="flex items-center justify-center space-x-4 text-sm text-muted-foreground">
             <div className="flex items-center">
               <Clock className="h-4 w-4 mr-1" />
-              예상 소요시간: 5-7분
+              예상 소요시간: 7-10분
             </div>
             <div className="flex items-center">
               <Pill className="h-4 w-4 mr-1" />

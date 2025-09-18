@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, CheckCircle } from 'lucide-react';
+import ExpertValidationBanner from '@/components/ExpertValidationBanner';
 import { SasangConstitutionTest } from '@/components/assessment/SasangConstitutionTest';
 import { SasangConstitutionResult } from '@/components/assessment/SasangConstitutionResult';
 import { HanMedicinePremiumTest } from '@/components/assessment/HanMedicinePremiumTest';
@@ -271,6 +272,9 @@ const HanMedicineTest = () => {
             </Card>
           </div>
         </div>
+
+        {/* 차별점 배너를 하단으로 이동 */}
+        <ExpertValidationBanner />
 
         {/* 신뢰성 표시 */}
         <div className="mt-12 text-center">

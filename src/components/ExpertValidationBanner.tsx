@@ -14,7 +14,7 @@ import {
 
 const ExpertValidationBanner = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [validatedCount, setValidatedCount] = useState(12847);
+  const [validatedCount, setValidatedCount] = useState(878);
   const [expertsOnline, setExpertsOnline] = useState(5);
 
   // 3초 주기로 애니메이션 반복
@@ -41,21 +41,21 @@ const ExpertValidationBanner = () => {
   ];
 
   return (
-    <div className="w-full bg-gradient-to-r from-blue-50 via-purple-50 to-green-50 py-8 border-b">
-      <div className="container mx-auto px-4">
+    <div className="w-full bg-white py-8 border-b border-gray-100">
+      <div className="container mx-auto px-6 max-w-7xl">
         {/* 메인 헤딩 */}
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
             일반 AI와 <span className="text-primary">완전히 다른</span> 차별점
           </h2>
-          <p className="text-muted-foreground text-lg">
-            GPT, 클로드와 달리 <strong>모든 결과는 전문가검토</strong>를 거칩니다
+          <p className="text-gray-600 text-lg">
+            GPT, 클로드와 달리 <strong className="text-gray-900">모든 결과는 전문가검토</strong>를 거칩니다
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 items-center">
+        <div className="grid lg:grid-cols-3 gap-8 items-center max-w-6xl mx-auto">
           {/* 비교 섹션 */}
-          <Card className="p-6 h-full">
+          <Card className="p-6 h-full border-2 border-gray-100 hover:border-gray-200 transition-colors">
             <h3 className="font-semibold text-gray-900 mb-4 text-center">일반 AI vs 우리</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -83,7 +83,7 @@ const ExpertValidationBanner = () => {
           </Card>
 
           {/* 검증 플로우 애니메이션 */}
-          <Card className="p-6 h-full">
+          <Card className="p-6 h-full border-2 border-blue-100 bg-gradient-to-br from-blue-50/30 to-purple-50/30">
             <h3 className="font-semibold text-gray-900 mb-6 text-center">2단계 검증 시스템</h3>
             <div className="flex items-center justify-between">
               {steps.map((step, index) => (
@@ -92,7 +92,7 @@ const ExpertValidationBanner = () => {
                     <div 
                       className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
                         currentStep >= index 
-                          ? `${step.bg} scale-110 shadow-lg` 
+                          ? `${step.bg} scale-110 shadow-lg border-2 border-white` 
                           : 'bg-gray-100'
                       }`}
                     >
@@ -129,7 +129,7 @@ const ExpertValidationBanner = () => {
           </Card>
 
           {/* 실시간 상태 */}
-          <Card className="p-6 h-full">
+          <Card className="p-6 h-full border-2 border-green-100 bg-gradient-to-br from-green-50/30 to-emerald-50/30">
             <h3 className="font-semibold text-gray-900 mb-4 text-center">실시간 현황</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -143,12 +143,12 @@ const ExpertValidationBanner = () => {
                 </Badge>
               </div>
               
-              <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg">
+              <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-100">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary animate-pulse">
                     {validatedCount.toLocaleString()}건
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm text-gray-600">
                     전문가검토 완료
                   </div>
                 </div>
@@ -164,7 +164,7 @@ const ExpertValidationBanner = () => {
 
         {/* 신뢰도 강조 메시지 */}
         <div className="mt-8 text-center">
-          <div className="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-lg border">
+          <div className="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-lg border border-gray-200">
             <Shield className="w-5 h-5 text-green-500" />
             <span className="font-medium text-gray-900">
               모든 리포팅은 의료진 및 전문가가 검토합니다

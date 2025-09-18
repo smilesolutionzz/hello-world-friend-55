@@ -17,6 +17,15 @@ export const useTestResultActions = () => {
     try {
       setIsGeneratingPDF(true);
       
+      // 먼저 검사 결과 저장
+      await saveTestResult({
+        testType: testData.testType,
+        results: testData.results,
+        analysis: testData.analysis,
+        testInfo: testData.testInfo,
+        chartData: testData.chartData
+      });
+      
       const { data, error } = await supabase.functions.invoke('generate-test-report', {
         body: testData
       });
@@ -54,20 +63,54 @@ export const useTestResultActions = () => {
     analysis?: string;
     testInfo?: any;
     ageGroup?: string;
+    chartData?: any;
   }) => {
     try {
       setIsSaving(true);
       
-      const { data, error } = await supabase.functions.invoke('save-test-result', {
-        body: testData
-      });
+      // 검사 카테고리 결정
+      const getTestCategory = (testType: string) => {
+        if (testType.includes('발달') || testType.includes('언어') || testType.includes('감각') || testType.includes('학습') || testType.includes('사회성')) {
+          return '발달평가';
+        }
+        if (testType.includes('ADHD') || testType.includes('주의력')) {
+          return 'ADHD';
+        }
+        if (testType.includes('우울') || testType.includes('불안') || testType.includes('스트레스')) {
+          return '정신건강';
+        }
+        if (testType.includes('자폐') || testType.includes('스펙트럼')) {
+          return '자폐스펙트럼';
+        }
+        return '기타검사';
+      };
+
+      const { data, error } = await supabase
+        .from('test_results')
+        .insert({
+          test_type: testData.testType,
+          test_category: getTestCategory(testData.testType),
+          results: testData.results,
+          analysis: testData.analysis,
+          chart_data: testData.chartData,
+          test_info: testData.testInfo,
+          risk_level: testData.results?.severity || testData.results?.riskLevel || 'unknown',
+          score_summary: {
+            average: testData.results?.average,
+            total: testData.results?.total,
+            severity: testData.results?.severity,
+            ageGroup: testData.ageGroup || testData.results?.ageGroup
+          }
+        })
+        .select()
+        .single();
 
       if (error) throw error;
 
-      if (data.success) {
+      if (data) {
         toast({
-          title: "결과 저장 완료",
-          description: "검사 결과가 성공적으로 저장되었습니다. 검사기록에서 확인하실 수 있습니다.",
+          title: "검사 결과 저장 완료",
+          description: "검사 결과가 성공적으로 저장되었습니다. 나의 검사기록에서 확인하실 수 있습니다.",
         });
         return true;
       }

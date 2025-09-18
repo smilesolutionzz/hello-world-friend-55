@@ -1,4 +1,4 @@
-// 전문 진단 시스템 타입 정의
+// 전문 선별 평가 시스템 타입 정의
 
 export interface AssessmentQuestion {
   id: string;

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import FeedbackModal from "@/components/FeedbackModal";
-import EarlyDiagnosisSection from "@/components/assessment/EarlyDiagnosisSection";
+import EarlyScreeningSection from "@/components/assessment/EarlyScreeningSection";
 
 interface PremiumAssessmentResultProps {
   assessmentType: string;
@@ -312,8 +312,8 @@ const PremiumAssessmentResult = ({
           </Card>
         </div>
 
-        {/* AIH 조기진단 섹션 */}
-        <EarlyDiagnosisSection 
+        {/* AIH 조기선별 섹션 */}
+        <EarlyScreeningSection
           assessmentType={assessmentType}
           results={results}
           isAnalyzing={isAnalyzing}

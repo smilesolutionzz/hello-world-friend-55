@@ -58,8 +58,8 @@ const LegalSafetyNotice = ({ onAccept, testType }: LegalSafetyNoticeProps) => {
           <div className="text-blue-800 space-y-2">
             <p className="font-semibold">본 서비스는 참고용 자가체크 및 심리상담 연결 서비스입니다.</p>
             <ul className="list-disc list-inside space-y-1 text-sm">
-              <li>의학적 진단이나 치료행위는 포함되지 않습니다</li>
-              <li>정확한 진단과 치료는 반드시 의료기관에서 받으시기 바랍니다</li>
+              <li>의학적 평가나 치료행위는 포함되지 않습니다</li>
+              <li>정확한 평가와 치료는 반드시 의료기관에서 받으시기 바랍니다</li>
               <li>결과는 개인차가 있는 참고자료입니다</li>
             </ul>
           </div>
@@ -84,7 +84,7 @@ const LegalSafetyNotice = ({ onAccept, testType }: LegalSafetyNoticeProps) => {
                 className="mt-1"
               />
               <label htmlFor="understanding" className="text-sm cursor-pointer">
-                이 체크리스트는 자가 참고용이며 의학적 진단이 아님을 이해합니다
+                이 체크리스트는 자가 참고용이며 의학적 평가가 아님을 이해합니다
               </label>
             </div>
 
@@ -130,8 +130,8 @@ const LegalSafetyNotice = ({ onAccept, testType }: LegalSafetyNoticeProps) => {
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
           <h5 className="font-semibold text-gray-900 mb-2">📜 면책조항</h5>
           <p className="text-sm text-gray-700 leading-relaxed">
-            본 서비스는 심리적 지지를 위한 참고용 도구이며, 의료행위, 진단행위, 치료행위를 포함하지 않습니다. 
-            서비스 결과는 개인차가 클 수 있으며, 정확한 진단과 치료를 위해서는 반드시 의료기관을 방문하시기 바랍니다. 
+            본 서비스는 심리적 지지를 위한 참고용 도구이며, 의료행위, 평가행위, 치료행위를 포함하지 않습니다. 
+            서비스 결과는 개인차가 클 수 있으며, 정확한 평가와 치료를 위해서는 반드시 의료기관을 방문하시기 바랍니다.
             위기상황이나 응급상황에서는 즉시 119 또는 전문 상담기관에 연락하시기 바랍니다.
           </p>
           <div className="mt-3 flex gap-4 text-sm">

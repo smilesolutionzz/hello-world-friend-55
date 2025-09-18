@@ -69,7 +69,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
           <div className="flex items-center justify-center mb-8">
             <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-lg border border-border">
               <Heart className="w-6 h-6 text-primary animate-pulse-glow" />
-              <span className="text-xl font-semibold text-brand-gradient">전문 진단 시스템</span>
+              <span className="text-xl font-semibold text-brand-gradient">전문 선별 평가 시스템</span>
             </div>
           </div>
           

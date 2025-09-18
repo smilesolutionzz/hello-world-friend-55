@@ -100,7 +100,7 @@ const ExpertList = () => {
             <h1 className="text-4xl font-bold text-brand-gradient">전문가 상담</h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            검증된 전문가들과 1:1 맞춤 상담으로 더 정확한 진단과 솔루션을 받아보세요
+            검증된 전문가들과 1:1 맞춤 상담으로 더 정확한 평가와 솔루션을 받아보세요
           </p>
         </div>
 

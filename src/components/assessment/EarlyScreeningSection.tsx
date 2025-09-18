@@ -16,7 +16,7 @@ import {
   Info
 } from "lucide-react";
 
-interface EarlyDiagnosisSectionProps {
+interface EarlyScreeningSectionProps {
   assessmentType: string;
   results: Record<string, number>;
   isAnalyzing: boolean;
@@ -32,7 +32,7 @@ interface RiskFactor {
   recommendation: string;
 }
 
-const EarlyDiagnosisSection = ({ assessmentType, results, isAnalyzing }: EarlyDiagnosisSectionProps) => {
+const EarlyScreeningSection = ({ assessmentType, results, isAnalyzing }: EarlyScreeningSectionProps) => {
   const [riskFactors, setRiskFactors] = useState<RiskFactor[]>([]);
   const [overallRiskLevel, setOverallRiskLevel] = useState<'low' | 'moderate' | 'high'>('low');
 
@@ -298,8 +298,8 @@ const EarlyDiagnosisSection = ({ assessmentType, results, isAnalyzing }: EarlyDi
 
           {/* 법적 고지사항 */}
           <div className="mt-4 p-3 bg-gray-50 rounded text-xs text-gray-600 border-l-4 border-gray-300">
-            <strong>중요 안내:</strong> 본 조기 위험요소 체크는 AI 기반 참고자료이며 전문적 평가를 대체하지 않습니다. 
-            실제 증상이 있거나 우려사항이 있는 경우 반드시 전문의와 상담하시기 바랍니다.
+            <strong>중요 안내:</strong> 본 조기 위험요소 선별은 AI 기반 참고자료이며 의료적 평가를 대체하지 않습니다. 
+            실제 증상이 있거나 우려사항이 있는 경우 반드시 의료기관에서 전문의와 상담하시기 바랍니다.
           </div>
         </CardContent>
       </Card>
@@ -307,4 +307,4 @@ const EarlyDiagnosisSection = ({ assessmentType, results, isAnalyzing }: EarlyDi
   );
 };
 
-export default EarlyDiagnosisSection;
+export default EarlyScreeningSection;

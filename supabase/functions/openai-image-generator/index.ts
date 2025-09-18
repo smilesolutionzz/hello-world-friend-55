@@ -42,12 +42,12 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-image-1',
+        model: 'dall-e-3',
         prompt: enhancedPrompt,
         n: 1,
         size: '1024x1024',
-        quality: 'high',
-        output_format: 'png'
+        quality: 'hd',
+        response_format: 'url'
       }),
     })
 
@@ -62,9 +62,8 @@ serve(async (req) => {
       throw new Error('No image data received from OpenAI')
     }
 
-    // gpt-image-1은 항상 base64로 반환됨
-    const imageData = data.data[0].b64_json
-    const imageUrl = `data:image/png;base64,${imageData}`
+    // DALL-E 3는 URL로 반환됨
+    const imageUrl = data.data[0].url
 
     return new Response(
       JSON.stringify({ 

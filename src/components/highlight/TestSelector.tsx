@@ -146,22 +146,22 @@ export const TestSelector = () => {
         navigate('/assessment');
         break;
       case 'developmental-delay-test':
-        navigate('/assessment');
+        navigate('/developmental-assessment');
         break;
       case 'language-development':
-        navigate('/assessment');
+        navigate('/developmental-assessment');
         break;
       case 'sensory-integration-test':
-        navigate('/assessment');
+        navigate('/developmental-assessment');
         break;
       case 'learning-disability-test':
-        navigate('/assessment');
+        navigate('/developmental-assessment');
         break;
       case 'social-development-test':
-        navigate('/assessment');
+        navigate('/developmental-assessment');
         break;
       case 'tic-disorder-test':
-        navigate('/assessment');
+        navigate('/developmental-assessment');
         break;
       case 'premium-assessment':
         navigate('/premium-assessment');

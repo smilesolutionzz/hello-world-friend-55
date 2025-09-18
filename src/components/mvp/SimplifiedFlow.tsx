@@ -116,7 +116,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
         </div>
         
         <h1 className="text-3xl md:text-4xl font-bold mb-4">
-          24시간 AI 심리전문가와 함께하는
+          24시간 AI + 실제 전문가와 함께하는
           <br />
           <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
             단계별 케어 시스템

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface DevelopmentalDelayTestFormProps {
   onComplete: (results: {
@@ -43,11 +44,26 @@ const questions = [
 const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(0));
+  const { toast } = useToast();
 
   const handleAnswerChange = (value: string) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = parseInt(value);
     setAnswers(newAnswers);
+    
+    // 선택 후 자동으로 다음으로 넘어가기
+    toast({
+      description: "답변이 저장되었습니다",
+      duration: 1000,
+    });
+    
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        handleComplete(newAnswers);
+      }
+    }, 500);
   };
 
   const handleNext = () => {
@@ -64,9 +80,9 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
     }
   };
 
-  const handleComplete = () => {
-    const total = answers.reduce((sum, answer) => sum + answer, 0);
-    const average = total / answers.length;
+  const handleComplete = (finalAnswers = answers) => {
+    const total = finalAnswers.reduce((sum, answer) => sum + answer, 0);
+    const average = total / finalAnswers.length;
     
     let severity = "정상";
     if (total >= 60) severity = "심각";
@@ -74,7 +90,7 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
     else if (total >= 20) severity = "경미";
 
     onComplete({
-      answers,
+      answers: finalAnswers,
       total,
       average,
       ageGroup: "아동",
@@ -119,23 +135,23 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="0" id="option0" />
-              <Label htmlFor="option0">전혀 그렇지 않다</Label>
+              <Label htmlFor="option0" className="cursor-pointer">전혀 그렇지 않다</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="1" id="option1" />
-              <Label htmlFor="option1">거의 그렇지 않다</Label>
+              <Label htmlFor="option1" className="cursor-pointer">거의 그렇지 않다</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="2" id="option2" />
-              <Label htmlFor="option2">가끔 그렇다</Label>
+              <Label htmlFor="option2" className="cursor-pointer">가끔 그렇다</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="3" id="option3" />
-              <Label htmlFor="option3">자주 그렇다</Label>
+              <Label htmlFor="option3" className="cursor-pointer">자주 그렇다</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="4" id="option4" />
-              <Label htmlFor="option4">매우 그렇다</Label>
+              <Label htmlFor="option4" className="cursor-pointer">매우 그렇다</Label>
             </div>
           </RadioGroup>
 
@@ -149,16 +165,9 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
               이전
             </Button>
             
-            <Button
-              onClick={handleNext}
-              disabled={answers[currentQuestion] === 0 && answers[currentQuestion] !== 0}
-              className="bg-primary hover:bg-primary/90"
-            >
-              {currentQuestion === questions.length - 1 ? "완료" : "다음"}
-              {currentQuestion < questions.length - 1 && (
-                <ChevronRight className="w-4 h-4 ml-2" />
-              )}
-            </Button>
+            <div className="text-sm text-muted-foreground">
+              답변을 선택하면 자동으로 다음으로 넘어갑니다
+            </div>
           </div>
         </CardContent>
       </Card>

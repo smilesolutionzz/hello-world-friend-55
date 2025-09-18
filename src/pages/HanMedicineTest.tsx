@@ -74,7 +74,7 @@ const HanMedicineTest = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto ml-auto mr-16">
         {/* 헤더 - 가운데 정렬 */}
         <div className="text-center mb-12 flex flex-col items-center">
           <h1 className="text-4xl font-bold text-foreground mb-4">

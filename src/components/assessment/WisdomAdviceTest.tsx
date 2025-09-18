@@ -224,16 +224,23 @@ const WisdomAdviceTest: React.FC<WisdomAdviceTestProps> = ({ onComplete, onBack 
       console.log('Calculated scores:', scores);
 
       // OpenAI API로 재미있는 결과 생성
-      const { data: aiResult, error } = await supabase.functions.invoke('generate-wisdom-advice', {
-        body: { answers, scores }
-      });
+      let aiResult = null;
+      try {
+        const { data, error } = await supabase.functions.invoke('generate-wisdom-advice', {
+          body: { answers, scores }
+        });
 
-      if (error) {
-        console.error('AI 생성 오류:', error);
-        throw error;
+        if (error) {
+          console.error('AI 생성 오류:', error);
+          // 에러가 있어도 계속 진행
+        } else {
+          aiResult = data;
+          console.log('AI generated result:', aiResult);
+        }
+      } catch (apiError) {
+        console.error('API 호출 오류:', apiError);
+        // API 호출 실패해도 계속 진행
       }
-
-      console.log('AI generated result:', aiResult);
 
       // 기본 아이콘과 타입 결정
       const maxScore = Math.max(...Object.values(scores));
@@ -257,11 +264,11 @@ const WisdomAdviceTest: React.FC<WisdomAdviceTestProps> = ({ onComplete, onBack 
       const result = {
         adviceType,
         icon: icon.name,
-        title: aiResult.title || '지혜로운 인생의 멘토',
-        description: aiResult.description || '당신은 풍부한 인생 경험을 가진 분입니다.',
-        advice: aiResult.advice || '당신의 경험과 지혜를 주변과 나누어 주세요.',
-        funFact: aiResult.funFact || '당신같은 분이 있어서 세상이 더 따뜻해집니다!',
-        recommendation: aiResult.recommendation || '오늘 하루 여유롭게 보내보세요.',
+        title: aiResult?.title || '지혜로운 인생의 멘토 🌟',
+        description: aiResult?.description || '당신은 풍부한 인생 경험을 가진 분입니다.',
+        advice: aiResult?.advice || '당신의 경험과 지혜를 주변과 나누어 주세요.',
+        funFact: aiResult?.funFact || '당신같은 분이 있어서 세상이 더 따뜻해집니다! 😊',
+        recommendation: aiResult?.recommendation || '오늘 하루 여유롭게 보내보세요.',
         scores,
         answers,
         timestamp: new Date().toISOString()
@@ -296,10 +303,8 @@ const WisdomAdviceTest: React.FC<WisdomAdviceTestProps> = ({ onComplete, onBack 
         timestamp: new Date().toISOString()
       };
 
-      setTimeout(() => {
-        setLoading(false);
-        onComplete(result, 'wisdom_advice');
-      }, 2000);
+      setLoading(false);
+      onComplete(result, 'wisdom_advice');
     }
   };
 

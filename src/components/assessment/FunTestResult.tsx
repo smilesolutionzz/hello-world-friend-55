@@ -722,6 +722,17 @@ export default function FunTestResult() {
 
   // 지혜 조언 테스트 결과
   if (testType === 'wisdom_advice') {
+    // 안전한 기본값 설정
+    const safeResult = {
+      title: result?.title || '지혜로운 인생의 멘토 🌟',
+      description: result?.description || '당신은 풍부한 인생 경험을 가진 분입니다.',
+      advice: result?.advice || '당신의 경험과 지혜를 주변과 나누어 주세요.',
+      funFact: result?.funFact || '당신같은 분이 있어서 세상이 더 따뜻해집니다!',
+      recommendation: result?.recommendation || '오늘 하루 여유롭게 보내보세요.',
+      scores: result?.scores || { family: 0, health: 0, wisdom: 0, experience: 0 },
+      adviceType: result?.adviceType || 'wisdom'
+    };
+
     return (
       <div className="container mx-auto p-6 max-w-4xl">
         <Card className="border-2 border-primary/20 overflow-hidden">
@@ -736,10 +747,10 @@ export default function FunTestResult() {
             {/* 메인 결과 */}
             <div className="text-center space-y-4">
               <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
-                {result.title}
+                {safeResult.title}
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                {result.description}
+                {safeResult.description}
               </p>
             </div>
 
@@ -749,7 +760,7 @@ export default function FunTestResult() {
               <ImageGenerator 
                 initialPrompt={`wise elderly person giving advice, warm and caring expression, traditional Korean style, beautiful watercolor illustration`}
                 type="test_result"
-                context={`wisdom_advice_${result.adviceType}`}
+                context={`wisdom_advice_${safeResult.adviceType}`}
               />
             </div>
 
@@ -759,19 +770,19 @@ export default function FunTestResult() {
                 <MessageCircle className="w-5 h-5" />
                 당신을 위한 특별한 조언
               </h3>
-              <p className="text-orange-700 text-lg leading-relaxed">{result.advice}</p>
+              <p className="text-orange-700 text-lg leading-relaxed">{safeResult.advice}</p>
             </div>
 
             {/* 재미있는 사실 */}
             <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-200">
               <h3 className="text-xl font-bold mb-3 text-yellow-800">✨ 특별한 메시지</h3>
-              <p className="text-yellow-700 text-lg">{result.funFact}</p>
+              <p className="text-yellow-700 text-lg">{safeResult.funFact}</p>
             </div>
 
             {/* 오늘의 실천 방법 */}
             <div className="bg-green-50 rounded-xl p-6 border border-green-200">
               <h3 className="text-xl font-bold mb-3 text-green-800">🌱 오늘의 실천 방법</h3>
-              <p className="text-green-700 text-lg">{result.recommendation}</p>
+              <p className="text-green-700 text-lg">{safeResult.recommendation}</p>
             </div>
 
             {/* 점수 차트 */}
@@ -783,28 +794,28 @@ export default function FunTestResult() {
                     <Heart className="w-8 h-8 text-pink-600" />
                   </div>
                   <h4 className="font-semibold text-pink-800">가족사랑</h4>
-                  <p className="text-2xl font-bold text-pink-600">{result.scores?.family || 0}</p>
+                  <p className="text-2xl font-bold text-pink-600">{safeResult.scores.family}</p>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-2">
                     <Star className="w-8 h-8 text-green-600" />
                   </div>
                   <h4 className="font-semibold text-green-800">건강관리</h4>
-                  <p className="text-2xl font-bold text-green-600">{result.scores?.health || 0}</p>
+                  <p className="text-2xl font-bold text-green-600">{safeResult.scores.health}</p>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 mx-auto rounded-full bg-blue-100 flex items-center justify-center mb-2">
                     <Crown className="w-8 h-8 text-blue-600" />
                   </div>
                   <h4 className="font-semibold text-blue-800">지혜통찰</h4>
-                  <p className="text-2xl font-bold text-blue-600">{result.scores?.wisdom || 0}</p>
+                  <p className="text-2xl font-bold text-blue-600">{safeResult.scores.wisdom}</p>
                 </div>
                 <div className="text-center">
                   <div className="w-16 h-16 mx-auto rounded-full bg-purple-100 flex items-center justify-center mb-2">
                     <Users className="w-8 h-8 text-purple-600" />
                   </div>
                   <h4 className="font-semibold text-purple-800">경험멘토</h4>
-                  <p className="text-2xl font-bold text-purple-600">{result.scores?.experience || 0}</p>
+                  <p className="text-2xl font-bold text-purple-600">{safeResult.scores.experience}</p>
                 </div>
               </div>
             </div>

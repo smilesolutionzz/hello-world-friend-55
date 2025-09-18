@@ -521,11 +521,12 @@ const Assessment = () => {
   if (currentStep === 'test-type') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden">
-        {/* 최상단 법적 안전 공지 */}
-        <div className="bg-blue-600 text-white py-3 px-4 text-center text-sm">
-          <span className="font-semibold">⚠️ 중요 안내:</span> 본 서비스는 참고용 자가체크 및 심리상담 연결 서비스입니다. 
-          의학적 진단이나 치료행위는 포함되지 않습니다. 정확한 진단은 의료기관에서 받으세요. 
-          <span className="font-semibold ml-2">🚨 응급상황: 119 / 자살예방: 1577-0199</span>
+        {/* 작은 법적 안전 공지 배지 */}
+        <div className="fixed top-4 right-4 z-50">
+          <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow-lg hover:bg-blue-700 transition-colors cursor-pointer group">
+            <span>⚠️</span>
+            <span className="hidden group-hover:inline">참고용 서비스 • 응급시 119</span>
+          </div>
         </div>
         
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
@@ -623,17 +624,17 @@ const Assessment = () => {
 
                   <div 
                     className="bg-white dark:bg-card hover-glow border-2 border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
-                    onClick={() => handleTestTypeSelect('language')}
+                    onClick={() => handleTestTypeSelect('selfesteem')}
                   >
                     <div className="absolute top-3 right-3">
                       <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
                     </div>
-                    <h3 className="text-xl font-bold text-brand-gradient mb-3">영유아언어발달체크</h3>
-                    <p className="text-muted-foreground mb-3 text-sm">연령에 맞춤 20문항으로 간단 확인 (참고용)</p>
+                    <h3 className="text-xl font-bold text-brand-gradient mb-3">영유아 자아가치 체크</h3>
+                    <p className="text-muted-foreground mb-3 text-sm">영유아 연령별 자존감 및 정서발달 확인 (참고용)</p>
                     <ul className="space-y-1 text-sm">
-                      <li>• 연령대별 20문항</li>
-                      <li>• 3분 간단 체크</li>
-                      <li>• 즉시 참고결과 확인</li>
+                      <li>• 연령대별 15문항</li>
+                      <li>• 정서발달 상태 확인</li>
+                      <li>• 자아 발달 분석</li>
                     </ul>
                   </div>
                 </div>
@@ -897,6 +898,42 @@ const Assessment = () => {
                       <li>• MZ세대 맞춤</li>
                       <li>• 현실적인 조언</li>
                       <li>• 이모의 따뜻한 걱정</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 전문 발달 검사 섹션 */}
+          <div className="mb-8">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 via-blue-500/10 to-teal-500/10 rounded-3xl blur-sm"></div>
+              <div className="relative bg-gradient-to-r from-teal-50 via-blue-50 to-teal-50 dark:from-teal-950/10 dark:via-blue-950/10 dark:to-teal-950/10 rounded-2xl p-8 border border-teal-200 dark:border-teal-800">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-full font-bold text-sm mb-4">
+                    🧠 전문 발달 검사
+                  </div>
+                  <h3 className="text-2xl font-bold text-foreground mb-2">발달 전문 검사</h3>
+                  <p className="text-muted-foreground">
+                    연령별 발달 상태를 전문적으로 확인하는 검사
+                  </p>
+                </div>
+                
+                <div className="max-w-4xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-teal-300 dark:border-teal-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => handleTestTypeSelect('language')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-teal-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">영유아언어발달체크</h4>
+                    <p className="text-muted-foreground text-sm mb-3">연령별 언어발달 상태 확인 (참고용)</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 연령대별 20문항</li>
+                      <li>• 언어발달 단계 분석</li>
+                      <li>• 발달 권고사항</li>
                     </ul>
                   </div>
                 </div>

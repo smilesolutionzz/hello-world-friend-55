@@ -71,7 +71,7 @@ const ProfessionalSidebar = () => {
       description: "개인화된 종합 분석 보고서",
       icon: <FileText className="w-5 h-5" />,
       action: "신청하기",
-      route: "/comprehensive-report",
+      route: "/dashboard",
       bgColor: "bg-pink-50",
       textColor: "text-pink-700",
       buttonColor: "bg-pink-600 hover:bg-pink-700"

@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Heart, TrendingUp, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, Heart, TrendingUp, AlertCircle, CheckCircle, Loader2, MessageCircle, Users, HandHeart, Target, Smile, Crown, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, LineChart, Line, AreaChart, Area } from 'recharts';
 
 interface SocialDevelopmentTestResultProps {
   results: {
@@ -23,10 +24,97 @@ interface SocialDevelopmentTestResultProps {
 const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevelopmentTestResultProps) => {
   const [analysis, setAnalysis] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const [socialDomains, setSocialDomains] = useState<any[]>([]);
+  const [detailedAnalysis, setDetailedAnalysis] = useState<any>(null);
   const { toast } = useToast();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
 
+  // 사회성 영역별 분석 함수
+  const analyzeSocialDomains = () => {
+    const { answers } = results;
+    
+    // 각 영역별 문항 인덱스 (0-19, 총 20문항)
+    const domains = {
+      communication: [0, 3, 8, 17], // 의사소통 (문항 1,4,9,18)
+      cooperation: [1, 4, 11, 16], // 협력 (문항 2,5,12,17)
+      empathy: [5, 12, 18], // 공감능력 (문항 6,13,19)
+      conflict: [2, 6, 15], // 갈등해결 (문항 3,7,16)
+      leadership: [14, 18], // 리더십 (문항 15,19)
+      social_cues: [19, 9], // 사회적 단서 이해 (문항 20,10)
+      emotional_regulation: [13, 7, 10] // 감정조절 (문항 14,8,11)
+    };
+
+    const domainData = Object.entries(domains).map(([key, indices]) => {
+      const domainAnswers = indices.map(i => answers[i] || 0);
+      const total = domainAnswers.reduce((sum, val) => sum + val, 0);
+      const maxPossible = indices.length * 4; // 각 문항 최대 4점
+      const percentage = (total / maxPossible) * 100;
+      
+      let level = "우수";
+      let color = "#10B981"; // green
+      if (percentage <= 25) {
+        level = "관심필요";
+        color = "#EF4444"; // red
+      } else if (percentage <= 50) {
+        level = "보통";
+        color = "#F59E0B"; // orange  
+      } else if (percentage <= 75) {
+        level = "양호";
+        color = "#3B82F6"; // blue
+      }
+
+      return {
+        domain: getDomainName(key),
+        score: total,
+        maxScore: maxPossible,
+        percentage: Math.round(percentage),
+        level,
+        color,
+        key
+      };
+    });
+
+    return domainData;
+  };
+
+  const getDomainName = (key: string) => {
+    const names = {
+      communication: "의사소통",
+      cooperation: "협력능력", 
+      empathy: "공감능력",
+      conflict: "갈등해결",
+      leadership: "리더십",
+      social_cues: "사회적 단서",
+      emotional_regulation: "감정조절"
+    };
+    return names[key as keyof typeof names];
+  };
+
+  const getDomainIcon = (key: string) => {
+    const icons = {
+      communication: <MessageCircle className="w-5 h-5" />,
+      cooperation: <Users className="w-5 h-5" />,
+      empathy: <HandHeart className="w-5 h-5" />,
+      conflict: <Shield className="w-5 h-5" />,
+      leadership: <Crown className="w-5 h-5" />,
+      social_cues: <Target className="w-5 h-5" />,
+      emotional_regulation: <Smile className="w-5 h-5" />
+    };
+    return icons[key as keyof typeof icons];
+  };
+
   useEffect(() => {
+    const domains = analyzeSocialDomains();
+    setSocialDomains(domains);
+    
+    // 상세 분석 데이터 생성
+    const detailed = {
+      weakAreas: domains.filter(d => d.percentage <= 50),
+      strongAreas: domains.filter(d => d.percentage >= 75),
+      overallSocialSkill: domains.reduce((sum, d) => sum + d.percentage, 0) / domains.length
+    };
+    setDetailedAnalysis(detailed);
+    
     analyzeResults();
   }, [results]);
 
@@ -36,7 +124,10 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
       const { data, error } = await supabase.functions.invoke('analyze-test-results', {
         body: {
           testType: 'social-development',
-          results,
+          results: {
+            ...results,
+            socialDomains: socialDomains.length > 0 ? socialDomains : analyzeSocialDomains()
+          },
           answers: results.answers
         }
       });

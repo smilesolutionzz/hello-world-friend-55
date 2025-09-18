@@ -85,44 +85,35 @@ function getSystemPrompt(testType: string): string {
   const specificPrompts = {
     'developmental-delay': `${basePrompt}
 
-발달지연 검사 전문가로서, 다음 영역을 중점적으로 분석해주세요:
-- 연령별 발달 기준과의 비교
-- 강점 영역과 지원이 필요한 영역
-- 조기 개입의 중요성
-- 부모/양육자를 위한 구체적 활동 제안`,
+발달지연 검사 전문가로서, 다음 7개 영역을 중점 분석해주세요:
+- 언어발달, 운동발달, 인지발달, 사회성발달, 적응행동, 주의집중, 정서발달
+- 각 영역별 발달 수준과 연령 적합성 평가
+- 조기 개입의 중요성과 구체적 지원 방안
+- 부모/양육자를 위한 실천 가능한 활동 제안`,
 
     'sensory-integration': `${basePrompt}
 
-감각통합장애 검사 전문가로서, 다음 영역을 상세히 분석해주세요:
-- 7가지 감각 영역별 상세 분석 (촉각, 전정감각, 고유수용감각, 청각, 시각, 운동계획, 감각조절)
+감각통합장애 검사 전문가로서, 다음 7개 감각 영역을 상세 분석해주세요:
+- 촉각, 전정감각, 고유수용감각, 청각, 시각, 운동계획, 감각조절
 - 각 영역의 점수와 위험도를 바탕으로 한 구체적 해석
 - 일상생활에서의 구체적 영향과 증상 설명
-- 가정과 학교에서 적용 가능한 감각 조절 전략
-- 치료적 활동 및 환경 조성 방법
-- 전문가 개입이 필요한 영역 식별
-
-**분석 형식:**
-1. 종합 소견 (2-3문장)
-2. 주요 위험 영역 분석 (각 영역별 구체적 설명)
-3. 강점 영역 활용 방안
-4. 실생활 적용 전략 (가정/학교별)
-5. 전문가 권장사항`,
+- 가정과 학교에서 적용 가능한 감각 조절 전략`,
 
     'learning-disability': `${basePrompt}
 
-학습장애 검사 전문가로서, 다음을 중점 분석해주세요:
-- 학습 능력별 강약점
-- 인지 기능 평가
-- 학습 전략 및 지원 방안
-- 교육 환경 개선 제안`,
+학습장애 검사 전문가로서, 다음 7개 학습 영역을 중점 분석해주세요:
+- 읽기능력, 쓰기능력, 수학능력, 주의집중, 기억력, 정보처리, 실행기능
+- 각 영역별 강약점과 학습 패턴 분석
+- 학습 전략 및 교육적 지원 방안
+- 학교와 가정에서의 구체적 지원 방법`,
 
     'social-development': `${basePrompt}
 
-사회성 발달 검사 전문가로서, 다음을 분석해주세요:
-- 사회적 기술 수준
-- 또래 관계 및 상호작용 능력
-- 사회적 적응 전략
-- 사회성 향상을 위한 활동 제안`
+사회성 발달 검사 전문가로서, 다음 7개 사회성 영역을 분석해주세요:
+- 의사소통, 협력능력, 공감능력, 갈등해결, 리더십, 사회적단서, 감정조절
+- 각 영역별 사회적 기술 수준 평가
+- 또래 관계 및 사회적 적응 능력 분석
+- 사회성 향상을 위한 구체적 활동과 전략`
   };
 
   return specificPrompts[testType as keyof typeof specificPrompts] || basePrompt;
@@ -139,21 +130,23 @@ function formatUserPrompt(testType: string, results: any, answers?: number[]): s
 
 ${answers ? `개별 답변 점수: [${answers.join(', ')}]` : ''}`;
 
-  // 감각통합검사의 경우 영역별 분석 추가
-  if (testType === 'sensory-integration' && results.sensoryDomains) {
-    prompt += `\n\n=== 감각 영역별 상세 분석 ===`;
-    results.sensoryDomains.forEach((domain: any) => {
+  // 각 검사별 영역 분석 추가
+  const domainKey = {
+    'developmental-delay': 'developmentalDomains',
+    'sensory-integration': 'sensoryDomains', 
+    'learning-disability': 'learningDomains',
+    'social-development': 'socialDomains'
+  }[testType];
+
+  if (domainKey && results[domainKey]) {
+    prompt += `\n\n=== 영역별 상세 분석 ===`;
+    results[domainKey].forEach((domain: any) => {
       prompt += `\n• ${domain.domain}: ${domain.score}/${domain.maxScore}점 (${domain.percentage}%, ${domain.level})`;
     });
     
-    const riskAreas = results.sensoryDomains.filter((d: any) => d.percentage >= 50);
-    const strengthAreas = results.sensoryDomains.filter((d: any) => d.percentage < 25);
-    
-    if (riskAreas.length > 0) {
-      prompt += `\n\n주의 영역: ${riskAreas.map((area: any) => area.domain).join(', ')}`;
-    }
-    if (strengthAreas.length > 0) {
-      prompt += `\n강점 영역: ${strengthAreas.map((area: any) => area.domain).join(', ')}`;
+    const criticalAreas = results[domainKey].filter((d: any) => d.percentage >= 50 || d.percentage <= 25);
+    if (criticalAreas.length > 0) {
+      prompt += `\n\n주요 관심 영역: ${criticalAreas.map((area: any) => area.domain).join(', ')}`;
     }
   }
 

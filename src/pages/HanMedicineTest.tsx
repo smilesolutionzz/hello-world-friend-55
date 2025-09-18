@@ -75,13 +75,26 @@ const HanMedicineTest = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
-        {/* 헤더 */}
-        <div className="text-center mb-12">
+        {/* 헤더 - 가운데 정렬 */}
+        <div className="text-center mb-12 flex flex-col items-center">
           <h1 className="text-4xl font-bold text-foreground mb-4">
             한방다이어트 - AIH 체질분석 센터
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl">
             전문 AI가 당신의 체질과 대사를 정확히 분석하여 맞춤형 다이어트 솔루션을 제공합니다
+          </p>
+        </div>
+
+        {/* 3분만에 확인하는 우리가족마음건강 섹션 - 가운데 정렬 */}
+        <div className="text-center mb-16 flex flex-col items-center">
+          <h2 className="text-3xl font-bold text-foreground mb-4">
+            3분만에 확인하는 우리가족 마음건강
+          </h2>
+          <p className="text-lg text-muted-foreground mb-6 max-w-2xl">
+            "고민을 말하면, 답을 받는다"
+          </p>
+          <p className="text-muted-foreground max-w-xl">
+            지금 가장 걱정되는 한 문장을 적어보세요
           </p>
         </div>
 
@@ -473,12 +486,12 @@ const HanMedicineTest = () => {
           </div>
         </div>
 
-        {/* 일반 AI와 안전히 다른 차별점 섹션 - 가운데 정렬 */}
-        <div className="mt-16 text-center max-w-6xl mx-auto">
+        {/* 일반 AI와 안전히 다른 차별점 섹션 - 완전 가운데 정렬 */}
+        <div className="mt-16 flex flex-col items-center text-center">
           <h2 className="text-3xl font-bold text-foreground mb-4">
             일반 AI와 <span className="text-primary">안전히 다른</span> 차별점
           </h2>
-          <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground mb-12 max-w-2xl">
             GPT, 클로드와 달리 <strong>모든 결과는 전문가검토</strong>를 거칩니다
           </p>
           

@@ -30,6 +30,8 @@ import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import MobileOptimizedLayout from '@/components/MobileOptimizedLayout';
 import { PlatformGuide } from '@/components/onboarding/PlatformGuide';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
+import SimplifiedFlow from '@/components/mvp/SimplifiedFlow';
+import QuickOnboarding from '@/components/mvp/QuickOnboarding';
 
 const Index = () => {
   console.log('🏠 Index.tsx: Index page component rendering...');
@@ -40,6 +42,7 @@ const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [showGuideComplete, setShowGuideComplete] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showQuickOnboarding, setShowQuickOnboarding] = useState(false);
 
   useEffect(() => {
     // Check for current user
@@ -154,6 +157,11 @@ const Index = () => {
           {/* 1. Hero Section - 서비스 소개 */}
           <div className="animate-fade-in w-full">
             <HeroSection />
+          </div>
+
+          {/* MVP 단순화된 플로우 */}
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.05s' }}>
+            <SimplifiedFlow onStepComplete={(step) => console.log('Step completed:', step)} />
           </div>
           
           {/* 2. 차별점 섹션 - "왜 우리가 다른지" */}

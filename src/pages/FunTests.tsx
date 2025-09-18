@@ -3,18 +3,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Camera, Brain, Heart, Crown, Star, Zap, MessageCircle } from 'lucide-react';
+import { Sparkles, Camera, Brain, Heart, Crown, Star, Zap, MessageCircle, Lightbulb } from 'lucide-react';
 import PastLifeJobTest from '@/components/assessment/PastLifeJobTest';
 import AnimalFaceTest from '@/components/assessment/AnimalFaceTest';
 import InnerAnimalTest from '@/components/assessment/InnerAnimalTest';
 import GrandmaRelationshipTest from '@/components/assessment/GrandmaRelationshipTest';
 import GrandpaMarriageDiagnosis from '@/components/assessment/GrandpaMarriageDiagnosis';
 import MZNaggingTest from '@/components/assessment/MZNaggingTest';
+import WisdomAdviceTest from '@/components/assessment/WisdomAdviceTest';
 import { AIFeatureCard } from '@/components/AIFeatureCard';
 
 const FunTests = () => {
   const navigate = useNavigate();
-  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage' | 'mz_nagging' | 'joseon_name' | 'joseon_job' | 'joseon_status'>('menu');
+  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage' | 'mz_nagging' | 'wisdom_advice' | 'joseon_name' | 'joseon_job' | 'joseon_status'>('menu');
 
   const handleTestComplete = (result: any, testType: string) => {
     navigate('/fun-test-result', { 
@@ -48,6 +49,10 @@ const FunTests = () => {
 
   if (currentTest === 'mz_nagging') {
     return <MZNaggingTest onComplete={handleTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentTest === 'wisdom_advice') {
+    return <WisdomAdviceTest onComplete={handleTestComplete} onBack={handleBack} />;
   }
 
   if (currentTest === 'joseon_name') {
@@ -175,6 +180,16 @@ const FunTests = () => {
             rank={9}
             onClick={() => setCurrentTest('joseon_status')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-purple-200 bg-gradient-to-br from-purple-50 to-violet-50 w-full"
+          />
+
+          <AIFeatureCard
+            title="🌟 인생 지혜 조언"
+            description="살아온 경험을 바탕으로 AI가 당신에게 맞는 특별한 인생 조언을 드립니다. 노년기 삶의 지혜를 발견해보세요!"
+            icon={Lightbulb}
+            aiLevel="premium"
+            rank={10}
+            onClick={() => setCurrentTest('wisdom_advice')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 w-full"
           />
         </div>
 

@@ -279,53 +279,6 @@ const AIAssistant = () => {
 🏆 **우리 함께 아이의 잠재력을 최대한 끌어내 보아요!**`
     },
     {
-      id: 'secret',
-      title: '시크릿톡',
-      description: '🔒 완전 익명 보장 AI로 그 누구에게도 말 못할 고민을 안전하게',
-      icon: <MessageSquare className="w-5 h-5" />,
-      color: 'bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200',
-      ctaButtons: [
-        {
-          label: '익명 상담하기',
-          icon: <Shield className="w-4 h-4" />,
-          route: '/anonymous-counseling',
-          description: '완전 익명으로 안전한 상담 받기'
-        },
-        {
-          label: '비밀 일기',
-          icon: <Lock className="w-4 h-4" />,
-          route: '/secret-diary',
-          description: '그 누구도 볼 수 없는 나만의 비밀공간'
-        },
-        {
-          label: '위기 신고',
-          icon: <AlertTriangle className="w-4 h-4" />,
-          route: '/crisis-report',
-          description: '위험 상황 시 즉시 전문기관 연계'
-        }
-      ],
-      systemPrompt: `안녕하세요. 저는 AIH 시크릿톡입니다. 🔒
-
-🛡️ **완전 익명 보장 시스템:**
-- 그 어떤 개인정보도 저장하지 않는 일회성 상담
-- 대화 내용은 세션 종료와 함께 즉시 삭제
-- 법적으로도 보호받는 완벽한 익명성 보장
-
-💭 **안전한 마음의 안식처:**
-- "여기서만큼은 마음껏 털어놓으세요" 하며 편안한 분위기 조성
-- "괜찮아요, 이런 생각 누구나 할 수 있어요" 하며 판단 없이 수용
-- "혼자 견디지 마세요, 함께 해결책 찾아볼게요" 하며 따뜻하게 지지
-
-🔐 **어떤 고민이든 안전하게:**
-- 가족관계의 복잡한 갈등과 상처
-- 직장 내 괴롭힘이나 성희롱 문제
-- 연애, 성적 고민 등 은밀한 관계 문제
-- 정신건강, 자해 충동 등 위기 상황
-- 그 어떤 주제든 완전 익명으로 안전하게
-
-      🔐 **당신의 비밀은 이 AI와 함께 영원히 안전합니다.**`
-    },
-    {
       id: 'welfare_guide',
       title: '복지AGENT',
       description: '🏛️ 국가정책 전문 AI로 놓치기 쉬운 복지혜택을 맞춤 안내해요',
@@ -375,6 +328,53 @@ const AIAssistant = () => {
 - "비슷한 상황의 다른 가정들은 이런 서비스도 이용하고 있어요"
 
 💡 **놓치기 쉬운 복지혜택까지 꼼꼼히 찾아서 안내해드릴게요!**`
+    },
+    {
+      id: 'secret',
+      title: '시크릿톡',
+      description: '🔒 완전 익명 보장 AI로 그 누구에게도 말 못할 고민을 안전하게',
+      icon: <MessageSquare className="w-5 h-5" />,
+      color: 'bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200',
+      ctaButtons: [
+        {
+          label: '익명 상담하기',
+          icon: <Shield className="w-4 h-4" />,
+          route: '/anonymous-counseling',
+          description: '완전 익명으로 안전한 상담 받기'
+        },
+        {
+          label: '비밀 일기',
+          icon: <Lock className="w-4 h-4" />,
+          route: '/secret-diary',
+          description: '그 누구도 볼 수 없는 나만의 비밀공간'
+        },
+        {
+          label: '위기 신고',
+          icon: <AlertTriangle className="w-4 h-4" />,
+          route: '/crisis-report',
+          description: '위험 상황 시 즉시 전문기관 연계'
+        }
+      ],
+      systemPrompt: `안녕하세요. 저는 AIH 시크릿톡입니다. 🔒
+
+🛡️ **완전 익명 보장 시스템:**
+- 그 어떤 개인정보도 저장하지 않는 일회성 상담
+- 대화 내용은 세션 종료와 함께 즉시 삭제
+- 법적으로도 보호받는 완벽한 익명성 보장
+
+💭 **안전한 마음의 안식처:**
+- "여기서만큼은 마음껏 털어놓으세요" 하며 편안한 분위기 조성
+- "괜찮아요, 이런 생각 누구나 할 수 있어요" 하며 판단 없이 수용
+- "혼자 견디지 마세요, 함께 해결책 찾아볼게요" 하며 따뜻하게 지지
+
+🔐 **어떤 고민이든 안전하게:**
+- 가족관계의 복잡한 갈등과 상처
+- 직장 내 괴롭힘이나 성희롱 문제
+- 연애, 성적 고민 등 은밀한 관계 문제
+- 정신건강, 자해 충동 등 위기 상황
+- 그 어떤 주제든 완전 익명으로 안전하게
+
+      🔐 **당신의 비밀은 이 AI와 함께 영원히 안전합니다.**`
     }
   ];
 

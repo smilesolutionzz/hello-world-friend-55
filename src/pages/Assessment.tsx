@@ -673,14 +673,17 @@ const Assessment = () => {
 
                   <div 
                     className="bg-white dark:bg-card hover-glow border border-green-300 dark:border-green-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
-                    onClick={() => navigate('/developmental-assessment')}
+                    onClick={() => handleTestTypeSelect('language')}
                   >
-                    <h4 className="text-lg font-bold text-brand-gradient mb-3">언어발달 검사</h4>
-                    <p className="text-muted-foreground text-sm mb-3">언어 능력 및 발달 평가</p>
+                    <div className="inline-flex items-center gap-1 bg-green-500 text-white px-2 py-1 rounded-full font-bold text-xs mb-2">
+                      2분체크
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">영유아언어발달체크</h4>
+                    <p className="text-muted-foreground text-sm mb-3">언어발달 2세부터 · 빠른 현상 확인 (한국어)</p>
                     <ul className="space-y-1 text-xs">
-                      <li>• 수용·표현 언어</li>
-                      <li>• 연령별 언어 발달</li>
-                      <li>• 언어지연 조기발견</li>
+                      <li>• 표현어휘 20단어</li>
+                      <li>• 의사표현 단계 분석</li>
+                      <li>• 발달 과정 체크</li>
                     </ul>
                   </div>
 

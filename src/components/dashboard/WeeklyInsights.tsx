@@ -149,8 +149,13 @@ export function WeeklyInsights({
               </div>
               <div className="w-full bg-white/60 rounded-full h-3 overflow-hidden shadow-inner">
                 <div 
-                  className="bg-gradient-to-r from-primary to-primary-glow h-3 rounded-full transition-all duration-700 ease-out shadow-sm relative"
-                  style={{ width: `${Math.max(progress, 8)}%` }}
+                  className="bg-gradient-to-r from-primary via-primary to-primary-glow h-3 rounded-full transition-all duration-700 ease-out shadow-sm relative"
+                  style={{ 
+                    width: `${Math.max(progress, 8)}%`,
+                    background: progress > 0 
+                      ? 'linear-gradient(90deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 50%, hsl(var(--primary-glow)) 100%)'
+                      : 'hsl(var(--primary))'
+                  }}
                 >
                   {progress > 0 && (
                     <div className="absolute right-1 top-0 h-full flex items-center">

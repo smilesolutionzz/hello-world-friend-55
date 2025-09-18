@@ -260,6 +260,170 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
         </CardContent>
       </Card>
 
+      {/* 사회성 영역별 상세 분석 */}
+      {socialDomains.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* 레이더 차트 */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="w-5 h-5 text-blue-600" />
+                사회성 영역별 분석
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart data={socialDomains}>
+                    <PolarGrid />
+                    <PolarAngleAxis dataKey="domain" tick={{ fontSize: 12 }} />
+                    <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10 }} />
+                    <Radar
+                      name="점수"
+                      dataKey="percentage"
+                      stroke="#8B5CF6"
+                      fill="#8B5CF6"
+                      fillOpacity={0.3}
+                      strokeWidth={2}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 막대 차트 */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                영역별 점수 분포
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={socialDomains} layout="horizontal">
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" domain={[0, 100]} />
+                    <YAxis dataKey="domain" type="category" width={80} tick={{ fontSize: 11 }} />
+                    <Tooltip />
+                    <Bar dataKey="percentage" fill="#8B5CF6" radius={[0, 4, 4, 0]}>
+                      {socialDomains.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* 영역별 상세 정보 */}
+      {socialDomains.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-purple-600" />
+              사회성 영역별 상세 분석
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {socialDomains.map((domain, index) => (
+                <div key={index} className="p-4 border rounded-lg bg-card">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      {getDomainIcon(domain.key)}
+                      <h4 className="font-semibold text-sm">{domain.domain}</h4>
+                    </div>
+                    <Badge 
+                      className="text-white text-xs px-2 py-1"
+                      style={{ backgroundColor: domain.color }}
+                    >
+                      {domain.level}
+                    </Badge>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">점수</span>
+                      <span className="font-medium">{domain.score}/{domain.maxScore}</span>
+                    </div>
+                    <Progress value={domain.percentage} className="h-2" />
+                    <div className="text-right">
+                      <span className="text-sm font-medium" style={{ color: domain.color }}>
+                        {domain.percentage}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* 상세 분석 인사이트 */}
+      {detailedAnalysis && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-indigo-600" />
+              상세 분석 리포트
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {detailedAnalysis.weakAreas.length > 0 && (
+              <div className="p-4 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-800">
+                <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  관심이 필요한 영역 ({detailedAnalysis.weakAreas.length}개)
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {detailedAnalysis.weakAreas.map((area: any, index: number) => (
+                    <Badge key={index} variant="destructive" className="text-xs">
+                      {area.domain} ({area.percentage}%)
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {detailedAnalysis.strongAreas.length > 0 && (
+              <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
+                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2 flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4" />
+                  강점 영역 ({detailedAnalysis.strongAreas.length}개)
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {detailedAnalysis.strongAreas.map((area: any, index: number) => (
+                    <Badge key={index} className="bg-green-600 text-white text-xs">
+                      {area.domain} ({area.percentage}%)
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">
+                전체 사회성 지수
+              </h4>
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <Progress value={detailedAnalysis.overallSocialSkill} className="h-3" />
+                </div>
+                <span className="font-bold text-blue-600 text-lg">
+                  {Math.round(detailedAnalysis.overallSocialSkill)}%
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* AI 분석 결과 */}
       <Card>
         <CardHeader>

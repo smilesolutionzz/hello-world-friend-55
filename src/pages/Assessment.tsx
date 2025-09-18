@@ -642,6 +642,91 @@ const Assessment = () => {
             </div>
           </div>
 
+          {/* 발달전문검사 섹션 */}
+          <div className="mb-12">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-green-500/15 via-teal-500/15 to-green-500/15 rounded-3xl blur-sm"></div>
+              <div className="relative bg-gradient-to-r from-green-50 via-teal-50 to-green-50 dark:from-green-950/20 dark:via-teal-950/20 dark:to-green-950/20 rounded-2xl p-8 border border-green-200 dark:border-green-800">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-full font-bold text-sm mb-4">
+                    🧠 발달전문검사
+                  </div>
+                  <h3 className="text-2xl font-bold text-foreground mb-2">아동 · 청소년 발달검사</h3>
+                  <p className="text-muted-foreground">
+                    연령별 발달 상태를 전문적으로 확인하는 검사
+                  </p>
+                </div>
+                
+                <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-green-300 dark:border-green-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => navigate('/developmental-assessment')}
+                  >
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">발달지연 검사</h4>
+                    <p className="text-muted-foreground text-sm mb-3">전반적 발달지연 선별진단</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 전반적 발달 상태</li>
+                      <li>• 연령별 발달 기준</li>
+                      <li>• 조기 선별 가능</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-green-300 dark:border-green-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => navigate('/developmental-assessment')}
+                  >
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">언어발달 검사</h4>
+                    <p className="text-muted-foreground text-sm mb-3">언어 능력 및 발달 평가</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 수용·표현 언어</li>
+                      <li>• 연령별 언어 발달</li>
+                      <li>• 언어지연 조기발견</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-green-300 dark:border-green-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => navigate('/developmental-assessment')}
+                  >
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">감각통합장애 검사</h4>
+                    <p className="text-muted-foreground text-sm mb-3">감각처리 및 통합능력 평가</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 감각 처리 기능</li>
+                      <li>• 통합 능력 평가</li>
+                      <li>• 일상생활 적응</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-green-300 dark:border-green-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => navigate('/developmental-assessment')}
+                  >
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">학습장애 검사</h4>
+                    <p className="text-muted-foreground text-sm mb-3">학습능력 및 인지기능 평가</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 읽기·쓰기·수학</li>
+                      <li>• 인지기능 평가</li>
+                      <li>• 학습전략 제안</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-green-300 dark:border-green-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => navigate('/developmental-assessment')}
+                  >
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">사회성 발달 검사</h4>
+                    <p className="text-muted-foreground text-sm mb-3">사회적 상호작용 및 적응 평가</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 사회적 기술</li>
+                      <li>• 대인관계 능력</li>
+                      <li>• 적응행동 평가</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* 중간 중요도 - AIH 전문가 창작 검사 섹션 */}
           <div className="mb-12">
             <div className="relative">

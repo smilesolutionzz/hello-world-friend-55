@@ -25,6 +25,10 @@ import CareerInterestForm from "@/components/assessment/CareerInterestForm";
 import CareerInterestResult from "@/components/assessment/CareerInterestResult";
 import SelfEsteemTestForm from "@/components/assessment/SelfEsteemTestForm";
 import SelfEsteemTestResult from "@/components/assessment/SelfEsteemTestResult";
+import DevelopmentalDelayTestForm from "@/components/assessment/DevelopmentalDelayTestForm";
+import SensoryIntegrationTestForm from "@/components/assessment/SensoryIntegrationTestForm";
+import LearningDisabilityTestForm from "@/components/assessment/LearningDisabilityTestForm";
+import SocialDevelopmentTestForm from "@/components/assessment/SocialDevelopmentTestForm";
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
@@ -54,8 +58,8 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | null>(null);
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
@@ -71,6 +75,10 @@ const Assessment = () => {
   const [childResults, setChildResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, gameScores: Record<string, number>} | null>(null);
   const [infantResults, setInfantResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, categoryScores: Record<string, number>} | null>(null);
   const [adultResults, setAdultResults] = useState<{answers: Record<string, number>, total: number, average: number, ageGroup: string, categoryScores: Record<string, number>} | null>(null);
+  const [developmentalDelayResults, setDevelopmentalDelayResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
+  const [sensoryIntegrationResults, setSensoryIntegrationResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
+  const [learningDisabilityResults, setLearningDisabilityResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
+  const [socialDevelopmentResults, setSocialDevelopmentResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
   const [currentAssessmentResults, setCurrentAssessmentResults] = useState<any>(null);
@@ -182,11 +190,15 @@ const Assessment = () => {
       case 'attachment': return '관계유형 진단';
       case 'career': return '진로흥미 탐색';
       case 'selfesteem': return '자아가치 측정';
+      case 'developmental-delay': return '발달지연 검사';
+      case 'sensory-integration': return '감각통합장애 검사';
+      case 'learning-disability': return '학습장애 검사';
+      case 'social-development': return '사회성 발달 검사';
       default: return '심리상태 체크';
     }
   };
 
-  const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju') => {
+  const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development') => {
     // 로그인 확인
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -212,6 +224,14 @@ const Assessment = () => {
       setCurrentStep('attachment-test');
     } else if (type === 'career') {
       setCurrentStep('career-test');
+    } else if (type === 'developmental-delay') {
+      setCurrentStep('developmental-delay-test');
+    } else if (type === 'sensory-integration') {
+      setCurrentStep('sensory-integration-test');
+    } else if (type === 'learning-disability') {
+      setCurrentStep('learning-disability-test');
+    } else if (type === 'social-development') {
+      setCurrentStep('social-development-test');
     } else {
       setCurrentStep('legal-notice');
     }
@@ -660,7 +680,7 @@ const Assessment = () => {
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                   <div 
                     className="bg-white dark:bg-card hover-glow border border-green-300 dark:border-green-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
-                    onClick={() => navigate('/developmental-assessment')}
+                    onClick={() => handleTestTypeSelect('developmental-delay')}
                   >
                     <h4 className="text-lg font-bold text-brand-gradient mb-3">발달지연 검사</h4>
                     <p className="text-muted-foreground text-sm mb-3">전반적 발달지연 선별진단</p>
@@ -689,7 +709,7 @@ const Assessment = () => {
 
                   <div 
                     className="bg-white dark:bg-card hover-glow border border-green-300 dark:border-green-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
-                    onClick={() => navigate('/developmental-assessment')}
+                    onClick={() => handleTestTypeSelect('sensory-integration')}
                   >
                     <h4 className="text-lg font-bold text-brand-gradient mb-3">감각통합장애 검사</h4>
                     <p className="text-muted-foreground text-sm mb-3">감각처리 및 통합능력 평가</p>
@@ -702,7 +722,7 @@ const Assessment = () => {
 
                   <div 
                     className="bg-white dark:bg-card hover-glow border border-green-300 dark:border-green-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
-                    onClick={() => navigate('/developmental-assessment')}
+                    onClick={() => handleTestTypeSelect('learning-disability')}
                   >
                     <h4 className="text-lg font-bold text-brand-gradient mb-3">학습장애 검사</h4>
                     <p className="text-muted-foreground text-sm mb-3">학습능력 및 인지기능 평가</p>
@@ -715,7 +735,7 @@ const Assessment = () => {
 
                   <div 
                     className="bg-white dark:bg-card hover-glow border border-green-300 dark:border-green-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
-                    onClick={() => navigate('/developmental-assessment')}
+                    onClick={() => handleTestTypeSelect('social-development')}
                   >
                     <h4 className="text-lg font-bold text-brand-gradient mb-3">사회성 발달 검사</h4>
                     <p className="text-muted-foreground text-sm mb-3">사회적 상호작용 및 적응 평가</p>
@@ -993,41 +1013,6 @@ const Assessment = () => {
             </div>
           </div>
 
-          {/* 전문 발달 검사 섹션 */}
-          <div className="mb-8">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 via-blue-500/10 to-teal-500/10 rounded-3xl blur-sm"></div>
-              <div className="relative bg-gradient-to-r from-teal-50 via-blue-50 to-teal-50 dark:from-teal-950/10 dark:via-blue-950/10 dark:to-teal-950/10 rounded-2xl p-8 border border-teal-200 dark:border-teal-800">
-                <div className="text-center mb-8">
-                  <div className="inline-flex items-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-full font-bold text-sm mb-4">
-                    🧠 전문 발달 검사
-                  </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-2">발달 전문 검사</h3>
-                  <p className="text-muted-foreground">
-                    연령별 발달 상태를 전문적으로 확인하는 검사
-                  </p>
-                </div>
-                
-                <div className="max-w-4xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div 
-                    className="bg-white dark:bg-card hover-glow border border-teal-300 dark:border-teal-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
-                    onClick={() => handleTestTypeSelect('language')}
-                  >
-                    <div className="absolute top-3 right-3">
-                      <Badge className="bg-teal-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
-                    </div>
-                    <h4 className="text-lg font-bold text-brand-gradient mb-3">영유아언어발달체크</h4>
-                    <p className="text-muted-foreground text-sm mb-3">연령별 언어발달 상태 확인 (참고용)</p>
-                    <ul className="space-y-1 text-xs">
-                      <li>• 연령대별 20문항</li>
-                      <li>• 언어발달 단계 분석</li>
-                      <li>• 발달 권고사항</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     );
@@ -1339,19 +1324,34 @@ const Assessment = () => {
         </div>
       </div>
     );
+  
+  // 발달 검사 렌더링
+  if (currentStep === 'developmental-delay-test') {
+    return <DevelopmentalDelayTestForm onComplete={(results) => {
+      setDevelopmentalDelayResults(results);
+      setCurrentStep('developmental-delay-result');
+    }} onBack={handleBack} />;
   }
 
-  if (currentStep === 'selfesteem-result' && selfesteemResults) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <SelfEsteemTestResult 
-            result={selfesteemResults}
-            onRestart={() => setCurrentStep('selfesteem-test')}
-          />
-        </div>
-      </div>
-    );
+  if (currentStep === 'sensory-integration-test') {
+    return <SensoryIntegrationTestForm onComplete={(results) => {
+      setSensoryIntegrationResults(results);
+      setCurrentStep('sensory-integration-result');
+    }} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'learning-disability-test') {
+    return <LearningDisabilityTestForm onComplete={(results) => {
+      setLearningDisabilityResults(results);
+      setCurrentStep('learning-disability-result');
+    }} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'social-development-test') {
+    return <SocialDevelopmentTestForm onComplete={(results) => {
+      setSocialDevelopmentResults(results);
+      setCurrentStep('social-development-result');
+    }} onBack={handleBack} />;
   }
 
 

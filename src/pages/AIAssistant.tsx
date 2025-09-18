@@ -134,7 +134,7 @@ const AIAssistant = () => {
     },
     {
       id: 'counselor',
-      title: 'AIH 심리상담사',
+      title: '심리AGENT',
       description: '💊 심리학 전문 딥러닝 엔진으로 당신의 마음을 깊이 이해해요',
       icon: <Heart className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-pink-50 to-rose-50 border-pink-200',
@@ -177,7 +177,7 @@ const AIAssistant = () => {
     },
     {
       id: 'health_manager',
-      title: 'AIH 헬스관리인',
+      title: '헬스AGENT',
       description: '🏥 의학 데이터 기반 AI로 과학적인 건강 솔루션을 제공해요',
       icon: <Lightbulb className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200',
@@ -228,7 +228,7 @@ const AIAssistant = () => {
     },
     {
       id: 'development_director',
-      title: 'AIH 발달센터장',
+      title: '발달AGENT',
       description: '😊 아동발달학 전문 AI로 우리 아이 성장을 과학적으로 분석해요',
       icon: <Smile className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200',
@@ -280,7 +280,7 @@ const AIAssistant = () => {
     },
     {
       id: 'secret',
-      title: 'AIH 시크릿톡',
+      title: '시크릿톡',
       description: '🔒 완전 익명 보장 AI로 그 누구에게도 말 못할 고민을 안전하게',
       icon: <MessageSquare className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200',
@@ -327,7 +327,7 @@ const AIAssistant = () => {
     },
     {
       id: 'welfare_guide',
-      title: 'AIH 복지길라잡이',
+      title: '복지AGENT',
       description: '🏛️ 국가정책 전문 AI로 놓치기 쉬운 복지혜택을 맞춤 안내해요',
       icon: <Building2 className="w-5 h-5" />,
       color: 'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200',
@@ -665,7 +665,7 @@ const AIAssistant = () => {
               <h1 className="text-3xl md:text-5xl font-bold mb-3 md:mb-6 animate-fade-in">
                 <TypingAnimation
                   className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg"
-                  phrases={["AI 어시스턴트 🚀"]}
+                  phrases={["AIH 에이전트 🚀"]}
                 />
               </h1>
               <div className="absolute -top-2 -left-2 w-12 h-12 md:w-20 md:h-20 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
@@ -674,7 +674,7 @@ const AIAssistant = () => {
             
             <p className="text-base md:text-xl text-white/90 max-w-3xl mx-auto animate-fade-in font-medium px-4" style={{animationDelay: '0.3s'}}>
               🧠 <strong>딥러닝 기반 전문 AI 엔진</strong>으로 각 분야별 수십만 건의 전문 데이터를 학습하여<br/>
-              ✨ <strong>개인 맞춤형 고도화 상담</strong>을 제공하는 차세대 AI 어시스턴트입니다 ✨
+              ✨ <strong>개인 맞춤형 고도화 상담</strong>을 제공하는 차세대 AIH 에이전트입니다 ✨
             </p>
           </div>
 
@@ -802,7 +802,7 @@ const AIAssistant = () => {
                     AI 모드 선택
                   </CardTitle>
                   <CardDescription className="text-white/80 text-sm">
-                    필요에 맞는 AI 어시스턴트 모드를 선택하세요
+                    필요에 맞는 AIH 에이전트 모드를 선택하세요
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3 md:space-y-4 p-3 md:p-6 pt-0">

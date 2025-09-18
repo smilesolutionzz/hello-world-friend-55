@@ -133,9 +133,9 @@ const Index = () => {
   return (
     <>
       <SEOHead 
-        title="하이라이트 - AI 심리상담 플랫폼"
-        description="전문 AI와 함께하는 개인 맞춤형 심리상담 서비스. 언제 어디서나 안전하고 편리한 상담을 받아보세요."
-        keywords="AI상담, 심리상담, 정신건강, 온라인상담, 심리치료"
+        title="AI하이라이트PRO - AI 기반 통합 케어 플랫폼"
+        description="AI와 전문가가 함께하는 종합 케어 플랫폼. 심리상담, 발달평가, 건강관리부터 전문기관 연계까지 전생애 통합 케어 서비스를 제공합니다."
+        keywords="AI케어, 통합케어, 심리상담, 발달평가, 건강관리, 전문상담, 전생애케어"
       />
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
       <div className="min-h-screen max-w-full overflow-x-hidden">

@@ -95,7 +95,7 @@ const ProfessionalSidebar = () => {
           </div>
           <div>
             <h2 className="font-bold text-gray-900">AI하이라이트PRO</h2>
-            <p className="text-sm text-gray-500">AI 심리상담 플랫폼</p>
+            <p className="text-sm text-gray-500">AI 기반 통합 케어 플랫폼</p>
           </div>
         </div>
         

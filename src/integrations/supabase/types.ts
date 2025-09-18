@@ -4256,6 +4256,26 @@ export type Database = {
         Args: { post_id: string }
         Returns: number
       }
+      get_public_expert_info: {
+        Args: { expert_id: string }
+        Returns: {
+          average_rating: number
+          certifications: string[]
+          consultation_methods: string[]
+          education_background: string[]
+          hourly_rate: number
+          id: string
+          is_available: boolean
+          is_verified: boolean
+          languages: string[]
+          professional_title: string
+          profile_image_url: string
+          sanitized_bio: string
+          specializations: string[]
+          total_sessions: number
+          years_experience: number
+        }[]
+      }
       get_public_institutions: {
         Args: Record<PropertyKey, never>
         Returns: {

@@ -93,11 +93,20 @@ function getSystemPrompt(testType: string): string {
 
     'sensory-integration': `${basePrompt}
 
-감각통합장애 검사 전문가로서, 다음 영역을 분석해주세요:
-- 감각 처리 패턴 분석
-- 일상생활에서의 영향
-- 감각 조절 전략
-- 치료적 활동 및 환경 조성 방법`,
+감각통합장애 검사 전문가로서, 다음 영역을 상세히 분석해주세요:
+- 7가지 감각 영역별 상세 분석 (촉각, 전정감각, 고유수용감각, 청각, 시각, 운동계획, 감각조절)
+- 각 영역의 점수와 위험도를 바탕으로 한 구체적 해석
+- 일상생활에서의 구체적 영향과 증상 설명
+- 가정과 학교에서 적용 가능한 감각 조절 전략
+- 치료적 활동 및 환경 조성 방법
+- 전문가 개입이 필요한 영역 식별
+
+**분석 형식:**
+1. 종합 소견 (2-3문장)
+2. 주요 위험 영역 분석 (각 영역별 구체적 설명)
+3. 강점 영역 활용 방안
+4. 실생활 적용 전략 (가정/학교별)
+5. 전문가 권장사항`,
 
     'learning-disability': `${basePrompt}
 
@@ -122,13 +131,33 @@ function getSystemPrompt(testType: string): string {
 function formatUserPrompt(testType: string, results: any, answers?: number[]): string {
   const { total, average, severity, ageGroup } = results;
   
-  return `검사 유형: ${testType}
+  let prompt = `검사 유형: ${testType}
 총점: ${total}점
 평균: ${average.toFixed(1)}점
 수준: ${severity}
 연령대: ${ageGroup}
 
-${answers ? `개별 답변 점수: [${answers.join(', ')}]` : ''}
+${answers ? `개별 답변 점수: [${answers.join(', ')}]` : ''}`;
 
-위 결과를 바탕으로 전문적인 분석과 조언을 제공해주세요.`;
+  // 감각통합검사의 경우 영역별 분석 추가
+  if (testType === 'sensory-integration' && results.sensoryDomains) {
+    prompt += `\n\n=== 감각 영역별 상세 분석 ===`;
+    results.sensoryDomains.forEach((domain: any) => {
+      prompt += `\n• ${domain.domain}: ${domain.score}/${domain.maxScore}점 (${domain.percentage}%, ${domain.level})`;
+    });
+    
+    const riskAreas = results.sensoryDomains.filter((d: any) => d.percentage >= 50);
+    const strengthAreas = results.sensoryDomains.filter((d: any) => d.percentage < 25);
+    
+    if (riskAreas.length > 0) {
+      prompt += `\n\n주의 영역: ${riskAreas.map((area: any) => area.domain).join(', ')}`;
+    }
+    if (strengthAreas.length > 0) {
+      prompt += `\n강점 영역: ${strengthAreas.map((area: any) => area.domain).join(', ')}`;
+    }
+  }
+
+  prompt += `\n\n위 결과를 바탕으로 전문적인 분석과 조언을 제공해주세요.`;
+  
+  return prompt;
 }

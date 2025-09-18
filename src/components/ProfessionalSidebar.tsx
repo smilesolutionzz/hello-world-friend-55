@@ -107,7 +107,7 @@ const ProfessionalSidebar = () => {
             <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
             <div>
               <p className="text-sm font-medium text-gray-700">AI + 전문가 2단계 검증</p>
-              <p className="text-xs text-gray-500">모든 분석은 의료진이 검토합니다</p>
+              <p className="text-xs text-gray-500">모든 리포팅은 의료진 및 전문가가 검토합니다</p>
             </div>
           </div>
           <div className="flex items-start gap-3">

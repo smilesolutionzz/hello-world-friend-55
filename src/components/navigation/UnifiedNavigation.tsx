@@ -149,6 +149,17 @@ export const UnifiedNavigation = () => {
 
             {/* Desktop Menu */}
             <div className="flex items-center gap-1">
+              {/* 홈 버튼 */}
+              <Button
+                variant={isActive('/') ? "default" : "ghost"}
+                size="sm"
+                onClick={() => handleNavigation('/')}
+                className="flex items-center gap-2"
+              >
+                <Home className="w-4 h-4" />
+                홈
+              </Button>
+
               {/* 3분테스트 드롭다운 메뉴 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -252,11 +263,22 @@ export const UnifiedNavigation = () => {
 
                   {/* Navigation Items */}
                   <div className="flex-1 space-y-2">
-                    {/* 핵심 메뉴 */}
+                    {/* 전체 기능 목록 */}
                     <div className="space-y-1">
-                      <p className="text-xs text-muted-foreground mb-2 px-2">주요 기능</p>
-                      {/* 3분테스트 그룹 */}
-                      <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground mb-2 px-2">전체 기능</p>
+                      
+                      {/* 홈 */}
+                      <Button
+                        variant={isActive('/') ? "default" : "ghost"}
+                        className="w-full justify-start gap-3"
+                        onClick={() => handleNavigation('/')}
+                      >
+                        <Home className="w-4 h-4" />
+                        홈
+                      </Button>
+                      
+                      {/* 테스트 그룹 */}
+                      <div className="pl-2 space-y-1">
                         <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">테스트</p>
                         {assessmentSubmenuItems.map((item) => (
                           <Button
@@ -275,7 +297,7 @@ export const UnifiedNavigation = () => {
                         ))}
                       </div>
                       
-                      {/* 기타 주요 기능 */}
+                      {/* 주요 기능들 */}
                       {mainNavigationItems.map((item) => (
                         <Button
                           key={item.path}
@@ -292,11 +314,8 @@ export const UnifiedNavigation = () => {
                           )}
                         </Button>
                       ))}
-                    </div>
-                    
-                    {/* 추가 기능 */}
-                    <div className="space-y-1 pt-2">
-                      <p className="text-xs text-muted-foreground mb-2 px-2">추가 기능</p>
+                      
+                      {/* 추가 기능들 */}
                       {secondaryNavigationItems.map((item) => (
                         <Button
                           key={item.path}

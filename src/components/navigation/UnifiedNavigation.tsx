@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { 
   Brain, 
   Menu, 
@@ -22,7 +28,9 @@ import {
   Calendar,
   Target,
   Heart,
-  Zap
+  Zap,
+  ChevronDown,
+  Crown
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -43,17 +51,21 @@ interface NavigationItem {
 // 상단 네비게이션용 핵심 메뉴
 const mainNavigationItems: NavigationItem[] = [
   { icon: Home, label: '홈', path: '/' },
-  { icon: TrendingUp, label: '3분테스트', path: '/assessment', requiresAuth: false },
   { icon: MessageCircle, label: 'AI에이전트', path: '/ai-assistant', requiresAuth: false },
   { icon: BarChart3, label: '나의DATA', path: '/dashboard', requiresAuth: false },
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: false },
 ];
 
+// 3분테스트 하위 메뉴
+const assessmentSubmenuItems = [
+  { icon: TrendingUp, label: '3분테스트', path: '/assessment', requiresAuth: false },
+  { icon: Crown, label: '프리미엄테스트', path: '/premium-assessment', requiresAuth: false },
+  { icon: Brain, label: '체질분석', path: '/han-medicine-test', requiresAuth: false },
+];
+
 // 사이드바/모바일 메뉴용 추가 기능들
 const secondaryNavigationItems: NavigationItem[] = [
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
-  { icon: FileText, label: '프리미엄테스트', path: '/premium-assessment', requiresAuth: false },
-  { icon: Brain, label: '체질분석', path: '/han-medicine-test', requiresAuth: false },
   { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: false },
 ];
 
@@ -137,6 +149,34 @@ export const UnifiedNavigation = () => {
 
             {/* Desktop Menu */}
             <div className="flex items-center gap-1">
+              {/* 3분테스트 드롭다운 메뉴 */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={isActive('/assessment') || isActive('/premium-assessment') || isActive('/han-medicine-test') ? "default" : "ghost"}
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    3분테스트
+                    <ChevronDown className="w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  {assessmentSubmenuItems.map((item) => (
+                    <DropdownMenuItem
+                      key={item.path}
+                      onClick={() => handleNavigation(item.path, item)}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* 나머지 메인 메뉴들 */}
               {mainNavigationItems.map((item) => (
                 <Button
                   key={item.path}
@@ -215,6 +255,27 @@ export const UnifiedNavigation = () => {
                     {/* 핵심 메뉴 */}
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground mb-2 px-2">주요 기능</p>
+                      {/* 3분테스트 그룹 */}
+                      <div className="space-y-1">
+                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">테스트</p>
+                        {assessmentSubmenuItems.map((item) => (
+                          <Button
+                            key={item.path}
+                            variant={isActive(item.path) ? "default" : "ghost"}
+                            className={`w-full justify-start gap-3 ${
+                              item.path === '/premium-assessment' 
+                                ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
+                                : ''
+                            }`}
+                            onClick={() => handleNavigation(item.path, item)}
+                          >
+                            <item.icon className="w-4 h-4" />
+                            {item.label}
+                          </Button>
+                        ))}
+                      </div>
+                      
+                      {/* 기타 주요 기능 */}
                       {mainNavigationItems.map((item) => (
                         <Button
                           key={item.path}
@@ -240,11 +301,7 @@ export const UnifiedNavigation = () => {
                         <Button
                           key={item.path}
                           variant={isActive(item.path) ? "default" : "ghost"}
-                          className={`w-full justify-start gap-3 ${
-                            item.path === '/premium-assessment' 
-                              ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
-                              : ''
-                          }`}
+                          className="w-full justify-start gap-3"
                           onClick={() => handleNavigation(item.path, item)}
                         >
                           <item.icon className="w-4 h-4" />

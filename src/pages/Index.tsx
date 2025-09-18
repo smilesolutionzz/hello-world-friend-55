@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import ExpertValidationBanner from "@/components/ExpertValidationBanner";
 import HeroSection from "@/components/HeroSection";
 import PlatformOverview from "@/components/PlatformOverview";
 import VideoShowcase from "@/components/VideoShowcase";
@@ -142,6 +143,7 @@ const Index = () => {
         <PlatformGuide onComplete={handleGuideComplete} />
         <ScrollProgressBar />
         <UnifiedNavigation />
+        <ExpertValidationBanner />
         <div className="flex max-w-full">
         {/* Product Sidebar - 모바일에서는 완전히 숨김 */}
         <div className="hidden lg:block fixed left-0 top-16 z-30 h-full">

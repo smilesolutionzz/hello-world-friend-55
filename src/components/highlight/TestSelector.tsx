@@ -151,6 +151,18 @@ export const TestSelector = () => {
       case 'language-development':
         navigate('/assessment');
         break;
+      case 'sensory-integration-test':
+        navigate('/assessment');
+        break;
+      case 'learning-disability-test':
+        navigate('/assessment');
+        break;
+      case 'social-development-test':
+        navigate('/assessment');
+        break;
+      case 'tic-disorder-test':
+        navigate('/assessment');
+        break;
       case 'premium-assessment':
         navigate('/premium-assessment');
         break;

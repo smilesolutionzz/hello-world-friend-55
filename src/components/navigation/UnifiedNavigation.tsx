@@ -40,18 +40,21 @@ interface NavigationItem {
   requiresAuth?: boolean;
 }
 
-const navigationItems: NavigationItem[] = [
+// 상단 네비게이션용 핵심 메뉴
+const mainNavigationItems: NavigationItem[] = [
   { icon: Home, label: '홈', path: '/' },
   { icon: TrendingUp, label: '3분테스트', path: '/assessment', requiresAuth: false },
   { icon: MessageCircle, label: 'AI어시스턴트', path: '/ai-assistant', requiresAuth: false },
+  { icon: BarChart3, label: '나의DATA', path: '/dashboard', requiresAuth: false },
+  { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: false },
+];
+
+// 사이드바/모바일 메뉴용 추가 기능들
+const secondaryNavigationItems: NavigationItem[] = [
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
   { icon: FileText, label: '프리미엄테스트', path: '/premium-assessment', requiresAuth: false },
-  { icon: BarChart3, label: '나의DATA', path: '/dashboard', requiresAuth: false },
-  
-  { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: false },
   { icon: Brain, label: '체질분석', path: '/han-medicine-test', requiresAuth: false },
   { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: false },
-  
 ];
 
 export const UnifiedNavigation = () => {
@@ -60,7 +63,6 @@ export const UnifiedNavigation = () => {
   const { user } = useAuthGuard();
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-
 
   const handleNavigation = (path: string, item?: NavigationItem) => {
     if (item?.requiresAuth && !user) {
@@ -77,7 +79,6 @@ export const UnifiedNavigation = () => {
   };
 
   const handleFAQ = () => {
-    // AI 채팅 열기
     setIsChatOpen(true);
     setIsOpen(false);
   };
@@ -109,7 +110,7 @@ export const UnifiedNavigation = () => {
 
   const canAccess = (item: NavigationItem) => {
     if (!item.requiresAuth) return true;
-    return !!user; // 인증이 필요한 항목은 로그인 상태 확인
+    return !!user;
   };
 
   return (
@@ -136,36 +137,22 @@ export const UnifiedNavigation = () => {
 
             {/* Desktop Menu */}
             <div className="flex items-center gap-1">
-              {navigationItems.map((item) => (
-                  <Button
-                    key={item.path}
-                    variant={isActive(item.path) ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => handleNavigation(item.path, item)}
-                    className={`flex items-center gap-2 ${
-                      item.path === '/premium-assessment' 
-                        ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
-                        : item.path === '/ai-counselor'
-                        ? 'bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 hover:from-purple-100 hover:to-indigo-100 text-purple-800 font-medium'
-                        : item.path === '/wellness-hub'
-                        ? 'bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 hover:from-green-100 hover:to-emerald-100 text-green-800 font-medium'
-                        : item.path === '/ai-coach'
-                        ? 'bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 hover:from-blue-100 hover:to-cyan-100 text-blue-800 font-medium'
-                        : ''
-                    }`}
-                  >
-                    {item.path === '/ai-counselor' ? (
-                      <img src={secretTalkCharacter} alt="시크릿톡" className="w-4 h-4" />
-                    ) : (
-                      <item.icon className="w-4 h-4" />
-                    )}
-                    {item.label}
-                    {item.badge && (
-                      <Badge variant="secondary" className="ml-1 text-xs">
-                        {item.badge}
-                      </Badge>
-                    )}
-                  </Button>
+              {mainNavigationItems.map((item) => (
+                <Button
+                  key={item.path}
+                  variant={isActive(item.path) ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => handleNavigation(item.path, item)}
+                  className="flex items-center gap-2"
+                >
+                  <item.icon className="w-4 h-4" />
+                  {item.label}
+                  {item.badge && (
+                    <Badge variant="secondary" className="ml-1 text-xs">
+                      {item.badge}
+                    </Badge>
+                  )}
+                </Button>
               ))}
 
               {/* Auth Button */}
@@ -225,28 +212,17 @@ export const UnifiedNavigation = () => {
 
                   {/* Navigation Items */}
                   <div className="flex-1 space-y-2">
-                    {navigationItems.map((item) => (
+                    {/* 핵심 메뉴 */}
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground mb-2 px-2">주요 기능</p>
+                      {mainNavigationItems.map((item) => (
                         <Button
                           key={item.path}
                           variant={isActive(item.path) ? "default" : "ghost"}
-                          className={`w-full justify-start gap-3 ${
-                            item.path === '/premium-assessment' 
-                              ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
-                              : item.path === '/ai-counselor'
-                              ? 'bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 hover:from-purple-100 hover:to-indigo-100 text-purple-800 font-medium'
-                              : item.path === '/wellness-hub'
-                              ? 'bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 hover:from-green-100 hover:to-emerald-100 text-green-800 font-medium'
-                              : item.path === '/ai-coach'
-                              ? 'bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 hover:from-blue-100 hover:to-cyan-100 text-blue-800 font-medium'
-                              : ''
-                          }`}
+                          className="w-full justify-start gap-3"
                           onClick={() => handleNavigation(item.path, item)}
                         >
-                          {item.path === '/ai-counselor' ? (
-                            <img src={secretTalkCharacter} alt="시크릿톡" className="w-4 h-4" />
-                          ) : (
-                            <item.icon className="w-4 h-4" />
-                          )}
+                          <item.icon className="w-4 h-4" />
                           {item.label}
                           {item.badge && (
                             <Badge variant="secondary" className="ml-auto text-xs">
@@ -254,72 +230,98 @@ export const UnifiedNavigation = () => {
                             </Badge>
                           )}
                         </Button>
-                     ))}
-                     
-                     {/* Auth Section */}
-                     <div className="pt-4 mt-4 border-t border-border/50">
-                       {user ? (
-                         <div className="space-y-2">
-                           <div className="px-2 py-1 text-xs text-muted-foreground">
-                             로그인 계정: {user.email}
-                           </div>
-                           <Button
-                             variant="ghost"
-                             className="w-full justify-start gap-3 text-red-600 hover:text-red-700 hover:bg-red-50"
-                             onClick={handleAuth}
-                           >
-                             <User className="w-4 h-4" />
-                             로그아웃
-                           </Button>
-                         </div>
-                       ) : (
-                         <div className="space-y-2">
-                           <Button
-                             variant="default"
-                             className="w-full justify-start gap-3"
-                             onClick={handleAuth}
-                           >
-                             <User className="w-4 h-4" />
-                             로그인
-                           </Button>
-                           <Button
-                             variant="outline"
-                             className="w-full justify-start gap-3"
-                             onClick={() => {
-                               navigate('/auth?mode=signup');
-                               setIsOpen(false);
-                             }}
-                           >
-                             <UserCheck className="w-4 h-4" />
-                             회원가입
-                           </Button>
-                         </div>
-                       )}
-                     </div>
-                     
-                     {/* 고객 지원 섹션 */}
-                     <div className="pt-4 mt-4 border-t border-border/50">
-                       <p className="text-xs text-muted-foreground mb-2 px-2">고객 지원</p>
-                       <div className="space-y-1">
-                         <Button
-                           variant="ghost"
-                           className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
-                           onClick={handleFAQ}
-                         >
-                           <HelpCircle className="w-4 h-4" />
-                           질문있나요?
-                         </Button>
-                         <Button
-                           variant="ghost"
-                           className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
-                           onClick={handleContact}
-                         >
-                           <Mail className="w-4 h-4" />
-                           문의하기
-                         </Button>
-                       </div>
-                     </div>
-                   </div>
+                      ))}
+                    </div>
+                    
+                    {/* 추가 기능 */}
+                    <div className="space-y-1 pt-2">
+                      <p className="text-xs text-muted-foreground mb-2 px-2">추가 기능</p>
+                      {secondaryNavigationItems.map((item) => (
+                        <Button
+                          key={item.path}
+                          variant={isActive(item.path) ? "default" : "ghost"}
+                          className={`w-full justify-start gap-3 ${
+                            item.path === '/premium-assessment' 
+                              ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
+                              : ''
+                          }`}
+                          onClick={() => handleNavigation(item.path, item)}
+                        >
+                          <item.icon className="w-4 h-4" />
+                          {item.label}
+                          {item.badge && (
+                            <Badge variant="secondary" className="ml-auto text-xs">
+                              {item.badge}
+                            </Badge>
+                          )}
+                        </Button>
+                      ))}
+                    </div>
+                    
+                    {/* Auth Section */}
+                    <div className="pt-4 mt-4 border-t border-border/50">
+                      {user ? (
+                        <div className="space-y-2">
+                          <div className="px-2 py-1 text-xs text-muted-foreground">
+                            로그인 계정: {user.email}
+                          </div>
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start gap-3 text-red-600 hover:text-red-700 hover:bg-red-50"
+                            onClick={handleAuth}
+                          >
+                            <User className="w-4 h-4" />
+                            로그아웃
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <Button
+                            variant="default"
+                            className="w-full justify-start gap-3"
+                            onClick={handleAuth}
+                          >
+                            <User className="w-4 h-4" />
+                            로그인
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start gap-3"
+                            onClick={() => {
+                              navigate('/auth?mode=signup');
+                              setIsOpen(false);
+                            }}
+                          >
+                            <UserCheck className="w-4 h-4" />
+                            회원가입
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* 고객 지원 섹션 */}
+                    <div className="pt-4 mt-4 border-t border-border/50">
+                      <p className="text-xs text-muted-foreground mb-2 px-2">고객 지원</p>
+                      <div className="space-y-1">
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+                          onClick={handleFAQ}
+                        >
+                          <HelpCircle className="w-4 h-4" />
+                          질문있나요?
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+                          onClick={handleContact}
+                        >
+                          <Mail className="w-4 h-4" />
+                          문의하기
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>

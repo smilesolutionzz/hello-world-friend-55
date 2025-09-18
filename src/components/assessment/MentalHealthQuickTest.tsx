@@ -141,11 +141,11 @@ export const MentalHealthQuickTest: React.FC<MentalHealthQuickTestProps> = ({ on
     setIsAnalyzing(true);
     try {
       // 토큰 잔액 확인
-      const tokenCost = TOKEN_COSTS.HAN_MEDICINE_TEST;
+      const tokenCost = TOKEN_COSTS.PSYCHOLOGICAL_TEST;
       if (!checkTokenAvailability(tokenCost)) {
         toast({
           title: "토큰 부족",
-          description: `통합건강 분석을 위해 ${tokenCost}개의 토큰이 필요합니다.`,
+          description: `빠른 분석을 위해 ${tokenCost}개의 토큰이 필요합니다.`,
           variant: "destructive"
         });
         setIsAnalyzing(false);

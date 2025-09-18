@@ -51,6 +51,20 @@ export const TestSelector = () => {
           duration_minutes: 3
         },
         {
+          id: 'autism-spectrum-test',
+          name: '자폐스펙트럼장애 검사',
+          description: 'ASD 조기선별 및 발달평가',
+          typebot_url: '',
+          duration_minutes: 3
+        },
+        {
+          id: 'developmental-delay-test',
+          name: '발달지연 검사',
+          description: '전반적 발달지연 선별진단',
+          typebot_url: '',
+          duration_minutes: 3
+        },
+        {
           id: 'language-development',
           name: '언어발달 검사',
           description: '언어 능력 및 발달 평가',
@@ -82,6 +96,7 @@ export const TestSelector = () => {
     if (testName.includes('언어')) return MessageSquare;
     if (testName.includes('회복력')) return Activity;
     if (testName.includes('ADHD')) return Brain;
+    if (testName.includes('자폐') || testName.includes('발달지연')) return Brain;
     return Brain;
   };
 
@@ -97,6 +112,12 @@ export const TestSelector = () => {
         navigate('/assessment'); 
         break;
       case 'anxiety-test':
+        navigate('/assessment');
+        break;
+      case 'autism-spectrum-test':
+        navigate('/assessment');
+        break;
+      case 'developmental-delay-test':
         navigate('/assessment');
         break;
       case 'language-development':

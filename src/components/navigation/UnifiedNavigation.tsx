@@ -50,9 +50,14 @@ interface NavigationItem {
 
 // 상단 네비게이션용 핵심 메뉴
 const mainNavigationItems: NavigationItem[] = [
-  { icon: MessageCircle, label: 'AIH 에이전트', path: '/ai-assistant', requiresAuth: false },
   { icon: BarChart3, label: '나의DATA', path: '/dashboard', requiresAuth: false },
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: false },
+];
+
+// AIH 에이전트 하위 메뉴
+const aihSubmenuItems = [
+  { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false },
+  { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
 ];
 
 // 3분테스트 하위 메뉴
@@ -64,7 +69,6 @@ const assessmentSubmenuItems = [
 
 // 사이드바/모바일 메뉴용 추가 기능들
 const secondaryNavigationItems: NavigationItem[] = [
-  { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
   { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: false },
 ];
 
@@ -186,6 +190,33 @@ export const UnifiedNavigation = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* AIH 에이전트 드롭다운 메뉴 */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={isActive('/ai-assistant') || isActive('/observation') ? "default" : "ghost"}
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    AIH 에이전트
+                    <ChevronDown className="w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  {aihSubmenuItems.map((item) => (
+                    <DropdownMenuItem
+                      key={item.path}
+                      onClick={() => handleNavigation(item.path, item)}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               {/* 나머지 메인 메뉴들 */}
               {mainNavigationItems.map((item) => (
                 <Button
@@ -288,6 +319,22 @@ export const UnifiedNavigation = () => {
                                 ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 hover:from-yellow-100 hover:to-orange-100 text-yellow-800 font-medium' 
                                 : ''
                             }`}
+                            onClick={() => handleNavigation(item.path, item)}
+                          >
+                            <item.icon className="w-4 h-4" />
+                            {item.label}
+                          </Button>
+                        ))}
+                      </div>
+                      
+                      {/* AIH 에이전트 그룹 */}
+                      <div className="pl-2 space-y-1">
+                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">AIH 에이전트</p>
+                        {aihSubmenuItems.map((item) => (
+                          <Button
+                            key={item.path}
+                            variant={isActive(item.path) ? "default" : "ghost"}
+                            className="w-full justify-start gap-3"
                             onClick={() => handleNavigation(item.path, item)}
                           >
                             <item.icon className="w-4 h-4" />

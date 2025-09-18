@@ -397,7 +397,7 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
                             <DialogHeader>
                               <DialogTitle>한약 주문하기</DialogTitle>
                               <DialogDescription>
-                                {prescription.name} 처방을 AIH 제휴 한의원에서 조제 받으실 수 있습니다.
+                                {prescription.name} 처방을 가까이한의원에서 조제 받으실 수 있습니다.
                               </DialogDescription>
                             </DialogHeader>
                             <div className="space-y-4">

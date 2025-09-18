@@ -50,8 +50,13 @@ interface NavigationItem {
 
 // 상단 네비게이션용 핵심 메뉴
 const mainNavigationItems: NavigationItem[] = [
-  { icon: BarChart3, label: '나의DATA', path: '/dashboard', requiresAuth: false },
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: false },
+];
+
+// 나의DATA 하위 메뉴
+const dataSubmenuItems = [
+  { icon: BarChart3, label: '개인DATA', path: '/dashboard', requiresAuth: false },
+  { icon: Users, label: '기관DATA', path: '/institution-admin', requiresAuth: false },
 ];
 
 // AIH 에이전트 하위 메뉴
@@ -217,6 +222,33 @@ export const UnifiedNavigation = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* 나의DATA 드롭다운 메뉴 */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={isActive('/dashboard') || isActive('/institution-admin') ? "default" : "ghost"}
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                    나의DATA
+                    <ChevronDown className="w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48 bg-white shadow-lg z-50">
+                  {dataSubmenuItems.map((item) => (
+                    <DropdownMenuItem
+                      key={item.path}
+                      onClick={() => handleNavigation(item.path, item)}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               {/* 나머지 메인 메뉴들 */}
               {mainNavigationItems.map((item) => (
                 <Button
@@ -331,6 +363,22 @@ export const UnifiedNavigation = () => {
                       <div className="pl-2 space-y-1">
                         <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">AIH 에이전트</p>
                         {aihSubmenuItems.map((item) => (
+                          <Button
+                            key={item.path}
+                            variant={isActive(item.path) ? "default" : "ghost"}
+                            className="w-full justify-start gap-3"
+                            onClick={() => handleNavigation(item.path, item)}
+                          >
+                            <item.icon className="w-4 h-4" />
+                            {item.label}
+                          </Button>
+                        ))}
+                      </div>
+                      
+                      {/* 데이터 그룹 */}
+                      <div className="pl-2 space-y-1">
+                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">데이터</p>
+                        {dataSubmenuItems.map((item) => (
                           <Button
                             key={item.path}
                             variant={isActive(item.path) ? "default" : "ghost"}

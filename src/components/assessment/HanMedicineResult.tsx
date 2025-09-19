@@ -28,10 +28,15 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
   const [isGeneratingAnalysis, setIsGeneratingAnalysis] = useState(false);
   const [enhancedAnalysis, setEnhancedAnalysis] = useState<string | null>(null);
   const [clinicInfo, setClinicInfo] = useState<any>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   const generateEnhancedAnalysis = async () => {
     setIsGeneratingAnalysis(true);
+    setAnalysisError(null);
+    
     try {
+      console.log('Generating enhanced analysis for:', result.type);
+      
       const { data, error } = await supabase.functions.invoke('han-medicine-analyzer', {
         body: {
           testType: result.type,
@@ -43,28 +48,73 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
         }
       });
 
-      if (error) throw error;
+      console.log('Analysis response:', { data, error });
 
-      if (data.success) {
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
+
+      if (data && data.analysis) {
         setEnhancedAnalysis(data.analysis);
         setClinicInfo(data.clinicInfo);
         toast({
           title: "AI 분석 완료",
-          description: "전문 한의사 수준의 분석이 완료되었습니다.",
+          description: "30년 경력 한의사 수준의 전문 분석이 완료되었습니다.",
         });
       } else {
-        throw new Error(data.error || '분석 생성 실패');
+        // 실패한 경우에도 기본 분석 제공
+        setEnhancedAnalysis(data?.analysis || generateBasicAnalysis());
+        setAnalysisError("AI 분석 중 일부 문제가 발생했지만, 기본 분석을 제공합니다.");
+        toast({
+          title: "기본 분석 제공",
+          description: "네트워크 문제로 기본 분석을 제공합니다.",
+          variant: "default"
+        });
       }
     } catch (error) {
       console.error('분석 생성 중 오류:', error);
+      setEnhancedAnalysis(generateBasicAnalysis());
+      setAnalysisError("AI 분석 서비스 일시 중단. 기본 분석을 제공합니다.");
       toast({
-        title: "분석 오류",
-        description: "분석 생성 중 오류가 발생했습니다. 다시 시도해주세요.",
-        variant: "destructive"
+        title: "기본 분석 제공",
+        description: "현재 AI 분석 서비스에 일시적 문제가 있어 기본 분석을 제공합니다.",
+        variant: "default"
       });
     } finally {
       setIsGeneratingAnalysis(false);
     }
+  };
+
+  const generateBasicAnalysis = () => {
+    const testNames = {
+      adhd: 'ADHD',
+      autism: '자폐 스펙트럼',
+      atopy: '아토피',
+      intellectual: '인지능력',
+      stress: '스트레스'
+    };
+
+    const testName = testNames[result.type as keyof typeof testNames] || '한방';
+
+    return `🔍 **${testName} 검사 결과 분석**
+
+📊 **검사 점수**: ${result.score}/${result.maxScore}점 (${result.percentage}%)
+🏥 **심각도**: ${result.severity} 단계
+
+💊 **한의학적 접근법**:
+검사 결과를 바탕으로 한의학적 체질 진단과 맞춤형 치료가 필요합니다. ${result.severity === '높음' ? '즉시 전문 한의사와 상담하여 정밀 진단을 받으시길 권합니다.' : '정기적인 관리와 예방 차원의 한방 치료를 고려해보세요.'}
+
+🌿 **추천 관리법**:
+- 개인 체질에 맞는 한약 처방
+- 생활습관 개선 및 식이요법
+- 스트레스 관리와 충분한 휴식
+- 정기적인 전문 상담
+
+⚕️ **전문 상담 권장**:
+더 정확한 진단과 맞춤 치료를 위해 가까이한의원에서 전문 한의사와 상담받으시길 권합니다.
+
+📞 상담 예약: 가까이한의원 1588-1234`;
   };
 
   const goHome = () => {
@@ -175,22 +225,42 @@ ${result.recommendations.map((rec: string, index: number) => `${index + 1}. ${re
         {!enhancedAnalysis && (
           <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
             <CardContent className="p-6 text-center">
-              <h3 className="text-lg font-semibold mb-3">AI 전문 분석 받기</h3>
+              <div className="flex items-center justify-center mb-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-white font-bold text-lg">AI</span>
+                </div>
+                <h3 className="text-lg font-semibold">전문 한의사 수준 AI 분석</h3>
+              </div>
               <p className="text-muted-foreground mb-4">
-                GPT-4.1이 30년 경력 한의사 수준의 전문 분석을 제공합니다
+                🏥 <strong>GPT-4.1</strong>이 30년 경력 한의사의 전문 지식으로 <br/>
+                체질별 맞춤 진단과 치료법을 제공합니다
               </p>
+              <div className="flex items-center justify-center mb-4 space-x-4 text-sm text-muted-foreground">
+                <div className="flex items-center">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                  장부변증 분석
+                </div>
+                <div className="flex items-center">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
+                  맞춤 한약재 추천
+                </div>
+                <div className="flex items-center">
+                  <span className="w-2 h-2 bg-purple-500 rounded-full mr-1"></span>
+                  생활요법 처방
+                </div>
+              </div>
               <Button 
                 onClick={generateEnhancedAnalysis}
                 disabled={isGeneratingAnalysis}
-                className="bg-primary hover:bg-primary/90"
+                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg"
               >
                 {isGeneratingAnalysis ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    AI 분석 생성 중...
+                    전문 분석 생성 중... (약 30초)
                   </>
                 ) : (
-                  '전문 분석 받기'
+                  '🔍 전문 분석 받기 (무료)'
                 )}
               </Button>
             </CardContent>
@@ -202,17 +272,34 @@ ${result.recommendations.map((rec: string, index: number) => `${index + 1}. ${re
           <CardHeader>
             <CardTitle className="flex items-center">
               <Pill className="h-5 w-5 mr-2 text-primary" />
-              한의학적 분석
+              {enhancedAnalysis ? '🏥 전문 한의사 수준 AI 분석' : '기본 한의학적 분석'}
             </CardTitle>
+            {analysisError && (
+              <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-sm text-yellow-800">⚠️ {analysisError}</p>
+              </div>
+            )}
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="prose prose-sm max-w-none">
               {enhancedAnalysis ? (
-                <div className="whitespace-pre-wrap">{enhancedAnalysis}</div>
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border-l-4 border-primary">
+                  <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">{enhancedAnalysis}</div>
+                </div>
               ) : (
-                <p>{result.analysis}</p>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <p className="text-gray-700">{result.analysis}</p>
+                </div>
               )}
             </div>
+            {enhancedAnalysis && clinicInfo && (
+              <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h4 className="font-semibold text-green-800 mb-2">📋 연계 전문 상담 가능</h4>
+                <p className="text-sm text-green-700">
+                  위 분석을 바탕으로 {clinicInfo.name}에서 더 정밀한 진단과 맞춤 치료를 받으실 수 있습니다.
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
 

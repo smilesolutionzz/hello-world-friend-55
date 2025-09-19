@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, CheckCircle, Users, Zap, Shield, Activity, Smile, Phone } from 'lucide-react';
-import KoreanPharmacy3D from '@/components/3d/KoreanPharmacy3D';
 import ExpertValidationBanner from '@/components/ExpertValidationBanner';
 import { SasangConstitutionTest } from '@/components/assessment/SasangConstitutionTest';
 import { SasangConstitutionResult } from '@/components/assessment/SasangConstitutionResult';
@@ -81,13 +80,12 @@ const HanMedicineTest = () => {
   }
 
   return (
-    <KoreanPharmacy3D>
-    <div className="min-h-screen bg-gradient-to-br from-green-50/80 via-blue-50/60 to-purple-50/40 py-4 sm:py-8 px-4 overflow-y-auto">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-4 sm:py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* 헤더 - 가운데 정렬 */}
         <div className="text-center mb-8 sm:mb-12 flex flex-col items-center px-2">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            한방솔루션
+            한방다이어트 - AIH 체질분석 센터
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
             전문 AI가 당신의 체질과 대사를 정확히 분석하여 맞춤형 다이어트 솔루션을 제공합니다
@@ -799,7 +797,6 @@ const HanMedicineTest = () => {
 
       </div>
     </div>
-    </KoreanPharmacy3D>
   );
 };
 

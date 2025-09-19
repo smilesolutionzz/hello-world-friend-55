@@ -35,6 +35,18 @@ const FreeTrialAssessment = () => {
       badge: '추천',
       route: '/assessment/stress-test'
     },
+    {
+      id: 'personality-simple',
+      title: '간단 성격유형 테스트',
+      subtitle: '나는 어떤 성격일까요?',
+      description: '외향성, 내향성, 감정 표현 방식 등 기본적인 성격 특성을 알아볼 수 있습니다.',
+      duration: '5-7분',
+      questions: 25,
+      icon: Target,
+      gradient: 'from-green-500 to-teal-600',
+      badge: '신규',
+      route: '/assessment/personality-love-test'
+    }
   ];
 
   // 토큰이 필요한 프리미엄 테스트들 (차단됨)

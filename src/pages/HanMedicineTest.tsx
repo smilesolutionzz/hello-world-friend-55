@@ -194,18 +194,6 @@ const HanMedicineTest = () => {
           </div>
         </div>
 
-        {/* 3분만에 확인하는 우리가족마음건강 섹션 - 가운데 정렬 */}
-        <div className="text-center mb-16 flex flex-col items-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            3분만에 확인하는 우리가족 마음건강
-          </h2>
-          <p className="text-lg text-muted-foreground mb-6 max-w-2xl">
-            "고민을 말하면, 답을 받는다"
-          </p>
-          <p className="text-muted-foreground max-w-xl">
-            지금 가장 걱정되는 한 문장을 적어보세요
-          </p>
-        </div>
 
         {/* 테스트 선택 카드 */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">

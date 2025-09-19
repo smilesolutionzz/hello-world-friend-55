@@ -90,6 +90,76 @@ const questions = [
       { value: 'fatigue', label: '피로감이나 무기력', points: { soyang: 0, soeum: 3, taeyang: 1, taeeum: 2 } },
       { value: 'insomnia', label: '불면이나 예민함', points: { soyang: 3, soeum: 2, taeyang: 1, taeeum: 0 } }
     ]
+  },
+  {
+    id: 'voice_speaking',
+    question: '당신의 목소리와 말하는 스타일은?',
+    options: [
+      { value: 'loud_fast', label: '크고 빠르게 말함', points: { soyang: 3, soeum: 0, taeyang: 2, taeeum: 1 } },
+      { value: 'clear_steady', label: '또렷하고 침착하게', points: { soyang: 1, soeum: 1, taeyang: 3, taeeum: 2 } },
+      { value: 'soft_gentle', label: '부드럽고 조용하게', points: { soyang: 0, soeum: 3, taeyang: 1, taeeum: 2 } },
+      { value: 'varies', label: '상황에 따라 다름', points: { soyang: 2, soeum: 2, taeyang: 1, taeeum: 1 } }
+    ]
+  },
+  {
+    id: 'facial_features',
+    question: '얼굴형과 이목구비는 어떤 편인가요?',
+    options: [
+      { value: 'angular_sharp', label: '각지고 날카로운 편', points: { soyang: 3, soeum: 1, taeyang: 2, taeeum: 0 } },
+      { value: 'round_soft', label: '둥글고 부드러운 편', points: { soyang: 0, soeum: 2, taeyang: 1, taeeum: 3 } },
+      { value: 'long_oval', label: '긴 타원형', points: { soyang: 1, soeum: 3, taeyang: 1, taeeum: 1 } },
+      { value: 'square_wide', label: '사각형이고 넓은 편', points: { soyang: 1, soeum: 0, taeyang: 3, taeeum: 2 } }
+    ]
+  },
+  {
+    id: 'movement_posture',
+    question: '평소 걸음걸이와 자세는?',
+    options: [
+      { value: 'quick_energetic', label: '빠르고 활기찬 편', points: { soyang: 3, soeum: 0, taeyang: 2, taeeum: 1 } },
+      { value: 'stable_confident', label: '안정되고 당당한 편', points: { soyang: 1, soeum: 0, taeyang: 3, taeeum: 2 } },
+      { value: 'gentle_careful', label: '조심스럽고 신중한 편', points: { soyang: 0, soeum: 3, taeyang: 1, taeeum: 2 } },
+      { value: 'slow_heavy', label: '느리고 묵직한 편', points: { soyang: 0, soeum: 1, taeyang: 1, taeeum: 3 } }
+    ]
+  },
+  {
+    id: 'skin_condition',
+    question: '피부 상태와 특징은?',
+    options: [
+      { value: 'oily_acne', label: '기름기 많고 트러블 생기기 쉬움', points: { soyang: 3, soeum: 0, taeyang: 1, taeeum: 2 } },
+      { value: 'dry_sensitive', label: '건조하고 민감한 편', points: { soyang: 1, soeum: 3, taeyang: 2, taeeum: 0 } },
+      { value: 'thick_rough', label: '두껍고 거친 편', points: { soyang: 0, soeum: 1, taeyang: 3, taeeum: 2 } },
+      { value: 'soft_smooth', label: '부드럽고 매끄러운 편', points: { soyang: 1, soeum: 2, taeyang: 1, taeeum: 3 } }
+    ]
+  },
+  {
+    id: 'water_intake',
+    question: '물을 마시는 습관은?',
+    options: [
+      { value: 'cold_much', label: '찬물을 많이 마심', points: { soyang: 3, soeum: 0, taeyang: 2, taeeum: 1 } },
+      { value: 'warm_regular', label: '따뜻한 물을 규칙적으로', points: { soyang: 0, soeum: 3, taeyang: 1, taeeum: 2 } },
+      { value: 'room_temp', label: '미지근한 물을 적당히', points: { soyang: 1, soeum: 1, taeyang: 2, taeeum: 2 } },
+      { value: 'little_intake', label: '물을 잘 마시지 않음', points: { soyang: 2, soeum: 2, taeyang: 1, taeeum: 1 } }
+    ]
+  },
+  {
+    id: 'bowel_movement',
+    question: '배변 습관은 어떤가요?',
+    options: [
+      { value: 'regular_formed', label: '규칙적이고 잘 형성됨', points: { soyang: 2, soeum: 1, taeyang: 3, taeeum: 2 } },
+      { value: 'loose_frequent', label: '묽고 자주 봄', points: { soyang: 3, soeum: 1, taeyang: 1, taeeum: 0 } },
+      { value: 'constipated', label: '변비가 자주 있음', points: { soyang: 1, soeum: 3, taeyang: 2, taeeum: 2 } },
+      { value: 'irregular', label: '불규칙하고 일정하지 않음', points: { soyang: 2, soeum: 2, taeyang: 1, taeeum: 1 } }
+    ]
+  },
+  {
+    id: 'exercise_preference',
+    question: '선호하는 운동이나 활동은?',
+    options: [
+      { value: 'intense_cardio', label: '격렬한 유산소 운동', points: { soyang: 3, soeum: 0, taeyang: 2, taeeum: 1 } },
+      { value: 'strength_training', label: '웨이트나 근력 운동', points: { soyang: 1, soeum: 0, taeyang: 3, taeeum: 2 } },
+      { value: 'gentle_yoga', label: '요가나 스트레칭', points: { soyang: 0, soeum: 3, taeyang: 1, taeeum: 2 } },
+      { value: 'walking_light', label: '산책이나 가벼운 운동', points: { soyang: 1, soeum: 2, taeyang: 2, taeeum: 3 } }
+    ]
   }
 ];
 
@@ -172,7 +242,7 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('sasang-analyzer', {
+      const { data, error } = await supabase.functions.invoke('enhanced-constitution-analyzer', {
         body: { constitution, scores, answers },
         headers: {
           Authorization: `Bearer ${session.access_token}`,

@@ -17,6 +17,7 @@ import { HanMedicineResult } from '@/components/assessment/HanMedicineResult';
 import { StressTest } from '@/components/assessment/StressTest';
 import { WomensHealthTest } from '@/components/assessment/WomensHealthTest';
 import { WomensHealthResult } from '@/components/assessment/WomensHealthResult';
+import { EnhancedConstitutionResult } from '@/components/assessment/EnhancedConstitutionResult';
 
 type TestType = 'none' | 'quick' | 'premium' | 'diet' | 'autism' | 'adhd' | 'intellectual' | 'atopy' | 'stress' | 'women';
 type TestState = 'select' | 'testing' | 'result';
@@ -66,7 +67,7 @@ const HanMedicineTest = () => {
 
   if (testState === 'result' && testResult) {
     if (currentTest === 'quick') {
-      return <SasangConstitutionResult result={testResult} onRestart={handleRestart} />;
+      return <EnhancedConstitutionResult result={testResult} onRestart={handleRestart} />;
     } else if (currentTest === 'premium') {
       return <HanMedicinePremiumResult result={testResult} onRestart={handleRestart} />;
     } else if (currentTest === 'diet') {

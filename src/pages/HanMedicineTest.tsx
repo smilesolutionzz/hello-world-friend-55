@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, CheckCircle, Users, Zap, Shield, Activity, Smile } from 'lucide-react';
+import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, CheckCircle, Users, Zap, Shield, Activity, Smile, Phone } from 'lucide-react';
 import ExpertValidationBanner from '@/components/ExpertValidationBanner';
 import { SasangConstitutionTest } from '@/components/assessment/SasangConstitutionTest';
 import { SasangConstitutionResult } from '@/components/assessment/SasangConstitutionResult';
@@ -128,38 +128,53 @@ const HanMedicineTest = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-              <CardContent className="pt-8 pb-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Shield className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-4 text-primary">3분만에 결과 확인</h3>
-                <div className="flex items-center justify-center space-x-2 sm:space-x-4 mb-6">
-                  <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                      <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
-                    </div>
-                    <span className="text-xs">간단 질문</span>
+            <Card className="text-center border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 overflow-hidden">
+              <CardContent className="pt-8 pb-8 relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-green-500/10 animate-pulse"></div>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+                    <Shield className="h-8 w-8 text-primary" />
                   </div>
-                  <div className="w-3 sm:w-6 h-0.5 bg-primary"></div>
-                  <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                      <Brain className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-primary">한의사와 비대면 진료</h3>
+                  <div className="flex items-center justify-center space-x-2 sm:space-x-4 mb-6">
+                    <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center animate-pulse">
+                        <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                      </div>
+                      <span className="text-xs font-medium">체질분석</span>
                     </div>
-                    <span className="text-xs">AI분석</span>
-                  </div>
-                  <div className="w-3 sm:w-6 h-0.5 bg-primary"></div>
-                  <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-full flex items-center justify-center">
-                      <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                    <div className="w-3 sm:w-6 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                    <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-purple-500 rounded-full flex items-center justify-center animate-pulse">
+                        <Brain className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                      </div>
+                      <span className="text-xs font-medium">맞춤처방</span>
                     </div>
-                    <span className="text-xs">즉시확인</span>
+                    <div className="w-3 sm:w-6 h-0.5 bg-gradient-to-r from-purple-500 to-green-500"></div>
+                    <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
+                        <Heart className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
+                      </div>
+                      <span className="text-xs font-medium">비대면진료</span>
+                    </div>
                   </div>
-                </div>
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                  <p className="text-sm text-green-700 font-medium">
-                    ✅ 바로 확인: 3분 이내
-                  </p>
+                  <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-lg p-4 mb-4">
+                    <div className="flex items-center justify-center mb-2">
+                      <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse mr-2"></div>
+                      <span className="text-sm font-medium text-emerald-700">실시간 전문가 연결</span>
+                    </div>
+                    <p className="text-sm text-emerald-700 font-medium">
+                      ✅ 24시간 온라인 상담 가능
+                    </p>
+                  </div>
+                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg p-3">
+                    <div className="text-xs text-blue-700 font-medium mb-1">
+                      🏥 전국 1,200+ 한의원 제휴
+                    </div>
+                    <div className="text-xs text-purple-700">
+                      🎯 맞춤 처방 즉시 배송
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -169,34 +184,61 @@ const HanMedicineTest = () => {
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Target className="h-8 w-8 text-purple-500" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4">오늘의 분석 현황</h3>
+                <h3 className="text-xl font-semibold mb-4">오늘의 진료 현황</h3>
                 <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-4 mb-4">
                   <div className="flex items-center justify-center space-x-2 mb-2">
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                    <span className="text-sm font-medium">분석 진행중</span>
-                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">실시간</span>
+                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm font-medium">진료 진행중</span>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">LIVE</span>
                   </div>
-                  <div className="text-4xl font-bold text-primary mb-2">1,247건</div>
-                  <div className="text-sm text-muted-foreground">누적 체질분석 완료</div>
+                  <div className="text-4xl font-bold text-primary mb-2">2,847건</div>
+                  <div className="text-sm text-muted-foreground">누적 비대면 진료 완료</div>
                 </div>
                 <div className="flex items-center justify-center space-x-2 text-xs text-muted-foreground">
                   <Sparkles className="h-4 w-4 text-yellow-500" />
-                  <span>지금 바로 시작해보세요</span>
+                  <span>전문 한의사와 상담하세요</span>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl px-4 sm:px-8 py-4 sm:py-6 border border-emerald-200 max-w-3xl mx-auto">
-            <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-sm sm:text-lg font-semibold text-emerald-700">
-                  🌿 내 체질에 맞는 건강법, 지금 확인해보세요!
-                </span>
-              </div>
-              <div className="bg-emerald-500 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium">
-                무료 체험
+          <div className="bg-gradient-to-r from-emerald-50 via-blue-50 to-purple-50 rounded-3xl px-4 sm:px-8 py-6 sm:py-8 border-2 border-transparent bg-clip-border max-w-5xl mx-auto relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-200/30 via-blue-200/30 to-purple-200/30 animate-pulse rounded-3xl"></div>
+            <div className="relative z-10">
+              <div className="flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0 lg:space-x-8">
+                <div className="flex-1 text-center lg:text-left">
+                  <div className="flex items-center justify-center lg:justify-start space-x-2 mb-3">
+                    <div className="w-4 h-4 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <span className="text-lg sm:text-xl font-bold text-emerald-700">
+                      🌿 전국 한의원과 연결된 스마트 진료 시스템
+                    </span>
+                  </div>
+                  <p className="text-sm sm:text-base text-gray-700 mb-4">
+                    AI 체질분석 → 전문 한의사 매칭 → 맞춤 처방 → 약재 배송까지 원스톱 서비스
+                  </p>
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-2">
+                    <div className="bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-emerald-200">
+                      ⚡ 5분 내 한의사 연결
+                    </div>
+                    <div className="bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-blue-200">
+                      📱 비대면 진료
+                    </div>
+                    <div className="bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium border border-purple-200">
+                      🚚 당일 배송
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col space-y-3">
+                  <Button className="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white px-8 py-3 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200">
+                    <Heart className="h-5 w-5 mr-2" />
+                    지금 바로 진료 받기
+                  </Button>
+                  <div className="text-center">
+                    <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-medium">
+                      💎 프리미엄 서비스 무료 체험
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -284,43 +326,60 @@ const HanMedicineTest = () => {
             </CardContent>
           </Card>
 
-          {/* 프리미엄 종합 검사 - 임시 비활성화 */}
-          <Card className="relative overflow-hidden border-2 border-gray-200 transition-colors bg-gray-50 opacity-75">
+          {/* 프리미엄 종합 검사 - 활성화 */}
+          <Card className="relative overflow-hidden border-2 border-gradient-to-r from-gold-300 to-amber-300 transition-colors cursor-pointer group bg-gradient-to-br from-amber-50 to-yellow-50 shadow-lg">
             <div className="absolute top-4 right-4">
-              <Crown className="h-6 w-6 text-gray-400" />
+              <Crown className="h-6 w-6 text-amber-500" />
             </div>
-            <div className="absolute inset-0 bg-gray-100/50 flex items-center justify-center z-10">
-              <div className="bg-white rounded-lg p-4 shadow-lg text-center">
-                <p className="text-sm font-medium text-gray-600 mb-2">서비스 점검 중</p>
-                <p className="text-xs text-gray-500">곧 다시 만나요!</p>
+            <div className="absolute top-2 left-2">
+              <div className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                NEW
               </div>
             </div>
             <CardHeader>
-              <CardTitle className="text-xl flex items-center text-gray-500">
-                <Crown className="h-6 w-6 mr-2 text-gray-400" />
+              <CardTitle className="text-xl flex items-center text-amber-700">
+                <Crown className="h-6 w-6 mr-2 text-amber-500" />
                 프리미엄 종합 분석
               </CardTitle>
-              <CardDescription className="text-gray-400">
-                오장육부 상태까지 정밀 분석하는 한의학 검사
+              <CardDescription className="text-amber-600">
+                AI + 전문 한의사가 함께하는 정밀 체질 분석
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Star className="h-4 w-4 text-gray-400" />
-                <span className="text-sm text-gray-500">소요시간: 10-15분</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm">소요시간: 10-15분</span>
+                </div>
+                <div className="bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 px-3 py-1 rounded text-xs font-medium border border-amber-200">
+                  15토큰
+                </div>
               </div>
               <div className="space-y-2">
-                <p className="text-sm text-gray-400">✓ 체질 + 오장육부 종합 분석</p>
-                <p className="text-sm text-gray-400">✓ 맞춤 한방 처방 추천</p>
-                <p className="text-sm text-gray-400">✓ 상세 식이요법 가이드</p>
-                <p className="text-sm text-gray-400">✓ 혈자리 지압법 안내</p>
-                <p className="text-sm text-gray-400">✓ 계절별 건강관리법</p>
+                <p className="text-sm text-amber-700">✓ AI + 한의사 이중 분석</p>
+                <p className="text-sm text-amber-700">✓ 오장육부 정밀 진단</p>
+                <p className="text-sm text-amber-700">✓ 3D 체질 분석 그래프</p>
+                <p className="text-sm text-amber-700">✓ 맞춤 한방 처방전</p>
+                <p className="text-sm text-amber-700">✓ 1:1 전문가 화상 상담</p>
+                <p className="text-sm text-amber-700">✓ 6개월 건강 관리 플랜</p>
+              </div>
+              <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-lg p-3">
+                <div className="flex items-center justify-center mb-1">
+                  <Crown className="h-4 w-4 text-amber-500 mr-2" />
+                  <span className="text-sm font-medium text-amber-700">프리미엄 혜택</span>
+                </div>
+                <p className="text-xs text-amber-600">
+                  • 전국 제휴 한의원 20% 할인
+                  • 한약 처방 무료 배송
+                  • 24시간 전문가 상담
+                </p>
               </div>
               <Button 
-                disabled
-                className="w-full bg-gray-300 text-gray-500 cursor-not-allowed"
+                onClick={() => handleTestSelection('premium')}
+                className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white group-hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
-                점검 중
+                <Crown className="h-4 w-4 mr-2" />
+                프리미엄 분석 시작하기
               </Button>
             </CardContent>
           </Card>
@@ -619,7 +678,111 @@ const HanMedicineTest = () => {
               <p className="text-sm text-muted-foreground">장기적 건강 관리와 개선 추적</p>
             </div>
           </div>
-        </div>
+          </div>
+
+          {/* 한의원 제휴 섹션 */}
+          <div className="mt-16 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-indigo-500/20 animate-pulse"></div>
+            <div className="relative z-10">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                  🏥 전국 한의원 제휴 프로그램
+                </h2>
+                <p className="text-lg sm:text-xl text-blue-100 max-w-3xl mx-auto">
+                  최첨단 AI 체질분석 시스템으로 환자 만족도를 높이고 수익을 극대화하세요
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-8 mb-12">
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-10 w-10 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">환자 유입 증대</h3>
+                  <p className="text-blue-100">AI 체질분석으로 월 평균 200% 환자 증가</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Zap className="h-10 w-10 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">진료 효율성</h3>
+                  <p className="text-blue-100">사전 분석으로 진료 시간 50% 단축</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Star className="h-10 w-10 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">만족도 향상</h3>
+                  <p className="text-blue-100">정확한 체질분석으로 치료 만족도 95%</p>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 mb-8">
+                <div className="grid md:grid-cols-2 gap-8 items-center">
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4">🚀 제휴 혜택</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-3" />
+                        <span>무료 AI 체질분석 시스템 도입</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-3" />
+                        <span>전용 관리자 패널 제공</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-3" />
+                        <span>환자 DB 및 진료 이력 관리</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-3" />
+                        <span>비대면 진료 플랫폼 연동</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="h-5 w-5 text-green-400 mr-3" />
+                        <span>마케팅 지원 및 홍보</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="bg-gradient-to-br from-yellow-400 to-orange-400 rounded-2xl p-6 mb-6">
+                      <div className="text-3xl font-bold text-white mb-2">1,200+</div>
+                      <div className="text-white">제휴 한의원</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-green-400 to-emerald-400 rounded-2xl p-6">
+                      <div className="text-3xl font-bold text-white mb-2">95%</div>
+                      <div className="text-white">만족도</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="inline-flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                  <Button 
+                    size="lg" 
+                    className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-black font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200"
+                  >
+                    <Crown className="h-5 w-5 mr-2" />
+                    제휴 문의하기
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="border-white text-white hover:bg-white hover:text-black px-8 py-4 rounded-full"
+                  >
+                    <Phone className="h-5 w-5 mr-2" />
+                    1588-1234
+                  </Button>
+                </div>
+                <p className="text-sm text-blue-100 mt-4">
+                  📞 제휴 문의: 평일 9:00-18:00 | 📧 partnership@hanmedicine.ai
+                </p>
+              </div>
+            </div>
+          </div>
 
         {/* 신뢰성 표시 */}
         <div className="mt-12 text-center">

@@ -85,13 +85,13 @@ const HanMedicineTest = () => {
           </p>
         </div>
 
-        {/* 일반 AI와 안전히 다른 차별점 섹션 - 완전 가운데 정렬 */}
+        {/* 나만의 체질 찾기 섹션 - 완전 가운데 정렬 */}
         <div className="mb-16 flex flex-col items-center text-center">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            일반 AI와 <span className="text-primary">안전히 다른</span> 차별점
+            나만의 <span className="text-primary">체질을 찾아</span> 건강해지세요
           </h2>
           <p className="text-lg text-muted-foreground mb-12 max-w-2xl">
-            GPT, 클로드와 달리 <strong>모든 결과는 전문가검토</strong>를 거칩니다
+            천 년의 한의학 지혜와 현대 AI가 만나 <strong>당신만의 맞춤 솔루션</strong>을 제공합니다
           </p>
           
           <div className="grid md:grid-cols-3 gap-8 mb-12">
@@ -100,23 +100,23 @@ const HanMedicineTest = () => {
                 <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Heart className="h-8 w-8 text-red-500" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4">전문 한의학 AI</h3>
+                <h3 className="text-xl font-semibold mb-4">내 몸에 딱 맞는 처방</h3>
                 <div className="space-y-3">
                   <div className="flex items-center justify-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground text-left">AI+한방전문가 검토</span>
+                    <span className="text-sm text-muted-foreground text-left">사상체질별 맞춤 식단</span>
                   </div>
                   <div className="flex items-center justify-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground text-left">신뢰도 검증</span>
+                    <span className="text-sm text-muted-foreground text-left">개인별 생활습관 처방</span>
                   </div>
                   <div className="flex items-center justify-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground text-left">혁신 안정</span>
+                    <span className="text-sm text-muted-foreground text-left">체질개선 운동법</span>
                   </div>
                   <div className="flex items-center justify-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground text-left">전문가 추천</span>
+                    <span className="text-sm text-muted-foreground text-left">한방차 추천</span>
                   </div>
                 </div>
               </CardContent>
@@ -127,32 +127,32 @@ const HanMedicineTest = () => {
                 <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Shield className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-primary">2단계 검증 시스템</h3>
+                <h3 className="text-xl font-semibold mb-4 text-primary">3분만에 결과 확인</h3>
                 <div className="flex items-center justify-center space-x-4 mb-6">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                      <Brain className="h-4 w-4 text-white" />
+                      <Clock className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-xs">AI 분석</span>
+                    <span className="text-xs">간단 질문</span>
                   </div>
                   <div className="w-6 h-0.5 bg-primary"></div>
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                      <Users className="h-4 w-4 text-white" />
+                      <Brain className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-xs">전문가검토</span>
+                    <span className="text-xs">AI분석</span>
                   </div>
                   <div className="w-6 h-0.5 bg-primary"></div>
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                       <CheckCircle className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-xs">검증완료</span>
+                    <span className="text-xs">즉시확인</span>
                   </div>
                 </div>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                   <p className="text-sm text-green-700 font-medium">
-                    ✅ 한의사 검토: 2분 30초
+                    ✅ 바로 확인: 3분 이내
                   </p>
                 </div>
               </CardContent>
@@ -163,32 +163,32 @@ const HanMedicineTest = () => {
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Target className="h-8 w-8 text-purple-500" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4">실시간 현황</h3>
+                <h3 className="text-xl font-semibold mb-4">오늘의 분석 현황</h3>
                 <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-4 mb-4">
                   <div className="flex items-center justify-center space-x-2 mb-2">
                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                    <span className="text-sm font-medium">전문가 온라인</span>
-                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">+ 5명</span>
+                    <span className="text-sm font-medium">분석 진행중</span>
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">실시간</span>
                   </div>
-                  <div className="text-4xl font-bold text-primary mb-2">883건</div>
-                  <div className="text-sm text-muted-foreground">전문가검토 완료</div>
+                  <div className="text-4xl font-bold text-primary mb-2">1,247건</div>
+                  <div className="text-sm text-muted-foreground">누적 체질분석 완료</div>
                 </div>
                 <div className="flex items-center justify-center space-x-2 text-xs text-muted-foreground">
                   <Sparkles className="h-4 w-4 text-yellow-500" />
-                  <span>실시간 검증 진행중</span>
+                  <span>지금 바로 시작해보세요</span>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-full px-8 py-4 border border-green-200 max-w-2xl mx-auto">
-            <div className="flex items-center justify-center space-x-3">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-green-700">
-                모든 리포트는 의료진 및 전문가 검토합니다
+          <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl px-8 py-6 border border-emerald-200 max-w-3xl mx-auto">
+            <div className="flex items-center justify-center space-x-4">
+              <div className="w-4 h-4 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span className="text-lg font-semibold text-emerald-700">
+                🌿 내 체질에 맞는 건강법, 지금 확인해보세요!
               </span>
-              <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-                검증완료
+              <div className="bg-emerald-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                무료 체험
               </div>
             </div>
           </div>

@@ -73,28 +73,28 @@ const HanMedicineTest = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-8 px-4">
-      <div className="max-w-6xl mx-auto ml-auto mr-16">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-4 sm:py-8 px-4">
+      <div className="max-w-6xl mx-auto">
         {/* 헤더 - 가운데 정렬 */}
-        <div className="text-center mb-12 flex flex-col items-center">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
+        <div className="text-center mb-8 sm:mb-12 flex flex-col items-center px-2">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4">
             한방다이어트 - AIH 체질분석 센터
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
             전문 AI가 당신의 체질과 대사를 정확히 분석하여 맞춤형 다이어트 솔루션을 제공합니다
           </p>
         </div>
 
         {/* 나만의 체질 찾기 섹션 - 완전 가운데 정렬 */}
-        <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
+        <div className="mb-12 sm:mb-16 flex flex-col items-center text-center px-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">
             나만의 <span className="text-primary">체질을 찾아</span> 건강해지세요
           </h2>
-          <p className="text-lg text-muted-foreground mb-12 max-w-2xl">
+          <p className="text-base sm:text-lg text-muted-foreground mb-8 sm:mb-12 max-w-2xl">
             천 년의 한의학 지혜와 현대 AI가 만나 <strong>당신만의 맞춤 솔루션</strong>을 제공합니다
           </p>
           
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8 mb-8 sm:mb-12 w-full max-w-5xl">
             <Card className="text-center border-2 hover:border-primary/30 transition-colors">
               <CardContent className="pt-8 pb-8">
                 <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -104,19 +104,19 @@ const HanMedicineTest = () => {
                 <div className="space-y-3">
                   <div className="flex items-center justify-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground text-left">사상체질별 맞춤 식단</span>
+                    <span className="text-xs sm:text-sm text-muted-foreground text-left">사상체질별 맞춤 식단</span>
                   </div>
                   <div className="flex items-center justify-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground text-left">개인별 생활습관 처방</span>
+                    <span className="text-xs sm:text-sm text-muted-foreground text-left">개인별 생활습관 처방</span>
                   </div>
                   <div className="flex items-center justify-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground text-left">체질개선 운동법</span>
+                    <span className="text-xs sm:text-sm text-muted-foreground text-left">체질개선 운동법</span>
                   </div>
                   <div className="flex items-center justify-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground text-left">한방차 추천</span>
+                    <span className="text-xs sm:text-sm text-muted-foreground text-left">한방차 추천</span>
                   </div>
                 </div>
               </CardContent>
@@ -127,25 +127,25 @@ const HanMedicineTest = () => {
                 <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Shield className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4 text-primary">3분만에 결과 확인</h3>
-                <div className="flex items-center justify-center space-x-4 mb-6">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                      <Clock className="h-4 w-4 text-white" />
+                <h3 className="text-lg sm:text-xl font-semibold mb-4 text-primary">3분만에 결과 확인</h3>
+                <div className="flex items-center justify-center space-x-2 sm:space-x-4 mb-6">
+                  <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                      <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                     </div>
                     <span className="text-xs">간단 질문</span>
                   </div>
-                  <div className="w-6 h-0.5 bg-primary"></div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                      <Brain className="h-4 w-4 text-white" />
+                  <div className="w-3 sm:w-6 h-0.5 bg-primary"></div>
+                  <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                      <Brain className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                     </div>
                     <span className="text-xs">AI분석</span>
                   </div>
-                  <div className="w-6 h-0.5 bg-primary"></div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                      <CheckCircle className="h-4 w-4 text-white" />
+                  <div className="w-3 sm:w-6 h-0.5 bg-primary"></div>
+                  <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-full flex items-center justify-center">
+                      <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
                     </div>
                     <span className="text-xs">즉시확인</span>
                   </div>
@@ -181,13 +181,15 @@ const HanMedicineTest = () => {
             </Card>
           </div>
 
-          <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl px-8 py-6 border border-emerald-200 max-w-3xl mx-auto">
-            <div className="flex items-center justify-center space-x-4">
-              <div className="w-4 h-4 bg-emerald-500 rounded-full animate-pulse"></div>
-              <span className="text-lg font-semibold text-emerald-700">
-                🌿 내 체질에 맞는 건강법, 지금 확인해보세요!
-              </span>
-              <div className="bg-emerald-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+          <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl px-4 sm:px-8 py-4 sm:py-6 border border-emerald-200 max-w-3xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span className="text-sm sm:text-lg font-semibold text-emerald-700">
+                  🌿 내 체질에 맞는 건강법, 지금 확인해보세요!
+                </span>
+              </div>
+              <div className="bg-emerald-500 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium">
                 무료 체험
               </div>
             </div>
@@ -196,7 +198,7 @@ const HanMedicineTest = () => {
 
 
         {/* 테스트 선택 카드 */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto px-2">
           {/* 3분 간편 테스트 */}
           <Card className="relative overflow-hidden border-2 hover:border-primary/50 transition-colors cursor-pointer group">
             <div className="absolute top-4 right-4">

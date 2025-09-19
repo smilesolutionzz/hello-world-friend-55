@@ -229,7 +229,7 @@ export const AtopyTest: React.FC<AtopyTestProps> = ({ onComplete, onBack }) => {
                 {atopyQuestions[currentQuestion].question}
               </h3>
 
-              <RadioGroup value={currentAnswer} onValueChange={handleAnswer}>
+              <RadioGroup value={currentAnswer || ""} onValueChange={handleAnswer}>
                 {atopyQuestions[currentQuestion].options.map((option) => (
                   <div key={option.value} className="flex items-center space-x-2">
                     <RadioGroupItem value={option.value} id={option.value} />

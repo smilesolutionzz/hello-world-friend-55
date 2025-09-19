@@ -233,7 +233,7 @@ ${result.recommendations.map((rec: string, index: number) => `${index + 1}. ${re
               </div>
               <p className="text-muted-foreground mb-4">
                 🏥 <strong>GPT-4.1</strong>이 30년 경력 한의사의 전문 지식으로 <br/>
-                체질별 맞춤 진단과 치료법을 제공합니다
+                <strong>2000자 이상 상세 체질별 맞춤 진단</strong>과 치료법을 제공합니다
               </p>
               <div className="flex items-center justify-center mb-4 space-x-4 text-sm text-muted-foreground">
                 <div className="flex items-center">
@@ -248,6 +248,10 @@ ${result.recommendations.map((rec: string, index: number) => `${index + 1}. ${re
                   <span className="w-2 h-2 bg-purple-500 rounded-full mr-1"></span>
                   생활요법 처방
                 </div>
+                <div className="flex items-center">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full mr-1"></span>
+                  경혈 마사지법
+                </div>
               </div>
               <Button 
                 onClick={generateEnhancedAnalysis}
@@ -257,10 +261,10 @@ ${result.recommendations.map((rec: string, index: number) => `${index + 1}. ${re
                 {isGeneratingAnalysis ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    전문 분석 생성 중... (약 30초)
+                    전문 분석 생성 중... (약 60초)
                   </>
                 ) : (
-                  '🔍 전문 분석 받기 (무료)'
+                  '🔍 상세 전문 분석 받기 (무료)'
                 )}
               </Button>
             </CardContent>
@@ -330,7 +334,7 @@ ${result.recommendations.map((rec: string, index: number) => `${index + 1}. ${re
           <CardHeader>
             <CardTitle className="flex items-center text-green-800">
               <Phone className="h-5 w-5 mr-2" />
-              가까이한의원 전문 상담
+              전문 한의원 상담 안내
             </CardTitle>
             <CardDescription>
               검사 결과를 바탕으로 전문 한의사의 맞춤 상담을 받아보세요
@@ -366,7 +370,7 @@ ${result.recommendations.map((rec: string, index: number) => `${index + 1}. ${re
                 className="flex-1 bg-green-600 hover:bg-green-700 text-white"
               >
                 <Phone className="h-4 w-4 mr-2" />
-                맞춤한방 전화상담받기
+                전문 한의원 상담받기
               </Button>
               <Button 
                 variant="outline" 
@@ -405,7 +409,7 @@ ${result.recommendations.map((rec: string, index: number) => `${index + 1}. ${re
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
             <span className="text-lg">✨</span>
             <span className="font-medium text-foreground">
-              <span className="text-brand-gradient font-bold">가까이한의원</span> 전문 한의사 검증 완료
+              전문 한의원 검증 완료 AI 진단
             </span>
           </div>
         </div>

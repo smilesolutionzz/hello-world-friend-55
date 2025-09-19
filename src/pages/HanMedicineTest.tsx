@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, CheckCircle, Users, Zap, Shield, Activity, Smile, Phone } from 'lucide-react';
+import KoreanPharmacy3D from '@/components/3d/KoreanPharmacy3D';
 import ExpertValidationBanner from '@/components/ExpertValidationBanner';
 import { SasangConstitutionTest } from '@/components/assessment/SasangConstitutionTest';
 import { SasangConstitutionResult } from '@/components/assessment/SasangConstitutionResult';
@@ -80,7 +81,8 @@ const HanMedicineTest = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-4 sm:py-8 px-4">
+    <KoreanPharmacy3D>
+    <div className="min-h-screen bg-gradient-to-br from-green-50/80 via-blue-50/60 to-purple-50/40 py-4 sm:py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* 헤더 - 가운데 정렬 */}
         <div className="text-center mb-8 sm:mb-12 flex flex-col items-center px-2">
@@ -797,6 +799,7 @@ const HanMedicineTest = () => {
 
       </div>
     </div>
+    </KoreanPharmacy3D>
   );
 };
 

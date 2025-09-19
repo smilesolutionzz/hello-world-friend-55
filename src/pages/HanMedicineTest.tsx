@@ -15,8 +15,10 @@ import { IntellectualDisabilityTest } from '@/components/assessment/Intellectual
 import { AtopyTest } from '@/components/assessment/AtopyTest';
 import { HanMedicineResult } from '@/components/assessment/HanMedicineResult';
 import { StressTest } from '@/components/assessment/StressTest';
+import { WomensHealthTest } from '@/components/assessment/WomensHealthTest';
+import { WomensHealthResult } from '@/components/assessment/WomensHealthResult';
 
-type TestType = 'none' | 'quick' | 'premium' | 'diet' | 'autism' | 'adhd' | 'intellectual' | 'atopy' | 'stress';
+type TestType = 'none' | 'quick' | 'premium' | 'diet' | 'autism' | 'adhd' | 'intellectual' | 'atopy' | 'stress' | 'women';
 type TestState = 'select' | 'testing' | 'result';
 
 const HanMedicineTest = () => {
@@ -57,6 +59,8 @@ const HanMedicineTest = () => {
       return <AtopyTest onComplete={handleTestComplete} onBack={handleRestart} />;
     } else if (currentTest === 'stress') {
       return <StressTest onComplete={handleTestComplete} onBack={handleRestart} />;
+    } else if (currentTest === 'women') {
+      return <WomensHealthTest onComplete={handleTestComplete} onBack={handleRestart} />;
     }
   }
 
@@ -67,6 +71,8 @@ const HanMedicineTest = () => {
       return <HanMedicinePremiumResult result={testResult} onRestart={handleRestart} />;
     } else if (currentTest === 'diet') {
       return <DietAnalysisResult result={testResult} onRestart={handleRestart} />;
+    } else if (currentTest === 'women') {
+      return <WomensHealthResult result={testResult} onRestart={handleRestart} />;
     } else if (['autism', 'adhd', 'intellectual', 'atopy', 'stress'].includes(currentTest)) {
       return <HanMedicineResult result={testResult} onRestart={handleRestart} />;
     }
@@ -515,6 +521,46 @@ const HanMedicineTest = () => {
                 className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white group-hover:shadow-lg"
               >
                 스트레스 분석 시작하기
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* 여성건강 한방치료 */}
+          <Card className="relative overflow-hidden border-2 border-pink-200 hover:border-pink-300 transition-colors cursor-pointer group bg-gradient-to-br from-pink-50 to-rose-50">
+            <div className="absolute top-4 right-4">
+              <Heart className="h-6 w-6 text-pink-500" />
+            </div>
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center">
+                <Heart className="h-6 w-6 mr-2 text-pink-500" />
+                여성건강 한방치료
+              </CardTitle>
+              <CardDescription>
+                여성 특화 체질 분석과 맞춤 한방 솔루션
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm">소요시간: 6분</span>
+                </div>
+                <div className="bg-pink-100 text-pink-800 px-2 py-1 rounded text-xs font-medium">
+                  4토큰
+                </div>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">✓ 여성 체질 정밀 분석</p>
+                <p className="text-sm text-muted-foreground">✓ 월경 불순 개선법</p>
+                <p className="text-sm text-muted-foreground">✓ 여성 질환 한방 처방</p>
+                <p className="text-sm text-muted-foreground">✓ 근처 한의원 연계</p>
+                <p className="text-sm text-muted-foreground">✓ 비대면 처방 연결</p>
+              </div>
+              <Button 
+                onClick={() => handleTestSelection('women')}
+                className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white"
+              >
+                여성건강 분석 시작하기
               </Button>
             </CardContent>
           </Card>

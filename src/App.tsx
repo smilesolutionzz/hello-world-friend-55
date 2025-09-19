@@ -83,6 +83,7 @@ import DailyCheckin from "./pages/DailyCheckin";
 import ChallengesPage from "./pages/ChallengesPage";
 import GrowthTracker from "./pages/GrowthTracker";
 import AIAssistant from "./pages/AIAssistant";
+import WellnessLifestyle from "./pages/WellnessLifestyle";
 
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTests from "./pages/FunTests";
@@ -168,6 +169,7 @@ const App = () => {
           
           {/* New Retention Features */}
           <Route path="/wellness-hub" element={<WellnessHub />} />
+          <Route path="/wellness-lifestyle" element={<WellnessLifestyle />} />
           <Route path="/daily-checkin" element={<DailyCheckin />} />
           <Route path="/challenges" element={<ChallengesPage />} />
           <Route path="/growth-tracker" element={<GrowthTracker />} />

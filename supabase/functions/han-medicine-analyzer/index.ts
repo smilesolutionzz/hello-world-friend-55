@@ -204,41 +204,6 @@ function generateSystemPrompt(testType: string): string {
   return basePrompt + '\n\n' + (typeSpecificPrompts[testType as keyof typeof typeSpecificPrompts] || '');
 }
 
-  const typeSpecificPrompts = {
-    adhd: `ADHD는 한의학에서 다음과 같이 접근합니다:
-- 신(腎) 기능 저하로 인한 정신집중력 부족
-- 심(心)의 불안정으로 인한 과도한 활동성  
-- 비위(脾胃) 기능 약화로 인한 영양 흡수 장애
-- 간(肝)의 소설기능 실조로 인한 감정 조절 어려움`,
-
-    autism: `자폐 스펙트럼은 한의학에서 다음과 같이 분석됩니다:
-- 신(腎) 정기 부족으로 인한 발달 지연
-- 심(心)의 신명 기능 장애로 인한 소통 어려움
-- 비위(脾胃) 기능 저하로 인한 소화 문제
-- 간(肝)의 조달 기능 실조로 인한 정서적 불안정`,
-
-    atopy: `아토피는 한의학에서 다음과 같이 접근합니다:
-- 폐(肺) 선발기능 저하로 인한 피부 방어력 약화
-- 비위(脾胃) 운화기능 실조로 인한 습열 생성
-- 간(肝) 소설기능 장애로 인한 스트레스 악화
-- 신(腎) 음허로 인한 피부 건조와 염증`,
-
-    intellectual: `인지능력 저하는 한의학에서 다음과 같이 분석됩니다:
-- 신(腎) 정기 부족으로 인한 뇌 기능 저하
-- 심(心)의 신명 기능 약화로 인한 기억력 감퇴
-- 비위(脾胃) 기능 저하로 인한 청양불승
-- 간(肝) 울체로 인한 기혈 순환 장애`,
-
-    stress: `스트레스는 한의학에서 다음과 같이 접근합니다:
-- 간(肝)의 소설기능 실조로 인한 기울증
-- 심(心)의 신명 불안으로 인한 정서적 동요
-- 비위(脾胃) 기능 저하로 인한 사려과도
-- 신(腎) 정기 부족으로 인한 정신력 약화`
-  };
-
-  return basePrompt + '\n\n' + (typeSpecificPrompts[testType as keyof typeof typeSpecificPrompts] || '');
-}
-
 function generateUserPrompt(
   testType: string, 
   score: number, 

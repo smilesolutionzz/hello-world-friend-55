@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Baby, Star, CheckCircle } from 'lucide-react';
+import { Clock, Baby, Star, CheckCircle, Home, ArrowLeft } from 'lucide-react';
 import { TOKEN_COSTS } from '@/constants/tokenCosts';
 
 export const ChildPackage = () => {
@@ -56,6 +56,19 @@ export const ChildPackage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30">
+      {/* Home CTA Button */}
+      <div className="fixed top-4 left-4 z-50">
+        <Button
+          onClick={() => navigate('/')}
+          variant="outline"
+          size="sm"
+          className="bg-white/90 backdrop-blur-sm border border-gray-200 hover:bg-white shadow-lg"
+        >
+          <Home className="w-4 h-4 mr-2" />
+          홈으로
+        </Button>
+      </div>
+      
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">

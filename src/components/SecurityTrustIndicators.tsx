@@ -17,7 +17,7 @@ const SecurityTrustIndicators = () => {
     {
       icon: <UserCheck className="w-5 h-5 text-purple-600" />,
       title: '전문가 검증',
-      description: '소아청소년과 전문의 감수'
+      description: '각 검사별 전문의 및 전문가 감수'
     },
     {
       icon: <Eye className="w-5 h-5 text-orange-600" />,

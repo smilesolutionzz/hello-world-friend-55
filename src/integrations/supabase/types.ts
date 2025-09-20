@@ -659,6 +659,36 @@ export type Database = {
         }
         Relationships: []
       }
+      consultation_limits: {
+        Row: {
+          created_at: string | null
+          expert_assignment_type: string
+          id: string
+          monthly_consultations: number
+          priority_level: number
+          subscription_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expert_assignment_type?: string
+          id?: string
+          monthly_consultations?: number
+          priority_level?: number
+          subscription_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expert_assignment_type?: string
+          id?: string
+          monthly_consultations?: number
+          priority_level?: number
+          subscription_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       consultations: {
         Row: {
           chat_room_id: string | null

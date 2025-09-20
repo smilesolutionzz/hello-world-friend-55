@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import html2pdf from "html2pdf.js";
 
 interface HanMedicineResultProps {
   result: any;
@@ -121,29 +122,191 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
     window.location.href = '/';
   };
 
-  const downloadResults = () => {
-    const content = `
-한방 검사 결과
-검사 유형: ${getTestTypeName(result.type)}
-점수: ${result.score}/${result.maxScore}점 (${result.percentage}%)
-심각도: ${result.severity}
+  const downloadResults = async () => {
+    try {
+      // Create PDF content element
+      const element = document.createElement('div');
+      element.innerHTML = `
+        <div style="font-family: 'Noto Sans KR', sans-serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; line-height: 1.6; color: #333;">
+          <div style="text-align: center; margin-bottom: 40px; border-bottom: 3px solid #059669; padding-bottom: 20px;">
+            <h1 style="font-size: 28px; margin: 0 0 10px 0; color: #059669; font-weight: bold;">한의학 체질검사 결과 보고서</h1>
+            <h2 style="font-size: 20px; margin: 0 0 10px 0; color: #047857;">${getTestTypeName(result.type)}</h2>
+            <p style="margin: 5px 0; color: #666; font-size: 14px;">검사일: ${new Date().toLocaleDateString()}</p>
+            <p style="margin: 5px 0; color: #666; font-size: 14px;">검사 점수: ${result.score}/${result.maxScore}점 (${result.percentage}%)</p>
+            <div style="display: inline-block; background: ${getSeverityBgColor(result.severity)}; color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; margin-top: 10px;">
+              ${result.severity} 단계
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 18px; color: #059669; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #E5E7EB;">🔍 한의학적 분석</h3>
+            <div style="background: linear-gradient(135deg, #ECFDF5, #F0FDF4); border: 1px solid #A7F3D0; border-radius: 12px; padding: 20px;">
+              <div style="white-space: pre-wrap; line-height: 1.7; font-size: 14px; color: #374151;">
+                ${enhancedAnalysis || result.analysis}
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 18px; color: #059669; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #E5E7EB;">💊 한약 처방 및 치료법</h3>
+            <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 20px;">
+              ${generateHerbalPrescription(result.type, result.severity)}
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 18px; color: #059669; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #E5E7EB;">🌿 치료 추천사항</h3>
+            <div style="display: grid; gap: 10px;">
+              ${result.recommendations.map((rec: string, index: number) => `
+                <div style="background: #F0FDF4; border-left: 4px solid #059669; padding: 12px 16px; border-radius: 6px;">
+                  <div style="display: flex; align-items: flex-start; gap: 10px;">
+                    <span style="background: #059669; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; flex-shrink: 0;">
+                      ${index + 1}
+                    </span>
+                    <p style="margin: 0; font-size: 14px; color: #374151;">${rec}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          
+          <div style="background: #FEF3C7; border: 1px solid #F59E0B; border-radius: 8px; padding: 15px; margin-top: 30px;">
+            <h4 style="color: #92400E; margin: 0 0 10px 0; font-size: 14px; font-weight: bold;">⚠️ 중요 안내사항</h4>
+            <p style="margin: 0; font-size: 12px; color: #92400E; line-height: 1.5;">
+              본 검사 결과는 AI 기반 한의학적 분석을 통해 제공되는 참고 자료입니다. 
+              정확한 진단이나 치료가 필요한 경우 반드시 전문 한의사와 상담하시기 바랍니다.
+              한약 처방은 개인의 체질과 상태에 따라 달라질 수 있으므로, 실제 복용 전 반드시 한의사의 진료를 받으시기 바랍니다.
+            </p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB;">
+            <p style="margin: 0; font-size: 12px; color: #9CA3AF;">가까이한의원 연계 | 전문 한의학 체질검사</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; color: #9CA3AF;">상담 문의: https://naver.me/xk1XPBhl</p>
+          </div>
+        </div>
+      `;
+      
+      // Configure PDF options
+      const opt = {
+        margin: [10, 10, 10, 10] as [number, number, number, number],
+        filename: `한의학체질검사_${getTestTypeName(result.type)}_${new Date().toLocaleDateString().replace(/\./g, '')}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+      };
+      
+      // Generate PDF
+      await html2pdf().set(opt).from(element).save();
+      
+      toast({
+        title: "PDF 다운로드 완료",
+        description: "한의학 체질검사 결과 보고서가 성공적으로 다운로드되었습니다.",
+      });
 
-분석 내용:
-${enhancedAnalysis || result.analysis}
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "PDF 생성 오류", 
+        description: "PDF 생성 중 오류가 발생했습니다. 다시 시도해 주세요.",
+        variant: "destructive"
+      });
+    }
+  };
 
-추천사항:
-${result.recommendations.map((rec: string, index: number) => `${index + 1}. ${rec}`).join('\n')}
+  const generateHerbalPrescription = (type: string, severity: string) => {
+    const prescriptions: Record<string, any> = {
+      adhd: {
+        name: "감맥대조탕가감 (甘麥大棗湯加減)",
+        ingredients: ["감초 6g", "대조 12g", "소맥 15g", "용골 10g", "모려 10g", "산조인 12g", "원지 6g"],
+        effects: "심신을 안정시키고 집중력을 높이는 효과",
+        usage: "1일 2-3회, 식후 30분에 복용",
+        duration: "4-6주 지속 복용 권장"
+      },
+      autism: {
+        name: "정지환가감 (定志丸加減)", 
+        ingredients: ["인삼 9g", "복신 12g", "원지 6g", "창포 6g", "용골 10g", "모려 10g", "백자인 12g"],
+        effects: "정신을 안정시키고 소통 능력을 향상시키는 효과",
+        usage: "1일 2회, 아침·저녁 식후 복용",
+        duration: "8-12주 지속 복용 권장"
+      },
+      atopy: {
+        name: "소풍산가감 (消風散加減)",
+        ingredients: ["형개 6g", "방풍 6g", "우방자 9g", "선퇴 6g", "고삼 9g", "지황 12g", "당귀 9g"],
+        effects: "피부 염증을 완화하고 가려움증을 억제하는 효과",
+        usage: "1일 2-3회, 식간에 복용",
+        duration: "6-8주 지속 복용 권장"
+      },
+      intellectual: {
+        name: "보양환오탕가감 (補陽還五湯加減)",
+        ingredients: ["황기 30g", "당귀미 6g", "적작약 6g", "천궁 6g", "도인 6g", "홍화 6g", "지룡 6g"],
+        effects: "뇌 기능을 활성화하고 인지능력을 개선하는 효과", 
+        usage: "1일 2회, 아침·점심 식후 복용",
+        duration: "12주 이상 지속 복용 권장"
+      },
+      stress: {
+        name: "안신정지환가감 (安神定志丸加減)",
+        ingredients: ["인삼 9g", "백출 9g", "복령 12g", "감초 6g", "용골 12g", "모려 12g", "산조인 15g"],
+        effects: "스트레스를 완화하고 정신을 안정시키는 효과",
+        usage: "1일 2-3회, 식후 또는 스트레스 상황 전 복용", 
+        duration: "4-8주 지속 복용 권장"
+      }
+    };
 
-가까이한의원 상담 링크: https://naver.me/xk1XPBhl
+    const prescription = prescriptions[type] || prescriptions.stress;
+    const intensityAdjustment = severity === '높음' ? 
+      "고농도 처방으로 집중 치료 필요" : 
+      severity === '중간' ? 
+      "표준 농도로 꾸준한 관리 필요" : 
+      "저농도로 예방적 관리 권장";
+
+    return `
+      <div style="margin-bottom: 20px;">
+        <h4 style="color: #059669; font-size: 16px; margin-bottom: 10px; font-weight: bold;">🍃 추천 한약 처방</h4>
+        <div style="background: white; border: 1px solid #D1FAE5; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+          <p style="margin: 0 0 8px 0; font-weight: bold; color: #047857; font-size: 15px;">${prescription.name}</p>
+          <p style="margin: 0 0 10px 0; font-size: 13px; color: #374151;">${prescription.effects}</p>
+          
+          <h5 style="margin: 10px 0 5px 0; font-size: 14px; color: #059669;">📋 구성 약재:</h5>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 5px; margin-bottom: 10px;">
+            ${prescription.ingredients.map((ingredient: string) => `
+              <span style="background: #F0FDF4; padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #047857; border: 1px solid #BBF7D0;">${ingredient}</span>
+            `).join('')}
+          </div>
+          
+          <h5 style="margin: 10px 0 5px 0; font-size: 14px; color: #059669;">💊 복용법:</h5>
+          <p style="margin: 0 0 5px 0; font-size: 13px; color: #374151;">${prescription.usage}</p>
+          <p style="margin: 0 0 5px 0; font-size: 13px; color: #374151;">${prescription.duration}</p>
+          <p style="margin: 0; font-size: 12px; color: #F59E0B; font-weight: bold;">⚠️ ${intensityAdjustment}</p>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <h4 style="color: #059669; font-size: 16px; margin-bottom: 10px; font-weight: bold;">🏥 추가 한방 치료법</h4>
+        <div style="display: grid; gap: 10px;">
+          <div style="background: white; border: 1px solid #D1FAE5; border-radius: 8px; padding: 12px;">
+            <h5 style="margin: 0 0 5px 0; font-size: 13px; color: #047857; font-weight: bold;">침술 치료 (週 2-3회)</h5>
+            <p style="margin: 0; font-size: 12px; color: #374151;">백회, 신정, 인당 등 정신안정 혈자리 자침으로 뇌 기능 활성화</p>
+          </div>
+          <div style="background: white; border: 1px solid #D1FAE5; border-radius: 8px; padding: 12px;">
+            <h5 style="margin: 0 0 5px 0; font-size: 13px; color: #047857; font-weight: bold;">추나 요법 (週 1-2회)</h5>
+            <p style="margin: 0; font-size: 12px; color: #374151;">경추와 흉추 정렬로 뇌 혈류 개선 및 자율신경 안정</p>
+          </div>
+          <div style="background: white; border: 1px solid #D1FAE5; border-radius: 8px; padding: 12px;">
+            <h5 style="margin: 0 0 5px 0; font-size: 13px; color: #047857; font-weight: bold;">한방 아로마 요법</h5>
+            <p style="margin: 0; font-size: 12px; color: #374151;">계피, 정향, 박하 등 천연 한약재 향기로 심신 안정</p>
+          </div>
+        </div>
+      </div>
     `;
-    
-    const element = document.createElement('a');
-    const file = new Blob([content], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = '한방검사결과.txt';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+  };
+
+  const getSeverityBgColor = (severity: string) => {
+    switch (severity) {
+      case '높음': return '#DC2626';
+      case '중간': return '#F59E0B';
+      case '경미': return '#059669';
+      default: return '#6B7280';
+    }
   };
 
   const shareResults = async () => {

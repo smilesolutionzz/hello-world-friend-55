@@ -3,12 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Crown, Download, Brain, TrendingUp, FileText, Sparkles, Calendar, Target, MessageSquare } from "lucide-react";
+import { ArrowLeft, Crown, Download, Brain, TrendingUp, FileText, Sparkles, Calendar, Target, MessageSquare, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import FeedbackModal from "@/components/FeedbackModal";
 import EarlyScreeningSection from "@/components/assessment/EarlyScreeningSection";
+import { EnhancedChart } from "@/components/ui/enhanced-chart";
+import html2pdf from "html2pdf.js";
 
 interface PremiumAssessmentResultProps {
   assessmentType: string;
@@ -101,35 +103,91 @@ const PremiumAssessmentResult = ({
     try {
       setIsGeneratingPDF(true);
       
-      const response = await supabase.functions.invoke('generate-premium-pdf', {
-        body: {
-          assessmentType,
-          results,
-          assessmentInfo,
-          aiAnalysis,
-          timestamp: new Date().toISOString()
-        }
-      });
-
-      if (response.error) {
-        throw new Error(response.error.message);
-      }
-
-      // HTML 컨텐츠를 새 창에서 열어 인쇄 가능하도록 함
-      const htmlContent = response.data.htmlContent;
-      const printWindow = window.open('', '_blank');
-      if (printWindow) {
-        printWindow.document.write(htmlContent);
-        printWindow.document.close();
-        printWindow.focus();
-        setTimeout(() => {
-          printWindow.print();
-        }, 500);
-      }
-
+      // Create PDF content element
+      const element = document.createElement('div');
+      element.innerHTML = `
+        <div style="font-family: 'Noto Sans KR', sans-serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; line-height: 1.6; color: #333;">
+          <div style="text-align: center; margin-bottom: 40px; border-bottom: 3px solid #8B5CF6; padding-bottom: 20px;">
+            <h1 style="font-size: 28px; margin: 0 0 10px 0; color: #8B5CF6; font-weight: bold;">프리미엄 AIH 검사 결과 보고서</h1>
+            <h2 style="font-size: 20px; margin: 0 0 10px 0; color: #6366F1;">${assessmentInfo.title}</h2>
+            <p style="margin: 5px 0; color: #666; font-size: 14px;">검사일: ${new Date().toLocaleDateString()}</p>
+            <p style="margin: 5px 0; color: #666; font-size: 14px;">평균 점수: ${averageScore.toFixed(1)}/7.0</p>
+          </div>
+          
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 18px; color: #8B5CF6; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #E5E7EB;">📊 영역별 상세 점수</h3>
+            <div style="display: grid; gap: 15px;">
+              ${Object.entries(results).map(([category, score]) => {
+                const interpretation = getScoreInterpretation(score, category);
+                const percentage = (score / 7) * 100;
+                return `
+                  <div style="border: 1px solid #E5E7EB; border-radius: 8px; padding: 15px; background: #F9FAFB;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                      <strong style="color: #374151;">${translateCategory(category)}</strong>
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="background: ${interpretation.color}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">${interpretation.level}</span>
+                        <strong style="color: #111827; font-size: 16px;">${score.toFixed(1)}</strong>
+                      </div>
+                    </div>
+                    <div style="background: #E5E7EB; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 5px;">
+                      <div style="background: linear-gradient(90deg, #8B5CF6, #6366F1); height: 100%; width: ${percentage}%; border-radius: 4px;"></div>
+                    </div>
+                    <p style="margin: 0; font-size: 12px; color: #6B7280;">${interpretation.description}</p>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 18px; color: #8B5CF6; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #E5E7EB;">🧠 AIH 전문 분석 보고서</h3>
+            <div style="background: linear-gradient(135deg, #F0F9FF, #F3E8FF); border: 1px solid #C7D2FE; border-radius: 12px; padding: 20px;">
+              <div style="white-space: pre-wrap; line-height: 1.7; font-size: 14px; color: #374151;">
+                ${aiAnalysis || "분석을 완료하는 중입니다..."}
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 18px; color: #8B5CF6; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #E5E7EB;">📋 검사 정보</h3>
+            <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 15px;">
+              <p style="margin: 5px 0; font-size: 14px;"><strong>검사 유형:</strong> ${assessmentInfo.title}</p>
+              <p style="margin: 5px 0; font-size: 14px;"><strong>문항 수:</strong> ${assessmentInfo.questions_count || 'N/A'}개</p>
+              <p style="margin: 5px 0; font-size: 14px;"><strong>소요 시간:</strong> ${assessmentInfo.duration || 'N/A'}</p>
+              <p style="margin: 5px 0; font-size: 14px;"><strong>검사 등급:</strong> 프리미엄 전문 검사</p>
+            </div>
+          </div>
+          
+          <div style="background: #FEF3C7; border: 1px solid #F59E0B; border-radius: 8px; padding: 15px; margin-top: 30px;">
+            <h4 style="color: #92400E; margin: 0 0 10px 0; font-size: 14px; font-weight: bold;">⚠️ 중요 안내사항</h4>
+            <p style="margin: 0; font-size: 12px; color: #92400E; line-height: 1.5;">
+              본 검사 결과는 AI 기반 심층 분석을 통해 제공되는 참고 자료입니다. 
+              정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다.
+              검사 결과는 개인의 현재 상태를 반영하며, 시간이 지남에 따라 변화할 수 있습니다.
+            </p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB;">
+            <p style="margin: 0; font-size: 12px; color: #9CA3AF;">AIH - AI Health Platform | 프리미엄 심리검사</p>
+          </div>
+        </div>
+      `;
+      
+      // Configure PDF options
+      const opt = {
+        margin: [10, 10, 10, 10] as [number, number, number, number],
+        filename: `${assessmentInfo.title}_결과보고서_${new Date().toLocaleDateString().replace(/\./g, '')}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+      };
+      
+      // Generate PDF
+      await html2pdf().set(opt).from(element).save();
+      
       toast({
-        title: "PDF 준비 완료",
-        description: "새 창에서 인쇄 대화상자가 열립니다. PDF로 저장하시려면 인쇄 대상을 'PDF로 저장'으로 선택하세요.",
+        title: "PDF 다운로드 완료",
+        description: "프리미엄 분석 보고서가 성공적으로 다운로드되었습니다.",
       });
 
     } catch (error) {
@@ -172,6 +230,17 @@ const PremiumAssessmentResult = ({
 
   const totalScore = Object.values(results).reduce((sum, score) => sum + score, 0);
   const averageScore = totalScore / Object.keys(results).length;
+
+  // 차트 데이터 준비
+  const chartData = Object.entries(results).map(([category, score]) => {
+    const interpretation = getScoreInterpretation(score, category);
+    return {
+      name: translateCategory(category),
+      value: score,
+      color: interpretation.color.replace('bg-', '').replace('-500', ''),
+      description: interpretation.description
+    };
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/30 to-blue-50/30 relative overflow-hidden">
@@ -229,8 +298,19 @@ const PremiumAssessmentResult = ({
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-purple-600" />
+                    시각화 차트 분석
+                  </h3>
+                  <EnhancedChart 
+                    data={chartData}
+                    title="영역별 점수 분포"
+                    description="각 영역의 상대적 강도를 한눈에 확인하세요"
+                  />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
                     <TrendingUp className="w-5 h-5 text-purple-600" />
-                    영역별 상세 점수
+                    영역별 상세 점수 (Score Details)
                   </h3>
                   <div className="space-y-3">
                     {Object.entries(results).map(([category, score]) => {
@@ -238,11 +318,11 @@ const PremiumAssessmentResult = ({
                       return (
                         <div key={category} className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="font-medium">
+                            <span className="font-medium text-sm">
                               {translateCategory(category)}
                             </span>
                             <div className="flex items-center gap-2">
-                              <Badge variant="outline" className={`${interpretation.color} text-white`}>
+                              <Badge variant="outline" className={`${interpretation.color} text-white text-xs`}>
                                 {interpretation.level}
                               </Badge>
                               <span className="font-bold">{score.toFixed(1)}</span>

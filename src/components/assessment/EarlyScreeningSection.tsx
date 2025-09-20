@@ -45,30 +45,55 @@ const EarlyScreeningSection = ({ assessmentType, results, isAnalyzing }: EarlySc
   const analyzeRiskFactors = () => {
     const factors: RiskFactor[] = [];
     
-    // 평균 점수 계산
-    const averageScore = Object.values(results).reduce((sum, score) => sum + score, 0) / Object.values(results).length;
+    // 점수 배열과 평균 계산
+    const scoreValues = Object.values(results);
+    const totalScore = scoreValues.reduce((sum, score) => sum + score, 0);
+    const averageScore = totalScore / scoreValues.length;
+    const maxPossibleScore = scoreValues.length * 7; // 각 문항 최대 7점
+    const scorePercentage = (totalScore / maxPossibleScore) * 100;
+    
+    console.log('번아웃 검사 점수 분석:', {
+      results,
+      scoreValues,
+      totalScore,
+      averageScore,
+      maxPossibleScore,
+      scorePercentage
+    });
     
     // 검사 유형별 위험요소 분석
     switch (assessmentType) {
       case 'work_stress':
+        // 번아웃 위험도 계산 (높은 점수 = 높은 위험)
+        const burnoutScore = scorePercentage;
+        const burnoutLevel = burnoutScore >= 70 ? 'high' : burnoutScore >= 50 ? 'moderate' : 'low';
+        
+        // 우울증 위험도 계산 (번아웃과 연관성 고려)
+        const depressionScore = Math.min(burnoutScore * 0.8, 100); // 번아웃 점수의 80% 반영
+        const depressionLevel = depressionScore >= 60 ? 'high' : depressionScore >= 40 ? 'moderate' : 'low';
+        
         factors.push(
           {
             id: 'burnout_risk',
             name: '번아웃 위험',
             description: '직무 스트레스로 인한 번아웃 증후군 발생 가능성',
-            level: averageScore > 5 ? 'high' : averageScore > 3.5 ? 'moderate' : 'low',
-            score: Math.min(averageScore * 14.3, 100), // 7점 만점을 100점으로 환산
+            level: burnoutLevel,
+            score: burnoutScore,
             icon: <Brain className="w-5 h-5" />,
-            recommendation: '정기적인 휴식과 스트레스 관리 기법 실천이 필요합니다.'
+            recommendation: burnoutLevel === 'high' ? '즉시 전문가 상담과 업무 조정이 필요합니다.' :
+                           burnoutLevel === 'moderate' ? '정기적인 휴식과 스트레스 관리 기법 실천이 필요합니다.' :
+                           '현재 상태를 유지하되 예방적 관리를 계속하세요.'
           },
           {
             id: 'depression_risk',
             name: '우울증 위험',
             description: '지속적인 직무 스트레스로 인한 우울 증상 발생 위험',
-            level: averageScore > 4.5 ? 'high' : averageScore > 3 ? 'moderate' : 'low',
-            score: Math.min((averageScore - 1) * 16.7, 100),
+            level: depressionLevel,
+            score: depressionScore,
             icon: <Heart className="w-5 h-5" />,
-            recommendation: '전문가 상담을 통한 조기 개입을 고려하세요.'
+            recommendation: depressionLevel === 'high' ? '전문가 상담을 통한 즉시 개입이 필요합니다.' :
+                           depressionLevel === 'moderate' ? '전문가 상담을 통한 조기 개입을 고려하세요.' :
+                           '전문가 상담을 통한 조기 개입을 고려하세요.'
           }
         );
         break;

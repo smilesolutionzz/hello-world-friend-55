@@ -90,16 +90,11 @@ const ProfessionalSidebar = () => {
       {/* 헤더 */}
       <div className="p-6 border-b border-gray-100">
         <div className="flex items-center gap-3 mb-3">
-          <div className="relative flex items-center gap-2">
             <img 
               src="/src/assets/aih-logo.png" 
               alt="AIH Logo" 
-              className="w-8 h-8 object-contain"
+              className="w-10 h-10 object-contain"
             />
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <Heart className="w-4 h-4 text-white" />
-            </div>
-          </div>
           <div>
             <h2 className="font-bold text-gray-900">AI하이라이트PRO</h2>
             <p className="text-sm text-gray-500">AI 기반 통합 케어 플랫폼</p>

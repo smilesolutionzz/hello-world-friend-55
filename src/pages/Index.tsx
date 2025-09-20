@@ -146,14 +146,9 @@ const Index = () => {
         <PlatformGuide onComplete={handleGuideComplete} />
         <ScrollProgressBar />
         <UnifiedNavigation />
-        <div className="flex max-w-full">
-        {/* Product Sidebar - 모바일에서는 완전히 숨김 */}
-        <div className="hidden lg:block fixed left-0 top-16 z-30 h-full">
-          <ProfessionalSidebar />
-        </div>
         
-        {/* Main Content - 모바일에서는 여백 없음 */}
-        <main id="main-content" className="w-full lg:ml-72">
+        {/* Main Content - Full Width */}
+        <main id="main-content" className="w-full">
           {/* 1. Hero Section - 서비스 소개 */}
           <div className="animate-fade-in w-full">
             <HeroSection />
@@ -211,7 +206,6 @@ const Index = () => {
             <TrustIndicators />
           </div>
         </main>
-      </div>
       <BackToTop />
       
       {/* 온보딩 모달 */}

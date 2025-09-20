@@ -179,28 +179,9 @@ const Index = () => {
             <TechBadgeShowcase />
           </div>
           
-          {/* 5. 플랫폼 개요 - 주요 기능들 */}
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
-            <PlatformOverview />
-          </div>
-          
           {/* 보안 및 신뢰성 섹션 */}
-          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.5s' }}>
+          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
             <SecurityTrustIndicators />
-          </div>
-          
-          {/* 전문가 검증 데모 */}
-          <div className="container mx-auto px-4 py-4 animate-fade-in w-full" style={{ animationDelay: '0.55s' }}>
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold mb-2">AI + 전문가 2단계 검증 시스템</h2>
-              <p className="text-muted-foreground">모든 분석 결과는 전문가가 2차 검토합니다</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              <ExpertVerificationBadge status="ai_analysis" />
-              <ExpertVerificationBadge status="pending_expert" />
-              <ExpertVerificationBadge status="expert_reviewed" expertName="매칭된 실제 전문가" />
-              <ExpertVerificationBadge status="verified" />
-            </div>
           </div>
           
           {/* 실제 사례 및 후기 */}

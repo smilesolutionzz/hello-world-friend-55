@@ -147,3 +147,6 @@ verify_jwt = false
 
 [functions.referral-system]
 verify_jwt = true
+
+[functions.premium-adhd-analyzer]
+verify_jwt = true

@@ -1,14 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ExternalLink, MessageCircle, Users, Brain } from "lucide-react";
+import { ArrowLeft, ExternalLink, MessageCircle, Users, Brain, Sparkles, Crown, Target, Download } from "lucide-react";
 import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 import { useNavigate } from "react-router-dom";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import ShareResultButton from '@/components/ShareResultButton';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface AdhdTestResultProps {
   results: {
@@ -27,7 +31,93 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const { total, average, ageGroup, severity, answers } = results;
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
+  const { toast } = useToast();
   
+  // AI 분석 상태
+  const [aiAnalysis, setAiAnalysis] = useState<string>("");
+  const [domainScores, setDomainScores] = useState<any[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string>("");
+  const [tokenError, setTokenError] = useState<{required: number, available: number} | null>(null);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // 사용자 정보 확인
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkUser();
+  }, []);
+  
+  // AI 분석 요청 함수
+  const requestAIAnalysis = async () => {
+    if (!user) {
+      toast({
+        title: "로그인 필요",
+        description: "AI 전문 분석을 받으려면 로그인이 필요합니다.",
+        variant: "destructive"
+      });
+      navigate('/auth');
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setAnalysisError("");
+    setTokenError(null);
+
+    try {
+      console.log('🧠 ADHD AI 분석 요청 시작');
+      
+      const { data, error } = await supabase.functions.invoke('premium-adhd-analyzer', {
+        body: {
+          answers,
+          ageGroup,
+          severity,
+          total,
+          average,
+          userId: user.id
+        }
+      });
+
+      if (error) {
+        console.error('❌ ADHD AI 분석 오류:', error);
+        throw error;
+      }
+
+      if (data?.error) {
+        if (data.error === 'insufficient_tokens') {
+          setTokenError({
+            required: data.required,
+            available: data.available
+          });
+          return;
+        }
+        throw new Error(data.message || 'AI 분석 중 오류가 발생했습니다.');
+      }
+
+      console.log('✅ ADHD AI 분석 완료:', data);
+      setAiAnalysis(data.analysis);
+      setDomainScores(data.domainScores);
+      
+      toast({
+        title: "🧠 AI 전문 분석 완료!",
+        description: "ADHD 정신과의사급 상세 분석이 완료되었습니다.",
+      });
+
+    } catch (error: any) {
+      console.error('❌ ADHD AI 분석 오류:', error);
+      setAnalysisError(error.message || 'AI 분석 중 오류가 발생했습니다.');
+      toast({
+        title: "분석 오류",
+        description: error.message || 'AI 분석 중 오류가 발생했습니다.',
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   const getOverallEvaluation = (severity: string) => {
     if (severity === "정상 범위") {
       return {
@@ -94,6 +184,269 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           ⚠️ 이 결과는 참고용이며 전문적 평가가 절대 아닙니다. 주의집중력 문제가 의심되면 반드시 전문기관에서 상담받으세요.
         </p>
       </div>
+
+      {/* AI 전문 분석 섹션 */}
+      <Card className="p-6 mb-6 bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-purple-600 rounded-lg">
+            <Brain className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-purple-900">🧠 AI 전문가 심층분석</h3>
+            <p className="text-purple-700 text-sm">정신과의사급 ADHD 전문 분석 (8토큰)</p>
+          </div>
+        </div>
+
+        {tokenError && (
+          <Card className="mb-4 bg-red-50 border-red-200">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3 mb-3">
+                <Target className="w-5 h-5 text-red-600" />
+                <span className="font-semibold text-red-800">토큰 부족</span>
+              </div>
+              <p className="text-red-700 text-sm mb-4">
+                AI 전문 분석을 위해서는 {tokenError.required}토큰이 필요하지만, 
+                현재 {tokenError.available}토큰만 보유하고 있습니다.
+              </p>
+              <div className="flex gap-2">
+                <Button 
+                  size="sm" 
+                  onClick={() => navigate('/token-subscription')}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  토큰 충전하기
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={requestAIAnalysis}
+                  disabled={isAnalyzing}
+                >
+                  다시 시도
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {!aiAnalysis && !tokenError && (
+          <div className="text-center py-8">
+            <div className="bg-white/70 rounded-xl p-6 border border-purple-200">
+              <Crown className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+              <h4 className="font-bold text-lg text-purple-900 mb-2">
+                정신과의사급 ADHD 전문 분석
+              </h4>
+              <p className="text-purple-700 text-sm mb-4 leading-relaxed">
+                • 6개 영역별 세부 점수 분석<br/>
+                • DSM-5 기준 임상적 해석<br/>
+                • 연령별 특성 고려<br/>
+                • 치료 권고 및 관리방안<br/>
+                • 2000자 이상 상세 분석
+              </p>
+              <Button 
+                onClick={requestAIAnalysis}
+                disabled={isAnalyzing}
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <Sparkles className="w-5 h-5 mr-2 animate-spin" />
+                    AI 분석 중...
+                  </>
+                ) : (
+                  <>
+                    <Brain className="w-5 h-5 mr-2" />
+                    AI 전문 분석 시작 (8토큰)
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {isAnalyzing && (
+          <div className="space-y-4">
+            <div className="text-center py-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-full">
+                <Sparkles className="w-4 h-4 text-purple-600 animate-spin" />
+                <span className="text-purple-800 font-medium">AI가 ADHD 전문 분석을 진행중입니다...</span>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/5" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+          </div>
+        )}
+
+        {analysisError && (
+          <Card className="bg-red-50 border-red-200">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3 mb-2">
+                <Target className="w-5 h-5 text-red-600" />
+                <span className="font-semibold text-red-800">분석 오류</span>
+              </div>
+              <p className="text-red-700 text-sm mb-3">{analysisError}</p>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={requestAIAnalysis}
+                disabled={isAnalyzing}
+              >
+                다시 시도
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {aiAnalysis && (
+          <div className="space-y-6">
+            {/* 도메인별 점수 차트 */}
+            {domainScores.length > 0 && (
+              <Card className="bg-white/70 border-purple-200">
+                <CardHeader>
+                  <CardTitle className="text-purple-900 flex items-center gap-2">
+                    <Target className="w-5 h-5" />
+                    ADHD 영역별 상세 분석
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* 막대 차트 */}
+                    <div>
+                      <h4 className="font-semibold mb-3 text-gray-700">영역별 점수</h4>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={domainScores}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis 
+                            dataKey="name" 
+                            angle={-45}
+                            textAnchor="end"
+                            height={100}
+                            fontSize={12}
+                          />
+                          <YAxis />
+                          <Tooltip 
+                            formatter={(value: any, name: string) => [
+                              `${value.toFixed(1)}%`, 
+                              '백분율'
+                            ]}
+                            labelFormatter={(label) => `영역: ${label}`}
+                          />
+                          <Bar 
+                            dataKey="percentage" 
+                            fill="#8B5CF6" 
+                            radius={[4, 4, 0, 0]}
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* 레이더 차트 */}
+                    <div>
+                      <h4 className="font-semibold mb-3 text-gray-700">종합 프로필</h4>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <RadarChart data={domainScores}>
+                          <PolarGrid />
+                          <PolarAngleAxis 
+                            dataKey="name" 
+                            fontSize={12}
+                          />
+                          <PolarRadiusAxis 
+                            angle={90} 
+                            domain={[0, 100]}
+                            fontSize={10}
+                          />
+                          <Radar
+                            name="백분율"
+                            dataKey="percentage"
+                            stroke="#8B5CF6"
+                            fill="#8B5CF6"
+                            fillOpacity={0.3}
+                            strokeWidth={2}
+                          />
+                          <Tooltip 
+                            formatter={(value: any) => [`${value.toFixed(1)}%`, '백분율']}
+                          />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+
+                  {/* 도메인별 상세 정보 */}
+                  <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {domainScores.map((domain, index) => (
+                      <div key={index} className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                        <h5 className="font-semibold text-purple-900 mb-2">{domain.name}</h5>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">점수:</span>
+                            <span className="font-medium">{domain.score}점</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">백분율:</span>
+                            <span className="font-medium">{domain.percentage.toFixed(1)}%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">수준:</span>
+                            <Badge 
+                              variant={domain.severity === '높음' ? 'destructive' : 
+                                     domain.severity === '중간' ? 'secondary' : 'outline'}
+                              className="text-xs"
+                            >
+                              {domain.severity}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* AI 분석 결과 */}
+            <Card className="bg-white/70 border-purple-200">
+              <CardHeader>
+                <CardTitle className="text-purple-900 flex items-center gap-2">
+                  <Brain className="w-5 h-5" />
+                  정신과의사급 AI 전문 분석
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="prose prose-sm max-w-none">
+                  <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+                    {aiAnalysis}
+                  </div>
+                </div>
+                
+                {/* 분석 결과 액션 버튼 */}
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Button 
+                    onClick={() => navigate('/experts')}
+                    variant="outline" 
+                    size="sm"
+                  >
+                    <Users className="w-4 h-4 mr-2" />
+                    전문가 상담
+                  </Button>
+                  <Button 
+                    onClick={() => navigate('/premium-assessment')}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Target className="w-4 h-4 mr-2" />
+                    다른 검사 하기
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </Card>
 
       {/* Summary Card */}
       <Card className="p-8">

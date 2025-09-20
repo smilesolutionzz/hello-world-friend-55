@@ -73,24 +73,15 @@ const HeroSection = () => {
       <div className="relative z-10 container mx-auto px-4 sm:px-6 pt-12 sm:pt-20 pb-12 sm:pb-16">
         {/* Main Headline */}
         <div className="text-center mb-8 sm:mb-16 space-y-4 sm:space-y-6">
-          {/* Logo Section */}
-          <div className="flex justify-center items-center gap-4 mb-6">
-            <img 
-              src="/src/assets/aih-logo.png" 
-              alt="AIH Logo" 
-              className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
-            />
-            <div className="text-left">
-              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                AI하이라이트PRO
-              </h2>
-              <p className="text-sm sm:text-base text-muted-foreground">AI Health Platform</p>
-            </div>
+          {/* Powerful Hook */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full mb-6">
+            <span className="text-xl">✨</span>
+            <span className="text-sm font-semibold text-blue-700 tracking-wide">AI 기반 프리미엄 심리건강 플랫폼</span>
           </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight">
-            <span className="block text-foreground mb-1 sm:mb-2">3분만에 확인하는</span>
-            <span className="block text-brand-gradient">우리 가족 마음 건강</span>
+            <span className="block text-gray-900 mb-1 sm:mb-2">3분만에 확인하는</span>
+            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">우리 가족 마음 건강</span>
           </h1>
           
           <div className="space-y-4 sm:space-y-6">

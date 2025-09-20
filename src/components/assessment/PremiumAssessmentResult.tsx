@@ -31,6 +31,7 @@ const PremiumAssessmentResult = ({
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [tokenError, setTokenError] = useState<string | null>(null);
 
   useEffect(() => {
     generateAIAnalysis();
@@ -59,14 +60,20 @@ const PremiumAssessmentResult = ({
       // 결과를 데이터베이스에 저장
       await saveAssessmentResult(response.data.analysis);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating AI analysis:', error);
+      const msg = error?.message || String(error);
+      if (msg.includes('토큰') || msg.toLowerCase().includes('token')) {
+        setTokenError(msg);
+        setAiAnalysis('토큰 부족으로 AI 분석을 실행할 수 없습니다. 토큰을 충전한 후 다시 시도해 주세요.');
+      } else {
+        setAiAnalysis('분석을 생성하는 중 오류가 발생했습니다. 기본 해석을 제공합니다.');
+      }
       toast({
-        title: "분석 오류",
-        description: "AI 분석 생성 중 오류가 발생했습니다. 다시 시도해 주세요.",
-        variant: "destructive"
+        title: '분석 오류',
+        description: msg,
+        variant: 'destructive'
       });
-      setAiAnalysis("분석을 생성하는 중 오류가 발생했습니다. 기본 해석을 제공합니다.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -400,6 +407,19 @@ const PremiumAssessmentResult = ({
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
+              {tokenError && (
+                <div className="mb-4 p-4 rounded-lg border border-yellow-200 bg-yellow-50">
+                  <p className="text-sm text-yellow-800 mb-3">⚠️ {tokenError}</p>
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" onClick={() => navigate('/token-subscription')} className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+                      토큰 충전하기
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={generateAIAnalysis} disabled={isAnalyzing}>
+                      다시 시도
+                    </Button>
+                  </div>
+                </div>
+              )}
               {isAnalyzing ? (
                 <div className="flex items-center justify-center py-12">
                   <div className="text-center">

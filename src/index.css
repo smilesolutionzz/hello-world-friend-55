@@ -56,33 +56,44 @@ html, body {
     --ring: 230 80% 65%;
     --radius: 1rem;
     
-    /* Modern Card Colors */
-    --card-purple: 250 85% 97%;
-    --card-purple-text: 250 70% 55%;
-    --card-green: 140 75% 97%;
-    --card-green-text: 140 65% 45%;
-    --card-blue: 210 85% 97%;
-    --card-blue-text: 210 70% 55%;
-    --card-orange: 25 85% 97%;
-    --card-orange-text: 25 70% 55%;
-    --card-pink: 330 85% 97%;
-    --card-pink-text: 330 70% 55%;
+    /* Premium Card Colors - 고급스러운 파스텔 톤 */
+    --card-purple: 255 248 255;
+    --card-purple-text: 124 58 237;
+    --card-purple-border: 196 181 253;
+    --card-green: 247 254 231;
+    --card-green-text: 34 197 94;
+    --card-green-border: 163 230 53;
+    --card-blue: 239 246 255;
+    --card-blue-text: 59 130 246;
+    --card-blue-border: 147 197 253;
+    --card-orange: 255 247 237;
+    --card-orange-text: 249 115 22;
+    --card-orange-border: 253 186 116;
+    --card-pink: 253 242 248;
+    --card-pink-text: 236 72 153;
+    --card-pink-border: 251 182 206;
+    --card-yellow: 254 249 195;
+    --card-yellow-text: 202 138 4;
+    --card-yellow-border: 250 204 21;
     
-    /* Modern Gradients */
+    /* Premium Gradients - 미묘하고 우아한 그라데이션 */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-card-purple: linear-gradient(135deg, hsl(var(--card-purple)), hsl(250 75% 95%));
-    --gradient-card-green: linear-gradient(135deg, hsl(var(--card-green)), hsl(140 65% 95%));
-    --gradient-card-blue: linear-gradient(135deg, hsl(var(--card-blue)), hsl(210 75% 95%));
-    --gradient-card-orange: linear-gradient(135deg, hsl(var(--card-orange)), hsl(25 75% 95%));
-    --gradient-card-pink: linear-gradient(135deg, hsl(var(--card-pink)), hsl(330 75% 95%));
+    --gradient-card-purple: linear-gradient(135deg, rgba(124, 58, 237, 0.03), rgba(124, 58, 237, 0.06));
+    --gradient-card-green: linear-gradient(135deg, rgba(34, 197, 94, 0.03), rgba(34, 197, 94, 0.06));
+    --gradient-card-blue: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(59, 130, 246, 0.06));
+    --gradient-card-orange: linear-gradient(135deg, rgba(249, 115, 22, 0.03), rgba(249, 115, 22, 0.06));
+    --gradient-card-pink: linear-gradient(135deg, rgba(236, 72, 153, 0.03), rgba(236, 72, 153, 0.06));
+    --gradient-card-yellow: linear-gradient(135deg, rgba(202, 138, 4, 0.03), rgba(202, 138, 4, 0.06));
     
-    /* Modern Shadows */
-    --shadow-card: 0 4px 20px -2px hsl(220 30% 92% / 0.4);
-    --shadow-card-hover: 0 8px 25px -3px hsl(220 30% 92% / 0.6);
-    --shadow-glow: 0 0 30px hsl(var(--primary) / 0.15);
+    /* Premium Shadows - 깊이감 있는 그림자 */
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-card-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-card-active: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 0 15px rgba(var(--primary), 0.1);
     
-    /* Animation */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Smooth Animations */
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .dark {
@@ -119,47 +130,146 @@ html, body {
 }
 
 @layer utilities {
+  /* Premium Card Base */
   .card-modern {
-    @apply bg-card border border-border/50 rounded-2xl shadow-[var(--shadow-card)] transition-[var(--transition-smooth)] hover:shadow-[var(--shadow-card-hover)];
+    @apply relative border border-white/20 rounded-2xl backdrop-blur-sm;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-smooth);
   }
   
+  .card-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+  }
+  
+  .card-modern:active {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card-active);
+  }
+  
+  /* Premium Color Variants */
   .card-purple {
-    @apply bg-[hsl(var(--card-purple))] border-[hsl(var(--card-purple-text)/0.2)] text-[hsl(var(--card-purple-text))];
+    background: linear-gradient(135deg, 
+      rgba(255, 248, 255, 0.9), 
+      rgba(249, 246, 255, 0.9)
+    );
+    border-color: rgba(196, 181, 253, 0.3);
+  }
+  
+  .card-purple:hover {
+    background: linear-gradient(135deg, 
+      rgba(255, 248, 255, 0.95), 
+      rgba(249, 246, 255, 0.95)
+    );
+    border-color: rgba(196, 181, 253, 0.4);
   }
   
   .card-green {
-    @apply bg-[hsl(var(--card-green))] border-[hsl(var(--card-green-text)/0.2)] text-[hsl(var(--card-green-text))];
+    background: linear-gradient(135deg, 
+      rgba(247, 254, 231, 0.9), 
+      rgba(240, 253, 244, 0.9)
+    );
+    border-color: rgba(163, 230, 53, 0.3);
+  }
+  
+  .card-green:hover {
+    background: linear-gradient(135deg, 
+      rgba(247, 254, 231, 0.95), 
+      rgba(240, 253, 244, 0.95)
+    );
+    border-color: rgba(163, 230, 53, 0.4);
   }
   
   .card-blue {
-    @apply bg-[hsl(var(--card-blue))] border-[hsl(var(--card-blue-text)/0.2)] text-[hsl(var(--card-blue-text))];
+    background: linear-gradient(135deg, 
+      rgba(239, 246, 255, 0.9), 
+      rgba(245, 251, 255, 0.9)
+    );
+    border-color: rgba(147, 197, 253, 0.3);
+  }
+  
+  .card-blue:hover {
+    background: linear-gradient(135deg, 
+      rgba(239, 246, 255, 0.95), 
+      rgba(245, 251, 255, 0.95)
+    );
+    border-color: rgba(147, 197, 253, 0.4);
   }
   
   .card-orange {
-    @apply bg-[hsl(var(--card-orange))] border-[hsl(var(--card-orange-text)/0.2)] text-[hsl(var(--card-orange-text))];
+    background: linear-gradient(135deg, 
+      rgba(255, 247, 237, 0.9), 
+      rgba(254, 243, 229, 0.9)
+    );
+    border-color: rgba(253, 186, 116, 0.3);
+  }
+  
+  .card-orange:hover {
+    background: linear-gradient(135deg, 
+      rgba(255, 247, 237, 0.95), 
+      rgba(254, 243, 229, 0.95)
+    );
+    border-color: rgba(253, 186, 116, 0.4);
   }
   
   .card-pink {
-    @apply bg-[hsl(var(--card-pink))] border-[hsl(var(--card-pink-text)/0.2)] text-[hsl(var(--card-pink-text))];
+    background: linear-gradient(135deg, 
+      rgba(253, 242, 248, 0.9), 
+      rgba(252, 231, 243, 0.9)
+    );
+    border-color: rgba(251, 182, 206, 0.3);
   }
   
-  .icon-purple {
-    @apply text-[hsl(var(--card-purple-text))];
+  .card-pink:hover {
+    background: linear-gradient(135deg, 
+      rgba(253, 242, 248, 0.95), 
+      rgba(252, 231, 243, 0.95)
+    );
+    border-color: rgba(251, 182, 206, 0.4);
   }
   
-  .icon-green {
-    @apply text-[hsl(var(--card-green-text))];
+  .card-yellow {
+    background: linear-gradient(135deg, 
+      rgba(254, 249, 195, 0.9), 
+      rgba(253, 246, 178, 0.9)
+    );
+    border-color: rgba(250, 204, 21, 0.3);
   }
   
-  .icon-blue {
-    @apply text-[hsl(var(--card-blue-text))];
+  .card-yellow:hover {
+    background: linear-gradient(135deg, 
+      rgba(254, 249, 195, 0.95), 
+      rgba(253, 246, 178, 0.95)
+    );
+    border-color: rgba(250, 204, 21, 0.4);
   }
   
-  .icon-orange {
-    @apply text-[hsl(var(--card-orange-text))];
+  /* Icon Colors */
+  .icon-purple { color: rgb(124 58 237); }
+  .icon-green { color: rgb(34 197 94); }
+  .icon-blue { color: rgb(59 130 246); }
+  .icon-orange { color: rgb(249 115 22); }
+  .icon-pink { color: rgb(236 72 153); }
+  .icon-yellow { color: rgb(202 138 4); }
+  
+  /* Text Colors */
+  .text-purple { color: rgb(124 58 237); }
+  .text-green { color: rgb(34 197 94); }
+  .text-blue { color: rgb(59 130 246); }
+  .text-orange { color: rgb(249 115 22); }
+  .text-pink { color: rgb(236 72 153); }
+  .text-yellow { color: rgb(202 138 4); }
+  
+  /* Premium Button */
+  .btn-premium {
+    @apply bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium px-6 py-3 rounded-xl;
+    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.25);
+    transition: var(--transition-smooth);
   }
   
-  .icon-pink {
-    @apply text-[hsl(var(--card-pink-text))];
+  .btn-premium:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.35);
   }
 }

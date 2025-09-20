@@ -29,27 +29,30 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
       color: "card-purple",
       iconColor: "icon-purple",
       route: "/free-trial",
-      description: "AI와 대화하며 심리 상태를 간단히 파악해보세요"
+      description: "AI와 대화하며 심리 상태를 간단히 파악해보세요",
+      emoji: "💬"
     },
     {
       id: 2,
       title: "3분 심리체크",
       subtitle: "빠른 기본 상태 확인",
       icon: Clock,
-      color: "card-green", 
-      iconColor: "icon-green",
+      color: "card-blue", 
+      iconColor: "icon-blue",
       route: "/assessment",
-      description: "짧은 시간에 현재 마음 상태를 체크해보세요"
+      description: "짧은 시간에 현재 마음 상태를 체크해보세요",
+      emoji: "⏱️"
     },
     {
       id: 3,
       title: "관찰일지 작성",
       subtitle: "체계적인 행동 기록",
       icon: FileText,
-      color: "card-blue",
-      iconColor: "icon-blue", 
+      color: "card-green",
+      iconColor: "icon-green", 
       route: "/observation",
-      description: "일상 속 패턴을 발견하고 개선점을 찾아보세요"
+      description: "일상 속 패턴을 발견하고 개선점을 찾아보세요",
+      emoji: "📝"
     },
     {
       id: 4,
@@ -59,17 +62,19 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
       color: "card-orange",
       iconColor: "icon-orange",
       route: "/experts",
-      description: "심리 전문가와 직접 상담하며 해결책을 찾아보세요"
+      description: "심리 전문가와 직접 상담하며 해결책을 찾아보세요",
+      emoji: "👨‍⚕️"
     },
     {
       id: 5,
-      title: "나만의 맞춤리포팅 신청",
+      title: "맞춤 리포트",
       subtitle: "개인화된 종합 분석 보고서",
       icon: Sparkles,
       color: "card-pink",
       iconColor: "icon-pink",
       route: "/premium-assessment",
-      description: "AI가 분석한 개인 맞춤형 심리 리포트를 받아보세요"
+      description: "AI가 분석한 개인 맞춤형 심리 리포트를 받아보세요",
+      emoji: "✨"
     }
   ];
 
@@ -87,59 +92,99 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
   };
 
   return (
-    <div className="w-full bg-gradient-to-br from-background via-background to-muted/30 py-16">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-2xl font-bold text-foreground mb-4">
-            단계별 이용 가이드
+    <div className="w-full bg-gradient-to-br from-slate-50 via-white to-blue-50/30 py-20">
+      <div className="max-w-5xl mx-auto px-6">
+        {/* Premium Header */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200/50 rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-700">단계별 맞춤 케어</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+            심리건강 여정을 함께 걸어보세요
           </h2>
-          <p className="text-muted-foreground text-sm max-w-2xl mx-auto">
-            AI 기반 심리 케어 서비스를 단계별로 체험해보세요. 무료 체험부터 전문가 상담까지.
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+            무료 체험부터 전문가 상담까지, 당신에게 맞는 심리 케어를 선택하세요
           </p>
         </div>
 
-        {/* Guide Steps */}
-        <div className="space-y-4">
+        {/* Premium Grid Layout */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {guideSteps.map((step, index) => (
             <Card 
               key={step.id}
-              className={`card-modern ${step.color} cursor-pointer group hover:scale-[1.02] active:scale-[0.98] transition-all duration-200`}
+              className={`card-modern ${step.color} cursor-pointer group relative overflow-hidden`}
               onClick={() => handleStepClick(step)}
             >
               <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex-shrink-0">
-                      <step.icon className={`w-6 h-6 ${step.iconColor}`} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-semibold text-lg leading-tight mb-1">
-                        {step.title}
-                      </h3>
-                      <p className="text-sm opacity-80 leading-tight">
-                        {step.subtitle}
-                      </p>
-                    </div>
+                {/* Card Number Badge */}
+                <div className="absolute top-4 right-4 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center">
+                  <span className="text-xs font-semibold text-gray-600">{step.id}</span>
+                </div>
+                
+                {/* Icon & Emoji */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-white/80 rounded-xl flex items-center justify-center shadow-sm">
+                    <span className="text-xl">{step.emoji}</span>
                   </div>
-                  <div className="flex-shrink-0 ml-4">
-                    <ArrowRight className={`w-5 h-5 ${step.iconColor} group-hover:translate-x-1 transition-transform duration-200`} />
-                  </div>
+                  <step.icon className={`w-6 h-6 ${step.iconColor} opacity-70`} />
+                </div>
+                
+                {/* Content */}
+                <div className="space-y-2 mb-4">
+                  <h3 className="font-semibold text-gray-900 text-lg leading-tight">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    {step.subtitle}
+                  </p>
+                </div>
+                
+                {/* Description */}
+                <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                  {step.description}
+                </p>
+                
+                {/* Arrow Indicator */}
+                <div className="flex justify-end">
+                  <ArrowRight className={`w-5 h-5 ${step.iconColor} group-hover:translate-x-1 transition-transform duration-200`} />
                 </div>
               </CardContent>
             </Card>
           ))}
+          
+          {/* Special CTA Card */}
+          <Card className="card-modern card-yellow cursor-pointer group relative overflow-hidden md:col-span-2 lg:col-span-1">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-white/80 rounded-xl flex items-center justify-center shadow-sm mx-auto mb-4">
+                  <span className="text-xl">🎯</span>
+                </div>
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">
+                  무료로 시작하기
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  어떤 서비스가 맞는지 모르겠다면?
+                </p>
+                <Button 
+                  className="btn-premium w-full group-hover:scale-105 transition-transform"
+                  onClick={() => handleStepClick(guideSteps[0])}
+                >
+                  지금 체험해보기
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Bottom CTA */}
-        <div className="text-center mt-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-4">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">무료로 시작하세요</span>
+        {/* Bottom Message */}
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/80 border border-gray-200/50 rounded-full shadow-sm">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-gray-700">
+              모든 서비스는 개별 이용 가능하며, 언제든 시작할 수 있습니다
+            </span>
           </div>
-          <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-            모든 단계는 개별적으로 이용 가능하며, 순서에 상관없이 필요한 서비스부터 시작하실 수 있습니다.
-          </p>
         </div>
       </div>
     </div>

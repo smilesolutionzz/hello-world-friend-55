@@ -139,112 +139,57 @@ export const UnifiedNavigation = () => {
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="hidden lg:flex bg-white/98 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-40 shadow-sm">
+      <nav className="hidden lg:flex bg-white/96 backdrop-blur-md border-b border-gray-200/60 sticky top-0 z-40 shadow-sm">
         <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between h-20">
-            {/* Professional Logo & Token Balance */}
-            <div className="flex items-center gap-6">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo & Token Balance */}
+            <div className="flex items-center gap-4">
               <div 
-                className="flex items-center gap-3 cursor-pointer group"
+                className="flex items-center gap-2 cursor-pointer group"
                 onClick={() => navigate('/')}
               >
-                <div className="relative">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform duration-200">
-                    <Brain className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></div>
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200">
+                  <Brain className="w-4 h-4 text-white" />
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    AI하이라이트PRO
-                  </span>
-                  <span className="text-xs text-gray-500 font-medium">AI Health Platform</span>
-                </div>
+                <span className="text-lg font-semibold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">AIHPRO</span>
               </div>
               
-              {/* Token Balance with enhanced design */}
-              <div className="ml-4">
-                <TokenBalance compact showPurchaseButton={false} />
-              </div>
+              {/* Token Balance - Always visible */}
+              <TokenBalance compact showPurchaseButton={false} />
             </div>
 
-            {/* Streamlined Professional Menu */}
-            <div className="flex items-center gap-2">
-              {/* Core Services - Simplified */}
+            {/* Desktop Menu */}
+            <div className="flex items-center gap-1">
+              {/* 홈 버튼 */}
               <Button
                 variant={isActive('/') ? "default" : "ghost"}
                 size="sm"
                 onClick={() => handleNavigation('/')}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium"
+                className="flex items-center gap-2 h-9 px-3 rounded-md font-medium hover:bg-gray-50 transition-colors"
               >
                 <Home className="w-4 h-4" />
                 홈
               </Button>
 
-              {/* Primary CTA - 테스트 시작 */}
+              {/* 3분테스트 드롭다운 메뉴 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant={isActive('/assessment') || isActive('/premium-assessment') || isActive('/han-medicine-test') ? "default" : "ghost"}
                     size="sm"
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium bg-gradient-to-r from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 border border-blue-200/50"
+                    className="flex items-center gap-2 h-9 px-3 rounded-md font-medium hover:bg-gray-50 transition-colors"
                   >
-                    <TrendingUp className="w-4 h-4 text-blue-600" />
-                    <span className="text-blue-700 font-semibold">건강검사</span>
-                    <ChevronDown className="w-3 h-3 text-blue-600" />
+                    <TrendingUp className="w-4 h-4" />
+                    3분테스트
+                    <ChevronDown className="w-3 h-3 opacity-70" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56 bg-white shadow-xl rounded-xl border border-gray-200/50">
+                <DropdownMenuContent align="start" className="w-48 bg-white shadow-lg border border-gray-200/80 rounded-lg">
                   {assessmentSubmenuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.path}
                       onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-3 cursor-pointer px-4 py-3 hover:bg-gray-50 rounded-lg mx-1"
-                    >
-                      <item.icon className="w-5 h-5 text-blue-600" />
-                      <div className="flex flex-col">
-                        <span className="font-medium">{item.label}</span>
-                        <span className="text-xs text-gray-500">
-                          {item.path === '/assessment' && '기본 심리건강 검사'}
-                          {item.path === '/premium-assessment' && '전문가 정밀분석'}
-                          {item.path === '/han-medicine-test' && '한의학 체질 분석'}
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* AI 상담 */}
-              <Button
-                variant={isActive('/ai-assistant') ? "default" : "ghost"}
-                size="sm"
-                onClick={() => handleNavigation('/ai-assistant')}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium"
-              >
-                <MessageCircle className="w-4 h-4" />
-                AI 상담
-              </Button>
-
-              {/* 데이터 & 리포트 */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant={isActive('/dashboard') || isActive('/institution-admin') ? "default" : "ghost"}
-                    size="sm"
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium"
-                  >
-                    <BarChart3 className="w-4 h-4" />
-                    리포트
-                    <ChevronDown className="w-3 h-3" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-white shadow-lg rounded-xl border border-gray-200/50">
-                  {dataSubmenuItems.map((item) => (
-                    <DropdownMenuItem
-                      key={item.path}
-                      onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-2 cursor-pointer px-3 py-2 hover:bg-gray-50 rounded-lg mx-1"
+                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-md mx-1 my-0.5"
                     >
                       <item.icon className="w-4 h-4" />
                       {item.label}
@@ -253,33 +198,101 @@ export const UnifiedNavigation = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Premium Service */}
-              <Button
-                variant={isActive('/token-subscription') ? "default" : "ghost"}
-                size="sm"
-                onClick={() => handleNavigation('/token-subscription')}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border border-amber-200/50"
-              >
-                <Crown className="w-4 h-4 text-amber-600" />
-                <span className="text-amber-700 font-semibold">프리미엄</span>
-              </Button>
+              {/* AIH 에이전트 드롭다운 메뉴 */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={isActive('/ai-assistant') || isActive('/observation') ? "default" : "ghost"}
+                    size="sm"
+                    className="flex items-center gap-2 h-9 px-3 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    AIH 에이전트
+                    <ChevronDown className="w-3 h-3 opacity-70" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48 bg-white shadow-lg border border-gray-200/80 rounded-lg">
+                  {aihSubmenuItems.map((item) => (
+                    <DropdownMenuItem
+                      key={item.path}
+                      onClick={() => handleNavigation(item.path, item)}
+                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-md mx-1 my-0.5"
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-              {/* User Account */}
-              <div className="ml-4 pl-4 border-l border-gray-200">
-                <Button
-                  variant={user ? "ghost" : "default"}
-                  size="sm"
-                  onClick={handleAuth}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium ${
-                    !user 
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-md' 
-                      : 'hover:bg-gray-100'
-                  }`}
-                >
-                  <User className="w-4 h-4" />
-                  {user ? '내 계정' : '로그인'}
-                </Button>
-              </div>
+              {/* 나의DATA 드롭다운 메뉴 */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={isActive('/dashboard') || isActive('/institution-admin') ? "default" : "ghost"}
+                    size="sm"
+                    className="flex items-center gap-2 h-9 px-3 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                    나의DATA
+                    <ChevronDown className="w-3 h-3 opacity-70" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48 bg-white shadow-lg border border-gray-200/80 rounded-lg z-50">
+                  {dataSubmenuItems.map((item) => (
+                    <DropdownMenuItem
+                      key={item.path}
+                      onClick={() => handleNavigation(item.path, item)}
+                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-md mx-1 my-0.5"
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* 전문가 서비스 드롭다운 메뉴 */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant={isActive('/expert-hiring') || isActive('/token-subscription') ? "default" : "ghost"}
+                    size="sm"
+                    className="flex items-center gap-2 h-9 px-3 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                  >
+                    <UserCheck className="w-4 h-4" />
+                    전문가고용
+                    <ChevronDown className="w-3 h-3 opacity-70" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48 bg-white shadow-lg border border-gray-200/80 rounded-lg z-50">
+                  {expertSubmenuItems.map((item) => (
+                    <DropdownMenuItem
+                      key={item.path}
+                      onClick={() => handleNavigation(item.path, item)}
+                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-md mx-1 my-0.5"
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Auth Button */}
+              <Button
+                variant={user ? "ghost" : "default"}
+                size="sm"
+                onClick={handleAuth}
+                className={`ml-3 flex items-center gap-2 h-9 px-4 rounded-md font-medium transition-all ${
+                  !user 
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-sm hover:shadow-md' 
+                    : 'hover:bg-gray-50'
+                }`}
+              >
+                <User className="w-4 h-4" />
+                {user ? '로그아웃' : '로그인'}
+              </Button>
             </div>
           </div>
         </div>

@@ -61,7 +61,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
       icon: Users,
       color: "card-orange",
       iconColor: "icon-orange",
-      route: "/experts",
+      route: "/expert-hiring",
       description: "심리 전문가와 직접 상담하며 해결책을 찾아보세요",
       emoji: "👨‍⚕️"
     },
@@ -72,7 +72,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
       icon: Sparkles,
       color: "card-pink",
       iconColor: "icon-pink",
-      route: "/premium-assessment",
+      route: "/dashboard",
       description: "AI가 분석한 개인 맞춤형 심리 리포트를 받아보세요",
       emoji: "✨"
     }

@@ -42,18 +42,18 @@ serve(async (req) => {
 
     // 토큰 확인 및 차감
     if (userId) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('tokens')
-        .eq('id', userId)
+      const { data: userTokens } = await supabase
+        .from('user_tokens')
+        .select('current_tokens, total_used')
+        .eq('user_id', userId)
         .single();
 
-      if (!profile || profile.tokens < 8) {
-        console.log('[PREMIUM-ADHD-ANALYZER] 토큰 부족:', profile?.tokens || 0);
+      if (!userTokens || userTokens.current_tokens < 8) {
+        console.log('[PREMIUM-ADHD-ANALYZER] 토큰 부족:', userTokens?.current_tokens || 0);
         return new Response(JSON.stringify({ 
           error: 'insufficient_tokens',
           required: 8,
-          available: profile?.tokens || 0,
+          available: userTokens?.current_tokens || 0,
           message: '토큰이 부족합니다. ADHD 전문 분석에는 8토큰이 필요합니다.'
         }), {
           status: 400,
@@ -63,16 +63,19 @@ serve(async (req) => {
 
       // 토큰 차감
       const { error: tokenError } = await supabase
-        .from('profiles')
-        .update({ tokens: profile.tokens - 8 })
-        .eq('id', userId);
+        .from('user_tokens')
+        .update({ 
+          current_tokens: userTokens.current_tokens - 8,
+          total_used: userTokens.total_used + 8
+        })
+        .eq('user_id', userId);
 
       if (tokenError) {
         console.error('[PREMIUM-ADHD-ANALYZER] 토큰 차감 실패:', tokenError);
         throw new Error('토큰 차감에 실패했습니다.');
       }
 
-      console.log(`ADHD 전문 분석 - 토큰 차감: 8, 잔액: ${profile.tokens - 8}`);
+      console.log(`ADHD 전문 분석 - 토큰 차감: 8, 잔액: ${userTokens.current_tokens - 8}`);
     }
 
     // ADHD 문항별 분석 준비
@@ -167,8 +170,7 @@ ${domainScores.map(domain => `
             content: analysisPrompt
           }
         ],
-        max_completion_tokens: 4000,
-        stream: false
+        max_completion_tokens: 4000
       }),
     });
 

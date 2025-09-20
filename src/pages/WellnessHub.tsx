@@ -319,12 +319,12 @@ const WellnessHub = () => {
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-4">
               <TypingAnimation 
-                phrases={["웰니스 허브", "Wellness Hub", "마음 건강 센터"]}
+                phrases={["라이프케어 허브", "LifeCare Hub", "통합 건강 센터", "스마트 헬스케어"]}
                 className="text-gradient"
               />
             </h1>
             <p className="text-lg text-muted-foreground">
-              매일체크, 챌린지, 성장추적을 한 곳에서
+              AI 기반 개인맞춤 건강관리와 성장 솔루션
             </p>
           </div>
 

@@ -536,7 +536,10 @@ const PremiumAssessmentResult = ({
             </Button>
 
             <Button
-              onClick={() => navigate('/premium-assessment')}
+              onClick={() => {
+                console.log('다른 검사 하기 button clicked');
+                navigate('/premium-assessment');
+              }}
               variant="outline"
               size="lg"
               className="flex items-center gap-2"

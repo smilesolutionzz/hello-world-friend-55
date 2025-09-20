@@ -342,7 +342,10 @@ const ParentingStyleResult = ({
             )}
 
             <Button
-              onClick={onBack}
+              onClick={() => {
+                console.log('다른 검사 하기 button clicked');
+                onBack();
+              }}
               variant="outline"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />

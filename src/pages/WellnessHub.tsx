@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { TypingAnimation } from "@/components/ui/typing-animation";
+import { AIInsightsPanel } from "@/components/ai-wellness/AIInsightsPanel";
+import { AICoachChat } from "@/components/ai-wellness/AICoachChat";
 
 interface Challenge {
   id: string;
@@ -330,10 +332,14 @@ const WellnessHub = () => {
 
           {/* Main Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="checkin" className="flex items-center gap-2">
                 <Heart className="w-4 h-4" />
                 매일체크
+              </TabsTrigger>
+              <TabsTrigger value="ai-insights" className="flex items-center gap-2">
+                <Brain className="w-4 h-4" />
+                AI 인사이트
               </TabsTrigger>
               <TabsTrigger value="challenges" className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
@@ -384,12 +390,21 @@ const WellnessHub = () => {
                           <p className="text-2xl">{stressEmojis[stress! - 1]}</p>
                         </div>
                       </div>
-                      <Button 
-                        onClick={() => setActiveTab('tracker')} 
-                        className="w-full"
-                      >
-                        성장 기록 보러가기
-                      </Button>
+                      <div className="space-y-3">
+                        <Button 
+                          onClick={() => setActiveTab('ai-insights')} 
+                          className="w-full"
+                        >
+                          AI 인사이트 확인하기
+                        </Button>
+                        <Button 
+                          onClick={() => setActiveTab('tracker')} 
+                          variant="outline"
+                          className="w-full"
+                        >
+                          성장 기록 보러가기
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 ) : (
@@ -477,6 +492,33 @@ const WellnessHub = () => {
                     </Button>
                   </div>
                 )}
+              </div>
+            </TabsContent>
+
+            {/* AI Insights Tab */}
+            <TabsContent value="ai-insights" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* AI Health Insights Panel */}
+                <div>
+                  <AIInsightsPanel 
+                    userId={undefined}
+                    checkinData={{ mood, energy, stress, date: new Date().toISOString() }}
+                    onInsightGenerated={(insights) => {
+                      console.log('New insights generated:', insights);
+                    }}
+                  />
+                </div>
+                
+                {/* AI Coach Chat */}
+                <div>
+                  <AICoachChat 
+                    userId={undefined}
+                    moodBefore={mood || undefined}
+                    onSessionComplete={(sessionId) => {
+                      console.log('Coaching session completed:', sessionId);
+                    }}
+                  />
+                </div>
               </div>
             </TabsContent>
 

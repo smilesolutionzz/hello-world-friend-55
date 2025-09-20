@@ -128,6 +128,84 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_coaching_sessions: {
+        Row: {
+          action_items: string[] | null
+          completed_at: string | null
+          conversation_history: Json
+          created_at: string
+          id: string
+          mood_after: number | null
+          mood_before: number | null
+          next_session_date: string | null
+          session_duration_minutes: number | null
+          session_summary: string | null
+          session_type: string
+          user_id: string
+        }
+        Insert: {
+          action_items?: string[] | null
+          completed_at?: string | null
+          conversation_history?: Json
+          created_at?: string
+          id?: string
+          mood_after?: number | null
+          mood_before?: number | null
+          next_session_date?: string | null
+          session_duration_minutes?: number | null
+          session_summary?: string | null
+          session_type: string
+          user_id: string
+        }
+        Update: {
+          action_items?: string[] | null
+          completed_at?: string | null
+          conversation_history?: Json
+          created_at?: string
+          id?: string
+          mood_after?: number | null
+          mood_before?: number | null
+          next_session_date?: string | null
+          session_duration_minutes?: number | null
+          session_summary?: string | null
+          session_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_health_insights: {
+        Row: {
+          confidence_score: number | null
+          content: string
+          created_at: string
+          generated_at: string
+          id: string
+          insight_type: string
+          is_read: boolean | null
+          user_id: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          content: string
+          created_at?: string
+          generated_at?: string
+          id?: string
+          insight_type: string
+          is_read?: boolean | null
+          user_id: string
+        }
+        Update: {
+          confidence_score?: number | null
+          content?: string
+          created_at?: string
+          generated_at?: string
+          id?: string
+          insight_type?: string
+          is_read?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       assessment_enhanced_analysis: {
         Row: {
           assessment_type: string
@@ -2703,6 +2781,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      personalized_challenges: {
+        Row: {
+          ai_generated: boolean | null
+          category: string
+          created_at: string
+          custom_goals: Json | null
+          description: string
+          difficulty_level: number
+          duration_days: number
+          end_date: string | null
+          id: string
+          progress_metrics: Json | null
+          start_date: string | null
+          status: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          category: string
+          created_at?: string
+          custom_goals?: Json | null
+          description: string
+          difficulty_level: number
+          duration_days: number
+          end_date?: string | null
+          id?: string
+          progress_metrics?: Json | null
+          start_date?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_generated?: boolean | null
+          category?: string
+          created_at?: string
+          custom_goals?: Json | null
+          description?: string
+          difficulty_level?: number
+          duration_days?: number
+          end_date?: string | null
+          id?: string
+          progress_metrics?: Json | null
+          start_date?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       personalized_missions: {
         Row: {

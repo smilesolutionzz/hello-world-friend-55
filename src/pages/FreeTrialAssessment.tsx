@@ -96,10 +96,25 @@ const FreeTrialAssessment = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             회원가입 없이 3가지 기본 테스트를 무료로 체험해보세요
           </p>
-          <div className="bg-primary/10 rounded-lg p-3 mt-4 max-w-md mx-auto">
-            <p className="text-sm text-primary font-medium">
-              💡 더 정확한 분석이 필요하다면 회원가입 후 프리미엄 테스트를 이용하세요
-            </p>
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4 max-w-2xl mx-auto">
+            <div className="flex items-start gap-2">
+              <div className="text-lg">💡</div>
+              <div className="text-sm text-yellow-800">
+                <p className="font-bold mb-1">무료 vs 구독 해석 차이점:</p>
+                <div className="grid md:grid-cols-2 gap-2 text-xs">
+                  <div className="bg-white/50 rounded p-2">
+                    <p className="font-medium text-gray-600">🆓 무료 해석</p>
+                    <p>• 일반적인 기본 해석</p>
+                    <p>• 단순한 결과 제공</p>
+                  </div>
+                  <div className="bg-white/50 rounded p-2">
+                    <p className="font-medium text-blue-600">💎 구독자 해석</p>
+                    <p>• AI 초정밀 분석</p>
+                    <p>• 전문가급 상세 해석</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -152,6 +167,14 @@ const FreeTrialAssessment = () => {
                       </div>
                       <div className="text-muted-foreground">
                         {test.questions}개 문항
+                      </div>
+                    </div>
+
+                    {/* 해석 레벨 안내 */}
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                      <div className="text-xs text-gray-600">
+                        <p className="font-medium mb-1">📄 일반 해석만 제공</p>
+                        <p>기본적인 분석 결과를 확인하실 수 있습니다</p>
                       </div>
                     </div>
 
@@ -209,19 +232,46 @@ const FreeTrialAssessment = () => {
         {/* CTA 섹션 */}
         <div className="bg-gradient-to-br from-primary/10 via-white/90 to-secondary/10 rounded-2xl p-8 text-center">
           <Crown className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h3 className="text-2xl font-bold mb-4">더 정확한 분석이 필요하시다면?</h3>
+          <h3 className="text-2xl font-bold mb-4">AI 초정밀 전문가급 해석이 필요하시다면?</h3>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            회원가입하시면 10개 토큰 무료 지급 + 매일 3개 토큰 추가 지급으로 
-            더 전문적이고 상세한 심리분석을 받으실 수 있습니다.
+            구독하시면 <strong className="text-primary">AI 초정밀 분석 + 전문가급 상세 해석</strong>을 받으실 수 있습니다.
+            무료 해석과는 완전히 다른 퀄리티의 분석 결과를 경험해보세요.
           </p>
+          
+          {/* 차별화 포인트 강조 */}
+          <div className="bg-white/70 rounded-xl p-4 mb-6 max-w-3xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-4 text-left">
+              <div className="space-y-2">
+                <h4 className="font-bold text-gray-600 flex items-center gap-2">
+                  🆓 무료 해석 (현재)
+                </h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• 기본적인 일반 해석</li>
+                  <li>• 단순한 결과 요약</li>
+                  <li>• 표면적 분석</li>
+                </ul>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-bold text-blue-600 flex items-center gap-2">
+                  💎 구독자 해석 (업그레이드)
+                </h4>
+                <ul className="text-sm text-blue-600 space-y-1">
+                  <li>• <strong>AI 초정밀 3중 분석</strong></li>
+                  <li>• <strong>전문가급 상세 해석</strong></li>
+                  <li>• <strong>개인 맞춤 개선안</strong></li>
+                  <li>• <strong>심층 심리 패턴 분석</strong></li>
+                </ul>
+              </div>
+            </div>
+          </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
             <Button 
-              onClick={handleSignUp}
+              onClick={() => navigate('/token-subscription')}
               className="flex-1 bg-gradient-to-r from-primary to-primary-glow text-white"
               size="lg"
             >
-              회원가입 (10토큰 무료)
+              🚀 AI 초정밀 해석 받기
             </Button>
             <Button 
               variant="outline"

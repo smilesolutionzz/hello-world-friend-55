@@ -23,7 +23,7 @@ import {
   Users
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -65,6 +65,85 @@ const WellnessLifestyle = () => {
       toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
     } finally {
       setLoadingChallenge(false);
+    }
+  };
+
+  // Additional CTA handlers
+  const handleSupplementsDetail = async () => {
+    try {
+      await supabase.functions.invoke('ai-health-insights', {
+        body: { action: 'supplements_detail' },
+      });
+      toast({ title: '상세 분석 준비 완료', description: '맞춤형 영양 분석으로 이동합니다.' });
+      navigate('/ai-assistant');
+    } catch (err: any) {
+      console.error('상세 분석 실패:', err);
+      toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+    }
+  };
+
+  const handleConstitutionTest = () => {
+    navigate('/han-medicine-test');
+  };
+
+  const handleBeautyPlan = () => {
+    toast({ title: '뷰티 플랜 생성', description: 'AI가 맞춤 플랜을 구성합니다.' });
+    navigate('/ai-assistant');
+  };
+
+  const handleBiomarkerBooking = () => {
+    navigate('/institutions');
+  };
+
+  const [fastingActive, setFastingActive] = useState(false);
+  const [fastingStart, setFastingStart] = useState<number | null>(null);
+  const [fastingElapsedText, setFastingElapsedText] = useState('14시간 30분');
+
+  useEffect(() => {
+    if (!fastingActive) return;
+    if (!fastingStart) setFastingStart(Date.now());
+    const start = fastingStart ?? Date.now();
+    const update = () => {
+      const diff = Date.now() - start;
+      const hrs = Math.floor(diff / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      setFastingElapsedText(`${hrs}시간 ${mins}분`);
+    };
+    update();
+    const id = setInterval(update, 60000);
+    return () => clearInterval(id);
+  }, [fastingActive, fastingStart]);
+
+  const handleFastingTimerStart = () => {
+    if (!fastingActive) {
+      setFastingStart(Date.now());
+      setFastingActive(true);
+      toast({ title: '단식 타이머 시작', description: '지금부터 단식 시간을 기록합니다.' });
+    } else {
+      setFastingActive(false);
+      toast({ title: '단식 타이머 중지', description: '기록을 일시 중지했어요.' });
+    }
+  };
+
+  const handleWorkoutStart = async () => {
+    try {
+      await supabase.functions.invoke('ai-coach', { body: { action: 'start_workout' } });
+      toast({ title: '운동 세션 시작', description: 'AI 코치 페이지로 이동합니다.' });
+      navigate('/ai-coach');
+    } catch (err: any) {
+      console.error('운동 시작 실패:', err);
+      toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+    }
+  };
+
+  const handleSleepTips = async () => {
+    try {
+      await supabase.functions.invoke('ai-health-insights', { body: { action: 'sleep_tips' } });
+      toast({ title: '수면 개선 팁', description: '맞춤 팁을 준비했어요.' });
+      navigate('/ai-assistant');
+    } catch (err: any) {
+      console.error('수면 팁 실패:', err);
+      toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
     }
   };
 
@@ -242,7 +321,7 @@ const WellnessLifestyle = () => {
                           <Badge variant="outline">선택</Badge>
                         </div>
                       </div>
-                      <Button size="sm" className="w-full">
+                      <Button size="sm" className="w-full" onClick={handleSupplementsDetail}>
                         상세 분석 받기
                       </Button>
                     </div>
@@ -271,7 +350,7 @@ const WellnessLifestyle = () => {
                           <div className="text-xs text-muted-foreground">감국, 라벤더 블렌드</div>
                         </div>
                       </div>
-                      <Button size="sm" className="w-full">
+                      <Button size="sm" className="w-full" onClick={handleConstitutionTest}>
                         체질 검사하기
                       </Button>
                     </div>
@@ -308,7 +387,7 @@ const WellnessLifestyle = () => {
                           <div className="text-muted-foreground">항산화</div>
                         </div>
                       </div>
-                      <Button size="sm" className="w-full">
+                      <Button size="sm" className="w-full" onClick={handleBeautyPlan}>
                         뷰티 플랜 만들기
                       </Button>
                     </div>
@@ -397,7 +476,7 @@ const WellnessLifestyle = () => {
                       </div>
                       
                       <div className="space-y-2">
-                        <Button className="w-full">
+                        <Button className="w-full" onClick={handleBiomarkerBooking}>
                           바이오마커 검사 예약
                         </Button>
                         <Button variant="outline" className="w-full">
@@ -424,11 +503,11 @@ const WellnessLifestyle = () => {
                     </p>
                     <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg mb-4">
                       <div className="text-sm font-medium">오늘의 단식 시간</div>
-                      <div className="text-lg font-bold text-orange-600">14시간 30분</div>
+                      <div className="text-lg font-bold text-orange-600">{fastingElapsedText}</div>
                       <Progress value={90} className="h-2 mt-2" />
                     </div>
-                    <Button size="sm" className="w-full">
-                      단식 타이머 시작
+                    <Button size="sm" className="w-full" onClick={handleFastingTimerStart}>
+                      {fastingActive ? '타이머 진행 중' : '단식 타이머 시작'}
                     </Button>
                   </CardContent>
                 </Card>
@@ -458,7 +537,7 @@ const WellnessLifestyle = () => {
                         <span>15분</span>
                       </div>
                     </div>
-                    <Button size="sm" className="w-full">
+                    <Button size="sm" className="w-full" onClick={handleWorkoutStart}>
                       오늘의 운동 시작
                     </Button>
                   </CardContent>
@@ -480,7 +559,7 @@ const WellnessLifestyle = () => {
                       <div className="text-lg font-bold text-purple-600">85점</div>
                       <div className="text-xs text-muted-foreground">깊은잠 3시간 32분</div>
                     </div>
-                    <Button size="sm" className="w-full">
+                    <Button size="sm" className="w-full" onClick={handleSleepTips}>
                       수면 개선 팁 보기
                     </Button>
                   </CardContent>

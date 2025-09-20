@@ -256,23 +256,19 @@ const TokenSubscription = () => {
               <div className="bg-white/20 rounded-full p-2">
                 <Sparkles className="w-5 h-5" />
               </div>
-              <h2 className="text-xl font-bold">🎯 1단계: 하이브리드 모델 런칭!</h2>
+              <h2 className="text-xl font-bold">🎯 체험 후 구독! 스마트한 선택</h2>
             </div>
             <p className="text-lg font-medium">
-              토큰제와 구독제를 모두 제공합니다. 본인에게 맞는 방식을 선택하세요!
+              토큰으로 먼저 체험해보고, 더 자주 사용한다면 구독으로 업그레이드하세요!
             </p>
-            <div className="grid md:grid-cols-3 gap-4 mt-4 text-sm">
-              <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold">🆓 무료 체험</div>
-                <div>월 1회 무료 체험</div>
-              </div>
+            <div className="grid md:grid-cols-2 gap-4 mt-4 text-sm">
               <div className="bg-white/10 rounded-lg p-3">
                 <div className="font-bold">🪙 토큰팩</div>
-                <div>9,900원/50토큰 (시험용)</div>
+                <div>9,900원/50토큰 → 체험용</div>
               </div>
               <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold">💎 베이직</div>
-                <div>19,900원/월 무제한</div>
+                <div className="font-bold">💎 구독제</div>
+                <div>19,900원/월 → 무제한 이용</div>
               </div>
             </div>
           </div>

@@ -1,27 +1,39 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTokens } from './useTokens';
+import { useSubscription } from './useSubscription';
 
 interface TokenGuardReturn {
   allowed: boolean;
   loading: boolean;
   remainingTokens: number;
+  isSubscriber: boolean;
 }
 
 export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
   const [allowed, setAllowed] = useState(false);
   const [loading, setLoading] = useState(true);
   const { balance, checkTokenAvailability } = useTokens();
+  const { subscription, loading: subLoading, isPremiumUser } = useSubscription();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkTokens = async () => {
+    const checkAccess = async () => {
       try {
-        if (!balance) {
+        if (subLoading || !balance) {
+          setLoading(true);
+          return;
+        }
+
+        // 구독자면 무제한 이용 가능
+        const isSubscriber = isPremiumUser();
+        if (isSubscriber) {
+          setAllowed(true);
           setLoading(false);
           return;
         }
 
+        // 구독자가 아니면 토큰 확인
         const hasEnoughTokens = checkTokenAvailability(requiredTokens);
         
         if (!hasEnoughTokens) {
@@ -31,7 +43,7 @@ export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
           setAllowed(true);
         }
       } catch (error) {
-        console.error('Token check error:', error);
+        console.error('Access check error:', error);
         navigate('/token-subscription');
         setAllowed(false);
       } finally {
@@ -39,12 +51,13 @@ export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
       }
     };
 
-    checkTokens();
-  }, [balance, requiredTokens, navigate, checkTokenAvailability]);
+    checkAccess();
+  }, [balance, subscription, subLoading, requiredTokens, navigate, checkTokenAvailability, isPremiumUser]);
 
   return { 
     allowed, 
     loading, 
-    remainingTokens: balance?.current_tokens || 0 
+    remainingTokens: balance?.current_tokens || 0,
+    isSubscriber: isPremiumUser()
   };
 };

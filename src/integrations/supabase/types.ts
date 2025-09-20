@@ -352,6 +352,39 @@ export type Database = {
         }
         Relationships: []
       }
+      beta_discount_settings: {
+        Row: {
+          created_at: string | null
+          discount_name: string
+          end_date: string
+          id: string
+          is_active: boolean
+          monthly_discount_percent: number
+          start_date: string
+          yearly_discount_percent: number
+        }
+        Insert: {
+          created_at?: string | null
+          discount_name: string
+          end_date?: string
+          id?: string
+          is_active?: boolean
+          monthly_discount_percent?: number
+          start_date?: string
+          yearly_discount_percent?: number
+        }
+        Update: {
+          created_at?: string | null
+          discount_name?: string
+          end_date?: string
+          id?: string
+          is_active?: boolean
+          monthly_discount_percent?: number
+          start_date?: string
+          yearly_discount_percent?: number
+        }
+        Relationships: []
+      }
       challenge_posts: {
         Row: {
           created_at: string
@@ -3205,6 +3238,36 @@ export type Database = {
           status?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      test_access_control: {
+        Row: {
+          access_level: string
+          created_at: string | null
+          id: string
+          is_free: boolean
+          required_subscription_type: string | null
+          test_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          access_level?: string
+          created_at?: string | null
+          id?: string
+          is_free?: boolean
+          required_subscription_type?: string | null
+          test_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          access_level?: string
+          created_at?: string | null
+          id?: string
+          is_free?: boolean
+          required_subscription_type?: string | null
+          test_type?: string
+          updated_at?: string | null
         }
         Relationships: []
       }

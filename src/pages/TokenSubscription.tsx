@@ -298,8 +298,11 @@ const TokenSubscription = () => {
 
         {/* 구독 플랜 선택 섹션 */}
         <div className="mt-16 text-center">
-          <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">구독 플랜 선택</h2>
-          <p className="text-lg text-muted-foreground mb-12">필요에 맞는 플랜을 선택하여 AI 심리 분석 서비스를 이용하세요</p>
+          <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">구독 플랜 선택</h2>
+          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-lg mb-4 inline-block animate-pulse">
+            🔥 베타 런칭 특가! 3개월 한정 최대 50% 할인
+          </div>
+          <p className="text-lg text-muted-foreground mb-12">모든 심리테스트가 구독으로! 재미테스트만 무료로 체험하세요</p>
           
           <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
             {/* 베이직 (무료) */}
@@ -309,25 +312,25 @@ const TokenSubscription = () => {
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold mb-2 text-green-800">베이직</h3>
-                <p className="text-sm text-muted-foreground mb-3">기본적인 AI 분석과 관찰일지를 무료로 체험해보세요</p>
+                <p className="text-sm text-muted-foreground mb-3">재미테스트만 무료로 체험해보세요</p>
                 <div className="text-3xl font-bold text-green-600 mb-2">무료</div>
               </div>
               <div className="space-y-3 text-left mb-8">
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-sm">월 3회 기본 AI 분석</span>
+                  <span className="text-sm">🎯 재미테스트 무료 이용</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-sm">간단한 관찰일지 작성</span>
+                  <span className="text-sm">📝 기본 관찰일지 작성</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-sm">기본 심리 상태 체크</span>
+                  <span className="text-sm">💬 커뮤니티 이용</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-sm">커뮤니티 이용</span>
+                  <span className="text-sm">📊 기본 결과 요약</span>
                 </div>
               </div>
               <Button 
@@ -352,15 +355,23 @@ const TokenSubscription = () => {
                   <Crown className="w-10 h-10 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold mb-2 text-purple-800">스탠다드</h3>
-                <p className="text-sm text-muted-foreground mb-3">무제한 AI 분석과 전문가 검토 서비스</p>
-                <div className="text-3xl font-bold text-purple-600 mb-1">₩29,900</div>
+                <p className="text-sm text-muted-foreground mb-3">모든 심리테스트 무제한 + 전문가 검토</p>
+                
+                {/* 할인 가격 표시 */}
+                <div className="mb-3">
+                  <div className="text-lg text-gray-500 line-through">₩29,900</div>
+                  <div className="text-3xl font-bold text-purple-600 mb-1">₩20,930</div>
+                  <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-bold inline-block">
+                    30% 할인 🔥
+                  </div>
+                </div>
                 <p className="text-sm text-muted-foreground">월간 구독</p>
               </div>
 
               <div className="space-y-3 text-left mb-8">
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm">✨ 무제한 AI 분석 (GPT-4 + Claude)</span>
+                  <span className="text-sm">✨ 모든 심리테스트 무제한</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
@@ -396,19 +407,44 @@ const TokenSubscription = () => {
                 </div>
               </div>
 
-              <Button 
-                onClick={async () => {
-                  const { data: { session } } = await supabase.auth.getSession();
-                  if (!session) {
-                    navigate('/auth');
-                    return;
-                  }
-                  handleSubscriptionPurchase('standard');
-                }}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
-              >
-                🚀 스탠다드 시작하기
-              </Button>
+              {/* 월간/연간 선택 버튼 */}
+              <div className="space-y-3 mb-4">
+                <Button 
+                  onClick={async () => {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) {
+                      navigate('/auth');
+                      return;
+                    }
+                    handleSubscriptionPurchase('standard-monthly');
+                  }}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
+                >
+                  🚀 월간 ₩20,930
+                </Button>
+                
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <div className="text-center">
+                    <div className="text-sm font-bold text-yellow-800 mb-1">🎁 연간 결제 시 추가 할인!</div>
+                    <div className="text-lg font-bold text-yellow-900">₩179,400/년 (월 ₩14,950)</div>
+                    <div className="text-sm text-yellow-700">50% 할인 혜택!</div>
+                  </div>
+                  <Button 
+                    onClick={async () => {
+                      const { data: { session } } = await supabase.auth.getSession();
+                      if (!session) {
+                        navigate('/auth');
+                        return;
+                      }
+                      handleSubscriptionPurchase('standard-yearly');
+                    }}
+                    variant="outline"
+                    className="w-full mt-2 border-yellow-400 text-yellow-800 hover:bg-yellow-100"
+                  >
+                    💎 연간 결제하기
+                  </Button>
+                </div>
+              </div>
             </div>
             
             {/* 프리미엄 (₩59,900) */}
@@ -416,7 +452,7 @@ const TokenSubscription = () => {
               {/* 추천 배지 */}
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg">
-                  🌟 추천
+                  👑 VIP
                 </div>
               </div>
 
@@ -426,7 +462,15 @@ const TokenSubscription = () => {
                 </div>
                 <h3 className="text-2xl font-bold mb-2 text-amber-800">프리미엄</h3>
                 <p className="text-sm text-muted-foreground mb-3">완전한 AI + 전문가 케어 서비스</p>
-                <div className="text-3xl font-bold text-amber-600 mb-1">₩59,900</div>
+                
+                {/* 할인 가격 표시 */}
+                <div className="mb-3">
+                  <div className="text-lg text-gray-500 line-through">₩59,900</div>
+                  <div className="text-3xl font-bold text-amber-600 mb-1">₩41,930</div>
+                  <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-bold inline-block">
+                    30% 할인 🔥
+                  </div>
+                </div>
                 <p className="text-sm text-muted-foreground">월간 구독</p>
               </div>
 
@@ -473,19 +517,44 @@ const TokenSubscription = () => {
                 </div>
               </div>
 
-              <Button 
-                onClick={async () => {
-                  const { data: { session } } = await supabase.auth.getSession();
-                  if (!session) {
-                    navigate('/auth');
-                    return;
-                  }
-                  handleSubscriptionPurchase('premium');
-                }}
-                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
-              >
-                💎 프리미엄 시작하기
-              </Button>
+              {/* 월간/연간 선택 버튼 */}
+              <div className="space-y-3 mb-4">
+                <Button 
+                  onClick={async () => {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) {
+                      navigate('/auth');
+                      return;
+                    }
+                    handleSubscriptionPurchase('premium-monthly');
+                  }}
+                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
+                >
+                  💎 월간 ₩41,930
+                </Button>
+                
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="text-center">
+                    <div className="text-sm font-bold text-blue-800 mb-1">🎁 연간 결제 시 추가 할인!</div>
+                    <div className="text-lg font-bold text-blue-900">₩359,400/년 (월 ₩29,950)</div>
+                    <div className="text-sm text-blue-700">50% 할인 혜택!</div>
+                  </div>
+                  <Button 
+                    onClick={async () => {
+                      const { data: { session } } = await supabase.auth.getSession();
+                      if (!session) {
+                        navigate('/auth');
+                        return;
+                      }
+                      handleSubscriptionPurchase('premium-yearly');
+                    }}
+                    variant="outline"
+                    className="w-full mt-2 border-blue-400 text-blue-800 hover:bg-blue-100"
+                  >
+                    👑 연간 결제하기
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

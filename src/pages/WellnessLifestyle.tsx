@@ -20,7 +20,9 @@ import {
   Leaf,
   Dumbbell,
   Shield,
-  Users
+  Users,
+  BarChart3,
+  FileText
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
@@ -243,449 +245,276 @@ const WellnessLifestyle = () => {
       <UnifiedNavigation />
       
       <main className="pt-4 pb-12">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-6xl">
           {/* Hero Section */}
           <section className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 px-4 py-2 rounded-full mb-6">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium">MZ세대를 위한 웰니스 혁명</span>
+            <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 px-4 py-2 rounded-full mb-6">
+              <Sparkles className="h-4 w-4 text-blue-600" />
+              <span className="text-sm font-semibold text-blue-700">웰니스 허브</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              웰니스 라이프스타일 허브
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+              나만의 건강 리포트 센터
             </h1>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
-              AI 기반 개인 맞춤형 건강 관리로 당신의 웰니스 여정을 시작하세요. 
-              디지털 라이프스타일 플래너부터 장수 건강 솔루션까지, 모든 것을 한 곳에서.
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+              AI 분석부터 전문가 검증까지, 모든 건강 리포트를 한 곳에서 확인하고 관리하세요
             </p>
           </section>
 
-          {/* Main Tabs */}
-          <Tabs defaultValue="lifestyle" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="lifestyle" className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                라이프스타일 플래너
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate('/assessment')}>
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Brain className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">심리 검사 받기</h3>
+                <p className="text-sm text-gray-600 mb-4">3분만에 현재 마음 상태 체크</p>
+                <Button size="sm" className="w-full">검사 시작</Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate('/dashboard')}>
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <BarChart3 className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">내 리포트 보기</h3>
+                <p className="text-sm text-gray-600 mb-4">받은 모든 분석 결과 한눈에</p>
+                <Button size="sm" className="w-full" variant="outline">리포트 열기</Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-200 hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate('/expert-hiring')}>
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">전문가 상담</h3>
+                <p className="text-sm text-gray-600 mb-4">전문의와 1:1 개인 상담</p>
+                <Button size="sm" className="w-full" variant="outline">상담 신청</Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content Tabs */}
+          <Tabs defaultValue="health-analysis" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-8 h-12">
+              <TabsTrigger value="health-analysis" className="flex items-center gap-2 text-sm">
+                <Activity className="h-4 w-4" />
+                맞춤 건강 분석
               </TabsTrigger>
-              <TabsTrigger value="functional" className="flex items-center gap-2">
-                <Leaf className="h-4 w-4" />
-                기능성 건강
+              <TabsTrigger value="wellness-plan" className="flex items-center gap-2 text-sm">
+                <Target className="h-4 w-4" />
+                웰니스 플랜
               </TabsTrigger>
-              <TabsTrigger value="longevity" className="flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                장수 & 체중관리
+              <TabsTrigger value="my-reports" className="flex items-center gap-2 text-sm">
+                <FileText className="h-4 w-4" />
+                내 리포트 모음
               </TabsTrigger>
             </TabsList>
 
-            {/* 라이프스타일 플래너 */}
-            <TabsContent value="lifestyle" className="space-y-8">
+            {/* 맞춤 건강 분석 */}
+            <TabsContent value="health-analysis" className="space-y-8">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <Card className="hover-scale">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Brain className="h-5 w-5 text-primary" />
-                      AI 맞춤형 일상 루틴
+                {/* 영양제 추천 */}
+                <Card className="hover:shadow-lg transition-all">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Pill className="h-5 w-5 text-blue-600" />
+                      </div>
+                      맞춤형 영양제 추천
                     </CardTitle>
+                    <p className="text-sm text-gray-600">AI 기반 개인 맞춤형 영양제 분석</p>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">오늘의 웰니스 점수</span>
-                        <Badge variant="secondary">85%</Badge>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 bg-blue-50 rounded-lg text-center">
+                        <div className="text-sm font-medium text-blue-900">오메가3</div>
+                        <div className="text-xs text-blue-600">필수</div>
                       </div>
-                      <Progress value={85} className="h-2" />
-                      
-                      <div className="grid grid-cols-2 gap-4 mt-6">
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
-                          <Moon className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-                          <div className="text-sm font-medium">수면</div>
-                          <div className="text-xs text-muted-foreground">7.5시간</div>
-                        </div>
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
-                          <Activity className="h-6 w-6 mx-auto mb-2 text-green-500" />
-                          <div className="text-sm font-medium">운동</div>
-                          <div className="text-xs text-muted-foreground">45분</div>
-                        </div>
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
-                          <Apple className="h-6 w-6 mx-auto mb-2 text-orange-500" />
-                          <div className="text-sm font-medium">영양</div>
-                          <div className="text-xs text-muted-foreground">균형식</div>
-                        </div>
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
-                          <Heart className="h-6 w-6 mx-auto mb-2 text-red-500" />
-                          <div className="text-sm font-medium">스트레스</div>
-                          <div className="text-xs text-muted-foreground">낮음</div>
-                        </div>
+                      <div className="p-3 bg-green-50 rounded-lg text-center">
+                        <div className="text-sm font-medium text-green-900">비타민D</div>
+                        <div className="text-xs text-green-600">추천</div>
                       </div>
-                      
-                      <Button className="w-full mt-4" onClick={handleStartDailyRoutine} disabled={loadingRoutine}>
-                        {loadingRoutine ? '생성 중...' : '오늘의 루틴 시작하기'}
-                      </Button>
                     </div>
+                    <Button className="w-full" onClick={handleSupplementsDetail} disabled={loadingSupplements}>
+                      {loadingSupplements ? '분석 중...' : '상세 분석 받기'}
+                    </Button>
                   </CardContent>
                 </Card>
 
-                <Card className="hover-scale">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="h-5 w-5 text-secondary" />
-                      소셜 웰니스 챌린지
+                {/* 뷰티 웰니스 */}
+                <Card className="hover:shadow-lg transition-all">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <Sparkles className="h-5 w-5 text-purple-600" />
+                      </div>
+                      안티에이징 뷰티 플랜
                     </CardTitle>
+                    <p className="text-sm text-gray-600">개인 맞춤 뷰티 루틴 & 영양 관리</p>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg">
-                        <h4 className="font-medium mb-2">🏃‍♀️ 30일 걷기 챌린지</h4>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          친구들과 함께 매일 1만보 걷기 도전!
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm">진행률</span>
-                          <span className="text-sm font-medium">15/30일</span>
-                        </div>
-                        <Progress value={50} className="h-2 mt-2" />
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-2 bg-purple-50 rounded text-center">
+                        <div className="text-sm font-medium text-purple-900">콜라겐</div>
+                        <div className="text-xs text-purple-600">탄력</div>
                       </div>
-                      
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                          <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
-                            <span className="text-xs font-bold">1위</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="text-sm font-medium">김민지</div>
-                            <div className="text-xs text-muted-foreground">12,450보</div>
-                          </div>
-                          <Badge variant="outline">🏆</Badge>
-                        </div>
-                        
-                        <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                          <div className="w-8 h-8 bg-secondary/20 rounded-full flex items-center justify-center">
-                            <span className="text-xs font-bold">2위</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="text-sm font-medium">나 (이서준)</div>
-                            <div className="text-xs text-muted-foreground">11,280보</div>
-                          </div>
-                          <Badge variant="outline">🥈</Badge>
-                        </div>
+                      <div className="p-2 bg-pink-50 rounded text-center">
+                        <div className="text-sm font-medium text-pink-900">비타민C</div>
+                        <div className="text-xs text-pink-600">미백</div>
                       </div>
-                      
-                      <Button variant="outline" className="w-full" onClick={handleJoinNewChallenge} disabled={loadingChallenge}>
-                        {loadingChallenge ? '준비 중...' : '새 챌린지 참여하기'}
-                      </Button>
                     </div>
+                    <Button className="w-full" onClick={handleBeautyPlan} disabled={loadingBeauty}>
+                      {loadingBeauty ? '플랜 생성 중...' : '뷰티 플랜 만들기'}
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
+
+              {/* 분석 결과 표시 영역 */}
+              {(analysisResult || beautyPlan) && (
+                <div className="space-y-6">
+                  <h3 className="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                    📋 분석 결과
+                  </h3>
+                  
+                  {analysisResult && (
+                    <Card className="border-l-4 border-l-blue-500">
+                      <CardHeader>
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <Pill className="h-5 w-5 text-blue-600" />
+                          영양제 분석 리포트
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="prose prose-sm max-w-none">
+                          <p className="text-gray-700 leading-relaxed">{analysisResult}</p>
+                        </div>
+                        <div className="mt-4 flex gap-2">
+                          <Button size="sm" onClick={() => navigate('/dashboard')}>
+                            내 리포트에 저장
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => setAnalysisResult('')}>
+                            닫기
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {beautyPlan && (
+                    <Card className="border-l-4 border-l-purple-500">
+                      <CardHeader>
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <Sparkles className="h-5 w-5 text-purple-600" />
+                          뷰티 플랜 리포트
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="prose prose-sm max-w-none">
+                          <p className="text-gray-700 leading-relaxed">{beautyPlan}</p>
+                        </div>
+                        <div className="mt-4 flex gap-2">
+                          <Button size="sm" onClick={() => navigate('/dashboard')}>
+                            내 리포트에 저장
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => setBeautyPlan('')}>
+                            닫기
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              )}
             </TabsContent>
 
-            {/* 기능성 건강 솔루션 */}
-            <TabsContent value="functional" className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Card className="hover-scale">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Pill className="h-5 w-5 text-blue-500" />
-                      맞춤형 영양제
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-sm text-muted-foreground">
-                        AI 분석 기반 개인 맞춤형 영양제 추천
-                      </p>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm">오메가3</span>
-                          <Badge variant="secondary">추천</Badge>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm">비타민D</span>
-                          <Badge variant="secondary">추천</Badge>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm">마그네슘</span>
-                          <Badge variant="outline">선택</Badge>
-                        </div>
-                      </div>
-                      <Button size="sm" className="w-full" onClick={handleSupplementsDetail} disabled={loadingSupplements}>
-                        {loadingSupplements ? '분석 중...' : '상세 분석 받기'}
-                      </Button>
-                      {analysisResult && (
-                        <div className="mt-4 p-3 bg-primary/5 border border-primary/20 rounded-lg">
-                          <h4 className="font-medium text-sm mb-2">🎯 맞춤 분석 결과</h4>
-                          <p className="text-xs text-muted-foreground">{analysisResult}</p>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="hover-scale">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Leaf className="h-5 w-5 text-green-500" />
-                      한방차 처방
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-sm text-muted-foreground">
-                        체질과 현재 상태에 맞는 한방차 추천
-                      </p>
-                      <div className="space-y-2">
-                        <div className="p-3 bg-muted/30 rounded-lg">
-                          <div className="text-sm font-medium">소양인 맞춤차</div>
-                          <div className="text-xs text-muted-foreground">열을 내리고 진정 효과</div>
-                        </div>
-                        <div className="p-3 bg-muted/30 rounded-lg">
-                          <div className="text-sm font-medium">스트레스 완화차</div>
-                          <div className="text-xs text-muted-foreground">감국, 라벤더 블렌드</div>
-                        </div>
-                      </div>
-                      <Button size="sm" className="w-full" onClick={handleConstitutionTest} disabled={loadingConstitution}>
-                        {loadingConstitution ? '검사 중...' : '체질 검사하기'}
-                      </Button>
-                      {constitutionResult && (
-                        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                          <h4 className="font-medium text-sm mb-2">🌿 체질 분석 결과</h4>
-                          <p className="text-xs text-muted-foreground">{constitutionResult}</p>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="hover-scale">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-purple-500" />
-                      뷰티 웰니스
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-sm text-muted-foreground">
-                        안티에이징과 뷰티를 위한 통합 케어
-                      </p>
-                      <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="p-2 bg-muted/30 rounded text-center">
-                          <div className="font-medium">콜라겐</div>
-                          <div className="text-muted-foreground">피부탄력</div>
-                        </div>
-                        <div className="p-2 bg-muted/30 rounded text-center">
-                          <div className="font-medium">히알루론산</div>
-                          <div className="text-muted-foreground">수분공급</div>
-                        </div>
-                        <div className="p-2 bg-muted/30 rounded text-center">
-                          <div className="font-medium">비타민C</div>
-                          <div className="text-muted-foreground">미백효과</div>
-                        </div>
-                        <div className="p-2 bg-muted/30 rounded text-center">
-                          <div className="font-medium">레스베라트롤</div>
-                          <div className="text-muted-foreground">항산화</div>
-                        </div>
-                      </div>
-                      <Button size="sm" className="w-full" onClick={handleBeautyPlan} disabled={loadingBeauty}>
-                        {loadingBeauty ? '생성 중...' : '뷰티 플랜 만들기'}
-                      </Button>
-                      {beautyPlan && (
-                        <div className="mt-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                          <h4 className="font-medium text-sm mb-2">✨ 맞춤 뷰티 플랜</h4>
-                          <p className="text-xs text-muted-foreground">{beautyPlan}</p>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            {/* 장수 & 체중관리 */}
-            <TabsContent value="longevity" className="space-y-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <Card className="hover-scale">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-green-500" />
-                      GLP-1 체중 관리
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-sm text-muted-foreground">
-                        최신 GLP-1 약물과 전문가 상담을 통한 안전한 체중 관리
-                      </p>
-                      
-                      <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg">
-                        <h4 className="font-medium mb-2">🎯 목표 체중 달성률</h4>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm">현재: 70kg → 목표: 65kg</span>
-                          <span className="text-sm font-medium">60% 달성</span>
-                        </div>
-                        <Progress value={60} className="h-2" />
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                          <span className="text-sm">전문의 상담</span>
-                          <Button size="sm" variant="outline">예약</Button>
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                          <span className="text-sm">약물 처방 상담</span>
-                          <Button size="sm" variant="outline">문의</Button>
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                          <span className="text-sm">식단 관리 코칭</span>
-                          <Button size="sm" variant="outline">시작</Button>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="hover-scale">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Shield className="h-5 w-5 text-blue-500" />
-                      장수 건강 플랜
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-sm text-muted-foreground">
-                        바이오마커 분석과 예방의학 기반 장수 건강 관리
-                      </p>
-                      
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
-                          <Target className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-                          <div className="text-sm font-medium">생체나이</div>
-                          <div className="text-xs text-muted-foreground">23세 (실제 26세)</div>
-                        </div>
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
-                          <Zap className="h-6 w-6 mx-auto mb-2 text-yellow-500" />
-                          <div className="text-sm font-medium">에너지</div>
-                          <div className="text-xs text-muted-foreground">최적</div>
-                        </div>
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
-                          <Heart className="h-6 w-6 mx-auto mb-2 text-red-500" />
-                          <div className="text-sm font-medium">심혈관</div>
-                          <div className="text-xs text-muted-foreground">양호</div>
-                        </div>
-                        <div className="text-center p-4 bg-muted/50 rounded-lg">
-                          <Brain className="h-6 w-6 mx-auto mb-2 text-purple-500" />
-                          <div className="text-sm font-medium">인지능력</div>
-                          <div className="text-xs text-muted-foreground">우수</div>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Button className="w-full" onClick={handleBiomarkerBooking} disabled={loadingBiomarker}>
-                          {loadingBiomarker ? '정보 로딩 중...' : '바이오마커 검사 예약'}
-                        </Button>
-                        {biomarkerInfo && (
-                          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                            <h4 className="font-medium text-sm mb-2">🔬 검사 정보</h4>
-                            <p className="text-xs text-muted-foreground">{biomarkerInfo}</p>
-                          </div>
-                        )}
-                        <Button variant="outline" className="w-full">
-                          장수 플랜 상담받기
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* 추가 기능들 */}
+            {/* 웰니스 플랜 */}
+            <TabsContent value="wellness-plan" className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="hover-scale">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Timer className="h-5 w-5 text-orange-500" />
-                      간헐적 단식
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      16:8 패턴으로 건강한 다이어트와 세포 재생
-                    </p>
-                    <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg mb-4">
-                      <div className="text-sm font-medium">오늘의 단식 시간</div>
-                      <div className="text-lg font-bold text-orange-600">{fastingElapsedText}</div>
-                      <Progress value={90} className="h-2 mt-2" />
-                    </div>
-                    <Button size="sm" className="w-full" onClick={handleFastingTimerStart}>
-                      {fastingActive ? '타이머 진행 중' : '단식 타이머 시작'}
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="hover-scale">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Dumbbell className="h-5 w-5 text-green-500" />
-                      운동 최적화
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      AI 기반 개인 맞춤형 운동 프로그램
-                    </p>
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span>유산소</span>
-                        <span>30분</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>근력운동</span>
-                        <span>45분</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>스트레칭</span>
-                        <span>15분</span>
-                      </div>
-                    </div>
+                <Card className="text-center">
+                  <CardContent className="p-6">
+                    <Dumbbell className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">운동 플랜</h3>
+                    <p className="text-sm text-gray-600 mb-4">맞춤 홈트레이닝</p>
                     <Button size="sm" className="w-full" onClick={handleWorkoutStart} disabled={loadingWorkout}>
-                      {loadingWorkout ? '계획 생성 중...' : '오늘의 운동 시작'}
+                      {loadingWorkout ? '생성 중...' : '운동 시작'}
                     </Button>
-                    {workoutPlan && (
-                      <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                        <h4 className="font-medium text-sm mb-2">💪 운동 계획</h4>
-                        <p className="text-xs text-muted-foreground">{workoutPlan}</p>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
 
-                <Card className="hover-scale">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Activity className="h-5 w-5 text-purple-500" />
-                      수면 최적화
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      수면 패턴 분석과 품질 개선 솔루션
-                    </p>
-                    <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg mb-4">
-                      <div className="text-sm font-medium">어젯밤 수면 점수</div>
-                      <div className="text-lg font-bold text-purple-600">85점</div>
-                      <div className="text-xs text-muted-foreground">깊은잠 3시간 32분</div>
-                    </div>
+                <Card className="text-center">
+                  <CardContent className="p-6">
+                    <Moon className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">수면 개선</h3>
+                    <p className="text-sm text-gray-600 mb-4">수면 품질 향상</p>
                     <Button size="sm" className="w-full" onClick={handleSleepTips} disabled={loadingSleep}>
-                      {loadingSleep ? '팁 준비 중...' : '수면 개선 팁 보기'}
+                      {loadingSleep ? '준비 중...' : '수면 가이드'}
                     </Button>
-                    {sleepTips && (
-                      <div className="mt-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                        <h4 className="font-medium text-sm mb-2">😴 수면 개선 가이드</h4>
-                        <p className="text-xs text-muted-foreground">{sleepTips}</p>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
+
+                <Card className="text-center">
+                  <CardContent className="p-6">
+                    <Timer className="h-12 w-12 text-orange-600 mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">간헐적 단식</h3>
+                    <p className="text-sm text-gray-600 mb-4">건강한 다이어트</p>
+                    <Button size="sm" className="w-full" onClick={handleFastingTimerStart}>
+                      {fastingActive ? '진행 중' : '타이머 시작'}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* 플랜 결과 표시 */}
+              {(workoutPlan || sleepTips) && (
+                <div className="space-y-6">
+                  <h3 className="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2">
+                    🎯 내 웰니스 플랜
+                  </h3>
+                  
+                  {workoutPlan && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Dumbbell className="h-5 w-5 text-green-600" />
+                          운동 계획
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-gray-700 leading-relaxed">{workoutPlan}</p>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {sleepTips && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Moon className="h-5 w-5 text-blue-600" />
+                          수면 개선 가이드
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-gray-700 leading-relaxed">{sleepTips}</p>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* 내 리포트 모음 */}
+            <TabsContent value="my-reports" className="space-y-6">
+              <div className="text-center py-12 bg-gray-50 rounded-lg">
+                <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">모든 리포트를 한 곳에서</h3>
+                <p className="text-gray-600 mb-6">받은 분석 결과와 플랜들을 체계적으로 관리하세요</p>
+                <Button onClick={() => navigate('/dashboard')}>
+                  내 리포트 대시보드로 이동
+                </Button>
               </div>
             </TabsContent>
           </Tabs>

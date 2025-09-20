@@ -23,8 +23,51 @@ import {
   Users
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const WellnessLifestyle = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loadingRoutine, setLoadingRoutine] = useState(false);
+  const [loadingChallenge, setLoadingChallenge] = useState(false);
+
+  const handleStartDailyRoutine = async () => {
+    setLoadingRoutine(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-health-insights', {
+        body: { action: 'generate_daily_routine' },
+      });
+      if (error) throw error;
+      toast({ title: 'AI 루틴 생성 완료', description: '오늘의 루틴이 준비됐어요.' });
+      navigate('/daily-checkin');
+    } catch (err: any) {
+      console.error('오늘의 루틴 시작 실패:', err);
+      toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+    } finally {
+      setLoadingRoutine(false);
+    }
+  };
+
+  const handleJoinNewChallenge = async () => {
+    setLoadingChallenge(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-coach', {
+        body: { action: 'suggest_challenge' },
+      });
+      if (error) throw error;
+      toast({ title: '추천 챌린지 준비 완료', description: '당신에게 맞는 챌린지를 추천했어요.' });
+      navigate('/challenges');
+    } catch (err: any) {
+      console.error('새 챌린지 참여 실패:', err);
+      toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+    } finally {
+      setLoadingChallenge(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30">
       <Helmet>
@@ -109,8 +152,8 @@ const WellnessLifestyle = () => {
                         </div>
                       </div>
                       
-                      <Button className="w-full mt-4">
-                        오늘의 루틴 시작하기
+                      <Button className="w-full mt-4" onClick={handleStartDailyRoutine} disabled={loadingRoutine}>
+                        {loadingRoutine ? '생성 중...' : '오늘의 루틴 시작하기'}
                       </Button>
                     </div>
                   </CardContent>
@@ -161,8 +204,8 @@ const WellnessLifestyle = () => {
                         </div>
                       </div>
                       
-                      <Button variant="outline" className="w-full">
-                        새 챌린지 참여하기
+                      <Button variant="outline" className="w-full" onClick={handleJoinNewChallenge} disabled={loadingChallenge}>
+                        {loadingChallenge ? '준비 중...' : '새 챌린지 참여하기'}
                       </Button>
                     </div>
                   </CardContent>

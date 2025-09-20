@@ -247,7 +247,36 @@ const PremiumAssessmentResult = ({
       'career_development': 'Career Development (경력개발)',
       'organizational_support': 'Organizational Support (조직지원)',
       
-      // 기타 영역
+      // ADHD 관련 요인
+      'attention': 'Attention (주의집중)',
+      'hyperactivity': 'Hyperactivity (과잉행동)',
+      'impulsivity': 'Impulsivity (충동성)',
+      'inattention': 'Inattention (부주의)',
+      'executive_function': 'Executive Function (실행기능)',
+      'working_memory': 'Working Memory (작업기억)',
+      
+      // 발달 관련 요인
+      'language_development': 'Language Development (언어발달)',
+      'social_development': 'Social Development (사회성 발달)',
+      'motor_development': 'Motor Development (운동발달)',
+      'cognitive_development': 'Cognitive Development (인지발달)',
+      'emotional_development': 'Emotional Development (정서발달)',
+      
+      // 자폐스펙트럼 관련 요인
+      'social_communication': 'Social Communication (사회적 의사소통)',
+      'repetitive_behaviors': 'Repetitive Behaviors (반복행동)',
+      'sensory_processing': 'Sensory Processing (감각처리)',
+      'restricted_interests': 'Restricted Interests (제한된 관심)',
+      
+      // 양육 스타일 관련
+      'authoritative': 'Authoritative (민주적)',
+      'authoritarian': 'Authoritarian (권위적)',
+      'permissive': 'Permissive (허용적)',
+      'neglectful': 'Neglectful (방임적)',
+      'warmth': 'Warmth (온정)',
+      'control': 'Control (통제)',
+      
+      // 기타 심리학적 영역
       'social_energy': 'Social Energy (사회적 에너지)',
       'decision_making': 'Decision Making (의사결정)',
       'emotional_regulation': 'Emotional Regulation (감정조절)',
@@ -257,13 +286,41 @@ const PremiumAssessmentResult = ({
       'achievement_motivation': 'Achievement Motivation (성취동기)',
       'interpersonal_skills': 'Interpersonal Skills (대인관계)',
       'self_confidence': 'Self Confidence (자신감)',
-      'emotional_intelligence': 'Emotional Intelligence (감정지능)'
+      'emotional_intelligence': 'Emotional Intelligence (감정지능)',
+      'anxiety': 'Anxiety (불안)',
+      'depression': 'Depression (우울)',
+      'mood_regulation': 'Mood Regulation (기분조절)',
+      'social_anxiety': 'Social Anxiety (사회불안)',
+      'perfectionism': 'Perfectionism (완벽주의)',
+      'self_esteem': 'Self Esteem (자존감)',
+      'resilience': 'Resilience (회복력)',
+      'coping_strategies': 'Coping Strategies (대처전략)',
+      'communication_skills': 'Communication Skills (의사소통)',
+      'problem_solving': 'Problem Solving (문제해결)',
+      'time_management': 'Time Management (시간관리)',
+      'organization': 'Organization (조직화)',
+      'planning': 'Planning (계획수립)',
+      'task_completion': 'Task Completion (과제완성)',
+      'focus': 'Focus (집중력)',
+      'memory': 'Memory (기억력)',
+      'processing_speed': 'Processing Speed (처리속도)',
+      'verbal_comprehension': 'Verbal Comprehension (언어이해)',
+      'perceptual_reasoning': 'Perceptual Reasoning (지각추론)'
     };
     return translations[category.toLowerCase()] || category.replace(/_/g, ' ');
   };
 
   const totalScore = Object.values(results).reduce((sum, score) => sum + score, 0);
   const averageScore = totalScore / Object.keys(results).length;
+  
+  console.log('프리미엄 검사 결과 분석:', {
+    assessmentType,
+    results,
+    totalScore,
+    averageScore,
+    resultKeys: Object.keys(results),
+    resultValues: Object.values(results)
+  });
 
   // 차트 데이터 준비
   const chartData = Object.entries(results).map(([category, score]) => {

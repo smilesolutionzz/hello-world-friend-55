@@ -52,7 +52,8 @@ const EarlyScreeningSection = ({ assessmentType, results, isAnalyzing }: EarlySc
     const maxPossibleScore = scoreValues.length * 7; // 각 문항 최대 7점
     const scorePercentage = (totalScore / maxPossibleScore) * 100;
     
-    console.log('번아웃 검사 점수 분석:', {
+    console.log(`${assessmentType} 검사 점수 분석:`, {
+      assessmentType,
       results,
       scoreValues,
       totalScore,
@@ -99,70 +100,93 @@ const EarlyScreeningSection = ({ assessmentType, results, isAnalyzing }: EarlySc
         break;
         
       case 'temperament':
+        // 기질 검사는 각 특성별로 다른 기준을 적용
+        const harmAvoidanceScore = Math.min((results.harm_avoidance || 0) * 14.3, 100);
+        const rewardDependenceScore = Math.min((results.reward_dependence || 0) * 14.3, 100);
+        
         factors.push(
           {
             id: 'anxiety_tendency',
             name: '불안 경향성',
             description: '성격 특성상 불안장애 발생 가능성',
             level: (results.harm_avoidance || 0) > 5 ? 'high' : (results.harm_avoidance || 0) > 3.5 ? 'moderate' : 'low',
-            score: Math.min((results.harm_avoidance || 0) * 14.3, 100),
+            score: harmAvoidanceScore,
             icon: <Shield className="w-5 h-5" />,
-            recommendation: '위험회피 성향이 높아 불안 관리 기법이 도움이 됩니다.'
+            recommendation: harmAvoidanceScore > 70 ? '불안 관리 전문가 상담이 권장됩니다.' :
+                           harmAvoidanceScore > 50 ? '위험회피 성향이 높아 불안 관리 기법이 도움이 됩니다.' :
+                           '건강한 수준의 신중함을 보이고 있습니다.'
           },
           {
             id: 'social_isolation',
             name: '사회적 고립 위험',
             description: '낮은 사회적 민감성으로 인한 관계 문제 발생 가능성',
             level: (results.reward_dependence || 0) < 2 ? 'high' : (results.reward_dependence || 0) < 3.5 ? 'moderate' : 'low',
-            score: Math.max(100 - (results.reward_dependence || 0) * 14.3, 0),
+            score: Math.max(100 - rewardDependenceScore, 0), // 사회적 민감성이 낮을수록 고립 위험 높음
             icon: <Eye className="w-5 h-5" />,
-            recommendation: '사회적 관계 개선을 위한 소통 기술 향상이 필요합니다.'
+            recommendation: rewardDependenceScore < 30 ? '사회적 관계 개선을 위한 전문가 도움이 필요합니다.' :
+                           rewardDependenceScore < 50 ? '사회적 관계 개선을 위한 소통 기술 향상이 필요합니다.' :
+                           '적절한 사회적 관계를 유지하고 있습니다.'
           }
         );
         break;
         
       case 'cognitive':
+        // 인지 검사는 높은 점수가 더 좋은 것임
+        const cognitiveScorePercentage = (averageScore / 7) * 100; // 7점 만점을 100점으로 환산
+        const attentionScorePercentage = ((results.attention || averageScore) / 7) * 100;
+        
         factors.push(
           {
             id: 'cognitive_decline',
             name: '인지기능 저하',
             description: '기억력, 집중력 등 인지능력 감소 위험',
-            level: averageScore < 3 ? 'high' : averageScore < 4 ? 'moderate' : 'low',
-            score: Math.max(100 - averageScore * 14.3, 0),
+            level: cognitiveScorePercentage >= 70 ? 'low' : cognitiveScorePercentage >= 50 ? 'moderate' : 'high',
+            score: Math.max(100 - cognitiveScorePercentage, 0), // 인지점수가 낮을수록 위험도 높음
             icon: <Brain className="w-5 h-5" />,
-            recommendation: '인지기능 훈련과 정기적인 검진이 권장됩니다.'
+            recommendation: cognitiveScorePercentage < 50 ? '인지기능 훈련과 정기적인 검진이 권장됩니다.' :
+                           cognitiveScorePercentage < 70 ? '인지기능 유지를 위한 지속적 관리가 필요합니다.' :
+                           '양호한 인지기능을 유지하고 있습니다.'
           },
           {
             id: 'attention_deficit',
             name: '주의력 결핍',
             description: '집중력 저하 및 주의산만 증상 위험',
-            level: (results.attention || averageScore) < 3.5 ? 'high' : (results.attention || averageScore) < 4.5 ? 'moderate' : 'low',
-            score: Math.max(100 - (results.attention || averageScore) * 14.3, 0),
+            level: attentionScorePercentage >= 70 ? 'low' : attentionScorePercentage >= 50 ? 'moderate' : 'high',
+            score: Math.max(100 - attentionScorePercentage, 0), // 주의력 점수가 낮을수록 위험도 높음
             icon: <Eye className="w-5 h-5" />,
-            recommendation: '주의력 향상을 위한 집중력 훈련이 도움이 됩니다.'
+            recommendation: attentionScorePercentage < 50 ? '주의력 향상을 위한 전문적 훈련이 필요합니다.' :
+                           attentionScorePercentage < 70 ? '주의력 향상을 위한 집중력 훈련이 도움이 됩니다.' :
+                           '좋은 주의집중력을 보이고 있습니다.'
           }
         );
         break;
         
       default:
+        // 일반 정신건강 검사 - 높은 점수가 더 좋은 정신건강 상태
+        const mentalHealthPercentage = (averageScore / 7) * 100;
+        
         factors.push(
           {
             id: 'general_mental_health',
             name: '전반적 정신건강',
             description: '심리적 웰빙 상태 및 정신건강 위험도',
-            level: averageScore > 5 ? 'low' : averageScore > 3.5 ? 'moderate' : 'high',
-            score: averageScore * 14.3,
+            level: mentalHealthPercentage >= 70 ? 'low' : mentalHealthPercentage >= 50 ? 'moderate' : 'high',
+            score: Math.max(100 - mentalHealthPercentage, 0), // 정신건강 점수가 낮을수록 위험도 높음
             icon: <Heart className="w-5 h-5" />,
-            recommendation: '정기적인 자기관리와 스트레스 관리가 중요합니다.'
+            recommendation: mentalHealthPercentage < 50 ? '전문가 상담을 통한 정신건강 관리가 필요합니다.' :
+                           mentalHealthPercentage < 70 ? '정기적인 자기관리와 스트레스 관리가 중요합니다.' :
+                           '좋은 정신건강 상태를 유지하고 있습니다.'
           },
           {
             id: 'stress_vulnerability',
             name: '스트레스 취약성',
             description: '스트레스 상황에 대한 적응력 및 회복력',
-            level: averageScore < 3 ? 'high' : averageScore < 4.5 ? 'moderate' : 'low',
-            score: Math.max(100 - averageScore * 14.3, 0),
+            level: mentalHealthPercentage >= 70 ? 'low' : mentalHealthPercentage >= 50 ? 'moderate' : 'high',
+            score: Math.max(100 - mentalHealthPercentage, 0), // 정신건강과 연관
             icon: <TrendingUp className="w-5 h-5" />,
-            recommendation: '스트레스 관리 기법 습득과 회복력 강화가 필요합니다.'
+            recommendation: mentalHealthPercentage < 50 ? '스트레스 관리 전문가의 도움이 필요합니다.' :
+                           mentalHealthPercentage < 70 ? '스트레스 관리 기법 습득과 회복력 강화가 필요합니다.' :
+                           '적절한 스트레스 대처능력을 갖추고 있습니다.'
           }
         );
     }

@@ -44,10 +44,11 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
   };
 
   const getOverallEvaluation = (average: number) => {
+    // 3점 척도에서 높은 점수가 더 문제 있음 (0=전혀없음, 1=가끔, 2=자주, 3=항상)
     if (average <= 0.5) {
       return {
         level: "양호",
-        description: "전반적인 통합건강 상태가 양호합니다.",
+        description: "전반적인 정신건강 상태가 양호합니다.",
         color: "bg-green-100 text-green-800 border-green-200"
       };
     } else if (average <= 1.0) {
@@ -59,7 +60,7 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
     } else if (average <= 2.0) {
       return {
         level: "중등도 증상",
-        description: "중등도 수준의 증상으로 관심이 필요합니다.",
+        description: "중등도 수준의 증상으로 전문가 상담을 고려해보세요.",
         color: "bg-orange-100 text-orange-800 border-orange-200"
       };
     } else {

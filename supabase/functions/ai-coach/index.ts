@@ -237,3 +237,4 @@ function getDefaultActionItems(action: string): string[] {
   };
   
   return defaults[action as keyof typeof defaults] || defaults.workout_plan;
+}

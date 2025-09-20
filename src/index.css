@@ -42,6 +42,7 @@ html, body {
     --popover-foreground: 220 15% 25%;
     --primary: 230 80% 65%;
     --primary-foreground: 0 0% 100%;
+    --primary-glow: 240 70% 75%;
     --secondary: 220 60% 96%;
     --secondary-foreground: 220 15% 25%;
     --muted: 220 20% 96%;
@@ -53,7 +54,35 @@ html, body {
     --border: 220 30% 92%;
     --input: 220 30% 95%;
     --ring: 230 80% 65%;
-    --radius: 0.75rem;
+    --radius: 1rem;
+    
+    /* Modern Card Colors */
+    --card-purple: 250 85% 97%;
+    --card-purple-text: 250 70% 55%;
+    --card-green: 140 75% 97%;
+    --card-green-text: 140 65% 45%;
+    --card-blue: 210 85% 97%;
+    --card-blue-text: 210 70% 55%;
+    --card-orange: 25 85% 97%;
+    --card-orange-text: 25 70% 55%;
+    --card-pink: 330 85% 97%;
+    --card-pink-text: 330 70% 55%;
+    
+    /* Modern Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-card-purple: linear-gradient(135deg, hsl(var(--card-purple)), hsl(250 75% 95%));
+    --gradient-card-green: linear-gradient(135deg, hsl(var(--card-green)), hsl(140 65% 95%));
+    --gradient-card-blue: linear-gradient(135deg, hsl(var(--card-blue)), hsl(210 75% 95%));
+    --gradient-card-orange: linear-gradient(135deg, hsl(var(--card-orange)), hsl(25 75% 95%));
+    --gradient-card-pink: linear-gradient(135deg, hsl(var(--card-pink)), hsl(330 75% 95%));
+    
+    /* Modern Shadows */
+    --shadow-card: 0 4px 20px -2px hsl(220 30% 92% / 0.4);
+    --shadow-card-hover: 0 8px 25px -3px hsl(220 30% 92% / 0.6);
+    --shadow-glow: 0 0 30px hsl(var(--primary) / 0.15);
+    
+    /* Animation */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
@@ -85,5 +114,52 @@ html, body {
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .card-modern {
+    @apply bg-card border border-border/50 rounded-2xl shadow-[var(--shadow-card)] transition-[var(--transition-smooth)] hover:shadow-[var(--shadow-card-hover)];
+  }
+  
+  .card-purple {
+    @apply bg-[hsl(var(--card-purple))] border-[hsl(var(--card-purple-text)/0.2)] text-[hsl(var(--card-purple-text))];
+  }
+  
+  .card-green {
+    @apply bg-[hsl(var(--card-green))] border-[hsl(var(--card-green-text)/0.2)] text-[hsl(var(--card-green-text))];
+  }
+  
+  .card-blue {
+    @apply bg-[hsl(var(--card-blue))] border-[hsl(var(--card-blue-text)/0.2)] text-[hsl(var(--card-blue-text))];
+  }
+  
+  .card-orange {
+    @apply bg-[hsl(var(--card-orange))] border-[hsl(var(--card-orange-text)/0.2)] text-[hsl(var(--card-orange-text))];
+  }
+  
+  .card-pink {
+    @apply bg-[hsl(var(--card-pink))] border-[hsl(var(--card-pink-text)/0.2)] text-[hsl(var(--card-pink-text))];
+  }
+  
+  .icon-purple {
+    @apply text-[hsl(var(--card-purple-text))];
+  }
+  
+  .icon-green {
+    @apply text-[hsl(var(--card-green-text))];
+  }
+  
+  .icon-blue {
+    @apply text-[hsl(var(--card-blue-text))];
+  }
+  
+  .icon-orange {
+    @apply text-[hsl(var(--card-orange-text))];
+  }
+  
+  .icon-pink {
+    @apply text-[hsl(var(--card-pink-text))];
   }
 }

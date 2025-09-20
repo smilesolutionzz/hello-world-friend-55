@@ -139,193 +139,187 @@ export const UnifiedNavigation = () => {
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="hidden lg:flex bg-white/96 backdrop-blur-md border-b border-gray-200/60 sticky top-0 z-40 shadow-sm">
+      <nav className="hidden lg:flex bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-xl bg-white/95">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            {/* Logo & Token Balance */}
-            <div className="flex items-center gap-4">
+            {/* Clean Logo & Token Balance */}
+            <div className="flex items-center gap-6">
               <div 
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => navigate('/')}
               >
-                <div className="relative flex items-center gap-2">
-                  <img 
-                    src="/src/assets/aih-logo.png" 
-                    alt="AIH Logo" 
-                    className="w-8 h-8 object-contain group-hover:scale-105 transition-transform duration-200"
-                  />
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200">
-                    <Brain className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-                <span className="text-lg font-semibold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">AIHPRO</span>
+                <img 
+                  src="/src/assets/aih-logo.png" 
+                  alt="AIH Logo" 
+                  className="w-8 h-8 object-contain group-hover:scale-105 transition-transform duration-200"
+                />
+                <span className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">AIHPRO</span>
               </div>
               
-              {/* Token Balance - Always visible */}
-              <TokenBalance compact showPurchaseButton={false} />
+              {/* Token Balance */}
+              <div className="flex items-center">
+                <TokenBalance compact showPurchaseButton={false} />
+              </div>
             </div>
 
-            {/* Desktop Menu */}
-            <div className="flex items-center gap-1">
-              {/* 홈 버튼 */}
+            {/* Clean Modern Menu */}
+            <div className="flex items-center gap-2">
+              {/* 홈 */}
               <Button
                 variant={isActive('/') ? "default" : "ghost"}
                 size="sm"
                 onClick={() => handleNavigation('/')}
-                className="flex items-center gap-2 h-9 px-3 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
               >
-                <Home className="w-4 h-4" />
+                <Home className="w-4 h-4 mr-2" />
                 홈
               </Button>
 
-              {/* 3분테스트 드롭다운 메뉴 */}
+              {/* 건강검사 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant={isActive('/assessment') || isActive('/premium-assessment') || isActive('/han-medicine-test') ? "default" : "ghost"}
                     size="sm"
-                    className="flex items-center gap-2 h-9 px-3 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                    className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
                   >
-                    <TrendingUp className="w-4 h-4" />
-                    3분테스트
-                    <ChevronDown className="w-3 h-3 opacity-70" />
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    건강검사
+                    <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-white shadow-lg border border-gray-200/80 rounded-lg">
+                <DropdownMenuContent align="start" className="w-48 bg-white shadow-xl border border-gray-200 rounded-xl p-1">
                   {assessmentSubmenuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.path}
                       onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-md mx-1 my-0.5"
+                      className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg px-3 py-2 mx-1 transition-colors"
                     >
-                      <item.icon className="w-4 h-4" />
-                      {item.label}
+                      <item.icon className="w-4 h-4 text-gray-500" />
+                      <span className="font-medium text-gray-700">{item.label}</span>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* AIH 에이전트 드롭다운 메뉴 */}
+              {/* AI 상담 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant={isActive('/ai-assistant') || isActive('/observation') ? "default" : "ghost"}
                     size="sm"
-                    className="flex items-center gap-2 h-9 px-3 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                    className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
                   >
-                    <MessageCircle className="w-4 h-4" />
-                    AIH 에이전트
-                    <ChevronDown className="w-3 h-3 opacity-70" />
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    AI 상담
+                    <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-white shadow-lg border border-gray-200/80 rounded-lg">
+                <DropdownMenuContent align="start" className="w-48 bg-white shadow-xl border border-gray-200 rounded-xl p-1">
                   {aihSubmenuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.path}
                       onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-md mx-1 my-0.5"
+                      className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg px-3 py-2 mx-1 transition-colors"
                     >
-                      <item.icon className="w-4 h-4" />
-                      {item.label}
+                      <item.icon className="w-4 h-4 text-gray-500" />
+                      <span className="font-medium text-gray-700">{item.label}</span>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* 나의DATA 드롭다운 메뉴 */}
+              {/* 데이터 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant={isActive('/dashboard') || isActive('/institution-admin') ? "default" : "ghost"}
                     size="sm"
-                    className="flex items-center gap-2 h-9 px-3 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                    className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
                   >
-                    <BarChart3 className="w-4 h-4" />
-                    나의DATA
-                    <ChevronDown className="w-3 h-3 opacity-70" />
+                    <BarChart3 className="w-4 h-4 mr-2" />
+                    데이터
+                    <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-white shadow-lg border border-gray-200/80 rounded-lg z-50">
+                <DropdownMenuContent align="start" className="w-48 bg-white shadow-xl border border-gray-200 rounded-xl p-1 z-50">
                   {dataSubmenuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.path}
                       onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-md mx-1 my-0.5"
+                      className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg px-3 py-2 mx-1 transition-colors"
                     >
-                      <item.icon className="w-4 h-4" />
-                      {item.label}
+                      <item.icon className="w-4 h-4 text-gray-500" />
+                      <span className="font-medium text-gray-700">{item.label}</span>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* 전문가 서비스 드롭다운 메뉴 */}
+              {/* 전문가 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant={isActive('/expert-hiring') || isActive('/token-subscription') ? "default" : "ghost"}
                     size="sm"
-                    className="flex items-center gap-2 h-9 px-3 rounded-md font-medium hover:bg-gray-50 transition-colors"
+                    className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
                   >
-                    <UserCheck className="w-4 h-4" />
-                    전문가고용
-                    <ChevronDown className="w-3 h-3 opacity-70" />
+                    <UserCheck className="w-4 h-4 mr-2" />
+                    전문가
+                    <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-white shadow-lg border border-gray-200/80 rounded-lg z-50">
+                <DropdownMenuContent align="start" className="w-48 bg-white shadow-xl border border-gray-200 rounded-xl p-1 z-50">
                   {expertSubmenuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.path}
                       onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded-md mx-1 my-0.5"
+                      className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg px-3 py-2 mx-1 transition-colors"
                     >
-                      <item.icon className="w-4 h-4" />
-                      {item.label}
+                      <item.icon className="w-4 h-4 text-gray-500" />
+                      <span className="font-medium text-gray-700">{item.label}</span>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Auth Button */}
-              <Button
-                variant={user ? "ghost" : "default"}
-                size="sm"
-                onClick={handleAuth}
-                className={`ml-3 flex items-center gap-2 h-9 px-4 rounded-md font-medium transition-all ${
-                  !user 
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-sm hover:shadow-md' 
-                    : 'hover:bg-gray-50'
-                }`}
-              >
-                <User className="w-4 h-4" />
-                {user ? '로그아웃' : '로그인'}
-              </Button>
+              {/* Login Button */}
+              <div className="ml-4 pl-4 border-l border-gray-200">
+                <Button
+                  variant={user ? "ghost" : "default"}
+                  size="sm"
+                  onClick={handleAuth}
+                  className={`h-9 px-4 rounded-lg font-medium transition-all ${
+                    !user 
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm' 
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                  }`}
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  {user ? '내 계정' : '로그인'}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </nav>
 
       {/* Mobile Navigation */}
-      <nav className="lg:hidden bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-40">
+      <nav className="lg:hidden bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-xl bg-white/95">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-14">
-            {/* Logo & Token Balance */}
+            {/* Mobile Logo & Token Balance */}
             <div className="flex items-center gap-3">
               <div 
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={() => navigate('/')}
               >
-                <div className="relative flex items-center gap-1.5">
-                  <img 
-                    src="/src/assets/aih-logo.png" 
-                    alt="AIH Logo" 
-                    className="w-6 h-6 object-contain"
-                  />
-                  <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
-                    <Brain className="w-3 h-3 text-white" />
-                  </div>
-                </div>
-                <span className="text-base font-bold text-foreground">AIHPRO</span>
+                <img 
+                  src="/src/assets/aih-logo.png" 
+                  alt="AIH Logo" 
+                  className="w-7 h-7 object-contain"
+                />
+                <span className="text-lg font-semibold text-gray-900">AIHPRO</span>
               </div>
               
               {/* Token Balance - Always visible on mobile */}
@@ -335,25 +329,22 @@ export const UnifiedNavigation = () => {
             {/* Mobile Menu Toggle */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="p-2">
                   <Menu className="w-5 h-5" />
                 </Button>
               </SheetTrigger>
               
-              <SheetContent side="right" className="w-72">
+                <SheetContent side="right" className="w-72 bg-white">
                 <div className="flex flex-col h-full">
-                  {/* Header */}
-                    <div className="border-b pb-4 mb-4">
-                    <div className="flex items-center gap-2">
+                  {/* Clean Header */}
+                  <div className="border-b border-gray-100 pb-4 mb-4">
+                    <div className="flex items-center gap-3">
                       <img 
                         src="/src/assets/aih-logo.png" 
                         alt="AIH Logo" 
-                        className="w-6 h-6 object-contain"
+                        className="w-8 h-8 object-contain"
                       />
-                      <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
-                        <Brain className="w-3 h-3 text-white" />
-                      </div>
-                      <span className="text-lg font-bold text-foreground">AIHPRO</span>
+                      <span className="text-xl font-semibold text-gray-900">AIHPRO</span>
                     </div>
                   </div>
 

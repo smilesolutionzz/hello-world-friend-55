@@ -360,9 +360,9 @@ const TokenSubscription = () => {
                 {/* 할인 가격 표시 */}
                 <div className="mb-3">
                   <div className="text-lg text-gray-500 line-through">₩29,900</div>
-                  <div className="text-3xl font-bold text-purple-600 mb-1">₩20,033</div>
+                  <div className="text-3xl font-bold text-purple-600 mb-1">₩19,900</div>
                   <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-bold inline-block">
-                    33% 할인 🔥
+                    34% 할인 🔥
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground">월간 구독</p>
@@ -420,7 +420,7 @@ const TokenSubscription = () => {
                   }}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
                 >
-                  🚀 월간 ₩20,033
+                  🚀 월간 ₩19,900
                 </Button>
                 
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
@@ -466,9 +466,9 @@ const TokenSubscription = () => {
                 {/* 할인 가격 표시 */}
                 <div className="mb-3">
                   <div className="text-lg text-gray-500 line-through">₩59,900</div>
-                  <div className="text-3xl font-bold text-amber-600 mb-1">₩40,133</div>
+                  <div className="text-3xl font-bold text-amber-600 mb-1">₩39,900</div>
                   <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-bold inline-block">
-                    33% 할인 🔥
+                    34% 할인 🔥
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground">월간 구독</p>
@@ -530,7 +530,7 @@ const TokenSubscription = () => {
                   }}
                   className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
                 >
-                  💎 월간 ₩40,133
+                  💎 월간 ₩39,900
                 </Button>
                 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">

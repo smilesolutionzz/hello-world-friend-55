@@ -76,7 +76,7 @@ const HeroSection = () => {
           {/* Powerful Hook */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full mb-6">
             <span className="text-xl">✨</span>
-            <span className="text-sm font-semibold text-blue-700 tracking-wide">AI 기반 프리미엄 심리건강 플랫폼</span>
+            <span className="text-sm font-semibold text-blue-700 tracking-wide">전문과와 AI가 함께하는 혁신적인 한국형 헬스통합케어 플랫폼</span>
           </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight">

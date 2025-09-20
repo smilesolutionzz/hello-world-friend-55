@@ -40,16 +40,14 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
 
   useEffect(() => {
     loadRecentInsights();
-  }, [userId]);
+  }, []);
 
   const loadRecentInsights = async () => {
-    if (!userId) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
     
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
       const { data, error } = await supabase
         .from('ai_health_insights')
         .select('*')
@@ -67,7 +65,8 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
   };
 
   const generateNewInsights = async () => {
-    if (!userId || !checkinData) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !checkinData) {
       toast({
         title: "데이터 부족",
         description: "인사이트 생성을 위해 체크인 데이터가 필요합니다.",
@@ -78,8 +77,6 @@ export const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
 
     setGenerating(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
 
       // Call AI insights function
       const { data, error } = await supabase.functions.invoke('ai-health-insights', {

@@ -105,7 +105,14 @@ export const AICoachChat: React.FC<AICoachChatProps> = ({
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        toast({
+          title: "로그인 필요",
+          description: "AI 코칭을 이용하려면 로그인이 필요합니다.",
+          variant: "destructive"
+        });
+        return;
+      }
 
       const { data, error } = await supabase.functions.invoke('ai-coach', {
         body: {

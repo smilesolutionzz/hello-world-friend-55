@@ -126,3 +126,24 @@ verify_jwt = true
 
 [functions.advanced-disability-analyzer]
 verify_jwt = true
+
+[functions.ai-health-insights]
+verify_jwt = false
+
+[functions.ai-coach]
+verify_jwt = false
+
+[functions.content-recommender]
+verify_jwt = false
+
+[functions.enhanced-assessment-analyzer]
+verify_jwt = false
+
+[functions.enhanced-constitution-analyzer]
+verify_jwt = false
+
+[functions.openai-image-generator]
+verify_jwt = false
+
+[functions.referral-system]
+verify_jwt = true

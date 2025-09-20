@@ -16,6 +16,7 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 import { AIInsightsPanel } from "@/components/ai-wellness/AIInsightsPanel";
 import { AICoachChat } from "@/components/ai-wellness/AICoachChat";
+import { SmartCTA } from "@/components/ai-wellness/SmartCTA";
 
 interface Challenge {
   id: string;
@@ -330,6 +331,9 @@ const WellnessHub = () => {
             </p>
           </div>
 
+          {/* Smart CTA Section */}
+          <SmartCTA />
+
           {/* Main Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-4">
@@ -501,10 +505,13 @@ const WellnessHub = () => {
                 {/* AI Health Insights Panel */}
                 <div>
                   <AIInsightsPanel 
-                    userId={undefined}
                     checkinData={{ mood, energy, stress, date: new Date().toISOString() }}
                     onInsightGenerated={(insights) => {
                       console.log('New insights generated:', insights);
+                      toast({
+                        title: "AI 인사이트 생성 완료! 🎯",
+                        description: `${insights.length}개의 개인맞춤 인사이트가 생성되었습니다.`
+                      });
                     }}
                   />
                 </div>
@@ -512,10 +519,13 @@ const WellnessHub = () => {
                 {/* AI Coach Chat */}
                 <div>
                   <AICoachChat 
-                    userId={undefined}
                     moodBefore={mood || undefined}
                     onSessionComplete={(sessionId) => {
                       console.log('Coaching session completed:', sessionId);
+                      toast({
+                        title: "코칭 세션 완료! 🎉",
+                        description: "AI 코칭 세션이 완료되었습니다."
+                      });
                     }}
                   />
                 </div>

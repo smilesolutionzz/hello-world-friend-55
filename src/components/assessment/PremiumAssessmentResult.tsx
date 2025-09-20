@@ -305,7 +305,41 @@ const PremiumAssessmentResult = ({
       'memory': 'Memory (기억력)',
       'processing_speed': 'Processing Speed (처리속도)',
       'verbal_comprehension': 'Verbal Comprehension (언어이해)',
-      'perceptual_reasoning': 'Perceptual Reasoning (지각추론)'
+      'perceptual_reasoning': 'Perceptual Reasoning (지각추론)',
+      
+      // 연애성격분석테스트 요인
+      'passionate_romantic': '열정적 로맨티스트 (매우 열정적)',
+      'stable_companion': '안정적 동반자 (안정 특성)',
+      'independent_individualist': '독립적 개인주의자 (독립 특성)',
+      'realistic_planner': '계획적 현실주의자 (현실 특성)',
+      
+      // 재정심리 요인
+      'financial_anxiety': 'Financial Anxiety (재정불안)',
+      'spending_habits': 'Spending Habits (소비습관)',
+      'investment_attitude': 'Investment Attitude (투자성향)',
+      'money_values': 'Money Values (돈에 대한 가치관)',
+      'financial_planning': 'Financial Planning (재정계획)',
+      
+      // 청소년 정신건강 요인
+      'identity_formation': 'Identity Formation (정체성 형성)',
+      'peer_relationships': 'Peer Relationships (또래관계)',
+      'academic_stress': 'Academic Stress (학업스트레스)',
+      'family_relationships': 'Family Relationships (가족관계)',
+      'future_anxiety': 'Future Anxiety (미래불안)',
+      
+      // 직업 관련 요인
+      'career_interest': 'Career Interest (진로관심)',
+      'work_values': 'Work Values (직업가치관)',
+      'job_skills': 'Job Skills (직무능력)',
+      'leadership': 'Leadership (리더십)',
+      'teamwork': 'Teamwork (팀워크)',
+      
+      // 사회성 및 관계 요인
+      'social_competence': 'Social Competence (사회적 역량)',
+      'relationship_skills': 'Relationship Skills (관계기술)',
+      'empathy': 'Empathy (공감능력)',
+      'assertiveness': 'Assertiveness (자기주장)',
+      'conflict_resolution': 'Conflict Resolution (갈등해결)'
     };
     return translations[category.toLowerCase()] || category.replace(/_/g, ' ');
   };

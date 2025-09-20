@@ -70,6 +70,7 @@ export default function AssessmentDetail() {
 
   const translateCategory = (category: string) => {
     const translations: Record<string, string> = {
+      // TCI 요인
       'novelty_seeking': '자극추구',
       'harm_avoidance': '위험회피', 
       'reward_dependence': '사회적 민감성',
@@ -77,11 +78,42 @@ export default function AssessmentDetail() {
       'self_directedness': '자율성',
       'cooperativeness': '협조성',
       'self_transcendence': '자기초월',
+      
+      // Big Five 요인
       'extraversion': '외향성',
       'agreeableness': '친화성',
       'conscientiousness': '성실성',
       'neuroticism': '신경성',
-      'openness': '개방성'
+      'openness': '개방성',
+      
+      // 연애성격분석테스트 요인
+      'passionate_romantic': '열정적 로맨티스트 (매우 열정적)',
+      'stable_companion': '안정적 동반자 (안정 특성)',
+      'independent_individualist': '독립적 개인주의자 (독립 특성)',
+      'realistic_planner': '계획적 현실주의자 (현실 특성)',
+      
+      // ADHD 관련 요인
+      'attention': '주의집중',
+      'hyperactivity': '과잉행동',
+      'impulsivity': '충동성',
+      'inattention': '부주의',
+      'executive_function': '실행기능',
+      'working_memory': '작업기억',
+      
+      // 기타 심리학적 영역
+      'social_energy': '사회적 에너지',
+      'decision_making': '의사결정',
+      'emotional_regulation': '감정조절',
+      'adaptability': '적응성',
+      'stress_tolerance': '스트레스 내성',
+      'anxiety': '불안',
+      'depression': '우울',
+      'self_esteem': '자존감',
+      'resilience': '회복력',
+      'communication_skills': '의사소통',
+      'problem_solving': '문제해결',
+      'focus': '집중력',
+      'memory': '기억력'
     };
     return translations[category.toLowerCase()] || category.replace(/_/g, ' ');
   };

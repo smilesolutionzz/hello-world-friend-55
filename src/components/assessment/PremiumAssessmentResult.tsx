@@ -212,6 +212,7 @@ const PremiumAssessmentResult = ({
 
   const translateCategory = (category: string) => {
     const translations: Record<string, string> = {
+      // TCI 요인
       'novelty_seeking': 'Novelty Seeking (자극추구)',
       'harm_avoidance': 'Harm Avoidance (위험회피)', 
       'reward_dependence': 'Reward Dependence (사회적 민감성)',
@@ -219,11 +220,37 @@ const PremiumAssessmentResult = ({
       'self_directedness': 'Self-Directedness (자율성)',
       'cooperativeness': 'Cooperativeness (협조성)',
       'self_transcendence': 'Self-Transcendence (자기초월)',
+      
+      // Big Five 요인  
       'extraversion': 'Extraversion (외향성)',
       'agreeableness': 'Agreeableness (친화성)',
       'conscientiousness': 'Conscientiousness (성실성)',
       'neuroticism': 'Neuroticism (신경성)',
-      'openness': 'Openness (개방성)'
+      'openness': 'Openness (개방성)',
+      
+      // 번아웃/직장 스트레스 요인
+      'emotional_exhaustion': 'Emotional Exhaustion (감정소진)',
+      'depersonalization': 'Depersonalization (비인격화)',
+      'personal_accomplishment': 'Personal Accomplishment (성취감)',
+      'work_life_balance': 'Work-Life Balance (일-삶 균형)',
+      'job_satisfaction': 'Job Satisfaction (직무만족)',
+      'work_overload': 'Work Overload (업무과부하)',
+      'interpersonal_conflict': 'Interpersonal Conflict (대인갈등)',
+      'role_ambiguity': 'Role Ambiguity (역할모호성)',
+      'career_development': 'Career Development (경력개발)',
+      'organizational_support': 'Organizational Support (조직지원)',
+      
+      // 기타 영역
+      'social_energy': 'Social Energy (사회적 에너지)',
+      'decision_making': 'Decision Making (의사결정)',
+      'emotional_regulation': 'Emotional Regulation (감정조절)',
+      'adaptability': 'Adaptability (적응성)',
+      'stress_tolerance': 'Stress Tolerance (스트레스 내성)',
+      'cognitive_flexibility': 'Cognitive Flexibility (인지유연성)',
+      'achievement_motivation': 'Achievement Motivation (성취동기)',
+      'interpersonal_skills': 'Interpersonal Skills (대인관계)',
+      'self_confidence': 'Self Confidence (자신감)',
+      'emotional_intelligence': 'Emotional Intelligence (감정지능)'
     };
     return translations[category.toLowerCase()] || category.replace(/_/g, ' ');
   };

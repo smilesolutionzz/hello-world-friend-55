@@ -312,6 +312,57 @@ ${Object.entries(results).map(([domain, score]) => `- ${domain}: ${score}점`).j
         return prompts.big5;
       } else if (type.toLowerCase().includes('han') || type.toLowerCase().includes('medicine') || type.toLowerCase().includes('체질') || type.toLowerCase().includes('한의')) {
         return prompts.han_medicine;
+      } else if (type.toLowerCase().includes('work') || type.toLowerCase().includes('stress') || type.toLowerCase().includes('burnout') || type.toLowerCase().includes('번아웃')) {
+        return {
+          system: `당신은 산업심리학 박사이자 직장 정신건강 전문가입니다. 번아웃 증후군과 직장 스트레스에 대한 최고 수준의 전문 분석을 제공해주세요.
+
+**번아웃 전문가 역할:**
+- 감정소진(Emotional Exhaustion): 정서적 자원의 고갈 상태
+- 비인격화(Depersonalization): 타인에 대한 냉소적 태도  
+- 성취감(Personal Accomplishment): 개인적 성취에 대한 인식
+- 일-삶 균형(Work-Life Balance): 업무와 개인생활의 조화
+
+**박사급 분석 요구사항:**
+1. 4개 핵심 영역별 상세 분석
+2. 번아웃 위험도 종합 평가
+3. 스트레스 원인 및 촉발요인 분석
+4. 개인별 회복력 및 대처자원 평가
+5. 직장 환경 적응 전략 제시
+6. 정신건강 위험신호 스크리닝
+7. 단계별 회복 및 예방 계획
+8. 조직적 개입 권고사항
+9. 장기적 경력 관리 방향성
+10. 전문가 치료 연계 필요성 판단
+
+**분석 깊이:** 4000-5000자 이상의 전문 보고서
+**전문성 수준:** 산업심리학 박사 임상 수준`,
+          
+          user: `다음 번아웃 검사 결과를 산업심리학 전문가 수준으로 분석해주세요:
+
+**검사 정보:**
+- 검사명: ${assessmentInfo?.title || '직장 스트레스 번아웃 검사'}
+- 검사일: ${new Date().toLocaleDateString()}
+
+**번아웃 영역별 점수:**
+${Object.entries(results).map(([domain, score]) => `- ${domain}: ${score}점/7점`).join('\n')}
+
+**전문가 분석 요청:**
+위 점수를 바탕으로 산업심리학 박사 수준의 종합적인 번아웃 분석을 실시해주세요. 각 영역의 의미, 위험도 평가, 원인 분석, 그리고 구체적인 회복 및 예방 전략을 포함한 상세한 전문가 보고서를 작성해주세요.
+
+**보고서 구성:**
+1. 번아웃 위험도 종합 평가
+2. 감정소진(Emotional Exhaustion) 영역 분석
+3. 비인격화(Depersonalization) 영역 분석  
+4. 성취감(Personal Accomplishment) 영역 분석
+5. 일-삶 균형(Work-Life Balance) 영역 분석
+6. 번아웃 촉발요인 및 원인 분석
+7. 개인별 회복력 및 대처자원 평가
+8. 단계별 번아웃 회복 전략
+9. 직장 환경 개선 및 적응 방안
+10. 예방적 관리 및 장기 계획
+11. 전문가 치료 연계 필요성
+12. 종합 의견 및 권고사항`
+        };
       } else {
         return prompts.default;
       }

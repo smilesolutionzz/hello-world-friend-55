@@ -145,11 +145,18 @@ export const UnifiedNavigation = () => {
             {/* Logo & Token Balance */}
             <div className="flex items-center gap-4">
               <div 
-                className="flex items-center gap-2 cursor-pointer group"
+                className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => navigate('/')}
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200">
-                  <Brain className="w-4 h-4 text-white" />
+                <div className="relative flex items-center gap-2">
+                  <img 
+                    src="/src/assets/aih-logo.png" 
+                    alt="AIH Logo" 
+                    className="w-8 h-8 object-contain group-hover:scale-105 transition-transform duration-200"
+                  />
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-200">
+                    <Brain className="w-4 h-4 text-white" />
+                  </div>
                 </div>
                 <span className="text-lg font-semibold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">AIHPRO</span>
               </div>
@@ -308,8 +315,15 @@ export const UnifiedNavigation = () => {
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={() => navigate('/')}
               >
-                <div className="w-7 h-7 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
-                  <Brain className="w-3 h-3 text-white" />
+                <div className="relative flex items-center gap-1.5">
+                  <img 
+                    src="/src/assets/aih-logo.png" 
+                    alt="AIH Logo" 
+                    className="w-6 h-6 object-contain"
+                  />
+                  <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
+                    <Brain className="w-3 h-3 text-white" />
+                  </div>
                 </div>
                 <span className="text-base font-bold text-foreground">AIHPRO</span>
               </div>
@@ -329,10 +343,15 @@ export const UnifiedNavigation = () => {
               <SheetContent side="right" className="w-72">
                 <div className="flex flex-col h-full">
                   {/* Header */}
-                  <div className="border-b pb-4 mb-4">
+                    <div className="border-b pb-4 mb-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
-                        <Brain className="w-4 h-4 text-white" />
+                      <img 
+                        src="/src/assets/aih-logo.png" 
+                        alt="AIH Logo" 
+                        className="w-6 h-6 object-contain"
+                      />
+                      <div className="w-6 h-6 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
+                        <Brain className="w-3 h-3 text-white" />
                       </div>
                       <span className="text-lg font-bold text-foreground">AIHPRO</span>
                     </div>

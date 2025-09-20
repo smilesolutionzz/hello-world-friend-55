@@ -18,17 +18,33 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const requestData = await req.json();
     const { 
       userId, 
       sessionType, 
       message, 
       conversationHistory = [],
-      moodBefore 
-    } = await req.json();
+      moodBefore,
+      action,
+      prompt 
+    } = requestData;
 
-    console.log('AI Coach request:', { userId, sessionType, message });
+    console.log('AI Coach request:', { userId, sessionType, message, action, prompt });
 
-    // Generate coaching response
+    // Handle different action types
+    if (action && prompt) {
+      // New action-based request
+      const coachingResponse = await generateActionResponse(action, prompt);
+      return new Response(JSON.stringify({ 
+        success: true, 
+        response: coachingResponse.response,
+        actionItems: coachingResponse.actionItems
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Original coaching session logic
     const coachingResponse = await generateCoachingResponse(
       sessionType, 
       message, 
@@ -158,3 +174,66 @@ function extractActionItems(content: string): string[] {
     '자신에게 친절하게 대하기'
   ];
 }
+
+async function generateActionResponse(action: string, prompt: string) {
+  const actionPrompts = {
+    workout_plan: '당신은 전문 피트니스 트레이너입니다. 사용자에게 안전하고 효과적인 운동 계획을 제공합니다.',
+    suggest_challenge: '당신은 웰니스 챌린지 전문가입니다. 사용자의 라이프스타일에 맞는 건강 챌린지를 추천합니다.',
+    start_workout: '당신은 운동 코치입니다. 사용자가 운동을 시작할 수 있도록 동기부여와 구체적인 가이드를 제공합니다.'
+  };
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { 
+            role: 'system', 
+            content: actionPrompts[action as keyof typeof actionPrompts] || actionPrompts.workout_plan
+          },
+          { role: 'user', content: prompt }
+        ],
+        max_tokens: 800,
+        temperature: 0.7,
+      }),
+    });
+
+    const data = await response.json();
+    const content = data.choices[0].message.content;
+
+    return {
+      response: content,
+      actionItems: extractActionItems(content)
+    };
+  } catch (error) {
+    console.error('OpenAI API error for action:', error);
+    return {
+      response: getDefaultResponseForAction(action),
+      actionItems: getDefaultActionItems(action)
+    };
+  }
+}
+
+function getDefaultResponseForAction(action: string): string {
+  const defaults = {
+    workout_plan: '🏃‍♂️ **30분 홈 트레이닝 계획**\n\n**워밍업 (5분)**\n- 제자리 걷기: 2분\n- 팔 돌리기: 1분\n- 목과 어깨 스트레칭: 2분\n\n**메인 운동 (20분)**\n- 스쿼트: 3세트 x 10회\n- 팔굽혀펴기: 3세트 x 8회\n- 플랭크: 3세트 x 30초\n- 런지: 3세트 x 각 다리 8회\n\n**쿨다운 (5분)**\n- 전신 스트레칭\n- 심호흡\n\n💡 **초보자 팁**: 무리하지 말고 자신의 페이스에 맞춰 진행하세요!',
+    suggest_challenge: '🌟 **추천 웰니스 챌린지**\n\n**30일 건강 습관 만들기**\n- 매일 물 8잔 마시기\n- 10분 명상하기\n- 1만보 걷기\n- 22시 전 잠자리에 들기\n\n친구들과 함께 도전하면 더 재미있어요!',
+    start_workout: '💪 **운동 시작 준비!**\n\n지금 바로 시작할 수 있는 간단한 운동을 추천드려요!\n\n1. 편안한 옷으로 갈아입기\n2. 물 한 잔 준비하기\n3. 5분 가벼운 스트레칭\n4. 좋아하는 음악 틀기\n\n작은 시작이 큰 변화를 만듭니다! 🌟'
+  };
+  
+  return defaults[action as keyof typeof defaults] || defaults.workout_plan;
+}
+
+function getDefaultActionItems(action: string): string[] {
+  const defaults = {
+    workout_plan: ['스쿼트 3세트 완료하기', '플랭크 30초 유지하기', '운동 후 충분한 수분 섭취'],
+    suggest_challenge: ['오늘부터 물 8잔 마시기', '10분 산책하기', '일찍 잠자리에 들기'],
+    start_workout: ['편안한 운동복 입기', '5분 스트레칭으로 시작', '운동 후 성취감 느끼기']
+  };
+  
+  return defaults[action as keyof typeof defaults] || defaults.workout_plan;

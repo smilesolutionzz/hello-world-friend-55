@@ -329,6 +329,16 @@ const TokenSubscription = () => {
                   <Check className="w-4 h-4 text-blue-500 flex-shrink-0" />
                   <span className="text-sm">🧠 AI 분석 제공</span>
                 </div>
+                
+                {/* 제한사항 강조 */}
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-4">
+                  <div className="text-xs font-bold text-yellow-800 mb-1">⚠️ 주의사항</div>
+                  <div className="text-xs text-yellow-700">
+                    • 토큰 모두 소진 시 이용 제한<br/>
+                    • 추가 토큰 구매 필요<br/>
+                    • 무제한 이용은 구독만 가능
+                  </div>
+                </div>
               </div>
               <Button 
                 onClick={() => handlePurchase('token-pack-50')}
@@ -366,9 +376,15 @@ const TokenSubscription = () => {
               </div>
 
               <div className="space-y-3 text-left mb-8">
+                {/* 무제한 혜택 강조 */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-3 mb-3">
+                  <div className="text-sm font-bold text-green-800 mb-1">🚀 토큰 걱정 없음!</div>
+                  <div className="text-sm text-green-700">무제한 이용으로 자유롭게 검사하세요</div>
+                </div>
+                
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm">✨ 모든 심리테스트 무제한</span>
+                  <span className="text-sm font-bold">✨ 모든 심리테스트 무제한</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />

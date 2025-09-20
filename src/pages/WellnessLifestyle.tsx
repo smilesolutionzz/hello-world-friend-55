@@ -68,31 +68,94 @@ const WellnessLifestyle = () => {
     }
   };
 
-  // Additional CTA handlers
+  // Additional CTA handlers with OpenAI functionality
+  const [analysisResult, setAnalysisResult] = useState<string>('');
+  const [constitutionResult, setConstitutionResult] = useState<string>('');
+  const [beautyPlan, setBeautyPlan] = useState<string>('');
+  const [biomarkerInfo, setBiomarkerInfo] = useState<string>('');
+  const [loadingSupplements, setLoadingSupplements] = useState(false);
+  const [loadingConstitution, setLoadingConstitution] = useState(false);
+  const [loadingBeauty, setLoadingBeauty] = useState(false);
+  const [loadingBiomarker, setLoadingBiomarker] = useState(false);
+
   const handleSupplementsDetail = async () => {
+    setLoadingSupplements(true);
     try {
-      await supabase.functions.invoke('ai-health-insights', {
-        body: { action: 'supplements_detail' },
+      const { data, error } = await supabase.functions.invoke('ai-health-insights', {
+        body: { 
+          action: 'supplements_analysis',
+          prompt: '사용자의 연령 25세, 직장인, 운동량 보통, 스트레스 중간 정도를 고려한 맞춤형 영양제 상세 분석을 제공해주세요.'
+        },
       });
-      toast({ title: '상세 분석 준비 완료', description: '맞춤형 영양 분석으로 이동합니다.' });
-      navigate('/ai-assistant');
+      if (error) throw error;
+      setAnalysisResult(data.response || '맞춤형 영양제 분석이 완료되었습니다.');
+      toast({ title: '✨ 상세 분석 완료', description: '개인 맞춤형 영양제 추천을 확인해보세요!' });
     } catch (err: any) {
       console.error('상세 분석 실패:', err);
       toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+    } finally {
+      setLoadingSupplements(false);
     }
   };
 
-  const handleConstitutionTest = () => {
-    navigate('/han-medicine-test');
+  const handleConstitutionTest = async () => {
+    setLoadingConstitution(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-health-insights', {
+        body: { 
+          action: 'constitution_analysis',
+          prompt: '한의학 체질 진단을 위한 질문과 분석을 제공해주세요. 체질별 특징과 맞춤 건강관리법을 포함해주세요.'
+        },
+      });
+      if (error) throw error;
+      setConstitutionResult(data.response || '체질 분석이 완료되었습니다.');
+      toast({ title: '🌿 체질 검사 완료', description: '당신의 체질에 맞는 건강법을 확인해보세요!' });
+    } catch (err: any) {
+      console.error('체질 검사 실패:', err);
+      toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+    } finally {
+      setLoadingConstitution(false);
+    }
   };
 
-  const handleBeautyPlan = () => {
-    toast({ title: '뷰티 플랜 생성', description: 'AI가 맞춤 플랜을 구성합니다.' });
-    navigate('/ai-assistant');
+  const handleBeautyPlan = async () => {
+    setLoadingBeauty(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-health-insights', {
+        body: { 
+          action: 'beauty_plan',
+          prompt: '25세 여성을 위한 안티에이징 뷰티 플랜을 작성해주세요. 스킨케어, 영양, 생활습관을 포함한 종합적인 계획을 제공해주세요.'
+        },
+      });
+      if (error) throw error;
+      setBeautyPlan(data.response || '맞춤형 뷰티 플랜이 생성되었습니다.');
+      toast({ title: '✨ 뷰티 플랜 완성', description: '당신만의 맞춤 뷰티 루틴을 확인해보세요!' });
+    } catch (err: any) {
+      console.error('뷰티 플랜 생성 실패:', err);
+      toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+    } finally {
+      setLoadingBeauty(false);
+    }
   };
 
-  const handleBiomarkerBooking = () => {
-    navigate('/institutions');
+  const handleBiomarkerBooking = async () => {
+    setLoadingBiomarker(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-health-insights', {
+        body: { 
+          action: 'biomarker_info',
+          prompt: '바이오마커 검사의 중요성과 추천 검사 항목, 주변 검사 기관 정보를 제공해주세요.'
+        },
+      });
+      if (error) throw error;
+      setBiomarkerInfo(data.response || '바이오마커 검사 정보가 준비되었습니다.');
+      toast({ title: '🔬 바이오마커 검사 정보', description: '검사 정보와 예약 가이드를 확인해보세요!' });
+    } catch (err: any) {
+      console.error('바이오마커 정보 로드 실패:', err);
+      toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+    } finally {
+      setLoadingBiomarker(false);
+    }
   };
 
   const [fastingActive, setFastingActive] = useState(false);
@@ -125,25 +188,48 @@ const WellnessLifestyle = () => {
     }
   };
 
+  const [workoutPlan, setWorkoutPlan] = useState<string>('');
+  const [sleepTips, setSleepTips] = useState<string>('');
+  const [loadingWorkout, setLoadingWorkout] = useState(false);
+  const [loadingSleep, setLoadingSleep] = useState(false);
+
   const handleWorkoutStart = async () => {
+    setLoadingWorkout(true);
     try {
-      await supabase.functions.invoke('ai-coach', { body: { action: 'start_workout' } });
-      toast({ title: '운동 세션 시작', description: 'AI 코치 페이지로 이동합니다.' });
-      navigate('/ai-coach');
+      const { data, error } = await supabase.functions.invoke('ai-coach', { 
+        body: { 
+          action: 'workout_plan',
+          prompt: '25세 직장인을 위한 30분 홈트레이닝 계획을 작성해주세요. 초보자도 쉽게 따라할 수 있는 운동으로 구성해주세요.'
+        }
+      });
+      if (error) throw error;
+      setWorkoutPlan(data.response || '맞춤형 운동 계획이 생성되었습니다.');
+      toast({ title: '💪 오늘의 운동 시작', description: '맞춤형 운동 계획을 확인해보세요!' });
     } catch (err: any) {
       console.error('운동 시작 실패:', err);
       toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+    } finally {
+      setLoadingWorkout(false);
     }
   };
 
   const handleSleepTips = async () => {
+    setLoadingSleep(true);
     try {
-      await supabase.functions.invoke('ai-health-insights', { body: { action: 'sleep_tips' } });
-      toast({ title: '수면 개선 팁', description: '맞춤 팁을 준비했어요.' });
-      navigate('/ai-assistant');
+      const { data, error } = await supabase.functions.invoke('ai-health-insights', { 
+        body: { 
+          action: 'sleep_improvement',
+          prompt: '직장인의 수면의 질 개선을 위한 구체적인 팁과 루틴을 제공해주세요. 스마트폰 사용, 카페인 섭취, 수면환경 등을 포함해주세요.'
+        }
+      });
+      if (error) throw error;
+      setSleepTips(data.response || '수면 개선 팁이 준비되었습니다.');
+      toast({ title: '😴 수면 개선 팁', description: '맞춤형 수면 가이드를 확인해보세요!' });
     } catch (err: any) {
       console.error('수면 팁 실패:', err);
       toast({ title: '문제가 발생했어요', description: err?.message ?? '잠시 후 다시 시도해주세요.', variant: 'destructive' });
+    } finally {
+      setLoadingSleep(false);
     }
   };
 
@@ -321,9 +407,15 @@ const WellnessLifestyle = () => {
                           <Badge variant="outline">선택</Badge>
                         </div>
                       </div>
-                      <Button size="sm" className="w-full" onClick={handleSupplementsDetail}>
-                        상세 분석 받기
+                      <Button size="sm" className="w-full" onClick={handleSupplementsDetail} disabled={loadingSupplements}>
+                        {loadingSupplements ? '분석 중...' : '상세 분석 받기'}
                       </Button>
+                      {analysisResult && (
+                        <div className="mt-4 p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                          <h4 className="font-medium text-sm mb-2">🎯 맞춤 분석 결과</h4>
+                          <p className="text-xs text-muted-foreground">{analysisResult}</p>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -350,9 +442,15 @@ const WellnessLifestyle = () => {
                           <div className="text-xs text-muted-foreground">감국, 라벤더 블렌드</div>
                         </div>
                       </div>
-                      <Button size="sm" className="w-full" onClick={handleConstitutionTest}>
-                        체질 검사하기
+                      <Button size="sm" className="w-full" onClick={handleConstitutionTest} disabled={loadingConstitution}>
+                        {loadingConstitution ? '검사 중...' : '체질 검사하기'}
                       </Button>
+                      {constitutionResult && (
+                        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                          <h4 className="font-medium text-sm mb-2">🌿 체질 분석 결과</h4>
+                          <p className="text-xs text-muted-foreground">{constitutionResult}</p>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -387,9 +485,15 @@ const WellnessLifestyle = () => {
                           <div className="text-muted-foreground">항산화</div>
                         </div>
                       </div>
-                      <Button size="sm" className="w-full" onClick={handleBeautyPlan}>
-                        뷰티 플랜 만들기
+                      <Button size="sm" className="w-full" onClick={handleBeautyPlan} disabled={loadingBeauty}>
+                        {loadingBeauty ? '생성 중...' : '뷰티 플랜 만들기'}
                       </Button>
+                      {beautyPlan && (
+                        <div className="mt-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                          <h4 className="font-medium text-sm mb-2">✨ 맞춤 뷰티 플랜</h4>
+                          <p className="text-xs text-muted-foreground">{beautyPlan}</p>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -476,9 +580,15 @@ const WellnessLifestyle = () => {
                       </div>
                       
                       <div className="space-y-2">
-                        <Button className="w-full" onClick={handleBiomarkerBooking}>
-                          바이오마커 검사 예약
+                        <Button className="w-full" onClick={handleBiomarkerBooking} disabled={loadingBiomarker}>
+                          {loadingBiomarker ? '정보 로딩 중...' : '바이오마커 검사 예약'}
                         </Button>
+                        {biomarkerInfo && (
+                          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h4 className="font-medium text-sm mb-2">🔬 검사 정보</h4>
+                            <p className="text-xs text-muted-foreground">{biomarkerInfo}</p>
+                          </div>
+                        )}
                         <Button variant="outline" className="w-full">
                           장수 플랜 상담받기
                         </Button>
@@ -537,9 +647,15 @@ const WellnessLifestyle = () => {
                         <span>15분</span>
                       </div>
                     </div>
-                    <Button size="sm" className="w-full" onClick={handleWorkoutStart}>
-                      오늘의 운동 시작
+                    <Button size="sm" className="w-full" onClick={handleWorkoutStart} disabled={loadingWorkout}>
+                      {loadingWorkout ? '계획 생성 중...' : '오늘의 운동 시작'}
                     </Button>
+                    {workoutPlan && (
+                      <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <h4 className="font-medium text-sm mb-2">💪 운동 계획</h4>
+                        <p className="text-xs text-muted-foreground">{workoutPlan}</p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -559,9 +675,15 @@ const WellnessLifestyle = () => {
                       <div className="text-lg font-bold text-purple-600">85점</div>
                       <div className="text-xs text-muted-foreground">깊은잠 3시간 32분</div>
                     </div>
-                    <Button size="sm" className="w-full" onClick={handleSleepTips}>
-                      수면 개선 팁 보기
+                    <Button size="sm" className="w-full" onClick={handleSleepTips} disabled={loadingSleep}>
+                      {loadingSleep ? '팁 준비 중...' : '수면 개선 팁 보기'}
                     </Button>
+                    {sleepTips && (
+                      <div className="mt-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                        <h4 className="font-medium text-sm mb-2">😴 수면 개선 가이드</h4>
+                        <p className="text-xs text-muted-foreground">{sleepTips}</p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>

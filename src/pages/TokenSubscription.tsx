@@ -575,16 +575,16 @@ const TokenSubscription = () => {
         {/* 토큰제 vs 구독제 비교 */}
         <div className="mt-20">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">하이브리드 모델 1단계 비교</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">하이브리드 모델 비교</h2>
             <div className="bg-gradient-to-br from-background to-muted/30 rounded-3xl p-8 shadow-lg border border-border">
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center">
                   <div className="text-2xl font-bold mb-2">🆓 무료 체험</div>
                   <div className="text-sm text-muted-foreground mb-4">
-                    월 1회 무료로 체험하세요
+                    무료검사만 가능
                   </div>
                   <ul className="text-sm space-y-1 text-left">
-                    <li>• 월 1회 심리검사</li>
+                    <li>• 무료검사 이용</li>
                     <li>• AI 기본 분석</li>
                     <li>• 결과 요약 제공</li>
                   </ul>

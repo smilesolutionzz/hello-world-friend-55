@@ -51,7 +51,7 @@ interface NavigationItem {
 // 전문가 서비스 하위 메뉴
 const expertSubmenuItems = [
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: false },
-  { icon: CreditCard, label: '구독', path: '/subscription', requiresAuth: false },
+  { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: false },
 ];
 
 // 상단 네비게이션용 핵심 메뉴 (드롭다운으로 변경됨)
@@ -256,7 +256,7 @@ export const UnifiedNavigation = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant={isActive('/expert-hiring') || isActive('/subscription') ? "default" : "ghost"}
+                    variant={isActive('/expert-hiring') || isActive('/token-subscription') ? "default" : "ghost"}
                     size="sm"
                     className="flex items-center gap-2"
                   >

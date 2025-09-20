@@ -296,66 +296,106 @@ const TokenSubscription = () => {
           </div>
         </div>
 
-        {/* 하이브리드 선택 섹션 */}
+        {/* 구독 플랜 선택 섹션 */}
         <div className="mt-16 text-center">
-          <h2 className="text-3xl font-bold mb-8">어떤 방식이 나에게 맞을까요?</h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-12">
-            {/* 무료 체험 */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 border border-blue-200">
+          <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">구독 플랜 선택</h2>
+          <p className="text-lg text-muted-foreground mb-12">필요에 맞는 플랜을 선택하여 AI 심리 분석 서비스를 이용하세요</p>
+          
+          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
+            {/* 베이직 (무료) */}
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border border-green-200">
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">무료 체험</h3>
-                <div className="text-2xl font-bold text-blue-600 mb-2">무료</div>
-                <p className="text-muted-foreground">월 1회 체험</p>
+                <h3 className="text-2xl font-bold mb-2 text-green-800">베이직</h3>
+                <p className="text-sm text-muted-foreground mb-3">기본적인 AI 분석과 관찰일지를 무료로 체험해보세요</p>
+                <div className="text-3xl font-bold text-green-600 mb-2">무료</div>
               </div>
-              <div className="space-y-2 text-left mb-6">
+              <div className="space-y-3 text-left mb-8">
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-blue-500" />
-                  <span className="text-sm">월 1회 무료 검사</span>
+                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <span className="text-sm">월 3회 기본 AI 분석</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-blue-500" />
-                  <span className="text-sm">AI 기본 분석</span>
+                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <span className="text-sm">간단한 관찰일지 작성</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-blue-500" />
-                  <span className="text-sm">결과 요약 제공</span>
+                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <span className="text-sm">기본 심리 상태 체크</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <span className="text-sm">커뮤니티 이용</span>
                 </div>
               </div>
               <Button 
                 onClick={() => navigate('/')}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3"
               >
-                무료 체험 시작
+                🌱 무료로 시작하기
               </Button>
             </div>
             
-            {/* 토큰팩 */}
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border border-purple-200">
+            {/* 스탠다드 (₩29,900) */}
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border-2 border-purple-300 relative transform hover:scale-105 transition-all duration-300 shadow-2xl">
+              {/* 추천 배지 */}
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg">
+                  🌟 추천
+                </div>
+              </div>
+
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Coins className="w-8 h-8 text-white" />
+                <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Crown className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">토큰팩</h3>
-                <div className="text-2xl font-bold text-purple-600 mb-2">9,900원</div>
-                <p className="text-muted-foreground">50토큰</p>
+                <h3 className="text-2xl font-bold mb-2 text-purple-800">스탠다드</h3>
+                <p className="text-sm text-muted-foreground mb-3">무제한 AI 분석과 전문가 검토 서비스</p>
+                <div className="text-3xl font-bold text-purple-600 mb-1">₩29,900</div>
+                <p className="text-sm text-muted-foreground">월간 구독</p>
               </div>
-              <div className="space-y-2 text-left mb-6">
+
+              <div className="space-y-3 text-left mb-8">
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm">필요한 만큼만 결제</span>
+                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span className="text-sm">✨ 무제한 AI 분석 (GPT-4 + Claude)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm">토큰 영구 보관</span>
+                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span className="text-sm">🧠 3AI 동시 분석으로 정확도 3배 향상</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm">서비스 체험용</span>
+                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span className="text-sm">📊 상세한 심리 분석 리포트</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span className="text-sm">👥 전문가 1차 검토 (월 2회)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span className="text-sm">📱 실시간 위기 감지 알림</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span className="text-sm">📈 상세한 트렌드 분석</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span className="text-sm">🎯 개인 맞춤 개선 가이드</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span className="text-sm">💬 우선 커뮤니티 답변</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                  <span className="text-sm">📞 긴급상담 우선 배정</span>
                 </div>
               </div>
+
               <Button 
                 onClick={async () => {
                   const { data: { session } } = await supabase.auth.getSession();
@@ -363,138 +403,89 @@ const TokenSubscription = () => {
                     navigate('/auth');
                     return;
                   }
-                  handlePurchase('token-pack');
+                  handleSubscriptionPurchase('standard');
                 }}
-                className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3"
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
               >
-                토큰팩 구매하기
+                🚀 스탠다드 시작하기
               </Button>
             </div>
             
-            {/* 프로 구독 */}
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border-2 border-green-300 relative transform hover:scale-105 transition-all duration-300 shadow-2xl">
-              {/* 최고 인기 배지 */}
+            {/* 프리미엄 (₩59,900) */}
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-8 border-2 border-amber-300 relative transform hover:scale-105 transition-all duration-300 shadow-2xl">
+              {/* 추천 배지 */}
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg animate-pulse">
-                  🔥 최고 인기
-                </div>
-              </div>
-              
-              {/* 한정 특가 배지 */}
-              <div className="absolute -top-2 -right-2">
-                <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-bounce">
-                  💎 한정특가
+                <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg">
+                  🌟 추천
                 </div>
               </div>
 
               <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Crown className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-2 text-green-800">프로 구독</h3>
-                <div className="mb-3">
-                  <span className="text-lg text-gray-500 line-through">39,800원</span>
-                  <div className="text-3xl font-black text-green-600 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                    19,900원/월
-                  </div>
-                  <div className="text-red-600 font-bold text-sm">⚡ 50% 런칭 할인</div>
-                </div>
-                <p className="text-green-700 font-semibold">무제한 + VIP 혜택</p>
+                <h3 className="text-2xl font-bold mb-2 text-amber-800">프리미엄</h3>
+                <p className="text-sm text-muted-foreground mb-3">완전한 AI + 전문가 케어 서비스</p>
+                <div className="text-3xl font-bold text-amber-600 mb-1">₩59,900</div>
+                <p className="text-sm text-muted-foreground">월간 구독</p>
               </div>
 
-              <div className="space-y-3 text-left mb-6">
-                <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm font-medium">🔥 무제한 검사 + 심화분석</span>
+              <div className="space-y-2 text-left mb-8">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm">🚀 스탠다드 모든 기능 포함</span>
                 </div>
-                <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm font-medium">📝 무제한 관찰일지 분석</span>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm">👨‍⚕️ 전문가 상담 월 1회 (50분)</span>
                 </div>
-                <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm font-medium">🤖 초개인화에이전트 모드 (데이터 축적시 AI가 먼저 제안)</span>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm">🔍 전문가 심층 분석 (월 2회)</span>
                 </div>
-                <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm font-medium">📊 월간 성장 리포트</span>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm">⚡ AI 분석 결과 전문가 검증</span>
                 </div>
-                <div className="flex items-center gap-3 bg-white/50 rounded-lg p-2">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm font-medium">⚡ 우선 예약 + 빠른 상담</span>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm">📋 개인 맞춤 치료 계획 수립</span>
                 </div>
-                <div className="flex items-center gap-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-2">
-                  <div className="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm font-bold text-yellow-900">🎁 VIP 전용 혜택</span>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm">🎯 전담 전문가 배정</span>
                 </div>
-                <div className="flex items-center gap-3 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg p-2">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm font-bold text-blue-900">🆓 첫 달 무료 체험</span>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm">📞 24시간 긴급 상담 라인</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm">👨‍👩‍👧‍👦 가족 구성원 분석 (최대 4명)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm">🎁 매월 심리 케어 가이드북</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm">🏆 VIP 고객 전용 혜택</span>
                 </div>
               </div>
 
-              <div className="text-center mb-4">
-                <div className="bg-red-100 border border-red-300 rounded-lg p-2 mb-3">
-                  <div className="text-red-600 font-bold text-sm">⏰ 런칭 특가 종료까지</div>
-                  <div className="text-red-800 font-black text-lg">7일 남음</div>
-                </div>
-                <div className="bg-blue-100 border border-blue-300 rounded-lg p-3 mb-3">
-                  <div className="text-blue-800 font-bold text-sm">💰 1년 결제 시 추가 할인</div>
-                  <div className="text-blue-900 text-lg">연간 179,000원 (월 14,916원)</div>
-                  <div className="text-blue-600 text-xs">월 결제 대비 25% 절약!</div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-2 mb-4">
-                <Button 
-                  onClick={async () => {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (!session) {
-                      navigate('/auth');
-                      return;
-                    }
-                    handleSubscriptionPurchase('basic');
-                  }}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
-                >
-                  🚀 월 결제로 시작하기
-                </Button>
-                
-                <Button 
-                  onClick={async () => {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (!session) {
-                      navigate('/auth');
-                      return;
-                    }
-                    handleSubscriptionPurchase('basic-annual');
-                  }}
-                  variant="outline"
-                  className="w-full border-2 border-green-500 text-green-700 hover:bg-green-50 font-bold py-3 shadow-lg transform hover:scale-105 transition-all duration-200"
-                >
-                  💎 연간 결제로 25% 절약하기
-                </Button>
-              </div>
-              
-              <div className="text-center mt-3">
-                <p className="text-xs text-green-700 font-medium">
-                  💰 매월 10회 이상 이용시 <span className="font-bold">40% 절약</span>
-                </p>
-              </div>
+              <Button 
+                onClick={async () => {
+                  const { data: { session } } = await supabase.auth.getSession();
+                  if (!session) {
+                    navigate('/auth');
+                    return;
+                  }
+                  handleSubscriptionPurchase('premium');
+                }}
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                💎 프리미엄 시작하기
+              </Button>
             </div>
           </div>
         </div>

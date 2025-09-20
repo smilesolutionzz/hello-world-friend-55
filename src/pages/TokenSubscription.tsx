@@ -300,44 +300,45 @@ const TokenSubscription = () => {
         <div className="mt-16 text-center">
           <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">구독 플랜 선택</h2>
           <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-lg mb-4 inline-block animate-pulse">
-            🔥 베타 런칭 특가! 3개월 한정 33% 할인 • 연간구독이 이득!
+            🔥 베타 런칭 특가! 3개월 한정 34% 할인 • 연간구독이 이득!
           </div>
-          <p className="text-lg text-muted-foreground mb-12">모든 심리테스트가 구독으로! 재미테스트만 무료로 체험하세요</p>
+          <p className="text-lg text-muted-foreground mb-12">토큰으로 체험 후 구독으로 업그레이드하세요!</p>
           
           <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
-            {/* 베이직 (무료) */}
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border border-green-200">
+            {/* 토큰팩 (9,900원/50토큰) */}
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border border-blue-200">
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Coins className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold mb-2 text-green-800">베이직</h3>
-                <p className="text-sm text-muted-foreground mb-3">재미테스트만 무료로 체험해보세요</p>
-                <div className="text-3xl font-bold text-green-600 mb-2">무료</div>
+                <h3 className="text-2xl font-bold mb-2 text-blue-800">토큰팩</h3>
+                <p className="text-sm text-muted-foreground mb-3">필요할 때만 사용하세요</p>
+                <div className="text-3xl font-bold text-blue-600 mb-2">₩9,900</div>
+                <p className="text-sm text-muted-foreground">50토큰</p>
               </div>
               <div className="space-y-3 text-left mb-8">
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-sm">🎯 재미테스트 무료 이용</span>
+                  <Check className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                  <span className="text-sm">🪙 50토큰 제공</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-sm">📝 기본 관찰일지 작성</span>
+                  <Check className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                  <span className="text-sm">⚡ 즉시 사용 가능</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-sm">💬 커뮤니티 이용</span>
+                  <Check className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                  <span className="text-sm">📱 모든 심리테스트 이용</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <span className="text-sm">📊 기본 결과 요약</span>
+                  <Check className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                  <span className="text-sm">🧠 AI 분석 제공</span>
                 </div>
               </div>
               <Button 
-                onClick={() => navigate('/')}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3"
+                onClick={() => handlePurchase('token-pack-50')}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3"
               >
-                🌱 무료로 시작하기
+                🪙 토큰 구매하기
               </Button>
             </div>
             

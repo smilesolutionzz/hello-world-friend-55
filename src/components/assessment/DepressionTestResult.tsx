@@ -9,6 +9,8 @@ import ProductRecommendation from "@/components/ProductRecommendation";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import { useShareText, formatPsychTestResult } from '@/utils/shareUtils';
+import SocialShareButtons from '@/components/social/SocialShareButtons';
+import VoiceFeature from '@/components/voice/VoiceFeature';
 import { supabase } from '@/integrations/supabase/client';
 
 interface DepressionTestResultProps {
@@ -442,6 +444,19 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
           정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.
         </p>
       </Card>
+
+      {/* 음성 기능 */}
+      <VoiceFeature 
+        title="우울증 검사 결과 음성 안내"
+        text={`우울증 자가진단 결과를 알려드리겠습니다. 총점 ${total}점으로 ${severity} 수준입니다. 정확한 진단을 위해 전문의와 상담받으시기 바랍니다.`}
+        type="result"
+      />
+
+      {/* 소셜 공유 */}
+      <SocialShareButtons 
+        title={`우울증 자가진단 결과: ${severity} (${average.toFixed(1)}점)`}
+        description={`총점 ${total}점으로 ${severity} 수준입니다. 전문적인 도움을 받아보세요!`}
+      />
     </div>
   );
 };

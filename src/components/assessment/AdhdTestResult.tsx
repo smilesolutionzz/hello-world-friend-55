@@ -6,6 +6,8 @@ import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
+import SocialShareButtons from '@/components/social/SocialShareButtons';
+import VoiceFeature from '@/components/voice/VoiceFeature';
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import ShareResultButton from '@/components/ShareResultButton';
@@ -726,6 +728,19 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
         category="adhd" 
         severity={severity}
         ageGroup={ageGroup}
+      />
+
+      {/* 음성 기능 */}
+      <VoiceFeature 
+        title="ADHD 검사 결과 음성 안내"
+        text={`ADHD 검사 결과를 알려드리겠습니다. 총점 ${results.total}점으로 ${evaluation.level} 수준입니다. ${evaluation.description}`}
+        type="result"
+      />
+
+      {/* 소셜 공유 */}
+      <SocialShareButtons 
+        title={`ADHD 검사 결과: ${evaluation.level} (${results.average.toFixed(1)}점)`}
+        description={`${evaluation.description} 더 자세한 분석을 받아보세요!`}
       />
 
       {/* Additional Information */}

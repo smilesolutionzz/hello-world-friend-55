@@ -35,10 +35,10 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
       key: 'adult' as const,
       title: '성인',
       subtitle: '19-64세', 
-      description: '우울증상 + 불안증상 자가체크',
+      description: 'ADHD 검사',
       icon: Briefcase,
       color: 'from-primary to-primary-glow',
-      features: ['우울/불안 스크리닝', '성격 5요인', '직장 적응도', '대인관계']
+      features: ['주의집중력', '사회-정서', '인지능력', '충동조절']
     }
   ];
 

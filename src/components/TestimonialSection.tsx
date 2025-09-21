@@ -381,88 +381,89 @@ const TestimonialSection = () => {
 
       {/* 메인 후기 */}
       <div 
-        className="card-glass relative overflow-hidden hover-lift"
+        className="card-glass relative overflow-hidden hover-lift p-6"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <Button variant="ghost" size="icon" onClick={handlePrevious}>
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <div className="flex gap-2">
-              {testimonials.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentTestimonial ? 'bg-primary' : 'bg-gray-300'
-                  }`}
-                />
-              ))}
+        <div className="flex items-center justify-between mb-4">
+          <Button variant="ghost" size="icon" onClick={handlePrevious} className="bg-white/20 hover:bg-white/30 text-current border-white/30">
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          <div className="flex gap-2">
+            {testimonials.map((_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  index === currentTestimonial ? 'bg-current' : 'bg-current/30'
+                }`}
+              />
+            ))}
+          </div>
+          <Button variant="ghost" size="icon" onClick={handleNext} className="bg-white/20 hover:bg-white/30 text-current border-white/30">
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+
+        <div className="space-y-4">
+          {/* 사용자 정보 */}
+          <div className="flex items-center gap-3">
+            <Avatar className="h-12 w-12 border-2 border-white/20">
+              <AvatarImage src={currentItem.avatar} alt={currentItem.name} />
+              <AvatarFallback className="bg-white/20 text-current">
+                {currentItem.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="font-semibold text-current">{currentItem.name}</div>
+              <div className="text-sm opacity-80">{currentItem.role}</div>
             </div>
-            <Button variant="ghost" size="icon" onClick={handleNext}>
-              <ChevronRight className="w-4 h-4" />
-            </Button>
           </div>
 
-          <div className="space-y-4">
-            {/* 사용자 정보 */}
-            <div className="flex items-center gap-4">
-              <Avatar className="w-12 h-12">
-                <AvatarImage src={currentItem.avatar} />
-                <AvatarFallback>{currentItem.name[0]}</AvatarFallback>
-              </Avatar>
-              <div>
-                <div className="font-medium">{currentItem.name}</div>
-                <div className="text-sm text-muted-foreground">{currentItem.role}</div>
-                <div className="flex items-center gap-1 mt-1">
-                  {[...Array(currentItem.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-              </div>
+          {/* 평점 */}
+          <div className="flex items-center gap-1">
+            {[...Array(currentItem.rating)].map((_, i) => (
+              <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+            ))}
+          </div>
+
+          {/* 제목 */}
+          <h3 className="font-bold text-lg text-current mb-2">{currentItem.title}</h3>
+
+          {/* 내용 */}
+          <p className="text-current/90 leading-relaxed">{currentItem.content}</p>
+
+          {/* 전후 비교 (있는 경우) */}
+          {currentItem.beforeAfter && (
+            <div className="bg-white/10 rounded-lg p-3 border border-white/20">
+              <div className="text-xs font-medium text-current/80 mb-1">개선 결과</div>
+              <div className="text-sm text-current/90">{currentItem.beforeAfter}</div>
             </div>
+          )}
 
-            {/* 후기 내용 */}
-            <div className="relative">
-              <Quote className="absolute -top-2 -left-2 w-8 h-8 text-primary/20" />
-              <h3 className="font-semibold mb-2 pl-6">{currentItem.title}</h3>
-              <p className="text-muted-foreground leading-relaxed pl-6">
-                {currentItem.content}
-              </p>
+          {/* 전문성 정보 (전문가인 경우) */}
+          {currentItem.expertise && (
+            <div className="bg-white/10 rounded-lg p-3 border border-white/20">
+              <div className="text-xs font-medium text-current/80 mb-1">전문 분야</div>
+              <div className="text-sm text-current/90">{currentItem.expertise}</div>
             </div>
+          )}
 
-            {/* 추가 정보 */}
-            {currentItem.beforeAfter && (
-              <div className="bg-green-50 p-3 rounded-lg">
-                <div className="text-sm font-medium text-green-800 mb-1">변화 과정</div>
-                <div className="text-sm text-green-700">{currentItem.beforeAfter}</div>
-              </div>
-            )}
-
-            {currentItem.expertise && (
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <div className="text-sm font-medium text-blue-800 mb-1">전문 분야</div>
-                <div className="text-sm text-blue-700">{currentItem.expertise}</div>
-              </div>
-            )}
-
-            {currentItem.stats && (
-              <div className="bg-purple-50 p-3 rounded-lg">
-                <div className="text-sm font-medium text-purple-800 mb-1">협력 현황</div>
-                <div className="text-sm text-purple-700">{currentItem.stats}</div>
-              </div>
-            )}
-
-            {/* 태그 */}
-            <div className="flex flex-wrap gap-2">
-              {currentItem.tags.map((tag, index) => (
-                <Badge key={index} variant="secondary" className="text-xs">
-                  {tag}
-                </Badge>
-              ))}
+          {/* 통계 (기관인 경우) */}
+          {currentItem.stats && (
+            <div className="bg-white/10 rounded-lg p-3 border border-white/20">
+              <div className="text-xs font-medium text-current/80 mb-1">성과 지표</div>
+              <div className="text-sm text-current/90">{currentItem.stats}</div>
             </div>
+          )}
+
+          {/* 태그 */}
+          <div className="flex flex-wrap gap-2">
+            {currentItem.tags.map((tag, index) => (
+              <Badge key={index} variant="secondary" className="text-xs bg-white/20 text-current border-white/30">
+                {tag}
+              </Badge>
+            ))}
           </div>
         </div>
       </div>

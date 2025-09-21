@@ -287,41 +287,65 @@ const WellnessLifestyle = () => {
             </p>
           </section>
 
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate('/assessment')}>
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Brain className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">심리 검사 받기</h3>
-                <p className="text-sm text-gray-600 mb-4">3분만에 현재 마음 상태 체크</p>
-                <Button size="sm" className="w-full">검사 시작</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate('/dashboard')}>
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <BarChart3 className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">내 리포트 보기</h3>
-                <p className="text-sm text-gray-600 mb-4">받은 모든 분석 결과 한눈에</p>
-                <Button size="sm" className="w-full" variant="outline">리포트 열기</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-200 hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate('/expert-hiring')}>
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">전문가 상담</h3>
-                <p className="text-sm text-gray-600 mb-4">전문의와 1:1 개인 상담</p>
-                <Button size="sm" className="w-full" variant="outline">상담 신청</Button>
-              </CardContent>
-            </Card>
-          </div>
+          {/* 상황별 맞춤 패키지 */}
+          <section className="mb-16">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">상황별 맞춤 패키지</h2>
+              <p className="text-gray-600">현재 가장 고민되는 상황에 맞는 전문 패키지를 선택하세요</p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div className="card-glass-yellow p-6 text-center hover-lift animate-float cursor-pointer" onClick={() => navigate('/assessment')}>
+                <div className="text-4xl mb-3">😊</div>
+                <h3 className="font-semibold text-yellow-800 mb-1">아동발달</h3>
+                <p className="text-xs text-yellow-700">언어·ADHD·증상</p>
+              </div>
+              
+              <div className="card-glass-blue p-6 text-center hover-lift animate-float cursor-pointer" onClick={() => navigate('/assessment')}>
+                <div className="text-4xl mb-3">🤯</div>
+                <h3 className="font-semibold text-blue-800 mb-1">스트레스</h3>
+                <p className="text-xs text-blue-700">직장·자존감·관리</p>
+              </div>
+              
+              <div className="card-glass-green p-6 text-center hover-lift animate-float cursor-pointer" onClick={() => navigate('/assessment')}>
+                <div className="text-4xl mb-3">😰</div>
+                <h3 className="font-semibold text-green-800 mb-1">불안·공황</h3>
+                <p className="text-xs text-green-700">증급지원대처법</p>
+              </div>
+              
+              <div className="card-glass-orange p-6 text-center hover-lift animate-float cursor-pointer" onClick={() => navigate('/assessment')}>
+                <div className="text-4xl mb-3">😔</div>
+                <h3 className="font-semibold text-orange-800 mb-1">우울·감정</h3>
+                <p className="text-xs text-orange-700">기분정리·처방</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="card-glass-purple p-6 text-center hover-lift cursor-pointer" onClick={() => navigate('/assessment')}>
+                <div className="text-4xl mb-3">🎯</div>
+                <h3 className="font-semibold text-purple-800 mb-2">집중력/ADHD</h3>
+                <p className="text-xs text-purple-700">성격·스트레스·교정</p>
+              </div>
+              
+              <div className="card-glass-pink p-6 text-center hover-lift cursor-pointer" onClick={() => navigate('/assessment')}>
+                <div className="text-4xl mb-3">💗</div>
+                <h3 className="font-semibold text-pink-800 mb-2">연애/관계</h3>
+                <p className="text-xs text-pink-700">관계유형·자격감</p>
+              </div>
+              
+              <div className="card-glass p-6 text-center hover-lift cursor-pointer" onClick={() => navigate('/assessment')}>
+                <div className="text-4xl mb-3">💼</div>
+                <h3 className="font-semibold text-gray-800 mb-2">진로/적성</h3>
+                <p className="text-xs text-gray-700">출미·적성·스트레스</p>
+              </div>
+            </div>
+            
+            <div className="text-center mt-8">
+              <Button variant="outline" size="lg" className="bg-white/50 hover:bg-white/70 border-white/30">
+                📋 맞춤 추천 받기
+              </Button>
+            </div>
+          </section>
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="health-analysis" className="w-full">

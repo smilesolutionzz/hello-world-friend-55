@@ -369,26 +369,24 @@ const TestimonialSection = () => {
       {/* 통계 */}
       <div className="grid grid-cols-3 gap-4">
         {stats.map((stat, index) => (
-          <Card key={index} className="text-center">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-center mb-2 text-primary">
-                {stat.icon}
-              </div>
-              <div className="text-2xl font-bold text-primary">{stat.value}</div>
-              <div className="text-sm text-muted-foreground">{stat.label}</div>
-            </CardContent>
-          </Card>
+          <div key={index} className={`card-glass-${index === 0 ? 'blue' : index === 1 ? 'green' : 'purple'} p-4 text-center hover-lift animate-float`}>
+            <div className="flex items-center justify-center mb-2 text-current">
+              {stat.icon}
+            </div>
+            <div className="text-2xl font-bold text-current">{stat.value}</div>
+            <div className="text-sm opacity-80">{stat.label}</div>
+          </div>
         ))}
       </div>
 
       {/* 메인 후기 */}
-      <Card 
-        className="relative overflow-hidden"
+      <div 
+        className="card-glass relative overflow-hidden hover-lift"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <CardContent className="p-6">
+        <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <Button variant="ghost" size="icon" onClick={handlePrevious}>
               <ChevronLeft className="w-4 h-4" />
@@ -466,8 +464,8 @@ const TestimonialSection = () => {
               ))}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

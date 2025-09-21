@@ -196,10 +196,22 @@ const WellnessLifestyle = () => {
   const [loadingSleep, setLoadingSleep] = useState(false);
 
   const handleWorkoutStart = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({ 
+        title: '로그인이 필요합니다', 
+        description: '운동 계획을 받으시려면 먼저 로그인해주세요.',
+        variant: 'destructive'
+      });
+      navigate('/login');
+      return;
+    }
+
     setLoadingWorkout(true);
     try {
       const { data, error } = await supabase.functions.invoke('ai-coach', { 
         body: { 
+          userId: user.id,
           action: 'workout_plan',
           prompt: '25세 직장인을 위한 30분 홈트레이닝 계획을 작성해주세요. 초보자도 쉽게 따라할 수 있는 운동으로 구성해주세요.'
         }
@@ -216,16 +228,31 @@ const WellnessLifestyle = () => {
   };
 
   const handleSleepTips = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({ 
+        title: '로그인이 필요합니다', 
+        description: '수면 개선 가이드를 받으시려면 먼저 로그인해주세요.',
+        variant: 'destructive'
+      });
+      navigate('/login');
+      return;
+    }
+
     setLoadingSleep(true);
     try {
       const { data, error } = await supabase.functions.invoke('ai-health-insights', { 
         body: { 
+          userId: user.id,
           action: 'sleep_improvement',
           prompt: '직장인의 수면의 질 개선을 위한 구체적인 팁과 루틴을 제공해주세요. 스마트폰 사용, 카페인 섭취, 수면환경 등을 포함해주세요.'
         }
       });
       if (error) throw error;
-      setSleepTips(data.response || '수면 개선 팁이 준비되었습니다.');
+      
+      // Edge Function 응답 구조에 맞게 수정
+      const insightContent = data.insights?.[0]?.content || data.response || '맞춤형 수면 개선 가이드가 준비되었습니다.';
+      setSleepTips(insightContent);
       toast({ title: '😴 수면 개선 팁', description: '맞춤형 수면 가이드를 확인해보세요!' });
     } catch (err: any) {
       console.error('수면 팁 실패:', err);

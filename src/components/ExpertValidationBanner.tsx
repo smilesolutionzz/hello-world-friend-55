@@ -165,11 +165,6 @@ const ExpertValidationBanner = () => {
         {/* 신뢰도 강조 메시지 */}
         <div className="mt-8 text-center">
           <div className="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg border border-gray-200">
-            <img 
-              src="/src/assets/aih-logo.png" 
-              alt="AIH Logo" 
-              className="w-5 h-5 object-contain"
-            />
             <Shield className="w-5 h-5 text-green-500" />
             <span className="font-medium text-gray-900">
               모든 리포팅은 의료진 및 전문가가 검토합니다

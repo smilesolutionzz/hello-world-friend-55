@@ -329,11 +329,6 @@ export const UnifiedNavigation = () => {
                   {/* Clean Header */}
                   <div className="border-b border-gray-100 pb-4 mb-4">
                     <div className="flex items-center gap-3">
-                      <img 
-                        src="/src/assets/aih-logo.png" 
-                        alt="AIH Logo" 
-                        className="w-8 h-8 object-contain"
-                      />
                       <span className="text-xl font-semibold text-gray-900">AIHPRO</span>
                     </div>
                   </div>

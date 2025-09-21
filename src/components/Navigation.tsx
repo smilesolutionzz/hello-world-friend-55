@@ -368,14 +368,7 @@ const Navigation = () => {
               <div className="flex flex-col h-full">
                 {/* Header */}
                 <div className="p-6 border-b border-border/50">
-                  <div className="flex items-center gap-3">
-                    <img 
-                      src="/lovable-uploads/ec886850-04ce-4489-b96e-d4ac8f73d95e.png" 
-                      alt="AI Pro Logo" 
-                      className="h-6 w-auto" 
-                    />
-                    <h2 className="text-lg font-bold text-brand-gradient">AIHPRO</h2>
-                  </div>
+                  <h2 className="text-lg font-bold text-brand-gradient">AIHPRO</h2>
                 </div>
                 
                 {/* Navigation Links */}

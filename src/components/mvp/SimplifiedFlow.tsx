@@ -26,7 +26,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
       title: "무료 체험하기",
       subtitle: "AI 상담과 대화해보세요",
       icon: MessageSquare,
-      color: "card-purple",
+      color: "card-glass-pink",
       iconColor: "icon-purple",
       route: "/free-trial",
       description: "AI와 대화하며 심리 상태를 간단히 파악해보세요",
@@ -37,7 +37,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
       title: "3분 심리체크",
       subtitle: "빠른 기본 상태 확인",
       icon: Clock,
-      color: "card-blue", 
+      color: "card-glass-blue", 
       iconColor: "icon-blue",
       route: "/assessment",
       description: "짧은 시간에 현재 마음 상태를 체크해보세요",
@@ -48,7 +48,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
       title: "관찰일지 작성",
       subtitle: "체계적인 행동 기록",
       icon: FileText,
-      color: "card-green",
+      color: "card-glass-green",
       iconColor: "icon-green", 
       route: "/observation",
       description: "일상 속 패턴을 발견하고 개선점을 찾아보세요",
@@ -59,7 +59,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
       title: "전문가 상담",
       subtitle: "실제 전문가와 상담",
       icon: Users,
-      color: "card-orange",
+      color: "card-glass-orange",
       iconColor: "icon-orange",
       route: "/expert-hiring",
       description: "심리 전문가와 직접 상담하며 해결책을 찾아보세요",
@@ -70,7 +70,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
       title: "맞춤 리포트",
       subtitle: "개인화된 종합 분석 보고서",
       icon: Sparkles,
-      color: "card-pink",
+      color: "card-glass-purple",
       iconColor: "icon-pink",
       route: "/dashboard",
       description: "AI가 분석한 개인 맞춤형 심리 리포트를 받아보세요",
@@ -113,7 +113,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
           {guideSteps.map((step, index) => (
             <Card 
               key={step.id}
-              className={`card-modern ${step.color} cursor-pointer group relative overflow-hidden`}
+              className={`${step.color} cursor-pointer group relative overflow-hidden animate-float hover-glow`}
               onClick={() => handleStepClick(step)}
             >
               <CardContent className="p-6">
@@ -154,7 +154,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
           ))}
           
           {/* Special CTA Card */}
-          <Card className="card-modern card-yellow cursor-pointer group relative overflow-hidden md:col-span-2 lg:col-span-1">
+          <Card className="card-glass-yellow cursor-pointer group relative overflow-hidden md:col-span-2 lg:col-span-1 hover-glow">
             <CardContent className="p-6">
               <div className="text-center">
                 <div className="w-12 h-12 bg-white/80 rounded-xl flex items-center justify-center shadow-sm mx-auto mb-4">

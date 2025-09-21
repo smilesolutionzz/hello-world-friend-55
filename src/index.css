@@ -180,158 +180,250 @@ html, body {
     backdrop-filter: blur(20px);
   }
   
-  /* Premium Card Base */
-  .card-modern {
-    @apply relative border border-white/20 rounded-2xl backdrop-blur-sm;
-    background: rgba(255, 255, 255, 0.8);
+  /* Ultra Modern Glass Cards */
+  .card-glass {
+    @apply relative rounded-3xl overflow-hidden;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.06),
-      0 1px 1px rgba(0, 0, 0, 0.05),
-      inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    transition: var(--transition-smooth);
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      0 2px 8px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   
-  .card-modern:hover {
-    transform: translateY(-2px);
+  .card-glass:hover {
+    transform: translateY(-8px) scale(1.02);
     box-shadow: 
-      0 12px 40px rgba(0, 0, 0, 0.08),
-      0 4px 6px rgba(0, 0, 0, 0.05),
+      0 20px 60px rgba(0, 0, 0, 0.15),
+      0 8px 20px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.8);
   }
   
-  /* Modern Color Variants with Blur */
-  .card-purple {
+  /* Modern Colored Glass Cards */
+  .card-glass-pink {
     background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.9), 
-      rgba(249, 246, 255, 0.85)
+      rgba(255, 192, 203, 0.3), 
+      rgba(255, 182, 193, 0.25)
     );
-    border-color: rgba(196, 181, 253, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 192, 203, 0.3);
     position: relative;
   }
   
-  .card-purple::before {
+  .card-glass-pink::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle at 30% 20%, rgba(255, 105, 180, 0.15) 0%, transparent 50%);
     border-radius: inherit;
     pointer-events: none;
   }
   
-  .card-green {
+  .card-glass-blue {
     background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.9), 
-      rgba(240, 253, 244, 0.85)
+      rgba(173, 216, 255, 0.3), 
+      rgba(135, 206, 250, 0.25)
     );
-    border-color: rgba(163, 230, 53, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(173, 216, 255, 0.3);
     position: relative;
   }
   
-  .card-green::before {
+  .card-glass-blue::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle at 30% 20%, rgba(30, 144, 255, 0.15) 0%, transparent 50%);
     border-radius: inherit;
     pointer-events: none;
   }
   
-  .card-blue {
+  .card-glass-green {
     background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.9), 
-      rgba(245, 251, 255, 0.85)
+      rgba(144, 238, 144, 0.3), 
+      rgba(152, 251, 152, 0.25)
     );
-    border-color: rgba(147, 197, 253, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(144, 238, 144, 0.3);
     position: relative;
   }
   
-  .card-blue::before {
+  .card-glass-green::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle at 30% 20%, rgba(50, 205, 50, 0.15) 0%, transparent 50%);
     border-radius: inherit;
     pointer-events: none;
   }
   
-  .card-orange {
+  .card-glass-purple {
     background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.9), 
-      rgba(254, 243, 229, 0.85)
+      rgba(221, 160, 221, 0.3), 
+      rgba(218, 112, 214, 0.25)
     );
-    border-color: rgba(253, 186, 116, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(221, 160, 221, 0.3);
     position: relative;
   }
   
-  .card-orange::before {
+  .card-glass-purple::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle at 30% 20%, rgba(138, 43, 226, 0.15) 0%, transparent 50%);
     border-radius: inherit;
     pointer-events: none;
   }
   
-  .card-pink {
+  .card-glass-orange {
     background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.9), 
-      rgba(252, 231, 243, 0.85)
+      rgba(255, 218, 185, 0.3), 
+      rgba(255, 228, 196, 0.25)
     );
-    border-color: rgba(251, 182, 206, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 218, 185, 0.3);
     position: relative;
   }
   
-  .card-pink::before {
+  .card-glass-orange::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(236, 72, 153, 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle at 30% 20%, rgba(255, 140, 0, 0.15) 0%, transparent 50%);
     border-radius: inherit;
     pointer-events: none;
   }
   
-  .card-yellow {
+  .card-glass-yellow {
     background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.9), 
-      rgba(253, 246, 178, 0.85)
+      rgba(255, 255, 224, 0.3), 
+      rgba(255, 250, 205, 0.25)
     );
-    border-color: rgba(250, 204, 21, 0.3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 224, 0.3);
     position: relative;
   }
   
-  .card-yellow::before {
+  .card-glass-yellow::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle at 30% 20%, rgba(255, 215, 0, 0.15) 0%, transparent 50%);
     border-radius: inherit;
     pointer-events: none;
   }
   
-  /* Modern Button with Glass Effect */
-  .btn-modern {
-    @apply bg-white/80 backdrop-blur-md border border-white/30 text-gray-700 font-medium px-6 py-3 rounded-xl;
+  /* Modern Button with Ultra Glass Effect */
+  .btn-glass {
+    @apply relative rounded-2xl overflow-hidden font-medium px-8 py-4 text-white;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.2), 
+      rgba(255, 255, 255, 0.1)
+    );
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 
-      0 4px 6px rgba(0, 0, 0, 0.05),
-      inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    transition: var(--transition-smooth);
+      0 4px 16px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   
-  .btn-modern:hover {
-    @apply bg-white/90;
-    transform: translateY(-1px);
+  .btn-glass:hover {
+    transform: translateY(-2px) scale(1.05);
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.3), 
+      rgba(255, 255, 255, 0.15)
+    );
     box-shadow: 
-      0 8px 15px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      0 8px 25px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
   }
   
-  /* Icon Colors */
-  .icon-purple { color: rgb(124 58 237); }
-  .icon-green { color: rgb(34 197 94); }
-  .icon-blue { color: rgb(59 130 246); }
-  .icon-orange { color: rgb(249 115 22); }
-  .icon-pink { color: rgb(236 72 153); }
-  .icon-yellow { color: rgb(202 138 4); }
+  .btn-glass::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+  }
+  
+  .btn-glass:hover::before {
+    left: 100%;
+  }
+  
+  /* Interactive Hover Effects */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-8px) scale(1.02);
+  }
+  
+  .hover-glow {
+    transition: all 0.3s ease;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  }
+  
+  /* Floating Animation for Cards */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-float:nth-child(2) {
+    animation-delay: 1s;
+  }
+  
+  .animate-float:nth-child(3) {
+    animation-delay: 2s;
+  }
+  
+  /* Typography Enhancements */
+  .text-glow {
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+  
+  .text-gradient-modern {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Icon Colors with Glow */
+  .icon-purple { 
+    color: rgb(124 58 237);
+    filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.3));
+  }
+  .icon-green { 
+    color: rgb(34 197 94);
+    filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.3));
+  }
+  .icon-blue { 
+    color: rgb(59 130 246);
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
+  }
+  .icon-orange { 
+    color: rgb(249 115 22);
+    filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.3));
+  }
+  .icon-pink { 
+    color: rgb(236 72 153);
+    filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.3));
+  }
+  .icon-yellow { 
+    color: rgb(202 138 4);
+    filter: drop-shadow(0 0 8px rgba(202, 138, 4, 0.3));
+  }
   
   /* Text Colors */
   .text-purple { color: rgb(124 58 237); }

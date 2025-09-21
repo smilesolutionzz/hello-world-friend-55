@@ -103,14 +103,33 @@ const Dashboard = () => {
   useEffect(() => {
     checkAuth();
     loadDashboardData();
+    checkOnboardingStatus();
+  }, []);
+
+  const checkOnboardingStatus = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // 사용자별 고유한 localStorage 키 사용
+    const userOnboardingKey = `hasSeenOnboarding_${user.id}`;
+    const hasSeenOnboardingStorage = localStorage.getItem(userOnboardingKey);
     
-    // Check if user has seen onboarding
-    const hasSeenOnboardingStorage = localStorage.getItem('hasSeenOnboarding');
-    if (!hasSeenOnboardingStorage) {
+    // 사용자 프로필 생성일 확인하여 신규 사용자인지 판단
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('created_at')
+      .eq('user_id', user.id)
+      .single();
+
+    // 프로필이 최근 24시간 내에 생성되었고, 온보딩을 본 적이 없는 경우에만 표시
+    const isNewUser = profile && new Date().getTime() - new Date(profile.created_at).getTime() < 24 * 60 * 60 * 1000;
+    
+    if (isNewUser && !hasSeenOnboardingStorage) {
       setShowOnboarding(true);
     }
+    
     setHasSeenOnboarding(!!hasSeenOnboardingStorage);
-  }, []);
+  };
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -468,10 +487,21 @@ const Dashboard = () => {
     });
   };
 
-  const handleOnboardingComplete = () => {
+  const handleOnboardingComplete = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // 사용자별 고유한 localStorage 키로 온보딩 완료 저장
+    const userOnboardingKey = `hasSeenOnboarding_${user.id}`;
+    localStorage.setItem(userOnboardingKey, 'true');
+    localStorage.setItem(`onboardingCompletedAt_${user.id}`, new Date().toISOString());
+    
+    // 전역 키도 함께 저장 (기존 호환성)
     localStorage.setItem('hasSeenOnboarding', 'true');
+    
     setHasSeenOnboarding(true);
     setShowOnboarding(false);
+    setOnboardingCompleted(true);
     toast({
       title: "환영합니다! 🎉",
       description: "AI 하이라이트프로와 함께 가족의 심리 건강을 관리해보세요.",

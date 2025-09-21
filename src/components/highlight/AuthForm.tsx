@@ -139,8 +139,11 @@ export const AuthForm = () => {
           title: "회원가입 완료", 
           description: `환영합니다! 15토큰이 지급되었습니다. ${bonusMessage}`,
         });
-        // 신규 가입자에게 온보딩 표시
-        setShowOnboarding(true);
+        // 신규 가입자에게만 온보딩 표시 (한 번만)
+        const userOnboardingKey = `hasSeenOnboarding_${data.user?.id}`;
+        if (!localStorage.getItem(userOnboardingKey)) {
+          setShowOnboarding(true);
+        }
         // 추천 코드 localStorage에서 제거
         localStorage.removeItem('referralCode');
       }
@@ -474,9 +477,16 @@ export const AuthForm = () => {
       <OnboardingOverlay
         isOpen={showOnboarding}
         onClose={() => setShowOnboarding(false)}
-        onComplete={() => {
+        onComplete={async () => {
+          // 사용자별 온보딩 완료 상태 저장
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const userOnboardingKey = `hasSeenOnboarding_${user.id}`;
+            localStorage.setItem(userOnboardingKey, 'true');
+            localStorage.setItem('hasSeenOnboarding', 'true');
+          }
           setShowOnboarding(false);
-          navigate('/');
+          navigate('/dashboard');
         }}
       />
     </>

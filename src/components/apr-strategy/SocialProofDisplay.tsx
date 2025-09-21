@@ -156,8 +156,8 @@ export const SocialProofDisplay: React.FC = () => {
             {stats?.recentActivity.map((activity, index) => (
               <div key={index} className="flex items-center gap-3 text-xs lg:text-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-muted-foreground flex-1">{activity}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-foreground flex-1">{activity}</span>
+                <span className="text-xs text-primary">
                   방금 전
                 </span>
               </div>

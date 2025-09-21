@@ -32,6 +32,10 @@ import { PlatformGuide } from '@/components/onboarding/PlatformGuide';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import SimplifiedFlow from '@/components/mvp/SimplifiedFlow';
 import QuickOnboarding from '@/components/mvp/QuickOnboarding';
+import { PersonalizationEngine } from '@/components/apr-strategy/PersonalizationEngine';
+import { SocialProofDisplay } from '@/components/apr-strategy/SocialProofDisplay';
+import { RealTimeTracking } from '@/components/apr-strategy/RealTimeTracking';
+import { ViralMechanics } from '@/components/apr-strategy/ViralMechanics';
 
 const Index = () => {
   console.log('🏠 Index.tsx: Index page component rendering...');
@@ -154,6 +158,13 @@ const Index = () => {
             <HeroSection />
           </div>
 
+          {/* APR 전략: 소셜 증명 디스플레이 - 실시간 통계로 FOMO 유발 */}
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.03s' }}>
+            <div className="container mx-auto px-4 py-8">
+              <SocialProofDisplay />
+            </div>
+          </div>
+
           {/* MVP 단순화된 플로우 */}
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.05s' }}>
             <SimplifiedFlow onStepComplete={(step) => console.log('Step completed:', step)} />
@@ -174,10 +185,28 @@ const Index = () => {
             <TechBadgeShowcase />
           </div>
           
+          {/* APR 전략: 개인화 엔진 - 비가역성 경험 제공 */}
+          {user && (
+            <div className="animate-fade-in w-full" style={{ animationDelay: '0.35s' }}>
+              <div className="container mx-auto px-4 py-8">
+                <PersonalizationEngine />
+              </div>
+            </div>
+          )}
+          
           {/* 보안 및 신뢰성 섹션 */}
           <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
             <SecurityTrustIndicators />
           </div>
+          
+          {/* APR 전략: 실시간 추적 및 긴급성 */}
+          {user && (
+            <div className="animate-fade-in w-full" style={{ animationDelay: '0.45s' }}>
+              <div className="container mx-auto px-4 py-8">
+                <RealTimeTracking />
+              </div>
+            </div>
+          )}
           
           {/* 실제 사례 및 후기 */}
           <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.6s' }}>
@@ -193,7 +222,15 @@ const Index = () => {
           <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.7s' }}>
             <CommunityPlatform />
           </div>
-          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.75s' }}>
+          
+          {/* APR 전략: 바이럴 메커니즘 */}
+          <div className="animate-fade-in w-full" style={{ animationDelay: '0.75s' }}>
+            <div className="container mx-auto px-4 py-8">
+              <ViralMechanics />
+            </div>
+          </div>
+          
+          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.77s' }}>
             <ReferralWidget />
             <ReferralCodeInput />
           </div>

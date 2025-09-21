@@ -55,6 +55,9 @@ import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { WeeklyInsights } from "@/components/dashboard/WeeklyInsights";
 import LifeCareHub from "@/components/LifeCareHub";
+import { PersonalizationEngine } from '@/components/apr-strategy/PersonalizationEngine';
+import { RealTimeTracking } from '@/components/apr-strategy/RealTimeTracking';
+import { ViralMechanics } from '@/components/apr-strategy/ViralMechanics';
 
 interface Profile {
   id: string;
@@ -1049,11 +1052,32 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="lifecare">
-            <LifeCareHub />
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">이주의 통합 케어</h3>
+              <LifeCareHub />
+            </Card>
+            
+            {/* APR 전략: 개인화 엔진 추가 */}
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">나만의 케어 플랜</h3>
+              <PersonalizationEngine />
+            </Card>
+            
+            {/* APR 전략: 실시간 추적 추가 */}
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4">실시간 진행 상황</h3>
+              <RealTimeTracking />
+            </Card>
           </TabsContent>
 
           <TabsContent value="team">
             <TeamSettings />
+            
+            {/* APR 전략: 바이럴 메커니즘을 팀 설정에 추가 */}
+            <Card className="p-6 mt-6">
+              <h3 className="text-lg font-semibold mb-4">팀 공유 & 확산</h3>
+              <ViralMechanics />
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

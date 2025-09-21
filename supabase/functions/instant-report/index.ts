@@ -1,5 +1,16 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.55.0';
+
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const supabaseUrl = Deno.env.get('SUPABASE_URL');
+const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+if (!openAIApiKey) {
+  throw new Error('OPENAI_API_KEY is required');
+}
+
+const supabase = createClient(supabaseUrl!, supabaseServiceRoleKey!);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -7,216 +18,202 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // CORS preflight 처리
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('🚀 즉시 리포팅 요청 수신');
-    
-    // 환경변수 직접 확인
-    const apiKey = Deno.env.get('OPENAI_API_KEY');
-    console.log('🔑 API 키 상태:', apiKey ? `설정됨 (길이: ${apiKey.length})` : '설정되지 않음');
-    
-    // 요청 본문 파싱
-    const { message } = await req.json();
-    console.log('📝 메시지 길이:', message?.length || 0);
-
-    // API 키 체크
-    if (!apiKey) {
-      console.error('❌ OpenAI API 키가 없습니다');
-      return new Response(JSON.stringify({
-        success: false,
-        error: 'API key not found',
-        report: '🔍 **설정 오류**\n\nOpenAI API 키가 설정되지 않았습니다.\n관리자에게 문의해주세요.',
-        riskLevel: 'medium',
-        needsExpertConsultation: true,
-        timestamp: new Date().toISOString()
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      });
+    // Authenticate user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('Authorization header is required');
     }
 
-    // 메시지 검증
-    if (!message || message.trim().length < 10) {
-      console.error('❌ 메시지가 너무 짧습니다');
-      return new Response(JSON.stringify({
-        success: false,
-        error: 'Message too short',
-        report: '입력한 내용이 너무 짧습니다. 더 자세히 작성해주세요.',
-        riskLevel: 'low',
-        needsExpertConsultation: false,
-        timestamp: new Date().toISOString()
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      });
-    }
-
-    console.log('🤖 OpenAI API 호출 시작');
-
-    // 공통 메시지 구성
-    const messages = [
-      {
-        role: 'system',
-        content: `당신은 육아 및 발달 전문 상담가입니다. 
-부모의 고민을 듣고 따뜻하고 전문적인 조언을 제공하세요.
-항상 "참고용"임을 명시하고, 필요시 전문가 상담을 권하세요.`
-      },
-      {
-        role: 'user',
-        content: `다음 육아 고민에 대해 전문적이고 따뜻한 조언을 해주세요:
-
-"${message}"
-
-다음 형식으로 답변해주세요:
-
-🔍 **상황 분석**
-현재 상황을 간단히 정리해주세요.
-
-💡 **전문가 관점**
-발달심리 전문가 관점에서 해석해주세요.
-
-🎯 **실천 조언**
-부모가 바로 실천할 수 있는 구체적인 방법들을 제시해주세요.
-
-📚 **참고 자료**
-도움이 될 만한 정보나 활동을 추천해주세요.
-
-💝 **격려의 말**
-따뜻한 격려와 지지의 메시지를 전해주세요.
-
-⚠️ 이는 참고용 정보이며 의학적 진단이 아닙니다. 필요시 전문가 상담을 받으시기 바랍니다.`
-      }
-    ];
-
-    const timeoutMs = 10_000;
-
-    // OpenAI 호출 유틸 (신형 모델 vs 레거시 모델 파라미터 차이 처리)
-    const callOpenAI = async (model: string, legacyParams = false) => {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort('timeout'), timeoutMs);
-      try {
-        const body = legacyParams
-          ? { model, messages, max_tokens: 800 } // gpt-4o(-mini) 등 레거시 파라미터
-          : { model, messages, max_completion_tokens: 1000 }; // gpt-4.1+ 파라미터
-
-        const res = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-          signal: controller.signal,
-        });
-
-        console.log('📡 OpenAI 응답 상태:', res.status);
-
-        if (!res.ok) {
-          const errorText = await res.text().catch(() => '');
-          console.error('❌ OpenAI API 오류:', errorText);
-          return { ok: false as const, report: undefined };
-        }
-
-        const data = await res.json();
-        const report = data?.choices?.[0]?.message?.content as string | undefined;
-        return { ok: Boolean(report) as const, report };
-      } catch (err) {
-        console.error('⚠️ OpenAI 호출 예외:', err);
-        return { ok: false as const, report: undefined };
-      } finally {
-        clearTimeout(timer);
-      }
-    };
-
-    // 1차: 안정 모델(gpt-4.1)
-    console.log('🧪 1차 시도: gpt-4.1-2025-04-14');
-    let result = await callOpenAI('gpt-4.1-2025-04-14', false);
-
-    // 2차: 같은 모델로 1회 재시도
-    if (!result.ok) {
-      console.log('🔁 재시도: gpt-4.1-2025-04-14');
-      result = await callOpenAI('gpt-4.1-2025-04-14', false);
-    }
-
-    // 3차: 폴백(gpt-4o-mini, 레거시 파라미터 사용)
-    if (!result.ok) {
-      console.log('🛟 폴백 시도: gpt-4o-mini');
-      result = await callOpenAI('gpt-4o-mini', true);
-    }
-
-    if (!result.ok || !result.report) {
-      console.error('❌ 빈 응답 받음 또는 모든 시도 실패 - 템플릿 폴백 적용');
-
-      // 템플릿 기반 폴백 리포트 생성 (OpenAI 실패 시에도 사용자 경험 보장)
-      const fallbackReport = `🔍 **상황 분석**\n${message.slice(0, 200)}\n\n` +
-        `💡 **전문가 관점**\n` +
-        `- 스트레스 요인을 줄이는 환경 조정이 우선입니다.\n` +
-        `- 최근 변화(수면, 식사, 학교/가정 사건)를 점검하세요.\n` +
-        `- 반복되는 행동은 신호일 수 있으니 감정 라벨링으로 의미를 파악해 보세요.\n\n` +
-        `🎯 **실천 조언**\n` +
-        `1) 하루 1회 규칙적 루틴(수면/식사/화장실/놀이) 세우기\n` +
-        `2) 공감 대화 스크립트: "+[감정 요약] 그래서 [행동 제안] 해보자"\n` +
-        `3) 1주일 체크리스트(빈도/강도/지속시간)로 변화를 기록하기\n\n` +
-        `📚 **참고 자료**\n` +
-        `- 발달 단계별 감정 코칭 자료\n` +
-        `- 학교/지역센터 상담 연계 가이드\n\n` +
-        `💝 **격려의 말**\n` +
-        `지금처럼 구체적으로 상황을 기록하고 도움을 요청하는 태도는 큰 힘입니다. 작은 변화부터 차근히 시작해도 충분합니다.`;
-
-      // 위험 키워드 체크 (폴백에도 동일 적용)
-      const riskKeywords = ['자살', '자해', '죽고싶다', '극심한', '심각한'];
-      const hasRisk = riskKeywords.some(keyword => message.toLowerCase().includes(keyword));
-
-      return new Response(JSON.stringify({
-        success: true,
-        report: fallbackReport,
-        riskLevel: hasRisk ? 'high' : 'low',
-        needsExpertConsultation: hasRisk || message.length > 200,
-        timestamp: new Date().toISOString()
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      });
-    }
-
-    const report = result.report;
-
-    console.log('✅ AI 분석 성공');
-
-    // 위험 키워드 체크
-    const riskKeywords = ['자살', '자해', '죽고싶다', '극심한', '심각한'];
-    const hasRisk = riskKeywords.some(keyword => 
-      message.toLowerCase().includes(keyword) || 
-      report.toLowerCase().includes(keyword)
+    const { data: { user }, error: authError } = await supabase.auth.getUser(
+      authHeader.replace('Bearer ', '')
     );
 
-    return new Response(JSON.stringify({
-      success: true,
-      report: report,
-      riskLevel: hasRisk ? 'high' : 'low',
-      needsExpertConsultation: hasRisk || message.length > 200,
-      timestamp: new Date().toISOString()
-    }), {
+    if (authError || !user) {
+      throw new Error('Authentication failed');
+    }
+
+    // Deduct tokens (5 tokens for instant report)
+    const { data: userTokens, error: tokenError } = await supabase
+      .from('user_tokens')
+      .select('current_tokens')
+      .eq('user_id', user.id)
+      .single();
+
+    if (tokenError || !userTokens) {
+      throw new Error('Failed to check user tokens');
+    }
+
+    if (userTokens.current_tokens < 5) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Insufficient tokens. You need 5 tokens for instant report.',
+          requiredTokens: 5,
+          currentTokens: userTokens.current_tokens
+        }),
+        { 
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+    // Deduct tokens
+    const { error: deductError } = await supabase
+      .from('user_tokens')
+      .update({ current_tokens: userTokens.current_tokens - 5 })
+      .eq('user_id', user.id);
+
+    if (deductError) {
+      throw new Error('Failed to deduct tokens');
+    }
+
+    const { message } = await req.json();
+
+    if (!message || message.length < 30) {
+      throw new Error('Message must be at least 30 characters long');
+    }
+
+    console.log('Processing instant report for user:', user.id);
+    console.log('Message length:', message.length);
+
+    // Enhanced AI analysis prompt
+    const systemPrompt = `당신은 정신건강 전문가이자 심리상담사입니다. 사용자의 상황을 깊이 있게 분석하고 따뜻하고 전문적인 조언을 제공해야 합니다.
+
+분석 지침:
+1. 공감과 이해: 사용자의 감정을 충분히 이해하고 공감 표현
+2. 전문적 관점: 심리학적, 의학적 관점에서의 정확한 정보 제공
+3. 실질적 조언: 구체적이고 실행 가능한 해결방안 제시
+4. 희망과 격려: 긍정적 전망과 격려 메시지 포함
+5. 전문가 연결: 필요시 전문가 상담 권유
+
+응답 구조 (1000자 이상):
+1. 상황 인정 및 공감 (200자)
+2. 전문적 분석 및 설명 (400자)  
+3. 실질적 조언 및 대처방안 (300자)
+4. 희망적 전망 및 격려 (200자)
+5. 추가 지원 안내 (100자)
+
+위험도 평가:
+- low: 일반적인 스트레스, 가벼운 고민
+- medium: 중간 정도의 심리적 어려움, 지속적 관리 필요
+- high: 즉각적인 전문가 개입이 필요한 상황
+
+전문가 상담 필요성:
+- true: 전문가 상담이 권장되는 경우
+- false: 셀프케어로 충분한 경우`;
+
+    const userPrompt = `다음 상황에 대해 전문적이고 따뜻한 분석과 조언을 1000자 이상으로 제공해주세요:
+
+상황: ${message}
+
+JSON 형식으로 응답해주세요:
+{
+  "report": "상세한 분석 및 조언 내용 (1000자 이상)",
+  "riskLevel": "low|medium|high",
+  "needsExpertConsultation": true|false,
+  "timestamp": "${new Date().toISOString()}"
+}`;
+
+    // Call OpenAI API
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 2000,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error('OpenAI API error:', response.status, errorData);
+      throw new Error(`OpenAI API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const analysisContent = data.choices[0].message.content;
+
+    console.log('OpenAI response received:', analysisContent.length, 'characters');
+
+    // Parse JSON response
+    let analysisResult;
+    try {
+      analysisResult = JSON.parse(analysisContent);
+    } catch (parseError) {
+      console.error('Failed to parse JSON, using fallback:', parseError);
+      // Fallback analysis
+      analysisResult = {
+        report: analysisContent || "상황을 분석 중 오류가 발생했습니다. 전문가와 상담하시기를 권장드립니다.",
+        riskLevel: "medium",
+        needsExpertConsultation: true,
+        timestamp: new Date().toISOString()
+      };
+    }
+
+    // Track usage
+    await supabase
+      .from('usage_tracking')
+      .insert({
+        user_id: user.id,
+        feature_type: 'instant_report',
+        usage_date: new Date().toISOString().split('T')[0],
+        count: 1
+      });
+
+    console.log('Analysis completed successfully');
+
+    return new Response(JSON.stringify(analysisResult), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error('💥 예상치 못한 오류:', error);
+    console.error('Error in instant-report function:', error);
     
+    // Provide detailed fallback analysis for common situations
+    const fallbackReport = `죄송합니다. 일시적인 기술적 문제가 발생했습니다. 
+
+**현재 상황에 대해:**
+어려운 상황에 직면하신 것 같아 마음이 무겁습니다. 혼자서 모든 것을 감당하려 하지 마시고, 주변의 도움을 받으시기 바랍니다.
+
+**전문가 상담 권장:**
+- 정신건강위기상담전화: 1577-0199 (24시간)
+- 청소년전화: 1388
+- 생명의전화: 1588-9191
+
+**당장 할 수 있는 것들:**
+1. 깊고 천천히 숨쉬기
+2. 신뢰할 수 있는 사람과 대화하기
+3. 충분한 휴식 취하기
+4. 규칙적인 생활 패턴 유지하기
+
+**기억해주세요:**
+지금의 어려움은 영원하지 않습니다. 적절한 도움과 시간이 지나면 상황은 분명히 나아질 것입니다. 혼자가 아니라는 것을 기억해주세요.
+
+더 정확한 분석을 위해서는 전문가와의 직접 상담을 권장드립니다.`;
+
     return new Response(JSON.stringify({
-      success: false,
-      error: error.message,
-      report: '🔍 **기술적 오류**\n\n예상치 못한 문제가 발생했습니다.\n잠시 후 다시 시도해주세요.',
+      report: fallbackReport,
       riskLevel: 'medium',
       needsExpertConsultation: true,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      error: '일시적 분석 오류'
     }), {
+      status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 200
     });
   }
 });

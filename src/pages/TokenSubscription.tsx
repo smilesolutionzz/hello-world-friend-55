@@ -738,25 +738,6 @@ const TokenSubscription = () => {
                   <p className="text-sm text-muted-foreground">AI 하이라이트 프로 창립자 이수석 드림</p>
                 </div>
                 
-                {/* 창립자 경력사항과 소개 이미지 */}
-                <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="text-center">
-                    <h4 className="text-lg font-bold text-orange-800 mb-3">이수석 대표가 걸어온 길</h4>
-                    <img 
-                      src="/src/assets/founder-detailed-career.png" 
-                      alt="이수석 대표 상세 경력사항" 
-                      className="w-full rounded-xl shadow-lg"
-                    />
-                  </div>
-                  <div className="text-center">
-                    <h4 className="text-lg font-bold text-orange-800 mb-3">AI 하이라이트 프로의 비전</h4>
-                    <img 
-                      src="/src/assets/founder-profile-intro.png" 
-                      alt="이수석 대표 프로필 소개" 
-                      className="w-full rounded-xl shadow-lg"
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           </div>

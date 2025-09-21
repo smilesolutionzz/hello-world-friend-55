@@ -217,7 +217,7 @@ const ChallengesPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-modern">
       <UnifiedNavigation />
       
       <div className="container mx-auto px-4 pt-8 pb-12">

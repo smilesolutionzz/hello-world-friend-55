@@ -56,6 +56,21 @@ html, body {
     --ring: 230 80% 65%;
     --radius: 1rem;
     
+    /* Modern Background System - 부드럽고 현대적인 블러 배경 */
+    --bg-modern-primary: linear-gradient(135deg, 
+      rgba(168, 85, 247, 0.08) 0%, 
+      rgba(59, 130, 246, 0.06) 25%, 
+      rgba(255, 255, 255, 0.95) 50%, 
+      rgba(236, 72, 153, 0.05) 75%, 
+      rgba(16, 185, 129, 0.07) 100%);
+    
+    --bg-modern-secondary: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.9) 0%, 
+      rgba(249, 250, 251, 0.95) 25%, 
+      rgba(243, 244, 246, 0.9) 50%, 
+      rgba(249, 250, 251, 0.95) 75%, 
+      rgba(255, 255, 255, 0.9) 100%);
+    
     /* Premium Card Colors - 고급스러운 파스텔 톤 */
     --card-purple: 255 248 255;
     --card-purple-text: 124 58 237;
@@ -75,6 +90,14 @@ html, body {
     --card-yellow: 254 249 195;
     --card-yellow-text: 202 138 4;
     --card-yellow-border: 250 204 21;
+    
+    /* Modern Blur Effects */
+    --blur-bg-purple: rgba(168, 85, 247, 0.04);
+    --blur-bg-blue: rgba(59, 130, 246, 0.04);
+    --blur-bg-green: rgba(16, 185, 129, 0.04);
+    --blur-bg-pink: rgba(236, 72, 153, 0.04);
+    --blur-bg-orange: rgba(249, 115, 22, 0.04);
+    --blur-bg-yellow: rgba(245, 158, 11, 0.04);
     
     /* Premium Gradients - 미묘하고 우아한 그라데이션 */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
@@ -130,119 +153,176 @@ html, body {
 }
 
 @layer utilities {
+  /* Modern Background Classes */
+  .bg-modern {
+    background: var(--bg-modern-primary);
+    position: relative;
+  }
+  
+  .bg-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 30%),
+      radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.10) 0%, transparent 30%),
+      radial-gradient(circle at 40% 40%, rgba(236, 72, 153, 0.08) 0%, transparent 25%);
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  .bg-modern-simple {
+    background: var(--bg-modern-secondary);
+    backdrop-filter: blur(20px);
+  }
+  
   /* Premium Card Base */
   .card-modern {
     @apply relative border border-white/20 rounded-2xl backdrop-blur-sm;
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: var(--shadow-card);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.06),
+      0 1px 1px rgba(0, 0, 0, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
     transition: var(--transition-smooth);
   }
   
   .card-modern:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-card-hover);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.08),
+      0 4px 6px rgba(0, 0, 0, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
   }
   
-  .card-modern:active {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-card-active);
-  }
-  
-  /* Premium Color Variants */
+  /* Modern Color Variants with Blur */
   .card-purple {
     background: linear-gradient(135deg, 
-      rgba(255, 248, 255, 0.9), 
-      rgba(249, 246, 255, 0.9)
+      rgba(255, 255, 255, 0.9), 
+      rgba(249, 246, 255, 0.85)
     );
     border-color: rgba(196, 181, 253, 0.3);
+    position: relative;
   }
   
-  .card-purple:hover {
-    background: linear-gradient(135deg, 
-      rgba(255, 248, 255, 0.95), 
-      rgba(249, 246, 255, 0.95)
-    );
-    border-color: rgba(196, 181, 253, 0.4);
+  .card-purple::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
+    border-radius: inherit;
+    pointer-events: none;
   }
   
   .card-green {
     background: linear-gradient(135deg, 
-      rgba(247, 254, 231, 0.9), 
-      rgba(240, 253, 244, 0.9)
+      rgba(255, 255, 255, 0.9), 
+      rgba(240, 253, 244, 0.85)
     );
     border-color: rgba(163, 230, 53, 0.3);
+    position: relative;
   }
   
-  .card-green:hover {
-    background: linear-gradient(135deg, 
-      rgba(247, 254, 231, 0.95), 
-      rgba(240, 253, 244, 0.95)
-    );
-    border-color: rgba(163, 230, 53, 0.4);
+  .card-green::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
+    border-radius: inherit;
+    pointer-events: none;
   }
   
   .card-blue {
     background: linear-gradient(135deg, 
-      rgba(239, 246, 255, 0.9), 
-      rgba(245, 251, 255, 0.9)
+      rgba(255, 255, 255, 0.9), 
+      rgba(245, 251, 255, 0.85)
     );
     border-color: rgba(147, 197, 253, 0.3);
+    position: relative;
   }
   
-  .card-blue:hover {
-    background: linear-gradient(135deg, 
-      rgba(239, 246, 255, 0.95), 
-      rgba(245, 251, 255, 0.95)
-    );
-    border-color: rgba(147, 197, 253, 0.4);
+  .card-blue::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+    border-radius: inherit;
+    pointer-events: none;
   }
   
   .card-orange {
     background: linear-gradient(135deg, 
-      rgba(255, 247, 237, 0.9), 
-      rgba(254, 243, 229, 0.9)
+      rgba(255, 255, 255, 0.9), 
+      rgba(254, 243, 229, 0.85)
     );
     border-color: rgba(253, 186, 116, 0.3);
+    position: relative;
   }
   
-  .card-orange:hover {
-    background: linear-gradient(135deg, 
-      rgba(255, 247, 237, 0.95), 
-      rgba(254, 243, 229, 0.95)
-    );
-    border-color: rgba(253, 186, 116, 0.4);
+  .card-orange::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.06) 0%, transparent 70%);
+    border-radius: inherit;
+    pointer-events: none;
   }
   
   .card-pink {
     background: linear-gradient(135deg, 
-      rgba(253, 242, 248, 0.9), 
-      rgba(252, 231, 243, 0.9)
+      rgba(255, 255, 255, 0.9), 
+      rgba(252, 231, 243, 0.85)
     );
     border-color: rgba(251, 182, 206, 0.3);
+    position: relative;
   }
   
-  .card-pink:hover {
-    background: linear-gradient(135deg, 
-      rgba(253, 242, 248, 0.95), 
-      rgba(252, 231, 243, 0.95)
-    );
-    border-color: rgba(251, 182, 206, 0.4);
+  .card-pink::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(236, 72, 153, 0.06) 0%, transparent 70%);
+    border-radius: inherit;
+    pointer-events: none;
   }
   
   .card-yellow {
     background: linear-gradient(135deg, 
-      rgba(254, 249, 195, 0.9), 
-      rgba(253, 246, 178, 0.9)
+      rgba(255, 255, 255, 0.9), 
+      rgba(253, 246, 178, 0.85)
     );
     border-color: rgba(250, 204, 21, 0.3);
+    position: relative;
   }
   
-  .card-yellow:hover {
-    background: linear-gradient(135deg, 
-      rgba(254, 249, 195, 0.95), 
-      rgba(253, 246, 178, 0.95)
-    );
-    border-color: rgba(250, 204, 21, 0.4);
+  .card-yellow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.06) 0%, transparent 70%);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  
+  /* Modern Button with Glass Effect */
+  .btn-modern {
+    @apply bg-white/80 backdrop-blur-md border border-white/30 text-gray-700 font-medium px-6 py-3 rounded-xl;
+    box-shadow: 
+      0 4px 6px rgba(0, 0, 0, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transition: var(--transition-smooth);
+  }
+  
+  .btn-modern:hover {
+    @apply bg-white/90;
+    transform: translateY(-1px);
+    box-shadow: 
+      0 8px 15px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
   }
   
   /* Icon Colors */
@@ -260,16 +340,4 @@ html, body {
   .text-orange { color: rgb(249 115 22); }
   .text-pink { color: rgb(236 72 153); }
   .text-yellow { color: rgb(202 138 4); }
-  
-  /* Premium Button */
-  .btn-premium {
-    @apply bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium px-6 py-3 rounded-xl;
-    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.25);
-    transition: var(--transition-smooth);
-  }
-  
-  .btn-premium:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.35);
-  }
 }

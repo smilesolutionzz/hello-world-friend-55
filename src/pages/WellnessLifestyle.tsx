@@ -263,7 +263,7 @@ const WellnessLifestyle = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30">
+    <div className="min-h-screen bg-modern">
       <Helmet>
         <title>라이프스타일 허브 - AI 기반 맞춤형 건강 관리</title>
         <meta name="description" content="AI 기반 개인 맞춤형 라이프 솔루션. 수면, 스트레스, 영양, 운동을 통합 관리하고 장수 건강 플랜을 받아보세요." />

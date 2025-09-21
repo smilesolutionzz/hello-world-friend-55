@@ -591,7 +591,7 @@ const Community = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-modern">
       <div className="container mx-auto px-4 py-8 space-y-6">
         {/* 커뮤니티 헤더 */}
         <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-none shadow-lg">

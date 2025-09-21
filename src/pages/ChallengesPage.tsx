@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { TypingAnimation } from "@/components/ui/typing-animation";
+import { UserLevelDisplay } from "@/components/growth/UserLevelDisplay";
 
 interface Challenge {
   id: string;
@@ -99,11 +100,36 @@ const ChallengesPage = () => {
   };
 
   const loadUserPoints = async () => {
-    // Mock user points
-    setUserPoints(450);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // 실제 성장 포인트 불러오기
+    const { data: growthPoints } = await supabase
+      .from('user_growth_points')
+      .select('story_points, challenge_points, reversal_points, total_points')
+      .eq('user_id', user.id)
+      .single();
+
+    if (growthPoints) {
+      const totalPoints = (growthPoints.story_points || 0) + 
+                         (growthPoints.challenge_points || 0) + 
+                         (growthPoints.reversal_points || 0);
+      setUserPoints(totalPoints);
+    } else {
+      setUserPoints(0);
+    }
   };
 
   const handleJoinChallenge = async (challengeId: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const challenge = challenges.find(c => c.id === challengeId);
+    if (!challenge) return;
+
+    // 챌린지 참가 시 즉시 5점 지급
+    await updateGrowthPoints(user.id, 'challenge', 5);
+
     const updatedChallenges = challenges.map(challenge =>
       challenge.id === challengeId 
         ? { ...challenge, is_joined: true, participants_count: challenge.participants_count + 1 }
@@ -113,8 +139,45 @@ const ChallengesPage = () => {
 
     toast({
       title: "챌린지 참가 완료! 🎉",
-      description: "오늘부터 새로운 도전을 시작해보세요!",
+      description: "챌린지 시작으로 +5점 획득! 매일 완료하면 추가 점수를 얻을 수 있어요!",
     });
+  };
+
+  const updateGrowthPoints = async (userId: string, pointType: 'story' | 'challenge' | 'reversal', points: number) => {
+    try {
+      // 현재 포인트 가져오기
+      const { data: currentPoints } = await supabase
+        .from('user_growth_points')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (currentPoints) {
+        // 기존 데이터 업데이트
+        const updateData: any = { last_activity_date: new Date().toISOString().split('T')[0] };
+        updateData[`${pointType}_points`] = (currentPoints[`${pointType}_points`] || 0) + points;
+
+        await supabase
+          .from('user_growth_points')
+          .update(updateData)
+          .eq('user_id', userId);
+      } else {
+        // 새 데이터 생성
+        const insertData: any = {
+          user_id: userId,
+          story_points: pointType === 'story' ? points : 0,
+          challenge_points: pointType === 'challenge' ? points : 0,
+          reversal_points: pointType === 'reversal' ? points : 0,
+          last_activity_date: new Date().toISOString().split('T')[0]
+        };
+
+        await supabase
+          .from('user_growth_points')
+          .insert(insertData);
+      }
+    } catch (error) {
+      console.error('Failed to update growth points:', error);
+    }
   };
 
   const getCategoryIcon = (category: string) => {
@@ -172,6 +235,18 @@ const ChallengesPage = () => {
             </p>
           </div>
 
+          {/* User Level Display */}
+          <div className="mb-8">
+            <Card className="bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200">
+              <CardHeader>
+                <CardTitle className="text-lg">내 성장 레벨</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <UserLevelDisplay totalPoints={userPoints} />
+              </CardContent>
+            </Card>
+          </div>
+
           {/* User Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
@@ -181,7 +256,7 @@ const ChallengesPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-yellow-700">{userPoints}P</div>
-                <p className="text-xs text-yellow-600">챌린지 완주로 포인트 획득!</p>
+                <p className="text-xs text-yellow-600">활동으로 점수 획득!</p>
               </CardContent>
             </Card>
 

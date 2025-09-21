@@ -60,17 +60,25 @@ const DailyCheckin = () => {
     if (data) {
       let currentStreak = 0;
       const today = new Date();
+      today.setHours(0, 0, 0, 0); // 자정으로 설정
       
-      for (let i = 0; i < data.length; i++) {
-        const checkinDate = new Date((data[i] as any).checkin_date);
-        const daysDiff = Math.floor((today.getTime() - checkinDate.getTime()) / (1000 * 60 * 60 * 24));
+      // 연속 체크인 계산 (어제부터 거슬러 올라가며 확인)
+      for (let dayOffset = 0; dayOffset < data.length; dayOffset++) {
+        const expectedDate = new Date(today);
+        expectedDate.setDate(today.getDate() - dayOffset);
         
-        if (daysDiff === i) {
+        const hasCheckinOnDate = data.some(checkin => {
+          const checkinDate = new Date((checkin as any).checkin_date);
+          return checkinDate.toDateString() === expectedDate.toDateString();
+        });
+        
+        if (hasCheckinOnDate) {
           currentStreak++;
         } else {
           break;
         }
       }
+      
       setStreak(currentStreak);
     }
   };
@@ -89,11 +97,14 @@ const DailyCheckin = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    const today = new Date().toISOString().split('T')[0];
+
+    // 체크인 저장
     const { error } = await supabase
       .from('daily_checkins' as any)
       .upsert({
         user_id: user.id,
-        checkin_date: new Date().toISOString().split('T')[0],
+        checkin_date: today,
         mood_score: mood,
         energy_level: energy,
         stress_level: stress,
@@ -106,14 +117,56 @@ const DailyCheckin = () => {
         variant: "destructive",
       });
     } else {
+      // 연속 체크인 일수 다시 계산
+      await loadStreak();
+      
+      // 성장 포인트 업데이트 (체크인 1점 추가)
+      await updateGrowthPoints(user.id, 'story', 1);
+      
       setCheckinComplete(true);
-      setStreak(prev => prev + 1);
       toast({
         title: "체크인 완료! 🎉",
-        description: `${streak + 1}일 연속 체크인 달성!`,
+        description: `${streak + 1}일 연속 체크인 달성! +1점 획득!`,
       });
     }
     setLoading(false);
+  };
+
+  const updateGrowthPoints = async (userId: string, pointType: 'story' | 'challenge' | 'reversal', points: number) => {
+    try {
+      // 현재 포인트 가져오기
+      const { data: currentPoints } = await supabase
+        .from('user_growth_points')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (currentPoints) {
+        // 기존 데이터 업데이트
+        const updateData: any = { last_activity_date: new Date().toISOString().split('T')[0] };
+        updateData[`${pointType}_points`] = (currentPoints[`${pointType}_points`] || 0) + points;
+
+        await supabase
+          .from('user_growth_points')
+          .update(updateData)
+          .eq('user_id', userId);
+      } else {
+        // 새 데이터 생성
+        const insertData: any = {
+          user_id: userId,
+          story_points: pointType === 'story' ? points : 0,
+          challenge_points: pointType === 'challenge' ? points : 0,
+          reversal_points: pointType === 'reversal' ? points : 0,
+          last_activity_date: new Date().toISOString().split('T')[0]
+        };
+
+        await supabase
+          .from('user_growth_points')
+          .insert(insertData);
+      }
+    } catch (error) {
+      console.error('Failed to update growth points:', error);
+    }
   };
 
   return (

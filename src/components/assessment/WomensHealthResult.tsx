@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Heart, MapPin, Phone, Clock, Star, ChevronRight, Activity, TrendingUp, Shield } from 'lucide-react';
+import { Heart, MapPin, Phone, Clock, Star, ChevronRight, Activity, TrendingUp, Shield, Brain, Sparkles, Loader2 } from 'lucide-react';
 import { PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import VoiceFeature from '@/components/voice/VoiceFeature';
+import SocialShareButtons from '@/components/social/SocialShareButtons';
 
 interface WomensHealthResultProps {
   result: any;
@@ -50,6 +54,34 @@ const constitutionData = {
   }
 };
 
+// 여성건강 체질별 상세 정보
+const womensHealthInfo = {
+  taeyang: {
+    healthConcerns: ['갱년기 조기 도래', '월경과다', '안면홍조', '심장 두근거림'],
+    hormoneTips: ['대두 이소플라본 섭취', '스트레스 관리', '충분한 수면'],
+    lifestyle: ['규칙적인 운동', '명상과 요가', '과로 피하기'],
+    supplements: ['홍삼', '당귀', '숙지황', '백작약']
+  },
+  taeeum: {
+    healthConcerns: ['자궁내막증', '다낭성난소증후군', '체중증가', '부종'],
+    hormoneTips: ['저칼로리 식단', '규칙적인 운동', '수분 섭취 증가'],
+    lifestyle: ['꾸준한 유산소 운동', '식이조절', '스트레스 관리'],
+    supplements: ['천궁', '향부자', '오약', '진피']
+  },
+  soyang: {
+    healthConcerns: ['생리불순', '조기폐경', '불면증', '예민함'],
+    hormoneTips: ['시원한 성질의 음식', '충분한 수분', '열성 음식 피하기'],
+    lifestyle: ['적당한 운동', '충분한 휴식', '스트레스 해소'],
+    supplements: ['생지황', '맥문동', '지모', '황백']
+  },
+  soeum: {
+    healthConcerns: ['월경지연', '자궁근종', '손발냉증', '소화불량'],
+    hormoneTips: ['따뜻한 음식 섭취', '몸 따뜻하게 유지', '소화 도움 음식'],
+    lifestyle: ['가벼운 운동', '반신욕', '복부 마사지'],
+    supplements: ['건강', '백출', '감초', '인삼']
+  }
+};
+
 const nearbyClinicsMockData = [
   {
     id: 1,
@@ -90,9 +122,41 @@ const nearbyClinicsMockData = [
 ];
 
 export const WomensHealthResult: React.FC<WomensHealthResultProps> = ({ result, onRestart }) => {
-  const [selectedTab, setSelectedTab] = useState<'analysis' | 'clinics'>('analysis');
+  const [selectedTab, setSelectedTab] = useState<'analysis' | 'clinics' | 'ai-analysis'>('analysis');
+  const [aiAnalysis, setAiAnalysis] = useState<string>('');
+  const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(false);
+  const { toast } = useToast();
   
   const constitution = constitutionData[result.constitution as keyof typeof constitutionData];
+  const womensHealth = womensHealthInfo[result.constitution as keyof typeof womensHealthInfo];
+
+  // AI 분석 생성
+  const generateAIAnalysis = async () => {
+    if (aiAnalysis) return; // 이미 생성된 경우
+    
+    setIsLoadingAnalysis(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('women-health-analysis', {
+        body: { testResult: result }
+      });
+
+      if (error) throw error;
+      setAiAnalysis(data.analysis);
+    } catch (error) {
+      console.error('AI 분석 생성 오류:', error);
+      toast({
+        title: "AI 분석 오류",
+        description: "AI 분석을 생성하는 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoadingAnalysis(false);
+    }
+  };
+
+  useEffect(() => {
+    generateAIAnalysis();
+  }, []);
   
   // 체질 점수 데이터 (파이차트용)
   const pieData = Object.entries(result.constitutionScore).map(([key, value]) => ({
@@ -139,6 +203,14 @@ export const WomensHealthResult: React.FC<WomensHealthResultProps> = ({ result, 
             >
               <Activity className="h-4 w-4 mr-2" />
               체질 분석
+            </Button>
+            <Button
+              variant={selectedTab === 'ai-analysis' ? 'default' : 'ghost'}
+              onClick={() => setSelectedTab('ai-analysis')}
+              className="mr-1"
+            >
+              <Brain className="h-4 w-4 mr-2" />
+              AI 여성건강 분석
             </Button>
             <Button
               variant={selectedTab === 'clinics' ? 'default' : 'ghost'}
@@ -316,7 +388,123 @@ export const WomensHealthResult: React.FC<WomensHealthResultProps> = ({ result, 
                 </CardContent>
               </Card>
             </div>
+
+            {/* 여성건강 특화 정보 추가 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <Card className="border-pink-200">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center">
+                    <Heart className="h-5 w-5 mr-2 text-pink-500" />
+                    여성건강 주의사항
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {womensHealth.healthConcerns.map((concern, index) => (
+                      <div key={index} className="flex items-center">
+                        <div className="w-2 h-2 bg-pink-500 rounded-full mr-2"></div>
+                        <span className="text-sm">{concern}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-purple-200">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center">
+                    <Sparkles className="h-5 w-5 mr-2 text-purple-500" />
+                    호르몬 균형 관리법
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {womensHealth.hormoneTips.map((tip, index) => (
+                      <div key={index} className="flex items-center">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                        <span className="text-sm">{tip}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 음성 기능 추가 */}
+            <div className="mb-8">
+              <VoiceFeature 
+                text={`${constitution.name} 체질 분석 결과입니다. ${constitution.description} 추천 한약재는 ${constitution.herbs.join(', ')}이며, 권장 식단은 ${constitution.diet.join(', ')}입니다.`}
+                title="여성건강 체질분석 결과 음성으로 듣기"
+                type="result"
+              />
+            </div>
+
+            {/* 공유 기능 추가 */}
+            <div className="mb-8">
+              <SocialShareButtons 
+                title={`나는 ${constitution.name} 체질! 여성건강 맞춤 분석 결과`}
+                description="AI가 분석한 나의 체질과 여성건강 관리법을 확인해보세요"
+              />
+            </div>
           </>
+        )}
+
+        {selectedTab === 'ai-analysis' && (
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center mb-4">
+                <Brain className="h-8 w-8 text-purple-500 mr-3" />
+                <h2 className="text-2xl font-bold">AI 전문 여성건강 분석</h2>
+              </div>
+              <p className="text-muted-foreground">당신의 체질을 바탕으로 한 맞춤형 여성건강 케어 가이드</p>
+            </div>
+
+            {isLoadingAnalysis ? (
+              <Card>
+                <CardContent className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-purple-500" />
+                    <p className="text-muted-foreground">AI가 당신의 여성건강을 종합 분석하고 있습니다...</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : aiAnalysis ? (
+              <>
+                <Card className="border-purple-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Sparkles className="h-5 w-5 mr-2 text-purple-500" />
+                      AI 여성건강 전문 분석
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="prose prose-sm max-w-none">
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                        {aiAnalysis}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* AI 분석 음성 기능 */}
+                <VoiceFeature 
+                  text={aiAnalysis}
+                  title="AI 여성건강 분석 음성으로 듣기"
+                  type="result"
+                />
+              </>
+            ) : (
+              <Card>
+                <CardContent className="text-center py-8">
+                  <Brain className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <p className="text-muted-foreground">AI 분석을 불러올 수 없습니다.</p>
+                  <Button onClick={generateAIAnalysis} className="mt-4">
+                    다시 시도
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         )}
 
         {selectedTab === 'clinics' && (

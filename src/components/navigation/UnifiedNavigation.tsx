@@ -149,7 +149,7 @@ export const UnifiedNavigation = () => {
                 onClick={() => navigate('/')}
               >
                 <img 
-                  src="/src/assets/aih-logo.png" 
+                  src="/src/assets/logo.jpg" 
                   alt="AIH Logo" 
                   className="w-8 h-8 object-contain group-hover:scale-105 transition-transform duration-200"
                 />
@@ -315,7 +315,7 @@ export const UnifiedNavigation = () => {
                 onClick={() => navigate('/')}
               >
                 <img 
-                  src="/src/assets/aih-logo.png" 
+                  src="/src/assets/logo.jpg" 
                   alt="AIH Logo" 
                   className="w-7 h-7 object-contain"
                 />

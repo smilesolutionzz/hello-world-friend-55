@@ -90,9 +90,9 @@ const Navigation = () => {
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-3 text-xl sm:text-2xl font-bold cursor-pointer" onClick={() => navigate('/')}>
           <img 
-            src="/lovable-uploads/ec886850-04ce-4489-b96e-d4ac8f73d95e.png" 
+            src="/src/assets/logo.jpg" 
             alt="AI Pro Logo" 
-            className="h-8 w-auto sm:h-10" 
+            className="h-8 w-auto sm:h-10 object-contain" 
           />
           <span className="text-brand-gradient">AIHPRO</span>
         </div>

@@ -971,6 +971,24 @@ const Dashboard = () => {
               </div>
             </div>
 
+            {/* APR 전략: 개인화 엔진 - 메인에서 이동 */}
+            <Card className="p-6 mb-6">
+              <h3 className="text-lg font-semibold mb-4">나만의 심리 프로필 & 맞춤 추천</h3>
+              <PersonalizationEngine />
+            </Card>
+
+            {/* APR 전략: 실시간 추적 - 메인에서 이동 */}
+            <Card className="p-6 mb-6">
+              <h3 className="text-lg font-semibold mb-4">실시간 진행 상황 & 목표 달성</h3>
+              <RealTimeTracking />
+            </Card>
+
+            {/* APR 전략: 바이럴 메커니즘 - 메인에서 이동 */}
+            <Card className="p-6 mb-6">
+              <h3 className="text-lg font-semibold mb-4">공유하고 함께 성장하기</h3>
+              <ViralMechanics />
+            </Card>
+
             {/* User Info Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">

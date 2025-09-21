@@ -264,11 +264,11 @@ const TokenSubscription = () => {
             <div className="grid md:grid-cols-2 gap-4 mt-4 text-sm">
               <div className="bg-white/10 rounded-lg p-3">
                 <div className="font-bold">🪙 토큰팩</div>
-                <div>9,900원/50토큰 → 체험용</div>
+                <div>4,900원/50토큰 → 체험용</div>
               </div>
               <div className="bg-white/10 rounded-lg p-3">
                 <div className="font-bold">💎 구독제</div>
-                <div>19,900원/월 → 무제한 이용</div>
+                <div>9,900원/월 → 무제한 이용</div>
               </div>
             </div>
           </div>
@@ -296,7 +296,7 @@ const TokenSubscription = () => {
         <div className="mt-16 text-center">
           <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">구독 플랜 선택</h2>
           <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-lg mb-4 inline-block animate-pulse">
-            🔥 베타 런칭 특가! 3개월 한정 34% 할인 • 연간구독이 이득!
+            🔥 론칭 기념 특가! 50% 할인 • 선착순 1000명 한정!
           </div>
           <p className="text-lg text-muted-foreground mb-12">토큰으로 체험 후 구독으로 업그레이드하세요!</p>
           
@@ -309,7 +309,7 @@ const TokenSubscription = () => {
                 </div>
                 <h3 className="text-2xl font-bold mb-2 text-blue-800">토큰팩</h3>
                 <p className="text-sm text-muted-foreground mb-3">필요할 때만 사용하세요</p>
-                <div className="text-3xl font-bold text-blue-600 mb-2">₩9,900</div>
+                <div className="text-3xl font-bold text-blue-600 mb-2">₩4,900</div>
                 <p className="text-sm text-muted-foreground">50토큰</p>
               </div>
               <div className="space-y-3 text-left mb-8">
@@ -366,10 +366,10 @@ const TokenSubscription = () => {
                 
                 {/* 할인 가격 표시 */}
                 <div className="mb-3">
-                  <div className="text-lg text-gray-500 line-through">₩29,900</div>
-                  <div className="text-3xl font-bold text-purple-600 mb-1">₩19,900</div>
+                  <div className="text-lg text-gray-500 line-through">₩19,900</div>
+                  <div className="text-3xl font-bold text-purple-600 mb-1">₩9,900</div>
                   <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-bold inline-block">
-                    34% 할인 🔥
+                    50% 할인 🔥
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground">월간 구독</p>
@@ -433,14 +433,14 @@ const TokenSubscription = () => {
                   }}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
                 >
-                  🚀 월간 ₩19,900
+                  🚀 월간 ₩9,900
                 </Button>
                 
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                   <div className="text-center">
                     <div className="text-sm font-bold text-yellow-800 mb-1">🎁 연간 결제 시 추가 할인!</div>
-                    <div className="text-lg font-bold text-yellow-900">₩179,400/년 (월 ₩14,950)</div>
-                    <div className="text-sm text-yellow-700">50% 할인 혜택!</div>
+                    <div className="text-lg font-bold text-yellow-900">₩89,400/년 (월 ₩7,450)</div>
+                    <div className="text-sm text-yellow-700">25% 추가 할인 혜택!</div>
                   </div>
                   <Button 
                     onClick={async () => {
@@ -478,10 +478,10 @@ const TokenSubscription = () => {
                 
                 {/* 할인 가격 표시 */}
                 <div className="mb-3">
-                  <div className="text-lg text-gray-500 line-through">₩59,900</div>
-                  <div className="text-3xl font-bold text-amber-600 mb-1">₩39,900</div>
+                  <div className="text-lg text-gray-500 line-through">₯39,900</div>
+                  <div className="text-3xl font-bold text-amber-600 mb-1">₩19,900</div>
                   <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-bold inline-block">
-                    34% 할인 🔥
+                    50% 할인 🔥
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground">월간 구독</p>
@@ -543,14 +543,14 @@ const TokenSubscription = () => {
                   }}
                   className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
                 >
-                  💎 월간 ₩39,900
+                  💎 월간 ₩19,900
                 </Button>
                 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                   <div className="text-center">
                     <div className="text-sm font-bold text-blue-800 mb-1">🎁 연간 결제 시 추가 할인!</div>
-                    <div className="text-lg font-bold text-blue-900">₩359,400/년 (월 ₩29,950)</div>
-                    <div className="text-sm text-blue-700">50% 할인 혜택!</div>
+                    <div className="text-lg font-bold text-blue-900">₩179,400/년 (월 ₩14,950)</div>
+                    <div className="text-sm text-blue-700">25% 추가 할인 혜택!</div>
                   </div>
                   <Button 
                     onClick={async () => {

@@ -170,7 +170,7 @@ export const UnifiedNavigation = () => {
                 홈
               </Button>
 
-              {/* 건강검사 */}
+              {/* 종합검사 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -179,7 +179,7 @@ export const UnifiedNavigation = () => {
                     className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
                   >
                     <TrendingUp className="w-4 h-4 mr-2" />
-                    건강검사
+                    종합검사
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>

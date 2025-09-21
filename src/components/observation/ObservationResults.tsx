@@ -222,7 +222,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
   ];
 
   const isPremiumUser = subscriptionData?.subscription_status === 'premium';
-  const hasUsagesLeft = !subscriptionData || subscriptionData.usage_count < 3;
+  const hasUsagesLeft = !subscriptionData || subscriptionData.usage_count < 5;
   const canViewAdvanced = isPremiumUser || hasUsagesLeft;
 
   // 연령대 확인
@@ -344,7 +344,7 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
               <Crown className="h-5 w-5 text-amber-600" />
               <div>
                 <p className="font-medium text-amber-800">
-                  무료 체험은 3회까지 요약 제공. 심화 리포트와 PDF는 구독 전환 후 이용 가능합니다.
+                  무료 체험은 5회까지 요약 제공. 심화 리포트와 PDF는 구독 전환 후 이용 가능합니다.
                 </p>
                 <p className="text-sm text-amber-700 mt-1">
                   레이더 차트, 시간 추이 분석, PDF 저장 등의 기능을 이용하세요.

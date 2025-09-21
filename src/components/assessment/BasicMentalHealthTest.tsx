@@ -271,12 +271,48 @@ const BasicMentalHealthTest = () => {
                 </p>
               </div>
 
+              {/* 소셜 공유 섹션 추가 */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4">
+                <div className="text-center space-y-3">
+                  <h4 className="font-bold text-blue-700">🎉 친구들과 함께 해보세요!</h4>
+                  <p className="text-sm text-blue-600">
+                    결과를 공유하고 <span className="font-semibold">무료 토큰 5개</span>를 받아보세요!
+                  </p>
+                  <div className="flex gap-2 justify-center">
+                    <Button 
+                      size="sm" 
+                      className="bg-yellow-400 hover:bg-yellow-500 text-gray-800"
+                      onClick={() => {
+                        const text = `나의 심리상태 분석 결과: ${result.level}\n\n${result.description}\n\n👆 너도 무료로 체험해봐!\n\nhttps://mindgrowth.co.kr/free-trial`;
+                        if (navigator.share) {
+                          navigator.share({ title: '심리상태 분석 결과', text });
+                        } else {
+                          navigator.clipboard.writeText(text);
+                        }
+                      }}
+                    >
+                      카톡 공유하기
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => {
+                        const text = `나의 심리상태 분석 결과: ${result.level}\n\n${result.description}\n\n👆 너도 무료로 체험해봐! https://mindgrowth.co.kr/free-trial`;
+                        navigator.clipboard.writeText(text);
+                      }}
+                    >
+                      링크 복사
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button onClick={() => navigate('/free-trial')} variant="outline">
                   다른 무료 테스트 해보기
                 </Button>
                 <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
-                  회원가입하고 AI 전문가 분석받기
+                  월 9,900원으로 AI 전문가 분석받기
                 </Button>
               </div>
             </CardContent>

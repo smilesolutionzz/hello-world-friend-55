@@ -123,11 +123,11 @@ const TimelineTab = ({ familyId, members }: TimelineTabProps) => {
       family_id: familyId,
       type: "PAYMENT",
       title: "프리미엄 구독 결제 완료",
-      summary: "월 구독료 29,900원이 정상적으로 결제되었습니다.",
+      summary: "월 구독료 19,900원이 정상적으로 결제되었습니다.",
       tags: ["결제", "프리미엄"],
       files: [],
       actor: { role: "system", name: "결제 시스템" },
-      meta: { amount: 29900, method: "카드" },
+      meta: { amount: 19900, method: "카드" },
       created_at: new Date(Date.now() - 345600000).toISOString(),
       updated_at: new Date(Date.now() - 345600000).toISOString()
     }

@@ -15,6 +15,27 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import DevelopmentalTrackingDashboard from "@/components/development/DevelopmentalTrackingDashboard";
 
+// 라이프허브 인터페이스 추가
+interface LifeInsight {
+  id: string;
+  insight_type: string;
+  content: string;
+  confidence_score: number;
+  created_at: string;
+}
+
+interface PersonalizedChallenge {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: string;
+  duration_days: number;
+  progress_metrics: any;
+  start_date: string;
+  end_date: string;
+}
+
 interface Challenge {
   id: string;
   title: string;
@@ -56,6 +77,12 @@ const LifeCareHub = () => {
     streak: 0
   });
   const [trackerLoading, setTrackerLoading] = useState(true);
+
+  // 라이프허브 통합 데이터 상태
+  const [lifeInsights, setLifeInsights] = useState<LifeInsight[]>([]);
+  const [personalizedChallenges, setPersonalizedChallenges] = useState<PersonalizedChallenge[]>([]);
+  const [developmentalData, setDevelopmentalData] = useState<any[]>([]);
+  const [lifeDataLoading, setLifeDataLoading] = useState(true);
 
   const moodEmojis = ["😢", "😕", "😐", "😊", "😁"];
   const energyEmojis = ["🔋", "⚡", "🔥", "💪", "🚀"];
@@ -110,6 +137,7 @@ const LifeCareHub = () => {
     loadChallenges();
     loadUserPoints();
     loadGrowthData();
+    loadLifeHubData(); // 라이프허브 통합 데이터 로드
   }, []);
 
   // Daily Check-in Functions
@@ -252,7 +280,7 @@ const LifeCareHub = () => {
         mood: (item as any).mood_score,
         energy: (item as any).energy_level,
         stress: 6 - (item as any).stress_level,
-        wellness: Math.round(((item as any).mood_score + (item as any).energy_level + (6 - (item as any).stress_level)) / 3)
+        life: Math.round(((item as any).mood_score + (item as any).energy_level + (6 - (item as any).stress_level)) / 3)
       }));
 
       setWeeklyData(processedData);
@@ -272,6 +300,58 @@ const LifeCareHub = () => {
     }
 
     setTrackerLoading(false);
+  };
+
+  // 라이프허브 통합 데이터 로드 함수
+  const loadLifeHubData = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setLifeDataLoading(false);
+      return;
+    }
+
+    try {
+      // AI 건강 인사이트 로드
+      const { data: insights } = await supabase
+        .from('ai_health_insights')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (insights) {
+        setLifeInsights(insights);
+      }
+
+      // 개인화된 챌린지 로드
+      const { data: challenges } = await supabase
+        .from('personalized_challenges')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (challenges) {
+        setPersonalizedChallenges(challenges);
+      }
+
+      // 발달 검사 결과 로드
+      const { data: developmental } = await supabase
+        .from('developmental_screening_results')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (developmental) {
+        setDevelopmentalData(developmental);
+      }
+
+    } catch (error) {
+      console.error('라이프허브 데이터 로드 오류:', error);
+    } finally {
+      setLifeDataLoading(false);
+    }
   };
 
   // Helper Functions
@@ -304,15 +384,15 @@ const LifeCareHub = () => {
     }
   };
 
-  const getWellnessLevel = (score: number) => {
+  const getLifeLevel = (score: number) => {
     if (score >= 4.5) return { label: "훌륭함", color: "text-green-600", bg: "bg-green-100" };
     if (score >= 3.5) return { label: "좋음", color: "text-blue-600", bg: "bg-blue-100" };
     if (score >= 2.5) return { label: "보통", color: "text-yellow-600", bg: "bg-yellow-100" };
     return { label: "관리필요", color: "text-red-600", bg: "bg-red-100" };
   };
 
-  const overallWellness = (monthlyStats.avgMood + monthlyStats.avgEnergy + (6 - monthlyStats.avgStress)) / 3;
-  const wellnessStatus = getWellnessLevel(overallWellness);
+  const overallLife = (monthlyStats.avgMood + monthlyStats.avgEnergy + (6 - monthlyStats.avgStress)) / 3;
+  const lifeStatus = getLifeLevel(overallLife);
 
   return (
     <div className="space-y-6">
@@ -398,7 +478,7 @@ const LifeCareHub = () => {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="checkin" className="flex items-center gap-2">
             <Heart className="w-4 h-4" />
             매일체크
@@ -414,6 +494,10 @@ const LifeCareHub = () => {
           <TabsTrigger value="tracker" className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4" />
             성장추적
+          </TabsTrigger>
+          <TabsTrigger value="life-insights" className="flex items-center gap-2">
+            <Lightbulb className="w-4 h-4" />
+            라이프 인사이트
           </TabsTrigger>
         </TabsList>
 
@@ -726,20 +810,20 @@ const LifeCareHub = () => {
             <CardHeader>
               <CardTitle>전체 라이프케어 상태</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{overallWellness.toFixed(1)}/5</p>
-                  <Badge className={`${wellnessStatus.bg} ${wellnessStatus.color}`}>
-                    {wellnessStatus.label}
-                  </Badge>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-muted-foreground">지난 30일 평균</p>
-                  <p className="text-sm text-muted-foreground">총 {monthlyStats.totalDays}일 기록</p>
-                </div>
-              </div>
-              <Progress value={(overallWellness / 5) * 100} className="h-3" />
+             <CardContent>
+               <div className="flex items-center justify-between mb-4">
+                 <div>
+                   <p className="text-2xl font-bold text-foreground">{overallLife.toFixed(1)}/5</p>
+                   <Badge className={`${lifeStatus.bg} ${lifeStatus.color}`}>
+                     {lifeStatus.label}
+                   </Badge>
+                 </div>
+                 <div className="text-right">
+                   <p className="text-sm text-muted-foreground">지난 30일 평균</p>
+                   <p className="text-sm text-muted-foreground">총 {monthlyStats.totalDays}일 기록</p>
+                 </div>
+               </div>
+               <Progress value={(overallLife / 5) * 100} className="h-3" />
             </CardContent>
           </Card>
 
@@ -784,6 +868,165 @@ const LifeCareHub = () => {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        {/* 라이프 인사이트 탭 - 라이프허브 데이터 통합 */}
+        <TabsContent value="life-insights" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* AI 건강 인사이트 */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="w-5 h-5 text-blue-500" />
+                  AI 라이프 인사이트
+                </CardTitle>
+                <CardDescription>
+                  AI가 분석한 맞춤형 건강 관리 인사이트
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {lifeDataLoading ? (
+                  <div className="text-center py-4 text-muted-foreground">
+                    인사이트를 불러오는 중...
+                  </div>
+                ) : lifeInsights.length > 0 ? (
+                  <div className="space-y-3">
+                    {lifeInsights.slice(0, 3).map((insight) => (
+                      <div key={insight.id} className="p-3 bg-blue-50 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <Badge variant="outline" className="text-xs">
+                            {insight.insight_type === 'daily_recommendation' ? '일일 추천' :
+                             insight.insight_type === 'mood_analysis' ? '기분 분석' :
+                             insight.insight_type === 'energy_boost' ? '에너지 부스터' :
+                             insight.insight_type === 'stress_relief' ? '스트레스 완화' : '기타'}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            신뢰도: {Math.round((insight.confidence_score || 0) * 100)}%
+                          </span>
+                        </div>
+                        <p className="text-sm text-foreground line-clamp-3">
+                          {insight.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Lightbulb className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p>아직 라이프 인사이트가 없습니다.</p>
+                    <p className="text-xs">매일 체크인을 통해 맞춤형 인사이트를 받아보세요!</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* 개인화된 챌린지 */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="w-5 h-5 text-purple-500" />
+                  맞춤형 라이프 챌린지
+                </CardTitle>
+                <CardDescription>
+                  AI가 추천하는 개인화된 성장 챌린지
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {lifeDataLoading ? (
+                  <div className="text-center py-4 text-muted-foreground">
+                    챌린지를 불러오는 중...
+                  </div>
+                ) : personalizedChallenges.length > 0 ? (
+                  <div className="space-y-3">
+                    {personalizedChallenges.slice(0, 3).map((challenge) => (
+                      <div key={challenge.id} className="p-3 bg-purple-50 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium text-foreground">{challenge.title}</h4>
+                          <Badge variant={challenge.status === 'active' ? 'default' : 'secondary'}>
+                            {challenge.status === 'active' ? '진행중' : '완료'}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                          {challenge.description}
+                        </p>
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">
+                            {challenge.duration_days}일 챌린지
+                          </span>
+                          <span className="text-purple-600 font-medium">
+                            {challenge.category}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Target className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p>아직 맞춤형 챌린지가 없습니다.</p>
+                    <p className="text-xs">라이프허브에서 새로운 챌린지를 시작해보세요!</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* 발달 추적 데이터 */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Baby className="w-5 h-5 text-green-500" />
+                  발달 추적 요약
+                </CardTitle>
+                <CardDescription>
+                  아동발달 검사 결과 및 성장 추적 데이터
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {lifeDataLoading ? (
+                  <div className="text-center py-4 text-muted-foreground">
+                    발달 데이터를 불러오는 중...
+                  </div>
+                ) : developmentalData.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {developmentalData.slice(0, 3).map((data) => (
+                      <div key={data.id} className="p-4 bg-green-50 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <Badge variant="outline" className="text-xs">
+                            {data.age_group} 검사
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(data.created_at).toLocaleDateString('ko-KR')}
+                          </span>
+                        </div>
+                        <div className="text-center mb-2">
+                          <div className="text-2xl font-bold text-green-600">
+                            {data.total_score}점
+                          </div>
+                          <p className="text-xs text-muted-foreground">전체 점수</p>
+                        </div>
+                        {data.risk_level && (
+                          <Badge 
+                            variant={data.risk_level === 'low' ? 'default' : 
+                                   data.risk_level === 'medium' ? 'secondary' : 'destructive'}
+                            className="w-full justify-center"
+                          >
+                            {data.risk_level === 'low' ? '정상 범위' :
+                             data.risk_level === 'medium' ? '주의 관찰' : '전문가 상담 권장'}
+                          </Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Baby className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p>아직 발달 추적 데이터가 없습니다.</p>
+                    <p className="text-xs">발달 검사를 진행하여 성장을 추적해보세요!</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

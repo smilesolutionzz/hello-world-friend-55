@@ -265,8 +265,8 @@ const WellnessLifestyle = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30">
       <Helmet>
-        <title>웰니스 라이프스타일 허브 - AI 기반 맞춤형 건강 관리</title>
-        <meta name="description" content="AI 기반 개인 맞춤형 웰니스 솔루션. 수면, 스트레스, 영양, 운동을 통합 관리하고 장수 건강 플랜을 받아보세요." />
+        <title>라이프스타일 허브 - AI 기반 맞춤형 건강 관리</title>
+        <meta name="description" content="AI 기반 개인 맞춤형 라이프 솔루션. 수면, 스트레스, 영양, 운동을 통합 관리하고 장수 건강 플랜을 받아보세요." />
       </Helmet>
       
       <UnifiedNavigation />
@@ -277,7 +277,7 @@ const WellnessLifestyle = () => {
           <section className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 px-4 py-2 rounded-full mb-6">
               <Sparkles className="h-4 w-4 text-blue-600" />
-              <span className="text-sm font-semibold text-blue-700">웰니스 허브</span>
+              <span className="text-sm font-semibold text-blue-700">라이프 허브</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
               나만의 건강 리포트 센터
@@ -332,7 +332,7 @@ const WellnessLifestyle = () => {
               </TabsTrigger>
               <TabsTrigger value="wellness-plan" className="flex items-center gap-2 text-sm">
                 <Target className="h-4 w-4" />
-                웰니스 플랜
+                라이프 플랜
               </TabsTrigger>
               <TabsTrigger value="my-reports" className="flex items-center gap-2 text-sm">
                 <FileText className="h-4 w-4" />
@@ -371,7 +371,7 @@ const WellnessLifestyle = () => {
                   </CardContent>
                 </Card>
 
-                {/* 뷰티 웰니스 */}
+                {/* 뷰티 라이프케어 */}
                 <Card className="hover:shadow-lg transition-all">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-3">
@@ -458,7 +458,7 @@ const WellnessLifestyle = () => {
               )}
             </TabsContent>
 
-            {/* 웰니스 플랜 */}
+            {/* 라이프 플랜 */}
             <TabsContent value="wellness-plan" className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="text-center">
@@ -499,7 +499,7 @@ const WellnessLifestyle = () => {
               {(workoutPlan || sleepTips) && (
                 <div className="space-y-6">
                   <h3 className="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                    🎯 내 웰니스 플랜
+                    🎯 내 라이프 플랜
                   </h3>
                   
                   {workoutPlan && (

@@ -274,16 +274,39 @@ const Subscription = () => {
                   <CardTitle className="text-2xl mb-2">{plan.name}</CardTitle>
                   <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
                   
-                  <div className="space-y-2">
-                    <div className="text-4xl font-bold text-foreground">
-                      {plan.price === 0 ? '무료' : `₩${formatPrice(plan.price)}`}
-                    </div>
-                    {plan.price > 0 && (
-                      <div className="text-sm text-muted-foreground">
-                        월간 구독
-                      </div>
-                    )}
-                  </div>
+                   <div className="space-y-2">
+                     <div className="text-4xl font-bold text-foreground">
+                       {plan.price === 0 ? '무료' : `₩${formatPrice(plan.price)}`}
+                     </div>
+                     {plan.price > 0 && (
+                       <div className="text-sm text-muted-foreground">
+                         월간 구독
+                       </div>
+                     )}
+                     
+                     {/* 한정 오퍼 안내 - 가격 후킹 */}
+                     {plan.type === 'premium' && (
+                       <div className="mt-3 p-3 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-lg">
+                         <div className="text-sm font-bold text-red-700 mb-1">
+                           ⚡ 오늘만 한정 특가
+                         </div>
+                         <div className="text-xs text-red-600">
+                           이 가격은 선착순 100명에게만 제공됩니다
+                         </div>
+                       </div>
+                     )}
+                     
+                     {plan.type === 'paid' && plan.price > 0 && (
+                       <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-lg">
+                         <div className="text-sm font-bold text-blue-700 mb-1">
+                           🎯 이번 주 한정
+                         </div>
+                         <div className="text-xs text-blue-600">
+                           베이직 플랜 론칭 기념 특별가
+                         </div>
+                       </div>
+                     )}
+                   </div>
                 </CardHeader>
 
                 <CardContent className="space-y-4 pb-8">

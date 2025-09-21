@@ -254,8 +254,7 @@ export const ViralMechanics: React.FC = () => {
                   )}
                 </div>
               </div>
-            </div>
-          </MobileCard>
+            </MobileCard>
         ))}
       </MobileGrid>
 

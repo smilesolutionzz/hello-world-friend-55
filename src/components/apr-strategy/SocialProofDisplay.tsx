@@ -166,22 +166,6 @@ export const SocialProofDisplay: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* APR 전략: 아마존 프라임데이 신화 스타일 임팩트 메시지 */}
-      <Card className="bg-gradient-to-r from-red-500 to-pink-500 text-white">
-        <CardContent className="p-6 text-center">
-          <h2 className="text-2xl font-bold mb-2">
-            🎯 24시간 만에 1,000명이 선택!
-          </h2>
-          <p className="text-lg opacity-90 mb-4">
-            AI 심리 분석으로 인생이 바뀐 사람들의 이야기
-          </p>
-          <div className="flex justify-center items-center gap-4 text-sm">
-            <div>⭐ 평균 평점 4.9/5</div>
-            <div>🚀 만족도 {stats?.satisfactionRate}%</div>
-            <div>💡 개선 효과 {stats?.avgImprovement}%</div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* APR 전략: K-뷰티 글로벌 성공 스토리 차용 */}
       <Card className="border-2 border-primary/20">

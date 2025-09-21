@@ -167,31 +167,31 @@ export const PersonalizationEngine: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6">
       {/* APR 전략: 개인화된 사용자 프로필로 "나만의" 경험 강조 */}
       <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Star className="h-5 w-5 text-primary" />
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+            <Star className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
             나만의 심리 프로필
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4">
             <div>
-              <p className="text-sm text-muted-foreground">심리 타입</p>
-              <Badge variant="secondary" className="mt-1">
+              <p className="text-xs lg:text-sm text-muted-foreground">심리 타입</p>
+              <Badge variant="secondary" className="mt-1 text-xs">
                 {personalizationData?.userProfile.mentalHealthType}
               </Badge>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">사용 패턴</p>
-              <Badge variant="outline" className="mt-1">
+              <p className="text-xs lg:text-sm text-muted-foreground">사용 패턴</p>
+              <Badge variant="outline" className="mt-1 text-xs">
                 {personalizationData?.userProfile.usagePattern}
               </Badge>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">성장 목표</p>
+              <p className="text-xs lg:text-sm text-muted-foreground">성장 목표</p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {personalizationData?.userProfile.improvementGoals.slice(0, 2).map((goal, index) => (
                   <Badge key={index} variant="default" className="text-xs">
@@ -206,23 +206,23 @@ export const PersonalizationEngine: React.FC = () => {
 
       {/* APR 전략: 개인화된 추천으로 다음 액션 유도 */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-base lg:text-lg">
+            <TrendingUp className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
             맞춤형 추천
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="space-y-3 lg:space-y-4">
             {personalizationData?.recommendations.map((rec, index) => (
               <div key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                <div className={`w-2 h-2 rounded-full mt-2 ${
+                <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
                   rec.priority === 'high' ? 'bg-red-500' : 
                   rec.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
                 }`} />
-                <div className="flex-1">
-                  <h4 className="font-medium">{rec.nextAction}</h4>
-                  <p className="text-sm text-muted-foreground mt-1">{rec.reason}</p>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-medium text-sm lg:text-base text-foreground">{rec.nextAction}</h4>
+                  <p className="text-xs lg:text-sm text-muted-foreground mt-1">{rec.reason}</p>
                 </div>
               </div>
             ))}

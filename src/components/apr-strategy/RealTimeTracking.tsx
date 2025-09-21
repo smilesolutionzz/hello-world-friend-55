@@ -5,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { Activity, BarChart3, Target, Zap, Eye, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
+import { MobileGrid, MobileCard, MobileButton } from '@/components/common/MobileOptimized';
 
 interface TrackingData {
   dailyGoal: number;
@@ -202,102 +203,96 @@ export const RealTimeTracking: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6">
       {/* APR 전략: 실시간 활동 표시로 FOMO 유발 */}
-      <Card className="border-l-4 border-l-red-500 bg-gradient-to-r from-red-50 to-transparent">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Eye className="h-5 w-5 text-red-500 real-time-pulse" />
-              <span className="font-medium">지금 이 순간</span>
+      <MobileCard className="border-l-4 border-l-red-500 bg-gradient-to-r from-red-50 to-transparent">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Eye className="h-4 w-4 lg:h-5 lg:w-5 text-red-500 animate-pulse flex-shrink-0" />
+            <span className="font-medium text-sm lg:text-base">지금 이 순간</span>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-xs lg:text-sm">
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>{liveStats.currentViewers}명 접속 중</span>
             </div>
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>{liveStats.currentViewers}명 접속 중</span>
+            <div className="flex items-center gap-1">
+              <Zap className="h-3 w-3 lg:h-4 lg:w-4 text-orange-500 flex-shrink-0" />
+              <span>오늘 {liveStats.todayCompletions}명 완료</span>
+            </div>
+          </div>
+        </div>
+      </MobileCard>
+
+      <MobileGrid cols={2} gap="md">
+        {/* 개인 성과 트래킹 */}
+        <MobileCard>
+          <div className="mb-4">
+            <h3 className="flex items-center gap-2 text-base lg:text-lg font-semibold">
+              <Target className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
+              오늘의 목표
+            </h3>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between text-sm mb-2">
+                <span>진행률</span>
+                <span>{trackingData?.currentProgress}/{trackingData?.dailyGoal}</span>
               </div>
-              <div className="flex items-center gap-1">
-                <Zap className="h-4 w-4 text-orange-500" />
-                <span>오늘 {liveStats.todayCompletions}명 완료</span>
+              <Progress 
+                value={(trackingData?.currentProgress || 0) / (trackingData?.dailyGoal || 1) * 100} 
+                className="h-3"
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+              <div className="text-center">
+                <div className="text-lg lg:text-2xl font-bold text-primary">
+                  {trackingData?.streakDays}
+                </div>
+                <div className="text-xs lg:text-sm text-muted-foreground">연속 일수</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg lg:text-2xl font-bold text-green-600">
+                  {trackingData?.engagementScore}
+                </div>
+                <div className="text-xs lg:text-sm text-muted-foreground">참여 점수</div>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* 개인 성과 트래킹 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              오늘의 목표
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span>진행률</span>
-                  <span>{trackingData?.currentProgress}/{trackingData?.dailyGoal}</span>
-                </div>
-                <Progress 
-                  value={(trackingData?.currentProgress || 0) / (trackingData?.dailyGoal || 1) * 100} 
-                  className="h-3"
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">
-                    {trackingData?.streakDays}
-                  </div>
-                  <div className="text-sm text-muted-foreground">연속 일수</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">
-                    {trackingData?.engagementScore}
-                  </div>
-                  <div className="text-sm text-muted-foreground">참여 점수</div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        </MobileCard>
 
         {/* 주간 트렌드 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-primary" />
+        <MobileCard>
+          <div className="mb-4">
+            <h3 className="flex items-center gap-2 text-base lg:text-lg font-semibold">
+              <BarChart3 className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
               7일 활동 트렌드
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-end gap-2 h-24">
-                {trackingData?.weeklyTrend.map((value, index) => (
-                  <div
-                    key={index}
-                    className="flex-1 bg-primary/20 rounded-t-sm relative"
+            </h3>
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-end gap-2 h-24">
+              {trackingData?.weeklyTrend.map((value, index) => (
+                <div
+                  key={index}
+                  className="flex-1 bg-primary/20 rounded-t-sm relative"
+                  style={{ height: `${Math.max(value * 20, 8)}px` }}
+                >
+                  <div 
+                    className="bg-primary rounded-t-sm w-full transition-all duration-500"
                     style={{ height: `${Math.max(value * 20, 8)}px` }}
-                  >
-                    <div 
-                      className="bg-primary rounded-t-sm w-full transition-all duration-500"
-                      style={{ height: `${Math.max(value * 20, 8)}px` }}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="flex justify-between text-xs text-muted-foreground">
-                {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => (
-                  <span key={index}>{day}</span>
-                ))}
-              </div>
+                  />
+                </div>
+              ))}
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="flex justify-between text-xs text-muted-foreground">
+              {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => (
+                <span key={index}>{day}</span>
+              ))}
+            </div>
+          </div>
+        </MobileCard>
+      </MobileGrid>
 
       {/* APR 전략: 스마트 추천으로 다음 액션 유도 */}
       <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
@@ -310,9 +305,9 @@ export const RealTimeTracking: React.FC = () => {
         <CardContent>
           <div className="space-y-3">
             {trackingData?.recommendedActions.map((action, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-white rounded-lg border">
-                <span className="text-sm">{action}</span>
-                <Button size="sm" variant="outline">
+              <div key={index} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-white rounded-lg border gap-3">
+                <span className="text-sm text-foreground">{action}</span>
+                <Button size="sm" variant="outline" className="bg-primary text-primary-foreground hover:bg-primary/90 w-full sm:w-auto">
                   시작하기
                 </Button>
               </div>
@@ -323,15 +318,15 @@ export const RealTimeTracking: React.FC = () => {
 
       {/* APR 전략: 긴급성 메시지 */}
       <Card className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
-        <CardContent className="p-6 text-center">
-          <h3 className="text-xl font-bold mb-2">⚡ 지금이 변화의 순간!</h3>
-          <p className="mb-4 opacity-90">
+        <CardContent className="p-4 lg:p-6 text-center">
+          <h3 className="text-lg lg:text-xl font-bold mb-2">⚡ 지금이 변화의 순간!</h3>
+          <p className="mb-4 opacity-90 text-sm lg:text-base">
             {trackingData?.streakDays && trackingData.streakDays > 0 
               ? `${trackingData.streakDays}일 연속 기록을 이어가세요!`
               : "오늘 시작하면 내일이 달라집니다!"
             }
           </p>
-          <Button variant="secondary" className="text-primary font-medium">
+          <Button variant="secondary" className="text-primary font-medium bg-white hover:bg-gray-50">
             지금 시작하기
           </Button>
         </CardContent>

@@ -7,6 +7,7 @@ import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useReferrals } from '@/hooks/useReferrals';
 import { useToast } from '@/hooks/use-toast';
 import SocialShareButtons from '@/components/social/SocialShareButtons';
+import { MobileGrid, MobileCard, MobileButton } from '@/components/common/MobileOptimized';
 
 interface ViralCampaign {
   title: string;
@@ -166,62 +167,70 @@ export const ViralMechanics: React.FC = () => {
       </Card>
 
       {/* 바이럴 캠페인 목록 */}
-      <div className="grid gap-4">
+      <MobileGrid cols={1} gap="md">
         {campaigns.map((campaign, index) => (
-          <Card key={index} className={`${campaign.urgent ? 'border-orange-300 bg-orange-50' : ''}`}>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className={`p-2 rounded-lg text-white ${getCampaignColor(campaign.type)}`}>
+          <MobileCard key={index} className={`${campaign.urgent ? 'border-orange-300 bg-orange-50' : ''}`}>
+            <div className="pb-3">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <div className={`p-2 rounded-lg text-white flex-shrink-0 ${getCampaignColor(campaign.type)}`}>
                     {getCampaignIcon(campaign.type)}
                   </div>
-                  {campaign.title}
-                  {campaign.urgent && (
-                    <Badge variant="destructive" className="animate-pulse">
-                      긴급
-                    </Badge>
-                  )}
-                </CardTitle>
-                <div className="text-right">
-                  <div className="text-sm text-muted-foreground">보상</div>
-                  <div className="font-semibold text-primary">{campaign.reward}</div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-sm lg:text-base truncate">{campaign.title}</h3>
+                    {campaign.urgent && (
+                      <Badge variant="destructive" className="animate-pulse text-xs mt-1">
+                        긴급
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <div className="text-xs text-muted-foreground">보상</div>
+                  <div className="font-semibold text-primary text-sm">{campaign.reward}</div>
                 </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">{campaign.description}</p>
-              
-              <div className="space-y-3">
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span>진행률</span>
-                    <span>{campaign.progress}/{campaign.target}</span>
-                  </div>
-                  <div className="w-full bg-muted rounded-full h-2">
-                    <div 
-                      className={`h-2 rounded-full transition-all duration-500 ${getCampaignColor(campaign.type)}`}
-                      style={{ width: `${Math.min((campaign.progress / campaign.target) * 100, 100)}%` }}
-                    />
-                  </div>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span>진행률</span>
+                  <span>{campaign.progress}/{campaign.target}</span>
                 </div>
+                <div className="w-full bg-muted rounded-full h-2">
+                  <div 
+                    className={`h-2 rounded-full transition-all duration-500 ${getCampaignColor(campaign.type)}`}
+                    style={{ width: `${Math.min((campaign.progress / campaign.target) * 100, 100)}%` }}
+                  />
+                </div>
+              </div>
 
-                <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                   {campaign.type === 'share' && (
-                    <Button onClick={handleShare} className="flex-1">
+                    <Button 
+                      onClick={handleShare} 
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                    >
                       <Share2 className="h-4 w-4 mr-2" />
                       결과 공유하기
                     </Button>
                   )}
                   
                   {campaign.type === 'referral' && (
-                    <Button onClick={handleReferralShare} className="flex-1">
+                    <Button 
+                      onClick={handleReferralShare} 
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                    >
                       <Users className="h-4 w-4 mr-2" />
                       친구 초대하기
                     </Button>
                   )}
                   
                   {campaign.type === 'review' && (
-                    <Button asChild className="flex-1">
+                    <Button 
+                      asChild 
+                      className="flex-1 bg-pink-600 hover:bg-pink-700 text-white"
+                    >
                       <a 
                         href="https://apps.apple.com/app/your-app" 
                         target="_blank" 
@@ -234,17 +243,21 @@ export const ViralMechanics: React.FC = () => {
                   )}
                   
                   {campaign.type === 'streak' && (
-                    <Button variant="outline" className="flex-1" disabled>
+                    <Button 
+                      variant="outline" 
+                      className="flex-1 border-purple-300 text-purple-700 hover:bg-purple-50" 
+                      disabled
+                    >
                       <Trophy className="h-4 w-4 mr-2" />
                       진행 중
                     </Button>
                   )}
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </MobileCard>
         ))}
-      </div>
+      </MobileGrid>
 
       {/* APR 전략: 소셜 공유 최적화 */}
       <Card>
@@ -305,7 +318,7 @@ export const ViralMechanics: React.FC = () => {
             
             <Button 
               variant="secondary" 
-              className="mt-4 text-primary font-medium"
+              className="mt-4 text-primary font-medium bg-white hover:bg-gray-50"
               onClick={handleShare}
             >
               나도 참여하기

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, TrendingUp, Star, Clock, Zap } from 'lucide-react';
+import { Users, TrendingUp, Star, Clock, Zap, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { MobileGrid, MobileCard } from '@/components/common/MobileOptimized';
 
 interface SocialProofStats {
   activeUsers: number;
@@ -93,70 +94,70 @@ export const SocialProofDisplay: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* APR 전략: 메디큐브 스타일 성과 어필 */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <CardContent className="p-4 text-center">
+          <CardContent className="p-3 lg:p-4 text-center">
             <div className="flex items-center justify-center mb-2">
-              <Users className="h-6 w-6 text-blue-600" />
+              <Users className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
             </div>
-            <div className="text-2xl font-bold text-blue-800">
+            <div className="text-lg lg:text-2xl font-bold text-blue-800">
               {stats?.activeUsers.toLocaleString()}+
             </div>
-            <div className="text-sm text-blue-600">활성 사용자</div>
+            <div className="text-xs lg:text-sm text-blue-600">활성 사용자</div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-          <CardContent className="p-4 text-center">
+          <CardContent className="p-3 lg:p-4 text-center">
             <div className="flex items-center justify-center mb-2">
-              <TrendingUp className="h-6 w-6 text-green-600" />
+              <TrendingUp className="h-5 w-5 lg:h-6 lg:w-6 text-green-600" />
             </div>
-            <div className="text-2xl font-bold text-green-800">
+            <div className="text-lg lg:text-2xl font-bold text-green-800">
               {stats?.totalTests.toLocaleString()}+
             </div>
-            <div className="text-sm text-green-600">완료된 분석</div>
+            <div className="text-xs lg:text-sm text-green-600">완료된 분석</div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
-          <CardContent className="p-4 text-center">
+          <CardContent className="p-3 lg:p-4 text-center">
             <div className="flex items-center justify-center mb-2">
-              <Star className="h-6 w-6 text-orange-600" />
+              <Star className="h-5 w-5 lg:h-6 lg:w-6 text-orange-600" />
             </div>
-            <div className="text-2xl font-bold text-orange-800">
+            <div className="text-lg lg:text-2xl font-bold text-orange-800">
               {stats?.satisfactionRate}%
             </div>
-            <div className="text-sm text-orange-600">만족도</div>
+            <div className="text-xs lg:text-sm text-orange-600">만족도</div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-          <CardContent className="p-4 text-center">
+          <CardContent className="p-3 lg:p-4 text-center">
             <div className="flex items-center justify-center mb-2">
-              <Zap className="h-6 w-6 text-purple-600" />
+              <Zap className="h-5 w-5 lg:h-6 lg:w-6 text-purple-600" />
             </div>
-            <div className="text-2xl font-bold text-purple-800">
+            <div className="text-lg lg:text-2xl font-bold text-purple-800">
               {stats?.avgImprovement}%
             </div>
-            <div className="text-sm text-purple-600">개선 효과</div>
+            <div className="text-xs lg:text-sm text-purple-600">개선 효과</div>
           </CardContent>
         </Card>
       </div>
 
       {/* APR 전략: Rising Stars 스타일 실시간 활동 피드 */}
       <Card className="border-l-4 border-l-primary bg-gradient-to-r from-primary/5 to-transparent">
-        <CardContent className="p-4">
+        <CardContent className="p-4 lg:p-6">
           <div className="flex items-center gap-2 mb-3">
-            <Clock className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold">실시간 활동</h3>
-            <Badge variant="secondary" className="animate-pulse">Live</Badge>
+            <Clock className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
+            <h3 className="text-sm lg:text-base font-semibold text-foreground">실시간 활동</h3>
+            <Badge variant="secondary" className="animate-pulse text-xs">Live</Badge>
           </div>
           <div className="space-y-2">
             {stats?.recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center gap-3 text-sm">
+              <div key={index} className="flex items-center gap-3 text-xs lg:text-sm">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-muted-foreground">{activity}</span>
-                <span className="text-xs text-muted-foreground ml-auto">
+                <span className="text-muted-foreground flex-1">{activity}</span>
+                <span className="text-xs text-muted-foreground">
                   방금 전
                 </span>
               </div>

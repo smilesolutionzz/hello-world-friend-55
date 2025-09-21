@@ -78,12 +78,16 @@ const ValueProposition: React.FC<ValuePropositionProps> = ({ onStartTrial }) => 
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button size="lg" onClick={onStartTrial} className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4">
-            <Heart className="h-5 w-5 mr-2" />
+          <Button 
+            size="lg" 
+            onClick={onStartTrial} 
+            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-3 lg:px-8 lg:py-4 text-sm lg:text-lg w-full sm:w-auto"
+          >
+            <Heart className="h-4 w-4 lg:h-5 lg:w-5 mr-2" />
             무료로 체험하기
-            <ArrowRight className="h-5 w-5 ml-2" />
+            <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5 ml-2" />
           </Button>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-xs lg:text-sm text-muted-foreground text-center">
             ✨ 회원가입 없이 바로 체험 | 💳 결제 정보 불필요
           </div>
         </div>
@@ -149,7 +153,11 @@ const ValueProposition: React.FC<ValuePropositionProps> = ({ onStartTrial }) => 
           <p className="text-muted-foreground mb-6">
             첫 번째 분석은 완전 무료입니다. 마음에 들지 않으면 언제든 중단하실 수 있어요.
           </p>
-          <Button size="lg" onClick={onStartTrial} className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white">
+          <Button 
+            size="lg" 
+            onClick={onStartTrial} 
+            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white w-full sm:w-auto"
+          >
             무료 체험 시작하기
           </Button>
         </CardContent>

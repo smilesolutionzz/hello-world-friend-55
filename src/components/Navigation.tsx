@@ -89,11 +89,6 @@ const Navigation = () => {
       {/* Logo */}
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-3 text-xl sm:text-2xl font-bold cursor-pointer" onClick={() => navigate('/')}>
-          <img 
-            src="/logo.jpg" 
-            alt="AI Pro Logo" 
-            className="h-8 w-auto sm:h-10 object-contain" 
-          />
           <span className="text-brand-gradient">AIHPRO</span>
         </div>
       </div>

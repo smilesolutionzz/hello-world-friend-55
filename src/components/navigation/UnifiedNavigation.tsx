@@ -148,11 +148,6 @@ export const UnifiedNavigation = () => {
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => navigate('/')}
               >
-                <img 
-                  src="/logo.jpg" 
-                  alt="AIH Logo" 
-                  className="w-8 h-8 object-contain group-hover:scale-105 transition-transform duration-200"
-                />
                 <span className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">AIHPRO</span>
               </div>
               
@@ -314,11 +309,6 @@ export const UnifiedNavigation = () => {
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={() => navigate('/')}
               >
-                <img 
-                  src="/logo.jpg" 
-                  alt="AIH Logo" 
-                  className="w-7 h-7 object-contain"
-                />
                 <span className="text-lg font-semibold text-gray-900">AIHPRO</span>
               </div>
               

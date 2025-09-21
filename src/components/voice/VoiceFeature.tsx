@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Volume2, VolumeX, Mic, MicOff, Brain, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface VoiceFeatureProps {
   text: string;
@@ -22,19 +23,35 @@ const VoiceFeature: React.FC<VoiceFeatureProps> = ({ text, title, type = 'result
     setIsPlaying(true);
     
     try {
-      // Web Speech API 사용 (ElevenLabs 대신 임시)
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ko-KR';
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      
-      // 음성 종료 시 상태 변경
-      utterance.onend = () => {
-        setIsPlaying(false);
-      };
+      // ElevenLabs API를 통한 고품질 TTS
+      const { data, error } = await supabase.functions.invoke('elevenlabs-tts', {
+        body: { 
+          text: text,
+          voice: 'Aria', // 따뜻한 여성 목소리
+          model: 'eleven_multilingual_v2'
+        }
+      });
 
-      utterance.onerror = () => {
+      if (error) throw error;
+
+      // Base64 오디오를 Blob으로 변환
+      const binaryString = atob(data.audioContent);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const audioBlob = new Blob([bytes], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+
+      // HTML5 Audio로 재생
+      const audio = new Audio(audioUrl);
+      audio.onended = () => {
         setIsPlaying(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+      audio.onerror = () => {
+        setIsPlaying(false);
+        URL.revokeObjectURL(audioUrl);
         toast({
           title: "음성 재생 오류",
           description: "음성 재생 중 오류가 발생했습니다.",
@@ -42,21 +59,37 @@ const VoiceFeature: React.FC<VoiceFeatureProps> = ({ text, title, type = 'result
         });
       };
 
-      speechSynthesis.speak(utterance);
+      await audio.play();
       
       toast({
-        title: "🎙️ 음성 재생 시작",
-        description: "결과를 음성으로 들려드립니다.",
+        title: "🎙️ AI 음성 재생 시작",
+        description: "ElevenLabs AI 음성으로 들려드립니다.",
       });
 
     } catch (error) {
       setIsPlaying(false);
-      console.error('TTS Error:', error);
-      toast({
-        title: "음성 기능 오류",
-        description: "브라우저에서 음성 기능을 지원하지 않습니다.",
-        variant: "destructive"
-      });
+      console.error('ElevenLabs TTS Error:', error);
+      
+      // 폴백: 브라우저 기본 TTS 사용
+      try {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ko-KR';
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        utterance.onend = () => setIsPlaying(false);
+        speechSynthesis.speak(utterance);
+        
+        toast({
+          title: "기본 음성으로 재생",
+          description: "AI 음성 서비스가 일시적으로 불가능합니다.",
+        });
+      } catch (fallbackError) {
+        toast({
+          title: "음성 기능 오류",
+          description: "음성 재생이 불가능합니다.",
+          variant: "destructive"
+        });
+      }
     }
   };
 
@@ -203,9 +236,9 @@ const VoiceFeature: React.FC<VoiceFeatureProps> = ({ text, title, type = 'result
           </div>
         )}
         
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-          <p className="text-xs text-yellow-700">
-            💡 <strong>향후 업그레이드:</strong> ElevenLabs AI 음성으로 더욱 자연스럽고 전문적인 음성 서비스를 제공할 예정입니다.
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+          <p className="text-xs text-green-700">
+            ✨ <strong>ElevenLabs AI 음성 적용!</strong> 자연스럽고 전문적인 AI 음성으로 업그레이드되었습니다.
           </p>
         </div>
       </CardContent>

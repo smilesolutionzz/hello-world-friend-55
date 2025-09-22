@@ -385,6 +385,177 @@ export type Database = {
         }
         Relationships: []
       }
+      book_projects: {
+        Row: {
+          ai_guide: Json | null
+          auto_save_content: string | null
+          chapters: Json | null
+          created_at: string
+          genre: string | null
+          id: string
+          is_published: boolean | null
+          last_ai_generation: string | null
+          outline: Json | null
+          roadmap_data: Json | null
+          target_audience: string | null
+          theme: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          writing_progress: Json | null
+        }
+        Insert: {
+          ai_guide?: Json | null
+          auto_save_content?: string | null
+          chapters?: Json | null
+          created_at?: string
+          genre?: string | null
+          id?: string
+          is_published?: boolean | null
+          last_ai_generation?: string | null
+          outline?: Json | null
+          roadmap_data?: Json | null
+          target_audience?: string | null
+          theme?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          writing_progress?: Json | null
+        }
+        Update: {
+          ai_guide?: Json | null
+          auto_save_content?: string | null
+          chapters?: Json | null
+          created_at?: string
+          genre?: string | null
+          id?: string
+          is_published?: boolean | null
+          last_ai_generation?: string | null
+          outline?: Json | null
+          roadmap_data?: Json | null
+          target_audience?: string | null
+          theme?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          writing_progress?: Json | null
+        }
+        Relationships: []
+      }
+      brain_health_stats: {
+        Row: {
+          cognitive_age: number | null
+          created_at: string
+          games_completed: number
+          id: string
+          improvement_percentage: number | null
+          streak_days: number
+          updated_at: string
+          user_id: string
+          week_end: string
+          week_start: string
+          weekly_average_score: number
+        }
+        Insert: {
+          cognitive_age?: number | null
+          created_at?: string
+          games_completed?: number
+          id?: string
+          improvement_percentage?: number | null
+          streak_days?: number
+          updated_at?: string
+          user_id: string
+          week_end: string
+          week_start: string
+          weekly_average_score?: number
+        }
+        Update: {
+          cognitive_age?: number | null
+          created_at?: string
+          games_completed?: number
+          id?: string
+          improvement_percentage?: number | null
+          streak_days?: number
+          updated_at?: string
+          user_id?: string
+          week_end?: string
+          week_start?: string
+          weekly_average_score?: number
+        }
+        Relationships: []
+      }
+      brain_training_scores: {
+        Row: {
+          created_at: string
+          duration: number
+          game_type: string
+          id: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration?: number
+          game_type: string
+          id?: string
+          score?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration?: number
+          game_type?: string
+          id?: string
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      brain_training_sessions: {
+        Row: {
+          cognitive_metrics: Json | null
+          created_at: string
+          difficulty_level: number
+          duration_seconds: number | null
+          game_name: string
+          game_type: string
+          id: string
+          max_score: number
+          score: number
+          session_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cognitive_metrics?: Json | null
+          created_at?: string
+          difficulty_level?: number
+          duration_seconds?: number | null
+          game_name: string
+          game_type: string
+          id?: string
+          max_score?: number
+          score?: number
+          session_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cognitive_metrics?: Json | null
+          created_at?: string
+          difficulty_level?: number
+          duration_seconds?: number | null
+          game_name?: string
+          game_type?: string
+          id?: string
+          max_score?: number
+          score?: number
+          session_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       challenge_posts: {
         Row: {
           created_at: string
@@ -790,6 +961,107 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      conversation_files: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          duration_minutes: number | null
+          file_content: string
+          file_name: string
+          file_size: number
+          file_type: string | null
+          id: string
+          is_public: boolean | null
+          session_title: string | null
+          total_messages: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          file_content: string
+          file_name: string
+          file_size: number
+          file_type?: string | null
+          id?: string
+          is_public?: boolean | null
+          session_title?: string | null
+          total_messages?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          file_content?: string
+          file_name?: string
+          file_size?: number
+          file_type?: string | null
+          id?: string
+          is_public?: boolean | null
+          session_title?: string | null
+          total_messages?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_files_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "memory_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_brain_training: {
+        Row: {
+          assigned_game_name: string
+          assigned_game_type: string
+          completed_at: string | null
+          created_at: string
+          game_rotation_index: number
+          id: string
+          is_completed: boolean
+          popup_shown: boolean
+          popup_shown_at: string | null
+          training_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_game_name: string
+          assigned_game_type: string
+          completed_at?: string | null
+          created_at?: string
+          game_rotation_index?: number
+          id?: string
+          is_completed?: boolean
+          popup_shown?: boolean
+          popup_shown_at?: string | null
+          training_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_game_name?: string
+          assigned_game_type?: string
+          completed_at?: string | null
+          created_at?: string
+          game_rotation_index?: number
+          id?: string
+          is_completed?: boolean
+          popup_shown?: boolean
+          popup_shown_at?: string | null
+          training_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       daily_checkins: {
         Row: {
@@ -2425,6 +2697,84 @@ export type Database = {
           },
         ]
       }
+      legacy_memories: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string
+          id: string
+          is_delivered: boolean | null
+          media_type: string | null
+          media_url: string | null
+          recipients: Json | null
+          scheduled_date: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          is_delivered?: boolean | null
+          media_type?: string | null
+          media_url?: string | null
+          recipients?: Json | null
+          scheduled_date?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          is_delivered?: boolean | null
+          media_type?: string | null
+          media_url?: string | null
+          recipients?: Json | null
+          scheduled_date?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      memory_conversations: {
+        Row: {
+          conversation_type: string | null
+          created_at: string
+          emotion_analysis: Json | null
+          id: string
+          memory_extracted: string | null
+          messages: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          conversation_type?: string | null
+          created_at?: string
+          emotion_analysis?: Json | null
+          id?: string
+          memory_extracted?: string | null
+          messages?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          conversation_type?: string | null
+          created_at?: string
+          emotion_analysis?: Json | null
+          id?: string
+          memory_extracted?: string | null
+          messages?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       observation_domains: {
         Row: {
           color_class: string
@@ -2845,6 +3195,30 @@ export type Database = {
           },
         ]
       }
+      personality_test_results: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          personality_type: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          personality_type: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          personality_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       personalized_challenges: {
         Row: {
           ai_generated: boolean | null
@@ -3236,6 +3610,33 @@ export type Database = {
           payment_method?: string | null
           plan_type?: string
           status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      temperament_test_results: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          temperament_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          temperament_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          temperament_type?: string
           updated_at?: string
           user_id?: string
         }
@@ -4183,6 +4584,48 @@ export type Database = {
         }
         Relationships: []
       }
+      website_orders: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          estimated_completion_date: string | null
+          id: string
+          order_data: Json
+          status: string
+          stripe_payment_id: string | null
+          total_price: number
+          updated_at: string
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          estimated_completion_date?: string | null
+          id?: string
+          order_data: Json
+          status?: string
+          stripe_payment_id?: string | null
+          total_price: number
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          estimated_completion_date?: string | null
+          id?: string
+          order_data?: Json
+          status?: string
+          stripe_payment_id?: string | null
+          total_price?: number
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       weekly_mission_completions: {
         Row: {
           completed_missions: number
@@ -4340,6 +4783,19 @@ export type Database = {
         Args: { target_user_id: string; token_amount: number }
         Returns: boolean
       }
+      admin_view_bank_transfer_requests: {
+        Args: { access_reason?: string; limit_count?: number }
+        Returns: {
+          created_at: string
+          id: string
+          masked_bank_name: string
+          masked_depositor_name: string
+          requested_tokens: number
+          status: string
+          transfer_amount: number
+          user_email: string
+        }[]
+      }
       admin_view_expert_application: {
         Args: { access_reason?: string; application_id: string }
         Returns: {
@@ -4368,6 +4824,15 @@ export type Database = {
           user_email: string
         }[]
       }
+      analyze_stress_test_results: {
+        Args: {
+          p_age?: number
+          p_answers: number[]
+          p_total_score: number
+          p_user_id: string
+        }
+        Returns: Json
+      }
       apply_referral_code: {
         Args: { p_referral_code: string; p_user_id: string }
         Returns: boolean
@@ -4380,6 +4845,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: boolean
+      }
+      calculate_weekly_brain_stats: {
+        Args: { p_user_id: string; p_week_start: string }
+        Returns: undefined
       }
       can_access_family_observation: {
         Args: { observation_user_id: string }
@@ -4394,6 +4863,10 @@ export type Database = {
         Returns: boolean
       }
       cleanup_expert_access_logs: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      cleanup_financial_audit_logs: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
@@ -4475,6 +4948,16 @@ export type Database = {
           id: string
           specializations: string[]
           updated_at: string
+        }[]
+      }
+      get_payment_statistics_secure: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          approved_transfers: number
+          average_order_value: number
+          pending_transfers: number
+          total_orders: number
+          total_revenue: number
         }[]
       }
       get_post_likes_count: {
@@ -4607,6 +5090,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      secure_cleanup_old_payment_data: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       track_feature_usage: {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: undefined
@@ -4621,6 +5108,10 @@ export type Database = {
       }
       user_has_liked_post: {
         Args: { post_id: string }
+        Returns: boolean
+      }
+      validate_payment_session: {
+        Args: { session_id: string; user_id: string }
         Returns: boolean
       }
       verify_consultation_access: {

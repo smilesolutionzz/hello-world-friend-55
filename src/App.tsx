@@ -89,6 +89,7 @@ import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTests from "./pages/FunTests";
 import FunTestResult from "./pages/FunTestResult";
 import FreeTrialResult from "./pages/FreeTrialResult";
+import PastLifeJobTestFree from "./components/assessment/PastLifeJobTestFree";
 
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
@@ -138,6 +139,7 @@ const App = () => {
             }} />
           } />
           <Route path="/assessment/stress-test" element={<Assessment />} />
+          <Route path="/assessment/past-life-job-test" element={<PastLifeJobTestFree />} />
           <Route path="/free-trial-result" element={<FreeTrialResult />} />
           <Route path="/assessment/relationship-style-test" element={<RelationshipStyleTest />} />
           <Route path="/assessment/communication-style-test" element={<CommunicationStyleTest />} />

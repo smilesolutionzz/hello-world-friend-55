@@ -16,6 +16,8 @@ interface FreeTrialResultProps {
     recommendations?: string[];
     personalityType?: any;
     traits?: any;
+    pastLifeJob?: any;
+    counts?: any;
     testType?: string;
   };
 }
@@ -130,6 +132,40 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
                           </li>
                         ))}
                       </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {result.pastLifeJob && (
+                <div className="p-4 rounded-lg bg-amber-50 border border-amber-200">
+                  <h3 className="text-lg font-semibold mb-2 text-amber-700 flex items-center gap-2">
+                    <Crown className="w-5 h-5" />
+                    {result.pastLifeJob.job}
+                  </h3>
+                  <p className="text-gray-700 mb-3">{result.pastLifeJob.description}</p>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <h4 className="font-medium mb-1 text-amber-600">시대적 배경:</h4>
+                      <p className="text-sm text-gray-600">{result.pastLifeJob.era}</p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-medium mb-2 text-amber-600">주요 특성:</h4>
+                      <div className="grid grid-cols-2 gap-1">
+                        {result.pastLifeJob.traits?.slice(0, 4).map((trait: string, index: number) => (
+                          <div key={index} className="text-sm text-gray-600 flex items-start gap-2">
+                            <div className="w-1.5 h-1.5 bg-amber-400 rounded-full mt-2 flex-shrink-0"></div>
+                            {trait}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-amber-100 p-3 rounded-lg">
+                      <h4 className="font-medium mb-1 text-amber-700">현재와의 연결점:</h4>
+                      <p className="text-sm text-amber-700">{result.pastLifeJob.modernConnection}</p>
                     </div>
                   </div>
                 </div>

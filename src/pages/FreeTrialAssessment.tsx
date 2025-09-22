@@ -59,6 +59,18 @@ const FreeTrialAssessment = () => {
       description: '임상급 우울증·불안장애 진단',
       tokens: 10,
       locked: true
+    },
+    {
+      id: 'past-life-job',
+      title: '내 전생은 어떤 직업?',
+      subtitle: '재미있는 AI 분석으로 알아보는 전생',
+      description: '답변을 토대로 AI가 분석하는 나의 전생 직업과 그 시대의 이야기를 들어보세요.',
+      duration: '3-5분',
+      questions: 12,
+      icon: Crown,
+      gradient: 'from-amber-500 to-orange-600',
+      badge: '인기',
+      route: '/assessment/past-life-job-test'
     }
   ];
 

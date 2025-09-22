@@ -117,7 +117,7 @@ ${Object.entries(answers).map(([questionId, answer]) => `문항 ${questionId}: $
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',
         messages: [
           { 
             role: 'system', 

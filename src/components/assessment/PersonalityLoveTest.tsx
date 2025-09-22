@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -170,6 +171,7 @@ interface PersonalityLoveTestProps {
 }
 
 export const PersonalityLoveTest: React.FC<PersonalityLoveTestProps> = ({ onComplete }) => {
+  const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -305,7 +307,8 @@ export const PersonalityLoveTest: React.FC<PersonalityLoveTestProps> = ({ onComp
           completedAt: new Date().toISOString()
         };
 
-        onComplete(result);
+        // 무료 체험 결과 페이지로 이동
+        navigate('/free-trial-result', { state: { testResult: result } });
       } catch (aiError) {
         console.error('AI 분석 실패:', aiError);
         // AI 분석 실패 시에도 기본 결과는 제공
@@ -317,7 +320,7 @@ export const PersonalityLoveTest: React.FC<PersonalityLoveTestProps> = ({ onComp
           testType: 'personality_love',
           completedAt: new Date().toISOString()
         };
-        onComplete(result);
+        navigate('/free-trial-result', { state: { testResult: result } });
       }
     } catch (error) {
       console.error('분석 중 오류:', error);

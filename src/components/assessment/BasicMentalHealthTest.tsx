@@ -126,7 +126,20 @@ const BasicMentalHealthTest = () => {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
       } else {
-        setIsCompleted(true);
+        // 결과 페이지로 이동
+        const result = getResult();
+        const totalScore = answers.reduce((sum, answer) => sum + (answer || 0), 0);
+        navigate('/free-trial-result', { 
+          state: { 
+            testResult: {
+              ...result,
+              totalScore,
+              maxScore: 30,
+              testType: 'mental_health_quick',
+              completedAt: new Date().toISOString()
+            }
+          }
+        });
       }
     }, 500);
   };
@@ -135,7 +148,20 @@ const BasicMentalHealthTest = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      setIsCompleted(true);
+      // 결과 페이지로 이동
+      const result = getResult();
+      const totalScore = answers.reduce((sum, answer) => sum + (answer || 0), 0);
+      navigate('/free-trial-result', { 
+        state: { 
+          testResult: {
+            ...result,
+            totalScore,
+            maxScore: 30,
+            testType: 'mental_health_quick',
+            completedAt: new Date().toISOString()
+          }
+        }
+      });
     }
   };
 

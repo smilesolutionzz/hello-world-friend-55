@@ -35,18 +35,6 @@ const FreeTrialAssessment = () => {
       badge: '추천',
       route: '/assessment/stress-test'
     },
-    {
-      id: 'personality-simple',
-      title: '간단 성격유형 테스트',
-      subtitle: '나는 어떤 성격일까요?',
-      description: '외향성, 내향성, 감정 표현 방식 등 기본적인 성격 특성을 알아볼 수 있습니다.',
-      duration: '5-7분',
-      questions: 25,
-      icon: Target,
-      gradient: 'from-green-500 to-teal-600',
-      badge: '신규',
-      route: '/assessment/personality-love-test'
-    }
   ];
 
   // 토큰이 필요한 프리미엄 테스트들 (차단됨)
@@ -96,23 +84,82 @@ const FreeTrialAssessment = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             회원가입 없이 3가지 기본 테스트를 무료로 체험해보세요
           </p>
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4 max-w-2xl mx-auto">
-            <div className="flex items-start gap-2">
-              <div className="text-lg">💡</div>
-              <div className="text-sm text-yellow-800">
-                <p className="font-bold mb-1">무료 vs 구독 해석 차이점:</p>
-                <div className="grid md:grid-cols-2 gap-2 text-xs">
-                  <div className="bg-white/50 rounded p-2">
-                    <p className="font-medium text-gray-600">🆓 무료 해석</p>
-                    <p>• 일반적인 기본 해석</p>
-                    <p>• 단순한 결과 제공</p>
+          <div className="relative overflow-hidden rounded-2xl p-6 mt-4 max-w-3xl mx-auto">
+            {/* Premium Glass Background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/5 to-pink-500/10 backdrop-blur-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20"></div>
+            <div className="absolute inset-0 border border-white/30 rounded-2xl"></div>
+            
+            <div className="relative z-10">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="text-2xl">💎</div>
+                <div>
+                  <h3 className="font-bold text-lg mb-2 bg-gradient-to-r from-purple-600 via-blue-600 to-pink-600 bg-clip-text text-transparent">
+                    무료 vs 구독 해석 차이점
+                  </h3>
+                  <p className="text-sm text-muted-foreground">지금 바로 체험해보고 차이를 느껴보세요</p>
+                </div>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                      FREE
+                    </div>
+                    <h4 className="font-semibold text-gray-700">무료 해석</h4>
                   </div>
-                  <div className="bg-white/50 rounded p-2">
-                    <p className="font-medium text-blue-600">💎 구독자 해석</p>
-                    <p>• AI 초정밀 분석</p>
-                    <p>• 전문가급 상세 해석</p>
+                  <ul className="text-sm text-gray-600 space-y-2">
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                      기본적인 점수 분석
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                      일반적인 결과 요약
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
+                      표면적 분석
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border-2 border-transparent bg-clip-border relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-xl"></div>
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                        PRO
+                      </div>
+                      <h4 className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">구독자 해석</h4>
+                    </div>
+                    <ul className="text-sm space-y-2">
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                        <span className="font-medium text-blue-700">AI 초정밀 분석 (2000자+)</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                        <span className="font-medium text-purple-700">전문가급 상세 해석</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-gradient-to-r from-pink-500 to-blue-500 rounded-full"></div>
+                        <span className="font-medium text-pink-700">개인 맞춤 개선안</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                        <span className="font-medium text-blue-700">심층 심리 패턴 분석</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
+              </div>
+              
+              <div className="mt-4 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl">
+                <p className="text-xs text-amber-800 text-center">
+                  ✨ <strong>지금 회원가입하면</strong> 무료 테스트도 <strong className="text-amber-900">AI 초정밀 해석</strong>으로 업그레이드!
+                </p>
               </div>
             </div>
           </div>
@@ -173,8 +220,8 @@ const FreeTrialAssessment = () => {
                     {/* 해석 레벨 안내 */}
                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                       <div className="text-xs text-gray-600">
-                        <p className="font-medium mb-1">📄 일반 해석만 제공</p>
-                        <p>기본적인 분석 결과를 확인하실 수 있습니다</p>
+                        <p className="font-medium mb-1">📊 기본 점수분석 제공</p>
+                        <p>회원가입시 <strong className="text-blue-600">2000자+ AI 전문가급 해석</strong> 받기</p>
                       </div>
                     </div>
 

@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { RefreshCw, Download, Share2, User, Heart, Target, Brain, Lightbulb, Save } from "lucide-react";
+import { RefreshCw, Download, Share2, User, Heart, Target, Brain, Lightbulb, Save, FileDown } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 
@@ -68,7 +68,7 @@ const getLevelVariant = (score: number) => {
 
 export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResultProps) {
   const { shareAsText } = useShareText();
-  const { saveTestResult, isSaving } = useTestResultActions();
+  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
 
   const handleShare = () => {
     const scoreTexts = Object.entries(result.scores)
@@ -265,6 +265,25 @@ export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResu
 
         {/* 액션 버튼 */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button 
+            onClick={() => generatePDFReport({
+              testType: 'bigfive',
+              results: {
+                ...result,
+                ageGroup: '성인'
+              },
+              analysis: '5차원 성격 분석 완료',
+              testInfo: {
+                testName: '5차원 성격 분석',
+                date: new Date().toLocaleDateString('ko-KR')
+              }
+            })}
+            disabled={isGeneratingPDF}
+            className="flex items-center gap-2"
+          >
+            <FileDown className="w-4 h-4" />
+            {isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 다운로드'}
+          </Button>
           <Button onClick={onRestart} variant="outline" className="flex items-center gap-2">
             <RefreshCw className="w-4 h-4" />
             다시 검사하기

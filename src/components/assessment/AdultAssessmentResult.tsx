@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink, MessageCircle, Users, UserCheck } from "lucide-react";
+import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink, MessageCircle, Users, UserCheck, FileDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
+import { useTestResultActions } from '@/hooks/useTestResultActions';
 
 interface AdultAssessmentResultProps {
   results: {
@@ -22,6 +23,8 @@ interface AdultAssessmentResultProps {
 const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }: AdultAssessmentResultProps) => {
   const { total, average, ageGroup, categoryScores } = results;
   const navigate = useNavigate();
+  const { generatePDFReport, isGeneratingPDF } = useTestResultActions();
+  const today = new Date().toLocaleDateString('ko-KR');
   
   const getCategoryName = (category: string) => {
     const names = {
@@ -230,13 +233,27 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
         </Button>
 
         <Button 
+          onClick={() => generatePDFReport({
+            testType: 'adult_assessment',
+            results: {
+              ...results,
+              ageGroup: ageGroup
+            },
+            analysis: "성인 심리상태 체크 완료",
+            testInfo: {
+              testName: '성인 심리상태 체크',
+              date: today
+            }
+          })}
+          disabled={isGeneratingPDF}
           variant="outline" 
           className="h-16"
-          disabled
+          aria-label="PDF 리포트 다운로드"
         >
+          <FileDown className="w-5 h-5 mr-2" />
           <div className="text-left">
-            <div className="font-semibold">PDF 리포트</div>
-            <div className="text-sm text-muted-foreground">(프리미엄)</div>
+            <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
+            <div className="text-sm text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
           </div>
         </Button>
 

@@ -19,7 +19,7 @@ interface PanicTestResultProps {
 
 const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
   const { total, average, severity } = results;
-  const { saveTestResult, isSaving } = useTestResultActions();
+  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { shareAsText } = useShareText();
   
   const chartData = [
@@ -321,13 +321,26 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
         </Button>
 
         <Button 
+          onClick={() => generatePDFReport({
+            testType: 'panic',
+            results: {
+              ...results,
+              ageGroup: '성인'
+            },
+            analysis: `불안감 수준: ${severity}`,
+            testInfo: {
+              testName: '불안감 수준 확인',
+              date: new Date().toLocaleDateString('ko-KR')
+            }
+          })}
+          disabled={isGeneratingPDF}
           variant="outline" 
           className="h-16"
-          disabled
+          aria-label="PDF 리포트 다운로드"
         >
           <div className="text-left">
-            <div className="font-semibold">PDF 리포트</div>
-            <div className="text-sm text-muted-foreground">(프리미엄)</div>
+            <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
+            <div className="text-sm text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
           </div>
         </Button>
 

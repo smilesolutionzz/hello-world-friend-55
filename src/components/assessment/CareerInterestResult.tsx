@@ -2,8 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { RefreshCw, Download, Share2, Briefcase, Wrench, Microscope, Palette, Users, TrendingUp, FileText } from "lucide-react";
+import { RefreshCw, Download, Share2, Briefcase, Wrench, Microscope, Palette, Users, TrendingUp, FileText, FileDown } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
+import { useTestResultActions } from '@/hooks/useTestResultActions';
 
 interface CareerInterestResultProps {
   result: {
@@ -72,6 +73,7 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
   const topConfig = typeConfig[topType as keyof typeof typeConfig];
   const TopIcon = topConfig.icon;
   const { shareAsText } = useShareText();
+  const { generatePDFReport, isGeneratingPDF } = useTestResultActions();
 
   const handleShare = () => {
     const topThreeTypes = result.topTypes
@@ -272,6 +274,25 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
 
         {/* 액션 버튼 */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button 
+            onClick={() => generatePDFReport({
+              testType: 'career',
+              results: {
+                ...result,
+                ageGroup: '성인'
+              },
+              analysis: `진로 유형: ${topConfig.name}`,
+              testInfo: {
+                testName: '진로 흥미 탐색',
+                date: new Date().toLocaleDateString('ko-KR')
+              }
+            })}
+            disabled={isGeneratingPDF}
+            className="flex items-center gap-2"
+          >
+            <FileDown className="w-4 h-4" />
+            {isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 다운로드'}
+          </Button>
           <Button onClick={onRestart} variant="outline" className="flex items-center gap-2">
             <RefreshCw className="w-4 h-4" />
             다시 검사하기
@@ -279,10 +300,6 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
           <Button onClick={handleShare} className="flex items-center gap-2">
             <Share2 className="w-4 h-4" />
             결과 공유하기
-          </Button>
-          <Button variant="secondary" className="flex items-center gap-2">
-            <Download className="w-4 h-4" />
-            결과 저장하기
           </Button>
         </div>
       </div>

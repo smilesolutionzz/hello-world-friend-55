@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Share2, RotateCcw, AlertTriangle, CheckCircle, Info, Heart } from 'lucide-react';
+import { Brain, Share2, RotateCcw, AlertTriangle, CheckCircle, Info, Heart, FileDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useTestResultActions } from '@/hooks/useTestResultActions';
 
 interface StressTestResultProps {
   result: {
@@ -19,6 +20,7 @@ interface StressTestResultProps {
 const StressTestResult = ({ result, onRestart }: StressTestResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { generatePDFReport, isGeneratingPDF } = useTestResultActions();
 
   const handleShare = async () => {
     const shareText = `스트레스 자가진단 결과\n총점: ${result.total}점\n상태: ${result.severity}\n\n나도 테스트해보기!`;
@@ -111,6 +113,25 @@ const StressTestResult = ({ result, onRestart }: StressTestResultProps) => {
             </div>
 
             <div className="flex flex-col gap-3">
+              <Button 
+                onClick={() => generatePDFReport({
+                  testType: 'stress',
+                  results: {
+                    ...result,
+                    ageGroup: '성인'
+                  },
+                  analysis: `스트레스 수준: ${stressInfo.level}`,
+                  testInfo: {
+                    testName: '스트레스 지수 측정',
+                    date: new Date().toLocaleDateString('ko-KR')
+                  }
+                })}
+                disabled={isGeneratingPDF}
+                className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700"
+              >
+                <FileDown className="w-4 h-4 mr-2" />
+                {isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 다운로드'}
+              </Button>
               <Button 
                 onClick={handleShare}
                 className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"

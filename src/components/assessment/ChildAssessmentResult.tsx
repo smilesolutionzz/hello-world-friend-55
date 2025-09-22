@@ -195,13 +195,27 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
         </Button>
 
         <Button 
+          onClick={() => generatePDFReport({
+            testType: 'child_assessment',
+            results: {
+              ...results,
+              ageGroup: ageGroup
+            },
+            analysis: "아동발달 체크 완료",
+            testInfo: {
+              testName: '아동발달 체크',
+              date: today
+            }
+          })}
+          disabled={isGeneratingPDF}
           variant="outline" 
           className="h-16"
-          disabled
+          aria-label="PDF 리포트 다운로드"
         >
+          <FileDown className="w-5 h-5 mr-2" />
           <div className="text-left">
-            <div className="font-semibold">PDF 리포트</div>
-            <div className="text-sm text-muted-foreground">(프리미엄)</div>
+            <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
+            <div className="text-sm text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
           </div>
         </Button>
 

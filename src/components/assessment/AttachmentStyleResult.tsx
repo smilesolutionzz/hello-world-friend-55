@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { RefreshCw, Download, Share2, Heart, Shield, UserX, Zap, Save } from "lucide-react";
+import { RefreshCw, Download, Share2, Heart, Shield, UserX, Zap, Save, FileDown } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 
@@ -101,7 +101,7 @@ export default function AttachmentStyleResult({ result, onRestart }: AttachmentS
   const Icon = config.icon;
   const tips = improvementTips[result.style as keyof typeof improvementTips];
   const { shareAsText } = useShareText();
-  const { saveTestResult, isSaving } = useTestResultActions();
+  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
 
   const handleShare = () => {
     const shareContent = `애착 유형 검사 결과\n\n나의 애착 유형: ${result.style}\n불안 점수: ${result.anxietyScore.toFixed(1)}\n회피 점수: ${result.avoidanceScore.toFixed(1)}`;
@@ -387,6 +387,25 @@ export default function AttachmentStyleResult({ result, onRestart }: AttachmentS
 
         {/* 액션 버튼 */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button 
+            onClick={() => generatePDFReport({
+              testType: 'attachment',
+              results: {
+                ...result,
+                ageGroup: '성인'
+              },
+              analysis: `애착 유형: ${result.style}`,
+              testInfo: {
+                testName: '관계 유형 진단',
+                date: new Date().toLocaleDateString('ko-KR')
+              }
+            })}
+            disabled={isGeneratingPDF}
+            className="flex items-center gap-2"
+          >
+            <FileDown className="w-4 h-4" />
+            {isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 다운로드'}
+          </Button>
           <Button onClick={onRestart} variant="outline" className="flex items-center gap-2">
             <RefreshCw className="w-4 h-4" />
             다시 검사하기

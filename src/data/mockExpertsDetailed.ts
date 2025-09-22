@@ -90,36 +90,6 @@ export const mockExpertsDetailed = [
     responseTime: '평균 4시간 이내'
   },
   {
-    id: '4',
-    name: '박하진',
-    specialty: ['청소년상담', '심리상담'],
-    credentials: ['청소년상담사 1급', '상담심리사'],
-    rating: 4.9,
-    reviews: 78,
-    experience: '10년',
-    availability: '평일 16-22시, 주말 가능',
-    monthlyPrice: 110000,
-    hourlyPrice: 28000,
-    image: '/api/placeholder/150/150',
-    description: '청소년기 정서적 어려움과 학업 스트레스 상담을 전문으로 합니다.',
-    languages: ['한국어'],
-    consultationTypes: ['화상상담', '전화상담'],
-    monthlyServices: [
-      '주 1회 개별 상담 (월 4회)',
-      '위기 상황 24시간 대응',
-      '부모-자녀 관계 개선 상담',
-      '학업 동기 향상 프로그램'
-    ],
-    portfolio: {
-      cases: 180,
-      successRate: 86,
-      specializations: ['청소년 상담', '학교적응', '심리상담']
-    },
-    location: '온라인 전용',
-    isOnline: true,
-    responseTime: '평균 30분 이내'
-  },
-  {
     id: '5',
     name: '강은미',
     specialty: ['심리상담', '심리평가'],

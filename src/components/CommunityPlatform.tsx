@@ -110,16 +110,6 @@ const CommunityPlatform = () => {
       description: '언어발달지연 아동의 언어능력 향상을 위한 맞춤형 치료를 제공합니다.'
     },
     {
-      name: '박하진',
-      specialty: '청소년상담사',
-      experience: '10년',
-      rating: 4.9,
-      consultations: 180,
-      online: true,
-      credentials: ['청소년상담사 1급', '상담심리사'],
-      description: '청소년기 정서적 어려움과 학업 스트레스 상담을 전문으로 합니다.'
-    },
-    {
       name: '강은미',
       specialty: '임상심리사',
       experience: '14년',

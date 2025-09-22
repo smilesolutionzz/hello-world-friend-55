@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink } from "lucide-react";
+import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink, FileDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useState } from 'react';
+// import { generatePDFReport } from '@/utils/pdfGenerator';
 
 interface ChildAssessmentResultProps {
   results: {
@@ -19,6 +21,8 @@ interface ChildAssessmentResultProps {
 const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) => {
   const { total, average, ageGroup, gameScores } = results;
   const navigate = useNavigate();
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const today = new Date().toLocaleDateString('ko-KR');
   
   const getShortGameName = (gameName: string) => {
     const names = {
@@ -195,27 +199,18 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
         </Button>
 
         <Button 
-          onClick={() => generatePDFReport({
-            testType: 'child_assessment',
-            results: {
-              ...results,
-              ageGroup: ageGroup
-            },
-            analysis: "아동발달 체크 완료",
-            testInfo: {
-              testName: '아동발달 체크',
-              date: today
-            }
-          })}
-          disabled={isGeneratingPDF}
+          onClick={() => {
+            // PDF 생성 기능은 구독 서비스에서 제공됩니다
+            window.open('https://drive.google.com/file/d/17WD3mhW2T4TdkfxTzLpfH5bzFARxz_Vh/view?usp=drive_link', '_blank');
+          }}
           variant="outline" 
           className="h-16"
           aria-label="PDF 리포트 다운로드"
         >
           <FileDown className="w-5 h-5 mr-2" />
           <div className="text-left">
-            <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
-            <div className="text-sm text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
+            <div className="font-semibold">PDF 리포트</div>
+            <div className="text-sm text-muted-foreground">결과를 PDF로 저장</div>
           </div>
         </Button>
 

@@ -62,14 +62,6 @@ export const ViralMechanics: React.FC = () => {
         progress: 0, // 실제로는 사용자 스트릭 데이터
         target: 7,
         type: 'streak'
-      },
-      {
-        title: "리뷰 작성 이벤트",
-        description: "앱스토어 리뷰 작성하고 토큰 받기",
-        reward: "토큰 100개",
-        progress: 0,
-        target: 1,
-        type: 'review'
       }
     ];
 
@@ -226,21 +218,6 @@ export const ViralMechanics: React.FC = () => {
                     </Button>
                   )}
                   
-                  {campaign.type === 'review' && (
-                    <Button 
-                      asChild 
-                      className="flex-1 bg-pink-600 hover:bg-pink-700 text-white"
-                    >
-                      <a 
-                        href="https://apps.apple.com/app/your-app" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                      >
-                        <Heart className="h-4 w-4 mr-2" />
-                        리뷰 작성하기
-                      </a>
-                    </Button>
-                  )}
                   
                   {campaign.type === 'streak' && (
                     <Button 
@@ -291,34 +268,41 @@ export const ViralMechanics: React.FC = () => {
       </Card>
 
       {/* APR 전략: 성과 기반 사회적 증명 */}
-      <Card className="bg-gradient-to-r from-green-500 to-blue-500 text-white">
+      <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
         <CardContent className="p-6">
           <div className="text-center">
             <h3 className="text-xl font-bold mb-2">🌟 공유 리더보드</h3>
-            <p className="mb-4 opacity-90">이번 주 가장 많이 공유한 사용자들</p>
+            <p className="mb-2">이번 주 가장 많이 공유한 사용자들</p>
+            <p className="mb-4 text-sm bg-yellow-400/20 text-yellow-200 px-3 py-1 rounded-full inline-block font-medium">
+              매주 1, 2, 3등에겐 3개월/2개월/1개월 무료구독권을 드립니다!
+            </p>
             
             <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="bg-white/20 rounded-lg p-3">
+              <div className="bg-primary-foreground/20 rounded-lg p-3">
                 <div className="text-2xl">🥇</div>
-                <div className="text-sm opacity-90">김**님</div>
-                <div className="text-xs">15회 공유</div>
+                <div className="text-sm">김**님</div>
+                <div className="text-xs opacity-80">15회 공유</div>
+                <div className="text-xs text-yellow-200 font-medium mt-1">3개월 무료</div>
               </div>
-              <div className="bg-white/20 rounded-lg p-3">
+              <div className="bg-primary-foreground/20 rounded-lg p-3">
                 <div className="text-2xl">🥈</div>
-                <div className="text-sm opacity-90">이**님</div>
-                <div className="text-xs">12회 공유</div>
+                <div className="text-sm">이**님</div>
+                <div className="text-xs opacity-80">12회 공유</div>
+                <div className="text-xs text-yellow-200 font-medium mt-1">2개월 무료</div>
               </div>
-              <div className="bg-white/20 rounded-lg p-3">
+              <div className="bg-primary-foreground/20 rounded-lg p-3">
                 <div className="text-2xl">🥉</div>
-                <div className="text-sm opacity-90">박**님</div>
-                <div className="text-xs">9회 공유</div>
+                <div className="text-sm">박**님</div>
+                <div className="text-xs opacity-80">9회 공유</div>
+                <div className="text-xs text-yellow-200 font-medium mt-1">1개월 무료</div>
               </div>
             </div>
             
             <Button 
               variant="secondary" 
-              className="mt-4 text-primary font-medium bg-white hover:bg-gray-50"
+              className="mt-4 font-medium"
               onClick={handleShare}
+              aria-label="공유 리더보드에 참여하기"
             >
               나도 참여하기
             </Button>

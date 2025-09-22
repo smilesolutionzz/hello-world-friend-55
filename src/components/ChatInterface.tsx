@@ -53,7 +53,7 @@ const ChatInterface = () => {
         throw error;
       }
 
-      if (!data || !data.success) {
+      if (!data || !data.report) {
         console.error('응답 오류:', data);
         throw new Error(data?.error || '서버 응답 오류');
       }

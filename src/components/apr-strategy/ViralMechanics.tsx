@@ -268,33 +268,33 @@ export const ViralMechanics: React.FC = () => {
       </Card>
 
       {/* APR 전략: 성과 기반 사회적 증명 */}
-      <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
+      <Card className="bg-background text-foreground border border-primary/20">
         <CardContent className="p-6">
           <div className="text-center">
             <h3 className="text-xl font-bold mb-2">🌟 공유 리더보드</h3>
             <p className="mb-2">이번 주 가장 많이 공유한 사용자들</p>
-            <p className="mb-4 text-sm bg-yellow-400/20 text-yellow-200 px-3 py-1 rounded-full inline-block font-medium">
+            <p className="mb-4 text-sm bg-muted/60 text-foreground px-3 py-1 rounded-full inline-block font-medium">
               매주 1, 2, 3등에겐 3개월/2개월/1개월 무료구독권을 드립니다!
             </p>
             
             <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="bg-primary-foreground/20 rounded-lg p-3">
+              <div className="bg-muted/40 rounded-lg p-3">
                 <div className="text-2xl">🥇</div>
                 <div className="text-sm">김**님</div>
                 <div className="text-xs opacity-80">15회 공유</div>
-                <div className="text-xs text-yellow-200 font-medium mt-1">3개월 무료</div>
+                <div className="text-xs text-foreground font-medium mt-1">3개월 무료</div>
               </div>
-              <div className="bg-primary-foreground/20 rounded-lg p-3">
+              <div className="bg-muted/40 rounded-lg p-3">
                 <div className="text-2xl">🥈</div>
                 <div className="text-sm">이**님</div>
                 <div className="text-xs opacity-80">12회 공유</div>
-                <div className="text-xs text-yellow-200 font-medium mt-1">2개월 무료</div>
+                <div className="text-xs text-foreground font-medium mt-1">2개월 무료</div>
               </div>
-              <div className="bg-primary-foreground/20 rounded-lg p-3">
+              <div className="bg-muted/40 rounded-lg p-3">
                 <div className="text-2xl">🥉</div>
                 <div className="text-sm">박**님</div>
                 <div className="text-xs opacity-80">9회 공유</div>
-                <div className="text-xs text-yellow-200 font-medium mt-1">1개월 무료</div>
+                <div className="text-xs text-foreground font-medium mt-1">1개월 무료</div>
               </div>
             </div>
             

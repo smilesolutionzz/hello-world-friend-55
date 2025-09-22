@@ -6,6 +6,7 @@ import { Activity, BarChart3, Target, Zap, Eye, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { MobileGrid, MobileCard, MobileButton } from '@/components/common/MobileOptimized';
+import { useNavigate } from 'react-router-dom';
 
 interface TrackingData {
   dailyGoal: number;
@@ -18,12 +19,33 @@ interface TrackingData {
 
 export const RealTimeTracking: React.FC = () => {
   const { user } = useAuthGuard();
+  const navigate = useNavigate();
   const [trackingData, setTrackingData] = useState<TrackingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [liveStats, setLiveStats] = useState({
     currentViewers: 0,
     todayCompletions: 0
   });
+
+  const handleActionClick = (action: string) => {
+    if (action.includes('3분') || action.includes('일일 체크')) {
+      navigate('/assessment');
+      return;
+    }
+    if (action.includes('AI 분석') || action.includes('강점')) {
+      navigate('/assessment');
+      return;
+    }
+    if (action.includes('재분석') || action.includes('지난주')) {
+      navigate('/assessment-history');
+      return;
+    }
+    if (action.includes('전문가') || action.includes('상담')) {
+      navigate('/expert-hiring');
+      return;
+    }
+    navigate('/assessment');
+  };
 
   useEffect(() => {
     if (user) {
@@ -205,7 +227,7 @@ export const RealTimeTracking: React.FC = () => {
   return (
     <div className="space-y-4 lg:space-y-6">
       {/* APR 전략: 실시간 활동 표시로 FOMO 유발 */}
-      <MobileCard className="border-l-4 border-l-red-500 bg-gradient-to-r from-red-50 to-transparent">
+      <MobileCard className="border-l-4 border-l-primary/60 bg-gradient-to-r from-primary/5 to-transparent">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <Eye className="h-4 w-4 lg:h-5 lg:w-5 text-red-500 animate-pulse flex-shrink-0" />
@@ -307,7 +329,13 @@ export const RealTimeTracking: React.FC = () => {
             {trackingData?.recommendedActions.map((action, index) => (
               <div key={index} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 bg-white rounded-lg border gap-3">
                 <span className="text-sm text-foreground">{action}</span>
-                <Button size="sm" variant="outline" className="bg-primary text-primary-foreground hover:bg-primary/90 w-full sm:w-auto">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleActionClick(action)}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 w-full sm:w-auto"
+                  aria-label="추천 액션 시작하기"
+                >
                   시작하기
                 </Button>
               </div>
@@ -317,7 +345,7 @@ export const RealTimeTracking: React.FC = () => {
       </Card>
 
       {/* APR 전략: 긴급성 메시지 */}
-      <Card className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
+      <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
         <CardContent className="p-4 lg:p-6 text-center">
           <h3 className="text-lg lg:text-xl font-bold mb-2">⚡ 지금이 변화의 순간!</h3>
           <p className="mb-4 opacity-90 text-sm lg:text-base">
@@ -326,7 +354,12 @@ export const RealTimeTracking: React.FC = () => {
               : "오늘 시작하면 내일이 달라집니다!"
             }
           </p>
-          <Button variant="secondary" className="text-primary font-medium bg-white hover:bg-gray-50">
+          <Button
+            variant="secondary"
+            onClick={() => navigate('/assessment')}
+            className="font-medium"
+            aria-label="지금 시작하기"
+          >
             지금 시작하기
           </Button>
         </CardContent>

@@ -88,9 +88,6 @@ import WellnessLifestyle from "./pages/WellnessLifestyle";
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTests from "./pages/FunTests";
 import FunTestResult from "./pages/FunTestResult";
-import JoseonNameTest from "./pages/JoseonNameTest";
-import JoseonJobTest from "./pages/JoseonJobTest";
-import JoseonStatusTest from "./pages/JoseonStatusTest";
 
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
@@ -146,9 +143,6 @@ const App = () => {
           <Route path="/assessment-detail/:id" element={<AssessmentDetail />} />
           <Route path="/fun-tests" element={<FunTests />} />
            <Route path="/fun-test-result" element={<FunTestResult />} />
-           <Route path="/joseon-name-test" element={<JoseonNameTest />} />
-           <Route path="/joseon-job-test" element={<JoseonJobTest />} />
-           <Route path="/joseon-status-test" element={<JoseonStatusTest />} />
           
           <Route path="/assessment-history" element={<AssessmentHistory />} />
           <Route path="/counseling" element={<CounselingFlow />} />

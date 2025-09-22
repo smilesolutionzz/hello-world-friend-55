@@ -40,7 +40,7 @@ export default function FunTestResult() {
   };
 
   const handleRetry = () => {
-    navigate('/fun-tests');
+    navigate('/');
   };
 
   const handleShareText = () => {
@@ -94,8 +94,8 @@ export default function FunTestResult() {
         <Card>
           <CardContent className="text-center p-8">
             <p className="text-muted-foreground mb-4">결과를 찾을 수 없습니다.</p>
-            <Button onClick={() => navigate('/assessment')}>
-              테스트 다시 하기
+            <Button onClick={() => navigate('/')}>
+              메인으로 돌아가기
             </Button>
           </CardContent>
         </Card>
@@ -200,7 +200,7 @@ export default function FunTestResult() {
                 </Button>
                 <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
                   <RotateCcw className="w-4 h-4 mr-2" />
-                  다른 테스트 해보기
+                  메인으로 돌아가기
                 </Button>
               </div>
               <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full">
@@ -355,7 +355,7 @@ export default function FunTestResult() {
                 </Button>
                 <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
                   <RotateCcw className="w-4 h-4 mr-2" />
-                  다른 테스트 해보기
+                  메인으로 돌아가기
                 </Button>
               </div>
               <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full">

@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, LineChart, Line, AreaChart, Area } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 
 interface SocialDevelopmentTestResultProps {
   results: {
@@ -22,6 +23,7 @@ interface SocialDevelopmentTestResultProps {
 }
 
 const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevelopmentTestResultProps) => {
+  const navigate = useNavigate();
   const [analysis, setAnalysis] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [socialDomains, setSocialDomains] = useState<any[]>([]);
@@ -501,8 +503,9 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
         </Button>
         
         <Button 
-          onClick={() => window.open('https://example.com/expert-consultation', '_blank')}
+          onClick={() => navigate('/expert-hiring')}
           className="bg-green-600 hover:bg-green-700"
+          aria-label="전문가 상담 예약하기"
         >
           전문가 상담 예약
         </Button>

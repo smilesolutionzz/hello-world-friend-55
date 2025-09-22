@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Heart, MapPin, Phone, Clock, Star, ChevronRight, Pill, Utensils, Activity, Shield, Calendar } from 'lucide-react';
 import { PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 
 interface EnhancedConstitutionResultProps {
   result: any;
@@ -19,6 +20,7 @@ const constitutionColors = {
 };
 
 export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProps> = ({ result, onRestart }) => {
+  const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<'analysis' | 'prescription' | 'lifestyle' | 'clinics'>('analysis');
   
   const analysis = result.analysis || {};
@@ -467,7 +469,12 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
               <Heart className="h-5 w-5 mr-2" />
               결과 저장하기
             </Button>
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+            <Button 
+              size="lg" 
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={() => navigate('/expert-hiring')}
+              aria-label="전문가 상담 예약하기"
+            >
               <Phone className="h-5 w-5 mr-2" />
               전문가 상담 예약
             </Button>

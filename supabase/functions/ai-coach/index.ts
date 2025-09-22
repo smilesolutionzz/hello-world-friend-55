@@ -122,7 +122,7 @@ ${moodBefore ? `시작 기분 점수: ${moodBefore}/5` : ''}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-5-2025-08-07',
         messages: [
           { 
             role: 'system', 
@@ -190,7 +190,7 @@ async function generateActionResponse(action: string, prompt: string) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-5-2025-08-07',
         messages: [
           { 
             role: 'system', 

@@ -18,7 +18,7 @@ export const DepressionPackage = () => {
       status: '전문검사',
       statusColor: 'bg-red-500',
       description: 'AHI-MOOD 기준 정확한 진단',
-      path: '/assessment?type=depression'
+      path: '/assessment?test=depression'
     },
     {
       id: 2,

@@ -18,7 +18,7 @@ export const StressPackage = () => {
       status: '빠른체크',
       statusColor: 'bg-blue-500',
       description: '스트레스 수준 정확한 측정',
-      path: '/assessment'
+      path: '/assessment?test=stress'
     },
     {
       id: 2,
@@ -28,7 +28,7 @@ export const StressPackage = () => {
       status: '직장인 추천',
       statusColor: 'bg-purple-500',
       description: '결과에 따라 심화 검사 제공',
-      path: '/assessment'
+      path: '/assessment?test=stress'
     },
     {
       id: 3,

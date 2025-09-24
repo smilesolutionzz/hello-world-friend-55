@@ -18,7 +18,7 @@ export const ChildPackage = () => {
       status: '발달평가',
       statusColor: 'bg-green-500',
       description: '발달단계별 정확한 평가',
-      path: '/assessment?type=language'
+      path: '/assessment?test=language'
     },
     {
       id: 2,
@@ -28,7 +28,7 @@ export const ChildPackage = () => {
       status: 'ADHD체크',
       statusColor: 'bg-orange-500',
       description: 'ADHD 증상 조기 발견',
-      path: '/assessment?type=adhd'
+      path: '/assessment?test=adhd'
     },
     {
       id: 3,

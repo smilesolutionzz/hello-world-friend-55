@@ -18,7 +18,7 @@ export const AnxietyPackage = () => {
       status: '필수검사',
       statusColor: 'bg-orange-500',
       description: '불안 유형별 정확한 진단',
-      path: '/assessment?type=panic'
+      path: '/assessment?test=panic'
     },
     {
       id: 2,

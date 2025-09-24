@@ -62,7 +62,8 @@ export const ExpertApplicationForm = () => {
 
   const specializationOptions = [
     '아동발달', '언어치료', '심리상담', '행동치료', '학습지도', 
-    '감각통합', '놀이치료', '인지치료', '사회성훈련', '부모교육'
+    '감각통합', '놀이치료', '인지치료', '사회성훈련', '부모교육',
+    '미술(심리)치료'
   ];
 
   const consultationMethodOptions = [

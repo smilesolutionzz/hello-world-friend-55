@@ -4,14 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
 import { 
   Users, MessageCircle, Heart, Star, Clock, 
   UserCheck, Building, Baby, Stethoscope, 
-  BookOpen, TrendingUp, Shield, Award
+  BookOpen, TrendingUp, Shield, Award, Send
 } from 'lucide-react';
 
 const CommunityPlatform = () => {
   const [activeTab, setActiveTab] = useState('posts');
+  const [comments, setComments] = useState<{[postId: number]: Array<{id: number, author: string, content: string, timeAgo: string}>}>({});
+  const [newComment, setNewComment] = useState<{[postId: number]: string}>({});
+  const [selectedPost, setSelectedPost] = useState<number | null>(null);
 
   // 커뮤니티 포스트 데이터
   const communityPosts = [
@@ -210,6 +214,35 @@ const CommunityPlatform = () => {
     }
   };
 
+  const handleCommentSubmit = (postId: number) => {
+    const commentText = newComment[postId]?.trim();
+    if (!commentText) return;
+
+    const newCommentObj = {
+      id: Date.now(),
+      author: '나',
+      content: commentText,
+      timeAgo: '방금 전'
+    };
+
+    setComments(prev => ({
+      ...prev,
+      [postId]: [...(prev[postId] || []), newCommentObj]
+    }));
+
+    setNewComment(prev => ({
+      ...prev,
+      [postId]: ''
+    }));
+  };
+
+  const handleCommentChange = (postId: number, value: string) => {
+    setNewComment(prev => ({
+      ...prev,
+      [postId]: value
+    }));
+  };
+
   return (
     <div className="space-y-6">
       {/* 커뮤니티 헤더 */}
@@ -304,14 +337,67 @@ const CommunityPlatform = () => {
                         <Heart className="w-4 h-4" />
                         {post.stats.likes}
                       </div>
-                      <div className="flex items-center gap-1">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="flex items-center gap-1 p-1 h-auto text-sm text-muted-foreground hover:text-primary"
+                        onClick={() => setSelectedPost(selectedPost === post.id ? null : post.id)}
+                      >
                         <MessageCircle className="w-4 h-4" />
-                        {post.stats.comments}
-                      </div>
+                        {comments[post.id]?.length || 0}
+                      </Button>
                       <div className="flex items-center gap-1">
                         조회 {post.stats.views}
                       </div>
                     </div>
+
+                    {/* 댓글 섹션 */}
+                    {selectedPost === post.id && (
+                      <div className="mt-4 space-y-3 border-t pt-3">
+                        {/* 기존 댓글 목록 */}
+                        {comments[post.id]?.map((comment) => (
+                          <div key={comment.id} className="flex items-start gap-2">
+                            <Avatar className="w-6 h-6">
+                              <AvatarFallback className="text-xs">{comment.author[0]}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium">{comment.author}</span>
+                                <span className="text-xs text-muted-foreground">{comment.timeAgo}</span>
+                              </div>
+                              <p className="text-sm text-muted-foreground">{comment.content}</p>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {/* 댓글 입력 */}
+                        <div className="flex items-center gap-2">
+                          <Avatar className="w-6 h-6">
+                            <AvatarFallback className="text-xs">나</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 flex gap-2">
+                            <Input
+                              placeholder="댓글을 입력하세요..."
+                              value={newComment[post.id] || ''}
+                              onChange={(e) => handleCommentChange(post.id, e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleCommentSubmit(post.id);
+                                }
+                              }}
+                              className="text-sm"
+                            />
+                            <Button 
+                              size="sm" 
+                              onClick={() => handleCommentSubmit(post.id)}
+                              disabled={!newComment[post.id]?.trim()}
+                            >
+                              <Send className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>

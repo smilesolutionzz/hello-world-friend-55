@@ -391,8 +391,59 @@ const ExpertHiring = () => {
 
           if (data && data.experts) {
             console.log('AI matched experts:', data.experts);
-            setAiRecommendations(data.experts);
-            toast.success(`${data.experts.length}명의 전문가가 AI 분석을 통해 추천되었습니다.`);
+            // Normalize AI response to match Expert interface
+            const normalized = data.experts.map((e: any, idx: number): Expert => ({
+              id: e.id || `ai_${idx}`,
+              name: e.name || e.full_name || '이름 미상',
+              specialty: Array.isArray(e.specialty)
+                ? e.specialty
+                : typeof e.specialty === 'string'
+                  ? e.specialty.split(/[,\s]+/).filter(Boolean)
+                  : Array.isArray(e.specializations)
+                    ? e.specializations
+                    : [],
+              credentials: Array.isArray(e.credentials)
+                ? e.credentials
+                : e.credentials
+                  ? [e.credentials]
+                  : Array.isArray(e.certifications)
+                    ? e.certifications
+                    : [],
+              rating: Number(e.rating) || Number(e.average_rating) || 4.7,
+              reviews: Number(e.reviews) || Number(e.review_count) || Number(e.total_sessions) || 0,
+              experience: e.experience || (e.years_experience ? `${e.years_experience}년` : '경력 미상'),
+              availability: e.availability || '평일 9-18시',
+              monthlyPrice: Number(e.monthlyPrice) || (Number(e.hourlyPrice || e.hourly_rate) ? Number(e.hourlyPrice || e.hourly_rate) * 4 : 100000),
+              hourlyPrice: Number(e.hourlyPrice || e.hourly_rate) || 25000,
+              image: e.image || e.profile_image_url || '/api/placeholder/150/150',
+              description: e.description || e.bio || '',
+              languages: Array.isArray(e.languages) ? e.languages : ['한국어'],
+              consultationTypes: Array.isArray(e.consultationTypes)
+                ? e.consultationTypes
+                : Array.isArray(e.consultation_methods)
+                  ? e.consultation_methods
+                  : ['화상상담'],
+              monthlyServices: Array.isArray(e.monthlyServices) && e.monthlyServices.length > 0
+                ? e.monthlyServices
+                : [
+                    '주 1회 개별 상담 (월 4회)',
+                    '전문가 평가 및 리포트',
+                    '상담 진행 관리',
+                    '24시간 문의 지원'
+                  ],
+              portfolio: {
+                cases: Number(e.portfolio?.cases || e.total_sessions) || 0,
+                successRate: Number(e.portfolio?.successRate) || 90,
+                specializations: Array.isArray(e.portfolio?.specializations) ? e.portfolio.specializations : []
+              },
+              location: e.location || '온라인',
+              isOnline: typeof e.isOnline === 'boolean' ? e.isOnline : true,
+              responseTime: e.responseTime || '평균 2시간 이내',
+              aiMatchScore: Number(e.aiMatchScore || e.confidence) || undefined
+            }));
+
+            setAiRecommendations(normalized);
+            toast.success(`${normalized.length}명의 전문가가 AI 분석을 통해 추천되었습니다.`);
           } else {
             // 실제 데이터베이스에서 전문가 목록 가져오기
             const { data: dbExperts } = await supabase

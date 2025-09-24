@@ -1668,7 +1668,7 @@ export type Database = {
           specializations: string[]
           total_sessions: number | null
           updated_at: string | null
-          user_id: string
+          user_id: string | null
           years_experience: number
         }
         Insert: {
@@ -1690,7 +1690,7 @@ export type Database = {
           specializations?: string[]
           total_sessions?: number | null
           updated_at?: string | null
-          user_id: string
+          user_id?: string | null
           years_experience?: number
         }
         Update: {
@@ -1712,7 +1712,7 @@ export type Database = {
           specializations?: string[]
           total_sessions?: number | null
           updated_at?: string | null
-          user_id?: string
+          user_id?: string | null
           years_experience?: number
         }
         Relationships: []

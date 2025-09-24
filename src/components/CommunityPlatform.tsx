@@ -18,62 +18,77 @@ const CommunityPlatform = () => {
     {
       id: 1,
       author: {
-        name: '김엄마',
+        name: '유준만',
         role: 'parent',
         avatar: '/api/placeholder/40/40',
-        badges: ['신뢰회원', '활동장려상']
+        badges: ['신뢰회원']
       },
-      title: '7살 아이 언어발달 고민',
-      content: '7살 아이 언어발달 고민이에요. 아직도 발음이 부정확하고 문장을 제대로 만들지 못해서 걱정이 많아요. 언어치료를 받아야 할까요? 어떤 전문가를 만나야 할지 조언 부탁드려요.',
-      tags: ['언어발달', '7세'],
-      stats: { likes: 12, comments: 8, views: 156 },
-      timeAgo: '2시간 전',
+      title: '여기 통해서',
+      content: '최소한 관찰은 정안하게 되었나요',
+      tags: ['관찰', '일반상담'],
+      stats: { likes: 1, comments: 0, views: 23 },
+      timeAgo: '16일 전',
       isVerified: false
     },
     {
       id: 2,
       author: {
-        name: '김미영 아동발달전문가',
-        role: 'expert',
+        name: '별이엄마92',
+        role: 'parent',
         avatar: '/api/placeholder/40/40',
-        badges: ['인증전문가', 'TOP기여자']
+        badges: ['활동장려상', '베스트댓글']
       },
-      title: 'ADHD 치료 성공 후기',
-      content: '우리 아이가 ADHD 진단을 받았어요. 처음엔 너무 충격이었는데, 전문가 선생님과 상담하면서 많이 달라졌어요. 아이도 훨씬 안정적이고 집중력도 좋아졌습니다. 혹시 비슷한 고민 있으신 분들, 너무 걱정하지 마세요!',
-      tags: ['ADHD', '전문가상담'],
-      stats: { likes: 25, comments: 15, views: 289 },
-      timeAgo: '4시간 전',
-      isExpert: true
+      title: '5살 아들 감각통합 치료 후기 공유합니다!',
+      content: '처음엔 정말 힘들었어요.. 아이가 소리에 너무 예민하고 미끄럼틀도 무서워해서.. 감각통합 치료 6개월 받고나니 완전 달라졌어요! 놀이터도 혼자 갈 수 있고, 마트에서도 울지 않아요. 혹시 고민 중이신 분들 있으면 꼭 상담받아보세요!! 우리 아이 변화 보니까 울컥하더라구요 ㅠㅠ',
+      tags: ['감각통합', '5세', '성공후기'],
+      stats: { likes: 47, comments: 23, views: 312 },
+      timeAgo: '3시간 전',
+      isVerified: false
     },
     {
       id: 3,
       author: {
-        name: '박상훈 행동분석사',
-        role: 'expert',
+        name: '든든한아빠',
+        role: 'parent',
         avatar: '/api/placeholder/40/40',
-        badges: ['인증전문가', 'BCBA']
+        badges: ['신뢰회원', '경험공유왕']
       },
-      title: '자폐스펙트럼 ABA 치료 효과',
-      content: '자폐스펙트럼 아동의 ABA 치료 효과에 대해 많은 부모님들이 궁금해하시는데, 체계적인 접근을 통해 상당한 개선을 볼 수 있습니다. 무엇보다 가족의 꾸준한 지지가 중요해요.',
-      tags: ['자폐스펙트럼', 'ABA치료'],
-      stats: { likes: 31, comments: 18, views: 445 },
-      timeAgo: '5시간 전',
-      isExpert: true
+      title: 'ADHD 약물치료 vs 행동치료 고민이에요',
+      content: '초1 아들이 ADHD 진단받았는데... 약물치료 시작할지 행동치료만 할지 너무 고민돼요. 약 먹이기가 무서우면서도 아이가 학교에서 힘들어하는 모습 보니까 마음이 아프네요. 비슷한 경험 있으신 분들 조언 좀 부탁드려요. 아이 아빠로서 어떤 게 맞는 선택인지 모르겠어요.',
+      tags: ['ADHD', '약물치료', '행동치료', '초등학생'],
+      stats: { likes: 34, comments: 18, views: 267 },
+      timeAgo: '1시간 전',
+      isVerified: false
     },
     {
       id: 4,
       author: {
-        name: '한점미소발달센터',
-        role: 'institution',
+        name: '희망이네',
+        role: 'parent',
         avatar: '/api/placeholder/40/40',
-        badges: ['제휴기관', '우수기관']
+        badges: ['따뜻한댓글', '도움왕']
       },
-      title: '발달재활서비스 바우처 이용 안내',
-      content: '발달재활서비스 바우처를 통해 경제적 부담 없이 전문적인 치료를 받으실 수 있습니다. 언어치료, 인지치료, 작업치료 등 다양한 서비스를 제공하고 있어요.',
-      tags: ['바우처', '발달재활서비스', '지원'],
-      stats: { likes: 42, comments: 12, views: 567 },
-      timeAgo: '6시간 전',
-      isInstitution: true
+      title: '자폐스펙트럼 아이와 함께하는 일상 TIP',
+      content: '3년차 자폐 스펙트럼 아이 엄마예요. 처음엔 정말 막막했는데 이제는 아이만의 특별함을 알겠어요 😊 매일 작은 루틴들이 정말 중요하더라구요! 아침에 일어나서 같은 순서로 옷입기, 정해진 자리에서 밥먹기 이런 것들이요. 그리고 아이가 좋아하는 것들 찾아주기! 우리 아이는 자동차 소리에 진짜 신기하게 반응해요 ㅎㅎ',
+      tags: ['자폐스펙트럼', '일상팁', '루틴'],
+      stats: { likes: 52, comments: 31, views: 421 },
+      timeAgo: '5시간 전',
+      isVerified: false
+    },
+    {
+      id: 5,
+      author: {
+        name: '새벽맘',
+        role: 'parent',
+        avatar: '/api/placeholder/40/40',
+        badges: ['신규회원']
+      },
+      title: '언어발달 늦은 3살, 언제부터 치료 시작해야 할까요?',
+      content: '아직 두어마디 정도밖에 못해요.. 주변에선 남자아이라 원래 늦다고 하는데 정말 걱정이 많아요. 또래 아이들은 벌써 문장으로 말하는데 우리 아이만... 언어치료 받으면 정말 늘까요? 비용도 만만치 않고 아이가 스트레스받을까봐 고민도 되구요. 같은 경험 있으신 분들 이야기 들어보고 싶어요.',
+      tags: ['언어발달', '3세', '치료시기'],
+      stats: { likes: 28, comments: 15, views: 184 },
+      timeAgo: '30분 전',
+      isVerified: false
     }
   ];
 

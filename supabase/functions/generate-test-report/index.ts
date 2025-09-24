@@ -39,17 +39,25 @@ serve(async (req) => {
 
     console.log('Generating PDF for test result:', { testType, userId: user.id });
 
+    if (!testType || !results) {
+      throw new Error('필수 데이터가 누락되었습니다.');
+    }
+
     const pdfData = generatePDFContent(testType, results, analysis, testInfo, chartData);
     
-    // 실제 PDF 생성은 추후 구현 (현재는 HTML 기반 레포트)
+    // HTML 기반 레포트 생성
     const reportHtml = generateHTMLReport(testType, results, analysis, testInfo, chartData);
+
+    // 생성된 레포트를 새 창에서 열 수 있도록 data URL 생성
+    const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(reportHtml)}`;
 
     return new Response(JSON.stringify({
       success: true,
       message: 'PDF 리포트가 생성되었습니다.',
+      pdfUrl: dataUrl, // 브라우저에서 바로 열 수 있는 URL
       reportData: {
         html: reportHtml,
-        downloadUrl: null, // 실제 PDF 파일 URL (추후 구현)
+        downloadUrl: dataUrl,
         fileName: `${testType}_결과리포트_${new Date().toISOString().split('T')[0]}.pdf`
       }
     }), {

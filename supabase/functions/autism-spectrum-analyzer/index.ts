@@ -104,6 +104,12 @@ JSON 형식으로 응답해주세요:
     "redFlags": ["주의 신호 1", "주의 신호 2", "주의 신호 3"],
     "resources": ["활용 가능한 자원 1", "활용 가능한 자원 2"]
   },
+  "summaryAndRecommendations": {
+    "coreFindings": "핵심 발견사항 요약 (3-4줄)",
+    "immediateActions": ["오늘부터 실행할 수 있는 방법 1", "오늘부터 실행할 수 있는 방법 2", "오늘부터 실행할 수 있는 방법 3"],
+    "professionalNeed": "전문가 개입 필요성 여부와 이유",
+    "hopefulMessage": "긍정적 전망과 격려 메시지"
+  },
   "disclaimer": "본 검사는 선별도구이며 진단을 대체하지 않습니다. 정확한 평가를 위해서는 전문의와 상담하시기 바랍니다."
 }`
           },
@@ -163,6 +169,12 @@ JSON 형식으로 응답해주세요:
           timeline: "3-6개월 후 재평가 권장",
           redFlags: ["언어발달 지연", "사회적 회피 증가", "문제행동 심화"],
           resources: ["지역 발달센터", "특수교육지원센터", "부모 교육 프로그램"]
+        },
+        summaryAndRecommendations: {
+          coreFindings: `전체 점수 ${overallScore.toFixed(2)}/4.0으로 ${riskLevel} 위험도에 해당합니다. 개별 영역별 특성을 종합적으로 고려하여 맞춤형 지원이 필요합니다.`,
+          immediateActions: ["구조화된 일상 루틴 만들기", "시각적 도구 활용하기", "감각 친화적 환경 조성하기"],
+          professionalNeed: "지속적인 관찰과 전문가 평가를 통해 조기 개입의 필요성을 검토하는 것이 중요합니다.",
+          hopefulMessage: "적절한 지원과 환경에서 아이의 고유한 강점을 발휘할 수 있습니다."
         },
         disclaimer: "본 검사는 선별도구이며 진단을 대체하지 않습니다. 정확한 평가를 위해서는 전문의와 상담하시기 바랍니다."
       };

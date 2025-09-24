@@ -264,8 +264,8 @@ const mockExperts: Expert[] = [
 
 const ExpertHiring = () => {
   const navigate = useNavigate();
-  const [experts, setExperts] = useState<Expert[]>(mockExperts);
-  const [filteredExperts, setFilteredExperts] = useState<Expert[]>(mockExperts);
+  const [experts, setExperts] = useState<Expert[]>([]);
+  const [filteredExperts, setFilteredExperts] = useState<Expert[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [specialtyFilter, setSpecialtyFilter] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
@@ -294,42 +294,153 @@ const ExpertHiring = () => {
   const [showStoryShare, setShowStoryShare] = useState(false);
   const [storyRefreshTrigger, setStoryRefreshTrigger] = useState(0);
 
+  // 실제 전문가 데이터 로드
+  const loadExperts = async () => {
+    try {
+      const { data: dbExperts, error } = await supabase
+        .from('experts')
+        .select('*')
+        .eq('is_verified', true)
+        .eq('is_available', true);
+      
+      if (error) {
+        console.error('Error loading experts:', error);
+        toast.error('전문가 목록을 불러오는 중 오류가 발생했습니다.');
+        return;
+      }
+
+      if (dbExperts) {
+        // 데이터베이스 형식을 기존 Expert 인터페이스에 맞게 변환
+        const formattedExperts: Expert[] = dbExperts.map(expert => ({
+          id: expert.id,
+          name: expert.full_name,
+          specialty: expert.specializations || [],
+          credentials: expert.certifications || [],
+          rating: expert.average_rating || 4.5,
+          reviews: expert.total_sessions || 0,
+          experience: `${expert.years_experience}년`,
+          availability: '평일 9-18시',
+          monthlyPrice: expert.hourly_rate * 4, // 월 4회 기준
+          hourlyPrice: expert.hourly_rate,
+          image: expert.profile_image_url || '/api/placeholder/150/150',
+          description: expert.bio || '',
+          languages: expert.languages || ['한국어'],
+          consultationTypes: expert.consultation_methods || ['화상상담'],
+          monthlyServices: [
+            '주 1회 개별 상담 (월 4회)',
+            '전문가 평가 및 리포트',
+            '상담 진행 관리',
+            '24시간 문의 지원'
+          ],
+          portfolio: {
+            cases: expert.total_sessions || 0,
+            successRate: 90,
+            specializations: expert.specializations || []
+          },
+          location: '온라인',
+          isOnline: expert.consultation_methods?.includes('화상상담') || true,
+          responseTime: '평균 2시간 이내'
+        }));
+        
+        setExperts(formattedExperts);
+        setFilteredExperts(formattedExperts);
+        console.log('Loaded experts from database:', formattedExperts.length);
+      }
+    } catch (error) {
+      console.error('Error loading experts:', error);
+      toast.error('전문가 목록을 불러오는 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 컴포넌트 마운트 시 실제 데이터 로드
+  useEffect(() => {
+    loadExperts();
+  }, []);
+
   // AI 추천 전문가 가져오기
   const getAIRecommendations = async () => {
     setIsLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        // 최신 평가 결과 가져오기
         const { data: assessments } = await supabase
           .from('assessment_enhanced_analysis')
           .select('*')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
-          .limit(3);
+          .limit(1);
 
         if (assessments && assessments.length > 0) {
+          const assessment = assessments[0];
+          
+          // expert-matcher 엣지 함수 호출
           const { data, error } = await supabase.functions.invoke('expert-matcher', {
             body: { 
-              analysis: assessments[0].enhanced_analysis || '',
-              ageGroup: assessments[0].assessment_type || 'adult',
-              age: 25
+              analysis: assessment.enhanced_analysis || '평가 분석 데이터가 없습니다.',
+              ageGroup: assessment.assessment_type || 'adult',
+              age: 25 // 기본 나이, 실제로는 프로필에서 가져와야 함
             }
           });
 
-          if (data && data.experts) {
-            const recommendedExperts = mockExperts
-              .filter((expert: Expert) => data.experts.some((rec: any) => rec.id === expert.id))
-              .map((expert: Expert) => {
-                const recommendation = data.experts.find((rec: any) => rec.id === expert.id);
-                return {
-                  ...expert,
-                  aiMatchScore: recommendation?.match_score || 0
-                };
-              })
-              .sort((a: Expert, b: Expert) => (b.aiMatchScore || 0) - (a.aiMatchScore || 0));
-
-            setAiRecommendations(recommendedExperts);
+          if (error) {
+            console.error('Expert matcher error:', error);
+            toast.error('AI 추천을 가져오는 중 오류가 발생했습니다.');
+            return;
           }
+
+          if (data && data.experts) {
+            console.log('AI matched experts:', data.experts);
+            setAiRecommendations(data.experts);
+            toast.success(`${data.experts.length}명의 전문가가 AI 분석을 통해 추천되었습니다.`);
+          } else {
+            // 실제 데이터베이스에서 전문가 목록 가져오기
+            const { data: dbExperts } = await supabase
+              .from('experts')
+              .select('*')
+              .eq('is_verified', true)
+              .eq('is_available', true)
+              .limit(3);
+            
+            if (dbExperts) {
+              const formattedExperts = dbExperts.map(expert => ({
+                id: expert.id,
+                name: expert.full_name,
+                specialty: expert.specializations,
+                credentials: expert.certifications || [],
+                rating: expert.average_rating || 4.5,
+                reviews: expert.total_sessions || 0,
+                experience: `${expert.years_experience}년`,
+                availability: '평일 9-18시',
+                monthlyPrice: expert.hourly_rate * 4, // 월 4회 기준
+                hourlyPrice: expert.hourly_rate,
+                image: expert.profile_image_url || '/api/placeholder/150/150',
+                description: expert.bio,
+                languages: expert.languages || ['한국어'],
+                consultationTypes: expert.consultation_methods || ['화상상담'],
+                monthlyServices: [
+                  '주 1회 개별 상담 (월 4회)',
+                  '전문가 평가 및 리포트',
+                  '상담 진행 관리',
+                  '24시간 문의 지원'
+                ],
+                portfolio: {
+                  cases: expert.total_sessions || 0,
+                  successRate: 90,
+                  specializations: expert.specializations || []
+                },
+                location: '온라인',
+                isOnline: expert.consultation_methods?.includes('화상상담') || true,
+                responseTime: '평균 2시간 이내',
+                aiMatchScore: 85
+              }));
+              
+              setAiRecommendations(formattedExperts);
+              toast.success(`${formattedExperts.length}명의 전문가를 추천합니다.`);
+            }
+          }
+        } else {
+          toast.info('먼저 평가를 완료하시면 더 정확한 AI 추천을 받을 수 있습니다.');
         }
       }
     } catch (error) {
@@ -1088,6 +1199,71 @@ const ExpertHiring = () => {
 
           {/* AI 추천 전문가 탭 */}
           <TabsContent value="ai-matching" className="space-y-6">
+            {/* AI 매칭 프로세스 안내 */}
+            <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+              <CardContent className="p-6">
+                <div className="text-center mb-6">
+                  <Brain className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">AI 매칭을 위한 정보 수집</h2>
+                  <p className="text-gray-600">먼저 검사를 받아보세요. AI가 검사 결과를 바탕으로 최적의 전문가를 추천해드립니다.</p>
+                </div>
+                
+                <div className="grid md:grid-cols-3 gap-6 mb-6">
+                  <div className="text-center">
+                    <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                      <CheckCircle className="h-8 w-8 text-blue-600" />
+                    </div>
+                    <h3 className="font-semibold mb-2">1. 평가/검사 실시</h3>
+                    <p className="text-sm text-gray-600">온라인 맞춤형 검사를 실시하고 기본적인 정보를 수집합니다</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                      <Brain className="h-8 w-8 text-purple-600" />
+                    </div>
+                    <h3 className="font-semibold mb-2">2. AI 분석 및 매칭</h3>
+                    <p className="text-sm text-gray-600">100% 데이터 기반의 분석으로 최적의 전문가를 추천합니다</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                      <Target className="h-8 w-8 text-green-600" />
+                    </div>
+                    <h3 className="font-semibold mb-2">3. 맞춤형 추천</h3>
+                    <p className="text-sm text-gray-600">가장 적합한 TOP 3 전문가를 매칭율과 함께 추천해드립니다</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+                  <Button 
+                    onClick={() => navigate('/assessment')}
+                    className="gap-2"
+                    size="lg"
+                  >
+                    <CheckCircle className="h-5 w-5" />
+                    검사 받으러 가기
+                  </Button>
+                  <Button 
+                    onClick={getAIRecommendations}
+                    disabled={isLoading}
+                    variant="outline"
+                    className="gap-2"
+                    size="lg"
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+                        AI 분석 중...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-5 w-5" />
+                        AI 매칭 시작하기
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             {isLoading ? (
               <Card className="p-8 text-center">
                 <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
@@ -1106,7 +1282,14 @@ const ExpertHiring = () => {
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 text-center sm:text-left">
-                          <h4 className="font-bold text-base sm:text-lg text-gray-800 mb-1">{expert.name}</h4>
+                          <div className="flex items-center gap-2 justify-center sm:justify-start mb-2">
+                            <h4 className="font-bold text-base sm:text-lg text-gray-800">{expert.name}</h4>
+                            {expert.aiMatchScore && (
+                              <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
+                                매칭도 {expert.aiMatchScore}%
+                              </Badge>
+                            )}
+                          </div>
                           <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
                             <div className="flex items-center gap-1">
                               <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />

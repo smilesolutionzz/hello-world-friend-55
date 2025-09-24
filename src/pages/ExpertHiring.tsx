@@ -171,6 +171,36 @@ const mockExperts: Expert[] = [
     responseTime: '평균 4시간 이내'
   },
   {
+    id: '4',
+    name: '김수현',
+    specialty: ['감각통합', '특수체육'],
+    credentials: ['작업치료사', '특수체육교육사'],
+    rating: 4.9,
+    reviews: 92,
+    experience: '10년',
+    availability: '평일 9-18시',
+    monthlyPrice: 110000,
+    hourlyPrice: 28000,
+    image: '/api/placeholder/150/150',
+    description: '감각통합 장애 아동의 신체적, 인지적 발달을 위한 전문 치료를 제공합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['방문상담', '센터상담'],
+    monthlyServices: [
+      '주 2회 감각통합치료 (월 8회)',
+      '특수체육 활동 프로그램',
+      '가정내 환경 설정 가이드',
+      '월간 발달 평가'
+    ],
+    portfolio: {
+      cases: 340,
+      successRate: 89,
+      specializations: ['감각통합치료', '특수체육', '운동발달']
+    },
+    location: '서울 송파구',
+    isOnline: false,
+    responseTime: '평균 3시간 이내'
+  },
+  {
     id: '5',
     name: '강은미',
     specialty: ['심리상담', '심리평가'],
@@ -197,6 +227,36 @@ const mockExperts: Expert[] = [
       specializations: ['심리평가', 'ADHD', '우울증', '불안장애']
     },
     location: '서울 서초구',
+    isOnline: true,
+    responseTime: '평균 1.5시간 이내'
+  },
+  {
+    id: '6',
+    name: '정민호',
+    specialty: ['놀이치료', '정신상담'],
+    credentials: ['놀이치료사', '정신건강임상심리사'],
+    rating: 4.7,
+    reviews: 167,
+    experience: '9년',
+    availability: '평일 10-19시',
+    monthlyPrice: 100000,
+    hourlyPrice: 26000,
+    image: '/api/placeholder/150/150',
+    description: '놀이를 통한 아동의 정서적 안정과 사회성 발달을 돕는 전문가입니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담', '센터상담'],
+    monthlyServices: [
+      '주 2회 놀이치료 (월 8회)',
+      '정신건강 상담 및 평가',
+      '부모-자녀 상호작용 지도',
+      '정서 발달 관찰 리포트'
+    ],
+    portfolio: {
+      cases: 285,
+      successRate: 87,
+      specializations: ['놀이치료', '정서발달', '사회성훈련', '정신건강']
+    },
+    location: '서울 강북구',
     isOnline: true,
     responseTime: '평균 3시간 이내'
   }

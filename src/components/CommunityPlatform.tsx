@@ -30,7 +30,7 @@ const CommunityPlatform = () => {
       title: '여기 통해서',
       content: '최소한 관찰은 정안하게 되었나요',
       tags: ['관찰', '일반상담'],
-      stats: { likes: 1, comments: 0, views: 23 },
+      stats: { likes: 1, views: 23 },
       timeAgo: '16일 전',
       isVerified: false
     },
@@ -45,7 +45,7 @@ const CommunityPlatform = () => {
       title: '5살 아들 감각통합 치료 후기 공유합니다!',
       content: '처음엔 정말 힘들었어요.. 아이가 소리에 너무 예민하고 미끄럼틀도 무서워해서.. 감각통합 치료 6개월 받고나니 완전 달라졌어요! 놀이터도 혼자 갈 수 있고, 마트에서도 울지 않아요. 혹시 고민 중이신 분들 있으면 꼭 상담받아보세요!! 우리 아이 변화 보니까 울컥하더라구요 ㅠㅠ',
       tags: ['감각통합', '5세', '성공후기'],
-      stats: { likes: 47, comments: 23, views: 312 },
+      stats: { likes: 47, views: 312 },
       timeAgo: '3시간 전',
       isVerified: false
     },
@@ -60,7 +60,7 @@ const CommunityPlatform = () => {
       title: 'ADHD 약물치료 vs 행동치료 고민이에요',
       content: '초1 아들이 ADHD 진단받았는데... 약물치료 시작할지 행동치료만 할지 너무 고민돼요. 약 먹이기가 무서우면서도 아이가 학교에서 힘들어하는 모습 보니까 마음이 아프네요. 비슷한 경험 있으신 분들 조언 좀 부탁드려요. 아이 아빠로서 어떤 게 맞는 선택인지 모르겠어요.',
       tags: ['ADHD', '약물치료', '행동치료', '초등학생'],
-      stats: { likes: 34, comments: 18, views: 267 },
+      stats: { likes: 34, views: 267 },
       timeAgo: '1시간 전',
       isVerified: false
     },
@@ -75,7 +75,7 @@ const CommunityPlatform = () => {
       title: '자폐스펙트럼 아이와 함께하는 일상 TIP',
       content: '3년차 자폐 스펙트럼 아이 엄마예요. 처음엔 정말 막막했는데 이제는 아이만의 특별함을 알겠어요 😊 매일 작은 루틴들이 정말 중요하더라구요! 아침에 일어나서 같은 순서로 옷입기, 정해진 자리에서 밥먹기 이런 것들이요. 그리고 아이가 좋아하는 것들 찾아주기! 우리 아이는 자동차 소리에 진짜 신기하게 반응해요 ㅎㅎ',
       tags: ['자폐스펙트럼', '일상팁', '루틴'],
-      stats: { likes: 52, comments: 31, views: 421 },
+      stats: { likes: 52, views: 421 },
       timeAgo: '5시간 전',
       isVerified: false
     },
@@ -90,7 +90,7 @@ const CommunityPlatform = () => {
       title: '언어발달 늦은 3살, 언제부터 치료 시작해야 할까요?',
       content: '아직 두어마디 정도밖에 못해요.. 주변에선 남자아이라 원래 늦다고 하는데 정말 걱정이 많아요. 또래 아이들은 벌써 문장으로 말하는데 우리 아이만... 언어치료 받으면 정말 늘까요? 비용도 만만치 않고 아이가 스트레스받을까봐 고민도 되구요. 같은 경험 있으신 분들 이야기 들어보고 싶어요.',
       tags: ['언어발달', '3세', '치료시기'],
-      stats: { likes: 28, comments: 15, views: 184 },
+      stats: { likes: 28, views: 184 },
       timeAgo: '30분 전',
       isVerified: false
     }

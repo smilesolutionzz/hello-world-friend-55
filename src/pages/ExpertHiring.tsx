@@ -368,7 +368,7 @@ const ExpertHiring = () => {
           likes_count: 12,
           comments_count: 8,
           is_anonymous: true,
-          tags: ['김엄마']
+          tags: ['은지맘']
         },
         {
           id: 'mock-2',
@@ -379,7 +379,7 @@ const ExpertHiring = () => {
           likes_count: 25,
           comments_count: 15,
           is_anonymous: true,
-          tags: ['희망맘']
+          tags: ['민수엄마']
         },
         {
           id: 'mock-3',
@@ -390,7 +390,7 @@ const ExpertHiring = () => {
           likes_count: 18,
           comments_count: 12,
           is_anonymous: true,
-          tags: ['고민엄마']
+          tags: ['수진']
         },
         {
           id: 'mock-4',
@@ -401,7 +401,7 @@ const ExpertHiring = () => {
           likes_count: 31,
           comments_count: 9,
           is_anonymous: true,
-          tags: ['감사맘']
+          tags: ['현주']
         },
         {
           id: 'mock-5',
@@ -412,7 +412,7 @@ const ExpertHiring = () => {
           likes_count: 22,
           comments_count: 6,
           is_anonymous: true,
-          tags: ['새출발']
+          tags: ['정호']
         },
         {
           id: 'mock-6',
@@ -423,7 +423,7 @@ const ExpertHiring = () => {
           likes_count: 19,
           comments_count: 14,
           is_anonymous: true,
-          tags: ['함께가는길']
+          tags: ['지영맘']
         },
         {
           id: 'mock-7',
@@ -434,7 +434,7 @@ const ExpertHiring = () => {
           likes_count: 45,
           comments_count: 18,
           is_anonymous: true,
-          tags: ['회복중']
+          tags: ['서연']
         },
         {
           id: 'mock-8',
@@ -445,7 +445,7 @@ const ExpertHiring = () => {
           likes_count: 16,
           comments_count: 11,
           is_anonymous: true,
-          tags: ['배움의시작']
+          tags: ['혜진']
         },
         {
           id: 'mock-9',
@@ -456,7 +456,7 @@ const ExpertHiring = () => {
           likes_count: 28,
           comments_count: 7,
           is_anonymous: true,
-          tags: ['만족']
+          tags: ['태준맘']
         },
         {
           id: 'mock-10',

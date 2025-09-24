@@ -1304,7 +1304,7 @@ const ExpertHiring = () => {
                         </div>
                       </div>
                       <p className="text-xs sm:text-sm text-gray-600 mb-4 text-center sm:text-left line-clamp-2">
-                        {expert.specialty.join(", ")}
+                        {Array.isArray(expert.specialty) ? expert.specialty.join(", ") : expert.specialty}
                       </p>
                       <div className="space-y-2">
                         <Button 

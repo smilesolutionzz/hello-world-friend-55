@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import FloatingKeywords from "./FloatingKeywords";
 import { useState } from "react";
 
 const HeroSection = () => {
@@ -63,6 +64,9 @@ const HeroSection = () => {
   ];
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden">
+      {/* Floating Keywords Background */}
+      <FloatingKeywords />
+      
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />

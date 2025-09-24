@@ -216,6 +216,13 @@ export default function Institutions() {
     // 특정 기관은 외부 링크로 연결
     const institution = institutions.find(inst => inst.id === institutionId);
     if (institution) {
+      // website_url이 있으면 외부 링크로 연결
+      if (institution.website_url) {
+        window.open(institution.website_url, '_blank');
+        return;
+      }
+      
+      // 기존 하드코딩된 특정 기관들 (하위 호환성)
       if (institution.name.includes('한점미소발달센터')) {
         window.open('https://naver.me/FgTH9V07', '_blank');
         return;

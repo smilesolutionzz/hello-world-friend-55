@@ -24,6 +24,7 @@ interface Institution {
   parking_available: boolean;
   accessibility_features: string[] | null;
   operating_hours?: Record<string, string>;
+  website_url?: string;
 }
 
 interface InstitutionCardProps {
@@ -37,10 +38,16 @@ export function InstitutionCard({ institution, onViewDetails, onContactInstituti
     switch (type) {
       case 'development_center':
         return '발달센터';
+      case 'developmental_center':
+        return '발달센터';
       case 'medical_center':
         return '의료기관';
       case 'counseling_center':
         return '상담센터';
+      case 'social_service_center':
+        return '사회서비스센터';
+      case 'korean_medicine':
+        return '한의원';
       default:
         return '기타';
     }
@@ -180,7 +187,7 @@ export function InstitutionCard({ institution, onViewDetails, onContactInstituti
             onClick={() => onViewDetails(institution.id)}
             className="flex-1"
           >
-            상세보기
+            기관정보보기
           </Button>
           <Button 
             size="sm" 

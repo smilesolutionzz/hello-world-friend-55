@@ -78,10 +78,13 @@ const HeroSection = () => {
         {/* Main Headline */}
         <div className="text-center mb-8 sm:mb-16 space-y-4 sm:space-y-6">
           {/* Powerful Hook */}
-          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-50 border border-blue-200 rounded-full mb-6 max-w-[320px] sm:max-w-none mx-auto">
-            <span className="text-xl">✨</span>
-            <span className="text-xs sm:text-sm font-semibold text-blue-700 tracking-wide text-center leading-tight">
-              전문과와 AI가 함께하는<br className="sm:hidden" />
+          <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200/50 rounded-full mb-6 max-w-[320px] sm:max-w-none mx-auto shadow-sm">
+            <div className="flex items-center gap-1">
+              <span className="text-xl animate-pulse">✨</span>
+              <span className="text-xl animate-bounce delay-100">🧠</span>
+            </div>
+            <span className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent tracking-wide text-center leading-tight">
+              전문가와 AI가 함께하는<br className="sm:hidden" />
               혁신적인 딥러닝<br className="sm:hidden" />
               멘탈통합케어 플랫폼
             </span>

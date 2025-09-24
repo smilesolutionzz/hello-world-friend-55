@@ -89,6 +89,9 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
   const currentTokens = tokenBalance?.current_tokens || 0;
   const isLowBalance = currentTokens <= 5;
   
+  // 디버깅을 위한 로그
+  console.log('TokenBalance - 현재 토큰:', currentTokens, '낮은 잔액:', isLowBalance);
+  
   // 로그인하지 않은 사용자는 로그인 안내 표시
   if (!user && compact) {
     return (

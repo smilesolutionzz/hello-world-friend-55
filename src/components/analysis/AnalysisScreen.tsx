@@ -44,48 +44,41 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
   }, []);
 
   const runAnalysis = async () => {
-    // 토큰 확인 및 소비
+    // 토큰 확인 및 소비 - 검사 결과 분석은 토큰 소비 안함 (이미 검사 시 소비했음)
+    console.log('분석 시작 - 토큰 소비 없이 진행');
+    
+    // 토큰 체크는 하되 소비는 하지 않음
     const tokenCost = TOKEN_COSTS.PSYCHOLOGICAL_TEST;
-    if (!checkTokenAvailability(tokenCost)) {
+    if (!checkTokenAvailability(1)) {
       toast({
-        title: "토큰 부족",
-        description: `분석을 위해 ${tokenCost}토큰이 필요합니다. 토큰을 충전해주세요.`,
+        title: "서비스 이용 불가",
+        description: "검사 결과 분석을 위해 최소 1토큰이 필요합니다.",
         variant: "destructive"
       });
       return;
     }
 
-    const tokenSuccess = await consumeTokens(tokenCost);
-    if (!tokenSuccess) {
-      toast({
-        title: "토큰 소비 실패",
-        description: "토큰 소비 중 오류가 발생했습니다. 다시 시도해주세요.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // 단계별 진행 시뮬레이션
+    // 단계별 진행 시뮬레이션 - 더 신뢰성 있게 수정
     let currentProgress = 0;
     const totalSteps = analysisSteps.length;
 
     for (let i = 0; i < totalSteps; i++) {
       setCurrentStep(analysisSteps[i].step);
       
-      // 진행률 업데이트
-      await new Promise(resolve => {
-        const stepProgress = (i + 1) / totalSteps * 90; // 90%까지는 단계 진행
-        const interval = setInterval(() => {
-          currentProgress += 2;
-          if (currentProgress >= stepProgress) {
-            setAnalysisProgress(stepProgress);
-            clearInterval(interval);
-            resolve(undefined);
-          } else {
-            setAnalysisProgress(currentProgress);
-          }
-        }, analysisSteps[i].duration / 45); // 부드러운 진행
-      });
+      // 진행률 업데이트 - 각 단계마다 확실히 진행되도록 수정
+      const stepProgress = Math.floor((i + 1) / totalSteps * 90); // 90%까지는 단계 진행
+      
+      // 프로그레스를 작은 단위로 나누어 애니메이션
+      const progressIncrement = Math.max(1, Math.floor((stepProgress - currentProgress) / 10));
+      
+      while (currentProgress < stepProgress) {
+        currentProgress = Math.min(currentProgress + progressIncrement, stepProgress);
+        setAnalysisProgress(currentProgress);
+        await new Promise(resolve => setTimeout(resolve, analysisSteps[i].duration / 10));
+      }
+      
+      // 각 단계 완료 후 잠시 대기
+      await new Promise(resolve => setTimeout(resolve, 200));
     }
 
     // 실제 AI 분석 실행

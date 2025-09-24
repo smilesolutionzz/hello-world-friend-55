@@ -88,7 +88,13 @@ export function useTokens() {
       }
     },
     checkTokenAvailability: (amount: number) => {
-      return tokenBalance ? tokenBalance.current_tokens >= amount : false;
+      // 로딩 중이거나 토큰 정보가 없으면 false 반환
+      if (loading || !tokenBalance) return false;
+      
+      // 현재 토큰이 요구 토큰보다 많거나 같으면 true
+      const hasEnough = tokenBalance.current_tokens >= amount;
+      console.log(`토큰 확인: 보유 ${tokenBalance.current_tokens}, 필요 ${amount}, 충분: ${hasEnough}`);
+      return hasEnough;
     }
   };
 }

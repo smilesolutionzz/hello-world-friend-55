@@ -68,20 +68,36 @@ export const useTestResultActions = () => {
     try {
       setIsSaving(true);
       
+      // 사용자 확인
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "로그인 필요",
+          description: "결과 저장을 위해 로그인이 필요합니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       // 먼저 test_type을 찾거나 생성
       let testTypeId = '';
       
       // 기존 test_type 확인
-      const { data: existingTestType } = await supabase
+      const { data: existingTestType, error: typeSelectError } = await supabase
         .from('test_types')
         .select('id')
         .eq('name', testData.testType)
-        .single();
+        .maybeSingle();
+      
+      if (typeSelectError && typeSelectError.code !== 'PGRST116') {
+        console.error('Test type 조회 오류:', typeSelectError);
+        throw typeSelectError;
+      }
       
       if (existingTestType) {
         testTypeId = existingTestType.id;
       } else {
-        // 새로운 test_type 생성
+        // 새로운 test_type 생성 시도
         const { data: newTestType, error: createError } = await supabase
           .from('test_types')
           .insert({
@@ -91,7 +107,10 @@ export const useTestResultActions = () => {
           .select('id')
           .single();
         
-        if (createError) throw createError;
+        if (createError) {
+          console.error('Test type 생성 오류:', createError);
+          throw createError;
+        }
         testTypeId = newTestType.id;
       }
 

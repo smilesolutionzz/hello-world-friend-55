@@ -392,6 +392,21 @@ const Assessment = () => {
   };
 
   const handleStartAIChat = () => {
+    // AI 상담 시작 전 현재 결과 상태 저장
+    const currentResultState = {
+      step: currentStep,
+      adhdResults,
+      adultResults,
+      childResults,
+      infantResults,
+      depressionResults,
+      panicResults,
+      languageResults
+    };
+    
+    // 세션 스토리지에 저장하여 뒤로가기 시 복원 가능하도록
+    sessionStorage.setItem('lastAssessmentResult', JSON.stringify(currentResultState));
+    
     setCurrentStep('ai-chat');
   };
 

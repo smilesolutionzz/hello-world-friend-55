@@ -292,8 +292,8 @@ const LiveFeedWidget = () => {
                   <div className="opacity-90 text-xs">방문</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-sm text-foreground">{stats.currentOnline}</div>
-                  <div className="opacity-90 text-xs">온라인</div>
+                  <div className="font-bold text-sm text-white">{stats.currentOnline}</div>
+                  <div className="opacity-90 text-xs text-white">온라인</div>
                 </div>
                 <div className="text-center">
                   <div className="font-bold text-sm">{stats.totalTests.toLocaleString()}</div>

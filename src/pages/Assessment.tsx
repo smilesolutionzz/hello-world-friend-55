@@ -51,6 +51,7 @@ import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target, MessageCircle } fro
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Navigation from "@/components/Navigation";
 
 const Assessment = () => {
   const navigate = useNavigate();
@@ -544,7 +545,9 @@ const Assessment = () => {
 
   if (currentStep === 'test-type') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden">
+      <div>
+        <Navigation />
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden pt-4">
         {/* 작은 법적 안전 공지 배지 */}
         <div className="fixed top-4 right-4 z-50">
           <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow-lg hover:bg-blue-700 transition-colors cursor-pointer group">
@@ -1018,21 +1021,43 @@ const Assessment = () => {
           </div>
 
         </div>
+        </div>
       </div>
     );
   }
 
 
   if (currentStep === 'dream-interpretation') {
-    return <DreamInterpretation onBack={handleBack} />;
+    return (
+      <div>
+        <Navigation />
+        <div className="pt-4">
+          <DreamInterpretation onBack={handleBack} />
+        </div>
+      </div>
+    );
   }
   
   if (currentStep === 'saju-analysis') {
-    return <SajuAnalysis onBack={handleBack} />;
+    return (
+      <div>
+        <Navigation />
+        <div className="pt-4">
+          <SajuAnalysis onBack={handleBack} />
+        </div>
+      </div>
+    );
   }
 
   if (currentStep === 'legal-notice' && testType && testType !== 'dream') {
-    return <LegalSafetyNotice onAccept={handleLegalNoticeAccept} testType={testType} />;
+    return (
+      <div>
+        <Navigation />
+        <div className="pt-4">
+          <LegalSafetyNotice onAccept={handleLegalNoticeAccept} testType={testType} />
+        </div>
+      </div>
+    );
   }
   
   if (currentStep === 'age-select') {
@@ -1225,12 +1250,15 @@ const Assessment = () => {
 
   if (currentStep === 'stress-result' && stressResults) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <StressTestResult 
-            result={stressResults}
-            onRestart={() => setCurrentStep('stress-test')}
-          />
+      <div>
+        <Navigation />
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
+          <div className="container mx-auto max-w-4xl">
+            <StressTestResult 
+              result={stressResults}
+              onRestart={() => setCurrentStep('stress-test')}
+            />
+          </div>
         </div>
       </div>
     );
@@ -1408,27 +1436,30 @@ const Assessment = () => {
 
   return (
     <div>
-      {selectedAgeGroup === 'infant' && (
-        <InfantAssessment 
-          age={selectedAge} 
-          onComplete={handleAssessmentComplete}
-          onBack={handleBack}
-        />
-      )}
-      {selectedAgeGroup === 'child' && (
-        <ChildAssessmentSimplified 
-          age={selectedAge} 
-          onComplete={handleAssessmentComplete}
-          onBack={handleBack}
-        />
-      )}
-      {selectedAgeGroup === 'adult' && (
-        <AdultAssessment 
-          age={selectedAge} 
-          onComplete={handleAssessmentComplete}
-          onBack={handleBack}
-        />
-      )}
+      <Navigation />
+      <div className="pt-4">
+        {selectedAgeGroup === 'infant' && (
+          <InfantAssessment 
+            age={selectedAge} 
+            onComplete={handleAssessmentComplete}
+            onBack={handleBack}
+          />
+        )}
+        {selectedAgeGroup === 'child' && (
+          <ChildAssessmentSimplified 
+            age={selectedAge} 
+            onComplete={handleAssessmentComplete}
+            onBack={handleBack}
+          />
+        )}
+        {selectedAgeGroup === 'adult' && (
+          <AdultAssessment 
+            age={selectedAge} 
+            onComplete={handleAssessmentComplete}
+            onBack={handleBack}
+          />
+        )}
+      </div>
     </div>
   );
 };

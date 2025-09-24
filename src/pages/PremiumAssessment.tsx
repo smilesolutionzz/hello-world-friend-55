@@ -4,6 +4,7 @@ import { ArrowLeft, Crown, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard";
+import Navigation from "@/components/Navigation";
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
 import PremiumAssessmentResult from "@/components/assessment/PremiumAssessmentResult";
 import LanguageDevelopmentForm from "@/components/assessment/LanguageDevelopmentForm";
@@ -141,19 +142,29 @@ const PremiumAssessment = () => {
   if (currentStep === 'assessment' && selectedAssessment) {
     if (selectedAssessment === 'autismSpectrumScreening') {
       return (
-        <AutismSpectrumForm
-          onComplete={handleAssessmentComplete}
-          onBack={handleBack}
-        />
+        <div>
+          <Navigation />
+          <div className="pt-4">
+            <AutismSpectrumForm
+              onComplete={handleAssessmentComplete}
+              onBack={handleBack}
+            />
+          </div>
+        </div>
       );
     }
 
     if (selectedAssessment === 'languageDevelopment') {
       return (
-        <LanguageDevelopmentForm
-          onComplete={handleAssessmentComplete}
-          onBack={handleBack}
-        />
+        <div>
+          <Navigation />
+          <div className="pt-4">
+            <LanguageDevelopmentForm
+              onComplete={handleAssessmentComplete}
+              onBack={handleBack}
+            />
+          </div>
+        </div>
       );
     }
 
@@ -188,15 +199,17 @@ const PremiumAssessment = () => {
 
   return (
     <AuthenticationGuard fallbackMessage="프리미엄 심리검사를 이용하려면 로그인이 필요합니다." redirectPath="/auth">
-      <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden">
-      {/* Premium Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/20 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-32 right-16 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-yellow-200/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
-      </div>
+      <div>
+        <Navigation />
+        <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden pt-4">
+        {/* Premium Background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/20 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-32 right-16 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-yellow-200/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
+        </div>
 
-      <div className="relative z-10 container mx-auto px-6 pt-8 pb-16">
+        <div className="relative z-10 container mx-auto px-6 pt-8 pb-16">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <Button 
@@ -303,8 +316,9 @@ const PremiumAssessment = () => {
             </p>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+      </div>
     </AuthenticationGuard>
   );
 };

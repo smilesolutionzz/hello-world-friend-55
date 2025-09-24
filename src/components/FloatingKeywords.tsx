@@ -29,7 +29,7 @@ const FloatingKeywords = () => {
       text: keyword,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      speed: 0.2 + Math.random() * 0.3,
+      speed: 0.05 + Math.random() * 0.1,
       angle: Math.random() * Math.PI * 2,
       opacity: 0.3 + Math.random() * 0.3,
       size: 12 + Math.random() * 8
@@ -61,7 +61,7 @@ const FloatingKeywords = () => {
           angle: newAngle
         };
       }));
-    }, 50);
+    }, 100);
 
     return () => clearInterval(interval);
   }, []);

@@ -31,7 +31,7 @@ const FloatingKeywords = () => {
       y: Math.random() * 100,
       speed: 0.2 + Math.random() * 0.3,
       angle: Math.random() * Math.PI * 2,
-      opacity: 0.15 + Math.random() * 0.25,
+      opacity: 0.3 + Math.random() * 0.3,
       size: 12 + Math.random() * 8
     }));
     setFloatingItems(items);
@@ -71,14 +71,14 @@ const FloatingKeywords = () => {
       {floatingItems.map((item) => (
         <div
           key={item.id}
-          className="absolute select-none font-medium text-muted-foreground/40 transition-all duration-1000 ease-linear"
+          className="absolute select-none font-medium text-muted-foreground/60 transition-all duration-1000 ease-linear"
           style={{
             left: `${item.x}%`,
             top: `${item.y}%`,
             opacity: item.opacity,
             fontSize: `${item.size}px`,
             transform: 'translate(-50%, -50%)',
-            filter: 'blur(0.5px)',
+            filter: 'blur(0.2px)',
             fontWeight: Math.random() > 0.5 ? 'normal' : 'bold'
           }}
         >

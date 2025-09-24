@@ -271,8 +271,17 @@ const Assessment = () => {
   };
 
   const handleAssessmentComplete = (results: Record<string, number>) => {
-    console.log('Assessment Results:', results);
+    console.log('🔄 Assessment Results:', results);
     setAssessmentResults(results);
+    
+    // 현재 결과 상태 저장 (뒤로가기 시 복원용)
+    setCurrentAssessmentResults({
+      testType: 'psychological',
+      ageGroup: selectedAgeGroup || 'adult',
+      total: Object.values(results).reduce((sum, val) => sum + val, 0),
+      average: Object.values(results).reduce((sum, val) => sum + val, 0) / Object.keys(results).length,
+      results
+    });
     
     // 3분테스트는 AI 분석 단계로 이동 (토큰 차감 포함)
     setCurrentStep('analysis');

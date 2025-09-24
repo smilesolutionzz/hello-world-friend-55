@@ -35,11 +35,14 @@ export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
 
         // 구독자가 아니면 토큰 확인
         const hasEnoughTokens = checkTokenAvailability(requiredTokens);
+        console.log(`🔒 Token Guard: Required ${requiredTokens}, Has enough: ${hasEnoughTokens}, Balance: ${balance?.current_tokens}`);
         
         if (!hasEnoughTokens) {
+          console.log('❌ Token Guard: Insufficient tokens, redirecting to subscription');
           navigate('/token-subscription');
           setAllowed(false);
         } else {
+          console.log('✅ Token Guard: Sufficient tokens, allowing access');
           setAllowed(true);
         }
       } catch (error) {

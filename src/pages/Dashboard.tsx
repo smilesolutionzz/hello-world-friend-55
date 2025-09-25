@@ -531,7 +531,7 @@ const Dashboard = () => {
 
       {/* Header - Simplified for mobile */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-border/40 lg:block hidden">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-6 py-4 max-w-7xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button 
@@ -569,15 +569,35 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-3 sm:px-6 py-4 sm:py-8">
-        <Tabs defaultValue="overview" className="space-y-3 sm:space-y-6">
-          <TabsList className="grid w-full grid-cols-6 h-8 sm:h-10">
-            <TabsTrigger value="overview" className="text-xs sm:text-sm px-1">개요</TabsTrigger>
-            <TabsTrigger value="family" className="text-xs sm:text-sm px-1">가족</TabsTrigger>
-            <TabsTrigger value="assessments" className="text-xs sm:text-sm px-1">검사</TabsTrigger>
-            <TabsTrigger value="consultations" className="text-xs sm:text-sm px-1">상담</TabsTrigger>
-            <TabsTrigger value="lifecare" className="text-xs sm:text-sm px-1">라이프케어</TabsTrigger>
-            <TabsTrigger value="team" className="text-xs sm:text-sm px-1">팀</TabsTrigger>
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                나의 데이터
+              </h1>
+              <p className="text-gray-600 mt-1">
+                심리적 건강 상태를 종합적으로 관리하세요
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <TokenBalance />
+              <Button onClick={() => navigate('/family')} variant="outline" size="sm">
+                <Users className="w-4 h-4 mr-2" />
+                가족 관리
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <Tabs defaultValue="overview" className="space-y-6" onValueChange={setSelectedTab}>
+          <TabsList className="grid w-full grid-cols-6 max-w-4xl mx-auto">
+            <TabsTrigger value="overview">개요</TabsTrigger>
+            <TabsTrigger value="assessments">검사 이력</TabsTrigger>
+            <TabsTrigger value="consultations">상담 이력</TabsTrigger>
+            <TabsTrigger value="family">가족 관리</TabsTrigger>
+            <TabsTrigger value="development">발달 추적</TabsTrigger>
+            <TabsTrigger value="settings">설정</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-3 sm:space-y-6">
@@ -733,14 +753,17 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Charts Section */}
+            {/* Charts Section - 데스크톱에서 가로로 배치 */}
         <div className="space-y-6">
           <NextStepSuggestion />
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               {/* Distribution Chart */}
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">영역별 분포</h3>
+              <Card className="p-4 lg:p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-blue-500" />
+                  영역별 분포
+                </h3>
                 {distributionData.some(item => item.value > 0) ? (
                   <div className="h-64">
                     <ChartContainer config={{}} className="h-full w-full">
@@ -812,8 +835,11 @@ const Dashboard = () => {
               </Card>
 
               {/* Trend Chart */}
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">최근 12주 점수 추이</h3>
+              <Card className="p-4 lg:p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-green-500" />
+                  최근 12주 점수 추이
+                </h3>
                 {trendData.some(item => item.score > 0) ? (
                   <div className="h-64">
                     <ChartContainer config={{}} className="h-full w-full">

@@ -94,10 +94,6 @@ export const useReferrals = () => {
 
       if (data.success) {
         setReferralCode(data.referralCode);
-        toast({
-          title: "추천 코드 생성 완료!",
-          description: "친구들과 공유해보세요!",
-        });
         // 통계 새로고침
         await loadReferralStats();
         return data.referralCode;

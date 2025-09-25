@@ -1222,6 +1222,35 @@ export type Database = {
         }
         Relationships: []
       }
+      diary_likes: {
+        Row: {
+          created_at: string
+          diary_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          diary_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          diary_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diary_likes_diary_id_fkey"
+            columns: ["diary_id"]
+            isOneToOne: false
+            referencedRelation: "memory_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expert_application_access_log: {
         Row: {
           access_reason: string | null
@@ -2744,34 +2773,52 @@ export type Database = {
       }
       memory_conversations: {
         Row: {
+          ai_generated_image_url: string | null
+          audio_narration_url: string | null
           conversation_type: string | null
           created_at: string
           emotion_analysis: Json | null
           id: string
+          is_public: boolean | null
+          likes_count: number | null
           memory_extracted: string | null
           messages: Json | null
           updated_at: string
           user_id: string
+          user_recording_url: string | null
+          views_count: number | null
         }
         Insert: {
+          ai_generated_image_url?: string | null
+          audio_narration_url?: string | null
           conversation_type?: string | null
           created_at?: string
           emotion_analysis?: Json | null
           id?: string
+          is_public?: boolean | null
+          likes_count?: number | null
           memory_extracted?: string | null
           messages?: Json | null
           updated_at?: string
           user_id: string
+          user_recording_url?: string | null
+          views_count?: number | null
         }
         Update: {
+          ai_generated_image_url?: string | null
+          audio_narration_url?: string | null
           conversation_type?: string | null
           created_at?: string
           emotion_analysis?: Json | null
           id?: string
+          is_public?: boolean | null
+          likes_count?: number | null
           memory_extracted?: string | null
           messages?: Json | null
           updated_at?: string
           user_id?: string
+          user_recording_url?: string | null
+          views_count?: number | null
         }
         Relationships: []
       }

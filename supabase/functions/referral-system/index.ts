@@ -57,7 +57,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in referral-system function:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
@@ -113,7 +113,7 @@ async function generateReferralCode(supabaseClient: any, userId: string) {
   } catch (error) {
     console.error('Error generating referral code:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
@@ -181,7 +181,7 @@ async function getReferralStats(supabaseClient: any, userId: string) {
       .eq('referrer_id', userId)
       .eq('status', 'completed');
 
-    const totalTokens = totalRewards?.reduce((sum, reward) => sum + reward.tokens_awarded, 0) || 0;
+    const totalTokens = totalRewards?.reduce((sum: number, reward: any) => sum + reward.tokens_awarded, 0) || 0;
 
     // 내 추천 코드
     const { data: myReferralCode } = await supabaseClient
@@ -208,7 +208,7 @@ async function getReferralStats(supabaseClient: any, userId: string) {
   } catch (error) {
     console.error('Error getting referral stats:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

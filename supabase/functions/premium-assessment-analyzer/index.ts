@@ -427,7 +427,7 @@ ${Object.entries(results).map(([domain, score]) => `- ${domain}: ${score}점/7�
   } catch (error) {
     console.error('[PREMIUM-ASSESSMENT-ANALYZER] 오류:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       constitution: "분석 오류",
       overview: "분석 중 오류가 발생했습니다. 다시 시도해주세요."
     }), {

@@ -105,8 +105,8 @@ serve(async (req) => {
     console.error('Error in replicate image generation:', error)
     return new Response(
       JSON.stringify({ 
-        error: error.message || '이미지 생성에 실패했습니다. 다시 시도해주세요.',
-        details: error.toString()
+        error: error instanceof Error ? error.message : '이미지 생성에 실패했습니다. 다시 시도해주세요.',
+        details: error instanceof Error ? error.toString() : 'Unknown error'
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

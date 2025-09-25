@@ -113,12 +113,12 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in stress-analyzer function:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       fallbackAnalysis: `현재 분석 서비스에 일시적인 문제가 발생했습니다. 
       
       **기본 분석 결과**
-      - 총점: ${req.body?.totalScore || 0}점
-      - 스트레스 수준: ${req.body?.severity || '분석 불가'}
+      - 총점: 분석 불가
+      - 스트레스 수준: 분석 불가
       
       **기본 권장사항:**
       1. 충분한 휴식과 수면을 취하세요

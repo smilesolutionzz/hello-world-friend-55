@@ -112,7 +112,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error saving test result:', error);
     return new Response(
-      JSON.stringify({ error: error.message || '결과 저장 중 오류가 발생했습니다.' }),
+      JSON.stringify({ error: error instanceof Error ? error.message : '결과 저장 중 오류가 발생했습니다.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

@@ -215,7 +215,7 @@ ${domainScores.map(domain => `
     console.error('[PREMIUM-ADHD-ANALYZER] 오류:', error);
     return new Response(JSON.stringify({ 
       error: 'analysis_failed',
-      message: error.message || 'ADHD 분석 중 오류가 발생했습니다.'
+      message: error instanceof Error ? error.message : 'ADHD 분석 중 오류가 발생했습니다.'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -154,7 +154,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('[SASANG-ANALYZER] 오류:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       analysis: '분석 중 오류가 발생했습니다. 기본 체질 정보를 참고해주세요.' 
     }), {
       status: 500,

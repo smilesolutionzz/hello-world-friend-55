@@ -100,7 +100,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'AI 상담 서비스에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Unknown error' 
       }),
       { 
         status: 500, 

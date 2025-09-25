@@ -386,7 +386,7 @@ async function findSocialMatches(supabaseClient: any, profileId: string) {
   }) || [];
 
   // Create match records
-  const matchPromises = matches.slice(0, 3).map(match => 
+  const matchPromises = matches.slice(0, 3).map((match: any) => 
     supabaseClient
       .from('social_matches')
       .upsert({

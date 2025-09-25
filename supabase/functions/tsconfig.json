@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["deno.ns", "deno.window"],
+    "noImplicitAny": false,
+    "strict": false,
+    "skipLibCheck": true,
+    "useUnknownInCatchVariables": false
+  }
+}

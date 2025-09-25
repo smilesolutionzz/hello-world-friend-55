@@ -355,13 +355,13 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(`Error in advanced-disability-analyzer function (${req.url}):`, error);
     
     return new Response(JSON.stringify({
       success: false,
-      error: error.message,
-      fallback: getFallbackAnalysis(type)
+      error: error?.message || 'Unknown error occurred',
+      fallback: getFallbackAnalysis('benefit') // Default fallback
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -369,8 +369,8 @@ serve(async (req) => {
   }
 });
 
-function getFallbackAnalysis(type: string) {
-  const fallbacks = {
+function getFallbackAnalysis(type: string): any {
+  const fallbacks: Record<string, any> = {
     benefit: {
       totalMonthlyAmount: "계산 중 오류가 발생했습니다",
       benefits: [],

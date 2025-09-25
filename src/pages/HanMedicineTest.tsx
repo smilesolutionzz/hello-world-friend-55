@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, CheckCircle, Users, Zap, Shield, Activity, Smile, Phone } from 'lucide-react';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import ExpertValidationBanner from '@/components/ExpertValidationBanner';
+import HerbalClinic3DBackground from '@/components/HerbalClinic3DBackground';
 import { SasangConstitutionTest } from '@/components/assessment/SasangConstitutionTest';
 import { SasangConstitutionResult } from '@/components/assessment/SasangConstitutionResult';
 import { HanMedicinePremiumTest } from '@/components/assessment/HanMedicinePremiumTest';
@@ -47,21 +48,24 @@ const HanMedicineTest = () => {
   if (testState === 'testing') {
     if (currentTest === 'quick') {
       return (
-        <div>
+        <div className="relative">
+          <HerbalClinic3DBackground />
           <UnifiedNavigation />
           <SasangConstitutionTest onComplete={handleTestComplete} />
         </div>
       );
     } else if (currentTest === 'premium') {
       return (
-        <div>
+        <div className="relative">
+          <HerbalClinic3DBackground />
           <UnifiedNavigation />
           <HanMedicinePremiumTest onComplete={handleTestComplete} />
         </div>
       );
     } else if (currentTest === 'diet') {
       return (
-        <div>
+        <div className="relative">
+          <HerbalClinic3DBackground />
           <UnifiedNavigation />
           <DietAnalysisTest onComplete={handleTestComplete} />
         </div>
@@ -114,7 +118,8 @@ const HanMedicineTest = () => {
   if (testState === 'result' && testResult) {
     if (currentTest === 'quick') {
       return (
-        <div>
+        <div className="relative">
+          <HerbalClinic3DBackground />
           <UnifiedNavigation />
           <EnhancedConstitutionResult result={testResult} onRestart={handleRestart} />
         </div>
@@ -151,9 +156,10 @@ const HanMedicineTest = () => {
   }
 
   return (
-    <div>
+    <div className="relative">
+      <HerbalClinic3DBackground />
       <UnifiedNavigation />
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-4 sm:py-8 px-4 pt-4">
+      <div className="min-h-screen py-4 sm:py-8 px-4 pt-4">
         <div className="max-w-6xl mx-auto">
           {/* 헤더 - 가운데 정렬 */}
           <div className="text-center mb-8 sm:mb-12 flex flex-col items-center px-2">

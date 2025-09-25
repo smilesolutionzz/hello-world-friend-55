@@ -530,7 +530,7 @@ const Dashboard = () => {
       />
 
       {/* Header - Simplified for mobile */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-border/40 lg:block hidden">
+      <header className="bg-white border-b border-border/40 lg:block hidden">
         <div className="container mx-auto px-6 py-4 max-w-7xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -759,7 +759,7 @@ const Dashboard = () => {
           
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               {/* Distribution Chart */}
-              <Card className="p-4 lg:p-6">
+              <Card className="p-4 lg:p-6 hover:shadow-md transition-shadow duration-200">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <BarChart3 className="w-5 h-5 text-blue-500" />
                   영역별 분포
@@ -835,7 +835,7 @@ const Dashboard = () => {
               </Card>
 
               {/* Trend Chart */}
-              <Card className="p-4 lg:p-6">
+              <Card className="p-4 lg:p-6 hover:shadow-md transition-shadow duration-200">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-green-500" />
                   최근 12주 점수 추이

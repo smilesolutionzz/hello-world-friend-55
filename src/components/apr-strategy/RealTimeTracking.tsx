@@ -345,19 +345,18 @@ export const RealTimeTracking: React.FC = () => {
       </Card>
 
       {/* APR 전략: 긴급성 메시지 */}
-      <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
+      <Card className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200">
         <CardContent className="p-4 lg:p-6 text-center">
-          <h3 className="text-lg lg:text-xl font-bold mb-2">⚡ 지금이 변화의 순간!</h3>
-          <p className="mb-4 opacity-90 text-sm lg:text-base">
+          <h3 className="text-lg lg:text-xl font-bold mb-2 text-orange-900">⚡ 지금이 변화의 순간!</h3>
+          <p className="mb-4 text-orange-700 text-sm lg:text-base">
             {trackingData?.streakDays && trackingData.streakDays > 0 
               ? `${trackingData.streakDays}일 연속 기록을 이어가세요!`
               : "오늘 시작하면 내일이 달라집니다!"
             }
           </p>
           <Button
-            variant="secondary"
             onClick={() => navigate('/assessment')}
-            className="font-medium"
+            className="bg-orange-500 hover:bg-orange-600 text-white font-medium"
             aria-label="지금 시작하기"
           >
             지금 시작하기

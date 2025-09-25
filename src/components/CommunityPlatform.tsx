@@ -143,6 +143,17 @@ const CommunityPlatform = () => {
   // 제휴기관 목록
   const institutionsList = [
     {
+      name: '삼성웰니스의원 발달클리닉',
+      type: '의원',
+      location: '서울시 강남구',
+      rating: 5.0,
+      members: 25,
+      programs: ['발달검진', '언어치료', '인지치료', '작업치료', '행동치료', '약물치료', '가족상담', '조기개입'],
+      voucher_types: ['발달재활서비스', '언어치료', '인지치료', '작업치료', '의료급여'],
+      featured: true,
+      description: '최고 수준의 의료진과 최신 시설을 갖춘 프리미엄 발달클리닉'
+    },
+    {
       name: '한점미소발달센터 남양주점',
       type: '발달센터',
       location: '경기도 남양주시',
@@ -447,48 +458,140 @@ const CommunityPlatform = () => {
         </TabsContent>
 
         {/* 제휴기관 탭 */}
-        <TabsContent value="institutions" className="space-y-4">
-          {institutionsList.map((institution, index) => (
-            <Card key={index}>
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3">
-                    <div className="bg-purple-100 p-2 rounded-lg">
-                      <Building className="w-6 h-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium">{institution.name}</span>
-                        <Badge className="bg-purple-100 text-purple-800">제휴기관</Badge>
-                      </div>
-                      <div className="text-sm text-muted-foreground mb-2">
-                        {institution.type} • {institution.location}
-                      </div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="flex items-center gap-1">
-                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                          <span className="text-sm">{institution.rating}</span>
-                        </div>
-                        <span className="text-sm text-muted-foreground">
-                          회원 {institution.members}명
-                        </span>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {institution.programs.map((program, idx) => (
-                          <Badge key={idx} variant="outline" className="text-xs">
-                            {program}
-                          </Badge>
-                        ))}
-                      </div>
+        <TabsContent value="institutions" className="space-y-6">
+          {/* 프리미엄 제휴기관 섹션 */}
+          {institutionsList.filter(institution => institution.featured).map((institution, index) => (
+            <Card key={index} className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-white to-purple-50 shadow-lg">
+              <CardContent className="p-8">
+                <div className="text-center space-y-6">
+                  {/* 프리미엄 뱃지 */}
+                  <div className="flex justify-center">
+                    <Badge className="bg-gradient-to-r from-primary to-purple-600 text-white px-4 py-2 text-sm font-semibold">
+                      ⭐ 프리미엄 제휴기관
+                    </Badge>
+                  </div>
+                  
+                  {/* 기관 아이콘 */}
+                  <div className="flex justify-center">
+                    <div className="bg-gradient-to-br from-primary to-purple-600 p-6 rounded-2xl shadow-lg">
+                      <Stethoscope className="w-12 h-12 text-white" />
                     </div>
                   </div>
-                  <Button size="sm" variant="outline">
-                    기관 정보
-                  </Button>
+                  
+                  {/* 기관 정보 */}
+                  <div className="space-y-3">
+                    <h3 className="text-3xl font-bold text-primary">{institution.name}</h3>
+                    <p className="text-lg text-muted-foreground font-medium">
+                      {institution.description}
+                    </p>
+                    <div className="flex justify-center items-center gap-4 text-lg">
+                      <Badge className="bg-primary/10 text-primary text-base px-3 py-1">
+                        {institution.type}
+                      </Badge>
+                      <span className="text-muted-foreground">•</span>
+                      <span className="font-medium">{institution.location}</span>
+                    </div>
+                    
+                    {/* 평점 및 회원 정보 */}
+                    <div className="flex justify-center items-center gap-6 text-base">
+                      <div className="flex items-center gap-2">
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-5 h-5 text-yellow-500 fill-current" />
+                          ))}
+                        </div>
+                        <span className="font-bold text-primary">{institution.rating}</span>
+                      </div>
+                      <span className="text-muted-foreground">•</span>
+                      <span className="font-medium text-primary">
+                        전문의 {institution.members}명
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* 프로그램 */}
+                  <div className="space-y-3">
+                    <h4 className="text-lg font-semibold">제공 서비스</h4>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {institution.programs.map((program, idx) => (
+                        <Badge key={idx} className="bg-primary/10 text-primary border border-primary/20 text-sm px-3 py-1">
+                          {program}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* 바우처 정보 */}
+                  <div className="space-y-3">
+                    <h4 className="text-lg font-semibold">지원 바우처</h4>
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {institution.voucher_types.map((voucher, idx) => (
+                        <Badge key={idx} variant="outline" className="border-green-300 text-green-700 text-sm px-3 py-1">
+                          {voucher}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* 액션 버튼 */}
+                  <div className="flex justify-center gap-4 pt-4">
+                    <Button size="lg" className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 text-white px-8">
+                      진료 예약
+                    </Button>
+                    <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5 px-8">
+                      기관 정보
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))}
+          
+          {/* 일반 제휴기관 섹션 */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-center mb-6 text-muted-foreground">기타 제휴기관</h3>
+            {institutionsList.filter(institution => !institution.featured).map((institution, index) => (
+              <Card key={index} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-purple-100 p-2 rounded-lg">
+                        <Building className="w-6 h-6 text-purple-600" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium">{institution.name}</span>
+                          <Badge className="bg-purple-100 text-purple-800">제휴기관</Badge>
+                        </div>
+                        <div className="text-sm text-muted-foreground mb-2">
+                          {institution.type} • {institution.location}
+                        </div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                            <span className="text-sm">{institution.rating}</span>
+                          </div>
+                          <span className="text-sm text-muted-foreground">
+                            회원 {institution.members}명
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {institution.programs.map((program, idx) => (
+                            <Badge key={idx} variant="outline" className="text-xs">
+                              {program}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      기관 정보
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </TabsContent>
 
         {/* 성공사례 탭 */}

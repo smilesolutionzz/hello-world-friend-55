@@ -4,7 +4,7 @@ import { ArrowLeft, Crown, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard";
-import Navigation from "@/components/Navigation";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
 import PremiumAssessmentResult from "@/components/assessment/PremiumAssessmentResult";
 import LanguageDevelopmentForm from "@/components/assessment/LanguageDevelopmentForm";
@@ -143,7 +143,7 @@ const PremiumAssessment = () => {
     if (selectedAssessment === 'autismSpectrumScreening') {
       return (
         <div>
-          <Navigation />
+          <UnifiedNavigation />
           <div className="pt-4">
             <AutismSpectrumForm
               onComplete={handleAssessmentComplete}
@@ -157,7 +157,7 @@ const PremiumAssessment = () => {
     if (selectedAssessment === 'languageDevelopment') {
       return (
         <div>
-          <Navigation />
+          <UnifiedNavigation />
           <div className="pt-4">
             <LanguageDevelopmentForm
               onComplete={handleAssessmentComplete}
@@ -200,7 +200,7 @@ const PremiumAssessment = () => {
   return (
     <AuthenticationGuard fallbackMessage="프리미엄 심리검사를 이용하려면 로그인이 필요합니다." redirectPath="/auth">
       <div>
-        <Navigation />
+        <UnifiedNavigation />
         <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden pt-4">
         {/* Premium Background */}
         <div className="absolute inset-0 overflow-hidden">

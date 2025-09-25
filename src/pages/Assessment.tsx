@@ -51,7 +51,7 @@ import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target, MessageCircle } fro
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Navigation from "@/components/Navigation";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
 const Assessment = () => {
   const navigate = useNavigate();
@@ -570,7 +570,7 @@ const Assessment = () => {
   if (currentStep === 'test-type') {
     return (
       <div>
-        <Navigation />
+        <UnifiedNavigation />
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden pt-4">
         {/* 작은 법적 안전 공지 배지 */}
         <div className="fixed top-4 right-4 z-50">
@@ -1054,7 +1054,7 @@ const Assessment = () => {
   if (currentStep === 'dream-interpretation') {
     return (
       <div>
-        <Navigation />
+        <UnifiedNavigation />
         <div className="pt-4">
           <DreamInterpretation onBack={handleBack} />
         </div>
@@ -1065,7 +1065,7 @@ const Assessment = () => {
   if (currentStep === 'saju-analysis') {
     return (
       <div>
-        <Navigation />
+        <UnifiedNavigation />
         <div className="pt-4">
           <SajuAnalysis onBack={handleBack} />
         </div>
@@ -1076,7 +1076,7 @@ const Assessment = () => {
   if (currentStep === 'legal-notice' && testType && testType !== 'dream') {
     return (
       <div>
-        <Navigation />
+        <UnifiedNavigation />
         <div className="pt-4">
           <LegalSafetyNotice onAccept={handleLegalNoticeAccept} testType={testType} />
         </div>
@@ -1275,7 +1275,7 @@ const Assessment = () => {
   if (currentStep === 'stress-result' && stressResults) {
     return (
       <div>
-        <Navigation />
+        <UnifiedNavigation />
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 pt-8">
           <div className="container mx-auto max-w-4xl">
             <StressTestResult 
@@ -1460,7 +1460,7 @@ const Assessment = () => {
 
   return (
     <div>
-      <Navigation />
+      <UnifiedNavigation />
       <div className="pt-4">
         {selectedAgeGroup === 'infant' && (
           <InfantAssessment 

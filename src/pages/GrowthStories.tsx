@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sparkles, PlusCircle, TrendingUp, Users, Heart } from 'lucide-react';
 import GrowthStoryShare from '@/components/growth/GrowthStoryShare';
 import GrowthStoryFeed from '@/components/growth/GrowthStoryFeed';
-import Navigation from '@/components/Navigation';
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 
 const GrowthStories = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -39,7 +39,7 @@ const GrowthStories = () => {
 
   return (
     <div className="min-h-screen bg-modern">
-      <Navigation />
+      <UnifiedNavigation />
       
       <div className="container mx-auto px-4 py-8">
         {/* 헤더 */}

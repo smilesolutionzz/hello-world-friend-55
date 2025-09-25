@@ -1,7 +1,12 @@
-import React from 'react';
-import { Heart, Building2, Brain, Activity, GraduationCap, Users, Target, Leaf, Stethoscope, BookOpen, Trophy, Sparkles, Star, Quote } from 'lucide-react';
+import React, { useState } from 'react';
+import { Heart, Building2, Brain, Activity, GraduationCap, Users, Target, Leaf, Stethoscope, BookOpen, Trophy, Sparkles, Star, Quote, MapPin, Phone, Clock, Award } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 const ClientLogos = () => {
+  const [selectedInstitution, setSelectedInstitution] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // 실제 사용자들의 감동적인 후기들
   const testimonials = [
     {
@@ -114,35 +119,92 @@ const ClientLogos = () => {
     }
   ];
 
-  // 제휴 전문기관들
+  // 제휴 전문기관들 (상세 정보 추가)
   const partners = [
-    { name: "한점미소발달센터", count: "전문기관", icon: Heart },
-    { name: "우아함발달센터", count: "전문기관", icon: Sparkles },
-    { name: "메이플 ABA 센터", count: "자폐전문", icon: Users },
-    { name: "엘림아동발달센터", count: "전문기관", icon: Target },
-    { name: "해웃음 심리발달센터", count: "전문기관", icon: Heart },
-    { name: "핌발달센터", count: "전문기관", icon: Brain },
-    { name: "정관언어발달센터", count: "전문기관", icon: BookOpen },
-    { name: "해오름 아동발달센터", count: "전문기관", icon: Sparkles },
-    { name: "넘나들 언어인지학습연구소", count: "전문기관", icon: GraduationCap },
-    { name: "별하언어심리상담센터", count: "전문기관", icon: Heart },
-    { name: "정아동발달센터", count: "전문기관", icon: Building2 },
-    { name: "소리엘언어발달센터", count: "전문기관", icon: Activity },
-    { name: "나아가다발달상담센터", count: "전문기관", icon: Users },
-    { name: "우리aba사회성발달센터", count: "전문기관", icon: Target },
-    { name: "한걸음발달 연구소", count: "전문기관", icon: Leaf },
-    { name: "참소리언어심리연구소", count: "전문기관", icon: Brain },
-    { name: "산본아동발달센터", count: "전문기관", icon: Heart },
-    { name: "도란도란 심리상담센터", count: "전문기관", icon: BookOpen },
-    { name: "다다언어심리발달센터", count: "전문기관", icon: Stethoscope },
-    { name: "풍무아동청소년아동발달센터", count: "전문기관", icon: Sparkles },
-    { name: "창원튼튼i병원", count: "부설 아동발달센터", icon: Building2 },
-    { name: "톡톡말톡톡 언어인지학습센터", count: "전문기관", icon: Activity },
-    { name: "가까이한의원", count: "한의원", icon: Leaf },
-    { name: "인애한의원", count: "한의원", icon: Stethoscope },
-    { name: "해수원한의원", count: "한의원", icon: Leaf },
-    { name: "굿모닝언어심리발달센터", count: "전문기관", icon: Heart }
+    { 
+      name: "삼성웰니스의원 발달클리닉", 
+      count: "메인 제휴기관", 
+      icon: Heart,
+      type: "의원",
+      location: "서울시 강남구",
+      phone: "02-0000-0000",
+      services: ["발달검진", "언어치료", "인지치료", "작업치료", "행동치료"],
+      specialties: ["조기개입", "자폐스펙트럼", "언어발달지연", "ADHD"],
+      rating: 5.0,
+      description: "최고 수준의 의료진과 최신 시설을 갖춘 메인 제휴기관입니다.",
+      hours: "평일 09:00-18:00, 토요일 09:00-14:00"
+    },
+    { 
+      name: "한점미소발달센터", 
+      count: "전문기관", 
+      icon: Heart,
+      type: "발달센터",
+      location: "경기도 남양주시",
+      phone: "031-1234-5678",
+      services: ["언어치료", "인지치료", "작업치료", "사회성훈련"],
+      specialties: ["자폐스펙트럼", "ADHD", "언어발달지연"],
+      rating: 4.7,
+      description: "아동발달 전문센터로 언어치료, 인지치료, 작업치료를 통합적으로 제공합니다.",
+      hours: "평일 09:00-18:00, 토요일 09:00-15:00"
+    },
+    { 
+      name: "조이발달센터", 
+      count: "전문기관", 
+      icon: Sparkles,
+      type: "발달센터",
+      location: "서울시 노원구",
+      phone: "02-1111-2222",
+      services: ["언어치료", "인지치료", "작업치료", "사회성훈련", "감각통합치료"],
+      specialties: ["언어발달지연", "자폐스펙트럼", "ADHD"],
+      rating: 4.7,
+      description: "언어·인지·작업치료 및 사회성훈련을 제공하는 통합 발달센터입니다.",
+      hours: "평일 09:00-18:00, 토요일 09:00-15:00"
+    },
+    { 
+      name: "틔움통합발달센터", 
+      count: "전문기관", 
+      icon: Users,
+      type: "발달센터",
+      location: "경기도 안양시",
+      phone: "031-222-3333",
+      services: ["언어치료", "인지치료", "작업치료", "사회성훈련", "학습치료", "부모상담"],
+      specialties: ["자폐스펙트럼", "ADHD", "언어발달지연", "학습장애"],
+      rating: 4.8,
+      description: "언어·인지·작업·사회성 등 통합 발달치료를 제공하는 전문센터입니다.",
+      hours: "평일 09:00-18:00, 토요일 09:00-16:00"
+    },
+    { 
+      name: "틔움사회서비스센터", 
+      count: "전문기관", 
+      icon: Target,
+      type: "사회서비스센터",
+      location: "경기도 안양시",
+      phone: "031-444-5555",
+      services: ["언어치료", "인지치료", "사회성훈련", "가족상담", "지역사회적응훈련"],
+      specialties: ["사회성발달", "정서행동", "가족상담"],
+      rating: 4.6,
+      description: "지역사회 기반의 가족상담, 사회성훈련, 지역사회적응훈련을 제공하는 센터입니다.",
+      hours: "평일 09:00-18:00, 토요일 09:00-14:00"
+    },
+    { 
+      name: "메이플 ABA 센터", 
+      count: "자폐전문", 
+      icon: Brain,
+      type: "발달센터",
+      location: "서울시 양천구",
+      phone: "02-2643-5678",
+      services: ["ABA치료", "행동중재", "사회성훈련", "부모교육", "개별교육"],
+      specialties: ["자폐스펙트럼", "행동문제", "사회성발달"],
+      rating: 4.8,
+      description: "ABA(응용행동분석) 전문센터로 자폐스펙트럼 아동의 행동중재를 제공합니다.",
+      hours: "평일 09:00-18:00, 토요일 09:00-16:00"
+    }
   ];
+
+  const handleInstitutionClick = (institution: any) => {
+    setSelectedInstitution(institution);
+    setIsModalOpen(true);
+  };
 
   return (
     <section className="py-12 sm:py-16 bg-gradient-to-b from-background to-muted/20">
@@ -216,10 +278,19 @@ const ClientLogos = () => {
               return (
                 <div
                   key={index}
-                  className="text-center p-4 rounded-xl bg-background/50 hover:bg-background/80 transition-all duration-200 hover:scale-105"
+                  className="text-center p-4 rounded-xl bg-background/50 hover:bg-background/80 transition-all duration-200 hover:scale-105 cursor-pointer"
+                  onClick={() => handleInstitutionClick(partner)}
                 >
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <IconComponent className="w-6 h-6 text-primary" />
+                  <div className={`w-12 h-12 ${
+                    partner.name === '삼성웰니스의원 발달클리닉' 
+                      ? 'bg-gradient-to-br from-amber-400 to-yellow-500' 
+                      : 'bg-primary/10'
+                  } rounded-full flex items-center justify-center mx-auto mb-3`}>
+                    <IconComponent className={`w-6 h-6 ${
+                      partner.name === '삼성웰니스의원 발달클리닉' 
+                        ? 'text-white' 
+                        : 'text-primary'
+                    }`} />
                   </div>
                   <h4 className="font-semibold text-sm text-foreground mb-1">{partner.name}</h4>
                   <p className="text-xs text-muted-foreground">{partner.count}</p>
@@ -237,6 +308,113 @@ const ClientLogos = () => {
             </div>
           </div>
         </div>
+
+        {/* 기관 정보 모달 */}
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3">
+                {selectedInstitution && (
+                  <>
+                    <div className={`w-10 h-10 ${
+                      selectedInstitution.name === '삼성웰니스의원 발달클리닉' 
+                        ? 'bg-gradient-to-br from-amber-400 to-yellow-500' 
+                        : 'bg-primary/10'
+                    } rounded-full flex items-center justify-center`}>
+                      <selectedInstitution.icon className={`w-5 h-5 ${
+                        selectedInstitution.name === '삼성웰니스의원 발달클리닉' 
+                          ? 'text-white' 
+                          : 'text-primary'
+                      }`} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">{selectedInstitution.name}</h3>
+                      <Badge className={`${
+                        selectedInstitution.name === '삼성웰니스의원 발달클리닉' 
+                          ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-white' 
+                          : 'bg-primary/10 text-primary'
+                      }`}>
+                        {selectedInstitution.count}
+                      </Badge>
+                    </div>
+                  </>
+                )}
+              </DialogTitle>
+            </DialogHeader>
+
+            {selectedInstitution && (
+              <div className="space-y-6">
+                {/* 기본 정보 */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">{selectedInstitution.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">{selectedInstitution.phone}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">{selectedInstitution.hours}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm">{selectedInstitution.type}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Award className="w-4 h-4 text-yellow-500" />
+                      <span className="text-sm font-medium">평점 {selectedInstitution.rating}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 설명 */}
+                <div>
+                  <h4 className="font-semibold mb-2">기관 소개</h4>
+                  <p className="text-sm text-muted-foreground">{selectedInstitution.description}</p>
+                </div>
+
+                {/* 제공 서비스 */}
+                <div>
+                  <h4 className="font-semibold mb-3">제공 서비스</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedInstitution.services.map((service: string, index: number) => (
+                      <Badge key={index} variant="outline" className="text-xs">
+                        {service}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 전문 분야 */}
+                <div>
+                  <h4 className="font-semibold mb-3">전문 분야</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedInstitution.specialties.map((specialty: string, index: number) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {specialty}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 상담 버튼 */}
+                <div className="flex gap-3 pt-4">
+                  <Button className="flex-1">
+                    상담 예약하기
+                  </Button>
+                  <Button variant="outline" className="flex-1">
+                    더 자세한 정보
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );

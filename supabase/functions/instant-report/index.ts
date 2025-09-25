@@ -112,16 +112,11 @@ serve(async (req) => {
 
 상황: ${message}
 
-JSON 형식으로 응답해주세요:
-{
-  "report": "상세한 분석 및 조언 내용 (1000자 이상)",
-  "riskLevel": "low|medium|high",
-  "needsExpertConsultation": true|false,
-  "timestamp": "${new Date().toISOString()}"
-}`;
+응답 시 JSON 형식은 사용하지 말고, 자연스러운 텍스트로만 작성해주세요. 
+분석 내용만 깔끔하게 1000자 이상으로 제공해주세요.`;
 
-    // Call OpenAI API
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Call OpenAI API for main analysis
+    const mainResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${openAIApiKey}`,
@@ -138,31 +133,66 @@ JSON 형식으로 응답해주세요:
       }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error('OpenAI API error:', response.status, errorData);
-      throw new Error(`OpenAI API error: ${response.status}`);
+    if (!mainResponse.ok) {
+      const errorData = await mainResponse.text();
+      console.error('OpenAI API error:', mainResponse.status, errorData);
+      throw new Error(`OpenAI API error: ${mainResponse.status}`);
     }
 
-    const data = await response.json();
-    const analysisContent = data.choices[0].message.content;
+    const mainData = await mainResponse.json();
+    const reportContent = mainData.choices[0].message.content;
 
-    console.log('OpenAI response received:', analysisContent.length, 'characters');
+    // Call OpenAI API for risk assessment
+    const riskAssessmentPrompt = `다음 상황을 분석하여 위험도와 전문가 상담 필요성을 평가해주세요:
 
-    // Parse JSON response
-    let analysisResult;
-    try {
-      analysisResult = JSON.parse(analysisContent);
-    } catch (parseError) {
-      console.error('Failed to parse JSON, using fallback:', parseError);
-      // Fallback analysis
-      analysisResult = {
-        report: analysisContent || "상황을 분석 중 오류가 발생했습니다. 전문가와 상담하시기를 권장드립니다.",
-        riskLevel: "medium",
-        needsExpertConsultation: true,
-        timestamp: new Date().toISOString()
-      };
+상황: ${message}
+
+JSON 형식으로만 응답:
+{
+  "riskLevel": "low|medium|high",
+  "needsExpertConsultation": true|false
+}`;
+
+    const riskResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          { role: 'system', content: '위험도 평가 전문가입니다.' },
+          { role: 'user', content: riskAssessmentPrompt }
+        ],
+        temperature: 0.3,
+        max_tokens: 200,
+      }),
+    });
+
+    let riskAssessment = {
+      riskLevel: "medium",
+      needsExpertConsultation: true
+    };
+
+    if (riskResponse.ok) {
+      const riskData = await riskResponse.json();
+      try {
+        riskAssessment = JSON.parse(riskData.choices[0].message.content);
+      } catch (parseError) {
+        console.error('Failed to parse risk assessment:', parseError);
+      }
     }
+
+    console.log('OpenAI response received:', reportContent.length, 'characters');
+
+    // Create final result
+    const analysisResult = {
+      report: reportContent.trim(),
+      riskLevel: riskAssessment.riskLevel,
+      needsExpertConsultation: riskAssessment.needsExpertConsultation,
+      timestamp: new Date().toISOString()
+    };
 
     // Track usage
     await supabase

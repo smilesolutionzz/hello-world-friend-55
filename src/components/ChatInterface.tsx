@@ -138,7 +138,36 @@ const ChatInterface = () => {
             {/* AIH 분석 결과 */}
             <div className="prose prose-lg max-w-none">
               <div className="whitespace-pre-line text-foreground leading-relaxed">
-                {report.report}
+                {report.report
+                  .replace(/^```json\s*/, '') // json 시작 제거
+                  .replace(/```$/, '') // 마지막 ``` 제거
+                  .replace(/\n\n\s*\n\n/g, '\n\n') // 중복 줄바꿈 제거
+                  .trim()
+                }
+              </div>
+            </div>
+
+            {/* 분석 요약 정보 */}
+            <div className="grid md:grid-cols-2 gap-4 mt-6">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="font-semibold text-sm text-gray-700 mb-2">위험도 수준</h4>
+                <div className={`text-sm font-medium ${
+                  report.riskLevel === 'high' ? 'text-red-600' :
+                  report.riskLevel === 'medium' ? 'text-orange-600' :
+                  'text-green-600'
+                }`}>
+                  {report.riskLevel === 'high' ? '높음 - 즉시 전문가 상담 필요' :
+                   report.riskLevel === 'medium' ? '보통 - 전문가 상담 권장' :
+                   '낮음 - 지속적인 관찰 필요'}
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="font-semibold text-sm text-gray-700 mb-2">전문가 상담 필요성</h4>
+                <div className={`text-sm font-medium ${
+                  report.needsExpertConsultation ? 'text-orange-600' : 'text-green-600'
+                }`}>
+                  {report.needsExpertConsultation ? '전문가 상담 권장' : '셀프케어로 관리 가능'}
+                </div>
               </div>
             </div>
           </div>

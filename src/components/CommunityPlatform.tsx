@@ -16,6 +16,10 @@ const CommunityPlatform = () => {
   const [comments, setComments] = useState<{[postId: number]: Array<{id: number, author: string, content: string, timeAgo: string}>}>({});
   const [newComment, setNewComment] = useState<{[postId: number]: string}>({});
   const [selectedPost, setSelectedPost] = useState<number | null>(null);
+  const [postLikes, setPostLikes] = useState<{[postId: number]: number}>({
+    1: 1, 2: 47, 3: 34, 4: 52, 5: 28
+  });
+  const [userLikes, setUserLikes] = useState<{[postId: number]: boolean}>({});
 
   // 커뮤니티 포스트 데이터
   const communityPosts = [
@@ -308,6 +312,18 @@ const CommunityPlatform = () => {
     }));
   };
 
+  const handleLike = (postId: number) => {
+    const isLiked = userLikes[postId];
+    setUserLikes(prev => ({
+      ...prev,
+      [postId]: !isLiked
+    }));
+    setPostLikes(prev => ({
+      ...prev,
+      [postId]: isLiked ? prev[postId] - 1 : prev[postId] + 1
+    }));
+  };
+
   return (
     <div className="space-y-6">
       {/* 커뮤니티 헤더 */}
@@ -398,10 +414,17 @@ const CommunityPlatform = () => {
 
                     {/* 상호작용 통계 */}
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Heart className="w-4 h-4" />
-                        {post.stats.likes}
-                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`flex items-center gap-1 p-1 h-auto text-sm hover:text-red-500 ${
+                          userLikes[post.id] ? 'text-red-500' : 'text-muted-foreground'
+                        }`}
+                        onClick={() => handleLike(post.id)}
+                      >
+                        <Heart className={`w-4 h-4 ${userLikes[post.id] ? 'fill-current' : ''}`} />
+                        {postLikes[post.id] || post.stats.likes}
+                      </Button>
                       <Button 
                         variant="ghost" 
                         size="sm" 

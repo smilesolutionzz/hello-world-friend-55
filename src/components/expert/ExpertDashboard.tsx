@@ -20,6 +20,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { AIAssistantDashboard } from './AIAssistantDashboard';
 
 interface Expert {
   id: string;
@@ -393,13 +394,12 @@ export const ExpertDashboard: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="earnings">
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-6">수익 관리</h2>
-            <div className="text-center py-8 text-muted-foreground">
-              <TrendingUp className="w-8 h-8 mx-auto mb-2" />
-              <p>수익 분석 기능은 곧 추가될 예정입니다.</p>
-            </div>
-          </Card>
+          <div className="space-y-6">
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-6">AI 업무 지원 시스템</h2>
+              <AIAssistantDashboard />
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

@@ -88,6 +88,34 @@ export const generateAIPredictions = async (
 // Backwards compatibility export
 export const matchExperts = getExpertRecommendations;
 
+export const generateFuturePrediction = async (
+  assessmentData: Record<string, number>,
+  ageGroup: 'infant' | 'child' | 'adult',
+  age: number,
+  rawAnswers?: number[]
+) => {
+  try {
+    const { data, error } = await supabase.functions.invoke('future-predictor', {
+      body: { assessmentData, ageGroup, age, rawAnswers, predictionType: 'developmental_delay' }
+    });
+
+    if (error) throw error;
+
+    return {
+      prediction: data.prediction,
+      accuracy: data.accuracy,
+      confidence: data.confidence
+    };
+  } catch (error) {
+    console.error('Future prediction error:', error);
+    return {
+      prediction: null,
+      accuracy: 70,
+      confidence: 'low'
+    };
+  }
+};
+
 export const chatWithAICounselor = async (
   message: string,
   conversationHistory: Array<{ role: string; content: string }>

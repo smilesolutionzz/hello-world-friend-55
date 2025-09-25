@@ -1618,18 +1618,42 @@ const ExpertHiring = () => {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredInstitutions.map((institution) => (
-                <Card key={institution.id} className="hover:shadow-lg transition-all duration-300 border-none shadow-md">
+                <Card 
+                  key={institution.id} 
+                  className={`hover:shadow-lg transition-all duration-300 border-none shadow-md ${
+                    institution.partnership_status === 'premium' 
+                      ? 'bg-gradient-to-br from-amber-50 via-white to-amber-50 border-2 border-amber-300 ring-2 ring-amber-200' 
+                      : ''
+                  }`}
+                >
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4 mb-4">
-                      <div className="bg-purple-100 p-3 rounded-lg shrink-0">
-                        <Building className="w-8 h-8 text-purple-600" />
+                      <div className={`${
+                        institution.partnership_status === 'premium' 
+                          ? 'bg-gradient-to-br from-amber-400 to-yellow-500' 
+                          : 'bg-purple-100'
+                        } p-3 rounded-lg shrink-0`}>
+                        <Building className={`w-8 h-8 ${
+                          institution.partnership_status === 'premium' 
+                            ? 'text-white' 
+                            : 'text-purple-600'
+                        }`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
-                          <h4 className="font-semibold text-lg text-gray-800 truncate">{institution.name}</h4>
-                          <Badge className="bg-purple-100 text-purple-800 shrink-0">
+                          <div className="flex items-center gap-1">
+                            {institution.partnership_status === 'premium' && (
+                              <Crown className="w-4 h-4 text-amber-500" />
+                            )}
+                            <h4 className="font-semibold text-lg text-gray-800 truncate">{institution.name}</h4>
+                          </div>
+                          <Badge className={`shrink-0 ${
+                            institution.partnership_status === 'premium' 
+                              ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-white border-amber-300' 
+                              : 'bg-purple-100 text-purple-800'
+                          }`}>
                             <Shield className="w-3 h-3 mr-1" />
-                            제휴기관
+                            {institution.partnership_status === 'premium' ? '⭐ 프리미엄 제휴기관' : '제휴기관'}
                           </Badge>
                         </div>
                         <div className="text-sm text-muted-foreground mb-2">
@@ -1673,7 +1697,11 @@ const ExpertHiring = () => {
 
                     <div className="space-y-2">
                       <Button 
-                        className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                        className={`w-full text-white ${
+                          institution.partnership_status === 'premium' 
+                            ? 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700' 
+                            : 'bg-purple-600 hover:bg-purple-700'
+                        }`}
                         onClick={() => {
                           toast("제휴기관 상담 예약 서비스를 준비 중입니다. 곧 이용하실 수 있습니다.");
                         }}
@@ -1682,7 +1710,11 @@ const ExpertHiring = () => {
                       </Button>
                       <Button 
                         variant="outline" 
-                        className="w-full"
+                        className={`w-full ${
+                          institution.partnership_status === 'premium' 
+                            ? 'border-amber-300 text-amber-700 hover:bg-amber-50' 
+                            : ''
+                        }`}
                         onClick={() => {
                           toast("상세한 기관 정보 페이지를 준비 중입니다. 곧 이용하실 수 있습니다.");
                         }}

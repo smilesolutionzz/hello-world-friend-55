@@ -369,6 +369,12 @@ const ClientLogos = () => {
                       <Award className="w-4 h-4 text-yellow-500" />
                       <span className="text-sm font-medium">평점 {selectedInstitution.rating}</span>
                     </div>
+                    {selectedInstitution.name === '삼성웰니스의원 발달클리닉' && (
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm">전문가 15명</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 

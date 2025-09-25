@@ -20,7 +20,7 @@ serve(async (req) => {
     console.log('Future prediction request:', { ageGroup, age, predictionType, dataPoints: Object.keys(assessmentData).length });
 
     // Calculate risk factors and predictions
-    const avgScore = Object.values(assessmentData).reduce((a: number, b: number) => a + b, 0) / Object.values(assessmentData).length;
+    const avgScore = Object.values(assessmentData).reduce((a: number, b: unknown) => a + (typeof b === 'number' ? b : 0), 0) / Object.values(assessmentData).length;
     const scoreVariance = calculateVariance(Object.values(assessmentData));
     
     const systemPrompt = `당신은 아동 발달 및 심리 상태 예측 전문가입니다. 

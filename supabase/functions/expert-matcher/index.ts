@@ -176,7 +176,7 @@ ${index + 1}. ${expert.full_name} (${expert.professional_title})
   } catch (error) {
     console.error('Expert matcher error:', error);
     return new Response(JSON.stringify({ 
-      error: error.message || '매칭 중 오류가 발생했습니다.',
+      error: error instanceof Error ? error.message : '매칭 중 오류가 발생했습니다.',
       experts: []
     }), {
       status: 500,

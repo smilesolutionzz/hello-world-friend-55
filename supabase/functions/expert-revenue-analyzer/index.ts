@@ -78,8 +78,8 @@ serve(async (req) => {
       : 0;
 
     // Analyze top earning days
-    const dayStats = {};
-    (thisMonthConsultations || []).forEach(consultation => {
+    const dayStats: Record<string, number> = {};
+    (thisMonthConsultations || []).forEach((consultation: any) => {
       const day = new Date(consultation.created_at).toLocaleDateString('ko-KR', { weekday: 'long' });
       dayStats[day] = (dayStats[day] || 0) + (consultation.price * 0.7);
     });
@@ -94,8 +94,8 @@ serve(async (req) => {
       lastMonth: Math.round(lastMonthRevenue),
       growth: Math.round(growth * 10) / 10,
       sessionCount: thisMonthConsultations?.length || 0,
-      averageRate: thisMonthConsultations?.length > 0 
-        ? Math.round(thisMonthRevenue / thisMonthConsultations.length)
+      averageRate: (thisMonthConsultations?.length || 0) > 0
+        ? Math.round(thisMonthRevenue / (thisMonthConsultations?.length || 1))
         : 0,
       topEarningDays: topEarningDays.length > 0 ? topEarningDays : ['월요일', '수요일', '금요일']
     };

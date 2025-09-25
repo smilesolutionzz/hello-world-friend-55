@@ -38,7 +38,7 @@ serve(async (req) => {
       "Brian": "nPczCjzI2devNBz1zQrb"
     };
 
-    const voiceId = voiceIds[voice] || voiceIds["Aria"];
+    const voiceId = voiceIds[voice as keyof typeof voiceIds] || voiceIds["Aria"];
 
     console.log(`Generating speech for text: "${text.substring(0, 100)}..." with voice: ${voice} (${voiceId})`);
 
@@ -85,7 +85,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in elevenlabs-tts function:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }

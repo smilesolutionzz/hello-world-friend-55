@@ -51,7 +51,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in family ecosystem analysis:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       analysis: null
     }), {
       status: 500,
@@ -75,7 +75,7 @@ async function analyzeFamilyDynamics(supabaseClient: any, familyId: string) {
     .eq('family_id', familyId);
 
   // Get recent lifestyle data for each member
-  const memberIds = familyMembers?.map(m => m.profile_id) || [];
+  const memberIds = familyMembers?.map((m: any) => m.profile_id) || [];
   const { data: lifestyleData } = await supabaseClient
     .from('lifestyle_patterns')
     .select('*')
@@ -136,7 +136,7 @@ async function detectEmotionalContagion(supabaseClient: any, familyId: string) {
   }
 
   // Get recent mood and stress data for all members
-  const memberIds = familyMembers.map(m => m.profile_id);
+  const memberIds = familyMembers.map((m: any) => m.profile_id);
   const { data: recentLifestyle } = await supabaseClient
     .from('lifestyle_patterns')
     .select('*')

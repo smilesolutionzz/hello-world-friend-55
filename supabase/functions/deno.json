@@ -2,8 +2,8 @@
   "compilerOptions": {
     "allowJs": true,
     "lib": ["deno.ns", "deno.window"],
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
+    "allowUnreachableCode": true,
+    "allowUnusedLabels": true,
     "checkJs": false,
     "noImplicitAny": false,
     "noImplicitReturns": false,
@@ -16,6 +16,7 @@
     "suppressExcessPropertyErrors": true,
     "suppressImplicitAnyIndexErrors": true,
     "useUnknownInCatchVariables": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noImplicitOverride": false
   }
 }

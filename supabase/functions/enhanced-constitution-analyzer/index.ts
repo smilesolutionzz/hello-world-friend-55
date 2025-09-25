@@ -222,7 +222,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in enhanced-constitution-analyzer:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       constitution_analysis: "분석 중 오류가 발생했습니다. 전문가와 상담해주세요.",
       clinic_recommendation: "가까운 한의원에서 정확한 체질 진단을 받으시기 바랍니다."
     }), {

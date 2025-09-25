@@ -5,6 +5,7 @@ import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink, MessageCirc
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
+import LifeRiskAnalysis from "@/components/insurance/LifeRiskAnalysis";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 
 interface AdultAssessmentResultProps {
@@ -296,6 +297,20 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
         category="adult" 
         severity={evaluation.level}
         ageGroup={ageGroup}
+      />
+
+      {/* 생활 위험도 분석 (보험 연계) */}
+      <LifeRiskAnalysis 
+        assessmentData={{
+          stressLevel: categoryScores.anxiety ? (categoryScores.anxiety / 3) * 100 : 50,
+          anxietyLevel: categoryScores.depression ? (categoryScores.depression / 3) * 100 : 50,
+          overallScore: ((3 - average) / 3) * 100, // 역산: 낮은 점수가 좋은 상태
+          ageGroup: ageGroup
+        }}
+        familyData={{
+          members: 1, // 기본값, 추후 가족 정보와 연동
+          hasChildren: false
+        }}
       />
 
       {/* Additional Information */}

@@ -54,6 +54,7 @@ import LifespanDevelopmentalTracker from '@/components/development/LifespanDevel
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { WeeklyInsights } from "@/components/dashboard/WeeklyInsights";
+import SafetyIndex from "@/components/dashboard/SafetyIndex";
 import LifeCareHub from "@/components/LifeCareHub";
 import { PersonalizationEngine } from '@/components/apr-strategy/PersonalizationEngine';
 import { RealTimeTracking } from '@/components/apr-strategy/RealTimeTracking';
@@ -954,6 +955,9 @@ const Dashboard = () => {
               
               {/* Quick Actions */}
               <QuickActions />
+              
+              {/* Safety Index - 보험 연계 */}
+              <SafetyIndex observations={observations} />
               
               {/* Weekly Insights */}
               <WeeklyInsights

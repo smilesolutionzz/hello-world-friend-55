@@ -572,13 +572,6 @@ const Assessment = () => {
       <div>
         <UnifiedNavigation />
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden pt-4">
-        {/* 작은 법적 안전 공지 배지 */}
-        <div className="fixed top-4 right-4 z-50">
-          <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow-lg hover:bg-blue-700 transition-colors cursor-pointer group">
-            <span>⚠️</span>
-            <span className="hidden group-hover:inline">참고용 서비스 • 응급시 119</span>
-          </div>
-        </div>
         
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
           <div className="text-center mb-16 space-y-6">

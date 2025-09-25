@@ -124,12 +124,12 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('=== Confirm Payment Error ===');
     console.error(error);
-    
+    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
     return new Response(JSON.stringify({ 
-      error: error.message 
+      error: message 
     }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

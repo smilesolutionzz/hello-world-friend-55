@@ -111,7 +111,7 @@ serve(async (req) => {
       analysisResult = JSON.parse(data.choices[0].message.content);
     } catch (parseError) {
       console.log('JSON parsing error, using fallback analysis');
-      analysisResult = createFallbackAnalysis(userId, assessments, consultations);
+      analysisResult = createFallbackAnalysis(userId, assessments || [], consultations || []);
     }
 
     return new Response(JSON.stringify(analysisResult), {

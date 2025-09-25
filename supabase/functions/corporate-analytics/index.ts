@@ -40,10 +40,11 @@ serve(async (req) => {
       default:
         throw new Error(`Unknown action: ${action}`);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in corporate analytics:', error);
+    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: message }),
       { 
         status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
@@ -398,7 +399,7 @@ async function calculateROIMetrics(organizationId: string, periodData: any) {
       turnover_rate_after: periodData.turnover_after || 0,
       absenteeism_reduction_percent: roiAnalysis.cost_savings.reduced_absenteeism,
       employee_satisfaction_improvement: 0, // To be calculated separately
-      estimated_cost_savings: Object.values(roiAnalysis.cost_savings).reduce((a, b) => a + b, 0),
+      estimated_cost_savings: Object.values(roiAnalysis.cost_savings as Record<string, number>).reduce((sum: number, v: number) => Number(sum) + Number(v), 0),
       roi_percentage: roiAnalysis.roi_percentage,
       additional_metrics: roiAnalysis
     });

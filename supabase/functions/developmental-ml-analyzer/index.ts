@@ -84,10 +84,11 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in developmental-ml-analyzer:', error);
+    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: message,
       details: 'Failed to analyze developmental data with ML'
     }), {
       status: 500,
@@ -172,7 +173,7 @@ async function analyzeDevelopmentalPatterns(processedData: any): Promise<MLAnaly
 - 전체 개선율: ${(processedData.improvementRate * 100).toFixed(1)}%
 
 발달 트렌드:
-${processedData.developmentTrends.map(t => 
+${processedData.developmentTrends.map((t: any) => 
   `- ${t.domain}: 트렌드 ${t.trend.toFixed(2)} (${t.dataPoints}개 데이터)`
 ).join('\n')}
 

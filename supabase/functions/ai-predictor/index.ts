@@ -124,10 +124,11 @@ ${analysis}
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in AI predictor function:', error);
+    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: message,
       predictions: createFallbackPrediction(),
       confidence: 'medium'
     }), {

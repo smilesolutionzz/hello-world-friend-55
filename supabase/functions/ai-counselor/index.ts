@@ -147,10 +147,11 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in AI counselor function:', error);
+    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: message,
       response: "죄송합니다. 일시적인 문제가 발생했습니다. 긴급한 상황이라면 정신건강위기상담전화 1577-0199로 연락해주세요.",
       riskLevel: 'medium'
     }), {

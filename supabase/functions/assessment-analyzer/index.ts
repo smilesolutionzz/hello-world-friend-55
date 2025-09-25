@@ -258,10 +258,11 @@ ${Object.entries(results).map(([key, value]) => `${key}: ${value}점`).join('\n'
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in assessment analyzer function:', error);
+    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: message,
       analysis: "분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
       riskLevel: 'medium'
     }), {

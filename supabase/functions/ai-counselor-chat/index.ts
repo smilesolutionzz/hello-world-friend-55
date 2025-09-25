@@ -100,10 +100,11 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in AI counselor chat:', error);
+    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: message,
       response: "죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
     }), {
       status: 500,

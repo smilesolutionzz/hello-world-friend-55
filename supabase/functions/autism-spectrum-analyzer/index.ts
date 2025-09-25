@@ -195,12 +195,13 @@ JSON 형식으로 응답해주세요:
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in autism-spectrum-analyzer function:', error);
+    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message,
+        error: message,
         analysis: {
           overallInterpretation: "현재 분석 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
           disclaimer: "본 검사는 선별도구이며 진단을 대체하지 않습니다."

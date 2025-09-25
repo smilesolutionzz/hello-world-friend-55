@@ -58,12 +58,12 @@ serve(async (req) => {
       status: 200,
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('💥 Daily token bonus error:', error);
-    
+    const message = error instanceof Error ? error.message : (typeof error === 'string' ? error : 'Unknown error');
     return new Response(JSON.stringify({ 
       success: false,
-      error: error.message || 'Unknown error occurred',
+      error: message,
       timestamp: new Date().toISOString()
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

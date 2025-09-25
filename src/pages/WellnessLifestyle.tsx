@@ -29,6 +29,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import ExercisePlanChart from '@/components/wellness/ExercisePlanChart';
+import SleepGuideChart from '@/components/wellness/SleepGuideChart';
+import FastingChart from '@/components/wellness/FastingChart';
 
 const WellnessLifestyle = () => {
   const navigate = useNavigate();
@@ -484,77 +487,106 @@ const WellnessLifestyle = () => {
 
             {/* 라이프 플랜 */}
             <TabsContent value="wellness-plan" className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="text-center">
-                  <CardContent className="p-6">
-                    <Dumbbell className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                    <h3 className="font-semibold mb-2">운동 플랜</h3>
-                    <p className="text-sm text-gray-600 mb-4">맞춤 홈트레이닝</p>
-                    <Button size="sm" className="w-full" onClick={handleWorkoutStart} disabled={loadingWorkout}>
-                      {loadingWorkout ? '생성 중...' : '운동 시작'}
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="text-center">
-                  <CardContent className="p-6">
-                    <Moon className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                    <h3 className="font-semibold mb-2">수면 개선</h3>
-                    <p className="text-sm text-gray-600 mb-4">수면 품질 향상</p>
-                    <Button size="sm" className="w-full" onClick={handleSleepTips} disabled={loadingSleep}>
-                      {loadingSleep ? '준비 중...' : '수면 가이드'}
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="text-center">
-                  <CardContent className="p-6">
-                    <Timer className="h-12 w-12 text-orange-600 mx-auto mb-4" />
-                    <h3 className="font-semibold mb-2">간헐적 단식</h3>
-                    <p className="text-sm text-gray-600 mb-4">건강한 다이어트</p>
-                    <Button size="sm" className="w-full" onClick={handleFastingTimerStart}>
-                      {fastingActive ? '진행 중' : '타이머 시작'}
-                    </Button>
-                  </CardContent>
-                </Card>
+              {/* 라이프 플랜 그래프 섹션 */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* 운동 계획 차트 */}
+                <ExercisePlanChart />
+                
+                {/* 수면 가이드 차트 */}
+                <SleepGuideChart />
               </div>
 
-              {/* 플랜 결과 표시 */}
+              {/* 간헐적 단식 차트 - 전체 너비 */}
+              <div className="w-full">
+                <FastingChart />
+              </div>
+
+              {/* AI 생성 플랜 결과 (기존 기능 유지) */}
               {(workoutPlan || sleepTips) && (
-                <div className="space-y-6">
-                  <h3 className="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                    🎯 내 라이프 플랜
+                <div className="space-y-6 pt-8 border-t border-gray-200">
+                  <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                    <Brain className="h-5 w-5 text-purple-600" />
+                    AI 맞춤 플랜
                   </h3>
                   
                   {workoutPlan && (
-                    <Card>
+                    <Card className="border-l-4 border-l-green-500">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                           <Dumbbell className="h-5 w-5 text-green-600" />
-                          운동 계획
+                          개인 맞춤 운동 계획
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-gray-700 leading-relaxed">{workoutPlan}</p>
+                        <div className="prose prose-sm max-w-none">
+                          <p className="text-gray-700 leading-relaxed whitespace-pre-line">{workoutPlan}</p>
+                        </div>
+                        <div className="mt-4 flex gap-2">
+                          <Button size="sm" onClick={() => navigate('/dashboard')}>
+                            내 리포트에 저장
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => setWorkoutPlan('')}>
+                            닫기
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   )}
 
                   {sleepTips && (
-                    <Card>
+                    <Card className="border-l-4 border-l-blue-500">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                           <Moon className="h-5 w-5 text-blue-600" />
-                          수면 개선 가이드
+                          개인 맞춤 수면 개선 가이드
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-gray-700 leading-relaxed">{sleepTips}</p>
+                        <div className="prose prose-sm max-w-none">
+                          <p className="text-gray-700 leading-relaxed whitespace-pre-line">{sleepTips}</p>
+                        </div>
+                        <div className="mt-4 flex gap-2">
+                          <Button size="sm" onClick={() => navigate('/dashboard')}>
+                            내 리포트에 저장
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => setSleepTips('')}>
+                            닫기
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   )}
                 </div>
               )}
+
+              {/* AI 플랜 생성 버튼들 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 border-t border-gray-200">
+                <Button 
+                  variant="outline" 
+                  className="h-16 flex flex-col gap-1"
+                  onClick={handleWorkoutStart} 
+                  disabled={loadingWorkout}
+                >
+                  <Dumbbell className="h-5 w-5 text-green-600" />
+                  <span className="font-medium">맞춤 운동 플랜 생성</span>
+                  <span className="text-xs text-muted-foreground">
+                    {loadingWorkout ? 'AI 분석 중...' : '개인 맞춤형 홈트레이닝'}
+                  </span>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-16 flex flex-col gap-1"
+                  onClick={handleSleepTips} 
+                  disabled={loadingSleep}
+                >
+                  <Moon className="h-5 w-5 text-blue-600" />
+                  <span className="font-medium">수면 개선 가이드 생성</span>
+                  <span className="text-xs text-muted-foreground">
+                    {loadingSleep ? 'AI 분석 중...' : '수면 품질 향상 방법'}
+                  </span>
+                </Button>
+              </div>
             </TabsContent>
 
             {/* 내 리포트 모음 */}

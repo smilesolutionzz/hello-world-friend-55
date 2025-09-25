@@ -95,7 +95,7 @@ serve(async (req) => {
 
 ## 검사 결과 점수
 ${Object.entries(results).map(([category, score]) => {
-  const categoryNames = {
+  const categoryNames: Record<string, string> = {
     warmth_acceptance: '온정수용',
     behavioral_control: '행동통제', 
     psychological_control: '심리통제',

@@ -43,10 +43,11 @@ serve(async (req) => {
         throw new Error('Invalid action');
     }
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in personalization engine:', error);
+    const message = error instanceof Error ? error.message : String(error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: message,
       recommendations: []
     }), {
       status: 500,
@@ -102,11 +103,13 @@ async function analyzePatterns(supabaseClient: any, profileId: string) {
       });
   }
 
-  return { insights };
+  return new Response(JSON.stringify({ insights }), {
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
 }
 
-function generateInsights(behaviors: any[]) {
-  const insights = [];
+function generateInsights(behaviors: any[]): any[] {
+  const insights: any[] = [];
   
   if (behaviors.length === 0) return insights;
 
@@ -377,7 +380,7 @@ async function findSocialMatches(supabaseClient: any, profileId: string) {
     .neq('id', profileId)
     .limit(20);
 
-  const matches = potentialMatches?.filter(match => {
+  const matches = potentialMatches?.filter((match: { id: string; birth_date: string }) => {
     const matchAge = calculateAge(match.birth_date);
     return Math.abs(matchAge - calculateAge(profile?.birth_date)) <= 5;
   }) || [];

@@ -33,7 +33,7 @@ serve(async (req) => {
 
     // 답변을 읽기 쉬운 형태로 변환
     const formattedAnswers = Object.entries(answers).map(([key, value]) => {
-      const questionMapping = {
+      const questionMapping: Record<string, string> = {
         'relationship_preference': '이상적인 관계 스타일',
         'conflict_style': '갈등 상황 대처법',
         'communication_style': '소통에서 중요한 것',
@@ -44,7 +44,7 @@ serve(async (req) => {
         'social_preference': '사회적 활동 선호도'
       };
       
-      const answerMapping = {
+      const answerMapping: Record<string, string> = {
         // relationship_preference
         'passionate': '열정적이고 로맨틱한 관계',
         'stable': '안정적이고 신뢰할 수 있는 관계',
@@ -75,7 +75,7 @@ serve(async (req) => {
         'very_dependent': '항상 함께 있고 싶음'
       };
 
-      return `${questionMapping[key] || key}: ${answerMapping[value] || value}`;
+      return `${questionMapping[String(key)] || String(key)}: ${answerMapping[String(value)] || String(value)}`;
     }).join('\n');
 
     const prompt = `
@@ -159,10 +159,11 @@ ${formattedAnswers}
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('[PERSONALITY-LOVE-ANALYZER] 오류:', error);
+    const message = error instanceof Error ? error.message : String(error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: message,
       fallback: "분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
     }), {
       status: 500,

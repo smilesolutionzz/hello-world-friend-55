@@ -60,16 +60,21 @@ serve(async (req) => {
     });
   }
 
+  let supabaseServiceClient: any;
+  let supabaseClient: any;
+  let tokenData: { current_tokens: number; total_used: number } | null = null;
+  let tokenCost: number | null = null;
+
   try {
     logStep('Function started');
 
-    const supabaseServiceClient = createClient(
+    supabaseServiceClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
       { auth: { persistSession: false } }
     );
 
-    const supabaseClient = createClient(
+    supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
@@ -107,14 +112,16 @@ serve(async (req) => {
     });
 
     // 토큰 차감 처리
-    const tokenCost = requestBody.tokenCost || (requestBody.mode === 'detailed' ? 5 : 3);
+    tokenCost = requestBody.tokenCost || (requestBody.mode === 'detailed' ? 5 : 3);
     
     // 현재 토큰 잔액 확인 및 차감
-    const { data: tokenData, error: tokenError } = await supabaseServiceClient
+    const { data: tokenDataRes, error: tokenError } = await supabaseServiceClient
       .from('user_tokens')
       .select('current_tokens, total_used')
       .eq('user_id', user.id)
       .single();
+
+    tokenData = tokenDataRes;
 
     if (tokenError || !tokenData) {
       return new Response(JSON.stringify({ 
@@ -415,26 +422,28 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error) {
-    logStep('Error occurred', { error: error.message });
-    
-    const errorMessage = error.message || 'Unknown error';
-    
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logStep('Error occurred', { error: errorMessage });
+
     // 토큰 환불 시도 (에러 발생 시에만)
     try {
-      const { data: { user: currentUser } } = await supabaseClient.auth.getUser();
-      if (currentUser?.id && tokenCost && tokenData) {
-        await supabaseServiceClient
-          .from('user_tokens')
-          .update({ 
-            current_tokens: tokenData.current_tokens, // 원래 토큰으로 복구
-            total_used: tokenData.total_used 
-          })
-          .eq('user_id', currentUser.id);
-        logStep('Token refunded due to error', { refundedTokens: tokenCost });
+      if (supabaseClient) {
+        const { data: { user: currentUser } } = await supabaseClient.auth.getUser();
+        if (currentUser?.id && tokenCost != null && tokenData && supabaseServiceClient) {
+          await supabaseServiceClient
+            .from('user_tokens')
+            .update({ 
+              current_tokens: tokenData.current_tokens, // 원래 토큰으로 복구
+              total_used: tokenData.total_used 
+            })
+            .eq('user_id', currentUser.id);
+          logStep('Token refunded due to error', { refundedTokens: tokenCost });
+        }
       }
-    } catch (refundError) {
-      logStep('Token refund failed', { error: refundError });
+    } catch (refundError: unknown) {
+      const refundMessage = refundError instanceof Error ? refundError.message : String(refundError);
+      logStep('Token refund failed', { error: refundMessage });
     }
     
     // OpenAI API 에러인 경우 더 구체적인 메시지

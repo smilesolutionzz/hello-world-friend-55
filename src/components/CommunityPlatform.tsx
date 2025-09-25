@@ -559,7 +559,7 @@ const CommunityPlatform = () => {
                   <div className="space-y-3">
                     <h3 className="text-3xl font-bold text-primary">{institution.name}</h3>
                     <p className="text-lg text-muted-foreground font-medium">
-                      {institution.description}
+                      최고 수준의 최고수준의 치료사와 전문성을 갖춘 발달클리닉
                     </p>
                     <div className="flex justify-center items-center gap-4 text-lg">
                       <Badge className="bg-primary/10 text-primary text-base px-3 py-1">

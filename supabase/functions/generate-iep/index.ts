@@ -392,7 +392,7 @@ ${Object.keys(currentPerformance).length > 0 ? JSON.stringify(currentPerformance
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message || 'IEP 생성 중 오류가 발생했습니다'
+        error: error instanceof Error ? error.message : 'IEP 생성 중 오류가 발생했습니다'
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

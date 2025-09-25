@@ -251,7 +251,7 @@ Deno.serve(async (req) => {
   <div class="section">
     <h2 class="section-title">연간 목표</h2>
     ${Array.isArray(iepData.annual_goals) ? 
-      iepData.annual_goals.map((goal, index) => `
+      iepData.annual_goals.map((goal: any, index: any) => `
         <div class="goal-item">
           <div class="goal-header">목표 ${index + 1}</div>
           ${goal.domain ? `<div class="goal-domain">${goal.domain}</div>` : ''}
@@ -290,7 +290,7 @@ Deno.serve(async (req) => {
   <div class="section">
     <h2 class="section-title">특수교육 서비스</h2>
     ${Array.isArray(iepData.special_education_services) ? 
-      iepData.special_education_services.map(service => `
+      iepData.special_education_services.map((service: any) => `
         <div class="goal-item">
           <div class="goal-header">${service.service || '특수교육 서비스'}</div>
           <div class="service-grid">
@@ -337,7 +337,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message || 'PDF 생성 중 오류가 발생했습니다'
+        error: error instanceof Error ? error.message : 'PDF 생성 중 오류가 발생했습니다'
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -6,7 +6,7 @@ declare global {
   }
   
   // Declare any as a global type to suppress TypeScript errors
-  declare const $any: any;
+  const $any: any;
 }
 
 // Type overrides for catch blocks

@@ -247,7 +247,7 @@ ${JSON.stringify(chatRooms?.slice(0, 3), null, 2)}
     console.error('Error generating comprehensive report:', error);
     return new Response(
       JSON.stringify({
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         success: false
       }),
       {

@@ -258,7 +258,7 @@ async function analyzeGenerationalPatterns(supabaseClient: any, familyId: string
     .order('generation');
 
   // Get historical data for pattern analysis
-  const memberIds = familyMembers?.map(m => m.profile_id) || [];
+  const memberIds = familyMembers?.map((m: any) => m.profile_id) || [];
   const { data: historicalData } = await supabaseClient
     .from('lifestyle_patterns')
     .select('*')
@@ -305,7 +305,7 @@ async function calculateFamilyWellnessIndex(supabaseClient: any, familyId: strin
     .select('profile_id, influence_weight')
     .eq('family_id', familyId);
 
-  const memberIds = familyMembers?.map(m => m.profile_id) || [];
+  const memberIds = familyMembers?.map((m: any) => m.profile_id) || [];
   
   // Get recent lifestyle data
   const { data: recentLifestyle } = await supabaseClient
@@ -316,8 +316,8 @@ async function calculateFamilyWellnessIndex(supabaseClient: any, familyId: strin
 
   // Calculate individual wellness scores
   const individualScores: Record<string, number> = {};
-  memberIds.forEach(memberId => {
-    const memberData = recentLifestyle?.filter(l => l.profile_id === memberId) || [];
+  memberIds.forEach((memberId: any) => {
+    const memberData = recentLifestyle?.filter((l: any) => l.profile_id === memberId) || [];
     individualScores[memberId] = calculateIndividualWellness(memberData);
   });
 
@@ -392,7 +392,7 @@ async function predictEventImpact(supabaseClient: any, familyId: string, eventDa
 - 영향받는 구성원: ${eventData.affectedMembers?.length || 0}명
 
 가족 구성:
-${familyMembers?.map(m => `- ${m.relationship_type} (세대: ${m.generation}, 영향력: ${m.influence_weight})`).join('\n')}
+${familyMembers?.map((m: any) => `- ${m.relationship_type} (세대: ${m.generation}, 영향력: ${m.influence_weight})`).join('\n')}
 
 최근 가족 역학:
 - 가족 웰빙 지수: ${recentDynamics?.[0]?.family_wellness_index || '알 수 없음'}

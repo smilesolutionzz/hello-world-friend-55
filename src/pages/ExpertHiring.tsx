@@ -1675,10 +1675,7 @@ const ExpertHiring = () => {
                       <Button 
                         className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                         onClick={() => {
-                          toast({
-                            title: "상담 예약",
-                            description: "제휴기관 상담 예약 서비스를 준비 중입니다. 곧 이용하실 수 있습니다.",
-                          });
+                          toast("제휴기관 상담 예약 서비스를 준비 중입니다. 곧 이용하실 수 있습니다.");
                         }}
                       >
                         상담 예약하기
@@ -1687,10 +1684,7 @@ const ExpertHiring = () => {
                         variant="outline" 
                         className="w-full"
                         onClick={() => {
-                          toast({
-                            title: "기관 정보",
-                            description: "상세한 기관 정보 페이지를 준비 중입니다. 곧 이용하실 수 있습니다.",
-                          });
+                          toast("상세한 기관 정보 페이지를 준비 중입니다. 곧 이용하실 수 있습니다.");
                         }}
                       >
                         기관 정보 보기

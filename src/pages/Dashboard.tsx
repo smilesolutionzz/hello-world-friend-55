@@ -581,7 +581,6 @@ const Dashboard = () => {
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <TokenBalance />
               <Button onClick={() => navigate('/family')} variant="outline" size="sm">
                 <Users className="w-4 h-4 mr-2" />
                 가족 관리
@@ -737,20 +736,14 @@ const Dashboard = () => {
               </Card>
             )}
 
-            {/* Token Balance and Comprehensive Report Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-              <div className="space-y-6">
-                <TokenBalance compact={false} showPurchaseButton={true} />
-                <SamplePDFDownload />
-              </div>
-              <div className="lg:col-span-2">
-                <ComprehensiveReportSection
-                  totalAssessments={observations.filter(obs => obs.tags.includes('검사')).length}
-                  totalObservations={observations.filter(obs => obs.tags.includes('관찰일지')).length}
-                  totalConsultations={observations.filter(obs => obs.tags.includes('상담')).length}
-                  hasEnoughData={observations.length >= 3}
-                />
-              </div>
+            {/* Comprehensive Report Section */}
+            <div className="mb-6">
+              <ComprehensiveReportSection
+                totalAssessments={observations.filter(obs => obs.tags.includes('검사')).length}
+                totalObservations={observations.filter(obs => obs.tags.includes('관찰일지')).length}
+                totalConsultations={observations.filter(obs => obs.tags.includes('상담')).length}
+                hasEnoughData={observations.length >= 3}
+              />
             </div>
 
             {/* Charts Section - 데스크톱에서 가로로 배치 */}
@@ -1126,6 +1119,14 @@ const Dashboard = () => {
               <h3 className="text-lg font-semibold mb-4">팀 공유 & 확산</h3>
               <ViralMechanics />
             </Card>
+          </TabsContent>
+
+          <TabsContent value="development">
+            <LifespanDevelopmentalTracker />
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <TeamSettings />
           </TabsContent>
         </Tabs>
       </div>

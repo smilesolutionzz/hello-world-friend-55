@@ -23,8 +23,8 @@ serve(async (req) => {
     const answerAnalysis = Object.entries(answers).map(([id, answer]) => `질문 ${id}: ${answer}`).join('\n');
     
     // 가장 높은 점수 영역 찾기
-    const maxScore = Math.max(...Object.values(scores));
-    const dominantTraits = Object.entries(scores)
+    const maxScore = Math.max(...(Object.values(scores) as number[]));
+    const dominantTraits = Object.entries(scores as Record<string, number>)
       .filter(([_, score]) => score === maxScore)
       .map(([trait, _]) => trait);
 

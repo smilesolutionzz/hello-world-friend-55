@@ -85,12 +85,12 @@ serve(async (req) => {
     // 에러 시 기본 분석 제공
     const fallbackAnalysis = generateFallbackAnalysis();
     
-    return new Response(JSON.stringify({
-      success: false,
-      error: error.message,
-      analysis: fallbackAnalysis,
-      clinicInfo: null
-    }), {
+  return new Response(JSON.stringify({
+    success: false,
+    error: error instanceof Error ? error.message : 'Unknown error',
+    analysis: fallbackAnalysis,
+    clinicInfo: null
+  }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

@@ -372,7 +372,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         positives: concernsMatch ? [concernsMatch[1].trim()] : ['주요 관심 사항을 확인했습니다.'],
         tips: recommendationsMatch ? extractDetailedListItems(recommendationsMatch[1]) : ['전문가급 권고사항을 제시했습니다.'],
         alerts: consultationMatch ? [consultationMatch[1].trim()] : [],
-        observationGuide: observationGuideMatch ? [observationGuideMatch[1].trim()] : [],
+        
         mediaNotes
       };
     } else {

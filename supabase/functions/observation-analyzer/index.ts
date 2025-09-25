@@ -150,8 +150,8 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in observation-analyzer function:', error);
-    return new Response(JSON.stringify({ 
-      error: error.message,
+  return new Response(JSON.stringify({ 
+      error: error instanceof Error ? error.message : 'Unknown error',
       analysis: "분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
       riskLevel: 'medium'
     }), {

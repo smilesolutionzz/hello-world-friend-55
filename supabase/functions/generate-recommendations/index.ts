@@ -119,7 +119,7 @@ ${requestBody.analysisText}
 
     // Parse recommendations from AI response
     const recommendations = [];
-    const sections = recommendationText.split(/\[권고사항 \d+\]/).filter(section => section.trim().length > 0);
+    const sections = recommendationText.split(/\[권고사항 \d+\]/).filter((section: string) => section.trim().length > 0);
     
     for (let i = 0; i < Math.min(sections.length, 5); i++) {
       const section = sections[i];
@@ -136,7 +136,7 @@ ${requestBody.analysisText}
           const stepText = stepsMatch[1];
           const stepMatches = stepText.match(/\d+\.\s*(.+)/g);
           if (stepMatches) {
-            steps.push(...stepMatches.map(step => step.replace(/^\d+\.\s*/, '')));
+            steps.push(...stepMatches.map((step: string) => step.replace(/^\d+\.\s*/, '')));
           }
         }
         

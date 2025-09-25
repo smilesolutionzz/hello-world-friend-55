@@ -58,7 +58,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error generating image:', error)
     return new Response(
-      JSON.stringify({ error: 'Image generation failed', details: error.message }),
+      JSON.stringify({ error: 'Image generation failed', details: error instanceof Error ? error.message : 'Unknown error' }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     )
   }

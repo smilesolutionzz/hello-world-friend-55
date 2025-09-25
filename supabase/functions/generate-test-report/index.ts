@@ -399,7 +399,7 @@ function generateHTMLReport(testType: string, results: any, analysis: string, te
         <div class="score-visualization">
             <h3>점수 시각화</h3>
             ${Object.entries(results).map(([key, value]) => {
-                const numValue = typeof value === 'number' ? value : parseFloat(value) || 0;
+                const numValue = typeof value === 'number' ? value : (typeof value === 'string' ? parseFloat(value as string) || 0 : 0);
                 const percentage = Math.min((numValue / 100) * 100, 100);
                 return `
                 <div class="score-bar">

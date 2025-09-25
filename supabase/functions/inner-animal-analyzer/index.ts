@@ -150,9 +150,9 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in inner-animal-analyzer:', error);
-    return new Response(JSON.stringify({ 
+  return new Response(JSON.stringify({ 
       error: 'Analysis failed',
-      message: error.message 
+      message: error instanceof Error ? error.message : 'Unknown error' 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

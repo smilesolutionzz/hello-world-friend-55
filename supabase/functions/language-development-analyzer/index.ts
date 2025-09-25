@@ -150,9 +150,9 @@ ${Object.entries(answers).map(([questionId, answer]) => `문항 ${questionId}: $
 
   } catch (error) {
     console.error('언어발달 분석 오류:', error);
-    return new Response(JSON.stringify({ 
+  return new Response(JSON.stringify({ 
       error: 'AI 분석 생성 중 오류가 발생했습니다.',
-      details: error.message 
+      details: error instanceof Error ? error.message : 'Unknown error' 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

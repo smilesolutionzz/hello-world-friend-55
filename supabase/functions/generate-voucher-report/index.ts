@@ -218,11 +218,11 @@ ${customNotes || '없음'}
 
   } catch (error) {
     console.error('바우처 보고서 생성 오류:', error);
-    return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        details: '바우처 보고서 생성 중 오류가 발생했습니다.'
-      }), 
+  return new Response(
+    JSON.stringify({ 
+      error: error instanceof Error ? error.message : 'Unknown error',
+      details: '바우처 보고서 생성 중 오류가 발생했습니다.'
+    }), 
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

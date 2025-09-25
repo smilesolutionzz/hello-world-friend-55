@@ -541,7 +541,11 @@ const CommunityPlatform = () => {
                   <div className="space-y-3">
                     
                     <div className="flex flex-wrap justify-center gap-2">
-                      {institution.programs.map((program, idx) => {})}
+                      {institution.programs.map((program, idx) => (
+                        <Badge key={idx} className="bg-secondary/50 text-secondary-foreground">
+                          {program}
+                        </Badge>
+                      ))}
                     </div>
                   </div>
                   

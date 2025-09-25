@@ -259,7 +259,7 @@ const ChatInterface = () => {
           </div>
           
           {/* Character Count */}
-          <div className="absolute bottom-3 sm:bottom-4 left-4 sm:left-6 text-xs sm:text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded">
+          <div className="absolute bottom-3 sm:bottom-4 left-4 sm:left-6 text-xs sm:text-sm text-muted-foreground bg-background/90 backdrop-blur-sm px-2 py-1 rounded z-10 pointer-events-none">
             {message.length}/500 (최소 30자)
           </div>
         </div>

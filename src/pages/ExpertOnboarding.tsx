@@ -92,7 +92,7 @@ export default function ExpertOnboarding() {
       if (!user.user) return;
 
       const { error } = await supabase
-        .from('expert_profiles')
+        .from('expert_profiles' as any)
         .upsert({
           user_id: user.user.id,
           specialization: expertProfile.specialization,

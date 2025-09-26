@@ -1638,6 +1638,54 @@ export type Database = {
         }
         Relationships: []
       }
+      expert_profiles: {
+        Row: {
+          available_hours: string | null
+          created_at: string | null
+          experience_years: string | null
+          expertise_areas: string[] | null
+          id: string
+          introduction: string | null
+          license_info: string | null
+          specialization: string[] | null
+          status: string | null
+          target_age_groups: string[] | null
+          updated_at: string | null
+          user_id: string
+          workplace: string | null
+        }
+        Insert: {
+          available_hours?: string | null
+          created_at?: string | null
+          experience_years?: string | null
+          expertise_areas?: string[] | null
+          id?: string
+          introduction?: string | null
+          license_info?: string | null
+          specialization?: string[] | null
+          status?: string | null
+          target_age_groups?: string[] | null
+          updated_at?: string | null
+          user_id: string
+          workplace?: string | null
+        }
+        Update: {
+          available_hours?: string | null
+          created_at?: string | null
+          experience_years?: string | null
+          expertise_areas?: string[] | null
+          id?: string
+          introduction?: string | null
+          license_info?: string | null
+          specialization?: string[] | null
+          status?: string | null
+          target_age_groups?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+          workplace?: string | null
+        }
+        Relationships: []
+      }
       expert_reviews: {
         Row: {
           consultation_id: string | null
@@ -2581,6 +2629,54 @@ export type Database = {
           },
         ]
       }
+      institution_profiles: {
+        Row: {
+          created_at: string | null
+          department: string | null
+          expected_user_count: string | null
+          id: string
+          institution_name: string | null
+          institution_type: string | null
+          role: string | null
+          service_types: string[] | null
+          status: string | null
+          target_population: string[] | null
+          updated_at: string | null
+          usage_description: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          department?: string | null
+          expected_user_count?: string | null
+          id?: string
+          institution_name?: string | null
+          institution_type?: string | null
+          role?: string | null
+          service_types?: string[] | null
+          status?: string | null
+          target_population?: string[] | null
+          updated_at?: string | null
+          usage_description?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          department?: string | null
+          expected_user_count?: string | null
+          id?: string
+          institution_name?: string | null
+          institution_type?: string | null
+          role?: string | null
+          service_types?: string[] | null
+          status?: string | null
+          target_population?: string[] | null
+          updated_at?: string | null
+          usage_description?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       institution_reviews: {
         Row: {
           created_at: string
@@ -3241,6 +3337,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      payment_sessions: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          product_name: string
+          status: string
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          id?: string
+          product_name: string
+          status?: string
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          product_name?: string
+          status?: string
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       personality_test_results: {
         Row: {

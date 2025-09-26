@@ -89,7 +89,7 @@ export default function InstitutionOnboarding() {
       if (!user.user) return;
 
       const { error } = await supabase
-        .from('institution_profiles')
+        .from('institution_profiles' as any)
         .upsert({
           user_id: user.user.id,
           institution_type: institutionProfile.institutionType,

@@ -22,6 +22,8 @@ import AICounselor from "./pages/AICounselor";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NeedsAssessment from "./pages/NeedsAssessment";
+import ExpertOnboarding from "./pages/ExpertOnboarding";
+import InstitutionOnboarding from "./pages/InstitutionOnboarding";
 import QuickNeeds from "./pages/QuickNeeds";
 
 // HIGHLIGHT MVP Pages
@@ -154,6 +156,8 @@ const App = () => {
           <Route path="/ai-counselor" element={<AICounselor />} />
           <Route path="/needs-assessment" element={<NeedsAssessment />} />
           <Route path="/quick-needs" element={<QuickNeeds />} />
+          <Route path="/expert-onboarding" element={<ExpertOnboarding />} />
+          <Route path="/institution-onboarding" element={<InstitutionOnboarding />} />
           <Route path="/stress-package" element={<StressPackage />} />
           <Route path="/depression-package" element={<DepressionPackage />} />
           <Route path="/anxiety-package" element={<AnxietyPackage />} />

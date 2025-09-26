@@ -982,7 +982,7 @@ const ExpertHiring = () => {
                 </div>
               </div>
               <Button
-                onClick={() => navigate('/expert-application')}
+                onClick={() => window.open('https://naver.me/GPl0x4ry', '_blank')}
                 size="lg"
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg"
               >

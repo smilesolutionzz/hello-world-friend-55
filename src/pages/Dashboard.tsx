@@ -910,7 +910,13 @@ const Dashboard = () => {
                             {obs.profile?.display_name || '알 수 없음'}
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline">{obs.age_group}</Badge>
+                            <Badge variant="outline">
+                              {obs.age_group === 'adult' ? '성인' : 
+                               obs.age_group === 'child' ? '아동' : 
+                               obs.age_group === 'infant' ? '영유아' : 
+                               obs.age_group === 'adolescent' ? '청소년' :
+                               obs.age_group === 'senior' ? '고령자' : obs.age_group}
+                            </Badge>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">

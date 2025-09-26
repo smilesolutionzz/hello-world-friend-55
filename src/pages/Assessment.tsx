@@ -489,8 +489,12 @@ const Assessment = () => {
 
 
   const handleBack = () => {
-    if (currentStep === 'dream-interpretation' || currentStep === 'saju-analysis' || currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'panic-result' || currentStep === 'depression-result' || currentStep === 'adhd-result' || currentStep === 'stress-result' || currentStep === 'bigfive-result' || currentStep === 'attachment-result' || currentStep === 'career-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
-      // 분석/매칭/상담/결과 단계에서는 처음부터 다시 시작
+    if (currentStep === 'depression-result' || currentStep === 'panic-result' || currentStep === 'adhd-result' || currentStep === 'stress-result' || currentStep === 'bigfive-result' || currentStep === 'attachment-result' || currentStep === 'career-result') {
+      // 결과 페이지에서는 결과를 유지하면서 검사 선택으로 돌아가기
+      setCurrentStep('test-type');
+      // 결과 데이터는 유지 (초기화하지 않음)
+    } else if (currentStep === 'dream-interpretation' || currentStep === 'saju-analysis' || currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
+      // 기타 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
     } else if (currentStep === 'legal-notice') {

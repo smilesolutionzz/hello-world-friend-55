@@ -152,14 +152,15 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const inattentionScore = results.answers.slice(0, 9).reduce((sum, score) => sum + score, 0);
   const hyperactivityScore = results.answers.slice(9, 18).reduce((sum, score) => sum + score, 0);
   
+  // 기본 ADHD 검사는 2개 영역만 제공 (18문항)
   const chartData = [
     {
-      name: "Inattention (부주의 증상)",
+      name: "주의력 결핍",
       value: inattentionScore,
       fullMark: 18,
     },
     {
-      name: "Hyperactivity/Impulsivity (과잉행동/충동성)",
+      name: "과잉행동/충동성",
       value: hyperactivityScore,
       fullMark: 18,
     }
@@ -239,11 +240,11 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
                 정신과의사급 ADHD 전문 분석
               </h4>
               <p className="text-purple-700 text-sm mb-4 leading-relaxed">
-                • 6개 영역별 세부 점수 분석<br/>
+                • 주의력 결핍 & 과잉행동/충동성 세부 분석<br/>
                 • DSM-5 기준 임상적 해석<br/>
-                • 연령별 특성 고려<br/>
-                • 치료 권고 및 관리방안<br/>
-                • 2000자 이상 상세 분석
+                • 연령별 특성 고려한 맞춤 분석<br/>
+                • 치료 권고 및 관리방안 제시<br/>
+                • 2000자 이상 전문가급 상세 분석
               </p>
               <Button 
                 onClick={requestAIAnalysis}
@@ -312,7 +313,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
                 <CardHeader>
                   <CardTitle className="text-purple-900 flex items-center gap-2">
                     <Target className="w-5 h-5" />
-                    ADHD 영역별 상세 분석
+                    ADHD 전문가 AI 분석 결과
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -699,14 +700,14 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
 
       {/* AI 이미지 생성 */}
       <Card className="p-8">
-        <h3 className="text-2xl font-bold text-foreground mb-6">🎨 맞춤형 치료 이미지 생성</h3>
+        <h3 className="text-2xl font-bold text-foreground mb-6">🎨 맞춤형 집중력 향상 이미지 생성</h3>
         <p className="text-muted-foreground mb-6">
-          ADHD 테스트 결과를 바탕으로 치료에 도움이 되는 개인화된 이미지를 생성해보세요.
+          ADHD 테스트 결과를 바탕으로 집중력 향상과 치료에 도움이 되는 개인화된 이미지를 생성해보세요.
         </p>
         <ImageGenerator
-          initialPrompt={`ADHD 치료를 위한 ${severity} 수준의 집중력 향상 이미지`}
-          context={`ADHD 테스트 결과 - 위험도: ${severity}, 점수: ${total}`}
-          type="test_result"
+          initialPrompt={`ADHD ${severity} 수준에 맞는 집중력 향상과 마음 안정을 위한 치료 이미지 생성. 평온하고 집중할 수 있는 환경을 표현한 한국어 설명 포함`}
+          context={`ADHD 테스트 결과 - 심각도: ${severity}, 총점: ${total}점. 주의력 결핍: ${inattentionScore}점, 과잉행동/충동성: ${hyperactivityScore}점`}
+          type="therapy"
         />
       </Card>
 

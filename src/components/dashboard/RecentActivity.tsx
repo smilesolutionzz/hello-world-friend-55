@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { 
   Clock, 
   Brain, 
@@ -22,6 +24,27 @@ interface RecentActivityProps {
 }
 
 export function RecentActivity({ activities }: RecentActivityProps) {
+  const navigate = useNavigate();
+  
+  const handleActivityClick = (activity: any) => {
+    // 검사 결과를 다시 볼 수 있도록 세션 스토리지에 저장
+    const testData = {
+      testType: activity.type,
+      results: activity.meta || {},
+      timestamp: activity.date
+    };
+    
+    sessionStorage.setItem('viewTestResult', JSON.stringify(testData));
+    
+    // 검사 유형에 따라 적절한 페이지로 이동
+    if (activity.type === 'depression' || activity.type === 'panic' || activity.type === 'adhd') {
+      navigate('/assessment');
+      toast.success("이전 검사 결과를 불러왔습니다.");
+    } else {
+      toast.info("해당 검사 결과는 검사 페이지에서 확인할 수 있습니다.");
+    }
+  };
+  
   const getActivityIcon = (type: string) => {
     switch (type) {
       case 'assessment':
@@ -58,7 +81,11 @@ export function RecentActivity({ activities }: RecentActivityProps) {
       {activities.length > 0 ? (
         <div className="space-y-3">
           {activities.slice(0, 5).map((activity) => (
-            <div key={activity.id} className="group">
+            <div 
+              key={activity.id} 
+              className="group cursor-pointer"
+              onClick={() => handleActivityClick(activity)}
+            >
               {/* 모바일에서 예쁘게 보이는 카드형 레이아웃 */}
               <div className="flex md:hidden bg-gradient-to-r from-white to-background/80 rounded-xl border border-border/40 p-4 shadow-sm hover:shadow-md transition-all duration-200 group-hover:scale-[1.01]">
                 <div className="flex-shrink-0">
@@ -94,7 +121,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
               </div>
 
               {/* 데스크톱에서는 기존 레이아웃 */}
-              <div className="hidden md:flex items-center gap-3 p-3 bg-background/50 rounded-lg hover:bg-background/80 transition-colors">
+              <div className="hidden md:flex items-center gap-3 p-3 bg-background/50 rounded-lg hover:bg-background/80 transition-colors cursor-pointer">
                 <div className="p-2 bg-background rounded-lg">
                   {getActivityIcon(activity.type)}
                 </div>

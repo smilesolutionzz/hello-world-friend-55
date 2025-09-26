@@ -33,6 +33,13 @@ const ContentRecommendationPanel: React.FC<ContentRecommendationPanelProps> = ({
       const analysisResult = session?.observations?.analysis_data?.report?.situation || 
                             session?.observations?.ai_analysis || '';
       
+      console.log('Content recommendation request:', {
+        observationText: observationText.substring(0, 100) + '...',
+        ageGroup: session?.observations?.raw_data?.ageGroup || 'child',
+        tags: session?.observations?.raw_data?.tags || [],
+        analysisResult: analysisResult.substring(0, 100) + '...'
+      });
+      
       const { data, error } = await supabase.functions.invoke('content-recommender', {
         body: {
           observationText,

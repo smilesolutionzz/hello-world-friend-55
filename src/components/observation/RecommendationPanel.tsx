@@ -31,6 +31,13 @@ const RecommendationPanel: React.FC<RecommendationPanelProps> = ({ session }) =>
                           session?.summary || 
                           '분석 데이터가 없습니다.';
 
+      console.log('Generating recommendations with:', {
+        analysisText: analysisText.substring(0, 100) + '...',
+        ageGroup: session?.observations?.raw_data?.ageGroup || 'child',
+        tags: session?.observations?.raw_data?.tags || [],
+        observationText: (session?.observations?.raw_data?.text || '').substring(0, 100) + '...'
+      });
+
       const { data, error } = await supabase.functions.invoke('generate-recommendations', {
         body: {
           analysisText: analysisText,

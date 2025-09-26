@@ -358,13 +358,13 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
         </Card>
       )}
 
-      <Tabs defaultValue="overview" className="w-full">
+      <Tabs defaultValue="analysis" className="w-full">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">종합 개요</TabsTrigger>
           <TabsTrigger value="scores">점수 분석</TabsTrigger>
           <TabsTrigger value="analysis">AI 분석</TabsTrigger>
           <TabsTrigger value="recommendations">권고사항</TabsTrigger>
-          <TabsTrigger value="content">관련 컨텐츠</TabsTrigger>
+          <TabsTrigger value="content">컨텐츠 추천</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -448,15 +448,15 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
               </CardHeader>
             </Card>
 
-            {/* AI 분석 결과 파싱 - 새로운 접근법 */}
+            {/* AI 분석 결과 파싱 - 올바른 경로로 수정 */}
             {(() => {
-              // 분석 데이터 추출 - 여러 경로에서 시도
+              // 분석 데이터 추출 - ObservationFormMobile에서 저장한 구조에 맞게 수정
               const reportData = session.observations?.analysis_data?.report || 
-                                session.observations?.report ||
-                                session.analysis_data?.report ||
-                                session.report;
+                                session.analysis_data?.report;
               
+              console.log('Full session data:', session);
               console.log('Analysis Report Data:', reportData);
+              console.log('Analysis Data:', session.observations?.analysis_data);
               
               if (reportData) {
                 return (
@@ -612,8 +612,15 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
               // 데이터가 없는 경우
               return (
                 <Card>
-                  <CardContent className="p-6 text-center text-muted-foreground">
-                    분석 데이터가 없습니다. 관찰일지를 다시 분석 요청해주세요.
+                  <CardContent className="p-6 text-center">
+                    <Brain className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="font-medium mb-2">AI 분석 데이터를 불러오는 중...</h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      분석 데이터가 표시되지 않는 경우, 관찰일지를 새로 생성해보세요.
+                    </p>
+                    <Button variant="outline" onClick={() => window.location.reload()}>
+                      페이지 새로고침
+                    </Button>
                   </CardContent>
                 </Card>
               );

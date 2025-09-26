@@ -28,6 +28,7 @@ import QuickNeeds from "./pages/QuickNeeds";
 import HighlightAuth from "./pages/HighlightAuth";
 import HighlightDashboard from "./pages/HighlightDashboard";
 import HighlightAI from "./pages/HighlightAI";
+import AITherapyStudio from "./pages/AITherapyStudio";
 
 import { TypebotEmbed } from "./components/highlight/TypebotEmbed";
 import { TestResults } from "./components/highlight/TestResults";
@@ -174,6 +175,7 @@ const App = () => {
           <Route path="/ai-assistant" element={<AIAssistant />} />
           <Route path="/ai-counselor" element={<AIAssistant />} />
           <Route path="/ai-coach" element={<AIAssistant />} />
+          <Route path="/ai-therapy-studio" element={<AITherapyStudio />} />
           
           
           <Route path="/corporate" element={<Corporate />} />

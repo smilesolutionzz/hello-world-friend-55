@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { 
   User, 
   Mail, 
@@ -13,7 +14,10 @@ import {
   Calendar,
   Heart,
   Shield,
-  Users
+  Users,
+  UserCog,
+  Building,
+  Stethoscope
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +37,9 @@ const Auth = () => {
     email: "",
     password: ""
   });
+  
+  // User type selection
+  const [userType, setUserType] = useState<'individual' | 'expert' | 'institution' | ''>('');
   
   // Signup form
   const [signupData, setSignupData] = useState({
@@ -64,7 +71,16 @@ const Auth = () => {
           await processReferralReward(referralCode);
           localStorage.removeItem('referralCode');
         }
-        navigate('/dashboard');
+        
+        // Navigate based on user type or default to dashboard
+        const userType = session.user.user_metadata?.user_type;
+        if (userType === 'expert') {
+          navigate('/expert-onboarding');
+        } else if (userType === 'institution') {
+          navigate('/institution-onboarding');
+        } else {
+          navigate('/needs-assessment');
+        }
       }
     });
     
@@ -151,6 +167,7 @@ const Auth = () => {
             display_name: signupData.displayName,
             phone: signupData.phone,
             birth_date: signupData.birthDate,
+            user_type: userType,
             referral_code: referralCode || undefined
           }
         }
@@ -233,8 +250,67 @@ const Auth = () => {
             </TabsContent>
             
             <TabsContent value="signup">
-              <form onSubmit={handleSignup} className="space-y-4">
-                <div className="space-y-2">
+              {!userType ? (
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h3 className="text-lg font-semibold mb-2">서비스 이용 목적을 선택해주세요</h3>
+                    <p className="text-sm text-muted-foreground">선택에 따라 맞춤형 경험을 제공해드립니다</p>
+                  </div>
+                  
+                  <RadioGroup value={userType} onValueChange={(value) => setUserType(value as any)}>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="flex items-center space-x-2 p-4 rounded-lg border border-border hover:bg-muted/50 cursor-pointer">
+                        <RadioGroupItem value="individual" id="individual" />
+                        <Label htmlFor="individual" className="flex-1 cursor-pointer">
+                          <div className="flex items-start gap-3">
+                            <User className="w-5 h-5 text-primary mt-1" />
+                            <div>
+                              <div className="font-medium">개인 사용자</div>
+                              <div className="text-sm text-muted-foreground">나와 가족을 위한 심리검사</div>
+                            </div>
+                          </div>
+                        </Label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 p-4 rounded-lg border border-border hover:bg-muted/50 cursor-pointer">
+                        <RadioGroupItem value="expert" id="expert" />
+                        <Label htmlFor="expert" className="flex-1 cursor-pointer">
+                          <div className="flex items-start gap-3">
+                            <Stethoscope className="w-5 h-5 text-primary mt-1" />
+                            <div>
+                              <div className="font-medium">전문가</div>
+                              <div className="text-sm text-muted-foreground">심리상담사, 의료진, 교육 전문가</div>
+                            </div>
+                          </div>
+                        </Label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 p-4 rounded-lg border border-border hover:bg-muted/50 cursor-pointer">
+                        <RadioGroupItem value="institution" id="institution" />
+                        <Label htmlFor="institution" className="flex-1 cursor-pointer">
+                          <div className="flex items-start gap-3">
+                            <Building className="w-5 h-5 text-primary mt-1" />
+                            <div>
+                              <div className="font-medium">기관 관계자</div>
+                              <div className="text-sm text-muted-foreground">학교, 병원, 상담센터 등</div>
+                            </div>
+                          </div>
+                        </Label>
+                      </div>
+                    </div>
+                  </RadioGroup>
+                  
+                  <Button 
+                    onClick={() => userType && setUserType(userType)} 
+                    className="w-full"
+                    disabled={!userType}
+                  >
+                    다음 단계로
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleSignup} className="space-y-4">
+                  <div className="space-y-2">
                   <Label htmlFor="signup-name">이름</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -330,7 +406,19 @@ const Auth = () => {
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "가입 중..." : "회원가입"}
                 </Button>
+                
+                <div className="text-center">
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    onClick={() => setUserType('')}
+                    className="text-sm"
+                  >
+                    ← 사용자 유형 다시 선택
+                  </Button>
+                </div>
               </form>
+              )}
             </TabsContent>
           </Tabs>
           

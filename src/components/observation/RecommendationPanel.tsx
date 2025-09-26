@@ -190,10 +190,11 @@ const RecommendationPanel: React.FC<RecommendationPanelProps> = ({ session }) =>
         !isLoading && (
           <Card className="border-dashed">
             <CardContent className="py-12 text-center">
-              <Target className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="font-medium mb-2">권고사항이 아직 생성되지 않았습니다</h3>
+              <Target className="h-12 w-12 mx-auto mb-4 text-blue-600" />
+              <h3 className="font-medium mb-2">맞춤 권고사항 추천</h3>
               <p className="text-muted-foreground text-sm mb-4">
-                관찰 분석을 바탕으로 맞춤형 권고사항을 AI가 생성해드립니다.
+                관찰 분석을 바탕으로 전문가 수준의 개선 권고사항을 제공합니다.<br/>
+                구체적이고 실행 가능한 솔루션을 받아보세요.
               </p>
               <Button 
                 onClick={generateRecommendations}

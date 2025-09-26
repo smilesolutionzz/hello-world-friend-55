@@ -122,7 +122,8 @@ ${requestBody.analysisResult ? `- AI 분석 결과: ${requestBody.analysisResult
               content: gptRecommendationPrompt
             }
           ],
-          max_completion_tokens: 1500,
+          max_tokens: 1500,
+          temperature: 0.7
         }),
       });
 

@@ -269,9 +269,10 @@ const ContentRecommendationPanel: React.FC<ContentRecommendationPanelProps> = ({
           <Card className="border-dashed">
             <CardContent className="py-12 text-center">
               <Youtube className="h-12 w-12 mx-auto mb-4 text-red-600" />
-              <h3 className="font-medium mb-2">아직 추천받은 컨텐츠가 없습니다</h3>
+              <h3 className="font-medium mb-2">맞춤 컨텐츠 추천</h3>
               <p className="text-muted-foreground text-sm mb-4">
-                관찰 내용을 분석하여 도움이 될 유튜브 컨텐츠를 AIH가 추천해드립니다.
+                관찰 내용을 바탕으로 개선에 도움이 될 유튜브 컨텐츠를 추천받으세요.<br/>
+                전문가가 엄선한 양질의 교육 컨텐츠를 제공합니다.
               </p>
               <Button 
                 onClick={generateContentRecommendations}

@@ -30,7 +30,9 @@ import {
   Heart,
   Zap,
   ChevronDown,
-  Crown
+  Crown,
+  Mic,
+  Bot
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -68,6 +70,8 @@ const aihSubmenuItems = [
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
   { icon: Heart, label: '라이프 허브', path: '/wellness-lifestyle', requiresAuth: false },
+  { icon: Mic, label: '음성 감정 분석', path: '/voice-emotion-analysis', requiresAuth: false, badge: 'NEW' },
+  { icon: Bot, label: '개인 맞춤 AI 코칭', path: '/personalized-ai-coaching', requiresAuth: false, badge: 'NEW' },
 ];
 
 // 3분테스트 하위 메뉴
@@ -201,7 +205,7 @@ export const UnifiedNavigation = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant={isActive('/ai-assistant') || isActive('/observation') ? "default" : "ghost"}
+                    variant={isActive('/ai-assistant') || isActive('/observation') || isActive('/voice-emotion-analysis') || isActive('/personalized-ai-coaching') ? "default" : "ghost"}
                     size="sm"
                     className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
                   >
@@ -210,15 +214,23 @@ export const UnifiedNavigation = () => {
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-white shadow-xl border border-gray-200 rounded-xl p-1">
+                <DropdownMenuContent align="start" className="w-64 bg-white shadow-xl border border-gray-200 rounded-xl p-1 z-50">
                   {aihSubmenuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.path}
                       onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg px-3 py-2 mx-1 transition-colors"
+                      className="flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-3 py-2 mx-1 transition-colors"
                     >
-                      <item.icon className="w-4 h-4 text-gray-500" />
-                      <span className="font-medium text-gray-700">{item.label}</span>
+                      <div className="flex items-center gap-3">
+                        <item.icon className="w-4 h-4 text-gray-500" />
+                        <span className="font-medium text-gray-700">{item.label}</span>
+                      </div>
+                      {item.badge && (
+                        <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                          <Zap className="w-2 h-2 mr-1" />
+                          {item.badge}
+                        </Badge>
+                      )}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -372,17 +384,27 @@ export const UnifiedNavigation = () => {
                       {/* AIH 에이전트 그룹 */}
                       <div className="pl-2 space-y-1">
                         <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">AIH 에이전트</p>
-                        {aihSubmenuItems.map((item) => (
-                          <Button
-                            key={item.path}
-                            variant={isActive(item.path) ? "default" : "ghost"}
-                            className="w-full justify-start gap-3"
-                            onClick={() => handleNavigation(item.path, item)}
-                          >
-                            <item.icon className="w-4 h-4" />
-                            {item.label}
-                          </Button>
-                        ))}
+                         {aihSubmenuItems.map((item) => (
+                           <Button
+                             key={item.path}
+                             variant={isActive(item.path) ? "default" : "ghost"}
+                             className={`w-full justify-start gap-3 ${
+                               item.badge === 'NEW' 
+                                 ? 'bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 hover:from-green-100 hover:to-blue-100 text-green-800 font-medium relative' 
+                                 : ''
+                             }`}
+                             onClick={() => handleNavigation(item.path, item)}
+                           >
+                             <item.icon className="w-4 h-4" />
+                             <span className="flex-1 text-left">{item.label}</span>
+                             {item.badge && (
+                               <Badge className="bg-green-100 text-green-800 border-green-200 text-xs ml-2">
+                                 <Zap className="w-2 h-2 mr-1" />
+                                 {item.badge}
+                               </Badge>
+                             )}
+                           </Button>
+                         ))}
                       </div>
                       
                       {/* 데이터 그룹 */}

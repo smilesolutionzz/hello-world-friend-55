@@ -56,7 +56,7 @@ serve(async (req) => {
 - 인생 목표: ${lifeGoals || '미제공'}
 
 == 현재 생활 패턴 분석 ==
-${patterns.map(p => `- ${p.category}: ${p.activity} (주 ${p.frequency}회, ${p.timeOfDay}, 만족도: ${p.satisfaction}/5)`).join('\n')}
+${patterns.map((p: any) => `- ${p.category}: ${p.activity} (주 ${p.frequency}회, ${p.timeOfDay}, 만족도: ${p.satisfaction}/5)`).join('\n')}
 
 == 요구사항 ==
 다음 고도화된 JSON 형식으로 응답해주세요:
@@ -278,7 +278,7 @@ ${patterns.map(p => `- ${p.category}: ${p.activity} (주 ${p.frequency}회, ${p.
     
     return new Response(JSON.stringify({
       success: false,
-      error: error.message
+      error: error instanceof Error ? error.message : 'Unknown error occurred'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

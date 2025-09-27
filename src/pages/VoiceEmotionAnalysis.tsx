@@ -112,10 +112,19 @@ const VoiceEmotionAnalysis = () => {
   };
 
   const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      if (timerRef.current) clearInterval(timerRef.current);
+    console.log('Stop recording called', { isRecording, hasRecorder: !!mediaRecorderRef.current });
+    
+    if (mediaRecorderRef.current) {
+      if (mediaRecorderRef.current.state === 'recording') {
+        mediaRecorderRef.current.stop();
+      }
+    }
+    
+    setIsRecording(false);
+    
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = undefined;
     }
   };
 

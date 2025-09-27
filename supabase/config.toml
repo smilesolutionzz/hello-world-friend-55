@@ -100,9 +100,6 @@ verify_jwt = false
 [functions.instant-report]
 verify_jwt = true
 
-[functions.metaverse-therapy]
-verify_jwt = true
-
 [functions.observation-analyzer]
 verify_jwt = true
 
@@ -140,9 +137,6 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.enhanced-constitution-analyzer]
-verify_jwt = false
-
-[functions.openai-image-generator]
 verify_jwt = false
 
 [functions.referral-system]

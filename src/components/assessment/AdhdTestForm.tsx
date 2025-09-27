@@ -53,26 +53,26 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
       
       let severity = "";
       if (ageGroup === 'child') {
-        // 18개 문항 * 3점 = 54점 만점
-        if (total <= 24) {
-          severity = "정상 범위";
-        } else if (total <= 32) {
-          severity = "경계선 수준";
-        } else if (total <= 42) {
-          severity = "중등도 수준";
+        // 18개 문항 * 3점 = 54점 만점 (긍정적 질문이므로 점수가 높을수록 좋음)
+        if (total >= 45) {
+          severity = "우수한 집중력";
+        } else if (total >= 36) {
+          severity = "양호한 집중력";
+        } else if (total >= 27) {
+          severity = "보통 수준";
         } else {
-          severity = "심각한 수준";
+          severity = "집중력 향상 필요";
         }
       } else {
-        // 18개 문항 * 3점 = 54점 만점
-        if (total <= 24) {
-          severity = "정상 범위";
-        } else if (total <= 32) {
-          severity = "경계선 수준";
-        } else if (total <= 42) {
-          severity = "중등도 수준";
+        // 18개 문항 * 3점 = 54점 만점 (긍정적 질문이므로 점수가 높을수록 좋음)
+        if (total >= 45) {
+          severity = "우수한 집중력";
+        } else if (total >= 36) {
+          severity = "양호한 집중력";
+        } else if (total >= 27) {
+          severity = "보통 수준";
         } else {
-          severity = "심각한 수준";
+          severity = "집중력 향상 필요";
         }
       }
       

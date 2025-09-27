@@ -26,6 +26,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 
 interface DailyPattern {
   category: string;
@@ -259,7 +260,9 @@ const PersonalizedAICoaching = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30">
+      <UnifiedNavigation />
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
@@ -555,6 +558,7 @@ const PersonalizedAICoaching = () => {
           )}
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 };

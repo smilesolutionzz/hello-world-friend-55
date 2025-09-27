@@ -8,12 +8,14 @@ interface ComingSoonWrapperProps {
   title: string;
   description: string;
   expectedDate?: string;
+  additionalInfo?: string;
 }
 
 const ComingSoonWrapper: React.FC<ComingSoonWrapperProps> = ({ 
   title, 
   description, 
-  expectedDate = "2025년 상반기" 
+  expectedDate = "2025년 상반기",
+  additionalInfo
 }) => {
   const navigate = useNavigate();
 
@@ -38,6 +40,12 @@ const ComingSoonWrapper: React.FC<ComingSoonWrapperProps> = ({
             <p className="text-blue-800 font-medium">예상 출시일</p>
             <p className="text-blue-600">{expectedDate}</p>
           </div>
+
+          {additionalInfo && (
+            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+              <p className="text-green-800 text-sm">{additionalInfo}</p>
+            </div>
+          )}
 
           <div className="space-y-3">
             <Button 

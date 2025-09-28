@@ -231,14 +231,12 @@ export default function VoiceEmotionAnalysis() {
         throw uploadError;
       }
 
-      const { data: publicUrlData } = supabase.storage
-        .from('voice-recordings')
-        .getPublicUrl(objectPath);
+        const { data: publicUrlData } = supabase.storage
+          .from('voice-recordings')
+          .getPublicUrl(objectPath);
 
-      // Persist diary entry
-      const { error: insertError } = await supabase
-        .from('voice_diary_entries')
-        .insert({
+        // Persist diary entry using the service
+        await voiceDiaryService.createEntry({
           user_id: user.id,
           title: `${analysisResult.emotion} 감정 일기`,
           audio_url: publicUrlData.publicUrl,
@@ -257,11 +255,6 @@ export default function VoiceEmotionAnalysis() {
           },
           diary_date: format(new Date(), 'yyyy-MM-dd')
         });
-
-      if (insertError) {
-        console.error('Database insert error:', insertError);
-        throw insertError;
-      }
 
       toast.success('음성 일기가 저장되었습니다!');
     } catch (error) {

@@ -5,22 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { BookOpen, Calendar, Play, Pause, Brain, Heart, Activity, MicOff, Sparkles, Trash2, Filter } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { voiceDiaryService, VoiceDiaryEntry } from '@/services/voiceDiaryService';
 // Mock user for now
 const useAuth = () => ({ user: { id: 'mock-user-id' } });
-
-interface VoiceDiaryEntry {
-  id: string;
-  title: string | null;
-  audio_url: string | null;
-  audio_duration: number | null;
-  transcription: string | null;
-  emotion_analysis: any;
-  diary_date: string;
-  created_at: string;
-  user_id: string;
-}
 
 const VoiceDiary = () => {
   const { user } = useAuth();
@@ -36,14 +24,8 @@ const VoiceDiary = () => {
     
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('voice_diary_entries')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setEntries(data || []);
+      const data = await voiceDiaryService.getEntries(user.id);
+      setEntries(data);
     } catch (error) {
       console.error('Error fetching diary entries:', error);
       toast({
@@ -120,13 +102,7 @@ const VoiceDiary = () => {
     if (!confirm('이 일기를 삭제하시겠습니까?')) return;
 
     try {
-      const { error } = await supabase
-        .from('voice_diary_entries')
-        .delete()
-        .eq('id', entryId);
-
-      if (error) throw error;
-
+      await voiceDiaryService.deleteEntry(entryId);
       setEntries(entries.filter(entry => entry.id !== entryId));
       toast({
         title: "삭제 완료",

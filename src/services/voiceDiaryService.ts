@@ -16,7 +16,7 @@ export interface VoiceDiaryEntry {
 
 export const voiceDiaryService = {
   async getVoiceDiaryEntries(limit = 50) {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('voice_diary_entries')
       .select('*')
       .order('created_at', { ascending: false })
@@ -27,7 +27,7 @@ export const voiceDiaryService = {
   },
 
   async getVoiceDiaryEntriesByEmotion(emotion: string) {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('voice_diary_entries')
       .select('*')
       .eq('emotion_analysis->emotion', emotion)

@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { VoiceDiaryEntry } from '@/services/voiceDiaryService';
+import { voiceDiaryService } from '@/services/voiceDiaryService';
 
 const VoiceDiary = () => {
   const [entries, setEntries] = useState<VoiceDiaryEntry[]>([]);
@@ -22,22 +23,11 @@ const VoiceDiary = () => {
       setLoading(true);
       
       if (filterEmotion !== 'all') {
-        const { data, error } = await supabase
-          .from('voice_diary_entries')
-          .select('*')
-          .eq('emotion_analysis->emotion', filterEmotion)
-          .order('created_at', { ascending: false });
-        
-        if (error) throw error;
-        setEntries(data || []);
+        const data = await voiceDiaryService.getVoiceDiaryEntriesByEmotion(filterEmotion);
+        setEntries(data);
       } else {
-        const { data, error } = await supabase
-          .from('voice_diary_entries')
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        if (error) throw error;
-        setEntries(data || []);
+        const data = await voiceDiaryService.getVoiceDiaryEntries();
+        setEntries(data);
       }
     } catch (error) {
       console.error('Error fetching diary entries:', error);

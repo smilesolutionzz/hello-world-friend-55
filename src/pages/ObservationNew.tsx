@@ -247,7 +247,7 @@ const ObservationNew = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                     <div className="text-center p-4">
                       <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
                         <Brain className="h-6 w-6 text-purple-600" />
@@ -269,16 +269,69 @@ const ObservationNew = () => {
                       <h4 className="font-semibold text-indigo-800 mb-2">자폐 스펙트럼 선별</h4>
                       <p className="text-sm text-indigo-600">사회적 상호작용과 의사소통 패턴 분석</p>
                     </div>
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Brain className="h-6 w-6 text-rose-600" />
+                      </div>
+                      <h4 className="font-semibold text-rose-800 mb-2">정서/행동 분석</h4>
+                      <p className="text-sm text-rose-600">감정 표현과 행동 패턴의 종합 분석</p>
+                    </div>
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Zap className="h-6 w-6 text-emerald-600" />
+                      </div>
+                      <h4 className="font-semibold text-emerald-800 mb-2">ADHD/노인인지</h4>
+                      <p className="text-sm text-emerald-600">주의력과 인지 기능 저하 패턴 감지</p>
+                    </div>
                   </div>
                   
-                  <div className="bg-white rounded-lg p-4 border border-purple-200">
-                    <h5 className="font-semibold text-purple-800 mb-2">📋 상세 분석 결과 제공:</h5>
-                    <ul className="text-sm text-purple-700 space-y-1">
-                      <li>• 위험도 평가 (낮음/보통/높음)</li>
-                      <li>• 특정 패턴 감지 및 빈도 분석</li>
-                      <li>• 전문가 권고사항 및 개선 방안</li>
-                      <li>• 추가 검사 필요성 여부 판단</li>
-                    </ul>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white rounded-lg p-4 border border-purple-200">
+                      <h5 className="font-semibold text-purple-800 mb-3 flex items-center gap-2">
+                        📋 상세 분석 결과 제공
+                      </h5>
+                      <ul className="text-sm text-purple-700 space-y-2">
+                        <li className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></span>
+                          위험도 평가 (낮음/보통/높음)
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></span>
+                          특정 패턴 감지 및 빈도 분석
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></span>
+                          전문가 권고사항 및 개선 방안
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></span>
+                          추가 검사 필요성 여부 판단
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                      <h5 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                        🎯 지원 분야
+                      </h5>
+                      <ul className="text-sm text-blue-700 space-y-2">
+                        <li className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></span>
+                          언어 발달 및 의사소통 장애
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></span>
+                          자폐 스펙트럼 및 발달 지연
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></span>
+                          ADHD 및 주의력 결핍
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></span>
+                          정서 행동 및 노인 인지 기능
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

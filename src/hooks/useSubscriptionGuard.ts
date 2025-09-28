@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSubscription } from './useSubscription';
+import { isBetaTestPeriod } from '@/utils/betaTest';
 
 interface SubscriptionGuardReturn {
   allowed: boolean;
@@ -23,6 +24,14 @@ export const useSubscriptionGuard = (requiredFeature: string = 'basic_test'): Su
   useEffect(() => {
     const checkAccess = async () => {
       try {
+        // 베타테스트 기간 중에는 모든 접근 허용
+        if (isBetaTestPeriod()) {
+          console.log('🎉 Beta Test Period: All subscription features granted');
+          setAllowed(true);
+          setLoading(false);
+          return;
+        }
+
         if (subLoading) {
           setLoading(true);
           return;

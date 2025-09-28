@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthGuard } from './useAuthGuard';
+import { isBetaTestPeriod } from '@/utils/betaTest';
 
 export function useTokens() {
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,12 @@ export function useTokens() {
     consumeTokens: async (amount: number) => {
       if (!user || !tokenBalance) return false;
       
+      // 베타테스트 기간 중에는 토큰 소비하지 않음
+      if (isBetaTestPeriod()) {
+        console.log(`🎉 Beta Test: Token consumption skipped (${amount} tokens)`);
+        return true;
+      }
+      
       const newBalance = tokenBalance.current_tokens - amount;
       if (newBalance < 0) return false;
 
@@ -88,6 +95,12 @@ export function useTokens() {
       }
     },
     checkTokenAvailability: (amount: number) => {
+      // 베타테스트 기간 중에는 항상 true 반환
+      if (isBetaTestPeriod()) {
+        console.log('🎉 Beta Test: Token availability check bypassed');
+        return true;
+      }
+      
       // 로딩 중이거나 토큰 정보가 없으면 false 반환
       if (loading || !tokenBalance) {
         console.log(`🔍 Token Check: Loading=${loading}, TokenBalance=${!!tokenBalance}`);

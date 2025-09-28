@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTokens } from './useTokens';
 import { useSubscription } from './useSubscription';
+import { isBetaTestPeriod } from '@/utils/betaTest';
 
 interface TokenGuardReturn {
   allowed: boolean;
@@ -20,6 +21,14 @@ export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
   useEffect(() => {
     const checkAccess = async () => {
       try {
+        // 베타테스트 기간 중에는 모든 접근 허용
+        if (isBetaTestPeriod()) {
+          console.log('🎉 Beta Test Period: All access granted');
+          setAllowed(true);
+          setLoading(false);
+          return;
+        }
+
         if (subLoading || !balance) {
           setLoading(true);
           return;

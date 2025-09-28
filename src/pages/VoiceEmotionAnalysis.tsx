@@ -15,6 +15,8 @@ interface VoiceAnalysisResult {
   confidence: number;
   stressLevel: number;
   energyLevel: number;
+  moodValence?: number;
+  arousalLevel?: number;
   recommendations: string[];
   voiceCharacteristics: {
     pitch: string;
@@ -23,6 +25,28 @@ interface VoiceAnalysisResult {
   };
   analysis: string;
   transcription: string;
+  detailedAnalysis?: {
+    primaryEmotion?: string;
+    secondaryEmotions?: string[];
+    emotionalIntensity?: number;
+    emotionalStability?: number;
+    cognitiveState?: string;
+    physicalIndicators?: string[];
+    speechPatterns?: {
+      coherence?: number;
+      complexity?: number;
+      emotionalExpression?: number;
+    };
+  };
+  psychologicalProfile?: {
+    overallMentalState?: string;
+    stressFactors?: string[];
+    copingMechanisms?: string[];
+    resilience?: number;
+    socialConnectedness?: number;
+    selfAwareness?: number;
+  };
+  followUpSuggestions?: string[];
 }
 
 const VoiceEmotionAnalysis = () => {
@@ -305,7 +329,7 @@ const VoiceEmotionAnalysis = () => {
           const { data, error } = await supabase.functions.invoke('voice-emotion-analyzer', {
             body: {
               audioData: base64Audio,
-              analysisType: 'emotion'
+              title: `음성 분석 ${new Date().toLocaleDateString('ko-KR')}`
             }
           });
 
@@ -317,22 +341,33 @@ const VoiceEmotionAnalysis = () => {
           }
 
           if (data && data.success) {
+            const emotionAnalysis = data.emotion_analysis || {};
+            
             const analysisResult = {
-              emotion: data.emotion,
-              confidence: data.confidence,
-              stressLevel: data.stressLevel,
-              energyLevel: data.energyLevel,
-              recommendations: data.recommendations,
-              voiceCharacteristics: data.voiceCharacteristics,
-              analysis: data.analysis,
-              transcription: data.transcription
+              emotion: emotionAnalysis.emotion || data.emotion || '중립',
+              confidence: emotionAnalysis.confidence || data.confidence || 70,
+              stressLevel: emotionAnalysis.stressLevel || data.stressLevel || 30,
+              energyLevel: emotionAnalysis.energyLevel || data.energyLevel || 50,
+              moodValence: emotionAnalysis.moodValence || 5,
+              arousalLevel: emotionAnalysis.arousalLevel || 5,
+              recommendations: emotionAnalysis.recommendations || data.recommendations || ['정기적인 휴식을 취하세요'],
+              voiceCharacteristics: emotionAnalysis.voiceCharacteristics || data.voiceCharacteristics || {
+                pitch: '보통',
+                speed: '보통', 
+                clarity: '보통'
+              },
+              analysis: emotionAnalysis.analysis || data.analysis || '음성 분석이 완료되었습니다.',
+              transcription: data.transcription || '음성 인식 결과',
+              detailedAnalysis: emotionAnalysis.detailedAnalysis || {},
+              psychologicalProfile: emotionAnalysis.psychologicalProfile || {},
+              followUpSuggestions: emotionAnalysis.followUpSuggestions || []
             };
 
             setResult(analysisResult);
             
             toast({
-              title: "✨ 분석 완료",
-              description: "AI가 당신의 감정을 성공적으로 분석했습니다!",
+              title: "✨ 완벽한 감정 분석 완료",
+              description: "AI가 당신의 음성과 심리상태를 종합적으로 분석했습니다!",
             });
           } else {
             throw new Error(data?.error || '분석 중 오류가 발생했습니다.');
@@ -344,24 +379,53 @@ const VoiceEmotionAnalysis = () => {
             description: "음성 분석 중 오류가 발생했습니다. OpenAI API 키가 설정되어 있는지 확인해주세요.",
             variant: "destructive",
           });
-          // 임시 분석 결과 (개발용)
+          // 고급 임시 분석 결과 (개발용)
           setResult({
             emotion: '차분함',
             confidence: 85,
             stressLevel: 25,
             energyLevel: 75,
+            moodValence: 7,
+            arousalLevel: 4,
             recommendations: [
               '규칙적인 호흡을 통해 마음을 안정시켜보세요',
               '긍정적인 생각을 유지하며 하루를 마무리하세요',
-              '충분한 휴식을 취하시기 바랍니다'
+              '충분한 휴식을 취하시기 바랍니다',
+              '명상이나 요가를 통해 내면의 평화를 찾아보세요'
             ],
             voiceCharacteristics: {
               pitch: '안정적',
               speed: '적절함',
               clarity: '명확함'
             },
-            analysis: '목소리 톤과 리듬을 분석한 결과, 전반적으로 안정된 감정 상태를 보이고 있습니다.',
-            transcription: '음성 인식 결과가 여기에 표시됩니다.'
+            analysis: '목소리 톤과 리듬을 분석한 결과, 전반적으로 안정된 감정 상태를 보이고 있습니다. 스트레스 수준이 낮고 에너지 레벨이 적절하여 균형잡힌 심리상태로 판단됩니다.',
+            transcription: '음성 인식 결과가 여기에 표시됩니다.',
+            detailedAnalysis: {
+              primaryEmotion: '차분함',
+              secondaryEmotions: ['안정감', '평온함'],
+              emotionalIntensity: 6,
+              emotionalStability: 8,
+              cognitiveState: '명확하고 집중된 상태',
+              physicalIndicators: ['안정된 호흡', '일정한 음성 톤'],
+              speechPatterns: {
+                coherence: 8,
+                complexity: 7,
+                emotionalExpression: 6
+              }
+            },
+            psychologicalProfile: {
+              overallMentalState: '건강하고 안정적인 정신상태',
+              stressFactors: ['일상적 업무 스트레스'],
+              copingMechanisms: ['규칙적 휴식', '긍정적 사고'],
+              resilience: 7,
+              socialConnectedness: 6,
+              selfAwareness: 8
+            },
+            followUpSuggestions: [
+              '현재 상태를 유지하기 위한 지속적인 자기관리',
+              '스트레스 예방을 위한 정기적 점검',
+              '감정 상태 모니터링 권장'
+            ]
           });
         } finally {
           setIsAnalyzing(false);

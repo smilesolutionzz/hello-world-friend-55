@@ -13,27 +13,8 @@ export interface VoiceDiaryEntry {
   updated_at: string;
 }
 
-export interface VoiceDiaryEntryInsert {
-  user_id: string;
-  title?: string;
-  audio_url?: string;
-  audio_duration?: number;
-  transcription?: string;
-  emotion_analysis?: any;
-  diary_date: string;
-}
-
-export interface VoiceDiaryEntryUpdate {
-  title?: string;
-  audio_url?: string;
-  audio_duration?: number;
-  transcription?: string;
-  emotion_analysis?: any;
-  diary_date?: string;
-}
-
 export const voiceDiaryService = {
-  async createEntry(entry: VoiceDiaryEntryInsert): Promise<VoiceDiaryEntry> {
+  async createEntry(entry: any) {
     const { data, error } = await supabase
       .from('voice_diary_entries')
       .insert(entry)
@@ -41,10 +22,10 @@ export const voiceDiaryService = {
       .single();
 
     if (error) throw error;
-    return data as VoiceDiaryEntry;
+    return data;
   },
 
-  async getEntries(userId: string): Promise<VoiceDiaryEntry[]> {
+  async getEntries(userId: string) {
     const { data, error } = await supabase
       .from('voice_diary_entries')
       .select('*')
@@ -52,10 +33,10 @@ export const voiceDiaryService = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return (data || []) as VoiceDiaryEntry[];
+    return data;
   },
 
-  async updateEntry(id: string, updates: VoiceDiaryEntryUpdate): Promise<VoiceDiaryEntry> {
+  async updateEntry(id: string, updates: any) {
     const { data, error } = await supabase
       .from('voice_diary_entries')
       .update(updates)
@@ -64,10 +45,10 @@ export const voiceDiaryService = {
       .single();
 
     if (error) throw error;
-    return data as VoiceDiaryEntry;
+    return data;
   },
 
-  async deleteEntry(id: string): Promise<void> {
+  async deleteEntry(id: string) {
     const { error } = await supabase
       .from('voice_diary_entries')
       .delete()

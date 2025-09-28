@@ -77,7 +77,7 @@ serve(async (req) => {
     console.error('Error in frame extraction:', error);
     
     return new Response(JSON.stringify({ 
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      error: error.message,
       details: 'Frame extraction failed'
     }), {
       status: 500,

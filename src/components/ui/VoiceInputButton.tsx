@@ -69,28 +69,8 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   };
 
   const stopRecording = () => {
-    console.log('🛑 Stop recording called', { isRecording, hasMediaRecorder: !!mediaRecorderRef.current });
-    
     if (mediaRecorderRef.current && isRecording) {
-      try {
-        console.log('🛑 Stopping media recorder...');
-        mediaRecorderRef.current.stop();
-        setIsRecording(false);
-        console.log('✅ Recording stopped successfully');
-      } catch (error) {
-        console.error('❌ Error stopping recording:', error);
-        setIsRecording(false);
-        // Force stop by clearing the ref
-        if (mediaRecorderRef.current) {
-          mediaRecorderRef.current = null;
-        }
-      }
-    } else {
-      console.log('⚠️ Cannot stop recording - missing conditions', { 
-        hasMediaRecorder: !!mediaRecorderRef.current, 
-        isRecording 
-      });
-      // Force stop anyway
+      mediaRecorderRef.current.stop();
       setIsRecording(false);
     }
   };
@@ -149,8 +129,6 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   };
 
   const handleClick = () => {
-    console.log('🔘 Button clicked', { isRecording, isProcessing });
-    
     if (isRecording) {
       stopRecording();
     } else {

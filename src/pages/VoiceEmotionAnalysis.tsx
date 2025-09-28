@@ -24,8 +24,6 @@ interface VoiceAnalysisResult {
   };
   analysis: string;
   transcription: string;
-  timeBasedStress?: string;
-  dailyStressFactors?: string[];
 }
 
 export default function VoiceEmotionAnalysis() {
@@ -182,81 +180,90 @@ export default function VoiceEmotionAnalysis() {
     setIsAnalyzing(true);
     
     try {
-      toast.success('AI 분석을 시작합니다. 잠시만 기다려주세요...');
-
-      // Convert audio blob to base64 efficiently (chunked)
-      const arrayBuffer = await audioBlob.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      let binary = '';
-      const chunkSize = 0x8000;
-      for (let i = 0; i < uint8Array.length; i += chunkSize) {
-        const chunk = uint8Array.subarray(i, Math.min(i + chunkSize, uint8Array.length));
-        binary += String.fromCharCode.apply(null, Array.from(chunk));
-      }
-      const base64Audio = btoa(binary);
-
-      // Call Supabase Edge Function for transcription + emotion analysis
-      const { data, error } = await supabase.functions.invoke('voice-emotion-analyzer', {
-        body: { audioData: base64Audio, analysisType: 'detailed' }
-      });
-
-      if (error) throw error;
-      if (!data) throw new Error('AI 분석 결과가 없습니다.');
-
+      // 여기서 실제 AI 음성 분석 API를 호출할 수 있습니다
+      // 현재는 시뮬레이션된 결과를 반환합니다
+      
+      // OpenAI Speech-to-Text API 호출 시뮬레이션
+      const transcription = "안녕하세요, 오늘 하루는 정말 힘들었어요. 많은 일들이 있었지만 그래도 견뎌낼 수 있었습니다.";
+      
+      // 감정 분석 결과 시뮬레이션
       const analysisResult: VoiceAnalysisResult = {
-        emotion: data?.emotion || data?.analysis?.emotion || '분석됨',
-        confidence: Math.round(data?.confidence || data?.analysis?.confidence || 85),
-        stressLevel: Math.round(data?.stressLevel || data?.analysis?.stressLevel || 50),
-        energyLevel: Math.round(data?.energyLevel || data?.analysis?.energyLevel || 60),
-        transcription: data?.transcription || data?.text || '',
-        voiceCharacteristics: data?.voiceCharacteristics || { pitch: '보통', speed: '보통', clarity: '보통' },
-        analysis: data?.analysisText || data?.analysis || 'AI 분석 결과를 생성했습니다.',
-        timeBasedStress: data?.timeBasedStress,
-        dailyStressFactors: data?.dailyStressFactors,
-        recommendations: data?.recommendations || []
+        emotion: '스트레스',
+        confidence: 85,
+        stressLevel: 75,
+        energyLevel: 35,
+        transcription,
+        voiceCharacteristics: {
+          pitch: '낮음',
+          speed: '보통',
+          clarity: '명확함'
+        },
+        analysis: '음성에서 피로감과 스트레스가 감지됩니다. 목소리 톤이 평소보다 낮고, 말하는 속도가 느려졌습니다. 휴식이 필요한 상태로 보입니다.',
+        recommendations: [
+          '10분간 심호흡을 통한 릴랙스 시간을 가져보세요',
+          '따뜻한 차를 마시며 잠시 휴식을 취하세요',
+          '가벼운 스트레칭으로 몸의 긴장을 풀어보세요',
+          '오늘의 성취를 되돌아보며 자신을 격려하세요'
+        ]
       };
+
+      await new Promise(resolve => setTimeout(resolve, 3000)); // 분석 시뮬레이션
 
       setResult(analysisResult);
       setShowAnalysis(true);
 
-      // Save audio to Storage (public bucket) under user folder for access control via policies
-      const fileName = `voice_${Date.now()}.webm`;
-      const objectPath = `${user.id}/${fileName}`;
-      const { error: uploadError } = await supabase.storage
-        .from('voice-recordings')
-        .upload(objectPath, audioBlob, { contentType: 'audio/webm' });
+      // 음성 일기로 저장
+      try {
+        // 오디오 파일 업로드
+        const fileName = `voice_${Date.now()}.webm`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('voice-recordings')
+          .upload(fileName, audioBlob, {
+            contentType: 'audio/webm'
+          });
 
-      if (uploadError) {
-        console.error('Storage upload error:', uploadError);
-        throw uploadError;
-      }
+        if (uploadError) {
+          console.error('Storage upload error:', uploadError);
+          throw uploadError;
+        }
 
+        // 공개 URL 가져오기
         const { data: publicUrlData } = supabase.storage
           .from('voice-recordings')
-          .getPublicUrl(objectPath);
+          .getPublicUrl(fileName);
 
-        // Persist diary entry using the service
-        await voiceDiaryService.createEntry({
-          user_id: user.id,
-          title: `${analysisResult.emotion} 감정 일기`,
-          audio_url: publicUrlData.publicUrl,
-          audio_duration: recordingTime,
-          transcription: analysisResult.transcription,
-          emotion_analysis: {
-            emotion: analysisResult.emotion,
-            confidence: analysisResult.confidence,
-            stressLevel: analysisResult.stressLevel,
-            energyLevel: analysisResult.energyLevel,
-            recommendations: analysisResult.recommendations,
-            voiceCharacteristics: analysisResult.voiceCharacteristics,
-            analysis: analysisResult.analysis,
-            timeBasedStress: analysisResult.timeBasedStress,
-            dailyStressFactors: analysisResult.dailyStressFactors
-          },
-          diary_date: format(new Date(), 'yyyy-MM-dd')
-        });
+        // 음성 일기 엔트리 저장
+        const { error: insertError } = await supabase
+          .from('voice_diary_entries')
+          .insert({
+            user_id: user.id,
+            title: `${analysisResult.emotion} 감정 일기`,
+            audio_url: publicUrlData.publicUrl,
+            audio_duration: recordingTime,
+            transcription: analysisResult.transcription,
+            emotion_analysis: {
+              emotion: analysisResult.emotion,
+              confidence: analysisResult.confidence,
+              stressLevel: analysisResult.stressLevel,
+              energyLevel: analysisResult.energyLevel,
+              recommendations: analysisResult.recommendations,
+              voiceCharacteristics: analysisResult.voiceCharacteristics,
+              analysis: analysisResult.analysis
+            },
+            diary_date: format(new Date(), 'yyyy-MM-dd')
+          });
 
-      toast.success('음성 일기가 저장되었습니다!');
+        if (insertError) {
+          console.error('Database insert error:', insertError);
+          throw insertError;
+        }
+
+        toast.success('음성 일기가 저장되었습니다!');
+      } catch (error) {
+        console.error('음성 일기 저장 실패:', error);
+        toast.error('음성 일기 저장에 실패했습니다.');
+      }
+
     } catch (error) {
       console.error('음성 분석 실패:', error);
       toast.error('음성 분석에 실패했습니다.');
@@ -282,26 +289,6 @@ export default function VoiceEmotionAnalysis() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      {/* Navigation Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <nav className="flex items-center justify-between">
-            <div className="flex items-center space-x-8">
-              <h1 className="text-xl font-bold text-gray-900">HIGHLIGHT</h1>
-              <div className="hidden md:flex items-center space-x-6">
-                <a href="/" className="text-gray-600 hover:text-primary transition-colors">홈</a>
-                <a href="/voice-emotion-analysis" className="text-primary font-medium">음성분석</a>
-                <a href="/voice-diary" className="text-gray-600 hover:text-primary transition-colors">음성일기</a>
-                <a href="/dashboard" className="text-gray-600 hover:text-primary transition-colors">대시보드</a>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button className="text-gray-600 hover:text-primary transition-colors">로그아웃</button>
-            </div>
-          </nav>
-        </div>
-      </header>
-
       {/* Premium Header */}
       <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white">
         <div className="absolute inset-0 bg-black/20"></div>
@@ -406,7 +393,7 @@ export default function VoiceEmotionAnalysis() {
                   </div>
                   
                   {isRecording && (
-                    <div className="absolute -inset-4 rounded-full border-2 border-red-500/30 animate-ping pointer-events-none"></div>
+                    <div className="absolute -inset-4 rounded-full border-2 border-red-500/30 animate-ping"></div>
                   )}
                 </div>
 
@@ -422,13 +409,8 @@ export default function VoiceEmotionAnalysis() {
                   </p>
 
                   {isRecording && (
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="text-3xl font-mono text-blue-600 font-bold">
-                        {formatTime(recordingTime)}
-                      </div>
-                      <Button variant="destructive" size="sm" onClick={stopRecording}>
-                        녹음 중지
-                      </Button>
+                    <div className="text-3xl font-mono text-blue-600 font-bold">
+                      {formatTime(recordingTime)}
                     </div>
                   )}
                 </div>
@@ -599,37 +581,9 @@ export default function VoiceEmotionAnalysis() {
                   <span>AI 전문 분석</span>
                 </h4>
                 <div className="p-4 bg-indigo-50 rounded-lg">
-                  <div className="prose prose-sm text-indigo-800 leading-relaxed whitespace-pre-line">
-                    {result.analysis}
-                  </div>
+                  <p className="text-indigo-800 leading-relaxed">{result.analysis}</p>
                 </div>
               </Card>
-
-              {/* 시간대별 스트레스 분석 */}
-              {result.timeBasedStress && (
-                <Card className="p-6">
-                  <h4 className="text-lg font-semibold mb-4 flex items-center space-x-2">
-                    <Activity className="w-5 h-5 text-orange-500" />
-                    <span>시간대별 스트레스 분석</span>
-                  </h4>
-                  <div className="p-4 bg-orange-50 rounded-lg">
-                    <p className="text-orange-800 leading-relaxed">{result.timeBasedStress}</p>
-                    {result.dailyStressFactors && (
-                      <div className="mt-4">
-                        <h5 className="font-medium text-orange-900 mb-2">주요 스트레스 요인:</h5>
-                        <ul className="space-y-1">
-                          {result.dailyStressFactors.map((factor: string, index: number) => (
-                            <li key={index} className="text-sm text-orange-700 flex items-start space-x-2">
-                              <span className="w-1.5 h-1.5 bg-orange-400 rounded-full mt-2 flex-shrink-0"></span>
-                              <span>{factor}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </Card>
-              )}
 
               {/* 추천사항 */}
               <Card className="p-6">

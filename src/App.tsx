@@ -80,6 +80,7 @@ import RelationshipPackage from "./pages/RelationshipPackage";
 import ComprehensivePackage from "./pages/ComprehensivePackage";
 import GrowthStories from "./pages/GrowthStories";
 import VoiceEmotionAnalysis from "./pages/VoiceEmotionAnalysis";
+import VoiceDiary from "./pages/VoiceDiary";
 import PersonalizedAICoaching from "./pages/PersonalizedAICoaching";
 
 // New Retention Features
@@ -182,8 +183,9 @@ const App = () => {
            <Route path="/ai-counselor" element={<AIAssistant />} />
            <Route path="/ai-coach" element={<AIAssistant />} />
            <Route path="/ai-therapy-studio" element={<AITherapyStudio />} />
-           <Route path="/voice-emotion-analysis" element={<VoiceEmotionAnalysis />} />
-           <Route path="/personalized-ai-coaching" element={<PersonalizedAICoaching />} />
+            <Route path="/voice-emotion-analysis" element={<VoiceEmotionAnalysis />} />
+            <Route path="/voice-diary" element={<VoiceDiary />} />
+            <Route path="/personalized-ai-coaching" element={<PersonalizedAICoaching />} />
           
           
           <Route path="/corporate" element={<Corporate />} />

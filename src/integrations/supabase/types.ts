@@ -4287,6 +4287,98 @@ export type Database = {
         }
         Relationships: []
       }
+      user_book_chapters: {
+        Row: {
+          book_id: string
+          chapter_number: number
+          content: string | null
+          created_at: string
+          id: string
+          is_ai_generated: boolean | null
+          is_completed: boolean | null
+          keywords: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+          word_count: number | null
+        }
+        Insert: {
+          book_id: string
+          chapter_number: number
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_ai_generated?: boolean | null
+          is_completed?: boolean | null
+          keywords?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+          word_count?: number | null
+        }
+        Update: {
+          book_id?: string
+          chapter_number?: number
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_ai_generated?: boolean | null
+          is_completed?: boolean | null
+          keywords?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          word_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_book_chapters_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "user_books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_books: {
+        Row: {
+          completed_chapters: number | null
+          created_at: string
+          id: string
+          keywords: string
+          status: string | null
+          title: string
+          topic: string
+          total_chapters: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_chapters?: number | null
+          created_at?: string
+          id?: string
+          keywords: string
+          status?: string | null
+          title: string
+          topic: string
+          total_chapters?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_chapters?: number | null
+          created_at?: string
+          id?: string
+          keywords?: string
+          status?: string | null
+          title?: string
+          topic?: string
+          total_chapters?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_challenges: {
         Row: {
           challenge_id: string
@@ -4720,6 +4812,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      voice_diary_entries: {
+        Row: {
+          audio_duration: number | null
+          audio_url: string | null
+          created_at: string
+          diary_date: string
+          emotion_analysis: Json | null
+          id: string
+          title: string | null
+          transcription: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          audio_duration?: number | null
+          audio_url?: string | null
+          created_at?: string
+          diary_date?: string
+          emotion_analysis?: Json | null
+          id?: string
+          title?: string | null
+          transcription?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          audio_duration?: number | null
+          audio_url?: string | null
+          created_at?: string
+          diary_date?: string
+          emotion_analysis?: Json | null
+          id?: string
+          title?: string | null
+          transcription?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       voucher_types: {
         Row: {

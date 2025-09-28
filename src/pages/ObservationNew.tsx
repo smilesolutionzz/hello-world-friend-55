@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ClipboardList, Plus, Eye, ChevronLeft, Clock, Sparkles } from "lucide-react";
+import { ClipboardList, Plus, Eye, ChevronLeft, Clock, Sparkles, Video, Brain, Zap } from "lucide-react";
 import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
 import ObservationDetailView from "@/components/observation/ObservationDetailView";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
@@ -26,14 +26,15 @@ const ObservationNew = () => {
     description: '심도있는 행동 관찰 및 AI 분석',
     domain: 'comprehensive',
     duration: '5-15분',
-    features: [
-      '체계적 행동 관찰 기록',
-      '전문가급 AI 분석 및 해석',
-      '맞춤형 개선 권고사항',
-      '상세한 PDF 리포트 제공',
-      '발달 영역별 점수 분석',
-      '장기적 추적 관리'
-    ],
+      features: [
+        '체계적 행동 관찰 기록',
+        '🎥 AI 비디오 행동 분석 (NEW)',
+        '전문가급 AI 분석 및 해석',
+        '맞춤형 개선 권고사항',
+        '상세한 PDF 리포트 제공',
+        '발달 영역별 점수 분석',
+        '장기적 추적 관리'
+      ],
     template_type: 'comprehensive'
   };
 
@@ -228,6 +229,59 @@ const ObservationNew = () => {
                 간단한 관찰 기록으로 <span className="font-semibold text-primary">즉시 AI 분석</span>과 
                 <span className="font-semibold text-primary"> 전문 PDF 리포트</span>를 받아보세요
               </p>
+            </div>
+
+            {/* AI 비디오 분석 기능 강조 */}
+            <div className="max-w-4xl mx-auto px-2 mb-8">
+              <Card className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-2 border-purple-200">
+                <CardHeader className="text-center pb-4">
+                  <div className="inline-flex items-center gap-2 mx-auto mb-4 px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full text-sm font-medium">
+                    <Video className="h-4 w-4" />
+                    NEW FEATURE
+                  </div>
+                  <CardTitle className="text-xl sm:text-2xl text-purple-800 mb-2">
+                    🎥 AI 비디오 행동 분석
+                  </CardTitle>
+                  <CardDescription className="text-base text-purple-700 max-w-2xl mx-auto">
+                    비디오를 업로드하면 AI가 자동으로 발달 관련 이슈를 분석해드립니다
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Brain className="h-6 w-6 text-purple-600" />
+                      </div>
+                      <h4 className="font-semibold text-purple-800 mb-2">말더듬/조음 분석</h4>
+                      <p className="text-sm text-purple-600">언어 발달 상태와 조음 문제를 자동 감지</p>
+                    </div>
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Zap className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <h4 className="font-semibold text-blue-800 mb-2">틱/운동 분석</h4>
+                      <p className="text-sm text-blue-600">비자발적 운동이나 틱 증상을 정밀 분석</p>
+                    </div>
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Eye className="h-6 w-6 text-indigo-600" />
+                      </div>
+                      <h4 className="font-semibold text-indigo-800 mb-2">자폐 스펙트럼 선별</h4>
+                      <p className="text-sm text-indigo-600">사회적 상호작용과 의사소통 패턴 분석</p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white rounded-lg p-4 border border-purple-200">
+                    <h5 className="font-semibold text-purple-800 mb-2">📋 상세 분석 결과 제공:</h5>
+                    <ul className="text-sm text-purple-700 space-y-1">
+                      <li>• 위험도 평가 (낮음/보통/높음)</li>
+                      <li>• 특정 패턴 감지 및 빈도 분석</li>
+                      <li>• 전문가 권고사항 및 개선 방안</li>
+                      <li>• 추가 검사 필요성 여부 판단</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
             
             {/* 템플릿 */}

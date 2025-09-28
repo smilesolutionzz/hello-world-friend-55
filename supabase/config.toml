@@ -144,3 +144,9 @@ verify_jwt = true
 
 [functions.premium-adhd-analyzer]
 verify_jwt = true
+
+[functions.voice-emotion-analyzer]
+verify_jwt = true
+
+[functions.platform-ai-consultant]
+verify_jwt = false

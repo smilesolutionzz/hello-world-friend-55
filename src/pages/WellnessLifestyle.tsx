@@ -408,7 +408,10 @@ const WellnessLifestyle = () => {
                       </div>
                     </div>
                     
-                    <Button className="w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-4 text-lg">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-4 text-lg"
+                      onClick={() => navigate('/ai-counselor')}
+                    >
                       AI 코치와 대화하기
                     </Button>
                   </CardContent>
@@ -449,7 +452,10 @@ const WellnessLifestyle = () => {
                       </div>
                     </div>
                     
-                    <Button className="w-full bg-gradient-to-r from-purple-500 to-violet-500 text-white py-4 text-lg">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-purple-500 to-violet-500 text-white py-4 text-lg"
+                      onClick={() => navigate('/goal-setting')}
+                    >
                       목표 재설정하기
                     </Button>
                   </CardContent>
@@ -532,7 +538,10 @@ const WellnessLifestyle = () => {
                       <div className="text-xs text-yellow-600 mt-2">10일 남음</div>
                     </div>
                     
-                    <Button className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 text-white py-3">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 text-white py-3"
+                      onClick={() => navigate('/challenges')}
+                    >
                       챌린지 참여하기
                     </Button>
                   </CardContent>
@@ -572,7 +581,10 @@ const WellnessLifestyle = () => {
                       </div>
                     </div>
                     
-                    <Button className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3"
+                      onClick={() => navigate('/leaderboard')}
+                    >
                       전체 랭킹 보기
                     </Button>
                   </CardContent>

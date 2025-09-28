@@ -532,7 +532,7 @@ const CommunityPlatform = () => {
                       </div>
                       <span className="text-muted-foreground">•</span>
                       <span className="font-medium text-primary">
-                        전문의 {institution.members}명
+                        전문가 15명
                       </span>
                     </div>
                   </div>

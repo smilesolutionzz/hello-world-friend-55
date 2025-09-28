@@ -294,6 +294,10 @@ const VoiceEmotionAnalysis = () => {
         } else {
           // 분석 시작
           setShowAnalysis(true);
+          // 자동으로 AI 분석 시작
+          setTimeout(() => {
+            analyzeAudio();
+          }, 500);
         }
       };
       

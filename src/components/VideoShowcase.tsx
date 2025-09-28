@@ -18,13 +18,21 @@ const VideoShowcase = () => {
     },
     {
       id: 2,
+      title: "테스트 시연 영상",
+      description: "실제 테스트 과정을 자세히 확인해보세요",
+      embedId: "tkkIlUpf8nU",
+      thumbnail: "/api/placeholder/640/360",
+      youtubeUrl: "https://youtu.be/tkkIlUpf8nU?si=t7shEOrxJWEYdz_C"
+    },
+    {
+      id: 3,
       title: "사용자 후기 모음",
       description: "실제 이용자들의 생생한 경험담",
       embedId: "EAYwe4C8nds",
       thumbnail: "/api/placeholder/640/360"
     },
     {
-      id: 3,
+      id: 4,
       title: "AI아나운서 설명",
       description: "AI가 직접 설명하는 플랫폼 이용방법",
       embedId: "t4ZkQll1WxU",
@@ -82,7 +90,17 @@ const VideoShowcase = () => {
                               <Play className="w-8 h-8 text-primary-foreground ml-1" />
                             </button>
                             <h3 className="text-xl font-semibold mb-2">{video.title}</h3>
-                            <p className="text-muted-foreground">{video.description}</p>
+                            <p className="text-muted-foreground mb-3">{video.description}</p>
+                            {video.youtubeUrl && (
+                              <a 
+                                href={video.youtubeUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 underline"
+                              >
+                                YouTube에서 보기 →
+                              </a>
+                            )}
                           </div>
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-black/90">

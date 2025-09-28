@@ -182,128 +182,88 @@ export default function VoiceEmotionAnalysis() {
     setIsAnalyzing(true);
     
     try {
-      // 실제 AI 음성 분석을 위한 더 긴 처리 시간
       toast.success('AI 분석을 시작합니다. 잠시만 기다려주세요...');
-      
-      // 1. 음성을 텍스트로 변환
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      toast.success('음성 인식이 완료되었습니다...');
-      
-      // 2. 감정 분석 시작
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      toast.success('감정 상태를 분석 중입니다...');
-      
-      // 3. 스트레스 패턴 분석
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success('스트레스 패턴을 분석하고 있습니다...');
-      
-      // 4. 개인화된 추천 생성
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success('맞춤형 솔루션을 생성 중입니다...');
 
-      // 더 상세하고 개인화된 분석 결과 생성
-      const currentHour = new Date().getHours();
-      let timeBasedStress = '';
-      let dailyStressFactors = [];
-      
-      if (currentHour < 12) {
-        timeBasedStress = '오전 시간대의 음성 분석 결과, 하루를 시작하는 에너지와 함께 약간의 긴장감이 감지됩니다.';
-        dailyStressFactors = ['아침 준비로 인한 시간 압박', '하루 일정에 대한 걱정', '수면 부족으로 인한 피로'];
-      } else if (currentHour < 18) {
-        timeBasedStress = '오후 시간대의 음성 분석 결과, 일과 중 누적된 스트레스와 피로감이 목소리에 반영되어 있습니다.';
-        dailyStressFactors = ['업무 스트레스', '대인관계로 인한 긴장', '오후 집중력 저하'];
-      } else {
-        timeBasedStress = '저녁 시간대의 음성 분석 결과, 하루의 피로감과 함께 휴식에 대한 욕구가 감지됩니다.';
-        dailyStressFactors = ['하루 종일 누적된 피로', '개인 시간 부족', '내일에 대한 불안감'];
+      // Convert audio blob to base64 efficiently (chunked)
+      const arrayBuffer = await audioBlob.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      let binary = '';
+      const chunkSize = 0x8000;
+      for (let i = 0; i < uint8Array.length; i += chunkSize) {
+        const chunk = uint8Array.subarray(i, Math.min(i + chunkSize, uint8Array.length));
+        binary += String.fromCharCode.apply(null, Array.from(chunk));
       }
+      const base64Audio = btoa(binary);
+
+      // Call Supabase Edge Function for transcription + emotion analysis
+      const { data, error } = await supabase.functions.invoke('voice-emotion-analyzer', {
+        body: { audioData: base64Audio, analysisType: 'detailed' }
+      });
+
+      if (error) throw error;
+      if (!data) throw new Error('AI 분석 결과가 없습니다.');
 
       const analysisResult: VoiceAnalysisResult = {
-        emotion: '차분함',
-        confidence: 87,
-        stressLevel: 45,
-        energyLevel: 65,
-        transcription: "안녕하세요, 오늘 하루도 정말 바쁘게 지나갔네요. 여러 가지 일들이 있었지만 나름대로 잘 해결해 나가고 있는 것 같습니다. 가끔은 스트레스를 받기도 하지만, 그래도 긍정적으로 생각하려고 노력하고 있어요.",
-        voiceCharacteristics: {
-          pitch: '중간',
-          speed: '보통',
-          clarity: '명확함'
-        },
-        analysis: `${timeBasedStress} 
-
-목소리 톤 분석: 전반적으로 안정적인 음성 패턴을 보이나, 특정 단어에서 약간의 긴장감이 감지됩니다. 
-
-감정 상태 종합 분석:
-• 기본 감정: 차분하고 안정적인 상태
-• 잠재적 스트레스: ${dailyStressFactors[0]} 관련 미세한 긴장감
-• 에너지 레벨: 적정 수준 유지, 약간의 피로감 존재
-
-심리적 상태 평가:
-현재 상태는 전반적으로 양호하며, 일상적인 스트레스 수준 내에서 잘 관리되고 있습니다. 다만, 목소리에서 감지되는 미세한 변화들을 통해 볼 때, 충분한 휴식과 스트레스 관리가 필요한 시점으로 판단됩니다.`,
-        recommendations: [
-          `${dailyStressFactors[0]} 완화를 위한 5분간 심호흡 명상을 시도해보세요`,
-          '따뜻한 차를 마시며 15분간 창밖을 바라보는 시간을 가져보세요',
-          '오늘의 긍정적인 순간 3가지를 떠올리며 감사 일기를 작성해보세요',
-          '가벼운 목과 어깨 스트레칭으로 신체적 긴장을 완화하세요',
-          '충분한 수분 섭취와 함께 잠시 산책을 통해 기분전환을 해보세요'
-        ],
-        timeBasedStress,
-        dailyStressFactors
+        emotion: data?.emotion || data?.analysis?.emotion || '분석됨',
+        confidence: Math.round(data?.confidence || data?.analysis?.confidence || 85),
+        stressLevel: Math.round(data?.stressLevel || data?.analysis?.stressLevel || 50),
+        energyLevel: Math.round(data?.energyLevel || data?.analysis?.energyLevel || 60),
+        transcription: data?.transcription || data?.text || '',
+        voiceCharacteristics: data?.voiceCharacteristics || { pitch: '보통', speed: '보통', clarity: '보통' },
+        analysis: data?.analysisText || data?.analysis || 'AI 분석 결과를 생성했습니다.',
+        timeBasedStress: data?.timeBasedStress,
+        dailyStressFactors: data?.dailyStressFactors,
+        recommendations: data?.recommendations || []
       };
 
       setResult(analysisResult);
       setShowAnalysis(true);
 
-      // 음성 일기로 저장
-      try {
-        const fileName = `voice_${Date.now()}.webm`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('voice-recordings')
-          .upload(fileName, audioBlob, {
-            contentType: 'audio/webm'
-          });
+      // Save audio to Storage (public bucket) under user folder for access control via policies
+      const fileName = `voice_${Date.now()}.webm`;
+      const objectPath = `${user.id}/${fileName}`;
+      const { error: uploadError } = await supabase.storage
+        .from('voice-recordings')
+        .upload(objectPath, audioBlob, { contentType: 'audio/webm' });
 
-        if (uploadError) {
-          console.error('Storage upload error:', uploadError);
-          throw uploadError;
-        }
-
-        const { data: publicUrlData } = supabase.storage
-          .from('voice-recordings')
-          .getPublicUrl(fileName);
-
-        const { error: insertError } = await supabase
-          .from('voice_diary_entries')
-          .insert({
-            user_id: user.id,
-            title: `${analysisResult.emotion} 감정 일기`,
-            audio_url: publicUrlData.publicUrl,
-            audio_duration: recordingTime,
-            transcription: analysisResult.transcription,
-            emotion_analysis: {
-              emotion: analysisResult.emotion,
-              confidence: analysisResult.confidence,
-              stressLevel: analysisResult.stressLevel,
-              energyLevel: analysisResult.energyLevel,
-              recommendations: analysisResult.recommendations,
-              voiceCharacteristics: analysisResult.voiceCharacteristics,
-              analysis: analysisResult.analysis,
-              timeBasedStress: analysisResult.timeBasedStress,
-              dailyStressFactors: analysisResult.dailyStressFactors
-            },
-            diary_date: format(new Date(), 'yyyy-MM-dd')
-          });
-
-        if (insertError) {
-          console.error('Database insert error:', insertError);
-          throw insertError;
-        }
-
-        toast.success('음성 일기가 저장되었습니다!');
-      } catch (error) {
-        console.error('음성 일기 저장 실패:', error);
-        toast.error('음성 일기 저장에 실패했습니다.');
+      if (uploadError) {
+        console.error('Storage upload error:', uploadError);
+        throw uploadError;
       }
 
+      const { data: publicUrlData } = supabase.storage
+        .from('voice-recordings')
+        .getPublicUrl(objectPath);
+
+      // Persist diary entry
+      const { error: insertError } = await supabase
+        .from('voice_diary_entries')
+        .insert({
+          user_id: user.id,
+          title: `${analysisResult.emotion} 감정 일기`,
+          audio_url: publicUrlData.publicUrl,
+          audio_duration: recordingTime,
+          transcription: analysisResult.transcription,
+          emotion_analysis: {
+            emotion: analysisResult.emotion,
+            confidence: analysisResult.confidence,
+            stressLevel: analysisResult.stressLevel,
+            energyLevel: analysisResult.energyLevel,
+            recommendations: analysisResult.recommendations,
+            voiceCharacteristics: analysisResult.voiceCharacteristics,
+            analysis: analysisResult.analysis,
+            timeBasedStress: analysisResult.timeBasedStress,
+            dailyStressFactors: analysisResult.dailyStressFactors
+          },
+          diary_date: format(new Date(), 'yyyy-MM-dd')
+        });
+
+      if (insertError) {
+        console.error('Database insert error:', insertError);
+        throw insertError;
+      }
+
+      toast.success('음성 일기가 저장되었습니다!');
     } catch (error) {
       console.error('음성 분석 실패:', error);
       toast.error('음성 분석에 실패했습니다.');
@@ -453,7 +413,7 @@ export default function VoiceEmotionAnalysis() {
                   </div>
                   
                   {isRecording && (
-                    <div className="absolute -inset-4 rounded-full border-2 border-red-500/30 animate-ping"></div>
+                    <div className="absolute -inset-4 rounded-full border-2 border-red-500/30 animate-ping pointer-events-none"></div>
                   )}
                 </div>
 
@@ -469,8 +429,13 @@ export default function VoiceEmotionAnalysis() {
                   </p>
 
                   {isRecording && (
-                    <div className="text-3xl font-mono text-blue-600 font-bold">
-                      {formatTime(recordingTime)}
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="text-3xl font-mono text-blue-600 font-bold">
+                        {formatTime(recordingTime)}
+                      </div>
+                      <Button variant="destructive" size="sm" onClick={stopRecording}>
+                        녹음 중지
+                      </Button>
                     </div>
                   )}
                 </div>

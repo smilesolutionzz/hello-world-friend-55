@@ -590,7 +590,7 @@ const CommunityPlatform = () => {
                           <Badge className="bg-purple-100 text-purple-800">제휴기관</Badge>
                         </div>
                         <div className="text-sm text-muted-foreground mb-2">
-                          {institution.type} • {institution.location}
+                          {institution.type}
                         </div>
                         <div className="flex items-center gap-2 mb-2">
                           <div className="flex items-center gap-1">

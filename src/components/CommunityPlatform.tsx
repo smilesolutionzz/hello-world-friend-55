@@ -167,8 +167,8 @@ const CommunityPlatform = () => {
     location: '서울시 강남구',
     rating: 5.0,
     members: 25,
-    programs: ['발달검진', '언어치료', '인지치료', '작업치료', '행동치료', '약물치료', '가족상담', '조기개입'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '작업치료', '의료급여'],
+    programs: ['발달검진', '언어치료', '인지치료', '작업치료', '행동치료', '조기개입'],
+    voucher_types: ['언어치료', '인지치료', '작업치료', '의료급여'],
     featured: true,
     description: '최고 수준의 의료진과 최신 시설을 갖춘 메인 제휴기관'
   }, {
@@ -178,7 +178,7 @@ const CommunityPlatform = () => {
     rating: 4.8,
     members: 15,
     programs: ['언어치료', '인지치료', '작업치료', '사회성훈련', '감각통합치료', '부모상담'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '작업치료', '교육청서비스']
+    voucher_types: ['언어치료', '인지치료', '작업치료', '교육청서비스']
   }, {
     name: '우아람발달센터',
     type: '발달센터',
@@ -186,7 +186,7 @@ const CommunityPlatform = () => {
     rating: 4.7,
     members: 12,
     programs: ['언어치료', '인지치료', '작업치료', '학습치료', '사회성훈련'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '교육청서비스', '우리아이심리지원서비스']
+    voucher_types: ['언어치료', '인지치료', '교육청서비스', '우리아이심리지원서비스']
   }, {
     name: '정원언어인지발달센터',
     type: '발달센터',
@@ -194,7 +194,7 @@ const CommunityPlatform = () => {
     rating: 4.6,
     members: 10,
     programs: ['언어치료', '인지치료', '학습치료', '부모교육'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '교육청서비스']
+    voucher_types: ['언어치료', '인지치료', '교육청서비스']
   }, {
     name: '조이발달센터',
     type: '발달센터',
@@ -202,7 +202,7 @@ const CommunityPlatform = () => {
     rating: 4.7,
     members: 14,
     programs: ['언어치료', '인지치료', '작업치료', '사회성훈련', '감각통합치료'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '작업치료']
+    voucher_types: ['언어치료', '인지치료', '작업치료']
   }, {
     name: '틔움통합발달센터',
     type: '발달센터',
@@ -210,15 +210,15 @@ const CommunityPlatform = () => {
     rating: 4.8,
     members: 16,
     programs: ['언어치료', '인지치료', '작업치료', '사회성훈련', '학습치료', '부모상담'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '작업치료', '교육청서비스']
+    voucher_types: ['언어치료', '인지치료', '작업치료', '교육청서비스']
   }, {
     name: '틔움사회서비스센터',
     type: '사회서비스센터',
     location: '경기도 안양시',
     rating: 4.6,
     members: 11,
-    programs: ['언어치료', '인지치료', '사회성훈련', '가족상담', '지역사회적응훈련'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '우리아이심리지원서비스']
+    programs: ['언어치료', '인지치료', '사회성훈련', '지역사회적응훈련'],
+    voucher_types: ['언어치료', '인지치료', '우리아이심리지원서비스']
   }, {
     name: '한점미소발달센터 남양주점',
     type: '발달센터',
@@ -226,7 +226,7 @@ const CommunityPlatform = () => {
     rating: 4.7,
     members: 8,
     programs: ['언어치료', '인지치료', '작업치료', '사회성훈련', '부모상담'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '교육청서비스', '우리아이심리지원서비스']
+    voucher_types: ['언어치료', '인지치료', '교육청서비스', '우리아이심리지원서비스']
   }, {
     name: '메이플 ABA 목동센터',
     type: '발달센터',
@@ -234,7 +234,7 @@ const CommunityPlatform = () => {
     rating: 4.8,
     members: 12,
     programs: ['ABA치료', '행동중재', '사회성훈련', '부모교육', '개별교육'],
-    voucher_types: ['발달재활서비스', 'ABA치료', '행동중재', '교육청서비스']
+    voucher_types: ['ABA치료', '행동중재', '교육청서비스']
   }, {
     name: '해오름 아동발달센터',
     type: '발달센터',
@@ -242,7 +242,7 @@ const CommunityPlatform = () => {
     rating: 4.8,
     members: 13,
     programs: ['언어치료', '인지치료', '작업치료', '물리치료', '사회성훈련', '감각통합치료'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '작업치료', '교육청서비스']
+    voucher_types: ['언어치료', '인지치료', '작업치료', '교육청서비스']
   }, {
     name: '핌발달센터',
     type: '발달센터',
@@ -250,15 +250,15 @@ const CommunityPlatform = () => {
     rating: 4.8,
     members: 11,
     programs: ['언어치료', '인지치료', '작업치료', '사회성훈련', '학습치료'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '작업치료']
+    voucher_types: ['언어치료', '인지치료', '작업치료']
   }, {
     name: '해웃음 심리발달센터',
     type: '상담센터',
     location: '서울시 마포구',
     rating: 4.6,
     members: 8,
-    programs: ['심리상담', '언어치료', '놀이치료', '가족상담', '부모교육'],
-    voucher_types: ['발달재활서비스', '심리상담', '우리아이심리지원서비스']
+    programs: ['심리상담', '언어치료', '놀이치료', '부모교육'],
+    voucher_types: ['심리상담', '우리아이심리지원서비스']
   }, {
     name: '넘나들 언어인지학습연구소',
     type: '연구소',
@@ -266,7 +266,7 @@ const CommunityPlatform = () => {
     rating: 4.8,
     members: 12,
     programs: ['언어치료', '인지치료', '학습치료', '사회성훈련', '부모교육'],
-    voucher_types: ['발달재활서비스', '언어치료', '인지치료', '교육청서비스']
+    voucher_types: ['언어치료', '인지치료', '교육청서비스']
   }];
   const getRoleIcon = (role: string) => {
     switch (role) {

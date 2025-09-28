@@ -7,23 +7,19 @@ import { BookOpen, Calendar, Play, Pause, Brain, Heart, Activity, MicOff, Sparkl
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-// Mock user for now
-const useAuth = () => ({ user: { id: 'mock-user-id' } });
 
 interface VoiceDiaryEntry {
   id: string;
-  title: string | null;
-  audio_url: string | null;
-  audio_duration: number | null;
-  transcription: string | null;
+  title: string;
+  audio_url: string;
+  audio_duration: number;
+  transcription: string;
   emotion_analysis: any;
   diary_date: string;
   created_at: string;
-  user_id: string;
 }
 
 const VoiceDiary = () => {
-  const { user } = useAuth();
   const [entries, setEntries] = useState<VoiceDiaryEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [playingId, setPlayingId] = useState<string | null>(null);
@@ -32,14 +28,11 @@ const VoiceDiary = () => {
   const { toast } = useToast();
 
   const fetchEntries = async () => {
-    if (!user) return;
-    
     try {
       setLoading(true);
       let query = supabase
         .from('voice_diary_entries')
         .select('*')
-        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (filterEmotion !== 'all') {
@@ -64,7 +57,7 @@ const VoiceDiary = () => {
 
   useEffect(() => {
     fetchEntries();
-  }, [filterEmotion, user]);
+  }, [filterEmotion]);
 
   const getEmotionIcon = (emotion: string) => {
     switch (emotion?.toLowerCase()) {
@@ -158,25 +151,10 @@ const VoiceDiary = () => {
     });
   };
 
-  const formatDuration = (seconds: number | null) => {
-    if (!seconds) return '0:00';
+  const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const getEmotionFromAnalysis = (analysis: any): string => {
-    if (typeof analysis === 'object' && analysis !== null) {
-      return analysis.emotion || '';
-    }
-    return '';
-  };
-
-  const getAnalysisProperty = (analysis: any, property: string): any => {
-    if (typeof analysis === 'object' && analysis !== null) {
-      return analysis[property];
-    }
-    return undefined;
   };
 
   const emotionOptions = ['all', '행복', '차분함', '스트레스', '피로', '활기찬'];
@@ -253,157 +231,150 @@ const VoiceDiary = () => {
           </Card>
         ) : (
           <div className="space-y-4">
-            {entries.map((entry) => {
-              const emotion = getEmotionFromAnalysis(entry.emotion_analysis);
-              const analysis = entry.emotion_analysis;
-              
-              return (
-                <Card key={entry.id} className="p-6 hover:shadow-lg transition-all duration-300">
-                  <div className="space-y-4">
-                    {/* 헤더 */}
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className={`p-2 rounded-lg ${getEmotionColor(emotion)}`}>
-                          {getEmotionIcon(emotion)}
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900">{entry.title || '음성 일기'}</h3>
-                          <div className="flex items-center space-x-4 text-sm text-gray-500">
-                            <div className="flex items-center space-x-1">
-                              <Calendar className="w-4 h-4" />
-                              <span>{formatDate(entry.created_at)}</span>
-                            </div>
-                            <span>•</span>
-                            <span>{formatDuration(entry.audio_duration)}</span>
-                          </div>
-                        </div>
+            {entries.map((entry) => (
+              <Card key={entry.id} className="p-6 hover:shadow-lg transition-all duration-300">
+                <div className="space-y-4">
+                  {/* 헤더 */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className={`p-2 rounded-lg ${getEmotionColor(entry.emotion_analysis?.emotion)}`}>
+                        {getEmotionIcon(entry.emotion_analysis?.emotion)}
                       </div>
-                      <div className="flex items-center space-x-2">
-                        {emotion && (
-                          <Badge className={getEmotionColor(emotion)}>
-                            {emotion}
-                          </Badge>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteEntry(entry.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">{entry.title}</h3>
+                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                          <div className="flex items-center space-x-1">
+                            <Calendar className="w-4 h-4" />
+                            <span>{formatDate(entry.created_at)}</span>
+                          </div>
+                          <span>•</span>
+                          <span>{formatDuration(entry.audio_duration)}</span>
+                        </div>
                       </div>
                     </div>
-
-                    {/* 오디오 재생 */}
-                    {entry.audio_url && (
-                      <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => playAudio(entry.id, entry.audio_url!)}
-                          className="flex-shrink-0"
-                        >
-                          {playingId === entry.id ? (
-                            <Pause className="w-4 h-4" />
-                          ) : (
-                            <Play className="w-4 h-4" />
-                          )}
-                        </Button>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-600">음성 재생</span>
-                            <span className="text-sm text-gray-500">{formatDuration(entry.audio_duration)}</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
-                            <div 
-                              className={`h-1 rounded-full transition-all duration-300 ${
-                                playingId === entry.id ? 'bg-purple-600' : 'bg-gray-400'
-                              }`}
-                              style={{ width: playingId === entry.id ? '100%' : '0%' }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 음성 인식 결과 */}
-                    {entry.transcription && (
-                      <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                        <h4 className="font-medium text-blue-900 mb-2">음성 인식 결과</h4>
-                        <p className="text-blue-800 italic">"{entry.transcription}"</p>
-                      </div>
-                    )}
-
-                    {/* 감정 분석 결과 */}
-                    {analysis && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-3">
-                          <h4 className="font-medium text-gray-900">감정 분석</h4>
-                          <div className="space-y-2">
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">신뢰도</span>
-                              <span className="font-medium">{getAnalysisProperty(analysis, 'confidence')}%</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">스트레스</span>
-                              <span className="font-medium text-orange-600">{getAnalysisProperty(analysis, 'stressLevel')}%</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">에너지</span>
-                              <span className="font-medium text-green-600">{getAnalysisProperty(analysis, 'energyLevel')}%</span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-3">
-                          <h4 className="font-medium text-gray-900">음성 특성</h4>
-                          <div className="space-y-2">
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">음성 높이</span>
-                              <span className="font-medium">{getAnalysisProperty(analysis, 'voiceCharacteristics')?.pitch}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">말하기 속도</span>
-                              <span className="font-medium">{getAnalysisProperty(analysis, 'voiceCharacteristics')?.speed}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">발음 명확도</span>
-                              <span className="font-medium">{getAnalysisProperty(analysis, 'voiceCharacteristics')?.clarity}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* AI 분석 */}
-                    {getAnalysisProperty(analysis, 'analysis') && (
-                      <div className="p-4 bg-purple-50 rounded-lg">
-                        <h4 className="font-medium text-purple-900 mb-2">AI 분석</h4>
-                        <p className="text-purple-800 text-sm leading-relaxed">{getAnalysisProperty(analysis, 'analysis')}</p>
-                      </div>
-                    )}
-
-                    {/* 추천사항 */}
-                    {getAnalysisProperty(analysis, 'recommendations') && Array.isArray(getAnalysisProperty(analysis, 'recommendations')) && (
-                      <div className="p-4 bg-green-50 rounded-lg">
-                        <h4 className="font-medium text-green-900 mb-3">AI 추천사항</h4>
-                        <div className="space-y-2">
-                          {getAnalysisProperty(analysis, 'recommendations').map((rec: string, index: number) => (
-                            <div key={index} className="flex items-start space-x-2 text-sm text-green-800">
-                              <span className="w-4 h-4 bg-green-200 rounded-full flex items-center justify-center text-xs font-medium text-green-700 flex-shrink-0 mt-0.5">
-                                {index + 1}
-                              </span>
-                              <span>{rec}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    <div className="flex items-center space-x-2">
+                      {entry.emotion_analysis?.emotion && (
+                        <Badge className={getEmotionColor(entry.emotion_analysis.emotion)}>
+                          {entry.emotion_analysis.emotion}
+                        </Badge>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteEntry(entry.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                </Card>
-              );
-            })}
+
+                  {/* 오디오 재생 */}
+                  <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => playAudio(entry.id, entry.audio_url)}
+                      className="flex-shrink-0"
+                    >
+                      {playingId === entry.id ? (
+                        <Pause className="w-4 h-4" />
+                      ) : (
+                        <Play className="w-4 h-4" />
+                      )}
+                    </Button>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">음성 재생</span>
+                        <span className="text-sm text-gray-500">{formatDuration(entry.audio_duration)}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                        <div 
+                          className={`h-1 rounded-full transition-all duration-300 ${
+                            playingId === entry.id ? 'bg-purple-600' : 'bg-gray-400'
+                          }`}
+                          style={{ width: playingId === entry.id ? '100%' : '0%' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 음성 인식 결과 */}
+                  {entry.transcription && (
+                    <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                      <h4 className="font-medium text-blue-900 mb-2">음성 인식 결과</h4>
+                      <p className="text-blue-800 italic">"{entry.transcription}"</p>
+                    </div>
+                  )}
+
+                  {/* 감정 분석 결과 */}
+                  {entry.emotion_analysis && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <h4 className="font-medium text-gray-900">감정 분석</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">신뢰도</span>
+                            <span className="font-medium">{entry.emotion_analysis.confidence}%</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">스트레스</span>
+                            <span className="font-medium text-orange-600">{entry.emotion_analysis.stressLevel}%</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">에너지</span>
+                            <span className="font-medium text-green-600">{entry.emotion_analysis.energyLevel}%</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <h4 className="font-medium text-gray-900">음성 특성</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">음성 높이</span>
+                            <span className="font-medium">{entry.emotion_analysis.voiceCharacteristics?.pitch}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">말하기 속도</span>
+                            <span className="font-medium">{entry.emotion_analysis.voiceCharacteristics?.speed}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">발음 명확도</span>
+                            <span className="font-medium">{entry.emotion_analysis.voiceCharacteristics?.clarity}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* AI 분석 */}
+                  {entry.emotion_analysis?.analysis && (
+                    <div className="p-4 bg-purple-50 rounded-lg">
+                      <h4 className="font-medium text-purple-900 mb-2">AI 분석</h4>
+                      <p className="text-purple-800 text-sm leading-relaxed">{entry.emotion_analysis.analysis}</p>
+                    </div>
+                  )}
+
+                  {/* 추천사항 */}
+                  {entry.emotion_analysis?.recommendations && entry.emotion_analysis.recommendations.length > 0 && (
+                    <div className="p-4 bg-green-50 rounded-lg">
+                      <h4 className="font-medium text-green-900 mb-3">AI 추천사항</h4>
+                      <div className="space-y-2">
+                        {entry.emotion_analysis.recommendations.map((rec: string, index: number) => (
+                          <div key={index} className="flex items-start space-x-2 text-sm text-green-800">
+                            <span className="w-4 h-4 bg-green-200 rounded-full flex items-center justify-center text-xs font-medium text-green-700 flex-shrink-0 mt-0.5">
+                              {index + 1}
+                            </span>
+                            <span>{rec}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            ))}
           </div>
         )}
       </div>

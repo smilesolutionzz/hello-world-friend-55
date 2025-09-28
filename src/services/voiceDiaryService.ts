@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
+// 간단한 타입 정의로 순환 참조 문제 해결
 export interface VoiceDiaryEntry {
   id: string;
   user_id: string;
@@ -14,7 +15,6 @@ export interface VoiceDiaryEntry {
 }
 
 export const voiceDiaryService = {
-  // 음성 일기 목록 조회
   async getVoiceDiaryEntries(limit = 50) {
     const { data, error } = await supabase
       .from('voice_diary_entries')
@@ -23,10 +23,9 @@ export const voiceDiaryService = {
       .limit(limit);
 
     if (error) throw error;
-    return data as VoiceDiaryEntry[];
+    return data || [];
   },
 
-  // 특정 감정으로 필터링된 일기 조회
   async getVoiceDiaryEntriesByEmotion(emotion: string) {
     const { data, error } = await supabase
       .from('voice_diary_entries')
@@ -35,76 +34,31 @@ export const voiceDiaryService = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data as VoiceDiaryEntry[];
+    return data || [];
   },
 
-  // 음성 일기 생성
-  async createVoiceDiaryEntry(entry: {
-    title?: string;
-    audio_url?: string;
-    audio_duration?: number;
-    transcription?: string;
-    emotion_analysis?: any;
-    diary_date?: string;
-  }) {
+  async createVoiceDiaryEntry(entry: any) {
+    const { data: user } = await supabase.auth.getUser();
+    
     const { data, error } = await supabase
       .from('voice_diary_entries')
-      .insert(entry)
+      .insert({
+        ...entry,
+        user_id: user.user?.id!,
+        diary_date: entry.diary_date || new Date().toISOString().split('T')[0]
+      })
       .select()
       .single();
 
     if (error) throw error;
-    return data as VoiceDiaryEntry;
+    return data;
   },
 
-  // 음성 일기 삭제
   async deleteVoiceDiaryEntry(id: string) {
     const { error } = await supabase
       .from('voice_diary_entries')
       .delete()
       .eq('id', id);
-
-    if (error) throw error;
-  },
-
-  // 특정 날짜의 일기 조회
-  async getVoiceDiaryEntriesByDate(date: string) {
-    const { data, error } = await supabase
-      .from('voice_diary_entries')
-      .select('*')
-      .eq('diary_date', date)
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data as VoiceDiaryEntry[];
-  },
-
-  // 오디오 파일 업로드
-  async uploadAudioFile(file: Blob, fileName: string) {
-    const { data, error } = await supabase.storage
-      .from('voice-recordings')
-      .upload(fileName, file, {
-        contentType: 'audio/webm'
-      });
-
-    if (error) throw error;
-
-    // 공개 URL 가져오기
-    const { data: publicUrlData } = supabase.storage
-      .from('voice-recordings')
-      .getPublicUrl(fileName);
-
-    return {
-      path: data.path,
-      publicUrl: publicUrlData.publicUrl
-    };
-  },
-
-  // 오디오 파일 삭제
-  async deleteAudioFile(fileName: string) {
-    const { error } = await supabase.storage
-      .from('voice-recordings')
-      .remove([fileName]);
 
     if (error) throw error;
   }

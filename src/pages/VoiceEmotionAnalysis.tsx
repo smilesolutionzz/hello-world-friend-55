@@ -411,9 +411,11 @@ const VoiceEmotionAnalysis = () => {
         .getPublicUrl(fileName);
 
       // 음성 일기 엔트리 저장
+      const { data: user } = await supabase.auth.getUser();
       const { error: insertError } = await supabase
         .from('voice_diary_entries')
         .insert({
+          user_id: user.user?.id!,
           title: `${result.emotion} 감정 일기`,
           audio_url: publicUrlData.publicUrl,
           audio_duration: recordingTime,
@@ -426,7 +428,8 @@ const VoiceEmotionAnalysis = () => {
             recommendations: result.recommendations,
             voiceCharacteristics: result.voiceCharacteristics,
             analysis: result.analysis
-          }
+          },
+          diary_date: new Date().toISOString().split('T')[0]
         });
 
       if (insertError) {

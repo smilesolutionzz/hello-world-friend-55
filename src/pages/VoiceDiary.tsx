@@ -7,17 +7,7 @@ import { BookOpen, Calendar, Play, Pause, Brain, Heart, Activity, MicOff, Sparkl
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
-interface VoiceDiaryEntry {
-  id: string;
-  title: string;
-  audio_url: string;
-  audio_duration: number;
-  transcription: string;
-  emotion_analysis: any;
-  diary_date: string;
-  created_at: string;
-}
+import type { VoiceDiaryEntry } from '@/services/voiceDiaryService';
 
 const VoiceDiary = () => {
   const [entries, setEntries] = useState<VoiceDiaryEntry[]>([]);
@@ -30,19 +20,25 @@ const VoiceDiary = () => {
   const fetchEntries = async () => {
     try {
       setLoading(true);
-      let query = supabase
-        .from('voice_diary_entries')
-        .select('*')
-        .order('created_at', { ascending: false });
-
+      
       if (filterEmotion !== 'all') {
-        query = query.eq('emotion_analysis->emotion', filterEmotion);
+        const { data, error } = await supabase
+          .from('voice_diary_entries')
+          .select('*')
+          .eq('emotion_analysis->emotion', filterEmotion)
+          .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        setEntries(data || []);
+      } else {
+        const { data, error } = await supabase
+          .from('voice_diary_entries')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        setEntries(data || []);
       }
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-      setEntries(data || []);
     } catch (error) {
       console.error('Error fetching diary entries:', error);
       toast({
@@ -248,7 +244,7 @@ const VoiceDiary = () => {
                             <span>{formatDate(entry.created_at)}</span>
                           </div>
                           <span>•</span>
-                          <span>{formatDuration(entry.audio_duration)}</span>
+                          <span>{formatDuration(entry.audio_duration || 0)}</span>
                         </div>
                       </div>
                     </div>
@@ -270,34 +266,36 @@ const VoiceDiary = () => {
                   </div>
 
                   {/* 오디오 재생 */}
-                  <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => playAudio(entry.id, entry.audio_url)}
-                      className="flex-shrink-0"
-                    >
-                      {playingId === entry.id ? (
-                        <Pause className="w-4 h-4" />
-                      ) : (
-                        <Play className="w-4 h-4" />
-                      )}
-                    </Button>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">음성 재생</span>
-                        <span className="text-sm text-gray-500">{formatDuration(entry.audio_duration)}</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
-                        <div 
-                          className={`h-1 rounded-full transition-all duration-300 ${
-                            playingId === entry.id ? 'bg-purple-600' : 'bg-gray-400'
-                          }`}
-                          style={{ width: playingId === entry.id ? '100%' : '0%' }}
-                        />
+                  {entry.audio_url && (
+                    <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => playAudio(entry.id, entry.audio_url!)}
+                        className="flex-shrink-0"
+                      >
+                        {playingId === entry.id ? (
+                          <Pause className="w-4 h-4" />
+                        ) : (
+                          <Play className="w-4 h-4" />
+                        )}
+                      </Button>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">음성 재생</span>
+                          <span className="text-sm text-gray-500">{formatDuration(entry.audio_duration || 0)}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                          <div 
+                            className={`h-1 rounded-full transition-all duration-300 ${
+                              playingId === entry.id ? 'bg-purple-600' : 'bg-gray-400'
+                            }`}
+                            style={{ width: playingId === entry.id ? '100%' : '0%' }}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* 음성 인식 결과 */}
                   {entry.transcription && (

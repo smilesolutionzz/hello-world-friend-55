@@ -222,7 +222,7 @@ serve(async (req) => {
     console.error('Error in video behavior analysis:', error);
     
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
       details: 'Video behavior analysis failed'
     }), {
       status: 500,

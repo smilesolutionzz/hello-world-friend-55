@@ -36,17 +36,11 @@ const VoiceDiary = () => {
     
     try {
       setLoading(true);
-      let query = supabase
+      const { data, error } = await supabase
         .from('voice_diary_entries')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
-
-      if (filterEmotion !== 'all') {
-        query = query.eq('emotion_analysis->emotion', filterEmotion);
-      }
-
-      const { data, error } = await query;
 
       if (error) throw error;
       setEntries(data || []);

@@ -164,10 +164,10 @@ const HanMedicineTest = () => {
           {/* 헤더 - 가운데 정렬 */}
           <div className="text-center mb-8 sm:mb-12 flex flex-col items-center px-2">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              한방다이어트 - AIH 체질분석 센터
+              한방솔루션 - AIH 체질분석 센터
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
-              전문 AI가 당신의 체질과 대사를 정확히 분석하여 맞춤형 다이어트 솔루션을 제공합니다
+              전문 AI가 당신의 체질과 대사를 정확히 분석하여 맞춤형 한방솔루션을 제공합니다
             </p>
           </div>
 
@@ -209,7 +209,7 @@ const HanMedicineTest = () => {
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Brain className="h-8 w-8 text-blue-500" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-4">AI 정밀 진단</h3>
+                  <h3 className="text-xl font-semibold mb-4">AI 정밀 체질체크</h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
@@ -257,7 +257,7 @@ const HanMedicineTest = () => {
           {/* 진단 프로그램 메뉴 */}
           <div className="mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl font-bold text-center text-foreground mb-8 sm:mb-12">
-              진단 프로그램 선택
+              한방체크 프로그램 선택
             </h2>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
@@ -272,7 +272,7 @@ const HanMedicineTest = () => {
                       <Clock className="h-6 w-6 text-blue-600" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl text-foreground">3분 빠른 체질 진단</CardTitle>
+                      <CardTitle className="text-xl text-foreground">3분 빠른 체질체크</CardTitle>
                       <p className="text-sm text-muted-foreground">간편하고 빠른 기본 분석</p>
                     </div>
                   </div>
@@ -313,7 +313,7 @@ const HanMedicineTest = () => {
                       <Star className="h-6 w-6 text-purple-600" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl text-foreground">프리미엄 정밀 체질 진단</CardTitle>
+                      <CardTitle className="text-xl text-foreground">프리미엄 정밀 체질체크</CardTitle>
                       <p className="text-sm text-muted-foreground">상세하고 정확한 맞춤 분석</p>
                     </div>
                   </div>
@@ -341,7 +341,7 @@ const HanMedicineTest = () => {
                     className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                     onClick={() => handleTestSelection('premium')}
                   >
-                    정밀 진단 받기
+                    정밀 체질체크 받기
                   </Button>
                 </CardContent>
               </Card>
@@ -350,7 +350,7 @@ const HanMedicineTest = () => {
             {/* 추가 특화 진단 프로그램 */}
             <div className="space-y-6">
               <h3 className="text-xl font-semibold text-center text-foreground mb-6">
-                특화 진단 프로그램
+                특화 체질체크 프로그램
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

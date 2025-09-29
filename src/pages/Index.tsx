@@ -33,6 +33,8 @@ import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import SimplifiedFlow from '@/components/mvp/SimplifiedFlow';
 import QuickOnboarding from '@/components/mvp/QuickOnboarding';
 import { SocialProofDisplay } from '@/components/apr-strategy/SocialProofDisplay';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   console.log('🏠 Index.tsx: Index page component rendering...');
@@ -40,6 +42,7 @@ const Index = () => {
   const [searchParams] = useSearchParams();
   const { processReferralReward } = useReferrals();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [showGuideComplete, setShowGuideComplete] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);

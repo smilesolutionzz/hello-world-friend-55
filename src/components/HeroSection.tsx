@@ -5,6 +5,7 @@ import { TypingAnimation } from "@/components/ui/typing-animation";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import FloatingKeywords from "./FloatingKeywords";
 import { useState } from "react";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -245,11 +246,15 @@ const HeroSection = () => {
             <div className="flex flex-col gap-3 justify-center max-w-lg mx-auto">
               <Button 
                 size="lg"
-                onClick={() => navigate('/free-trial')}
-                className="w-full px-6 py-4 bg-gradient-to-r from-primary via-primary-glow to-secondary text-white rounded-xl font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-lg h-14"
+                onClick={() => navigate('/pmf')}
+                className="w-full px-6 py-4 bg-gradient-to-r from-primary via-primary-glow to-secondary text-white rounded-xl font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-lg h-14 relative overflow-hidden group"
               >
-                <span className="text-xl mr-2">🚀</span>
-                무료 체험 시작하기
+                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out"></div>
+                <span className="relative flex items-center justify-center gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  🎯 3분 AI 심리분석 체험
+                  <ArrowRight className="w-5 h-5" />
+                </span>
               </Button>
               
               <div className="text-center">

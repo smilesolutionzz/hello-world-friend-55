@@ -104,6 +104,7 @@ import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
 import AdminDashboard from "./pages/AdminDashboard";
 import InstitutionAdmin from "./pages/InstitutionAdmin";
+import PMFOnboarding from "./pages/PMFOnboarding";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -135,6 +136,7 @@ const App = () => {
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
+          <Route path="/pmf" element={<PMFOnboarding />} />
           <Route path="/design-showcase" element={<EnhancedDesignShowcase />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/dashboard" element={<Dashboard />} />

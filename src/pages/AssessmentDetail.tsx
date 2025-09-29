@@ -180,8 +180,8 @@ export default function AssessmentDetail() {
                   <p className="text-purple-100 mt-1">AI 기반 심층 분석 결과</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold">{averageScore.toFixed(1)}</div>
-                  <div className="text-sm text-purple-100">평균 점수</div>
+                  <div className="text-3xl font-bold">{results.predicted_score?.toFixed(1) || averageScore.toFixed(1)}</div>
+                  <div className="text-sm text-purple-100">AI 예측 점수</div>
                 </div>
               </div>
             </CardHeader>

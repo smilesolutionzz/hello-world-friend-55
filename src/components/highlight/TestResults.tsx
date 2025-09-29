@@ -221,15 +221,18 @@ export const TestResults = () => {
         {/* 총점 카드 */}
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">전체 점수</CardTitle>
+            <CardTitle className="text-2xl">AI 예측 점수</CardTitle>
             <div className="flex items-center justify-center gap-4 mt-4">
               <div className="text-4xl font-bold text-primary">
-                {result.scores.total_score || 0}점
+                {result.scores.predicted_score || result.scores.total_score || 0}점
               </div>
               <Badge className={`${color} text-white`}>
                 {level}
               </Badge>
             </div>
+            <p className="text-sm text-muted-foreground mt-2">
+              AI가 분석한 표준화된 예측 점수
+            </p>
           </CardHeader>
         </Card>
 

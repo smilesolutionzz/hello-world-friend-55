@@ -17,10 +17,20 @@ const PMFOnboardingFlow: React.FC<PMFOnboardingFlowProps> = ({ onComplete }) => 
     mainConcern: '',
     targetPerson: '',
     experience: '',
-    motivation: ''
+    motivation: '',
+    instantInput: '' // 즉시 분석에서 가져온 텍스트
   });
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // 즉시 분석에서 입력한 텍스트 가져오기
+  React.useEffect(() => {
+    const instantInput = localStorage.getItem('instant_analysis_input');
+    if (instantInput) {
+      setUserData(prev => ({ ...prev, instantInput }));
+      localStorage.removeItem('instant_analysis_input'); // 사용 후 삭제
+    }
+  }, []);
 
   const steps = [
     {
@@ -139,6 +149,21 @@ const PMFOnboardingFlow: React.FC<PMFOnboardingFlowProps> = ({ onComplete }) => 
           {/* Step 0: Welcome */}
           {currentStep === 0 && (
             <div className="space-y-6">
+              {/* 즉시 분석에서 온 경우 환영 메시지 */}
+              {userData.instantInput && (
+                <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                  <h4 className="font-medium text-green-800 dark:text-green-200 mb-2">
+                    🎉 즉시 분석을 경험해보셨군요!
+                  </h4>
+                  <p className="text-sm text-green-700 dark:text-green-300 mb-2">
+                    입력하신 내용: "{userData.instantInput.substring(0, 50)}..."
+                  </p>
+                  <p className="text-sm text-green-700 dark:text-green-300">
+                    이제 더 정확하고 개인화된 분석을 위해 3분만 더 투자해보세요!
+                  </p>
+                </div>
+              )}
+              
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center p-4 bg-primary/5 rounded-lg">
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">

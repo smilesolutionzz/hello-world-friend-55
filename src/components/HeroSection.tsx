@@ -1,4 +1,4 @@
-import ChatInterface from "./ChatInterface";
+import InstantAIAnalysis from "./InstantAIAnalysis";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { TypingAnimation } from "@/components/ui/typing-animation";
@@ -123,8 +123,10 @@ const HeroSection = () => {
         </div>
 
 
-        {/* Chat Interface */}
-        <ChatInterface />
+        {/* Instant AI Analysis - 즉시 후킹 요소 */}
+        <div className="mb-12">
+          <InstantAIAnalysis />
+        </div>
         
         {/* CTA Section */}
         <div className="mt-12 text-center space-y-6">
@@ -246,7 +248,7 @@ const HeroSection = () => {
             <div className="flex flex-col gap-3 justify-center max-w-lg mx-auto">
               <Button 
                 size="lg"
-                onClick={() => navigate('/pmf')}
+                onClick={() => navigate('/pmf-onboarding')}
                 className="w-full px-6 py-4 bg-gradient-to-r from-primary via-primary-glow to-secondary text-white rounded-xl font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-lg h-14 relative overflow-hidden group"
               >
                 <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out"></div>

@@ -247,6 +247,35 @@ const TokenSubscription = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <UnifiedNavigation />
       
+      {/* 베타 서비스 무료 기간 안내 배너 */}
+      <div className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white py-6 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 via-emerald-400/20 to-teal-400/20 animate-pulse"></div>
+        <div className="container mx-auto relative z-10">
+          <div className="text-center space-y-3">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="bg-white/20 rounded-full p-2">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <h2 className="text-2xl font-bold">🎉 베타 서비스 무료 기간</h2>
+            </div>
+            <p className="text-xl font-medium">
+              <strong>10월 30일까지</strong> 모든 서비스를 <strong>무료</strong>로 이용할 수 있습니다!
+            </p>
+            <div className="bg-white/10 rounded-lg p-4 max-w-2xl mx-auto">
+              <div className="text-lg font-bold mb-2">✨ 베타 기간 혜택</div>
+              <div className="text-base space-y-1">
+                <div>• 모든 심리테스트 무제한 무료 이용</div>
+                <div>• AI 분석 및 리포트 무료 제공</div>
+                <div>• 현재 결제 기능이 일시적으로 비활성화 상태</div>
+              </div>
+            </div>
+            <div className="text-lg font-bold text-yellow-200">
+              🚀 11월 1일부터 정식 서비스 시작 예정
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* 하이브리드 모델 1단계 안내 배너 */}
       <div className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 text-white py-4 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 via-blue-400/20 to-purple-400/20 animate-pulse"></div>
@@ -341,10 +370,17 @@ const TokenSubscription = () => {
                 </div>
               </div>
               <Button 
-                onClick={() => handlePurchase('token-pack-50')}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3"
+                onClick={() => {
+                  toast({
+                    title: "베타 서비스 기간",
+                    description: "10월 30일까지 무료 이용 기간입니다. 현재 결제가 필요하지 않습니다.",
+                    variant: "default"
+                  });
+                }}
+                className="w-full bg-gray-400 hover:bg-gray-500 text-white font-bold py-3"
+                disabled
               >
-                🪙 토큰 구매하기
+                🎉 베타 기간 무료 이용중
               </Button>
             </div>
             
@@ -423,17 +459,17 @@ const TokenSubscription = () => {
               {/* 월간/연간 선택 버튼 */}
               <div className="space-y-3 mb-4">
                 <Button 
-                  onClick={async () => {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (!session) {
-                      navigate('/auth');
-                      return;
-                    }
-                    handleSubscriptionPurchase('standard-monthly');
+                  onClick={() => {
+                    toast({
+                      title: "베타 서비스 기간",
+                      description: "10월 30일까지 무료 이용 기간입니다. 현재 결제가 필요하지 않습니다.",
+                      variant: "default"
+                    });
                   }}
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
+                  className="w-full bg-gray-400 hover:bg-gray-500 text-white font-bold py-4 text-lg"
+                  disabled
                 >
-                  🚀 월간 ₩9,900
+                  🎉 베타 기간 무료 이용중
                 </Button>
                 
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
@@ -443,18 +479,18 @@ const TokenSubscription = () => {
                     <div className="text-sm text-yellow-700">25% 추가 할인 혜택!</div>
                   </div>
                   <Button 
-                    onClick={async () => {
-                      const { data: { session } } = await supabase.auth.getSession();
-                      if (!session) {
-                        navigate('/auth');
-                        return;
-                      }
-                      handleSubscriptionPurchase('standard-yearly');
+                    onClick={() => {
+                      toast({
+                        title: "베타 서비스 기간",
+                        description: "10월 30일까지 무료 이용 기간입니다. 현재 결제가 필요하지 않습니다.",
+                        variant: "default"
+                      });
                     }}
                     variant="outline"
-                    className="w-full mt-2 border-yellow-400 text-yellow-800 hover:bg-yellow-100"
+                    className="w-full mt-2 border-gray-400 text-gray-600 hover:bg-gray-100"
+                    disabled
                   >
-                    💎 연간 결제하기
+                    🎉 베타 기간 무료
                   </Button>
                 </div>
               </div>
@@ -533,17 +569,17 @@ const TokenSubscription = () => {
               {/* 월간/연간 선택 버튼 */}
               <div className="space-y-3 mb-4">
                 <Button 
-                  onClick={async () => {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (!session) {
-                      navigate('/auth');
-                      return;
-                    }
-                    handleSubscriptionPurchase('premium-monthly');
+                  onClick={() => {
+                    toast({
+                      title: "베타 서비스 기간",
+                      description: "10월 30일까지 무료 이용 기간입니다. 현재 결제가 필요하지 않습니다.",
+                      variant: "default"
+                    });
                   }}
-                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-200"
+                  className="w-full bg-gray-400 hover:bg-gray-500 text-white font-bold py-4 text-lg"
+                  disabled
                 >
-                  💎 월간 ₩19,900
+                  🎉 베타 기간 무료 이용중
                 </Button>
                 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
@@ -553,18 +589,18 @@ const TokenSubscription = () => {
                     <div className="text-sm text-blue-700">25% 추가 할인 혜택!</div>
                   </div>
                   <Button 
-                    onClick={async () => {
-                      const { data: { session } } = await supabase.auth.getSession();
-                      if (!session) {
-                        navigate('/auth');
-                        return;
-                      }
-                      handleSubscriptionPurchase('premium-yearly');
+                    onClick={() => {
+                      toast({
+                        title: "베타 서비스 기간",
+                        description: "10월 30일까지 무료 이용 기간입니다. 현재 결제가 필요하지 않습니다.",
+                        variant: "default"
+                      });
                     }}
                     variant="outline"
-                    className="w-full mt-2 border-blue-400 text-blue-800 hover:bg-blue-100"
+                    className="w-full mt-2 border-gray-400 text-gray-600 hover:bg-gray-100"
+                    disabled
                   >
-                    👑 연간 결제하기
+                    🎉 베타 기간 무료
                   </Button>
                 </div>
               </div>

@@ -39,42 +39,10 @@ const Subscription = () => {
         return;
       }
 
-      // Toss Payments를 사용한 구독 결제 처리
-      const { data, error } = await supabase.functions.invoke('create-toss-payment', {
-        body: {
-          planId: plan.id,
-          subscriptionType: plan.type
-        }
+      // 무통장입금으로 결제 진행
+      navigate('/bank-transfer-subscription', { 
+        state: { selectedPlanId: plan.id } 
       });
-
-      if (error) throw error;
-
-      if (data?.paymentData && data?.clientKey) {
-        // 동적으로 Toss Payments SDK 로드
-        const script = document.createElement('script');
-        script.src = 'https://js.tosspayments.com/v1/payment-widget';
-        script.onload = () => {
-          const paymentWidget = (window as any).PaymentWidget(data.clientKey, (window as any).PaymentWidget.ANONYMOUS);
-          
-          paymentWidget.renderPaymentMethods('#payment-widget', {
-            value: data.paymentData.amount,
-            currency: 'KRW',
-            country: 'KR'
-          });
-
-          // 결제 요청
-          paymentWidget.requestPayment({
-            orderId: data.paymentData.orderId,
-            orderName: data.paymentData.orderName,
-            amount: data.paymentData.amount,
-            successUrl: `${window.location.origin}/payment-success`,
-            failUrl: `${window.location.origin}/payment-fail`,
-            customerEmail: session.user.email,
-            customerName: session.user.user_metadata?.display_name || '사용자'
-          });
-        };
-        document.head.appendChild(script);
-      }
 
     } catch (error: any) {
       console.error('=== Subscription error:', error);

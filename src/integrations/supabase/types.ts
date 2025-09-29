@@ -308,8 +308,11 @@ export type Database = {
           processed_at: string | null
           processed_by: string | null
           request_note: string | null
+          request_type: string | null
           requested_tokens: number
           status: string
+          subscription_duration_months: number | null
+          subscription_plan_id: string | null
           transfer_amount: number
           transfer_date: string | null
           updated_at: string
@@ -325,8 +328,11 @@ export type Database = {
           processed_at?: string | null
           processed_by?: string | null
           request_note?: string | null
+          request_type?: string | null
           requested_tokens: number
           status?: string
+          subscription_duration_months?: number | null
+          subscription_plan_id?: string | null
           transfer_amount: number
           transfer_date?: string | null
           updated_at?: string
@@ -342,8 +348,11 @@ export type Database = {
           processed_at?: string | null
           processed_by?: string | null
           request_note?: string | null
+          request_type?: string | null
           requested_tokens?: number
           status?: string
+          subscription_duration_months?: number | null
+          subscription_plan_id?: string | null
           transfer_amount?: number
           transfer_date?: string | null
           updated_at?: string

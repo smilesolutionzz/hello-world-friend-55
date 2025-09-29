@@ -16,7 +16,10 @@ const BankTransferRequest = () => {
     requestedTokens: '',
     bankName: '',
     transferDate: '',
-    requestNote: ''
+    requestNote: '',
+    requestType: 'token_purchase',
+    subscriptionPlanId: '',
+    subscriptionDurationMonths: 1
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -57,24 +60,38 @@ const BankTransferRequest = () => {
 
     setIsLoading(true);
     try {
+      const insertData: any = {
+        user_id: user.id,
+        user_email: user.email || '',
+        depositor_name: formData.depositorName,
+        transfer_amount: parseInt(formData.transferAmount),
+        bank_name: formData.bankName,
+        transfer_date: formData.transferDate || null,
+        request_note: formData.requestNote || null,
+        request_type: formData.requestType
+      };
+
+      if (formData.requestType === 'token_purchase') {
+        insertData.requested_tokens = parseInt(formData.requestedTokens);
+      } else if (formData.requestType === 'subscription_payment') {
+        insertData.subscription_plan_id = formData.subscriptionPlanId || null;
+        insertData.subscription_duration_months = formData.subscriptionDurationMonths;
+        insertData.requested_tokens = 0; // 구독은 토큰이 아님
+      }
+
       const { error } = await supabase
         .from('bank_transfer_requests')
-        .insert({
-          user_id: user.id,
-          user_email: user.email || '',
-          depositor_name: formData.depositorName,
-          transfer_amount: parseInt(formData.transferAmount),
-          requested_tokens: parseInt(formData.requestedTokens),
-          bank_name: formData.bankName,
-          transfer_date: formData.transferDate || null,
-          request_note: formData.requestNote || null
-        });
+        .insert(insertData);
 
       if (error) throw error;
 
+      const successMessage = formData.requestType === 'subscription_payment' 
+        ? "구독 결제 신청이 완료되었습니다. 입금 확인 후 구독이 활성화됩니다."
+        : "입금 신청 완료되었습니다. 입금 확인 후 토큰이 지급됩니다.";
+
       toast({
-        title: "입금 신청 완료",
-        description: "입금 확인 후 토큰이 지급됩니다. 최대 24시간 소요됩니다.",
+        title: "신청 완료",
+        description: successMessage,
       });
 
       // 폼 초기화
@@ -84,7 +101,10 @@ const BankTransferRequest = () => {
         requestedTokens: '',
         bankName: '',
         transferDate: '',
-        requestNote: ''
+        requestNote: '',
+        requestType: 'token_purchase',
+        subscriptionPlanId: '',
+        subscriptionDurationMonths: 1
       });
     } catch (error) {
       console.error('입금 신청 오류:', error);

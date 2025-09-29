@@ -13,6 +13,8 @@ import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 import Analytics from "@/components/common/Analytics";
 import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
+import BankTransfer from "./pages/BankTransfer";
+import BankTransferSubscription from "./pages/BankTransferSubscription";
 
 import Assessment from "./pages/Assessment";
 import FreeTrialAssessment from "./pages/FreeTrialAssessment";
@@ -219,6 +221,8 @@ const App = () => {
           <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />
           <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
           <Route path="/token-test" element={<TokenTest />} />
+          <Route path="/bank-transfer" element={<BankTransfer />} />
+          <Route path="/bank-transfer-subscription" element={<BankTransferSubscription />} />
           
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />

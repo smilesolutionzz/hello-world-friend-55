@@ -21,7 +21,35 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   const chunksRef = useRef<Blob[]>([]);
   const { toast } = useToast();
 
+  const checkMicrophonePermission = async () => {
+    try {
+      const result = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+      return result.state;
+    } catch (error) {
+      return 'prompt';
+    }
+  };
+
   const startRecording = async () => {
+    // 권한 상태 확인
+    const permissionState = await checkMicrophonePermission();
+    
+    if (permissionState === 'denied') {
+      toast({
+        title: "마이크 접근 권한 필요",
+        description: "브라우저 설정에서 마이크 권한을 허용해주세요. 주소창 왼쪽의 자물쇠 아이콘을 클릭하여 설정할 수 있습니다.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (permissionState === 'prompt') {
+      toast({
+        title: "마이크 접근 권한 요청",
+        description: "음성 분석을 위해 마이크 접근을 허용해주세요.",
+      });
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
@@ -60,9 +88,13 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       });
     } catch (error) {
       console.error('Recording error:', error);
+      const errorMessage = error instanceof Error && error.name === 'NotAllowedError' 
+        ? "마이크 접근이 거부되었습니다. 브라우저 설정에서 마이크 권한을 허용해주세요."
+        : "마이크에 접근할 수 없습니다. 다른 앱에서 마이크를 사용 중인지 확인해주세요.";
+        
       toast({
         title: "녹음 오류",
-        description: "마이크 접근이 거부되었습니다.",
+        description: errorMessage,
         variant: "destructive",
       });
     }

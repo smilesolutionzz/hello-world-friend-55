@@ -150,3 +150,24 @@ verify_jwt = true
 
 [functions.platform-ai-consultant]
 verify_jwt = false
+
+[functions.extract-video-frames]
+verify_jwt = false
+
+[functions.video-behavior-analysis]
+verify_jwt = false
+
+[functions.voice-to-text]
+verify_jwt = false
+
+[functions.ai-mindfulness-coach]
+verify_jwt = false
+
+[functions.ai-fitness-coach]
+verify_jwt = false
+
+[functions.ai-nutrition-advisor]
+verify_jwt = false
+
+[functions.ai-sleep-analyzer]
+verify_jwt = false

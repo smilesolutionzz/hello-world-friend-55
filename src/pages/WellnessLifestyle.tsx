@@ -58,22 +58,98 @@ const WellnessLifestyle = () => {
     try {
       toast({ 
         title: `🎉 ${isBetaTestPeriod() ? '베타테스트 무료 이용' : 'AI 분석 시작'}`, 
-        description: '고급 AI 분석이 시작되었습니다!' 
+        description: 'AI가 개인 맞춤형 분석을 시작합니다!' 
       });
       
-      // 페이지별 네비게이션
-      const routes = {
-        'mindfulness': '/meditation',
-        'fitness': '/workout-plan',
-        'nutrition': '/nutrition-guide',
-        'sleep': '/sleep-analysis'
-      };
+      // AI 분석 로딩 표시
+      const loadingToast = toast({
+        title: "🤖 AI 분석 중...",
+        description: "최첨단 AI가 당신을 위한 맞춤형 솔루션을 생성하고 있습니다.",
+      });
+
+      let analysisData;
       
-      if (routes[type as keyof typeof routes]) {
-        navigate(routes[type as keyof typeof routes]);
+      // 각 타입별 맞춤형 AI 분석 호출
+      switch(type) {
+        case 'mindfulness':
+          const { data: mindfulnessData } = await supabase.functions.invoke('ai-mindfulness-coach', {
+            body: {
+              stressLevel: Math.floor(Math.random() * 50) + 25, // 실제로는 사용자 데이터
+              focusLevel: dailyScore,
+              userGoals: "스트레스 해소 및 집중력 향상",
+              currentMood: "약간 스트레스"
+            }
+          });
+          analysisData = mindfulnessData;
+          break;
+          
+        case 'fitness':
+          const { data: fitnessData } = await supabase.functions.invoke('ai-fitness-coach', {
+            body: {
+              currentSteps: 7890,
+              caloriesBurned: 340,
+              fitnessGoals: "체중 감량 및 근력 증진",
+              activityLevel: "중간",
+              healthConditions: ""
+            }
+          });
+          analysisData = fitnessData;
+          break;
+          
+        case 'nutrition':
+          const { data: nutritionData } = await supabase.functions.invoke('ai-nutrition-advisor', {
+            body: {
+              dailyCalories: 1650,
+              targetCalories: 2000,
+              nutritionBalance: 92,
+              dietaryRestrictions: "",
+              healthGoals: "균형잡힌 영양 섭취"
+            }
+          });
+          analysisData = nutritionData;
+          break;
+          
+        case 'sleep':
+          const { data: sleepData } = await supabase.functions.invoke('ai-sleep-analyzer', {
+            body: {
+              sleepQuality: "우수",
+              sleepDuration: "7시간 30분",
+              bedtime: "23:00",
+              wakeupTime: "06:30",
+              sleepIssues: "",
+              lifestyle: "일반적인 직장인"
+            }
+          });
+          analysisData = sleepData;
+          break;
       }
+
+      if (analysisData) {
+        toast({
+          title: "✨ AI 분석 완료!",
+          description: "맞춤형 분석 결과를 확인하세요.",
+        });
+        
+        // 분석 결과를 새 창으로 표시 (실제로는 모달이나 새 페이지로)
+        console.log('AI Analysis Result:', analysisData);
+        
+        // 이미지가 생성된 경우 처리
+        if (analysisData.meditation_image || analysisData.motivation_image || 
+            analysisData.meal_image || analysisData.sleep_environment_image) {
+          toast({
+            title: "🎨 맞춤형 이미지까지 생성완료!",
+            description: "AI가 생성한 맞춤 이미지도 확인해보세요.",
+          });
+        }
+      }
+      
     } catch (error) {
       console.error('AI Analysis error:', error);
+      toast({
+        title: "❌ 분석 중 오류 발생",
+        description: "잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      });
     }
   };
 

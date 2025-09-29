@@ -19,9 +19,30 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Inter', 'Noto Sans KR', 'system-ui', 'sans-serif'],
+				sans: ['Pretendard', 'Inter', 'Noto Sans KR', 'system-ui', 'sans-serif'],
 				korean: ['Noto Sans KR', 'sans-serif'],
 				pretendard: ['Pretendard', 'system-ui', 'sans-serif'],
+				display: ['Pretendard', 'system-ui', 'sans-serif'], // For headings with high visual weight
+			},
+			fontSize: {
+				'giant': ['4rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '900' }],
+				'huge': ['3rem', { lineHeight: '1.2', letterSpacing: '-0.015em', fontWeight: '800' }],
+				'large': ['2.25rem', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '700' }],
+				'big': ['1.875rem', { lineHeight: '1.35', fontWeight: '600' }],
+				'medium': ['1.5rem', { lineHeight: '1.4', fontWeight: '500' }],
+				'normal': ['1.125rem', { lineHeight: '1.5', fontWeight: '400' }],
+				'small': ['1rem', { lineHeight: '1.5', fontWeight: '400' }],
+				'tiny': ['0.875rem', { lineHeight: '1.4', fontWeight: '400' }],
+				'micro': ['0.75rem', { lineHeight: '1.3', fontWeight: '300' }],
+			},
+			fontWeight: {
+				'ultra': '900',
+				'heavy': '800',
+				'bold': '700',
+				'semibold': '600',
+				'medium': '500',
+				'normal': '400',
+				'light': '300',
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -80,12 +101,43 @@ export default {
 				'calm-blue': 'hsl(var(--calm-blue))',
 				'warm-lavender': 'hsl(var(--warm-lavender))',
 				'soft-mint': 'hsl(var(--soft-mint))',
-				'gentle-peach': 'hsl(var(--gentle-peach))'
+				'gentle-peach': 'hsl(var(--gentle-peach))',
+				
+				// Visual Weight Color System
+				'weight': {
+					'heavy': 'hsl(var(--weight-heavy))',
+					'bold': 'hsl(var(--weight-bold))',
+					'medium': 'hsl(var(--weight-medium))',
+					'light': 'hsl(var(--weight-light))',
+					'subtle': 'hsl(var(--weight-subtle))',
+				},
+				
+				// Primary System with Visual Weight
+				'primary-strong': 'hsl(var(--primary-strong))',
+				'primary-medium': 'hsl(var(--primary-medium))',
+				'primary-light': 'hsl(var(--primary-light))',
+				'primary-subtle': 'hsl(var(--primary-subtle))',
+			},
+			spacing: {
+				'micro': 'var(--space-micro)',
+				'tiny': 'var(--space-tiny)',
+				'xs': 'var(--space-xs)',
+				'sm': 'var(--space-sm)',
+				'md': 'var(--space-md)',
+				'lg': 'var(--space-lg)',
+				'xl': 'var(--space-xl)',
+				'2xl': 'var(--space-2xl)',
+				'3xl': 'var(--space-3xl)',
+				'4xl': 'var(--space-4xl)',
+				'5xl': 'var(--space-5xl)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				'visual-primary': 'calc(var(--radius) * 1.5)',
+				'visual-secondary': 'var(--radius)',
+				'visual-tertiary': 'calc(var(--radius) * 0.75)',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -139,6 +191,31 @@ export default {
 					'50%': {
 						boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)'
 					}
+				},
+				'visual-emphasis': {
+					'0%': {
+						transform: 'scale(1)',
+						opacity: '1'
+					},
+					'50%': {
+						transform: 'scale(1.05)',
+						opacity: '0.9'
+					},
+					'100%': {
+						transform: 'scale(1)',
+						opacity: '1'
+					}
+				},
+				'balance-flow': {
+					'0%, 100%': {
+						transform: 'translateX(0px) rotate(0deg)'
+					},
+					'33%': {
+						transform: 'translateX(10px) rotate(1deg)'
+					},
+					'66%': {
+						transform: 'translateX(-5px) rotate(-0.5deg)'
+					}
 				}
 			},
 			animation: {
@@ -147,7 +224,14 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 				'scale-in': 'scale-in 0.2s ease-out',
 				'float': 'float 3s ease-in-out infinite',
-				'glow': 'glow 2s ease-in-out infinite alternate'
+				'glow': 'glow 2s ease-in-out infinite alternate',
+				'visual-emphasis': 'visual-emphasis 3s ease-in-out infinite',
+				'balance-flow': 'balance-flow 6s ease-in-out infinite',
+			},
+			transitionTimingFunction: {
+				'gentle': 'cubic-bezier(0.4, 0, 0.2, 1)',
+				'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+				'dramatic': 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
 			},
 			backdropBlur: {
 				'xs': '2px',

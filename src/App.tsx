@@ -82,6 +82,7 @@ import GrowthStories from "./pages/GrowthStories";
 import VoiceEmotionAnalysis from "./pages/VoiceEmotionAnalysis";
 import VoiceDiary from "./pages/VoiceDiary";
 import PersonalizedAICoaching from "./pages/PersonalizedAICoaching";
+import EnhancedDesignShowcase from "./pages/EnhancedDesignShowcase";
 
 // New Retention Features
 import WellnessHub from "./pages/WellnessHub";
@@ -132,6 +133,7 @@ const App = () => {
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
+          <Route path="/design-showcase" element={<EnhancedDesignShowcase />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/premium-assessment" element={<PremiumAssessment />} />

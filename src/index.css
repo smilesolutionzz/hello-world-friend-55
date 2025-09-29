@@ -34,15 +34,30 @@ html, body {
 
 @layer base {
   :root {
+    /* Base System Colors - 시각적 무게감 기반 */
     --background: 0 0% 100%;
-    --foreground: 220 15% 25%;
+    --foreground: 220 20% 15%;
     --card: 0 0% 100%;
     --card-foreground: 220 15% 25%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 25%;
+    
+    /* Primary Hierarchy - 시각적 무게감 단계별 */
     --primary: 230 80% 65%;
     --primary-foreground: 0 0% 100%;
     --primary-glow: 240 70% 75%;
+    --primary-strong: 230 85% 55%; /* 강한 시각적 무게 */
+    --primary-medium: 230 75% 70%; /* 중간 시각적 무게 */
+    --primary-light: 230 65% 80%; /* 약한 시각적 무게 */
+    --primary-subtle: 230 45% 92%; /* 매우 약한 시각적 무게 */
+    
+    /* Visual Weight Color System */
+    --weight-heavy: 220 25% 10%; /* 최대 시각적 무게 */
+    --weight-bold: 220 20% 20%; /* 강한 시각적 무게 */
+    --weight-medium: 220 15% 40%; /* 중간 시각적 무게 */
+    --weight-light: 220 10% 60%; /* 약한 시각적 무게 */
+    --weight-subtle: 220 8% 80%; /* 미세한 시각적 무게 */
+    
     --secondary: 220 60% 96%;
     --secondary-foreground: 220 15% 25%;
     --muted: 220 20% 96%;
@@ -118,9 +133,44 @@ html, body {
     --shadow-card-active: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-glow: 0 0 15px rgba(var(--primary), 0.1);
     
-    /* Smooth Animations */
+    /* Visual Weight Typography Scale */
+    --text-size-giant: 4rem; /* 72px - 최대 시각적 무게 */
+    --text-size-huge: 3rem; /* 48px - 매우 강한 시각적 무게 */
+    --text-size-large: 2.25rem; /* 36px - 강한 시각적 무게 */
+    --text-size-big: 1.875rem; /* 30px - 중간 강한 시각적 무게 */
+    --text-size-medium: 1.5rem; /* 24px - 중간 시각적 무게 */
+    --text-size-normal: 1.125rem; /* 18px - 기본 시각적 무게 */
+    --text-size-small: 1rem; /* 16px - 약한 시각적 무게 */
+    --text-size-tiny: 0.875rem; /* 14px - 미세한 시각적 무게 */
+    --text-size-micro: 0.75rem; /* 12px - 최소 시각적 무게 */
+    
+    /* Font Weight Hierarchy */
+    --font-weight-ultra: 900; /* 최강 시각적 무게 */
+    --font-weight-heavy: 800; /* 매우 강한 시각적 무게 */
+    --font-weight-bold: 700; /* 강한 시각적 무게 */
+    --font-weight-semibold: 600; /* 중간 강한 시각적 무게 */
+    --font-weight-medium: 500; /* 중간 시각적 무게 */
+    --font-weight-normal: 400; /* 기본 시각적 무게 */
+    --font-weight-light: 300; /* 약한 시각적 무게 */
+    
+    /* Visual Balance Spacing System */
+    --space-micro: 0.125rem; /* 2px */
+    --space-tiny: 0.25rem; /* 4px */
+    --space-xs: 0.5rem; /* 8px */
+    --space-sm: 0.75rem; /* 12px */
+    --space-md: 1rem; /* 16px */
+    --space-lg: 1.5rem; /* 24px */
+    --space-xl: 2rem; /* 32px */
+    --space-2xl: 3rem; /* 48px */
+    --space-3xl: 4rem; /* 64px */
+    --space-4xl: 6rem; /* 96px */
+    --space-5xl: 8rem; /* 128px */
+    
+    /* Smooth Animations with Visual Weight */
     --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-spring: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --transition-gentle: all 0.15s ease-out;
+    --transition-dramatic: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
   .dark {
@@ -161,6 +211,77 @@ html, body {
 }
 
 @layer utilities {
+  /* Visual Weight Typography Classes */
+  .text-weight-giant { 
+    font-size: var(--text-size-giant); 
+    font-weight: var(--font-weight-ultra);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .text-weight-huge { 
+    font-size: var(--text-size-huge); 
+    font-weight: var(--font-weight-heavy);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .text-weight-large { 
+    font-size: var(--text-size-large); 
+    font-weight: var(--font-weight-bold);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .text-weight-big { 
+    font-size: var(--text-size-big); 
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.35;
+  }
+  .text-weight-medium { 
+    font-size: var(--text-size-medium); 
+    font-weight: var(--font-weight-medium);
+    line-height: 1.4;
+  }
+  .text-weight-normal { 
+    font-size: var(--text-size-normal); 
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+  .text-weight-small { 
+    font-size: var(--text-size-small); 
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+  .text-weight-tiny { 
+    font-size: var(--text-size-tiny); 
+    font-weight: var(--font-weight-normal);
+    line-height: 1.4;
+  }
+  .text-weight-micro { 
+    font-size: var(--text-size-micro); 
+    font-weight: var(--font-weight-light);
+    line-height: 1.3;
+  }
+  
+  /* Visual Weight Color Classes */
+  .text-heavy { color: hsl(var(--weight-heavy)); }
+  .text-bold-weight { color: hsl(var(--weight-bold)); }
+  .text-medium-weight { color: hsl(var(--weight-medium)); }
+  .text-light-weight { color: hsl(var(--weight-light)); }
+  .text-subtle-weight { color: hsl(var(--weight-subtle)); }
+  
+  /* Visual Balance Components */
+  .visual-balance-symmetric {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .visual-balance-asymmetric {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    align-items: start;
+    gap: var(--space-lg);
+  }
+  
   /* Modern Background Classes */
   .bg-modern {
     background: var(--bg-modern-primary);
@@ -440,4 +561,72 @@ html, body {
   .text-orange { color: rgb(249 115 22); }
   .text-pink { color: rgb(236 72 153); }
   .text-yellow { color: rgb(202 138 4); }
+  
+  /* Visual Hierarchy Containers */
+  .container-primary {
+    padding: var(--space-2xl);
+    border-radius: calc(var(--radius) * 1.5);
+    box-shadow: var(--shadow-card-hover);
+  }
+  
+  .container-secondary {
+    padding: var(--space-xl);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+  }
+  
+  .container-tertiary {
+    padding: var(--space-lg);
+    border-radius: calc(var(--radius) * 0.75);
+    background: rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Enhanced Spacing System */
+  .space-micro { margin: var(--space-micro); }
+  .space-tiny { margin: var(--space-tiny); }
+  .space-xs { margin: var(--space-xs); }
+  .space-sm { margin: var(--space-sm); }
+  .space-md { margin: var(--space-md); }
+  .space-lg { margin: var(--space-lg); }
+  .space-xl { margin: var(--space-xl); }
+  .space-2xl { margin: var(--space-2xl); }
+  .space-3xl { margin: var(--space-3xl); }
+  .space-4xl { margin: var(--space-4xl); }
+  .space-5xl { margin: var(--space-5xl); }
+  
+  /* Enhanced Interactive Effects */
+  .interactive-primary {
+    transition: var(--transition-spring);
+    cursor: pointer;
+  }
+  
+  .interactive-primary:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-glow), var(--shadow-card-hover);
+  }
+  
+  .interactive-primary:active {
+    transform: translateY(-1px) scale(0.98);
+    box-shadow: var(--shadow-card-active);
+  }
+  
+  .interactive-secondary {
+    transition: var(--transition-smooth);
+    cursor: pointer;
+  }
+  
+  .interactive-secondary:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
+  
+  .interactive-subtle {
+    transition: var(--transition-gentle);
+    cursor: pointer;
+  }
+  
+  .interactive-subtle:hover {
+    opacity: 0.8;
+    transform: scale(1.01);
+  }
 }

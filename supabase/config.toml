@@ -40,9 +40,6 @@ double_confirm_changes = true
 enable_confirmations = false
 
 # Configure edge functions to work properly
-[functions.ai-coach-advanced]
-verify_jwt = true
-
 [functions.ai-counselor]
 verify_jwt = true
 
@@ -127,8 +124,6 @@ verify_jwt = true
 [functions.ai-health-insights]
 verify_jwt = false
 
-[functions.ai-coach]
-verify_jwt = false
 
 [functions.content-recommender]
 verify_jwt = false

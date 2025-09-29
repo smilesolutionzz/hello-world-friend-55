@@ -136,7 +136,7 @@ const App = () => {
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
-          <Route path="/pmf" element={<PMFOnboarding />} />
+          <Route path="/pmf-onboarding" element={<PMFOnboarding />} />
           <Route path="/design-showcase" element={<EnhancedDesignShowcase />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/dashboard" element={<Dashboard />} />

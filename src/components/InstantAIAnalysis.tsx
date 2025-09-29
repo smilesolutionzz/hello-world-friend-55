@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -24,6 +25,30 @@ const InstantAIAnalysis = () => {
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const callAIAnalysis = async (text: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('instant-ai-analysis', {
+        body: { inputText: text }
+      });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error(error.message || 'AI 분석 중 오류가 발생했습니다.');
+      }
+
+      if (data.success) {
+        return data.analysis;
+      } else {
+        // Use fallback analysis if AI failed
+        return data.fallbackAnalysis;
+      }
+    } catch (error) {
+      console.error('AI Analysis error:', error);
+      // Return fallback analysis in case of complete failure
+      return mockAnalysis(text);
+    }
+  };
 
   const mockAnalysis = (text: string) => {
     // 간단한 키워드 기반 분석
@@ -81,11 +106,20 @@ const InstantAIAnalysis = () => {
       return;
     }
 
+    if (inputText.trim().length < 30) {
+      toast({
+        title: "더 자세히 적어주세요",
+        description: "정확한 분석을 위해 최소 30자 이상 입력해주세요",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsAnalyzing(true);
     
-    // 실제 AI 분석 시뮬레이션
-    setTimeout(() => {
-      const result = mockAnalysis(inputText);
+    try {
+      // 실제 AI 분석 호출
+      const result = await callAIAnalysis(inputText);
       setAnalysisResult(result);
       setIsAnalyzing(false);
       setShowResult(true);
@@ -95,18 +129,16 @@ const InstantAIAnalysis = () => {
         toast({
           title: "🎯 더 정확한 분석을 원하신다면?",
           description: "3분 온보딩으로 맞춤형 솔루션을 받아보세요!",
-          action: (
-            <Button 
-              size="sm" 
-              onClick={() => navigate('/pmf-onboarding')}
-              className="ml-2"
-            >
-              시작하기
-            </Button>
-          ),
         });
       }, 3000);
-    }, 2000);
+    } catch (error) {
+      setIsAnalyzing(false);
+      toast({
+        title: "분석 중 오류가 발생했습니다",
+        description: "잠시 후 다시 시도해주세요",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleStartFullAnalysis = () => {
@@ -260,6 +292,15 @@ const InstantAIAnalysis = () => {
                       ))}
                     </ul>
                   </div>
+
+                  {analysisResult?.aiResponse && (
+                    <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <h5 className="text-sm font-medium mb-1">AI 상세 분석:</h5>
+                      <p className="text-xs text-muted-foreground whitespace-pre-wrap">
+                        {analysisResult.aiResponse}
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 

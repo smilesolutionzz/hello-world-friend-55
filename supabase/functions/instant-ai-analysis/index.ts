@@ -95,12 +95,16 @@ serve(async (req) => {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR in instant-ai-analysis", { message: errorMessage });
     
+    // OpenAI API 키가 없거나 API 호출이 실패한 경우, fallback 분석을 성공으로 반환
+    const fallbackAnalysis = getFallbackAnalysis(inputText || "");
+    
     return new Response(JSON.stringify({ 
-      success: false,
-      error: errorMessage,
-      fallbackAnalysis: getFallbackAnalysis("")
+      success: true,  // fallback이지만 성공으로 처리
+      analysis: fallbackAnalysis,
+      fallback: true,
+      originalError: errorMessage
     }), {
-      status: 500,
+      status: 200,  // 200으로 변경하여 클라이언트에서 정상 처리되도록
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }

@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Brain, TrendingUp, Calendar, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { generateTestResultPDF } from '@/utils/pdfGenerator';
 
 interface AssessmentDetail {
   id: string;
@@ -118,6 +119,25 @@ export default function AssessmentDetail() {
     return translations[category.toLowerCase()] || category.replace(/_/g, ' ');
   };
 
+  const handleDownloadPDF = async () => {
+    try {
+      const testDate = new Date(assessment?.created_at || Date.now()).toLocaleDateString('ko-KR');
+      
+      await generateTestResultPDF('프리미엄 심리검사', '사용자', testDate, 'pdf-content');
+      
+      toast({
+        title: "PDF 다운로드 완료",
+        description: "검사 결과가 PDF로 저장되었습니다.",
+      });
+    } catch (error) {
+      toast({
+        title: "PDF 다운로드 실패", 
+        description: "PDF 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -167,9 +187,13 @@ export default function AssessmentDetail() {
             </p>
           </div>
           
-          <div className="w-20" />
+          <Button onClick={handleDownloadPDF} size="sm">
+            <Download className="w-4 h-4 mr-2" />
+            PDF 다운로드
+          </Button>
         </div>
 
+        <div id="pdf-content">
         {/* Overall Score Card */}
         <div className="max-w-6xl mx-auto mb-8">
           <Card className="overflow-hidden hover-glow border-purple-200">
@@ -266,6 +290,7 @@ export default function AssessmentDetail() {
               </p>
             </CardContent>
           </Card>
+        </div>
         </div>
       </div>
     </div>

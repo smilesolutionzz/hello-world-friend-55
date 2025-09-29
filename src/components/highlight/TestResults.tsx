@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, Share } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTokenGuard } from '@/hooks/useTokenGuard';
+import { generateTestResultPDF } from '@/utils/pdfGenerator';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 
 interface TestResult {
@@ -75,7 +76,7 @@ export const TestResults = () => {
           age_group,
           profile:profiles(display_name)
         `)
-.eq('id', id)
+        .eq('id', id)
         .single();
 
       if (error) throw error;
@@ -161,6 +162,26 @@ export const TestResults = () => {
     return `검사 결과, 전체 점수는 ${totalScore}점으로 '${level}' 수준입니다.`;
   };
 
+  const handleDownloadPDF = async () => {
+    try {
+      const testName = result?.test_types?.name || '심리검사';
+      const testDate = new Date(result?.completed_at || Date.now()).toLocaleDateString('ko-KR');
+      
+      await generateTestResultPDF(testName, '사용자', testDate, 'pdf-content');
+      
+      toast({
+        title: "PDF 다운로드 완료",
+        description: "검사 결과가 PDF로 저장되었습니다.",
+      });
+    } catch (error) {
+      toast({
+        title: "PDF 다운로드 실패",
+        description: "PDF 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -208,7 +229,7 @@ export const TestResults = () => {
               공유
             </Button>
             <PremiumFeature>
-              <Button size="sm">
+              <Button size="sm" onClick={handleDownloadPDF}>
                 <Download className="w-4 h-4 mr-2" />
                 PDF 다운로드
               </Button>
@@ -217,7 +238,7 @@ export const TestResults = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 space-y-6">
+      <div id="pdf-content" className="container mx-auto px-4 py-8 space-y-6">
         {/* 총점 카드 */}
         <Card>
           <CardHeader className="text-center">

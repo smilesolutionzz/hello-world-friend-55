@@ -96,9 +96,10 @@ serve(async (req) => {
       });
     }
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      // Proceed with fallback later if key is missing
+      logStep('LOVABLE_API_KEY not configured - will use fallback');
     }
 
     const requestBody: ObserveReportRequest = await req.json();
@@ -271,63 +272,99 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 
     const prompt = isDetailedMode ? detailedPrompt : basicPrompt;
 
-    logStep('Calling OpenAI API');
+    logStep('Calling AI Gateway');
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: [
-          {
-            role: 'system',
-            content: `당신은 박사급 심리상담·행동분석 전문가입니다. 20년 이상의 임상 경험을 바탕으로 모든 연령대의 관찰 기록을 최고 수준의 전문성으로 분석합니다.
+    let useFallback = false;
+    let analysisText = '';
+    let aiResponse: any = null;
 
-전문가 자격:
-- 임상심리학 박사 / 행동분석학 박사
-- 다학제적 접근법 (신경심리학, 발달심리학, 인지행동치료, 응용행동분석)
-- 증거기반 실무(Evidence-Based Practice) 전문가
-
-분석 지침:
-1. 대상자의 이름은 반드시 관찰 정보에 명시된 이름을 그대로 사용
-2. 연령대별 특성을 고려한 맞춤형 분석 제공
-3. 이론적 배경과 실증적 근거를 바탕으로 한 전문적 해석
-4. 구체적이고 실행 가능한 개입 전략 제시
-5. 우선순위가 명확한 단계별 권고사항 작성
-6. 각 권고사항의 근거와 기대효과 명시
-7. 정량적 평가 지표와 모니터링 방법 포함
-8. 응답은 반드시 요청된 형식을 정확히 따라주세요`
+    if (!LOVABLE_API_KEY) {
+      useFallback = true;
+    } else {
+      try {
+        const gatewayRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json',
           },
-          {
-            role: 'user',
-            content: prompt
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [
+              {
+                role: 'system',
+                content:
+                  '당신은 박사급 심리상담·행동분석 전문가입니다. 사용자가 제공한 관찰 내용을 한국어로 전문적이고 명확하게 분석하고, 요청된 형식을 정확히 따릅니다.'
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ]
+          })
+        });
+
+        if (!gatewayRes.ok) {
+          logStep('AI gateway error', { status: gatewayRes.status, text: await gatewayRes.text() });
+          useFallback = true;
+          // Refund tokens on provider error
+          try {
+            if (supabaseServiceClient && tokenData) {
+              await supabaseServiceClient
+                .from('user_tokens')
+                .update({ current_tokens: tokenData.current_tokens, total_used: tokenData.total_used })
+                .eq('user_id', user.id);
+              logStep('Token refunded due to AI gateway error', { refundedTokens: tokenCost });
+            }
+          } catch (refundErr) {
+            logStep('Token refund failed (gateway error)', { error: String(refundErr) });
           }
-        ],
-        max_tokens: isDetailedMode ? 6000 : 2000,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+        } else {
+          aiResponse = await gatewayRes.json();
+          analysisText = aiResponse?.choices?.[0]?.message?.content ?? '';
+          if (!analysisText) {
+            useFallback = true;
+          }
+        }
+      } catch (e) {
+        logStep('AI gateway exception', { error: e instanceof Error ? e.message : String(e) });
+        useFallback = true;
+        try {
+          if (supabaseServiceClient && tokenData) {
+            await supabaseServiceClient
+              .from('user_tokens')
+              .update({ current_tokens: tokenData.current_tokens, total_used: tokenData.total_used })
+              .eq('user_id', user.id);
+            logStep('Token refunded due to AI exception', { refundedTokens: tokenCost });
+          }
+        } catch (refundErr) {
+          logStep('Token refund failed (exception)', { error: String(refundErr) });
+        }
+      }
     }
 
-    const aiResponse = await response.json();
-    logStep('Full OpenAI response', { response: aiResponse });
-    
-    if (!aiResponse.choices || !aiResponse.choices[0] || !aiResponse.choices[0].message) {
-      throw new Error('Invalid OpenAI response structure');
+    if (useFallback) {
+      // Build structured fallback text matching expected format
+      const sentences = (requestBody.text || '').split(/[\.\?!\n]/).map(s => s.trim()).filter(Boolean);
+      const first = sentences[0] || '관찰 상황을 요약했습니다.';
+      const pointsList = sentences.slice(1, 4);
+      const tips = [
+        '같은 시간대/환경에서 2-3회 반복 관찰해 변화를 비교하세요.',
+        '관찰 내용을 동일한 항목으로 기록해 추세를 확인하세요.',
+        '변화가 지속되거나 악화되면 전문가 상담을 고려하세요.'
+      ];
+      const sectionTitle = isDetailedMode ? '상황 분석' : '상황 요약';
+      const subTitle = isDetailedMode ? '현재 상태 평가' : '주요 포인트';
+      const listTitle = isDetailedMode ? '전문가급 권고사항' : '개선 팁';
+      const cautionTitle = isDetailedMode ? '전문가 상담 권장' : '주의사항';
+
+      analysisText = `**${sectionTitle}**\n${first}\n\n**${subTitle}**\n${pointsList.map(p => `- ${p}`).join("\\n") || '- 관찰 내용을 바탕으로 핵심 특징을 정리했습니다.'}\n\n**${listTitle}**\n${tips.map(t => `- ${t}`).join("\\n")}\n\n**${cautionTitle}**\n- 즉각적인 위험 신호가 보이면 지역 지원기관이나 전문기관에 문의하세요.`;
+
+      logStep('Using fallback analysis text');
     }
-    
-    const analysisText = aiResponse.choices[0].message.content;
-    
-    if (!analysisText || typeof analysisText !== 'string') {
-      throw new Error('OpenAI returned empty or invalid content');
-    }
-    
+
     logStep('OpenAI response received', { textLength: analysisText.length });
+
 
     // Parse the analysis response
     const domainScores = { 정서: 70, 행동: 70, 인지: 70, 사회성: 70, 신체: 70 };

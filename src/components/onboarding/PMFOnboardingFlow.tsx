@@ -73,19 +73,66 @@ const PMFOnboardingFlow: React.FC<PMFOnboardingFlowProps> = ({ onComplete }) => 
     { id: 'family', label: '가족 전체', description: '관계 역학 분석' }
   ];
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep === steps.length - 1) {
-      // 무료 체험 시작
-      localStorage.setItem('pmf_onboarding_data', JSON.stringify(userData));
-      localStorage.setItem('free_trial_started', 'true');
-      
-      toast({
-        title: "🎉 무료 체험 시작!",
-        description: "지금 바로 관찰일지를 작성해보세요",
-      });
-      
-      onComplete(userData);
-      navigate('/observation');
+      // 맞춤 분석 리포팅 생성
+      if (userData.instantInput && userData.mainConcern && userData.targetPerson) {
+        try {
+          toast({
+            title: "🔄 맞춤 분석 생성 중...",
+            description: "잠시만 기다려주세요",
+          });
+
+          const { supabase } = await import('@/integrations/supabase/client');
+          const { data, error } = await supabase.functions.invoke('instant-ai-analysis', {
+            body: { 
+              inputText: userData.instantInput,
+              concern: userData.mainConcern,
+              target: userData.targetPerson
+            }
+          });
+
+          if (error) throw error;
+
+          // 생성된 리포팅을 localStorage에 저장
+          localStorage.setItem('pmf_custom_report', JSON.stringify(data));
+          localStorage.setItem('pmf_onboarding_data', JSON.stringify(userData));
+          localStorage.setItem('free_trial_started', 'true');
+          
+          toast({
+            title: "✅ 맞춤 분석 완료!",
+            description: "이제 관찰일지를 작성해보세요",
+          });
+          
+          onComplete(userData);
+          navigate('/observation');
+        } catch (error) {
+          console.error('맞춤 분석 생성 실패:', error);
+          toast({
+            title: "⚠️ 분석 생성 실패",
+            description: "그래도 관찰일지를 시작할 수 있습니다",
+            variant: "destructive"
+          });
+          
+          // 실패해도 진행
+          localStorage.setItem('pmf_onboarding_data', JSON.stringify(userData));
+          localStorage.setItem('free_trial_started', 'true');
+          onComplete(userData);
+          navigate('/observation');
+        }
+      } else {
+        // instantInput이 없는 경우 바로 진행
+        localStorage.setItem('pmf_onboarding_data', JSON.stringify(userData));
+        localStorage.setItem('free_trial_started', 'true');
+        
+        toast({
+          title: "🎉 무료 체험 시작!",
+          description: "지금 바로 관찰일지를 작성해보세요",
+        });
+        
+        onComplete(userData);
+        navigate('/observation');
+      }
     } else {
       setCurrentStep(currentStep + 1);
     }

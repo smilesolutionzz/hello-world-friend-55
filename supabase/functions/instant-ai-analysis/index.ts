@@ -28,14 +28,47 @@ serve(async (req) => {
     }
     logStep("OpenAI API key verified");
 
-    const { inputText } = await req.json();
-    logStep("Request received", { inputTextLength: inputText?.length });
+    const { inputText, concern, target } = await req.json();
+    logStep("Request received", { inputTextLength: inputText?.length, concern, target });
 
     if (!inputText || inputText.trim().length < 10) {
       throw new Error("입력 텍스트가 너무 짧습니다. 최소 10자 이상 입력해주세요.");
     }
 
-    logStep("Starting AI analysis", { inputText: inputText.substring(0, 50) + "..." });
+    logStep("Starting AI analysis", { inputText: inputText.substring(0, 50) + "...", concern, target });
+
+    // 맞춤 시스템 프롬프트 생성
+    const concernLabels: Record<string, string> = {
+      'development': '발달 지연',
+      'behavior': '행동 문제',
+      'emotion': '감정 조절',
+      'social': '사회성'
+    };
+
+    const targetLabels: Record<string, string> = {
+      'child': '아동 (0-12세)',
+      'teen': '청소년 (13-18세)',
+      'adult': '성인',
+      'family': '가족'
+    };
+
+    const concernLabel = concernLabels[concern] || '일반적인 고민';
+    const targetLabel = targetLabels[target] || '대상자';
+
+    const systemPrompt = `당신은 ${concernLabel} 전문 심리상담사입니다. ${targetLabel}를 대상으로 한 분석을 제공합니다.
+
+사용자가 입력한 고민(500자 이내)을 분석하여 다음 형식으로 맞춤형 리포팅을 제공해주세요:
+
+분석 형식:
+1. 주요 문제 유형: [${concernLabel} 관련]
+2. ${targetLabel} 맞춤 분석: 구체적인 상황 분석
+3. 심각도: [낮음/중간/높음]
+4. 추천 솔루션: 3개의 ${targetLabel}에게 적합한 구체적인 해결책
+5. 다음 단계: 3개의 실행 가능한 조치
+6. 신뢰도: 80-99% 사이의 수치
+
+${concernLabel}과 ${targetLabel}의 특성을 고려하여 전문적이면서도 따뜻한 톤으로 한국어로 작성해주세요.
+짧은 입력이더라도 ${concernLabel}과 ${targetLabel}의 맥락에서 의미있는 분석을 제공해주세요.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -48,16 +81,7 @@ serve(async (req) => {
         messages: [
           { 
             role: 'system', 
-            content: `당신은 심리상담 전문가이자 AI 분석사입니다. 사용자의 고민이나 상황을 듣고 다음 형식으로 정확한 분석을 제공해주세요:
-
-분석 형식:
-1. 주요 문제 유형: [우울감/불안감/스트레스/육아스트레스/직장스트레스/대인관계/수면문제/집중력/기타]
-2. 심각도: [낮음/중간/높음]
-3. 추천 솔루션: 3개의 구체적인 해결책
-4. 다음 단계: 3개의 실행 가능한 조치
-5. 신뢰도: 80-99% 사이의 수치
-
-한국어로 답변하고, 전문적이면서도 따뜻한 톤으로 작성해주세요.`
+            content: systemPrompt
           },
           { role: 'user', content: inputText }
         ],

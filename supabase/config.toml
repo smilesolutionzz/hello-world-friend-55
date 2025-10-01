@@ -158,11 +158,5 @@ verify_jwt = false
 [functions.ai-mindfulness-coach]
 verify_jwt = false
 
-[functions.ai-fitness-coach]
-verify_jwt = false
-
-[functions.ai-nutrition-advisor]
-verify_jwt = false
-
-[functions.ai-sleep-analyzer]
+[functions.instant-ai-analysis]
 verify_jwt = false

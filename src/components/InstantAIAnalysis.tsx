@@ -51,43 +51,86 @@ const InstantAIAnalysis = () => {
   };
 
   const mockAnalysis = (text: string) => {
-    // 간단한 키워드 기반 분석
-    const keywords = {
-      '우울': { type: '우울감', severity: '중간', color: 'bg-blue-500' },
-      '불안': { type: '불안감', severity: '높음', color: 'bg-red-500' },
-      '스트레스': { type: '스트레스', severity: '중간', color: 'bg-orange-500' },
-      '걱정': { type: '걱정', severity: '중간', color: 'bg-yellow-500' },
-      '화': { type: '분노', severity: '높음', color: 'bg-red-500' },
-      '아이': { type: '육아스트레스', severity: '중간', color: 'bg-green-500' },
-      '직장': { type: '직장스트레스', severity: '높음', color: 'bg-purple-500' },
-      '관계': { type: '대인관계', severity: '중간', color: 'bg-pink-500' },
-      '잠': { type: '수면문제', severity: '중간', color: 'bg-indigo-500' },
-      '집중': { type: '집중력', severity: '중간', color: 'bg-cyan-500' },
+    // 심각도 키워드 (우선순위 높음)
+    const highSeverityKeywords = [
+      '죽고싶', '자살', '자해', '극심', '심각', '위급', '위험', '견딜 수 없',
+      '못 견디', '한계', '폭력', '학대'
+    ];
+    
+    const mediumSeverityKeywords = [
+      '우울', '불안', '공황', '스트레스', '화', '분노', '걱정', '고민',
+      '힘들', '지쳐', '아프', '외로', '슬프', '무기력', '짜증', '피곤',
+      '싸움', '갈등', '문제', '어려움'
+    ];
+
+    // 유형 키워드
+    const typeKeywords = {
+      '우울감': ['우울', '무기력', '의욕 없', '슬프', '외로'],
+      '불안감': ['불안', '걱정', '초조', '공황', '두려', '무서'],
+      '발달지연': ['말 안', '걷지 못', '발달', '늦', '또래보다', '개월', '언어', '운동'],
+      '육아스트레스': ['아이', '육아', '엄마', '아빠', '키우', '양육'],
+      '학업스트레스': ['공부', '시험', '성적', '학교', '학원', '입시'],
+      '대인관계': ['친구', '관계', '따돌림', '왕따', '외톨이', '사회성'],
+      '수면문제': ['잠', '수면', '못 자', '불면'],
+      '분노조절': ['화', '분노', '짜증', '폭발', '참을 수 없'],
     };
 
-    let detectedType = '일반 상담';
+    // 심각도 판단
     let severity = '낮음';
-    let color = 'bg-gray-500';
-
-    for (const [keyword, info] of Object.entries(keywords)) {
+    let color = 'bg-green-500';
+    
+    for (const keyword of highSeverityKeywords) {
       if (text.includes(keyword)) {
-        detectedType = info.type;
-        severity = info.severity;
-        color = info.color;
+        severity = '높음';
+        color = 'bg-red-500';
         break;
       }
     }
+    
+    if (severity === '낮음') {
+      for (const keyword of mediumSeverityKeywords) {
+        if (text.includes(keyword)) {
+          severity = '중간';
+          color = 'bg-orange-500';
+          break;
+        }
+      }
+    }
+
+    // 유형 판단
+    let detectedType = '일반 상담';
+    for (const [type, keywords] of Object.entries(typeKeywords)) {
+      if (keywords.some(keyword => text.includes(keyword))) {
+        detectedType = type;
+        break;
+      }
+    }
+
+    // 심각도별 추천사항
+    const recommendations = severity === '높음' 
+      ? [
+          '즉시 전문가 상담 (1577-0199 정신건강위기상담)',
+          '가까운 정신건강복지센터 방문',
+          '24시간 위기상담 서비스 이용'
+        ]
+      : severity === '중간'
+      ? [
+          '전문가 상담을 통한 맞춤 솔루션',
+          '체계적인 관찰일지 작성',
+          '단계별 개선 가이드 제공'
+        ]
+      : [
+          '예방적 상담 및 관찰',
+          '정기적인 자가 체크',
+          '건강한 생활 습관 유지'
+        ];
 
     return {
       type: detectedType,
       severity,
       color,
-      recommendations: [
-        '전문가 상담을 통한 맞춤 솔루션',
-        '체계적인 관찰일지 작성',
-        '단계별 개선 가이드 제공'
-      ],
-      confidence: Math.floor(Math.random() * 20) + 80, // 80-99%
+      recommendations,
+      confidence: Math.floor(Math.random() * 15) + 80, // 80-94%
       nextSteps: [
         '3분 온보딩으로 정확한 분석 받기',
         '전문가 매칭 및 상담 예약',

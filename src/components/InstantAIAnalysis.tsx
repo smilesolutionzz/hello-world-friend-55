@@ -160,7 +160,7 @@ const InstantAIAnalysis = () => {
       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-6 text-center border-b border-primary/20">
         <div className="flex items-center justify-center gap-2 mb-2">
           <Sparkles className="w-6 h-6 text-primary animate-pulse" />
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <h2 className="text-2xl font-bold text-foreground">
             AI 즉시 리포팅
           </h2>
           <Badge variant="secondary" className="text-xs">beta</Badge>

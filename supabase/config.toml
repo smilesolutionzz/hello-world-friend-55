@@ -39,39 +39,12 @@ enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 
-# Configure edge functions to work properly
-[functions.ai-counselor]
-verify_jwt = true
-
-[functions.ai-counselor-chat]
-verify_jwt = true
-
-[functions.ai-predictor]
-verify_jwt = true
-
-[functions.assessment-analyzer]
-verify_jwt = true
-
-[functions.check-subscription]
-verify_jwt = true
-
-[functions.confirm-token-payment]
+# Core actively used edge functions only
+[functions.admin-add-tokens]
 verify_jwt = false
 
-[functions.confirm-toss-payment]
+[functions.ai-health-insights]
 verify_jwt = false
-
-[functions.corporate-analytics]
-verify_jwt = true
-
-[functions.create-checkout]
-verify_jwt = true
-
-[functions.create-token-payment]
-verify_jwt = true
-
-[functions.create-toss-payment]
-verify_jwt = true
 
 [functions.depression-analyzer]
 verify_jwt = true
@@ -79,31 +52,22 @@ verify_jwt = true
 [functions.dream-interpreter]
 verify_jwt = true
 
-[functions.expert-matcher]
-verify_jwt = true
-
-[functions.family-ecosystem-analyzer]
-verify_jwt = true
-
-[functions.generate-observation-report]
-verify_jwt = true
+[functions.enhanced-assessment-analyzer]
+verify_jwt = false
 
 [functions.generate-premium-pdf]
 verify_jwt = true
 
-[functions.input-validation]
+[functions.instant-ai-analysis]
 verify_jwt = false
 
 [functions.instant-report]
 verify_jwt = true
 
-[functions.observation-analyzer]
-verify_jwt = true
+[functions.platform-ai-consultant]
+verify_jwt = false
 
-[functions.observe-report]
-verify_jwt = true
-
-[functions.personalization-engine]
+[functions.premium-adhd-analyzer]
 verify_jwt = true
 
 [functions.premium-assessment-analyzer]
@@ -111,52 +75,3 @@ verify_jwt = true
 
 [functions.saju-analyzer]
 verify_jwt = true
-
-[functions.admin-add-tokens]
-verify_jwt = false
-
-[functions.huggingface-image-generator]
-verify_jwt = true
-
-[functions.advanced-disability-analyzer]
-verify_jwt = true
-
-[functions.ai-health-insights]
-verify_jwt = false
-
-
-[functions.content-recommender]
-verify_jwt = false
-
-[functions.enhanced-assessment-analyzer]
-verify_jwt = false
-
-[functions.enhanced-constitution-analyzer]
-verify_jwt = false
-
-[functions.referral-system]
-verify_jwt = true
-
-[functions.premium-adhd-analyzer]
-verify_jwt = true
-
-[functions.voice-emotion-analyzer]
-verify_jwt = true
-
-[functions.platform-ai-consultant]
-verify_jwt = false
-
-[functions.extract-video-frames]
-verify_jwt = false
-
-[functions.video-behavior-analysis]
-verify_jwt = false
-
-[functions.voice-to-text]
-verify_jwt = false
-
-[functions.ai-mindfulness-coach]
-verify_jwt = false
-
-[functions.instant-ai-analysis]
-verify_jwt = false

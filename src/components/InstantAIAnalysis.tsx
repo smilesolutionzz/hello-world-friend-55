@@ -106,10 +106,10 @@ const InstantAIAnalysis = () => {
       return;
     }
 
-    if (inputText.trim().length < 30) {
+    if (inputText.trim().length < 10) {
       toast({
-        title: "더 자세히 적어주세요",
-        description: "정확한 분석을 위해 최소 30자 이상 입력해주세요",
+        title: "조금만 더 적어주세요",
+        description: "최소 10자 이상 입력해주세요 (예: 아이가 말을 안해요)",
         variant: "destructive"
       });
       return;
@@ -166,7 +166,7 @@ const InstantAIAnalysis = () => {
           <Badge variant="secondary" className="text-xs">beta</Badge>
         </div>
         <p className="text-muted-foreground">
-          고민을 말하면, 즉시 분석해드려요 (최대 30자)
+          고민을 간단히 말하면, 즉시 분석해드려요 (최소 10자)
         </p>
       </div>
 
@@ -192,7 +192,7 @@ const InstantAIAnalysis = () => {
                   maxLength={500}
                 />
                 <div className="flex justify-between items-center text-sm text-muted-foreground">
-                  <span>{inputText.length}/500 (최소 30자)</span>
+                  <span>{inputText.length}/500 (최소 10자)</span>
                   <div className="flex items-center gap-4">
                     <span className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
@@ -216,8 +216,8 @@ const InstantAIAnalysis = () => {
                   💡 <strong>효과적인 리포팅을 위한 팁:</strong>
                 </p>
                 <ul className="text-sm text-yellow-700 dark:text-yellow-300 mt-2 space-y-1">
-                  <li>• 최소 30자 이상으로 구체적인 상황을 설명해주세요</li>
-                  <li>• 대상자의 연령, 구체적인 행동, 지속 기간 등을 포함해주세요</li>
+                  <li>• 최소 10자 이상, 핵심 고민만 간단히 적어주세요</li>
+                  <li>• 예시: "5살 아이 말 늦어요", "우울해요", "아이가 친구 없어요"</li>
                   <li>• 개인정보나 민감한 정보는 포함하지 말아주세요</li>
                 </ul>
               </div>
@@ -225,7 +225,7 @@ const InstantAIAnalysis = () => {
               {/* 즉시 리포트 받기 버튼 */}
               <Button
                 onClick={handleAnalyze}
-                disabled={isAnalyzing || inputText.length < 30}
+                disabled={isAnalyzing || inputText.length < 10}
                 size="lg"
                 className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105"
               >

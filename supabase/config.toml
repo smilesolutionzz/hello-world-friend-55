@@ -39,39 +39,142 @@ enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 
-# Core actively used edge functions only
+# AI and Core Functions
 [functions.admin-add-tokens]
+verify_jwt = false
+
+[functions.ai-coach]
+verify_jwt = false
+
+[functions.ai-comprehensive-analysis]
+verify_jwt = false
+
+[functions.ai-consultation-summarizer]
+verify_jwt = false
+
+[functions.ai-counselor]
+verify_jwt = false
+
+[functions.ai-counselor-chat]
 verify_jwt = false
 
 [functions.ai-health-insights]
 verify_jwt = false
 
+[functions.ai-mindfulness-coach]
+verify_jwt = false
+
+[functions.ai-patient-analyzer]
+verify_jwt = false
+
+[functions.analyze-test-results]
+verify_jwt = false
+
+[functions.animal-face-matcher]
+verify_jwt = false
+
+[functions.assessment-analyzer]
+verify_jwt = false
+
+[functions.autism-spectrum-analyzer]
+verify_jwt = false
+
+[functions.content-recommender]
+verify_jwt = false
+
 [functions.depression-analyzer]
-verify_jwt = true
+verify_jwt = false
 
 [functions.dream-interpreter]
-verify_jwt = true
+verify_jwt = false
 
 [functions.enhanced-assessment-analyzer]
 verify_jwt = false
 
+[functions.expert-matcher]
+verify_jwt = false
+
+[functions.future-predictor]
+verify_jwt = false
+
+[functions.generate-comprehensive-report]
+verify_jwt = false
+
 [functions.generate-premium-pdf]
-verify_jwt = true
+verify_jwt = false
+
+[functions.generate-recommendations]
+verify_jwt = false
+
+[functions.generate-wisdom-advice]
+verify_jwt = false
+
+[functions.han-medicine-analyzer]
+verify_jwt = false
+
+[functions.huggingface-image-generator]
+verify_jwt = false
+
+[functions.inner-animal-analyzer]
+verify_jwt = false
 
 [functions.instant-ai-analysis]
 verify_jwt = false
 
 [functions.instant-report]
-verify_jwt = true
+verify_jwt = false
+
+[functions.language-development-analyzer]
+verify_jwt = false
+
+[functions.openai-image-generator]
+verify_jwt = false
+
+[functions.parenting-style-analyzer]
+verify_jwt = false
+
+[functions.past-life-job-analyzer]
+verify_jwt = false
+
+[functions.personality-love-analyzer]
+verify_jwt = false
 
 [functions.platform-ai-consultant]
 verify_jwt = false
 
 [functions.premium-adhd-analyzer]
-verify_jwt = true
+verify_jwt = false
 
 [functions.premium-assessment-analyzer]
-verify_jwt = true
+verify_jwt = false
+
+[functions.referral-system]
+verify_jwt = false
+
+[functions.replicate-image-generator]
+verify_jwt = false
 
 [functions.saju-analyzer]
+verify_jwt = false
+
+[functions.sensory-integration-analyzer]
+verify_jwt = false
+
+[functions.social-development-analyzer]
+verify_jwt = false
+
+# Payment Functions
+[functions.check-subscription]
 verify_jwt = true
+
+[functions.confirm-token-order]
+verify_jwt = true
+
+[functions.confirm-token-payment]
+verify_jwt = true
+
+[functions.create-token-payment]
+verify_jwt = true
+
+[functions.daily-token-bonus]
+verify_jwt = false

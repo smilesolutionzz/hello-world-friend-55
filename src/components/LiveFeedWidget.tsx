@@ -267,7 +267,7 @@ const LiveFeedWidget = () => {
     <div className="fixed top-20 right-4 z-40 space-y-2">
       {/* 실시간 통계 - 더 작고 투명하게 */}
       {showStats && !isStatsHidden && (
-        <Card className="p-2 bg-gradient-to-r from-blue-500/80 to-purple-600/80 text-white border-0 shadow-lg backdrop-blur-sm animate-slide-in-right relative">
+        <Card className="p-2 bg-gradient-to-r from-blue-500/80 to-purple-600/80 text-foreground border-0 shadow-lg backdrop-blur-sm animate-slide-in-right relative">
           {/* 닫기 버튼 */}
           <Button
             onClick={handleCloseStats}
@@ -292,8 +292,8 @@ const LiveFeedWidget = () => {
                   <div className="opacity-90 text-xs">방문</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-sm text-white">{stats.currentOnline}</div>
-                  <div className="opacity-90 text-xs text-white">온라인</div>
+                  <div className="font-bold text-sm">{stats.currentOnline}</div>
+                  <div className="opacity-90 text-xs">온라인</div>
                 </div>
                 <div className="text-center">
                   <div className="font-bold text-sm">{stats.totalTests.toLocaleString()}</div>

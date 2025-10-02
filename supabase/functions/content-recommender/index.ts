@@ -49,8 +49,9 @@ serve(async (req) => {
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
     }
+    // Perplexity key is optional for now; proceed with OpenAI-only flow if absent
     if (!perplexityApiKey) {
-      throw new Error('Perplexity API key not configured');
+      logStep('PERPLEXITY_API_KEY not configured - proceeding with OpenAI only');
     }
 
     const requestBody: ContentRecommendationRequest = await req.json();

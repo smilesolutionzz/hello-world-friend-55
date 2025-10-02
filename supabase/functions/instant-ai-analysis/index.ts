@@ -60,6 +60,7 @@ serve(async (req) => {
   "type": "고민 유형 (예: 우울감, 불안감, 육아스트레스, 발달지연, 대인관계, 학업스트레스 등)",
   "severity": "심각도 - 반드시 고민의 심각성에 따라 '낮음', '중간', '높음' 중 하나를 선택",
   "color": "색상코드 (낮음: bg-green-500, 중간: bg-orange-500, 높음: bg-red-500)",
+  "detailedAdvice": "500자 이내의 구체적이고 따뜻한 조언 (사용자의 상황에 맞는 실질적인 팁과 격려 포함)",
   "recommendations": ["구체적인 추천사항 3개"],
   "nextSteps": ["실행 가능한 다음 단계 3개"],
   "confidence": 75-95 사이의 신뢰도 점수
@@ -69,6 +70,13 @@ serve(async (req) => {
 - 낮음: 일상적인 고민, 가벼운 걱정, 예방 차원의 상담
 - 중간: 지속적인 스트레스, 중등도의 불안/우울, 관계 갈등, 육아 어려움
 - 높음: 심각한 정신건강 문제, 자해/자살 관련, 극심한 스트레스, 심각한 발달 지연
+
+detailedAdvice 작성 가이드:
+- 사용자의 구체적인 상황에 맞는 실질적인 조언 제공
+- 따뜻하고 공감적인 어조 사용
+- 즉시 실천할 수 있는 구체적인 팁 포함
+- 긍정적인 관점과 격려 메시지 포함
+- 반드시 500자 이내로 작성
 
 사용자 고민: ${inputText}
 ${concernLabel ? `주요 관심사: ${concernLabel}` : ''}
@@ -151,6 +159,7 @@ function parseAIResponse(response: string, originalText: string) {
         type: parsed.type || '일반 상담',
         severity: parsed.severity || '중간',
         color: parsed.color || 'bg-orange-500',
+        detailedAdvice: parsed.detailedAdvice || '전문가의 도움을 받아 구체적인 상담을 진행하시는 것을 권장드립니다. 관찰일지를 작성하며 패턴을 파악하고, 작은 변화부터 시작해보세요.',
         recommendations: parsed.recommendations || [
           '전문가 상담을 통한 맞춤 솔루션',
           '체계적인 관찰일지 작성',
@@ -221,6 +230,13 @@ function getFallbackAnalysis(text: string) {
     }
   }
 
+  // 상세 조언 생성
+  const detailedAdvice = severity === '높음' 
+    ? `현재 겪고 계신 어려움이 상당히 힘드실 것 같습니다. 이런 상황에서는 혼자 해결하려 하기보다 전문가의 도움을 받는 것이 중요합니다. 우선 신뢰할 수 있는 가족이나 친구에게 마음을 터놓고 이야기해보세요. 그리고 정신건강 전문의나 상담사와의 상담을 고려해보시길 권합니다. 작은 변화부터 시작하되, 자신을 너무 몰아붙이지 마세요. 하루하루 버티는 것만으로도 충분히 대단한 일입니다. 지금의 고통은 영원하지 않습니다.`
+    : severity === '중간'
+    ? `지금 느끼시는 어려움에 대해 충분히 공감합니다. 이러한 상황은 누구에게나 찾아올 수 있으며, 도움을 구하는 것은 용기 있는 행동입니다. 일상에서 작은 루틴을 만들어보세요 - 규칙적인 수면, 가벼운 운동, 취미 활동 등이 도움이 될 수 있습니다. 또한 관찰일지를 작성하며 패턴을 파악하고, 필요하다면 전문가 상담도 고려해보세요. 변화는 천천히 일어나지만, 꾸준히 노력한다면 분명 좋아질 것입니다.`
+    : `공유해주신 내용을 보니 현재 관리 가능한 수준의 고민으로 보입니다. 이런 고민을 인식하고 해결하려는 노력 자체가 큰 발전입니다. 관찰일지를 통해 패턴을 파악하고, 작은 목표를 세워 실천해보세요. 스트레스 관리를 위해 명상이나 산책 같은 활동도 도움이 됩니다. 예방적 차원에서 꾸준히 관심을 가지고 관리한다면 더 큰 문제로 발전하지 않을 것입니다. 자신을 돌보는 시간을 꼭 가지세요.`;
+
   // 유형 판단
   let detectedType = '일반 상담';
   for (const [type, keywords] of Object.entries(typeKeywords)) {
@@ -253,6 +269,7 @@ function getFallbackAnalysis(text: string) {
     type: detectedType,
     severity,
     color,
+    detailedAdvice,
     recommendations,
     confidence: Math.floor(Math.random() * 15) + 80,
     nextSteps: [

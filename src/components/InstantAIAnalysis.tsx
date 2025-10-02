@@ -97,6 +97,13 @@ const InstantAIAnalysis = () => {
       }
     }
 
+    // 상세 조언 생성
+    const detailedAdvice = severity === '높음' 
+      ? `현재 겪고 계신 어려움이 상당히 힘드실 것 같습니다. 이런 상황에서는 혼자 해결하려 하기보다 전문가의 도움을 받는 것이 중요합니다. 우선 신뢰할 수 있는 가족이나 친구에게 마음을 터놓고 이야기해보세요. 그리고 정신건강 전문의나 상담사와의 상담을 고려해보시길 권합니다. 작은 변화부터 시작하되, 자신을 너무 몰아붙이지 마세요. 하루하루 버티는 것만으로도 충분히 대단한 일입니다. 지금의 고통은 영원하지 않습니다.`
+      : severity === '중간'
+      ? `지금 느끼시는 어려움에 대해 충분히 공감합니다. 이러한 상황은 누구에게나 찾아올 수 있으며, 도움을 구하는 것은 용기 있는 행동입니다. 일상에서 작은 루틴을 만들어보세요 - 규칙적인 수면, 가벼운 운동, 취미 활동 등이 도움이 될 수 있습니다. 또한 관찰일지를 작성하며 패턴을 파악하고, 필요하다면 전문가 상담도 고려해보세요. 변화는 천천히 일어나지만, 꾸준히 노력한다면 분명 좋아질 것입니다.`
+      : `공유해주신 내용을 보니 현재 관리 가능한 수준의 고민으로 보입니다. 이런 고민을 인식하고 해결하려는 노력 자체가 큰 발전입니다. 관찰일지를 통해 패턴을 파악하고, 작은 목표를 세워 실천해보세요. 스트레스 관리를 위해 명상이나 산책 같은 활동도 도움이 됩니다. 예방적 차원에서 꾸준히 관심을 가지고 관리한다면 더 큰 문제로 발전하지 않을 것입니다. 자신을 돌보는 시간을 꼭 가지세요.`;
+
     // 유형 판단
     let detectedType = '일반 상담';
     for (const [type, keywords] of Object.entries(typeKeywords)) {
@@ -129,6 +136,7 @@ const InstantAIAnalysis = () => {
       type: detectedType,
       severity,
       color,
+      detailedAdvice,
       recommendations,
       confidence: Math.floor(Math.random() * 15) + 80, // 80-94%
       nextSteps: [
@@ -313,6 +321,19 @@ const InstantAIAnalysis = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {/* AI의 조언 - 메인으로 강조 */}
+                  {analysisResult?.detailedAdvice && (
+                    <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg p-4 border-2 border-primary/20">
+                      <h4 className="font-semibold mb-3 flex items-center gap-2 text-primary">
+                        <Heart className="w-5 h-5" />
+                        AI 전문가의 조언
+                      </h4>
+                      <p className="text-sm leading-relaxed text-foreground">
+                        {analysisResult.detailedAdvice}
+                      </p>
+                    </div>
+                  )}
+
                   <div>
                     <h4 className="font-medium mb-2 flex items-center gap-2">
                       <Target className="w-4 h-4" />
@@ -327,46 +348,29 @@ const InstantAIAnalysis = () => {
                       ))}
                     </ul>
                   </div>
-
-                  <div>
-                    <h4 className="font-medium mb-2 flex items-center gap-2">
-                      <ArrowRight className="w-4 h-4" />
-                      다음 단계
-                    </h4>
-                    <ul className="space-y-1 text-sm text-muted-foreground">
-                      {analysisResult?.nextSteps?.map((step: string, index: number) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="text-primary">•</span>
-                          <span>{step}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {analysisResult?.aiResponse && (
-                    <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <h5 className="text-sm font-medium mb-1">AI 상세 분석:</h5>
-                      <p className="text-xs text-muted-foreground whitespace-pre-wrap">
-                        {analysisResult.aiResponse}
-                      </p>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
 
-              {/* CTA 버튼들 */}
+              {/* CTA 버튼들 - 관찰일지를 메인으로 */}
               <div className="space-y-3">
                 <Button
-                  onClick={handleStartFullAnalysis}
+                  onClick={() => navigate('/observation')}
                   size="lg"
                   className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105"
                 >
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  🎯 3분 온보딩으로 정확한 분석 받기
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <ArrowRight className="w-5 h-5 mr-2" />
+                  📝 관찰일지 작성하기
                 </Button>
                 
                 <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleStartFullAnalysis}
+                    className="flex-1"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    3분 온보딩
+                  </Button>
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -375,14 +379,7 @@ const InstantAIAnalysis = () => {
                     }}
                     className="flex-1"
                   >
-                    다시 분석하기
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate('/observation')}
-                    className="flex-1"
-                  >
-                    관찰일지 작성
+                    다시 분석
                   </Button>
                 </div>
               </div>

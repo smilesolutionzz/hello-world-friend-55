@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import ContentRecommendationPanel from "./ContentRecommendationPanel";
 import { 
   ArrowLeft, 
   Download, 
@@ -442,36 +443,63 @@ const ObservationDetailView = ({ session, onBack }: ObservationDetailViewProps) 
 
         {/* 권고사항 */}
         <TabsContent value="recommendations" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>전문가 권고사항</CardTitle>
-              <CardDescription>관찰 결과를 바탕으로 한 맞춤형 제안</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <h4 className="font-semibold text-blue-900 mb-2">일상 생활 개선 방안</h4>
-                  <p className="text-sm text-blue-700">
-                    관찰된 패턴을 바탕으로 일상에서 적용할 수 있는 구체적인 방법들을 실천해보세요.
-                  </p>
+          {/* Full AI Analysis if available */}
+          {aiReport.fullText && (
+            <Card>
+              <CardHeader>
+                <CardTitle>전문가 AI 분석 전문</CardTitle>
+                <CardDescription>임상심리사·정신과의사 수준의 종합 분석</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="prose max-w-none text-sm leading-relaxed whitespace-pre-wrap">
+                  {aiReport.fullText}
                 </div>
-                
-                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                  <h4 className="font-semibold text-green-900 mb-2">전문가 상담 권장</h4>
-                  <p className="text-sm text-green-700">
-                    현재 관찰 결과를 바탕으로 전문가 상담을 통해 더 정확한 평가를 받아보시기를 권장합니다.
-                  </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Recommendations from AI */}
+          {aiReport.tips && aiReport.tips.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>전문가 권고사항</CardTitle>
+                <CardDescription>관찰 결과를 바탕으로 한 맞춤형 제안</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {aiReport.tips.map((tip: string, index: number) => (
+                    <div key={index} className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <Lightbulb className="h-5 w-5 text-blue-600 flex-shrink-0 mt-1" />
+                      <p className="text-blue-800 flex-1">{tip}</p>
+                    </div>
+                  ))}
                 </div>
-                
-                <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                  <h4 className="font-semibold text-purple-900 mb-2">관련 교육 자료</h4>
-                  <p className="text-sm text-purple-700">
-                    관찰 영역과 관련된 교육 프로그램과 자료를 활용하여 지속적인 발전을 도모하세요.
-                  </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Alerts from AI */}
+          {aiReport.alerts && aiReport.alerts.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>전문가 상담 권장</CardTitle>
+                <CardDescription>전문가 개입이 필요한 영역</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {aiReport.alerts.map((alert: string, index: number) => (
+                    <div key={index} className="flex items-start gap-3 p-4 bg-red-50 rounded-lg border border-red-200">
+                      <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-1" />
+                      <p className="text-red-800 flex-1">{alert}</p>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Content Recommendations */}
+          <ContentRecommendationPanel session={session} />
         </TabsContent>
       </Tabs>
     </div>

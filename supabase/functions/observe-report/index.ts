@@ -29,6 +29,7 @@ interface ObserveReportResponse {
     tips: string[];
     alerts: string[];
     mediaNotes: string[];
+    fullText?: string; // Add full AI response text
   };
   score?: {
     overall: number;
@@ -428,7 +429,8 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         positives: [], // Not used in new format
         tips: recommendationsMatch ? extractDetailedListItems(recommendationsMatch[1]) : ['전문가 권고사항을 제시했습니다.'],
         alerts: consultationMatch ? [consultationMatch[1].trim()] : [],
-        mediaNotes
+        mediaNotes,
+        fullText: analysisText // Include full AI response
       };
       
       // Add observation guide to tips if available
@@ -452,7 +454,8 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         positives: [], // 기본 모드에서는 긍정적 측면 별도 표시 안함
         tips: tipsMatch ? extractListItems(tipsMatch[1]) : ['개선 팁을 제시했습니다.'],
         alerts: alertsMatch ? extractListItems(alertsMatch[1]) : [],
-        mediaNotes
+        mediaNotes,
+        fullText: analysisText // Include full AI response
       };
     }
 

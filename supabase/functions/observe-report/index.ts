@@ -98,7 +98,6 @@ serve(async (req) => {
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
-      // Proceed with fallback later if key is missing
       logStep('LOVABLE_API_KEY not configured - will use fallback');
     }
 
@@ -227,30 +226,27 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 `;
 
     const detailedPrompt = basePrompt + `
-다음 형식으로 박사급 수준의 전문가 분석을 제공해주세요:
+다음 형식으로 임상심리사·정신과의사 수준의 전문가 분석을 **1000자 이상**으로 상세하게 제공해주세요:
 
-**상황 분석**
-관찰된 내용을 바탕으로 현재 상황을 구체적으로 분석하고, 행동의 맥락적 의미와 환경적 요인을 종합적으로 평가해주세요.
+**종합 분석 (500-600자)**
+관찰된 내용을 바탕으로 현재 상황을 임상적 관점에서 구체적으로 분석하세요. 행동의 맥락적 의미, 환경적 요인, 심리적 기제를 종합적으로 평가하고, ${requestBody.targetName || '대상자'}의 현재 기능 수준과 적응 양상을 전문적으로 기술해주세요. 관찰된 행동 특성과 연령대별 표준 발달 기준을 비교하여 정량적·정성적으로 평가하고, 개인차를 고려한 종합적 판단을 제시해주세요.
 
-**현재 상태 평가** 
-현재 관찰된 행동 특성과 기능적 상태를 연령대별 표준 기준과 비교하여 정량적·정성적으로 평가하고, 개인차를 고려한 종합적 판단을 제시해주세요.
+**발달 영역별 상세 평가 및 점수**
+다음 5개 영역을 각각 평가하고 0-100점 척도로 점수를 매겨주세요:
+- 정서 영역: [점수]점 - 평가 근거와 설명 (100-150자)
+- 행동 영역: [점수]점 - 평가 근거와 설명 (100-150자)
+- 인지 영역: [점수]점 - 평가 근거와 설명 (100-150자)
+- 사회성 영역: [점수]점 - 평가 근거와 설명 (100-150자)
+- 신체 영역: [점수]점 - 평가 근거와 설명 (100-150자)
 
-**주요 관심 사항**
-관찰된 행동이나 특성 중 지속적 모니터링이 필요한 핵심 요소들을 우선순위별로 제시하고, 각각의 임상적 의미를 설명해주세요.
+**핵심 권고사항 (200-300자)**
+- 즉시 실행 가능한 1차 개입 전략 3가지 (각 50-80자)
+- 각 전략의 이론적 근거와 기대 효과
 
-**잠재적 문제점**
-현재 관찰된 내용에서 우려되는 부분이나 개선이 필요한 영역을 분석하고, 방치 시 예상되는 결과와 조기 개입의 중요성을 설명해주세요.
+**전문가 상담 권장 (100-150자)**
+필요한 전문 분야(임상심리사, 정신과의사, 언어치료사 등)와 상담 시급도를 구체적으로 명시해주세요.
 
-**전문가급 권고사항**
-- 즉시 실행 가능한 1차 개입 전략 (환경 조정, 일상 루틴 개선)
-- 중기 목표 달성을 위한 체계적 접근법 (행동 수정, 기능 향상 프로그램)
-- 장기적 발전을 위한 종합적 계획 (전문적 치료, 교육적 지원)
-- 각 권고사항의 이론적 근거와 기대 효과, 평가 지표 포함
-
-**전문가 상담 권장**
-전문적인 평가나 상담의 필요성을 단계별로 제시하고, 추천 전문 분야(임상심리사, 언어치료사, 작업치료사 등)와 상담 시급도를 명시해주세요.
-
-**지속적 관찰 가이드**
+**지속 관찰 가이드 (100-150자)**
 향후 관찰 시 중점적으로 확인해야 할 구체적 행동 지표와 기록 방법을 제시해주세요.
 `;
 
@@ -294,7 +290,7 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
               {
                 role: 'system',
                 content:
-                  '당신은 박사급 심리상담·행동분석 전문가입니다. 사용자가 제공한 관찰 내용을 한국어로 전문적이고 명확하게 분석하고, 요청된 형식을 정확히 따릅니다.'
+                  '당신은 임상심리학 박사이자 정신과 전문의 수준의 전문가입니다. 관찰 내용을 DSM-5 진단 기준과 발달심리학 이론에 기반하여 분석하고, 요청된 형식을 정확히 따라 1000자 이상의 상세한 분석을 제공합니다. 발달 영역별 점수는 반드시 [정서 영역: 85점], [행동 영역: 75점] 형식으로 명시해주세요.'
               },
               {
                 role: 'user',
@@ -353,32 +349,41 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         '관찰 내용을 동일한 항목으로 기록해 추세를 확인하세요.',
         '변화가 지속되거나 악화되면 전문가 상담을 고려하세요.'
       ];
-      const sectionTitle = isDetailedMode ? '상황 분석' : '상황 요약';
-      const subTitle = isDetailedMode ? '현재 상태 평가' : '주요 포인트';
-      const listTitle = isDetailedMode ? '전문가급 권고사항' : '개선 팁';
+      const sectionTitle = isDetailedMode ? '종합 분석' : '상황 요약';
+      const subTitle = isDetailedMode ? '발달 영역별 상세 평가 및 점수' : '주요 포인트';
+      const listTitle = isDetailedMode ? '핵심 권고사항' : '개선 팁';
       const cautionTitle = isDetailedMode ? '전문가 상담 권장' : '주의사항';
 
-      analysisText = `**${sectionTitle}**\n${first}\n\n**${subTitle}**\n${pointsList.map(p => `- ${p}`).join("\\n") || '- 관찰 내용을 바탕으로 핵심 특징을 정리했습니다.'}\n\n**${listTitle}**\n${tips.map(t => `- ${t}`).join("\\n")}\n\n**${cautionTitle}**\n- 즉각적인 위험 신호가 보이면 지역 지원기관이나 전문기관에 문의하세요.`;
+      analysisText = `**${sectionTitle}**\n${first}\n\n**${subTitle}**\n${pointsList.map(p => `- ${p}`).join("\n") || '- 관찰 내용을 바탕으로 핵심 특징을 정리했습니다.'}\n\n**${listTitle}**\n${tips.map(t => `- ${t}`).join("\n")}\n\n**${cautionTitle}**\n- 즉각적인 위험 신호가 보이면 지역 지원기관이나 전문기관에 문의하세요.`;
 
       logStep('Using fallback analysis text');
     }
 
-    logStep('OpenAI response received', { textLength: analysisText.length });
+    logStep('AI response received', { textLength: analysisText.length });
 
-
-    // Parse the analysis response
+    // Parse the analysis response - Extract domain scores from AI response
     const domainScores = { 정서: 70, 행동: 70, 인지: 70, 사회성: 70, 신체: 70 };
     
-    // Extract scores from AI response if present
-    const scoreRegex = /(정서|행동|인지|사회성|신체):\s*(\d+)/g;
-    let match;
-    while ((match = scoreRegex.exec(analysisText)) !== null) {
-      const domain = match[1];
-      const score = parseInt(match[2]);
-      if (domain in domainScores && score >= 0 && score <= 100) {
-        domainScores[domain as keyof typeof domainScores] = score;
+    // Multiple regex patterns to catch different score formats
+    const scorePatterns = [
+      /(정서|행동|인지|사회성|신체)\s*영역\s*:\s*\[?(\d+)\]?점/g,
+      /(정서|행동|인지|사회성|신체)\s*:\s*\[?(\d+)\]?점/g,
+      /(정서|행동|인지|사회성|신체)\s*\[?(\d+)\]?점/g,
+      /(정서|행동|인지|사회성|신체):\s*(\d+)/g,
+    ];
+    
+    for (const pattern of scorePatterns) {
+      let match;
+      while ((match = pattern.exec(analysisText)) !== null) {
+        const domain = match[1];
+        const score = parseInt(match[2]);
+        if (domain in domainScores && score >= 0 && score <= 100) {
+          domainScores[domain as keyof typeof domainScores] = score;
+        }
       }
     }
+    
+    logStep('Domain scores extracted', domainScores);
 
     // Add media notes if files were provided
     const mediaNotes: string[] = [];
@@ -397,28 +402,39 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     let report;
     
     if (isDetailedMode) {
-      // Extract detailed sections
-      const situationMatch = analysisText.match(/\*\*상황 분석\*\*([\s\S]*?)(?=\*\*|$)/);
-      const developmentMatch = analysisText.match(/\*\*현재 상태 평가\*\*([\s\S]*?)(?=\*\*|$)/);
-      const concernsMatch = analysisText.match(/\*\*주요 관심 사항\*\*([\s\S]*?)(?=\*\*|$)/);
-      const issuesMatch = analysisText.match(/\*\*잠재적 문제점\*\*([\s\S]*?)(?=\*\*|$)/);
-      const recommendationsMatch = analysisText.match(/\*\*전문가급 권고사항\*\*([\s\S]*?)(?=\*\*|$)/);
-      const consultationMatch = analysisText.match(/\*\*전문가 상담 권장\*\*([\s\S]*?)(?=\*\*|$)/);
-      const observationGuideMatch = analysisText.match(/\*\*지속적 관찰 가이드\*\*([\s\S]*?)(?=\*\*|$)/);
+      // Extract detailed sections - updated patterns for new format
+      const comprehensiveMatch = analysisText.match(/\*\*종합 분석.*?\*\*([\s\S]*?)(?=\*\*발달 영역별|$)/i);
+      const domainEvalMatch = analysisText.match(/\*\*발달 영역별 상세 평가.*?\*\*([\s\S]*?)(?=\*\*핵심 권고사항|$)/i);
+      const recommendationsMatch = analysisText.match(/\*\*핵심 권고사항.*?\*\*([\s\S]*?)(?=\*\*전문가 상담|$)/i);
+      const consultationMatch = analysisText.match(/\*\*전문가 상담 권장.*?\*\*([\s\S]*?)(?=\*\*지속 관찰|$)/i);
+      const observationGuideMatch = analysisText.match(/\*\*지속 관찰 가이드.*?\*\*([\s\S]*?)(?=\*\*|$)/i);
 
       const extractDetailedListItems = (text: string): string[] => {
-        return text.split(/[-•]\s+/).filter(item => item.trim()).map(item => item.trim());
+        const items = text.split(/[-•]\s+/).filter(item => item.trim()).map(item => item.trim());
+        return items.length > 0 ? items : text.split('\n').filter(line => line.trim() && !line.match(/^\*\*/)).map(line => line.trim());
       };
 
+      // Extract domain evaluations as points
+      const domainPoints: string[] = [];
+      if (domainEvalMatch) {
+        const domainText = domainEvalMatch[1];
+        const domainLines = domainText.split('\n').filter(line => line.includes('영역') && line.includes('점'));
+        domainPoints.push(...domainLines.map(line => line.replace(/^[-•]\s*/, '').trim()));
+      }
+
       report = {
-        situation: situationMatch ? situationMatch[1].trim() : '상황을 분석했습니다.',
-        points: developmentMatch ? [developmentMatch[1].trim()] : ['현재 상태를 평가했습니다.'],
-        positives: concernsMatch ? [concernsMatch[1].trim()] : ['주요 관심 사항을 확인했습니다.'],
-        tips: recommendationsMatch ? extractDetailedListItems(recommendationsMatch[1]) : ['전문가급 권고사항을 제시했습니다.'],
+        situation: comprehensiveMatch ? comprehensiveMatch[1].trim() : analysisText.substring(0, 500) + '...',
+        points: domainPoints.length > 0 ? domainPoints : ['발달 영역별 평가를 완료했습니다.'],
+        positives: [], // Not used in new format
+        tips: recommendationsMatch ? extractDetailedListItems(recommendationsMatch[1]) : ['전문가 권고사항을 제시했습니다.'],
         alerts: consultationMatch ? [consultationMatch[1].trim()] : [],
-        
         mediaNotes
       };
+      
+      // Add observation guide to tips if available
+      if (observationGuideMatch) {
+        report.tips.push(`📊 지속 관찰: ${observationGuideMatch[1].trim()}`);
+      }
     } else {
       // Extract basic sections
       const summaryMatch = analysisText.match(/\*\*상황 요약\*\*([\s\S]*?)(?=\*\*|$)/);
@@ -460,40 +476,28 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     });
 
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logStep('Error occurred', { error: errorMessage });
 
-    // 토큰 환불 시도 (에러 발생 시에만)
-    try {
-      if (supabaseClient) {
-        const { data: { user: currentUser } } = await supabaseClient.auth.getUser();
-        if (currentUser?.id && tokenCost != null && tokenData && supabaseServiceClient) {
-          await supabaseServiceClient
-            .from('user_tokens')
-            .update({ 
-              current_tokens: tokenData.current_tokens, // 원래 토큰으로 복구
-              total_used: tokenData.total_used 
-            })
-            .eq('user_id', currentUser.id);
-          logStep('Token refunded due to error', { refundedTokens: tokenCost });
-        }
+    // Refund tokens on error
+    if (supabaseServiceClient && tokenData && tokenCost) {
+      try {
+        await supabaseServiceClient
+          .from('user_tokens')
+          .update({ 
+            current_tokens: tokenData.current_tokens,
+            total_used: tokenData.total_used
+          })
+          .eq('user_id', tokenData.user_id || '');
+        logStep('Token refunded due to error', { refundedTokens: tokenCost });
+      } catch (refundErr) {
+        logStep('Token refund failed on error', { error: String(refundErr) });
       }
-    } catch (refundError: unknown) {
-      const refundMessage = refundError instanceof Error ? refundError.message : String(refundError);
-      logStep('Token refund failed', { error: refundMessage });
     }
-    
-    // OpenAI API 에러인 경우 더 구체적인 메시지
-    let userMessage = '분석 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
-    if (errorMessage.includes('OpenAI')) {
-      userMessage = 'AI 분석 서비스에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.';
-    } else if (errorMessage.includes('rate limit') || errorMessage.includes('quota')) {
-      userMessage = '현재 요청이 많아 처리가 지연되고 있습니다. 잠시 후 다시 시도해주세요.';
-    }
-    
+
     return new Response(JSON.stringify({ 
       ok: false, 
-      message: userMessage
+      message: errorMessage 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

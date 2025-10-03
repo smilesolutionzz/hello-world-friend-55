@@ -98,6 +98,126 @@ const questions: Question[] = [
       { value: "quickly_drain", label: "빨리 소모되어 충전이 필요하다", score: 7 },
       { value: "instantly_drain", label: "즉시 완전히 방전된다", score: 9 }
     ]
+  },
+  {
+    id: "group_size",
+    question: "편한 모임 규모는?",
+    options: [
+      { value: "large", label: "많은 사람일수록 재미있다", score: 1 },
+      { value: "medium", label: "5-6명 정도가 적당하다", score: 3 },
+      { value: "small", label: "2-3명의 친한 사람이 좋다", score: 7 },
+      { value: "one", label: "일대일이 가장 편하다", score: 9 }
+    ]
+  },
+  {
+    id: "thinking_style",
+    question: "생각을 정리할 때?",
+    options: [
+      { value: "talk_out", label: "다른 사람과 대화하며 정리한다", score: 1 },
+      { value: "both", label: "말하기와 혼자 생각하기를 섞는다", score: 5 },
+      { value: "write", label: "주로 혼자 글로 정리한다", score: 7 },
+      { value: "silent", label: "완전히 혼자 머릿속으로만 정리한다", score: 9 }
+    ]
+  },
+  {
+    id: "energy_source",
+    question: "에너지를 얻는 방법은?",
+    options: [
+      { value: "people", label: "사람들과 함께 있을 때", score: 1 },
+      { value: "variety", label: "상황에 따라 다르다", score: 5 },
+      { value: "quiet", label: "조용한 환경에서", score: 7 },
+      { value: "complete_solitude", label: "완전한 고독 속에서", score: 9 }
+    ]
+  },
+  {
+    id: "phone_calls",
+    question: "전화 통화에 대한 생각은?",
+    options: [
+      { value: "love", label: "전화 통화를 즐긴다", score: 1 },
+      { value: "okay", label: "필요하면 괜찮다", score: 3 },
+      { value: "prefer_text", label: "문자를 선호한다", score: 7 },
+      { value: "avoid", label: "가능하면 피한다", score: 9 }
+    ]
+  },
+  {
+    id: "workspace",
+    question: "선호하는 작업 환경은?",
+    options: [
+      { value: "team", label: "팀과 함께 일하는 공간", score: 1 },
+      { value: "flexible", label: "혼자와 팀 작업 전환 가능", score: 5 },
+      { value: "quiet_office", label: "조용한 개인 공간", score: 7 },
+      { value: "isolated", label: "완전히 고립된 공간", score: 9 }
+    ]
+  },
+  {
+    id: "social_media",
+    question: "SNS 사용 패턴은?",
+    options: [
+      { value: "active_poster", label: "자주 올리고 소통한다", score: 1 },
+      { value: "occasional", label: "가끔 올리고 주로 본다", score: 5 },
+      { value: "lurker", label: "거의 올리지 않고 구경만", score: 7 },
+      { value: "minimal", label: "거의 사용하지 않는다", score: 9 }
+    ]
+  },
+  {
+    id: "decision_making",
+    question: "중요한 결정을 내릴 때?",
+    options: [
+      { value: "discuss", label: "여러 사람과 상의한다", score: 1 },
+      { value: "few_people", label: "소수와만 상의한다", score: 5 },
+      { value: "alone_then_share", label: "혼자 결정 후 공유한다", score: 7 },
+      { value: "completely_alone", label: "완전히 혼자 결정한다", score: 9 }
+    ]
+  },
+  {
+    id: "after_work",
+    question: "퇴근/하교 후 선호하는 활동은?",
+    options: [
+      { value: "meet_people", label: "바로 사람들을 만난다", score: 1 },
+      { value: "flexible", label: "기분에 따라 다르다", score: 5 },
+      { value: "rest_first", label: "먼저 혼자 쉬고 싶다", score: 7 },
+      { value: "no_plans", label: "약속을 잡지 않는다", score: 9 }
+    ]
+  },
+  {
+    id: "conflict_resolution",
+    question: "갈등 상황에서 당신은?",
+    options: [
+      { value: "discuss_immediately", label: "즉시 대화로 해결한다", score: 1 },
+      { value: "brief_talk", label: "짧게 얘기 후 시간을 둔다", score: 5 },
+      { value: "think_first", label: "혼자 생각한 후 얘기한다", score: 7 },
+      { value: "avoid", label: "가능한 피하고 싶다", score: 9 }
+    ]
+  },
+  {
+    id: "attention_span",
+    question: "장시간 사회적 활동 시?",
+    options: [
+      { value: "energized", label: "계속 활기차다", score: 1 },
+      { value: "peaks_valleys", label: "활발과 조용이 반복된다", score: 5 },
+      { value: "gradually_quiet", label: "점점 조용해진다", score: 7 },
+      { value: "exhausted_quickly", label: "빨리 지친다", score: 9 }
+    ]
+  },
+  {
+    id: "small_talk",
+    question: "가벼운 잡담에 대해?",
+    options: [
+      { value: "enjoy", label: "즐기고 잘한다", score: 1 },
+      { value: "situational", label: "상황에 따라 다르다", score: 5 },
+      { value: "uncomfortable", label: "불편하지만 할 수 있다", score: 7 },
+      { value: "avoid", label: "피하고 싶다", score: 9 }
+    ]
+  },
+  {
+    id: "recharge_time",
+    question: "에너지 충전에 필요한 시간은?",
+    options: [
+      { value: "no_need", label: "특별히 필요 없다", score: 1 },
+      { value: "brief", label: "30분-1시간 정도", score: 5 },
+      { value: "several_hours", label: "몇 시간이 필요하다", score: 7 },
+      { value: "full_day", label: "하루 이상 필요하다", score: 9 }
+    ]
   }
 ];
 
@@ -113,6 +233,15 @@ export default function OtrovertTest({ onComplete, onBack }: OtrovertTestProps) 
       ...answers,
       [currentQuestionData.id]: { value, score }
     });
+    
+    // 자동으로 다음 질문으로 넘어가기
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        calculateResult();
+      }
+    }, 300);
   };
 
   const handleNext = () => {

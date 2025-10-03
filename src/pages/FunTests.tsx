@@ -97,16 +97,6 @@ const FunTests = () => {
 
         {/* 테스트 카드들 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-12">
-          <AIFeatureCard
-            title="🎭 오트로버트 진단"
-            description="외향? 내향? NO! 당신은 오트로버트일 수 있습니다. 정신과 의사들이 주목하는 새로운 성격 유형을 발견하세요!"
-            icon={Users}
-            aiLevel="basic"
-            rank={1}
-            onClick={() => setCurrentTest('otrovert')}
-            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 w-full relative"
-            badge="NEW"
-          />
 
           <AIFeatureCard
             title="내 전생은 어떤 직업?"

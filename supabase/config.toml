@@ -82,6 +82,9 @@ verify_jwt = false
 [functions.content-recommender]
 verify_jwt = false
 
+[functions.otrovert-analyzer]
+verify_jwt = false
+
 [functions.depression-analyzer]
 verify_jwt = false
 

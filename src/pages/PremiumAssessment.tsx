@@ -7,6 +7,9 @@ import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
 import PremiumAssessmentResult from "@/components/assessment/PremiumAssessmentResult";
+import OtrovertTest from "@/components/assessment/OtrovertTest";
+import { AIFeatureCard } from "@/components/AIFeatureCard";
+import { Users } from "lucide-react";
 import LanguageDevelopmentForm from "@/components/assessment/LanguageDevelopmentForm";
 import LanguageDevelopmentResult from "@/components/assessment/LanguageDevelopmentResult";
 import PremiumAdhdForm from "@/components/assessment/PremiumAdhdForm";
@@ -40,6 +43,7 @@ const PremiumAssessment = () => {
   const [assessmentResults, setAssessmentResults] = useState<any>({});
   const [assessmentAnswers, setAssessmentAnswers] = useState<Record<string, string>>({});
   const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
+  const [currentTest, setCurrentTest] = useState<string | null>(null);
 
   const assessmentData = {
     autismSpectrumScreening: Object.values(autismSpectrumScreeningQuestions).flat(),
@@ -81,6 +85,10 @@ const PremiumAssessment = () => {
   };
 
   const handleBack = () => {
+    if (currentTest) {
+      setCurrentTest(null);
+      return;
+    }
     if (currentStep === 'result') {
       setCurrentStep('list');
     } else if (currentStep === 'assessment') {
@@ -89,6 +97,17 @@ const PremiumAssessment = () => {
       navigate('/assessment');
     }
   };
+
+  const handleOtrovertComplete = (result: any, testType: string) => {
+    navigate('/fun-test-result', { 
+      state: { result, testType } 
+    });
+  };
+
+  // 오트로버트 테스트 화면
+  if (currentTest === 'otrovert') {
+    return <OtrovertTest onComplete={handleOtrovertComplete} onBack={handleBack} />;
+  }
 
   if (currentStep === 'result' && selectedAssessment && Object.keys(assessmentResults).length > 0) {
     if (selectedAssessment === 'languageDevelopment') {
@@ -272,6 +291,18 @@ const PremiumAssessment = () => {
         {/* Assessment Cards Grid */}
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* 오트로버트 테스트 - 1위 NEW */}
+            <AIFeatureCard
+              title="🎭 오트로버트 성격 진단"
+              description="외향? 내향? NO! 당신은 오트로버트일 수 있습니다. MBTI보다 정확한 20문항 정밀 분석으로 새로운 성격 유형을 발견하세요! 🔥"
+              icon={Users}
+              aiLevel="premium"
+              rank={1}
+              onClick={() => setCurrentTest('otrovert')}
+              className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 w-full relative"
+              badge="NEW"
+            />
+            
             {Object.entries(premiumAssessmentInfo).map(([key, info]) => (
               <PremiumAssessmentCard
                 key={key}

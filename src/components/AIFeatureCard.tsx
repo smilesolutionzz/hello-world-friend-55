@@ -11,6 +11,7 @@ interface AIFeatureCardProps {
   rank?: number;
   onClick?: () => void;
   className?: string;
+  badge?: string;
 }
 
 export const AIFeatureCard: React.FC<AIFeatureCardProps> = ({
@@ -20,7 +21,8 @@ export const AIFeatureCard: React.FC<AIFeatureCardProps> = ({
   aiLevel = 'basic',
   rank,
   onClick,
-  className = ''
+  className = '',
+  badge
 }) => {
   const getAIBadgeVariant = () => {
     switch (aiLevel) {
@@ -40,6 +42,11 @@ export const AIFeatureCard: React.FC<AIFeatureCardProps> = ({
     >
       <CardHeader className="relative">
         <div className="absolute top-2 right-2 flex gap-2">
+          {badge && (
+            <span className="bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
+              {badge}
+            </span>
+          )}
           {rank && (
             <span className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
               {rank}위

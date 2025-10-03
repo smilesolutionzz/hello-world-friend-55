@@ -126,6 +126,33 @@ ${result.currentLifePhase}
 🔮 AI 내면 동물 분석 서비스
 나의 진정한 모습을 발견: aihpro.com`;
 
+    case 'otrovert':
+      return `🎭 오트로버트 성격 진단 결과
+📅 ${timestamp}
+
+🎯 성격 유형: ${result.personalityType}
+📊 점수: ${result.score}점
+
+📖 설명:
+${result.typeDescription}
+
+✨ 핵심 특성:
+${result.characteristics?.map((char: string, index: number) => `${index + 1}. ${char}`).join('\n') || '정보 없음'}
+
+💪 강점:
+${result.strengths?.map((strength: string, index: number) => `• ${strength}`).join('\n') || '정보 없음'}
+
+⚠️ 주의할 점:
+${result.weaknesses?.map((weakness: string, index: number) => `• ${weakness}`).join('\n') || '정보 없음'}
+
+💡 추천사항:
+${result.recommendations?.map((rec: string, index: number) => `${index + 1}. ${rec}`).join('\n') || '정보 없음'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎭 오트로버트 성격 진단
+MBTI를 넘어서는 새로운 성격 분석: aihpro.com
+#오트로버트 #성격테스트 #MBTI대안`;
+
     case 'joseon_name':
       return `🏯 조선시대 내 이름: ${result.joseonName}
 ✨ 이름의 의미: ${result.meaning}

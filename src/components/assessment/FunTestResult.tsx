@@ -56,6 +56,8 @@ export default function FunTestResult() {
         return `내 얼굴은 ${result?.matchedAnimal} 닮음! ${result?.emoji || '🐾'}`;
       case 'inner_animal':
         return `내 내면은 ${result?.innerAnimal}! 🦋`;
+      case 'otrovert':
+        return `나는 ${result?.personalityType}! 🎭`;
       case 'joseon_name':
         return `내 조선시대 이름은 ${result?.joseonName}! 🏯`;
       case 'joseon_job':
@@ -79,6 +81,8 @@ export default function FunTestResult() {
         return `AI가 분석한 결과 ${result?.similarity}% 유사도로 ${result?.matchedAnimal}과 닮았다고! ${result?.advice}`;
       case 'inner_animal':
         return `심리 분석 결과 내 내면은 ${result?.innerAnimal}! 매칭도 ${result?.personalityMatch}%`;
+      case 'otrovert':
+        return `오트로버트 점수 ${result?.score}점! 외향과 내향 사이의 나만의 성격을 발견했어요. MBTI보다 더 정확한 나의 진짜 모습!`;
       case 'grandma_relationship':
         return `궁합 점수 ${result?.compatibility_score}점! "${result?.grandma_verdict}"`;
       case 'wisdom_advice':
@@ -839,6 +843,150 @@ export default function FunTestResult() {
             </div>
           </CardContent>
         </Card>
+      </div>
+    );
+  }
+
+  if (testType === 'otrovert') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <Card className="border-2 border-indigo-200 shadow-2xl overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Users className="w-8 h-8" />
+                <CardTitle className="text-3xl text-center">오트로버트 성격 진단 결과</CardTitle>
+              </div>
+              <div className="text-center">
+                <Badge className="bg-white/20 text-white text-lg px-4 py-2">
+                  점수: {result.score}점
+                </Badge>
+              </div>
+            </CardHeader>
+
+            <CardContent className="p-8 space-y-8">
+              {/* 메인 결과 */}
+              <div className="text-center space-y-4">
+                <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  {result.personalityType}
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {result.typeDescription}
+                </p>
+              </div>
+
+              {/* 핵심 특성 */}
+              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6">
+                <h3 className="text-xl font-bold mb-4 text-indigo-800 flex items-center gap-2">
+                  <Star className="w-5 h-5" />
+                  당신의 핵심 특성
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {result.characteristics?.map((char: string, index: number) => (
+                    <div key={index} className="flex items-center gap-2 bg-white/60 rounded-lg p-3">
+                      <span className="text-lg">{char}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 강점 */}
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6">
+                <h3 className="text-xl font-bold mb-4 text-green-800 flex items-center gap-2">
+                  <Star className="w-5 h-5" />
+                  {result.strengthsTitle}
+                </h3>
+                <div className="space-y-2">
+                  {result.strengths?.map((strength: string, index: number) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <span className="text-green-600 font-bold">✓</span>
+                      <span className="text-gray-700">{strength}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 주의할 점 */}
+              <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6">
+                <h3 className="text-xl font-bold mb-4 text-orange-800 flex items-center gap-2">
+                  <Star className="w-5 h-5" />
+                  {result.weaknessesTitle}
+                </h3>
+                <div className="space-y-2">
+                  {result.weaknesses?.map((weakness: string, index: number) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <span className="text-orange-600 font-bold">⚠</span>
+                      <span className="text-gray-700">{weakness}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 추천 사항 */}
+              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6">
+                <h3 className="text-xl font-bold mb-4 text-blue-800 flex items-center gap-2">
+                  <Heart className="w-5 h-5" />
+                  나를 위한 추천
+                </h3>
+                <div className="space-y-2">
+                  {result.recommendations?.map((rec: string, index: number) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <span className="text-blue-600 font-bold">💡</span>
+                      <span className="text-gray-700">{rec}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 공유 안내 */}
+              <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-6 border-2 border-pink-200">
+                <div className="text-center space-y-3">
+                  <h3 className="text-xl font-bold text-pink-800 flex items-center justify-center gap-2">
+                    <Share2 className="w-5 h-5" />
+                    친구들과 비교해보세요!
+                  </h3>
+                  <p className="text-gray-700">
+                    오트로버트는 MBTI처럼 친구들과 비교하면 더 재미있어요!<br />
+                    나와 친구의 성격 차이를 발견하고 서로를 더 잘 이해할 수 있습니다.
+                  </p>
+                  <div className="flex flex-wrap gap-2 justify-center pt-2">
+                    <Badge variant="secondary" className="bg-indigo-100 text-indigo-700">
+                      #오트로버트
+                    </Badge>
+                    <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                      #성격테스트
+                    </Badge>
+                    <Badge variant="secondary" className="bg-pink-100 text-pink-700">
+                      #MBTI대안
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* 액션 버튼들 */}
+              <div className="flex flex-col gap-3 pt-6">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button 
+                    onClick={handleShare} 
+                    size="lg" 
+                    className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
+                  >
+                    <Share2 className="w-4 h-4 mr-2" />
+                    친구들에게 공유하기
+                  </Button>
+                  <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    다른 테스트 해보기
+                  </Button>
+                </div>
+                <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full">
+                  <Copy className="w-4 h-4 mr-2" />
+                  📋 결과 텍스트로 복사하기
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }

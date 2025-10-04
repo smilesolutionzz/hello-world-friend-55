@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { MessageCircle, Share2, FileDown, RotateCcw, Heart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
 
 interface GrandmaRelationshipResultProps {
   result: {
@@ -284,6 +285,14 @@ export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaR
               </CardContent>
             </Card>
           </div>
+        </div>
+        
+        {/* 맞춤 추천 및 B2B 제안 */}
+        <div className="mt-8">
+          <PersonalizedProductRecommendation 
+            testType="grandma_relationship"
+            testResult={result}
+          />
         </div>
       </div>
     </div>

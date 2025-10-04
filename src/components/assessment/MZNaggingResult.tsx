@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { MessageCircle, Share2, FileDown, RotateCcw, Heart, Coffee } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
 
 interface MZNaggingResultProps {
   result: {
@@ -288,6 +289,14 @@ export default function MZNaggingResult({ result, onRetake }: MZNaggingResultPro
               </CardContent>
             </Card>
           </div>
+        </div>
+        
+        {/* 맞춤 추천 및 B2B 제안 */}
+        <div className="mt-8">
+          <PersonalizedProductRecommendation 
+            testType="mz_nagging"
+            testResult={result}
+          />
         </div>
       </div>
     </div>

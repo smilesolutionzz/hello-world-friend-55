@@ -10,6 +10,7 @@ import GrandmaRelationshipResult from "./GrandmaRelationshipResult";
 import GrandpaMarriageResult from "./GrandpaMarriageResult";
 import MZNaggingResult from "./MZNaggingResult";
 import OtrovertResult from "./OtrovertResult";
+import { PersonalizedProductRecommendation } from "@/components/product/PersonalizedProductRecommendation";
 
 export default function FunTestResult() {
   const location = useLocation();
@@ -215,6 +216,12 @@ export default function FunTestResult() {
             </div>
           </CardContent>
         </Card>
+        
+        {/* 맞춤 추천 및 B2B 제안 */}
+        <PersonalizedProductRecommendation 
+          testType="past_life_job"
+          testResult={result}
+        />
       </div>
     );
   }
@@ -370,6 +377,12 @@ export default function FunTestResult() {
             </div>
           </CardContent>
         </Card>
+        
+        {/* 맞춤 추천 및 B2B 제안 */}
+        <PersonalizedProductRecommendation 
+          testType="animal_face_match"
+          testResult={result}
+        />
       </div>
     );
   }
@@ -533,6 +546,12 @@ export default function FunTestResult() {
             </div>
           </CardContent>
         </Card>
+        
+        {/* 맞춤 추천 및 B2B 제안 */}
+        <PersonalizedProductRecommendation 
+          testType="inner_animal"
+          testResult={result}
+        />
       </div>
     );
   }
@@ -844,6 +863,12 @@ export default function FunTestResult() {
             </div>
           </CardContent>
         </Card>
+        
+        {/* 맞춤 추천 및 B2B 제안 */}
+        <PersonalizedProductRecommendation 
+          testType="wisdom_advice"
+          testResult={safeResult}
+        />
       </div>
     );
   }

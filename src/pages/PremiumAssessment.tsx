@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Crown, Sparkles } from "lucide-react";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Crown, Sparkles, Clock, Users, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard";
@@ -8,8 +10,6 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
 import PremiumAssessmentResult from "@/components/assessment/PremiumAssessmentResult";
 import OtrovertTest from "@/components/assessment/OtrovertTest";
-import { AIFeatureCard } from "@/components/AIFeatureCard";
-import { Users } from "lucide-react";
 import LanguageDevelopmentForm from "@/components/assessment/LanguageDevelopmentForm";
 import LanguageDevelopmentResult from "@/components/assessment/LanguageDevelopmentResult";
 import PremiumAdhdForm from "@/components/assessment/PremiumAdhdForm";
@@ -292,16 +292,88 @@ const PremiumAssessment = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* 오트로버트 테스트 - 1위 NEW */}
-            <AIFeatureCard
-              title="🎭 오트로버트 성격 진단"
-              description="외향? 내향? NO! 당신은 오트로버트일 수 있습니다. MBTI보다 정확한 20문항 정밀 분석으로 새로운 성격 유형을 발견하세요! 🔥"
-              icon={Users}
-              aiLevel="premium"
-              rank={1}
-              onClick={() => setCurrentTest('otrovert')}
-              className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 w-full relative"
-              badge="NEW"
-            />
+            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]">
+              {/* 인기 순위 배지 */}
+              <div className="absolute top-2 right-2 z-10 flex gap-1">
+                <Badge className="bg-pink-500 text-white border-0 text-xs px-2 py-1">
+                  NEW
+                </Badge>
+                <Badge className="bg-red-500 text-white border-0 text-xs px-2 py-1">
+                  <Crown className="w-2.5 h-2.5 mr-1" />
+                  1위
+                </Badge>
+              </div>
+
+              {/* Header with Dark Gradient - AIH 스타일 */}
+              <div className="bg-gradient-to-r from-slate-700 to-slate-600 p-6 pr-24 text-white relative">
+                <div className="absolute inset-0 bg-black/10" />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <Users className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg font-bold">🎭 오트로버트 성격 진단</CardTitle>
+                      <p className="text-sm opacity-90">ASES-OT (Otrovert Spectrum Early Screening)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <CardContent className="p-6 space-y-4">
+                {/* Description */}
+                <p className="text-muted-foreground leading-relaxed">
+                  외향? 내향? NO! 당신은 오트로버트일 수 있습니다. MBTI보다 정확한 20문항 정밀 분석으로 새로운 성격 유형을 발견하세요! 🔥
+                </p>
+
+                <p className="text-sm text-muted-foreground">
+                  AI 분석으로 재미있는 결과를 제공합니다
+                </p>
+
+                {/* Test Info */}
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Clock className="w-4 h-4" />
+                    약 5-8분
+                  </div>
+                  <div className="text-muted-foreground">
+                    20개 문항
+                  </div>
+                </div>
+
+                {/* Premium Features */}
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-sm">프리미엄 분석 내용</h4>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">외향성-내향성 스펙트럼 정밀 분석</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">91% 이상 정확도의 AI 분석</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">성격 차원별 레이더 차트 제공</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground ml-5">
+                      외 3가지...
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <div className="pt-4">
+                  <Button 
+                    onClick={() => setCurrentTest('otrovert')}
+                    className="w-full bg-gradient-to-r from-slate-700 to-slate-600 hover:opacity-90"
+                  >
+                    검사 시작하기
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
             
             {Object.entries(premiumAssessmentInfo).map(([key, info]) => (
               <PremiumAssessmentCard

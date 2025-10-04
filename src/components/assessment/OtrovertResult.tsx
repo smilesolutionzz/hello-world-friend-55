@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Share2, RotateCcw, Copy, Loader2, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { PersonalizedProductRecommendation } from "@/components/product/PersonalizedProductRecommendation";
 import {
   RadarChart,
   PolarGrid,
@@ -258,6 +259,15 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
             </div>
           </CardContent>
         </Card>
+
+        {/* 맞춤형 상품 추천 섹션 */}
+        <PersonalizedProductRecommendation 
+          testType="otrovert"
+          testResult={result}
+          userProfile={{
+            personality: result.personalityType
+          }}
+        />
       </div>
     </div>
   );

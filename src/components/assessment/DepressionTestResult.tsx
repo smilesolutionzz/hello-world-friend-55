@@ -12,6 +12,7 @@ import { useShareText, formatPsychTestResult } from '@/utils/shareUtils';
 import SocialShareButtons from '@/components/social/SocialShareButtons';
 import VoiceFeature from '@/components/voice/VoiceFeature';
 import { supabase } from '@/integrations/supabase/client';
+import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
 
 interface DepressionTestResultProps {
   results: {
@@ -456,6 +457,12 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
       <SocialShareButtons 
         title={`우울증 자가진단 결과: ${severity} (${average.toFixed(1)}점)`}
         description={`총점 ${total}점으로 ${severity} 수준입니다. 전문적인 도움을 받아보세요!`}
+      />
+      
+      {/* 맞춤 추천 및 B2B 제안 */}
+      <PersonalizedProductRecommendation 
+        testType="depression"
+        testResult={results}
       />
     </div>
   );

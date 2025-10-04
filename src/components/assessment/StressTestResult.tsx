@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { supabase } from '@/integrations/supabase/client';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
 
 interface StressTestResultProps {
   result: {
@@ -320,6 +321,12 @@ const StressTestResult = ({ result, onRestart }: StressTestResultProps) => {
             </div>
           </CardContent>
         </Card>
+        
+        {/* 맞춤 추천 및 B2B 제안 */}
+        <PersonalizedProductRecommendation 
+          testType="stress"
+          testResult={result}
+        />
       </div>
     </div>
   );

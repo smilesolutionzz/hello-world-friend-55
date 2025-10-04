@@ -87,22 +87,21 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
   ] : [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-8 px-4">
-      <div className="container mx-auto max-w-4xl">
-        <Card className="shadow-2xl border-2 border-indigo-200">
-          <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
-            <div className="text-center space-y-4">
-              <CardTitle className="text-3xl">🎭 오트로버트 성격 분석 결과</CardTitle>
-              <div className="flex items-center justify-center gap-4">
-                <Badge className="bg-white/90 text-indigo-600 text-lg px-4 py-2">
-                  {result.personalityType}
-                </Badge>
-                <Badge className="bg-white/90 text-purple-600 text-lg px-4 py-2">
-                  점수: {result.score}
-                </Badge>
-              </div>
+    <div className="container mx-auto p-6 max-w-4xl">
+      <Card className="border-2 border-primary/20 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+          <div className="text-center space-y-4">
+            <CardTitle className="text-3xl">🎭 오트로버트 성격 분석 결과</CardTitle>
+            <div className="flex items-center justify-center gap-4">
+              <Badge className="bg-white/20 text-white text-lg px-4 py-2">
+                {result.personalityType}
+              </Badge>
+              <Badge className="bg-white/20 text-white text-lg px-4 py-2">
+                점수: {result.score}
+              </Badge>
             </div>
-          </CardHeader>
+          </div>
+        </CardHeader>
 
           <CardContent className="p-8 space-y-8">
             {/* 기본 설명 */}
@@ -269,6 +268,5 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
           }}
         />
       </div>
-    </div>
-  );
-}
+    );
+  }

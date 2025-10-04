@@ -21,42 +21,35 @@ export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
   useEffect(() => {
     const checkAccess = async () => {
       try {
-        // 베타테스트 기간 중에는 모든 접근 허용
-        if (isBetaTestPeriod()) {
-          console.log('🎉 Beta Test Period: All access granted');
-          setAllowed(true);
-          setLoading(false);
-          return;
-        }
-
         if (subLoading || !balance) {
           setLoading(true);
           return;
         }
 
-        // 구독자면 무제한 이용 가능
+        // 유료화 전환: 프리미엄 구독자는 무제한 이용
         const isSubscriber = isPremiumUser();
         if (isSubscriber) {
+          console.log('✅ Premium subscriber - unlimited access granted');
           setAllowed(true);
           setLoading(false);
           return;
         }
 
-        // 구독자가 아니면 토큰 확인
+        // 무료 사용자는 토큰으로만 이용 가능
         const hasEnoughTokens = checkTokenAvailability(requiredTokens);
-        console.log(`🔒 Token Guard: Required ${requiredTokens}, Has enough: ${hasEnoughTokens}, Balance: ${balance?.current_tokens}`);
+        console.log(`🔒 Free user - Token check: Required ${requiredTokens}, Balance: ${balance?.current_tokens}, Has enough: ${hasEnoughTokens}`);
         
         if (!hasEnoughTokens) {
-          console.log('❌ Token Guard: Insufficient tokens, redirecting to subscription');
-          navigate('/token-subscription');
+          console.log('❌ Insufficient tokens - redirecting to subscription');
+          navigate('/subscription');
           setAllowed(false);
         } else {
-          console.log('✅ Token Guard: Sufficient tokens, allowing access');
+          console.log('✅ Sufficient tokens - access granted');
           setAllowed(true);
         }
       } catch (error) {
         console.error('Access check error:', error);
-        navigate('/token-subscription');
+        navigate('/subscription');
         setAllowed(false);
       } finally {
         setLoading(false);

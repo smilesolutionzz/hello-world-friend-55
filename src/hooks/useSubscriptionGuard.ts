@@ -24,33 +24,28 @@ export const useSubscriptionGuard = (requiredFeature: string = 'basic_test'): Su
   useEffect(() => {
     const checkAccess = async () => {
       try {
-        // 베타테스트 기간 중에는 모든 접근 허용
-        if (isBetaTestPeriod()) {
-          console.log('🎉 Beta Test Period: All subscription features granted');
-          setAllowed(true);
-          setLoading(false);
-          return;
-        }
-
         if (subLoading) {
           setLoading(true);
           return;
         }
 
+        // 유료화 전환: 구독이 없으면 무조건 구독 페이지로 이동
         if (!subscription) {
-          // 구독이 없으면 구독 페이지로 이동
+          console.log('❌ No subscription found - redirecting to subscription page');
           navigate('/subscription');
           setAllowed(false);
+          setLoading(false);
           return;
         }
 
         const hasAccess = hasFeatureAccess(requiredFeature);
         
         if (!hasAccess) {
-          // 기능에 대한 접근 권한이 없으면 구독 페이지로 이동
+          console.log(`❌ Feature access denied for: ${requiredFeature}`);
           navigate('/subscription');
           setAllowed(false);
         } else {
+          console.log(`✅ Feature access granted for: ${requiredFeature}`);
           setAllowed(true);
         }
       } catch (error) {

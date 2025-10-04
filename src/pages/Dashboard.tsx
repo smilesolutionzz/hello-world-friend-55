@@ -965,35 +965,132 @@ const Dashboard = () => {
               )}
             </Card>
 
-            {/* New Dashboard Components Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-              {/* Recent Activity */}
-              <RecentActivity 
-                activities={observations.slice(0, 5).map(obs => ({
-                  id: obs.id,
-                  type: obs.tags.includes('검사') ? 'assessment' : obs.tags.includes('상담') ? 'consultation' : 'observation',
-                  title: `${obs.profile?.display_name || '알 수 없음'} - ${obs.tags.join(', ')}`,
-                  date: obs.created_at,
-                  score: obs.score_overall
-                }))}
-              />
-              
-              {/* Quick Actions */}
-              <QuickActions />
-              
-              {/* Safety Index - 보험 연계 */}
+            {/* 핵심 개인 DATA 섹션 - 실용적인 지표만 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              {/* 주간 인사이트 - 가장 중요한 요약 */}
+              <Card className="p-6 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-blue-950 dark:via-background dark:to-purple-950">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-blue-500" />
+                    주간 핵심 지표
+                  </h3>
+                  <Badge variant="outline" className="text-xs">
+                    최근 7일
+                  </Badge>
+                </div>
+                
+                <div className="space-y-4">
+                  {/* 활동 횟수 */}
+                  <div className="flex items-center justify-between p-3 bg-white/60 dark:bg-background/60 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                        <BarChart3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">활동 횟수</p>
+                        <p className="text-2xl font-bold">{recent30DaysObservations}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {weeklyChange.changeRate > 5 ? (
+                        <>
+                          <ArrowUp className="w-4 h-4 text-green-500" />
+                          <span className="text-sm font-semibold text-green-600">
+                            {weeklyChange.changeRate.toFixed(0)}%
+                          </span>
+                        </>
+                      ) : weeklyChange.changeRate < -5 ? (
+                        <>
+                          <ArrowDown className="w-4 h-4 text-red-500" />
+                          <span className="text-sm font-semibold text-red-600">
+                            {Math.abs(weeklyChange.changeRate).toFixed(0)}%
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">안정</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 평균 점수 */}
+                  <div className="flex items-center justify-between p-3 bg-white/60 dark:bg-background/60 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                        <Star className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">평균 점수</p>
+                        <p className="text-2xl font-bold">
+                          {observations.length > 0 
+                            ? Math.round(observations.reduce((sum, obs) => sum + obs.score_overall, 0) / observations.length)
+                            : 0}
+                          <span className="text-sm text-muted-foreground ml-1">/100</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 토큰 잔액 - 실질적 가치 */}
+                  <div className="p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                    <TokenBalance />
+                  </div>
+                </div>
+              </Card>
+
+              {/* 빠른 액션 - 실제로 자주 사용하는 기능만 */}
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-orange-500" />
+                  빠른 실행
+                </h3>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    variant="outline"
+                    className="h-20 flex flex-col items-center justify-center gap-2 hover:bg-blue-50 dark:hover:bg-blue-950"
+                    onClick={() => navigate('/assessment')}
+                  >
+                    <FileText className="w-5 h-5 text-blue-500" />
+                    <span className="text-sm font-medium">새 검사</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    className="h-20 flex flex-col items-center justify-center gap-2 hover:bg-green-50 dark:hover:bg-green-950"
+                    onClick={() => navigate('/observation')}
+                  >
+                    <MessageCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-sm font-medium">관찰 기록</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    className="h-20 flex flex-col items-center justify-center gap-2 hover:bg-purple-50 dark:hover:bg-purple-950"
+                    onClick={() => navigate('/ai-assistant')}
+                  >
+                    <MessageCircle className="w-5 h-5 text-purple-500" />
+                    <span className="text-sm font-medium">AI 상담</span>
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    className="h-20 flex flex-col items-center justify-center gap-2 hover:bg-yellow-50 dark:hover:bg-yellow-950"
+                    onClick={() => navigate('/token-subscription')}
+                  >
+                    <CreditCard className="w-5 h-5 text-yellow-500" />
+                    <span className="text-sm font-medium">토큰 충전</span>
+                  </Button>
+                </div>
+              </Card>
+            </div>
+
+            {/* 안전지수 & 발달 추적 - B2B 핵심 가치 */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              {/* Safety Index - 보험 연계 핵심 지표 */}
               <SafetyIndex observations={observations} />
               
-              {/* Weekly Insights */}
-              <WeeklyInsights
-                totalActivities={recent30DaysObservations}
-                averageScore={Math.round(observations.reduce((sum, obs) => sum + obs.score_overall, 0) / Math.max(observations.length, 1))}
-                trendDirection={weeklyChange.changeRate > 5 ? 'up' : weeklyChange.changeRate < -5 ? 'down' : 'stable'}
-                weeklyGoal={5}
-              />
-              
-              {/* Lifespan Developmental Tracking */}
-              <div className="lg:col-span-3">
+              {/* 생애주기 발달 추적 - 장기 데이터 가치 */}
+              <div className="lg:col-span-1">
                 <LifespanDevelopmentalTracker 
                   birthDate={profile?.birth_date}
                 />

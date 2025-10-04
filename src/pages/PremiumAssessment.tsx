@@ -268,7 +268,7 @@ const PremiumAssessment = () => {
               </div>
               <div className="grid md:grid-cols-4 gap-6 text-center">
                 <div>
-                  <div className="text-2xl font-bold mb-1">10가지</div>
+                  <div className="text-2xl font-bold mb-1">14가지</div>
                   <div className="text-sm opacity-90">전문 검사</div>
                 </div>
                 <div>

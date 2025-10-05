@@ -73,11 +73,11 @@ export function InstitutionCard({ institution, onViewDetails, onContactInstituti
               alt={institution.name}
               className="w-12 h-12 rounded-lg object-cover border"
             />
-            <div>
-              <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors break-words leading-tight">
                 {institution.name}
               </h3>
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-xs mt-1">
                 {getInstitutionTypeLabel(institution.institution_type)}
               </Badge>
             </div>

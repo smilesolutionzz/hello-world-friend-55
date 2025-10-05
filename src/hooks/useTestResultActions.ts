@@ -17,7 +17,7 @@ export const useTestResultActions = () => {
     try {
       setIsGeneratingPDF(true);
       
-      // 먼저 검사 결과 저장
+      // 1) 결과 저장 시도 (히스토리 보존)
       await saveTestResult({
         testType: testData.testType,
         results: testData.results,
@@ -26,25 +26,56 @@ export const useTestResultActions = () => {
         chartData: testData.chartData
       });
       
-      const { data, error } = await supabase.functions.invoke('generate-test-report', {
-        body: testData
-      });
-
-      if (error) throw error;
-
-      if (data.success) {
-        // HTML 리포트를 새 창에서 열기
-        const newWindow = window.open('', '_blank');
-        if (newWindow) {
-          newWindow.document.write(data.reportData.html);
-          newWindow.document.close();
-        }
-        
-        toast({
-          title: "PDF 리포트 생성 완료",
-          description: "새 창에서 리포트를 확인하세요. 브라우저의 인쇄 기능을 사용하여 PDF로 저장할 수 있습니다.",
+      // 2) 리포트 HTML 생성 (엣지 함수가 있으면 사용, 없으면 로컬 템플릿 사용)
+      let reportHtml: string | null = null;
+      try {
+        const { data, error } = await supabase.functions.invoke('generate-test-report', {
+          body: testData
         });
+        if (!error && data?.reportData?.html) {
+          reportHtml = data.reportData.html as string;
+        }
+      } catch (_) {
+        // 엣지 함수 미배포 등으로 실패할 수 있음 - 로컬 템플릿로 폴백
       }
+      
+      if (!reportHtml) {
+        // 간단한 로컬 템플릿
+        reportHtml = `
+          <div id="pdf-content" style="font-family: system-ui, -apple-system, Segoe UI, Roboto; padding: 24px;">
+            <h1 style="margin:0 0 8px 0;">${testData.testType} 결과 보고서</h1>
+            <p style="color:#555; margin:0 0 16px 0;">${new Date().toLocaleString('ko-KR')}</p>
+            <pre style="white-space:pre-wrap; background:#f7f7f9; padding:16px; border-radius:8px;">${JSON.stringify(testData.results, null, 2)}</pre>
+            ${testData.analysis ? `<h3>분석</h3><p style="white-space:pre-wrap;">${testData.analysis}</p>` : ''}
+          </div>`;
+      }
+
+      // 3) html2pdf로 즉시 다운로드
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.left = '-99999px';
+      container.style.top = '0';
+      container.innerHTML = reportHtml;
+      document.body.appendChild(container);
+
+      // lazy import to keep bundle size small
+      const html2pdf = (await import('html2pdf.js')).default;
+      const filename = `${testData.testType}_결과_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'').replace(/\s/g,'')}.pdf`;
+
+      await html2pdf().set({
+        margin: [10,10,10,10],
+        filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      }).from(container.firstElementChild as HTMLElement).save();
+
+      document.body.removeChild(container);
+
+      toast({
+        title: "PDF 다운로드 완료",
+        description: "검사 결과 PDF가 다운로드되었습니다.",
+      });
     } catch (error) {
       console.error('PDF 생성 오류:', error);
       toast({

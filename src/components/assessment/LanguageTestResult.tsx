@@ -79,8 +79,9 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
     }
   ];
 
+  const navigate = useNavigate();
   const handleExpertConsult = () => {
-    window.open('https://typebot.io/hilight-consult', '_blank');
+    navigate('/expert-hiring');
   };
 
   return (

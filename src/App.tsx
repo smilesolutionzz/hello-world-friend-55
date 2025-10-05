@@ -80,6 +80,7 @@ import FocusPackage from "./pages/FocusPackage";
 import ChildPackage from "./pages/ChildPackage";
 import RelationshipPackage from "./pages/RelationshipPackage";
 import ComprehensivePackage from "./pages/ComprehensivePackage";
+import CareerPackage from "./pages/CareerPackage";
 import GrowthStories from "./pages/GrowthStories";
 import VoiceEmotionAnalysis from "./pages/VoiceEmotionAnalysis";
 import VoiceDiary from "./pages/VoiceDiary";
@@ -173,6 +174,7 @@ const App = () => {
           <Route path="/focus-package" element={<FocusPackage />} />
           <Route path="/child-package" element={<ChildPackage />} />
           <Route path="/relationship-package" element={<RelationshipPackage />} />
+          <Route path="/career-package" element={<CareerPackage />} />
           <Route path="/comprehensive-package" element={<ComprehensivePackage />} />
           <Route path="/family" element={<ChildPackage />} />
           <Route path="/han-medicine-test" element={<HanMedicineTest />} />

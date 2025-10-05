@@ -79,13 +79,14 @@ const StressTestResult = ({ result, onRestart }: StressTestResultProps) => {
         await navigator.share({
           title: '스트레스 자가진단 결과',
           text: shareText,
-          url: window.location.href,
+          url: `${window.location.origin}/assessment/stress-test`,
         });
       } catch (error) {
         console.log('공유 취소됨');
       }
     } else {
-      navigator.clipboard.writeText(shareText);
+      const shareUrl = `${window.location.origin}/assessment/stress-test`;
+      navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
       toast({
         title: "결과가 복사되었습니다",
         description: "클립보드에 결과를 복사했습니다!",

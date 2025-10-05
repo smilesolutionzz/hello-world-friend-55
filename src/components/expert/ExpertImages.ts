@@ -7,5 +7,6 @@ export const expertImages: Record<string, string> = {
 };
 
 export const getExpertImage = (name: string): string | null => {
+  console.log('Getting image for:', name, expertImages[name]);
   return expertImages[name] || null;
 };

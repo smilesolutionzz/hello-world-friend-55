@@ -1855,10 +1855,12 @@ export type Database = {
           consultation_methods: string[] | null
           created_at: string | null
           education_background: string[] | null
+          featured_order: number | null
           full_name: string
           hourly_rate: number
           id: string
           is_available: boolean | null
+          is_featured: boolean | null
           is_verified: boolean | null
           kakao_link: string | null
           languages: string[] | null
@@ -1878,10 +1880,12 @@ export type Database = {
           consultation_methods?: string[] | null
           created_at?: string | null
           education_background?: string[] | null
+          featured_order?: number | null
           full_name: string
           hourly_rate?: number
           id?: string
           is_available?: boolean | null
+          is_featured?: boolean | null
           is_verified?: boolean | null
           kakao_link?: string | null
           languages?: string[] | null
@@ -1901,10 +1905,12 @@ export type Database = {
           consultation_methods?: string[] | null
           created_at?: string | null
           education_background?: string[] | null
+          featured_order?: number | null
           full_name?: string
           hourly_rate?: number
           id?: string
           is_available?: boolean | null
+          is_featured?: boolean | null
           is_verified?: boolean | null
           kakao_link?: string | null
           languages?: string[] | null

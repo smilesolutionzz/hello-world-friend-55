@@ -25,6 +25,8 @@ interface Expert {
   is_available: boolean;
   is_verified: boolean;
   kakao_link?: string;
+  is_featured?: boolean;
+  featured_order?: number;
 }
 
 interface ExpertListProps {
@@ -52,8 +54,7 @@ export const ExpertList: React.FC<ExpertListProps> = ({
         .from('experts')
         .select('*')
         .eq('is_verified', true)
-        .eq('is_available', true)
-        .order('updated_at', { ascending: false });
+        .eq('is_available', true);
 
       if (specialization) {
         query = query.contains('specializations', [specialization]);
@@ -66,7 +67,18 @@ export const ExpertList: React.FC<ExpertListProps> = ({
       const { data, error } = await query;
 
       if (error) throw error;
-      setExperts(data || []);
+      
+      // Sort experts: featured first (by featured_order), then by updated_at
+      const sortedExperts = (data || []).sort((a, b) => {
+        if (a.is_featured && !b.is_featured) return -1;
+        if (!a.is_featured && b.is_featured) return 1;
+        if (a.is_featured && b.is_featured) {
+          return (a.featured_order || 999) - (b.featured_order || 999);
+        }
+        return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+      });
+      
+      setExperts(sortedExperts);
     } catch (error) {
       console.error('전문가 목록 조회 실패:', error);
       toast({
@@ -213,24 +225,51 @@ export const ExpertList: React.FC<ExpertListProps> = ({
         {experts.map((expert) => (
           <Card 
             key={expert.id} 
-            className="group overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/50 animate-fade-in"
+            className={`group overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 animate-fade-in ${
+              expert.is_featured 
+                ? 'bg-gradient-to-br from-amber-50/50 via-yellow-50/30 to-orange-50/50 border-amber-300 hover:border-amber-400 shadow-lg ring-2 ring-amber-200/50' 
+                : 'hover:border-primary/50'
+            }`}
           >
             <div className="p-8">
+              {expert.is_featured && (
+                <div className="mb-4 -mt-4 -mx-8 px-8 py-3 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-400 border-b-2 border-amber-500">
+                  <div className="flex items-center gap-2 justify-center">
+                    <Award className="w-5 h-5 text-amber-900 animate-pulse" />
+                    <span className="text-sm font-bold text-amber-900 tracking-wide">메인 에이전트 - AIHPRO 창립자</span>
+                    <Award className="w-5 h-5 text-amber-900 animate-pulse" />
+                  </div>
+                </div>
+              )}
               <div className="flex items-start gap-8">
                 {/* 프로필 이미지 */}
                 <div className="relative flex-shrink-0">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full blur-xl group-hover:blur-2xl transition-all" />
-                  <Avatar className="w-28 h-28 border-4 border-background shadow-xl relative">
+                  <div className={`absolute inset-0 rounded-full blur-xl group-hover:blur-2xl transition-all ${
+                    expert.is_featured 
+                      ? 'bg-gradient-to-br from-amber-400/40 to-yellow-400/20' 
+                      : 'bg-gradient-to-br from-primary/20 to-primary/5'
+                  }`} />
+                  <Avatar className={`w-28 h-28 border-4 shadow-xl relative ${
+                    expert.is_featured ? 'border-amber-300 ring-4 ring-amber-200/50' : 'border-background'
+                  }`}>
                     <AvatarImage 
                       src={getExpertImage(expert.full_name) || expert.profile_image_url || ''} 
                       className="object-cover" 
                     />
-                    <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary to-primary/60 text-white">
+                    <AvatarFallback className={`text-2xl font-bold ${
+                      expert.is_featured 
+                        ? 'bg-gradient-to-br from-amber-500 to-yellow-500 text-white'
+                        : 'bg-gradient-to-br from-primary to-primary/60 text-white'
+                    }`}>
                       {expert.full_name.slice(0, 2)}
                     </AvatarFallback>
                   </Avatar>
                   {expert.is_verified && (
-                    <div className="absolute -bottom-2 -right-2 bg-primary text-white rounded-full p-2 shadow-lg">
+                    <div className={`absolute -bottom-2 -right-2 rounded-full p-2 shadow-lg ${
+                      expert.is_featured 
+                        ? 'bg-amber-500 text-white ring-2 ring-amber-300' 
+                        : 'bg-primary text-white'
+                    }`}>
                       <Award className="w-5 h-5" />
                     </div>
                   )}
@@ -240,8 +279,15 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                 <div className="flex-1 space-y-5">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-2xl font-bold">{expert.full_name} 에이전트</h3>
-                      {expert.hourly_rate === 0 && (
+                      <h3 className={`text-2xl font-bold ${
+                        expert.is_featured ? 'text-amber-900' : ''
+                      }`}>{expert.full_name} 에이전트</h3>
+                      {expert.is_featured && (
+                        <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-3 py-1 text-sm font-bold animate-pulse">
+                          ⭐ 추천
+                        </Badge>
+                      )}
+                      {expert.hourly_rate === 0 && !expert.is_featured && (
                         <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 text-sm">
                           무료 봉사
                         </Badge>

@@ -392,9 +392,9 @@ const WellnessLifestyle = () => {
               </Button>
 
               {meditationContent && (
-                <div className="space-y-6 bg-white/50 rounded-xl p-6">
+                <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-blue-100">
                   {meditationContent.meditationImage && (
-                    <div className="rounded-xl overflow-hidden">
+                    <div className="rounded-xl overflow-hidden shadow-xl">
                       <img 
                         src={meditationContent.meditationImage} 
                         alt="명상 이미지" 
@@ -404,7 +404,7 @@ const WellnessLifestyle = () => {
                   )}
                   
                   {meditationContent.audioContent && (
-                    <div className="space-y-4 p-6 bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl border-2 border-blue-200">
+                    <div className="space-y-4 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border-2 border-blue-200 shadow-inner">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center animate-pulse">
@@ -413,7 +413,7 @@ const WellnessLifestyle = () => {
                           <div>
                             <h3 className="font-bold text-blue-900">AI 음성 나레이션</h3>
                             <p className="text-sm text-blue-700">
-                              {isPlaying ? '재생 중...' : 'ElevenLabs로 생성된 맞춤 명상 가이드'}
+                              {isPlaying ? '재생 중...' : 'ElevenLabs 맞춤 명상 가이드'}
                             </p>
                           </div>
                         </div>
@@ -456,15 +456,26 @@ const WellnessLifestyle = () => {
                           <span className="text-sm font-medium">재생 중...</span>
                         </div>
                       )}
-                      
-                      <div className="text-sm text-blue-600 bg-white/50 p-3 rounded-lg">
-                        💡 <strong>팁:</strong> 편안한 자세로 앉거나 누워서 들어보세요. 이어폰 사용을 권장합니다.
-                      </div>
                     </div>
                   )}
                   
                   <div className="prose max-w-none">
-                    <div className="whitespace-pre-wrap text-gray-700">{meditationContent.content}</div>
+                    <div 
+                      className="text-gray-700 leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html: meditationContent.content
+                          .split('\n\n')
+                          .map((section: string) => {
+                            if (section.startsWith('## ')) {
+                              return `<h2 class="text-xl font-bold text-blue-900 mt-6 mb-3 pb-2 border-b-2 border-blue-200">${section.replace('## ', '')}</h2>`;
+                            } else if (section.startsWith('**') || section.startsWith('•')) {
+                              return `<div class="bg-blue-50 p-4 rounded-lg my-3 border-l-4 border-blue-500">${section}</div>`;
+                            }
+                            return `<p class="mb-3">${section}</p>`;
+                          })
+                          .join('')
+                      }}
+                    />
                   </div>
                 </div>
               )}
@@ -509,9 +520,9 @@ const WellnessLifestyle = () => {
               </div>
 
               {workoutPlan && (
-                <div className="space-y-6 bg-white/50 rounded-xl p-6">
+                <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-green-100">
                   {workoutPlan.motivationImage && (
-                    <div className="rounded-xl overflow-hidden">
+                    <div className="rounded-xl overflow-hidden shadow-xl">
                       <img 
                         src={workoutPlan.motivationImage} 
                         alt="운동 동기부여 이미지" 
@@ -521,7 +532,24 @@ const WellnessLifestyle = () => {
                   )}
                   
                   <div className="prose max-w-none">
-                    <div className="whitespace-pre-wrap text-gray-700">{workoutPlan.workoutPlan}</div>
+                    <div 
+                      className="text-gray-700 leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html: workoutPlan.workoutPlan
+                          .split('\n\n')
+                          .map((section: string) => {
+                            if (section.startsWith('## ')) {
+                              return `<h2 class="text-xl font-bold text-green-900 mt-6 mb-3 pb-2 border-b-2 border-green-200">${section.replace('## ', '')}</h2>`;
+                            } else if (section.startsWith('**')) {
+                              return `<div class="bg-green-50 p-4 rounded-lg my-3 border-l-4 border-green-500">${section}</div>`;
+                            } else if (section.startsWith('•')) {
+                              return `<div class="ml-4 my-2">${section}</div>`;
+                            }
+                            return `<p class="mb-3">${section}</p>`;
+                          })
+                          .join('')
+                      }}
+                    />
                   </div>
                 </div>
               )}
@@ -553,9 +581,9 @@ const WellnessLifestyle = () => {
               </Button>
 
               {nutritionPlan && (
-                <div className="space-y-6 bg-white/50 rounded-xl p-6">
+                <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-orange-100">
                   {nutritionPlan.mealImage && (
-                    <div className="rounded-xl overflow-hidden">
+                    <div className="rounded-xl overflow-hidden shadow-xl">
                       <img 
                         src={nutritionPlan.mealImage} 
                         alt="식사 이미지" 
@@ -565,7 +593,24 @@ const WellnessLifestyle = () => {
                   )}
                   
                   <div className="prose max-w-none">
-                    <div className="whitespace-pre-wrap text-gray-700">{nutritionPlan.nutritionPlan}</div>
+                    <div 
+                      className="text-gray-700 leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html: nutritionPlan.nutritionPlan
+                          .split('\n\n')
+                          .map((section: string) => {
+                            if (section.startsWith('## ')) {
+                              return `<h2 class="text-xl font-bold text-orange-900 mt-6 mb-3 pb-2 border-b-2 border-orange-200">${section.replace('## ', '')}</h2>`;
+                            } else if (section.startsWith('**')) {
+                              return `<div class="bg-orange-50 p-4 rounded-lg my-3 border-l-4 border-orange-500">${section}</div>`;
+                            } else if (section.startsWith('•')) {
+                              return `<div class="ml-4 my-2">${section}</div>`;
+                            }
+                            return `<p class="mb-3">${section}</p>`;
+                          })
+                          .join('')
+                      }}
+                    />
                   </div>
                 </div>
               )}
@@ -618,9 +663,9 @@ const WellnessLifestyle = () => {
               </Button>
 
               {sleepAnalysis && (
-                <div className="space-y-6 bg-white/50 rounded-xl p-6">
+                <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-purple-100">
                   {sleepAnalysis.sleepEnvironmentImage && (
-                    <div className="rounded-xl overflow-hidden">
+                    <div className="rounded-xl overflow-hidden shadow-xl">
                       <img 
                         src={sleepAnalysis.sleepEnvironmentImage} 
                         alt="수면 환경 이미지" 
@@ -629,14 +674,31 @@ const WellnessLifestyle = () => {
                     </div>
                   )}
                   
-                  <div className="bg-purple-100 p-4 rounded-lg">
-                    <p className="text-purple-900 font-semibold">
-                      예상 수면 시간: {sleepAnalysis.sleepDuration}
+                  <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-5 rounded-xl border-l-4 border-purple-500 shadow-inner">
+                    <p className="text-purple-900 font-bold text-lg">
+                      ⏰ 예상 수면 시간: {sleepAnalysis.sleepDuration}
                     </p>
                   </div>
                   
                   <div className="prose max-w-none">
-                    <div className="whitespace-pre-wrap text-gray-700">{sleepAnalysis.sleepAnalysis}</div>
+                    <div 
+                      className="text-gray-700 leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html: sleepAnalysis.sleepAnalysis
+                          .split('\n\n')
+                          .map((section: string) => {
+                            if (section.startsWith('## ')) {
+                              return `<h2 class="text-xl font-bold text-purple-900 mt-6 mb-3 pb-2 border-b-2 border-purple-200">${section.replace('## ', '')}</h2>`;
+                            } else if (section.startsWith('**')) {
+                              return `<div class="bg-purple-50 p-4 rounded-lg my-3 border-l-4 border-purple-500">${section}</div>`;
+                            } else if (section.startsWith('•')) {
+                              return `<div class="ml-4 my-2">${section}</div>`;
+                            }
+                            return `<p class="mb-3">${section}</p>`;
+                          })
+                          .join('')
+                      }}
+                    />
                   </div>
                 </div>
               )}

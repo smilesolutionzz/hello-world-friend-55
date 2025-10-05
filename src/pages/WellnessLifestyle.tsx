@@ -319,12 +319,38 @@ const WellnessLifestyle = () => {
           {/* Meditation Section */}
           <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-0 shadow-xl">
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-4">
                 <CardTitle className="text-2xl font-bold text-blue-900 flex items-center gap-3">
                   <Brain className="h-8 w-8" />
                   AI 맞춤 명상
                 </CardTitle>
-                <Badge className="bg-blue-500 text-white">ElevenLabs 음성</Badge>
+                <div className="flex items-center gap-3">
+                  <Badge className="bg-blue-500 text-white">ElevenLabs 음성</Badge>
+                  
+                  {/* 명상 듣기 CTA 버튼 - 우측 상단 */}
+                  {meditationContent && meditationContent.audioContent && (
+                    <Button
+                      onClick={() => toggleAudio(meditationContent.audioContent)}
+                      className={`${
+                        isPlaying 
+                          ? 'bg-red-500 hover:bg-red-600' 
+                          : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
+                      } text-white px-6 py-3 shadow-lg transition-all flex items-center gap-2`}
+                    >
+                      {isPlaying ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white"></div>
+                          정지
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="h-5 w-5" />
+                          명상 듣기
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">

@@ -11,8 +11,10 @@ import expertLeeSuseok from '@/assets/expert-lee-suseok-male.jpg';
 import expertHeoSeungryong from '@/assets/expert-heo-seungryong-male.jpg';
 import expertSongSeongmokNew from '@/assets/expert-song-seongmok-male.jpg';
 import expertLeeSangrok from '@/assets/expert-lee-sangrok.jpg';
+import expertMoonGiwung from '@/assets/expert-moon-giwung.jpg';
 
 export const expertImages: Record<string, string> = {
+  '문기웅': expertMoonGiwung,
   '이수석': expertLeeSuseok,
   '허승룡': expertHeoSeungryong,
   '송성목': expertSongSeongmokNew,

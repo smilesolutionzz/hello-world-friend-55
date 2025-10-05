@@ -321,7 +321,7 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                         <div className="text-3xl font-bold text-primary">
                           {expert.hourly_rate.toLocaleString()}원
                         </div>
-                        <div className="text-sm text-muted-foreground">회당</div>
+                        <div className="text-sm text-muted-foreground">50분 기준</div>
                       </>
                     )}
                   </div>

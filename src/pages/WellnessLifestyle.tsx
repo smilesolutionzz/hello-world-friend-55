@@ -23,7 +23,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -33,6 +33,8 @@ const WellnessLifestyle = () => {
   
   // Meditation state
   const [meditationContent, setMeditationContent] = useState<any>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   
   // Workout state
   const [workoutPlan, setWorkoutPlan] = useState<any>(null);
@@ -199,9 +201,49 @@ const WellnessLifestyle = () => {
     }
   };
 
-  const playAudio = (base64Audio: string) => {
-    const audio = new Audio(`data:audio/mpeg;base64,${base64Audio}`);
-    audio.play();
+  const toggleAudio = (base64Audio: string) => {
+    if (isPlaying && audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      
+      const audio = new Audio(`data:audio/mpeg;base64,${base64Audio}`);
+      audioRef.current = audio;
+      
+      audio.onended = () => {
+        setIsPlaying(false);
+      };
+      
+      audio.onerror = () => {
+        toast({
+          title: '오디오 재생 오류',
+          description: '오디오를 재생할 수 없습니다.',
+          variant: 'destructive',
+        });
+        setIsPlaying(false);
+      };
+      
+      audio.play()
+        .then(() => {
+          setIsPlaying(true);
+          toast({
+            title: '🎵 나레이션 재생 중',
+            description: '편안하게 들어보세요.',
+          });
+        })
+        .catch((error) => {
+          console.error('Audio play error:', error);
+          toast({
+            title: '재생 오류',
+            description: '오디오 재생에 실패했습니다.',
+            variant: 'destructive',
+          });
+          setIsPlaying(false);
+        });
+    }
   };
 
   const achievementPercentage = (completedTasks.length / 4) * 100;
@@ -311,15 +353,62 @@ const WellnessLifestyle = () => {
                   )}
                   
                   {meditationContent.audioContent && (
-                    <div className="flex items-center gap-4 p-4 bg-blue-100 rounded-lg">
-                      <Button
-                        onClick={() => playAudio(meditationContent.audioContent)}
-                        className="bg-blue-600 hover:bg-blue-700"
-                      >
-                        <Volume2 className="h-5 w-5 mr-2" />
-                        음성 듣기
-                      </Button>
-                      <span className="text-sm text-blue-700">AI가 생성한 맞춤 명상 나레이션</span>
+                    <div className="space-y-4 p-6 bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl border-2 border-blue-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center animate-pulse">
+                            <Volume2 className="h-6 w-6 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-blue-900">AI 음성 나레이션</h3>
+                            <p className="text-sm text-blue-700">
+                              {isPlaying ? '재생 중...' : 'ElevenLabs로 생성된 맞춤 명상 가이드'}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          onClick={() => toggleAudio(meditationContent.audioContent)}
+                          className={`px-8 py-6 text-lg font-semibold ${
+                            isPlaying 
+                              ? 'bg-red-500 hover:bg-red-600' 
+                              : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
+                          } text-white shadow-lg transition-all`}
+                        >
+                          {isPlaying ? (
+                            <>
+                              <div className="w-4 h-4 mr-2 border-2 border-white"></div>
+                              정지
+                            </>
+                          ) : (
+                            <>
+                              <Play className="h-5 w-5 mr-2" />
+                              듣기
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                      
+                      {isPlaying && (
+                        <div className="flex items-center gap-2 text-blue-700 animate-pulse">
+                          <div className="flex gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <div
+                                key={i}
+                                className="w-1 bg-blue-500 rounded-full animate-pulse"
+                                style={{
+                                  height: `${Math.random() * 20 + 10}px`,
+                                  animationDelay: `${i * 0.1}s`
+                                }}
+                              ></div>
+                            ))}
+                          </div>
+                          <span className="text-sm font-medium">재생 중...</span>
+                        </div>
+                      )}
+                      
+                      <div className="text-sm text-blue-600 bg-white/50 p-3 rounded-lg">
+                        💡 <strong>팁:</strong> 편안한 자세로 앉거나 누워서 들어보세요. 이어폰 사용을 권장합니다.
+                      </div>
                     </div>
                   )}
                   

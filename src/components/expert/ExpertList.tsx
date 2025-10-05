@@ -7,6 +7,7 @@ import { Star, MessageCircle, Video, Mic, Clock, Award } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { getExpertImage } from './ExpertImages';
 
 interface Expert {
   id: string;
@@ -220,7 +221,10 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                 <div className="relative flex-shrink-0">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full blur-xl group-hover:blur-2xl transition-all" />
                   <Avatar className="w-28 h-28 border-4 border-background shadow-xl relative">
-                    <AvatarImage src={expert.profile_image_url || ''} className="object-cover" />
+                    <AvatarImage 
+                      src={getExpertImage(expert.full_name) || expert.profile_image_url || ''} 
+                      className="object-cover" 
+                    />
                     <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary to-primary/60 text-white">
                       {expert.full_name.slice(0, 2)}
                     </AvatarFallback>

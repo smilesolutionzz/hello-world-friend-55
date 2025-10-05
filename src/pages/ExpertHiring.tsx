@@ -1433,22 +1433,32 @@ const ExpertHiring = () => {
                   />
                 </div>
                 <Select value={specialtyFilter} onValueChange={setSpecialtyFilter}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white">
                     <SelectValue placeholder="전문 분야" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white z-50">
                     <SelectItem value="all">전체</SelectItem>
                     <SelectItem value="아동발달">아동발달</SelectItem>
                     <SelectItem value="언어치료">언어치료</SelectItem>
                     <SelectItem value="심리상담">심리상담</SelectItem>
                     <SelectItem value="행동분석">행동분석</SelectItem>
+                    <SelectItem value="한의사">한의사</SelectItem>
+                    <SelectItem value="음악치료">음악치료</SelectItem>
+                    <SelectItem value="놀이치료">놀이치료</SelectItem>
+                    <SelectItem value="감각통합">감각통합</SelectItem>
+                    <SelectItem value="운동재활">운동재활</SelectItem>
+                    <SelectItem value="행동치료">행동치료</SelectItem>
+                    <SelectItem value="발달재활">발달재활</SelectItem>
+                    <SelectItem value="약물관련">약물관련</SelectItem>
+                    <SelectItem value="ABA치료">ABA치료</SelectItem>
+                    <SelectItem value="전문의사">전문의사</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={priceFilter} onValueChange={setPriceFilter}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white">
                     <SelectValue placeholder="가격대" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white z-50">
                     <SelectItem value="all">전체</SelectItem>
                     <SelectItem value="low">15만원 이하</SelectItem>
                     <SelectItem value="medium">15-25만원</SelectItem>
@@ -1456,10 +1466,10 @@ const ExpertHiring = () => {
                   </SelectContent>
                 </Select>
                 <Select value={locationFilter} onValueChange={setLocationFilter}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white">
                     <SelectValue placeholder="지역" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white z-50">
                     <SelectItem value="all">전체</SelectItem>
                     <SelectItem value="online">온라인</SelectItem>
                     <SelectItem value="서울">서울</SelectItem>

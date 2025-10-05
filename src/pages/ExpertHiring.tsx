@@ -51,6 +51,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
 import GrowthStoryFeed from '@/components/growth/GrowthStoryFeed';
 import GrowthStoryShare from '@/components/growth/GrowthStoryShare';
+import { getExpertImage } from '@/components/expert/ExpertImages';
 
 interface Expert {
   id: string;
@@ -301,7 +302,8 @@ const ExpertHiring = () => {
         .from('experts')
         .select('*')
         .eq('is_verified', true)
-        .eq('is_available', true);
+        .eq('is_available', true)
+        .order('updated_at', { ascending: false });
       
       if (error) {
         console.error('Error loading experts:', error);
@@ -322,7 +324,7 @@ const ExpertHiring = () => {
           availability: '평일 9-18시',
           monthlyPrice: expert.hourly_rate * 4, // 월 4회 기준
           hourlyPrice: expert.hourly_rate,
-          image: expert.profile_image_url || '/api/placeholder/150/150',
+          image: getExpertImage(expert.full_name) || expert.profile_image_url || '/api/placeholder/150/150',
           description: expert.bio || '',
           languages: expert.languages || ['한국어'],
           consultationTypes: expert.consultation_methods || ['화상상담'],
@@ -893,6 +895,30 @@ const ExpertHiring = () => {
 
   const handleConsultExpert = async (expertId: string) => {
     try {
+      // 1) DB에서 전문가 정보 조회
+      const { data: dbExpert, error: expertErr } = await supabase
+        .from('experts')
+        .select('*')
+        .eq('id', expertId)
+        .maybeSingle();
+
+      if (expertErr) {
+        console.error('전문가 조회 오류:', expertErr);
+        toast.error('전문가 정보를 불러오지 못했습니다.');
+        return;
+      }
+      if (!dbExpert) {
+        toast.error('전문가를 찾을 수 없습니다.');
+        return;
+      }
+
+      // 2) 카카오 오픈채팅 링크가 있으면 즉시 외부로 이동 (로그인 불필요)
+      if (dbExpert.kakao_link) {
+        window.open(dbExpert.kakao_link, '_blank');
+        return;
+      }
+
+      // 3) 내부 상담 흐름 (로그인 필요)
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast.error('로그인이 필요합니다.');
@@ -900,26 +926,14 @@ const ExpertHiring = () => {
         return;
       }
 
-      const expert = mockExperts.find(e => e.id === expertId);
-      if (!expert) {
-        toast.error('전문가를 찾을 수 없습니다.');
-        return;
-      }
-
-      const { data: dbExpert } = await supabase
-        .from('experts')
-        .select('*')
-        .eq('id', expertId)
-        .single();
-
       const consultationData = {
         user_id: user.id,
-        expert_id: dbExpert?.id || expertId,
+        expert_id: dbExpert.id,
         consultation_type: 'text',
         status: 'pending',
-        price: expert.hourlyPrice,
+        price: dbExpert.hourly_rate ?? 0,
         scheduled_at: new Date().toISOString()
-      };
+      } as const;
 
       const { data: consultation, error } = await supabase
         .from('consultations')
@@ -937,7 +951,7 @@ const ExpertHiring = () => {
         .from('chat_rooms')
         .insert({
           user_id: user.id,
-          expert_id: dbExpert?.id || expertId,
+          expert_id: dbExpert.id,
           status: 'active'
         })
         .select()
@@ -949,7 +963,7 @@ const ExpertHiring = () => {
         return;
       }
 
-      toast.success(`${expert.name} 전문가와의 상담이 시작됩니다.`);
+      toast.success(`${dbExpert.full_name} 에이전트와의 상담이 시작됩니다.`);
       navigate(`/consultation/${chatRoom.id}`);
     } catch (error) {
       console.error('상담 시작 오류:', error);
@@ -1332,9 +1346,9 @@ const ExpertHiring = () => {
                             {expert.name[0]}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1 text-center sm:text-left">
-                          <div className="flex items-center gap-2 justify-center sm:justify-start mb-2">
-                            <h4 className="font-bold text-base sm:text-lg text-gray-800">{expert.name}</h4>
+            <div className="flex-1 text-center sm:text-left">
+              <div className="flex items-center gap-2 justify-center sm:justify-start mb-2">
+                <h4 className="font-bold text-base sm:text-lg text-gray-800">{expert.name} 에이전트</h4>
                             {expert.aiMatchScore && (
                               <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
                                 매칭도 {expert.aiMatchScore}%
@@ -1453,8 +1467,8 @@ const ExpertHiring = () => {
                           {expert.name[0]}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex-1">
-                        <h4 className="font-bold text-lg text-gray-800">{expert.name}</h4>
+            <div className="flex-1">
+              <h4 className="font-bold text-lg text-gray-800">{expert.name} 에이전트</h4>
                         <div className="flex items-center gap-2 mt-1">
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                           <span className="font-medium">{expert.rating}</span>
@@ -1967,8 +1981,8 @@ const ExpertHiring = () => {
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <h3 className="font-semibold">{expert.name}</h3>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="font-semibold">{expert.name} 에이전트</h3>
                                   {index === 0 && (
                                     <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white">
                                       🏆 최고 매칭

@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, X } from 'lucide-react';
 import AIPlatformChat from './AIPlatformChat';
 
 const FloatingChatCTA = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  
+  // 결과 페이지에서는 숨김
+  const hideOnRoutes = ['/fun-test-result', '/han-medicine-test'];
+  if (hideOnRoutes.some(route => location.pathname.includes(route))) {
+    return null;
+  }
 
   return (
     <>

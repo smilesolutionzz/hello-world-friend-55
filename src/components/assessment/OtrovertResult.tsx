@@ -87,7 +87,7 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
   ] : [];
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className="container mx-auto p-6 max-w-4xl pb-32">
       <Card className="border-2 border-primary/20 overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
           <div className="text-center space-y-4">

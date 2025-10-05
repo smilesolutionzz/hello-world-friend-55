@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const location = useLocation();
+  
+  // 결과 페이지에서는 숨김
+  const hideOnRoutes = ['/fun-test-result', '/han-medicine-test'];
+  const shouldHide = hideOnRoutes.some(route => location.pathname.includes(route));
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -25,6 +31,8 @@ const BackToTop = () => {
       behavior: 'smooth',
     });
   };
+
+  if (shouldHide) return null;
 
   return (
     <Button

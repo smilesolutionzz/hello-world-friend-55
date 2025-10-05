@@ -111,7 +111,7 @@ export default function FunTestResult() {
 
   if (testType === 'past_life_job') {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-6 max-w-4xl pb-32">
         <Card className="border-2 border-primary/20 overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -228,7 +228,7 @@ export default function FunTestResult() {
 
   if (testType === 'animal_face_match') {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-6 max-w-4xl pb-32">
         <Card className="border-2 border-primary/20 overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -389,7 +389,7 @@ export default function FunTestResult() {
 
   if (testType === 'inner_animal') {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-6 max-w-4xl pb-32">
         <Card className="border-2 border-primary/20 overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white">
             <div className="flex items-center justify-center gap-3 mb-4">

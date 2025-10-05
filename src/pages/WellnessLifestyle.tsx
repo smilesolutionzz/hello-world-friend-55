@@ -209,29 +209,26 @@ const WellnessLifestyle = () => {
   };
 
   const toggleAudio = (base64Audio: string) => {
-    const playFromBlob = (b64: string) => {
+    const playFromBase64DataUrl = (b64: string) => {
       try {
-        // Convert base64 -> Blob -> Object URL for maximum compatibility (iOS/Android/Chrome)
-        const binary = atob(b64);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-        const blob = new Blob([bytes], { type: 'audio/mpeg' });
-        const url = URL.createObjectURL(blob);
+        // Build data URL directly to avoid atob decoding issues
+        const cleaned = b64
+          .replace(/^data:audio\/[a-zA-Z0-9.+-]+;base64,/, '')
+          .replace(/[\r\n\s]/g, '');
+        const dataUrl = `data:audio/mpeg;base64,${cleaned}`;
 
         if (audioRef.current) {
           audioRef.current.pause();
           audioRef.current.src = '';
         }
         const audio = new Audio();
-        audio.src = url;
+        audio.src = dataUrl;
         audioRef.current = audio;
 
         audio.onended = () => {
           setIsPlaying(false);
-          URL.revokeObjectURL(url);
         };
         audio.onerror = () => {
-          URL.revokeObjectURL(url);
           toast({
             title: '오디오 재생 오류',
             description: '오디오를 재생할 수 없습니다. 잠시 후 다시 시도해주세요.',
@@ -252,7 +249,7 @@ const WellnessLifestyle = () => {
             setIsPlaying(false);
           });
       } catch (e) {
-        console.error('Audio blob/playback error:', e);
+        console.error('Audio base64/playback error:', e);
         toast({ title: '재생 오류', description: '오디오 데이터 처리 중 오류가 발생했습니다.', variant: 'destructive' });
       }
     };
@@ -264,7 +261,7 @@ const WellnessLifestyle = () => {
     }
 
     // Start playing
-    playFromBlob(base64Audio);
+    playFromBase64DataUrl(base64Audio);
   };
 
   const achievementPercentage = (completedTasks.length / 4) * 100;
@@ -419,7 +416,7 @@ const WellnessLifestyle = () => {
                   
                   {meditationContent.audioContent && (
                     <div className="space-y-4 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border-2 border-blue-200 shadow-inner">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center animate-pulse">
                             <Volume2 className="h-6 w-6 text-white" />
@@ -433,7 +430,7 @@ const WellnessLifestyle = () => {
                         </div>
                         <Button
                           onClick={() => toggleAudio(meditationContent.audioContent)}
-                          className={`px-8 py-6 text-lg font-semibold ${
+                          className={`w-full md:w-auto px-8 py-6 text-lg font-semibold ${
                             isPlaying 
                               ? 'bg-red-500 hover:bg-red-600' 
                               : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'

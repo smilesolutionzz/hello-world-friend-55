@@ -34,17 +34,6 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
     },
     {
       id: 2,
-      title: "3분 심리체크",
-      subtitle: "빠른 기본 상태 확인",
-      icon: Clock,
-      color: "card-glass-blue", 
-      iconColor: "icon-blue",
-      route: "/assessment",
-      description: "짧은 시간에 현재 마음 상태를 체크해보세요",
-      emoji: "⏱️"
-    },
-    {
-      id: 3,
       title: "관찰일지 작성",
       subtitle: "체계적인 행동 기록",
       icon: FileText,
@@ -53,6 +42,17 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
       route: "/observation",
       description: "일상 속 패턴을 발견하고 개선점을 찾아보세요",
       emoji: "📝"
+    },
+    {
+      id: 3,
+      title: "3분 온보딩",
+      subtitle: "빠른 기본 상태 확인",
+      icon: Clock,
+      color: "card-glass-blue", 
+      iconColor: "icon-blue",
+      route: "/assessment",
+      description: "짧은 시간에 현재 마음 상태를 체크해보세요",
+      emoji: "⏱️"
     },
     {
       id: 4,

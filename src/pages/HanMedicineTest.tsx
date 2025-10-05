@@ -301,50 +301,7 @@ const HanMedicineTest = () => {
                 </CardContent>
               </Card>
 
-              {/* 프리미엄 정밀 체질 진단 */}
-              <Card className="relative overflow-hidden border-2 border-purple-200 hover:border-purple-300 transition-all group">
-                <div className="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  <Crown className="h-3 w-3 inline mr-1" />
-                  프리미엄
-                </div>
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg flex items-center justify-center">
-                      <Star className="h-6 w-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl text-foreground">프리미엄 정밀 체질체크</CardTitle>
-                      <p className="text-sm text-muted-foreground">상세하고 정확한 맞춤 분석</p>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm text-muted-foreground">정밀 사상체질 + 대사타입 분석</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm text-muted-foreground">개인 맞춤 식단표 제공</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm text-muted-foreground">운동법 + 한약재 추천</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm text-muted-foreground">전문가 1:1 상담 가능</span>
-                    </div>
-                  </div>
-                  <Button 
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                    onClick={() => handleTestSelection('premium')}
-                  >
-                    정밀 체질체크 받기
-                  </Button>
-                </CardContent>
-              </Card>
+              {/* 프리미엄 정밀 체질 진단 - 기능 비활성화로 임시 제거 */}
             </div>
 
             {/* 추가 특화 진단 프로그램 */}

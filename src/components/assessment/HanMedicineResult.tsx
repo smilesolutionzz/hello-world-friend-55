@@ -607,68 +607,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
           </CardContent>
         </Card>
 
-        {/* 프리미엄 정밀 체질체크 CTA */}
-        {!enhancedAnalysis && (
-          <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 shadow-xl">
-            <CardContent className="p-8">
-              <div className="flex items-start gap-4 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <Sparkles className="h-8 w-8 text-white" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-2xl font-bold text-purple-900">프리미엄 정밀 체질체크</h3>
-                    <Badge className="bg-purple-600 text-white">NEW</Badge>
-                  </div>
-                  <p className="text-purple-800/80">상세하고 정확한 맞춤 분석</p>
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
-                <div className="bg-white/80 rounded-xl p-4 border border-purple-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <span className="text-green-600 font-bold">✓</span>
-                    </div>
-                    <span className="font-semibold text-purple-900">정밀 사상체질 + 대사타입 분석</span>
-                  </div>
-                </div>
-                <div className="bg-white/80 rounded-xl p-4 border border-purple-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <span className="text-green-600 font-bold">✓</span>
-                    </div>
-                    <span className="font-semibold text-purple-900">개인 맞춤 식단표 제공</span>
-                  </div>
-                </div>
-                <div className="bg-white/80 rounded-xl p-4 border border-purple-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <span className="text-green-600 font-bold">✓</span>
-                    </div>
-                    <span className="font-semibold text-purple-900">운동법 + 한약재 추천</span>
-                  </div>
-                </div>
-                <div className="bg-white/80 rounded-xl p-4 border border-purple-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <span className="text-green-600 font-bold">✓</span>
-                    </div>
-                    <span className="font-semibold text-purple-900">전문가 1:1 상담 가능</span>
-                  </div>
-                </div>
-              </div>
-
-              <Button
-                onClick={() => window.location.href = '/han-medicine-test'}
-                className="w-full h-14 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg font-bold shadow-lg"
-              >
-                정밀 체질체크 받기
-                <ExternalLink className="h-5 w-5 ml-2" />
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+        {/* 프리미엄 정밀 체질체크 CTA - 요청으로 제거 */}
 
         {/* 가까이한의원 연계 섹션 */}
         <Card className="border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">

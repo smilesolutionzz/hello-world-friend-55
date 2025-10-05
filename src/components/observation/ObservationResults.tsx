@@ -486,6 +486,9 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
                             <Target className="h-5 w-5 text-green-600" />
                             🎯 주요 관찰 포인트
                           </CardTitle>
+                          <CardDescription className="text-sm text-muted-foreground mt-1">
+                            ※ 아래 내용은 권고사항으로 참고하시기 바랍니다
+                          </CardDescription>
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-3">
@@ -508,6 +511,9 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
                             <Lightbulb className="h-5 w-5 text-yellow-600" />
                             💡 개선 제안
                           </CardTitle>
+                          <CardDescription className="text-sm text-muted-foreground mt-1">
+                            ※ 아래 내용은 권고사항으로 참고하시기 바랍니다
+                          </CardDescription>
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-3">
@@ -552,6 +558,9 @@ const ObservationResults = ({ session, onBack }: ObservationResultsProps) => {
                             <AlertTriangle className="h-5 w-5 text-red-600" />
                             ⚠️ 주의사항
                           </CardTitle>
+                          <CardDescription className="text-sm text-muted-foreground mt-1">
+                            ※ 아래 내용은 권고사항으로 참고하시기 바랍니다
+                          </CardDescription>
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-3">

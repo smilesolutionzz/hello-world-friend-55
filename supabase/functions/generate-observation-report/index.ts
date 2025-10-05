@@ -295,9 +295,9 @@ function generateReportHTML(sessionData: any, reportType: string): string {
     </style>
 </head>
 <body>
-    <div style="text-align: center; margin-bottom: 30px; padding: 20px 0; border-bottom: 2px solid #e2e8f0;">
-        <div style="font-size: 24px; font-weight: bold; color: #3b82f6; margin-bottom: 5px;">AIHPRO.COM</div>
-        <div style="font-size: 12px; color: #666;">AIH 기반 아동발달 관찰 전문 플랫폼</div>
+    <div style="text-align: center; margin-bottom: 30px; padding: 30px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px;">
+        <div style="font-size: 32px; font-weight: bold; margin-bottom: 8px;">aihpro.com</div>
+        <div style="font-size: 14px; opacity: 0.95;">AI 기반 심리 관찰 분석 전문 플랫폼</div>
     </div>
     
     <!-- Header -->
@@ -360,23 +360,25 @@ function generateReportHTML(sessionData: any, reportType: string): string {
 
     <!-- AI Expert Analysis Results -->
     <div class="section page-break">
-        <h2 class="section-title">🧠 AI 전문 분석 결과</h2>
+        <h2 class="section-title">🧠 AI 분석</h2>
         ${generateAIAnalysisSection(sessionData)}
+    </div>
+
+    <!-- Score Analysis -->
+    <div class="section">
+        <h2 class="section-title">📊 점수 분석</h2>
+        ${generateScoreAnalysisSection(sessionData)}
     </div>
 
     <!-- Expert Recommendations -->
     <div class="section">
-        <h2 class="section-title">💡 전문가 권고사항</h2>
+        <h2 class="section-title">💡 권고사항</h2>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">※ 아래 내용은 권고사항으로 참고하시기 바랍니다</p>
         ${generateExpertRecommendations(sessionData)}
     </div>
 
-    <!-- Detailed Analysis (Original) -->
-    <div class="section">
-        <h2 class="section-title">🔍 상세 분석</h2>
-        <div class="analysis-text">
-            ${sessionData.ai_analysis || '분석 데이터가 없습니다.'}
-        </div>
-    </div>
+    <!-- Content Recommendations -->
+    ${generateContentRecommendationsSection(sessionData)}
 
     <!-- Raw Data (if comprehensive report) -->
     ${reportType === 'comprehensive' ? generateRawDataSection(sessionData.raw_data) : ''}
@@ -589,6 +591,51 @@ function generateAIAnalysisSection(sessionData: any): string {
   `;
 }
 
+function generateScoreAnalysisSection(sessionData: any): string {
+  const scores = sessionData.analysis_data?.scores || {};
+  
+  if (Object.keys(scores).length === 0) {
+    return '<p style="color: #666;">점수 데이터가 없습니다.</p>';
+  }
+  
+  return `
+    <div class="score-grid" style="margin-top: 20px;">
+      ${Object.entries(scores).map(([category, data]: [string, any]) => `
+        <div class="score-card">
+          <div class="score-value">${data.average.toFixed(1)}</div>
+          <div class="score-label">${category}</div>
+          <div style="margin-top: 10px; font-size: 12px; color: #666;">
+            범위: ${data.min?.toFixed(1) || 'N/A'} ~ ${data.max?.toFixed(1) || 'N/A'}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function generateContentRecommendationsSection(sessionData: any): string {
+  const contentRecs = sessionData.content_recommendations || [];
+  
+  if (contentRecs.length === 0) {
+    return '';
+  }
+  
+  return `
+    <div class="section">
+      <h2 class="section-title">📚 컨텐츠 추천</h2>
+      <div style="display: grid; gap: 20px;">
+        ${contentRecs.map((item: any) => `
+          <div style="background: #f9fafb; padding: 20px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+            <h4 style="color: #7c3aed; margin-bottom: 10px; font-size: 16px;">${item.title || '추천 컨텐츠'}</h4>
+            <p style="color: #4b5563; line-height: 1.6; margin-bottom: 12px;">${item.description || ''}</p>
+            ${item.link ? `<a href="${item.link}" style="color: #8b5cf6; text-decoration: none; font-size: 14px;">자세히 보기 →</a>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
 function generateExpertRecommendations(sessionData: any): string {
   const analysisData = sessionData.analysis_data || {};
   const aiReport = analysisData.report || {};
@@ -599,11 +646,11 @@ function generateExpertRecommendations(sessionData: any): string {
   if (aiReport.tips && aiReport.tips.length > 0) {
     recommendationsContent += `
       <div class="recommendation-section">
-        <h4 style="color: #059669; margin-bottom: 15px;">📋 전문가 권고사항</h4>
+        <h4 style="color: #059669; margin-bottom: 15px;">전문가 제안</h4>
         <ul class="recommendation-list">
           ${aiReport.tips.map((tip: string, index: number) => `
             <li class="recommendation-item">
-              <div class="recommendation-title">권고사항 ${index + 1}</div>
+              <div class="recommendation-title">제안 ${index + 1}</div>
               <div>${tip}</div>
             </li>
           `).join('')}
@@ -616,7 +663,7 @@ function generateExpertRecommendations(sessionData: any): string {
   if (sessionData.recommendations && sessionData.recommendations.length > 0) {
     recommendationsContent += `
       <div class="recommendation-section" style="margin-top: 30px;">
-        <h4 style="color: #059669; margin-bottom: 15px;">📝 추가 권고사항</h4>
+        <h4 style="color: #059669; margin-bottom: 15px;">추가 권고사항</h4>
         <ul class="recommendation-list">
           ${generateRecommendationsList(sessionData.recommendations)}
         </ul>

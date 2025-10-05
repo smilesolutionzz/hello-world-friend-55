@@ -240,7 +240,7 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                 <div className="flex-1 space-y-5">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-2xl font-bold">{expert.full_name}</h3>
+                      <h3 className="text-2xl font-bold">{expert.full_name} 에이전트</h3>
                       {expert.hourly_rate === 0 && (
                         <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 text-sm">
                           무료 봉사

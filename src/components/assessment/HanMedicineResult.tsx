@@ -13,7 +13,9 @@ import {
   Activity, 
   Home,
   ExternalLink,
-  Loader2
+  Loader2,
+  Star,
+  Sparkles
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -57,25 +59,22 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
       }
 
       if (data && data.analysis) {
-        setEnhancedAnalysis(data.analysis);
+        // Parse structured JSON analysis
+        const parsedAnalysis = typeof data.analysis === 'string' 
+          ? JSON.parse(data.analysis) 
+          : data.analysis;
+        
+        setEnhancedAnalysis(parsedAnalysis);
         setClinicInfo(data.clinicInfo);
         toast({
           title: "AI 분석 완료",
           description: "30년 경력 한의사 수준의 전문 분석이 완료되었습니다.",
         });
       } else {
-        // 실패한 경우에도 기본 분석 제공
-        setEnhancedAnalysis(data?.analysis || generateBasicAnalysis());
-        setAnalysisError("AI 분석 중 일부 문제가 발생했지만, 기본 분석을 제공합니다.");
-        toast({
-          title: "기본 분석 제공",
-          description: "네트워크 문제로 기본 분석을 제공합니다.",
-          variant: "default"
-        });
+        throw new Error('Invalid analysis data');
       }
     } catch (error) {
       console.error('분석 생성 중 오류:', error);
-      setEnhancedAnalysis(generateBasicAnalysis());
       setAnalysisError("AI 분석 서비스 일시 중단. 기본 분석을 제공합니다.");
       toast({
         title: "기본 분석 제공",
@@ -360,6 +359,122 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
     }
   };
 
+  const renderStructuredAnalysis = (analysis: any) => {
+    if (typeof analysis === 'string') {
+      return <div className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{analysis}</div>;
+    }
+
+    return (
+      <div className="space-y-6">
+        {/* 체질 분석 */}
+        {analysis.constitution && (
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+            <h3 className="text-lg font-bold text-blue-900 mb-3 flex items-center gap-2">
+              🏥 체질 분석
+            </h3>
+            <p className="text-sm leading-relaxed text-blue-900/80">{analysis.constitution}</p>
+          </div>
+        )}
+
+        {/* 한약 추천 */}
+        {analysis.herbalRecommendation && (
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+            <h3 className="text-lg font-bold text-green-900 mb-3 flex items-center gap-2">
+              🌿 한약 추천
+            </h3>
+            <div className="space-y-3">
+              <div>
+                <h4 className="font-semibold text-green-800 mb-1">{analysis.herbalRecommendation.name}</h4>
+                <p className="text-sm text-green-900/70">{analysis.herbalRecommendation.description}</p>
+              </div>
+              {analysis.herbalRecommendation.ingredients && (
+                <div className="flex flex-wrap gap-2">
+                  {analysis.herbalRecommendation.ingredients.map((ingredient: string, idx: number) => (
+                    <span key={idx} className="bg-white px-3 py-1 rounded-full text-xs font-medium text-green-700 border border-green-200">
+                      {ingredient}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 한의사 분석 */}
+        {analysis.professionalAnalysis && (
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+            <h3 className="text-lg font-bold text-purple-900 mb-3 flex items-center gap-2">
+              👨‍⚕️ 전문가 소견
+            </h3>
+            <p className="text-sm leading-relaxed text-purple-900/80">{analysis.professionalAnalysis}</p>
+          </div>
+        )}
+
+        {/* 식단 추천 */}
+        {analysis.dietaryAdvice && (
+          <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-6 border border-orange-200">
+            <h3 className="text-lg font-bold text-orange-900 mb-3 flex items-center gap-2">
+              🍽️ 식단 관리
+            </h3>
+            <div className="space-y-2">
+              {analysis.dietaryAdvice.recommended && (
+                <div>
+                  <p className="text-xs font-semibold text-orange-800 mb-1">추천 음식</p>
+                  <div className="flex flex-wrap gap-2">
+                    {analysis.dietaryAdvice.recommended.map((food: string, idx: number) => (
+                      <span key={idx} className="bg-white px-2 py-1 rounded text-xs text-orange-700 border border-orange-200">
+                        ✓ {food}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {analysis.dietaryAdvice.avoid && (
+                <div>
+                  <p className="text-xs font-semibold text-orange-800 mb-1 mt-3">주의 음식</p>
+                  <div className="flex flex-wrap gap-2">
+                    {analysis.dietaryAdvice.avoid.map((food: string, idx: number) => (
+                      <span key={idx} className="bg-white px-2 py-1 rounded text-xs text-red-700 border border-red-200">
+                        ✗ {food}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 생활 관리 */}
+        {analysis.lifestyleAdvice && (
+          <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-6 border border-teal-200">
+            <h3 className="text-lg font-bold text-teal-900 mb-3 flex items-center gap-2">
+              💪 생활 관리
+            </h3>
+            <ul className="space-y-2">
+              {analysis.lifestyleAdvice.map((advice: string, idx: number) => (
+                <li key={idx} className="flex items-start gap-2 text-sm text-teal-900/80">
+                  <span className="text-teal-600 mt-0.5">•</span>
+                  <span>{advice}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* 치료 계획 */}
+        {analysis.treatmentPlan && (
+          <div className="bg-gradient-to-br from-rose-50 to-red-50 rounded-xl p-6 border border-rose-200">
+            <h3 className="text-lg font-bold text-rose-900 mb-3 flex items-center gap-2">
+              📋 치료 계획
+            </h3>
+            <p className="text-sm leading-relaxed text-rose-900/80">{analysis.treatmentPlan}</p>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-8 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -448,20 +563,20 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
             )}
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="prose prose-sm max-w-none">
-              {enhancedAnalysis ? (
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border-l-4 border-primary">
-                  <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">{enhancedAnalysis}</div>
-                </div>
-              ) : (
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-gray-700">{result.analysis}</p>
-                </div>
-              )}
-            </div>
+            {enhancedAnalysis ? (
+              renderStructuredAnalysis(enhancedAnalysis)
+            ) : (
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-gray-700 leading-relaxed">{result.analysis}</p>
+              </div>
+            )}
+            
             {enhancedAnalysis && clinicInfo && (
-              <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <h4 className="font-semibold text-green-800 mb-2">📋 연계 전문 상담 가능</h4>
+              <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+                <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  📋 연계 전문 상담 가능
+                </h4>
                 <p className="text-sm text-green-700">
                   위 분석을 바탕으로 {clinicInfo.name}에서 더 정밀한 진단과 맞춤 치료를 받으실 수 있습니다.
                 </p>
@@ -492,12 +607,75 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
           </CardContent>
         </Card>
 
+        {/* 프리미엄 정밀 체질체크 CTA */}
+        {!enhancedAnalysis && (
+          <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 shadow-xl">
+            <CardContent className="p-8">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <Sparkles className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-2xl font-bold text-purple-900">프리미엄 정밀 체질체크</h3>
+                    <Badge className="bg-purple-600 text-white">NEW</Badge>
+                  </div>
+                  <p className="text-purple-800/80">상세하고 정확한 맞춤 분석</p>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
+                <div className="bg-white/80 rounded-xl p-4 border border-purple-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <span className="text-green-600 font-bold">✓</span>
+                    </div>
+                    <span className="font-semibold text-purple-900">정밀 사상체질 + 대사타입 분석</span>
+                  </div>
+                </div>
+                <div className="bg-white/80 rounded-xl p-4 border border-purple-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <span className="text-green-600 font-bold">✓</span>
+                    </div>
+                    <span className="font-semibold text-purple-900">개인 맞춤 식단표 제공</span>
+                  </div>
+                </div>
+                <div className="bg-white/80 rounded-xl p-4 border border-purple-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <span className="text-green-600 font-bold">✓</span>
+                    </div>
+                    <span className="font-semibold text-purple-900">운동법 + 한약재 추천</span>
+                  </div>
+                </div>
+                <div className="bg-white/80 rounded-xl p-4 border border-purple-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <span className="text-green-600 font-bold">✓</span>
+                    </div>
+                    <span className="font-semibold text-purple-900">전문가 1:1 상담 가능</span>
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                onClick={() => window.location.href = '/han-medicine-test'}
+                className="w-full h-14 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg font-bold shadow-lg"
+              >
+                정밀 체질체크 받기
+                <ExternalLink className="h-5 w-5 ml-2" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         {/* 가까이한의원 연계 섹션 */}
         <Card className="border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
           <CardHeader>
             <CardTitle className="flex items-center text-green-800">
               <Phone className="h-5 w-5 mr-2" />
-              전문 한의원 상담 안내
+              전문 한의원 1:1 맞춤 상담
             </CardTitle>
             <CardDescription>
               검사 결과를 바탕으로 전문 한의사의 맞춤 상담을 받아보세요
@@ -506,21 +684,51 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
           <CardContent className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <h4 className="font-semibold text-green-800">제공 서비스</h4>
-                <ul className="text-sm space-y-1">
-                  <li>• 개별 체질 진단</li>
-                  <li>• 맞춤 한약 처방</li>
-                  <li>• 지속적 관리 프로그램</li>
-                  <li>• 생활습관 개선 지도</li>
+                <h4 className="font-semibold text-green-800 flex items-center gap-2">
+                  <Pill className="h-4 w-4" />
+                  제공 서비스
+                </h4>
+                <ul className="text-sm space-y-2 bg-white/60 rounded-lg p-3">
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">•</span>
+                    개별 체질 진단
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">•</span>
+                    맞춤 한약 처방
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">•</span>
+                    지속적 관리 프로그램
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">•</span>
+                    생활습관 개선 지도
+                  </li>
                 </ul>
               </div>
               <div className="space-y-2">
-                <h4 className="font-semibold text-green-800">상담 혜택</h4>
-                <ul className="text-sm space-y-1">
-                  <li>• 검사 결과 무료 해석</li>
-                  <li>• 초회 상담료 할인</li>
-                  <li>• 맞춤 치료 계획 제공</li>
-                  <li>• 24시간 상담 가능</li>
+                <h4 className="font-semibold text-green-800 flex items-center gap-2">
+                  <Star className="h-4 w-4" />
+                  상담 혜택
+                </h4>
+                <ul className="text-sm space-y-2 bg-white/60 rounded-lg p-3">
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">•</span>
+                    검사 결과 무료 해석
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">•</span>
+                    초회 상담료 할인
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">•</span>
+                    맞춤 치료 계획 제공
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">•</span>
+                    24시간 상담 가능
+                  </li>
                 </ul>
               </div>
             </div>
@@ -530,7 +738,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
             <div className="flex flex-col sm:flex-row gap-3">
               <Button 
                 onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                className="flex-1 h-12 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md"
               >
                 <Phone className="h-4 w-4 mr-2" />
                 전문 한의원 상담받기

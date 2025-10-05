@@ -455,21 +455,20 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                   </div>
 
                   <div className="space-y-2">
-                    {expert.kakao_link && (
-                      <Button
-                        onClick={() => window.open(expert.kakao_link, '_blank')}
-                        className="w-full group-hover:scale-105 transition-transform shadow-lg bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 font-bold"
-                        size="lg"
-                      >
-                        <MessageCircle className="w-4 h-4 mr-2" />
-                        즉시 상담하기
-                      </Button>
-                    )}
+                    <Button
+                      onClick={() => window.open('https://open.kakao.com/o/sq57G6Th', '_blank')}
+                      className="w-full group-hover:scale-105 transition-transform shadow-lg bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-gray-900 font-bold"
+                      size="lg"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      즉시 상담하기
+                    </Button>
                     
-                    {expert.consultation_methods.includes('text') && !expert.kakao_link && (
+                    {expert.consultation_methods.includes('text') && (
                       <Button
                         onClick={() => requestConsultation(expert, 'text')}
                         className="w-full group-hover:scale-105 transition-transform shadow-lg"
+                        variant="outline"
                         size="lg"
                       >
                         <MessageCircle className="w-4 h-4 mr-2" />

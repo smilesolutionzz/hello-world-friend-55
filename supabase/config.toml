@@ -181,3 +181,15 @@ verify_jwt = true
 
 [functions.daily-token-bonus]
 verify_jwt = false
+
+[functions.wellness-ai-meditation]
+verify_jwt = false
+
+[functions.wellness-ai-workout]
+verify_jwt = false
+
+[functions.wellness-ai-nutrition]
+verify_jwt = false
+
+[functions.wellness-ai-sleep]
+verify_jwt = false

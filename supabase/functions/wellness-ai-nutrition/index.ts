@@ -1,0 +1,137 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured');
+    }
+
+    const { 
+      dietaryRestrictions = '없음', 
+      healthGoals = '건강한 체중 유지',
+      allergies = '없음'
+    } = await req.json();
+
+    console.log('Generating personalized nutrition plan...');
+
+    // Generate nutrition plan with AI
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          {
+            role: 'system',
+            content: '당신은 전문 영양사입니다. 개인 맞춤형 식단과 영양제를 추천합니다.'
+          },
+          {
+            role: 'user',
+            content: `다음 조건에 맞는 맞춤 식단 및 영양 계획을 작성해주세요:
+            
+            - 식이 제한: ${dietaryRestrictions}
+            - 건강 목표: ${healthGoals}
+            - 알레르기: ${allergies}
+            - 날짜: ${new Date().toLocaleDateString('ko-KR')}
+            
+            다음 형식으로 작성해주세요:
+            1. 오늘의 식단 플랜
+               - 아침 (칼로리, 영양소 포함)
+               - 점심 (칼로리, 영양소 포함)
+               - 저녁 (칼로리, 영양소 포함)
+               - 간식 (선택사항)
+            
+            2. 추천 영양제 (3-5개)
+               - 영양제 이름
+               - 복용 시간
+               - 효과
+               - 추천 이유
+            
+            3. 오늘의 영양 팁
+            
+            4. 수분 섭취 가이드
+            
+            5. 예상 총 칼로리 및 영양소 비율
+            
+            실용적이고 실천 가능한 계획을 작성해주세요.`
+          }
+        ],
+      }),
+    });
+
+    const aiData = await aiResponse.json();
+    const nutritionPlan = aiData.choices[0].message.content;
+    console.log('Nutrition plan generated');
+
+    // Generate meal image
+    let mealImage = null;
+    try {
+      console.log('Generating meal image...');
+      const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash-image-preview',
+          messages: [
+            {
+              role: 'user',
+              content: '건강하고 균형잡힌 식사 이미지를 생성해주세요. 다채로운 채소, 단백질, 곡물이 포함된 아름답고 맛있어 보이는 한 끼 식사를 표현해주세요.'
+            }
+          ],
+          modalities: ['image', 'text']
+        }),
+      });
+
+      const imageData = await imageResponse.json();
+      if (imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url) {
+        mealImage = imageData.choices[0].message.images[0].image_url.url;
+        console.log('Meal image generated');
+      }
+    } catch (error) {
+      console.error('Image generation error:', error);
+    }
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        nutritionPlan: nutritionPlan,
+        mealImage: mealImage,
+        timestamp: new Date().toISOString()
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
+
+  } catch (error) {
+    console.error('Error:', error);
+    return new Response(
+      JSON.stringify({ 
+        error: error.message,
+        success: false 
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
+  }
+});

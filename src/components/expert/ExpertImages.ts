@@ -8,9 +8,11 @@ import expertBaekGyeongyeol from '@/assets/expert-baek-gyeongyeol.jpg';
 import expertLeeHayeon from '@/assets/expert-lee-hayeon.jpg';
 import expertYeWonmuk from '@/assets/expert-ye-wonmuk.jpg';
 import expertLeeSuseok from '@/assets/expert-lee-suseok.jpg';
+import expertHeoSeungryong from '@/assets/expert-heo-seungryong.jpg';
 
 export const expertImages: Record<string, string> = {
   '이수석': expertLeeSuseok,
+  '허승룡': expertHeoSeungryong,
   '장호탁': expertJangHotak,
   '김선길': expertKimSungil,
   '오세은': expertOhSeeun,

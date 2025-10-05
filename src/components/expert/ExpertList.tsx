@@ -218,8 +218,9 @@ export const ExpertList: React.FC<ExpertListProps> = ({
         </div>
       </div>
 
-      <div className="grid gap-8">
-        {experts.map((expert) => (
+      {/* 상단 3명의 에이전트 (가로 배치) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {experts.slice(0, 3).map((expert) => (
           <Card 
             key={expert.id} 
             className={`group overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 animate-fade-in ${
@@ -228,25 +229,25 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                 : 'hover:border-primary/50'
             }`}
           >
-            <div className="p-8">
+            <div className="p-6">
               {expert.is_featured && (
-                <div className="mb-4 -mt-4 -mx-8 px-8 py-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 border-b-2 border-blue-600">
+                <div className="mb-4 -mt-4 -mx-6 px-6 py-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 border-b-2 border-blue-600">
                   <div className="flex items-center gap-2 justify-center">
-                    <Award className="w-5 h-5 text-white animate-pulse" />
-                    <span className="text-sm font-bold text-white tracking-wide">⭐ 메인 에이전트 - AIHPRO 창립자 ⭐</span>
-                    <Award className="w-5 h-5 text-white animate-pulse" />
+                    <Award className="w-4 h-4 text-white animate-pulse" />
+                    <span className="text-xs font-bold text-white tracking-wide">메인 에이전트</span>
+                    <Award className="w-4 h-4 text-white animate-pulse" />
                   </div>
                 </div>
               )}
-              <div className="flex items-start gap-8">
+              <div className="flex flex-col items-center text-center space-y-4">
                 {/* 프로필 이미지 */}
                 <div className="relative flex-shrink-0">
-                  <div className={`absolute inset-0 rounded-full blur-xl group-hover:blur-2xl transition-all ${
+                  <div className={`absolute inset-0 rounded-full blur-xl transition-all ${
                     expert.is_featured 
                       ? 'bg-gradient-to-br from-blue-500/40 to-indigo-500/20' 
                       : 'bg-gradient-to-br from-primary/20 to-primary/5'
                   }`} />
-                  <Avatar className={`w-28 h-28 border-4 shadow-xl relative ${
+                  <Avatar className={`w-24 h-24 border-4 shadow-xl relative ${
                     expert.is_featured ? 'border-blue-400 ring-4 ring-blue-300/50' : 'border-background'
                   }`}>
                     <AvatarImage 
@@ -267,6 +268,97 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                         ? 'bg-blue-600 text-white ring-2 ring-blue-400' 
                         : 'bg-primary text-white'
                     }`}>
+                      <Award className="w-4 h-4" />
+                    </div>
+                  )}
+                </div>
+
+                {/* 전문가 정보 */}
+                <div className="space-y-3 w-full">
+                  <div>
+                    <h3 className={`text-xl font-bold ${
+                      expert.is_featured ? 'text-blue-900' : ''
+                    }`}>{expert.full_name}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">{expert.professional_title}</p>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-4 text-sm">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <span className="font-semibold">{expert.average_rating.toFixed(1)}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <Clock className="w-4 h-4" />
+                      <span>{expert.years_experience}년</span>
+                    </div>
+                  </div>
+
+                  {/* 전문 분야 */}
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    {expert.specializations.slice(0, 2).map((spec, index) => (
+                      <Badge 
+                        key={index} 
+                        variant="secondary" 
+                        className="text-xs px-2 py-1"
+                      >
+                        {spec}
+                      </Badge>
+                    ))}
+                  </div>
+
+                  {/* 가격 */}
+                  <div className="text-center p-3 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg">
+                    {expert.hourly_rate === 0 ? (
+                      <div className="text-xl font-bold text-green-600">무료</div>
+                    ) : (
+                      <>
+                        <div className="text-2xl font-bold text-primary">
+                          {expert.hourly_rate.toLocaleString()}원
+                        </div>
+                        <div className="text-xs text-muted-foreground">회당</div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* 상담 버튼 */}
+                  <Button
+                    onClick={() => expert.kakao_link ? window.open(expert.kakao_link, '_blank') : requestConsultation(expert, 'text')}
+                    className="w-full"
+                    size="sm"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    상담 신청
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* 나머지 에이전트들 (세로 배치) */}
+      <div className="grid gap-8">
+        {experts.slice(3).map((expert) => (
+          <Card 
+            key={expert.id} 
+            className="group overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 hover:border-primary/50 animate-fade-in"
+          >
+            <div className="p-8">
+              <div className="flex items-start gap-8">
+                {/* 프로필 이미지 */}
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full blur-xl group-hover:blur-2xl transition-all" />
+                  <Avatar className="w-28 h-28 border-4 border-background shadow-xl relative">
+                    <AvatarImage 
+                      src={getExpertImage(expert.full_name) || expert.profile_image_url || ''} 
+                      className="object-cover" 
+                    />
+                    <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-primary to-primary/60 text-white">
+                      {expert.full_name.slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  {expert.is_verified && (
+                    <div className="absolute -bottom-2 -right-2 bg-primary text-white rounded-full p-2 shadow-lg">
                       <Award className="w-5 h-5" />
                     </div>
                   )}
@@ -276,15 +368,8 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                 <div className="flex-1 space-y-5">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className={`text-2xl font-bold ${
-                        expert.is_featured ? 'text-blue-900' : ''
-                      }`}>{expert.full_name} 에이전트</h3>
-                      {expert.is_featured && (
-                        <Badge className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1 text-sm font-bold animate-pulse">
-                          ⭐ 추천
-                        </Badge>
-                      )}
-                      {expert.hourly_rate === 0 && !expert.is_featured && (
+                      <h3 className="text-2xl font-bold">{expert.full_name} 에이전트</h3>
+                      {expert.hourly_rate === 0 && (
                         <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 text-sm">
                           무료 봉사
                         </Badge>

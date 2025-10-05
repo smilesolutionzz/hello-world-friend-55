@@ -32,7 +32,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 하이라이트 AI. All rights reserved.</p>
+          <p>&copy; 2025 하이라이트 AI. All rights reserved.</p>
           <div className="mt-2 space-x-4">
             <span className="text-red-600 font-medium">응급상황: 119</span>
             <span className="text-blue-600 font-medium">자살예방상담: 1577-0199</span>

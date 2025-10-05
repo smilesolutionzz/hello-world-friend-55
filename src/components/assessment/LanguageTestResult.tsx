@@ -21,7 +21,6 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
 
-  // 점수에 따른 평가 (더 자세한 기준 제시)
   const getEvaluation = (score: number) => {
     if (score <= 24) {
       return {
@@ -79,7 +78,6 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
     }
   ];
 
-  const navigate = useNavigate();
   const handleExpertConsult = () => {
     navigate('/expert-hiring');
   };
@@ -128,12 +126,10 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         </div>
       </Card>
 
-      {/* 전문가 해석 결과 - 대폭 확장된 분석 */}
       <Card className="p-8">
         <h3 className="text-2xl font-bold text-foreground mb-6">✨ 상세 분석 결과</h3>
         
         <div className="space-y-8">
-          {/* 기본 정보 */}
           <div className="grid md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">언어발달 점수</p>
@@ -152,7 +148,6 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
             </div>
           </div>
           
-          {/* 점수 범위 안내 */}
           <div className="p-6 bg-gray-50 rounded-lg border border-gray-200">
             <h4 className="text-lg font-semibold text-gray-800 mb-4">📊 언어발달 점수 분류 기준</h4>
             <div className="grid md:grid-cols-3 gap-4">
@@ -171,7 +166,6 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
             </div>
           </div>
 
-          {/* 상세 해석 */}
           <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
             <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 상세 해석</h4>
             <div className="prose prose-purple max-w-none">
@@ -194,7 +188,6 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         </div>
       </Card>
 
-      {/* Chart */}
       <Card className="p-8">
         <h3 className="text-xl font-semibold mb-6 text-center">점수 분포</h3>
         <div className="h-64">
@@ -210,7 +203,6 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
         </div>
       </Card>
 
-      {/* Action Buttons */}
       <div className="grid md:grid-cols-2 gap-4">
         <Card className="p-6">
           <h3 className="font-semibold mb-4">전문가 상담</h3>
@@ -280,7 +272,6 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
           </div>
         </Card>
 
-        {/* Expert Consultation CTA */}
         <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
           <div className="flex items-center gap-4">
             <div className="flex-shrink-0">

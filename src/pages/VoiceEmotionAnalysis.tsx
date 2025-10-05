@@ -99,9 +99,9 @@ const VoiceEmotionAnalysis = () => {
 
   // 이번 달 AI 업데이트
   const monthlyUpdates = [
-    { date: "2024.01", feature: "GPT-4 Turbo 음성 분석 엔진 적용", status: "완료" },
-    { date: "2024.02", feature: "실시간 감정 트래킹 시스템", status: "진행중" },
-    { date: "2024.03", feature: "다중 언어 감정 분석 지원", status: "예정" }
+    { date: "2025년 10월 중 공개", feature: "GPT-4 Turbo 음성 분석 엔진 적용", status: "완료" },
+    { date: "2025년 10월 중 공개", feature: "실시간 감정 트래킹 시스템", status: "진행중" },
+    { date: "2025년 10월 중 공개", feature: "다중 언어 감정 분석 지원", status: "예정" }
   ];
 
   const getEmotionIcon = (emotion: string) => {

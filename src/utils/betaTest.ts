@@ -1,5 +1,5 @@
 // 베타테스트 종료 - 유료화 전환 완료
-export const BETA_TEST_END_DATE = new Date('2024-10-31T23:59:59');
+export const BETA_TEST_END_DATE = new Date('2025-10-31T23:59:59');
 
 export const isBetaTestPeriod = (): boolean => {
   return false; // 베타 테스트 완전 종료

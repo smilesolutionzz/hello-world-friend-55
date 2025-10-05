@@ -25,7 +25,7 @@ const PrivacyPolicy = () => {
               개인정보처리방침
             </CardTitle>
             <p className="text-center text-muted-foreground">
-              최종 업데이트: 2024년 12월 10일
+              최종 업데이트: 2025년 10월 중 공개
             </p>
           </CardHeader>
           
@@ -140,7 +140,7 @@ const PrivacyPolicy = () => {
 
             <section>
               <h2 className="text-xl font-semibold mb-4">부칙</h2>
-              <p>이 개인정보처리방침은 2024년 1월 1일부터 적용됩니다.</p>
+              <p>이 개인정보처리방침은 2025년 10월 중 공개부터 적용됩니다.</p>
             </section>
             </div>
           </CardContent>

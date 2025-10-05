@@ -154,32 +154,47 @@ const ExpertContract = () => {
       const contract = getCurrentContract();
       if (!contract) return;
 
-      const contractData = {
-        expertId: expert.id,
-        contractType: contractType,
-        durationMonths: contract.months,
-        hourlyRate: expert.hourlyPrice,
-        sessionsPerWeek: sessionsPerWeek,
-        additionalServices: additionalServices,
-        contractStartDate: contractStartDate,
-        notes: notes
-      };
-
-      const { data, error } = await supabase.functions.invoke('create-expert-contract', {
-        body: contractData
+      // Stripe 결제 세션 생성
+      toast.loading('결제 페이지로 이동 중...');
+      
+      const { data, error } = await supabase.functions.invoke('create-expert-contract-payment', {
+        body: {
+          expertId: expert.id,
+          expertName: expert.name,
+          contractType: contractType,
+          durationMonths: contract.months,
+          totalAmount: calculateTotalCost(),
+          sessionsPerWeek: sessionsPerWeek,
+          additionalServices: additionalServices.map(serviceId => {
+            const service = additionalServiceOptions.find(s => s.id === serviceId);
+            return {
+              id: serviceId,
+              name: service?.label || '',
+              price: service?.price || 0
+            };
+          }),
+          contractStartDate: contractStartDate,
+          notes: notes
+        }
       });
 
       if (error) {
-        console.error('Contract creation error:', error);
-        toast.error('계약 생성 중 오류가 발생했습니다.');
+        console.error('Payment session creation error:', error);
+        toast.dismiss();
+        toast.error('결제 세션 생성 중 오류가 발생했습니다.');
         return;
       }
 
-      // MVP 기간에는 무통장입금만 지원
-      toast.success("현재 MVP 기간으로 무통장입금만 지원됩니다.");
+      if (data?.url) {
+        toast.dismiss();
+        toast.success('결제 페이지로 이동합니다.');
+        // 새 탭에서 Stripe 결제 페이지 열기
+        window.open(data.url, '_blank');
+      }
     } catch (error: any) {
       console.error('Error creating contract:', error);
-      toast.error('계약 생성 중 오류가 발생했습니다.');
+      toast.dismiss();
+      toast.error('결제 처리 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -420,9 +435,15 @@ const ExpertContract = () => {
                     <span>₩{(sessionsPerWeek * expert.hourlyPrice * 4).toLocaleString()}/월</span>
                   </div>
                   
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>→ 회당 비용</span>
+                    <span>₩{expert.hourlyPrice.toLocaleString()}/회</span>
+                  </div>
+                  
                   {additionalServices.length > 0 && (
                     <>
                       <Separator />
+                      <div className="text-sm font-medium mb-2">추가 서비스</div>
                       {additionalServices.map((serviceId) => {
                         const service = additionalServiceOptions.find(s => s.id === serviceId);
                         return service ? (
@@ -437,12 +458,27 @@ const ExpertContract = () => {
                   
                   <Separator />
                   
-                  <div className="flex justify-between font-semibold">
+                  <div className="flex justify-between font-semibold text-lg">
                     <span>월 결제 금액</span>
                     <span className="text-primary">₩{getMonthlyPrice().toLocaleString()}</span>
                   </div>
                   
-                  <div className="flex justify-between text-lg font-bold">
+                  <div className="bg-primary/10 p-3 rounded-lg">
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>월 상담 횟수</span>
+                      <span className="font-semibold">{sessionsPerWeek * 4}회</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>월 평균 회당 비용</span>
+                      <span className="font-semibold text-primary">
+                        ₩{Math.round(getMonthlyPrice() / (sessionsPerWeek * 4)).toLocaleString()}/회
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div className="flex justify-between text-xl font-bold">
                     <span>총 계약 금액 ({getCurrentContract()?.months}개월)</span>
                     <span className="text-primary">₩{calculateTotalCost().toLocaleString()}</span>
                   </div>

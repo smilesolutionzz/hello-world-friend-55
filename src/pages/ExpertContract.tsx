@@ -73,15 +73,53 @@ const ExpertContract = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (expertId) {
-      const foundExpert = mockExperts.find(e => e.id === expertId);
-      setExpert(foundExpert);
+    const loadExpert = async () => {
+      if (!expertId) return;
       
-      // 내일 날짜를 기본값으로 설정
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      setContractStartDate(tomorrow.toISOString().split('T')[0]);
-    }
+      try {
+        // 먼저 Supabase에서 전문가 정보 가져오기
+        const { data: dbExpert, error } = await supabase
+          .from('experts')
+          .select('*')
+          .eq('id', expertId)
+          .maybeSingle();
+        
+        if (error) {
+          console.error('Error loading expert:', error);
+        }
+        
+        if (dbExpert) {
+          // Supabase 데이터를 기존 형식으로 변환
+          setExpert({
+            id: dbExpert.id,
+            name: dbExpert.full_name,
+            specialty: dbExpert.specializations || [],
+            credentials: dbExpert.certifications || [],
+            rating: dbExpert.average_rating || 4.5,
+            reviews: dbExpert.total_sessions || 0,
+            experience: `${dbExpert.years_experience || 0}년`,
+            hourlyPrice: dbExpert.hourly_rate || 25000,
+            image: dbExpert.profile_image_url || '/api/placeholder/150/150',
+            description: dbExpert.bio || '',
+            languages: dbExpert.languages || ['한국어'],
+            consultationTypes: dbExpert.consultation_methods || ['화상상담']
+          });
+        } else {
+          // Mock 데이터 fallback
+          const foundExpert = mockExperts.find(e => e.id === expertId);
+          setExpert(foundExpert);
+        }
+        
+        // 내일 날짜를 기본값으로 설정
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        setContractStartDate(tomorrow.toISOString().split('T')[0]);
+      } catch (error) {
+        console.error('Error in loadExpert:', error);
+      }
+    };
+    
+    loadExpert();
   }, [expertId]);
 
   const contractOptions = [

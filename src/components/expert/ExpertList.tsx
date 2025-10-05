@@ -68,8 +68,17 @@ export const ExpertList: React.FC<ExpertListProps> = ({
 
       if (error) throw error;
       
-      // Sort experts by featured_order
+      // Sort experts: first by profile image availability, then by featured_order
       const sortedExperts = (data || []).sort((a, b) => {
+        // Check if profile image exists and is not placeholder
+        const hasImageA = a.profile_image_url && !a.profile_image_url.includes('placeholder');
+        const hasImageB = b.profile_image_url && !b.profile_image_url.includes('placeholder');
+        
+        // Prioritize experts with images
+        if (hasImageA && !hasImageB) return -1;
+        if (!hasImageA && hasImageB) return 1;
+        
+        // If both have images or both don't, sort by featured_order
         const orderA = a.featured_order || 999;
         const orderB = b.featured_order || 999;
         return orderA - orderB;

@@ -313,7 +313,7 @@ const ExpertHiring = () => {
 
       if (dbExperts) {
         // 데이터베이스 형식을 기존 Expert 인터페이스에 맞게 변환
-        const formattedExperts: Expert[] = dbExperts.map(expert => ({
+        let formattedExperts: Expert[] = dbExperts.map(expert => ({
           id: expert.id,
           name: expert.full_name,
           specialty: expert.specializations || [],
@@ -343,6 +343,20 @@ const ExpertHiring = () => {
           isOnline: expert.consultation_methods?.includes('화상상담') || true,
           responseTime: '평균 2시간 이내'
         }));
+        
+        // Sort experts: first by profile image availability, then by featured_order
+        formattedExperts.sort((a, b) => {
+          // Check if profile image exists and is not placeholder
+          const hasImageA = a.image && !a.image.includes('placeholder');
+          const hasImageB = b.image && !b.image.includes('placeholder');
+          
+          // Prioritize experts with images
+          if (hasImageA && !hasImageB) return -1;
+          if (!hasImageA && hasImageB) return 1;
+          
+          // If both have images or both don't, keep original order (by updated_at)
+          return 0;
+        });
         
         setExperts(formattedExperts);
         setFilteredExperts(formattedExperts);

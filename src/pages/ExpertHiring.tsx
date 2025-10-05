@@ -344,17 +344,33 @@ const ExpertHiring = () => {
           responseTime: '평균 2시간 이내'
         }));
         
-        // Sort experts: first by profile image availability, then by featured_order
+        // 특정 전문가 순서 정의
+        const preferredOrder = ['이수석', '장호탁', '김선길', '이하연'];
+        
+        // Sort experts: 1) 지정된 순서, 2) 프로필 사진 있는 사람, 3) 나머지
         formattedExperts.sort((a, b) => {
-          // Check if profile image exists and is not placeholder
+          const indexA = preferredOrder.indexOf(a.name);
+          const indexB = preferredOrder.indexOf(b.name);
+          
+          // 둘 다 우선순위 목록에 있는 경우, 순서대로 정렬
+          if (indexA !== -1 && indexB !== -1) {
+            return indexA - indexB;
+          }
+          
+          // A만 우선순위 목록에 있으면 A를 앞으로
+          if (indexA !== -1) return -1;
+          
+          // B만 우선순위 목록에 있으면 B를 앞으로
+          if (indexB !== -1) return 1;
+          
+          // 둘 다 우선순위 목록에 없는 경우, 프로필 사진 유무로 정렬
           const hasImageA = a.image && !a.image.includes('placeholder');
           const hasImageB = b.image && !b.image.includes('placeholder');
           
-          // Prioritize experts with images
           if (hasImageA && !hasImageB) return -1;
           if (!hasImageA && hasImageB) return 1;
           
-          // If both have images or both don't, keep original order (by updated_at)
+          // 둘 다 이미지가 있거나 없으면 기존 순서 유지
           return 0;
         });
         

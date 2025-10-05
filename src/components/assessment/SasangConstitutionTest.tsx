@@ -250,14 +250,19 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
       });
 
       if (error) {
+        console.error('Supabase function error:', error);
         throw new Error(error.message);
       }
+
+      console.log('Received data from edge function:', data);
 
       const result = {
         constitution,
         scores,
         answers,
-        analysis: data.analysis,
+        analysis: data, // data 전체를 analysis로 사용
+        constitution_name: data.constitution_name,
+        partner_clinics: data.partner_clinics,
         testType: 'sasang_constitution',
         completedAt: new Date().toISOString()
       };

@@ -114,7 +114,8 @@ serve(async (req) => {
     특히 사용자의 응답 패턴을 분석하여 개인별 특성을 반영한 맞춤형 조언을 포함해주세요.
     `;
 
-    // OpenAI API 호출
+    // OpenAI API 호출 - JSON 모드 사용
+    console.log('Calling OpenAI API for constitution analysis...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -127,53 +128,102 @@ serve(async (req) => {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        max_tokens: 2000,
+        max_tokens: 3000,
         temperature: 0.7,
+        response_format: { type: "json_object" }
       }),
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('OpenAI API error:', response.status, errorText);
       throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const aiResponse = await response.json();
+    console.log('OpenAI response received');
+    
     let analysisResult;
 
     try {
-      analysisResult = JSON.parse(aiResponse.choices[0].message.content);
+      const content = aiResponse.choices[0].message.content;
+      console.log('Parsing AI response...');
+      analysisResult = JSON.parse(content);
+      console.log('Successfully parsed AI response');
     } catch (e) {
-      // JSON 파싱 실패 시 기본 구조로 응답
+      console.error('JSON parsing failed:', e);
+      console.error('Raw content:', aiResponse.choices[0].message.content);
+      
+      // JSON 파싱 실패 시 상세한 기본 구조로 응답
       analysisResult = {
-        constitution_analysis: aiResponse.choices[0].message.content,
+        constitution_analysis: `${userConstitution.name} 체질로 진단되었습니다. ${userConstitution.characteristics}이며, ${userConstitution.personality}한 성향을 가지고 있습니다. 체질에 맞는 맞춤 건강관리가 필요합니다.`,
         characteristics: {
-          strengths: [userConstitution.characteristics],
-          weaknesses: ["개인차에 따른 체질별 특성"]
+          strengths: [
+            userConstitution.characteristics,
+            userConstitution.personality,
+            "개인별 체질에 맞는 건강관리 가능"
+          ],
+          weaknesses: [
+            "체질에 맞지 않는 음식 섭취 시 건강 악화",
+            "스트레스에 민감할 수 있음",
+            "계절 변화에 주의 필요"
+          ]
         },
         herbal_prescription: {
           main_herbs: [
-            {name: "체질별 맞춤 한약", effect: "전문 한의사 상담 필요", dosage: "전문가 처방에 따라"}
+            {name: "인삼", effect: "기력 회복 및 면역력 강화", dosage: "하루 2회, 식후 복용"},
+            {name: "황기", effect: "체력 증진 및 면역력 향상", dosage: "하루 2회, 식후 복용"},
+            {name: "당귀", effect: "혈액 순환 개선", dosage: "하루 2회, 식후 복용"}
           ],
-          formula_name: "맞춤 처방",
-          preparation_method: "한의원에서 조제"
+          formula_name: `${userConstitution.name} 맞춤 처방`,
+          preparation_method: "전문 한의사 상담 후 체질에 맞게 조제"
         },
         diet_therapy: {
-          beneficial_foods: ["체질에 맞는 음식", "따뜻한 성질의 음식", "소화가 잘되는 음식"],
-          foods_to_avoid: ["체질에 맞지 않는 음식", "자극적인 음식"],
-          meal_timing: "규칙적인 식사",
-          cooking_methods: "체질에 맞는 조리법"
+          beneficial_foods: constitution === 'soyang' 
+            ? ["수박", "오이", "보리", "녹두", "돼지고기"] 
+            : constitution === 'soeum'
+            ? ["닭고기", "염소고기", "찹쌀", "생강", "마늘"]
+            : constitution === 'taeyang'
+            ? ["메밀", "새우", "게", "조개", "해삼"]
+            : ["콩", "들깨", "우엉", "연근", "토란"],
+          foods_to_avoid: constitution === 'soyang'
+            ? ["닭고기", "염소고기", "개고기", "생강", "후추"]
+            : constitution === 'soeum'
+            ? ["냉면", "보리", "돼지고기", "수박", "참외"]
+            : constitution === 'taeyang'
+            ? ["기름진 음식", "육류", "생강", "마늘", "고추"]
+            : ["밀가루", "달고 기름진 음식", "닭고기", "개고기", "술"],
+          meal_timing: "규칙적인 시간에 식사하며, 과식하지 않기",
+          cooking_methods: "체질에 맞는 조리법으로 음식의 성질 조절"
         },
         lifestyle_recommendations: {
-          exercise: "체질에 맞는 운동",
-          sleep: "충분한 수면",
-          stress_management: "스트레스 관리",
-          seasonal_care: "계절별 건강관리"
+          exercise: constitution === 'soyang'
+            ? "수영, 요가 등 차분한 운동 권장"
+            : constitution === 'soeum'
+            ? "가벼운 산책, 스트레칭 등 부드러운 운동"
+            : constitution === 'taeyang'
+            ? "하체 운동, 걷기 등 꾸준한 운동"
+            : "유산소 운동, 등산 등 활발한 활동 권장",
+          sleep: "규칙적인 수면 패턴 유지, 충분한 휴식",
+          stress_management: "명상, 심호흡, 취미활동으로 스트레스 해소",
+          seasonal_care: "계절 변화에 따른 체온 조절과 면역력 관리"
         },
         health_management: {
-          vulnerable_conditions: ["체질별 취약 부분"],
-          prevention_methods: ["예방 관리법"],
-          regular_checkups: "정기 검진"
+          vulnerable_conditions: constitution === 'soyang'
+            ? ["열성 질환", "고혈압", "두통"]
+            : constitution === 'soeum'
+            ? ["소화불량", "냉증", "저혈압"]
+            : constitution === 'taeyang'
+            ? ["간 질환", "상열감", "어지러움"]
+            : ["비만", "고지혈증", "당뇨"],
+          prevention_methods: [
+            "체질에 맞는 식단 관리",
+            "규칙적인 운동",
+            "충분한 수면과 휴식"
+          ],
+          regular_checkups: "연 1-2회 정기 건강검진 권장"
         },
-        clinic_recommendation: "전문 한의사와의 상담을 통해 더 정확한 진단과 처방을 받으시기 바랍니다."
+        clinic_recommendation: "전문 한의사와의 상담을 통해 더 정확한 진단과 맞춤 처방을 받으시기 바랍니다."
       };
     }
 

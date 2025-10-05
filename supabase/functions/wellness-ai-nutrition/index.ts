@@ -18,11 +18,33 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
+    const requestBody = await req.json();
+    
     const { 
       dietaryRestrictions = '없음', 
       healthGoals = '건강한 체중 유지',
       allergies = '없음'
-    } = await req.json();
+    } = requestBody;
+
+    // Input validation
+    if (typeof dietaryRestrictions !== 'string' || dietaryRestrictions.length > 500) {
+      throw new Error('Invalid dietary restrictions (max 500 characters)');
+    }
+
+    if (typeof healthGoals !== 'string' || healthGoals.length > 500) {
+      throw new Error('Invalid health goals (max 500 characters)');
+    }
+
+    if (typeof allergies !== 'string' || allergies.length > 500) {
+      throw new Error('Invalid allergies (max 500 characters)');
+    }
+
+    // Sanitize inputs to prevent prompt injection
+    const sanitize = (text: string) => text.replace(/[<>{}]/g, '').trim();
+    
+    const safeDietaryRestrictions = sanitize(dietaryRestrictions);
+    const safeHealthGoals = sanitize(healthGoals);
+    const safeAllergies = sanitize(allergies);
 
     console.log('Generating personalized nutrition plan...');
 
@@ -43,7 +65,7 @@ serve(async (req) => {
           {
             role: 'user',
             content: `오늘 날짜: ${new Date().toLocaleDateString('ko-KR')}
-식이제한: ${dietaryRestrictions}, 목표: ${healthGoals}, 알레르기: ${allergies}
+식이제한: ${safeDietaryRestrictions}, 목표: ${safeHealthGoals}, 알레르기: ${safeAllergies}
 
 영양 플랜을 다음 형식으로 1000자 이내로 작성:
 

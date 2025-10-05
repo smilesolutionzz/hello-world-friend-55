@@ -124,8 +124,31 @@ const Auth = () => {
       return;
     }
     
-    if (signupData.password.length < 6) {
-      setError("비밀번호는 최소 6자 이상이어야 합니다.");
+    // Enhanced password validation
+    if (signupData.password.length < 8) {
+      setError("비밀번호는 최소 8자 이상이어야 합니다.");
+      setLoading(false);
+      return;
+    }
+
+    // Check for password complexity
+    const hasUpperCase = /[A-Z]/.test(signupData.password);
+    const hasLowerCase = /[a-z]/.test(signupData.password);
+    const hasNumber = /[0-9]/.test(signupData.password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(signupData.password);
+
+    const complexityCount = [hasUpperCase, hasLowerCase, hasNumber, hasSpecialChar].filter(Boolean).length;
+
+    if (complexityCount < 3) {
+      setError("비밀번호는 대문자, 소문자, 숫자, 특수문자 중 최소 3가지를 포함해야 합니다.");
+      setLoading(false);
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(signupData.email)) {
+      setError("올바른 이메일 형식이 아닙니다.");
       setLoading(false);
       return;
     }
@@ -378,12 +401,15 @@ const Auth = () => {
                     <Input
                       id="signup-password"
                       type="password"
-                      placeholder="비밀번호를 입력하세요 (최소 6자)"
+                      placeholder="비밀번호 (최소 8자, 대소문자+숫자+특수문자 중 3가지)"
                       value={signupData.password}
                       onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
                       className="pl-10"
                       required
                     />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      대문자, 소문자, 숫자, 특수문자 중 최소 3가지 포함
+                    </p>
                   </div>
                 </div>
                 

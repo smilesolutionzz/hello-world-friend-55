@@ -18,12 +18,57 @@ serve(async (req) => {
       throw new Error('Test result is required');
     }
 
+    // Input validation
+    if (typeof testResult !== 'object') {
+      throw new Error('Invalid test result format');
+    }
+
+    const { constitution, scores, answers } = testResult;
+
+    // Validate constitution
+    if (!constitution || typeof constitution !== 'string' || constitution.length > 100) {
+      throw new Error('Invalid constitution data');
+    }
+
+    // Validate scores
+    if (!scores || typeof scores !== 'object') {
+      throw new Error('Invalid scores data');
+    }
+
+    // Validate each score value
+    for (const [key, value] of Object.entries(scores)) {
+      if (typeof value !== 'number' || value < 0 || value > 100) {
+        throw new Error(`Invalid score value for ${key}`);
+      }
+      if (key.length > 50) {
+        throw new Error('Score key too long');
+      }
+    }
+
+    // Validate answers
+    if (answers && !Array.isArray(answers)) {
+      throw new Error('Invalid answers format');
+    }
+
+    if (answers && answers.length > 100) {
+      throw new Error('Too many answers');
+    }
+
+    if (answers) {
+      for (const answer of answers) {
+        if (typeof answer !== 'string' && typeof answer !== 'number') {
+          throw new Error('Invalid answer format');
+        }
+        if (typeof answer === 'string' && answer.length > 1000) {
+          throw new Error('Answer too long');
+        }
+      }
+    }
+
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) {
       throw new Error('OpenAI API key not configured');
     }
-
-    const { constitution, scores, answers } = testResult;
 
     // 여성건강 특화 분석 프롬프트
     const analysisPrompt = `

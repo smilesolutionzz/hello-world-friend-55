@@ -25,7 +25,53 @@ serve(async (req) => {
       }
     );
 
+    // SECURITY: Verify admin authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: Invalid token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check admin role using security definer function
+    const { data: roleData, error: roleError } = await supabase
+      .rpc('has_role', { _user_id: user.id, _role: 'admin' });
+
+    if (roleError || !roleData) {
+      console.error('Admin check failed:', roleError);
+      return new Response(
+        JSON.stringify({ error: 'Forbidden: Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { targetEmail, tokenAmount } = await req.json();
+
+    // Input validation
+    if (!targetEmail || typeof targetEmail !== 'string' || targetEmail.length > 255) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid email address' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!tokenAmount || typeof tokenAmount !== 'number' || tokenAmount <= 0 || tokenAmount > 1000000) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid token amount (must be 1-1000000)' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     console.log('Adding tokens:', { targetEmail, tokenAmount });
 

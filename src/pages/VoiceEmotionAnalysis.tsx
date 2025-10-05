@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { PageContainer } from '@/components/ui/page-container';
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -539,6 +540,7 @@ const VoiceEmotionAnalysis = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <UnifiedNavigation />
       {/* 헤로 섹션 */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10" />

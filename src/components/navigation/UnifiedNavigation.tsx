@@ -70,7 +70,7 @@ const aihSubmenuItems = [
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
   { icon: Heart, label: '라이프 허브', path: '/wellness-lifestyle', requiresAuth: false },
-  { icon: Mic, label: '음성 감정 분석', path: '/voice-emotion-analysis', requiresAuth: false, badge: '곧 공개' },
+  { icon: Mic, label: '음성 감정 분석', path: '/voice-emotion-analysis', requiresAuth: false, badge: 'NEW' },
 ];
 
 // 3분테스트 하위 메뉴

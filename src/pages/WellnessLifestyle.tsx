@@ -70,8 +70,8 @@ const WellnessLifestyle = () => {
       
       if (!data?.audioContent) {
         toast({
-          title: '텍스트만 표시됩니다',
-          description: '음성 크레딧 부족 또는 생성 실패로 텍스트만 제공됩니다.',
+          title: '음성이 아직 준비되지 않았습니다',
+          description: 'ElevenLabs API 키 미설정 또는 크레딧 부족일 수 있어요. 텍스트로 먼저 제공됩니다.',
         });
       }
       

@@ -249,7 +249,19 @@ const Assessment = () => {
   const handleAgeGroupSelect = (ageGroup: 'infant' | 'child' | 'adult', age: number) => {
     setSelectedAgeGroup(ageGroup);
     setSelectedAge(age);
-    if (testType === 'language') {
+    
+    // 3분 테스트는 나이 그룹에 따라 테스트 타입 자동 설정
+    if (testType === 'psychological' || !testType) {
+      if (ageGroup === 'infant') {
+        setTestType('language');
+        setCurrentStep('language-test');
+      } else if (ageGroup === 'child' || ageGroup === 'adult') {
+        setTestType('adhd');
+        setCurrentStep('adhd-test');
+      } else {
+        setCurrentStep('assessment');
+      }
+    } else if (testType === 'language') {
       setCurrentStep('language-test');
     } else if (testType === 'panic') {
       setCurrentStep('panic-test');

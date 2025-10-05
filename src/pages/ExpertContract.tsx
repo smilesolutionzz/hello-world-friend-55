@@ -173,69 +173,10 @@ const ExpertContract = () => {
     }
   };
 
-  const handleCreateContract = async () => {
-    try {
-      setIsLoading(true);
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error('로그인이 필요합니다.');
-        navigate('/auth');
-        return;
-      }
-
-      if (!expert || !contractStartDate) {
-        toast.error('필수 정보를 모두 입력해주세요.');
-        return;
-      }
-
-      const contract = getCurrentContract();
-      if (!contract) return;
-
-      // Stripe 결제 세션 생성
-      toast.loading('결제 페이지로 이동 중...');
-      
-      const { data, error } = await supabase.functions.invoke('create-expert-contract-payment', {
-        body: {
-          expertId: expert.id,
-          expertName: expert.name,
-          contractType: contractType,
-          durationMonths: contract.months,
-          totalAmount: calculateTotalCost(),
-          sessionsPerWeek: sessionsPerWeek,
-          additionalServices: additionalServices.map(serviceId => {
-            const service = additionalServiceOptions.find(s => s.id === serviceId);
-            return {
-              id: serviceId,
-              name: service?.label || '',
-              price: service?.price || 0
-            };
-          }),
-          contractStartDate: contractStartDate,
-          notes: notes
-        }
-      });
-
-      if (error) {
-        console.error('Payment session creation error:', error);
-        toast.dismiss();
-        toast.error('결제 세션 생성 중 오류가 발생했습니다.');
-        return;
-      }
-
-      if (data?.url) {
-        toast.dismiss();
-        toast.success('결제 페이지로 이동합니다.');
-        // 새 탭에서 Stripe 결제 페이지 열기
-        window.open(data.url, '_blank');
-      }
-    } catch (error: any) {
-      console.error('Error creating contract:', error);
-      toast.dismiss();
-      toast.error('결제 처리 중 오류가 발생했습니다.');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleCreateContract = () => {
+    // 카카오톡 오픈채팅으로 바로 연결
+    window.open('https://open.kakao.com/o/sq57G6Th', '_blank');
+    toast.success('카카오톡 상담창으로 이동합니다. 전문가와 계약 상담을 진행해주세요.');
   };
 
   if (!expert) {

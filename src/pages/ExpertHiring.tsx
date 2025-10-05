@@ -1491,7 +1491,7 @@ const ExpertHiring = () => {
                       <p className="text-sm text-gray-600">{expert.description}</p>
                       <div className="flex items-center gap-4 text-sm">
                         <span>경력 {expert.experience}</span>
-                        <span>월 {formatPrice(expert.monthlyPrice)}원</span>
+                        <span>회당 {formatPrice(expert.hourlyPrice)}원</span>
                       </div>
                     </div>
 
@@ -2015,7 +2015,7 @@ const ExpertHiring = () => {
                           </div>
                           <div className="flex justify-between items-center mt-4 pt-4 border-t">
                             <div className="text-sm text-muted-foreground">
-                              월 정기상담: <span className="font-medium">{formatPrice(expert.monthlyPrice)}원</span>
+                              회당 상담료: <span className="font-medium">{formatPrice(expert.hourlyPrice)}원</span>
                             </div>
                             <Button 
                               size="sm" 

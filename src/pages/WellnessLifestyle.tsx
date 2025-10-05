@@ -68,6 +68,13 @@ const WellnessLifestyle = () => {
         setCompletedTasks([...completedTasks, 'meditation']);
       }
       
+      if (!data?.audioContent) {
+        toast({
+          title: '텍스트만 표시됩니다',
+          description: '음성 크레딧 부족 또는 생성 실패로 텍스트만 제공됩니다.',
+        });
+      }
+      
       toast({
         title: '✨ AI 명상 준비 완료!',
         description: '오늘의 맞춤 명상을 시작하세요.',

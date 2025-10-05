@@ -65,20 +65,23 @@ serve(async (req) => {
     if (ELEVENLABS_API_KEY && scriptText) {
       try {
         console.log('Generating voice narration...');
+        
+        // Use shorter text and cheaper model to stay within quota
+        const limitedText = scriptText.substring(0, 700); // Much smaller text
+        
         const voiceResponse = await fetch('https://api.elevenlabs.io/v1/text-to-speech/9BWtsMINqrJLrRacOk9x', {
           method: 'POST',
           headers: {
             'xi-api-key': ELEVENLABS_API_KEY,
             'Content-Type': 'application/json',
+            'Accept': 'audio/mpeg'
           },
           body: JSON.stringify({
-            text: scriptText.substring(0, 2500), // Limit for API
-            model_id: 'eleven_multilingual_v2',
+            text: limitedText,
+            model_id: 'eleven_turbo_v2_5', // More cost-efficient model
             voice_settings: {
-              stability: 0.75,
-              similarity_boost: 0.75,
-              style: 0.5,
-              use_speaker_boost: true
+              stability: 0.6,
+              similarity_boost: 0.7
             }
           }),
         });
@@ -99,7 +102,18 @@ serve(async (req) => {
           audioContent = base64Audio;
           console.log('Voice narration generated successfully');
         } else {
-          console.error('ElevenLabs API error:', await voiceResponse.text());
+          const errorText = await voiceResponse.text();
+          console.error('ElevenLabs API error:', errorText);
+          
+          // Check if it's a quota error
+          try {
+            const errorData = JSON.parse(errorText);
+            if (errorData?.detail?.status === 'quota_exceeded') {
+              console.log('ElevenLabs quota exceeded - audio will be null');
+            }
+          } catch (parseError) {
+            console.error('Error parsing ElevenLabs response:', parseError);
+          }
         }
       } catch (error) {
         console.error('Voice generation error:', error);

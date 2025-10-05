@@ -68,14 +68,11 @@ export const ExpertList: React.FC<ExpertListProps> = ({
 
       if (error) throw error;
       
-      // Sort experts: featured first (by featured_order), then by updated_at
+      // Sort experts by featured_order
       const sortedExperts = (data || []).sort((a, b) => {
-        if (a.is_featured && !b.is_featured) return -1;
-        if (!a.is_featured && b.is_featured) return 1;
-        if (a.is_featured && b.is_featured) {
-          return (a.featured_order || 999) - (b.featured_order || 999);
-        }
-        return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+        const orderA = a.featured_order || 999;
+        const orderB = b.featured_order || 999;
+        return orderA - orderB;
       });
       
       setExperts(sortedExperts);
@@ -227,17 +224,17 @@ export const ExpertList: React.FC<ExpertListProps> = ({
             key={expert.id} 
             className={`group overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 animate-fade-in ${
               expert.is_featured 
-                ? 'bg-gradient-to-br from-amber-50/50 via-yellow-50/30 to-orange-50/50 border-amber-300 hover:border-amber-400 shadow-lg ring-2 ring-amber-200/50' 
+                ? 'bg-gradient-to-br from-blue-50 via-indigo-50/40 to-purple-50/30 border-blue-400 hover:border-blue-500 shadow-xl ring-4 ring-blue-200/40' 
                 : 'hover:border-primary/50'
             }`}
           >
             <div className="p-8">
               {expert.is_featured && (
-                <div className="mb-4 -mt-4 -mx-8 px-8 py-3 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-400 border-b-2 border-amber-500">
+                <div className="mb-4 -mt-4 -mx-8 px-8 py-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 border-b-2 border-blue-600">
                   <div className="flex items-center gap-2 justify-center">
-                    <Award className="w-5 h-5 text-amber-900 animate-pulse" />
-                    <span className="text-sm font-bold text-amber-900 tracking-wide">메인 에이전트 - AIHPRO 창립자</span>
-                    <Award className="w-5 h-5 text-amber-900 animate-pulse" />
+                    <Award className="w-5 h-5 text-white animate-pulse" />
+                    <span className="text-sm font-bold text-white tracking-wide">⭐ 메인 에이전트 - AIHPRO 창립자 ⭐</span>
+                    <Award className="w-5 h-5 text-white animate-pulse" />
                   </div>
                 </div>
               )}
@@ -246,11 +243,11 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                 <div className="relative flex-shrink-0">
                   <div className={`absolute inset-0 rounded-full blur-xl group-hover:blur-2xl transition-all ${
                     expert.is_featured 
-                      ? 'bg-gradient-to-br from-amber-400/40 to-yellow-400/20' 
+                      ? 'bg-gradient-to-br from-blue-500/40 to-indigo-500/20' 
                       : 'bg-gradient-to-br from-primary/20 to-primary/5'
                   }`} />
                   <Avatar className={`w-28 h-28 border-4 shadow-xl relative ${
-                    expert.is_featured ? 'border-amber-300 ring-4 ring-amber-200/50' : 'border-background'
+                    expert.is_featured ? 'border-blue-400 ring-4 ring-blue-300/50' : 'border-background'
                   }`}>
                     <AvatarImage 
                       src={getExpertImage(expert.full_name) || expert.profile_image_url || ''} 
@@ -258,7 +255,7 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                     />
                     <AvatarFallback className={`text-2xl font-bold ${
                       expert.is_featured 
-                        ? 'bg-gradient-to-br from-amber-500 to-yellow-500 text-white'
+                        ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white'
                         : 'bg-gradient-to-br from-primary to-primary/60 text-white'
                     }`}>
                       {expert.full_name.slice(0, 2)}
@@ -267,7 +264,7 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                   {expert.is_verified && (
                     <div className={`absolute -bottom-2 -right-2 rounded-full p-2 shadow-lg ${
                       expert.is_featured 
-                        ? 'bg-amber-500 text-white ring-2 ring-amber-300' 
+                        ? 'bg-blue-600 text-white ring-2 ring-blue-400' 
                         : 'bg-primary text-white'
                     }`}>
                       <Award className="w-5 h-5" />
@@ -280,10 +277,10 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className={`text-2xl font-bold ${
-                        expert.is_featured ? 'text-amber-900' : ''
+                        expert.is_featured ? 'text-blue-900' : ''
                       }`}>{expert.full_name} 에이전트</h3>
                       {expert.is_featured && (
-                        <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-3 py-1 text-sm font-bold animate-pulse">
+                        <Badge className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1 text-sm font-bold animate-pulse">
                           ⭐ 추천
                         </Badge>
                       )}

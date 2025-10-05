@@ -85,8 +85,21 @@ serve(async (req) => {
 
         if (voiceResponse.ok) {
           const audioBuffer = await voiceResponse.arrayBuffer();
-          audioContent = btoa(String.fromCharCode(...new Uint8Array(audioBuffer)));
+          // Process audio in chunks to prevent stack overflow
+          const uint8Array = new Uint8Array(audioBuffer);
+          const chunkSize = 8192;
+          let base64Audio = '';
+          
+          for (let i = 0; i < uint8Array.length; i += chunkSize) {
+            const chunk = uint8Array.slice(i, i + chunkSize);
+            const chunkArray = Array.from(chunk);
+            base64Audio += btoa(String.fromCharCode.apply(null, chunkArray));
+          }
+          
+          audioContent = base64Audio;
           console.log('Voice narration generated successfully');
+        } else {
+          console.error('ElevenLabs API error:', await voiceResponse.text());
         }
       } catch (error) {
         console.error('Voice generation error:', error);

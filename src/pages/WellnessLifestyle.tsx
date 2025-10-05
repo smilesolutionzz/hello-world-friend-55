@@ -328,16 +328,34 @@ const WellnessLifestyle = () => {
                   <Badge className="bg-blue-500 text-white">ElevenLabs 음성</Badge>
                   
                   {/* 명상 듣기 CTA 버튼 - 우측 상단 */}
-                  {meditationContent && meditationContent.audioContent && (
+                  {meditationContent && (
                     <Button
-                      onClick={() => toggleAudio(meditationContent.audioContent)}
+                      onClick={() => {
+                        if (meditationContent.audioContent) {
+                          toggleAudio(meditationContent.audioContent);
+                        } else {
+                          toast({
+                            title: "음성 생성 중",
+                            description: "음성이 아직 생성되지 않았습니다. 잠시 후 다시 시도해주세요.",
+                            variant: "destructive"
+                          });
+                        }
+                      }}
+                      disabled={!meditationContent.audioContent}
                       className={`${
-                        isPlaying 
-                          ? 'bg-red-500 hover:bg-red-600' 
-                          : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
+                        !meditationContent.audioContent
+                          ? 'bg-gray-400 cursor-not-allowed'
+                          : isPlaying 
+                            ? 'bg-red-500 hover:bg-red-600' 
+                            : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
                       } text-white px-6 py-3 shadow-lg transition-all flex items-center gap-2`}
                     >
-                      {isPlaying ? (
+                      {!meditationContent.audioContent ? (
+                        <>
+                          <Volume2 className="h-5 w-5 opacity-50" />
+                          음성 생성 중...
+                        </>
+                      ) : isPlaying ? (
                         <>
                           <div className="w-4 h-4 border-2 border-white"></div>
                           정지

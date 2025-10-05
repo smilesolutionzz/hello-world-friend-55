@@ -132,6 +132,52 @@ serve(async (req) => {
       }
     }
 
+    // Fallback: Use OpenAI TTS if ElevenLabs is unavailable or failed
+    if (!audioContent && scriptText) {
+      const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+      if (OPENAI_API_KEY) {
+        try {
+          console.log('Attempting OpenAI TTS fallback...');
+          const limitedText = scriptText.substring(0, 1200);
+
+          const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${OPENAI_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'tts-1',
+              voice: 'alloy',
+              input: limitedText,
+              response_format: 'mp3',
+            }),
+          });
+
+          if (!ttsResponse.ok) {
+            const errText = await ttsResponse.text();
+            console.error('OpenAI TTS error:', errText);
+          } else {
+            const arrayBuffer = await ttsResponse.arrayBuffer();
+            const bytes = new Uint8Array(arrayBuffer);
+            const chunkSize = 8192;
+            let base64 = '';
+            for (let i = 0; i < bytes.length; i += chunkSize) {
+              const chunk = bytes.slice(i, i + chunkSize);
+              const chunkArray = Array.from(chunk);
+              base64 += btoa(String.fromCharCode.apply(null, chunkArray));
+            }
+            audioContent = base64;
+            console.log('OpenAI TTS fallback generated successfully');
+          }
+        } catch (e) {
+          console.error('OpenAI TTS fallback exception:', e);
+        }
+      } else {
+        console.log('OPENAI_API_KEY not configured; skipping OpenAI TTS fallback');
+      }
+    }
+
     // Generate meditation image
     let meditationImage = null;
     try {

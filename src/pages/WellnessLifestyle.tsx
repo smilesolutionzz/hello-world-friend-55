@@ -209,48 +209,62 @@ const WellnessLifestyle = () => {
   };
 
   const toggleAudio = (base64Audio: string) => {
-    if (isPlaying && audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      
-      const audio = new Audio(`data:audio/mpeg;base64,${base64Audio}`);
-      audioRef.current = audio;
-      
-      audio.onended = () => {
-        setIsPlaying(false);
-      };
-      
-      audio.onerror = () => {
-        toast({
-          title: '오디오 재생 오류',
-          description: '오디오를 재생할 수 없습니다.',
-          variant: 'destructive',
-        });
-        setIsPlaying(false);
-      };
-      
-      audio.play()
-        .then(() => {
-          setIsPlaying(true);
+    const playFromBlob = (b64: string) => {
+      try {
+        // Convert base64 -> Blob -> Object URL for maximum compatibility (iOS/Android/Chrome)
+        const binary = atob(b64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const blob = new Blob([bytes], { type: 'audio/mpeg' });
+        const url = URL.createObjectURL(blob);
+
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.src = '';
+        }
+        const audio = new Audio();
+        audio.src = url;
+        audioRef.current = audio;
+
+        audio.onended = () => {
+          setIsPlaying(false);
+          URL.revokeObjectURL(url);
+        };
+        audio.onerror = () => {
+          URL.revokeObjectURL(url);
           toast({
-            title: '🎵 나레이션 재생 중',
-            description: '편안하게 들어보세요.',
-          });
-        })
-        .catch((error) => {
-          console.error('Audio play error:', error);
-          toast({
-            title: '재생 오류',
-            description: '오디오 재생에 실패했습니다.',
+            title: '오디오 재생 오류',
+            description: '오디오를 재생할 수 없습니다. 잠시 후 다시 시도해주세요.',
             variant: 'destructive',
           });
           setIsPlaying(false);
-        });
+        };
+
+        // Must be user-gesture triggered; this function is called from a click handler
+        audio.play()
+          .then(() => {
+            setIsPlaying(true);
+            toast({ title: '🎵 나레이션 재생 중', description: '편안하게 들어보세요.' });
+          })
+          .catch((error) => {
+            console.error('Audio play error:', error);
+            toast({ title: '재생 오류', description: '오디오 재생에 실패했습니다.', variant: 'destructive' });
+            setIsPlaying(false);
+          });
+      } catch (e) {
+        console.error('Audio blob/playback error:', e);
+        toast({ title: '재생 오류', description: '오디오 데이터 처리 중 오류가 발생했습니다.', variant: 'destructive' });
+      }
+    };
+
+    if (isPlaying && audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      return;
     }
+
+    // Start playing
+    playFromBlob(base64Audio);
   };
 
   const achievementPercentage = (completedTasks.length / 4) * 100;
@@ -326,13 +340,13 @@ const WellnessLifestyle = () => {
           {/* Meditation Section */}
           <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-0 shadow-xl">
             <CardHeader>
-              <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <CardTitle className="text-2xl font-bold text-blue-900 flex items-center gap-3">
                   <Brain className="h-8 w-8" />
                   AI 맞춤 명상
                 </CardTitle>
                 <div className="flex items-center gap-3">
-                  <Badge className="bg-blue-500 text-white">ElevenLabs 음성</Badge>
+                  <Badge className="bg-blue-500 text-white">AI 음성</Badge>
                   
                   {/* 명상 듣기 CTA 버튼 - 우측 상단 */}
                   {meditationContent && (

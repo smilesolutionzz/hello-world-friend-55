@@ -1,12 +1,16 @@
-// 베타테스트 종료 - 유료화 전환 완료
-export const BETA_TEST_END_DATE = new Date('2025-10-31T23:59:59');
+// 베타테스트 기간 - 2025년 10월 30일까지 모든 기능 무료
+export const BETA_TEST_END_DATE = new Date('2025-10-30T23:59:59+09:00');
 
 export const isBetaTestPeriod = (): boolean => {
-  return false; // 베타 테스트 완전 종료
+  return new Date() < BETA_TEST_END_DATE; // 베타 기간 동안 true 반환
 };
 
 export const getBetaTestMessage = (): string => {
-  return '';
+  if (!isBetaTestPeriod()) return '';
+  const now = new Date();
+  const diffTime = BETA_TEST_END_DATE.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return `🎉 베타 테스트 기간! 모든 기능 무료 (D-${diffDays})`;
 };
 
 // 무료 플랜 제공 기능

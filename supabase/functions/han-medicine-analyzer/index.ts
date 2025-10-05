@@ -3,6 +3,10 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
+// 베타 테스트 기간 체크 (2025년 10월 30일까지 모든 기능 무료)
+const BETA_END_DATE = new Date('2025-10-30T23:59:59+09:00');
+const isBetaPeriod = () => new Date() < BETA_END_DATE;
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',

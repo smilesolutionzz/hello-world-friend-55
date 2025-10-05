@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+import { BetaBanner } from "@/components/BetaBanner";
 import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
 import ChildAssessmentSimplified from "@/components/assessment/ChildAssessmentSimplified";
@@ -1471,6 +1472,9 @@ const Assessment = () => {
     <div>
       <UnifiedNavigation />
       <div className="pt-4">
+        <div className="container mx-auto max-w-6xl px-4 mb-6">
+          <BetaBanner />
+        </div>
         {selectedAgeGroup === 'infant' && (
           <InfantAssessment 
             age={selectedAge} 

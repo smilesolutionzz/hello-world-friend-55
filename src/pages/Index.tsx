@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import ExpertValidationBanner from "@/components/ExpertValidationBanner";
+import { BetaBanner } from "@/components/BetaBanner";
 import HeroSection from "@/components/HeroSection";
 import PlatformOverview from "@/components/PlatformOverview";
 import VideoShowcase from "@/components/VideoShowcase";
@@ -153,6 +154,11 @@ const Index = () => {
         
         {/* Main Content - Full Width */}
         <main id="main-content" className="w-full">
+          {/* 베타 배너 */}
+          <div className="container mx-auto px-4 pt-4">
+            <BetaBanner />
+          </div>
+
           {/* 1. Hero Section - 서비스 소개 */}
           <div className="animate-fade-in w-full">
             <HeroSection />

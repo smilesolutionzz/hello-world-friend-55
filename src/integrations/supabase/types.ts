@@ -1786,6 +1786,7 @@ export type Database = {
           id: string
           is_available: boolean | null
           is_verified: boolean | null
+          kakao_link: string | null
           languages: string[] | null
           license_number: string | null
           professional_title: string
@@ -1808,6 +1809,7 @@ export type Database = {
           id?: string
           is_available?: boolean | null
           is_verified?: boolean | null
+          kakao_link?: string | null
           languages?: string[] | null
           license_number?: string | null
           professional_title: string
@@ -1830,6 +1832,7 @@ export type Database = {
           id?: string
           is_available?: boolean | null
           is_verified?: boolean | null
+          kakao_link?: string | null
           languages?: string[] | null
           license_number?: string | null
           professional_title?: string

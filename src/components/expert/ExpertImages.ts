@@ -4,7 +4,7 @@ import expertOhSeeun from '@/assets/expert-oh-seeun.jpg';
 import expertHeoSunhan from '@/assets/expert-heo-sunhan.jpg';
 import expertSongSeyeong from '@/assets/expert-song-seyeong.jpg';
 import expertYeSuyeo from '@/assets/expert-ye-suyeo.jpg';
-import expertParkWonmuk from '@/assets/expert-park-wonmuk.jpg';
+import expertBaekGyeongyeol from '@/assets/expert-baek-gyeongyeol.jpg';
 import expertLeeHayeon from '@/assets/expert-lee-hayeon.jpg';
 import expertYeWonmuk from '@/assets/expert-ye-wonmuk.jpg';
 
@@ -15,7 +15,7 @@ export const expertImages: Record<string, string> = {
   '허순한': expertHeoSunhan,
   '송세영': expertSongSeyeong,
   '예수여': expertYeSuyeo,
-  '박원묵': expertParkWonmuk,
+  '백경열': expertBaekGyeongyeol,
   '이하연': expertLeeHayeon,
   '예원묵': expertYeWonmuk,
 };

@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      ab_test_experiments: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_date: string | null
+          experiment_name: string
+          id: string
+          is_active: boolean
+          start_date: string | null
+          target_metric: string
+          updated_at: string
+          variants: Json
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          experiment_name: string
+          id?: string
+          is_active?: boolean
+          start_date?: string | null
+          target_metric: string
+          updated_at?: string
+          variants: Json
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          experiment_name?: string
+          id?: string
+          is_active?: boolean
+          start_date?: string | null
+          target_metric?: string
+          updated_at?: string
+          variants?: Json
+        }
+        Relationships: []
+      }
       admin_analytics: {
         Row: {
           active_subscribers: number | null
@@ -1803,6 +1842,54 @@ export type Database = {
         }
         Relationships: []
       }
+      family_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          expires_at: string
+          family_relationship: string
+          id: string
+          invitation_code: string
+          invitation_message: string | null
+          invited_email: string
+          invited_phone: string | null
+          inviter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          expires_at?: string
+          family_relationship: string
+          id?: string
+          invitation_code: string
+          invitation_message?: string | null
+          invited_email: string
+          invited_phone?: string | null
+          inviter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          expires_at?: string
+          family_relationship?: string
+          id?: string
+          invitation_code?: string
+          invitation_message?: string | null
+          invited_email?: string
+          invited_phone?: string | null
+          inviter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       family_members: {
         Row: {
           age: number | null
@@ -2927,6 +3014,36 @@ export type Database = {
         }
         Relationships: []
       }
+      memory_interactions: {
+        Row: {
+          comment_text: string | null
+          created_at: string
+          id: string
+          interaction_type: string
+          memory_id: string
+          reaction_emoji: string | null
+          user_id: string
+        }
+        Insert: {
+          comment_text?: string | null
+          created_at?: string
+          id?: string
+          interaction_type: string
+          memory_id: string
+          reaction_emoji?: string | null
+          user_id: string
+        }
+        Update: {
+          comment_text?: string | null
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          memory_id?: string
+          reaction_emoji?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       observation_domains: {
         Row: {
           color_class: string
@@ -3520,6 +3637,7 @@ export type Database = {
           birth_date: string | null
           created_at: string
           display_name: string | null
+          email: string | null
           id: string
           phone: string | null
           subscription_tier: string | null
@@ -3530,6 +3648,7 @@ export type Database = {
           birth_date?: string | null
           created_at?: string
           display_name?: string | null
+          email?: string | null
           id?: string
           phone?: string | null
           subscription_tier?: string | null
@@ -3540,6 +3659,7 @@ export type Database = {
           birth_date?: string | null
           created_at?: string
           display_name?: string | null
+          email?: string | null
           id?: string
           phone?: string | null
           subscription_tier?: string | null
@@ -3680,6 +3800,45 @@ export type Database = {
           service_type?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      shared_memories: {
+        Row: {
+          allow_comments: boolean
+          allow_reactions: boolean
+          created_at: string
+          family_group_id: string | null
+          id: string
+          memory_id: string
+          shared_by: string
+          shared_with: string[] | null
+          updated_at: string
+          visibility: string
+        }
+        Insert: {
+          allow_comments?: boolean
+          allow_reactions?: boolean
+          created_at?: string
+          family_group_id?: string | null
+          id?: string
+          memory_id: string
+          shared_by: string
+          shared_with?: string[] | null
+          updated_at?: string
+          visibility?: string
+        }
+        Update: {
+          allow_comments?: boolean
+          allow_reactions?: boolean
+          created_at?: string
+          family_group_id?: string | null
+          id?: string
+          memory_id?: string
+          shared_by?: string
+          shared_with?: string[] | null
+          updated_at?: string
+          visibility?: string
         }
         Relationships: []
       }
@@ -4296,6 +4455,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_analytics_events: {
+        Row: {
+          created_at: string
+          event_name: string
+          event_properties: Json | null
+          id: string
+          ip_address: unknown | null
+          page_path: string | null
+          referrer: string | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_name: string
+          event_properties?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          page_path?: string | null
+          referrer?: string | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_name?: string
+          event_properties?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          page_path?: string | null
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_book_chapters: {
         Row: {
           book_id: string
@@ -4431,6 +4629,80 @@ export type Database = {
             columns: ["challenge_id"]
             isOneToOne: false
             referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_cohorts: {
+        Row: {
+          acquisition_channel: string | null
+          cohort_date: string
+          created_at: string
+          first_activity_type: string | null
+          id: string
+          lifetime_value: number | null
+          retention_day_1: boolean | null
+          retention_day_30: boolean | null
+          retention_day_7: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          acquisition_channel?: string | null
+          cohort_date: string
+          created_at?: string
+          first_activity_type?: string | null
+          id?: string
+          lifetime_value?: number | null
+          retention_day_1?: boolean | null
+          retention_day_30?: boolean | null
+          retention_day_7?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          acquisition_channel?: string | null
+          cohort_date?: string
+          created_at?: string
+          first_activity_type?: string | null
+          id?: string
+          lifetime_value?: number | null
+          retention_day_1?: boolean | null
+          retention_day_30?: boolean | null
+          retention_day_7?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_experiment_assignments: {
+        Row: {
+          assigned_at: string
+          experiment_id: string
+          id: string
+          user_id: string
+          variant_name: string
+        }
+        Insert: {
+          assigned_at?: string
+          experiment_id: string
+          id?: string
+          user_id: string
+          variant_name: string
+        }
+        Update: {
+          assigned_at?: string
+          experiment_id?: string
+          id?: string
+          user_id?: string
+          variant_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_experiment_assignments_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "ab_test_experiments"
             referencedColumns: ["id"]
           },
         ]
@@ -4822,6 +5094,42 @@ export type Database = {
           },
         ]
       }
+      viral_shares: {
+        Row: {
+          content_id: string
+          content_type: string
+          conversion_tracked: boolean | null
+          created_at: string
+          id: string
+          recipient_info: Json | null
+          share_platform: string
+          share_url: string | null
+          user_id: string
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          conversion_tracked?: boolean | null
+          created_at?: string
+          id?: string
+          recipient_info?: Json | null
+          share_platform: string
+          share_url?: string | null
+          user_id: string
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          conversion_tracked?: boolean | null
+          created_at?: string
+          id?: string
+          recipient_info?: Json | null
+          share_platform?: string
+          share_url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       voice_diary_entries: {
         Row: {
           audio_duration: number | null
@@ -5188,6 +5496,10 @@ export type Database = {
       cleanup_financial_audit_logs: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      generate_invitation_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       generate_referral_code: {
         Args: Record<PropertyKey, never>

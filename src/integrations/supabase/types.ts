@@ -433,6 +433,80 @@ export type Database = {
         }
         Relationships: []
       }
+      book_production_requests: {
+        Row: {
+          actual_completion_date: string | null
+          book_id: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          delivery_address: string | null
+          estimated_completion_date: string | null
+          id: string
+          memory_count: number
+          payment_status: string | null
+          preferred_style: string | null
+          price_quote: number | null
+          production_notes: string | null
+          request_type: string
+          special_requests: string | null
+          status: string
+          total_word_count: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actual_completion_date?: string | null
+          book_id?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          delivery_address?: string | null
+          estimated_completion_date?: string | null
+          id?: string
+          memory_count?: number
+          payment_status?: string | null
+          preferred_style?: string | null
+          price_quote?: number | null
+          production_notes?: string | null
+          request_type: string
+          special_requests?: string | null
+          status?: string
+          total_word_count?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actual_completion_date?: string | null
+          book_id?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          delivery_address?: string | null
+          estimated_completion_date?: string | null
+          id?: string
+          memory_count?: number
+          payment_status?: string | null
+          preferred_style?: string | null
+          price_quote?: number | null
+          production_notes?: string | null
+          request_type?: string
+          special_requests?: string | null
+          status?: string
+          total_word_count?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_production_requests_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "user_books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       book_projects: {
         Row: {
           ai_guide: Json | null
@@ -2970,6 +3044,7 @@ export type Database = {
         Row: {
           ai_generated_image_url: string | null
           audio_narration_url: string | null
+          book_chapter_id: string | null
           conversation_type: string | null
           created_at: string
           emotion_analysis: Json | null
@@ -2986,6 +3061,7 @@ export type Database = {
         Insert: {
           ai_generated_image_url?: string | null
           audio_narration_url?: string | null
+          book_chapter_id?: string | null
           conversation_type?: string | null
           created_at?: string
           emotion_analysis?: Json | null
@@ -3002,6 +3078,7 @@ export type Database = {
         Update: {
           ai_generated_image_url?: string | null
           audio_narration_url?: string | null
+          book_chapter_id?: string | null
           conversation_type?: string | null
           created_at?: string
           emotion_analysis?: Json | null
@@ -3015,7 +3092,15 @@ export type Database = {
           user_recording_url?: string | null
           views_count?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "memory_conversations_book_chapter_id_fkey"
+            columns: ["book_chapter_id"]
+            isOneToOne: false
+            referencedRelation: "user_book_chapters"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       memory_interactions: {
         Row: {

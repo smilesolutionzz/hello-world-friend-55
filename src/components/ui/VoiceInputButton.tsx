@@ -15,7 +15,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   onTranscription,
   disabled = false,
   className = "",
-  isFixed = true
+  isFixed = false
 }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);

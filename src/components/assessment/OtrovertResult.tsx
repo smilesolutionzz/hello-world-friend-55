@@ -53,24 +53,102 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
 
       if (error) throw error;
 
-      if (data.analysis) {
+      if (data?.analysis) {
         setAiAnalysis(data.analysis);
+      } else {
+        // 분석 데이터가 없을 경우 기본 메시지
+        setAiAnalysis(getDefaultAnalysis());
       }
       
-      if (data.graphData) {
+      if (data?.graphData) {
         setGraphData(data.graphData);
+      } else {
+        // 그래프 데이터가 없을 경우 기본 데이터
+        setGraphData(getDefaultGraphData());
       }
 
       setIsLoading(false);
     } catch (error) {
       console.error('AI 분석 오류:', error);
+      
+      // 에러 발생 시 기본 분석 및 그래프 데이터 제공
+      setAiAnalysis(getDefaultAnalysis());
+      setGraphData(getDefaultGraphData());
+      
       toast({
         title: "분석 오류",
-        description: "AI 분석을 불러오는데 실패했습니다.",
+        description: "AI 분석 중 오류가 발생했습니다. 기본 분석을 표시합니다. 다시 시도 버튼을 눌러보세요.",
         variant: "destructive"
       });
       setIsLoading(false);
     }
+  };
+
+  // 기본 분석 텍스트 생성
+  const getDefaultAnalysis = () => {
+    const score = parseFloat(result.score);
+    if (score <= 3) {
+      return `당신은 외향적 오트로버트입니다. (${score}점)
+
+외향적 오트로버트는 사회적 상황에서 에너지를 얻지만, 때로는 혼자만의 시간도 필요로 합니다. 사람들과 함께 있는 것을 즐기지만, 깊은 대화와 의미 있는 관계를 선호합니다.
+
+**주요 특성:**
+• 사교적이면서도 내면의 성찰을 중요시함
+• 다양한 활동을 즐기지만 과도한 자극은 피함
+• 폭넓은 인맥과 깊은 우정을 동시에 추구
+
+**권장사항:**
+• 사회 활동과 휴식의 균형을 유지하세요
+• 깊이 있는 대화를 나눌 수 있는 소수의 친구를 소중히 하세요
+• 필요할 때는 혼자만의 시간을 가져도 괜찮습니다`;
+    } else if (score <= 6) {
+      return `당신은 균형잡힌 오트로버트입니다. (${score}점)
+
+균형잡힌 오트로버트는 외향성과 내향성의 중간에 위치하여, 상황에 따라 유연하게 대처할 수 있습니다. 혼자 있을 때도, 함께 있을 때도 편안함을 느낍니다.
+
+**주요 특성:**
+• 상황에 따라 사교적이거나 조용할 수 있음
+• 다양한 환경에 잘 적응함
+• 균형잡힌 에너지 관리 능력
+
+**권장사항:**
+• 자신의 컨디션을 잘 관찰하고 필요에 따라 조절하세요
+• 다양한 유형의 사람들과 교류하며 폭넓은 경험을 쌓으세요
+• 때로는 계획적으로, 때로는 즉흥적으로 활동하세요`;
+    } else {
+      return `당신은 내향적 오트로버트입니다. (${score}점)
+
+내향적 오트로버트는 혼자만의 시간을 통해 에너지를 충전하지만, 의미 있는 사회적 관계도 소중히 여깁니다. 깊이 있는 사고와 내면의 세계를 중시합니다.
+
+**주요 특성:**
+• 조용하고 사색적인 환경을 선호
+• 소수의 깊은 관계를 중시
+• 혼자만의 시간을 통해 재충전
+• 신중하고 깊이 있는 사고
+
+**권장사항:**
+• 충분한 휴식과 혼자만의 시간을 확보하세요
+• 소수의 친한 친구들과 깊이 있는 대화를 나누세요
+• 자신의 내향성을 받아들이고 존중하세요
+• 필요한 경우에만 사회 활동에 참여하세요`;
+    }
+  };
+
+  // 기본 그래프 데이터 생성
+  const getDefaultGraphData = () => {
+    const score = parseFloat(result.score);
+    const introversionScore = (score / 9) * 100;
+    const extroversionScore = 100 - introversionScore;
+
+    return {
+      extroversion: extroversionScore,
+      introversion: introversionScore,
+      socialEnergy: extroversionScore * 0.9,
+      aloneTime: introversionScore * 0.9,
+      groupPreference: extroversionScore * 0.85,
+      communication: 50 + (extroversionScore - 50) * 0.7,
+      thinkingStyle: introversionScore * 0.8
+    };
   };
 
   const radarChartData = graphData ? [

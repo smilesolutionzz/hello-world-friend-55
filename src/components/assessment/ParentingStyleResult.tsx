@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import ProductRecommendation from "../ProductRecommendation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 
 interface ParentingStyleResultProps {
   results: any;
@@ -23,6 +24,7 @@ const ParentingStyleResult = ({
   onStartRealTimeChat 
 }: ParentingStyleResultProps) => {
   const [analysis, setAnalysis] = useState<string>("");
+  const { toast } = useToast();
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const { generatePDFReport, saveTestResult } = useTestResultActions();
 
@@ -46,16 +48,35 @@ const ParentingStyleResult = ({
 
       if (error) {
         console.error('분석 생성 오류:', error);
-        setAnalysis("분석을 생성하는 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
-      } else {
+        setAnalysis(getDefaultParentingAnalysis());
+        toast({
+          title: "분석 오류",
+          description: "AI 분석 중 오류가 발생했습니다. 기본 분석을 표시합니다.",
+          variant: "destructive"
+        });
+      } else if (data?.analysis) {
         setAnalysis(data.analysis);
+      } else {
+        setAnalysis(getDefaultParentingAnalysis());
       }
     } catch (error) {
       console.error('분석 요청 오류:', error);
-      setAnalysis("분석을 생성하는 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+      setAnalysis(getDefaultParentingAnalysis());
+      toast({
+        title: "분석 오류",
+        description: "AI 분석 중 오류가 발생했습니다. 기본 분석을 표시합니다.",
+        variant: "destructive"
+      });
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const getDefaultParentingAnalysis = () => {
+    const primaryStyle = Object.entries(results.scores)
+      .sort(([, a], [, b]) => (b as number) - (a as number))[0][0];
+    
+    return `양육 스타일 분석 결과입니다.\n\n주된 양육 스타일: ${primaryStyle}\n\n각 양육 스타일의 균형을 맞추는 것이 중요합니다. 자녀의 개성과 상황에 따라 유연하게 대응하시기 바랍니다.`;
   };
 
   const saveResults = async () => {

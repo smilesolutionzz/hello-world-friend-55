@@ -138,18 +138,27 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
 
       if (response.error) throw response.error;
       
-      setAnalysis(response.data.analysis);
+      if (response.data?.analysis) {
+        setAnalysis(response.data.analysis);
+      } else {
+        setAnalysis(getDefaultConstitutionAnalysis());
+      }
     } catch (error) {
       console.error('분석 생성 중 오류:', error);
+      setAnalysis(getDefaultConstitutionAnalysis());
       toast({
         title: "분석 오류",
-        description: "AI 분석 중 오류가 발생했습니다. 기본 결과를 표시합니다.",
+        description: "AI 분석 중 오류가 발생했습니다. 기본 결과를 표시합니다. 다시 시도 버튼을 눌러보세요.",
         variant: "destructive"
       });
-      setAnalysis('기본 체질 분석 결과입니다.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const getDefaultConstitutionAnalysis = () => {
+    const constitutionData = constitutionInfo[result.constitution as keyof typeof constitutionInfo];
+    return `${constitutionData.name} 체질 기본 분석입니다.\n\n체질에 맞는 식이요법과 생활습관을 실천하시면 건강한 삶을 유지하실 수 있습니다.`;
   };
 
   const handleShareText = () => {

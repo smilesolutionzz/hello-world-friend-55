@@ -1296,9 +1296,33 @@ const Assessment = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
         <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">불안감 수준 확인 (3분)</h1>
-            <p className="text-muted-foreground">AHI-ANXIETY 수준 확인 21문항 (참고용)</p>
+          <div className="text-center mb-12">
+            <div className="inline-block px-4 py-2 bg-primary/10 rounded-full mb-4">
+              <span className="text-sm font-semibold text-primary">💜 전문 선별 평가 시스템</span>
+            </div>
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">불안감 수준 확인 자가체크 (참고용)</h1>
+            <p className="text-muted-foreground mb-6">불안감 증상 자가체크 (참고용)</p>
+            
+            <div className="bg-white dark:bg-card rounded-xl p-6 max-w-2xl mx-auto mb-8">
+              <h3 className="font-bold text-lg mb-4">불안 검사</h3>
+              <div className="space-y-2 text-left">
+                <p className="text-sm text-muted-foreground font-semibold">평가 영역:</p>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span>신속한 현재상태 확인</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span>AHI-ANXIETY 21문항</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span>수준별 참고 분석</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
           <PanicTestForm 
             onComplete={handlePanicTestComplete}

@@ -8,12 +8,14 @@ interface VoiceInputButtonProps {
   onTranscription: (text: string) => void;
   disabled?: boolean;
   className?: string;
+  isFixed?: boolean;
 }
 
 export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
   onTranscription,
   disabled = false,
-  className = ""
+  className = "",
+  isFixed = true
 }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -175,7 +177,7 @@ export const VoiceInputButton: React.FC<VoiceInputButtonProps> = ({
       size="sm"
       onClick={handleClick}
       disabled={disabled || isProcessing}
-      className={`flex items-center gap-2 ${className}`}
+      className={`flex items-center gap-2 ${isFixed ? 'fixed bottom-20 right-4 z-50 shadow-lg' : ''} ${className}`}
     >
       {isProcessing ? (
         <Loader2 className="w-4 h-4 animate-spin" />

@@ -1310,15 +1310,19 @@ const Assessment = () => {
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span>신속한 현재상태 확인</span>
+                    <span>불안 증상</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span>AHI-ANXIETY 21문항</span>
+                    <span>심리적 불안</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span>수준별 참고 분석</span>
+                    <span>신체적 긴장</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span>회피 행동</span>
                   </li>
                 </ul>
               </div>

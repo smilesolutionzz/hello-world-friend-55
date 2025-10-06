@@ -678,6 +678,60 @@ export type Database = {
         }
         Relationships: []
       }
+      business_plans: {
+        Row: {
+          budget: string | null
+          business_goals: string | null
+          channel_name: string
+          content_strategy: string | null
+          created_at: string
+          generated_plan: string
+          id: string
+          is_favorite: boolean | null
+          monetization_plan: string | null
+          niche: string
+          plan_type: string
+          target_audience: string
+          timeline: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget?: string | null
+          business_goals?: string | null
+          channel_name: string
+          content_strategy?: string | null
+          created_at?: string
+          generated_plan: string
+          id?: string
+          is_favorite?: boolean | null
+          monetization_plan?: string | null
+          niche: string
+          plan_type?: string
+          target_audience: string
+          timeline?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget?: string | null
+          business_goals?: string | null
+          channel_name?: string
+          content_strategy?: string | null
+          created_at?: string
+          generated_plan?: string
+          id?: string
+          is_favorite?: boolean | null
+          monetization_plan?: string | null
+          niche?: string
+          plan_type?: string
+          target_audience?: string
+          timeline?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       challenge_posts: {
         Row: {
           created_at: string
@@ -5488,6 +5542,57 @@ export type Database = {
           target_group?: string
           updated_at?: string
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      youtube_production_orders: {
+        Row: {
+          additional_requirements: string | null
+          admin_notes: string | null
+          base_price: number
+          business_plan_data: Json | null
+          channel_name: string
+          contact_email: string
+          contact_phone: string
+          created_at: string | null
+          discount_rate: number
+          final_price: number
+          id: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          additional_requirements?: string | null
+          admin_notes?: string | null
+          base_price: number
+          business_plan_data?: Json | null
+          channel_name: string
+          contact_email: string
+          contact_phone: string
+          created_at?: string | null
+          discount_rate?: number
+          final_price: number
+          id?: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          additional_requirements?: string | null
+          admin_notes?: string | null
+          base_price?: number
+          business_plan_data?: Json | null
+          channel_name?: string
+          contact_email?: string
+          contact_phone?: string
+          created_at?: string | null
+          discount_rate?: number
+          final_price?: number
+          id?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }

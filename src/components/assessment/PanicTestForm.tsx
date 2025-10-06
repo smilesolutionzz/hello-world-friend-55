@@ -61,11 +61,11 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
       const average = Math.round((total / answers.length) * 10) / 10;
       
       let severity = "";
-      if (total <= 14) {
+      if (total <= 15) {
         severity = "정상";
-      } else if (total <= 28) {
+      } else if (total <= 30) {
         severity = "경미";
-      } else if (total <= 42) {
+      } else if (total <= 45) {
         severity = "중등도";
       } else {
         severity = "심각";

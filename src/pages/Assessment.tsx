@@ -1121,21 +1121,21 @@ const Assessment = () => {
         return [
           {
             id: 'adhd',
-            title: '주의집중력 체크',
+            title: 'ADHD 검사',
             description: 'ADHD 증상 자가체크',
             icon: '🎯',
             items: ['18문항', '3분 소요', '영역별 분석']
           },
           {
             id: 'depression',
-            title: '우울감 체크',
+            title: '우울 검사',
             description: '우울감 수준 확인',
             icon: '😔',
             items: ['21문항', '3분 소요', '심리상태 분석']
           },
           {
             id: 'panic',
-            title: '불안감 체크',
+            title: '불안 검사',
             description: '불안 증상 수준 확인',
             icon: '😰',
             items: ['21문항', '3분 소요', '불안도 측정']
@@ -1152,28 +1152,28 @@ const Assessment = () => {
         return [
           {
             id: 'depression',
-            title: '우울감 체크',
+            title: '우울 검사',
             description: '우울감 수준 자가체크',
             icon: '😔',
             items: ['21문항', '3분 소요', '심리상태 분석']
           },
           {
             id: 'panic',
-            title: '불안감 체크',
+            title: '불안 검사',
             description: '불안 증상 수준 확인',
             icon: '😰',
             items: ['21문항', '3분 소요', '불안도 측정']
           },
           {
             id: 'stress',
-            title: '스트레스 체크',
+            title: '스트레스 검사',
             description: '일상 스트레스 수준 측정',
             icon: '😫',
             items: ['12문항', '3분 소요', '스트레스 분석']
           },
           {
             id: 'adhd',
-            title: '주의집중력 체크',
+            title: 'ADHD 검사',
             description: 'ADHD 증상 자가체크',
             icon: '🎯',
             items: ['18문항', '3분 소요', '영역별 분석']

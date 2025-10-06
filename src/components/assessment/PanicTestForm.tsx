@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Brain } from "lucide-react";
 
 interface PanicTestFormProps {
   onComplete: (results: {answers: number[], total: number, average: number, severity: string}) => void;
@@ -90,28 +90,36 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
   const canProceed = currentAnswer >= 1;
 
   return (
-    <Card className="max-w-4xl mx-auto p-8">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" />
-            뒤로가기
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            {currentQuestion + 1} / {panicQuestions.length}
-          </span>
-        </div>
-
-        {/* Progress */}
-        <div className="space-y-2">
-          <Progress value={progress} className="w-full" />
-          <p className="text-center text-sm text-muted-foreground">
-            진행률: {Math.round(progress)}%
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">
+      <div className="container mx-auto px-4 max-w-2xl">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Brain className="w-6 h-6 text-blue-500" />
+            <h1 className="text-2xl font-bold">불안 검사</h1>
+          </div>
+          <p className="text-muted-foreground mb-4">
+            불안 증상과 수준을 파악하는 3분 자가진단
           </p>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm text-muted-foreground">
+              <span>진행률</span>
+              <span>{currentQuestion + 1} / {panicQuestions.length}</span>
+            </div>
+            <Progress value={progress} className="h-2" />
+          </div>
         </div>
 
-        {/* Question */}
+        <Card className="p-8">
+          <div className="space-y-6">
+            {/* Back Button - 상단 우측 */}
+            <div className="flex justify-end">
+              <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                뒤로가기
+              </Button>
+            </div>
+
+            {/* Question */}
         <div className="space-y-6">
           <h2 className="text-xl font-semibold text-center">
             {panicQuestions[currentQuestion]}
@@ -155,13 +163,15 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
           <Button 
             onClick={handleNext}
             disabled={!canProceed}
-            className="btn-brand"
+            className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
           >
             {currentQuestion === panicQuestions.length - 1 ? '결과 보기' : '다음'}
           </Button>
-        </div>
+            </div>
+          </div>
+        </Card>
       </div>
-    </Card>
+    </div>
   );
 };
 

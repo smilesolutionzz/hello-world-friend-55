@@ -342,31 +342,29 @@ export const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({ ro
 
       {/* 메시지 입력 */}
       <Card className="p-4">
-        <div className="flex gap-2">
-          <div className="flex-1 relative">
+        <div className="space-y-2">
+          <div className="flex gap-2">
             <Textarea
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="메시지를 입력하세요..."
-              className="pr-16 pb-12 resize-none"
+              className="flex-1 resize-none"
               rows={2}
             />
-            <div className="absolute bottom-2 right-2">
-              <VoiceInputButton
-                onTranscription={(text) => setNewMessage(prev => prev + text)}
-                className="bg-background border"
-                disabled={isSending}
-              />
-            </div>
+            <Button
+              onClick={sendMessage}
+              disabled={!newMessage.trim() || isSending}
+              size="lg"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
           </div>
-          <Button
-            onClick={sendMessage}
-            disabled={!newMessage.trim() || isSending}
-            size="lg"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
+          <VoiceInputButton
+            onTranscription={(text) => setNewMessage(prev => prev + text)}
+            className="w-full"
+            disabled={isSending}
+          />
         </div>
       </Card>
     </div>

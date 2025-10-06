@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -250,7 +251,7 @@ const InstantAIAnalysis = () => {
                       💬 예시: 14개월 아기가 아직 걷지 못해요... / 고3 아들이 극도로 예민해져서 힘들어요... / 육아 스트레스로 아이에게 화를 자주 내요...
                     </label>
                     
-                    {/* 텍스트 영역 - 프리미엄 스타일 */}
+                    {/* 텍스트 영역 + 음성 입력 */}
                     <div className="relative">
                       <Textarea
                         placeholder="지금 가장 걱정되는 한 문장을 적어주세요..."
@@ -261,9 +262,22 @@ const InstantAIAnalysis = () => {
                             setInputText(text);
                           }
                         }}
-                        className="min-h-[140px] resize-none border border-border/50 focus:border-primary/50 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all duration-300 text-base bg-background/80 backdrop-blur-sm shadow-sm focus:shadow-lg"
+                        className="min-h-[140px] resize-none border border-border/50 focus:border-primary/50 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all duration-300 text-base bg-background/80 backdrop-blur-sm shadow-sm focus:shadow-lg pr-16"
                         maxLength={500}
                       />
+                      
+                      {/* 음성 입력 버튼 - 우측 상단 */}
+                      <div className="absolute top-2 right-2">
+                        <VoiceInputButton
+                          onTranscription={(text) => {
+                            const newText = inputText + (inputText ? ' ' : '') + text;
+                            if (newText.length <= 500) {
+                              setInputText(newText);
+                            }
+                          }}
+                          className="shadow-md hover:shadow-lg transition-shadow"
+                        />
+                      </div>
                     </div>
                     
                     <div className="flex flex-wrap justify-between items-center gap-3 text-sm">

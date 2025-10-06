@@ -25,11 +25,6 @@ const LiveFeedWidget = () => {
   const [feedbacks, setFeedbacks] = useState<LiveFeedback[]>([]);
   const [realFeedbacks, setRealFeedbacks] = useState<LiveFeedback[]>([]);
   
-  // 결과 페이지에서는 숨김
-  const hideOnRoutes = ['/fun-test-result', '/han-medicine-test'];
-  if (hideOnRoutes.some(route => location.pathname.includes(route))) {
-    return null;
-  }
   // 시간대별 증가를 위한 기준값 계산
   const getHourlyTargetStats = () => {
     const now = new Date();
@@ -254,6 +249,12 @@ const LiveFeedWidget = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  // 결과 페이지에서는 완전히 숨김
+  const hideOnRoutes = ['/fun-test-result', '/han-medicine-test'];
+  if (hideOnRoutes.some(route => location.pathname.includes(route))) {
+    return null;
+  }
 
   // 전체 위젯이 숨겨진 경우 복원 버튼만 표시
   if (isWidgetHidden) {

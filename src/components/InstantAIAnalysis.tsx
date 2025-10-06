@@ -229,7 +229,7 @@ const InstantAIAnalysis = () => {
                   <Sparkles className="relative w-7 h-7 text-primary" />
                 </div>
                 <h2 className="text-3xl md:text-4xl font-black text-foreground">
-                  AI 즉시 리포팅
+                  <span className="hidden md:inline">AI </span>즉시 리포팅
                 </h2>
                 <Badge variant="secondary" className="text-xs font-bold px-3 py-1 bg-primary/10 text-primary border-primary/30">
                   beta

@@ -61,11 +61,11 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
       const average = Math.round((total / answers.length) * 10) / 10;
       
       let severity = "";
-      if (total <= 30) {
+      if (total <= 13) {
         severity = "정상";
-      } else if (total <= 42) {
+      } else if (total <= 19) {
         severity = "가벼운 우울";
-      } else if (total <= 54) {
+      } else if (total <= 28) {
         severity = "중등도 우울";
       } else {
         severity = "심한 우울";

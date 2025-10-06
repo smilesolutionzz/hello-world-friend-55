@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -345,7 +346,8 @@ export const UnifiedNavigation = () => {
                   </div>
 
                   {/* Navigation Items */}
-                  <div className="flex-1 space-y-2">
+                  <ScrollArea className="flex-1 -mx-2 px-2">
+                    <div className="space-y-2 pb-6">
                     {/* 전체 기능 목록 */}
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground mb-2 px-2">전체 기능</p>
@@ -503,7 +505,8 @@ export const UnifiedNavigation = () => {
                         </Button>
                       </div>
                     </div>
-                  </div>
+                    </div>
+                  </ScrollArea>
                 </div>
               </SheetContent>
             </Sheet>

@@ -127,7 +127,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
                       </div>
                       
                       <p className="text-lg text-brand-gradient font-semibold">
-                        {group.description}
+                        불안검사
                       </p>
                       
                       <div className="space-y-2">

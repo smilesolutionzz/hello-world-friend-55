@@ -349,10 +349,10 @@ export const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({ ro
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="메시지를 입력하세요..."
-              className="pr-16 resize-none"
+              className="pr-16 pb-12 resize-none"
               rows={2}
             />
-            <div className="absolute top-2 right-2">
+            <div className="absolute bottom-2 right-2">
               <VoiceInputButton
                 onTranscription={(text) => setNewMessage(prev => prev + text)}
                 className="bg-background border"

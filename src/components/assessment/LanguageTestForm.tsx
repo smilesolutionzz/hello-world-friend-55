@@ -138,7 +138,7 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
           </h2>
 
           <RadioGroup 
-            value={currentAnswer.toString()} 
+            value={currentAnswer > 0 ? currentAnswer.toString() : undefined} 
             onValueChange={handleAnswer}
             className="space-y-4"
           >

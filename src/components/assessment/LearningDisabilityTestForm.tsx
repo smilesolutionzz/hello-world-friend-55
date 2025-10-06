@@ -120,7 +120,7 @@ const LearningDisabilityTestForm = ({ onComplete, onBack }: LearningDisabilityTe
         </CardHeader>
         <CardContent>
           <RadioGroup
-            value={answers[currentQuestion]?.toString() || ""}
+            value={answers[currentQuestion]?.toString()}
             onValueChange={handleAnswerChange}
             className="space-y-3"
           >

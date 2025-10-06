@@ -126,7 +126,7 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
           </h2>
 
           <RadioGroup 
-            value={currentAnswer >= 1 ? currentAnswer.toString() : ""} 
+            value={currentAnswer >= 1 ? currentAnswer.toString() : undefined} 
             onValueChange={handleAnswer}
             className="space-y-4"
           >

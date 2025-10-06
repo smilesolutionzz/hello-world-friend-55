@@ -118,7 +118,7 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
           </h2>
 
           <RadioGroup 
-            value={currentAnswer >= 1 ? currentAnswer.toString() : ""} 
+            value={currentAnswer >= 1 ? currentAnswer.toString() : undefined} 
             onValueChange={handleAnswer}
             className="space-y-4"
           >

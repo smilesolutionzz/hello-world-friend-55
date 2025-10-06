@@ -132,7 +132,7 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
           </h2>
 
           <RadioGroup 
-            value={currentAnswer > 0 ? currentAnswer.toString() : ""} 
+            value={currentAnswer > 0 ? currentAnswer.toString() : undefined} 
             onValueChange={handleAnswer}
             className="space-y-4"
           >

@@ -64,7 +64,7 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result'>('test-type');
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
@@ -251,17 +251,9 @@ const Assessment = () => {
     setSelectedAgeGroup(ageGroup);
     setSelectedAge(age);
     
-    // 3분 테스트는 나이 그룹에 따라 테스트 타입 자동 설정
+    // "마음상태 체크"인 경우 검사 선택 단계로 이동
     if (testType === 'psychological' || !testType) {
-      if (ageGroup === 'infant') {
-        setTestType('language');
-        setCurrentStep('language-test');
-      } else if (ageGroup === 'child' || ageGroup === 'adult') {
-        setTestType('adhd');
-        setCurrentStep('adhd-test');
-      } else {
-        setCurrentStep('assessment');
-      }
+      setCurrentStep('test-selection');
     } else if (testType === 'language') {
       setCurrentStep('language-test');
     } else if (testType === 'panic') {
@@ -503,11 +495,11 @@ const Assessment = () => {
 
   const handleBack = () => {
     if (currentStep === 'depression-result' || currentStep === 'panic-result' || currentStep === 'adhd-result' || currentStep === 'stress-result' || currentStep === 'bigfive-result' || currentStep === 'attachment-result' || currentStep === 'career-result') {
-      // 결과 페이지에서는 결과를 유지하면서 검사 선택으로 돌아가기
       setCurrentStep('test-type');
-      // 결과 데이터는 유지 (초기화하지 않음)
+    } else if (currentStep === 'test-selection') {
+      // 검사 선택 단계에서 뒤로가기 -> 연령 선택으로
+      setCurrentStep('age-select');
     } else if (currentStep === 'dream-interpretation' || currentStep === 'saju-analysis' || currentStep === 'analysis' || currentStep === 'matching' || currentStep === 'consultation' || currentStep === 'language-result' || currentStep === 'child-result' || currentStep === 'infant-result' || currentStep === 'adult-result' || currentStep === 'ai-chat' || currentStep === 'realtime-chat') {
-      // 기타 단계에서는 처음부터 다시 시작
       setCurrentStep('test-type');
       setTestType(null);
     } else if (currentStep === 'legal-notice') {
@@ -1097,6 +1089,176 @@ const Assessment = () => {
   if (currentStep === 'age-select') {
     return <AgeSelector onAgeGroupSelect={handleAgeGroupSelect} testType={testType as 'psychological' | 'language' | 'panic' | 'depression' | 'adhd'} />;
   }
+
+  // 연령별 검사 선택 단계
+  if (currentStep === 'test-selection') {
+    const getRecommendedTests = () => {
+      if (selectedAgeGroup === 'infant') {
+        return [
+          {
+            id: 'language',
+            title: '언어발달 체크',
+            description: '표현어휘와 의사소통 발달 확인',
+            icon: '🗣️',
+            items: ['20문항', '2분 소요', '발달단계 분석']
+          },
+          {
+            id: 'selfesteem',
+            title: '정서발달 체크',
+            description: '자존감 및 정서적 안정성 확인',
+            icon: '💝',
+            items: ['15문항', '3분 소요', '정서상태 분석']
+          },
+          {
+            id: 'developmental-delay',
+            title: '발달지연 체크',
+            description: '전반적 발달 상태 선별',
+            icon: '🧠',
+            items: ['전문 검사', '발달 기준', '조기 선별']
+          }
+        ];
+      } else if (selectedAgeGroup === 'child') {
+        return [
+          {
+            id: 'adhd',
+            title: '주의집중력 체크',
+            description: 'ADHD 증상 자가체크',
+            icon: '🎯',
+            items: ['18문항', '3분 소요', '영역별 분석']
+          },
+          {
+            id: 'depression',
+            title: '우울감 체크',
+            description: '우울감 수준 확인',
+            icon: '😔',
+            items: ['21문항', '3분 소요', '심리상태 분석']
+          },
+          {
+            id: 'panic',
+            title: '불안감 체크',
+            description: '불안 증상 수준 확인',
+            icon: '😰',
+            items: ['21문항', '3분 소요', '불안도 측정']
+          },
+          {
+            id: 'social-development',
+            title: '사회성 발달 체크',
+            description: '사회적 상호작용 평가',
+            icon: '👥',
+            items: ['전문 검사', '대인관계', '적응행동']
+          }
+        ];
+      } else {
+        return [
+          {
+            id: 'depression',
+            title: '우울감 체크',
+            description: '우울감 수준 자가체크',
+            icon: '😔',
+            items: ['21문항', '3분 소요', '심리상태 분석']
+          },
+          {
+            id: 'panic',
+            title: '불안감 체크',
+            description: '불안 증상 수준 확인',
+            icon: '😰',
+            items: ['21문항', '3분 소요', '불안도 측정']
+          },
+          {
+            id: 'stress',
+            title: '스트레스 체크',
+            description: '일상 스트레스 수준 측정',
+            icon: '😫',
+            items: ['12문항', '3분 소요', '스트레스 분석']
+          },
+          {
+            id: 'adhd',
+            title: '주의집중력 체크',
+            description: 'ADHD 증상 자가체크',
+            icon: '🎯',
+            items: ['18문항', '3분 소요', '영역별 분석']
+          }
+        ];
+      }
+    };
+
+    const recommendedTests = getRecommendedTests();
+
+    return (
+      <div>
+        <UnifiedNavigation />
+        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden pt-4">
+          <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
+            <div className="text-center mb-12">
+              <button
+                onClick={handleBack}
+                className="mb-6 text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2"
+              >
+                ← 뒤로 가기
+              </button>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                <span className="block text-foreground mb-2">어떤 검사를 받고 싶으신가요?</span>
+                <span className="block text-brand-gradient text-2xl">
+                  {selectedAgeGroup === 'infant' ? '영유아 (0-5세)' : 
+                   selectedAgeGroup === 'child' ? '아동·청소년 (6-18세)' : 
+                   '성인 (19-64세)'} 추천 검사
+                </span>
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                연령대에 맞는 심리 검사를 선택해주세요 (참고용)
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+              {recommendedTests.map((test) => (
+                <div
+                  key={test.id}
+                  onClick={() => {
+                    setTestType(test.id as any);
+                    if (test.id === 'language') setCurrentStep('language-test');
+                    else if (test.id === 'depression') setCurrentStep('depression-test');
+                    else if (test.id === 'panic') setCurrentStep('panic-test');
+                    else if (test.id === 'adhd') setCurrentStep('adhd-test');
+                    else if (test.id === 'stress') setCurrentStep('stress-test');
+                    else if (test.id === 'selfesteem') setCurrentStep('selfesteem-test');
+                    else if (test.id === 'developmental-delay') setCurrentStep('developmental-delay-test');
+                    else if (test.id === 'social-development') setCurrentStep('social-development-test');
+                  }}
+                  className="bg-white dark:bg-card hover-glow border-2 border-primary/20 rounded-2xl p-8 cursor-pointer transition-all hover:scale-105 hover:border-primary/40 relative group"
+                >
+                  <div className="absolute top-4 right-4 text-4xl opacity-20 group-hover:opacity-40 transition-opacity">
+                    {test.icon}
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold text-brand-gradient mb-3">
+                    {test.title}
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    {test.description}
+                  </p>
+                  <ul className="space-y-2 text-sm">
+                    {test.items.map((item, idx) => (
+                      <li key={idx} className="flex items-center gap-2">
+                        <span className="text-primary">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-12 text-center">
+              <p className="text-sm text-muted-foreground">
+                💡 여러 검사를 받으시면 더 정확한 분석이 가능합니다
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
 
   if (currentStep === 'language-test') {
     return (

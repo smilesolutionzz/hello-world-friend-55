@@ -38,7 +38,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
       description: 'ADHD 검사',
       icon: Briefcase,
       color: 'from-primary to-primary-glow',
-      features: ['주의집중력', '사회-정서', '인지능력', '충동조절']
+      features: ['불안 증상', '심리적 불안', '신체적 긴장', '회피 행동']
     }
   ];
 

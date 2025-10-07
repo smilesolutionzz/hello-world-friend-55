@@ -229,7 +229,7 @@ export const AdhdTest: React.FC<AdhdTestProps> = ({ onComplete, onBack }) => {
                 {adhdQuestions[currentQuestion].question}
               </h3>
 
-              <RadioGroup value={currentAnswer || ""} onValueChange={handleAnswer}>
+              <RadioGroup value={currentAnswer ?? undefined} onValueChange={handleAnswer}>
                 {adhdQuestions[currentQuestion].options.map((option) => (
                   <div key={option.value} className="flex items-center space-x-2">
                     <RadioGroupItem value={option.value} id={option.value} />

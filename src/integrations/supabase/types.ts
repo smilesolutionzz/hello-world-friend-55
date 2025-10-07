@@ -3100,6 +3100,33 @@ export type Database = {
         }
         Relationships: []
       }
+      legal_disclaimer_views: {
+        Row: {
+          id: string
+          ip_address: unknown | null
+          page_url: string
+          user_agent: string | null
+          user_id: string | null
+          viewed_at: string | null
+        }
+        Insert: {
+          id?: string
+          ip_address?: unknown | null
+          page_url: string
+          user_agent?: string | null
+          user_id?: string | null
+          viewed_at?: string | null
+        }
+        Update: {
+          id?: string
+          ip_address?: unknown | null
+          page_url?: string
+          user_agent?: string | null
+          user_id?: string | null
+          viewed_at?: string | null
+        }
+        Relationships: []
+      }
       memory_conversations: {
         Row: {
           ai_generated_image_url: string | null

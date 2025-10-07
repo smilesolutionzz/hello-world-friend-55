@@ -106,6 +106,7 @@ import IEPView from "./pages/IEPView";
 import AdminDashboard from "./pages/AdminDashboard";
 import InstitutionAdmin from "./pages/InstitutionAdmin";
 import PMFOnboarding from "./pages/PMFOnboarding";
+import KPIDashboard from "./pages/KPIDashboard";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -203,6 +204,7 @@ const App = () => {
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/kpi-dashboard" element={<KPIDashboard />} />
           <Route path="/institution-admin" element={<InstitutionAdmin />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/share/:shareId" element={<ShareView />} />

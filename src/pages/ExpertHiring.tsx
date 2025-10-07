@@ -1042,7 +1042,7 @@ const ExpertHiring = () => {
                 <div className="text-sm text-muted-foreground">인증 전문가</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">30+</div>
+                <div className="text-3xl font-bold text-blue-600">40+</div>
                 <div className="text-sm text-muted-foreground">제휴 기관</div>
               </div>
               <div className="text-center">

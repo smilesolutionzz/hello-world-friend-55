@@ -80,7 +80,7 @@ const ProfessionalSidebar = () => {
 
   const trustIndicators = [
     { icon: <Users className="w-4 h-4" />, text: "15,000+ 이용자" },
-    { icon: <Award className="w-4 h-4" />, text: "30+ 제휴기관" },
+    { icon: <Award className="w-4 h-4" />, text: "40+ 제휴기관" },
     { icon: <Shield className="w-4 h-4" />, text: "의료진 검증" },
     { icon: <Star className="w-4 h-4" />, text: "4.8점 만족도" }
   ];

@@ -22,7 +22,7 @@ const TrustIndicators = () => {
     },
     {
       icon: Heart,
-      number: "30+",
+      number: "40+",
       label: "제휴 전문기관",
       description: "검증된 전문기관 네트워크"
     }

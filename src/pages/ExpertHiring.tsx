@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from 'react-helmet-async';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { mockInstitutions } from '@/data/mockInstitutions';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -266,6 +267,29 @@ const mockExperts: Expert[] = [
 const ExpertHiring = () => {
   const navigate = useNavigate();
   const [experts, setExperts] = useState<Expert[]>([]);
+  
+  // SEO 구조화된 데이터
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "전문가 고용 및 상담",
+    "provider": {
+      "@type": "Organization",
+      "name": "AI하이라이트PRO",
+      "description": "전문가 매칭 및 상담 서비스"
+    },
+    "areaServed": "KR",
+    "availableChannel": {
+      "@type": "ServiceChannel",
+      "serviceUrl": "https://aihpro.com/expert-hiring"
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "KRW",
+      "lowPrice": "85000",
+      "highPrice": "135000"
+    }
+  };
   const [filteredExperts, setFilteredExperts] = useState<Expert[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [specialtyFilter, setSpecialtyFilter] = useState("");
@@ -1006,8 +1030,25 @@ const ExpertHiring = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <UnifiedNavigation />
+    <>
+      <Helmet>
+        <title>전문가 고용 - AI하이라이트PRO | 검증된 전문가 매칭 서비스</title>
+        <meta name="description" content="40+ 제휴기관의 검증된 전문가와 연결하세요. AI 매칭으로 최적의 전문가를 찾아 심리상담, 발달평가, 언어치료 등 전문 서비스를 받으실 수 있습니다." />
+        <meta name="keywords" content="전문가 고용, 전문가 매칭, AI 매칭, 심리상담사, 발달전문가, 언어치료사, 전문상담" />
+        <link rel="canonical" href="https://aihpro.com/expert-hiring" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="전문가 고용 - AI하이라이트PRO" />
+        <meta property="og:description" content="40+ 제휴기관의 검증된 전문가와 연결. AI 매칭으로 최적의 전문가 찾기" />
+        <meta property="og:url" content="https://aihpro.com/expert-hiring" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+      
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <UnifiedNavigation />
       
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* 커뮤니티 스타일 헤더 */}
@@ -2179,6 +2220,7 @@ const ExpertHiring = () => {
         </Card>
       </div>
     </div>
+    </>
   );
 };
 

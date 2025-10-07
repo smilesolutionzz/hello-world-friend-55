@@ -117,8 +117,8 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium">규준집단 대비</span>
-                <span className="text-2xl font-bold text-brand-gradient">{Math.round((total / (Object.keys(categoryScores).length * 3)) * 100)}%</span>
+                <span className="text-lg font-medium">문항당 평균점수</span>
+                <span className="text-2xl font-bold text-brand-gradient">{(total / Object.keys(categoryScores).length).toFixed(1)}점 / 3.0점</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -168,7 +168,7 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
               <p className="text-lg font-medium">• 종합평가: {evaluation.level}</p>
             </div>
             <div>
-              <p className="text-lg font-medium mb-2">• 평균: {(total / Object.keys(categoryScores).length).toFixed(1)}점 / 3.0점</p>
+              <p className="text-lg font-medium mb-2">• 문항당 평균점수: {(total / Object.keys(categoryScores).length).toFixed(1)}점 / 3.0점</p>
               <p className="text-lg font-medium">• 연령대: {ageGroup}</p>
             </div>
           </div>

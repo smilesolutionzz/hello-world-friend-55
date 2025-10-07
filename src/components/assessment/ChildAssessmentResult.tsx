@@ -104,8 +104,8 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium">규준집단 대비</span>
-                <span className="text-2xl font-bold text-brand-gradient">{Math.round((total / (Object.keys(gameScores).length * 100)) * 100)}%</span>
+                <span className="text-lg font-medium">영역당 평균점수</span>
+                <span className="text-2xl font-bold text-brand-gradient">{(total / Object.keys(gameScores).length).toFixed(1)}점 / 100점</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -155,7 +155,7 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
               <p className="text-lg font-medium">• 발달수준: {evaluation.level}</p>
             </div>
             <div>
-              <p className="text-lg font-medium mb-2">• 평균: {(total / Object.keys(gameScores).length).toFixed(1)}점 / 100점</p>
+              <p className="text-lg font-medium mb-2">• 영역당 평균점수: {(total / Object.keys(gameScores).length).toFixed(1)}점 / 100점</p>
               <p className="text-lg font-medium">• 연령대: {ageGroup}</p>
             </div>
           </div>

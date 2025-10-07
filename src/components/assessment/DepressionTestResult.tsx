@@ -160,8 +160,8 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
               </div>
               
               <div className="flex justify-between items-center">
-                <span className="text-lg font-medium">규준집단 대비</span>
-                <span className="text-2xl font-bold text-brand-gradient">{((total/42)*100).toFixed(0)}%</span>
+                <span className="text-lg font-medium">문항당 평균점수</span>
+                <span className="text-2xl font-bold text-brand-gradient">{(total / 21).toFixed(1)}점 / 2.0점</span>
               </div>
               
               <div className="flex justify-between items-center">

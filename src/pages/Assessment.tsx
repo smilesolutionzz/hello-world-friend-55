@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { BetaBanner } from "@/components/BetaBanner";
+import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
+import { useEventTracking } from "@/hooks/useEventTracking";
 import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
 import ChildAssessmentSimplified from "@/components/assessment/ChildAssessmentSimplified";
@@ -59,6 +61,7 @@ const Assessment = () => {
   const location = useLocation();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
+  const { trackTestStart, trackTestComplete, trackPageView } = useEventTracking();
   
   // URL 파라미터에서 테스트 타입 확인
   const urlTestType = searchParams.get('type');

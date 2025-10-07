@@ -5,6 +5,8 @@ import { CheckCircle, AlertTriangle, Heart, ArrowLeft, ExternalLink, FileDown } 
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useState } from 'react';
+import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
+import { PremiumAnalysisOffer } from "@/components/premium/PremiumAnalysisOffer";
 // import { generatePDFReport } from '@/utils/pdfGenerator';
 
 interface InfantAssessmentResultProps {
@@ -23,6 +25,16 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
   const navigate = useNavigate();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const today = new Date().toLocaleDateString('ko-KR');
+  const [userId, setUserId] = useState<string | undefined>();
+  
+  useState(() => {
+    const getUser = async () => {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id);
+    };
+    getUser();
+  });
   
   const getCategoryName = (category: string) => {
     const names = {
@@ -79,17 +91,12 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
           <ArrowLeft className="w-4 h-4" />
           뒤로가기
         </Button>
-        <h1 className="text-3xl font-bold text-brand-gradient">영유아 발달검사 결과 (참고용)</h1>
+        <h1 className="text-3xl font-bold text-brand-gradient">영유아 발달 자기 체크리스트 결과</h1>
         <div></div>
       </div>
 
-      {/* 법적 안전 공지 */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <p className="text-blue-800 text-sm">
-          <span className="font-semibold">📊 체크 결과 (참고용)</span><br />
-          ⚠️ 이 결과는 참고용이며 의학적 진단이 절대 아닙니다. 지속적 어려움이 있으시면 반드시 전문의와 상담하세요.
-        </p>
-      </div>
+      {/* Medical Disclaimer */}
+      <MedicalDisclaimer variant="full" />
 
       {/* Summary Card */}
       <Card className="p-8">
@@ -230,10 +237,17 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
       <Card className="p-6 bg-blue-50 border-blue-200">
         <h4 className="font-semibold text-blue-900 mb-2">참고사항</h4>
         <p className="text-blue-800 text-sm leading-relaxed">
-          이 검사는 영유아 발달 선별을 위한 도구로, 의학적 진단을 대체할 수 없습니다. 
+          이 체크리스트는 영유아 발달 관찰을 위한 도구로, 의학적 진단을 대체할 수 없습니다. 
           정확한 발달 평가를 위해서는 반드시 소아과 전문의나 발달 전문가와 상담하시기 바랍니다.
         </p>
       </Card>
+
+      {/* Premium Analysis Offer */}
+      <PremiumAnalysisOffer 
+        testType="infant_development"
+        basicScore={average}
+        userId={userId}
+      />
     </div>
   );
 };

@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Crown, Sparkles, Clock, Users, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
+import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
+import { useEventTracking } from "@/hooks/useEventTracking";
 import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
@@ -44,6 +46,7 @@ const PremiumAssessment = () => {
   const [assessmentAnswers, setAssessmentAnswers] = useState<Record<string, string>>({});
   const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
   const [currentTest, setCurrentTest] = useState<string | null>(null);
+  const { trackTestStart, trackTestComplete, trackPageView } = useEventTracking();
 
   const assessmentData = {
     autismSpectrumScreening: Object.values(autismSpectrumScreeningQuestions).flat(),
@@ -244,12 +247,12 @@ const PremiumAssessment = () => {
             <div className="flex items-center justify-center gap-2 mb-2">
               <Crown className="w-6 h-6 text-yellow-500" />
               <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                프리미엄 AIH 검사
+                프리미엄 AIH 자기 체크리스트
               </h1>
               <Crown className="w-6 h-6 text-yellow-500" />
             </div>
             <p className="text-lg text-muted-foreground">
-              전문적이고 정밀한 심리 분석을 위한 AIH전문가의 창작 검사들
+              전문적이고 정밀한 성향 파악을 위한 AIH전문가의 창작 도구들
             </p>
           </div>
           
@@ -409,15 +412,9 @@ const PremiumAssessment = () => {
           </div>
         )}
 
-        {/* Professional Notice */}
+        {/* Medical Disclaimer */}
         <div className="max-w-4xl mx-auto mt-8">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-            <h4 className="font-semibold text-blue-900 mb-2">전문 심리검사 안내</h4>
-            <p className="text-blue-800 text-sm leading-relaxed">
-              본 검사들은 임상심리학 이론에 근거한 전문 도구들로, 개인의 심리적 특성을 깊이 있게 분석합니다. 
-              검사 결과는 참고용이며, 전문적인 상담이나 치료가 필요한 경우 전문가와 상담하시기 바랍니다.
-            </p>
-          </div>
+          <MedicalDisclaimer variant="full" />
         </div>
         </div>
       </div>

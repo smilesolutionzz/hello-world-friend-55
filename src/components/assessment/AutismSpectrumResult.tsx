@@ -148,29 +148,62 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
               <CardDescription>각 영역의 세부 점수 분석</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="space-y-4">
                 {results.scores?.categories && Object.entries(results.scores.categories).map(([category, score]) => {
                   const IconComponent = categoryIcons[category as keyof typeof categoryIcons] || Target;
                   const categoryName = categoryLabels[category as keyof typeof categoryLabels] || category;
-                  const percentage = ((score as number) / 4.0) * 100;
+                  const scoreValue = score as number;
+                  const percentage = (scoreValue / 4.0) * 100;
+                  
+                  // Determine severity level based on score
+                  let severityLevel = "정상";
+                  let severityColor = "text-green-700";
+                  if (scoreValue >= 2.0 && scoreValue < 2.5) {
+                    severityLevel = "경계선";
+                    severityColor = "text-yellow-700";
+                  } else if (scoreValue >= 2.5 && scoreValue < 3.0) {
+                    severityLevel = "경도";
+                    severityColor = "text-orange-700";
+                  } else if (scoreValue >= 3.0 && scoreValue < 3.5) {
+                    severityLevel = "중등도";
+                    severityColor = "text-red-700";
+                  } else if (scoreValue >= 3.5) {
+                    severityLevel = "고도";
+                    severityColor = "text-red-900";
+                  }
                   
                   return (
-                    <Card key={category} className="border border-gray-200">
-                      <CardContent className="pt-6">
-                        <div className="flex items-center gap-3 mb-4">
+                    <div key={category} className="border-l-4 border-blue-500 pl-4 py-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
                           <div className="p-2 rounded-lg bg-blue-50">
                             <IconComponent className="w-5 h-5 text-blue-600" />
                           </div>
                           <div>
-                            <h4 className="font-medium">{categoryName}</h4>
+                            <h4 className="font-semibold">{categoryName}</h4>
                             <p className="text-sm text-muted-foreground">
-                              {(score as number).toFixed(2)} / 4.0
+                              {categoryName} 영역에서 {(score as number).toFixed(2)}점을 기록하였습니다.
                             </p>
                           </div>
                         </div>
-                        <Progress value={percentage} className="h-2" />
-                      </CardContent>
-                    </Card>
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-blue-600">
+                            {(score as number).toFixed(2)}
+                          </div>
+                          <div className={`text-sm font-semibold ${severityColor}`}>
+                            {severityLevel}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <Progress value={percentage} className="h-3" />
+                        <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                          <span>0.0 (정상)</span>
+                          <span>2.0 (경계선)</span>
+                          <span>4.0 (고도)</span>
+                        </div>
+                      </div>
+                    </div>
                   );
                 })}
               </div>

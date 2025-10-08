@@ -101,7 +101,13 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
 
       if (error) throw error;
 
-      onComplete(data.analysis, finalAnswers);
+      // Pass the complete data including scores
+      const completeResults = {
+        ...data.analysis,
+        scores: data.scores
+      };
+      
+      onComplete(completeResults, finalAnswers);
     } catch (error) {
       console.error('분석 처리 중 오류:', error);
       toast({

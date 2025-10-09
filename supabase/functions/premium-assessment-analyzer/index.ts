@@ -60,48 +60,53 @@ serve(async (req) => {
       });
     }
 
-    // 토큰 차감 처리 (프리미엄 검사는 8토큰)
-    const tokenCost = 8;
-    
-    // 현재 토큰 잔액 확인
-    const { data: tokenData, error: tokenError } = await supabaseServiceClient
-      .from('user_tokens')
-      .select('current_tokens, total_used')
-      .eq('user_id', user.id)
-      .single();
+    // 베타 기간 중에는 토큰 차감 생략
+    if (!isBetaPeriod()) {
+      // 토큰 차감 처리 (프리미엄 검사는 8토큰)
+      const tokenCost = 8;
+      
+      // 현재 토큰 잔액 확인
+      const { data: tokenData, error: tokenError } = await supabaseServiceClient
+        .from('user_tokens')
+        .select('current_tokens, total_used')
+        .eq('user_id', user.id)
+        .single();
 
-    if (tokenError || !tokenData) {
-      return new Response(JSON.stringify({ 
-        error: '토큰 정보를 확인할 수 없습니다.' 
-      }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      if (tokenError || !tokenData) {
+        return new Response(JSON.stringify({ 
+          error: '토큰 정보를 확인할 수 없습니다.' 
+        }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (tokenData.current_tokens < tokenCost) {
+        return new Response(JSON.stringify({ 
+          error: `분석을 위해 ${tokenCost}개의 토큰이 필요합니다. 현재 토큰: ${tokenData.current_tokens}개` 
+        }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // 토큰 차감
+      const { error: updateError } = await supabaseServiceClient
+        .from('user_tokens')
+        .update({ 
+          current_tokens: tokenData.current_tokens - tokenCost,
+          total_used: tokenData.total_used + tokenCost 
+        })
+        .eq('user_id', user.id);
+
+      if (updateError) {
+        throw new Error('토큰 차감 중 오류가 발생했습니다.');
+      }
+
+      console.log(`프리미엄 검사 분석 - 토큰 차감: ${tokenCost}, 잔액: ${tokenData.current_tokens - tokenCost}`);
+    } else {
+      console.log('[PREMIUM-ASSESSMENT-ANALYZER] 베타 기간 - 토큰 차감 생략');
     }
-
-    if (tokenData.current_tokens < tokenCost) {
-      return new Response(JSON.stringify({ 
-        error: `분석을 위해 ${tokenCost}개의 토큰이 필요합니다. 현재 토큰: ${tokenData.current_tokens}개` 
-      }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // 토큰 차감
-    const { error: updateError } = await supabaseServiceClient
-      .from('user_tokens')
-      .update({ 
-        current_tokens: tokenData.current_tokens - tokenCost,
-        total_used: tokenData.total_used + tokenCost 
-      })
-      .eq('user_id', user.id);
-
-    if (updateError) {
-      throw new Error('토큰 차감 중 오류가 발생했습니다.');
-    }
-
-    console.log(`프리미엄 검사 분석 - 토큰 차감: ${tokenCost}, 잔액: ${tokenData.current_tokens - tokenCost}`);
 
     console.log('[PREMIUM-ASSESSMENT-ANALYZER] 프리미엄 분석 시작:', { 
       actualAssessmentType, 

@@ -1,22 +1,27 @@
-import { AlertCircle, DollarSign, Target } from 'lucide-react';
+import { Heart, Shield, Users, Building2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 const ProblemVisionSection = () => {
   const problems = [
     {
-      icon: AlertCircle,
-      title: "상담 접근이 어렵다",
-      description: "전문 상담사를 찾기 어렵고 예약도 오래 걸려요"
+      icon: Building2,
+      title: "병원·센터 방문이 부담스럽다",
+      description: "두려움과 낙인 때문에 전문기관 방문을 망설이게 돼요"
     },
     {
-      icon: DollarSign,
-      title: "비용 부담이 크다",
-      description: "전문 상담 비용이 부담스러워 망설여져요"
+      icon: Shield,
+      title: "예방적 관리가 필요하다",
+      description: "심각해지기 전에 조기 발견하고 관리하는 것이 중요해요"
     },
     {
-      icon: Target,
-      title: "정확한 진단이 어렵다",
-      description: "내 상태를 정확히 파악하기가 쉽지 않아요"
+      icon: Heart,
+      title: "발달·심리 케어가 복잡하다",
+      description: "어디서부터 시작해야 할지, 누구에게 도움을 받아야 할지 막막해요"
+    },
+    {
+      icon: Users,
+      title: "전문가 연결이 어렵다",
+      description: "내게 맞는 전문가를 찾기 어렵고 비용 부담도 커요"
     }
   ];
 
@@ -31,7 +36,7 @@ const ProblemVisionSection = () => {
         </div>
 
         {/* 3단 카드 */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {problems.map((problem, index) => {
             const Icon = problem.icon;
             return (
@@ -52,8 +57,9 @@ const ProblemVisionSection = () => {
         {/* Solution Statement */}
         <div className="text-center">
           <p className="text-2xl font-semibold text-foreground max-w-3xl mx-auto leading-relaxed">
-            AI하이라이트PRO는 이 문제를<br className="sm:hidden" /> 
-            <span className="text-primary"> 기술과 사람의 협업</span>으로 해결합니다
+            AI하이라이트PRO는<br className="sm:hidden" /> 
+            <span className="text-primary"> AI 기술과 전문가의 협업</span>으로<br className="hidden sm:block" />
+            예방부터 회복까지 함께 돕습니다
           </p>
         </div>
       </div>

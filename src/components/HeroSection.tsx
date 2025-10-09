@@ -75,12 +75,12 @@ const HeroSection = () => {
         {/* Main Headline - 간결하고 강력하게 */}
         <div className="text-center mb-16 space-y-8">
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-lg">
-            <span className="text-sm font-medium text-white/90">AI 기반 통합 케어 플랫폼</span>
+            <span className="text-sm font-medium text-white/90">AI와 전문가가 함께하는 통합 케어 플랫폼</span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-            <span className="block text-white mb-2">AI가 당신의</span>
-            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent">회복을 돕습니다</span>
+            <span className="block text-white mb-2">AI와 전문가가 함께</span>
+            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent">당신의 회복을 돕습니다</span>
           </h1>
           
           <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">

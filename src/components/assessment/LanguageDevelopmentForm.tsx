@@ -49,13 +49,18 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
       
       const totalScore = receptiveScore + expressiveScore;
 
+      // 최대 점수: 수용언어 23점, 표현언어 22점, 총 45점 (각 문항 최대 2점)
+      const receptiveMaxScore = 23 * 2;
+      const expressiveMaxScore = 22 * 2;
+      const totalMaxScore = 45 * 2;
+
       const results = {
         receptive: receptiveScore,
         expressive: expressiveScore,
         total: totalScore,
-        receptive_percentage: Math.round((receptiveScore / (receptiveQuestions.length * 2)) * 100),
-        expressive_percentage: Math.round((expressiveScore / (expressiveQuestions.length * 2)) * 100),
-        total_percentage: Math.round((totalScore / (questions.length * 2)) * 100)
+        receptive_percentage: Math.round((receptiveScore / receptiveMaxScore) * 100),
+        expressive_percentage: Math.round((expressiveScore / expressiveMaxScore) * 100),
+        total_percentage: Math.round((totalScore / totalMaxScore) * 100)
       };
 
       // 답변 데이터를 문자열로 변환하여 전달
@@ -234,11 +239,11 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-peach-bloom">수용언어</span>
                   <span className="text-xs text-muted-foreground">
-                    {questions.filter(q => q.category === 'receptive' && answers[q.id] !== undefined).length} / 39
+                    {questions.filter(q => q.category === 'receptive' && answers[q.id] !== undefined).length} / 23
                   </span>
                 </div>
                 <Progress 
-                  value={(questions.filter(q => q.category === 'receptive' && answers[q.id] !== undefined).length / 39) * 100} 
+                  value={(questions.filter(q => q.category === 'receptive' && answers[q.id] !== undefined).length / 23) * 100} 
                   className="h-2" 
                 />
               </div>
@@ -246,11 +251,11 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-warm-lavender">표현언어</span>
                   <span className="text-xs text-muted-foreground">
-                    {questions.filter(q => q.category === 'expressive' && answers[q.id] !== undefined).length} / 38
+                    {questions.filter(q => q.category === 'expressive' && answers[q.id] !== undefined).length} / 22
                   </span>
                 </div>
                 <Progress 
-                  value={(questions.filter(q => q.category === 'expressive' && answers[q.id] !== undefined).length / 38) * 100} 
+                  value={(questions.filter(q => q.category === 'expressive' && answers[q.id] !== undefined).length / 22) * 100} 
                   className="h-2" 
                 />
               </div>

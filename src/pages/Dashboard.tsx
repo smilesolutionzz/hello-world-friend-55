@@ -570,186 +570,197 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                나의 데이터
-              </h1>
-              <p className="text-gray-600 mt-1">
-                심리적 건강 상태를 종합적으로 관리하세요
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button onClick={() => navigate('/family')} variant="outline" size="sm">
-                <Users className="w-4 h-4 mr-2" />
-                가족 관리
-              </Button>
-            </div>
+      <div className="container mx-auto px-4 py-12 max-w-7xl">
+        {/* Hero Section - Prevention Concept */}
+        <div className="mb-12 text-center">
+          <div className="inline-block mb-4 px-4 py-2 bg-primary/10 rounded-full">
+            <span className="text-sm font-medium text-primary">AI와 전문가가 함께하는 예방 케어</span>
           </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            나의 건강 데이터
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            발달·심리 건강을 예방적으로 관리하고, 변화를 조기 감지합니다
+          </p>
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-6" onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-6 max-w-4xl mx-auto">
-            <TabsTrigger value="overview">개요</TabsTrigger>
-            <TabsTrigger value="assessments">검사 이력</TabsTrigger>
-            <TabsTrigger value="consultations">상담 이력</TabsTrigger>
-            <TabsTrigger value="family">가족 관리</TabsTrigger>
-            <TabsTrigger value="development">발달 추적</TabsTrigger>
-            <TabsTrigger value="settings">설정</TabsTrigger>
+        <Tabs defaultValue="overview" className="space-y-8" onValueChange={setSelectedTab}>
+          <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto h-auto p-1 bg-muted/50">
+            <TabsTrigger value="overview" className="py-3">
+              <div className="flex flex-col items-center gap-1">
+                <BarChart3 className="w-5 h-5" />
+                <span className="text-sm">예방 스코어</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="assessments" className="py-3">
+              <div className="flex flex-col items-center gap-1">
+                <FileText className="w-5 h-5" />
+                <span className="text-sm">검사 이력</span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="family" className="py-3">
+              <div className="flex flex-col items-center gap-1">
+                <Users className="w-5 h-5" />
+                <span className="text-sm">가족 관리</span>
+              </div>
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-3 sm:space-y-6">
-            {/* KPI Cards - Mobile Optimized Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
-              <Card className="p-3 sm:p-6">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                    <BarChart3 className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-lg sm:text-2xl font-bold text-foreground">{totalObservations}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">총 관찰수</p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-3 sm:p-6">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-green-600" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-lg sm:text-2xl font-bold text-foreground">{recent30DaysObservations}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">30일 관찰</p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-3 sm:p-6">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                    <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-lg sm:text-2xl font-bold text-foreground">
-                      {userStats ? `${3 - userStats.free_uses}/3` : '로딩중'}
-                    </p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">무료 잔여</p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-3 sm:p-6">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                    <CreditCard className="w-4 h-4 sm:w-6 sm:h-6 text-purple-600" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getSubscriptionStatus().color}`}>
-                      {getSubscriptionStatus().label}
-                    </div>
-                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">구독 상태</p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-
-            {/* Change Detection Alert */}
-            {weeklyChange.hasSignificantChange && (
-              <Card className="p-6 border-orange-200 bg-orange-50">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center relative">
-                      <Bell className="w-6 h-6 text-orange-600" />
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                        <span className="text-xs text-white">🔔</span>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-orange-800">변화 감지</h3>
-                        {weeklyChange.changeRate > 0 ? (
-                          <ArrowUp className="w-4 h-4 text-green-600" />
-                        ) : (
-                          <ArrowDown className="w-4 h-4 text-red-600" />
-                        )}
-                      </div>
-                      <p className="text-sm text-orange-700 mb-2">
-                        최근 2주 변화율 {weeklyChange.changeRate > 0 ? '+' : ''}{weeklyChange.changeRate.toFixed(0)}% 
-                        {weeklyChange.changeRate > 0 ? ' ↑' : ' ↓'}
-                      </p>
-                      <p className="text-xs text-orange-600">
-                        {weeklyChange.previousWeekScore}점 → {weeklyChange.recentWeekScore}점
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Dialog open={showChangeModal} onOpenChange={setShowChangeModal}>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          자세히 보기
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-md">
-                        <DialogHeader>
-                          <DialogTitle>변화 상세 내역</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-medium mb-2">최근 관찰 기록</h4>
-                            <div className="space-y-2">
-                              {observations.slice(0, 3).map((obs, index) => (
-                                <div key={obs.id} className="flex justify-between items-center text-sm">
-                                  <span>{new Date(obs.created_at).toLocaleDateString('ko-KR')}</span>
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-medium">{obs.score_overall}점</span>
-                                    <Badge variant="outline" className="text-xs">
-                                      {obs.tags.join(', ')}
-                                    </Badge>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between text-sm">
-                            <span>변화율:</span>
-                            <span className={`font-medium ${weeklyChange.changeRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                              {weeklyChange.changeRate > 0 ? '+' : ''}{weeklyChange.changeRate.toFixed(1)}%
-                            </span>
-                          </div>
-                          {userStats?.subscription !== 'free' && (
-                            <Button 
-                              onClick={sendEmailNotification}
-                              className="w-full"
-                              variant="outline"
-                            >
-                              <Mail className="w-4 h-4 mr-2" />
-                              이메일 알림 설정
-                            </Button>
-                          )}
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </div>
-              </Card>
-            )}
-
-            {/* 예방 건강 점수 대시보드 */}
-            <div className="mb-6">
+          <TabsContent value="overview" className="space-y-8">
+            {/* Prevention Score - Hero Style */}
+            <div className="mb-8">
               <PreventionScoreDashboard />
             </div>
 
-            {/* Comprehensive Report Section */}
-            <div className="mb-6">
-              <ComprehensiveReportSection
-                totalAssessments={observations.filter(obs => obs.tags.includes('검사')).length}
-                totalObservations={observations.filter(obs => obs.tags.includes('관찰일지')).length}
-                totalConsultations={observations.filter(obs => obs.tags.includes('상담')).length}
-                hasEnoughData={observations.length >= 3}
-              />
+            {/* Key Metrics - Simplified */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-primary/20 rounded-2xl flex items-center justify-center">
+                    <BarChart3 className="w-7 h-7 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-foreground">{totalObservations}</p>
+                    <p className="text-sm text-muted-foreground mt-1">누적 검사</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-green-50 to-green-100/50 border-green-200">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center">
+                    <TrendingUp className="w-7 h-7 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-foreground">{recent30DaysObservations}</p>
+                    <p className="text-sm text-muted-foreground mt-1">최근 30일</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6 hover:shadow-lg transition-shadow bg-gradient-to-br from-purple-50 to-purple-100/50 border-purple-200">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center">
+                    <Heart className="w-7 h-7 text-purple-600" />
+                  </div>
+                  <div>
+                    <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${getSubscriptionStatus().color}`}>
+                      {getSubscriptionStatus().label}
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-2">구독 상태</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Change Detection Alert - Prevention Focus */}
+            {weeklyChange.hasSignificantChange && (
+              <Card className="p-6 border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center relative flex-shrink-0">
+                    <Bell className="w-7 h-7 text-orange-600" />
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full animate-pulse" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-xl font-bold text-orange-800">조기 변화 감지</h3>
+                      {weeklyChange.changeRate > 0 ? (
+                        <ArrowUp className="w-5 h-5 text-green-600" />
+                      ) : (
+                        <ArrowDown className="w-5 h-5 text-red-600" />
+                      )}
+                    </div>
+                    <p className="text-base text-orange-700 mb-3">
+                      최근 2주간 {Math.abs(weeklyChange.changeRate).toFixed(0)}% {weeklyChange.changeRate > 0 ? '개선' : '변화'} 감지
+                    </p>
+                    <div className="flex items-center gap-3 text-sm text-orange-600">
+                      <span className="font-medium">{weeklyChange.previousWeekScore}점</span>
+                      <span>→</span>
+                      <span className="font-medium">{weeklyChange.recentWeekScore}점</span>
+                    </div>
+                    <Button 
+                      onClick={() => setShowChangeModal(true)}
+                      className="mt-4 bg-orange-600 hover:bg-orange-700"
+                      size="sm"
+                    >
+                      상세 분석 보기
+                    </Button>
+                  </div>
+                </div>
+                
+                <Dialog open={showChangeModal} onOpenChange={setShowChangeModal}>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>변화 상세 분석</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div className="bg-muted/50 p-4 rounded-xl">
+                        <h4 className="font-semibold mb-3 text-foreground">최근 검사 기록</h4>
+                        <div className="space-y-2">
+                          {observations.slice(0, 3).map((obs) => (
+                            <div key={obs.id} className="flex justify-between items-center text-sm py-2 border-b last:border-0">
+                              <span className="text-muted-foreground">{new Date(obs.created_at).toLocaleDateString('ko-KR')}</span>
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold text-foreground">{obs.score_overall}점</span>
+                                <Badge variant="outline" className="text-xs">
+                                  {obs.tags.slice(0, 2).join(', ')}
+                                </Badge>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg">
+                        <span className="font-medium text-foreground">변화율</span>
+                        <span className={`text-lg font-bold ${weeklyChange.changeRate > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {weeklyChange.changeRate > 0 ? '+' : ''}{weeklyChange.changeRate.toFixed(1)}%
+                        </span>
+                      </div>
+                      <Button 
+                        onClick={sendEmailNotification}
+                        className="w-full"
+                        variant="outline"
+                      >
+                        <Mail className="w-4 h-4 mr-2" />
+                        변화 알림 받기
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </Card>
+            )}
+
+            {/* Quick Action Cards */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/assessment')}>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg mb-2 text-foreground">새로운 검사 시작</h3>
+                    <p className="text-sm text-muted-foreground">AI 기반 발달·심리 검사로 현재 상태를 확인하세요</p>
+                    <Button className="mt-4" size="sm">
+                      검사 시작하기
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/experts')}>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <UserCheck className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg mb-2 text-foreground">전문가 상담</h3>
+                    <p className="text-sm text-muted-foreground">검사 결과를 바탕으로 전문가와 1:1 상담하세요</p>
+                    <Button className="mt-4" size="sm" variant="outline">
+                      전문가 찾기
+                    </Button>
+                  </div>
+                </div>
+              </Card>
             </div>
 
             {/* Charts Section - 데스크톱에서 가로로 배치 */}

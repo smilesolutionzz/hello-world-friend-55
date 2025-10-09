@@ -59,6 +59,7 @@ import LifeCareHub from "@/components/LifeCareHub";
 import { PersonalizationEngine } from '@/components/apr-strategy/PersonalizationEngine';
 import { RealTimeTracking } from '@/components/apr-strategy/RealTimeTracking';
 import { ViralMechanics } from '@/components/apr-strategy/ViralMechanics';
+import { PreventionScoreDashboard } from '@/components/wellness/PreventionScoreDashboard';
 
 interface Profile {
   id: string;
@@ -735,6 +736,11 @@ const Dashboard = () => {
                 </div>
               </Card>
             )}
+
+            {/* 예방 건강 점수 대시보드 */}
+            <div className="mb-6">
+              <PreventionScoreDashboard />
+            </div>
 
             {/* Comprehensive Report Section */}
             <div className="mb-6">

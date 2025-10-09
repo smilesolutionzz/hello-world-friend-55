@@ -34,7 +34,7 @@ import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import SimplifiedFlow from '@/components/mvp/SimplifiedFlow';
 import QuickOnboarding from '@/components/mvp/QuickOnboarding';
 import { SocialProofDisplay } from '@/components/apr-strategy/SocialProofDisplay';
-import { PreventionScoreDashboard } from '@/components/wellness/PreventionScoreDashboard';
+import { PreventionScorePreview } from '@/components/wellness/PreventionScorePreview';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
@@ -177,10 +177,10 @@ const Index = () => {
             <SimplifiedFlow onStepComplete={(step) => console.log('Step completed:', step)} />
           </div>
 
-          {/* 예방 건강 점수 대시보드 - 로그인 사용자만 */}
+          {/* 예방 건강 점수 프리뷰 - 로그인 사용자만 */}
           {user && (
             <div className="animate-fade-in w-full container mx-auto px-4 py-8" style={{ animationDelay: '0.06s' }}>
-              <PreventionScoreDashboard />
+              <PreventionScorePreview />
             </div>
           )}
           

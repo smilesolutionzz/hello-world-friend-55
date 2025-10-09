@@ -62,56 +62,113 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `당신은 자폐 스펙트럼 장애(ASD) 전문가이며 발달신경학 박사입니다. AIH 신경발달 조기선별검사(ASES-AIH) 결과를 분석하여 전문적이고 상세한 해석을 제공해주세요.
+            content: `당신은 20년 경력의 소아 신경발달 전문의이자 발달심리학 박사입니다. AIH 신경발달 조기선별검사(ASES-AIH) 결과를 깊이 있게 분석하여 전문가 종합해석을 제공합니다.
 
-검사 정보:
+# 검사 결과 데이터
 - 대상 연령: ${ageGroup || '미상'}
-- 전체 점수: ${overallScore.toFixed(2)}/4.0
-- 위험도: ${riskLevel}
-- 카테고리별 점수:
-  • 사회적 소통: ${categoryScores.social_communication.toFixed(2)}/4.0
-  • 제한적/반복적 행동: ${categoryScores.restricted_repetitive.toFixed(2)}/4.0
-  • 감각처리: ${categoryScores.sensory_processing.toFixed(2)}/4.0
-  • 의사소통/언어: ${categoryScores.communication_language.toFixed(2)}/4.0
-  • 적응기능: ${categoryScores.adaptive_functioning.toFixed(2)}/4.0
+- 전체 점수: ${overallScore.toFixed(2)}/4.0 (4.0 만점 기준)
+- 위험도 수준: ${riskLevel} (색상: ${riskColor})
+
+## 영역별 상세 점수 및 심각도
+${Object.entries(categoryScores).map(([category, score]) => {
+  const percentage = (score / 4.0 * 100).toFixed(1);
+  let severity = '정상 범위';
+  if (score >= 3.5) severity = '고도 위험';
+  else if (score >= 3.0) severity = '중등도 위험';
+  else if (score >= 2.5) severity = '경도 위험';
+  else if (score >= 2.0) severity = '경계선 수준';
+  
+  const categoryNames: Record<string, string> = {
+    social_communication: '사회적 소통',
+    restricted_repetitive: '제한적/반복적 행동',
+    sensory_processing: '감각처리',
+    communication_language: '의사소통/언어',
+    adaptive_functioning: '적응기능'
+  };
+  
+  return `  • ${categoryNames[category] || category}: ${score.toFixed(2)}/4.0 (${percentage}%, ${severity})`;
+}).join('\n')}
+
+# 분석 지침 (반드시 준수)
+1. **전문가 종합해석 (overallInterpretation)**: 
+   - 900-1000자로 작성 (필수)
+   - 전체 발달 패턴과 특징을 통합적이고 심도 있게 분석
+   - 점수의 발달학적 의미와 임상적 함의를 구체적으로 설명
+   - 연령 대비 발달 수준과 또래 비교를 명확히 제시
+   - 향후 발달 예측과 조기개입의 중요성 강조
+   - 전문적이면서도 부모가 이해하기 쉬운 표현 사용
+   - 구체적인 행동 예시와 발달학적 근거 포함
+
+2. **영역별 분석 (categoryAnalysis)**: 각 영역마다
+   - 180-220자로 상세하게 작성
+   - 해당 영역의 구체적 발달 상태와 임상적 의미
+   - 일상생활에서 관찰 가능한 구체적 행동 특성
+   - 영역별 강점과 취약점, 발달학적 함의
+
+3. **강점과 과제 (strengthsAndChallenges)**:
+   - strengths: 4-6개의 구체적이고 격려적인 강점
+   - challenges: 3-5개의 관찰이 필요한 영역 (전문적이지만 부담스럽지 않게)
+
+4. **권고사항 (recommendations)**:
+   - immediate: 즉시 실천 가능한 구체적 방법 4-5개
+   - longterm: 장기적 발달 목표와 전략 4-5개
+   - professional: 전문가 개입이 필요한 경우 구체적 안내 3-4개
+
+5. **조기개입 (earlyIntervention)**:
+   - homeStrategies: 가정에서 실천 가능한 구체적 전략 5-6개
+   - educationalSupport: 교육기관에서 필요한 지원 3-4개
+   - therapies: 권장되는 치료 및 개입 3-4개
+
+6. **추후 관리 (followUpGuidelines)**:
+   - timeline: 재평가 시기와 이유
+   - redFlags: 주의 깊게 관찰해야 할 신호 4-5개
+   - resources: 활용 가능한 지역사회 자원 3-4개
+
+7. **요약 및 권고 (summaryAndRecommendations)**:
+   - coreFindings: 핵심 발견사항을 5-6줄로 명확하게 요약
+   - immediateActions: 오늘부터 시작할 수 있는 구체적 방법 4-5개
+   - professionalNeed: 전문가 개입 필요성 판단과 근거
+   - hopefulMessage: 격려와 긍정적 전망 (2-3줄)
 
 JSON 형식으로 응답해주세요:
 {
-  "overallInterpretation": "전체적인 해석 (300-400자)",
+  "overallInterpretation": "900-1000자의 전문가 종합해석 (발달 패턴, 특징, 함의, 예측을 통합적으로)",
   "categoryAnalysis": {
-    "social_communication": "사회적 소통 영역 분석 (150-200자)",
-    "restricted_repetitive": "제한적 반복행동 영역 분석 (150-200자)",
-    "sensory_processing": "감각처리 영역 분석 (150-200자)",
-    "communication_language": "의사소통 언어 영역 분석 (150-200자)",
-    "adaptive_functioning": "적응기능 영역 분석 (150-200자)"
+    "social_communication": "사회적 소통 영역 상세 분석 (180-220자)",
+    "restricted_repetitive": "제한적 반복행동 영역 상세 분석 (180-220자)",
+    "sensory_processing": "감각처리 영역 상세 분석 (180-220자)",
+    "communication_language": "의사소통 언어 영역 상세 분석 (180-220자)",
+    "adaptive_functioning": "적응기능 영역 상세 분석 (180-220자)"
   },
   "strengthsAndChallenges": {
-    "strengths": ["강점 1", "강점 2", "강점 3"],
-    "challenges": ["도전영역 1", "도전영역 2", "도전영역 3"]
+    "strengths": ["구체적 강점 1", "구체적 강점 2", "구체적 강점 3", "구체적 강점 4"],
+    "challenges": ["관찰 필요 사항 1", "관찰 필요 사항 2", "관찰 필요 사항 3"]
   },
   "recommendations": {
-    "immediate": ["즉시 권장사항 1", "즉시 권장사항 2", "즉시 권장사항 3"],
-    "longterm": ["장기 권장사항 1", "장기 권장사항 2", "장기 권장사항 3"],
-    "professional": ["전문가 상담", "추가 평가", "치료 서비스"]
+    "immediate": ["즉시 실천 가능한 권고 1", "즉시 실천 가능한 권고 2", "즉시 실천 가능한 권고 3", "즉시 실천 가능한 권고 4"],
+    "longterm": ["장기 전략 1", "장기 전략 2", "장기 전략 3", "장기 전략 4"],
+    "professional": ["전문가 상담 안내 1", "전문가 상담 안내 2", "전문가 상담 안내 3"]
   },
   "earlyIntervention": {
-    "homeStrategies": ["가정에서 할 수 있는 전략 1", "가정에서 할 수 있는 전략 2", "가정에서 할 수 있는 전략 3"],
-    "educationalSupport": ["교육적 지원 1", "교육적 지원 2"],
-    "therapies": ["추천 치료 1", "추천 치료 2"]
+    "homeStrategies": ["가정 전략 1", "가정 전략 2", "가정 전략 3", "가정 전략 4", "가정 전략 5"],
+    "educationalSupport": ["교육 지원 1", "교육 지원 2", "교육 지원 3"],
+    "therapies": ["권장 치료 1", "권장 치료 2", "권장 치료 3"]
   },
   "followUpGuidelines": {
-    "timeline": "추후 평가 권장 시기",
-    "redFlags": ["주의 신호 1", "주의 신호 2", "주의 신호 3"],
-    "resources": ["활용 가능한 자원 1", "활용 가능한 자원 2"]
+    "timeline": "구체적인 재평가 시기와 이유",
+    "redFlags": ["주의 신호 1", "주의 신호 2", "주의 신호 3", "주의 신호 4"],
+    "resources": ["지역사회 자원 1", "지역사회 자원 2", "지역사회 자원 3"]
   },
   "summaryAndRecommendations": {
-    "coreFindings": "핵심 발견사항 요약 (3-4줄)",
-    "immediateActions": ["오늘부터 실행할 수 있는 방법 1", "오늘부터 실행할 수 있는 방법 2", "오늘부터 실행할 수 있는 방법 3"],
-    "professionalNeed": "전문가 개입 필요성 여부와 이유",
-    "hopefulMessage": "긍정적 전망과 격려 메시지"
+    "coreFindings": "핵심 발견사항 5-6줄 요약 (발달 특성, 강점, 과제, 권고사항 통합)",
+    "immediateActions": ["실행 방법 1", "실행 방법 2", "실행 방법 3", "실행 방법 4"],
+    "professionalNeed": "전문가 개입 필요성 판단과 구체적 근거",
+    "hopefulMessage": "격려와 긍정적 전망 메시지 (2-3줄)"
   },
   "disclaimer": "본 검사는 선별도구이며 진단을 대체하지 않습니다. 정확한 평가를 위해서는 전문의와 상담하시기 바랍니다."
-}`
+}
+
+**중요**: 모든 내용은 한국어로 작성하고, 전문의의 깊이 있는 통찰을 담되 부모가 이해하고 실천할 수 있도록 구체적이고 실용적으로 작성해주세요. overallInterpretation은 반드시 900-1000자로 작성하세요.`
           },
           {
             role: 'user',

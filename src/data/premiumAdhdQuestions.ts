@@ -19,7 +19,7 @@ export const premiumAdhdAssessmentInfo = {
   category: "프리미엄 ADHD",
   priority: 1,
   highlight: true,
-  questions_count: 72,
+  questions_count: 45,
   premium_features: [
     "과학적 근거 기반 정밀 증상 분석",
     "ADHD 하위유형 세분화 판별",
@@ -33,7 +33,7 @@ export const premiumAdhdAssessmentInfo = {
 
 // ADHD 핵심 증상 영역별 문항
 export const premiumAdhdQuestions = {
-  // 1. 부주의 증상 (18문항)
+  // 1. 부주의 증상 (12문항)
   inattention: [
     {
       id: "adhd_inatt_01",
@@ -116,37 +116,12 @@ export const premiumAdhdQuestions = {
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
-    // 추가 부주의 세부 평가 문항
-    {
-      id: "adhd_inatt_10",
-      text: "긴 글이나 복잡한 지시사항을 끝까지 읽기 어려워합니다",
-      category: "inattention",
-      subcategory: "reading_comprehension_persistence",
-      severity_weight: 3,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_inatt_11",
-      text: "회의나 수업 중에 마음이 다른 곳으로 자주 떠납니다",
-      category: "inattention",
-      subcategory: "mind_wandering",
-      severity_weight: 3,
-      age_relevance: ["adolescent", "adult"]
-    },
     {
       id: "adhd_inatt_12",
       text: "중요한 약속이나 마감일을 자주 잊어버립니다",
       category: "inattention",
       subcategory: "time_management",
       severity_weight: 4,
-      age_relevance: ["adolescent", "adult"]
-    },
-    {
-      id: "adhd_inatt_13",
-      text: "한 번에 여러 가지 일을 처리하는 것이 매우 어렵습니다",
-      category: "inattention",
-      subcategory: "multitasking",
-      severity_weight: 3,
       age_relevance: ["adolescent", "adult"]
     },
     {
@@ -164,34 +139,10 @@ export const premiumAdhdQuestions = {
       subcategory: "project_completion",
       severity_weight: 4,
       age_relevance: ["adolescent", "adult"]
-    },
-    {
-      id: "adhd_inatt_16",
-      text: "세부사항보다는 전체적인 그림에만 관심을 가집니다",
-      category: "inattention",
-      subcategory: "detail_vs_big_picture",
-      severity_weight: 2,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_inatt_17",
-      text: "반복적인 작업을 할 때 실수가 증가합니다",
-      category: "inattention",
-      subcategory: "repetitive_task_accuracy",
-      severity_weight: 3,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_inatt_18",
-      text: "관심 없는 주제의 대화에서는 집중하기 어려워합니다",
-      category: "inattention",
-      subcategory: "selective_attention_interest",
-      severity_weight: 2,
-      age_relevance: ["child", "adolescent", "adult"]
     }
   ],
 
-  // 2. 과잉행동 증상 (18문항)
+  // 2. 과잉행동 증상 (11문항)
   hyperactivity: [
     {
       id: "adhd_hyper_01",
@@ -247,20 +198,11 @@ export const premiumAdhdQuestions = {
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
-    // 추가 과잉행동 세부 평가 문항
     {
       id: "adhd_hyper_07",
       text: "영화관이나 극장에서 오랫동안 가만히 앉아있기 힘들어합니다",
       category: "hyperactivity",
       subcategory: "sustained_sitting",
-      severity_weight: 3,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_hyper_08",
-      text: "긴 줄을 서서 기다리는 것을 매우 힘들어합니다",
-      category: "hyperactivity",
-      subcategory: "waiting_difficulty",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -273,44 +215,12 @@ export const premiumAdhdQuestions = {
       age_relevance: ["child", "adolescent", "adult"]
     },
     {
-      id: "adhd_hyper_10",
-      text: "손으로 무언가를 만지작거리거나 펜을 돌리는 등의 행동을 자주 합니다",
-      category: "hyperactivity",
-      subcategory: "object_fidgeting",
-      severity_weight: 2,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_hyper_11",
-      text: "다리를 떨거나 발을 까딱거리는 행동을 자주 합니다",
-      category: "hyperactivity",
-      subcategory: "leg_foot_movement",
-      severity_weight: 2,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
       id: "adhd_hyper_12",
       text: "내부적으로 안절부절못하는 느낌이 자주 듭니다",
       category: "hyperactivity",
       subcategory: "internal_restlessness",
       severity_weight: 3,
       age_relevance: ["adolescent", "adult"]
-    },
-    {
-      id: "adhd_hyper_13",
-      text: "에너지 수준이 다른 사람들보다 현저히 높습니다",
-      category: "hyperactivity",
-      subcategory: "high_energy_level",
-      severity_weight: 3,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_hyper_14",
-      text: "하루 종일 활동적이며 쉽게 피로해하지 않습니다",
-      category: "hyperactivity",
-      subcategory: "sustained_energy",
-      severity_weight: 2,
-      age_relevance: ["child", "adolescent", "adult"]
     },
     {
       id: "adhd_hyper_15",
@@ -327,26 +237,10 @@ export const premiumAdhdQuestions = {
       subcategory: "bedtime_restlessness",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_hyper_17",
-      text: "정적인 환경보다는 역동적인 환경을 선호합니다",
-      category: "hyperactivity",
-      subcategory: "environment_preference",
-      severity_weight: 2,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_hyper_18",
-      text: "몸을 사용하는 활동에서 더 높은 집중력을 보입니다",
-      category: "hyperactivity",
-      subcategory: "kinesthetic_focus",
-      severity_weight: 1,
-      age_relevance: ["child", "adolescent", "adult"]
     }
   ],
 
-  // 3. 충동성 증상 (18문항)
+  // 3. 충동성 증상 (11문항)
   impulsivity: [
     {
       id: "adhd_imp_01",
@@ -375,7 +269,6 @@ export const premiumAdhdQuestions = {
       severity_weight: 4,
       age_relevance: ["child", "adolescent", "adult"]
     },
-    // 추가 충동성 세부 평가 문항
     {
       id: "adhd_imp_04",
       text: "중요한 결정을 성급하게 내리는 경우가 많습니다",
@@ -401,14 +294,6 @@ export const premiumAdhdQuestions = {
       age_relevance: ["child", "adolescent", "adult"]
     },
     {
-      id: "adhd_imp_07",
-      text: "위험한 행동을 하면서도 그 위험성을 인식하지 못합니다",
-      category: "impulsivity",
-      subcategory: "risk_awareness",
-      severity_weight: 4,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
       id: "adhd_imp_08",
       text: "물건을 사거나 계획을 세울 때 충동적으로 결정합니다",
       category: "impulsivity",
@@ -425,26 +310,10 @@ export const premiumAdhdQuestions = {
       age_relevance: ["child", "adolescent", "adult"]
     },
     {
-      id: "adhd_imp_10",
-      text: "즉석에서 계획을 바꾸는 것을 선호합니다",
-      category: "impulsivity",
-      subcategory: "plan_changing",
-      severity_weight: 2,
-      age_relevance: ["adolescent", "adult"]
-    },
-    {
       id: "adhd_imp_11",
       text: "하고 싶은 말이 있으면 참지 못하고 바로 표현합니다",
       category: "impulsivity",
       subcategory: "verbal_impulsivity",
-      severity_weight: 3,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_imp_12",
-      text: "게임이나 활동에서 규칙을 무시하고 행동하는 경우가 있습니다",
-      category: "impulsivity",
-      subcategory: "rule_breaking",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     },
@@ -457,48 +326,16 @@ export const premiumAdhdQuestions = {
       age_relevance: ["child", "adolescent", "adult"]
     },
     {
-      id: "adhd_imp_14",
-      text: "화가 나면 물건을 던지거나 문을 세게 닫는 등의 행동을 합니다",
-      category: "impulsivity",
-      subcategory: "aggressive_impulses",
-      severity_weight: 4,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_imp_15",
-      text: "신중하게 생각할 시간이 주어져도 첫 번째 떠오른 답을 선택합니다",
-      category: "impulsivity",
-      subcategory: "first_response_preference",
-      severity_weight: 3,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_imp_16",
-      text: "다른 사람의 물건을 허락 없이 사용하는 경우가 있습니다",
-      category: "impulsivity",
-      subcategory: "boundary_violation",
-      severity_weight: 3,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
       id: "adhd_imp_17",
       text: "스트레스 상황에서 더욱 충동적으로 행동합니다",
       category: "impulsivity",
       subcategory: "stress_related_impulsivity",
       severity_weight: 4,
       age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_imp_18",
-      text: "재미있어 보이는 활동에는 즉시 참여하고 싶어합니다",
-      category: "impulsivity",
-      subcategory: "immediate_gratification_seeking",
-      severity_weight: 2,
-      age_relevance: ["child", "adolescent", "adult"]
     }
   ],
 
-  // 4. 실행기능 장애 (18문항)
+  // 4. 실행기능 장애 (11문항)
   executive_dysfunction: [
     {
       id: "adhd_exec_01",
@@ -557,14 +394,6 @@ export const premiumAdhdQuestions = {
       age_relevance: ["adolescent", "adult"]
     },
     {
-      id: "adhd_exec_08",
-      text: "정신적 피로가 빠르게 오며 인지적 과제 수행이 어려워집니다",
-      category: "executive_dysfunction",
-      subcategory: "mental_fatigue",
-      severity_weight: 3,
-      age_relevance: ["adolescent", "adult"]
-    },
-    {
       id: "adhd_exec_09",
       text: "멀티태스킹이 극도로 어려워 한 번에 하나씩만 처리할 수 있습니다",
       category: "executive_dysfunction",
@@ -573,44 +402,12 @@ export const premiumAdhdQuestions = {
       age_relevance: ["adolescent", "adult"]
     },
     {
-      id: "adhd_exec_10",
-      text: "정보를 체계적으로 조직화하고 분류하는 데 어려움이 있습니다",
-      category: "executive_dysfunction",
-      subcategory: "information_organization",
-      severity_weight: 3,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_exec_11",
-      text: "문제 해결 시 다양한 접근법을 고려하지 못하고 한 가지 방법에만 집착합니다",
-      category: "executive_dysfunction",
-      subcategory: "problem_solving_flexibility",
-      severity_weight: 3,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
       id: "adhd_exec_12",
       text: "과제 전환이 어려워 이전 활동에서 벗어나는 데 시간이 많이 걸립니다",
       category: "executive_dysfunction",
       subcategory: "task_switching",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_exec_13",
-      text: "추상적 사고보다는 구체적이고 단순한 사고를 선호합니다",
-      category: "executive_dysfunction",
-      subcategory: "abstract_thinking_difficulty",
-      severity_weight: 2,
-      age_relevance: ["adolescent", "adult"]
-    },
-    {
-      id: "adhd_exec_14",
-      text: "스트레스 상황에서 인지적 기능이 현저히 저하됩니다",
-      category: "executive_dysfunction",
-      subcategory: "stress_cognitive_impact",
-      severity_weight: 3,
-      age_relevance: ["adolescent", "adult"]
     },
     {
       id: "adhd_exec_15",
@@ -625,22 +422,6 @@ export const premiumAdhdQuestions = {
       text: "일의 순서를 기억하고 따라가는 것이 어렵습니다",
       category: "executive_dysfunction",
       subcategory: "sequence_memory",
-      severity_weight: 3,
-      age_relevance: ["child", "adolescent", "adult"]
-    },
-    {
-      id: "adhd_exec_17",
-      text: "자신의 수행 능력을 정확히 평가하지 못합니다",
-      category: "executive_dysfunction",
-      subcategory: "metacognitive_awareness",
-      severity_weight: 3,
-      age_relevance: ["adolescent", "adult"]
-    },
-    {
-      id: "adhd_exec_18",
-      text: "효율적인 학습 전략을 스스로 개발하거나 적용하지 못합니다",
-      category: "executive_dysfunction",
-      subcategory: "learning_strategy_deficits",
       severity_weight: 3,
       age_relevance: ["child", "adolescent", "adult"]
     }

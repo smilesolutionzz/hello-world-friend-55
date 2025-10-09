@@ -450,13 +450,13 @@ const ExpertHiring = () => {
             // Normalize AI response to match Expert interface
             const normalized = data.experts.map((e: any, idx: number): Expert => ({
               id: e.id || `ai_${idx}`,
-              name: e.name || e.full_name || '이름 미상',
-              specialty: Array.isArray(e.specialty)
-                ? e.specialty
-                : typeof e.specialty === 'string'
-                  ? e.specialty.split(/[,\s]+/).filter(Boolean)
-                  : Array.isArray(e.specializations)
-                    ? e.specializations
+              name: e.full_name || e.name || '이름 미상',
+              specialty: Array.isArray(e.specializations)
+                ? e.specializations
+                : Array.isArray(e.specialty)
+                  ? e.specialty
+                  : typeof e.specializations === 'string'
+                    ? e.specializations.split(/[,\s]+/).filter(Boolean)
                     : [],
               credentials: Array.isArray(e.credentials)
                 ? e.credentials
@@ -2063,7 +2063,7 @@ const ExpertHiring = () => {
                               </Avatar>
                               <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold">{expert.name} 에이전트</h3>
+                    <h3 className="font-semibold">{expert.name}</h3>
                                   {index === 0 && (
                                     <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white">
                                       🏆 최고 매칭

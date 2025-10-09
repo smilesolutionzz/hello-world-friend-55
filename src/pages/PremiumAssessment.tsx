@@ -124,6 +124,30 @@ const PremiumAssessment = () => {
     return <OtrovertTest onComplete={handleOtrovertComplete} onBack={handleBack} />;
   }
 
+  // 보험진단 폼
+  if (currentTest === 'insurance-analysis') {
+    if (insuranceResults) {
+      return (
+        <InsuranceAnalysisResult
+          results={insuranceResults}
+          onBack={() => {
+            setCurrentTest(null);
+            setInsuranceResults(null);
+          }}
+        />
+      );
+    }
+    
+    return (
+      <div>
+        <UnifiedNavigation />
+        <div className="pt-4">
+          <InsuranceAnalysisForm onComplete={handleInsuranceComplete} />
+        </div>
+      </div>
+    );
+  }
+
   if (currentStep === 'result' && selectedAssessment && Object.keys(assessmentResults).length > 0) {
     if (selectedAssessment === 'languageDevelopment') {
       return (

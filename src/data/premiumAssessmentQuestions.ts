@@ -636,7 +636,7 @@ export const personalityTypeAssessmentQuestions = {
   ]
 };
 
-// 2. AIH 타고난 기질 분석검사 (완전 창작형 선천적 성향 측정)
+// 2. AIH 타고난 기질 분석검사 (완전 창작형 선천적 성향 측정) - 30문항
 export const temperamentAssessmentQuestions = {
   novelty_seeking: [
     {
@@ -660,6 +660,30 @@ export const temperamentAssessmentQuestions = {
     {
       id: "tci_ns04",
       text: "모험적이고 스릴 있는 활동을 선호합니다",
+      category: "novelty_seeking",
+      subcategory: "impulsiveness"
+    },
+    {
+      id: "tci_ns05",
+      text: "익숙한 방법보다 새로운 방법을 시도하는 것이 즐겁습니다",
+      category: "novelty_seeking",
+      subcategory: "exploratory_excitability"
+    },
+    {
+      id: "tci_ns06",
+      text: "규칙이나 제한이 답답하게 느껴집니다",
+      category: "novelty_seeking",
+      subcategory: "impulsiveness"
+    },
+    {
+      id: "tci_ns07",
+      text: "새로운 사람을 만나는 것이 두렵지 않습니다",
+      category: "novelty_seeking",
+      subcategory: "exploratory_excitability"
+    },
+    {
+      id: "tci_ns08",
+      text: "계획 없이 여행을 떠나는 것도 괜찮습니다",
       category: "novelty_seeking",
       subcategory: "impulsiveness"
     }
@@ -688,6 +712,30 @@ export const temperamentAssessmentQuestions = {
       text: "피로하면 쉽게 지치고 회복이 느립니다",
       category: "harm_avoidance",
       subcategory: "fatigability"
+    },
+    {
+      id: "tci_ha05",
+      text: "작은 일에도 걱정이 많은 편입니다",
+      category: "harm_avoidance",
+      subcategory: "anticipatory_worry"
+    },
+    {
+      id: "tci_ha06",
+      text: "비판이나 거절에 민감하게 반응합니다",
+      category: "harm_avoidance",
+      subcategory: "fear_of_uncertainty"
+    },
+    {
+      id: "tci_ha07",
+      text: "불확실한 상황에서 불안감을 느낍니다",
+      category: "harm_avoidance",
+      subcategory: "fear_of_uncertainty"
+    },
+    {
+      id: "tci_ha08",
+      text: "스트레스 상황에서 쉽게 지칩니다",
+      category: "harm_avoidance",
+      subcategory: "fatigability"
     }
   ],
   reward_dependence: [
@@ -714,6 +762,24 @@ export const temperamentAssessmentQuestions = {
       text: "다른 사람을 도와주는 일에서 만족감을 느낍니다",
       category: "reward_dependence",
       subcategory: "dependence"
+    },
+    {
+      id: "tci_rd05",
+      text: "사람들과 함께 있을 때 에너지를 얻습니다",
+      category: "reward_dependence",
+      subcategory: "social_attachment"
+    },
+    {
+      id: "tci_rd06",
+      text: "감동적인 이야기나 영화에 쉽게 눈물을 흘립니다",
+      category: "reward_dependence",
+      subcategory: "sentimentality"
+    },
+    {
+      id: "tci_rd07",
+      text: "다른 사람의 기분에 따라 내 기분도 변합니다",
+      category: "reward_dependence",
+      subcategory: "sentimentality"
     }
   ],
   persistence: [
@@ -740,6 +806,24 @@ export const temperamentAssessmentQuestions = {
       text: "한번 시작한 일은 반드시 마무리합니다",
       category: "persistence",
       subcategory: "eagerness_of_effort"
+    },
+    {
+      id: "tci_p05",
+      text: "목표 달성을 위해 다른 활동을 포기할 수 있습니다",
+      category: "persistence",
+      subcategory: "work_hardened"
+    },
+    {
+      id: "tci_p06",
+      text: "일이 잘 풀리지 않아도 포기하지 않습니다",
+      category: "persistence",
+      subcategory: "eagerness_of_effort"
+    },
+    {
+      id: "tci_p07",
+      text: "작은 실수도 용납하기 어렵습니다",
+      category: "persistence",
+      subcategory: "perfectionist"
     }
   ]
 };
@@ -1624,8 +1708,8 @@ export const premiumAssessmentInfo = {
     title: "타고난 기질 분석검사", 
     subtitle: "창작형 선천적 성향 과학적 측정",
     description: "기질 4차원(자극추구, 위험회피, 사회적 민감성, 지속성)으로 타고난 성향을 독창적으로 분석합니다",
-    duration: "약 6-8분",
-    questions_count: 16,
+    duration: "약 8-10분",
+    questions_count: 30,
     premium_features: ["타고난 기질 4차원 분석", "스트레스 대처 방식", "심리적 취약점 평가", "성격 발달 가능성"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
     rank: 2,

@@ -318,11 +318,14 @@ const PremiumAssessmentResult = ({
       'realistic_planner': '계획적 현실주의자 (현실 특성)',
       
       // 재정심리 요인
-      'financial_anxiety': 'Financial Anxiety (재정불안)',
-      'spending_habits': 'Spending Habits (소비습관)',
-      'investment_attitude': 'Investment Attitude (투자성향)',
-      'money_values': 'Money Values (돈에 대한 가치관)',
-      'financial_planning': 'Financial Planning (재정계획)',
+      'financial_anxiety': '재정 불안 (Financial Anxiety)',
+      'spending_habits': '소비 습관 (Spending Habits)',
+      'investment_attitude': '투자 성향 (Investment Attitude)',
+      'money_values': '돈에 대한 가치관 (Money Values)',
+      'financial_planning': '재정 계획 (Financial Planning)',
+      'money_mindset': '금전 태도 (Money Mindset)',
+      'spending_patterns': '소비 패턴 (Spending Patterns)',
+      'financial_goals': '재정 목표 (Financial Goals)',
       
       // 청소년 정신건강 요인
       'identity_formation': 'Identity Formation (정체성 형성)',
@@ -439,7 +442,7 @@ const PremiumAssessmentResult = ({
                 <div>
                   <h3 className="font-semibold mb-3 flex items-center gap-2">
                     <TrendingUp className="w-5 h-5 text-purple-600" />
-                    영역별 상세 점수 (Score Details)
+                    영역별 상세 점수
                   </h3>
                   <div className="space-y-3">
                     {Object.entries(results).map(([category, score]) => {

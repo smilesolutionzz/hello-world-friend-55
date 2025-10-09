@@ -5,8 +5,13 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
 // 베타 테스트 기간 체크 (2025년 10월 30일까지 모든 기능 무료)
-const BETA_END_DATE = new Date('2025-10-30T23:59:59+09:00');
-const isBetaPeriod = () => new Date() < BETA_END_DATE;
+const BETA_END_DATE = new Date('2025-10-30T23:59:59Z');
+const isBetaPeriod = () => {
+  const now = new Date();
+  const isInBeta = now < BETA_END_DATE;
+  console.log('[BETA-CHECK]', { now: now.toISOString(), betaEnd: BETA_END_DATE.toISOString(), isInBeta });
+  return isInBeta;
+};
 
 // Initialize Supabase client
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;

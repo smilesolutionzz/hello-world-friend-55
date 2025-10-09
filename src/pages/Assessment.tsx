@@ -67,7 +67,7 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result'>('test-type');
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'emotional-development-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
@@ -685,13 +685,13 @@ const Assessment = () => {
                     <div className="absolute top-3 right-3">
                       <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">2토큰</Badge>
                     </div>
-                    <h3 className="text-xl font-bold text-brand-gradient mb-3">영유아 자아가치 체크</h3>
-                    <p className="text-muted-foreground mb-3 text-sm">영유아 연령별 자존감 및 정서발달 확인 (참고용)</p>
-                    <ul className="space-y-1 text-sm">
-                      <li>• 연령대별 15문항</li>
-                      <li>• 정서발달 상태 확인</li>
-                      <li>• 자아 발달 분석</li>
-                    </ul>
+                     <h3 className="text-xl font-bold text-brand-gradient mb-3">영유아 정서발달 체크</h3>
+                     <p className="text-muted-foreground mb-3 text-sm">영유아 연령별 정서 및 감정발달 확인 (참고용)</p>
+                     <ul className="space-y-1 text-sm">
+                       <li>• 연령대별 15문항</li>
+                       <li>• 정서발달 상태 확인</li>
+                       <li>• 감정표현 능력 평가</li>
+                     </ul>
                   </div>
                 </div>
               </div>
@@ -1224,6 +1224,7 @@ const Assessment = () => {
                     else if (test.id === 'adhd') setCurrentStep('adhd-test');
                     else if (test.id === 'stress') setCurrentStep('stress-test');
                     else if (test.id === 'selfesteem') setCurrentStep('selfesteem-test');
+                    else if (test.id === 'emotional-development') setCurrentStep('emotional-development-test');
                     else if (test.id === 'developmental-delay') setCurrentStep('developmental-delay-test');
                     else if (test.id === 'social-development') setCurrentStep('social-development-test');
                   }}
@@ -1580,6 +1581,79 @@ const Assessment = () => {
             onComplete={handleSelfesteemTestComplete}
             onBack={handleBack}
           />
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'emotional-development-test') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-brand-gradient mb-2">영유아 정서발달 체크</h1>
+            <p className="text-muted-foreground">정서 및 감정발달 확인 15문항 (참고용)</p>
+          </div>
+          <div className="bg-white dark:bg-card rounded-2xl p-8 shadow-lg border">
+            <div className="space-y-6">
+              <div className="text-center">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-900/30 dark:to-pink-900/30 px-4 py-2 rounded-full mb-4">
+                  <span className="text-2xl">💖</span>
+                  <span className="font-semibold">정서발달 평가 영역</span>
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-4 bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 rounded-xl border border-rose-200 dark:border-rose-800">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <span>😊</span> 감정 인식 및 표현
+                  </h3>
+                  <p className="text-sm text-muted-foreground">기쁨, 슬픔, 화남 등 기본 감정의 인식과 표현 능력</p>
+                </div>
+                <div className="p-4 bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl border border-purple-200 dark:border-purple-800">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <span>🤝</span> 애착 및 관계형성
+                  </h3>
+                  <p className="text-sm text-muted-foreground">주 양육자와의 애착, 타인과의 관계 형성 능력</p>
+                </div>
+                <div className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <span>🎭</span> 감정 조절
+                  </h3>
+                  <p className="text-sm text-muted-foreground">부정적 감정의 조절 및 자기진정 능력</p>
+                </div>
+                <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <span>💝</span> 공감 능력
+                  </h3>
+                  <p className="text-sm text-muted-foreground">타인의 감정을 이해하고 반응하는 능력</p>
+                </div>
+              </div>
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
+                <p className="text-sm text-muted-foreground">
+                  <strong className="text-foreground">💡 안내:</strong> 이 검사는 영유아의 정서발달 상태를 참고용으로 확인하는 도구입니다. 
+                  전문적인 진단이 필요한 경우 전문가와 상담하시기 바랍니다.
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <Button 
+                  onClick={handleBack}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  ← 뒤로가기
+                </Button>
+                <Button 
+                  onClick={() => {
+                    // 정서발달 검사 시작 - 자존감 검사 재사용
+                    setCurrentStep('selfesteem-test');
+                  }}
+                  className="flex-1 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
+                >
+                  검사 시작하기 →
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

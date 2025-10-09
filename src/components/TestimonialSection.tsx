@@ -321,9 +321,9 @@ const TestimonialSection = () => {
   ];
 
   const stats = [
-    { icon: <Users className="w-5 h-5" />, label: '누적 사용자', value: '15,234명' },
+    { icon: <Users className="w-5 h-5" />, label: '누적 사용자', value: '5,234명' },
     { icon: <Heart className="w-5 h-5" />, label: '만족도', value: '95.8%' },
-    { icon: <Award className="w-5 h-5" />, label: '전문가 연결', value: '3,456건' }
+    { icon: <Award className="w-5 h-5" />, label: '전문가 연결', value: '356건' }
   ];
 
   const handlePrevious = () => {

@@ -829,100 +829,96 @@ export const temperamentAssessmentQuestions = {
 };
 
 // 3. 브레인케어 인지능력 검사 (종합 인지기능 평가)
-export const cognitiveAssessmentQuestions = {
-  memory: [
-    {
-      id: "elderly_mem01",
-      text: "어제 먹은 식사 메뉴를 기억하는 데 어려움이 있습니다",
-      category: "memory",
-      subcategory: "recent_memory",
-      severity_indicator: "mild"
-    },
-    {
-      id: "elderly_mem02",
-      text: "가족이나 친구들의 이름을 기억하기 어려울 때가 있습니다",
-      category: "memory",
-      subcategory: "semantic_memory", 
-      severity_indicator: "moderate"
-    },
-    {
-      id: "elderly_mem03",
-      text: "약속 시간이나 중요한 일정을 자주 잊습니다",
-      category: "memory",
-      subcategory: "prospective_memory",
-      severity_indicator: "mild"
-    },
-    {
-      id: "elderly_mem04",
-      text: "물건을 어디에 두었는지 자주 기억하지 못합니다",
-      category: "memory",
-      subcategory: "spatial_memory",
-      severity_indicator: "mild"
-    }
-  ],
-  attention: [
-    {
-      id: "elderly_att01",
-      text: "TV 프로그램이나 책을 끝까지 집중해서 보기 어렵습니다",
-      category: "attention",
-      subcategory: "sustained_attention",
-      severity_indicator: "mild"
-    },
-    {
-      id: "elderly_att02", 
-      text: "여러 가지 일을 동시에 하는 것이 예전보다 어려워졌습니다",
-      category: "attention",
-      subcategory: "divided_attention",
-      severity_indicator: "moderate"
-    },
-    {
-      id: "elderly_att03",
-      text: "대화 중에 다른 곳으로 주의가 쉽게 분산됩니다",
-      category: "attention",
-      subcategory: "selective_attention",
-      severity_indicator: "mild"
-    }
-  ],
-  executive: [
-    {
-      id: "elderly_exec01",
-      text: "복잡한 문제를 해결하는 것이 예전보다 어려워졌습니다",
-      category: "executive",
-      subcategory: "problem_solving",
-      severity_indicator: "moderate"
-    },
-    {
-      id: "elderly_exec02",
-      text: "계획을 세우고 순서대로 실행하는 것이 어렵습니다",
-      category: "executive",
-      subcategory: "planning",
-      severity_indicator: "moderate"
-    },
-    {
-      id: "elderly_exec03",
-      text: "돈 계산이나 가계부 관리가 어려워졌습니다",
-      category: "executive",
-      subcategory: "calculation",
-      severity_indicator: "mild"
-    }
-  ],
-  language: [
-    {
-      id: "elderly_lang01",
-      text: "단어가 생각나지 않아 말끝을 흐리는 경우가 있습니다",
-      category: "language",
-      subcategory: "word_finding",
-      severity_indicator: "mild"
-    },
-    {
-      id: "elderly_lang02",
-      text: "복잡한 설명을 이해하는 것이 어려워졌습니다",
-      category: "language", 
-      subcategory: "comprehension",
-      severity_indicator: "moderate"
-    }
-  ]
-};
+export const cognitiveAssessmentQuestions = [
+  // 기억력 (Memory) - 4문항
+  {
+    id: "elderly_mem01",
+    text: "어제 먹은 식사 메뉴를 기억하는 데 어려움이 있습니다",
+    category: "memory",
+    subcategory: "recent_memory",
+    severity_indicator: "mild"
+  },
+  {
+    id: "elderly_mem02",
+    text: "가족이나 친구들의 이름을 기억하기 어려울 때가 있습니다",
+    category: "memory",
+    subcategory: "semantic_memory", 
+    severity_indicator: "moderate"
+  },
+  {
+    id: "elderly_mem03",
+    text: "약속 시간이나 중요한 일정을 자주 잊습니다",
+    category: "memory",
+    subcategory: "prospective_memory",
+    severity_indicator: "mild"
+  },
+  {
+    id: "elderly_mem04",
+    text: "물건을 어디에 두었는지 자주 기억하지 못합니다",
+    category: "memory",
+    subcategory: "spatial_memory",
+    severity_indicator: "mild"
+  },
+  // 주의력 (Attention) - 3문항
+  {
+    id: "elderly_att01",
+    text: "TV 프로그램이나 책을 끝까지 집중해서 보기 어렵습니다",
+    category: "attention",
+    subcategory: "sustained_attention",
+    severity_indicator: "mild"
+  },
+  {
+    id: "elderly_att02", 
+    text: "여러 가지 일을 동시에 하는 것이 예전보다 어려워졌습니다",
+    category: "attention",
+    subcategory: "divided_attention",
+    severity_indicator: "moderate"
+  },
+  {
+    id: "elderly_att03",
+    text: "대화 중에 다른 곳으로 주의가 쉽게 분산됩니다",
+    category: "attention",
+    subcategory: "selective_attention",
+    severity_indicator: "mild"
+  },
+  // 실행기능 (Executive Function) - 3문항
+  {
+    id: "elderly_exec01",
+    text: "복잡한 문제를 해결하는 것이 예전보다 어려워졌습니다",
+    category: "executive",
+    subcategory: "problem_solving",
+    severity_indicator: "moderate"
+  },
+  {
+    id: "elderly_exec02",
+    text: "계획을 세우고 순서대로 실행하는 것이 어렵습니다",
+    category: "executive",
+    subcategory: "planning",
+    severity_indicator: "moderate"
+  },
+  {
+    id: "elderly_exec03",
+    text: "돈 계산이나 가계부 관리가 어려워졌습니다",
+    category: "executive",
+    subcategory: "calculation",
+    severity_indicator: "mild"
+  },
+  // 언어능력 (Language) - 2문항
+  {
+    id: "elderly_lang01",
+    text: "단어가 생각나지 않아 말끝을 흐리는 경우가 있습니다",
+    category: "language",
+    subcategory: "word_finding",
+    severity_indicator: "mild"
+  },
+  {
+    id: "elderly_lang02",
+    text: "복잡한 설명을 이해하는 것이 어려워졌습니다",
+    category: "language", 
+    subcategory: "comprehension",
+    severity_indicator: "moderate"
+  }
+];
 
 // 4. 직장 스트레스 번아웃 검사 (직장인 정신건강 측정)
 export const workStressAssessmentQuestions = {

@@ -1,4 +1,4 @@
-import { BarChart3, Activity, TrendingUp, FileText } from 'lucide-react';
+import { BarChart3, Activity, TrendingUp, FileText, Download } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -11,6 +11,11 @@ import {
 
 const ResultReportSection = () => {
   const [showModal, setShowModal] = useState(false);
+
+  const handlePDFDownload = () => {
+    const googleDriveUrl = "https://drive.google.com/file/d/17WD3mhW2T4TdkfxTzLpfH5bzFARxz_Vh/view?usp=drive_link";
+    window.open(googleDriveUrl, '_blank');
+  };
 
   const features = [
     {
@@ -73,12 +78,22 @@ const ResultReportSection = () => {
               <div className="text-center space-y-4">
                 <BarChart3 className="w-20 h-20 text-primary mx-auto" />
                 <p className="text-lg font-semibold text-foreground">리포트 미리보기</p>
-                <Button 
-                  onClick={() => setShowModal(true)}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
-                >
-                  결과 예시 보기
-                </Button>
+                <div className="flex flex-col gap-3">
+                  <Button 
+                    onClick={() => setShowModal(true)}
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
+                  >
+                    결과 예시 보기
+                  </Button>
+                  <Button 
+                    onClick={handlePDFDownload}
+                    variant="outline"
+                    className="border-primary text-primary hover:bg-primary/10 rounded-xl"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    PDF 예시 보기
+                  </Button>
+                </div>
               </div>
             </div>
             

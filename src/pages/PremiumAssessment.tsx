@@ -20,6 +20,8 @@ import ParentingStyleForm from "@/components/assessment/ParentingStyleForm";
 import ParentingStyleResult from "@/components/assessment/ParentingStyleResult";
 import AutismSpectrumForm from "@/components/assessment/AutismSpectrumForm";
 import AutismSpectrumResult from "@/components/assessment/AutismSpectrumResult";
+import { InsuranceAnalysisForm } from "@/components/assessment/InsuranceAnalysisForm";
+import { InsuranceAnalysisResult } from "@/components/assessment/InsuranceAnalysisResult";
 import { 
   premiumAssessmentInfo,
   autismSpectrumScreeningQuestions,
@@ -46,6 +48,7 @@ const PremiumAssessment = () => {
   const [assessmentAnswers, setAssessmentAnswers] = useState<Record<string, string>>({});
   const [isSubscribed] = useState(true); // TODO: 실제 구독 상태로 연동
   const [currentTest, setCurrentTest] = useState<string | null>(null);
+  const [insuranceResults, setInsuranceResults] = useState<any>(null);
   const { trackTestStart, trackTestComplete, trackPageView } = useEventTracking();
 
   const assessmentData = {
@@ -92,6 +95,10 @@ const PremiumAssessment = () => {
       setCurrentTest(null);
       return;
     }
+    if (insuranceResults) {
+      setInsuranceResults(null);
+      return;
+    }
     if (currentStep === 'result') {
       setCurrentStep('list');
     } else if (currentStep === 'assessment') {
@@ -99,6 +106,11 @@ const PremiumAssessment = () => {
     } else {
       navigate('/assessment');
     }
+  };
+
+  const handleInsuranceComplete = (results: any) => {
+    console.log('Insurance Analysis Results:', results);
+    setInsuranceResults(results);
   };
 
   const handleOtrovertComplete = (result: any, testType: string) => {
@@ -294,6 +306,54 @@ const PremiumAssessment = () => {
         {/* Assessment Cards Grid */}
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* 보험보장분석 카드 */}
+            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]"
+              onClick={() => setCurrentTest('insurance-analysis')}
+            >
+              <div className="absolute top-2 right-2 z-10">
+                <Badge className="bg-blue-500 text-white border-0 text-xs px-2 py-1">
+                  AI 전문가
+                </Badge>
+              </div>
+
+              <div className="bg-gradient-to-r from-blue-700 to-cyan-600 p-6 pr-24 text-white relative">
+                <div className="absolute inset-0 bg-black/10" />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <CheckCircle className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg font-bold">💙 보험보장분석</CardTitle>
+                      <p className="text-sm opacity-90">Insurance Analysis</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <CardContent className="p-6 space-y-4">
+                <p className="text-muted-foreground leading-relaxed">
+                  증권 사진만 업로드하면 AI가 가족 보장을 분석합니다.
+                </p>
+
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Clock className="w-4 h-4" />
+                    약 5분
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <Button 
+                    onClick={() => setCurrentTest('insurance-analysis')}
+                    className="w-full bg-gradient-to-r from-blue-700 to-cyan-600"
+                  >
+                    분석 시작
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* 오트로버트 테스트 - 1위 NEW */}
             <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]">
               {/* 인기 순위 배지 */}

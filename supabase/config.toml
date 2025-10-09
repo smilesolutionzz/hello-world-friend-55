@@ -43,6 +43,9 @@ enable_confirmations = false
 [functions.analyze-emotional-development]
 verify_jwt = false
 
+[functions.analyze-insurance-coverage]
+verify_jwt = false
+
 [functions.admin-add-tokens]
 verify_jwt = false
 

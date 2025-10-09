@@ -53,6 +53,17 @@ const generatePDFHTML = (data: any) => {
           padding: 20px;
           background: white;
         }
+        .source-header {
+          text-align: center;
+          margin-bottom: 10px;
+          padding: 15px 0;
+        }
+        .source-url {
+          font-size: 20px;
+          font-weight: bold;
+          color: #6366f1;
+          letter-spacing: 1px;
+        }
         .brand-header {
           text-align: center;
           margin-bottom: 30px;
@@ -271,6 +282,10 @@ const generatePDFHTML = (data: any) => {
       </style>
     </head>
     <body>
+      <div class="source-header">
+        <div class="source-url">aihpro.com</div>
+      </div>
+      
       <div class="brand-header">
         <div class="brand-title">AIHPRO.COM</div>
         <div class="brand-subtitle">AIH 기반 심리검사 전문 플랫폼</div>

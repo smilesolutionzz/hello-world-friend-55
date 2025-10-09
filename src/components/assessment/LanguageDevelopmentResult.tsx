@@ -136,6 +136,8 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
           <title>AIH 영유아 언어발달 검사 결과</title>
           <style>
             body { font-family: 'Arial', sans-serif; margin: 40px; line-height: 1.6; }
+            .source-header { text-align: center; margin-bottom: 10px; }
+            .source-url { font-size: 20px; font-weight: bold; color: #6366f1; letter-spacing: 1px; }
             .header { text-align: center; margin-bottom: 30px; }
             .score-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
             .score-large { font-size: 24px; font-weight: bold; color: #333; }
@@ -146,6 +148,10 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
           </style>
         </head>
         <body>
+          <div class="source-header">
+            <div class="source-url">aihpro.com</div>
+          </div>
+          
           <div class="header">
             <h1>AIH 영유아 언어발달 검사 결과</h1>
             <p>검사일: ${new Date().toLocaleDateString('ko-KR')}</p>

@@ -43,6 +43,9 @@ export const useTestResultActions = () => {
         // 간단한 로컬 템플릿
         reportHtml = `
           <div id="pdf-content" style="font-family: system-ui, -apple-system, Segoe UI, Roboto; padding: 24px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <div style="font-size: 20px; font-weight: bold; color: #6366f1; letter-spacing: 1px;">aihpro.com</div>
+            </div>
             <h1 style="margin:0 0 8px 0;">${testData.testType} 결과 보고서</h1>
             <p style="color:#555; margin:0 0 16px 0;">${new Date().toLocaleString('ko-KR')}</p>
             <pre style="white-space:pre-wrap; background:#f7f7f9; padding:16px; border-radius:8px;">${JSON.stringify(testData.results, null, 2)}</pre>

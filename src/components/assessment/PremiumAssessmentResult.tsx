@@ -114,6 +114,10 @@ const PremiumAssessmentResult = ({
       const element = document.createElement('div');
       element.innerHTML = `
         <div style="font-family: 'Noto Sans KR', sans-serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; line-height: 1.6; color: #333;">
+          <div style="text-align: center; margin-bottom: 10px;">
+            <div style="font-size: 20px; font-weight: bold; color: #6366F1; letter-spacing: 1px;">aihpro.com</div>
+          </div>
+          
           <div style="text-align: center; margin-bottom: 40px; border-bottom: 3px solid #8B5CF6; padding-bottom: 20px;">
             <h1 style="font-size: 28px; margin: 0 0 10px 0; color: #8B5CF6; font-weight: bold;">프리미엄 AIH 검사 결과 보고서</h1>
             <h2 style="font-size: 20px; margin: 0 0 10px 0; color: #6366F1;">${assessmentInfo.title}</h2>

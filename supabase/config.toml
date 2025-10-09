@@ -46,6 +46,9 @@ verify_jwt = false
 [functions.analyze-insurance-coverage]
 verify_jwt = false
 
+[functions.wellness-prevention-score]
+verify_jwt = false
+
 [functions.admin-add-tokens]
 verify_jwt = false
 

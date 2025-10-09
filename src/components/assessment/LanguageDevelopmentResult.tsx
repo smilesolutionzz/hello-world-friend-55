@@ -153,14 +153,14 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
           
           <div class="score-section">
             <h2>전체 언어발달 수준</h2>
-            <div class="score-large">${results.total}점 / 77점 (${results.total_percentage}%)</div>
+            <div class="score-large">${results.total}점 / 45점 (${results.total_percentage}%)</div>
             <p><strong>해석:</strong> ${totalInterpretation.description}</p>
           </div>
           
           <div class="score-section">
             <h3>영역별 상세 결과</h3>
-            <p><strong>수용언어:</strong> ${results.receptive}점 / 39점 (${results.receptive_percentage}%) - ${receptiveInterpretation.description}</p>
-            <p><strong>표현언어:</strong> ${results.expressive}점 / 38점 (${results.expressive_percentage}%) - ${expressiveInterpretation.description}</p>
+            <p><strong>수용언어:</strong> ${results.receptive}점 / 23점 (${results.receptive_percentage}%) - ${receptiveInterpretation.description}</p>
+            <p><strong>표현언어:</strong> ${results.expressive}점 / 22점 (${results.expressive_percentage}%) - ${expressiveInterpretation.description}</p>
           </div>
           
           <div class="interpretation">
@@ -326,7 +326,7 @@ ${aiAnalysis || generateFallbackInterpretation()}
               
               <div className="mb-4">
                 <div className="text-4xl font-bold mb-2 text-foreground">
-                  {results.total}점 / 154점
+                  {results.total}점 / 45점
                 </div>
                 <Badge className={`${totalInterpretation.badge} text-white text-lg px-4 py-2`}>
                   {totalInterpretation.description}
@@ -354,7 +354,7 @@ ${aiAnalysis || generateFallbackInterpretation()}
               <CardContent>
                 <div className="text-center mb-4">
                   <div className="text-3xl font-bold mb-2">
-                    {results.receptive}점 / 78점
+                    {results.receptive}점 / 23점
                   </div>
                   <div className="text-lg text-peach-bloom font-semibold">
                     {results.receptive_percentage}%
@@ -377,7 +377,7 @@ ${aiAnalysis || generateFallbackInterpretation()}
               <CardContent>
                 <div className="text-center mb-4">
                   <div className="text-3xl font-bold mb-2">
-                    {results.expressive}점 / 76점
+                    {results.expressive}점 / 22점
                   </div>
                   <div className="text-lg text-warm-lavender font-semibold">
                     {results.expressive_percentage}%

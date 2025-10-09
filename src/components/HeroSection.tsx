@@ -64,60 +64,40 @@ const HeroSection = () => {
     "혼자 사는 노인 분이 점점 고립되고 있어요... 어떤 도움을 드려야 할까요?"
   ];
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden">
-      {/* Floating Keywords Background */}
-      <FloatingKeywords />
-      
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-32 right-16 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-warm-lavender/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
+    <section className="relative min-h-screen bg-gradient-to-br from-[#0A0E1A] via-[#1B2333] to-[#0A0E1A] overflow-hidden">
+      {/* Background Blur Effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 -left-40 w-96 h-96 bg-[#5E8FFF]/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-20 -right-40 w-96 h-96 bg-[#5E8FFF]/15 rounded-full blur-[120px]" />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 pt-12 sm:pt-20 pb-12 sm:pb-16">
-        {/* Main Headline */}
-        <div className="text-center mb-8 sm:mb-16 space-y-4 sm:space-y-6">
-          {/* Powerful Hook */}
-          <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200/50 rounded-full mb-6 max-w-[320px] sm:max-w-none mx-auto shadow-sm">
-            <div className="flex items-center gap-1">
-              <span className="text-xl animate-pulse">✨</span>
-              <span className="text-xl animate-bounce delay-100">🧠</span>
-            </div>
-            <span className="text-xs sm:text-sm font-semibold bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent tracking-wide text-center leading-tight">
-              전문가와 AI가 함께하는<br className="sm:hidden" />
-              혁신적인 딥러닝<br className="sm:hidden" />
-              멘탈통합케어 플랫폼
-            </span>
+      <div className="relative z-10 container mx-auto px-6 pt-20 pb-28 min-h-screen flex flex-col justify-center">
+        {/* Main Headline - 간결하고 강력하게 */}
+        <div className="text-center mb-16 space-y-8">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-lg">
+            <span className="text-sm font-medium text-white/90">AI 기반 통합 케어 플랫폼</span>
           </div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight">
-            <span className="block text-gray-900 mb-1 sm:mb-2">3분만에 확인하는</span>
-            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">우리 가족 마음 건강</span>
+          <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+            <span className="block text-white mb-2">AI가 당신의</span>
+            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent">회복을 돕습니다</span>
           </h1>
           
-          <div className="space-y-4 sm:space-y-6">
-            <div className="space-y-2 sm:space-y-3 text-lg sm:text-xl md:text-2xl">
-              <p className="text-brand-gradient font-semibold">
-                "고민을 말하면, 답을 받는다"
-              </p>
-              <p className="text-muted-foreground text-base sm:text-lg">
-                지금 가장 걱정되는 한 문장을 적어보세요
-              </p>
-            </div>
-            
-            {/* 타이핑 애니메이션 예시 */}
-            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto">
-              <p className="text-sm text-muted-foreground mb-2">예시:</p>
-              <div className="text-left text-sm sm:text-base text-foreground leading-relaxed min-h-[3rem] flex items-center">
-                <TypingAnimation 
-                  phrases={typingPhrases}
-                  typingSpeed={50}
-                  deletingSpeed={30}
-                  pauseDuration={2000}
-                  className="text-gray-700"
-                />
-              </div>
+          <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+            3분 테스트로 내 상태를 확인하세요
+          </p>
+          
+          {/* 타이핑 애니메이션 */}
+          <div className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 max-w-4xl mx-auto">
+            <p className="text-sm text-white/60 mb-3">이런 고민이 있으신가요?</p>
+            <div className="text-left text-base text-white/90 leading-relaxed min-h-[4rem] flex items-center">
+              <TypingAnimation 
+                phrases={typingPhrases}
+                typingSpeed={50}
+                deletingSpeed={30}
+                pauseDuration={2000}
+                className="text-white/90"
+              />
             </div>
           </div>
         </div>
@@ -128,157 +108,37 @@ const HeroSection = () => {
           <InstantAIAnalysis />
         </div>
         
-        {/* CTA Section */}
-        <div className="mt-12 text-center space-y-6">
-          {/* 패키지 선택 섹션 */}
-          <div className="bg-gradient-to-br from-primary/5 to-secondary/5 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-primary/20">
-            <h3 className="text-xl sm:text-2xl font-bold mb-2">🎯 상황별 맞춤 패키지</h3>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto leading-[1.6] text-center">
-              현재 가장 고민되는 상황에 맞는 전문 패키지를 선택하세요
-            </p>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto mb-4">
-              <Button 
-                size="lg"
-                onClick={() => navigate('/child-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-slate-100 to-gray-100 text-slate-700 border border-slate-200 rounded-xl font-medium hover:from-slate-200 hover:to-gray-200 hover:border-slate-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 h-auto flex flex-col gap-2"
-              >
-                <span className="text-2xl">👶</span>
-                <span className="text-sm font-bold">아동발달</span>
-                <span className="text-xs opacity-90">언어·ADHD·종합</span>
-              </Button>
-              <Button 
-                size="lg"
-                onClick={() => navigate('/stress-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border border-blue-200 rounded-xl font-medium hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 h-auto flex flex-col gap-2"
-              >
-                <span className="text-2xl">😰</span>
-                <span className="text-sm font-bold">스트레스</span>
-                <span className="text-xs opacity-90">직장·자존감·관리</span>
-              </Button>
-              <Button 
-                size="lg"
-                onClick={() => navigate('/anxiety-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-700 border border-emerald-200 rounded-xl font-medium hover:from-emerald-100 hover:to-green-100 hover:border-emerald-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 h-auto flex flex-col gap-2"
-              >
-                <span className="text-2xl">😨</span>
-                <span className="text-sm font-bold">불안·공황</span>
-                <span className="text-xs opacity-90">응급지원·대처법</span>
-              </Button>
-              <Button 
-                size="lg"
-                onClick={() => navigate('/depression-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 border border-amber-200 rounded-xl font-medium hover:from-amber-100 hover:to-orange-100 hover:border-amber-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 h-auto flex flex-col gap-2"
-              >
-                <span className="text-2xl">😔</span>
-                <span className="text-sm font-bold">우울·감정</span>
-                <span className="text-xs opacity-90">기분장애·치유</span>
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-              <Button 
-                size="lg"
-                onClick={() => navigate('/focus-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-violet-50 to-purple-50 text-violet-700 border border-violet-200 rounded-xl font-medium hover:from-violet-100 hover:to-purple-100 hover:border-violet-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 h-auto flex flex-col gap-2"
-              >
-                <span className="text-2xl">🎯</span>
-                <span className="text-sm font-bold">집중력/ADHD</span>
-                <span className="text-xs opacity-90">성격·스트레스·코칭</span>
-              </Button>
-              <Button 
-                size="lg"
-                onClick={() => navigate('/relationship-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-rose-50 to-pink-50 text-rose-700 border border-rose-200 rounded-xl font-medium hover:from-rose-100 hover:to-pink-100 hover:border-rose-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 h-auto flex flex-col gap-2"
-              >
-                <span className="text-2xl">💖</span>
-                <span className="text-sm font-bold">연애/관계</span>
-                <span className="text-xs opacity-90">관계유형·자존감</span>
-              </Button>
-              <Button 
-                size="lg"
-                onClick={() => navigate('/career-package')}
-                className="flex-1 p-4 bg-gradient-to-r from-cyan-50 to-teal-50 text-cyan-700 border border-cyan-200 rounded-xl font-medium hover:from-cyan-100 hover:to-teal-100 hover:border-cyan-300 transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 h-auto flex flex-col gap-2"
-              >
-                <span className="text-2xl">💼</span>
-                <span className="text-sm font-bold">진로/적성</span>
-                <span className="text-xs opacity-90">흥미·성격·스트레스</span>
-              </Button>
-            </div>
-            <div className="mt-4 text-center">
-              <Button 
-                size="lg"
-                variant="outline"
-                onClick={() => navigate('/quick-needs')}
-                className="px-6 py-3 border border-primary text-primary rounded-xl font-medium hover:bg-primary/10 transition-all duration-300 transform hover:scale-105 h-11 text-sm sm:text-base"
-              >
-                📋 맞춤 추천 받기
-              </Button>
-            </div>
-          </div>
+        {/* CTA Buttons - 2개 나란히 */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <Button 
+            size="lg"
+            onClick={() => navigate('/pmf-onboarding')}
+            className="group relative w-full sm:w-auto px-10 py-6 bg-[#5E8FFF] hover:bg-[#4A7FEF] text-white text-lg font-bold rounded-xl shadow-[0_3px_16px_rgba(94,143,255,0.4)] hover:shadow-[0_8px_24px_rgba(94,143,255,0.6)] transition-all duration-300"
+          >
+            <span className="flex items-center gap-2">
+              무료 테스트 시작
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </span>
+          </Button>
           
-          {/* 무료 체험 강조 섹션 */}
-          <div className="bg-gradient-to-br from-primary/10 via-white/90 to-secondary/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-xl border border-primary/20">
-            <div className="text-center mb-6">
-              <h3 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center justify-center gap-2">
-                <span className="text-2xl">🎁</span>
-                지금 무료로 체험해보세요!
-              </h3>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-[1.6]">
-                회원가입 없이도 3분 만에 AI 심리분석을 받아볼 수 있습니다
-              </p>
-            </div>
+          <Button 
+            size="lg"
+            variant="outline"
+            onClick={() => navigate('/expert-hiring')}
+            className="w-full sm:w-auto px-10 py-6 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white text-lg font-semibold rounded-xl hover:bg-white/20 transition-all duration-300"
+          >
+            전문가 상담 연결
+          </Button>
+        </div>
 
-            <div className="grid md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-white/70 rounded-xl p-4 text-center">
-                <div className="text-2xl mb-2">⚡</div>
-                <h4 className="font-semibold mb-1">즉시 시작</h4>
-                <p className="text-sm text-muted-foreground">회원가입 없이 바로 체험</p>
-              </div>
-              <div className="bg-white/70 rounded-xl p-4 text-center">
-                <div className="text-2xl mb-2">🤖</div>
-                <h4 className="font-semibold mb-1">AI 분석</h4>
-                <p className="text-sm text-muted-foreground">3분 만에 정확한 결과</p>
-              </div>
-              <div className="bg-white/70 rounded-xl p-4 text-center">
-                <div className="text-2xl mb-2">🎯</div>
-                <h4 className="font-semibold mb-1">맞춤 솔루션</h4>
-                <p className="text-sm text-muted-foreground">개인별 추천 받기</p>
-              </div>
-            </div>
-            
-            <div className="flex flex-col gap-3 justify-center max-w-lg mx-auto">
-              <Button 
-                size="lg"
-                onClick={() => navigate('/pmf-onboarding')}
-                className="w-full px-6 py-4 bg-gradient-to-r from-primary via-primary-glow to-secondary text-white rounded-xl font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-lg h-14 relative overflow-hidden group"
-              >
-                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-out"></div>
-                <span className="relative flex items-center justify-center gap-2">
-                  <Sparkles className="w-5 h-5" />
-                  🎯 3분 AI 심리분석 체험
-                  <ArrowRight className="w-5 h-5" />
-                </span>
-              </Button>
-              
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-2">
-                  더 많은 기능이 필요하시다면?
-                </p>
-                <div className="flex justify-center">
-                  <Button 
-                    size="lg"
-                    onClick={() => navigate('/auth')}
-                    className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 h-11 text-sm sm:text-base"
-                  >
-                    회원가입 (10토큰 무료)
-                  </Button>
-                </div>
-              </div>
-            </div>
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center pt-2">
+            <div className="w-1.5 h-3 bg-white/50 rounded-full" />
           </div>
-
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

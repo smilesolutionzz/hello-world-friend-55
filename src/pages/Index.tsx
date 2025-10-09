@@ -1,42 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
-import ExpertValidationBanner from "@/components/ExpertValidationBanner";
-import { BetaBanner } from "@/components/BetaBanner";
 import HeroSection from "@/components/HeroSection";
-import PlatformOverview from "@/components/PlatformOverview";
-import VideoShowcase from "@/components/VideoShowcase";
-import TrustIndicators from "@/components/TrustIndicators";
-import ClientLogos from "@/components/ClientLogos";
-import SecurityTrustIndicators from "@/components/SecurityTrustIndicators";
+import ProblemVisionSection from "@/components/landing/ProblemVisionSection";
+import CoreServiceSection from "@/components/landing/CoreServiceSection";
+import HowItWorksSection from "@/components/landing/HowItWorksSection";
+import ResultReportSection from "@/components/landing/ResultReportSection";
+import CTABannerSection from "@/components/landing/CTABannerSection";
+import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
+import FixedCTAButton from "@/components/landing/FixedCTAButton";
 import TestimonialSection from "@/components/TestimonialSection";
-import CommunityPlatform from "@/components/CommunityPlatform";
-import ExpertVerificationBadge from "@/components/ExpertVerificationBadge";
+import ClientLogos from "@/components/ClientLogos";
 import BackToTop from "@/components/common/BackToTop";
 import SEOHead from "@/components/common/SEOHead";
-import { PageContainer } from "@/components/ui/page-container";
 import { SkipLink } from "@/components/ui/skip-link";
-
-import ReferralWidget from "@/components/ReferralWidget";
-import ReferralCodeInput from "@/components/ReferralCodeInput";
-import ProfessionalSidebar from "@/components/ProfessionalSidebar";
-import { TechBadgeShowcase } from "@/components/TechBadgeShowcase";
-import FloatingChatCTA from "@/components/FloatingChatCTA";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
-import MobileOptimizedLayout from '@/components/MobileOptimizedLayout';
-import { PlatformGuide } from '@/components/onboarding/PlatformGuide';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
-import SimplifiedFlow from '@/components/mvp/SimplifiedFlow';
-import QuickOnboarding from '@/components/mvp/QuickOnboarding';
-import { SocialProofDisplay } from '@/components/apr-strategy/SocialProofDisplay';
-import { PreventionScorePreview } from '@/components/wellness/PreventionScorePreview';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import Footer from '@/components/ui/footer';
 
 const Index = () => {
   console.log('🏠 Index.tsx: Index page component rendering...');
@@ -143,103 +127,57 @@ const Index = () => {
   return (
     <>
       <SEOHead 
-        title="AI하이라이트PRO - AI 기반 통합 케어 플랫폼"
-        description="AI와 전문가가 함께하는 종합 케어 플랫폼. 심리상담, 발달평가, 건강관리부터 전문기관 연계까지 전생애 통합 케어 서비스를 제공합니다."
-        keywords="AI케어, 통합케어, 심리상담, 발달평가, 건강관리, 전문상담, 전생애케어"
+        title="AI하이라이트PRO | AI 기반 통합 케어 플랫폼"
+        description="AI와 전문가가 함께하는 통합 케어 플랫폼. 심리상담, 발달평가, 건강관리부터 전문기관 연계까지"
+        keywords="AI케어, 통합케어, 심리상담, 발달평가, 건강관리, 전문상담"
       />
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
+      
       <div className="min-h-screen max-w-full overflow-x-hidden">
-        <PlatformGuide onComplete={handleGuideComplete} />
         <ScrollProgressBar />
         <UnifiedNavigation />
         
-        {/* Main Content - Full Width */}
         <main id="main-content" className="w-full">
-          {/* 베타 배너 */}
-          <div className="container mx-auto px-4 pt-4">
-            <BetaBanner />
-          </div>
-
-          {/* 1. Hero Section - 서비스 소개 */}
-          <div className="animate-fade-in w-full">
-            <HeroSection />
-          </div>
-
-          {/* APR 전략: 실시간 소셜 증명만 메인페이지에 유지 */}
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.03s' }}>
-            <div className="container mx-auto px-4 py-8">
-              <SocialProofDisplay />
-            </div>
-          </div>
-
-          {/* MVP 단순화된 플로우 */}
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.05s' }}>
-            <SimplifiedFlow onStepComplete={(step) => console.log('Step completed:', step)} />
-          </div>
-
-          {/* 예방 건강 점수 프리뷰 - 로그인 사용자만 */}
-          {user && (
-            <div className="animate-fade-in w-full container mx-auto px-4 py-8" style={{ animationDelay: '0.06s' }}>
-              <PreventionScorePreview />
-            </div>
-          )}
+          {/* 1️⃣ Hero Section */}
+          <HeroSection />
           
-          {/* 2. 차별점 섹션 - "왜 우리가 다른지" */}
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.1s' }}>
-            <ExpertValidationBanner />
-          </div>
+          {/* 2️⃣ Problem & Vision */}
+          <ProblemVisionSection />
           
-          {/* 3. VideoShowcase - 시각적 설명 */}
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.2s' }}>
-            <VideoShowcase />
-          </div>
+          {/* 3️⃣ Core Service */}
+          <CoreServiceSection />
           
-          {/* 4. 기술 배지 - 신뢰성 강화 */}
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.3s' }}>
-            <TechBadgeShowcase />
-          </div>
+          {/* 4️⃣ How It Works */}
+          <HowItWorksSection />
           
-          {/* 보안 및 신뢰성 섹션 */}
-          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.4s' }}>
-            <SecurityTrustIndicators />
-          </div>
+          {/* 5️⃣ Result / Report */}
+          <ResultReportSection />
           
-          {/* 실제 사례 및 후기 */}
-          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.6s' }}>
-            <h2 className="text-2xl font-bold text-center mb-6">실제 이용 후기</h2>
-            <TestimonialSection />
-          </div>
+          {/* Trust & Partner Section */}
+          <PartnerTrustSection />
           
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.65s' }}>
-            <ClientLogos />
-          </div>
+          {/* Social Proof */}
+          <TestimonialSection />
+          <ClientLogos />
           
-          {/* 커뮤니티 플랫폼 */}
-          <div className="container mx-auto px-4 py-8 animate-fade-in w-full" style={{ animationDelay: '0.7s' }}>
-            <CommunityPlatform />
-          </div>
+          {/* 6️⃣ Call to Action */}
+          <CTABannerSection />
           
-          <div className="container mx-auto px-4 py-8 space-y-6 animate-fade-in w-full" style={{ animationDelay: '0.75s' }}>
-            <ReferralWidget />
-            <ReferralCodeInput />
-          </div>
-          {user && (
-            <div className="container mx-auto px-4 py-6 animate-fade-in w-full" style={{ animationDelay: '0.8s' }}>
-              <NextStepSuggestion />
-            </div>
-          )}
-          <div className="animate-fade-in w-full" style={{ animationDelay: '0.85s' }}>
-            <TrustIndicators />
-          </div>
+          {/* 7️⃣ Footer */}
+          <Footer />
         </main>
-      <BackToTop />
-      
-      {/* 온보딩 모달 */}
-      <WelcomeOnboarding 
-        isOpen={showOnboarding} 
-        onClose={handleOnboardingClose} 
-      />
-    </div>
+        
+        {/* Fixed CTA Button (Mobile + Desktop) */}
+        <FixedCTAButton />
+        
+        <BackToTop />
+        
+        {/* 온보딩 모달 */}
+        <WelcomeOnboarding 
+          isOpen={showOnboarding} 
+          onClose={handleOnboardingClose} 
+        />
+      </div>
     </>
   );
 };

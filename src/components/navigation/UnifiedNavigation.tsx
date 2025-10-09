@@ -143,7 +143,7 @@ export const UnifiedNavigation = () => {
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="hidden lg:flex bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-xl bg-white/95">
+      <nav className="hidden lg:flex bg-card border-b border-border sticky top-0 z-40 backdrop-blur-xl bg-card/95">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Clean Logo & Token Balance */}
@@ -152,7 +152,7 @@ export const UnifiedNavigation = () => {
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => navigate('/')}
               >
-                <span className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">AIHPRO</span>
+                <span className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">AIHPRO</span>
               </div>
               
               {/* Token Balance */}
@@ -168,7 +168,7 @@ export const UnifiedNavigation = () => {
                 variant={isActive('/') ? "default" : "ghost"}
                 size="sm"
                 onClick={() => handleNavigation('/')}
-                className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
+                className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
               >
                 <Home className="w-4 h-4 mr-2" />
                 홈
@@ -180,22 +180,22 @@ export const UnifiedNavigation = () => {
                   <Button
                     variant={isActive('/assessment') || isActive('/premium-assessment') || isActive('/han-medicine-test') ? "default" : "ghost"}
                     size="sm"
-                    className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
+                    className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
                     <TrendingUp className="w-4 h-4 mr-2" />
                     종합검사
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-white shadow-xl border border-gray-200 rounded-xl p-1">
+                <DropdownMenuContent align="start" className="w-48 bg-popover shadow-xl border rounded-xl p-1 z-50">
                   {assessmentSubmenuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.path}
                       onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg px-3 py-2 mx-1 transition-colors"
+                      className="flex items-center gap-3 cursor-pointer hover:bg-accent rounded-lg px-3 py-2 mx-1 transition-colors"
                     >
-                      <item.icon className="w-4 h-4 text-gray-500" />
-                      <span className="font-medium text-gray-700">{item.label}</span>
+                      <item.icon className="w-4 h-4 text-muted-foreground" />
+                      <span className="font-medium text-foreground">{item.label}</span>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -207,23 +207,23 @@ export const UnifiedNavigation = () => {
                   <Button
                     variant={isActive('/ai-assistant') || isActive('/observation') || isActive('/voice-emotion-analysis') || isActive('/personalized-ai-coaching') ? "default" : "ghost"}
                     size="sm"
-                    className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
+                    className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
                     AI 상담
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-64 bg-white shadow-xl border border-gray-200 rounded-xl p-1 z-50">
+                <DropdownMenuContent align="start" className="w-64 bg-popover shadow-xl border rounded-xl p-1 z-50">
                   {aihSubmenuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.path}
                       onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center justify-between cursor-pointer hover:bg-gray-50 rounded-lg px-3 py-2 mx-1 transition-colors"
+                      className="flex items-center justify-between cursor-pointer hover:bg-accent rounded-lg px-3 py-2 mx-1 transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <item.icon className="w-4 h-4 text-gray-500" />
-                        <span className="font-medium text-gray-700">{item.label}</span>
+                        <item.icon className="w-4 h-4 text-muted-foreground" />
+                        <span className="font-medium text-foreground">{item.label}</span>
                       </div>
                       {item.badge && (
                         <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
@@ -242,22 +242,22 @@ export const UnifiedNavigation = () => {
                   <Button
                     variant={isActive('/dashboard') || isActive('/institution-admin') ? "default" : "ghost"}
                     size="sm"
-                    className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
+                    className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
                     <BarChart3 className="w-4 h-4 mr-2" />
                     데이터
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-white shadow-xl border border-gray-200 rounded-xl p-1 z-50">
+                <DropdownMenuContent align="start" className="w-48 bg-popover shadow-xl border rounded-xl p-1 z-50">
                   {dataSubmenuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.path}
                       onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg px-3 py-2 mx-1 transition-colors"
+                      className="flex items-center gap-3 cursor-pointer hover:bg-accent rounded-lg px-3 py-2 mx-1 transition-colors"
                     >
-                      <item.icon className="w-4 h-4 text-gray-500" />
-                      <span className="font-medium text-gray-700">{item.label}</span>
+                      <item.icon className="w-4 h-4 text-muted-foreground" />
+                      <span className="font-medium text-foreground">{item.label}</span>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -269,37 +269,37 @@ export const UnifiedNavigation = () => {
                   <Button
                     variant={isActive('/expert-hiring') || isActive('/token-subscription') ? "default" : "ghost"}
                     size="sm"
-                    className="h-9 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 data-[state=open]:bg-gray-100 transition-colors"
+                    className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
                     <UserCheck className="w-4 h-4 mr-2" />
                     전문가
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-white shadow-xl border border-gray-200 rounded-xl p-1 z-50">
+                <DropdownMenuContent align="start" className="w-48 bg-popover shadow-xl border rounded-xl p-1 z-50">
                   {expertSubmenuItems.map((item) => (
                     <DropdownMenuItem
                       key={item.path}
                       onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg px-3 py-2 mx-1 transition-colors"
+                      className="flex items-center gap-3 cursor-pointer hover:bg-accent rounded-lg px-3 py-2 mx-1 transition-colors"
                     >
-                      <item.icon className="w-4 h-4 text-gray-500" />
-                      <span className="font-medium text-gray-700">{item.label}</span>
+                      <item.icon className="w-4 h-4 text-muted-foreground" />
+                      <span className="font-medium text-foreground">{item.label}</span>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
 
               {/* Login Button */}
-              <div className="ml-4 pl-4 border-l border-gray-200">
+              <div className="ml-4 pl-4 border-l border-border">
                 <Button
                   variant={user ? "ghost" : "default"}
                   size="sm"
                   onClick={handleAuth}
                   className={`h-9 px-4 rounded-lg font-medium transition-all ${
                     !user 
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm' 
-                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                   }`}
                 >
                   <User className="w-4 h-4 mr-2" />
@@ -312,7 +312,7 @@ export const UnifiedNavigation = () => {
       </nav>
 
       {/* Mobile Navigation */}
-      <nav className="lg:hidden bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-xl bg-white/95">
+      <nav className="lg:hidden bg-card border-b border-border sticky top-0 z-40 backdrop-blur-xl bg-card/95">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-14">
             {/* Mobile Logo & Token Balance */}
@@ -321,7 +321,7 @@ export const UnifiedNavigation = () => {
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={() => navigate('/')}
               >
-                <span className="text-lg font-semibold text-gray-900">AIHPRO</span>
+                <span className="text-lg font-semibold text-foreground">AIHPRO</span>
               </div>
               
               {/* Token Balance - Always visible on mobile */}
@@ -336,12 +336,12 @@ export const UnifiedNavigation = () => {
                 </Button>
               </SheetTrigger>
               
-                <SheetContent side="right" className="w-72 bg-white">
+                <SheetContent side="right" className="w-72 bg-card">
                 <div className="flex flex-col h-full">
                   {/* Clean Header */}
-                  <div className="border-b border-gray-100 pb-4 mb-4">
+                  <div className="border-b border-border pb-4 mb-4">
                     <div className="flex items-center gap-3">
-                      <span className="text-xl font-semibold text-gray-900">AIHPRO</span>
+                      <span className="text-xl font-semibold text-foreground">AIHPRO</span>
                     </div>
                   </div>
 

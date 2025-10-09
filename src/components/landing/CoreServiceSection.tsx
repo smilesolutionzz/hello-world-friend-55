@@ -34,13 +34,13 @@ const CoreServiceSection = () => {
   ];
 
   return (
-    <section className="py-32 bg-white">
+    <section className="py-32 bg-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#0A0E1A] mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             주요 서비스
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             AI와 전문가가 함께하는 통합 케어
           </p>
         </div>
@@ -58,16 +58,16 @@ const CoreServiceSection = () => {
                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 <div className="relative z-10">
-                  <div className="w-16 h-16 bg-white/80 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-background/80 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <Icon className={`w-8 h-8 ${service.iconColor}`} />
                   </div>
                   
-                  <h3 className="text-2xl font-bold text-[#0A0E1A] mb-3">{service.title}</h3>
-                  <p className="text-gray-700 mb-6 leading-relaxed">{service.description}</p>
+                  <h3 className="text-2xl font-bold text-foreground mb-3">{service.title}</h3>
+                  <p className="text-card-foreground mb-6 leading-relaxed">{service.description}</p>
                   
                   <Button 
                     variant="ghost" 
-                    className="group-hover:translate-x-2 transition-transform duration-300 p-0 h-auto text-[#5E8FFF] font-semibold"
+                    className="group-hover:translate-x-2 transition-transform duration-300 p-0 h-auto text-primary font-semibold"
                   >
                     자세히 보기
                     <ArrowRight className="w-4 h-4 ml-2" />

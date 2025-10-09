@@ -21,11 +21,11 @@ const ProblemVisionSection = () => {
   ];
 
   return (
-    <section className="py-32 bg-[#F5F7FA]">
+    <section className="py-32 bg-secondary">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <p className="text-sm font-semibold text-[#5E8FFF] mb-4 tracking-wide uppercase">Why AI Highlight Pro?</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-[#0A0E1A] mb-6">
+          <p className="text-sm font-semibold text-primary mb-4 tracking-wide uppercase">Why AI Highlight Pro?</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             왜 AI하이라이트PRO가 필요한가요?
           </h2>
         </div>
@@ -37,13 +37,13 @@ const ProblemVisionSection = () => {
             return (
               <Card 
                 key={index}
-                className="p-8 bg-white border border-gray-200 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                className="p-8 bg-card border border-border rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
               >
-                <div className="w-14 h-14 bg-gradient-to-br from-[#5E8FFF]/10 to-[#8FB9FF]/10 rounded-2xl flex items-center justify-center mb-6">
-                  <Icon className="w-7 h-7 text-[#5E8FFF]" />
+                <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
+                  <Icon className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold text-[#0A0E1A] mb-3">{problem.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{problem.description}</p>
+                <h3 className="text-xl font-bold text-foreground mb-3">{problem.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{problem.description}</p>
               </Card>
             );
           })}
@@ -51,9 +51,9 @@ const ProblemVisionSection = () => {
 
         {/* Solution Statement */}
         <div className="text-center">
-          <p className="text-2xl font-semibold text-[#0A0E1A] max-w-3xl mx-auto leading-relaxed">
+          <p className="text-2xl font-semibold text-foreground max-w-3xl mx-auto leading-relaxed">
             AI하이라이트PRO는 이 문제를<br className="sm:hidden" /> 
-            <span className="text-[#5E8FFF]"> 기술과 사람의 협업</span>으로 해결합니다
+            <span className="text-primary"> 기술과 사람의 협업</span>으로 해결합니다
           </p>
         </div>
       </div>

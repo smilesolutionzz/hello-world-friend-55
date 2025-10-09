@@ -1398,6 +1398,72 @@ export type Database = {
         }
         Relationships: []
       }
+      diary_book_orders: {
+        Row: {
+          admin_notes: string | null
+          binding_type: string
+          cover_design: string
+          created_at: string
+          delivery_address: string
+          delivery_name: string
+          delivery_phone: string
+          delivery_request: string | null
+          estimated_price: number
+          id: string
+          paper_type: string
+          payment_status: string
+          period_end: string
+          period_start: string
+          status: string
+          total_entries: number
+          total_pages: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          binding_type?: string
+          cover_design?: string
+          created_at?: string
+          delivery_address: string
+          delivery_name: string
+          delivery_phone: string
+          delivery_request?: string | null
+          estimated_price?: number
+          id?: string
+          paper_type?: string
+          payment_status?: string
+          period_end: string
+          period_start: string
+          status?: string
+          total_entries?: number
+          total_pages?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          binding_type?: string
+          cover_design?: string
+          created_at?: string
+          delivery_address?: string
+          delivery_name?: string
+          delivery_phone?: string
+          delivery_request?: string | null
+          estimated_price?: number
+          id?: string
+          paper_type?: string
+          payment_status?: string
+          period_end?: string
+          period_start?: string
+          status?: string
+          total_entries?: number
+          total_pages?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       diary_likes: {
         Row: {
           created_at: string
@@ -3141,6 +3207,8 @@ export type Database = {
           memory_extracted: string | null
           messages: Json | null
           updated_at: string
+          uploaded_photos: string[] | null
+          uploaded_videos: string[] | null
           user_id: string
           user_recording_url: string | null
           views_count: number | null
@@ -3158,6 +3226,8 @@ export type Database = {
           memory_extracted?: string | null
           messages?: Json | null
           updated_at?: string
+          uploaded_photos?: string[] | null
+          uploaded_videos?: string[] | null
           user_id: string
           user_recording_url?: string | null
           views_count?: number | null
@@ -3175,6 +3245,8 @@ export type Database = {
           memory_extracted?: string | null
           messages?: Json | null
           updated_at?: string
+          uploaded_photos?: string[] | null
+          uploaded_videos?: string[] | null
           user_id?: string
           user_recording_url?: string | null
           views_count?: number | null
@@ -5569,6 +5641,51 @@ export type Database = {
           target_group?: string
           updated_at?: string
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      wellness_prevention_scores: {
+        Row: {
+          analysis_data: Json | null
+          created_at: string | null
+          current_status: string
+          id: string
+          key_message: string | null
+          predictions: Json
+          prevention_tips: string[] | null
+          risk_factors: string[] | null
+          score: number
+          score_level: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          analysis_data?: Json | null
+          created_at?: string | null
+          current_status: string
+          id?: string
+          key_message?: string | null
+          predictions?: Json
+          prevention_tips?: string[] | null
+          risk_factors?: string[] | null
+          score: number
+          score_level: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          analysis_data?: Json | null
+          created_at?: string | null
+          current_status?: string
+          id?: string
+          key_message?: string | null
+          predictions?: Json
+          prevention_tips?: string[] | null
+          risk_factors?: string[] | null
+          score?: number
+          score_level?: string
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }

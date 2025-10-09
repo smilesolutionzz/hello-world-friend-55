@@ -34,6 +34,7 @@ import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import SimplifiedFlow from '@/components/mvp/SimplifiedFlow';
 import QuickOnboarding from '@/components/mvp/QuickOnboarding';
 import { SocialProofDisplay } from '@/components/apr-strategy/SocialProofDisplay';
+import { PreventionScoreDashboard } from '@/components/wellness/PreventionScoreDashboard';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
@@ -175,6 +176,13 @@ const Index = () => {
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.05s' }}>
             <SimplifiedFlow onStepComplete={(step) => console.log('Step completed:', step)} />
           </div>
+
+          {/* 예방 건강 점수 대시보드 - 로그인 사용자만 */}
+          {user && (
+            <div className="animate-fade-in w-full container mx-auto px-4 py-8" style={{ animationDelay: '0.06s' }}>
+              <PreventionScoreDashboard />
+            </div>
+          )}
           
           {/* 2. 차별점 섹션 - "왜 우리가 다른지" */}
           <div className="animate-fade-in w-full" style={{ animationDelay: '0.1s' }}>

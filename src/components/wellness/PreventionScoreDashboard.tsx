@@ -45,27 +45,30 @@ export const PreventionScoreDashboard = () => {
       }
 
       // 최근 점수 확인
-      const { data: recentScore } = await supabase
+      const { data: recentScore, error: fetchError } = await supabase
         .from('wellness_prevention_scores')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       // 최근 점수가 24시간 이내면 재사용
-      if (recentScore && new Date(recentScore.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)) {
-        setScoreData({
-          preventionScore: recentScore.score,
-          scoreLevel: recentScore.score_level,
-          currentStatus: recentScore.current_status,
-          riskFactors: recentScore.risk_factors,
-          predictions: recentScore.predictions,
-          preventionTips: recentScore.prevention_tips,
-          keyMessage: recentScore.key_message,
-        });
-        setLoading(false);
-        return;
+      if (recentScore && !fetchError) {
+        const createdTime = new Date(recentScore.created_at as string).getTime();
+        if (createdTime > Date.now() - 24 * 60 * 60 * 1000) {
+          setScoreData({
+            preventionScore: recentScore.score as number,
+            scoreLevel: recentScore.score_level as string,
+            currentStatus: recentScore.current_status as string,
+            riskFactors: (recentScore.risk_factors as string[]) || [],
+            predictions: (recentScore.predictions as any) || {},
+            preventionTips: (recentScore.prevention_tips as string[]) || [],
+            keyMessage: recentScore.key_message as string,
+          });
+          setLoading(false);
+          return;
+        }
       }
 
       // 새로운 분석 요청

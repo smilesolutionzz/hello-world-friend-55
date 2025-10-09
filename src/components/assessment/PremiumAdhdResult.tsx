@@ -48,47 +48,66 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
 
   const severity = getSeverityColor(results.severityLevel);
 
-  // AI 분석 생성
+  // AI 분석 생성 - ADHD 전용 분석기 사용
   useEffect(() => {
     const generateAIAnalysis = async () => {
       try {
         setIsAnalyzing(true);
         
+        // ADHD 전용 분석 데이터 구조
         const analysisData = {
-          assessmentType: 'premium_adhd',
           ageGroup: results.ageGroup,
-          scores: results.scores,
-          totalScore: results.totalScore,
-          severityLevel: results.severityLevel,
-          adhdSubtype: results.adhdSubtype,
-          answers: results.answers
+          answers: results.answers,
+          domainScores: {
+            inattention: results.scores.inattention,
+            hyperactivity_impulsivity: results.scores.hyperactivity + results.scores.impulsivity
+          }
         };
 
-        const { data, error } = await supabase.functions.invoke('enhanced-assessment-analyzer', {
+        console.log('Calling premium-adhd-analyzer with data:', analysisData);
+
+        const { data, error } = await supabase.functions.invoke('premium-adhd-analyzer', {
           body: analysisData
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Edge function error:', error);
+          throw error;
+        }
 
-        setAnalysis(data.analysis || "분석 중 오류가 발생했습니다.");
-        
-        // 결과 저장
-        await saveTestResult({
-          testType: 'Premium ADHD 정밀검사',
-          results: results,
-          analysis: data.analysis,
-          testInfo: {
-            severityLevel: results.severityLevel,
-            adhdSubtype: results.adhdSubtype,
-            totalScore: results.totalScore
-          },
-          ageGroup: results.ageGroup
-        });
+        console.log('Analysis response:', data);
+
+        if (data && data.analysis) {
+          setAnalysis(data.analysis);
+          
+          // 결과 저장
+          await saveTestResult({
+            testType: 'Premium ADHD 정밀검사',
+            results: results,
+            analysis: data.analysis,
+            testInfo: {
+              severityLevel: results.severityLevel,
+              adhdSubtype: results.adhdSubtype,
+              totalScore: results.totalScore,
+              domainScores: data.domainScores
+            },
+            ageGroup: results.ageGroup
+          });
+        } else {
+          throw new Error('분석 결과가 없습니다.');
+        }
 
       } catch (error) {
         console.error('AI 분석 생성 실패:', error);
         toast.error('AI 분석 생성에 실패했습니다.');
-        setAnalysis("분석 생성에 실패했습니다. 전문가와 상담을 통해 정확한 해석을 받아보시기 바랍니다.");
+        setAnalysis(`분석 생성 중 오류가 발생했습니다.
+
+⚠️ 중요 안내:
+- 이 결과는 참고용 선별검사입니다
+- 의학적 진단이 아니며 전문가 상담이 필요합니다
+- 지속적인 어려움이 있으시면 정신건강의학과 전문의와 상담하세요
+
+전문가 상담 서비스를 이용하시면 정확한 해석을 받으실 수 있습니다.`);
       } finally {
         setIsAnalyzing(false);
       }

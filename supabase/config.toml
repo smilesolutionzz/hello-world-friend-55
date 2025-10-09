@@ -40,6 +40,9 @@ double_confirm_changes = true
 enable_confirmations = false
 
 # AI and Core Functions
+[functions.analyze-emotional-development]
+verify_jwt = false
+
 [functions.admin-add-tokens]
 verify_jwt = false
 

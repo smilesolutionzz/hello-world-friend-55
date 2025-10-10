@@ -78,7 +78,7 @@ const HeroSection = () => {
             <span className="text-xs sm:text-sm font-medium text-white/90 whitespace-nowrap">AI와 전문가가 함께하는 통합 케어 플랫폼</span>
           </div>
           
-          <h1 className="text-[1.75rem] leading-tight sm:text-5xl md:text-7xl font-bold">
+          <h1 className="text-[1.4rem] leading-tight sm:text-5xl md:text-7xl font-bold">
             <span className="block text-white mb-1 sm:mb-2">
               AI와 전문가가 함께
             </span>

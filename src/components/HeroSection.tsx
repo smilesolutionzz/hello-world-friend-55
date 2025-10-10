@@ -75,7 +75,7 @@ const HeroSection = () => {
         {/* Main Headline - 간결하고 강력하게 */}
         <div className="text-center mb-16 space-y-8">
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-lg">
-            <span className="text-sm font-medium text-white/90">AI와 전문가가 함께하는 통합 케어 플랫폼</span>
+            <span className="text-xs sm:text-sm font-medium text-white/90 whitespace-nowrap">AI와 전문가가 함께하는 통합 케어 플랫폼</span>
           </div>
           
           <h1 className="text-[1.75rem] leading-tight sm:text-5xl md:text-7xl font-bold">

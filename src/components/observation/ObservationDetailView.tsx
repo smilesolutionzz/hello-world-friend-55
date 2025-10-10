@@ -55,9 +55,18 @@ const ObservationDetailView = ({ session, onBack }: ObservationDetailViewProps) 
     try {
       setGenerating(true);
 
+      // 전체 분석 데이터를 포함한 완전한 세션 데이터 구성
+      const fullSessionData = {
+        ...session,
+        analysis_data: session.observations?.analysis_data || session.analysis_data,
+        raw_data: session.observations?.raw_data || session.raw_data
+      };
+
+      console.log('Sending session data for PDF:', fullSessionData);
+
       const { data, error } = await supabase.functions.invoke('generate-observation-report', {
         body: {
-          sessionData: session,
+          sessionData: fullSessionData,
           reportType: 'comprehensive'
         }
       });

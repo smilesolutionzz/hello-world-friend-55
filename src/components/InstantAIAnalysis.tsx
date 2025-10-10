@@ -236,7 +236,8 @@ const InstantAIAnalysis = () => {
                 </Badge>
               </div>
               <p className="text-base text-muted-foreground font-medium">
-                고민을 간단히 말하면, 즉시 분석해드려요 <span className="text-primary font-bold">(최소 10자)</span>
+                고민을 간단히 말하면, 즉시 분석해드려요<br />
+                <span className="text-primary font-bold">(최소 10자)</span>
               </p>
             </div>
           </div>

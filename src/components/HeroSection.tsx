@@ -78,9 +78,15 @@ const HeroSection = () => {
             <span className="text-sm font-medium text-white/90">AI와 전문가가 함께하는 통합 케어 플랫폼</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-            <span className="block text-white mb-2">AI와 전문가가 함께</span>
-            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent">당신의 회복을 돕습니다</span>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight">
+            <span className="block text-white mb-2">
+              <span className="inline sm:inline">AI와 전문가가</span>{' '}
+              <span className="inline sm:inline">함께</span>
+            </span>
+            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent">
+              <span className="inline sm:inline">당신의 희망을</span>{' '}
+              <span className="inline sm:inline">돕습니다</span>
+            </span>
           </h1>
           
           <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">

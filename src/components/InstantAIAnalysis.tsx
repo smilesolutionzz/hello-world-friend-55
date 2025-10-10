@@ -262,7 +262,7 @@ const InstantAIAnalysis = () => {
                             setInputText(text);
                           }
                         }}
-                        className="min-h-[140px] resize-none border border-border/50 focus:border-primary/50 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all duration-300 text-base bg-background/80 backdrop-blur-sm shadow-sm focus:shadow-lg pr-16"
+                        className="min-h-[140px] resize-none border border-border/50 focus:border-primary/50 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all duration-300 text-base bg-background/80 backdrop-blur-sm shadow-sm focus:shadow-lg pr-28 pt-3"
                         maxLength={500}
                       />
                       

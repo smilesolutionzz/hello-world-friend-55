@@ -276,7 +276,7 @@ const LiveFeedWidget = () => {
     <div className="fixed top-20 right-4 z-40 space-y-2">
       {/* 실시간 통계 - 더 작고 투명하게 */}
       {showStats && !isStatsHidden && (
-        <Card className="p-2 bg-gradient-to-r from-blue-500/80 to-purple-600/80 text-foreground border-0 shadow-lg backdrop-blur-sm animate-slide-in-right relative">
+        <Card className="p-2 bg-gradient-to-r from-blue-500/80 to-purple-600/80 text-white border-0 shadow-lg backdrop-blur-sm animate-slide-in-right relative">
           {/* 닫기 버튼 */}
           <Button
             onClick={handleCloseStats}
@@ -288,14 +288,14 @@ const LiveFeedWidget = () => {
           </Button>
           <div className="flex items-center gap-2">
             <div className="p-1 bg-white/20 rounded-full">
-              <Activity className="w-3 h-3" />
+              <Activity className="w-3 h-3 text-white" />
             </div>
             <div className="space-y-1">
-              <div className="flex items-center gap-1 text-xs">
-                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+              <div className="flex items-center gap-1 text-xs text-white">
+                <span className="w-1.5 h-1.5 bg-green-300 rounded-full animate-pulse"></span>
                 <span className="font-medium">실시간</span>
               </div>
-              <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="grid grid-cols-3 gap-2 text-xs text-white">
                 <div className="text-center">
                   <div className="font-bold text-sm">{stats.dailyVisitors.toLocaleString()}</div>
                   <div className="opacity-90 text-xs">방문</div>

@@ -262,12 +262,12 @@ const InstantAIAnalysis = () => {
                             setInputText(text);
                           }
                         }}
-                        className="min-h-[140px] resize-none border border-border/50 focus:border-primary/50 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all duration-300 text-base bg-background/80 backdrop-blur-sm shadow-sm focus:shadow-lg pr-28 pt-3"
+                        className="min-h-[140px] resize-none border border-border/50 focus:border-primary/50 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all duration-300 text-base bg-background/80 backdrop-blur-sm shadow-sm focus:shadow-lg pr-3 pt-3"
                         maxLength={500}
                       />
                       
-                      {/* 음성 입력 버튼 - 우측 상단 */}
-                      <div className="absolute top-2 right-2">
+                      {/* 음성 입력 버튼 - 우측 하단 */}
+                      <div className="absolute bottom-2 right-2">
                         <VoiceInputButton
                           onTranscription={(text) => {
                             const newText = inputText + (inputText ? ' ' : '') + text;

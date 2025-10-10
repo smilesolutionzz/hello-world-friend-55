@@ -45,7 +45,7 @@ const ResultReportSection = () => {
     <section className="py-32 bg-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 whitespace-nowrap">
             AI 리포트 & 데이터 해석
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

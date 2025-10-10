@@ -32,7 +32,7 @@ const HowItWorksSection = () => {
     <section className="py-32 bg-gradient-to-br from-secondary to-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 whitespace-nowrap">
             어떻게 작동하나요?
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

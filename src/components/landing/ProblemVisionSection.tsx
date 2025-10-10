@@ -30,8 +30,9 @@ const ProblemVisionSection = () => {
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <p className="text-sm font-semibold text-primary mb-4 tracking-wide uppercase">Why AI Highlight Pro?</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            왜 AI하이라이트PRO가 필요한가요?
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
+            왜 AI하이라이트PRO가<br className="sm:hidden" />
+            필요한가요?
           </h2>
         </div>
 
@@ -47,7 +48,7 @@ const ProblemVisionSection = () => {
                 <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
                   <Icon className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-3">{problem.title}</h3>
+                <h3 className="text-base sm:text-xl font-bold text-foreground mb-3 whitespace-nowrap">{problem.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{problem.description}</p>
               </Card>
             );
@@ -56,9 +57,9 @@ const ProblemVisionSection = () => {
 
         {/* Solution Statement */}
         <div className="text-center">
-          <p className="text-2xl font-semibold text-foreground max-w-3xl mx-auto leading-relaxed">
-            AI하이라이트PRO는<br className="sm:hidden" /> 
-            <span className="text-primary"> AI 기술과 전문가의 협업</span>으로<br className="hidden sm:block" />
+          <p className="text-lg sm:text-2xl font-semibold text-foreground max-w-3xl mx-auto leading-relaxed">
+            AI하이라이트PRO는<br />
+            <span className="text-primary">AI 기술과 전문가의 협업</span>으로<br />
             예방부터 회복까지 함께 돕습니다
           </p>
         </div>

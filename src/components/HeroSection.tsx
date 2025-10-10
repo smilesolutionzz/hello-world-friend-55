@@ -80,12 +80,10 @@ const HeroSection = () => {
           
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight">
             <span className="block text-white mb-2">
-              <span className="inline sm:inline">AI와 전문가가</span>{' '}
-              <span className="inline sm:inline">함께</span>
+              AI와 전문가가 함께
             </span>
             <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent">
-              <span className="inline sm:inline">당신의 희망을</span>{' '}
-              <span className="inline sm:inline">돕습니다</span>
+              당신의 희망을 돕습니다
             </span>
           </h1>
           

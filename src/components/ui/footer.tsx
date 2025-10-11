@@ -26,7 +26,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><a href="/terms" className="hover:text-foreground">이용약관</a></li>
               <li><a href="/privacy" className="hover:text-foreground">개인정보처리방침</a></li>
-              <li>문의: support@highlight-ai.com</li>
+              <li>문의: aihpro@naver.com</li>
             </ul>
           </div>
         </div>

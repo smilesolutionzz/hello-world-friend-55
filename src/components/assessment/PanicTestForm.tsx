@@ -37,13 +37,13 @@ const panicQuestions = [
 
 const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(21).fill(-1)); // 기본값 없음
+  const [answers, setAnswers] = useState<string[]>(new Array(21).fill("")); // 빈 문자열로 초기화
 
   const progress = ((currentQuestion + 1) / panicQuestions.length) * 100;
 
   const handleAnswer = (value: string) => {
     const newAnswers = [...answers];
-    newAnswers[currentQuestion] = parseInt(value);
+    newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
     
     // 자동으로 다음 문항으로 이동 (0.5초 지연)
@@ -126,7 +126,7 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
           </h2>
 
           <RadioGroup 
-            value={currentAnswer >= 1 ? currentAnswer.toString() : undefined} 
+            value={currentAnswer} 
             onValueChange={handleAnswer}
             className="space-y-4"
           >

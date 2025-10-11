@@ -229,7 +229,7 @@ export const StressTest: React.FC<StressTestProps> = ({ onComplete, onBack }) =>
                 {stressQuestions[currentQuestion].question}
               </h3>
 
-              <RadioGroup value={currentAnswer} onValueChange={handleAnswer}>
+              <RadioGroup value={currentAnswer || ""} onValueChange={handleAnswer}>
                 {stressQuestions[currentQuestion].options.map((option) => (
                   <div key={option.value} className="flex items-center space-x-2">
                     <RadioGroupItem value={option.value} id={option.value} />

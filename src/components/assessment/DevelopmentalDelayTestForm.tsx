@@ -43,7 +43,7 @@ const questions = [
 
 const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(-1));
+  const [answers, setAnswers] = useState<string[]>(new Array(questions.length).fill("")); // 빈 문자열로 초기화
   const { toast } = useToast();
 
   const handleAnswerChange = (value: string) => {
@@ -129,7 +129,7 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
         </CardHeader>
         <CardContent>
           <RadioGroup
-            value={answers[currentQuestion] >= 0 ? answers[currentQuestion].toString() : undefined}
+            value={answers[currentQuestion]}
             onValueChange={handleAnswerChange}
             className="space-y-3"
           >

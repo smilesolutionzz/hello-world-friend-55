@@ -235,7 +235,7 @@ const CommunicationStyleForm = ({ onComplete }: CommunicationStyleFormProps) => 
           </CardHeader>
           <CardContent className="space-y-4">
             <RadioGroup
-              value={answers[currentQuestion]}
+              value={answers[currentQuestion] || ""}
               onValueChange={handleAnswerChange}
               className="space-y-3"
             >

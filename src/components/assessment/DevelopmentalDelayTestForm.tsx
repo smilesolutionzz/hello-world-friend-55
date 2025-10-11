@@ -48,7 +48,7 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
 
   const handleAnswerChange = (value: string) => {
     const newAnswers = [...answers];
-    newAnswers[currentQuestion] = parseInt(value);
+    newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
     
     // 선택 후 자동으로 다음으로 넘어가기
@@ -81,8 +81,14 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
   };
 
   const handleComplete = (finalAnswers = answers) => {
-    const total = finalAnswers.reduce((sum, answer) => sum + answer, 0);
-    const average = total / finalAnswers.length;
+    // 문자열 답변을 숫자로 변환
+    const numericAnswers = finalAnswers.map(a => {
+      const parsed = parseInt(a);
+      return isNaN(parsed) ? 0 : parsed;
+    });
+    
+    const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
+    const average = total / numericAnswers.length;
     
     let severity = "정상";
     if (total >= 60) severity = "심각";
@@ -90,7 +96,7 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
     else if (total >= 20) severity = "경미";
 
     onComplete({
-      answers: finalAnswers,
+      answers: numericAnswers,
       total,
       average,
       ageGroup: "아동",

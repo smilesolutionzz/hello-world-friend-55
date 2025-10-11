@@ -62,14 +62,14 @@ const languageQuestions = {
 
 const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(20).fill(0));
+  const [answers, setAnswers] = useState<string[]>(new Array(20).fill(""));
 
   const questions = languageQuestions[ageGroup];
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   const handleAnswer = (value: string) => {
     const newAnswers = [...answers];
-    newAnswers[currentQuestion] = parseInt(value);
+    newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
     
     // 자동으로 다음 질문으로 이동
@@ -86,13 +86,18 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 테스트 완료
-      const total = answers.reduce((sum, answer) => sum + answer, 0);
-      const average = Math.round((total / answers.length) * 10) / 10;
+      // 문자열 답변을 숫자로 변환
+      const numericAnswers = answers.map(a => {
+        const parsed = parseInt(a);
+        return isNaN(parsed) ? 0 : parsed;
+      });
+      
+      const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
+      const average = Math.round((total / numericAnswers.length) * 10) / 10;
       const ageGroupLabel = ageGroup === 'infant' ? '영유아' : '아동청소년';
       
       onComplete({
-        answers,
+        answers: numericAnswers,
         total,
         average,
         ageGroup: ageGroupLabel
@@ -107,7 +112,7 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
   };
 
   const currentAnswer = answers[currentQuestion];
-  const canProceed = currentAnswer !== undefined && currentAnswer > 0;
+  const canProceed = currentAnswer !== "";
 
   return (
     <Card className="max-w-4xl mx-auto p-8">

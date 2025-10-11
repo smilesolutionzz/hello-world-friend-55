@@ -56,9 +56,14 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
     if (currentQuestion < panicQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 테스트 완료
-      const total = answers.reduce((sum, answer) => sum + answer, 0);
-      const average = Math.round((total / answers.length) * 10) / 10;
+      // 문자열 답변을 숫자로 변환
+      const numericAnswers = answers.map(a => {
+        const parsed = parseInt(a);
+        return isNaN(parsed) ? 0 : parsed;
+      });
+      
+      const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
+      const average = Math.round((total / numericAnswers.length) * 10) / 10;
       
       let severity = "";
       if (total <= 15) {
@@ -72,7 +77,7 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
       }
       
       onComplete({
-        answers,
+        answers: numericAnswers,
         total,
         average,
         severity
@@ -87,7 +92,7 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
   };
 
   const currentAnswer = answers[currentQuestion];
-  const canProceed = currentAnswer >= 1;
+  const canProceed = currentAnswer !== "";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">

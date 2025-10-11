@@ -56,10 +56,18 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
     if (currentQuestion < depressionQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 테스트 완료
-      const numericAnswers = answers.map(a => parseInt(a));
-      const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
-      const average = Math.round((total / numericAnswers.length) * 10) / 10;
+      // 테스트 완료 - 모든 답변을 숫자로 변환하고 유효성 검사
+      const numericAnswers = answers.map(a => {
+        const parsed = parseInt(a);
+        return isNaN(parsed) ? 0 : parsed;
+      });
+      
+      // 유효한 답변만 계산에 포함
+      const validAnswers = numericAnswers.filter(a => a > 0);
+      const total = validAnswers.reduce((sum, answer) => sum + answer, 0);
+      const average = validAnswers.length > 0 
+        ? Math.round((total / validAnswers.length) * 10) / 10 
+        : 0;
       
       let severity = "";
       if (total <= 13) {

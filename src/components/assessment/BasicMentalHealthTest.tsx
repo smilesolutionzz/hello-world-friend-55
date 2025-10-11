@@ -113,12 +113,12 @@ const questions = [
 const BasicMentalHealthTest = () => {
   const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(-1));
+  const [answers, setAnswers] = useState<string[]>(new Array(questions.length).fill("")); // 빈 문자열로 초기화
   const [isCompleted, setIsCompleted] = useState(false);
 
   const handleAnswer = (value: number) => {
     const newAnswers = [...answers];
-    newAnswers[currentQuestion] = value;
+    newAnswers[currentQuestion] = value.toString();
     setAnswers(newAnswers);
     
     // 답변 선택 시 자동으로 다음 질문으로 이동 (0.5초 딜레이)
@@ -128,7 +128,7 @@ const BasicMentalHealthTest = () => {
       } else {
         // 결과 페이지로 이동
         const result = getResult();
-        const totalScore = answers.reduce((sum, answer) => sum + (answer || 0), 0);
+        const totalScore = answers.map(a => parseInt(a) || 0).reduce((sum, answer) => sum + answer, 0);
         navigate('/free-trial-result', { 
           state: { 
             testResult: {
@@ -150,7 +150,7 @@ const BasicMentalHealthTest = () => {
     } else {
       // 결과 페이지로 이동
       const result = getResult();
-      const totalScore = answers.reduce((sum, answer) => sum + (answer || 0), 0);
+      const totalScore = answers.map(a => parseInt(a) || 0).reduce((sum, answer) => sum + answer, 0);
       navigate('/free-trial-result', { 
         state: { 
           testResult: {
@@ -172,7 +172,7 @@ const BasicMentalHealthTest = () => {
   };
 
   const getResult = () => {
-    const totalScore = answers.reduce((sum, answer) => sum + (answer || 0), 0);
+    const totalScore = answers.map(a => parseInt(a) || 0).reduce((sum, answer) => sum + answer, 0);
     const maxScore = 30;
     const percentage = (totalScore / maxScore) * 100;
 
@@ -391,7 +391,7 @@ const BasicMentalHealthTest = () => {
           
           <CardContent className="space-y-4">
             <RadioGroup
-              value={answers[currentQuestion] >= 0 ? answers[currentQuestion]?.toString() : ""}
+              value={answers[currentQuestion]}
               onValueChange={(value) => handleAnswer(parseInt(value))}
             >
               {questions[currentQuestion].options.map((option) => (

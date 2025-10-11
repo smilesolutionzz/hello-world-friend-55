@@ -126,13 +126,12 @@ const intellectualQuestions = [
 
 export const IntellectualDisabilityTest: React.FC<IntellectualDisabilityTestProps> = ({ onComplete, onBack }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [answers, setAnswers] = useState<string[]>(new Array(intellectualQuestions.length).fill("")); // 빈 문자열로 초기화
 
   const handleAnswer = (value: string) => {
-    setAnswers(prev => ({
-      ...prev,
-      [intellectualQuestions[currentQuestion].id]: value
-    }));
+    const newAnswers = [...answers];
+    newAnswers[currentQuestion] = value;
+    setAnswers(newAnswers);
   };
 
   const handleNext = () => {
@@ -140,7 +139,7 @@ export const IntellectualDisabilityTest: React.FC<IntellectualDisabilityTestProp
       setCurrentQuestion(prev => prev + 1);
     } else {
       // 결과 계산
-      const totalScore = Object.values(answers).reduce((sum, score) => sum + parseInt(score), 0);
+      const totalScore = answers.map(a => parseInt(a)).reduce((sum, score) => sum + score, 0);
       const maxScore = intellectualQuestions.length * 5;
       const percentage = (totalScore / maxScore) * 100;
 
@@ -173,13 +172,18 @@ export const IntellectualDisabilityTest: React.FC<IntellectualDisabilityTestProp
         ];
       }
 
+      const answerObj = answers.reduce((acc, val, idx) => {
+        acc[intellectualQuestions[idx].id] = val;
+        return acc;
+      }, {} as Record<number, string>);
+
       const result = {
         type: 'intellectual',
         score: totalScore,
         maxScore,
         percentage: Math.round(percentage),
         severity,
-        answers,
+        answers: answerObj,
         recommendations,
         analysis: `인지능력 관련 점수는 ${totalScore}/${maxScore}점(${Math.round(percentage)}%)입니다. 
                   한의학적으로 지능발달은 신(腎)의 정(精)과 심(心)의 신(神), 비(脾)의 운화기능과 밀접한 관련이 있습니다.
@@ -197,7 +201,7 @@ export const IntellectualDisabilityTest: React.FC<IntellectualDisabilityTestProp
   };
 
   const progress = ((currentQuestion + 1) / intellectualQuestions.length) * 100;
-  const currentAnswer = answers[intellectualQuestions[currentQuestion].id];
+  const currentAnswer = answers[currentQuestion];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50 py-8 px-4">

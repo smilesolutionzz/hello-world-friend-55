@@ -37,13 +37,13 @@ const depressionQuestions = [
 
 const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(new Array(21).fill(-1)); // 기본값 없음
+  const [answers, setAnswers] = useState<string[]>(new Array(21).fill("")); // 빈 문자열로 초기화
 
   const progress = ((currentQuestion + 1) / depressionQuestions.length) * 100;
 
   const handleAnswer = (value: string) => {
     const newAnswers = [...answers];
-    newAnswers[currentQuestion] = parseInt(value);
+    newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
     
     // 자동으로 다음 문항으로 이동 (0.5초 지연)
@@ -57,8 +57,9 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
       setCurrentQuestion(currentQuestion + 1);
     } else {
       // 테스트 완료
-      const total = answers.reduce((sum, answer) => sum + answer, 0);
-      const average = Math.round((total / answers.length) * 10) / 10;
+      const numericAnswers = answers.map(a => parseInt(a));
+      const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
+      const average = Math.round((total / numericAnswers.length) * 10) / 10;
       
       let severity = "";
       if (total <= 13) {
@@ -72,7 +73,7 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
       }
       
       onComplete({
-        answers,
+        answers: numericAnswers,
         total,
         average,
         severity
@@ -87,7 +88,7 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
   };
 
   const currentAnswer = answers[currentQuestion];
-  const canProceed = currentAnswer >= 1; // 1점 이상이어야 함
+  const canProceed = currentAnswer !== ""; // 빈 문자열이 아니어야 함
 
   return (
     <Card className="max-w-4xl mx-auto p-8">
@@ -118,7 +119,7 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
           </h2>
 
           <RadioGroup 
-            value={currentAnswer >= 1 ? currentAnswer.toString() : undefined} 
+            value={currentAnswer} 
             onValueChange={handleAnswer}
             className="space-y-4"
           >

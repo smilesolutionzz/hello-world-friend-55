@@ -571,32 +571,51 @@ const ClientLogos = () => {
             <p className="text-muted-foreground">의료진과 전문가들이 인정한 AIH 통합분석 시스템</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {partners.map((partner, index) => {
-              const IconComponent = partner.icon;
-              return (
-                <div
-                  key={index}
-                  className="text-center p-4 rounded-xl bg-background/50 hover:bg-background/80 transition-all duration-200 hover:scale-105 cursor-pointer"
-                  onClick={() => handleInstitutionClick(partner)}
-                >
-                  <div className={`w-12 h-12 ${
-                    partner.name === '삼성웰니스의원 발달클리닉' 
-                      ? 'bg-gradient-to-br from-amber-400 to-yellow-500' 
-                      : 'bg-primary/10'
-                  } rounded-full flex items-center justify-center mx-auto mb-3`}>
-                    <IconComponent className={`w-6 h-6 ${
+          <div className="relative overflow-hidden">
+            <div className="flex gap-6 animate-scroll-partners">
+              {[...partners, ...partners, ...partners].map((partner, index) => {
+                const IconComponent = partner.icon;
+                return (
+                  <div
+                    key={index}
+                    className="flex-shrink-0 text-center p-4 rounded-xl bg-background/50 hover:bg-background/80 transition-all duration-200 hover:scale-105 cursor-pointer w-40"
+                    onClick={() => handleInstitutionClick(partner)}
+                  >
+                    <div className={`w-12 h-12 ${
                       partner.name === '삼성웰니스의원 발달클리닉' 
-                        ? 'text-white' 
-                        : 'text-primary'
-                    }`} />
+                        ? 'bg-gradient-to-br from-amber-400 to-yellow-500' 
+                        : 'bg-primary/10'
+                    } rounded-full flex items-center justify-center mx-auto mb-3`}>
+                      <IconComponent className={`w-6 h-6 ${
+                        partner.name === '삼성웰니스의원 발달클리닉' 
+                          ? 'text-white' 
+                          : 'text-primary'
+                      }`} />
+                    </div>
+                    <h4 className="font-semibold text-sm text-foreground mb-1">{partner.name}</h4>
+                    <p className="text-xs text-muted-foreground">{partner.count}</p>
                   </div>
-                  <h4 className="font-semibold text-sm text-foreground mb-1">{partner.name}</h4>
-                  <p className="text-xs text-muted-foreground">{partner.count}</p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
+
+          <style>{`
+            @keyframes scroll-partners {
+              0% {
+                transform: translateX(0);
+              }
+              100% {
+                transform: translateX(-66.666%);
+              }
+            }
+            .animate-scroll-partners {
+              animation: scroll-partners 40s linear infinite;
+            }
+            .animate-scroll-partners:hover {
+              animation-play-state: paused;
+            }
+          `}</style>
 
           <div className="text-center mt-8">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">

@@ -200,17 +200,31 @@ export default function FunTestResult() {
             {/* 액션 버튼들 */}
             <div className="flex flex-col gap-3 pt-6">
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button onClick={handleShare} size="lg" className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
-                  <Share2 className="w-4 h-4 mr-2" />
+                <Button 
+                  onClick={handleShare} 
+                  size="lg" 
+                  className="flex-1 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                >
+                  <Share2 className="w-5 h-5 mr-2" />
                   친구들에게 공유하기
                 </Button>
-                <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  메인으로 돌아가기
+                <Button 
+                  onClick={handleRetry} 
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1 border-2 hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] hover:border-primary/50"
+                >
+                  <RotateCcw className="w-5 h-5 mr-2" />
+                  다시 테스트하기
                 </Button>
               </div>
-              <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full">
-                <Copy className="w-4 h-4 mr-2" />
+              <Button 
+                onClick={handleShareText} 
+                variant="secondary" 
+                size="lg" 
+                className="w-full bg-white border-2 border-gray-200 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] shadow-sm hover:shadow-md"
+              >
+                <Copy className="w-5 h-5 mr-2" />
                 📋 텍스트로 복사하기
               </Button>
             </div>
@@ -361,17 +375,31 @@ export default function FunTestResult() {
             {/* 액션 버튼들 */}
             <div className="flex flex-col gap-3 pt-6">
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button onClick={handleShare} size="lg" className="flex-1 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600">
-                  <Share2 className="w-4 h-4 mr-2" />
-                  친구들에게 자랑하기
+                <Button 
+                  onClick={handleShare} 
+                  size="lg" 
+                  className="flex-1 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                >
+                  <Share2 className="w-5 h-5 mr-2" />
+                  친구들에게 공유하기
                 </Button>
-                <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  메인으로 돌아가기
+                <Button 
+                  onClick={handleRetry} 
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1 border-2 hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] hover:border-primary/50"
+                >
+                  <RotateCcw className="w-5 h-5 mr-2" />
+                  다시 테스트하기
                 </Button>
               </div>
-              <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full">
-                <Copy className="w-4 h-4 mr-2" />
+              <Button 
+                onClick={handleShareText} 
+                variant="secondary" 
+                size="lg" 
+                className="w-full bg-white border-2 border-gray-200 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] shadow-sm hover:shadow-md"
+              >
+                <Copy className="w-5 h-5 mr-2" />
                 📋 텍스트로 복사하기
               </Button>
             </div>
@@ -530,17 +558,31 @@ export default function FunTestResult() {
             {/* 액션 버튼들 */}
             <div className="flex flex-col gap-3 pt-6">
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button onClick={handleShare} size="lg" className="flex-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600">
-                  <Share2 className="w-4 h-4 mr-2" />
-                  지혜 공유하기
+                <Button 
+                  onClick={handleShare} 
+                  size="lg" 
+                  className="flex-1 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                >
+                  <Share2 className="w-5 h-5 mr-2" />
+                  친구들에게 공유하기
                 </Button>
-                <Button onClick={handleRetry} variant="outline" size="lg" className="flex-1">
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  다른 테스트 해보기
+                <Button 
+                  onClick={handleRetry} 
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1 border-2 hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] hover:border-primary/50"
+                >
+                  <RotateCcw className="w-5 h-5 mr-2" />
+                  다시 테스트하기
                 </Button>
               </div>
-              <Button onClick={handleShareText} variant="secondary" size="lg" className="w-full">
-                <Copy className="w-4 h-4 mr-2" />
+              <Button 
+                onClick={handleShareText} 
+                variant="secondary" 
+                size="lg" 
+                className="w-full bg-white border-2 border-gray-200 hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 hover:scale-[1.02] shadow-sm hover:shadow-md"
+              >
+                <Copy className="w-5 h-5 mr-2" />
                 📋 텍스트로 복사하기
               </Button>
             </div>

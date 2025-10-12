@@ -1698,7 +1698,7 @@ export const premiumAssessmentInfo = {
     premium_features: ["연령별 맞춤 문항", "수용/표현언어 분석", "발달 수준 평가", "상세 AI 해석"],
     disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
     rank: 1,
-    badge: "🔥 1위"
+    badge: "🔥 인기"
   },
   temperament: {
     title: "타고난 기질 분석검사", 

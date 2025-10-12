@@ -38,9 +38,18 @@ serve(async (req) => {
     const { testType, results, analysis, testInfo, chartData } = await req.json();
 
     console.log('Generating PDF for test result:', { testType, userId: user.id });
+    console.log('Results data:', JSON.stringify(results));
+    console.log('Analysis length:', analysis?.length || 0);
 
     if (!testType || !results) {
+      console.error('Missing required data:', { testType: !!testType, results: !!results });
       throw new Error('필수 데이터가 누락되었습니다.');
+    }
+
+    // 결과 데이터가 비어있는지 확인
+    if (typeof results === 'object' && Object.keys(results).length === 0) {
+      console.error('Empty results object detected');
+      throw new Error('검사 결과 데이터가 비어있습니다.');
     }
 
     const pdfData = generatePDFContent(testType, results, analysis, testInfo, chartData);
@@ -388,14 +397,18 @@ function generateHTMLReport(testType: string, results: any, analysis: string, te
     <div class="section no-break">
         <h2>검사 결과 요약</h2>
         <div class="result-summary">
-            ${Object.entries(results).map(([key, value]) => `
+            ${results && typeof results === 'object' && Object.keys(results).length > 0
+              ? Object.entries(results).map(([key, value]) => `
                 <div class="result-item">
                     <span class="result-label">${key}:</span>
                     <span class="result-value">${typeof value === 'number' ? value.toFixed(1) : value}</span>
                 </div>
-            `).join('')}
+              `).join('')
+              : '<p style="color: #ef4444;">검사 결과 데이터를 불러올 수 없습니다.</p>'
+            }
         </div>
         
+        ${results && typeof results === 'object' && Object.keys(results).length > 0 ? `
         <div class="score-visualization">
             <h3>점수 시각화</h3>
             ${Object.entries(results).map(([key, value]) => {
@@ -412,6 +425,7 @@ function generateHTMLReport(testType: string, results: any, analysis: string, te
                 `;
             }).join('')}
         </div>
+        ` : ''}
     </div>
 
     <div class="section page-break">

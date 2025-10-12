@@ -92,12 +92,19 @@ const Assessment = () => {
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
   const [currentAssessmentResults, setCurrentAssessmentResults] = useState<any>(null);
 
-  // URL 파라미터에 따른 초기 설정
+  // URL 파라미터 및 location state에 따른 초기 설정
   useEffect(() => {
     // URL에서 ?type=fun인 경우 새로운 페이지로 리다이렉트
     if (urlTestType === 'fun') {
       navigate('/fun-tests', { replace: true });
       return;
+    }
+    
+    // location.state에서 testType 확인 (3분 테스트에서 온 경우)
+    const stateTestType = location.state?.testType;
+    if (stateTestType) {
+      console.log('🔍 Test type from state:', stateTestType);
+      handleTestTypeSelect(stateTestType);
     }
     
     // URL 경로에 따른 자동 테스트 시작
@@ -106,7 +113,7 @@ const Assessment = () => {
       setTestType('stress');
       setCurrentStep('stress-test');
     }
-  }, [urlTestType, navigate, location.pathname]);
+  }, [urlTestType, navigate, location.pathname, location.state]);
 
   // Timeline에 검사 결과 저장하는 함수
   const saveTestToTimeline = async (testType: string, results: any) => {

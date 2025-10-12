@@ -134,16 +134,16 @@ export const TestSelector = () => {
     // Navigate to different pages based on test type
     switch (testType.id) {
       case 'adhd-test':
-        navigate('/assessment');
+        navigate('/assessment', { state: { testType: 'adhd' } });
         break;
       case 'depression-test':
-        navigate('/assessment'); 
+        navigate('/assessment', { state: { testType: 'depression' } }); 
         break;
       case 'anxiety-test':
-        navigate('/assessment');
+        navigate('/assessment', { state: { testType: 'panic' } });
         break;
       case 'autism-spectrum-test':
-        navigate('/assessment');
+        navigate('/assessment', { state: { testType: 'psychological' } });
         break;
       case 'developmental-delay-test':
         navigate('/developmental-assessment');

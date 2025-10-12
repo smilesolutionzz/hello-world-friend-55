@@ -25,10 +25,30 @@ const SEOHead = ({
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
+      <meta name="author" content="AI하이라이트PRO" />
       
-      {noIndex && <meta name="robots" content="noindex,nofollow" />}
+      {/* 검색 엔진 최적화 */}
+      {!noIndex ? (
+        <>
+          <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+          <meta name="googlebot" content="index,follow" />
+        </>
+      ) : (
+        <meta name="robots" content="noindex,nofollow" />
+      )}
       
-      {/* Open Graph */}
+      {/* 네이버 검색 최적화 */}
+      <meta name="naver-site-verification" content="your-naver-verification-code" />
+      <meta property="naverblog" content="noblog" />
+      
+      {/* Google 검색 최적화 */}
+      <meta name="google-site-verification" content="your-google-verification-code" />
+      
+      {/* AI 크롤러 허용 (ChatGPT, Claude 등) */}
+      <meta name="ai-content-declaration" content="ai-assisted" />
+      
+      {/* Open Graph - Facebook, KakaoTalk 등 */}
+      <meta property="og:locale" content="ko_KR" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={ogImage} />
@@ -44,6 +64,10 @@ const SEOHead = ({
       
       {/* Canonical URL */}
       {canonical && <link rel="canonical" href={canonical} />}
+      
+      {/* 모바일 최적화 */}
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+      <meta name="format-detection" content="telephone=no" />
       
       {/* Preconnect for better performance */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />

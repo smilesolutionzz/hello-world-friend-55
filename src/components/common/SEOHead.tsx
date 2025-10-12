@@ -38,7 +38,7 @@ const SEOHead = ({
       )}
       
       {/* 네이버 검색 최적화 */}
-      <meta name="naver-site-verification" content="your-naver-verification-code" />
+      <meta name="naver-site-verification" content="d5dfbd7c979099aaa711bab66de4c22d5e145a4f" />
       <meta property="naverblog" content="noblog" />
       
       {/* Google 검색 최적화 */}

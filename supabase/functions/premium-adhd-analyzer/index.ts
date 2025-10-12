@@ -2,7 +2,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.55.0";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL');
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
@@ -15,8 +15,8 @@ interface ADHDAnalysisRequest {
   answers: number[];
   ageGroup: string;
   severity: string;
-  total: number;
-  average: number;
+  total?: number | null;
+  average?: number | null;
   userId?: string;
 }
 
@@ -31,13 +31,18 @@ serve(async (req) => {
     console.log('[PREMIUM-ADHD-ANALYZER] 요청 시작');
 
     const { answers, ageGroup, severity, total, average, userId }: ADHDAnalysisRequest = await req.json();
-    
+
+    // 입력 정규화 및 안전 가드
+    const safeAnswers = (answers || []).map((n) => Number.isFinite(n) ? n : 0);
+    const safeTotal = Number.isFinite(total as number) ? (total as number) : safeAnswers.reduce((s, v) => s + v, 0);
+    const safeAverage = Number.isFinite(average as number) ? (average as number) : (safeAnswers.length ? safeTotal / safeAnswers.length : 0);
+
     console.log('[PREMIUM-ADHD-ANALYZER] 분석 시작:', {
-      answersCount: answers.length,
+      answersCount: safeAnswers.length,
       ageGroup,
       severity,
-      total,
-      average
+      total: safeTotal,
+      average: safeAverage
     });
 
     // 토큰 확인 및 차감
@@ -46,9 +51,9 @@ serve(async (req) => {
         .from('user_tokens')
         .select('current_tokens, total_used')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
-      if (!userTokens || userTokens.current_tokens < 8) {
+      if (!userTokens || (userTokens.current_tokens ?? 0) < 8) {
         console.log('[PREMIUM-ADHD-ANALYZER] 토큰 부족:', userTokens?.current_tokens || 0);
         return new Response(JSON.stringify({ 
           error: 'insufficient_tokens',
@@ -65,8 +70,8 @@ serve(async (req) => {
       const { error: tokenError } = await supabase
         .from('user_tokens')
         .update({ 
-          current_tokens: userTokens.current_tokens - 8,
-          total_used: userTokens.total_used + 8
+          current_tokens: (userTokens.current_tokens ?? 0) - 8,
+          total_used: (userTokens.total_used ?? 0) + 8
         })
         .eq('user_id', userId);
 
@@ -75,7 +80,7 @@ serve(async (req) => {
         throw new Error('토큰 차감에 실패했습니다.');
       }
 
-      console.log(`ADHD 전문 분석 - 토큰 차감: 8, 잔액: ${userTokens.current_tokens - 8}`);
+      console.log(`ADHD 전문 분석 - 토큰 차감: 8, 잔액: ${(userTokens.current_tokens ?? 0) - 8}`);
     }
 
     // 기본 ADHD 검사는 18문항 (주의력 결핍 9문항 + 과잉행동/충동성 9문항)
@@ -84,12 +89,12 @@ serve(async (req) => {
       { name: '과잉행동/충동성', items: [10, 11, 12, 13, 14, 15, 16, 17, 18] }
     ];
 
-    // 도메인별 점수 계산
+    // 도메인별 점수 계산 (각 문항 최대 3점 기준)
     const domainScores = adhdDomains.map(domain => {
-      const domainAnswers = domain.items.map(item => answers[item - 1] || 0);
+      const domainAnswers = domain.items.map(item => safeAnswers[item - 1] || 0);
       const domainTotal = domainAnswers.reduce((sum, score) => sum + score, 0);
       const domainAverage = domainTotal / domainAnswers.length;
-      const domainPercentage = (domainAverage / 4) * 100; // 4점 만점 기준
+      const domainPercentage = (domainAverage / 3) * 100; // 3점 만점 기준
 
       return {
         name: domain.name,
@@ -104,91 +109,71 @@ serve(async (req) => {
       };
     });
 
-    // AI 프롬프트 구성
+    // AI 프롬프트 구성 (간결 + 섹션화)
     const analysisPrompt = `
-당신은 ADHD 전문 정신과 의사입니다. 다음 ADHD 평가 결과를 바탕으로 2000자 이상의 상세한 전문 분석을 작성해주세요.
+당신은 ADHD 전문 정신과 의사입니다. 아래 데이터를 기반으로 정확하고 간결하지만 깊이 있는 분석을 한국어로 제공합니다.
 
-## 평가 결과 데이터:
+[기본 정보]
 - 연령군: ${ageGroup}
 - 전체 심각도: ${severity}
-- 총점: ${total}/180점
-- 평균: ${average}/4점
-- 전체 백분율: ${((average / 4) * 100).toFixed(1)}%
+- 총점: ${safeTotal}점 (문항수 ${safeAnswers.length})
+- 평균: ${safeAverage.toFixed(2)}점/3점
 
-## 도메인별 상세 점수:
-${domainScores.map(domain => `
-**${domain.name}**
-- 점수: ${domain.score}/${domain.items.length * 4}점
-- 평균: ${domain.average.toFixed(2)}/4점  
-- 백분율: ${domain.percentage.toFixed(1)}%
-- 심각도: ${domain.severity}
-- 응답 패턴: [${domain.answers.join(', ')}]
-`).join('\n')}
+[도메인 점수]
+${domainScores.map(d => `- ${d.name}: ${d.score}점 (평균 ${d.average.toFixed(2)}/3, ${d.percentage.toFixed(1)}%)`).join('\n')}
 
-## 분석 요구사항:
-1. **임상적 해석** (500자 이상): DSM-5 기준에 따른 ADHD 진단 관점에서의 종합적 해석
-2. **도메인별 상세 분석** (각 도메인당 200자 이상): 
-   - 주의력 결핍 영역 분석
-   - 과잉행동 영역 분석  
-   - 충동성 영역 분석
-   - 감정조절 영역 분석
-   - 실행기능 영역 분석
-   - 사회적 기능 영역 분석
-3. **연령별 특성 고려** (300자 이상): ${ageGroup}에 따른 ADHD 증상의 특징적 양상
-4. **일상생활 영향 분석** (300자 이상): 학습, 업무, 대인관계 등에 미치는 구체적 영향
-5. **개입 방안 및 치료 권고** (400자 이상): 
-   - 행동치료 전략
-   - 인지행동치료 접근
-   - 약물치료 고려사항
-   - 환경적 개선방안
-6. **장기 예후 및 관리방안** (300자 이상): 생애주기별 관리 전략
+[작성 지침]
+- 각 섹션 제목을 명확히 표기하세요.
+- 불필요한 서론 없이 핵심부터 설명하세요.
+- 총 900~1400자 내로 작성.
 
-## 🔥 매우 중요 - 반드시 마지막에 요약 및 제언 섹션 포함:
-7. **요약 및 제언** (400자 이상):
-   - 핵심 진단 요약 (3-4줄)
-   - 즉시 실행 가능한 권장사항 (3가지)
-   - 전문가 치료 필요성 여부
-   - 한줄 격려 메시지
-
-반드시 의학적 근거를 바탕으로 정확하고 전문적인 분석을 제공하며, 각 도메인의 점수와 연결하여 구체적인 설명을 포함해주세요.
-총 2000자 이상으로 작성하되, 전문적이면서도 이해하기 쉽게 설명해주세요.
+1) 임상적 해석(DSM-5 관점)
+2) 영역별 상세 분석(주의력/과잉행동·충동성)
+3) 연령 특성 고려한 생활 영향
+4) 현실적인 개입/훈련/환경 조정 제안(가정·학교/직장)
+5) 요약 및 즉시 실행 체크리스트(3개)
 `;
 
-    // OpenAI API 호출
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Lovable AI Gateway 호출 (Gemini 2.5 Flash)
+    if (!LOVABLE_API_KEY) {
+      console.error('LOVABLE_API_KEY is not configured');
+      throw new Error('AI 설정이 완료되지 않았습니다.');
+    }
+
+    const aiResp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'google/gemini-2.5-flash',
+        stream: false,
         messages: [
-          {
-            role: 'system',
-            content: '당신은 ADHD 전문 정신과 의사로서, 과학적 근거에 바탕한 정확하고 상세한 임상 분석을 제공합니다. DSM-5 기준과 최신 ADHD 연구를 바탕으로 전문적인 평가를 수행합니다.'
-          },
-          {
-            role: 'user',
-            content: analysisPrompt
-          }
+          { role: 'system', content: '당신은 신뢰할 수 있는 임상 심리/정신과 전문가입니다. 정확하고 간결한 한국어로 답변합니다.' },
+          { role: 'user', content: analysisPrompt }
         ],
-        max_completion_tokens: 4000
+        max_completion_tokens: 1500,
       }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error('[PREMIUM-ADHD-ANALYZER] OpenAI API 오류:', errorData);
-      throw new Error(`OpenAI API 오류: ${response.status}`);
+    if (!aiResp.ok) {
+      const t = await aiResp.text();
+      console.error('[PREMIUM-ADHD-ANALYZER] AI gateway error:', aiResp.status, t);
+      if (aiResp.status === 429) {
+        return new Response(JSON.stringify({ error: 'rate_limited', message: 'AI 요청이 많아 잠시 후 다시 시도해주세요.' }), { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+      if (aiResp.status === 402) {
+        return new Response(JSON.stringify({ error: 'payment_required', message: 'AI 크레딧이 부족합니다.' }), { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+      throw new Error('AI gateway error');
     }
 
-    const data = await response.json();
-    const analysis = data.choices[0].message.content;
+    const aiJson = await aiResp.json();
+    const analysis = aiJson.choices?.[0]?.message?.content ?? '';
 
     console.log(`[PREMIUM-ADHD-ANALYZER] 분석 완료, 텍스트 길이: ${analysis.length}`);
 
-    // 분석 결과와 도메인 점수 반환
     const result = {
       analysis,
       domainScores,
@@ -198,8 +183,8 @@ ${domainScores.map(domain => `
         analysisLength: analysis.length,
         ageGroup,
         severity,
-        totalScore: total,
-        averageScore: average
+        totalScore: safeTotal,
+        averageScore: safeAverage
       }
     };
 

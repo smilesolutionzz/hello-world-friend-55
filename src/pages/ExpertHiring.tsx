@@ -1811,7 +1811,9 @@ const ExpertHiring = () => {
                             : ''
                         }`}
                         onClick={() => {
-                          toast("상세한 기관 정보 페이지를 준비 중입니다. 곧 이용하실 수 있습니다.");
+                          // 네이버 지도에서 기관명 검색
+                          const searchQuery = encodeURIComponent(institution.name);
+                          window.open(`https://map.naver.com/v5/search/${searchQuery}`, '_blank');
                         }}
                       >
                         기관 정보 보기

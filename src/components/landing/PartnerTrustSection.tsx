@@ -79,7 +79,7 @@ const PartnerTrustSection = () => {
           </p>
           <div 
             className="relative overflow-hidden flex flex-nowrap"
-            style={{ ['--marquee-duration' as any]: '16s' }}
+            style={{ ['--marquee-duration' as any]: '20s' }}
           >
             <div className="marquee-track">
               {partners.map((partner, index) => (

@@ -72,6 +72,8 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
           }
           
           let score = parseInt(answer);
+          if (isNaN(score)) score = 0;
+          
           // Apply reverse scoring if needed
           if (question.reverse) {
             score = 5 - score;
@@ -87,7 +89,10 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
       // Calculate average scores
       const results: Record<string, number> = {};
       Object.entries(categoryScores).forEach(([category, scores]) => {
-        results[category] = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+        const validScores = scores.filter(s => !isNaN(s));
+        results[category] = validScores.length > 0 
+          ? validScores.reduce((sum, score) => sum + score, 0) / validScores.length 
+          : 0;
       });
 
       // Call the analysis function

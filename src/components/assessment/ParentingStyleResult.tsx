@@ -116,20 +116,26 @@ const ParentingStyleResult = ({
     return "낮음";
   };
 
-  const chartData = Object.entries(results.scores).map(([category, score]) => ({
-    name: category === 'warmth_acceptance' ? '온정수용' :
-          category === 'behavioral_control' ? '행동통제' :
-          category === 'psychological_control' ? '심리통제' :
-          category === 'autonomy_support' ? '자율성지지' :
-          category === 'communication_support' ? '의사소통지지' : category,
-    score: Number(score),
-    fullMark: 4
-  }));
+  const chartData = Object.entries(results.scores).map(([category, score]) => {
+    const numScore = Number(score);
+    return {
+      name: category === 'warmth_acceptance' ? '온정수용' :
+            category === 'behavioral_control' ? '행동통제' :
+            category === 'psychological_control' ? '심리통제' :
+            category === 'autonomy_support' ? '자율성지지' :
+            category === 'communication_support' ? '의사소통지지' : category,
+      score: isNaN(numScore) ? 0 : numScore,
+      fullMark: 4
+    };
+  });
 
   const radarData = chartData;
 
-  const scores = Object.values(results.scores as Record<string, number>);
-  const averageScore = scores.reduce((sum, score) => sum + Number(score), 0) / scores.length;
+  const scores = Object.values(results.scores as Record<string, number>).map(s => {
+    const num = Number(s);
+    return isNaN(num) ? 0 : num;
+  });
+  const averageScore = scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden">

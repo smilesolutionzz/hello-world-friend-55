@@ -86,7 +86,8 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
 
   // 기본 분석 텍스트 생성
   const getDefaultAnalysis = () => {
-    const score = parseFloat(result.score);
+    const score = parseFloat(result.score) || 0;
+    if (isNaN(score)) return "점수 분석 중 오류가 발생했습니다.";
     if (score <= 3) {
       return `당신은 외향적 오트로버트입니다. (${score}점)
 
@@ -136,7 +137,8 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
 
   // 기본 그래프 데이터 생성
   const getDefaultGraphData = () => {
-    const score = parseFloat(result.score);
+    const score = parseFloat(result.score) || 0;
+    if (isNaN(score)) return { extroversion: 50, introversion: 50, socialEnergy: 50, aloneTime: 50, groupPreference: 50, communication: 50, thinkingStyle: 50 };
     const introversionScore = (score / 9) * 100;
     const extroversionScore = 100 - introversionScore;
 

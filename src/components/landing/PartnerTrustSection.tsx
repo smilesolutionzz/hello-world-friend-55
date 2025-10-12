@@ -84,7 +84,7 @@ const PartnerTrustSection = () => {
           }
         }
         .animate-scroll {
-          animation: scroll 8s linear infinite;
+          animation: scroll 4s linear infinite;
         }
         .animate-scroll:hover {
           animation-play-state: paused;

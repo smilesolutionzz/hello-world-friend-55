@@ -77,11 +77,26 @@ const PartnerTrustSection = () => {
           <p className="text-center text-sm font-semibold text-gray-600 mb-8 uppercase tracking-wider">
             파트너 기관 & 협력 네트워크
           </p>
-          <div className="relative overflow-hidden">
-            <div className="flex gap-12 animate-scroll">
-              {[...partners, ...partners].map((partner, index) => (
+          <div 
+            className="relative overflow-hidden flex flex-nowrap"
+            style={{ ['--marquee-duration' as any]: '3s' }}
+          >
+            <div className="marquee-track">
+              {partners.map((partner, index) => (
                 <div 
-                  key={index}
+                  key={`track1-${index}`}
+                  className="flex-shrink-0 px-8 py-4 bg-white rounded-xl shadow-sm border border-gray-100"
+                >
+                  <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                    {partner}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="marquee-track second" aria-hidden="true">
+              {partners.map((partner, index) => (
+                <div 
+                  key={`track2-${index}`}
                   className="flex-shrink-0 px-8 py-4 bg-white rounded-xl shadow-sm border border-gray-100"
                 >
                   <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
@@ -95,18 +110,20 @@ const PartnerTrustSection = () => {
       </div>
 
       <style>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-100%); }
         }
-        .animate-scroll {
-          animation: scroll 3s linear infinite;
+        .marquee-track {
+          display: flex;
+          gap: 3rem;
+          min-width: max-content;
+          animation: marquee var(--marquee-duration, 3s) linear infinite;
         }
-        .animate-scroll:hover {
+        .marquee-track.second {
+          animation-delay: calc(var(--marquee-duration, 3s) / -2);
+        }
+        .marquee-track:hover {
           animation-play-state: paused;
         }
       `}</style>

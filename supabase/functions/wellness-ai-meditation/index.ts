@@ -18,14 +18,11 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');
     }
-    
-    if (!OPENAI_API_KEY) {
-      console.warn('OPENAI_API_KEY not configured - audio narration will be unavailable');
-    }
 
-    console.log('Generating AI meditation content...');
+    console.log('🧘 Starting meditation generation...');
 
-    // Generate meditation script with AI
+    // 1. Generate meditation script with AI
+    console.log('📝 Generating meditation script...');
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -37,25 +34,23 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: '당신은 전문 명상 가이드입니다. 핵심만 간결하게 1000자 이내로 작성하세요.'
+            content: '당신은 전문 명상 가이드입니다. 간결하고 핵심적인 명상 스크립트를 작성하세요.'
           },
           {
             role: 'user',
-            content: `오늘 날짜: ${new Date().toLocaleDateString('ko-KR')}
-            
-명상 스크립트를 다음 형식으로 1000자 이내로 작성:
+            content: `오늘의 맞춤 명상 스크립트를 다음 형식으로 작성해주세요 (총 800자 이내):
 
 ## 제목
 [한 줄 제목]
 
-## 준비 (3분)
-[간단한 준비 동작 3-4가지]
+## 준비 (2분)
+[간단한 준비 동작 2-3가지]
 
 ## 명상 (5분)
-[핵심 명상 가이드, 부드럽게]
+[핵심 명상 가이드, 부드럽고 차분한 톤으로]
 
 ## 마무리 (2분)
-[마무리 동작]
+[마무리 동작 2-3가지]
 
 ## 효과
 • [효과 1]
@@ -66,22 +61,23 @@ serve(async (req) => {
       }),
     });
 
+    if (!aiResponse.ok) {
+      throw new Error(`AI script generation failed: ${aiResponse.status}`);
+    }
+
     const aiData = await aiResponse.json();
     const meditationContent = aiData.choices[0].message.content;
-    console.log('AI meditation content generated');
+    console.log('✅ Meditation script generated');
 
-    // Extract script portion for voice generation
-    const scriptMatch = meditationContent.match(/2\. 스크립트:([\s\S]*?)(?=3\.|$)/);
-    const scriptText = scriptMatch ? scriptMatch[1].trim() : meditationContent;
-
-    let audioContent = null;
+    // 2. Generate voice narration with OpenAI TTS
+    let audioBase64 = null;
     
-    // Generate voice narration with OpenAI TTS
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-    if (OPENAI_API_KEY && scriptText) {
+    if (OPENAI_API_KEY) {
       try {
-        console.log('Generating voice narration with OpenAI TTS...');
-        const limitedText = scriptText.substring(0, 4000); // OpenAI TTS can handle more text
+        console.log('🎵 Generating voice narration with OpenAI TTS...');
+        
+        // Extract just the meditation section for narration
+        const scriptForVoice = meditationContent.substring(0, 3000);
 
         const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
           method: 'POST',
@@ -91,43 +87,43 @@ serve(async (req) => {
           },
           body: JSON.stringify({
             model: 'tts-1',
-            voice: 'nova', // Changed to 'nova' for a more soothing voice
-            input: limitedText,
+            voice: 'nova', // Soothing female voice
+            input: scriptForVoice,
             response_format: 'mp3',
+            speed: 0.9 // Slightly slower for meditation
           }),
         });
 
         if (!ttsResponse.ok) {
           const errText = await ttsResponse.text();
-          console.error('OpenAI TTS error:', errText);
-          throw new Error(`OpenAI TTS failed: ${errText}`);
+          console.error('❌ OpenAI TTS error:', errText);
+        } else {
+          // Convert audio to base64
+          const audioArrayBuffer = await ttsResponse.arrayBuffer();
+          const audioBytes = new Uint8Array(audioArrayBuffer);
+          
+          // Convert to base64 string safely
+          let binary = '';
+          const chunkSize = 0x8000; // 32KB chunks
+          for (let i = 0; i < audioBytes.length; i += chunkSize) {
+            const chunk = audioBytes.slice(i, Math.min(i + chunkSize, audioBytes.length));
+            binary += String.fromCharCode.apply(null, Array.from(chunk));
+          }
+          audioBase64 = btoa(binary);
+          
+          console.log('✅ Voice narration generated, size:', audioBytes.length, 'bytes');
         }
-
-        const arrayBuffer = await ttsResponse.arrayBuffer();
-        const bytes = new Uint8Array(arrayBuffer);
-        
-        // Convert to base64 in chunks to avoid memory issues
-        const chunkSize = 8192;
-        let base64 = '';
-        for (let i = 0; i < bytes.length; i += chunkSize) {
-          const chunk = bytes.slice(i, i + chunkSize);
-          const chunkArray = Array.from(chunk);
-          base64 += btoa(String.fromCharCode.apply(null, chunkArray));
-        }
-        
-        audioContent = base64;
-        console.log('OpenAI TTS audio generated successfully, size:', bytes.length);
       } catch (e) {
-        console.error('OpenAI TTS exception:', e);
+        console.error('❌ TTS generation error:', e);
       }
     } else {
-      console.log('OPENAI_API_KEY not configured or no script text; skipping audio generation');
+      console.warn('⚠️ OPENAI_API_KEY not configured - skipping audio generation');
     }
 
-    // Generate meditation image
+    // 3. Generate meditation image
     let meditationImage = null;
     try {
-      console.log('Generating meditation image...');
+      console.log('🎨 Generating meditation image...');
       const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -146,20 +142,24 @@ serve(async (req) => {
         }),
       });
 
-      const imageData = await imageResponse.json();
-      if (imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url) {
-        meditationImage = imageData.choices[0].message.images[0].image_url.url;
-        console.log('Meditation image generated');
+      if (imageResponse.ok) {
+        const imageData = await imageResponse.json();
+        if (imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url) {
+          meditationImage = imageData.choices[0].message.images[0].image_url.url;
+          console.log('✅ Meditation image generated');
+        }
       }
     } catch (error) {
-      console.error('Image generation error:', error);
+      console.error('❌ Image generation error:', error);
     }
 
+    console.log('✨ Meditation generation complete!');
+    
     return new Response(
       JSON.stringify({
         success: true,
         content: meditationContent,
-        audioContent: audioContent,
+        audioContent: audioBase64,
         meditationImage: meditationImage,
         timestamp: new Date().toISOString()
       }),
@@ -169,7 +169,7 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('❌ Error:', error);
     return new Response(
       JSON.stringify({ 
         error: error.message,

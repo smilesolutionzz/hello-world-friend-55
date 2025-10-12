@@ -209,95 +209,109 @@ const WellnessLifestyle = () => {
   };
 
   const toggleAudio = (base64Audio: string) => {
-    const playFromBase64DataUrl = (b64: string) => {
-      try {
-        console.log('Attempting to play audio, base64 length:', b64?.length);
-        
-        // Stop existing audio if playing
-        if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current.src = '';
-        }
-
-        // Clean the base64 string - remove any data URL prefix and whitespace
-        const cleaned = b64
-          .replace(/^data:audio\/[a-zA-Z0-9.+-]+;base64,/, '')
-          .replace(/[\r\n\s]/g, '');
-        
-        console.log('Cleaned base64 length:', cleaned.length);
-        
-        // Create data URL for MP3 audio
-        const dataUrl = `data:audio/mpeg;base64,${cleaned}`;
-        
-        // Create new audio element
-        const audio = new Audio();
-        audioRef.current = audio;
-
-        audio.onloadedmetadata = () => {
-          console.log('Audio metadata loaded, duration:', audio.duration);
-        };
-
-        audio.onended = () => {
-          console.log('Audio playback ended');
-          setIsPlaying(false);
-        };
-        
-        audio.onerror = (e) => {
-          console.error('Audio error event:', e);
-          console.error('Audio error details:', {
-            error: audio.error,
-            networkState: audio.networkState,
-            readyState: audio.readyState
-          });
-          toast({
-            title: '오디오 재생 오류',
-            description: '오디오를 재생할 수 없습니다. 다시 생성해주세요.',
-            variant: 'destructive',
-          });
-          setIsPlaying(false);
-        };
-
-        // Set source and play
-        audio.src = dataUrl;
-        
-        audio.play()
-          .then(() => {
-            console.log('Audio playback started successfully');
-            setIsPlaying(true);
-            toast({ 
-              title: '🎵 AI 음성 나레이션 재생 중', 
-              description: 'OpenAI TTS로 생성된 명상 가이드를 들려드립니다.' 
-            });
-          })
-          .catch((error) => {
-            console.error('Audio play error:', error);
-            toast({ 
-              title: '재생 오류', 
-              description: `오디오 재생에 실패했습니다: ${error.message}`, 
-              variant: 'destructive' 
-            });
-            setIsPlaying(false);
-          });
-      } catch (e) {
-        console.error('Audio base64/playback error:', e);
-        toast({ 
-          title: '재생 오류', 
-          description: '오디오 데이터 처리 중 오류가 발생했습니다.', 
-          variant: 'destructive' 
-        });
-        setIsPlaying(false);
-      }
-    };
-
     if (isPlaying && audioRef.current) {
+      // Stop current playback
       audioRef.current.pause();
+      audioRef.current = null;
       setIsPlaying(false);
       toast({ title: '재생 중지', description: '명상 가이드 재생을 중지했습니다.' });
       return;
     }
 
-    // Start playing
-    playFromBase64DataUrl(base64Audio);
+    try {
+      console.log('🎵 Starting audio playback...');
+      console.log('Base64 audio length:', base64Audio?.length);
+
+      if (!base64Audio || base64Audio.length === 0) {
+        throw new Error('No audio data provided');
+      }
+
+      // Clean base64 string
+      const cleanedBase64 = base64Audio
+        .replace(/^data:audio\/[a-zA-Z0-9.+-]+;base64,/, '')
+        .replace(/[\r\n\s]/g, '');
+
+      console.log('Cleaned base64 length:', cleanedBase64.length);
+
+      // Decode base64 to binary
+      const binaryString = atob(cleanedBase64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      console.log('Binary audio size:', bytes.length, 'bytes');
+
+      // Create blob from binary data
+      const audioBlob = new Blob([bytes], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+
+      console.log('Blob URL created:', audioUrl);
+
+      // Create audio element
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+
+      audio.onloadedmetadata = () => {
+        console.log('✅ Audio loaded, duration:', audio.duration, 'seconds');
+      };
+
+      audio.onplay = () => {
+        console.log('▶️ Audio playback started');
+      };
+
+      audio.onended = () => {
+        console.log('⏹️ Audio playback ended');
+        setIsPlaying(false);
+        URL.revokeObjectURL(audioUrl); // Clean up
+        toast({ title: '재생 완료', description: '명상 가이드가 끝났습니다.' });
+      };
+
+      audio.onerror = (e) => {
+        console.error('❌ Audio error:', e);
+        console.error('Error details:', {
+          error: audio.error,
+          code: audio.error?.code,
+          message: audio.error?.message
+        });
+        setIsPlaying(false);
+        URL.revokeObjectURL(audioUrl); // Clean up
+        toast({
+          title: '오디오 재생 오류',
+          description: '오디오를 재생할 수 없습니다. 다시 생성해주세요.',
+          variant: 'destructive',
+        });
+      };
+
+      // Play audio
+      audio.play()
+        .then(() => {
+          setIsPlaying(true);
+          toast({ 
+            title: '🎵 AI 음성 나레이션 재생 중', 
+            description: 'OpenAI TTS로 생성된 명상 가이드를 들려드립니다.' 
+          });
+        })
+        .catch((error) => {
+          console.error('❌ Play error:', error);
+          setIsPlaying(false);
+          URL.revokeObjectURL(audioUrl); // Clean up
+          toast({ 
+            title: '재생 오류', 
+            description: `오디오 재생에 실패했습니다: ${error.message}`, 
+            variant: 'destructive' 
+          });
+        });
+
+    } catch (error) {
+      console.error('❌ Audio processing error:', error);
+      setIsPlaying(false);
+      toast({ 
+        title: '오디오 처리 오류', 
+        description: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.', 
+        variant: 'destructive' 
+      });
+    }
   };
 
   const achievementPercentage = (completedTasks.length / 4) * 100;

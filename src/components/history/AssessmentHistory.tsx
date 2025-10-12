@@ -135,57 +135,57 @@ const AssessmentHistory = () => {
       </div>
 
       {/* Assessment Analytics */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-blue-600" />
+      <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+        <Card className="p-3 md:p-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
             </div>
             <div>
-              <div className="text-xl font-bold">{assessments.length}</div>
-              <div className="text-sm text-muted-foreground">총 검사 수</div>
+              <div className="text-lg md:text-xl font-bold">{assessments.length}</div>
+              <div className="text-xs md:text-sm text-muted-foreground">총 검사 수</div>
             </div>
           </div>
         </Card>
         
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-600" />
+        <Card className="p-3 md:p-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
             </div>
             <div>
-              <div className="text-xl font-bold">
+              <div className="text-lg md:text-xl font-bold">
                 {assessments.filter(a => a.risk_level === 'low').length}
               </div>
-              <div className="text-sm text-muted-foreground">정상 범위</div>
+              <div className="text-xs md:text-sm text-muted-foreground">정상 범위</div>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-              <Clock className="w-5 h-5 text-yellow-600" />
+        <Card className="p-3 md:p-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <Clock className="w-4 h-4 md:w-5 md:h-5 text-yellow-600" />
             </div>
             <div>
-              <div className="text-xl font-bold">
+              <div className="text-lg md:text-xl font-bold">
                 {assessments.filter(a => a.risk_level === 'medium').length}
               </div>
-              <div className="text-sm text-muted-foreground">주의 필요</div>
+              <div className="text-xs md:text-sm text-muted-foreground">주의 필요</div>
             </div>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
+        <Card className="p-3 md:p-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <AlertTriangle className="w-4 h-4 md:w-5 md:h-5 text-red-600" />
             </div>
             <div>
-              <div className="text-xl font-bold">
+              <div className="text-lg md:text-xl font-bold">
                 {assessments.filter(a => a.risk_level === 'high').length}
               </div>
-              <div className="text-sm text-muted-foreground">고위험군</div>
+              <div className="text-xs md:text-sm text-muted-foreground">고위험군</div>
             </div>
           </div>
         </Card>
@@ -193,22 +193,22 @@ const AssessmentHistory = () => {
 
       {/* Assessment List */}
       {assessments.length > 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {assessments.map(assessment => (
-            <Card key={assessment.id} className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                    <User className="w-6 h-6 text-primary" />
+            <Card key={assessment.id} className="p-4 md:p-6">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
+                <div className="flex items-start gap-3 md:gap-4">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <User className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">{assessment.profile.display_name}</h3>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      {new Date(assessment.completed_at).toLocaleDateString()}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-base md:text-lg truncate">{assessment.profile.display_name}</h3>
+                    <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mt-1">
+                      <Calendar className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                      <span className="truncate">{new Date(assessment.completed_at).toLocaleDateString()}</span>
                     </div>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="outline">
+                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                      <Badge variant="outline" className="text-xs">
                         {getAgeGroupLabel(assessment.age_group)} ({assessment.age_at_assessment}세)
                       </Badge>
                       {getRiskBadge(assessment.risk_level)}
@@ -219,6 +219,7 @@ const AssessmentHistory = () => {
                 <Button 
                   variant="outline" 
                   size="sm"
+                  className="w-full md:w-auto flex-shrink-0"
                   onClick={() => {
                     // Navigate to assessment detail page for assessments
                     navigate(`/assessment-detail/${assessment.id}`, { 

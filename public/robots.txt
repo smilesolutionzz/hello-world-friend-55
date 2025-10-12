@@ -6,6 +6,17 @@ Disallow: /api/
 Disallow: /dashboard/
 Disallow: /expert-dashboard/
 
+# 네이버 검색봇
+User-agent: Yeti
+Allow: /
+
+User-agent: NaverBot
+Allow: /
+
+# 구글 검색봇
+User-agent: Googlebot
+Allow: /
+
 # AI 크롤러 허용
 User-agent: GPTBot
 Allow: /

@@ -30,14 +30,14 @@ export const useTestResultActions = () => {
         return;
       }
       
-      // 1) 결과 저장 시도 (히스토리 보존)
+      // 1) 결과 저장 시도 (히스토리 보존) - 실패해도 PDF 생성은 계속 진행 (조용히 시도)
       await saveTestResult({
         testType: testData.testType,
         results: testData.results,
         analysis: testData.analysis,
         testInfo: testData.testInfo,
         chartData: testData.chartData
-      });
+      }, { silent: true });
       
       // 2) 리포트 HTML 생성 (엣지 함수가 있으면 사용, 없으면 로컬 템플릿 사용)
       let reportHtml: string | null = null;
@@ -144,19 +144,21 @@ export const useTestResultActions = () => {
     testInfo?: any;
     ageGroup?: string;
     chartData?: any;
-  }) => {
+  }, options?: { silent?: boolean }) => {
     try {
       setIsSaving(true);
       
       // 사용자 확인
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast({
-          title: "로그인 필요",
-          description: "결과 저장을 위해 로그인이 필요합니다.",
-          variant: "destructive",
-        });
-        return;
+        if (!options?.silent) {
+          toast({
+            title: "로그인 필요",
+            description: "결과 저장을 위해 로그인이 필요합니다.",
+            variant: "destructive",
+          });
+        }
+        return false;
       }
       
       // 먼저 test_type을 찾거나 생성
@@ -230,11 +232,13 @@ export const useTestResultActions = () => {
       }
     } catch (error) {
       console.error('결과 저장 오류:', error);
-      toast({
-        title: "저장 실패",
-        description: "결과 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
-        variant: "destructive",
-      });
+      if (!options?.silent) {
+        toast({
+          title: "저장 실패",
+          description: "결과 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+          variant: "destructive",
+        });
+      }
       return false;
     } finally {
       setIsSaving(false);

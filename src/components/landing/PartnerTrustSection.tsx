@@ -59,7 +59,7 @@ const PartnerTrustSection = () => {
           </p>
           <div className="relative overflow-hidden">
             <div className="flex gap-12 animate-scroll">
-              {[...partners, ...partners].map((partner, index) => (
+              {[...partners, ...partners, ...partners, ...partners, ...partners, ...partners, ...partners].map((partner, index) => (
                 <div 
                   key={index}
                   className="flex-shrink-0 px-8 py-4 bg-white rounded-xl shadow-sm border border-gray-100"

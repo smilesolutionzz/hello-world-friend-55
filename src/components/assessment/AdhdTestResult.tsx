@@ -31,14 +31,7 @@ interface AdhdTestResultProps {
 }
 
 const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }: AdhdTestResultProps) => {
-  const safeAnswers = (results.answers || []).map((n) => (Number.isFinite(n) ? n : 0));
-  const safeTotal = Number.isFinite(results.total) ? results.total : safeAnswers.reduce((s, v) => s + v, 0);
-  const safeAverageRaw = Number.isFinite(results.average) ? results.average : (safeAnswers.length ? safeTotal / safeAnswers.length : 0);
-  const total = safeTotal;
-  const average = safeAverageRaw;
-  const ageGroup = results.ageGroup;
-  const severity = results.severity;
-  const answers = safeAnswers;
+  const { total, average, ageGroup, severity, answers } = results;
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { toast } = useToast();
@@ -157,8 +150,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   };
   
   // ADHD 증상 영역별 분석 (부주의, 과잉행동-충동성)
-  const inattentionScore = answers.slice(0, 9).map((n) => (Number.isFinite(n) ? n : 0)).reduce((sum, score) => sum + score, 0);
-  const hyperactivityScore = answers.slice(9, 18).map((n) => (Number.isFinite(n) ? n : 0)).reduce((sum, score) => sum + score, 0);
+  const inattentionScore = results.answers.slice(0, 9).reduce((sum, score) => sum + score, 0);
+  const hyperactivityScore = results.answers.slice(9, 18).reduce((sum, score) => sum + score, 0);
   
   // 기본 ADHD 검사는 2개 영역만 제공 (18문항)
   const chartData = [
@@ -255,22 +248,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
                 • 2000자 이상 전문가급 상세 분석
               </p>
               <Button 
-                onClick={async () => {
-                  // 20초 타임아웃 처리로 UX 개선
-                  try {
-                    setIsAnalyzing(true);
-                    const timeoutMs = 20000;
-                    await Promise.race([
-                      requestAIAnalysis(),
-                      new Promise((_, reject) => setTimeout(() => reject(new Error('분석이 지연되고 있습니다. 잠시 후 다시 시도해주세요.')), timeoutMs))
-                    ]);
-                  } catch (e: any) {
-                    setAnalysisError(e?.message || '분석 요청이 지연되었습니다.');
-                    toast({ title: '지연 알림', description: '분석이 지연되고 있습니다. 잠시 후 다시 시도해주세요.', variant: 'destructive' });
-                  } finally {
-                    setIsAnalyzing(false);
-                  }
-                }}
+                onClick={requestAIAnalysis}
                 disabled={isAnalyzing}
                 size="lg"
                 className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
@@ -491,7 +469,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
               
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">평균점수</span>
-                <span className="text-2xl font-bold text-brand-gradient">{Number.isFinite(average) ? average.toFixed(1) : '0.0'}/2.0점</span>
+                <span className="text-2xl font-bold text-brand-gradient">{average.toFixed(1)}/2.0점</span>
               </div>
               <div className="text-center text-sm text-muted-foreground">
                 문항당 평균점수

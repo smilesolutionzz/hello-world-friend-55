@@ -115,19 +115,19 @@ const AssessmentHistory = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">검사 기록</h2>
-          <p className="text-muted-foreground">가족 구성원들의 심리검사 기록을 관리하세요</p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="min-w-0">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground whitespace-normal break-words">검사 기록</h2>
+          <p className="text-sm md:text-base text-muted-foreground mt-1 whitespace-normal break-words">가족 구성원들의 심리검사 기록을 관리하세요</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => navigate('/premium-assessment')}>
+        <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
+          <Button variant="outline" size="sm" onClick={() => navigate('/premium-assessment')} className="w-full sm:w-auto">
             <FileText className="w-4 h-4 mr-2" />
             검사 예약
           </Button>
-          <Button onClick={() => navigate('/assessment')}>
+          <Button size="sm" onClick={() => navigate('/assessment')} className="w-full sm:w-auto">
             <TrendingUp className="w-4 h-4 mr-2" />
             새 검사 시작
           </Button>

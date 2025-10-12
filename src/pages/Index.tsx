@@ -127,9 +127,9 @@ const Index = () => {
   return (
     <>
       <SEOHead 
-        title="AI하이라이트PRO | AI 기반 통합 케어 플랫폼"
-        description="AI와 전문가가 함께하는 통합 케어 플랫폼. 심리상담, 발달평가, 건강관리부터 전문기관 연계까지"
-        keywords="AI케어, 통합케어, 심리상담, 발달평가, 건강관리, 전문상담"
+        title="AI하이라이트PRO - 전생애 통합 케어 플랫폼"
+        description="AI와 전문가가 함께하는 통합 케어 서비스. ADHD, 우울증, 스트레스 검사부터 심리상담, 발달평가, 건강관리까지 전생애 케어를 제공합니다."
+        keywords="AI케어,통합케어,심리상담,발달평가,건강관리,ADHD검사,우울증검사,전문상담"
       />
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
       

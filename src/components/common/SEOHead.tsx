@@ -10,8 +10,8 @@ interface SEOHeadProps {
 }
 
 const SEOHead = ({
-  title = "AI하이라이트PRO - AI 심리검사 및 정신건강 상담 플랫폼",
-  description = "3분만에 확인하는 우리 가족 마음 건강. ADHD, 우울증, 스트레스 검사부터 전문가 상담까지, AI와 전문가가 함께하는 종합 심리검사 플랫폼입니다.",
+  title = "AI하이라이트PRO - 전생애 통합 케어 플랫폼",
+  description = "AI와 전문가가 함께하는 통합 케어 서비스. ADHD, 우울증, 스트레스 검사부터 심리상담, 발달평가, 건강관리까지 전생애 케어를 제공합니다.",
   keywords = "AI심리검사,정신건강,ADHD검사,우울증테스트,스트레스검사,전문가상담,심리분석",
   ogImage = "/lovable-uploads/ec886850-04ce-4489-b96e-d4ac8f73d95e.png",
   canonicalUrl,

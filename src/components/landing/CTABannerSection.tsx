@@ -36,7 +36,7 @@ const CTABannerSection = () => {
               className="group w-full sm:w-auto px-12 py-7 bg-white hover:bg-white/90 text-[#0A0E1A] text-lg font-bold rounded-xl shadow-[0_8px_30px_rgba(255,255,255,0.3)] hover:shadow-[0_12px_40px_rgba(255,255,255,0.4)] transition-all duration-300"
             >
               <span className="flex items-center gap-2">
-                무료 테스트 시작
+                무료 체험 시작
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </span>
             </Button>

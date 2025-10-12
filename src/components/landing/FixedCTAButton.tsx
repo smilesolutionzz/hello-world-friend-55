@@ -29,7 +29,7 @@ const FixedCTAButton = () => {
           className="w-full py-6 bg-[#5E8FFF] hover:bg-[#4A7FEF] text-white text-lg font-bold rounded-xl shadow-[0_4px_20px_rgba(94,143,255,0.4)]"
         >
           <span className="flex items-center justify-center gap-2">
-            무료 테스트 시작하기
+            무료 체험 시작하기
             <ArrowRight className="w-5 h-5" />
           </span>
         </Button>
@@ -43,7 +43,7 @@ const FixedCTAButton = () => {
           className="group px-8 py-6 bg-[#5E8FFF] hover:bg-[#4A7FEF] text-white text-base font-bold rounded-full shadow-[0_8px_30px_rgba(94,143,255,0.5)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.6)] transition-all duration-300 hover:scale-105"
         >
           <span className="flex items-center gap-2">
-            무료 테스트 시작
+            무료 체험 시작
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </span>
         </Button>

@@ -13,10 +13,14 @@ serve(async (req) => {
 
   try {
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    const ELEVENLABS_API_KEY = Deno.env.get('ELEVENLABS_API_KEY');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');
+    }
+    
+    if (!OPENAI_API_KEY) {
+      console.warn('OPENAI_API_KEY not configured - audio narration will be unavailable');
     }
 
     console.log('Generating AI meditation content...');
@@ -72,110 +76,52 @@ serve(async (req) => {
 
     let audioContent = null;
     
-    // Generate voice narration with ElevenLabs if available
-    if (ELEVENLABS_API_KEY && scriptText) {
+    // Generate voice narration with OpenAI TTS
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (OPENAI_API_KEY && scriptText) {
       try {
-        console.log('Generating voice narration...');
-        
-        // Use shorter text and cheaper model to stay within quota
-        const limitedText = scriptText.substring(0, 700); // Much smaller text
-        
-        const voiceResponse = await fetch('https://api.elevenlabs.io/v1/text-to-speech/9BWtsMINqrJLrRacOk9x', {
+        console.log('Generating voice narration with OpenAI TTS...');
+        const limitedText = scriptText.substring(0, 4000); // OpenAI TTS can handle more text
+
+        const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
           method: 'POST',
           headers: {
-            'xi-api-key': ELEVENLABS_API_KEY,
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
             'Content-Type': 'application/json',
-            'Accept': 'audio/mpeg'
           },
           body: JSON.stringify({
-            text: limitedText,
-            model_id: 'eleven_turbo_v2_5', // More cost-efficient model
-            voice_settings: {
-              stability: 0.6,
-              similarity_boost: 0.7
-            }
+            model: 'tts-1',
+            voice: 'nova', // Changed to 'nova' for a more soothing voice
+            input: limitedText,
+            response_format: 'mp3',
           }),
         });
 
-        if (voiceResponse.ok) {
-          const audioBuffer = await voiceResponse.arrayBuffer();
-          // Process audio in chunks to prevent stack overflow
-          const uint8Array = new Uint8Array(audioBuffer);
-          const chunkSize = 8192;
-          let base64Audio = '';
-          
-          for (let i = 0; i < uint8Array.length; i += chunkSize) {
-            const chunk = uint8Array.slice(i, i + chunkSize);
-            const chunkArray = Array.from(chunk);
-            base64Audio += btoa(String.fromCharCode.apply(null, chunkArray));
-          }
-          
-          audioContent = base64Audio;
-          console.log('Voice narration generated successfully');
-        } else {
-          const errorText = await voiceResponse.text();
-          console.error('ElevenLabs API error:', errorText);
-          
-          // Check if it's a quota error
-          try {
-            const errorData = JSON.parse(errorText);
-            if (errorData?.detail?.status === 'quota_exceeded') {
-              console.log('ElevenLabs quota exceeded - audio will be null');
-            }
-          } catch (parseError) {
-            console.error('Error parsing ElevenLabs response:', parseError);
-          }
+        if (!ttsResponse.ok) {
+          const errText = await ttsResponse.text();
+          console.error('OpenAI TTS error:', errText);
+          throw new Error(`OpenAI TTS failed: ${errText}`);
         }
-      } catch (error) {
-        console.error('Voice generation error:', error);
-        // Continue without voice if it fails
-      }
-    }
 
-    // Fallback: Use OpenAI TTS if ElevenLabs is unavailable or failed
-    if (!audioContent && scriptText) {
-      const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-      if (OPENAI_API_KEY) {
-        try {
-          console.log('Attempting OpenAI TTS fallback...');
-          const limitedText = scriptText.substring(0, 1200);
-
-          const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${OPENAI_API_KEY}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              model: 'tts-1',
-              voice: 'alloy',
-              input: limitedText,
-              response_format: 'mp3',
-            }),
-          });
-
-          if (!ttsResponse.ok) {
-            const errText = await ttsResponse.text();
-            console.error('OpenAI TTS error:', errText);
-          } else {
-            const arrayBuffer = await ttsResponse.arrayBuffer();
-            const bytes = new Uint8Array(arrayBuffer);
-            const chunkSize = 8192;
-            let base64 = '';
-            for (let i = 0; i < bytes.length; i += chunkSize) {
-              const chunk = bytes.slice(i, i + chunkSize);
-              const chunkArray = Array.from(chunk);
-              base64 += btoa(String.fromCharCode.apply(null, chunkArray));
-            }
-            audioContent = base64;
-            console.log('OpenAI TTS fallback generated successfully');
-          }
-        } catch (e) {
-          console.error('OpenAI TTS fallback exception:', e);
+        const arrayBuffer = await ttsResponse.arrayBuffer();
+        const bytes = new Uint8Array(arrayBuffer);
+        
+        // Convert to base64 in chunks to avoid memory issues
+        const chunkSize = 8192;
+        let base64 = '';
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          const chunk = bytes.slice(i, i + chunkSize);
+          const chunkArray = Array.from(chunk);
+          base64 += btoa(String.fromCharCode.apply(null, chunkArray));
         }
-      } else {
-        console.log('OPENAI_API_KEY not configured; skipping OpenAI TTS fallback');
+        
+        audioContent = base64;
+        console.log('OpenAI TTS audio generated successfully, size:', bytes.length);
+      } catch (e) {
+        console.error('OpenAI TTS exception:', e);
       }
+    } else {
+      console.log('OPENAI_API_KEY not configured or no script text; skipping audio generation');
     }
 
     // Generate meditation image

@@ -132,7 +132,8 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
     period_end: '',
     include_photos: false,
     include_assessments: true,
-    custom_notes: ''
+    custom_notes: '',
+    enhanced_prompt: false
   });
 
   useEffect(() => {
@@ -264,7 +265,8 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
           periodStart: reportForm.period_start,
           periodEnd: reportForm.period_end,
           clientInfo: clientInfo,
-          customNotes: reportForm.custom_notes
+          customNotes: reportForm.custom_notes,
+          enhancedPrompt: reportForm.enhanced_prompt
         }
       });
 
@@ -273,6 +275,11 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
       }
 
       console.log('AI 보고서 생성 완료:', response.data);
+
+      // 빈 일지 체크
+      if (!response.data?.content || response.data.content.trim().length === 0) {
+        throw new Error('AI가 빈 일지를 생성했습니다. 다시 시도해주세요.');
+      }
       
       setGenerationProgress(100);
       
@@ -303,8 +310,12 @@ export default function VoucherReportGenerator({ institutionId }: VoucherReportG
         period_end: '',
         include_photos: false,
         include_assessments: true,
-        custom_notes: ''
+        custom_notes: '',
+        enhanced_prompt: false
       });
+
+      // 생성이력 탭으로 자동 전환
+      setActiveTab('history');
 
     } catch (error: any) {
       console.error('Error generating report:', error);
@@ -428,6 +439,8 @@ ${report.ai_response?.metadata?.sections?.map((section: string) => `• ${sectio
     return <div className="flex justify-center p-8">로딩 중...</div>;
   }
 
+  const [activeTab, setActiveTab] = useState('generate');
+
   return (
     <div className="space-y-6">
       {/* 헤더 */}
@@ -445,7 +458,7 @@ ${report.ai_response?.metadata?.sections?.map((section: string) => `• ${sectio
         </Badge>
       </div>
 
-      <Tabs defaultValue="generate" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="generate">일지 생성</TabsTrigger>
           <TabsTrigger value="history">생성 이력</TabsTrigger>
@@ -555,6 +568,19 @@ ${report.ai_response?.metadata?.sections?.map((section: string) => `• ${sectio
                   placeholder="특별히 포함하고 싶은 내용이나 강조사항을 입력하세요"
                   rows={3}
                 />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="enhanced_prompt"
+                  checked={reportForm.enhanced_prompt}
+                  onChange={(e) => setReportForm({...reportForm, enhanced_prompt: e.target.checked})}
+                  className="rounded border-gray-300"
+                />
+                <Label htmlFor="enhanced_prompt" className="cursor-pointer">
+                  프롬프트 강화 (더 상세하고 전문적인 일지 생성)
+                </Label>
               </div>
 
               {isGenerating && (

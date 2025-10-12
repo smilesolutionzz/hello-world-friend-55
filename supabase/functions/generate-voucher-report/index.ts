@@ -117,10 +117,11 @@ serve(async (req) => {
       periodStart, 
       periodEnd,
       clientInfo,
-      customNotes 
+      customNotes,
+      enhancedPrompt 
     } = await req.json();
 
-    console.log('요청 데이터:', { voucherType, sessionData });
+    console.log('요청 데이터:', { voucherType, sessionData, enhancedPrompt });
 
     if (!openAIApiKey) {
       throw new Error('OpenAI API key가 설정되지 않았습니다.');
@@ -132,8 +133,8 @@ serve(async (req) => {
 
     const template = voucherTemplates[voucherType as keyof typeof voucherTemplates];
     
-    // AI 프롬프트 생성
-    const systemPrompt = `당신은 ${voucherType} 전문 치료일지 작성 전문가입니다. 
+    // AI 프롬프트 생성 (강화 모드에 따라 다르게)
+    const baseSystemPrompt = `당신은 ${voucherType} 전문 치료일지 작성 전문가입니다. 
 
 다음 서식과 요구사항에 맞춰 정확하고 전문적인 치료일지를 작성해주세요:
 
@@ -154,6 +155,44 @@ ${template.sections.map((section, idx) => `${idx + 1}. ${section}`).join('\n')}
 
 **출력 형식:**
 마크다운 형식으로 각 섹션을 명확히 구분하여 작성해주세요.`;
+
+    const enhancedSystemPrompt = baseSystemPrompt + `
+
+**프롬프트 강화 모드 활성화**
+
+다음의 고급 요구사항을 추가로 반영하여 더욱 상세하고 전문적인 일지를 작성하세요:
+
+1. **심화된 관찰 기록:**
+   - 미세한 행동 변화와 패턴 분석
+   - 감정 상태의 변화와 원인 추론
+   - 사회적 상호작용의 질적 평가
+
+2. **전문적 분석:**
+   - 발달 이론에 근거한 해석
+   - 객관적 평가도구 활용 및 해석
+   - 진전도의 정량적/정성적 측정
+
+3. **구체적 사례 제시:**
+   - 실제 상황에서의 구체적 예시
+   - 대화 내용이나 행동 묘사
+   - 치료적 개입의 효과성 분석
+
+4. **종합적 평가:**
+   - 강점과 개선 영역의 균형 잡힌 평가
+   - 가족 및 환경 요인 고려
+   - 중장기 발달 전망 제시
+
+5. **실행 가능한 제안:**
+   - 가정에서 실천 가능한 구체적 활동
+   - 다음 회기 목표의 단계적 설정
+   - 연계 서비스 제안 (필요시)
+
+**주의사항:**
+- 모든 섹션에 충실하고 풍부한 내용을 포함할 것
+- 빈 섹션이나 형식적인 답변 금지
+- 최소 2-3개의 구체적 사례를 각 섹션에 포함`;
+
+    const systemPrompt = enhancedPrompt ? enhancedSystemPrompt : baseSystemPrompt;
 
     const userPrompt = `
 **클라이언트 정보:**
@@ -198,6 +237,11 @@ ${customNotes || '없음'}
     
     const generatedReport = data.choices[0].message.content;
 
+    // 빈 일지 방지: 내용이 없거나 너무 짧으면 에러
+    if (!generatedReport || generatedReport.trim().length < 100) {
+      throw new Error('생성된 일지 내용이 충분하지 않습니다. 다시 시도해주세요.');
+    }
+
     // 메타데이터 추가
     const reportWithMetadata = {
       content: generatedReport,
@@ -208,7 +252,8 @@ ${customNotes || '없음'}
         periodStart,
         periodEnd,
         sections: template.sections,
-        requiredFields: template.requiredFields
+        requiredFields: template.requiredFields,
+        enhancedPrompt: enhancedPrompt || false
       }
     };
 

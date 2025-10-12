@@ -88,60 +88,60 @@ const SocialShareButtons: React.FC<SocialShareButtonsProps> = ({
   };
 
   return (
-    <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-6 space-y-4">
-      <div className="text-center">
-        <h4 className="font-bold text-lg mb-2">🎉 친구들과 함께 해보세요!</h4>
-        <p className="text-sm text-muted-foreground">
+    <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4 md:p-6 space-y-4">
+      <div className="text-center space-y-2">
+        <h4 className="font-bold text-base md:text-lg">🎉 친구들과 함께 해보세요!</h4>
+        <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
           공유하신 분과 친구 모두 <span className="font-semibold text-primary">무료 토큰 5개</span>를 드려요!
         </p>
       </div>
       
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
         <Button
           onClick={handleKakaoShare}
-          className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 h-12"
+          className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 h-10 md:h-12 text-sm md:text-base"
           size="sm"
         >
-          <MessageCircle className="w-4 h-4 mr-1" />
-          카톡공유
+          <MessageCircle className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+          <span className="text-xs md:text-sm">카톡공유</span>
         </Button>
         
         <Button
           onClick={handleWebShare}
           variant="outline"
-          className="h-12"
+          className="h-10 md:h-12 text-sm md:text-base"
           size="sm"
         >
-          <Share2 className="w-4 h-4 mr-1" />
-          공유하기
+          <Share2 className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+          <span className="text-xs md:text-sm">공유하기</span>
         </Button>
         
         <Button
           onClick={handleCopyLink}
           variant="outline"
-          className="h-12"
+          className="h-10 md:h-12 text-sm md:text-base"
           size="sm"
         >
-          <Copy className="w-4 h-4 mr-1" />
-          링크복사
+          <Copy className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+          <span className="text-xs md:text-sm">링크복사</span>
         </Button>
         
         {onPDFDownload && (
           <Button
             onClick={onPDFDownload}
             variant="outline"
-            className="h-12"
+            className="h-10 md:h-12 text-sm md:text-base"
             size="sm"
           >
-            <Download className="w-4 h-4 mr-1" />
-            PDF저장
+            <Download className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+            <span className="text-xs md:text-sm">PDF저장</span>
           </Button>
         )}
       </div>
       
       <div className="text-center">
-        <p className="text-xs text-muted-foreground">
-          💝 추천인 코드: <span className="font-mono bg-primary/20 px-2 py-1 rounded">FRIEND2024</span>
+        <p className="text-xs md:text-sm text-muted-foreground">
+          💝 추천인 코드: <span className="font-mono bg-primary/20 px-2 py-1 rounded text-xs md:text-sm">FRIEND2024</span>
         </p>
       </div>
     </div>

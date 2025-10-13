@@ -142,33 +142,80 @@ serve(async (req) => {
 
     const aiResponse = data.choices[0].message.content;
 
-    // Risk level detection based on conversation content
-    let riskLevel = 'low';
+    // Enhanced Crisis Detection System (Hippocratic AI 스타일)
+    let riskLevel: 'low' | 'medium' | 'high' | 'critical' = 'low';
+    let crisisType: string | null = null;
+    let recommendedAction: string | null = null;
+    
+    const criticalKeywords = [
+      '자살하고싶', '죽고싶어', '목숨을끊', '자살계획', '유서', '약먹고죽',
+      '투신', '목매', '칼로긋', '손목긋', '지금죽고싶', '오늘죽을'
+    ];
     
     const highRiskKeywords = [
       '죽고싶', '자살', '목숨', '죽어버리고', '생을마감', '자해', '상처내고싶',
-      '살아갈이유', '절망', '포기하고싶', '의미없어', '고통스러워', '견딜수없어'
+      '살아갈이유', '절망', '포기하고싶', '의미없어', '고통스러워', '견딜수없어',
+      '칼로긋', '손목', '피흘리', '흉터내고싶', '죽어야', '사라지고싶'
     ];
     
     const mediumRiskKeywords = [
       '우울해', '불안해', '무기력', '힘들어', '스트레스', '잠못자', '악몽',
-      '외로워', '혼자야', '아무도몰라', '이해안해', '화나', '짜증나'
+      '외로워', '혼자야', '아무도몰라', '이해안해', '화나', '짜증나',
+      '공황', '불면증', '악몽', '두려워', '겁나', '무섭'
     ];
 
     const combinedText = (message + ' ' + aiResponse).toLowerCase();
 
-    if (highRiskKeywords.some(keyword => combinedText.includes(keyword))) {
+    // Multi-level crisis detection
+    if (criticalKeywords.some(keyword => combinedText.includes(keyword))) {
+      riskLevel = 'critical';
+      crisisType = 'immediate_suicide_risk';
+      recommendedAction = 'IMMEDIATE_PROFESSIONAL_INTERVENTION';
+      
+      // Critical 로그 기록
+      console.error('🚨 CRITICAL RISK DETECTED:', {
+        timestamp: new Date().toISOString(),
+        messagePreview: message.substring(0, 100),
+        keywords: criticalKeywords.filter(k => combinedText.includes(k))
+      });
+      
+    } else if (highRiskKeywords.some(keyword => combinedText.includes(keyword))) {
       riskLevel = 'high';
+      crisisType = 'self_harm_risk';
+      recommendedAction = 'URGENT_EXPERT_CONSULTATION';
+      
+      console.warn('⚠️ HIGH RISK DETECTED:', {
+        timestamp: new Date().toISOString(),
+        messagePreview: message.substring(0, 100)
+      });
+      
     } else if (mediumRiskKeywords.some(keyword => combinedText.includes(keyword))) {
       riskLevel = 'medium';
+      crisisType = 'emotional_distress';
+      recommendedAction = 'EXPERT_CONSULTATION_RECOMMENDED';
     }
 
-    console.log('Risk level assessed:', riskLevel);
+    console.log('Risk assessment:', { riskLevel, crisisType, recommendedAction });
+
+    // Enhanced response with safety information
+    const safetyMessage = riskLevel === 'critical' 
+      ? '\n\n🚨 **즉시 도움이 필요합니다**\n정신건강위기상담전화: 1577-0199 (24시간)\n자살예방상담전화: 109 (24시간)\n응급상황: 119'
+      : riskLevel === 'high'
+      ? '\n\n💙 **전문가 상담을 권장합니다**\n정신건강위기상담전화: 1577-0199\n우리 플랫폼의 전문가와 상담해보세요.'
+      : '';
 
     return new Response(JSON.stringify({
-      response: aiResponse,
+      response: aiResponse + safetyMessage,
       riskLevel: riskLevel,
-      timestamp: new Date().toISOString()
+      crisisType: crisisType,
+      recommendedAction: recommendedAction,
+      emergencyContacts: riskLevel === 'critical' || riskLevel === 'high' ? {
+        crisis: '1577-0199',
+        suicide: '109',
+        emergency: '119'
+      } : null,
+      timestamp: new Date().toISOString(),
+      safetyCheckPerformed: true
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

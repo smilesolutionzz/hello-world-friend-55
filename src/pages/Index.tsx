@@ -9,6 +9,7 @@ import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import ResultReportSection from "@/components/landing/ResultReportSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
 import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
+import SafetyFirstSection from "@/components/landing/SafetyFirstSection";
 import FixedCTAButton from "@/components/landing/FixedCTAButton";
 import TestimonialSection from "@/components/TestimonialSection";
 import ClientLogos from "@/components/ClientLogos";
@@ -144,13 +145,16 @@ const Index = () => {
           {/* 2️⃣ Problem & Vision */}
           <ProblemVisionSection />
           
-          {/* 3️⃣ Core Service */}
+          {/* 3️⃣ Safety First - Hippocratic AI 스타일 */}
+          <SafetyFirstSection />
+          
+          {/* 4️⃣ Core Service */}
           <CoreServiceSection />
           
-          {/* 4️⃣ How It Works */}
+          {/* 5️⃣ How It Works */}
           <HowItWorksSection />
           
-          {/* 5️⃣ Result / Report */}
+          {/* 6️⃣ Result / Report */}
           <ResultReportSection />
           
           {/* Trust & Partner Section */}
@@ -160,10 +164,10 @@ const Index = () => {
           <TestimonialSection />
           <ClientLogos />
           
-          {/* 6️⃣ Call to Action */}
+          {/* 7️⃣ Call to Action */}
           <CTABannerSection />
           
-          {/* 7️⃣ Footer */}
+          {/* 8️⃣ Footer */}
           <Footer />
         </main>
         

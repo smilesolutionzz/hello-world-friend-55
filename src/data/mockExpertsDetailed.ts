@@ -1,3 +1,5 @@
+import { getExpertImage } from '@/components/expert/ExpertImages';
+
 export const mockExpertsDetailed = [
   {
     id: '1',
@@ -10,7 +12,7 @@ export const mockExpertsDetailed = [
     availability: '평일 9-18시',
     monthlyPrice: 120000,
     hourlyPrice: 30000,
-    image: '/api/placeholder/150/150',
+    image: getExpertImage('김미영') || '/api/placeholder/150/150',
     description: '12년간 아동발달센터에서 근무하며 수백 명의 아이들을 치료해온 경험이 있습니다.',
     languages: ['한국어'],
     consultationTypes: ['화상상담', '방문상담'],
@@ -40,7 +42,7 @@ export const mockExpertsDetailed = [
     availability: '평일 10-19시',
     monthlyPrice: 95000,
     hourlyPrice: 25000,
-    image: '/api/placeholder/150/150',
+    image: getExpertImage('박상훈') || '/api/placeholder/150/150',
     description: 'ABA 치료 전문가로 자폐스펙트럼 아동의 행동 개선에 특화되어 있습니다.',
     languages: ['한국어'],
     consultationTypes: ['화상상담', '방문상담'],
@@ -70,7 +72,7 @@ export const mockExpertsDetailed = [
     availability: '평일 14-20시',
     monthlyPrice: 85000,
     hourlyPrice: 22000,
-    image: '/api/placeholder/150/150',
+    image: getExpertImage('이정아') || '/api/placeholder/150/150',
     description: '언어발달지연 아동의 언어능력 향상을 위한 맞춤형 치료를 제공합니다.',
     languages: ['한국어'],
     consultationTypes: ['화상상담', '방문상담'],
@@ -100,7 +102,7 @@ export const mockExpertsDetailed = [
     availability: '평일 9-17시',
     monthlyPrice: 135000,
     hourlyPrice: 34000,
-    image: '/api/placeholder/150/150',
+    image: getExpertImage('강은미') || '/api/placeholder/150/150',
     description: '아동 및 청소년의 심리적 어려움을 전문적으로 평가하고 치료합니다.',
     languages: ['한국어'],
     consultationTypes: ['화상상담', '방문상담'],

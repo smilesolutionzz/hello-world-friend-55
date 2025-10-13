@@ -1,8 +1,10 @@
+import { getExpertImage } from '@/components/expert/ExpertImages';
+
 export const mockExperts = [
   {
     id: '1',
     name: '김지연 박사',
-    photo_url: '/placeholder.svg',
+    photo_url: getExpertImage('김지연') || '/placeholder.svg',
     credential: '임상심리학 박사, 아동발달전문가',
     verified: true,
     categories: ['아동발달', '학습장애'],
@@ -19,7 +21,7 @@ export const mockExperts = [
   {
     id: '2',
     name: '박민수 교수',
-    photo_url: '/placeholder.svg',
+    photo_url: getExpertImage('박민수') || '/placeholder.svg',
     credential: '정신의학과 전문의, 의학박사',
     verified: true,
     categories: ['우울증', '불안장애'],

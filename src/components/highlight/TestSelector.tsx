@@ -146,22 +146,22 @@ export const TestSelector = () => {
         navigate('/assessment', { state: { testType: 'psychological' } });
         break;
       case 'developmental-delay-test':
-        navigate('/developmental-assessment');
+        navigate('/assessment', { state: { testType: 'developmental-delay' } });
         break;
       case 'language-development':
-        navigate('/developmental-assessment');
+        navigate('/assessment', { state: { testType: 'language' } });
         break;
       case 'sensory-integration-test':
-        navigate('/developmental-assessment');
+        navigate('/assessment', { state: { testType: 'sensory-integration' } });
         break;
       case 'learning-disability-test':
-        navigate('/developmental-assessment');
+        navigate('/assessment', { state: { testType: 'learning-disability' } });
         break;
       case 'social-development-test':
-        navigate('/developmental-assessment');
+        navigate('/assessment', { state: { testType: 'social-development' } });
         break;
       case 'tic-disorder-test':
-        navigate('/developmental-assessment');
+        navigate('/assessment', { state: { testType: 'psychological' } });
         break;
       case 'premium-assessment':
         navigate('/premium-assessment');
@@ -173,6 +173,11 @@ export const TestSelector = () => {
 
   const handleGoHome = () => {
     navigate('/');
+  };
+
+  const handleGoBack = () => {
+    // 종합검사 페이지로 이동
+    navigate('/assessment');
   };
 
   if (loading) {
@@ -198,11 +203,11 @@ export const TestSelector = () => {
           </Button>
           <Button
             variant="ghost"
-            onClick={() => window.history.back()}
+            onClick={handleGoBack}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            뒤로가기
+            종합검사로 돌아가기
           </Button>
         </div>
 

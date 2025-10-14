@@ -237,8 +237,21 @@ export default function Institutions() {
   };
 
   const handleContactInstitution = (institutionId: string) => {
-    // 제휴 문의 모달 또는 페이지로 이동
-    console.log('제휴 문의:', institutionId);
+    const institution = institutions.find(inst => inst.id === institutionId);
+    if (!institution) return;
+
+    toast.info(`${institution.name}의 상담 예약 페이지로 이동합니다.`);
+
+    // 기관에 예약 URL이 있으면 해당 URL로, 없으면 상담 예약 페이지로
+    if (institution.booking_url) {
+      window.open(institution.booking_url, '_blank');
+    } else if (institution.phone) {
+      // 전화번호가 있으면 전화 걸기
+      window.location.href = `tel:${institution.phone}`;
+    } else {
+      // 기본 상담 예약 페이지로
+      navigate('/counseling', { state: { institutionId, institutionName: institution.name } });
+    }
   };
 
   const handleInstitutionSelect = (institutionId: string) => {

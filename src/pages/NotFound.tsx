@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Home, ArrowLeft } from "lucide-react";
+import SEOHead from "@/components/common/SEOHead";
 
 const NotFound = () => {
   const location = useLocation();
@@ -16,8 +17,14 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-full max-w-md">
+    <>
+      <SEOHead 
+        title="페이지를 찾을 수 없습니다 - AI하이라이트PRO"
+        description="요청하신 페이지가 존재하지 않거나 이동되었습니다."
+        noIndex={true}
+      />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Card className="w-full max-w-md">
         <CardContent className="p-8 text-center">
           <div className="mb-6">
             <h1 className="text-6xl font-bold text-muted-foreground mb-2">404</h1>
@@ -39,6 +46,7 @@ const NotFound = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 

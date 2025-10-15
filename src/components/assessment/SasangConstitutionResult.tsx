@@ -4,9 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, Heart, Utensils, Dumbbell, Leaf, AlertCircle, Copy } from 'lucide-react';
+import { Loader2, Heart, Utensils, Dumbbell, Leaf, AlertCircle, Copy, Target, FileText } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import { useShareText, formatMedicalTestResult } from '@/utils/shareUtils';
 
 const constitutionInfo = {
@@ -120,6 +121,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
   const [analysis, setAnalysis] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { shareAsText } = useShareText();
 
   useEffect(() => {
@@ -361,7 +363,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
 
       {/* 액션 버튼 */}
       <div className="flex flex-col gap-3">
-        <div className="flex justify-center space-x-4">
+        <div className="flex flex-wrap justify-center gap-3">
           <Button variant="outline" onClick={onRestart}>
             다시 검사하기
           </Button>
@@ -373,6 +375,26 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             맞춤한방 전화상담받기
+          </Button>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button 
+            onClick={() => navigate('/han-medicine-test')}
+            variant="outline" 
+            size="lg" 
+            className="flex-1"
+          >
+            <Target className="w-4 h-4 mr-2" />
+            다른 검사 하기
+          </Button>
+          <Button 
+            onClick={() => navigate('/dashboard')}
+            variant="outline" 
+            size="lg" 
+            className="flex-1"
+          >
+            <FileText className="w-4 h-4 mr-2" />
+            검사 기록 보기
           </Button>
         </div>
         <div className="flex justify-center">

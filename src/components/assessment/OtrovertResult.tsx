@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Share2, RotateCcw, Copy, Loader2, TrendingUp } from "lucide-react";
+import { Share2, RotateCcw, Copy, Loader2, TrendingUp, Target, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import { PersonalizedProductRecommendation } from "@/components/product/PersonalizedProductRecommendation";
 import {
   RadarChart,
@@ -34,6 +35,7 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
   const [graphData, setGraphData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     analyzeWithAI();
@@ -322,6 +324,26 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
                 <Button onClick={onRetry} variant="outline" size="lg" className="flex-1">
                   <RotateCcw className="w-4 h-4 mr-2" />
                   다시 테스트하기
+                </Button>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button 
+                  onClick={() => navigate('/fun-tests')}
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1"
+                >
+                  <Target className="w-4 h-4 mr-2" />
+                  다른 검사 하기
+                </Button>
+                <Button 
+                  onClick={() => navigate('/dashboard')}
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  검사 기록 보기
                 </Button>
               </div>
               <Button onClick={onShareText} variant="secondary" size="lg" className="w-full">

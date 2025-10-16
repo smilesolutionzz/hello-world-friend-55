@@ -150,15 +150,20 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 py-8">
       <div className="container mx-auto px-4 max-w-3xl">
-        <Card className="border-2 border-purple-200 shadow-2xl">
-          <CardHeader className={`text-center bg-gradient-to-r ${levelInfo.color} text-white py-8`}>
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Trophy className="w-12 h-12" />
-              <CardTitle className="text-3xl">인생 업적 달성률</CardTitle>
+        <Card className="border-2 border-purple-200 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <CardHeader className={`text-center bg-gradient-to-r ${levelInfo.color} text-white py-8 relative overflow-hidden`}>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+            <div className="relative">
+              <div className="flex items-center justify-center gap-3 mb-4 animate-in zoom-in duration-500">
+                <Trophy className="w-12 h-12 animate-bounce" />
+                <CardTitle className="text-3xl">인생 업적 달성률</CardTitle>
+              </div>
+              <div className="text-6xl font-bold my-6 animate-in zoom-in duration-700 delay-200">
+                {result.totalScore}%
+              </div>
+              <p className="text-2xl animate-in slide-in-from-bottom-4 duration-500 delay-300">{levelInfo.title}</p>
+              <p className="text-sm mt-2 animate-in fade-in duration-500 delay-400">레벨 {result.level}</p>
             </div>
-            <div className="text-6xl font-bold my-6">{result.totalScore}%</div>
-            <p className="text-2xl">{levelInfo.title}</p>
-            <p className="text-sm mt-2">레벨 {result.level}</p>
           </CardHeader>
 
           <CardContent className="p-8">

@@ -100,24 +100,31 @@ export default function LifeAchievementHistory() {
         </div>
 
         {results.length === 0 ? (
-          <Card className="p-12 text-center">
-            <Award className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+          <Card className="p-12 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <Award className="h-16 w-16 mx-auto mb-4 text-muted-foreground opacity-50 animate-pulse" />
             <h3 className="text-xl font-semibold mb-2">아직 기록이 없습니다</h3>
             <p className="text-muted-foreground mb-6">
               첫 번째 테스트를 시작해보세요!
             </p>
-            <Button onClick={() => navigate('/fun-tests')}>
+            <Button 
+              onClick={() => navigate('/fun-tests')}
+              className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700"
+            >
               테스트 시작하기
             </Button>
           </Card>
         ) : (
           <div className="space-y-4">
             {results.map((result, index) => (
-              <Card key={result.id} className="p-6 hover:shadow-lg transition-shadow">
+              <Card 
+                key={result.id} 
+                className="p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-bold bg-gradient-to-r ${getLevelColor(result.level)} text-white`}>
+                      <span className={`px-3 py-1 rounded-full text-sm font-bold bg-gradient-to-r ${getLevelColor(result.level)} text-white shadow-lg animate-in zoom-in duration-300`}>
                         Lv.{result.level} {result.level_name}
                       </span>
                       {index === 0 && (

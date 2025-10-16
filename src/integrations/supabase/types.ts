@@ -4990,6 +4990,42 @@ export type Database = {
         }
         Relationships: []
       }
+      token_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string | null
+          description: string | null
+          expires_at: string | null
+          feature_type: string | null
+          id: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          created_at?: string | null
+          description?: string | null
+          expires_at?: string | null
+          feature_type?: string | null
+          id?: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string | null
+          description?: string | null
+          expires_at?: string | null
+          feature_type?: string | null
+          id?: string
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       tokens: {
         Row: {
           created_at: string
@@ -5621,6 +5657,7 @@ export type Database = {
         Row: {
           created_at: string
           current_tokens: number
+          expiring_tokens: Json | null
           id: string
           last_daily_bonus_date: string | null
           referral_bonus: number | null
@@ -5632,6 +5669,7 @@ export type Database = {
         Insert: {
           created_at?: string
           current_tokens?: number
+          expiring_tokens?: Json | null
           id?: string
           last_daily_bonus_date?: string | null
           referral_bonus?: number | null
@@ -5643,6 +5681,7 @@ export type Database = {
         Update: {
           created_at?: string
           current_tokens?: number
+          expiring_tokens?: Json | null
           id?: string
           last_daily_bonus_date?: string | null
           referral_bonus?: number | null
@@ -6126,6 +6165,15 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      add_tokens: {
+        Args: {
+          p_amount: number
+          p_description?: string
+          p_transaction_type?: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
       admin_add_tokens: {
         Args: { target_user_id: string; token_amount: number }
         Returns: boolean
@@ -6220,6 +6268,15 @@ export type Database = {
       cleanup_financial_audit_logs: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      consume_tokens: {
+        Args: {
+          p_amount: number
+          p_description?: string
+          p_feature_type: string
+          p_user_id: string
+        }
+        Returns: Json
       }
       generate_invitation_code: {
         Args: Record<PropertyKey, never>

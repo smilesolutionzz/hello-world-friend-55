@@ -3,28 +3,73 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Zap, Star, Crown, Check, Sparkles, Brain, Rocket, Trophy, Heart } from 'lucide-react';
+import { Coins, Check, Sparkles, Brain, Zap, Trophy, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useSubscription, type SubscriptionPlan } from '@/hooks/useSubscription';
+import { useTokens } from '@/hooks/useTokens';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
+import TokenBalance from '@/components/TokenBalance';
+
+interface TokenPackage {
+  name: string;
+  tokens: number;
+  price: number;
+  bonus: number;
+  popular?: boolean;
+  features: string[];
+}
+
+const TOKEN_PACKAGES: TokenPackage[] = [
+  {
+    name: '스타터',
+    tokens: 50,
+    price: 9900,
+    bonus: 0,
+    features: [
+      '관찰일지 16회',
+      'AI 분석 10회',
+      '심리테스트 16회',
+      '1년간 유효'
+    ]
+  },
+  {
+    name: '베이직',
+    tokens: 100,
+    price: 19000,
+    bonus: 10,
+    popular: true,
+    features: [
+      '110 토큰 제공',
+      '관찰일지 36회',
+      'AI 분석 22회',
+      '전문가 피드백 5회',
+      '1년간 유효'
+    ]
+  },
+  {
+    name: '프로',
+    tokens: 300,
+    price: 49000,
+    bonus: 50,
+    features: [
+      '350 토큰 제공',
+      '모든 기능 무제한',
+      '전문가 피드백 17회',
+      '우선 지원',
+      '1년간 유효'
+    ]
+  }
+];
 
 const Subscription = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { subscription, availablePlans, loading: subLoading } = useSubscription();
+  const { tokenBalance, refreshTokenBalance } = useTokens();
   const [loading, setLoading] = useState(false);
-  const [purchasingPlanId, setPurchasingPlanId] = useState<string | null>(null);
+  const [purchasingPackage, setPurchasingPackage] = useState<string | null>(null);
 
-  const handlePlanSelect = async (plan: SubscriptionPlan) => {
-    if (plan.type === 'free') {
-      // 무료 플랜은 바로 대시보드로 이동
-      navigate('/');
-      return;
-    }
-
-    console.log('=== Plan selection started for:', plan.name);
-    setPurchasingPlanId(plan.id);
+  const handlePurchase = async (pkg: TokenPackage) => {
+    setPurchasingPackage(pkg.name);
     setLoading(true);
 
     try {
@@ -33,27 +78,31 @@ const Subscription = () => {
       if (!session) {
         toast({ 
           title: "로그인 필요", 
-          description: "구독하려면 먼저 로그인해주세요." 
+          description: "토큰을 구매하려면 먼저 로그인해주세요." 
         });
         navigate('/auth');
         return;
       }
 
-      // 무통장입금으로 결제 진행
-      navigate('/bank-transfer-subscription', { 
-        state: { selectedPlanId: plan.id } 
+      // 무통장입금 페이지로 이동
+      navigate('/bank-transfer', { 
+        state: { 
+          requestType: 'token_purchase',
+          tokenAmount: pkg.tokens + pkg.bonus,
+          price: pkg.price
+        } 
       });
 
     } catch (error: any) {
-      console.error('=== Subscription error:', error);
+      console.error('토큰 구매 오류:', error);
       toast({ 
         title: "오류", 
-        description: error.message || "구독 처리 중 오류가 발생했습니다.", 
+        description: error.message || "토큰 구매 중 오류가 발생했습니다.", 
         variant: "destructive" 
       });
     } finally {
       setLoading(false);
-      setPurchasingPlanId(null);
+      setPurchasingPackage(null);
     }
   };
 
@@ -61,66 +110,34 @@ const Subscription = () => {
     return new Intl.NumberFormat('ko-KR').format(price);
   };
 
-  const getPlanIcon = (planType: string) => {
-    switch (planType) {
-      case 'free':
-        return <Heart className="h-8 w-8 text-green-500" />;
-      case 'premium':
-        return <Crown className="h-8 w-8 text-purple-500" />;
-      default:
-        return <Rocket className="h-8 w-8 text-blue-500" />;
-    }
-  };
-
-  const getPlanColor = (planType: string) => {
-    switch (planType) {
-      case 'free':
-        return 'from-green-100 to-emerald-100';
-      case 'premium':
-        return 'from-purple-100 to-pink-100';
-      default:
-        return 'from-blue-100 to-cyan-100';
-    }
-  };
-
-  const isCurrentPlan = (planId: string) => {
-    return subscription?.plan_id === planId;
-  };
-
-  const getButtonText = (plan: SubscriptionPlan) => {
-    if (isCurrentPlan(plan.id)) {
-      return '현재 이용 중';
-    }
-    if (plan.type === 'free') {
-      return '무료로 시작하기';
-    }
-    return `${plan.name} 시작하기`;
+  const getPackageIcon = (index: number) => {
+    if (index === 0) return <Zap className="h-8 w-8 text-blue-500" />;
+    if (index === 1) return <Sparkles className="h-8 w-8 text-purple-500" />;
+    return <Trophy className="h-8 w-8 text-yellow-500" />;
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <UnifiedNavigation />
       
-      {/* Payment Widget Container (hidden) */}
-      <div id="payment-widget" style={{ display: 'none' }}></div>
-      
-      {/* 구독제 전환 안내 배너 */}
+      {/* 토큰제 안내 배너 */}
       <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white py-6 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 animate-pulse"></div>
         <div className="container mx-auto relative z-10">
           <div className="text-center space-y-3">
             <div className="flex items-center justify-center gap-2 mb-2">
               <div className="bg-white/20 rounded-full p-2">
-                <Sparkles className="w-6 h-6" />
+                <Coins className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-bold">🚀 새로운 구독 시스템 런칭!</h2>
+              <h2 className="text-2xl font-bold">🪙 간편한 토큰제 시스템</h2>
             </div>
             <p className="text-xl font-medium">
-              더 간편하고 합리적인 월간 구독제로 변경되었습니다
+              필요한 만큼만 구매하고, 1년간 자유롭게 사용하세요
             </p>
-            <p className="text-lg">
-              복잡한 토큰 계산 없이, <span className="font-bold text-yellow-300">월정액으로 무제한 이용하세요!</span>
-            </p>
+            <div className="flex items-center justify-center gap-2 text-lg">
+              <Clock className="w-5 h-5" />
+              <span>토큰 유효기간: <strong>구매일로부터 1년</strong></span>
+            </div>
           </div>
         </div>
       </div>
@@ -129,225 +146,144 @@ const Subscription = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            구독 플랜 선택
+            토큰 패키지 선택
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            필요에 맞는 플랜을 선택하여 AI 심리 분석 서비스를 이용하세요
+            부담 없이 시작하고, 언제든 충전하세요
           </p>
           
-          {subscription && (
-            <div className="flex justify-center mb-8">
-              <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
-                <div className="text-center">
-                  <div className="text-sm text-muted-foreground mb-1">현재 구독</div>
-                  <div className="text-2xl font-bold text-primary">
-                    {subscription.plan?.name || subscription.subscription_type}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    상태: {subscription.status === 'active' ? '활성' : '비활성'}
-                  </div>
-                </div>
-              </div>
+          <div className="flex justify-center mb-8">
+            <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
+              <TokenBalance showPurchaseButton={false} />
             </div>
-          )}
+          </div>
         </div>
 
-        {/* Plans */}
+        {/* Token Packages */}
         <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {subLoading ? (
-            // Loading state
-            Array.from({ length: 3 }).map((_, index) => (
-              <Card key={index} className="animate-pulse">
-                <CardHeader className="text-center pb-6 pt-12">
-                  <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-6 bg-gray-200 rounded mx-auto w-24"></div>
-                    <div className="h-4 bg-gray-200 rounded mx-auto w-32"></div>
-                    <div className="h-8 bg-gray-200 rounded mx-auto w-20"></div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4 pb-8">
-                  <div className="space-y-3">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="w-5 h-5 bg-gray-200 rounded"></div>
-                        <div className="h-4 bg-gray-200 rounded flex-1"></div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="pt-4">
-                    <div className="w-full h-12 bg-gray-200 rounded"></div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : availablePlans.length === 0 ? (
-            // No plans state
-            <div className="col-span-full text-center py-16">
-              <div className="bg-card border border-border rounded-2xl p-8 max-w-md mx-auto">
-                <div className="text-muted-foreground mb-4">
-                  <Brain className="w-16 h-16 mx-auto mb-4 opacity-50" />
+          {TOKEN_PACKAGES.map((pkg, index) => (
+            <Card 
+              key={pkg.name}
+              className={`relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                pkg.popular 
+                  ? 'border-2 border-purple-400 shadow-lg scale-105' 
+                  : 'border border-border hover:border-primary/20'
+              }`}
+              style={{ overflow: 'visible' }}
+            >
+              {pkg.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
+                    🌟 인기
+                  </Badge>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">구독 플랜이 없습니다</h3>
-                <p className="text-muted-foreground mb-4">
-                  현재 사용 가능한 구독 플랜이 없습니다.
-                </p>
-                <Button 
-                  onClick={() => window.location.reload()}
-                  variant="outline"
-                  className="mx-auto"
-                >
-                  다시 시도
-                </Button>
-              </div>
-            </div>
-          ) : (
-            availablePlans.map((plan, index) => (
-              <Card 
-                key={plan.id} 
-                className={`relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                  plan.type === 'premium' 
-                    ? 'border-2 border-purple-400 shadow-lg scale-105' 
-                    : isCurrentPlan(plan.id)
-                    ? 'border-2 border-green-400 shadow-lg'
-                    : 'border border-border hover:border-primary/20'
-                }`}
-                style={{ overflow: 'visible' }}
-              >
-                {plan.type === 'premium' && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                    <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
-                      🌟 추천
-                    </Badge>
+              )}
+              
+              <CardHeader className="text-center pb-6 pt-12">
+                <div className="flex justify-center mb-4">
+                  <div className={`p-4 rounded-full ${pkg.popular ? 'bg-gradient-to-br from-purple-100 to-pink-100' : 'bg-gradient-to-br from-blue-100 to-cyan-100'}`}>
+                    {getPackageIcon(index)}
                   </div>
-                )}
+                </div>
                 
-                {isCurrentPlan(plan.id) && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
-                      ✓ 이용 중
-                    </Badge>
+                <CardTitle className="text-2xl mb-2">{pkg.name}</CardTitle>
+                
+                <div className="space-y-2">
+                  <div className="text-4xl font-bold text-foreground">
+                    {pkg.tokens + pkg.bonus} <span className="text-xl text-muted-foreground">토큰</span>
                   </div>
-                )}
-                
-                <CardHeader className="text-center pb-6 pt-12">
-                  <div className="flex justify-center mb-4">
-                    <div className={`p-4 rounded-full bg-gradient-to-br ${getPlanColor(plan.type)}`}>
-                      {getPlanIcon(plan.type)}
+                  <div className="text-3xl font-bold text-primary">
+                    ₩{formatPrice(pkg.price)}
+                  </div>
+                  {pkg.bonus > 0 && (
+                    <div className="mt-3 p-2 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+                      <div className="text-sm font-bold text-green-700">
+                        🎁 보너스 {pkg.bonus}토큰
+                      </div>
                     </div>
+                  )}
+                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-2">
+                    <Clock className="w-4 h-4" />
+                    <span>1년간 유효</span>
                   </div>
-                  
-                  <CardTitle className="text-2xl mb-2">{plan.name}</CardTitle>
-                  <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
-                  
-                   <div className="space-y-2">
-                     <div className="text-4xl font-bold text-foreground">
-                       {plan.price === 0 ? '무료' : `₩${formatPrice(plan.price)}`}
-                     </div>
-                     {plan.price > 0 && (
-                       <div className="text-sm text-muted-foreground">
-                         월간 구독
-                       </div>
-                     )}
-                     
-                     {/* 한정 오퍼 안내 - 가격 후킹 */}
-                     {plan.type === 'premium' && (
-                       <div className="mt-3 p-3 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-lg">
-                         <div className="text-sm font-bold text-red-700 mb-1">
-                           ⚡ 오늘만 한정 특가
-                         </div>
-                         <div className="text-xs text-red-600">
-                           이 가격은 선착순 100명에게만 제공됩니다
-                         </div>
-                       </div>
-                     )}
-                     
-                     {plan.type === 'paid' && plan.price > 0 && (
-                       <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-lg">
-                         <div className="text-sm font-bold text-blue-700 mb-1">
-                           🎯 이번 주 한정
-                         </div>
-                         <div className="text-xs text-blue-600">
-                           베이직 플랜 론칭 기념 특별가
-                         </div>
-                       </div>
-                     )}
-                   </div>
-                </CardHeader>
+                </div>
+              </CardHeader>
 
-                <CardContent className="space-y-4 pb-8">
-                  <div className="space-y-3">
-                    {plan.features.map((feature, featureIndex) => (
-                      <div key={featureIndex} className="flex items-center gap-3">
-                        <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
-                        <span className="text-sm">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
+              <CardContent className="space-y-4 pb-8">
+                <div className="space-y-3">
+                  {pkg.features.map((feature, featureIndex) => (
+                    <div key={featureIndex} className="flex items-center gap-3">
+                      <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
 
-                  <div className="pt-4">
-                    <Button 
-                      className={`w-full py-3 text-lg font-bold ${
-                        isCurrentPlan(plan.id)
-                          ? 'bg-green-500 hover:bg-green-600 text-white cursor-default'
-                          : plan.type === 'premium'
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
-                          : plan.type === 'free'
-                          ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white'
-                          : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white'
-                      }`}
-                      disabled={loading || isCurrentPlan(plan.id)}
-                      onClick={() => handlePlanSelect(plan)}
-                    >
-                      <div className="flex items-center gap-2">
-                        {purchasingPlanId === plan.id ? (
-                          <>
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                            처리 중...
-                          </>
-                        ) : (
-                          <>
-                            {!isCurrentPlan(plan.id) && <Rocket className="w-5 h-5" />}
-                            {getButtonText(plan)}
-                          </>
-                        )}
-                      </div>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
+                <div className="pt-4">
+                  <Button 
+                    className={`w-full py-3 text-lg font-bold ${
+                      pkg.popular
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
+                        : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white'
+                    }`}
+                    disabled={loading}
+                    onClick={() => handlePurchase(pkg)}
+                  >
+                    <div className="flex items-center gap-2">
+                      {purchasingPackage === pkg.name ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          처리 중...
+                        </>
+                      ) : (
+                        <>
+                          <Coins className="w-5 h-5" />
+                          구매하기
+                        </>
+                      )}
+                    </div>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* 구독제 장점 안내 */}
+        {/* 토큰 사용 안내 */}
         <div className="mt-20 text-center">
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8 max-w-4xl mx-auto">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Brain className="w-8 h-8 text-blue-600" />
-              <h2 className="text-2xl font-bold">구독제의 장점</h2>
+              <h2 className="text-2xl font-bold">토큰 사용 가이드</h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="text-left space-y-2">
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="font-medium">복잡한 토큰 계산 불필요</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="font-medium">월정액으로 예측 가능한 비용</span>
+            <div className="grid md:grid-cols-2 gap-6 text-left">
+              <div className="space-y-2">
+                <div className="font-medium text-lg mb-3">📊 기능별 토큰 소비</div>
+                <div className="text-sm space-y-1">
+                  <div>• 관찰일지 작성: 3토큰</div>
+                  <div>• AI 분석: 5토큰</div>
+                  <div>• 기본 심리테스트: 3토큰</div>
+                  <div>• 고급 심리테스트: 10토큰</div>
+                  <div>• 전문가 피드백: 20토큰</div>
                 </div>
               </div>
-              <div className="text-left space-y-2">
+              <div className="space-y-2">
+                <div className="font-medium text-lg mb-3">✨ 토큰제 장점</div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span className="font-medium">무제한 서비스 이용</span>
+                  <span className="text-sm">필요한 만큼만 구매</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span className="font-medium">언제든 취소 가능</span>
+                  <span className="text-sm">1년간 자유롭게 사용</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-sm">언제든 추가 구매 가능</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-sm">보너스 토큰 제공</span>
                 </div>
               </div>
             </div>
@@ -355,28 +291,28 @@ const Subscription = () => {
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-20" id="faq">
+        <div className="mt-20">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">자주 묻는 질문</h2>
             <div className="space-y-6">
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">토큰제에서 구독제로 변경된 이유는?</h3>
+                <h3 className="font-semibold text-lg mb-2">토큰은 언제까지 사용할 수 있나요?</h3>
                 <p className="text-muted-foreground">
-                  사용자 피드백을 바탕으로 더 간편하고 예측 가능한 요금제를 제공하기 위해 변경되었습니다. 
-                  복잡한 토큰 계산 없이 월정액으로 모든 서비스를 자유롭게 이용할 수 있습니다.
+                  구매한 토큰은 구매일로부터 <strong>1년간</strong> 사용 가능합니다. 기간 내에 자유롭게 사용하세요.
                 </p>
               </div>
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">기존 토큰은 어떻게 되나요?</h3>
+                <h3 className="font-semibold text-lg mb-2">토큰이 부족하면 어떻게 하나요?</h3>
                 <p className="text-muted-foreground">
-                  기존에 보유하신 토큰은 구독 전환 시점까지 정상적으로 사용 가능합니다. 
-                  구독 후에는 토큰 없이 자유롭게 서비스를 이용하실 수 있습니다.
+                  언제든 추가로 토큰을 구매할 수 있습니다. 새로 구매한 토큰은 기존 토큰과 합산되며, 
+                  새로운 유효기간이 부여됩니다.
                 </p>
               </div>
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">언제든 취소할 수 있나요?</h3>
+                <h3 className="font-semibold text-lg mb-2">환불이 가능한가요?</h3>
                 <p className="text-muted-foreground">
-                  네, 언제든지 구독을 취소할 수 있습니다. 취소 후에도 현재 결제 주기가 끝날 때까지는 계속 서비스를 이용하실 수 있습니다.
+                  토큰을 사용하지 않은 경우, 구매일로부터 7일 이내에 전액 환불이 가능합니다. 
+                  일부 사용한 경우, 사용한 금액을 제외하고 환불됩니다.
                 </p>
               </div>
             </div>

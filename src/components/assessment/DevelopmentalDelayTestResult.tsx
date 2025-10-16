@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, LineChart, Line, AreaChart, Area } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+import { FileText } from 'lucide-react';
 
 interface DevelopmentalDelayTestResultProps {
   results: {
@@ -500,6 +501,22 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
         
         <Button onClick={onRestart} variant="outline">
           다시 검사하기
+        </Button>
+        
+        <Button 
+          onClick={() => navigate('/iep-generator', { 
+            state: { 
+              assessmentResults: {
+                '발달지연 검사': results,
+                analysis: analysis
+              } 
+            }
+          })}
+          className="bg-purple-600 hover:bg-purple-700"
+          aria-label="맞춤형 IEP 생성하기"
+        >
+          <FileText className="w-4 h-4 mr-2" />
+          맞춤형 IEP 생성
         </Button>
         
         <Button 

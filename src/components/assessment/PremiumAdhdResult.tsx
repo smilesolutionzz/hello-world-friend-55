@@ -363,6 +363,34 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
         </Button>
       </div>
 
+      {/* IEP 생성 버튼 (구독자 전용) */}
+      <Card className="p-6 bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200 mb-6">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+            <FileText className="w-6 h-6 text-purple-600" />
+          </div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-purple-900 mb-2">맞춤형 개별교육계획(IEP) 생성</h4>
+            <p className="text-purple-800 text-sm mb-4">
+              프리미엄 ADHD 검사 결과를 바탕으로 AI가 개별화된 교육 및 치료 계획을 자동으로 생성해드립니다.
+            </p>
+            <Button
+              onClick={() => navigate('/iep-generator', { 
+                state: { 
+                  assessmentResults: {
+                    '프리미엄 ADHD 검사': results
+                  } 
+                }
+              })}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              맞춤형 IEP 생성하기
+            </Button>
+          </div>
+        </div>
+      </Card>
+
       {/* 추천 상품 */}
       <ProductRecommendation 
         category="adhd"

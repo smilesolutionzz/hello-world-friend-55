@@ -120,7 +120,7 @@ const HeroSection = () => {
             className="group relative w-full sm:w-auto px-10 py-6 bg-[#5E8FFF] hover:bg-[#4A7FEF] text-white text-lg font-bold rounded-xl shadow-[0_3px_16px_rgba(94,143,255,0.4)] hover:shadow-[0_8px_24px_rgba(94,143,255,0.6)] transition-all duration-300"
           >
             <span className="flex items-center gap-2">
-              무료 체험 시작
+              무료 관찰 시작
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </span>
           </Button>
@@ -131,7 +131,7 @@ const HeroSection = () => {
             onClick={() => navigate('/expert-hiring')}
             className="w-full sm:w-auto px-10 py-6 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white text-lg font-semibold rounded-xl hover:bg-white/20 transition-all duration-300"
           >
-            전문가 상담 연결
+            3분 무료 테스트
           </Button>
         </div>
 

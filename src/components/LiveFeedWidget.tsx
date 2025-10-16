@@ -291,11 +291,11 @@ const LiveFeedWidget = () => {
               <Activity className="w-3 h-3 text-white" />
             </div>
             <div className="space-y-1">
-              <div className="flex items-center gap-1 text-xs text-white">
-                <span className="w-1.5 h-1.5 bg-green-300 rounded-full animate-pulse"></span>
+              <div className="flex items-center gap-1 text-xs text-gray-900">
+                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
                 <span className="font-medium">실시간</span>
               </div>
-              <div className="grid grid-cols-3 gap-2 text-xs text-white">
+              <div className="grid grid-cols-3 gap-2 text-xs text-gray-900">
                 <div className="text-center">
                   <div className="font-bold text-sm">{stats.dailyVisitors.toLocaleString()}</div>
                   <div className="opacity-90 text-xs">방문</div>

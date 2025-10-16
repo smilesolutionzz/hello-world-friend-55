@@ -1,22 +1,67 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, BookOpen, Download, Sparkles, MessageSquare, Users } from "lucide-react";
+import { ArrowLeft, BookOpen, Download, Sparkles, MessageSquare, Users, ChevronDown } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const PlatformManual = () => {
   const navigate = useNavigate();
   const [manualContent, setManualContent] = useState('');
+  const [sections, setSections] = useState<Array<{ title: string; content: string; id: string }>>([]);
 
   useEffect(() => {
     // Load the manual content
     fetch('/AIHPRO_Manual.md')
       .then(response => response.text())
-      .then(text => setManualContent(text))
+      .then(text => {
+        setManualContent(text);
+        // Parse sections
+        const parsedSections = parseManualSections(text);
+        setSections(parsedSections);
+      })
       .catch(error => console.error('Error loading manual:', error));
   }, []);
+
+  const parseManualSections = (content: string) => {
+    const lines = content.split('\n');
+    const sections: Array<{ title: string; content: string; id: string }> = [];
+    let currentSection: { title: string; content: string; id: string } | null = null;
+    
+    lines.forEach((line, index) => {
+      // Check if line is a main section (## heading)
+      if (line.startsWith('## ') && !line.includes('목차')) {
+        // Save previous section
+        if (currentSection) {
+          sections.push(currentSection);
+        }
+        // Start new section
+        const title = line.replace('## ', '').trim();
+        currentSection = {
+          title,
+          content: '',
+          id: `section-${sections.length}`
+        };
+      } else if (currentSection && line !== '---') {
+        // Add content to current section
+        currentSection.content += line + '\n';
+      }
+    });
+    
+    // Add last section
+    if (currentSection) {
+      sections.push(currentSection);
+    }
+    
+    return sections;
+  };
 
   const handleDownload = () => {
     const blob = new Blob([manualContent], { type: 'text/markdown' });
@@ -88,84 +133,115 @@ const PlatformManual = () => {
             </div>
           </div>
 
-          {/* Manual Content Card */}
-          <Card className="shadow-2xl border-border/50 bg-card/50 backdrop-blur-sm mb-16 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
-            
-            <CardContent className="relative p-0">
-              <div className="p-8 md:p-12 lg:p-16">
-                <div className="prose prose-slate prose-lg max-w-none dark:prose-invert
-                  prose-headings:scroll-mt-24
-                  prose-headings:font-bold
-                  
-                  prose-h1:text-4xl prose-h1:md:text-5xl 
-                  prose-h1:mb-8 prose-h1:mt-16 prose-h1:first:mt-0
-                  prose-h1:pb-6 prose-h1:border-b-2 prose-h1:border-gradient-to-r prose-h1:from-primary prose-h1:to-accent
-                  prose-h1:bg-gradient-to-r prose-h1:from-primary prose-h1:to-accent prose-h1:bg-clip-text prose-h1:text-transparent
-                  
-                  prose-h2:text-3xl prose-h2:md:text-4xl
-                  prose-h2:mb-6 prose-h2:mt-12
-                  prose-h2:text-primary prose-h2:relative
-                  prose-h2:pl-6 prose-h2:border-l-4 prose-h2:border-primary/50
-                  
-                  prose-h3:text-2xl prose-h3:md:text-3xl
-                  prose-h3:mb-5 prose-h3:mt-10
-                  prose-h3:text-foreground/90 prose-h3:font-semibold
-                  
-                  prose-h4:text-xl prose-h4:md:text-2xl
-                  prose-h4:mb-4 prose-h4:mt-8
-                  prose-h4:text-foreground/80
-                  
-                  prose-p:text-base prose-p:md:text-lg
-                  prose-p:leading-8 prose-p:md:leading-9
-                  prose-p:mb-6 prose-p:text-foreground/90
-                  
-                  prose-ul:my-8 prose-ul:space-y-3
-                  prose-ol:my-8 prose-ol:space-y-3
-                  prose-li:text-foreground/90 prose-li:leading-8 prose-li:text-base prose-li:md:text-lg
-                  prose-li:pl-2
-                  
-                  prose-strong:text-primary prose-strong:font-bold prose-strong:bg-primary/5 prose-strong:px-1 prose-strong:rounded
-                  
-                  prose-a:text-primary prose-a:font-semibold 
-                  prose-a:no-underline prose-a:border-b-2 prose-a:border-primary/30
-                  hover:prose-a:border-primary hover:prose-a:bg-primary/5
-                  prose-a:transition-all prose-a:px-1
-                  
-                  prose-code:bg-muted/80 prose-code:text-primary 
-                  prose-code:px-2 prose-code:py-1 
-                  prose-code:rounded-md prose-code:text-sm prose-code:font-mono
-                  prose-code:border prose-code:border-border/50
-                  
-                  prose-pre:bg-muted/50 prose-pre:backdrop-blur-sm
-                  prose-pre:p-6 prose-pre:rounded-xl 
-                  prose-pre:border-2 prose-pre:border-border/50
-                  prose-pre:shadow-lg
-                  
-                  prose-blockquote:border-l-4 prose-blockquote:border-primary 
-                  prose-blockquote:bg-primary/5 prose-blockquote:rounded-r-lg
-                  prose-blockquote:pl-6 prose-blockquote:pr-6 prose-blockquote:py-4
-                  prose-blockquote:italic prose-blockquote:text-muted-foreground
-                  prose-blockquote:shadow-sm
-                  
-                  prose-table:my-8 prose-table:shadow-lg prose-table:rounded-lg prose-table:overflow-hidden
-                  prose-thead:bg-muted/80
-                  prose-th:bg-muted/80 prose-th:p-4 prose-th:text-left 
-                  prose-th:font-bold prose-th:border prose-th:border-border/50
-                  prose-th:text-primary
-                  prose-td:p-4 prose-td:border prose-td:border-border/30
-                  prose-tr:hover:bg-muted/20 prose-tr:transition-colors
-                  
-                  prose-img:rounded-xl prose-img:shadow-xl prose-img:border-2 prose-img:border-border/50
-                  prose-img:my-8
-                  
-                  prose-hr:border-border/50 prose-hr:my-12
-                ">
-                  <ReactMarkdown>{manualContent}</ReactMarkdown>
-                </div>
+          {/* Table of Contents */}
+          <Card className="shadow-xl border-border/50 bg-card/50 backdrop-blur-sm mb-8">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-primary">📑 목차</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {sections.map((section, index) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    className="flex items-center gap-2 p-3 rounded-lg hover:bg-primary/10 transition-colors group"
+                  >
+                    <span className="text-primary font-semibold">{index + 1}.</span>
+                    <span className="group-hover:text-primary transition-colors">{section.title}</span>
+                  </a>
+                ))}
               </div>
             </CardContent>
           </Card>
+
+          {/* Manual Sections */}
+          <Accordion type="multiple" className="space-y-4 mb-16">
+            {sections.map((section) => (
+              <AccordionItem 
+                key={section.id} 
+                value={section.id}
+                id={section.id}
+                className="border-none"
+              >
+                <Card className="shadow-lg border-border/50 bg-card/50 backdrop-blur-sm overflow-hidden group hover:shadow-xl transition-all">
+                  <AccordionTrigger className="px-6 py-5 hover:no-underline [&[data-state=open]]:bg-primary/5 transition-colors">
+                    <div className="flex items-center gap-3 text-left">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <BookOpen className="h-5 w-5 text-primary" />
+                      </div>
+                      <h2 className="text-xl md:text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                        {section.title}
+                      </h2>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="px-6 pb-6 pt-2">
+                      <div className="prose prose-slate prose-base max-w-none dark:prose-invert
+                        prose-headings:scroll-mt-24
+                        prose-headings:font-bold
+                        
+                        prose-h1:text-3xl prose-h1:mb-6 prose-h1:mt-8
+                        prose-h1:text-primary
+                        
+                        prose-h2:text-2xl prose-h2:mb-4 prose-h2:mt-8
+                        prose-h2:text-foreground/90
+                        
+                        prose-h3:text-xl prose-h3:mb-3 prose-h3:mt-6
+                        prose-h3:text-foreground/80 prose-h3:font-semibold
+                        
+                        prose-h4:text-lg prose-h4:mb-3 prose-h4:mt-5
+                        prose-h4:text-foreground/70
+                        
+                        prose-p:text-sm prose-p:md:text-base
+                        prose-p:leading-7 prose-p:mb-4 prose-p:text-foreground/90
+                        
+                        prose-ul:my-4 prose-ul:space-y-2
+                        prose-ol:my-4 prose-ol:space-y-2
+                        prose-li:text-foreground/90 prose-li:leading-7 prose-li:text-sm prose-li:md:text-base
+                        
+                        prose-strong:text-primary prose-strong:font-bold prose-strong:bg-primary/5 prose-strong:px-1 prose-strong:rounded
+                        
+                        prose-a:text-primary prose-a:font-semibold 
+                        prose-a:no-underline prose-a:border-b-2 prose-a:border-primary/30
+                        hover:prose-a:border-primary hover:prose-a:bg-primary/5
+                        prose-a:transition-all prose-a:px-1
+                        
+                        prose-code:bg-muted/80 prose-code:text-primary 
+                        prose-code:px-2 prose-code:py-1 
+                        prose-code:rounded-md prose-code:text-sm prose-code:font-mono
+                        prose-code:border prose-code:border-border/50
+                        
+                        prose-pre:bg-muted/50 prose-pre:backdrop-blur-sm
+                        prose-pre:p-4 prose-pre:rounded-lg 
+                        prose-pre:border prose-pre:border-border/50
+                        prose-pre:shadow-md prose-pre:text-sm
+                        
+                        prose-blockquote:border-l-4 prose-blockquote:border-primary 
+                        prose-blockquote:bg-primary/5 prose-blockquote:rounded-r-lg
+                        prose-blockquote:pl-4 prose-blockquote:pr-4 prose-blockquote:py-3
+                        prose-blockquote:italic prose-blockquote:text-muted-foreground prose-blockquote:text-sm
+                        
+                        prose-table:my-6 prose-table:shadow-md prose-table:rounded-lg prose-table:overflow-hidden prose-table:text-sm
+                        prose-thead:bg-muted/80
+                        prose-th:bg-muted/80 prose-th:p-3 prose-th:text-left 
+                        prose-th:font-bold prose-th:border prose-th:border-border/50
+                        prose-th:text-primary
+                        prose-td:p-3 prose-td:border prose-td:border-border/30
+                        prose-tr:hover:bg-muted/20 prose-tr:transition-colors
+                        
+                        prose-img:rounded-lg prose-img:shadow-lg prose-img:border prose-img:border-border/50
+                        prose-img:my-6
+                        
+                        prose-hr:border-border/50 prose-hr:my-8
+                      ">
+                        <ReactMarkdown>{section.content}</ReactMarkdown>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </Card>
+              </AccordionItem>
+            ))}
+          </Accordion>
 
           {/* Quick Links Section */}
           <div className="space-y-8">

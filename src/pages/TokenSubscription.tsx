@@ -370,17 +370,32 @@ const TokenSubscription = () => {
                 </div>
               </div>
               <Button 
-                onClick={() => {
-                  toast({
-                    title: "베타 서비스 기간",
-                    description: "10월 30일까지 무료 이용 기간입니다. 현재 결제가 필요하지 않습니다.",
-                    variant: "default"
-                  });
+                onClick={async () => {
+                  try {
+                    setLoading(true);
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) {
+                      toast({ title: "로그인 필요", description: "로그인 후 이용해주세요." });
+                      navigate('/auth');
+                      return;
+                    }
+
+                    const { data, error } = await supabase.functions.invoke('create-checkout', {
+                      body: { priceId: 'price_1SIi9W8iwChi48do2VXbM0ui', mode: 'payment' }
+                    });
+
+                    if (error) throw error;
+                    if (data?.url) window.open(data.url, '_blank');
+                  } catch (error: any) {
+                    toast({ title: "오류", description: error.message, variant: "destructive" });
+                  } finally {
+                    setLoading(false);
+                  }
                 }}
-                className="w-full bg-gray-400 hover:bg-gray-500 text-white font-bold py-3"
-                disabled
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3"
+                disabled={loading}
               >
-                🎉 베타 기간 무료 이용중
+                구매하기
               </Button>
             </div>
             
@@ -459,17 +474,32 @@ const TokenSubscription = () => {
               {/* 월간/연간 선택 버튼 */}
               <div className="space-y-3 mb-4">
                 <Button 
-                  onClick={() => {
-                    toast({
-                      title: "베타 서비스 기간",
-                      description: "10월 30일까지 무료 이용 기간입니다. 현재 결제가 필요하지 않습니다.",
-                      variant: "default"
-                    });
+                  onClick={async () => {
+                    try {
+                      setLoading(true);
+                      const { data: { session } } = await supabase.auth.getSession();
+                      if (!session) {
+                        toast({ title: "로그인 필요", description: "로그인 후 이용해주세요." });
+                        navigate('/auth');
+                        return;
+                      }
+
+                      const { data, error } = await supabase.functions.invoke('create-checkout', {
+                        body: { priceId: 'price_1SIiAN8iwChi48dohjImJpPc', mode: 'subscription' }
+                      });
+
+                      if (error) throw error;
+                      if (data?.url) window.open(data.url, '_blank');
+                    } catch (error: any) {
+                      toast({ title: "오류", description: error.message, variant: "destructive" });
+                    } finally {
+                      setLoading(false);
+                    }
                   }}
-                  className="w-full bg-gray-400 hover:bg-gray-500 text-white font-bold py-4 text-lg"
-                  disabled
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 text-lg shadow-lg"
+                  disabled={loading}
                 >
-                  🎉 베타 기간 무료 이용중
+                  월간 결제 - ₩9,900/월
                 </Button>
                 
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
@@ -569,17 +599,32 @@ const TokenSubscription = () => {
               {/* 월간/연간 선택 버튼 */}
               <div className="space-y-3 mb-4">
                 <Button 
-                  onClick={() => {
-                    toast({
-                      title: "베타 서비스 기간",
-                      description: "10월 30일까지 무료 이용 기간입니다. 현재 결제가 필요하지 않습니다.",
-                      variant: "default"
-                    });
+                  onClick={async () => {
+                    try {
+                      setLoading(true);
+                      const { data: { session } } = await supabase.auth.getSession();
+                      if (!session) {
+                        toast({ title: "로그인 필요", description: "로그인 후 이용해주세요." });
+                        navigate('/auth');
+                        return;
+                      }
+
+                      const { data, error } = await supabase.functions.invoke('create-checkout', {
+                        body: { priceId: 'price_1SIiB88iwChi48doXd92s9Im', mode: 'subscription' }
+                      });
+
+                      if (error) throw error;
+                      if (data?.url) window.open(data.url, '_blank');
+                    } catch (error: any) {
+                      toast({ title: "오류", description: error.message, variant: "destructive" });
+                    } finally {
+                      setLoading(false);
+                    }
                   }}
-                  className="w-full bg-gray-400 hover:bg-gray-500 text-white font-bold py-4 text-lg"
-                  disabled
+                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 text-lg shadow-lg"
+                  disabled={loading}
                 >
-                  🎉 베타 기간 무료 이용중
+                  월간 결제 - ₩19,900/월
                 </Button>
                 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">

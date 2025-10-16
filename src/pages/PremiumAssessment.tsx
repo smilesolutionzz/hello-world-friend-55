@@ -259,77 +259,97 @@ const PremiumAssessment = () => {
     <AuthenticationGuard fallbackMessage="프리미엄 심리검사를 이용하려면 로그인이 필요합니다." redirectPath="/auth">
       <div>
         <UnifiedNavigation />
-        <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/20 to-blue-50/20 relative overflow-hidden pt-4">
-        {/* Premium Background */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/20 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-32 right-16 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-yellow-200/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
+        <div className="min-h-screen relative overflow-hidden pt-4">
+        {/* Modern Premium Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-subtle via-background to-accent/10" />
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-primary/8 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-32 right-16 w-[500px] h-[500px] bg-primary-glow/8 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/3 w-80 h-80 bg-accent/6 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }} />
         </div>
 
-        <div className="relative z-10 container mx-auto px-6 pt-8 pb-16">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="relative z-10 container mx-auto px-6 pt-8 pb-16 max-w-7xl">
+        {/* Header - Enhanced */}
+        <div className="flex items-center justify-between mb-10">
           <Button 
             variant="ghost" 
             onClick={handleBack}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 hover:bg-primary/10 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            뒤로가기
+            <span className="font-medium">뒤로가기</span>
           </Button>
           
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Crown className="w-6 h-6 text-yellow-500" />
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          <div className="text-center flex-1 px-4">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg">
+                <Crown className="w-6 h-6 text-white" />
+              </div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
                 프리미엄 AIH 자기 체크리스트
               </h1>
-              <Crown className="w-6 h-6 text-yellow-500" />
+              <div className="p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg">
+                <Crown className="w-6 h-6 text-white" />
+              </div>
             </div>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground font-medium">
               전문적이고 정밀한 성향 파악을 위한 AIH전문가의 창작 도구들
             </p>
           </div>
           
-          <div className="w-20" />
+          <div className="w-24" />
         </div>
 
-        {/* Premium Features Banner */}
-        <div className="max-w-6xl mx-auto mb-12">
-          <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 rounded-2xl p-8 text-white relative overflow-hidden">
-            <div className="absolute inset-0 bg-black/10" />
-            <div className="relative z-10">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Sparkles className="w-8 h-8 text-yellow-300" />
-                <h2 className="text-2xl font-bold">구독자 전용 프리미엄 AIH 검사</h2>
-                <Sparkles className="w-8 h-8 text-yellow-300" />
+        {/* Premium Features Banner - Redesigned */}
+        <div className="max-w-6xl mx-auto mb-14">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+            {/* Gradient Background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary-glow to-primary" />
+            
+            {/* Pattern Overlay */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{
+                backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+                backgroundSize: '32px 32px'
+              }} />
+            </div>
+            
+            {/* Glow Effects */}
+            <div className="absolute top-0 left-1/4 w-64 h-64 bg-white/20 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-primary-glow/30 rounded-full blur-3xl" />
+            
+            {/* Content */}
+            <div className="relative z-10 p-10 text-white">
+              <div className="flex items-center justify-center gap-3 mb-6">
+                <Sparkles className="w-8 h-8 text-yellow-300 animate-pulse" />
+                <h2 className="text-3xl font-bold">구독자 전용 프리미엄 AIH 검사</h2>
+                <Sparkles className="w-8 h-8 text-yellow-300 animate-pulse" />
               </div>
-              <div className="grid md:grid-cols-4 gap-6 text-center">
-                <div>
-                  <div className="text-2xl font-bold mb-1">14가지</div>
-                  <div className="text-sm opacity-90">전문 검사</div>
+              <div className="grid md:grid-cols-4 gap-8 text-center">
+                <div className="group">
+                  <div className="text-3xl font-bold mb-2 group-hover:scale-110 transition-transform">14가지</div>
+                  <div className="text-sm opacity-90 font-medium">전문 검사</div>
                 </div>
-                <div>
-                  <div className="text-2xl font-bold mb-1">정밀분석</div>
-                  <div className="text-sm opacity-90">과학적 근거</div>
+                <div className="group">
+                  <div className="text-3xl font-bold mb-2 group-hover:scale-110 transition-transform">정밀분석</div>
+                  <div className="text-sm opacity-90 font-medium">과학적 근거</div>
                 </div>
-                <div>
-                  <div className="text-2xl font-bold mb-1">맞춤형</div>
-                  <div className="text-sm opacity-90">개인별 해석</div>
+                <div className="group">
+                  <div className="text-3xl font-bold mb-2 group-hover:scale-110 transition-transform">맞춤형</div>
+                  <div className="text-sm opacity-90 font-medium">개인별 해석</div>
                 </div>
-                <div>
-                  <div className="text-2xl font-bold mb-1">PDF</div>
-                  <div className="text-sm opacity-90">상세 보고서</div>
+                <div className="group">
+                  <div className="text-3xl font-bold mb-2 group-hover:scale-110 transition-transform">PDF</div>
+                  <div className="text-sm opacity-90 font-medium">상세 보고서</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Assessment Cards Grid */}
+        {/* Assessment Cards Grid - Enhanced Spacing */}
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {/* 오트로버트 테스트 - 1위 NEW */}
             <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]">
               {/* 인기 순위 배지 */}

@@ -79,38 +79,64 @@ export const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
 
   if (authState === 'unauthenticated') {
     return (
-      <Card className="w-full max-w-lg mx-auto mt-8">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <ShieldAlert className="h-12 w-12 text-orange-500" />
-          </div>
-          <CardTitle className="text-xl">로그인이 필요합니다</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Alert>
-            <LogIn className="h-4 w-4" />
-            <AlertDescription>
-              {fallbackMessage}
-            </AlertDescription>
-          </Alert>
-          
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button onClick={handleLogin} className="flex-1">
-              <LogIn className="h-4 w-4 mr-2" />
-              로그인하기
-            </Button>
-            <Button variant="outline" onClick={handleRefresh} className="flex-1">
-              새로고침
-            </Button>
-          </div>
-          
-          <div className="text-center">
-            <p className="text-sm text-muted-foreground">
-              로그인 후 모든 기능을 이용하실 수 있습니다.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary-subtle via-background to-accent/20">
+        {/* Floating Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+        </div>
+
+        <Card className="w-full max-w-lg relative card-glass">
+          <CardHeader className="text-center space-y-4 pb-2">
+            <div className="flex justify-center">
+              <div className="p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl">
+                <ShieldAlert className="h-12 w-12 text-primary" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                로그인이 필요합니다
+              </CardTitle>
+              <p className="text-muted-foreground">
+                {fallbackMessage}
+              </p>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6 pt-6">
+            <Alert className="border-primary/20 bg-primary/5">
+              <LogIn className="h-4 w-4 text-primary" />
+              <AlertDescription className="text-foreground">
+                로그인 후 모든 프리미엄 기능을 이용하실 수 있습니다
+              </AlertDescription>
+            </Alert>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                onClick={handleLogin} 
+                className="flex-1 bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 transition-all"
+                size="lg"
+              >
+                <LogIn className="h-4 w-4 mr-2" />
+                로그인하기
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleRefresh} 
+                className="flex-1 border-primary/20 hover:bg-primary/5"
+                size="lg"
+              >
+                새로고침
+              </Button>
+            </div>
+            
+            <div className="text-center pt-2">
+              <p className="text-sm text-muted-foreground">
+                간편하게 시작하고 전문적인 분석을 받아보세요
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 

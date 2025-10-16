@@ -41,7 +41,7 @@ export const useLifeAchievementActions = () => {
         return acc;
       }, {} as Record<string, any>);
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('life_achievement_results')
         .insert({
           user_id: user.id,
@@ -50,9 +50,19 @@ export const useLifeAchievementActions = () => {
           level_name: result.levelName,
           category_scores: categoryScores,
           answers: result.answers
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // 배지 체크
+      if (data) {
+        await supabase.rpc('check_and_award_badges', {
+          p_user_id: user.id,
+          p_result_id: data.id
+        });
+      }
 
       toast({
         title: "저장 완료",

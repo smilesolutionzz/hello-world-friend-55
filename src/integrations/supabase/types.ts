@@ -3193,6 +3193,111 @@ export type Database = {
         }
         Relationships: []
       }
+      life_achievement_badges: {
+        Row: {
+          badge_type: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          name: string
+          rarity: string
+          unlock_condition: Json
+        }
+        Insert: {
+          badge_type: string
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: string
+          name: string
+          rarity?: string
+          unlock_condition: Json
+        }
+        Update: {
+          badge_type?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          rarity?: string
+          unlock_condition?: Json
+        }
+        Relationships: []
+      }
+      life_achievement_invites: {
+        Row: {
+          accepted_at: string | null
+          created_at: string | null
+          id: string
+          invite_code: string
+          invited_email: string
+          invited_user_id: string | null
+          inviter_id: string
+          status: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string | null
+          id?: string
+          invite_code: string
+          invited_email: string
+          invited_user_id?: string | null
+          inviter_id: string
+          status?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string | null
+          id?: string
+          invite_code?: string
+          invited_email?: string
+          invited_user_id?: string | null
+          inviter_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      life_achievement_leaderboard: {
+        Row: {
+          best_score: number
+          created_at: string | null
+          id: string
+          improvement: number | null
+          rank: number | null
+          total_tests: number
+          updated_at: string | null
+          user_id: string
+          week_end: string
+          week_start: string
+        }
+        Insert: {
+          best_score: number
+          created_at?: string | null
+          id?: string
+          improvement?: number | null
+          rank?: number | null
+          total_tests?: number
+          updated_at?: string | null
+          user_id: string
+          week_end: string
+          week_start: string
+        }
+        Update: {
+          best_score?: number
+          created_at?: string | null
+          id?: string
+          improvement?: number | null
+          rank?: number | null
+          total_tests?: number
+          updated_at?: string | null
+          user_id?: string
+          week_end?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
       life_achievement_results: {
         Row: {
           answers: Json
@@ -5068,6 +5173,38 @@ export type Database = {
         }
         Relationships: []
       }
+      user_life_achievement_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string | null
+          id: string
+          is_new: boolean | null
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string | null
+          id?: string
+          is_new?: boolean | null
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string | null
+          id?: string
+          is_new?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_life_achievement_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "life_achievement_badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_memory: {
         Row: {
           created_at: string
@@ -5859,6 +5996,10 @@ export type Database = {
       can_access_family_observation: {
         Args: { observation_user_id: string }
         Returns: boolean
+      }
+      check_and_award_badges: {
+        Args: { p_result_id: string; p_user_id: string }
+        Returns: undefined
       }
       check_daily_referral_limit: {
         Args: { p_user_id: string }

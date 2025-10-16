@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Trophy, Target, TrendingUp, Share2, Copy, RotateCcw, Loader2, FileText, Sparkles, History, BarChart3 } from 'lucide-react';
+import { Trophy, Target, TrendingUp, Share2, Copy, RotateCcw, Loader2, FileText, Sparkles, History, BarChart3, Award, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -281,7 +281,7 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
                   className="flex-1 w-full sm:w-auto"
                 >
                   <History className="w-4 h-4 mr-2" />
-                  히스토리 보기
+                  히스토리
                 </Button>
                 <Button 
                   onClick={() => navigate('/life-achievement-stats')}
@@ -290,7 +290,27 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
                   className="flex-1 w-full sm:w-auto"
                 >
                   <BarChart3 className="w-4 h-4 mr-2" />
-                  통계 보기
+                  통계
+                </Button>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <Button 
+                  onClick={() => navigate('/life-achievement-leaderboard')}
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1 w-full sm:w-auto"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  리더보드
+                </Button>
+                <Button 
+                  onClick={() => navigate('/life-achievement-badges')}
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1 w-full sm:w-auto"
+                >
+                  <Award className="w-4 h-4 mr-2" />
+                  배지
                 </Button>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full">

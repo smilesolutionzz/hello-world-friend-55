@@ -106,10 +106,10 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
             <span className="font-bold">프리미엄 분석 완료</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            당신의 HEXACO 성격 프로필
+            당신의 6차원 성격 프로필
           </h1>
           <p className="text-muted-foreground">
-            과학적으로 검증된 6차원 성격 특성 분석 결과입니다
+            진실성·감수성·활력성·협력성·계획성·탐구성 6차원 분석 결과
           </p>
         </div>
 
@@ -133,7 +133,7 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
         <Card className="p-8 mb-6 border-2 border-indigo-200 dark:border-indigo-800">
           <div className="flex items-center gap-3 mb-6">
             <Sparkles className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-            <h2 className="text-2xl font-bold">HEXACO 6차원 분석</h2>
+            <h2 className="text-2xl font-bold">6차원 성격 분석</h2>
           </div>
 
           <div className="space-y-6">

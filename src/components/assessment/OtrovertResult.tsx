@@ -326,12 +326,12 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
                   다시 테스트하기
                 </Button>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <Button 
                   onClick={() => navigate('/fun-tests')}
                   variant="outline" 
                   size="lg" 
-                  className="flex-1"
+                  className="flex-1 w-full sm:w-auto"
                 >
                   <Target className="w-4 h-4 mr-2" />
                   다른 검사 하기
@@ -340,7 +340,7 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
                   onClick={() => navigate('/dashboard')}
                   variant="outline" 
                   size="lg" 
-                  className="flex-1"
+                  className="flex-1 w-full sm:w-auto"
                 >
                   <FileText className="w-4 h-4 mr-2" />
                   검사 기록 보기

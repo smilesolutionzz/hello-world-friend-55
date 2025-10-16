@@ -377,12 +377,12 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
             맞춤한방 전화상담받기
           </Button>
         </div>
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 w-full">
           <Button 
             onClick={() => navigate('/han-medicine-test')}
             variant="outline" 
             size="lg" 
-            className="flex-1"
+            className="flex-1 w-full sm:w-auto"
           >
             <Target className="w-4 h-4 mr-2" />
             다른 검사 하기
@@ -391,7 +391,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
             onClick={() => navigate('/dashboard')}
             variant="outline" 
             size="lg" 
-            className="flex-1"
+            className="flex-1 w-full sm:w-auto"
           >
             <FileText className="w-4 h-4 mr-2" />
             검사 기록 보기

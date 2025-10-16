@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Trophy, Target, TrendingUp, Share2, Copy, RotateCcw, Loader2, FileText } from 'lucide-react';
+import { Trophy, Target, TrendingUp, Share2, Copy, RotateCcw, Loader2, FileText, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +24,7 @@ interface LifeAchievementResultProps {
 export default function LifeAchievementResult({ result, onRestart }: LifeAchievementResultProps) {
   const [analysis, setAnalysis] = useState('');
   const [nextGoals, setNextGoals] = useState<string[]>([]);
+  const [achievementImage, setAchievementImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -35,49 +36,62 @@ export default function LifeAchievementResult({ result, onRestart }: LifeAchieve
 
   const analyzeResults = async () => {
     try {
-      const prompt = `사용자의 인생 업적 달성률 분석 결과입니다:
-
-전체 달성률: ${result.totalScore}%
-레벨: ${result.level}
-
-카테고리별 달성률:
-${result.results.map(r => `${r.category}: ${r.score}%`).join('\n')}
-
-다음을 분석해주세요:
-1. 현재 인생 단계에 대한 전반적인 평가 (100자)
-2. 가장 잘하고 있는 영역과 칭찬 (80자)
-3. 개선이 필요한 영역 분석 (80자)
-4. 다음 달성해야 할 구체적 목표 3가지 (각 50자)
-
-따뜻하고 동기부여가 되는 톤으로 작성해주세요.`;
-
-      const { data, error } = await supabase.functions.invoke('chat-with-ai', {
+      console.log('Calling life-achievement-analyzer...');
+      
+      const { data, error } = await supabase.functions.invoke('life-achievement-analyzer', {
         body: { 
-          message: prompt,
-          conversationHistory: []
+          results: result.results,
+          totalScore: result.totalScore,
+          level: result.level
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Function error:', error);
+        throw error;
+      }
 
-      const analysisText = data.response;
-      setAnalysis(analysisText);
+      console.log('Analysis response:', data);
 
-      // 목표 추출 (숫자로 시작하는 줄 찾기)
-      const goals = analysisText
-        .split('\n')
-        .filter((line: string) => /^[1-3]\./.test(line.trim()))
-        .map((line: string) => line.replace(/^[1-3]\.\s*/, ''));
-      
-      setNextGoals(goals.length > 0 ? goals : [
+      if (data.analysis) {
+        setAnalysis(data.analysis);
+      }
+
+      if (data.goals && data.goals.length > 0) {
+        setNextGoals(data.goals);
+      } else {
+        setNextGoals([
+          '건강을 위한 규칙적인 운동 시작하기',
+          '재정 안정성을 위한 저축 계획 세우기',
+          '취미 활동으로 삶의 균형 찾기'
+        ]);
+      }
+
+      if (data.imageUrl) {
+        setAchievementImage(data.imageUrl);
+      }
+
+      if (!data.success) {
+        toast({
+          title: '분석 완료',
+          description: '일부 기능이 제한적으로 작동했지만 결과를 확인할 수 있습니다.',
+          variant: 'default'
+        });
+      }
+
+    } catch (error) {
+      console.error('Analysis error:', error);
+      setAnalysis('현재 분석 서비스에 일시적인 문제가 있습니다. 하지만 당신의 인생 업적은 정말 훌륭합니다! 계속 앞으로 나아가세요.');
+      setNextGoals([
         '건강을 위한 규칙적인 운동 시작하기',
         '재정 안정성을 위한 저축 계획 세우기',
         '취미 활동으로 삶의 균형 찾기'
       ]);
-
-    } catch (error) {
-      console.error('Analysis error:', error);
-      setAnalysis('현재 인생 업적 분석 중 오류가 발생했습니다. 다시 시도해주세요.');
+      toast({
+        title: '분석 오류',
+        description: '분석 중 오류가 발생했습니다. 기본 결과를 표시합니다.',
+        variant: 'destructive'
+      });
     } finally {
       setIsLoading(false);
     }
@@ -152,6 +166,23 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
               </div>
             ) : (
               <>
+                {/* AI 생성 이미지 */}
+                {achievementImage && (
+                  <div className="mb-8 rounded-xl overflow-hidden border-2 border-purple-200 shadow-lg">
+                    <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-6 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5" />
+                      <h3 className="font-bold">AI가 그린 당신의 업적 레벨</h3>
+                    </div>
+                    <div className="bg-white p-4">
+                      <img 
+                        src={achievementImage} 
+                        alt="Achievement Level Illustration" 
+                        className="w-full rounded-lg"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div className="mb-8 bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-200">
                   <h3 className="text-xl font-bold text-purple-800 mb-4 flex items-center gap-2">
                     <TrendingUp className="w-6 h-6" />

@@ -592,6 +592,10 @@ const Assessment = () => {
         <UnifiedNavigation />
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden pt-4">
         
+        {/* Background decorations */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-gradient opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-calm-blue to-warm-lavender opacity-10 rounded-full blur-3xl"></div>
+        
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
           <div className="text-center mb-16 space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold leading-tight">
@@ -1116,12 +1120,11 @@ const Assessment = () => {
             </div>
           </div>
 
-        </div>
+          </div>
         </div>
       </div>
     );
   }
-
 
   if (currentStep === 'dream-interpretation') {
     return (

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, BookOpen, Download, Sparkles, MessageSquare, Users, ChevronDown } from "lucide-react";
+import { ArrowLeft, BookOpen, Sparkles, MessageSquare, Users } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import {
   Accordion,
@@ -63,17 +63,6 @@ const PlatformManual = () => {
     return sections;
   };
 
-  const handleDownload = () => {
-    const blob = new Blob([manualContent], { type: 'text/markdown' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'AIHPRO_플랫폼_매뉴얼.md';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-  };
 
   return (
     <>
@@ -92,25 +81,14 @@ const PlatformManual = () => {
         {/* Header */}
         <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm">
           <div className="container mx-auto px-4 py-4 max-w-7xl">
-            <div className="flex items-center justify-between">
-              <Button
-                variant="ghost"
-                onClick={() => navigate('/')}
-                className="hover:bg-primary/10 transition-all"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                홈으로 돌아가기
-              </Button>
-
-              <Button
-                variant="outline"
-                onClick={handleDownload}
-                className="bg-gradient-to-r from-primary/10 to-accent/10 hover:from-primary/20 hover:to-accent/20 border-primary/20 transition-all"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                매뉴얼 다운로드
-              </Button>
-            </div>
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/')}
+              className="hover:bg-primary/10 transition-all"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              홈으로 돌아가기
+            </Button>
           </div>
         </div>
 

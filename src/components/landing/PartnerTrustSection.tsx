@@ -85,7 +85,7 @@ const PartnerTrustSection = () => {
               {partners.map((partner, index) => (
                 <div 
                   key={`track1-${index}`}
-                  className="flex-shrink-0 px-8 py-4 bg-white rounded-xl shadow-sm border border-gray-100"
+                  className="flex-shrink-0 px-6 py-3 bg-white rounded-xl shadow-sm border border-gray-100 min-w-fit"
                 >
                   <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
                     {partner}
@@ -97,7 +97,7 @@ const PartnerTrustSection = () => {
               {partners.map((partner, index) => (
                 <div 
                   key={`track2-${index}`}
-                  className="flex-shrink-0 px-8 py-4 bg-white rounded-xl shadow-sm border border-gray-100"
+                  className="flex-shrink-0 px-6 py-3 bg-white rounded-xl shadow-sm border border-gray-100 min-w-fit"
                 >
                   <p className="text-sm font-medium text-gray-700 whitespace-nowrap">
                     {partner}
@@ -116,7 +116,7 @@ const PartnerTrustSection = () => {
         }
         .marquee-track {
           display: flex;
-          gap: 3rem;
+          gap: 1.5rem;
           min-width: max-content;
           animation: marquee var(--marquee-duration, 3s) linear infinite;
         }

@@ -116,6 +116,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import InstitutionAdmin from "./pages/InstitutionAdmin";
 import PMFOnboarding from "./pages/PMFOnboarding";
 import KPIDashboard from "./pages/KPIDashboard";
+import PlatformManual from "./pages/PlatformManual";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -246,6 +247,7 @@ const App = () => {
           <Route path="/token-test" element={<TokenTest />} />
           <Route path="/bank-transfer" element={<BankTransfer />} />
           <Route path="/bank-transfer-subscription" element={<BankTransferSubscription />} />
+          <Route path="/platform-manual" element={<PlatformManual />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />

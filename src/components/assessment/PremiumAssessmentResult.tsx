@@ -130,6 +130,7 @@ const PremiumAssessmentResult = ({
             <div style="display: grid; gap: 15px;">
               ${Object.entries(results).map(([category, score]) => {
                 const interpretation = getScoreInterpretation(score, category);
+                const categoryDesc = getCategoryDescription(category);
                 const percentage = (score / 7) * 100;
                 return `
                   <div style="border: 1px solid #E5E7EB; border-radius: 8px; padding: 15px; background: #F9FAFB;">
@@ -137,13 +138,14 @@ const PremiumAssessmentResult = ({
                       <strong style="color: #374151;">${translateCategory(category)}</strong>
                       <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="background: ${interpretation.color}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">${interpretation.level}</span>
-                        <strong style="color: #111827; font-size: 16px;">${score.toFixed(1)}</strong>
+                        <strong style="color: #111827; font-size: 16px;">${score.toFixed(1)}/7.0</strong>
                       </div>
                     </div>
-                    <div style="background: #E5E7EB; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 5px;">
+                    <div style="background: #E5E7EB; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
                       <div style="background: linear-gradient(90deg, #8B5CF6, #6366F1); height: 100%; width: ${percentage}%; border-radius: 4px;"></div>
                     </div>
-                    <p style="margin: 0; font-size: 12px; color: #6B7280;">${interpretation.description}</p>
+                    ${categoryDesc ? `<p style="margin: 0 0 5px 0; font-size: 12px; color: #4B5563; line-height: 1.5;">${categoryDesc}</p>` : ''}
+                    <p style="margin: 0; font-size: 12px; color: #6B7280; font-weight: 500;">${interpretation.description}</p>
                   </div>
                 `;
               }).join('')}
@@ -213,13 +215,27 @@ const PremiumAssessmentResult = ({
     }
   };
 
+  const getCategoryDescription = (category: string): string => {
+    const descriptions: Record<string, string> = {
+      // 기질 영역
+      'novelty_seeking': '새로운 자극과 경험을 추구하는 성향입니다. 호기심이 많고 탐험적이며 변화를 즐깁니다.',
+      'harm_avoidance': '위험을 회피하고 안전을 추구하는 성향입니다. 신중하고 조심스러우며 불확실성을 불편해합니다.',
+      'reward_dependence': '타인의 인정과 사회적 관계에 민감한 성향입니다. 공감능력이 높고 타인과의 유대를 중요시합니다.',
+      'persistence': '어려움에도 불구하고 목표를 향해 꾸준히 노력하는 성향입니다. 끈기있고 인내심이 강합니다.',
+      'self_directedness': '스스로 목표를 세우고 행동을 조절하는 능력입니다. 자율성과 책임감이 높습니다.',
+      'cooperativeness': '타인과 협력하고 배려하는 성향입니다. 사회적으로 조화를 이루며 공동체 의식이 강합니다.',
+      'self_transcendence': '영적이고 초월적인 가치를 추구하는 성향입니다. 직관적이고 창의적인 사고를 합니다.',
+    };
+    return descriptions[category.toLowerCase()] || '';
+  };
+
   const getScoreInterpretation = (score: number, category: string) => {
-    // 7점 척도 기준 간소화된 해석
-    if (score >= 6) return { level: "매우 높음", color: "bg-red-500", description: "이 특성이 매우 강하게 나타남" };
-    if (score >= 5) return { level: "높음", color: "bg-orange-500", description: "이 특성이 강하게 나타남" };
-    if (score >= 4) return { level: "보통", color: "bg-yellow-500", description: "일반적인 수준" };
-    if (score >= 3) return { level: "다소 낮음", color: "bg-green-500", description: "이 특성이 약하게 나타남" };
-    return { level: "낮음", color: "bg-blue-500", description: "이 특성이 매우 약하게 나타남" };
+    // 7점 척도 기준 해석 (더 높은 점수가 나오도록 범위 조정)
+    if (score >= 5.5) return { level: "매우 높음", color: "bg-red-500", description: "이 특성이 매우 강하게 나타나며, 일상생활에서 두드러진 영향을 미칩니다" };
+    if (score >= 4.5) return { level: "높음", color: "bg-orange-500", description: "이 특성이 평균보다 강하게 나타나며, 행동 패턴에 영향을 줍니다" };
+    if (score >= 3.5) return { level: "보통", color: "bg-yellow-500", description: "일반적인 수준으로, 적절한 균형을 보입니다" };
+    if (score >= 2.5) return { level: "다소 낮음", color: "bg-green-500", description: "이 특성이 평균보다 약하게 나타납니다" };
+    return { level: "낮음", color: "bg-blue-500", description: "이 특성이 거의 나타나지 않습니다" };
   };
 
   const translateCategory = (category: string) => {
@@ -448,8 +464,9 @@ const PremiumAssessmentResult = ({
                   <div className="space-y-3">
                     {Object.entries(results).map(([category, score]) => {
                       const interpretation = getScoreInterpretation(score, category);
+                      const categoryDesc = getCategoryDescription(category);
                       return (
-                        <div key={category} className="space-y-2">
+                        <div key={category} className="space-y-2 p-3 bg-card/50 rounded-lg border border-border/30">
                           <div className="flex items-center justify-between">
                             <span className="font-medium text-sm">
                               {translateCategory(category)}
@@ -458,11 +475,14 @@ const PremiumAssessmentResult = ({
                               <Badge variant="outline" className={`${interpretation.color} text-white text-xs`}>
                                 {interpretation.level}
                               </Badge>
-                              <span className="font-bold">{score.toFixed(1)}</span>
+                              <span className="font-bold">{score.toFixed(1)}<span className="text-xs text-muted-foreground">/7.0</span></span>
                             </div>
                           </div>
                           <Progress value={(score / 7) * 100} className="h-2" />
-                          <p className="text-xs text-muted-foreground">{interpretation.description}</p>
+                          {categoryDesc && (
+                            <p className="text-xs text-foreground/70 leading-relaxed">{categoryDesc}</p>
+                          )}
+                          <p className="text-xs text-muted-foreground font-medium">{interpretation.description}</p>
                         </div>
                       );
                     })}

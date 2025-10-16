@@ -117,12 +117,12 @@ export const DefenseMechanismTest: React.FC<DefenseMechanismTestProps> = ({ onCo
         categoryCounts[q.category]++;
       });
 
-      // 평균 점수 계산
+      // 평균 점수 계산 (0-100% 정규화)
       const averageScores: Record<string, number> = {};
       Object.keys(categoryScores).forEach((category) => {
-        averageScores[category] = Math.round(
-          (categoryScores[category] / categoryCounts[category]) * 100
-        );
+        // 각 카테고리의 평균 점수를 구하고 0-100 범위로 정규화 (최대값 5점)
+        const avgScore = categoryScores[category] / categoryCounts[category];
+        averageScores[category] = Math.round((avgScore / 5) * 100);
       });
 
       // 주요 방어기제 찾기 (상위 3개)

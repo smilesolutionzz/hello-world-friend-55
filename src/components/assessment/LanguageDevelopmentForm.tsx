@@ -163,12 +163,7 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
                   <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-peach-bloom/5 transition-colors">
                     <RadioGroupItem value={index.toString()} id={index.toString()} />
                     <Label htmlFor={index.toString()} className="flex-1 cursor-pointer font-medium">
-                      <div className="flex items-center justify-between">
-                        <span>{option}</span>
-                        <span className={`text-sm font-semibold ${index === currentQuestion.correctAnswer ? 'text-green-600' : 'text-muted-foreground'}`}>
-                          {index === currentQuestion.correctAnswer ? '정답' : ''}
-                        </span>
-                      </div>
+                      {option}
                     </Label>
                   </div>
                 ))}

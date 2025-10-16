@@ -15,21 +15,21 @@ const newFeatures = [
     path: '/fun-tests'
   },
   {
+    id: 'voice_emotion',
+    title: '🎤 음성 감정 분석',
+    description: '내 목소리로 알아보는 진짜 감정 상태! 실시간 AI 분석',
+    date: '2025-10-12',
+    badge: 'HOT',
+    color: 'from-blue-500 to-cyan-500',
+    path: '/fun-tests'
+  },
+  {
     id: 'otrovert',
     title: '🎭 오트로버트 성격 분석',
     description: 'MBTI를 넘어선 새로운 성격 분석! 외향과 내향 사이의 나',
     date: '2025-10-10',
-    badge: 'HOT',
-    color: 'from-orange-500 to-red-500',
-    path: '/fun-tests'
-  },
-  {
-    id: 'wisdom_advice',
-    title: '🌟 인생 지혜 조언',
-    description: '살아온 경험을 바탕으로 AI가 주는 특별한 인생 조언',
-    date: '2025-10-08',
     badge: 'POPULAR',
-    color: 'from-amber-500 to-yellow-500',
+    color: 'from-orange-500 to-red-500',
     path: '/fun-tests'
   }
 ];
@@ -48,10 +48,10 @@ export const NewFeaturesSection = () => {
             <Sparkles className="w-5 h-5" />
           </div>
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
-            이번 주 신규 테스트
+            이번 주 NEW 기능
           </h2>
           <p className="text-xl text-gray-600">
-            매주 새로운 재미와 통찰을 드립니다 ✨
+            매주 새로운 AI 기능이 업데이트됩니다 ✨
           </p>
         </div>
 
@@ -92,7 +92,7 @@ export const NewFeaturesSection = () => {
             <CardContent className="p-6 text-center">
               <TrendingUp className="w-12 h-12 text-purple-600 mx-auto mb-3" />
               <div className="text-3xl font-bold text-purple-800 mb-2">11+</div>
-              <p className="text-purple-700">재미있는 테스트</p>
+              <p className="text-purple-700">AI 기능 개발</p>
             </CardContent>
           </Card>
 
@@ -121,7 +121,7 @@ export const NewFeaturesSection = () => {
             className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
           >
             <Sparkles className="w-5 h-5 mr-2" />
-            모든 테스트 보기
+            모든 기능 체험하기
             <Sparkles className="w-5 h-5 ml-2" />
           </Button>
         </div>

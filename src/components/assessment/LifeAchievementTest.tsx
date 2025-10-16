@@ -174,7 +174,6 @@ export default function LifeAchievementTest({ onComplete, onBack }: LifeAchievem
   const [currentCategory, setCurrentCategory] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number[]>>({});
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
   const category = achievements[currentCategory];
   const question = category.questions[currentQuestion];
@@ -182,27 +181,26 @@ export default function LifeAchievementTest({ onComplete, onBack }: LifeAchievem
   const answeredQuestions = Object.values(answers).reduce((sum, arr) => sum + arr.length, 0);
   const progress = (answeredQuestions / totalQuestions) * 100;
 
-  const handleAnswer = () => {
-    if (selectedAnswer === null) return;
-
+  const handleAnswer = (value: number) => {
     const newAnswers = { ...answers };
     if (!newAnswers[category.id]) {
       newAnswers[category.id] = [];
     }
-    newAnswers[category.id].push(selectedAnswer);
+    newAnswers[category.id].push(value);
     setAnswers(newAnswers);
-    setSelectedAnswer(null);
 
-    // 다음 질문으로
-    if (currentQuestion < category.questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else if (currentCategory < achievements.length - 1) {
-      setCurrentCategory(currentCategory + 1);
-      setCurrentQuestion(0);
-    } else {
-      // 테스트 완료
-      calculateResults(newAnswers);
-    }
+    // 자동으로 다음 질문으로 이동
+    setTimeout(() => {
+      if (currentQuestion < category.questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else if (currentCategory < achievements.length - 1) {
+        setCurrentCategory(currentCategory + 1);
+        setCurrentQuestion(0);
+      } else {
+        // 테스트 완료
+        calculateResults(newAnswers);
+      }
+    }, 300);
   };
 
   const calculateResults = (finalAnswers: Record<string, number[]>) => {
@@ -260,43 +258,20 @@ export default function LifeAchievementTest({ onComplete, onBack }: LifeAchievem
                 {question.q}
               </p>
 
-              <RadioGroup
-                value={selectedAnswer?.toString()}
-                onValueChange={(value) => setSelectedAnswer(Number(value))}
-              >
-                <div className="space-y-3">
-                  {question.options.map((option, idx) => (
-                    <div
-                      key={idx}
-                      className={`flex items-center space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer ${
-                        selectedAnswer === option.value
-                          ? 'border-purple-500 bg-purple-50'
-                          : 'border-gray-200 hover:border-purple-300'
-                      }`}
-                      onClick={() => setSelectedAnswer(option.value)}
-                    >
-                      <RadioGroupItem value={option.value.toString()} id={`option-${idx}`} />
-                      <Label
-                        htmlFor={`option-${idx}`}
-                        className="flex-1 cursor-pointer text-base"
-                      >
-                        {option.text}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </RadioGroup>
+              <div className="space-y-3">
+                {question.options.map((option, idx) => (
+                  <div
+                    key={idx}
+                    className="p-4 rounded-lg border-2 transition-all cursor-pointer border-gray-200 hover:border-purple-300 hover:bg-purple-50"
+                    onClick={() => handleAnswer(option.value)}
+                  >
+                    <p className="text-base text-gray-700">
+                      {option.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-
-            <Button
-              onClick={handleAnswer}
-              disabled={selectedAnswer === null}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg py-6"
-            >
-              {currentCategory === achievements.length - 1 && currentQuestion === category.questions.length - 1
-                ? '결과 확인하기'
-                : '다음'}
-            </Button>
           </CardContent>
         </Card>
       </div>

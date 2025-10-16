@@ -5,7 +5,7 @@ import { TypingAnimation } from "@/components/ui/typing-animation";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import FloatingKeywords from "./FloatingKeywords";
 import { useState } from "react";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -112,7 +112,7 @@ const HeroSection = () => {
           <InstantAIAnalysis />
         </div>
         
-        {/* CTA Buttons - 2개 나란히 */}
+        {/* CTA Buttons - 3개 나란히 */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Button 
             size="lg"
@@ -132,6 +132,18 @@ const HeroSection = () => {
             className="w-full sm:w-auto px-10 py-6 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white text-lg font-semibold rounded-xl hover:bg-white/20 transition-all duration-300"
           >
             3분 무료 테스트
+          </Button>
+
+          <Button 
+            size="lg"
+            variant="outline"
+            onClick={() => navigate('/platform-manual')}
+            className="group w-full sm:w-auto px-10 py-6 bg-white/10 backdrop-blur-md border-2 border-[#5E8FFF]/50 text-white text-lg font-semibold rounded-xl hover:bg-[#5E8FFF]/20 hover:border-[#5E8FFF] transition-all duration-300"
+          >
+            <span className="flex items-center gap-2">
+              <BookOpen className="w-5 h-5" />
+              플랫폼 메뉴얼
+            </span>
           </Button>
         </div>
 

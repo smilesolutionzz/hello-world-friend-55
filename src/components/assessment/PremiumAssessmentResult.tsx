@@ -437,9 +437,12 @@ const PremiumAssessmentResult = ({
                   <CardTitle className="text-2xl">{assessmentInfo.title}</CardTitle>
                   <p className="text-purple-100 mt-1">{assessmentInfo.subtitle}</p>
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold">{averageScore.toFixed(1)}</div>
-                  <div className="text-sm text-purple-100">평균 점수</div>
+                <div className="text-right bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3">
+                  <div className="text-xs text-purple-100 mb-1">내 평균 점수</div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold">{averageScore.toFixed(1)}</span>
+                    <span className="text-xl text-purple-100">/ 7.0</span>
+                  </div>
                 </div>
               </div>
             </CardHeader>
@@ -467,16 +470,18 @@ const PremiumAssessmentResult = ({
                       const categoryDesc = getCategoryDescription(category);
                       return (
                         <div key={category} className="space-y-2 p-3 bg-card/50 rounded-lg border border-border/30">
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between mb-1">
                             <span className="font-medium text-sm">
                               {translateCategory(category)}
                             </span>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className={`${interpretation.color} text-white text-xs`}>
-                                {interpretation.level}
-                              </Badge>
-                              <span className="font-bold">{score.toFixed(1)}<span className="text-xs text-muted-foreground">/7.0</span></span>
-                            </div>
+                            <Badge variant="outline" className={`${interpretation.color} text-white text-xs`}>
+                              {interpretation.level}
+                            </Badge>
+                          </div>
+                          <div className="flex items-baseline gap-1 mb-2">
+                            <span className="text-xs text-muted-foreground">내 점수:</span>
+                            <span className="text-xl font-bold text-primary">{score.toFixed(1)}</span>
+                            <span className="text-sm text-muted-foreground">/ 7.0</span>
                           </div>
                           <Progress value={(score / 7) * 100} className="h-2" />
                           {categoryDesc && (

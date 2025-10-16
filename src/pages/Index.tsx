@@ -13,6 +13,7 @@ import SafetyFirstSection from "@/components/landing/SafetyFirstSection";
 import FixedCTAButton from "@/components/landing/FixedCTAButton";
 import TestimonialSection from "@/components/TestimonialSection";
 import ClientLogos from "@/components/ClientLogos";
+import { NewFeaturesSection } from "@/components/landing/NewFeaturesSection";
 import BackToTop from "@/components/common/BackToTop";
 import SEOHead from "@/components/common/SEOHead";
 import { SkipLink } from "@/components/ui/skip-link";
@@ -153,6 +154,9 @@ const Index = () => {
           
           {/* 5️⃣ How It Works */}
           <HowItWorksSection />
+          
+          {/* 🎯 New Features Section - 매주 업데이트 */}
+          <NewFeaturesSection />
           
           {/* 6️⃣ Result / Report */}
           <ResultReportSection />

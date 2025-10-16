@@ -903,6 +903,27 @@ const Assessment = () => {
                       <li>• 향상 가이드</li>
                     </ul>
                   </div>
+
+                  {/* 🆕 NEW 방어기제 테스트 */}
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border-2 border-purple-400 dark:border-purple-600 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-xl"
+                    onClick={() => navigate('/assessment/defense-mechanism-test')}
+                  >
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xs px-2 py-1 animate-pulse">
+                        🆕 NEW
+                      </Badge>
+                    </div>
+                    <h4 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
+                      방어기제 분석
+                    </h4>
+                    <p className="text-muted-foreground text-sm mb-3">무의식적 심리 패턴 발견</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 24문항 5분</li>
+                      <li>• 8가지 방어기제</li>
+                      <li>• 심층 AI 분석</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>

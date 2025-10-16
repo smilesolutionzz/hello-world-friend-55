@@ -6,29 +6,29 @@ import { useNavigate } from 'react-router-dom';
 
 const newFeatures = [
   {
-    id: 'life_achievement',
-    title: '🏆 인생 업적 달성률',
-    description: '게임처럼 체크하는 나의 인생 목표 달성도! AI 이미지 생성 포함',
+    id: 'defense_mechanism',
+    title: '🛡️ 방어기제 분석',
+    description: '무의식적 심리 패턴 발견! 24문항으로 8가지 방어기제 분석',
     date: '2025-10-16',
     badge: 'NEW',
     color: 'from-purple-500 to-pink-500',
-    path: '/fun-tests'
+    path: '/assessment/defense-mechanism-test'
   },
   {
-    id: 'voice_emotion',
-    title: '🎤 음성 감정 분석',
-    description: '내 목소리로 알아보는 진짜 감정 상태! 실시간 AI 분석',
-    date: '2025-10-12',
-    badge: 'HOT',
+    id: 'hexaco_personality',
+    title: '🧠 6차원 성격진단',
+    description: '48문항 심층 성격 분석! AI가 당신의 성격을 6차원으로 분석',
+    date: '2025-10-16',
+    badge: 'NEW',
     color: 'from-blue-500 to-cyan-500',
-    path: '/fun-tests'
+    path: '/premium-assessment'
   },
   {
-    id: 'otrovert',
-    title: '🎭 오트로버트 성격 분석',
-    description: 'MBTI를 넘어선 새로운 성격 분석! 외향과 내향 사이의 나',
-    date: '2025-10-10',
-    badge: 'POPULAR',
+    id: 'life_achievement',
+    title: '🏆 인생 업적 달성률',
+    description: '게임처럼 체크하는 나의 인생 목표 달성도! AI 이미지 생성 포함',
+    date: '2025-10-14',
+    badge: 'HOT',
     color: 'from-orange-500 to-red-500',
     path: '/fun-tests'
   }

@@ -102,6 +102,7 @@ import FreeTrialResult from "./pages/FreeTrialResult";
 import PastLifeJobTestFree from "./components/assessment/PastLifeJobTestFree";
 import LifeAchievementHistory from "./pages/LifeAchievementHistory";
 import LifeAchievementStats from "./pages/LifeAchievementStats";
+import LifeAchievementCommunity from "./pages/LifeAchievementCommunity";
 import LifeAchievementLeaderboard from "./pages/LifeAchievementLeaderboard";
 import LifeAchievementBadges from "./pages/LifeAchievementBadges";
 

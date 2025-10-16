@@ -3226,6 +3226,91 @@ export type Database = {
         }
         Relationships: []
       }
+      life_achievement_goal_progress: {
+        Row: {
+          created_at: string | null
+          goal_id: string
+          id: string
+          note: string | null
+          progress_percentage: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          goal_id: string
+          id?: string
+          note?: string | null
+          progress_percentage?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          goal_id?: string
+          id?: string
+          note?: string | null
+          progress_percentage?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "life_achievement_goal_progress_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "life_achievement_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      life_achievement_goals: {
+        Row: {
+          category: string | null
+          completed_at: string | null
+          created_at: string | null
+          goal_text: string
+          id: string
+          is_completed: boolean | null
+          priority: string | null
+          result_id: string | null
+          target_date: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          goal_text: string
+          id?: string
+          is_completed?: boolean | null
+          priority?: string | null
+          result_id?: string | null
+          target_date?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          goal_text?: string
+          id?: string
+          is_completed?: boolean | null
+          priority?: string | null
+          result_id?: string | null
+          target_date?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "life_achievement_goals_result_id_fkey"
+            columns: ["result_id"]
+            isOneToOne: false
+            referencedRelation: "life_achievement_results"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       life_achievement_invites: {
         Row: {
           accepted_at: string | null

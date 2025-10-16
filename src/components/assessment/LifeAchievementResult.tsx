@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Trophy, Target, TrendingUp, Share2, Copy, RotateCcw, Loader2, FileText, Sparkles, History, BarChart3, Award, Users } from 'lucide-react';
+import { Trophy, Target as TargetIcon, TrendingUp, Share2, Copy, RotateCcw, Loader2, FileText, Sparkles, History, BarChart3, Award, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -170,7 +170,7 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
             {/* 카테고리별 달성률 */}
             <div className="mb-8">
               <h3 className="text-xl font-bold text-purple-800 mb-6 flex items-center gap-2">
-                <Target className="w-6 h-6" />
+                <TargetIcon className="w-6 h-6" />
                 카테고리별 달성률
               </h3>
               <div className="space-y-4">
@@ -225,7 +225,7 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
                 {nextGoals.length > 0 && (
                   <div className="mb-8 bg-gradient-to-br from-orange-50 to-yellow-50 p-6 rounded-lg border-2 border-orange-200">
                     <h3 className="text-xl font-bold text-orange-800 mb-4 flex items-center gap-2">
-                      <Target className="w-6 h-6" />
+                      <TargetIcon className="w-6 h-6" />
                       다음 달성할 목표
                     </h3>
                     <ul className="space-y-3">
@@ -329,8 +329,28 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
                   size="lg" 
                   className="flex-1 w-full sm:w-auto"
                 >
-                  <Target className="w-4 h-4 mr-2" />
+                  <TargetIcon className="w-4 h-4 mr-2" />
                   다른 검사 하기
+                </Button>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <Button 
+                  onClick={() => navigate('/life-achievement-community')}
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1 w-full sm:w-auto"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  커뮤니티
+                </Button>
+                <Button 
+                  onClick={() => navigate('/life-achievement-goals')}
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1 w-full sm:w-auto"
+                >
+                  <TargetIcon className="w-4 h-4 mr-2" />
+                  목표 관리
                 </Button>
               </div>
             </div>

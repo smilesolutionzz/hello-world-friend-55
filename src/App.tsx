@@ -105,6 +105,7 @@ import LifeAchievementStats from "./pages/LifeAchievementStats";
 import LifeAchievementCommunity from "./pages/LifeAchievementCommunity";
 import LifeAchievementLeaderboard from "./pages/LifeAchievementLeaderboard";
 import LifeAchievementBadges from "./pages/LifeAchievementBadges";
+import LifeAchievementGoals from "./pages/LifeAchievementGoals";
 
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
@@ -172,6 +173,8 @@ const App = () => {
           <Route path="/life-achievement-stats" element={<LifeAchievementStats />} />
           <Route path="/life-achievement-leaderboard" element={<LifeAchievementLeaderboard />} />
           <Route path="/life-achievement-badges" element={<LifeAchievementBadges />} />
+          <Route path="/life-achievement-community" element={<LifeAchievementCommunity />} />
+          <Route path="/life-achievement-goals" element={<LifeAchievementGoals />} />
           <Route path="/counseling" element={<CounselingFlow />} />
           <Route path="/ai-counselor" element={<AICounselor />} />
           <Route path="/needs-assessment" element={<NeedsAssessment />} />

@@ -3,31 +3,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 
 const TermsOfService = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/10 to-soft-mint/20">
+      <UnifiedNavigation />
+      
+      <div className="container mx-auto px-4 py-24 max-w-4xl">
         <Button 
           variant="ghost" 
           onClick={() => navigate(-1)}
           className="mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          뒤로가기
+          돌아가기
         </Button>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-center">
-              서비스 이용약관
-            </CardTitle>
-            <p className="text-center text-muted-foreground">
-              최종 업데이트: 2025년 10월 중 공개
-            </p>
+            <CardTitle className="text-3xl">서비스 이용약관</CardTitle>
+            <p className="text-muted-foreground">최종 수정일: 2025년 10월 16일</p>
           </CardHeader>
+          
           
           <CardContent className="space-y-6">
             <div className="space-y-8 text-sm leading-relaxed">
@@ -115,8 +115,20 @@ const TermsOfService = () => {
             </section>
 
             <section>
+              <h2 className="text-xl font-semibold mb-4">제10조 (사업자 정보)</h2>
+              <div className="space-y-1 text-muted-foreground">
+                <p>상호명: (AI)하이라이트</p>
+                <p>대표자명: 이수석</p>
+                <p>사업자등록번호: 206-12-62002</p>
+                <p>사업장 주소: 서울특별시 강남구 강남대로 84길 23-1, 1층 104호 (역삼동)</p>
+                <p>사업의 종류: 영대 정보관리업 | 종목: 출판 소프트웨어 개발 및 공급업</p>
+                <p>문의: aihpro@naver.com</p>
+              </div>
+            </section>
+
+            <section>
               <h2 className="text-xl font-semibold mb-4">부칙</h2>
-              <p>이 약관은 2025년 10월 중 공개부터 적용됩니다.</p>
+              <p>이 약관은 2025년 10월 16일부터 적용됩니다.</p>
             </section>
             </div>
           </CardContent>

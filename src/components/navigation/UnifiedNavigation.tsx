@@ -54,7 +54,7 @@ interface NavigationItem {
 // 전문가 서비스 하위 메뉴
 const expertSubmenuItems = [
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: false },
-  { icon: CreditCard, label: '구독', path: '/token-subscription', requiresAuth: false },
+  { icon: Zap, label: '토큰 충전', path: '/token-subscription', requiresAuth: false },
 ];
 
 // 상단 네비게이션용 핵심 메뉴 (드롭다운으로 변경됨)

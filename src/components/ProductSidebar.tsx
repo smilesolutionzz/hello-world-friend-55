@@ -271,8 +271,8 @@ const ProductSidebar = () => {
           className="w-full btn-brand mb-2 text-base font-semibold"
           onClick={() => navigate('/token-subscription')}
         >
-          <Gift className="w-4 h-4 mr-2" />
-          구독 관리
+          <Zap className="w-4 h-4 mr-2" />
+          토큰 충전
         </Button>
         <p className="text-sm text-gray-300 text-center font-medium">
           토큰팩 또는 무제한 플랜으로 업그레이드하세요

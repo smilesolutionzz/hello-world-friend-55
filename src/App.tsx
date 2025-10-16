@@ -14,7 +14,7 @@ import Analytics from "@/components/common/Analytics";
 import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
 import BankTransfer from "./pages/BankTransfer";
-import BankTransferSubscription from "./pages/BankTransferSubscription";
+
 import Payment from "./pages/Payment";
 
 import Assessment from "./pages/Assessment";
@@ -246,7 +246,7 @@ const App = () => {
           <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
           <Route path="/token-test" element={<TokenTest />} />
           <Route path="/bank-transfer" element={<BankTransfer />} />
-          <Route path="/bank-transfer-subscription" element={<BankTransferSubscription />} />
+          
           <Route path="/platform-manual" element={<PlatformManual />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

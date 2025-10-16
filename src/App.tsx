@@ -72,6 +72,7 @@ import NotFound from "./pages/NotFound";
 import ShareView from "./pages/ShareView";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import RefundPolicy from "./pages/RefundPolicy";
 import GrowthCommunity from "./pages/GrowthCommunity";
 import TokenTest from "./pages/TokenTest";
 import StressPackage from "./pages/StressPackage";
@@ -243,6 +244,9 @@ const App = () => {
           <Route path="/token-test" element={<TokenTest />} />
           <Route path="/bank-transfer" element={<BankTransfer />} />
           <Route path="/bank-transfer-subscription" element={<BankTransferSubscription />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
           
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Zap, Star, Crown, Check, Sparkles, Brain, Coins, Rocket, Trophy } from 'lucide-react';
+import { Coins, Check, Sparkles, Zap, Trophy, Clock, Brain } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
@@ -11,67 +11,70 @@ import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import TokenBalance from '@/components/TokenBalance';
 
 interface TokenPackage {
-  id: string;
   name: string;
-  description: string;
-  token_count: number;
-  price_krw: number;
-  is_popular: boolean;
+  tokens: number;
+  price: number;
+  popular?: boolean;
+  features: string[];
 }
+
+const TOKEN_PACKAGES: TokenPackage[] = [
+  {
+    name: '토큰팩 50',
+    tokens: 50,
+    price: 9900,
+    features: [
+      '기본 심리검사 25회',
+      '엔터테인먼트 테스트 50회',
+      'AI 상담 50메시지',
+      '꿈해석 12회',
+      '관찰일지 분석 12회',
+      '토큰 영구 보관',
+      '부담 없는 시작'
+    ]
+  },
+  {
+    name: '토큰팩 150',
+    tokens: 150,
+    price: 19900,
+    popular: true,
+    features: [
+      '✨ 가장 인기있는 선택',
+      '기본 심리검사 75회',
+      'AI 상담 150메시지',
+      '관찰일지 분석 37회',
+      '사주분석 25회',
+      '꿈해석 37회',
+      '1토큰당 132원으로 가장 합리적',
+      '정기적 이용에 최적'
+    ]
+  },
+  {
+    name: '토큰팩 400',
+    tokens: 400,
+    price: 39900,
+    features: [
+      '기본 심리검사 200회',
+      '프리미엄 검사 50회',
+      'IEP 생성 8회',
+      '종합리포트 2회',
+      '모든 기능 자유 이용',
+      '토큰당 99원으로 최고 할인율',
+      '장기간 안심 이용',
+      '전문가급 서비스'
+    ]
+  }
+];
 
 const TokenSubscription = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { tokenBalance } = useTokens();
-  const [packages, setPackages] = useState<TokenPackage[]>([]);
   const [loading, setLoading] = useState(false);
-  const [packagesLoading, setPackagesLoading] = useState(true);
-  const [purchasingPackageId, setPurchasingPackageId] = useState<string | null>(null);
+  const [purchasingPackage, setPurchasingPackage] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchPackages();
-  }, []);
-
-  const fetchPackages = async () => {
-    console.log('=== Fetching token packages...');
-    setPackagesLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('token_packages')
-        .select('*')
-        .eq('is_active', true)
-        .order('price_krw', { ascending: true });
-
-      console.log('=== Packages data:', data);
-      console.log('=== Packages error:', error);
-
-      if (error) throw error;
-      setPackages(data || []);
-      
-      if (!data || data.length === 0) {
-        console.warn('=== No token packages found');
-        toast({
-          title: "알림",
-          description: "사용 가능한 토큰 패키지가 없습니다.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('=== Error fetching packages:', error);
-      toast({
-        title: "오류",
-        description: "토큰 패키지를 불러오는 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    } finally {
-      setPackagesLoading(false);
-    }
-  };
-
-  const handlePurchase = async (packageId: string) => {
-    console.log('=== Token purchase started for package:', packageId);
-    
-    setPurchasingPackageId(packageId);
+  const handlePurchase = async (pkg: TokenPackage) => {
+    setPurchasingPackage(pkg.name);
     setLoading(true);
 
     try {
@@ -86,150 +89,24 @@ const TokenSubscription = () => {
         return;
       }
 
-      // 토큰 패키지 토스페이먼츠 결제 처리
-      await handleTokenPayment(packageId);
+      navigate('/bank-transfer', { 
+        state: { 
+          requestType: 'token_purchase',
+          tokenAmount: pkg.tokens,
+          price: pkg.price
+        } 
+      });
 
     } catch (error: any) {
-      console.error('=== Token purchase error:', error);
+      console.error('토큰 구매 오류:', error);
       toast({ 
         title: "오류", 
-        description: error.message || "결제 처리 중 오류가 발생했습니다.", 
+        description: error.message || "토큰 구매 중 오류가 발생했습니다.", 
         variant: "destructive" 
       });
     } finally {
       setLoading(false);
-      setPurchasingPackageId(null);
-    }
-  };
-
-  const handleSubscriptionPurchase = async (planType: string) => {
-    console.log('=== Subscription purchase started for plan:', planType);
-    
-    setLoading(true);
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({ 
-          title: "로그인 필요", 
-          description: "구독하려면 먼저 로그인해주세요." 
-        });
-        navigate('/auth');
-        return;
-      }
-
-      // 구독 토스페이먼츠 결제 처리
-      await handleTossPayment(planType, 'subscription');
-
-    } catch (error: any) {
-      console.error('=== Subscription purchase error:', error);
-      toast({ 
-        title: "오류", 
-        description: error.message || "결제 처리 중 오류가 발생했습니다.", 
-        variant: "destructive" 
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleTokenPayment = async (packageId: string) => {
-    try {
-      // 토큰 패키지 토스페이먼츠 결제 요청
-      const { data, error } = await supabase.functions.invoke('create-token-payment', {
-        body: { 
-          packageId: packageId,
-          paymentType: 'token' 
-        }
-      });
-
-      if (error) throw error;
-
-      if (data.success) {
-        const paymentData = data.paymentData;
-        const clientKey = data.clientKey;
-        
-        // 토스페이먼츠 SDK 로드 후 결제 진행
-        const loadTossPayments = () => {
-          return new Promise<void>((resolve) => {
-            if ((window as any).TossPayments) {
-              resolve();
-              return;
-            }
-
-            const script = document.createElement('script');
-            script.src = 'https://js.tosspayments.com/v1/payment';
-            script.onload = () => resolve();
-            document.head.appendChild(script);
-          });
-        };
-
-        await loadTossPayments();
-        
-        // 토스페이먼츠 결제 요청
-        const tossPayments = (window as any).TossPayments(clientKey);
-        
-        await tossPayments.requestPayment('카드', {
-          amount: paymentData.amount,
-          orderId: paymentData.orderId,
-          orderName: paymentData.orderName,
-          customerEmail: paymentData.customerEmail,
-          customerName: paymentData.customerName,
-          successUrl: paymentData.successUrl,
-          failUrl: paymentData.failUrl,
-        });
-      }
-    } catch (error) {
-      console.error('Token payment error:', error);
-      throw error;
-    }
-  };
-
-  const handleTossPayment = async (planId: string, subscriptionType: string) => {
-    try {
-      // 토스페이먼츠 결제 요청
-      const { data, error } = await supabase.functions.invoke('create-toss-payment', {
-        body: { 
-          planId: planId,
-          subscriptionType: subscriptionType 
-        }
-      });
-
-      if (error) throw error;
-
-      if (data.success) {
-        // 토스페이먼츠 SDK 동적 로딩
-        const script = document.createElement('script');
-        script.src = 'https://js.tosspayments.com/v1/payment-widget';
-        script.onload = () => {
-          const clientKey = data.clientKey;
-          const paymentWidget = (window as any).PaymentWidget(clientKey, (window as any).PaymentWidget.ANONYMOUS);
-          
-          // 결제 위젯 렌더링
-          paymentWidget.renderPaymentMethods('#payment-widget', data.amount);
-          
-          // 결제 버튼 클릭 처리
-          document.getElementById('payment-button')?.addEventListener('click', () => {
-            paymentWidget.requestPayment({
-              orderId: data.orderId,
-              orderName: data.orderName,
-              successUrl: window.location.origin + '/payment/success',
-              failUrl: window.location.origin + '/payment/fail',
-            });
-          });
-        };
-        document.head.appendChild(script);
-
-        // 결제 위젯 표시
-        const paymentContainer = document.getElementById('payment-container');
-        if (paymentContainer) {
-          paymentContainer.style.display = 'block';
-        }
-      }
-    } catch (error) {
-      console.error('Payment error:', error);
-      throw error;
+      setPurchasingPackage(null);
     }
   };
 
@@ -237,9 +114,9 @@ const TokenSubscription = () => {
     return new Intl.NumberFormat('ko-KR').format(price);
   };
 
-  const getPlanIcon = (tokenCount: number) => {
-    if (tokenCount <= 100) return <Zap className="h-8 w-8 text-blue-500" />;
-    if (tokenCount <= 500) return <Sparkles className="h-8 w-8 text-purple-500" />;
+  const getPackageIcon = (index: number) => {
+    if (index === 0) return <Zap className="h-8 w-8 text-blue-500" />;
+    if (index === 1) return <Sparkles className="h-8 w-8 text-purple-500" />;
     return <Trophy className="h-8 w-8 text-yellow-500" />;
   };
 
@@ -247,58 +124,23 @@ const TokenSubscription = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <UnifiedNavigation />
       
-      {/* 베타 서비스 무료 기간 안내 배너 */}
-      <div className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 text-white py-6 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 via-emerald-400/20 to-teal-400/20 animate-pulse"></div>
+      {/* 토큰제 안내 배너 */}
+      <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white py-6 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 animate-pulse"></div>
         <div className="container mx-auto relative z-10">
           <div className="text-center space-y-3">
             <div className="flex items-center justify-center gap-2 mb-2">
               <div className="bg-white/20 rounded-full p-2">
-                <Sparkles className="w-6 h-6" />
+                <Coins className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-bold">🎉 베타 서비스 무료 기간</h2>
+              <h2 className="text-2xl font-bold">🪙 간편한 토큰제 시스템</h2>
             </div>
             <p className="text-xl font-medium">
-              <strong>10월 30일까지</strong> 모든 서비스를 <strong>무료</strong>로 이용할 수 있습니다!
+              필요한 만큼만 구매하고, 1년간 자유롭게 사용하세요
             </p>
-            <div className="bg-white/10 rounded-lg p-4 max-w-2xl mx-auto">
-              <div className="text-lg font-bold mb-2">✨ 베타 기간 혜택</div>
-              <div className="text-base space-y-1">
-                <div>• 모든 심리테스트 무제한 무료 이용</div>
-                <div>• AI 분석 및 리포트 무료 제공</div>
-                <div>• 현재 결제 기능이 일시적으로 비활성화 상태</div>
-              </div>
-            </div>
-            <div className="text-lg font-bold text-yellow-200">
-              🚀 11월 1일부터 정식 서비스 시작 예정
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 하이브리드 모델 1단계 안내 배너 */}
-      <div className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 text-white py-4 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 via-blue-400/20 to-purple-400/20 animate-pulse"></div>
-        <div className="container mx-auto relative z-10">
-          <div className="text-center space-y-2">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="bg-white/20 rounded-full p-2">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <h2 className="text-xl font-bold">🎯 체험 후 구독! 스마트한 선택</h2>
-            </div>
-            <p className="text-lg font-medium">
-              토큰으로 먼저 체험해보고, 더 자주 사용한다면 구독으로 업그레이드하세요!
-            </p>
-            <div className="grid md:grid-cols-2 gap-4 mt-4 text-sm">
-              <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold">🪙 토큰팩</div>
-                <div>4,900원/50토큰 → 체험용</div>
-              </div>
-              <div className="bg-white/10 rounded-lg p-3">
-                <div className="font-bold">💎 구독제</div>
-                <div>9,900원/월 → 무제한 이용</div>
-              </div>
+            <div className="flex items-center justify-center gap-2 text-lg">
+              <Clock className="w-5 h-5" />
+              <span>토큰 유효기간: <strong>구매일로부터 1년</strong></span>
             </div>
           </div>
         </div>
@@ -308,10 +150,10 @@ const TokenSubscription = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            하이브리드 모델 선택
+            토큰 패키지 선택
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            토큰제와 구독제 중 본인에게 맞는 방식을 선택하세요
+            부담 없이 시작하고, 언제든 충전하세요
           </p>
           
           <div className="flex justify-center mb-8">
@@ -321,618 +163,165 @@ const TokenSubscription = () => {
           </div>
         </div>
 
-        {/* 구독 플랜 선택 섹션 */}
-        <div className="mt-16 text-center">
-          <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">구독 플랜 선택</h2>
-          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-lg mb-4 inline-block animate-pulse">
-            🔥 론칭 기념 특가! 50% 할인 • 선착순 1000명 한정!
-          </div>
-          <p className="text-lg text-muted-foreground mb-12">토큰으로 체험 후 구독으로 업그레이드하세요!</p>
-          
-          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
-            {/* 토큰팩 (9,900원/50토큰) */}
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 border border-blue-200">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Coins className="w-8 h-8 text-white" />
+        {/* Token Packages */}
+        <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {TOKEN_PACKAGES.map((pkg, index) => (
+            <Card 
+              key={pkg.name}
+              className={`relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                pkg.popular 
+                  ? 'border-2 border-purple-400 shadow-lg scale-105' 
+                  : 'border border-border hover:border-primary/20'
+              }`}
+              style={{ overflow: 'visible' }}
+            >
+              {pkg.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
+                    🌟 인기
+                  </Badge>
                 </div>
-                <h3 className="text-2xl font-bold mb-2 text-blue-800">토큰팩</h3>
-                <p className="text-sm text-muted-foreground mb-3">필요할 때만 사용하세요</p>
-                <div className="text-3xl font-bold text-blue-600 mb-2">₩4,900</div>
-                <p className="text-sm text-muted-foreground">50토큰</p>
-              </div>
-              <div className="space-y-3 text-left mb-8">
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                  <span className="text-sm">🪙 50토큰 제공</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                  <span className="text-sm">⚡ 즉시 사용 가능</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                  <span className="text-sm">📱 모든 심리테스트 이용</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                  <span className="text-sm">🧠 AI 분석 제공</span>
-                </div>
-                
-                {/* 제한사항 강조 */}
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-4">
-                  <div className="text-xs font-bold text-yellow-800 mb-1">⚠️ 주의사항</div>
-                  <div className="text-xs text-yellow-700">
-                    • 토큰 모두 소진 시 이용 제한<br/>
-                    • 추가 토큰 구매 필요<br/>
-                    • 무제한 이용은 구독만 가능
+              )}
+              
+              <CardHeader className="text-center pb-6 pt-12">
+                <div className="flex justify-center mb-4">
+                  <div className={`p-4 rounded-full ${pkg.popular ? 'bg-gradient-to-br from-purple-100 to-pink-100' : 'bg-gradient-to-br from-blue-100 to-cyan-100'}`}>
+                    {getPackageIcon(index)}
                   </div>
                 </div>
-              </div>
-              <Button 
-                onClick={async () => {
-                  try {
-                    setLoading(true);
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (!session) {
-                      toast({ title: "로그인 필요", description: "로그인 후 이용해주세요." });
-                      navigate('/auth');
-                      return;
-                    }
-
-                    const { data, error } = await supabase.functions.invoke('create-checkout', {
-                      body: { priceId: 'price_1SIi9W8iwChi48do2VXbM0ui', mode: 'payment' }
-                    });
-
-                    if (error) throw error;
-                    if (data?.url) window.open(data.url, '_blank');
-                  } catch (error: any) {
-                    toast({ title: "오류", description: error.message, variant: "destructive" });
-                  } finally {
-                    setLoading(false);
-                  }
-                }}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3"
-                disabled={loading}
-              >
-                구매하기
-              </Button>
-            </div>
-            
-            {/* 스탠다드 (₩29,900) */}
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-8 border-2 border-purple-300 relative transform hover:scale-105 transition-all duration-300 shadow-2xl">
-              {/* 추천 배지 */}
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg">
-                  🌟 추천
-                </div>
-              </div>
-
-              <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Crown className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 text-purple-800">스탠다드</h3>
-                <p className="text-sm text-muted-foreground mb-3">모든 심리테스트 무제한 + 전문가 검토</p>
                 
-                {/* 할인 가격 표시 */}
-                <div className="mb-3">
-                  <div className="text-lg text-gray-500 line-through">₩19,900</div>
-                  <div className="text-3xl font-bold text-purple-600 mb-1">₩9,900</div>
-                  <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-bold inline-block">
-                    50% 할인 🔥
+                <CardTitle className="text-2xl mb-2">{pkg.name}</CardTitle>
+                
+                <div className="space-y-2">
+                  <div className="text-4xl font-bold text-foreground">
+                    {pkg.tokens} <span className="text-xl text-muted-foreground">토큰</span>
+                  </div>
+                  <div className="text-3xl font-bold text-primary">
+                    ₩{formatPrice(pkg.price)}
+                  </div>
+                  <div className="mt-2 text-sm text-muted-foreground">
+                    토큰당 ₩{Math.round(pkg.price / pkg.tokens)}
+                  </div>
+                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-2">
+                    <Clock className="w-4 h-4" />
+                    <span>1년간 유효</span>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground">월간 구독</p>
-              </div>
+              </CardHeader>
 
-              <div className="space-y-3 text-left mb-8">
-                {/* 무제한 혜택 강조 */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-3 mb-3">
-                  <div className="text-sm font-bold text-green-800 mb-1">🚀 토큰 걱정 없음!</div>
-                  <div className="text-sm text-green-700">무제한 이용으로 자유롭게 검사하세요</div>
+              <CardContent className="space-y-4 pb-8">
+                <div className="space-y-3">
+                  {pkg.features.map((feature, featureIndex) => (
+                    <div key={featureIndex} className="flex items-center gap-3">
+                      <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </div>
+                  ))}
                 </div>
-                
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm font-bold">✨ 모든 심리테스트 무제한</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm">🧠 3AI 동시 분석으로 정확도 3배 향상</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm">📊 상세한 심리 분석 리포트</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm">👥 전문가 1차 검토 (월 2회)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm">📱 실시간 위기 감지 알림</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm">📈 상세한 트렌드 분석</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm">🎯 개인 맞춤 개선 가이드</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm">💬 우선 커뮤니티 답변</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-sm">📞 긴급상담 우선 배정</span>
-                </div>
-              </div>
 
-              {/* 월간/연간 선택 버튼 */}
-              <div className="space-y-3 mb-4">
-                <Button 
-                  onClick={async () => {
-                    try {
-                      setLoading(true);
-                      const { data: { session } } = await supabase.auth.getSession();
-                      if (!session) {
-                        toast({ title: "로그인 필요", description: "로그인 후 이용해주세요." });
-                        navigate('/auth');
-                        return;
-                      }
-
-                      const { data, error } = await supabase.functions.invoke('create-checkout', {
-                        body: { priceId: 'price_1SIiAN8iwChi48dohjImJpPc', mode: 'subscription' }
-                      });
-
-                      if (error) throw error;
-                      if (data?.url) window.open(data.url, '_blank');
-                    } catch (error: any) {
-                      toast({ title: "오류", description: error.message, variant: "destructive" });
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 text-lg shadow-lg"
-                  disabled={loading}
-                >
-                  월간 결제 - ₩9,900/월
-                </Button>
-                
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                  <div className="text-center">
-                    <div className="text-sm font-bold text-yellow-800 mb-1">🎁 연간 결제 시 추가 할인!</div>
-                    <div className="text-lg font-bold text-yellow-900">₩89,400/년 (월 ₩7,450)</div>
-                    <div className="text-sm text-yellow-700">25% 추가 할인 혜택!</div>
-                  </div>
+                <div className="pt-4">
                   <Button 
-                    onClick={() => {
-                      toast({
-                        title: "베타 서비스 기간",
-                        description: "10월 30일까지 무료 이용 기간입니다. 현재 결제가 필요하지 않습니다.",
-                        variant: "default"
-                      });
-                    }}
-                    variant="outline"
-                    className="w-full mt-2 border-gray-400 text-gray-600 hover:bg-gray-100"
-                    disabled
+                    className={`w-full py-3 text-lg font-bold ${
+                      pkg.popular
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
+                        : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white'
+                    }`}
+                    disabled={loading}
+                    onClick={() => handlePurchase(pkg)}
                   >
-                    🎉 베타 기간 무료
+                    <div className="flex items-center gap-2">
+                      {purchasingPackage === pkg.name ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          처리 중...
+                        </>
+                      ) : (
+                        <>
+                          <Coins className="w-5 h-5" />
+                          구매하기
+                        </>
+                      )}
+                    </div>
                   </Button>
                 </div>
-              </div>
-            </div>
-            
-            {/* 프리미엄 (₩59,900) */}
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-8 border-2 border-amber-300 relative transform hover:scale-105 transition-all duration-300 shadow-2xl">
-              {/* 추천 배지 */}
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg">
-                  👑 VIP
-                </div>
-              </div>
-
-              <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Crown className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold mb-2 text-amber-800">프리미엄</h3>
-                <p className="text-sm text-muted-foreground mb-3">완전한 AI + 전문가 케어 서비스</p>
-                
-                {/* 할인 가격 표시 */}
-                <div className="mb-3">
-                  <div className="text-lg text-gray-500 line-through">₯39,900</div>
-                  <div className="text-3xl font-bold text-amber-600 mb-1">₩19,900</div>
-                  <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-bold inline-block">
-                    50% 할인 🔥
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground">월간 구독</p>
-              </div>
-
-              <div className="space-y-2 text-left mb-8">
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm">🚀 스탠다드 모든 기능 포함</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm">👨‍⚕️ 전문가 상담 월 1회 (50분)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm">🔍 전문가 심층 분석 (월 2회)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm">⚡ AI 분석 결과 전문가 검증</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm">📋 개인 맞춤 치료 계획 수립</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm">🎯 전담 전문가 배정</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm">📞 24시간 긴급 상담 라인</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm">👨‍👩‍👧‍👦 가족 구성원 분석 (최대 4명)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm">🎁 매월 심리 케어 가이드북</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm">🏆 VIP 고객 전용 혜택</span>
-                </div>
-              </div>
-
-              {/* 월간/연간 선택 버튼 */}
-              <div className="space-y-3 mb-4">
-                <Button 
-                  onClick={async () => {
-                    try {
-                      setLoading(true);
-                      const { data: { session } } = await supabase.auth.getSession();
-                      if (!session) {
-                        toast({ title: "로그인 필요", description: "로그인 후 이용해주세요." });
-                        navigate('/auth');
-                        return;
-                      }
-
-                      const { data, error } = await supabase.functions.invoke('create-checkout', {
-                        body: { priceId: 'price_1SIiB88iwChi48doXd92s9Im', mode: 'subscription' }
-                      });
-
-                      if (error) throw error;
-                      if (data?.url) window.open(data.url, '_blank');
-                    } catch (error: any) {
-                      toast({ title: "오류", description: error.message, variant: "destructive" });
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 text-lg shadow-lg"
-                  disabled={loading}
-                >
-                  월간 결제 - ₩19,900/월
-                </Button>
-                
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <div className="text-center">
-                    <div className="text-sm font-bold text-blue-800 mb-1">🎁 연간 결제 시 추가 할인!</div>
-                    <div className="text-lg font-bold text-blue-900">₩179,400/년 (월 ₩14,950)</div>
-                    <div className="text-sm text-blue-700">25% 추가 할인 혜택!</div>
-                  </div>
-                  <Button 
-                    onClick={() => {
-                      toast({
-                        title: "베타 서비스 기간",
-                        description: "10월 30일까지 무료 이용 기간입니다. 현재 결제가 필요하지 않습니다.",
-                        variant: "default"
-                      });
-                    }}
-                    variant="outline"
-                    className="w-full mt-2 border-gray-400 text-gray-600 hover:bg-gray-100"
-                    disabled
-                  >
-                    🎉 베타 기간 무료
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* 토큰제 vs 구독제 비교 */}
-        <div className="mt-20">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">하이브리드 모델 비교</h2>
-            <div className="bg-gradient-to-br from-background to-muted/30 rounded-3xl p-8 shadow-lg border border-border">
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold mb-2">🆓 무료 체험</div>
-                  <div className="text-sm text-muted-foreground mb-4">
-                    무료검사만 가능
-                  </div>
-                  <ul className="text-sm space-y-1 text-left">
-                    <li>• 무료검사 이용</li>
-                    <li>• AI 기본 분석</li>
-                    <li>• 결과 요약 제공</li>
-                  </ul>
-                </div>
-                
-                <div className="text-center border-l border-r border-border px-6">
-                  <div className="text-2xl font-bold mb-2">🪙 토큰팩</div>
-                  <div className="text-sm text-muted-foreground mb-4">
-                    9,900원으로 50토큰 (시험용)
-                  </div>
-                  <ul className="text-sm space-y-1 text-left">
-                    <li>• 필요한 만큼만 결제</li>
-                    <li>• 토큰 영구 보관</li>
-                    <li>• 서비스 체험에 최적</li>
-                    <li>• 무통장입금 지원</li>
-                  </ul>
-                </div>
-                
-                <div className="text-center">
-                  <div className="text-2xl font-bold mb-2">💎 베이직 구독</div>
-                  <div className="text-sm text-muted-foreground mb-4">
-                    19,900원/월 무제한 이용
-                  </div>
-                  <ul className="text-sm space-y-1 text-left">
-                    <li>• 무제한 검사 및 분석</li>
-                    <li>• 전문가 상담 연결</li>
-                    <li>• 24/7 고객 지원</li>
-                    <li>• 정기 이용자에게 최적</li>
-                  </ul>
-                </div>
-              </div>
-              
-              <div className="mt-8 text-center">
-                <p className="text-lg font-semibold text-primary mb-4">
-                  🎯 어떤 방식이 나에게 맞을까요?
-                </p>
-                <div className="grid md:grid-cols-2 gap-4 text-sm">
-                  <div className="bg-purple-50 rounded-lg p-4">
-                    <div className="font-bold text-purple-800 mb-2">토큰팩이 적합한 분</div>
-                    <ul className="text-purple-700 space-y-1">
-                      <li>• 월 9회 이하 이용 예정</li>
-                      <li>• 서비스를 먼저 체험하고 싶은 분</li>
-                      <li>• 필요할 때만 결제하고 싶은 분</li>
-                    </ul>
-                  </div>
-                  <div className="bg-green-50 rounded-lg p-4">
-                    <div className="font-bold text-green-800 mb-2">베이직 구독이 적합한 분</div>
-                    <ul className="text-green-700 space-y-1">
-                      <li>• 월 10회 이상 이용 예정</li>
-                      <li>• 정기적인 관리가 필요한 분</li>
-                      <li>• 전문가 상담까지 원하는 분</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+        {/* 토큰 사용 안내 */}
+        <div className="mt-20 text-center">
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8 max-w-4xl mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Brain className="w-8 h-8 text-blue-600" />
+              <h2 className="text-2xl font-bold">토큰 사용 가이드</h2>
             </div>
-          </div>
-        </div>
-
-        {/* 창립자의 손편지 */}
-        <div className="mt-20">
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-gradient-to-br from-orange-100 via-amber-50 to-yellow-100 rounded-3xl p-8 shadow-lg border border-orange-200">
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Star className="w-8 h-8 text-white" />
+            <div className="grid md:grid-cols-2 gap-6 text-left">
+              <div className="space-y-2">
+                <div className="font-medium text-lg mb-3">📊 기능별 토큰 소비</div>
+                <div className="text-sm space-y-1">
+                  <div>• <strong>엔터테인먼트</strong>: 1토큰 (전생직업, 동물상 등)</div>
+                  <div>• <strong>기본 심리검사</strong>: 2토큰 (마음상태, 집중력 등)</div>
+                  <div>• <strong>AI 코치 세션</strong>: 3토큰</div>
+                  <div>• <strong>꿈해석/관찰분석</strong>: 4토큰</div>
+                  <div>• <strong>사주 분석</strong>: 6토큰</div>
+                  <div>• <strong>프리미엄 검사</strong>: 8토큰</div>
+                  <div>• <strong>IEP 생성</strong>: 50토큰</div>
+                  <div>• <strong>종합 리포팅</strong>: 200토큰</div>
                 </div>
-                <h2 className="text-2xl font-bold mb-2">창립자의 손편지</h2>
-                <p className="text-muted-foreground">아이들의 미래를 위한 진심어린 메시지</p>
               </div>
-              
-              <div className="bg-white/70 rounded-2xl p-6 shadow-sm">
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-orange-800 mb-2">데이터로 읽는 마음,</h3>
-                  <h2 className="text-3xl font-bold text-orange-900 mb-1">AI 하이라이트 프로</h2>
-                  <p className="text-lg text-orange-700 font-semibold">불안을 데이터로 안심을 리포트로</p>
+              <div className="space-y-2">
+                <div className="font-medium text-lg mb-3">✨ 토큰제 장점</div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-sm">필요한 만큼만 구매</span>
                 </div>
-                
-                <p className="text-lg leading-relaxed mb-4 text-orange-800">
-                  안녕하세요.<br />
-                  AI 하이라이트 프로 창립자 이수석입니다.
-                </p>
-                
-                <p className="text-base leading-relaxed mb-4">
-                  저는 지난 14년 동안 유소년 스포츠클럽, 발달센터, 심리상담센터, 
-                  그리고 병원 발달클리닉을 운영하며 수많은 아이들과 부모님, 
-                  성인과 어르신들을 만나왔습니다. 그 과정에서 늘 같은 고민을 들었습니다.
-                </p>
-                
-                <div className="bg-orange-50 p-4 rounded-lg mb-4 border-l-4 border-orange-400">
-                  <p className="text-sm text-orange-800 italic">
-                    "아이의 언어 발달이 늦는 건 아닐까?"<br />
-                    "직장 스트레스 때문에 무너지지 않을까?"<br />
-                    "부모님이 혹시 기억력이나 생활 능력에 변화를 겪고 계시진 않을까?"
-                  </p>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-sm">1년간 자유롭게 사용</span>
                 </div>
-                
-                <p className="text-base leading-relaxed mb-4">
-                  누구나 한 번쯤은 이런 걱정을 하지만, 막상 전문가를 찾기까지는 쉽지 않았습니다. 
-                  몇 달을 기다려야 하는 예약, 부담스러운 검사 비용, 상담실을 향한 두려움... 
-                  이런 이유로 많은 분들이 마음 건강을 챙기지 못하고 계셨습니다.
-                </p>
-                
-                <p className="text-base leading-relaxed mb-4">
-                  저는 이 현실을 바꾸고 싶었습니다. 그래서 직접 100% 개발하며 밤을 새워 만든 것이 바로 
-                  <span className="font-bold text-orange-800">AIHPRO(하이라이트 프로)</span> 입니다. 
-                  <span className="font-bold text-blue-600">단 3분이면 충분합니다.</span>
-                </p>
-                
-                <p className="text-base leading-relaxed mb-4">
-                  AIHPRO는 병원급 정밀도를 가진 딥러닝 AI가 단 3분 만에 마음 상태를 분석하고, 
-                  필요하다면 검증된 전문가가 마지막으로 코멘트를 더해주는 새로운 방식의 심리케어 플랫폼입니다.
-                </p>
-                
-                <p className="text-base leading-relaxed mb-4">
-                  작은 기록이 쌓이면, 큰 변화를 미리 막을 수 있습니다. 
-                  AIHPRO는 그 변화를 빠르게 감지하고, 필요할 때 전문가가 연결해 드립니다.
-                </p>
-                
-                <div className="bg-amber-50 p-4 rounded-lg mb-4 border-l-4 border-amber-400">
-                  <p className="text-base text-amber-800 italic font-medium">
-                    "기술은 차갑지만, 치유는 따뜻해야 한다"<br />
-                    는 마음으로 시작했습니다.
-                  </p>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-sm">언제든 추가 구매 가능</span>
                 </div>
-                
-                <p className="text-base leading-relaxed mb-4">
-                  AI가 먼저 빠르고 정확하게 마음을 읽어내고, 전문가는 그 위에 따뜻한 손길을 얹습니다. 
-                  이 과정에서 고객님은 "나는 혼자가 아니구나"라는 안도감을 느끼실 수 있습니다.
-                </p>
-                
-                <p className="text-base leading-relaxed mb-4">
-                  저희의 목표는 거창하지 않습니다. 단지 모든 가족이, 모든 사람의 마음의 무게를 
-                  혼자 지지 않아도 되는 세상을 만드는 것입니다.
-                </p>
-                
-                <p className="text-base leading-relaxed text-orange-800 font-medium mb-6">
-                  오늘 남긴 짧은 기록이 내일의 안심으로 이어지기를, 
-                  그렇게 가족이 건강하게 성장하고, 행복하게 살아가시기를 바라는 마음으로 
-                  AIHPRO를 만들었습니다.
-                </p>
-                
-                <div className="bg-gradient-to-r from-orange-100 to-amber-100 p-4 rounded-lg">
-                  <p className="text-base text-orange-900 font-bold text-center">
-                    당신의 마음과 가족의 행복을 지키는 든든한 동반자,<br />
-                    AI 하이라이트 프로가 늘 함께하겠습니다.
-                  </p>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-sm">토큰 영구 보관</span>
                 </div>
-                
-                <div className="text-right mt-6">
-                  <p className="text-sm text-muted-foreground">AI 하이라이트 프로 창립자 이수석 드림</p>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-sm">합리적인 가격 (최저 99원/토큰)</span>
                 </div>
-                
               </div>
             </div>
           </div>
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-20" id="faq">
+        <div className="mt-20">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">자주 묻는 질문</h2>
             <div className="space-y-6">
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">하이브리드 모델이란 무엇인가요?</h3>
+                <h3 className="font-semibold text-lg mb-2">토큰은 언제까지 사용할 수 있나요?</h3>
                 <p className="text-muted-foreground">
-                  토큰제와 구독제를 모두 제공하는 시스템입니다. 
-                  사용 패턴에 따라 본인에게 맞는 방식을 선택할 수 있어 더욱 경제적입니다.
+                  구매한 토큰은 구매일로부터 <strong>1년간</strong> 사용 가능합니다. 기간 내에 자유롭게 사용하세요.
                 </p>
               </div>
-              
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">AI 초개인화에이전트 모드란 무엇인가요?</h3>
-                <p className="text-muted-foreground mb-3">
-                  프로 구독 전용 기능으로, 사용자의 검사 데이터가 축적되면 AI가 패턴을 분석하여 
-                  능동적으로 맞춤형 제안을 해드리는 차별화된 서비스입니다.
-                </p>
-                <ul className="text-sm text-muted-foreground space-y-1 ml-4">
-                  <li>• 개인별 행동 패턴 학습 및 분석</li>
-                  <li>• 변화 징후 사전 감지 및 알림</li>
-                  <li>• 맞춤형 관리 방법 능동적 제안</li>
-                  <li>• 실시간 상태 모니터링</li>
-                </ul>
-              </div>
-
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">어떤 방식을 선택해야 하나요?</h3>
+                <h3 className="font-semibold text-lg mb-2">토큰이 부족하면 어떻게 하나요?</h3>
                 <p className="text-muted-foreground">
-                  월 10회 이상 이용 예정이시면 베이직 구독이, 
-                  월 9회 이하 또는 가끔 이용하시면 토큰팩이 더 경제적입니다.
+                  언제든 추가로 토큰을 구매할 수 있습니다. 새로 구매한 토큰은 기존 토큰과 합산되며, 
+                  새로운 유효기간이 부여됩니다.
                 </p>
               </div>
-
               <div className="bg-card rounded-lg p-6 border border-border">
                 <h3 className="font-semibold text-lg mb-2">환불이 가능한가요?</h3>
                 <p className="text-muted-foreground">
-                  디지털 서비스 특성상 환불은 불가합니다. 단, 구독은 언제든지 해지 가능하며, 
-                  결제된 토큰은 영구적으로 보관되어 언제든 사용하실 수 있습니다.
+                  토큰을 사용하지 않은 경우, 구매일로부터 7일 이내에 전액 환불이 가능합니다. 
+                  일부 사용한 경우, 사용한 금액을 제외하고 환불됩니다.
                 </p>
               </div>
-
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">나중에 방식을 변경할 수 있나요?</h3>
-                <p className="text-muted-foreground">
-                  네, 언제든지 변경 가능합니다. 
-                  토큰은 영구 보관되므로 구독으로 변경 후에도 기존 토큰을 사용할 수 있습니다.
-                </p>
-              </div>
-
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">전문가는 누구인가요?</h3>
-                <p className="text-muted-foreground">
-                  실제 제휴기관의 검증된 프로 전문가들로만 구성되어 있습니다. 
-                  모든 전문가는 관련 자격증과 임상 경험을 보유하고 있으며, 
-                  정기적인 교육과 평가를 통해 서비스 품질을 관리하고 있습니다.
-                </p>
-              </div>
-
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">개인정보는 안전한가요?</h3>
-                <p className="text-muted-foreground">
-                  모든 개인정보는 암호화되어 저장되며, 개인정보보호법에 따라 엄격하게 관리됩니다. 
-                  검사 결과는 본인과 담당 전문가에게만 제공되며, 제3자와 공유되지 않습니다.
-                </p>
-              </div>
-
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">AI 분석의 정확도는 얼마나 되나요?</h3>
-                <p className="text-muted-foreground">
-                  병원급 정밀도를 가진 딥러닝 AI를 사용하며, 13년간의 임상 데이터와 
-                  5000명 이상의 상담 경험을 바탕으로 개발되었습니다. 
-                  지속적인 학습을 통해 정확도를 개선하고 있습니다.
-                </p>
-              </div>
-
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">결과를 가족과 공유할 수 있나요?</h3>
-                <p className="text-muted-foreground">
-                  네, 검사 결과는 PDF 형태로 다운로드 가능하며, 
-                  가족 구성원과 안전하게 공유할 수 있는 기능을 제공합니다. 
-                  단, 개인정보보호를 위해 본인의 동의 하에만 가능합니다.
-                </p>
-              </div>
-
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">검사는 얼마나 자주 받는 것이 좋나요?</h3>
-                <p className="text-muted-foreground">
-                  일반적으로 월 1-2회 정기 검사를 권장하며, 
-                  특별한 상황이나 변화가 있을 때는 추가 검사를 받으시는 것이 좋습니다. 
-                  AI 에이전트가 개인별 최적 주기를 제안해드립니다.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 토스페이먼츠 결제 위젯 */}
-        <div id="payment-container" style={{ display: 'none' }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-bold mb-4">결제하기</h3>
-            <div id="payment-widget"></div>
-            <div className="flex gap-2 mt-4">
-              <Button id="payment-button" className="flex-1">결제하기</Button>
-              <Button variant="outline" onClick={() => {
-                const container = document.getElementById('payment-container');
-                if (container) container.style.display = 'none';
-              }}>취소</Button>
             </div>
           </div>
         </div>

@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Trophy, Target, TrendingUp, Share2, Copy, RotateCcw, Loader2, FileText, Sparkles } from 'lucide-react';
+import { Trophy, Target, TrendingUp, Share2, Copy, RotateCcw, Loader2, FileText, Sparkles, History, BarChart3 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useShareText } from '@/utils/shareUtils';
+import { useLifeAchievementActions } from '@/hooks/useLifeAchievementActions';
 
 interface LifeAchievementResultProps {
   result: {
@@ -29,6 +30,7 @@ export default function LifeAchievementResult({ result, onRestart }: LifeAchieve
   const { toast } = useToast();
   const navigate = useNavigate();
   const { shareAsText } = useShareText();
+  const { saveResult, isSaving } = useLifeAchievementActions();
 
   useEffect(() => {
     analyzeResults();
@@ -106,6 +108,27 @@ export default function LifeAchievementResult({ result, onRestart }: LifeAchieve
   };
 
   const levelInfo = getLevelInfo(result.level);
+
+  const handleSaveResult = async () => {
+    const success = await saveResult({
+      totalScore: result.totalScore,
+      level: result.level,
+      levelName: levelInfo.title,
+      categories: result.results.map(r => ({
+        title: r.category,
+        score: r.score,
+        total: 100
+      })),
+      answers: result.results
+    });
+
+    if (success) {
+      toast({
+        title: "저장 완료",
+        description: "결과가 성공적으로 저장되었습니다.",
+      });
+    }
+  };
 
   const handleShareText = () => {
     const text = `🏆 나의 인생 업적 달성률
@@ -219,6 +242,24 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
             <div className="flex flex-col gap-3 mt-8">
               <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <Button
+                  onClick={handleSaveResult}
+                  disabled={isSaving}
+                  className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                  size="lg"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      저장 중...
+                    </>
+                  ) : (
+                    <>
+                      <FileText className="w-4 h-4 mr-2" />
+                      결과 저장하기
+                    </>
+                  )}
+                </Button>
+                <Button
                   onClick={handleShareText}
                   className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                   size="lg"
@@ -226,6 +267,28 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
                   <Share2 className="w-4 h-4 mr-2" />
                   결과 공유하기
                 </Button>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <Button 
+                  onClick={() => navigate('/life-achievement-history')}
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1 w-full sm:w-auto"
+                >
+                  <History className="w-4 h-4 mr-2" />
+                  히스토리 보기
+                </Button>
+                <Button 
+                  onClick={() => navigate('/life-achievement-stats')}
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1 w-full sm:w-auto"
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  통계 보기
+                </Button>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <Button
                   onClick={onRestart}
                   variant="outline"
@@ -235,8 +298,6 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
                   <RotateCcw className="w-4 h-4 mr-2" />
                   다시 테스트하기
                 </Button>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 w-full">
                 <Button 
                   onClick={() => navigate('/fun-tests')}
                   variant="outline" 
@@ -246,25 +307,7 @@ ${nextGoals.map((goal, i) => `${i + 1}. ${goal}`).join('\n')}
                   <Target className="w-4 h-4 mr-2" />
                   다른 검사 하기
                 </Button>
-                <Button 
-                  onClick={() => navigate('/dashboard')}
-                  variant="outline" 
-                  size="lg" 
-                  className="flex-1 w-full sm:w-auto"
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  검사 기록 보기
-                </Button>
               </div>
-              <Button
-                onClick={handleShareText}
-                variant="secondary"
-                size="lg"
-                className="w-full"
-              >
-                <Copy className="w-4 h-4 mr-2" />
-                📋 텍스트로 복사하기
-              </Button>
             </div>
           </CardContent>
         </Card>

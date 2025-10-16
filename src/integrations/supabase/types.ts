@@ -3193,6 +3193,42 @@ export type Database = {
         }
         Relationships: []
       }
+      life_achievement_results: {
+        Row: {
+          answers: Json
+          category_scores: Json
+          created_at: string | null
+          id: string
+          level: number
+          level_name: string
+          total_score: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          answers: Json
+          category_scores: Json
+          created_at?: string | null
+          id?: string
+          level: number
+          level_name: string
+          total_score: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          category_scores?: Json
+          created_at?: string | null
+          id?: string
+          level?: number
+          level_name?: string
+          total_score?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       memory_conversations: {
         Row: {
           ai_generated_image_url: string | null

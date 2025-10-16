@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Crown, Sparkles, Clock, Users, CheckCircle } from "lucide-react";
+import { ArrowLeft, Crown, Sparkles, Clock, Users, CheckCircle, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
@@ -20,6 +20,8 @@ import ParentingStyleForm from "@/components/assessment/ParentingStyleForm";
 import ParentingStyleResult from "@/components/assessment/ParentingStyleResult";
 import AutismSpectrumForm from "@/components/assessment/AutismSpectrumForm";
 import AutismSpectrumResult from "@/components/assessment/AutismSpectrumResult";
+import { HexacoTest } from "@/components/assessment/HexacoTest";
+import { HexacoResult } from "@/components/assessment/HexacoResult";
 import { InsuranceAnalysisForm } from "@/components/assessment/InsuranceAnalysisForm";
 import { InsuranceAnalysisResult } from "@/components/assessment/InsuranceAnalysisResult";
 import { 
@@ -143,6 +145,35 @@ const PremiumAssessment = () => {
         <UnifiedNavigation />
         <div className="pt-4">
           <InsuranceAnalysisForm onComplete={handleInsuranceComplete} />
+        </div>
+      </div>
+    );
+  }
+
+  // HEXACO Test
+  if (currentTest === 'hexaco') {
+    if (assessmentResults && Object.keys(assessmentResults).length > 0) {
+      return (
+        <HexacoResult
+          result={assessmentResults}
+          onBack={() => {
+            setCurrentTest(null);
+            setAssessmentResults({});
+          }}
+        />
+      );
+    }
+    
+    return (
+      <div>
+        <UnifiedNavigation />
+        <div className="pt-4">
+          <HexacoTest
+            onComplete={(results) => {
+              setAssessmentResults(results);
+            }}
+            onBack={() => setCurrentTest(null)}
+          />
         </div>
       </div>
     );
@@ -329,7 +360,7 @@ const PremiumAssessment = () => {
               </div>
               <div className="grid md:grid-cols-4 gap-8 text-center">
                 <div className="group">
-                  <div className="text-3xl font-bold mb-2 group-hover:scale-110 transition-transform">14가지</div>
+                  <div className="text-3xl font-bold mb-2 group-hover:scale-110 transition-transform">15가지</div>
                   <div className="text-sm opacity-90 font-medium">전문 검사</div>
                 </div>
                 <div className="group">
@@ -489,6 +520,87 @@ const PremiumAssessment = () => {
                     className="w-full bg-gradient-to-r from-blue-700 to-cyan-600"
                   >
                     분석 시작
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* HEXACO 성격검사 카드 - NEW */}
+            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]"
+              onClick={() => setCurrentTest('hexaco')}
+            >
+              <div className="absolute top-2 right-2 z-10 flex gap-1">
+                <Badge className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white border-0 text-xs px-2 py-1 animate-pulse">
+                  🆕 NEW
+                </Badge>
+                <Badge className="bg-yellow-500 text-white border-0 text-xs px-2 py-1">
+                  <Star className="w-2.5 h-2.5 mr-1" />
+                  심층분석
+                </Badge>
+              </div>
+
+              <div className="bg-gradient-to-r from-indigo-700 to-purple-600 p-6 pr-24 text-white relative">
+                <div className="absolute inset-0 bg-black/10" />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <Crown className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg font-bold">💎 HEXACO 성격 검사</CardTitle>
+                      <p className="text-sm opacity-90">6차원 과학적 성격 분석</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <CardContent className="p-6 space-y-4">
+                <p className="text-muted-foreground leading-relaxed">
+                  정직-겸손, 정서성, 외향성, 원만성, 성실성, 개방성 6가지 차원으로 당신의 성격을 과학적으로 분석합니다. Big5를 넘어선 최신 성격 모델!
+                </p>
+
+                <p className="text-sm text-muted-foreground">
+                  Lee & Ashton의 검증된 HEXACO 모델 기반
+                </p>
+
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Clock className="w-4 h-4" />
+                    약 8-10분
+                  </div>
+                  <div className="text-muted-foreground">
+                    48개 문항
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-sm">프리미엄 분석 내용</h4>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">6가지 성격 차원 정밀 측정</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">직업 및 경력 맞춤 인사이트</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">대인관계 패턴 심층 분석</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">3000자 AI 전문가 리포트</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <Button 
+                    onClick={() => setCurrentTest('hexaco')}
+                    className="w-full bg-gradient-to-r from-indigo-700 to-purple-600"
+                  >
+                    검사 시작
                   </Button>
                 </div>
               </CardContent>

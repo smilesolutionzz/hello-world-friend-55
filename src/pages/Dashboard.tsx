@@ -51,14 +51,6 @@ import { NextStepSuggestion } from "@/components/onboarding/NextStepSuggestion";
 import TokenBalance from "@/components/TokenBalance";
 import { SamplePDFDownload } from "@/components/SamplePDFDownload";
 import LifespanDevelopmentalTracker from '@/components/development/LifespanDevelopmentalTracker';
-import { RecentActivity } from "@/components/dashboard/RecentActivity";
-import { QuickActions } from "@/components/dashboard/QuickActions";
-import { WeeklyInsights } from "@/components/dashboard/WeeklyInsights";
-import SafetyIndex from "@/components/dashboard/SafetyIndex";
-import LifeCareHub from "@/components/LifeCareHub";
-import { PersonalizationEngine } from '@/components/apr-strategy/PersonalizationEngine';
-import { RealTimeTracking } from '@/components/apr-strategy/RealTimeTracking';
-import { ViralMechanics } from '@/components/apr-strategy/ViralMechanics';
 import { PreventionScoreDashboard } from '@/components/wellness/PreventionScoreDashboard';
 
 interface Profile {
@@ -763,10 +755,8 @@ const Dashboard = () => {
               </Card>
             </div>
 
-            {/* Charts Section - 데스크톱에서 가로로 배치 */}
+            {/* Charts Section - 실제 데이터 기반 */}
         <div className="space-y-6">
-          <NextStepSuggestion />
-          
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               {/* Distribution Chart */}
               <Card className="p-4 lg:p-6 hover:shadow-md transition-shadow duration-200">
@@ -1101,35 +1091,11 @@ const Dashboard = () => {
               </Card>
             </div>
 
-            {/* 안전지수 & 발달 추적 - B2B 핵심 가치 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              {/* Safety Index - 보험 연계 핵심 지표 */}
-              <SafetyIndex observations={observations} />
-              
-              {/* 생애주기 발달 추적 - 장기 데이터 가치 */}
-              <div className="lg:col-span-1">
-                <LifespanDevelopmentalTracker 
-                  birthDate={profile?.birth_date}
-                />
-              </div>
-            </div>
-
-            {/* APR 전략: 개인화 엔진 - 메인에서 이동 */}
+            {/* 생애주기 발달 추적 */}
             <Card className="p-6 mb-6">
-              <h3 className="text-lg font-semibold mb-4">나만의 심리 프로필 & 맞춤 추천</h3>
-              <PersonalizationEngine />
-            </Card>
-
-            {/* APR 전략: 실시간 추적 - 메인에서 이동 */}
-            <Card className="p-6 mb-6">
-              <h3 className="text-lg font-semibold mb-4">실시간 진행 상황 & 목표 달성</h3>
-              <RealTimeTracking />
-            </Card>
-
-            {/* APR 전략: 바이럴 메커니즘 - 메인에서 이동 */}
-            <Card className="p-6 mb-6">
-              <h3 className="text-lg font-semibold mb-4">공유하고 함께 성장하기</h3>
-              <ViralMechanics />
+              <LifespanDevelopmentalTracker 
+                birthDate={profile?.birth_date}
+              />
             </Card>
 
             {/* User Info Section */}
@@ -1212,33 +1178,8 @@ const Dashboard = () => {
             <ConsultationHistory />
           </TabsContent>
 
-          <TabsContent value="lifecare">
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">이주의 통합 케어</h3>
-              <LifeCareHub />
-            </Card>
-            
-            {/* APR 전략: 개인화 엔진 추가 */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">나만의 케어 플랜</h3>
-              <PersonalizationEngine />
-            </Card>
-            
-            {/* APR 전략: 실시간 추적 추가 */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">실시간 진행 상황</h3>
-              <RealTimeTracking />
-            </Card>
-          </TabsContent>
-
           <TabsContent value="team">
             <TeamSettings />
-            
-            {/* APR 전략: 바이럴 메커니즘을 팀 설정에 추가 */}
-            <Card className="p-6 mt-6">
-              <h3 className="text-lg font-semibold mb-4">팀 공유 & 확산</h3>
-              <ViralMechanics />
-            </Card>
           </TabsContent>
 
           <TabsContent value="development">

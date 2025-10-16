@@ -77,7 +77,7 @@ const PlatformManual = () => {
               <BookOpen className="h-10 w-10 text-primary-foreground" />
             </div>
             <div className="space-y-4">
-              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent leading-tight">
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent leading-tight whitespace-nowrap">
                 AIHPRO 플랫폼 메뉴얼
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">

@@ -285,15 +285,15 @@ const PremiumAssessment = () => {
           
           {/* Title Section - 가로 정렬 */}
           <div className="text-center">
-            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 flex-wrap">
-              <div className="p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg flex-shrink-0">
-                <Crown className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="flex items-center justify-center gap-1.5 sm:gap-3 mb-4">
+              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg flex-shrink-0">
+                <Crown className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
               <h1 className="text-lg sm:text-2xl md:text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent whitespace-nowrap">
                 프리미엄 AIH 자기 체크리스트
               </h1>
-              <div className="p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg flex-shrink-0">
-                <Crown className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg flex-shrink-0">
+                <Crown className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
             </div>
             <p className="text-base sm:text-lg text-muted-foreground font-medium px-4">

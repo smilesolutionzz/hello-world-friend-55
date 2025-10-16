@@ -15,6 +15,7 @@ import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
 import BankTransfer from "./pages/BankTransfer";
 import BankTransferSubscription from "./pages/BankTransferSubscription";
+import Payment from "./pages/Payment";
 
 import Assessment from "./pages/Assessment";
 import FreeTrialAssessment from "./pages/FreeTrialAssessment";
@@ -215,6 +216,7 @@ const App = () => {
           <Route path="/growth-stories" element={<GrowthStories />} />
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
+          <Route path="/payment" element={<Payment />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/kpi-dashboard" element={<KPIDashboard />} />
           <Route path="/institution-admin" element={<InstitutionAdmin />} />

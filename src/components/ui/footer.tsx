@@ -31,8 +31,21 @@ const Footer = () => {
           </div>
         </div>
         
+        {/* 사업자 정보 (토스페이먼츠 요구사항) */}
+        <div className="border-t mt-8 pt-6">
+          <div className="text-sm text-muted-foreground space-y-1">
+            <p className="font-semibold text-foreground mb-2">사업자 정보</p>
+            <p>상호명: (AI)하이라이트</p>
+            <p>대표자명: 이수석</p>
+            <p>사업자등록번호: 206-12-62002</p>
+            <p>사업장 주소: 대구광역시 달서구 두류공원로 40, 710동 3층 302호(두류동, 산서마을)</p>
+            <p>사업의 종류: 영대 정보관리업 | 종목: 출판 소프트웨어 개발 및 공급업</p>
+            <p>대표 전화: 문의 aihpro@naver.com</p>
+          </div>
+        </div>
+        
         <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 하이라이트 AI. All rights reserved.</p>
+          <p>&copy; 2025 (AI)하이라이트. All rights reserved.</p>
           <div className="mt-2 space-x-4">
             <span className="text-red-600 font-medium">응급상황: 119</span>
             <span className="text-blue-600 font-medium">자살예방상담: 1577-0199</span>

@@ -3383,6 +3383,57 @@ export type Database = {
         }
         Relationships: []
       }
+      life_achievement_reports: {
+        Row: {
+          ai_insights: string | null
+          average_score: number | null
+          created_at: string | null
+          goals_completed: number | null
+          goals_total: number | null
+          id: string
+          improvement_rate: number | null
+          period_end: string
+          period_start: string
+          report_type: string
+          summary_image: string | null
+          top_category: string | null
+          total_tests: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_insights?: string | null
+          average_score?: number | null
+          created_at?: string | null
+          goals_completed?: number | null
+          goals_total?: number | null
+          id?: string
+          improvement_rate?: number | null
+          period_end: string
+          period_start: string
+          report_type: string
+          summary_image?: string | null
+          top_category?: string | null
+          total_tests?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_insights?: string | null
+          average_score?: number | null
+          created_at?: string | null
+          goals_completed?: number | null
+          goals_total?: number | null
+          id?: string
+          improvement_rate?: number | null
+          period_end?: string
+          period_start?: string
+          report_type?: string
+          summary_image?: string | null
+          top_category?: string | null
+          total_tests?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       life_achievement_results: {
         Row: {
           answers: Json
@@ -3415,6 +3466,74 @@ export type Database = {
           level_name?: string
           total_score?: number
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      life_achievement_share_likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          share_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          share_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          share_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "life_achievement_share_likes_share_id_fkey"
+            columns: ["share_id"]
+            isOneToOne: false
+            referencedRelation: "life_achievement_shares"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      life_achievement_shares: {
+        Row: {
+          achievement_data: Json | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_public: boolean | null
+          likes_count: number | null
+          share_type: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          achievement_data?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_public?: boolean | null
+          likes_count?: number | null
+          share_type: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          achievement_data?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_public?: boolean | null
+          likes_count?: number | null
+          share_type?: string
+          title?: string
           user_id?: string
         }
         Relationships: []

@@ -178,6 +178,12 @@ verify_jwt = false
 [functions.life-achievement-analyzer]
 verify_jwt = false
 
+[functions.generate-weekly-report]
+verify_jwt = false
+
+[functions.create-achievement-share]
+verify_jwt = false
+
 # Payment Functions
 [functions.check-subscription]
 verify_jwt = true

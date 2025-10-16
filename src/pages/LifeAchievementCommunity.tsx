@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft } from 'lucide-react';
 import BadgeShowcase from '@/components/life-achievement/BadgeShowcase';
 import Leaderboard from '@/components/life-achievement/Leaderboard';
+import { WeeklyReport } from '@/components/life-achievement/WeeklyReport';
+import { SocialFeed } from '@/components/life-achievement/SocialFeed';
 
 export default function LifeAchievementCommunity() {
   const navigate = useNavigate();
@@ -41,11 +43,17 @@ export default function LifeAchievementCommunity() {
           </p>
         </div>
 
-        <Tabs defaultValue="leaderboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+        <Tabs defaultValue="feed" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="feed">피드</TabsTrigger>
             <TabsTrigger value="leaderboard">리더보드</TabsTrigger>
             <TabsTrigger value="badges">배지</TabsTrigger>
+            <TabsTrigger value="reports">리포트</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="feed" className="space-y-6">
+            <SocialFeed />
+          </TabsContent>
 
           <TabsContent value="leaderboard" className="space-y-6">
             <Leaderboard userId={userId} />
@@ -53,6 +61,10 @@ export default function LifeAchievementCommunity() {
 
           <TabsContent value="badges" className="space-y-6">
             <BadgeShowcase userId={userId} />
+          </TabsContent>
+
+          <TabsContent value="reports" className="space-y-6">
+            <WeeklyReport />
           </TabsContent>
         </Tabs>
       </div>

@@ -86,7 +86,7 @@ const PremiumAssessmentForm = ({
         });
       }
 
-      // 카테고리별 점수 계산
+      // 카테고리별 점수 계산 (4점 척도 → 7점 척도 변환)
       const categoryScores: Record<string, number> = {};
       const categories = [...new Set(questions.map(q => q.category))];
       
@@ -111,7 +111,9 @@ const PremiumAssessmentForm = ({
         
         if (categoryAnswers.length > 0) {
           const average = categoryAnswers.reduce((sum, score) => sum + score, 0) / categoryAnswers.length;
-          categoryScores[category] = Math.round(average * 10) / 10; // 소수점 1자리
+          // 4점 척도(1-4)를 7점 척도(1-7)로 변환: (score - 1) / 3 * 6 + 1
+          const scaledScore = ((average - 1) / 3) * 6 + 1;
+          categoryScores[category] = Math.round(scaledScore * 10) / 10; // 소수점 1자리
         }
       });
 

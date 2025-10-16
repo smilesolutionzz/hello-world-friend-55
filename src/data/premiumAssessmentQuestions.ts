@@ -1702,12 +1702,12 @@ export const premiumAssessmentInfo = {
   },
   temperament: {
     title: "타고난 기질 분석검사", 
-    subtitle: "창작형 선천적 성향 과학적 측정",
+    subtitle: "창작형 선천적 성향 간편 측정",
     description: "기질 4차원(자극추구, 위험회피, 사회적 민감성, 지속성)으로 타고난 성향을 독창적으로 분석합니다",
     duration: "약 8-10분",
     questions_count: 30,
     premium_features: ["타고난 기질 4차원 분석", "스트레스 대처 방식", "심리적 취약점 평가", "성격 발달 가능성"],
-    disclaimer: "본 검사는 원저작과는 무관한 창작형 검사입니다.",
+    disclaimer: "본 검사는 기질검사를 참고한 창작형 간이 검사로, 전문가의 진단이나 치료를 대체할 수 없습니다. 심리학적 자격이 있는 전문가의 해석과 상담이 필요합니다.",
     rank: 2,
     badge: "🔥 2위"
   },

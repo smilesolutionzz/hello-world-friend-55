@@ -214,23 +214,24 @@ const PremiumAssessmentResult = ({
   };
 
   const getScoreInterpretation = (score: number, category: string) => {
-    if (score >= 6) return { level: "High (높음)", color: "bg-red-500", description: "매우 강한 특성" };
-    if (score >= 5) return { level: "Above Average (중상)", color: "bg-orange-500", description: "강한 특성" };
-    if (score >= 4) return { level: "Average (보통)", color: "bg-yellow-500", description: "일반적 특성" };
-    if (score >= 3) return { level: "Below Average (중하)", color: "bg-green-500", description: "약한 특성" };
-    return { level: "Low (낮음)", color: "bg-blue-500", description: "매우 약한 특성" };
+    // 7점 척도 기준 간소화된 해석
+    if (score >= 6) return { level: "매우 높음", color: "bg-red-500", description: "이 특성이 매우 강하게 나타남" };
+    if (score >= 5) return { level: "높음", color: "bg-orange-500", description: "이 특성이 강하게 나타남" };
+    if (score >= 4) return { level: "보통", color: "bg-yellow-500", description: "일반적인 수준" };
+    if (score >= 3) return { level: "다소 낮음", color: "bg-green-500", description: "이 특성이 약하게 나타남" };
+    return { level: "낮음", color: "bg-blue-500", description: "이 특성이 매우 약하게 나타남" };
   };
 
   const translateCategory = (category: string) => {
     const translations: Record<string, string> = {
-      // TCI 요인
-      'novelty_seeking': 'Novelty Seeking (자극추구)',
-      'harm_avoidance': 'Harm Avoidance (위험회피)', 
-      'reward_dependence': 'Reward Dependence (사회적 민감성)',
-      'persistence': 'Persistence (인내력)',
-      'self_directedness': 'Self-Directedness (자율성)',
-      'cooperativeness': 'Cooperativeness (협조성)',
-      'self_transcendence': 'Self-Transcendence (자기초월)',
+      // 기질 요인 (간소화된 한글명)
+      'novelty_seeking': '자극추구',
+      'harm_avoidance': '위험회피', 
+      'reward_dependence': '사회적 민감성',
+      'persistence': '인내력',
+      'self_directedness': '자율성',
+      'cooperativeness': '협조성',
+      'self_transcendence': '자기초월',
       
       // Big Five 요인  
       'extraversion': 'Extraversion (외향성)',

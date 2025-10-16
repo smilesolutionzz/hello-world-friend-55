@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Camera, Brain, Heart, Crown, Star, Zap, MessageCircle, Lightbulb, Users } from 'lucide-react';
+import { Sparkles, Camera, Brain, Heart, Crown, Star, Zap, MessageCircle, Lightbulb, Users, Trophy } from 'lucide-react';
 import PastLifeJobTest from '@/components/assessment/PastLifeJobTest';
 import AnimalFaceTest from '@/components/assessment/AnimalFaceTest';
 import InnerAnimalTest from '@/components/assessment/InnerAnimalTest';
@@ -12,11 +12,12 @@ import GrandpaMarriageDiagnosis from '@/components/assessment/GrandpaMarriageDia
 import MZNaggingTest from '@/components/assessment/MZNaggingTest';
 import WisdomAdviceTest from '@/components/assessment/WisdomAdviceTest';
 import OtrovertTest from '@/components/assessment/OtrovertTest';
+import LifeAchievementTest from '@/components/assessment/LifeAchievementTest';
 import { AIFeatureCard } from '@/components/AIFeatureCard';
 
 const FunTests = () => {
   const navigate = useNavigate();
-  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage' | 'mz_nagging' | 'wisdom_advice' | 'otrovert' | 'joseon_name' | 'joseon_job' | 'joseon_status'>('menu');
+  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage' | 'mz_nagging' | 'wisdom_advice' | 'otrovert' | 'joseon_name' | 'joseon_job' | 'joseon_status' | 'life_achievement'>('menu');
 
   const handleTestComplete = (result: any, testType: string) => {
     navigate('/fun-test-result', { 
@@ -58,6 +59,10 @@ const FunTests = () => {
 
   if (currentTest === 'otrovert') {
     return <OtrovertTest onComplete={handleTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentTest === 'life_achievement') {
+    return <LifeAchievementTest onComplete={handleTestComplete} onBack={handleBack} />;
   }
 
   if (currentTest === 'joseon_name') {
@@ -196,6 +201,16 @@ const FunTests = () => {
             rank={10}
             onClick={() => setCurrentTest('wisdom_advice')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 w-full"
+          />
+
+          <AIFeatureCard
+            title="🏆 인생 업적 달성률"
+            description="게임처럼 체크하는 나의 인생 목표 달성도! 경력, 가족, 재정, 건강 등 6가지 영역의 달성률과 다음 목표를 AI가 분석해드립니다"
+            icon={Trophy}
+            aiLevel="premium"
+            rank={11}
+            onClick={() => setCurrentTest('life_achievement')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 w-full"
           />
         </div>
 

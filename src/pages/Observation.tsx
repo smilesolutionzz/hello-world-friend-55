@@ -37,6 +37,7 @@ import ObservationResults from "@/components/observation/ObservationResults";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import IEPGenerationMotivation from "@/components/observation/IEPGenerationMotivation";
 import { isBetaTestPeriod } from '@/utils/betaTest';
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
 const Observation = () => {
   const navigate = useNavigate();
@@ -180,22 +181,13 @@ const Observation = () => {
   return (
     <AuthenticationGuard fallbackMessage="차세대 AI 관찰일지 시스템을 사용하려면 로그인이 필요합니다.">
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        {/* Unified Navigation */}
+        <UnifiedNavigation />
+        
         {/* Hero Section */}
         <section className="pt-24 pb-16 px-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10 animate-pulse"></div>
           <div className="container mx-auto max-w-7xl relative z-10">
-            {/* Navigation */}
-            <div className="mb-8">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/')}
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                홈으로
-              </Button>
-            </div>
 
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 px-6 py-3 rounded-full mb-8 animate-bounce">

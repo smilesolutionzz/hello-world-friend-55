@@ -269,35 +269,37 @@ const PremiumAssessment = () => {
         </div>
 
         <div className="relative z-10 container mx-auto px-6 pt-8 pb-16 max-w-7xl">
-        {/* Header - Enhanced */}
-        <div className="flex items-center justify-between mb-10">
-          <Button 
-            variant="ghost" 
-            onClick={handleBack}
-            className="flex items-center gap-2 hover:bg-primary/10 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="font-medium">뒤로가기</span>
-          </Button>
+        {/* Header - Mobile Optimized */}
+        <div className="mb-10">
+          {/* Back Button - 모바일에서 가장 위에 독립 배치 */}
+          <div className="mb-6">
+            <Button 
+              variant="ghost" 
+              onClick={handleBack}
+              className="flex items-center gap-2 hover:bg-primary/10 transition-colors px-4 py-2"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span className="font-medium text-base">뒤로가기</span>
+            </Button>
+          </div>
           
-          <div className="text-center flex-1 px-4">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <div className="p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg">
-                <Crown className="w-6 h-6 text-white" />
+          {/* Title Section - 가로 정렬 */}
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 flex-wrap">
+              <div className="p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg flex-shrink-0">
+                <Crown className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
                 프리미엄 AIH 자기 체크리스트
               </h1>
-              <div className="p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg">
-                <Crown className="w-6 h-6 text-white" />
+              <div className="p-2 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg flex-shrink-0">
+                <Crown className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
             </div>
-            <p className="text-lg text-muted-foreground font-medium">
+            <p className="text-base sm:text-lg text-muted-foreground font-medium px-4">
               전문적이고 정밀한 성향 파악을 위한 AIH전문가의 창작 도구들
             </p>
           </div>
-          
-          <div className="w-24" />
         </div>
 
         {/* Premium Features Banner - Redesigned */}

@@ -21,42 +21,51 @@ interface TokenPackage {
 
 const TOKEN_PACKAGES: TokenPackage[] = [
   {
-    name: '스타터',
+    name: '토큰팩 50',
     tokens: 50,
     price: 9900,
     bonus: 0,
     features: [
-      '관찰일지 16회',
-      'AI 분석 10회',
-      '심리테스트 16회',
-      '1년간 유효'
+      '기본 심리검사 25회',
+      '엔터테인먼트 테스트 50회',
+      'AI 상담 50메시지',
+      '꿈해석 12회',
+      '관찰일지 분석 12회',
+      '토큰 영구 보관',
+      '부담 없는 시작'
     ]
   },
   {
-    name: '베이직',
-    tokens: 100,
-    price: 19000,
-    bonus: 10,
+    name: '토큰팩 150',
+    tokens: 150,
+    price: 19900,
+    bonus: 0,
     popular: true,
     features: [
-      '110 토큰 제공',
-      '관찰일지 36회',
-      'AI 분석 22회',
-      '전문가 피드백 5회',
-      '1년간 유효'
+      '✨ 가장 인기있는 선택',
+      '기본 심리검사 75회',
+      'AI 상담 150메시지',
+      '관찰일지 분석 37회',
+      '사주분석 25회',
+      '꿈해석 37회',
+      '1토큰당 132원으로 가장 합리적',
+      '정기적 이용에 최적'
     ]
   },
   {
-    name: '프로',
-    tokens: 300,
-    price: 49000,
-    bonus: 50,
+    name: '토큰팩 400',
+    tokens: 400,
+    price: 39900,
+    bonus: 0,
     features: [
-      '350 토큰 제공',
-      '모든 기능 무제한',
-      '전문가 피드백 17회',
-      '우선 지원',
-      '1년간 유효'
+      '기본 심리검사 200회',
+      '프리미엄 검사 50회',
+      'IEP 생성 8회',
+      '종합리포트 2회',
+      '모든 기능 자유 이용',
+      '토큰당 99원으로 최고 할인율',
+      '장기간 안심 이용',
+      '전문가급 서비스'
     ]
   }
 ];
@@ -190,18 +199,14 @@ const Subscription = () => {
                 
                 <div className="space-y-2">
                   <div className="text-4xl font-bold text-foreground">
-                    {pkg.tokens + pkg.bonus} <span className="text-xl text-muted-foreground">토큰</span>
+                    {pkg.tokens} <span className="text-xl text-muted-foreground">토큰</span>
                   </div>
                   <div className="text-3xl font-bold text-primary">
                     ₩{formatPrice(pkg.price)}
                   </div>
-                  {pkg.bonus > 0 && (
-                    <div className="mt-3 p-2 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-                      <div className="text-sm font-bold text-green-700">
-                        🎁 보너스 {pkg.bonus}토큰
-                      </div>
-                    </div>
-                  )}
+                  <div className="mt-2 text-sm text-muted-foreground">
+                    토큰당 ₩{Math.round(pkg.price / pkg.tokens)}
+                  </div>
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-2">
                     <Clock className="w-4 h-4" />
                     <span>1년간 유효</span>
@@ -260,11 +265,14 @@ const Subscription = () => {
               <div className="space-y-2">
                 <div className="font-medium text-lg mb-3">📊 기능별 토큰 소비</div>
                 <div className="text-sm space-y-1">
-                  <div>• 관찰일지 작성: 3토큰</div>
-                  <div>• AI 분석: 5토큰</div>
-                  <div>• 기본 심리테스트: 3토큰</div>
-                  <div>• 고급 심리테스트: 10토큰</div>
-                  <div>• 전문가 피드백: 20토큰</div>
+                  <div>• <strong>엔터테인먼트</strong>: 1토큰 (전생직업, 동물상 등)</div>
+                  <div>• <strong>기본 심리검사</strong>: 2토큰 (마음상태, 집중력 등)</div>
+                  <div>• <strong>AI 코치 세션</strong>: 3토큰</div>
+                  <div>• <strong>꿈해석/관찰분석</strong>: 4토큰</div>
+                  <div>• <strong>사주 분석</strong>: 6토큰</div>
+                  <div>• <strong>프리미엄 검사</strong>: 8토큰</div>
+                  <div>• <strong>IEP 생성</strong>: 50토큰</div>
+                  <div>• <strong>종합 리포팅</strong>: 200토큰</div>
                 </div>
               </div>
               <div className="space-y-2">
@@ -283,7 +291,11 @@ const Subscription = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-sm">보너스 토큰 제공</span>
+                  <span className="text-sm">토큰 영구 보관</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span className="text-sm">합리적인 가격 (최저 99원/토큰)</span>
                 </div>
               </div>
             </div>

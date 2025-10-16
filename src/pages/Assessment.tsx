@@ -592,10 +592,6 @@ const Assessment = () => {
         <UnifiedNavigation />
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden pt-4">
         
-        {/* Background decorations */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-gradient opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-calm-blue to-warm-lavender opacity-10 rounded-full blur-3xl"></div>
-        
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
           <div className="text-center mb-16 space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold leading-tight">
@@ -797,16 +793,16 @@ const Assessment = () => {
             </div>
           </div>
 
-          {/* 이번 주 NEW 기능 */}
+          {/* 중간 중요도 - AIH 전문가 창작 검사 섹션 */}
           <div className="mb-12">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/15 via-purple-500/15 to-blue-500/15 rounded-3xl blur-sm"></div>
               <div className="relative bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-blue-950/20 rounded-2xl p-8 border border-blue-200 dark:border-blue-800">
                 <div className="text-center mb-8">
                   <div className="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-full font-bold text-sm mb-4">
-                    ⭐ 이번 주 NEW 기능
+                    ⭐ 높은 중요도 - 3분 검사
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-2">매주 새로운 AI 기능이 업데이트됩니다 ✨</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-2">AIH 전문가 창작 검사</h3>
                   <p className="text-muted-foreground">
                     심리전문가가 직접 개발한 신뢰도 높은 창작 검사
                   </p>
@@ -908,7 +904,7 @@ const Assessment = () => {
                     </ul>
                   </div>
 
-                  {/* 🆕 NEW 방어기제 검사 */}
+                  {/* 🆕 NEW 방어기제 테스트 */}
                   <div 
                     className="bg-white dark:bg-card hover-glow border-2 border-purple-400 dark:border-purple-600 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-xl"
                     onClick={() => navigate('/assessment/defense-mechanism-test')}
@@ -928,46 +924,7 @@ const Assessment = () => {
                       <li>• 심층 AI 분석</li>
                     </ul>
                   </div>
-
-                  {/* 🆕 NEW 6차원 성격진단 */}
-                  <div 
-                    className="bg-white dark:bg-card hover-glow border-2 border-indigo-400 dark:border-indigo-600 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-xl"
-                    onClick={() => navigate('/premium-assessment')}
-                  >
-                    <div className="absolute top-2 right-2">
-                      <Badge className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold text-xs px-2 py-1 animate-pulse">
-                        🆕 NEW
-                      </Badge>
-                    </div>
-                    <h4 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
-                      6차원 성격진단
-                    </h4>
-                    <p className="text-muted-foreground text-sm mb-3">심층 성격 6차원 분석</p>
-                    <ul className="space-y-1 text-xs">
-                      <li>• 48문항 10분</li>
-                      <li>• 6가지 성격 차원</li>
-                      <li>• 3000자 AI 리포트</li>
-                    </ul>
-                  </div>
-
-                  {/* 🔥 TOP 인기 3분 테스트 1위 */}
-                  <div 
-                    className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
-                    onClick={() => setCurrentStep('bigfive-test')}
-                  >
-                    <div className="absolute top-2 right-2">
-                      <Badge className="bg-red-500 text-white font-bold text-xs px-2 py-1">
-                        🔥 1위
-                      </Badge>
-                    </div>
-                    <h4 className="text-lg font-bold text-brand-gradient mb-3">5차원 성격 분석</h4>
-                    <p className="text-muted-foreground text-sm mb-3">나의 성격 특성 탐색</p>
-                    <ul className="space-y-1 text-xs">
-                      <li>• 25문항 5분</li>
-                      <li>• 5가지 영역</li>
-                      <li>• 상세 분석</li>
-                    </ul>
-                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1120,11 +1077,12 @@ const Assessment = () => {
             </div>
           </div>
 
-          </div>
+        </div>
         </div>
       </div>
     );
   }
+
 
   if (currentStep === 'dream-interpretation') {
     return (

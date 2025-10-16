@@ -17,65 +17,65 @@ interface Question {
 }
 
 const questions: Question[] = [
-  // Honesty-Humility (진실성-겸손)
-  { id: 1, text: "내 이익을 위해 상황을 왜곡하는 것이 괜찮다고 여긴다", category: 'honesty', reverse: true },
-  { id: 2, text: "나의 성취를 과시하지 않으려 노력한다", category: 'honesty' },
-  { id: 3, text: "재산을 많이 모으는 것이 삶의 최고 목표다", category: 'honesty', reverse: true },
-  { id: 4, text: "특권을 누릴 자격이 있다고 보지 않는다", category: 'honesty' },
-  { id: 5, text: "득이 되면 원칙을 굽힐 수 있다", category: 'honesty', reverse: true },
-  { id: 6, text: "타인의 행복을 함께 기뻐할 수 있다", category: 'honesty' },
-  { id: 7, text: "자신의 역량을 부풀려 말하곤 한다", category: 'honesty', reverse: true },
-  { id: 8, text: "정신적 충만함이 물질보다 소중하다", category: 'honesty' },
+  // Honesty-Humility (정직-겸손)
+  { id: 1, text: "다른 사람을 속이는 것이 정당화될 때가 있다고 생각한다", category: 'honesty', reverse: true },
+  { id: 2, text: "나는 내가 가진 것에 대해 자랑하지 않는 편이다", category: 'honesty' },
+  { id: 3, text: "부자가 되는 것이 인생에서 가장 중요하다", category: 'honesty', reverse: true },
+  { id: 4, text: "특별한 대우를 받을 자격이 있다고 생각하지 않는다", category: 'honesty' },
+  { id: 5, text: "규칙을 어기더라도 이익이 크다면 할 수 있다", category: 'honesty', reverse: true },
+  { id: 6, text: "다른 사람의 성공을 진심으로 기뻐할 수 있다", category: 'honesty' },
+  { id: 7, text: "나의 능력이나 업적을 과장하는 경향이 있다", category: 'honesty', reverse: true },
+  { id: 8, text: "물질적 소유보다 정신적 가치가 더 중요하다", category: 'honesty' },
 
-  // Emotionality (감수성)
-  { id: 9, text: "긴장된 상황에서도 평정심을 잃지 않는다", category: 'emotionality', reverse: true },
-  { id: 10, text: "남의 아픔에 깊은 연민을 느낀다", category: 'emotionality' },
-  { id: 11, text: "사소한 일에도 걱정이 많아진다", category: 'emotionality' },
-  { id: 12, text: "주변인에게 정서적 도움을 주려 한다", category: 'emotionality' },
-  { id: 13, text: "위험 앞에서도 두려움이 없다", category: 'emotionality', reverse: true },
-  { id: 14, text: "친밀한 관계를 무척 소중히 여긴다", category: 'emotionality' },
-  { id: 15, text: "감정의 변화가 거의 없다", category: 'emotionality', reverse: true },
-  { id: 16, text: "약한 이를 돕는 모습에 깊이 감동한다", category: 'emotionality' },
+  // Emotionality (정서성)
+  { id: 9, text: "스트레스 상황에서도 침착함을 유지한다", category: 'emotionality', reverse: true },
+  { id: 10, text: "다른 사람의 고통을 보면 깊이 공감한다", category: 'emotionality' },
+  { id: 11, text: "작은 일에도 쉽게 불안해진다", category: 'emotionality' },
+  { id: 12, text: "사람들에게 감정적인 지지를 제공하는 것을 좋아한다", category: 'emotionality' },
+  { id: 13, text: "위험한 상황에서도 두려움을 느끼지 않는다", category: 'emotionality', reverse: true },
+  { id: 14, text: "다른 사람과의 유대감을 매우 중요하게 생각한다", category: 'emotionality' },
+  { id: 15, text: "감정 기복이 거의 없는 편이다", category: 'emotionality', reverse: true },
+  { id: 16, text: "약자를 돕는 일에 깊은 감동을 느낀다", category: 'emotionality' },
 
-  // eXtraversion (활력성)
-  { id: 17, text: "여럿이 함께 하는 것이 재미있다", category: 'extraversion' },
-  { id: 18, text: "고요한 공간을 더 좋아한다", category: 'extraversion', reverse: true },
-  { id: 19, text: "모임에서 원기를 회복한다", category: 'extraversion' },
-  { id: 20, text: "홀로 있을 때 가장 편안하다", category: 'extraversion', reverse: true },
-  { id: 21, text: "사람들과 어울리는 기회를 만든다", category: 'extraversion' },
-  { id: 22, text: "새 사람 만나기가 부담된다", category: 'extraversion', reverse: true },
-  { id: 23, text: "대화의 주도권을 갖는 걸 즐긴다", category: 'extraversion' },
-  { id: 24, text: "인파 속에서 기운이 빠진다", category: 'extraversion', reverse: true },
+  // eXtraversion (외향성)
+  { id: 17, text: "사람들과 어울리는 것이 즐겁다", category: 'extraversion' },
+  { id: 18, text: "조용한 환경을 선호한다", category: 'extraversion', reverse: true },
+  { id: 19, text: "파티나 모임에서 활력을 얻는다", category: 'extraversion' },
+  { id: 20, text: "혼자 있을 때 더 편안하다", category: 'extraversion', reverse: true },
+  { id: 21, text: "사교적인 활동을 적극적으로 찾는다", category: 'extraversion' },
+  { id: 22, text: "새로운 사람을 만나는 것이 부담스럽다", category: 'extraversion', reverse: true },
+  { id: 23, text: "대화의 중심이 되는 것을 즐긴다", category: 'extraversion' },
+  { id: 24, text: "사람이 많은 곳에서 에너지가 소진된다", category: 'extraversion', reverse: true },
 
-  // Agreeableness (협력성)
-  { id: 25, text: "남의 잘못을 너그럽게 받아준다", category: 'agreeableness' },
-  { id: 26, text: "다툼이 있으면 한참 마음에 담아둔다", category: 'agreeableness', reverse: true },
-  { id: 27, text: "양보와 조정을 자연스럽게 한다", category: 'agreeableness' },
-  { id: 28, text: "내 생각을 관철하기 위해 밀어붙인다", category: 'agreeableness', reverse: true },
-  { id: 29, text: "상대 처지를 헤아리려 애쓴다", category: 'agreeableness' },
-  { id: 30, text: "지적받으면 변명부터 한다", category: 'agreeableness', reverse: true },
-  { id: 31, text: "경쟁보다 협업이 낫다고 본다", category: 'agreeableness' },
-  { id: 32, text: "남의 실책을 금방 지적한다", category: 'agreeableness', reverse: true },
+  // Agreeableness (원만성)
+  { id: 25, text: "다른 사람을 쉽게 용서하는 편이다", category: 'agreeableness' },
+  { id: 26, text: "사람들과 갈등이 생기면 오래 기억한다", category: 'agreeableness', reverse: true },
+  { id: 27, text: "타협하는 것을 자연스럽게 받아들인다", category: 'agreeableness' },
+  { id: 28, text: "내 의견을 관철시키기 위해 강하게 주장한다", category: 'agreeableness', reverse: true },
+  { id: 29, text: "다른 사람의 입장을 이해하려 노력한다", category: 'agreeableness' },
+  { id: 30, text: "비판을 받으면 방어적으로 반응한다", category: 'agreeableness', reverse: true },
+  { id: 31, text: "협력하는 것이 경쟁하는 것보다 좋다", category: 'agreeableness' },
+  { id: 32, text: "다른 사람의 실수를 쉽게 지적한다", category: 'agreeableness', reverse: true },
 
-  // Conscientiousness (계획성)
-  { id: 33, text: "일을 순서대로 정리해서 진행한다", category: 'conscientiousness' },
-  { id: 34, text: "기한을 자주 넘긴다", category: 'conscientiousness', reverse: true },
-  { id: 35, text: "완성도 있게 마무리하는 게 중요하다", category: 'conscientiousness' },
-  { id: 36, text: "즉흥적 행동을 더 좋아한다", category: 'conscientiousness', reverse: true },
-  { id: 37, text: "목표를 정하고 지속적으로 실천한다", category: 'conscientiousness' },
-  { id: 38, text: "정돈하는 데 서툴다", category: 'conscientiousness', reverse: true },
-  { id: 39, text: "책임을 다하려는 마음이 강하다", category: 'conscientiousness' },
-  { id: 40, text: "큰 일을 자꾸 뒤로 미룬다", category: 'conscientiousness', reverse: true },
+  // Conscientiousness (성실성)
+  { id: 33, text: "일을 체계적으로 계획하고 실행한다", category: 'conscientiousness' },
+  { id: 34, text: "마감일을 자주 놓친다", category: 'conscientiousness', reverse: true },
+  { id: 35, text: "완벽하게 끝내는 것이 중요하다", category: 'conscientiousness' },
+  { id: 36, text: "즉흥적으로 행동하는 것을 선호한다", category: 'conscientiousness', reverse: true },
+  { id: 37, text: "목표를 세우고 꾸준히 추구한다", category: 'conscientiousness' },
+  { id: 38, text: "정리정돈을 잘 하지 못한다", category: 'conscientiousness', reverse: true },
+  { id: 39, text: "책임감이 강한 편이다", category: 'conscientiousness' },
+  { id: 40, text: "중요한 일을 미루는 경향이 있다", category: 'conscientiousness', reverse: true },
 
-  // Openness to Experience (탐구성)
-  { id: 41, text: "새 관점과 아이디어를 즐겨 탐색한다", category: 'openness' },
-  { id: 42, text: "검증된 방법을 계속 쓰는 게 편하다", category: 'openness', reverse: true },
-  { id: 43, text: "예술과 문화에 흥미가 깊다", category: 'openness' },
-  { id: 44, text: "추상보다 실용을 선호한다", category: 'openness', reverse: true },
-  { id: 45, text: "상상하는 것을 즐긴다", category: 'openness' },
-  { id: 46, text: "반복되는 일상이 좋다", category: 'openness', reverse: true },
-  { id: 47, text: "다른 문화와 가치를 존중한다", category: 'openness' },
-  { id: 48, text: "전통 방식이 최선이라 생각한다", category: 'openness', reverse: true },
+  // Openness to Experience (개방성)
+  { id: 41, text: "새로운 아이디어나 관점을 탐구하는 것을 즐긴다", category: 'openness' },
+  { id: 42, text: "익숙한 방식을 고수하는 것이 편하다", category: 'openness', reverse: true },
+  { id: 43, text: "예술과 문화에 관심이 많다", category: 'openness' },
+  { id: 44, text: "추상적인 개념보다 실용적인 것을 선호한다", category: 'openness', reverse: true },
+  { id: 45, text: "상상력이 풍부한 편이다", category: 'openness' },
+  { id: 46, text: "일상적이고 반복적인 것을 선호한다", category: 'openness', reverse: true },
+  { id: 47, text: "다양한 문화와 가치관을 존중한다", category: 'openness' },
+  { id: 48, text: "전통적인 방식이 가장 좋다고 생각한다", category: 'openness', reverse: true },
 ];
 
 interface HexacoTestProps {
@@ -186,7 +186,7 @@ export const HexacoTest: React.FC<HexacoTestProps> = ({ onComplete, onBack }) =>
       }
 
       onComplete(result);
-      toast.success('6차원 성격 분석이 완료되었습니다!');
+      toast.success('HEXACO 분석이 완료되었습니다!');
     } catch (error) {
       console.error('Analysis error:', error);
       toast.error('분석 중 오류가 발생했습니다.');
@@ -208,10 +208,10 @@ export const HexacoTest: React.FC<HexacoTestProps> = ({ onComplete, onBack }) =>
             </div>
           </div>
           <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            AI가 당신의 6차원 성격을 분석하고 있습니다
+            AI가 당신의 HEXACO 성격을 분석하고 있습니다
           </h3>
           <p className="text-muted-foreground mb-8">
-            진실성, 감수성, 활력성, 협력성, 계획성, 탐구성을 심층 분석하여 상세한 프로필을 생성합니다...
+            6가지 차원의 성격 특성을 심층 분석하여 상세한 프로필을 생성합니다...
           </p>
           <div className="flex justify-center gap-2">
             <div className="w-3 h-3 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
@@ -232,13 +232,13 @@ export const HexacoTest: React.FC<HexacoTestProps> = ({ onComplete, onBack }) =>
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-6 py-3 rounded-full mb-4">
             <Crown className="w-5 h-5" />
-            <span className="font-bold">6차원 성격진단</span>
+            <span className="font-bold">HEXACO 성격 검사</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             6차원 심층 성격 분석
           </h1>
           <p className="text-muted-foreground">
-            진실성, 감수성, 활력성, 협력성, 계획성, 탐구성을 과학적으로 측정합니다
+            정직-겸손, 정서성, 외향성, 원만성, 성실성, 개방성을 과학적으로 측정합니다
           </p>
         </div>
 

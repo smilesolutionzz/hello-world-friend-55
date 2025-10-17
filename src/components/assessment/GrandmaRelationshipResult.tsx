@@ -275,6 +275,24 @@ export default function GrandmaRelationshipResult({ result, onRetake }: GrandmaR
               </CardContent>
             </Card>
 
+            {/* 전문 상담 연결 */}
+            <Card className="border-2 border-blue-200 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-blue-100 to-purple-100">
+                <CardTitle className="text-lg text-blue-800">더 깊은 상담이 필요하신가요?</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <p className="text-sm text-blue-700 mb-3">
+                  전문 상담가와의 1:1 상담으로 관계를 더욱 발전시켜보세요.
+                </p>
+                <Button 
+                  onClick={() => window.location.href = '/expert-counseling'}
+                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                >
+                  전문가 상담 신청하기
+                </Button>
+              </CardContent>
+            </Card>
+
             {/* 면책 조항 */}
             <Card className="border-2 border-gray-200 shadow-lg">
               <CardContent className="p-4">

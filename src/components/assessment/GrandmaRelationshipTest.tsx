@@ -21,6 +21,69 @@ interface Question {
   options: { value: string; label: string }[];
 }
 
+// 답변별 점수 (긍정적일수록 높은 점수)
+const answerScores: Record<string, number> = {
+  // 1. 첫 만남
+  "love_at_first": 10,
+  "comfortable": 9,
+  "awkward": 6,
+  "friend_zone": 3,
+  
+  // 2. 갈등 해결
+  "wife_first": 7,
+  "husband_first": 7,
+  "both_same": 5,
+  "both_avoid": 2,
+  
+  // 3. 돈 관리
+  "plan_together": 10,
+  "one_manages_well": 7,
+  "flexible": 8,
+  "no_plan": 3,
+  
+  // 4. 집안일
+  "share_equally": 10,
+  "flexible_help": 9,
+  "one_mostly": 5,
+  "always_fight": 2,
+  
+  // 5. 연락 패턴
+  "constant": 7,
+  "good_morning_night": 9,
+  "when_needed": 6,
+  "forget_often": 2,
+  
+  // 6. 배려
+  "both_very_considerate": 10,
+  "usually_considerate": 8,
+  "sometimes": 5,
+  "rarely": 2,
+  
+  // 7. 싸움
+  "explosive": 6,
+  "cold_war": 3,
+  "talk_it_out": 10,
+  "avoid": 5,
+  
+  // 8. 돈 씀씀이
+  "both_save": 8,
+  "both_spend": 6,
+  "balanced": 10,
+  "very_different": 3,
+  
+  // 9. 주변 반응
+  "everyone_loves": 10,
+  "mixed_reaction": 7,
+  "some_concern": 4,
+  "strong_opposition": 1,
+  
+  // 10. 현재 상태
+  "perfect": 10,
+  "mostly_good": 8,
+  "ups_downs": 5,
+  "rocky": 2
+};
+
 const questions: Question[] = [
   {
     id: "first_meeting",
@@ -33,33 +96,53 @@ const questions: Question[] = [
     ]
   },
   {
-    id: "date_planning",
-    question: "데이트 계획은 주로 누가 세우나요?",
+    id: "conflict_resolution",
+    question: "갈등이 생겼을 때 누가 먼저 화해하나요?",
     options: [
-      { value: "me_always", label: "항상 내가 다 계획한다" },
-      { value: "partner_always", label: "상대방이 다 알아서 한다" },
-      { value: "together", label: "함께 상의해서 정한다" },
-      { value: "no_plan", label: "그냥 만나서 아무거나 한다" }
+      { value: "wife_first", label: "주로 아내가 먼저 다가간다" },
+      { value: "husband_first", label: "주로 남편이 먼저 사과한다" },
+      { value: "both_same", label: "둘 다 동시에 화해하려 노력한다" },
+      { value: "both_avoid", label: "둘 다 피하다가 시간이 해결한다" }
     ]
   },
   {
-    id: "money_spending",
-    question: "돈 쓰는 패턴은 어떤가요?",
+    id: "money_management",
+    question: "가계 관리는 어떻게 하나요?",
     options: [
-      { value: "dutch_pay", label: "항상 더치페이" },
-      { value: "take_turns", label: "번갈아 가면서 낸다" },
-      { value: "one_pays", label: "한 명이 주로 낸다" },
-      { value: "fight_over", label: "내겠다고 싸운다" }
+      { value: "plan_together", label: "함께 계획하고 관리한다" },
+      { value: "one_manages_well", label: "한 명이 관리하지만 투명하게 공유한다" },
+      { value: "flexible", label: "각자 쓸 돈은 각자 관리한다" },
+      { value: "no_plan", label: "특별한 계획 없이 쓴다" }
+    ]
+  },
+  {
+    id: "housework",
+    question: "집안일은 어떻게 분담하나요?",
+    options: [
+      { value: "share_equally", label: "공평하게 역할을 나눈다" },
+      { value: "flexible_help", label: "상황에 따라 서로 도와준다" },
+      { value: "one_mostly", label: "한쪽이 주로 하지만 불만은 없다" },
+      { value: "always_fight", label: "이 문제로 자주 다툰다" }
     ]
   },
   {
     id: "phone_habits",
     question: "연락하는 패턴은?",
     options: [
-      { value: "constant", label: "하루종일 연락한다" },
+      { value: "constant", label: "하루종일 소소하게 연락한다" },
       { value: "good_morning_night", label: "아침저녁 인사는 꼭 한다" },
       { value: "when_needed", label: "필요할 때만 연락한다" },
       { value: "forget_often", label: "자주 깜빡한다" }
+    ]
+  },
+  {
+    id: "consideration",
+    question: "서로에 대한 배려는 어느 정도인가요?",
+    options: [
+      { value: "both_very_considerate", label: "둘 다 항상 상대를 먼저 생각한다" },
+      { value: "usually_considerate", label: "대부분 서로 배려한다" },
+      { value: "sometimes", label: "가끔 배려하지만 종종 놓친다" },
+      { value: "rarely", label: "각자 바빠서 배려할 여유가 없다" }
     ]
   },
   {
@@ -73,40 +156,20 @@ const questions: Question[] = [
     ]
   },
   {
-    id: "future_talk",
-    question: "미래에 대한 이야기는?",
+    id: "spending_pattern",
+    question: "돈 쓰는 패턴은 어떤가요?",
     options: [
-      { value: "detailed_plans", label: "구체적으로 계획을 세운다" },
-      { value: "vague_dreams", label: "막연하게 꿈만 이야기한다" },
-      { value: "avoid_topic", label: "그런 얘기는 피한다" },
-      { value: "different_views", label: "서로 생각이 다르다" }
-    ]
-  },
-  {
-    id: "affection",
-    question: "애정 표현은 어떻게 하나요?",
-    options: [
-      { value: "physical", label: "스킨십으로 표현한다" },
-      { value: "words", label: "말로 자주 표현한다" },
-      { value: "actions", label: "행동으로 보여준다" },
-      { value: "gifts", label: "선물이나 깜짝선물로" }
-    ]
-  },
-  {
-    id: "jealousy",
-    question: "질투에 대해서는?",
-    options: [
-      { value: "very_jealous", label: "둘 다 질투가 심하다" },
-      { value: "one_sided", label: "한쪽만 질투한다" },
-      { value: "healthy", label: "적당한 수준이다" },
-      { value: "no_jealousy", label: "질투 안 한다" }
+      { value: "both_save", label: "둘 다 아껴 쓰는 편이다" },
+      { value: "both_spend", label: "둘 다 쓸 때는 쓴다" },
+      { value: "balanced", label: "한 명은 절약, 한 명은 소비하며 균형을 맞춘다" },
+      { value: "very_different", label: "돈에 대한 가치관이 너무 다르다" }
     ]
   },
   {
     id: "family_friends",
     question: "주변 사람들 반응은?",
     options: [
-      { value: "everyone_loves", label: "모두가 좋아한다" },
+      { value: "everyone_loves", label: "모두가 좋아하고 응원한다" },
       { value: "mixed_reaction", label: "반반이다" },
       { value: "some_concern", label: "걱정하는 사람들이 있다" },
       { value: "strong_opposition", label: "강하게 반대한다" }
@@ -181,47 +244,59 @@ export default function GrandmaRelationshipTest({ onComplete, onBack }: GrandmaR
         throw new Error("토큰 차감에 실패했습니다");
       }
 
-      // Create a variety of humorous grandma analyses
-      const grandmaAnalyses = [
-        {
-          relationship_type: "궁합 최악 중의 최악",
-          grandma_verdict: "야 이것들아! 이건 뭐 원수를 맺은 관계냐? 너희 둘이 만나면 우리나라 GDP가 떨어진다고! 하나는 동쪽을 보면 하나는 서쪽을 보고, 하나는 밥을 먹으면 하나는 똥을 싸는 수준이야. 이런 걸 연애라고 부르는 거냐? 할머니가 봐도 기가 막혀서 혈압약 먹어야겠다!",
-          detailed_analysis: "이봐, 너희들이 만나는 건 우주의 질서를 거스르는 일이야. 하나는 개처럼 충성스럽고 하나는 고양이처럼 도도한데, 이게 어떻게 맞겠어? 게다가 하나는 불고기를 좋아하고 하나는 냉면을 좋아하잖아. 이런 근본적인 차이를 어떻게 극복하라고? 너희가 같이 있으면 주변 사람들도 다 스트레스 받는다고! 할머니가 젊었을 때도 이런 커플은 못 봤어. 정말로!",
-          advice: "그냥 깨끗하게 헤어져라. 아니면 둘 중 하나는 화성으로 이민을 가든지. 만약에 정말정말 사랑한다면, 둘 다 성격을 완전히 갈아엎고 새 사람이 되어야 할 거야. 그런데 그럴 바에야 차라리 새로운 사람을 만나는 게 낫지 않겠어? 할머니 말이 틀렸나 봐봐!",
-          compatibility_score: 8
-        },
-        {
-          relationship_type: "어휴 골치 아픈 관계",
-          grandma_verdict: "얘들아, 너희 보고 있으면 머리가 지끈지끈해. 하나는 아침형 인간이고 하나는 밤형 인간이면서 어떻게 만났냐? 이거 완전 시차 적응 안 되는 국제커플 수준이야! 하나는 조용히 책 보는 걸 좋아하고 하나는 클럽에서 신나게 놀고 싶어하는데, 데이트는 어떻게 하려고?",
-          detailed_analysis: "너희 둘은 마치 물과 기름 같아. 섞이지도 않으면서 계속 같은 그릇에 있으려고 하니까 문제지. 하나는 계획적이고 하나는 즉흥적이고, 하나는 아껴 쓰고 하나는 펑펑 쓰고... 이런 차이가 하나둘이냐? 근데 희한하게도 서로한테 끌리는 건 인정해줄게. 그게 사랑인지 호기심인지는 모르겠지만 말이야.",
-          advice: "많이 많이 대화해라. 그리고 서로의 다른 점을 인정하는 연습을 해. 하지만 너무 힘들면 포기하는 것도 용기야. 할머니는 너희가 행복했으면 좋겠어서 하는 소리야!",
-          compatibility_score: 35
-        },
-        {
-          relationship_type: "그럭저럭 볼만한 커플",
-          grandma_verdict: "음... 나쁘지 않네? 너희 둘이 같이 있는 거 보니까 그럭저럭 어울려. 근데 가끔 보면 답답할 때가 있어. 왜 그렇게 소통을 안 하냐? 서로 마음속으로만 생각하고 말은 안 하면서 상대방이 알아주길 바라고... 이게 뭐냐?",
-          detailed_analysis: "너희는 기본적으로는 잘 맞아. 취미도 비슷하고 가치관도 크게 다르지 않고. 근데 문제는 둘 다 너무 착해서 솔직한 말을 안 한다는 거야. 싫은 건 싫다고 하고, 좋은 건 좋다고 해야지. 그래야 진짜 사랑이지, 참고만 있으면 언젠가는 폭발한다고!",
-          advice: "좀 더 솔직해져라. 그리고 가끔은 서로에게 깜짝 이벤트도 해주고. 너무 평범하면 재미없잖아. 하지만 전체적으로는 괜찮은 커플이야!",
-          compatibility_score: 68
-        },
-        {
+      // 점수 계산
+      let totalScore = 0;
+      Object.entries(answers).forEach(([questionId, answerValue]) => {
+        totalScore += answerScores[answerValue] || 0;
+      });
+      
+      const maxScore = questions.length * 10;
+      const compatibilityScore = Math.round((totalScore / maxScore) * 100);
+
+      // 점수에 따른 분석 선택
+      let selectedAnalysis;
+      
+      if (compatibilityScore >= 85) {
+        selectedAnalysis = {
           relationship_type: "완벽한 천생연분",
           grandma_verdict: "어머나, 이것들 봐라! 너희 둘 보고 있으면 할머니가 다 기분이 좋아진다. 서로를 바라보는 눈빛부터가 다르더라. 이런 걸 진짜 사랑이라고 하는 거야. 할머니가 젊었을 때도 이런 커플은 흔하지 않았어!",
           detailed_analysis: "너희는 정말 잘 맞아. 서로 다른 점도 있지만 그게 오히려 매력이 되고, 같은 점들은 또 얼마나 많은지. 무엇보다 서로를 존중하고 배려하는 마음이 보여서 할머니가 흐뭇해. 이런 관계라면 오래오래 행복할 수 있을 거야.",
           advice: "지금처럼만 해. 서로를 소중히 여기고 감사하는 마음 잃지 말고. 가끔 작은 다툼이 있어도 금방 화해하는 너희들이니까 걱정 안 해. 할머니가 응원한다!",
-          compatibility_score: 92
-        },
-        {
+          compatibility_score: compatibilityScore
+        };
+      } else if (compatibilityScore >= 70) {
+        selectedAnalysis = {
           relationship_type: "미친 케미의 롤러코스터 커플",
-          grandma_verdict: "야야야! 너희 둘 뭐야? 만날 때는 세상에서 제일 행복해하더니 싸울 때는 또 왜 그렇게 드라마틱하게 싸우냐? 옆에서 보는 할머니가 다 어지러워. 그런데 또 금방 화해하고... 이게 뭔 드라마야?",
-          detailed_analysis: "너희는 정말 극과 극이야. 감정이 풍부한 건 좋은데 조금 과도한 것 같아. 사랑할 때는 우주를 다 줄 것처럼 하고, 화날 때는 지구를 박살낼 것처럼 하고... 그런데 이상하게도 서로한테 매력을 못 느끼겠대? 이해가 안 가!",
-          advice: "감정 조절 좀 배워라. 그리고 화났을 때는 한 번 숨 고르고 말해. 너희 사랑은 진짜인 것 같으니까 이런 것만 조절하면 정말 좋은 커플이 될 수 있어!",
-          compatibility_score: 74
-        }
-      ];
-
-      // Randomly select one of the analyses
-      const selectedAnalysis = grandmaAnalyses[Math.floor(Math.random() * grandmaAnalyses.length)];
+          grandma_verdict: "오호! 너희 둘 케미 좋은데? 서로 다른 점도 있지만 그게 오히려 매력 포인트네. 가끔 티격태격해도 금방 화해하는 모습이 보기 좋아. 이런 게 진짜 부부야!",
+          detailed_analysis: "너희는 정말 극과 극을 달리는 커플이야. 감정이 풍부한 건 좋은데 조금 과도할 때도 있네. 사랑할 때는 우주를 다 줄 것처럼 하고, 화날 때는 격하게 표현하고... 그런데 이상하게도 서로한테 매력을 느끼잖아? 이게 바로 사랑이야!",
+          advice: "감정 조절을 좀 배우면 더 좋겠어. 화났을 때는 한 번 숨 고르고 말해봐. 너희 사랑은 진짜인 것 같으니까 이런 것만 조절하면 정말 좋은 커플이 될 수 있어!",
+          compatibility_score: compatibilityScore
+        };
+      } else if (compatibilityScore >= 55) {
+        selectedAnalysis = {
+          relationship_type: "그럭저럭 볼만한 커플",
+          grandma_verdict: "음... 나쁘지 않네? 너희 둘이 같이 있는 거 보니까 그럭저럭 어울려. 근데 가끔 보면 답답할 때가 있어. 왜 그렇게 소통을 안 하냐? 서로 마음속으로만 생각하고 말은 안 하면서 상대방이 알아주길 바라고... 이게 뭐냐?",
+          detailed_analysis: "너희는 기본적으로는 잘 맞아. 취미도 비슷하고 가치관도 크게 다르지 않고. 근데 문제는 둘 다 너무 착해서 솔직한 말을 안 한다는 거야. 싫은 건 싫다고 하고, 좋은 건 좋다고 해야지. 그래야 진짜 사랑이지, 참고만 있으면 언젠가는 폭발한다고!",
+          advice: "좀 더 솔직해져라. 그리고 가끔은 서로에게 깜짝 이벤트도 해주고. 너무 평범하면 재미없잖아. 하지만 전체적으로는 괜찮은 커플이야!",
+          compatibility_score: compatibilityScore
+        };
+      } else if (compatibilityScore >= 35) {
+        selectedAnalysis = {
+          relationship_type: "어휴 골치 아픈 관계",
+          grandma_verdict: "얘들아, 너희 보고 있으면 머리가 지끈지끈해. 서로 맞지 않는 부분이 꽤 많은데 왜 그렇게 참고만 있냐? 하나는 이렇게 하고 싶고 하나는 저렇게 하고 싶은데, 대화는 언제 할 거야?",
+          detailed_analysis: "너희 둘은 마치 물과 기름 같아. 섞이지도 않으면서 계속 같은 그릇에 있으려고 하니까 문제지. 하나는 계획적이고 하나는 즉흥적이고, 하나는 아껴 쓰고 하나는 펑펑 쓰고... 이런 차이가 하나둘이냐? 근데 희한하게도 서로한테 끌리는 건 인정해줄게.",
+          advice: "많이 많이 대화해라. 그리고 서로의 다른 점을 인정하는 연습을 해. 하지만 너무 힘들면 포기하는 것도 용기야. 할머니는 너희가 행복했으면 좋겠어서 하는 소리야!",
+          compatibility_score: compatibilityScore
+        };
+      } else {
+        selectedAnalysis = {
+          relationship_type: "궁합 최악 중의 최악",
+          grandma_verdict: "야 이것들아! 이건 뭐 원수를 맺은 관계냐? 너희 둘이 만나면 우리나라 GDP가 떨어진다고! 하나는 동쪽을 보면 하나는 서쪽을 보고, 하나는 밥을 먹으면 하나는 똥을 싸는 수준이야. 이런 걸 연애라고 부르는 거냐? 할머니가 봐도 기가 막혀서 혈압약 먹어야겠다!",
+          detailed_analysis: "이봐, 너희들이 만나는 건 우주의 질서를 거스르는 일이야. 서로 맞지 않는 게 너무 많아. 게다가 갈등 해결 방식도 완전히 달라. 이런 근본적인 차이를 어떻게 극복하라고? 너희가 같이 있으면 주변 사람들도 다 스트레스 받는다고! 할머니가 젊었을 때도 이런 커플은 못 봤어. 정말로!",
+          advice: "그냥 깨끗하게 헤어져라. 아니면 둘 중 하나는 화성으로 이민을 가든지. 만약에 정말정말 사랑한다면, 둘 다 성격을 완전히 갈아엎고 새 사람이 되어야 할 거야. 그런데 그럴 바에야 차라리 새로운 사람을 만나는 게 낫지 않겠어?",
+          compatibility_score: compatibilityScore
+        };
+      }
 
       onComplete(selectedAnalysis, 'grandma_relationship');
 

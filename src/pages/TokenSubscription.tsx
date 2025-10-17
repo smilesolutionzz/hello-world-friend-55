@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Coins, Check, Sparkles, Zap, Trophy, Clock, Brain } from 'lucide-react';
+import { Coins, Check, Sparkles, Zap, Trophy, Clock, Brain, AlertCircle, Info } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
@@ -155,6 +155,12 @@ const TokenSubscription = () => {
           <p className="text-xl text-muted-foreground mb-8">
             부담 없이 시작하고, 언제든 충전하세요
           </p>
+          <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-2xl mx-auto mb-8">
+            <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+              <Info className="w-4 h-4" />
+              회원가입 없이도 구매 가능합니다 (단, 토큰 사용 시에는 회원가입이 필요합니다)
+            </p>
+          </div>
           
           <div className="flex justify-center mb-8">
             <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
@@ -285,8 +291,8 @@ const TokenSubscription = () => {
                   <span className="text-sm">언제든 추가 구매 가능</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-sm">토큰 영구 보관</span>
+                  <Clock className="w-5 h-5 text-blue-500" />
+                  <span className="text-sm">구매일로부터 1년간 유효</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-green-500" />
@@ -297,29 +303,84 @@ const TokenSubscription = () => {
           </div>
         </div>
 
-        {/* FAQ Section */}
+        {/* 환불 정책 섹션 */}
         <div className="mt-20">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-amber-50 dark:bg-amber-950/20 border-2 border-amber-200 dark:border-amber-800 rounded-xl p-8 mb-12">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-amber-100 dark:bg-amber-900 rounded-lg flex-shrink-0">
+                  <AlertCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold mb-4 text-amber-900 dark:text-amber-100">토큰 환불 정책</h2>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-start gap-2">
+                      <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <p><strong>환불 가능 기간:</strong> 구매일로부터 1년 이내</p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <p><strong>환불 조건:</strong> 사용하지 않은 토큰에 한하여 환불 가능</p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <p><strong>환불 방법:</strong> 결제하셨던 동일한 방법으로 환불 처리됩니다</p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <p><strong>환불 불가:</strong> 토큰을 1개라도 사용한 경우 환불이 불가능합니다</p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <p><strong>토큰 양도 불가:</strong> 충전된 토큰은 타인에게 양도할 수 없습니다</p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <p>환불 문의: 고객센터 (support@example.com)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* FAQ Section */}
+        <div className="mt-12">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">자주 묻는 질문</h2>
             <div className="space-y-6">
               <div className="bg-card rounded-lg p-6 border border-border">
                 <h3 className="font-semibold text-lg mb-2">토큰은 언제까지 사용할 수 있나요?</h3>
                 <p className="text-muted-foreground">
-                  구매한 토큰은 구매일로부터 <strong>1년간</strong> 사용 가능합니다. 기간 내에 자유롭게 사용하세요.
+                  토큰의 유효기간은 구매일로부터 <strong>1년</strong>입니다. 유효기간 내에 사용하지 않은 토큰은 자동으로 소멸되며, 
+                  환불 가능 기간도 구매일로부터 1년 이내입니다.
                 </p>
               </div>
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">토큰이 부족하면 어떻게 하나요?</h3>
+                <h3 className="font-semibold text-lg mb-2">회원가입 없이도 구매할 수 있나요?</h3>
                 <p className="text-muted-foreground">
-                  언제든 추가로 토큰을 구매할 수 있습니다. 새로 구매한 토큰은 기존 토큰과 합산되며, 
-                  새로운 유효기간이 부여됩니다.
+                  네, 토큰 구매는 회원가입 없이도 가능합니다. 다만, 구매한 토큰을 실제로 사용하시려면 
+                  회원가입 및 로그인이 필요합니다. 구매 시 입력하신 이메일로 가입하시면 자동으로 토큰이 연결됩니다.
                 </p>
               </div>
               <div className="bg-card rounded-lg p-6 border border-border">
                 <h3 className="font-semibold text-lg mb-2">환불이 가능한가요?</h3>
                 <p className="text-muted-foreground">
-                  토큰을 사용하지 않은 경우, 구매일로부터 7일 이내에 전액 환불이 가능합니다. 
-                  일부 사용한 경우, 사용한 금액을 제외하고 환불됩니다.
+                  네, 가능합니다. 토큰을 사용하지 않은 경우에 한하여 구매일로부터 1년 이내에 환불 요청이 가능하며, 
+                  결제하셨던 동일한 방법으로 환불 처리됩니다. 환불 문의는 고객센터(support@example.com)로 연락 주시기 바랍니다.
+                </p>
+              </div>
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">토큰을 다른 사람에게 양도할 수 있나요?</h3>
+                <p className="text-muted-foreground">
+                  아니요, 충전된 토큰은 타인에게 양도가 불가능합니다. 구매하신 본인만 사용하실 수 있습니다.
+                </p>
+              </div>
+              <div className="bg-card rounded-lg p-6 border border-border">
+                <h3 className="font-semibold text-lg mb-2">토큰이 부족하면 어떻게 하나요?</h3>
+                <p className="text-muted-foreground">
+                  언제든 추가로 토큰을 구매할 수 있습니다. 새로 구매한 토큰도 구매일로부터 1년간 유효합니다.
                 </p>
               </div>
             </div>

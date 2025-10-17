@@ -25,7 +25,7 @@ const TermsOfService = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-3xl">서비스 이용약관</CardTitle>
-            <p className="text-muted-foreground">최종 수정일: 2025년 10월 16일</p>
+            <p className="text-muted-foreground">최종 수정일: 2025년 1월 20일</p>
           </CardHeader>
           
           
@@ -96,7 +96,72 @@ const TermsOfService = () => {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold mb-4">제8조 (면책조항)</h2>
+              <h2 className="text-xl font-semibold mb-4">제8조 (토큰 서비스 이용)</h2>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <p className="font-semibold text-blue-800 mb-2">💡 토큰 서비스 필수 고지사항</p>
+                <div className="space-y-2 text-blue-700">
+                  <p className="font-semibold">1. 토큰 유효기간 및 환불 가능기간</p>
+                  <p className="ml-4">• <strong>충전된 토큰의 이용기간과 환불 가능기간은 결제시점으로부터 1년 이내로 제한됩니다.</strong></p>
+                  <p className="ml-4">• 1년이 경과한 토큰은 자동 소멸되며, 환불이 불가능합니다.</p>
+                  
+                  <p className="font-semibold mt-3">2. 토큰 양도 불가</p>
+                  <p className="ml-4">• <strong>충전된 토큰은 사용자 간 양도가 불가능합니다.</strong></p>
+                  <p className="ml-4">• 타인에게 양도하거나 거래할 수 없습니다.</p>
+                  
+                  <p className="font-semibold mt-3">3. 충전 한도</p>
+                  <p className="ml-4">• 1회 충전 한도는 최대 100,000원입니다.</p>
+                  <p className="ml-4">• 카드사 정책에 따라 일부 제한될 수 있습니다.</p>
+                  
+                  <p className="font-semibold mt-3">4. 결제 수단 제한</p>
+                  <p className="ml-4">• 가상계좌는 이용기간이 6개월 미만인 경우에만 사용 가능합니다.</p>
+                  <p className="ml-4">• 일부 간편결제(카카오페이, 네이버페이, 페이코, 토스페이 제외)는 이용이 제한됩니다.</p>
+                  <p className="ml-4">• 일부 카드사는 이용이 제한될 수 있습니다.</p>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <p>1. 토큰은 회사가 제공하는 다양한 서비스 이용에 사용됩니다.</p>
+                <p>2. 토큰은 현금으로 환전되지 않으며, 서비스 이용 목적으로만 사용 가능합니다.</p>
+                <p>3. 토큰 사용 내역은 마이페이지에서 확인할 수 있습니다.</p>
+                <p>4. 토큰 사용 시 먼저 충전한 토큰부터 차감됩니다.</p>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold mb-4">제9조 (환불 정책)</h2>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                <p className="font-semibold text-amber-800 mb-2">📋 토큰 환불 정책</p>
+                <div className="space-y-2 text-amber-700">
+                  <p className="font-semibold">환불 가능 조건:</p>
+                  <p className="ml-4">• 구매일로부터 1년 이내</p>
+                  <p className="ml-4">• 사용하지 않은 토큰에 한함</p>
+                  <p className="ml-4">• 결제 수단 확인 가능</p>
+                  
+                  <p className="font-semibold mt-3">환불 방법:</p>
+                  <p className="ml-4">• <strong>환불은 반드시 원래 결제했던 수단으로만 진행됩니다.</strong></p>
+                  <p className="ml-4">• 신용카드 결제 → 신용카드 취소</p>
+                  <p className="ml-4">• 계좌이체 결제 → 계좌 환불</p>
+                  
+                  <p className="font-semibold mt-3">환불 불가 사항:</p>
+                  <p className="ml-4">• 이미 사용한 토큰</p>
+                  <p className="ml-4">• 구매일로부터 1년 경과한 토큰</p>
+                  <p className="ml-4">• 이벤트나 프로모션으로 무료 지급받은 토큰</p>
+                  
+                  <p className="font-semibold mt-3">환불 처리 기간:</p>
+                  <p className="ml-4">• 환불 신청 후 영업일 기준 7일 이내 처리</p>
+                  <p className="ml-4">• 카드사에 따라 실제 입금까지 추가 시간 소요 가능</p>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <p>1. 서비스 이용 전 변심에 의한 환불은 전액 환불됩니다.</p>
+                <p>2. 서비스 일부 이용 후 환불 시에는 사용한 금액을 제외하고 환불됩니다.</p>
+                <p>3. 환불 문의: aihpro@naver.com</p>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold mb-4">제10조 (면책조항)</h2>
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <div className="space-y-2 text-red-700">
                   <p>1. 회사는 천재지변 또는 이에 준하는 불가항력으로 인하여 서비스를 제공할 수 없는 경우에는 서비스 제공에 관한 책임이 면제됩니다.</p>
@@ -108,14 +173,14 @@ const TermsOfService = () => {
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold mb-4">제9조 (분쟁해결)</h2>
+              <h2 className="text-xl font-semibold mb-4">제11조 (분쟁해결)</h2>
               <p>
                 서비스 이용으로 발생한 분쟁에 대해 소송이 제기될 경우 회사의 본사 소재지를 관할하는 법원을 관할 법원으로 합니다.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold mb-4">제10조 (사업자 정보)</h2>
+              <h2 className="text-xl font-semibold mb-4">제12조 (사업자 정보)</h2>
               <div className="space-y-1 text-muted-foreground">
                 <p>상호명: (AI)하이라이트</p>
                 <p>대표자명: 이수석</p>
@@ -127,7 +192,8 @@ const TermsOfService = () => {
 
             <section>
               <h2 className="text-xl font-semibold mb-4">부칙</h2>
-              <p>이 약관은 2025년 10월 16일부터 적용됩니다.</p>
+              <p className="font-semibold">시행일: 2025년 1월 20일</p>
+              <p className="text-muted-foreground mt-2">이 약관은 2025년 1월 20일부터 적용됩니다.</p>
             </section>
             </div>
           </CardContent>

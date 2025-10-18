@@ -5,6 +5,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft } from "lucide-react";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
+import { useTokens } from "@/hooks/useTokens";
+import TokenGate from "@/components/TokenGate";
 
 interface DepressionTestFormProps {
   onComplete: (results: {answers: number[], total: number, average: number, severity: string}) => void;
@@ -38,6 +41,8 @@ const depressionQuestions = [
 const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>(new Array(21).fill("")); // 빈 문자열로 초기화
+  const [hasStarted, setHasStarted] = useState(false);
+  const { consumeTokens } = useTokens();
 
   const progress = ((currentQuestion + 1) / depressionQuestions.length) * 100;
 
@@ -97,6 +102,25 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
 
   const currentAnswer = answers[currentQuestion];
   const canProceed = currentAnswer !== ""; // 빈 문자열이 아니어야 함
+
+  const handleStartTest = async () => {
+    const success = await consumeTokens(TOKEN_COSTS.DEPRESSION_TEST);
+    if (success) {
+      setHasStarted(true);
+    }
+  };
+
+  if (!hasStarted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 flex items-center justify-center">
+        <TokenGate
+          tokensRequired={TOKEN_COSTS.DEPRESSION_TEST}
+          featureName="우울증 자가체크 (AHI-MOOD 21문항)"
+          onProceed={handleStartTest}
+        />
+      </div>
+    );
+  }
 
   return (
     <Card className="max-w-4xl mx-auto p-8">

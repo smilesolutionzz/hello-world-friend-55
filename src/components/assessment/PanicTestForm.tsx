@@ -5,6 +5,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Brain } from "lucide-react";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
+import { useTokens } from "@/hooks/useTokens";
+import TokenGate from "@/components/TokenGate";
 
 interface PanicTestFormProps {
   onComplete: (results: {answers: number[], total: number, average: number, severity: string}) => void;
@@ -38,6 +41,8 @@ const panicQuestions = [
 const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>(new Array(21).fill("")); // 빈 문자열로 초기화
+  const [hasStarted, setHasStarted] = useState(false);
+  const { consumeTokens } = useTokens();
 
   const progress = ((currentQuestion + 1) / panicQuestions.length) * 100;
 
@@ -93,6 +98,25 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
 
   const currentAnswer = answers[currentQuestion];
   const canProceed = currentAnswer !== "";
+
+  const handleStartTest = async () => {
+    const success = await consumeTokens(TOKEN_COSTS.PANIC_TEST);
+    if (success) {
+      setHasStarted(true);
+    }
+  };
+
+  if (!hasStarted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8 flex items-center justify-center">
+        <TokenGate
+          tokensRequired={TOKEN_COSTS.PANIC_TEST}
+          featureName="불안장애 자가체크 (21문항)"
+          onProceed={handleStartTest}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">

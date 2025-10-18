@@ -72,7 +72,7 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
       
       toast({
         title: "꿈 해몽 완료",
-        description: `AI가 꿈을 분석했습니다. ${TOKEN_COSTS.DREAM_INTERPRETATION}토큰이 사용되었습니다.`,
+        description: "AI가 꿈을 분석했습니다.",
       });
     } catch (error: any) {
       console.error('Dream interpretation error:', error);
@@ -133,9 +133,8 @@ const DreamInterpretation = ({ onBack }: DreamInterpretationProps) => {
               당신의 꿈이 담고 있는 의미를 AI가 해석해드립니다
             </p>
             <div className="flex items-center justify-center gap-2 mt-2">
-              <Badge variant="secondary" className="flex items-center gap-1 bg-purple-500/20 text-purple-300 border-purple-400/30">
-                <Coins className="w-3 h-3" />
-                {TOKEN_COSTS.DREAM_INTERPRETATION}토큰 필요
+              <Badge variant="secondary" className="flex items-center gap-1 bg-green-500/20 text-green-300 border-green-400/30">
+                무료
               </Badge>
             </div>
           </div>

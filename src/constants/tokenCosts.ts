@@ -9,10 +9,12 @@ export const TOKEN_COSTS = {
   HAN_MEDICINE_TEST: 2,     // 한의학 체질 분석
   
   
+  // 재미있는 검사 (무료 전환)
+  DREAM_INTERPRETATION: 0,  // 꿈 해석 (무료)
+  SAJU_ANALYSIS: 0,         // 사주 분석 (무료)
+  
   // 고급 분석 (중가격대)
-  DREAM_INTERPRETATION: 4,  // 꿈 해석 (5→4)
   OBSERVATION_ANALYSIS: 4,  // 관찰 분석 (5→4)
-  SAJU_ANALYSIS: 6,         // 사주 분석 (8→6)
   AI_COACH: 3,              // AI 코치 세션
   EXPERT_MATCHING: 2,       // 전문가 매칭
   

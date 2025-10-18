@@ -5,6 +5,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft } from "lucide-react";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
+import { useTokens } from "@/hooks/useTokens";
+import TokenGate from "@/components/TokenGate";
 
 interface LanguageTestFormProps {
   ageGroup: 'infant' | 'child';
@@ -63,6 +66,8 @@ const languageQuestions = {
 const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>(new Array(20).fill(""));
+  const [hasStarted, setHasStarted] = useState(false);
+  const { consumeTokens } = useTokens();
 
   const questions = languageQuestions[ageGroup];
   const progress = ((currentQuestion + 1) / questions.length) * 100;
@@ -113,6 +118,25 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
 
   const currentAnswer = answers[currentQuestion];
   const canProceed = currentAnswer !== "";
+
+  const handleStartTest = async () => {
+    const success = await consumeTokens(TOKEN_COSTS.LANGUAGE_TEST);
+    if (success) {
+      setHasStarted(true);
+    }
+  };
+
+  if (!hasStarted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6 flex items-center justify-center">
+        <TokenGate
+          tokensRequired={TOKEN_COSTS.LANGUAGE_TEST}
+          featureName={`언어발달 자가체크 (${ageGroup === 'infant' ? '영유아' : '아동청소년'} 20문항)`}
+          onProceed={handleStartTest}
+        />
+      </div>
+    );
+  }
 
   return (
     <Card className="max-w-4xl mx-auto p-8">

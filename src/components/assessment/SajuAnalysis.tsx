@@ -89,7 +89,7 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
       
       toast({
         title: "사주 분석 완료",
-        description: `AI가 사주를 분석했습니다. ${TOKEN_COSTS.SAJU_ANALYSIS}토큰이 사용되었습니다.`,
+        description: "AI가 사주를 분석했습니다.",
       });
     } catch (error: any) {
       console.error('Saju analysis error:', error);
@@ -156,9 +156,8 @@ const SajuAnalysis = ({ onBack }: SajuAnalysisProps) => {
               AI가 당신의 사주를 분석하여 운세를 알려드립니다
             </p>
             <div className="flex items-center justify-center gap-2 mt-2">
-              <Badge variant="secondary" className="flex items-center gap-1 bg-orange-500/20 text-orange-300 border-orange-400/30">
-                <Coins className="w-3 h-3" />
-                {TOKEN_COSTS.SAJU_ANALYSIS}토큰 필요
+              <Badge variant="secondary" className="flex items-center gap-1 bg-green-500/20 text-green-300 border-green-400/30">
+                무료
               </Badge>
             </div>
           </div>

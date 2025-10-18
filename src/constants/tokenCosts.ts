@@ -8,6 +8,20 @@ export const TOKEN_COSTS = {
   LANGUAGE_TEST: 2,         // 언어발달 자가체크
   HAN_MEDICINE_TEST: 2,     // 한의학 체질 분석
   
+  // 발달 전문가 검사 (중가격대)
+  DEVELOPMENTAL_DELAY_TEST: 3,  // 발달지연 검사
+  SENSORY_INTEGRATION_TEST: 4,  // 감각통합장애 검사
+  LEARNING_DISABILITY_TEST: 4,  // 학습장애 검사
+  SOCIAL_DEVELOPMENT_TEST: 3,   // 사회성 발달 검사
+  
+  // AIH 전문가 제작 검사 (무료)
+  FIVE_D_PERSONALITY: 0,        // 5D 성격 분석
+  RELATIONSHIP_TYPE: 0,         // 관계유형 진단
+  STRESS_INDEX: 0,              // 스트레스 지수 측정
+  CAREER_INTEREST: 0,           // 진로흥미 탐색
+  SELF_WORTH: 0,                // 자존감 측정
+  DEFENSE_MECHANISM: 0,         // 방어기제 분석
+  
   
   // 재미있는 검사 (무료 전환)
   DREAM_INTERPRETATION: 0,  // 꿈 해석 (무료)

@@ -72,24 +72,30 @@ const HeroSection = () => {
       </div>
 
       <div className="relative z-10 container mx-auto px-6 pt-20 pb-28 min-h-screen flex flex-col justify-center">
-        {/* Main Headline - 간결하고 강력하게 */}
+        {/* Main Headline - 명확하고 즉시 이해되는 메시지 */}
         <div className="text-center mb-16 space-y-8">
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full shadow-lg">
-            <span className="text-xs sm:text-sm font-medium text-white/90 whitespace-nowrap">AI와 전문가가 함께하는 통합 케어 플랫폼</span>
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#5E8FFF]/20 to-[#8FB9FF]/20 backdrop-blur-md border border-[#5E8FFF]/40 rounded-full shadow-lg animate-pulse">
+            <Sparkles className="w-4 h-4 text-[#8FB9FF]" />
+            <span className="text-xs sm:text-sm font-bold text-white whitespace-nowrap">한국 1위 AI 심리·발달 케어 플랫폼</span>
           </div>
           
-          <h1 className="text-xl leading-tight sm:text-5xl md:text-7xl font-bold">
-            <span className="block text-white mb-1 sm:mb-2">
-              AI와 전문가가 함께
+          <h1 className="text-4xl leading-tight sm:text-6xl md:text-7xl font-extrabold">
+            <span className="block text-white mb-2 sm:mb-3">
+              심리 고민, ADHD, 발달 평가
             </span>
-            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent">
-              당신의 회복과 예방을 돕습니다
+            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent mb-4">
+              3분이면 전문가급 분석 완료
             </span>
           </h1>
           
-          <p className="text-base sm:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed whitespace-nowrap">
-            3분 테스트로 내 상태를 확인하세요
-          </p>
+          <div className="bg-gradient-to-r from-[#5E8FFF]/10 to-[#8FB9FF]/10 backdrop-blur-lg rounded-2xl p-6 border border-[#5E8FFF]/30 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-2xl text-white font-semibold mb-3">
+              ✓ 회원가입 없이 즉시 시작 &nbsp; ✓ 완전 무료 체험 &nbsp; ✓ 24시간 이용 가능
+            </p>
+            <p className="text-sm sm:text-base text-white/70">
+              2,000명이 먼저 경험한 AI+전문가 통합 케어
+            </p>
+          </div>
           
           {/* 타이핑 애니메이션 */}
           <div className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 max-w-4xl mx-auto">
@@ -112,39 +118,55 @@ const HeroSection = () => {
           <InstantAIAnalysis />
         </div>
         
-        {/* CTA Buttons - 3개 나란히 */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-          <Button 
-            size="lg"
-            onClick={() => navigate('/pmf-onboarding')}
-            className="group relative w-full sm:w-auto px-10 py-6 bg-[#5E8FFF] hover:bg-[#4A7FEF] text-white text-lg font-bold rounded-xl shadow-[0_3px_16px_rgba(94,143,255,0.4)] hover:shadow-[0_8px_24px_rgba(94,143,255,0.6)] transition-all duration-300"
-          >
-            <span className="flex items-center gap-2">
-              무료 관찰 시작
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </Button>
-          
-          <Button 
-            size="lg"
-            variant="outline"
-            onClick={() => navigate('/expert-hiring')}
-            className="w-full sm:w-auto px-10 py-6 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white text-lg font-semibold rounded-xl hover:bg-white/20 transition-all duration-300"
-          >
-            3분 무료 테스트
-          </Button>
+        {/* CTA Buttons - 명확한 행동 유도 */}
+        <div className="flex flex-col gap-6 justify-center items-center mb-16">
+          {/* 메인 CTA */}
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <Button 
+              size="lg"
+              onClick={() => navigate('/assessment')}
+              className="group relative w-full sm:w-auto px-12 py-7 bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] hover:from-[#4A7FEF] hover:to-[#7AA8EF] text-white text-xl font-extrabold rounded-2xl shadow-[0_8px_32px_rgba(94,143,255,0.5)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.7)] transition-all duration-300 transform hover:scale-105"
+            >
+              <span className="flex items-center gap-3">
+                <Sparkles className="w-6 h-6 animate-pulse" />
+                무료로 3분 테스트 시작
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+              </span>
+            </Button>
+          </div>
 
-          <Button 
-            size="lg"
-            variant="outline"
-            onClick={() => navigate('/platform-manual')}
-            className="group w-full sm:w-auto px-10 py-6 bg-white/10 backdrop-blur-md border-2 border-[#5E8FFF]/50 text-white text-lg font-semibold rounded-xl hover:bg-[#5E8FFF]/20 hover:border-[#5E8FFF] transition-all duration-300"
-          >
-            <span className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5" />
-              플랫폼 메뉴얼
-            </span>
-          </Button>
+          {/* 서브 CTA */}
+          <div className="flex flex-col sm:flex-row gap-3 text-center">
+            <button
+              onClick={() => navigate('/subscription')}
+              className="text-white/80 hover:text-white text-sm font-medium underline decoration-[#5E8FFF]/50 hover:decoration-[#5E8FFF] transition-all"
+            >
+              💎 프리미엄 플랜 보기 (무제한 이용)
+            </button>
+            <span className="hidden sm:inline text-white/40">|</span>
+            <button
+              onClick={() => navigate('/platform-manual')}
+              className="text-white/80 hover:text-white text-sm font-medium underline decoration-[#5E8FFF]/50 hover:decoration-[#5E8FFF] transition-all"
+            >
+              📖 플랫폼 사용법 보기
+            </button>
+          </div>
+
+          {/* 신뢰 지표 */}
+          <div className="flex flex-wrap gap-6 justify-center items-center text-white/70 text-sm mt-4">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              <span>실시간 2,000+ 사용자</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>⭐</span>
+              <span>평균 4.8/5.0 만족도</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>🔒</span>
+              <span>100% 익명 보장</span>
+            </div>
+          </div>
         </div>
 
         {/* Scroll Indicator */}

@@ -10,6 +10,7 @@ import ResultReportSection from "@/components/landing/ResultReportSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
 import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
 import SafetyFirstSection from "@/components/landing/SafetyFirstSection";
+import ValueComparisonSection from "@/components/landing/ValueComparisonSection";
 import FixedCTAButton from "@/components/landing/FixedCTAButton";
 import TestimonialSection from "@/components/TestimonialSection";
 import ClientLogos from "@/components/ClientLogos";
@@ -143,10 +144,13 @@ const Index = () => {
           {/* 1️⃣ Hero Section */}
           <HeroSection />
           
-          {/* 2️⃣ Problem & Vision */}
+          {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
+          <ValueComparisonSection />
+          
+          {/* 3️⃣ Problem & Vision */}
           <ProblemVisionSection />
           
-          {/* 3️⃣ Safety First - Hippocratic AI 스타일 */}
+          {/* 4️⃣ Safety First - Hippocratic AI 스타일 */}
           <SafetyFirstSection />
           
           {/* 4️⃣ Core Service */}

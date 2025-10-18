@@ -5,21 +5,20 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft } from "lucide-react";
-import { childFocusQuestions, adultFocusQuestions } from "@/data/assessmentQuestions";
+import { advancedAdhdQuestions } from "@/data/advancedAdhdTypes";
 import TokenGate from "@/components/TokenGate";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { useTokens } from "@/hooks/useTokens";
 
-interface AdhdTestFormProps {
-  ageGroup: 'child' | 'adult';
-  onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string, severity: string}) => void;
+interface AdvancedAdhdFormProps {
+  onComplete: (results: any) => void;
   onBack: () => void;
 }
 
-const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
-  const questions = ageGroup === 'child' ? childFocusQuestions : adultFocusQuestions;
+const AdvancedAdhdForm = ({ onComplete, onBack }: AdvancedAdhdFormProps) => {
+  const questions = advancedAdhdQuestions;
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<string[]>(new Array(questions.length).fill("")); // 빈 문자열로 초기화
+  const [answers, setAnswers] = useState<number[]>(new Array(questions.length).fill(-1));
   const [hasStarted, setHasStarted] = useState(false);
   const { consumeTokens } = useTokens();
 
@@ -27,10 +26,9 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
 
   const handleAnswer = (value: string) => {
     const newAnswers = [...answers];
-    newAnswers[currentQuestion] = value;
+    newAnswers[currentQuestion] = parseInt(value);
     setAnswers(newAnswers);
     
-    // 자동으로 다음 문항으로 이동 (0.5초 지연)
     setTimeout(() => {
       handleNext();
     }, 500);
@@ -43,33 +41,50 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     }
   };
 
+  const calculateTypeScores = () => {
+    const typeScores: Record<string, number> = {
+      classic: 0,
+      inattentive: 0,
+      overfocused: 0,
+      temporal: 0,
+      limbic: 0,
+      ringOfFire: 0,
+      anxious: 0,
+      cyclothymic: 0,
+      prefrontal: 0,
+      hyperfocus: 0,
+      sensory: 0,
+      postTraumatic: 0
+    };
+
+    answers.forEach((answer, index) => {
+      if (answer >= 0) {
+        const question = questions[index];
+        question.targetTypes.forEach(type => {
+          typeScores[type] += answer * question.weight;
+        });
+      }
+    });
+
+    // 정규화 (0-54 범위로)
+    const maxPossibleScore = questions.length * 3; // 각 질문 최대 3점
+    Object.keys(typeScores).forEach(type => {
+      typeScores[type] = Math.round((typeScores[type] / maxPossibleScore) * 54);
+    });
+
+    return typeScores;
+  };
+
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 테스트 완료
-      const numericAnswers = answers.map(a => parseInt(a));
-      const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
-      const average = Math.round((total / numericAnswers.length) * 10) / 10;
-      
-      let severity = "";
-      // 18개 문항 * 2점 = 36점 만점 (ADHD 증상 점수이므로 점수가 낮을수록 좋음)
-      if (total <= 9) {
-        severity = "정상 범위";
-      } else if (total <= 18) {
-        severity = "경계선 수준";
-      } else if (total <= 27) {
-        severity = "중등도 수준";
-      } else {
-        severity = "심각한 수준";
-      }
+      const typeScores = calculateTypeScores();
       
       onComplete({
-        answers: numericAnswers,
-        total,
-        average,
-        ageGroup: ageGroup === 'child' ? '아동청소년' : '성인',
-        severity
+        answers,
+        typeScores,
+        timestamp: new Date().toISOString()
       });
     }
   };
@@ -81,34 +96,24 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
   };
 
   const currentAnswer = answers[currentQuestion];
-  const canProceed = currentAnswer !== ""; // 빈 문자열이 아니어야 함
+  const canProceed = currentAnswer !== -1;
 
-  // 토큰 게이트 표시
   if (!hasStarted) {
     return (
       <TokenGate
         tokensRequired={TOKEN_COSTS.FOCUS_CHECK}
-        featureName="AIH 집중력 자가점검"
+        featureName="AIH 고급 ADHD 유형 분석"
         onProceed={handleStartTest}
       >
         <div className="space-y-4 text-center">
-          <div className="text-lg font-semibold">AIH 집중력 자가점검 특징</div>
+          <div className="text-lg font-semibold">12가지 ADHD 유형 분석의 특징</div>
           <ul className="space-y-2 text-sm text-muted-foreground max-w-md mx-auto">
-            <li>• {ageGroup === 'child' ? '아동청소년' : '성인'} 맞춤 문항</li>
-            <li>• 총 {questions.length}문항, 약 3분 소요</li>
-            <li>• 개인 집중력 패턴 분석</li>
-            <li>• 맞춤형 개선 방향 제안</li>
+            <li>• 총 {questions.length}문항, 약 5분 소요</li>
+            <li>• 12가지 세부 ADHD 유형 분석</li>
+            <li>• 각 유형별 맞춤 치료 방향 제시</li>
+            <li>• 정확한 증상 프로파일 파악</li>
+            <li>• 유형별 심각도 수준 평가</li>
           </ul>
-          <div className="mt-6 pt-6 border-t">
-            <p className="text-sm font-medium mb-2">더 정확한 ADHD 유형 분석을 원하신다면?</p>
-            <Button 
-              variant="outline" 
-              onClick={() => window.location.href = '/advanced-adhd-test'}
-              className="mt-2"
-            >
-              12가지 ADHD 유형 분석 보기
-            </Button>
-          </div>
         </div>
       </TokenGate>
     );
@@ -139,37 +144,43 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
         {/* Question */}
         <div className="space-y-6">
           <h2 className="text-xl font-semibold text-center">
-            {questions[currentQuestion]}
+            {questions[currentQuestion].text}
           </h2>
 
           <RadioGroup 
-            value={currentAnswer} 
+            value={currentAnswer >= 0 ? currentAnswer.toString() : ""} 
             onValueChange={handleAnswer}
             className="space-y-4"
           >
             <div className="flex items-center space-x-2">
+              <RadioGroupItem value="0" id="option0" />
+              <Label htmlFor="option0" className="text-base cursor-pointer">
+                전혀 그렇지 않다 (0점)
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
               <RadioGroupItem value="1" id="option1" />
               <Label htmlFor="option1" className="text-base cursor-pointer">
-                그렇지 않다 (1점)
+                가끔 그렇다 (1점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="2" id="option2" />
               <Label htmlFor="option2" className="text-base cursor-pointer">
-                보통이다 (2점)
+                자주 그렇다 (2점)
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="3" id="option3" />
               <Label htmlFor="option3" className="text-base cursor-pointer">
-                그렇다 (3점)
+                매우 자주 그렇다 (3점)
               </Label>
             </div>
           </RadioGroup>
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-start pt-6">
+        <div className="flex justify-between pt-6">
           <Button 
             variant="outline" 
             onClick={handlePrevious}
@@ -177,10 +188,15 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
           >
             이전
           </Button>
+          {currentQuestion === questions.length - 1 && canProceed && (
+            <Button onClick={handleNext}>
+              결과 보기
+            </Button>
+          )}
         </div>
       </div>
     </Card>
   );
 };
 
-export default AdhdTestForm;
+export default AdvancedAdhdForm;

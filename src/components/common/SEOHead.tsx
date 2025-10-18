@@ -7,6 +7,9 @@ interface SEOHeadProps {
   ogImage?: string;
   canonicalUrl?: string;
   noIndex?: boolean;
+  structuredData?: object;
+  ogType?: string;
+  author?: string;
 }
 
 const SEOHead = ({
@@ -15,17 +18,27 @@ const SEOHead = ({
   keywords = "AI심리검사,정신건강,ADHD검사,우울증테스트,스트레스검사,전문가상담,심리분석",
   ogImage = "/lovable-uploads/ec886850-04ce-4489-b96e-d4ac8f73d95e.png",
   canonicalUrl,
-  noIndex = false
+  noIndex = false,
+  structuredData,
+  ogType = "website",
+  author = "AI하이라이트PRO"
 }: SEOHeadProps) => {
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const canonical = canonicalUrl || currentUrl;
+  const fullImageUrl = ogImage.startsWith('http') ? ogImage : `https://aihpro.com${ogImage}`;
 
   return (
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
-      <meta name="author" content="AI하이라이트PRO" />
+      <meta name="author" content={author} />
+      
+      {/* 언어 및 지역 설정 */}
+      <html lang="ko" />
+      <meta httpEquiv="content-language" content="ko" />
+      <meta name="geo.region" content="KR" />
+      <meta name="geo.placename" content="South Korea" />
       
       {/* 검색 엔진 최적화 */}
       {!noIndex ? (
@@ -51,27 +64,49 @@ const SEOHead = ({
       <meta property="og:locale" content="ko_KR" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:image" content={fullImageUrl} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={title} />
       <meta property="og:url" content={canonical} />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={ogType} />
       <meta property="og:site_name" content="AI하이라이트PRO" />
       
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image" content={fullImageUrl} />
+      <meta name="twitter:image:alt" content={title} />
+      
+      {/* 다음(Daum) 검색 최적화 */}
+      <meta property="daumoa:title" content={title} />
+      <meta property="daumoa:description" content={description} />
+      <meta property="daumoa:image" content={fullImageUrl} />
       
       {/* Canonical URL */}
       {canonical && <link rel="canonical" href={canonical} />}
       
+      {/* 구조화된 데이터 */}
+      {structuredData && (
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      )}
+      
       {/* 모바일 최적화 */}
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
       <meta name="format-detection" content="telephone=no" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       
       {/* Preconnect for better performance */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      
+      {/* DNS Prefetch */}
+      <link rel="dns-prefetch" href="https://aihpro.com" />
     </Helmet>
   );
 };

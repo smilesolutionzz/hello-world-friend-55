@@ -25,6 +25,26 @@ import { useToast } from '@/hooks/use-toast';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AI하이라이트PRO",
+  "url": "https://aihpro.com",
+  "description": "AI와 전문가가 함께하는 통합 케어 서비스. ADHD, 우울증, 스트레스 검사부터 심리상담, 발달평가, 건강관리까지 전생애 케어를 제공합니다.",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "ratingCount": "1247"
+  }
+};
+
 const Index = () => {
   console.log('🏠 Index.tsx: Index page component rendering...');
   
@@ -130,9 +150,11 @@ const Index = () => {
   return (
     <>
       <SEOHead 
-        title="AI하이라이트PRO - 전생애 통합 케어 플랫폼"
-        description="AI와 전문가가 함께하는 통합 케어 서비스. ADHD, 우울증, 스트레스 검사부터 심리상담, 발달평가, 건강관리까지 전생애 케어를 제공합니다."
-        keywords="AI케어,통합케어,심리상담,발달평가,건강관리,ADHD검사,우울증검사,전문상담"
+        title="AI하이라이트PRO - AI 심리검사 및 전문가 상담 플랫폼"
+        description="3분 만에 완성하는 AI 심리검사. ADHD, 우울증, 스트레스 검사부터 전문가 상담까지. 검증된 전문가와 함께하는 전생애 통합 케어 서비스."
+        keywords="AI심리검사,ADHD검사,우울증테스트,스트레스검사,심리상담,발달평가,온라인상담,정신건강,아동발달,심리분석"
+        canonicalUrl="https://aihpro.com"
+        structuredData={structuredData}
       />
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
       

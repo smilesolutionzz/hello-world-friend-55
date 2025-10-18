@@ -107,7 +107,7 @@ const HeroSection = () => {
         <div className="text-center mb-16 space-y-8">
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#5E8FFF]/20 to-[#8FB9FF]/20 backdrop-blur-md border border-[#5E8FFF]/40 rounded-full shadow-lg animate-pulse">
             <Sparkles className="w-4 h-4 text-[#8FB9FF]" />
-            <span className="text-xs sm:text-sm font-bold text-white whitespace-nowrap">한국 1위 AI 심리·발달 케어 플랫폼</span>
+            <span className="text-xs sm:text-sm font-bold text-white whitespace-nowrap">혁신력 1위 AI 심리·발달 케어 플랫폼</span>
           </div>
           
           <h1 className="text-4xl leading-tight sm:text-6xl md:text-7xl font-extrabold">

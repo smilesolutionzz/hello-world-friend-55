@@ -9,7 +9,7 @@ import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import ResultReportSection from "@/components/landing/ResultReportSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
 import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
-import SafetyFirstSection from "@/components/landing/SafetyFirstSection";
+
 import ValueComparisonSection from "@/components/landing/ValueComparisonSection";
 import FixedCTAButton from "@/components/landing/FixedCTAButton";
 import TestimonialSection from "@/components/TestimonialSection";
@@ -149,9 +149,6 @@ const Index = () => {
           
           {/* 3️⃣ Problem & Vision */}
           <ProblemVisionSection />
-          
-          {/* 4️⃣ Safety First - Hippocratic AI 스타일 */}
-          <SafetyFirstSection />
           
           {/* 4️⃣ Core Service */}
           <CoreServiceSection />

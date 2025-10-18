@@ -38,6 +38,15 @@ import LearningDisabilityTestResult from "@/components/assessment/LearningDisabi
 import SocialDevelopmentTestResult from "@/components/assessment/SocialDevelopmentTestResult";
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";
+import PastLifeJobTest from "@/components/assessment/PastLifeJobTest";
+import AnimalFaceTest from "@/components/assessment/AnimalFaceTest";
+import InnerAnimalTest from "@/components/assessment/InnerAnimalTest";
+import GrandmaRelationshipTest from "@/components/assessment/GrandmaRelationshipTest";
+import GrandpaMarriageDiagnosis from "@/components/assessment/GrandpaMarriageDiagnosis";
+import MZNaggingTest from "@/components/assessment/MZNaggingTest";
+import WisdomAdviceTest from "@/components/assessment/WisdomAdviceTest";
+import OtrovertTest from "@/components/assessment/OtrovertTest";
+import LifeAchievementTest from "@/components/assessment/LifeAchievementTest";
 import AIChatInterface from "@/components/counseling/AIChatInterface";
 import RealTimeChat from "@/components/counseling/RealTimeChat";
 import LegalSafetyNotice from "@/components/LegalSafetyNotice";
@@ -67,7 +76,7 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'emotional-development-test' | 'dream-interpretation' | 'saju-analysis' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result'>('test-type');
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'emotional-development-test' | 'dream-interpretation' | 'saju-analysis' | 'past-life-job' | 'animal-face-match' | 'inner-animal' | 'grandma-relationship' | 'grandpa-marriage' | 'mz-nagging' | 'wisdom-advice' | 'otrovert' | 'life-achievement' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result'>('test-type');
   const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
@@ -979,15 +988,15 @@ const Assessment = () => {
 
                   <div 
                     className="bg-gradient-to-br from-purple-500 to-pink-600 hover-glow border border-purple-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
-                    onClick={() => navigate('/fun-tests?type=past-life-job')}
+                    onClick={() => setCurrentStep('past-life-job')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-pink-700 text-white text-xs px-2 py-1 opacity-80">🔥 HOT</Badge>
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
                     </div>
                     <h3 className="text-lg font-bold mb-3">👑 내 전생은 어떤 직업?</h3>
                     <p className="text-purple-100 mb-3 text-sm">AI가 분석하는 나의 전생 직업과 운명!</p>
                     <ul className="space-y-1 text-sm text-purple-100">
-                      <li>• MZ세대 인기</li>
+                      <li>• 질문 기반 분석</li>
                       <li>• AI 즉시 해석</li>
                       <li>• 신비로운 결과</li>
                     </ul>
@@ -995,15 +1004,15 @@ const Assessment = () => {
 
                   <div 
                     className="bg-gradient-to-br from-orange-500 to-yellow-600 hover-glow border border-orange-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
-                    onClick={() => navigate('/fun-tests?type=animal-face-match')}
+                    onClick={() => setCurrentStep('animal-face-match')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-yellow-700 text-white text-xs px-2 py-1 opacity-80">📈 TREND</Badge>
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
                     </div>
                     <h3 className="text-lg font-bold mb-3">📸 내 얼굴 닮은 동물 찾기</h3>
                     <p className="text-orange-100 mb-3 text-sm">카메라로 얼굴을 찍으면 AI가 닮은 동물을 찾아줘!</p>
                     <ul className="space-y-1 text-sm text-orange-100">
-                      <li>• 초등·청소년 인기</li>
+                      <li>• 사진 업로드</li>
                       <li>• AI 즉시 분석</li>
                       <li>• 친구들과 비교</li>
                     </ul>
@@ -1011,31 +1020,31 @@ const Assessment = () => {
 
                   <div 
                     className="bg-gradient-to-br from-green-500 to-blue-600 hover-glow border border-green-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
-                    onClick={() => navigate('/fun-tests?type=inner-animal')}
+                    onClick={() => setCurrentStep('inner-animal')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-blue-700 text-white text-xs px-2 py-1 opacity-80">✨ NEW</Badge>
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
                     </div>
                     <h3 className="text-lg font-bold mb-3">💚 나의 내면 동물 찾기</h3>
                     <p className="text-green-100 mb-3 text-sm">깊은 심리 분석으로 알아보는 나의 진짜 성격!</p>
                     <ul className="space-y-1 text-sm text-green-100">
-                      <li>• 40대+ 인기</li>
-                      <li>• AI 심리 분석</li>
+                      <li>• 심리 분석</li>
+                      <li>• AI 성격 진단</li>
                       <li>• 성격 탐구</li>
                     </ul>
                   </div>
 
                   <div 
                     className="bg-gradient-to-br from-red-500 to-orange-600 hover-glow border border-red-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
-                    onClick={() => navigate('/fun-tests?type=grandma-relationship')}
+                    onClick={() => setCurrentStep('grandma-relationship')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-orange-700 text-white text-xs px-2 py-1 opacity-80">🔥 HOT</Badge>
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
                     </div>
                     <h3 className="text-lg font-bold mb-3">👵 욕쟁이 할머니의 연애 진단</h3>
                     <p className="text-red-100 mb-3 text-sm">할머니가 직설적으로 당신들의 연애를 진단!</p>
                     <ul className="space-y-1 text-sm text-red-100">
-                      <li>• 커플·부부</li>
+                      <li>• 연애 고민 입력</li>
                       <li>• 할머니 독설</li>
                       <li>• 촌철살인 조언</li>
                     </ul>
@@ -1043,10 +1052,10 @@ const Assessment = () => {
 
                   <div 
                     className="bg-gradient-to-br from-blue-500 to-indigo-600 hover-glow border border-blue-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
-                    onClick={() => navigate('/fun-tests?type=grandpa-marriage')}
+                    onClick={() => setCurrentStep('grandpa-marriage')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-indigo-700 text-white text-xs px-2 py-1 opacity-80">🆕 NEW</Badge>
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
                     </div>
                     <h3 className="text-lg font-bold mb-3">👴 욕쟁이 할아버지의 부부금술진단</h3>
                     <p className="text-blue-100 mb-3 text-sm">할아버지가 부부싸움에서 누가 잘못했는지 제대로 판단!</p>
@@ -1059,17 +1068,113 @@ const Assessment = () => {
 
                   <div 
                     className="bg-gradient-to-br from-orange-500 to-yellow-600 hover-glow border border-orange-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
-                    onClick={() => navigate('/fun-tests?type=mz_nagging')}
+                    onClick={() => setCurrentStep('mz-nagging')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-yellow-700 text-white text-xs px-2 py-1 opacity-80">🔥 TREND</Badge>
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
                     </div>
                     <h3 className="text-lg font-bold mb-3">🍲 국밥집 이모의 MZ잔소리</h3>
                     <p className="text-orange-100 mb-3 text-sm">이모가 요즘 애들 걱정해서 해주는 따뜻하고 현실적인 잔소리!</p>
                     <ul className="space-y-1 text-sm text-orange-100">
-                      <li>• MZ세대 맞춤</li>
+                      <li>• MZ 고민 입력</li>
                       <li>• 현실적인 조언</li>
                       <li>• 이모의 따뜻한 걱정</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-gradient-to-br from-amber-500 to-yellow-600 hover-glow border border-amber-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => navigate('/joseon-name-test')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">🏯 조선시대 내 이름은?</h3>
+                    <p className="text-amber-100 mb-3 text-sm">태어난 월일로 알아보는 조선시대 나의 이름!</p>
+                    <ul className="space-y-1 text-sm text-amber-100">
+                      <li>• 생년월일 입력</li>
+                      <li>• 조선시대 이름</li>
+                      <li>• 친구와 비교</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-gradient-to-br from-emerald-500 to-green-600 hover-glow border border-emerald-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => navigate('/joseon-job-test')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">⚔️ 조선시대 내 직업은?</h3>
+                    <p className="text-emerald-100 mb-3 text-sm">성격 테스트로 알아보는 조선시대 나의 직업!</p>
+                    <ul className="space-y-1 text-sm text-emerald-100">
+                      <li>• 성격 분석</li>
+                      <li>• 조선시대 직업</li>
+                      <li>• 상세한 설명</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-gradient-to-br from-purple-500 to-violet-600 hover-glow border border-purple-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => navigate('/joseon-status-test')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">👑 조선시대 내 신분은?</h3>
+                    <p className="text-purple-100 mb-3 text-sm">라이프스타일로 알아보는 조선시대 나의 신분!</p>
+                    <ul className="space-y-1 text-sm text-purple-100">
+                      <li>• 생활 패턴 분석</li>
+                      <li>• 신분 예측</li>
+                      <li>• 신분상승 가능성</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-gradient-to-br from-amber-500 to-orange-600 hover-glow border border-amber-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => setCurrentStep('wisdom-advice')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">🌟 인생 지혜 조언</h3>
+                    <p className="text-amber-100 mb-3 text-sm">AI가 당신에게 맞는 특별한 인생 조언을 드립니다!</p>
+                    <ul className="space-y-1 text-sm text-amber-100">
+                      <li>• 경험 기반 질문</li>
+                      <li>• 맞춤 조언</li>
+                      <li>• 삶의 지혜</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-gradient-to-br from-indigo-500 to-blue-600 hover-glow border border-indigo-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => setCurrentStep('otrovert')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">🎭 오트로버트 테스트</h3>
+                    <p className="text-indigo-100 mb-3 text-sm">내향/외향도 아닌 나만의 독특한 성격 유형 발견!</p>
+                    <ul className="space-y-1 text-sm text-indigo-100">
+                      <li>• 심층 성격 분석</li>
+                      <li>• 독특한 유형</li>
+                      <li>• 그래프 시각화</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-gradient-to-br from-purple-500 to-pink-600 hover-glow border border-purple-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => setCurrentStep('life-achievement')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">🏆 인생 업적 달성률</h3>
+                    <p className="text-purple-100 mb-3 text-sm">게임처럼 체크하는 나의 인생 목표 달성도!</p>
+                    <ul className="space-y-1 text-sm text-purple-100">
+                      <li>• 6가지 영역</li>
+                      <li>• 달성률 분석</li>
+                      <li>• 다음 목표 제안</li>
                     </ul>
                   </div>
                 </div>
@@ -1104,6 +1209,49 @@ const Assessment = () => {
         </div>
       </div>
     );
+  }
+
+  // 재미있는 AI 테스트들
+  const handleFunTestComplete = (result: any, testType: string) => {
+    navigate('/fun-test-result', { 
+      state: { result, testType } 
+    });
+  };
+
+  if (currentStep === 'past-life-job') {
+    return <PastLifeJobTest onComplete={handleFunTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'animal-face-match') {
+    return <AnimalFaceTest onComplete={handleFunTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'inner-animal') {
+    return <InnerAnimalTest onComplete={handleFunTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'grandma-relationship') {
+    return <GrandmaRelationshipTest onComplete={handleFunTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'grandpa-marriage') {
+    return <GrandpaMarriageDiagnosis onComplete={handleFunTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'mz-nagging') {
+    return <MZNaggingTest onComplete={handleFunTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'wisdom-advice') {
+    return <WisdomAdviceTest onComplete={handleFunTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'otrovert') {
+    return <OtrovertTest onComplete={handleFunTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'life-achievement') {
+    return <LifeAchievementTest onComplete={handleFunTestComplete} onBack={handleBack} />;
   }
 
   if (currentStep === 'legal-notice' && testType && testType !== 'dream') {

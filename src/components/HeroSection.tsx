@@ -6,6 +6,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import FloatingKeywords from "./FloatingKeywords";
 import { useState } from "react";
 import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
+import { ExpertOnlineStatus } from "@/components/urgency/ExpertOnlineStatus";
+import { LimitedTimeOffer } from "@/components/urgency/LimitedTimeOffer";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -147,6 +149,12 @@ const HeroSection = () => {
         {/* Instant AI Analysis - 즉시 후킹 요소 */}
         <div className="mb-12">
           <InstantAIAnalysis />
+        </div>
+
+        {/* 긴급성 & 행동 유도 섹션 */}
+        <div className="space-y-6 mb-12">
+          <ExpertOnlineStatus />
+          <LimitedTimeOffer />
         </div>
         
         {/* CTA Buttons - 명확한 행동 유도 */}

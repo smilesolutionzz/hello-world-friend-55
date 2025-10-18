@@ -120,7 +120,7 @@ const HeroSection = () => {
           </h1>
           
           <div className="bg-gradient-to-r from-[#5E8FFF]/10 to-[#8FB9FF]/10 backdrop-blur-lg rounded-2xl p-6 border border-[#5E8FFF]/30 max-w-3xl mx-auto">
-            <p className="text-lg sm:text-2xl text-white font-semibold mb-3">
+            <p className="text-sm sm:text-base text-white font-semibold mb-3">
               ✓ 회원가입 없이 즉시 시작 &nbsp; ✓ 완전 무료 체험 &nbsp; ✓ 24시간 이용 가능
             </p>
             <p className="text-sm sm:text-base text-white/70">

@@ -950,7 +950,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('dream')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-purple-700 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
                     </div>
                     <h3 className="text-lg font-bold mb-3">🌙 AI 꿈 해몽</h3>
                     <p className="text-purple-100 mb-3 text-sm">당신의 꿈이 담고 있는 의미를 AI가 해석 (재미용)</p>
@@ -966,7 +966,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('saju')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-red-700 text-white text-xs px-2 py-1 opacity-80">8토큰</Badge>
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
                     </div>
                     <h3 className="text-lg font-bold mb-3">🔮 AI 사주풀이</h3>
                     <p className="text-orange-100 mb-3 text-sm">생년월일시로 당신의 운세와 사주를 AI가 분석 (재미용)</p>

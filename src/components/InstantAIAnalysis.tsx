@@ -297,14 +297,14 @@ const InstantAIAnalysis = () => {
           <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">AI 즉시 분석</span>
         </div>
         
-        <h1 className="text-3xl md:text-5xl font-black leading-tight">
+        <h1 className="text-xl sm:text-3xl md:text-5xl font-black leading-tight">
           <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-            내 고민으로<br />어떤 솔루션을 받을 수 있을까?
+            내 고민으로<br />어떤 솔루션을<br className="sm:hidden" /> 받을 수 있을까?
           </span>
         </h1>
         
-        <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto">
-          AI가 당신의 고민을 분석하고 최적의 상담 유형, 심각도, 맞춤 솔루션을 즉시 알려드립니다
+        <p className="text-muted-foreground text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+          AI가 당신의 고민을 분석하고<br className="sm:hidden" /> 최적의 상담 유형, 심각도,<br className="sm:hidden" /> 맞춤 솔루션을 즉시 알려드립니다
         </p>
       </div>
 

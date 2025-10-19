@@ -252,19 +252,19 @@ const InstantAIAnalysis = () => {
       <div className="text-center mb-12 space-y-4">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-full border border-amber-500/20">
           <Sparkles className="w-4 h-4 text-amber-500" />
-          <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">AI 주관 분석</span>
+          <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">AI 즉시 분석</span>
         </div>
         
         <h1 className="text-3xl md:text-5xl font-black leading-tight">
-          <span className="text-foreground">내 이야기로</span>
+          <span className="text-foreground">내 고민으로</span>
           <br />
           <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-            어떤 책을 만들 수 있을까?
+            어떤 솔루션을 받을 수 있을까?
           </span>
         </h1>
         
         <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
-          AI가 당신의 이야기를 분석하고 최적의 출간 형태, 예상 제작 비용, 제작 기간을 알려드립니다
+          AI가 당신의 고민을 분석하고 최적의 상담 유형, 심각도, 맞춤 솔루션을 즉시 알려드립니다
         </p>
       </div>
 
@@ -275,11 +275,11 @@ const InstantAIAnalysis = () => {
           <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 p-6 space-y-4">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
-              <h2 className="text-lg font-bold text-foreground">내 이야기 입력</h2>
+              <h2 className="text-lg font-bold text-foreground">내 고민 입력</h2>
             </div>
             
             <p className="text-sm text-muted-foreground">
-              살아온 인생이나 쓰고 싶은 주제를 자세히 입력해주세요
+              지금 가장 걱정되는 고민이나 문제를 간단히 적어주세요
             </p>
             
             {!showResult ? (
@@ -356,7 +356,7 @@ const InstantAIAnalysis = () => {
             )}
           </div>
           
-          {/* 시로 아이디어 확장하기 */}
+          {/* 고민 작성 팁 */}
           {!showResult && (
             <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20 backdrop-blur-sm rounded-xl border border-amber-200/30 dark:border-amber-800/30 p-5">
               <div className="flex items-start gap-3">
@@ -365,7 +365,7 @@ const InstantAIAnalysis = () => {
                 </div>
                 <div className="flex-1 space-y-2">
                   <p className="text-sm font-bold text-amber-900 dark:text-amber-100">
-                    시로 아이디어 확장하기
+                    고민 작성 팁
                   </p>
                   <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-1">
                     <li>• 최소 10자 이상, 핵심 고민만 간단히 적어주세요</li>

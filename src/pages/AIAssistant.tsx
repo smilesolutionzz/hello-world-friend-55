@@ -621,7 +621,7 @@ const AIAssistant = () => {
                                 <div className="w-2 h-2 md:w-3 md:h-3 bg-cyan-400 rounded-full animate-bounce"></div>
                                 <div className="w-2 h-2 md:w-3 md:h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
                                 <div className="w-2 h-2 md:w-3 md:h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                                <span className="text-xs md:text-sm text-white/90 ml-1 md:ml-2 font-medium">✨ AI가 응답을 생성중입니다...</span>
+                                <span className="text-xs md:text-sm text-white/90 ml-1 md:ml-2 font-medium">✨ 에이전트가 응답을 생성중입니다...</span>
                               </div>
                             </div>
                           </div>

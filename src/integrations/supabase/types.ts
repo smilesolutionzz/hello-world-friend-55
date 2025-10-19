@@ -337,6 +337,54 @@ export type Database = {
           },
         ]
       }
+      b2b_inquiries: {
+        Row: {
+          contact_person: string
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          num_users: number | null
+          organization_name: string
+          organization_type: string
+          phone: string
+          position: string | null
+          service_interest: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          contact_person: string
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          num_users?: number | null
+          organization_name: string
+          organization_type: string
+          phone: string
+          position?: string | null
+          service_interest: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          contact_person?: string
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          num_users?: number | null
+          organization_name?: string
+          organization_type?: string
+          phone?: string
+          position?: string | null
+          service_interest?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bank_transfer_requests: {
         Row: {
           admin_note: string | null
@@ -4260,6 +4308,85 @@ export type Database = {
         }
         Relationships: []
       }
+      realtime_consultation_messages: {
+        Row: {
+          content: string
+          created_at: string
+          file_url: string | null
+          id: string
+          is_read: boolean
+          message_type: Database["public"]["Enums"]["message_type"]
+          sender_id: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          is_read?: boolean
+          message_type?: Database["public"]["Enums"]["message_type"]
+          sender_id: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          is_read?: boolean
+          message_type?: Database["public"]["Enums"]["message_type"]
+          sender_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "realtime_consultation_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "realtime_consultation_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      realtime_consultation_sessions: {
+        Row: {
+          created_at: string
+          ended_at: string | null
+          expert_id: string | null
+          id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["consultation_session_status"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          expert_id?: string | null
+          id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["consultation_session_status"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          expert_id?: string | null
+          id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["consultation_session_status"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "realtime_consultation_sessions_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "experts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       referrals: {
         Row: {
           completed_at: string | null
@@ -6533,6 +6660,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "expert" | "user"
+      consultation_session_status: "waiting" | "active" | "ended"
+      message_type: "text" | "image" | "file"
       subscription_type: "free" | "token_pack" | "monthly_unlimited"
     }
     CompositeTypes: {
@@ -6662,6 +6791,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "expert", "user"],
+      consultation_session_status: ["waiting", "active", "ended"],
+      message_type: ["text", "image", "file"],
       subscription_type: ["free", "token_pack", "monthly_unlimited"],
     },
   },

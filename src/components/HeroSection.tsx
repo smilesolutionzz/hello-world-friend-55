@@ -55,7 +55,7 @@ const HeroSection = () => {
             <p className="text-sm sm:text-base text-white font-semibold mb-3">
               ✓ 회원가입 없이 즉시 시작 &nbsp; ✓ 완전 무료 체험 &nbsp; ✓ 24시간 이용 가능
             </p>
-            <p className="text-sm sm:text-base text-white/70">
+            <p className="text-xs sm:text-sm md:text-base text-white/70">
               2,000명이 먼저 경험한 AI+전문가 통합 케어
             </p>
           </div>

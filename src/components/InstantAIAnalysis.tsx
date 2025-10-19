@@ -426,8 +426,8 @@ const InstantAIAnalysis = () => {
                 <span className="text-3xl">📖</span>
               </div>
               <div className="space-y-2">
-                <h3 className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">분석 결과가 여기 표시됩니다</h3>
-                <p className="text-sm bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent max-w-xs mx-auto">
+                <h3 className="text-base sm:text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">분석 결과가 여기 표시됩니다</h3>
+                <p className="text-xs sm:text-sm bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent max-w-xs mx-auto leading-relaxed">
                   왼쪽에 내용을 입력하고<br />
                   "무료로 분석하기" 버튼을 눌러주세요
                 </p>
@@ -639,7 +639,7 @@ const InstantAIAnalysis = () => {
               </>
             )}
           </Button>
-          <p className="text-center text-sm text-muted-foreground mt-3">
+          <p className="text-center text-xs sm:text-sm text-muted-foreground mt-3">
             분석은 완전 무료이며, 30초 이내 완료됩니다
           </p>
         </div>

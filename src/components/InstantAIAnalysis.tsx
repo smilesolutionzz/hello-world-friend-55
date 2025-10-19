@@ -16,12 +16,14 @@ import {
   Target,
   Heart,
   Clock,
-  Zap
+  Zap,
+  Wand2
 } from 'lucide-react';
 
 const InstantAIAnalysis = () => {
   const [inputText, setInputText] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isExpanding, setIsExpanding] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const navigate = useNavigate();
@@ -200,6 +202,44 @@ const InstantAIAnalysis = () => {
     }
   };
 
+  const handleExpandPrompt = async () => {
+    if (!inputText.trim() || inputText.length < 10) {
+      toast({
+        title: "입력 확인",
+        description: "최소 10자 이상 입력해주세요.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsExpanding(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('expand-prompt', {
+        body: { prompt: inputText }
+      });
+
+      if (error) throw error;
+
+      if (data?.expandedPrompt) {
+        setInputText(data.expandedPrompt);
+        toast({
+          title: "✨ 프롬프트 확장 완료",
+          description: "입력 내용이 더 구체적으로 확장되었습니다.",
+        });
+      }
+    } catch (error: any) {
+      console.error('프롬프트 확장 오류:', error);
+      toast({
+        title: "확장 실패",
+        description: "프롬프트 확장 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsExpanding(false);
+    }
+  };
+
   const handleStartFullAnalysis = () => {
     // 입력한 텍스트를 localStorage에 저장하여 온보딩에서 활용
     localStorage.setItem('instant_analysis_input', inputText);
@@ -281,13 +321,15 @@ const InstantAIAnalysis = () => {
                       </div>
                     </div>
                     
+                    {/* 글자 수 + AI 다듬기 버튼 */}
                     <div className="flex flex-wrap justify-between items-center gap-3 text-sm">
                       <span className="font-medium text-muted-foreground">
                         {inputText.length}<span className="text-primary font-semibold">/500</span> <span className="text-xs">(최소 10자)</span>
                       </span>
                       
-                      {/* 아이콘 배지들 - 미니멀 스타일 */}
+                      {/* 우측: 정보 아이콘 + AI 다듬기 버튼 */}
                       <div className="flex flex-wrap items-center gap-2">
+                        {/* 아이콘 배지들 */}
                         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 rounded-lg border border-primary/10 hover:bg-primary/10 transition-colors">
                           <Clock className="w-3.5 h-3.5 text-primary" />
                           <span className="text-xs font-semibold text-primary">3분 소요</span>
@@ -296,10 +338,28 @@ const InstantAIAnalysis = () => {
                           <Zap className="w-3.5 h-3.5 text-green-600 dark:text-green-500" />
                           <span className="text-xs font-semibold text-green-700 dark:text-green-600">완전 무료</span>
                         </div>
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/5 rounded-lg border border-blue-500/10 hover:bg-blue-500/10 transition-colors">
-                          <CheckCircle className="w-3.5 h-3.5 text-blue-600 dark:text-blue-500" />
-                          <span className="text-xs font-semibold text-blue-700 dark:text-blue-600">회원가입 불필요</span>
-                        </div>
+                        
+                        {/* AI 다듬기 버튼 */}
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleExpandPrompt}
+                          disabled={isExpanding || isAnalyzing || inputText.length < 10}
+                          className="gap-1.5 text-xs h-7 px-2 border border-primary/20 hover:bg-primary/10 hover:border-primary/30"
+                        >
+                          {isExpanding ? (
+                            <>
+                              <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
+                              <span>다듬는 중...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Wand2 className="w-3.5 h-3.5" />
+                              <span>AI 다듬기</span>
+                            </>
+                          )}
+                        </Button>
                       </div>
                     </div>
                   </div>

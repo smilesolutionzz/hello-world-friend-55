@@ -13,6 +13,8 @@ interface InstantReport {
   report: string;
   riskLevel: 'low' | 'medium' | 'high';
   needsExpertConsultation: boolean;
+  recommendedTreatments?: string[];
+  recommendedContent?: string[];
   timestamp: string;
 }
 
@@ -170,6 +172,47 @@ const ChatInterface = () => {
                 </div>
               </div>
             </div>
+
+            {/* 추천 치료 방법 */}
+            {report.recommendedTreatments && report.recommendedTreatments.length > 0 && (
+              <div className="mt-6 bg-blue-50 rounded-lg p-5 border border-blue-200">
+                <h4 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  추천 치료 방법
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {report.recommendedTreatments.map((treatment, index) => (
+                    <span
+                      key={index}
+                      className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium"
+                    >
+                      {treatment}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 추천 컨텐츠 */}
+            {report.recommendedContent && report.recommendedContent.length > 0 && (
+              <div className="mt-4 bg-purple-50 rounded-lg p-5 border border-purple-200">
+                <h4 className="font-bold text-purple-900 mb-3 flex items-center gap-2">
+                  <FileText className="w-5 h-5" />
+                  추천 학습 컨텐츠
+                </h4>
+                <ul className="space-y-2">
+                  {report.recommendedContent.map((content, index) => (
+                    <li
+                      key={index}
+                      className="text-purple-800 text-sm flex items-start gap-2"
+                    >
+                      <span className="text-purple-600 mt-1">•</span>
+                      <span>{content}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </Card>
 

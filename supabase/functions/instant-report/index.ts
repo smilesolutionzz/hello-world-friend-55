@@ -142,16 +142,21 @@ serve(async (req) => {
     const mainData = await mainResponse.json();
     const reportContent = mainData.choices[0].message.content;
 
-    // Call OpenAI API for risk assessment
-    const riskAssessmentPrompt = `다음 상황을 분석하여 위험도와 전문가 상담 필요성을 평가해주세요:
+    // Call OpenAI API for risk assessment and recommendations
+    const riskAssessmentPrompt = `다음 상황을 분석하여 위험도, 전문가 상담 필요성, 추천 치료, 추천 컨텐츠를 평가해주세요:
 
 상황: ${message}
 
 JSON 형식으로만 응답:
 {
   "riskLevel": "low|medium|high",
-  "needsExpertConsultation": true|false
-}`;
+  "needsExpertConsultation": true|false,
+  "recommendedTreatments": ["치료1", "치료2", "치료3"],
+  "recommendedContent": ["컨텐츠1", "컨텐츠2", "컨텐츠3"]
+}
+
+추천 치료 예시: "인지행동치료(CBT)", "가족상담", "놀이치료", "약물치료", "미술치료", "음악치료" 등
+추천 컨텐츠 예시: "육아 스트레스 관리법", "ADHD 이해하기", "아동발달 체크리스트", "청소년 정서 관리" 등`;
 
     const riskResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -172,7 +177,9 @@ JSON 형식으로만 응답:
 
     let riskAssessment = {
       riskLevel: "medium",
-      needsExpertConsultation: true
+      needsExpertConsultation: true,
+      recommendedTreatments: ["전문가 상담", "심리평가"],
+      recommendedContent: ["정신건강 관리 가이드", "스트레스 대처법"]
     };
 
     if (riskResponse.ok) {
@@ -191,6 +198,8 @@ JSON 형식으로만 응답:
       report: reportContent.trim(),
       riskLevel: riskAssessment.riskLevel,
       needsExpertConsultation: riskAssessment.needsExpertConsultation,
+      recommendedTreatments: riskAssessment.recommendedTreatments || [],
+      recommendedContent: riskAssessment.recommendedContent || [],
       timestamp: new Date().toISOString()
     };
 
@@ -239,6 +248,8 @@ JSON 형식으로만 응답:
       report: fallbackReport,
       riskLevel: 'medium',
       needsExpertConsultation: true,
+      recommendedTreatments: ["전문가 상담", "심리평가"],
+      recommendedContent: ["정신건강 관리 가이드", "스트레스 대처법"],
       timestamp: new Date().toISOString(),
       error: '일시적 분석 오류'
     }), {

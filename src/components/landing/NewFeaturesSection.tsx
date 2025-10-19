@@ -15,9 +15,9 @@ const newFeatures = [
     path: '/assessment/defense-mechanism-test'
   },
   {
-    id: 'hexaco_personality',
-    title: '🧠 6차원 성격진단',
-    description: '48문항 심층 성격 분석! AI가 당신의 성격을 6차원으로 분석',
+    id: 'personality_compass',
+    title: '🧠 퍼스널리티 컴퍼스',
+    description: '48문항 심층 성격 분석! AI가 6가지 성격 차원을 분석',
     date: '2025-10-16',
     badge: 'NEW',
     color: 'from-blue-500 to-cyan-500',

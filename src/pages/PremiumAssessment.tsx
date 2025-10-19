@@ -525,7 +525,7 @@ const PremiumAssessment = () => {
               </CardContent>
             </Card>
 
-            {/* HEXACO 성격검사 카드 - NEW */}
+            {/* 퍼스널리티 컴퍼스 카드 - NEW */}
             <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]"
               onClick={() => setCurrentTest('hexaco')}
             >
@@ -547,8 +547,8 @@ const PremiumAssessment = () => {
                       <Crown className="w-6 h-6" />
                     </div>
                     <div>
-                      <CardTitle className="text-lg font-bold">💎 HEXACO 성격 검사</CardTitle>
-                      <p className="text-sm opacity-90">6차원 과학적 성격 분석</p>
+                      <CardTitle className="text-lg font-bold">💎 퍼스널리티 컴퍼스</CardTitle>
+                      <p className="text-sm opacity-90">6차원 성격 나침반 검사</p>
                     </div>
                   </div>
                 </div>
@@ -556,11 +556,11 @@ const PremiumAssessment = () => {
 
               <CardContent className="p-6 space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
-                  정직-겸손, 정서성, 외향성, 원만성, 성실성, 개방성 6가지 차원으로 당신의 성격을 과학적으로 분석합니다. Big5를 넘어선 최신 성격 모델!
+                  진실성, 감성, 사교성, 조화성, 계획성, 탐구성 6가지 차원으로 당신의 성격을 심층 분석합니다. AI가 맞춤형 인사이트를 제공합니다!
                 </p>
 
                 <p className="text-sm text-muted-foreground">
-                  Lee & Ashton의 검증된 HEXACO 모델 기반
+                  심리학 기반 6차원 성격 모델
                 </p>
 
                 <div className="flex items-center justify-between text-sm">

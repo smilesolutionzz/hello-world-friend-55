@@ -494,9 +494,11 @@ const InstantAIAnalysis = () => {
               {getRecommendedTests(analysisResult?.type).length > 0 && (
                 <Card className="border-amber-500/30 shadow-lg bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-amber-900 dark:text-amber-100">
+                    <CardTitle className="flex items-center gap-2">
                       <Brain className="w-5 h-5 text-amber-600" />
-                      이 고민에 맞는 추천 테스트
+                      <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+                        이 고민에 맞는 추천 테스트
+                      </span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>

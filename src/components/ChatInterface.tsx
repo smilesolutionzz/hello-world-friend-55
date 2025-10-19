@@ -346,24 +346,25 @@ const ChatInterface = () => {
           </div>
         </div>
 
-        {/* Expand Prompt Button */}
-        <div className="flex justify-center">
+        {/* Quick Actions */}
+        <div className="flex items-center justify-center gap-2 sm:gap-4 py-2">
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
+            size="sm"
             onClick={handleExpandPrompt}
             disabled={isExpanding || isAnalyzing || message.length < 10}
-            className="gap-2"
+            className="gap-1.5 text-xs sm:text-sm h-8 px-3"
           >
             {isExpanding ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent" />
-                확장 중...
+                <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
+                <span>다듬는 중...</span>
               </>
             ) : (
               <>
-                <Wand2 className="w-4 h-4" />
-                프롬프트 확장하기
+                <Wand2 className="w-3.5 h-3.5" />
+                <span>AI 다듬기</span>
               </>
             )}
           </Button>

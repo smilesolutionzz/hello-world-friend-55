@@ -339,35 +339,44 @@ const ChatInterface = () => {
               className="bg-primary/10 hover:bg-primary/20 text-primary border-primary/20"
             />
           </div>
-          
-          {/* Character Count */}
-          <div className="absolute bottom-3 sm:bottom-4 left-4 sm:left-6 text-xs sm:text-sm text-muted-foreground bg-background/90 backdrop-blur-sm px-2 py-1 rounded z-10 pointer-events-none">
-            {message.length}/500 (최소 30자)
-          </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="flex items-center justify-center gap-2 sm:gap-4 py-2">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={handleExpandPrompt}
-            disabled={isExpanding || isAnalyzing || message.length < 10}
-            className="gap-1.5 text-xs sm:text-sm h-8 px-3"
-          >
-            {isExpanding ? (
-              <>
-                <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
-                <span>다듬는 중...</span>
-              </>
-            ) : (
-              <>
-                <Wand2 className="w-3.5 h-3.5" />
-                <span>AI 다듬기</span>
-              </>
-            )}
-          </Button>
+        {/* Info Bar with Character Count and Quick Actions */}
+        <div className="flex items-center justify-between gap-4 py-2">
+          <div className="text-xs sm:text-sm text-muted-foreground">
+            {message.length}/500 (최소 10자)
+          </div>
+          
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Clock className="w-3.5 h-3.5 text-primary" />
+              <span>3분 소요</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              <span>완전 무료</span>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleExpandPrompt}
+              disabled={isExpanding || isAnalyzing || message.length < 10}
+              className="gap-1.5 text-xs h-7 px-2"
+            >
+              {isExpanding ? (
+                <>
+                  <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
+                  <span>다듬는 중...</span>
+                </>
+              ) : (
+                <>
+                  <Wand2 className="w-3.5 h-3.5" />
+                  <span>AI 다듬기</span>
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
         {/* Guidelines */}

@@ -187,17 +187,29 @@ export const UnifiedNavigation = () => {
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-popover shadow-xl border rounded-xl p-1 z-50">
-                  {assessmentSubmenuItems.map((item) => (
-                    <DropdownMenuItem
-                      key={item.path}
-                      onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-3 cursor-pointer hover:bg-accent rounded-lg px-3 py-2 mx-1 transition-colors"
-                    >
-                      <item.icon className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium text-foreground">{item.label}</span>
-                    </DropdownMenuItem>
-                  ))}
+                <DropdownMenuContent align="start" className="w-[380px] bg-background shadow-xl border rounded-xl p-5 z-50">
+                  <h3 className="text-sm font-bold mb-3 px-1">어떤 검사를 받으시겠어요?</h3>
+                  <div className="space-y-1">
+                    {assessmentSubmenuItems.map((item) => (
+                      <button
+                        key={item.path}
+                        onClick={() => handleNavigation(item.path, item)}
+                        className="w-full flex items-start gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors text-left group"
+                      >
+                        <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                          <item.icon className="w-4 h-4 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-sm mb-0.5">{item.label}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {item.label === '3분테스트' && '빠르고 간편한 심리 상태 체크'}
+                            {item.label === '프리미엄테스트' && '전문가 수준의 종합 심리 분석'}
+                            {item.label === '체질분석' && '한의학 기반 체질 및 건강 진단'}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -214,25 +226,38 @@ export const UnifiedNavigation = () => {
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-64 bg-popover shadow-xl border rounded-xl p-1 z-50">
-                  {aihSubmenuItems.map((item) => (
-                    <DropdownMenuItem
-                      key={item.path}
-                      onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center justify-between cursor-pointer hover:bg-accent rounded-lg px-3 py-2 mx-1 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <item.icon className="w-4 h-4 text-muted-foreground" />
-                        <span className="font-medium text-foreground">{item.label}</span>
-                      </div>
-                      {item.badge && (
-                        <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
-                          <Zap className="w-2 h-2 mr-1" />
-                          {item.badge}
-                        </Badge>
-                      )}
-                    </DropdownMenuItem>
-                  ))}
+                <DropdownMenuContent align="start" className="w-[400px] bg-background shadow-xl border rounded-xl p-5 z-50">
+                  <h3 className="text-sm font-bold mb-3 px-1">어떤 서비스를 찾고 계신가요?</h3>
+                  <div className="space-y-1">
+                    {aihSubmenuItems.map((item) => (
+                      <button
+                        key={item.path}
+                        onClick={() => handleNavigation(item.path, item)}
+                        className="w-full flex items-start gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors text-left group"
+                      >
+                        <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                          <item.icon className="w-4 h-4 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-sm mb-0.5 flex items-center gap-2">
+                            {item.label}
+                            {item.badge && (
+                              <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                                <Zap className="w-2 h-2 mr-1" />
+                                {item.badge}
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {item.label === 'AI 상담' && '24시간 AI 심리 상담 및 코칭'}
+                            {item.label === '관찰일지' && '아이 행동 기록 및 패턴 분석'}
+                            {item.label === '라이프 허브' && '일상 건강 및 웰니스 관리'}
+                            {item.label === '음성 감정 분석' && '목소리로 감정 상태 실시간 분석'}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -249,17 +274,28 @@ export const UnifiedNavigation = () => {
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-popover shadow-xl border rounded-xl p-1 z-50">
-                  {dataSubmenuItems.map((item) => (
-                    <DropdownMenuItem
-                      key={item.path}
-                      onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-3 cursor-pointer hover:bg-accent rounded-lg px-3 py-2 mx-1 transition-colors"
-                    >
-                      <item.icon className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium text-foreground">{item.label}</span>
-                    </DropdownMenuItem>
-                  ))}
+                <DropdownMenuContent align="start" className="w-[380px] bg-background shadow-xl border rounded-xl p-5 z-50">
+                  <h3 className="text-sm font-bold mb-3 px-1">데이터 관리</h3>
+                  <div className="space-y-1">
+                    {dataSubmenuItems.map((item) => (
+                      <button
+                        key={item.path}
+                        onClick={() => handleNavigation(item.path, item)}
+                        className="w-full flex items-start gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors text-left group"
+                      >
+                        <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                          <item.icon className="w-4 h-4 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-sm mb-0.5">{item.label}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {item.label === '개인DATA' && '내 검사 기록 및 통계 분석'}
+                            {item.label === '기관DATA' && '기관 회원 종합 데이터 관리'}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -276,17 +312,28 @@ export const UnifiedNavigation = () => {
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-48 bg-popover shadow-xl border rounded-xl p-1 z-50">
-                  {expertSubmenuItems.map((item) => (
-                    <DropdownMenuItem
-                      key={item.path}
-                      onClick={() => handleNavigation(item.path, item)}
-                      className="flex items-center gap-3 cursor-pointer hover:bg-accent rounded-lg px-3 py-2 mx-1 transition-colors"
-                    >
-                      <item.icon className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium text-foreground">{item.label}</span>
-                    </DropdownMenuItem>
-                  ))}
+                <DropdownMenuContent align="start" className="w-[380px] bg-background shadow-xl border rounded-xl p-5 z-50">
+                  <h3 className="text-sm font-bold mb-3 px-1">전문가 서비스</h3>
+                  <div className="space-y-1">
+                    {expertSubmenuItems.map((item) => (
+                      <button
+                        key={item.path}
+                        onClick={() => handleNavigation(item.path, item)}
+                        className="w-full flex items-start gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors text-left group"
+                      >
+                        <div className="mt-0.5 p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                          <item.icon className="w-4 h-4 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-sm mb-0.5">{item.label}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {item.label === '전문가고용' && '전문 상담사 1:1 매칭 및 예약'}
+                            {item.label === '토큰 충전' && 'AI 서비스 이용권 구매'}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
 

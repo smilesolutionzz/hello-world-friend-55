@@ -513,7 +513,7 @@ const ClientLogos = () => {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
             <span className="text-brand-gradient">진짜 부모들의 진심 후기</span>
           </h2>
-          <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-xs sm:text-base md:text-lg max-w-2xl mx-auto">
             AIH와 함께 아이의 숨겨진 가능성을 발견한 가족들의 소중한 이야기
           </p>
         </div>
@@ -565,10 +565,10 @@ const ClientLogos = () => {
         {/* 파트너 기관 섹션 */}
         <div className="bg-white/60 rounded-2xl p-8 border border-gray-200/60">
           <div className="text-center mb-8">
-            <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
+            <h3 className="text-base sm:text-xl md:text-2xl font-bold text-foreground mb-2">
               전문기관과 함께하는 <span className="text-brand-gradient">신뢰할 수 있는 분석</span>
             </h3>
-            <p className="text-muted-foreground">의료진과 전문가들이 인정한 AIH 통합분석 시스템</p>
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground">의료진과 전문가들이 인정한 AIH 통합분석 시스템</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">

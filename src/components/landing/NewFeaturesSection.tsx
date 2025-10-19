@@ -50,7 +50,7 @@ export const NewFeaturesSection = () => {
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
             이번 주 NEW 기능
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-sm sm:text-xl text-gray-600">
             매주 새로운 AI 기능이 업데이트됩니다 ✨
           </p>
         </div>

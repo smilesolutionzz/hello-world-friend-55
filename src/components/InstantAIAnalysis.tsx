@@ -308,8 +308,8 @@ const InstantAIAnalysis = () => {
         </p>
       </div>
 
-      {/* 메인 콘텐츠 - 2열 레이아웃 */}
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      {/* 메인 콘텐츠 - 모바일은 세로, 데스크톱은 2열 레이아웃 */}
+      <div className="flex flex-col md:grid md:grid-cols-2 gap-6 mb-8">
         {/* 왼쪽: 입력 영역 */}
         <div className="space-y-4">
           <div className="bg-transparent rounded-2xl border border-border/50 p-6 space-y-4">

@@ -10,6 +10,7 @@ import { ClipboardList, Plus, Eye, ChevronLeft, Clock, Sparkles, Video, Brain, Z
 import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
 import ObservationDetailView from "@/components/observation/ObservationDetailView";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
 const ObservationNew = () => {
   const navigate = useNavigate();
@@ -182,20 +183,10 @@ const ObservationNew = () => {
 
   return (
     <AuthenticationGuard fallbackMessage="관찰일지 시스템을 사용하려면 로그인이 필요합니다.">
+      <UnifiedNavigation />
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         {/* Header */}
         <div className="mb-4 sm:mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/')}
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              홈으로
-            </Button>
-          </div>
           <h1 className="text-xl sm:text-2xl md:text-4xl font-bold text-foreground mb-2 sm:mb-4 break-keep">
             🧠 AI 관찰일지 시스템
           </h1>

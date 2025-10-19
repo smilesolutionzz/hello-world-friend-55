@@ -586,7 +586,7 @@ const InstantAIAnalysis = () => {
                         });
                       });
                     }}
-                    className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold"
+                    className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold text-sm"
                     size="lg"
                   >
                     <span className="mr-2">💬</span>

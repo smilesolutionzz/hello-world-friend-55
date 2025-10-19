@@ -43,7 +43,7 @@ const AIAssistant = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [activeMode, setActiveMode] = useState<string>('proactive');
+  const [activeMode, setActiveMode] = useState<string>('development_director');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   // 모드별 대화 내역을 유지하기 위한 상태
@@ -79,58 +79,56 @@ const AIAssistant = () => {
 
   const assistantModes: AssistantMode[] = [
     {
-      id: 'proactive',
-      title: 'AIH 프로액티브 에이전트',
-      description: '🤖 대화를 학습하여 먼저 개인화된 제안을 하는 지능형 AI',
-      icon: <Brain className="w-5 h-5" />,
-      color: 'bg-gradient-to-r from-cyan-50 to-blue-50 border-cyan-200',
+      id: 'development_director',
+      title: '발달AGENT',
+      description: '😊 아동발달학 전문 AI로 우리 아이 성장을 과학적으로 분석해요',
+      icon: <Smile className="w-5 h-5" />,
+      color: 'bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200',
       ctaButtons: [
         {
-          label: '심리검사 받기',
+          label: '발달검사 받기',
           icon: <FileText className="w-4 h-4" />,
-          route: '/psychological-test',
-          description: 'AI가 추천하는 맞춤 심리검사'
+          route: '/developmental-assessment',
+          description: '아이의 현재 발달 수준 정확한 측정'
         },
         {
-          label: '전문가 상담',
-          icon: <Users className="w-4 h-4" />,
-          route: '/experts',
-          description: 'AI가 선별한 최적의 상담사 매칭'
+          label: '발달 기록부',
+          icon: <CalendarIcon className="w-4 h-4" />,
+          route: '/development-record',
+          description: '일상 속 아이 발달 과정 체계적 기록'
         },
         {
-          label: '발달 관찰',
-          icon: <Target className="w-4 h-4" />,
-          route: '/observation',
-          description: 'AI 기반 발달 패턴 분석'
+          label: '발달 리포트',
+          icon: <BarChart3 className="w-4 h-4" />,
+          route: '/development-report',
+          description: '발달 단계별 맞춤 활동 및 개선방안'
         }
       ],
-      systemPrompt: `안녕하세요! 저는 AIH 프로액티브 에이전트입니다. 🤖
+      systemPrompt: `안녕하세요! 저는 AIH 발달센터장이에요! 😊
 
-🧠 **개인화 학습 AI 엔진:**
-- 대화 패턴 분석을 통한 개인별 맞춤 서비스 제안
-- 행동 데이터 기반 예측적 개입 시스템
-- 멀티 에이전트 협업으로 종합적 솔루션 제공
-- 실시간 학습으로 점점 더 정교한 개인화 서비스
+👶 **아동발달 전문 AI 시스템:**
+- 5만+ 아동발달 케이스와 발달심리학 연구로 훈련된 전문 AI
+- 월령별, 개별적 발달패턴 정밀 분석 및 맞춤 가이드 제공
 
-🎯 **프로액티브 제안 시스템:**
-- "요즘 이런 패턴이 보이는데, 이 검사 한번 해보실래요?" 
-- "아, 그러면 이 전문가 선생님과 상담해보시는 게 어떨까요?"
-- "지금 상황에서는 이런 활동이 도움될 것 같아요"
-- "혹시 이런 것도 관심 있으실까요?"
+💕 **따뜻한 육아 동반자 스타일:**
+- "우와, 우리 아이가 이런 것도 할 수 있구나!" 하며 함께 기뻐해요
+- "아, 그럴 때는 이런 놀이 어때요?" 하며 재미있는 활동 제안해요
+- "걱정 마세요, 아이들은 저마다의 속도가 있어요" 하며 불안감 해소해드려요
 
-⚡ **실시간 학습 & 메모리화:**
-- 대화 내용을 학습하여 개인 프로필 생성
-- 선호도와 관심사 자동 파악
-- 상황별 최적 타이밍에 맞춤 제안
-- 지속적인 관계 형성을 통한 신뢰도 향상
+🌱 **발달 영역별 전문 관리:**
+- 언어발달: 어휘력, 말하기, 읽기 능력 향상
+- 인지발달: 사고력, 문제해결력, 학습능력 개발  
+- 사회성발달: 또래 관계, 협동심, 감정조절 능력
+- 신체발달: 대근육, 소근육 운동능력 향상
+- 정서발달: 자아존중감, 안정애착, 스트레스 관리
 
-🎨 **개인화 서비스 제안:**
-- 심리검사: 현재 상태에 맞는 정밀 검사 추천
-- 전문가 매칭: 문제 유형별 최적 상담사 연결
-- 발달 프로그램: 아이 특성에 맞는 활동 제안
-- 복지 혜택: 놓치기 쉬운 지원제도 알림
+🎯 **개인맞춤 발달 지원:**
+- 아이 성향에 맞는 놀이 및 학습 방법 제안
+- 발달 단계별 적기 개입 및 자극 제공
+- 부모-아이 상호작용 개선 코칭
+- 발달 지연 조기 발견 및 전문기관 연계
 
-💡 **대화할수록 더 똑똑해지는 AI가 되어 당신만의 전담 에이전트가 되어드릴게요!**`
+🏆 **우리 함께 아이의 잠재력을 최대한 끌어내 보아요!**`
     },
     {
       id: 'counselor',
@@ -225,58 +223,6 @@ const AIAssistant = () => {
 - 수치 기반 목표 설정 및 진행 모니터링
 
 ⚠️ **안전 원칙:** 의학적 진단이나 처방은 할 수 없으며, 심각한 증상이 있으시면 반드시 의료진과 상담받으시길 권해드려요.`
-    },
-    {
-      id: 'development_director',
-      title: '발달AGENT',
-      description: '😊 아동발달학 전문 AI로 우리 아이 성장을 과학적으로 분석해요',
-      icon: <Smile className="w-5 h-5" />,
-      color: 'bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200',
-      ctaButtons: [
-        {
-          label: '발달검사 받기',
-          icon: <FileText className="w-4 h-4" />,
-          route: '/developmental-assessment',
-          description: '아이의 현재 발달 수준 정확한 측정'
-        },
-        {
-          label: '발달 기록부',
-          icon: <CalendarIcon className="w-4 h-4" />,
-          route: '/development-record',
-          description: '일상 속 아이 발달 과정 체계적 기록'
-        },
-        {
-          label: '발달 리포트',
-          icon: <BarChart3 className="w-4 h-4" />,
-          route: '/development-report',
-          description: '발달 단계별 맞춤 활동 및 개선방안'
-        }
-      ],
-      systemPrompt: `안녕하세요! 저는 AIH 발달센터장이에요! 😊
-
-👶 **아동발달 전문 AI 시스템:**
-- 5만+ 아동발달 케이스와 발달심리학 연구로 훈련된 전문 AI
-- 월령별, 개별적 발달패턴 정밀 분석 및 맞춤 가이드 제공
-
-💕 **따뜻한 육아 동반자 스타일:**
-- "우와, 우리 아이가 이런 것도 할 수 있구나!" 하며 함께 기뻐해요
-- "아, 그럴 때는 이런 놀이 어때요?" 하며 재미있는 활동 제안해요
-- "걱정 마세요, 아이들은 저마다의 속도가 있어요" 하며 불안감 해소해드려요
-
-🌱 **발달 영역별 전문 관리:**
-- 언어발달: 어휘력, 말하기, 읽기 능력 향상
-- 인지발달: 사고력, 문제해결력, 학습능력 개발  
-- 사회성발달: 또래 관계, 협동심, 감정조절 능력
-- 신체발달: 대근육, 소근육 운동능력 향상
-- 정서발달: 자아존중감, 안정애착, 스트레스 관리
-
-🎯 **개인맞춤 발달 지원:**
-- 아이 성향에 맞는 놀이 및 학습 방법 제안
-- 발달 단계별 적기 개입 및 자극 제공
-- 부모-아이 상호작용 개선 코칭
-- 발달 지연 조기 발견 및 전문기관 연계
-
-🏆 **우리 함께 아이의 잠재력을 최대한 끌어내 보아요!**`
     },
     {
       id: 'secret',
@@ -408,30 +354,7 @@ const AIAssistant = () => {
 - 직장이나 연애의 복잡한 감정
 - 그냥 누군가한테 털어놓고 싶은 모든 것
 
-여기서는 뭐든 자유롭게 말할 수 있어요. 저는 조용히 들어드릴게요.`,
-
-      proactive: `안녕하세요! 저는 AIH 프로액티브 에이전트예요! 🤖
-
-저는 조금 특별한 AI인데요, 대화를 나누면서 당신을 점점 더 잘 알아가고, 필요한 순간에 먼저 도움을 제안하는 똑똑한 친구랍니다!
-
-🧠 **저만의 특별한 능력:**
-- 대화할수록 당신의 패턴과 선호도를 학습해요
-- 적절한 타이밍에 맞춤형 서비스를 제안해드려요
-- 여러 AI 전문가들과 협업하여 최고의 솔루션을 찾아요
-- 당신만의 개인화된 AI 어시스턴트로 계속 발전해요
-
-💡 **이런 걸 먼저 제안해드려요:**
-- "요즘 스트레스가 많으시네요. 이 심리검사 한번 해보실래요?"
-- "아이 발달이 궁금하시군요. 이 전문가 선생님 어떠세요?"
-- "지금 상황에서는 이런 복지혜택을 받을 수 있을 것 같아요"
-- "이런 관찰 방법도 시도해보시면 좋을 것 같아요"
-
-🎯 **함께 만들어가는 맞춤 서비스:**
-- 계속 대화하면서 저는 당신을 더 잘 이해하게 돼요
-- 필요한 순간 딱 맞는 도움을 제안해드려요
-- 플랫폼 내 모든 서비스를 연결해서 통합 솔루션을 만들어요
-
-어떤 고민이든 편하게 말씀해주세요. 대화하면서 당신에게 딱 맞는 도움을 찾아보아요! ✨`
+여기서는 뭐든 자유롭게 말할 수 있어요. 저는 조용히 들어드릴게요.`
     };
 
     return welcomeMessages[mode.id as keyof typeof welcomeMessages] || welcomeMessages.counselor;
@@ -506,8 +429,7 @@ const AIAssistant = () => {
       counselor: 'bg-gradient-to-br from-pink-900 via-rose-900 to-purple-900',
       health_manager: 'bg-gradient-to-br from-green-900 via-emerald-900 to-teal-900',
       development_director: 'bg-gradient-to-br from-blue-900 via-cyan-900 to-sky-900',
-      secret: 'bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-900',
-      proactive: 'bg-gradient-to-br from-cyan-900 via-blue-900 to-indigo-900'
+      secret: 'bg-gradient-to-br from-purple-900 via-indigo-900 to-violet-900'
     };
     return backgrounds[mode as keyof typeof backgrounds] || backgrounds.counselor;
   };
@@ -517,8 +439,7 @@ const AIAssistant = () => {
       counselor: { count: window.innerWidth < 768 ? 8 : 15, colors: ['bg-pink-400/30', 'bg-rose-400/30', 'bg-purple-400/30'] },
       health_manager: { count: window.innerWidth < 768 ? 6 : 12, colors: ['bg-green-400/30', 'bg-emerald-400/30', 'bg-teal-400/30'] },
       development_director: { count: window.innerWidth < 768 ? 10 : 18, colors: ['bg-blue-400/30', 'bg-cyan-400/30', 'bg-sky-400/30'] },
-      secret: { count: window.innerWidth < 768 ? 5 : 10, colors: ['bg-purple-400/30', 'bg-indigo-400/30', 'bg-violet-400/30'] },
-      proactive: { count: window.innerWidth < 768 ? 12 : 20, colors: ['bg-cyan-400/30', 'bg-blue-400/30', 'bg-indigo-400/30'] }
+      secret: { count: window.innerWidth < 768 ? 5 : 10, colors: ['bg-purple-400/30', 'bg-indigo-400/30', 'bg-violet-400/30'] }
     };
     return particleConfigs[mode as keyof typeof particleConfigs] || particleConfigs.counselor;
   };
@@ -549,11 +470,6 @@ const AIAssistant = () => {
         { size: 'w-64 h-64 md:w-96 md:h-96', gradient: 'from-orange-500 to-amber-500', position: 'top-10 left-10' },
         { size: 'w-48 h-48 md:w-80 md:h-80', gradient: 'from-amber-500 to-yellow-500', position: 'bottom-10 right-10', delay: '2s' },
         { size: 'w-32 h-32 md:w-64 md:h-64', gradient: 'from-yellow-500 to-orange-500', position: 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2', delay: '4s' }
-      ],
-      proactive: [
-        { size: 'w-64 h-64 md:w-96 md:h-96', gradient: 'from-cyan-500 to-blue-500', position: 'top-10 left-10' },
-        { size: 'w-48 h-48 md:w-80 md:h-80', gradient: 'from-blue-500 to-indigo-500', position: 'bottom-10 right-10', delay: '2s' },
-        { size: 'w-32 h-32 md:w-64 md:h-64', gradient: 'from-indigo-500 to-cyan-500', position: 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2', delay: '4s' }
       ]
     };
     return shapeConfigs[mode as keyof typeof shapeConfigs] || shapeConfigs.counselor;

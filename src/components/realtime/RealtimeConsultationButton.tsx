@@ -1,24 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
-import { RealtimeConsultationChat } from './RealtimeConsultationChat';
 
 export const RealtimeConsultationButton = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/ai-counselor');
+  };
 
   return (
-    <>
-      {!isOpen && (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-4 right-4 z-40 rounded-full h-14 w-14 shadow-lg"
-          size="icon"
-        >
-          <MessageCircle className="w-6 h-6" />
-        </Button>
-      )}
-      
-      {isOpen && <RealtimeConsultationChat onClose={() => setIsOpen(false)} />}
-    </>
+    <Button
+      onClick={handleClick}
+      className="fixed bottom-4 right-4 z-40 rounded-full h-14 w-14 shadow-lg"
+      size="icon"
+    >
+      <MessageCircle className="w-6 h-6" />
+    </Button>
   );
 };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { Send, Sparkles, AlertTriangle, ExternalLink, FileText, Clock } from "lucide-react";
+import { Send, Sparkles, AlertTriangle, ExternalLink, FileText, Clock, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,6 +21,7 @@ interface InstantReport {
 const ChatInterface = () => {
   const [message, setMessage] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isExpanding, setIsExpanding] = useState(false);
   const [report, setReport] = useState<InstantReport | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -96,6 +97,44 @@ const ChatInterface = () => {
   const handleNewAnalysis = () => {
     setMessage("");
     setReport(null);
+  };
+
+  const handleExpandPrompt = async () => {
+    if (!message.trim() || message.length < 10) {
+      toast({
+        title: "입력 확인",
+        description: "최소 10자 이상 입력해주세요.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsExpanding(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('expand-prompt', {
+        body: { prompt: message }
+      });
+
+      if (error) throw error;
+
+      if (data?.expandedPrompt) {
+        setMessage(data.expandedPrompt);
+        toast({
+          title: "✨ 프롬프트 확장 완료",
+          description: "입력 내용이 더 구체적으로 확장되었습니다.",
+        });
+      }
+    } catch (error: any) {
+      console.error('프롬프트 확장 오류:', error);
+      toast({
+        title: "확장 실패",
+        description: "프롬프트 확장 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsExpanding(false);
+    }
   };
 
   if (report) {
@@ -307,15 +346,45 @@ const ChatInterface = () => {
           </div>
         </div>
 
-        {/* Guidelines */}
-        <div className="text-xs sm:text-sm text-muted-foreground space-y-1 sm:space-y-2 px-1 sm:px-2">
-          <p className="font-medium">📝 효과적인 리포팅을 위한 팁:</p>
-          <ul className="list-disc list-inside space-y-1 ml-2">
-            <li>최소 30자 이상으로 가능한 구체적으로 상황을 설명해주세요</li>
-            <li>대상자의 연령, 구체적인 행동, 지속 기간 등을 포함해주세요</li>
-            <li>개인정보나 민감한 정보는 포함하지 말아주세요</li>
-          </ul>
+        {/* Expand Prompt Button */}
+        <div className="flex justify-center">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleExpandPrompt}
+            disabled={isExpanding || isAnalyzing || message.length < 10}
+            className="gap-2"
+          >
+            {isExpanding ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent" />
+                확장 중...
+              </>
+            ) : (
+              <>
+                <Wand2 className="w-4 h-4" />
+                프롬프트 확장하기
+              </>
+            )}
+          </Button>
         </div>
+
+        {/* Guidelines */}
+        <Card className="bg-amber-50 border-amber-200 p-4">
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <div className="bg-amber-500 text-white rounded-full p-1 mt-0.5">
+                <Sparkles className="w-3 h-3" />
+              </div>
+              <p className="font-semibold text-amber-900 text-sm">효과적인 리포팅을 위한 팁</p>
+            </div>
+            <ul className="space-y-1 ml-6 text-xs text-amber-800">
+              <li>• 최소 10자 이상, 핵심 고민만 간단히 적어주세요</li>
+              <li>• 예시: "5살 아이 말 늦어요", "우울해요", "아이가 친구 없어요"</li>
+              <li>• 개인정보나 민감한 정보는 포함하지 말아주세요</li>
+            </ul>
+          </div>
+        </Card>
 
         {/* Submit Button */}
         <div className={`flex ${isMobile ? 'justify-center' : 'justify-end'}`}>

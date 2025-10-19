@@ -356,7 +356,7 @@ const InstantAIAnalysis = () => {
                           ) : (
                             <>
                               <Wand2 className="w-3.5 h-3.5" />
-                              <span>AI 프롬프트 확장하기</span>
+                              <span>AI 다듬기</span>
                             </>
                           )}
                         </Button>

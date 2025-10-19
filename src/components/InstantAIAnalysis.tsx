@@ -399,46 +399,48 @@ const InstantAIAnalysis = () => {
                   <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-500" />
                   <h3 className="text-2xl font-bold text-foreground">AI 분석 완료!</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  신뢰도 <span className="text-lg font-bold text-green-600">{analysisResult?.confidence}%</span>의 분석 결과입니다
+                <p className="text-base font-semibold text-foreground">
+                  신뢰도 <span className="text-xl font-bold text-green-600">{analysisResult?.confidence}%</span>의 분석 결과입니다
                 </p>
               </div>
 
               {/* 분석 결과 카드 */}
-              <Card className="border-border/50">
+              <Card className="border-border/50 shadow-lg">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className={`w-5 h-5 rounded-full ${analysisResult?.color}`}></div>
-                    <CardTitle className="text-lg">{analysisResult?.type}</CardTitle>
-                    <Badge variant={analysisResult?.severity === '높음' ? 'destructive' : 'secondary'}>
+                    <CardTitle className="text-xl font-bold text-foreground">{analysisResult?.type}</CardTitle>
+                    <Badge variant={analysisResult?.severity === '높음' ? 'destructive' : 'secondary'} className="font-semibold">
                       {analysisResult?.severity} 단계
                     </Badge>
                   </div>
                 </CardHeader>
                 
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-5">
                   {analysisResult?.detailedAdvice && (
-                    <div className="bg-primary/5 rounded-xl p-4 border border-primary/20">
-                      <h4 className="font-bold mb-2 flex items-center gap-2 text-primary">
-                        <Heart className="w-5 h-5" />
+                    <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-xl p-5 border-2 border-amber-200 dark:border-amber-800">
+                      <h4 className="font-bold mb-3 flex items-center gap-2 text-amber-900 dark:text-amber-100 text-base">
+                        <Heart className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                         AI 전문가의 조언
                       </h4>
-                      <p className="text-sm text-foreground/80">
+                      <p className="text-sm leading-relaxed text-amber-950 dark:text-amber-50 font-medium">
                         {analysisResult.detailedAdvice}
                       </p>
                     </div>
                   )}
 
                   <div>
-                    <h4 className="font-bold mb-3 flex items-center gap-2">
-                      <Target className="w-5 h-5" />
+                    <h4 className="font-bold mb-3 flex items-center gap-2 text-foreground text-base">
+                      <Target className="w-5 h-5 text-amber-600 dark:text-amber-500" />
                       추천 솔루션
                     </h4>
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {analysisResult?.recommendations?.map((rec: string, index: number) => (
-                        <li key={index} className="flex items-start gap-2 text-sm">
-                          <span className="text-primary font-bold">{index + 1}.</span>
-                          <span>{rec}</span>
+                        <li key={index} className="flex items-start gap-3 p-4 bg-muted/80 dark:bg-muted/40 rounded-lg border border-border">
+                          <span className="flex-shrink-0 w-7 h-7 bg-amber-500/20 dark:bg-amber-500/30 rounded-full flex items-center justify-center text-amber-700 dark:text-amber-300 font-bold text-sm">
+                            {index + 1}
+                          </span>
+                          <span className="text-sm text-foreground font-medium pt-0.5">{rec}</span>
                         </li>
                       ))}
                     </ul>

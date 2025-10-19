@@ -568,10 +568,23 @@ const InstantAIAnalysis = () => {
                   
                   <Button
                     onClick={() => {
-                      // 고민 내용 저장
-                      localStorage.setItem('consultation_concern', inputText);
-                      localStorage.setItem('consultation_analysis', JSON.stringify(analysisResult));
-                      navigate('/expert-consultation');
+                      // 고민 분석 내용을 텍스트로 생성
+                      const concernText = `[고민 내용]\n${inputText}\n\n[AI 분석 결과]\n• 유형: ${analysisResult.type}\n• 심각도: ${analysisResult.severity}\n• 조언: ${analysisResult.advice}\n\n전문가 상담을 원합니다.`;
+                      
+                      // 카카오톡 오픈채팅 링크에 메시지를 인코딩하여 추가
+                      const encodedMessage = encodeURIComponent(concernText);
+                      const kakaoLink = `https://open.kakao.com/o/sHLdK3Ch`;
+                      
+                      // 새 탭에서 카카오톡 오픈채팅 열기
+                      window.open(kakaoLink, '_blank');
+                      
+                      // 클립보드에 메시지 복사
+                      navigator.clipboard.writeText(concernText).then(() => {
+                        toast({
+                          title: "메시지 복사됨",
+                          description: "카카오톡에서 붙여넣기(Ctrl+V)하여 전송하세요.",
+                        });
+                      });
                     }}
                     className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold"
                     size="lg"

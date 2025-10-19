@@ -272,13 +272,13 @@ const InstantAIAnalysis = () => {
       <div className="grid md:grid-cols-2 gap-6 mb-8">
         {/* 왼쪽: 입력 영역 */}
         <div className="space-y-4">
-          <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 p-6 space-y-4">
+          <div className="bg-transparent rounded-2xl border border-border/50 p-6 space-y-4">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
               <h2 className="text-lg font-bold text-foreground">내 고민 입력</h2>
             </div>
             
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground font-medium">
               지금 가장 걱정되는 고민이나 문제를 간단히 적어주세요
             </p>
             
@@ -379,7 +379,7 @@ const InstantAIAnalysis = () => {
         </div>
 
         {/* 오른쪽: 결과 영역 */}
-        <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 p-6">
+        <div className="bg-transparent rounded-2xl border border-border/50 p-6">
           {!showResult ? (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-12">
               <div className="w-16 h-16 bg-muted/50 rounded-2xl flex items-center justify-center">

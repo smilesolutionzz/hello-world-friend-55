@@ -410,6 +410,7 @@ const InstantAIAnalysis = () => {
                   <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-1">
                     <li>• 최소 10자 이상, 핵심 고민만 간단히 적어주세요</li>
                     <li>• 예시: "5살 아이 말 늦어요", "우울해요", "아이가 친구 없어요"</li>
+                    <li>• <span className="font-semibold text-amber-900 dark:text-amber-100">💬 "AI 다듬기" 버튼</span>을 누르면 고민이 자동으로 확장됩니다</li>
                     <li>• 개인정보나 민감한 정보는 포함하지 말아주세요</li>
                   </ul>
                 </div>

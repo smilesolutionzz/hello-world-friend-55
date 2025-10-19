@@ -91,7 +91,7 @@ export const NewFeaturesSection = () => {
           <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
             <CardContent className="p-6 text-center">
               <TrendingUp className="w-12 h-12 text-purple-600 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-purple-800 mb-2">11+</div>
+              <div className="text-3xl font-bold text-purple-800 mb-2">35+</div>
               <p className="text-purple-700">AI 기능 개발</p>
             </CardContent>
           </Card>

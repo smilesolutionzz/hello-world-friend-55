@@ -42,7 +42,7 @@ const HeroSection = () => {
             <span className="text-xs sm:text-sm font-bold text-white whitespace-nowrap">혁신력 1위 AI 심리·발달 케어 플랫폼</span>
           </div>
           
-          <h1 className="text-4xl leading-tight sm:text-6xl md:text-7xl font-extrabold">
+          <h1 className="text-3xl leading-tight sm:text-6xl md:text-7xl font-extrabold">
             <span className="block text-white mb-2 sm:mb-3">
               심리 고민, ADHD, 발달 평가
             </span>

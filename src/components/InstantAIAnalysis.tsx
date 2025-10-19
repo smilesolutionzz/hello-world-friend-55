@@ -438,11 +438,11 @@ const InstantAIAnalysis = () => {
               {/* 결과 헤더 */}
               <div className="text-center space-y-3">
                 <div className="flex items-center justify-center gap-3">
-                  <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-500" />
-                  <h3 className="text-2xl font-bold text-foreground">AI 분석 완료!</h3>
+                  <CheckCircle className="w-8 h-8 text-amber-600 dark:text-amber-500" />
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">AI 분석 완료!</h3>
                 </div>
-                <p className="text-base font-semibold text-foreground">
-                  신뢰도 <span className="text-xl font-bold text-green-600">{analysisResult?.confidence}%</span>의 분석 결과입니다
+                <p className="text-base font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  신뢰도 <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">{analysisResult?.confidence}%</span>의 분석 결과입니다
                 </p>
               </div>
 

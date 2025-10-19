@@ -513,8 +513,8 @@ const ClientLogos = () => {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
             <span className="text-brand-gradient">진짜 부모들의 진심 후기</span>
           </h2>
-          <p className="text-muted-foreground text-xs sm:text-base md:text-lg max-w-2xl mx-auto">
-            AIH와 함께 아이의 숨겨진 가능성을 발견한 가족들의 소중한 이야기
+          <p className="text-muted-foreground text-sm sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            AIH와 함께 아이의 숨겨진 가능성을<br className="sm:hidden" /> 발견한 가족들의 소중한 이야기
           </p>
         </div>
 

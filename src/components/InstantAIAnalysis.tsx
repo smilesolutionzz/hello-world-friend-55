@@ -246,6 +246,48 @@ const InstantAIAnalysis = () => {
     navigate('/pmf-onboarding');
   };
 
+  const getRecommendedTests = (concernType: string) => {
+    const testRecommendations: { [key: string]: Array<{ name: string; route: string; description: string; isPremium: boolean }> } = {
+      '우울감': [
+        { name: '우울증 테스트', route: '/test/depression', description: '우울증 정도를 체계적으로 평가합니다', isPremium: false },
+        { name: '스트레스 측정', route: '/test/stress', description: '스트레스 수준과 원인을 파악합니다', isPremium: false },
+        { name: '종합 심리 평가', route: '/assessment', description: '전문가 수준의 심층 평가', isPremium: true }
+      ],
+      '불안감': [
+        { name: '불안 테스트', route: '/test/anxiety', description: '불안 증상과 유형을 분석합니다', isPremium: false },
+        { name: '스트레스 측정', route: '/test/stress', description: '스트레스 수준과 원인을 파악합니다', isPremium: false },
+        { name: '종합 심리 평가', route: '/assessment', description: '전문가 수준의 심층 평가', isPremium: true }
+      ],
+      '발달지연': [
+        { name: '영유아 발달 평가', route: '/assessment', description: '아이의 발달 단계를 전문적으로 평가합니다', isPremium: true }
+      ],
+      '육아스트레스': [
+        { name: '스트레스 측정', route: '/test/stress', description: '육아 스트레스 정도를 측정합니다', isPremium: false },
+        { name: '번아웃 테스트', route: '/test/burnout', description: '육아 번아웃 위험을 확인합니다', isPremium: false },
+        { name: '종합 심리 평가', route: '/assessment', description: '전문가 수준의 심층 평가', isPremium: true }
+      ],
+      '학업스트레스': [
+        { name: 'ADHD 테스트', route: '/test/adhd', description: '주의력 및 집중력 문제를 파악합니다', isPremium: false },
+        { name: '스트레스 측정', route: '/test/stress', description: '학업 스트레스 수준을 측정합니다', isPremium: false }
+      ],
+      '대인관계': [
+        { name: '방어기제 분석', route: '/test/defense', description: '관계 패턴과 방어기제를 이해합니다', isPremium: false },
+        { name: '종합 심리 평가', route: '/assessment', description: '사회성 및 정서 발달 평가', isPremium: true }
+      ],
+      '수면문제': [
+        { name: '스트레스 측정', route: '/test/stress', description: '수면 방해 요인을 분석합니다', isPremium: false }
+      ],
+      '분노조절': [
+        { name: '스트레스 측정', route: '/test/stress', description: '분노와 스트레스 관계를 파악합니다', isPremium: false },
+        { name: '방어기제 분석', route: '/test/defense', description: '감정 조절 패턴을 이해합니다', isPremium: false }
+      ]
+    };
+
+    return testRecommendations[concernType] || [
+      { name: '종합 심리 평가', route: '/assessment', description: '전문가 수준의 심층 평가', isPremium: true }
+    ];
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
       {/* 헤더 섹션 */}
@@ -447,6 +489,42 @@ const InstantAIAnalysis = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* 맞춤 테스트 추천 */}
+              {getRecommendedTests(analysisResult?.type).length > 0 && (
+                <Card className="border-amber-500/30 shadow-lg bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-amber-900 dark:text-amber-100">
+                      <Brain className="w-5 h-5 text-amber-600" />
+                      이 고민에 맞는 추천 테스트
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-3">
+                      {getRecommendedTests(analysisResult?.type).map((test, index) => (
+                        <button
+                          key={index}
+                          onClick={() => navigate(test.route)}
+                          className="p-4 bg-background/60 backdrop-blur-sm rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-all text-left group"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <Badge variant={test.isPremium ? "default" : "secondary"} className="text-xs">
+                                  {test.isPremium ? "프리미엄" : "3분 테스트"}
+                                </Badge>
+                                <h5 className="font-bold text-foreground">{test.name}</h5>
+                              </div>
+                              <p className="text-sm text-muted-foreground">{test.description}</p>
+                            </div>
+                            <ArrowRight className="w-5 h-5 text-amber-500 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* CTA 버튼들 */}
               <div className="space-y-3">

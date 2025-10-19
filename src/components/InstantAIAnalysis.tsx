@@ -256,14 +256,12 @@ const InstantAIAnalysis = () => {
         </div>
         
         <h1 className="text-3xl md:text-5xl font-black leading-tight">
-          <span className="text-foreground">내 고민으로</span>
-          <br />
           <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-            어떤 솔루션을 받을 수 있을까?
+            내 고민으로<br />어떤 솔루션을 받을 수 있을까?
           </span>
         </h1>
         
-        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+        <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto">
           AI가 당신의 고민을 분석하고 최적의 상담 유형, 심각도, 맞춤 솔루션을 즉시 알려드립니다
         </p>
       </div>
@@ -275,10 +273,10 @@ const InstantAIAnalysis = () => {
           <div className="bg-transparent rounded-2xl border border-border/50 p-6 space-y-4">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
-              <h2 className="text-lg font-bold text-foreground">내 고민 입력</h2>
+              <h2 className="text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">내 고민 입력</h2>
             </div>
             
-            <p className="text-sm text-foreground font-medium">
+            <p className="text-sm font-medium bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
               지금 가장 걱정되는 고민이나 문제를 간단히 적어주세요
             </p>
             
@@ -318,13 +316,13 @@ const InstantAIAnalysis = () => {
                   </span>
                   
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-primary/5 rounded-lg border border-primary/10">
-                      <Clock className="w-3.5 h-3.5 text-primary" />
-                      <span className="text-xs font-semibold text-primary">3분 소요</span>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                      <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-500" />
+                      <span className="text-xs font-semibold text-amber-700 dark:text-amber-600">3분 소요</span>
                     </div>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-green-500/5 rounded-lg border border-green-500/10">
-                      <Zap className="w-3.5 h-3.5 text-green-600 dark:text-green-500" />
-                      <span className="text-xs font-semibold text-green-700 dark:text-green-600">완전 무료</span>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                      <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-500" />
+                      <span className="text-xs font-semibold text-amber-700 dark:text-amber-600">완전 무료</span>
                     </div>
                     <Button
                       type="button"
@@ -332,11 +330,11 @@ const InstantAIAnalysis = () => {
                       size="sm"
                       onClick={handleExpandPrompt}
                       disabled={isExpanding || isAnalyzing || inputText.length < 10}
-                      className="gap-1.5 text-xs h-7 px-2 border border-primary/20 hover:bg-primary/10"
+                      className="gap-1.5 text-xs h-7 px-2 border border-amber-500/30 hover:bg-amber-500/10 text-amber-700 dark:text-amber-600 hover:text-amber-800 dark:hover:text-amber-500"
                     >
                       {isExpanding ? (
                         <>
-                          <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
+                          <div className="animate-spin rounded-full h-3 w-3 border-2 border-amber-600 border-t-transparent" />
                           <span>다듬는 중...</span>
                         </>
                       ) : (
@@ -386,8 +384,8 @@ const InstantAIAnalysis = () => {
                 <span className="text-3xl">📖</span>
               </div>
               <div className="space-y-2">
-                <h3 className="text-xl font-bold text-foreground">분석 결과가 여기 표시됩니다</h3>
-                <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+                <h3 className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">분석 결과가 여기 표시됩니다</h3>
+                <p className="text-sm bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent max-w-xs mx-auto">
                   왼쪽에 내용을 입력하고<br />
                   "무료로 분석하기" 버튼을 눌러주세요
                 </p>

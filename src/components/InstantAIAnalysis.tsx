@@ -247,177 +247,102 @@ const InstantAIAnalysis = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      {/* 메인 컨테이너 - 프리미엄 디자인 */}
-      <div className="relative group">
-        {/* 배경 글로우 효과 */}
-        <div className="absolute -inset-1 bg-gradient-to-br from-primary/20 via-secondary/10 to-primary/20 rounded-3xl opacity-50 group-hover:opacity-70 blur-2xl transition-all duration-700" />
+    <div className="w-full max-w-6xl mx-auto px-4">
+      {/* 헤더 섹션 */}
+      <div className="text-center mb-12 space-y-4">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-full border border-amber-500/20">
+          <Sparkles className="w-4 h-4 text-amber-500" />
+          <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">AI 주관 분석</span>
+        </div>
         
-        {/* 메인 카드 */}
-        <div className="relative bg-background/95 backdrop-blur-xl rounded-3xl border border-primary/20 shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:shadow-[0_12px_48px_rgba(0,0,0,0.16)] transition-all duration-500">
-          {/* 헤더 */}
-          <div className="relative overflow-hidden">
-            {/* 미묘한 배경 패턴 */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--primary)/0.08),transparent_50%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,hsl(var(--secondary)/0.06),transparent_50%)]" />
-            
-            <div className="relative p-8 text-center">
-              <div className="flex items-center justify-center gap-3 mb-3">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary/30 blur-xl animate-pulse" />
-                  <Sparkles className="relative w-7 h-7 text-primary" />
-                </div>
-                <h2 className="text-3xl md:text-4xl font-black text-foreground whitespace-nowrap">
-                  <span className="hidden md:inline">AI </span>즉시 리포팅
-                </h2>
-                <Badge variant="secondary" className="text-xs font-bold px-3 py-1 bg-primary/10 text-primary border-primary/30">
-                  beta
-                </Badge>
-              </div>
-              <p className="text-base text-muted-foreground font-medium">
-                고민을 간단히 말하면, 즉시 분석해드려요<br />
-                <span className="text-primary font-bold">(최소 10자)</span>
-              </p>
-            </div>
-          </div>
+        <h1 className="text-3xl md:text-5xl font-black leading-tight">
+          <span className="text-foreground">내 이야기로</span>
+          <br />
+          <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+            어떤 책을 만들 수 있을까?
+          </span>
+        </h1>
+        
+        <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+          AI가 당신의 이야기를 분석하고 최적의 출간 형태, 예상 제작 비용, 제작 기간을 알려드립니다
+        </p>
+      </div>
 
-          <div className="p-8 space-y-6">
+      {/* 메인 콘텐츠 - 2열 레이아웃 */}
+      <div className="grid md:grid-cols-2 gap-6 mb-8">
+        {/* 왼쪽: 입력 영역 */}
+        <div className="space-y-4">
+          <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 p-6 space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-5 h-5 text-amber-500" />
+              <h2 className="text-lg font-bold text-foreground">내 이야기 입력</h2>
+            </div>
+            
+            <p className="text-sm text-muted-foreground">
+              살아온 인생이나 쓰고 싶은 주제를 자세히 입력해주세요
+            </p>
+            
             {!showResult ? (
               <>
-                {/* 입력 영역 */}
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <label className="block text-sm font-bold text-foreground/70 px-1">
-                      💬 예시: 14개월 아기가 아직 걷지 못해요... / 고3 아들이 극도로 예민해져서 힘들어요... / 육아 스트레스로 아이에게 화를 자주 내요...
-                    </label>
-                    
-                    {/* 텍스트 영역 + 음성 입력 */}
-                    <div className="relative">
-                      <Textarea
-                        placeholder="지금 가장 걱정되는 한 문장을 적어주세요..."
-                        value={inputText}
-                        onChange={(e) => {
-                          const text = e.target.value;
-                          if (text.length <= 500) {
-                            setInputText(text);
-                          }
-                        }}
-                        className="min-h-[140px] resize-none border border-border/50 focus:border-primary/50 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all duration-300 text-base bg-background/80 backdrop-blur-sm shadow-sm focus:shadow-lg pr-3 pt-3"
-                        maxLength={500}
-                      />
-                      
-                      {/* 음성 입력 버튼 - 우측 하단 */}
-                      <div className="absolute bottom-2 right-2">
-                        <VoiceInputButton
-                          onTranscription={(text) => {
-                            const newText = inputText + (inputText ? ' ' : '') + text;
-                            if (newText.length <= 500) {
-                              setInputText(newText);
-                            }
-                          }}
-                          className="shadow-md hover:shadow-lg transition-shadow"
-                        />
-                      </div>
-                    </div>
-                    
-                    {/* 글자 수 + AI 다듬기 버튼 */}
-                    <div className="flex flex-wrap justify-between items-center gap-3 text-sm">
-                      <span className="font-medium text-muted-foreground">
-                        {inputText.length}<span className="text-primary font-semibold">/500</span> <span className="text-xs">(최소 10자)</span>
-                      </span>
-                      
-                      {/* 우측: 정보 아이콘 + AI 다듬기 버튼 */}
-                      <div className="flex flex-wrap items-center gap-2">
-                        {/* 아이콘 배지들 */}
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 rounded-lg border border-primary/10 hover:bg-primary/10 transition-colors">
-                          <Clock className="w-3.5 h-3.5 text-primary" />
-                          <span className="text-xs font-semibold text-primary">3분 소요</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/5 rounded-lg border border-green-500/10 hover:bg-green-500/10 transition-colors">
-                          <Zap className="w-3.5 h-3.5 text-green-600 dark:text-green-500" />
-                          <span className="text-xs font-semibold text-green-700 dark:text-green-600">완전 무료</span>
-                        </div>
-                        
-                        {/* AI 다듬기 버튼 */}
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleExpandPrompt}
-                          disabled={isExpanding || isAnalyzing || inputText.length < 10}
-                          className="gap-1.5 text-xs h-7 px-2 border border-primary/20 hover:bg-primary/10 hover:border-primary/30"
-                        >
-                          {isExpanding ? (
-                            <>
-                              <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
-                              <span>다듬는 중...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Wand2 className="w-3.5 h-3.5" />
-                              <span>AI 다듬기</span>
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </div>
+                <div className="relative">
+                  <Textarea
+                    placeholder="지금 가장 걱정되는 한 문장을 적어주세요..."
+                    value={inputText}
+                    onChange={(e) => {
+                      const text = e.target.value;
+                      if (text.length <= 500) {
+                        setInputText(text);
+                      }
+                    }}
+                    className="min-h-[280px] resize-none border-border/50 focus:border-primary/50 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all text-base bg-background/80 backdrop-blur-sm pr-3 pt-3"
+                    maxLength={500}
+                  />
+                  
+                  {/* 음성 입력 버튼 */}
+                  <div className="absolute bottom-3 right-3">
+                    <VoiceInputButton
+                      onTranscription={(text) => {
+                        const newText = inputText + (inputText ? ' ' : '') + text;
+                        if (newText.length <= 500) {
+                          setInputText(newText);
+                        }
+                      }}
+                      className="shadow-lg hover:shadow-xl transition-shadow"
+                    />
                   </div>
-
-                  {/* 효과적인 리포팅을 위한 팁 - 프리미엄 스타일 */}
-                  <div className="relative group/tip">
-                    <div className="absolute -inset-0.5 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-xl opacity-50 group-hover/tip:opacity-70 blur-lg transition-all duration-300" />
-                    <div className="relative p-5 bg-gradient-to-br from-amber-50/90 to-orange-50/90 dark:from-amber-900/30 dark:to-orange-900/30 backdrop-blur-sm rounded-xl border border-amber-200/50 dark:border-amber-800/50 shadow-lg">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center shadow-md">
-                          <span className="text-lg">💡</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-bold text-amber-900 dark:text-amber-100 mb-2">
-                            효과적인 리포팅을 위한 팁
-                          </p>
-                          <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-1.5">
-                            <li className="flex items-start gap-2">
-                              <span className="text-amber-600 dark:text-amber-400 font-bold">•</span>
-                              <span>최소 10자 이상, 핵심 고민만 간단히 적어주세요</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <span className="text-amber-600 dark:text-amber-400 font-bold">•</span>
-                              <span>예시: "5살 아이 말 늦어요", "우울해요", "아이가 친구 없어요"</span>
-                            </li>
-                            <li className="flex items-start gap-2">
-                              <span className="text-amber-600 dark:text-amber-400 font-bold">•</span>
-                              <span>개인정보나 민감한 정보는 포함하지 말아주세요</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    <span className="font-semibold text-foreground">{inputText.length}</span>/500 <span className="text-xs">(최소 10자)</span>
+                  </span>
+                  
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-primary/5 rounded-lg border border-primary/10">
+                      <Clock className="w-3.5 h-3.5 text-primary" />
+                      <span className="text-xs font-semibold text-primary">3분 소요</span>
                     </div>
-                  </div>
-
-                  {/* 즉시 리포트 받기 버튼 - 프리미엄 스타일 */}
-                  <div className="relative group/button">
-                    {/* 글로우 효과 */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-primary/50 via-secondary/50 to-primary/50 rounded-xl opacity-0 group-hover/button:opacity-100 blur-xl transition-all duration-500" />
-                    
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-green-500/5 rounded-lg border border-green-500/10">
+                      <Zap className="w-3.5 h-3.5 text-green-600 dark:text-green-500" />
+                      <span className="text-xs font-semibold text-green-700 dark:text-green-600">완전 무료</span>
+                    </div>
                     <Button
-                      onClick={handleAnalyze}
-                      disabled={isAnalyzing || inputText.length < 10}
-                      size="lg"
-                      className="relative w-full h-16 text-lg font-bold bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 border-0 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 overflow-hidden"
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleExpandPrompt}
+                      disabled={isExpanding || isAnalyzing || inputText.length < 10}
+                      className="gap-1.5 text-xs h-7 px-2 border border-primary/20 hover:bg-primary/10"
                     >
-                      {/* 반짝이는 배경 효과 */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/button:translate-x-full transition-transform duration-1000" />
-                      
-                      {isAnalyzing ? (
+                      {isExpanding ? (
                         <>
-                          <Loader2 className="w-6 h-6 mr-2 animate-spin" />
-                          <span className="relative">AI가 분석 중입니다...</span>
+                          <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
+                          <span>다듬는 중...</span>
                         </>
                       ) : (
                         <>
-                          <Brain className="w-6 h-6 mr-2" />
-                          <span className="relative">즉시 리포트 받기</span>
+                          <Wand2 className="w-3.5 h-3.5" />
+                          <span>AI 다듬기</span>
                         </>
                       )}
                     </Button>
@@ -425,131 +350,162 @@ const InstantAIAnalysis = () => {
                 </div>
               </>
             ) : (
-              <>
-                {/* 분석 결과 */}
-                <div className="space-y-6">
-                  {/* 결과 헤더 - 프리미엄 애니메이션 */}
-                  <div className="text-center space-y-3">
-                    <div className="flex items-center justify-center gap-3 animate-fade-in">
-                      <div className="relative">
-                        <div className="absolute inset-0 bg-green-500/30 blur-xl animate-pulse" />
-                        <CheckCircle className="relative w-8 h-8 text-green-600 dark:text-green-500 animate-scale-in" />
-                      </div>
-                      <h3 className="text-2xl md:text-3xl font-black text-foreground">
-                        AI 분석 완료!
-                      </h3>
-                    </div>
-                    <div className="inline-block px-6 py-2 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-full border border-green-200/50 dark:border-green-800/50 shadow-md">
-                      <p className="text-sm font-semibold text-green-700 dark:text-green-300">
-                        신뢰도 <span className="text-lg font-bold text-green-600 dark:text-green-400">{analysisResult?.confidence}%</span>의 분석 결과입니다
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* 분석 결과 카드 - 프리미엄 */}
-                  <div className="relative group/card">
-                    <div className="absolute -inset-1 bg-gradient-to-br from-primary/30 via-secondary/20 to-primary/30 rounded-2xl opacity-50 blur-2xl transition-all duration-500" />
-                    <Card className="relative border border-border/50 rounded-2xl shadow-xl overflow-hidden bg-background/95 backdrop-blur-sm">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <div className={`w-5 h-5 rounded-full ${analysisResult?.color} shadow-md ring-2 ring-white/20 dark:ring-black/20`}></div>
-                          <CardTitle className="text-xl font-bold text-foreground">{analysisResult?.type}</CardTitle>
-                          <Badge 
-                            variant={analysisResult?.severity === '높음' ? 'destructive' : 'secondary'}
-                            className="text-xs font-semibold px-3 py-1"
-                          >
-                            {analysisResult?.severity} 단계
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      
-                      <CardContent className="space-y-5">
-                        {/* AI의 조언 - 메인으로 강조 */}
-                        {analysisResult?.detailedAdvice && (
-                          <div className="relative group/advice">
-                            <div className="absolute -inset-0.5 bg-gradient-to-br from-primary to-secondary rounded-xl opacity-20 blur transition-all duration-300" />
-                            <div className="relative bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 rounded-xl p-5 border-2 border-primary/30 shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.3)]">
-                              <h4 className="font-black mb-3 flex items-center gap-2 text-primary text-base">
-                                <Heart className="w-5 h-5 animate-pulse" />
-                                AI 전문가의 조언
-                              </h4>
-                              <p className="text-sm leading-relaxed text-foreground/90 font-medium">
-                                {analysisResult.detailedAdvice}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="space-y-3">
-                          <h4 className="font-bold text-base flex items-center gap-2 text-foreground">
-                            <Target className="w-5 h-5 text-accent" />
-                            추천 솔루션
-                          </h4>
-                          <ul className="space-y-2">
-                            {analysisResult?.recommendations?.map((rec: string, index: number) => (
-                              <li key={index} className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg border border-border/50 hover:border-primary/30 transition-colors duration-200">
-                                <span className="flex-shrink-0 w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold text-xs">
-                                  {index + 1}
-                                </span>
-                                <span className="text-sm text-foreground/80 font-medium">{rec}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* CTA 버튼들 - 네오브루탈리즘 */}
-                  <div className="space-y-4">
-                    <Button
-                      onClick={() => navigate('/observation')}
-                      size="lg"
-                      className="w-full h-16 text-lg font-black bg-gradient-to-r from-primary via-secondary to-accent border-2 border-foreground/20 hover:border-foreground/40 shadow-[6px_6px_0px_0px_hsl(var(--foreground)/0.2)] hover:shadow-[8px_8px_0px_0px_hsl(var(--foreground)/0.3)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all duration-200 relative overflow-hidden group/cta"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover/cta:opacity-100 transition-opacity duration-300" />
-                      <ArrowRight className="w-6 h-6 mr-2 group-hover/cta:translate-x-1 transition-transform duration-200" />
-                      <span className="relative">📝 관찰일지 작성하기</span>
-                    </Button>
-                    
-                    <div className="grid grid-cols-2 gap-3">
-                      <Button
-                        variant="outline"
-                        onClick={handleStartFullAnalysis}
-                        className="h-12 font-bold border-2 border-foreground/20 shadow-[3px_3px_0px_0px_hsl(var(--foreground)/0.15)] hover:shadow-[4px_4px_0px_0px_hsl(var(--foreground)/0.2)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all duration-200"
-                      >
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        3분 온보딩
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setShowResult(false);
-                          setInputText('');
-                        }}
-                        className="h-12 font-bold border-2 border-foreground/20 shadow-[3px_3px_0px_0px_hsl(var(--foreground)/0.15)] hover:shadow-[4px_4px_0px_0px_hsl(var(--foreground)/0.2)] hover:translate-x-[-1px] hover:translate-y-[-1px] transition-all duration-200"
-                      >
-                        다시 분석
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* 장점 안내 - 카드 스타일 */}
-                  <div className="relative group/info">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-secondary rounded-xl opacity-20 blur transition-all duration-300" />
-                    <div className="relative p-5 bg-gradient-to-br from-primary/10 to-secondary/10 backdrop-blur-sm rounded-xl border-2 border-primary/30 shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.2)]">
-                      <p className="text-sm text-center font-medium text-foreground/80">
-                        <strong className="text-primary font-black">💡 더 정확한 분석을 원하신다면?</strong><br />
-                        <span className="text-foreground/70">3분 온보딩을 통해 맞춤형 솔루션과 전문가 매칭을 받아보세요!</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </>
+              <div className="min-h-[280px] p-4 bg-muted/30 rounded-xl border border-border/50">
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{inputText}</p>
+              </div>
             )}
           </div>
+          
+          {/* 시로 아이디어 확장하기 */}
+          {!showResult && (
+            <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20 backdrop-blur-sm rounded-xl border border-amber-200/30 dark:border-amber-800/30 p-5">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
+                  <span className="text-base">💡</span>
+                </div>
+                <div className="flex-1 space-y-2">
+                  <p className="text-sm font-bold text-amber-900 dark:text-amber-100">
+                    시로 아이디어 확장하기
+                  </p>
+                  <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-1">
+                    <li>• 최소 10자 이상, 핵심 고민만 간단히 적어주세요</li>
+                    <li>• 예시: "5살 아이 말 늦어요", "우울해요", "아이가 친구 없어요"</li>
+                    <li>• 개인정보나 민감한 정보는 포함하지 말아주세요</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 오른쪽: 결과 영역 */}
+        <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 p-6">
+          {!showResult ? (
+            <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-12">
+              <div className="w-16 h-16 bg-muted/50 rounded-2xl flex items-center justify-center">
+                <span className="text-3xl">📖</span>
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold text-foreground">분석 결과가 여기 표시됩니다</h3>
+                <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+                  왼쪽에 내용을 입력하고<br />
+                  "무료로 분석하기" 버튼을 눌러주세요
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {/* 결과 헤더 */}
+              <div className="text-center space-y-3">
+                <div className="flex items-center justify-center gap-3">
+                  <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-500" />
+                  <h3 className="text-2xl font-bold text-foreground">AI 분석 완료!</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  신뢰도 <span className="text-lg font-bold text-green-600">{analysisResult?.confidence}%</span>의 분석 결과입니다
+                </p>
+              </div>
+
+              {/* 분석 결과 카드 */}
+              <Card className="border-border/50">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-5 h-5 rounded-full ${analysisResult?.color}`}></div>
+                    <CardTitle className="text-lg">{analysisResult?.type}</CardTitle>
+                    <Badge variant={analysisResult?.severity === '높음' ? 'destructive' : 'secondary'}>
+                      {analysisResult?.severity} 단계
+                    </Badge>
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="space-y-4">
+                  {analysisResult?.detailedAdvice && (
+                    <div className="bg-primary/5 rounded-xl p-4 border border-primary/20">
+                      <h4 className="font-bold mb-2 flex items-center gap-2 text-primary">
+                        <Heart className="w-5 h-5" />
+                        AI 전문가의 조언
+                      </h4>
+                      <p className="text-sm text-foreground/80">
+                        {analysisResult.detailedAdvice}
+                      </p>
+                    </div>
+                  )}
+
+                  <div>
+                    <h4 className="font-bold mb-3 flex items-center gap-2">
+                      <Target className="w-5 h-5" />
+                      추천 솔루션
+                    </h4>
+                    <ul className="space-y-2">
+                      {analysisResult?.recommendations?.map((rec: string, index: number) => (
+                        <li key={index} className="flex items-start gap-2 text-sm">
+                          <span className="text-primary font-bold">{index + 1}.</span>
+                          <span>{rec}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* CTA 버튼들 */}
+              <div className="space-y-3">
+                <Button
+                  onClick={() => navigate('/observation')}
+                  size="lg"
+                  className="w-full font-bold"
+                >
+                  <ArrowRight className="w-5 h-5 mr-2" />
+                  관찰일지 작성하기
+                </Button>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <Button variant="outline" onClick={handleStartFullAnalysis}>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    3분 온보딩
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowResult(false);
+                      setInputText('');
+                    }}
+                  >
+                    다시 분석
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+      
+      {/* 하단 버튼 */}
+      {!showResult && (
+        <div className="max-w-2xl mx-auto">
+          <Button
+            onClick={handleAnalyze}
+            disabled={isAnalyzing || inputText.length < 10}
+            size="lg"
+            className="w-full h-16 text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 border-0 shadow-xl"
+          >
+            {isAnalyzing ? (
+              <>
+                <Loader2 className="w-6 h-6 mr-2 animate-spin" />
+                AI가 분석 중입니다...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-6 h-6 mr-2" />
+                무료로 분석하기
+              </>
+            )}
+          </Button>
+          <p className="text-center text-sm text-muted-foreground mt-3">
+            분석은 완전 무료이며, 30초 이내 완료됩니다
+          </p>
+        </div>
+      )}
     </div>
   );
 };

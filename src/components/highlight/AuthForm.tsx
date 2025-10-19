@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -37,6 +37,23 @@ export const AuthForm = () => {
   const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  // Input field refs for scrolling
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const signupEmailRef = useRef<HTMLInputElement>(null);
+
+  // Scroll to input field when focused on mobile
+  const scrollToInput = (element: HTMLElement | null) => {
+    if (!element) return;
+    
+    setTimeout(() => {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }, 300); // Delay to wait for keyboard to appear
+  };
 
   useEffect(() => {
     // localStorage에서 추천 코드 확인하여 폼에 자동 입력
@@ -282,11 +299,13 @@ export const AuthForm = () => {
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
+                          ref={emailRef}
                           id="email"
                           type="email"
                           placeholder="your@email.com"
                           value={signInData.email}
                           onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
                           className="pl-10"
                           required
                           autoComplete="email"
@@ -298,11 +317,13 @@ export const AuthForm = () => {
                       <div className="relative">
                         <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
+                          ref={passwordRef}
                           id="password"
                           type="password"
                           placeholder="••••••••"
                           value={signInData.password}
                           onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
                           className="pl-10"
                           required
                           autoComplete="current-password"
@@ -353,6 +374,7 @@ export const AuthForm = () => {
                           placeholder="홍길동"
                           value={signUpData.name}
                           onChange={(e) => setSignUpData(prev => ({ ...prev, name: e.target.value }))}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
                           className="pl-10"
                           required
                           autoComplete="name"
@@ -370,6 +392,7 @@ export const AuthForm = () => {
                           placeholder="010-1234-5678"
                           value={signUpData.phone}
                           onChange={(e) => setSignUpData(prev => ({ ...prev, phone: e.target.value }))}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
                           className="pl-10"
                           required
                           autoComplete="tel"
@@ -382,11 +405,13 @@ export const AuthForm = () => {
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
+                          ref={signupEmailRef}
                           id="signup-email"
                           type="email"
                           placeholder="your@email.com"
                           value={signUpData.email}
                           onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
                           className="pl-10"
                           required
                           autoComplete="email"
@@ -404,6 +429,7 @@ export const AuthForm = () => {
                           placeholder="••••••••"
                           value={signUpData.password}
                           onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
                           className="pl-10"
                           required
                           autoComplete="new-password"
@@ -421,6 +447,7 @@ export const AuthForm = () => {
                           placeholder="••••••••"
                           value={signUpData.confirmPassword}
                           onChange={(e) => setSignUpData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                          onFocus={(e) => scrollToInput(e.currentTarget)}
                           className="pl-10"
                           required
                           autoComplete="new-password"

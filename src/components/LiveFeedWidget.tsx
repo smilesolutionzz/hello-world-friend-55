@@ -58,6 +58,17 @@ const LiveFeedWidget = () => {
 
   // 로컬스토리지에서 설정 불러오기
   useEffect(() => {
+    const today = new Date().toDateString();
+    const hiddenDate = localStorage.getItem('liveWidgetHiddenDate');
+    
+    // 오늘 날짜가 아니면 리셋
+    if (hiddenDate !== today) {
+      localStorage.removeItem('liveWidgetHidden');
+      localStorage.removeItem('liveStatsHidden');
+      localStorage.removeItem('liveFeedbackHidden');
+      localStorage.removeItem('liveWidgetHiddenDate');
+    }
+    
     const statsHidden = localStorage.getItem('liveStatsHidden') === 'true';
     const feedbackHidden = localStorage.getItem('liveFeedbackHidden') === 'true';
     const widgetHidden = localStorage.getItem('liveWidgetHidden') === 'true';
@@ -69,21 +80,27 @@ const LiveFeedWidget = () => {
 
   // 통계 닫기
   const handleCloseStats = () => {
+    const today = new Date().toDateString();
     setIsStatsHidden(true);
     localStorage.setItem('liveStatsHidden', 'true');
+    localStorage.setItem('liveWidgetHiddenDate', today);
   };
 
   // 피드백 닫기
   const handleCloseFeedback = () => {
+    const today = new Date().toDateString();
     setIsFeedbackHidden(true);
     localStorage.setItem('liveFeedbackHidden', 'true');
+    localStorage.setItem('liveWidgetHiddenDate', today);
     setCurrentFeedback(null);
   };
 
   // 전체 위젯 닫기
   const handleCloseWidget = () => {
+    const today = new Date().toDateString();
     setIsWidgetHidden(true);
     localStorage.setItem('liveWidgetHidden', 'true');
+    localStorage.setItem('liveWidgetHiddenDate', today);
   };
 
   // 위젯 다시 보기
@@ -94,6 +111,7 @@ const LiveFeedWidget = () => {
     localStorage.removeItem('liveWidgetHidden');
     localStorage.removeItem('liveStatsHidden');
     localStorage.removeItem('liveFeedbackHidden');
+    localStorage.removeItem('liveWidgetHiddenDate');
   };
 
   // 실제 피드백 데이터 가져오기

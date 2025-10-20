@@ -723,7 +723,7 @@ const Dashboard = () => {
             )}
 
             {/* Quick Action Cards */}
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/assessment')}>
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -734,6 +734,21 @@ const Dashboard = () => {
                     <p className="text-sm text-muted-foreground">AI 기반 발달·심리 검사로 현재 상태를 확인하세요</p>
                     <Button className="mt-4" size="sm">
                       검사 시작하기
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200" onClick={() => navigate('/concern-storage')}>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center">
+                    <Heart className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg mb-2 text-foreground">고민 저장소</h3>
+                    <p className="text-sm text-muted-foreground">저장된 고민과 AI 분석 결과를 확인하세요</p>
+                    <Button className="mt-4" size="sm" variant="outline">
+                      고민 보기
                     </Button>
                   </div>
                 </div>

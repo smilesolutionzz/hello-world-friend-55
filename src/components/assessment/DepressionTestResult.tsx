@@ -13,6 +13,7 @@ import SocialShareButtons from '@/components/social/SocialShareButtons';
 import VoiceFeature from '@/components/voice/VoiceFeature';
 import { supabase } from '@/integrations/supabase/client';
 import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
+import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 
 interface DepressionTestResultProps {
   results: {
@@ -458,6 +459,9 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
         title={`우울증 자가진단 결과: ${severity} (${average.toFixed(1)}점)`}
         description={`총점 ${total}점으로 ${severity} 수준입니다. 전문적인 도움을 받아보세요!`}
       />
+
+      {/* 전문가 상담 권유 */}
+      <ExpertConsultationNotice />
       
       {/* 맞춤 추천 및 B2B 제안 */}
       <PersonalizedProductRecommendation 

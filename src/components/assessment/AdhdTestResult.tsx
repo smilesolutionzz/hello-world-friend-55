@@ -13,6 +13,7 @@ import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import ShareResultButton from '@/components/ShareResultButton';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
@@ -784,6 +785,9 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           정확한 진단과 치료를 위해서는 반드시 통합건강의학과 전문의와 상담하시기 바랍니다.
         </p>
       </Card>
+
+      {/* 전문가 상담 권유 */}
+      <ExpertConsultationNotice />
       
       {/* 맞춤 추천 및 B2B 제안 */}
       <PersonalizedProductRecommendation 

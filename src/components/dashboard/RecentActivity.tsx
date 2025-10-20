@@ -61,7 +61,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
   const getActivityLabel = (type: string) => {
     switch (type) {
       case 'assessment':
-        return '심리검사';
+        return '심리테스트';
       case 'consultation':
         return 'AI상담';
       case 'observation':

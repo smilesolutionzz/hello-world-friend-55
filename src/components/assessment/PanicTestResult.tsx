@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { useShareText } from "@/utils/shareUtils";
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
+import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 
 interface PanicTestResultProps {
   results: {
@@ -361,11 +362,14 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
       {/* 다음 단계 제안 */}
       <NextStepSuggestion className="mb-6" />
 
+      {/* 전문가 상담 권유 */}
+      <ExpertConsultationNotice />
+
       {/* Additional Information */}
       <Card className="p-6 bg-blue-50 border-blue-200">
         <h4 className="font-semibold text-blue-900 mb-2">참고사항</h4>
         <p className="text-blue-800 text-sm leading-relaxed">
-          이 검사는 자가진단 도구로, 의학적 진단을 대체할 수 없습니다. 
+          이 체크는 자가진단 도구로, 의학적 진단을 대체할 수 없습니다. 
           정확한 진단과 치료를 위해서는 반드시 전문의와 상담하시기 바랍니다.
         </p>
       </Card>

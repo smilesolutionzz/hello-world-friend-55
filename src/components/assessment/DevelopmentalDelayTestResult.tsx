@@ -10,6 +10,7 @@ import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, LineChart, Line, AreaChart, Area } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { FileText } from 'lucide-react';
+import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 
 interface DevelopmentalDelayTestResultProps {
   results: {
@@ -502,12 +503,15 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
         <Button onClick={onRestart} variant="outline">
           다시 검사하기
         </Button>
+
+        {/* 전문가 상담 권유 */}
+        <ExpertConsultationNotice />
         
         <Button 
           onClick={() => navigate('/iep-generator', { 
             state: { 
               assessmentResults: {
-                '발달지연 검사': results,
+                '발달지연 체크': results,
                 analysis: analysis
               } 
             }

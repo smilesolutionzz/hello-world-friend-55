@@ -123,7 +123,7 @@ export const TokenHistory = () => {
       case 'assessment_analysis':
         return {
           icon: <TrendingDown className="w-4 h-4 text-red-600" />,
-          label: '심리검사 분석',
+          label: '심리테스트 분석',
           description: '검사 결과 분석',
           color: 'text-red-600',
           isIncrease: false
@@ -318,7 +318,7 @@ export const TokenHistory = () => {
               <ul className="text-sm text-blue-800 space-y-1">
                 <li>• 매일 3토큰씩 무료로 지급됩니다</li>
                 <li>• 친구 추천시 추천인은 10토큰, 가입자는 5토큰을 받습니다</li>
-                <li>• 심리검사 및 관찰일지 분석시 토큰이 차감됩니다</li>
+                <li>• 심리테스트 및 관찰일지 분석시 토큰이 차감됩니다</li>
                 <li>• 토큰은 유효기간이 없으며, 언제든지 사용할 수 있습니다</li>
               </ul>
             </div>

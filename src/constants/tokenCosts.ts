@@ -1,6 +1,6 @@
 // 각 기능별 토큰 소진량 정의 (BM 최적화 버전)
 export const TOKEN_COSTS = {
-  // 기본 심리검사 (저가격대)
+  // 기본 심리테스트 (저가격대)
   PSYCHOLOGICAL_TEST: 2,     // 마음상태 체크
   FOCUS_CHECK: 2,           // AIH 집중력 자가점검
   DEPRESSION_TEST: 2,       // 우울감 자가체크  

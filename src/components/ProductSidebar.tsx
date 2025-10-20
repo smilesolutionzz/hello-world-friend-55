@@ -28,7 +28,7 @@ const ProductSidebar = () => {
   const products = [
     {
       icon: <Clock className="w-5 h-5" />,
-      title: "3분 심리검사",
+      title: "3분 심리테스트",
       tokenCost: "2토큰",
       badge: "시작",
       badgeType: "popular",
@@ -186,7 +186,7 @@ const ProductSidebar = () => {
               className="w-full border-green-500 text-green-400 hover:bg-green-900/30 text-sm font-medium bg-transparent"
               onClick={() => navigate('/assessment')}
             >
-              ⚡ 3분 심리검사 (2토큰)
+              ⚡ 3분 심리테스트 (2토큰)
             </Button>
           </div>
         </div>

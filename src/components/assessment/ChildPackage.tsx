@@ -32,7 +32,7 @@ export const ChildPackage = () => {
     },
     {
       id: 3,
-      title: '아동 종합발달검사',
+      title: '아동 종합발달체크',
       duration: '25분',
       tokens: TOKEN_COSTS.OBSERVATION_ANALYSIS,
       status: '전문평가',
@@ -167,7 +167,7 @@ export const ChildPackage = () => {
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <p><strong>아이 발달이 걱정된다면:</strong></p>
                   <p>• 언어발달 검사로 시작</p>
-                  <p>• 종합발달검사로 정밀평가</p>
+                  <p>• 종합발달체크로 정밀평가</p>
                   <p>• 가족케어로 지속관리</p>
                 </div>
               </CardContent>

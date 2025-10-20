@@ -17,7 +17,7 @@ export function QuickActions() {
 
   const actions = [
     {
-      title: '3분 심리검사',
+      title: '3분 심리테스트',
       description: '빠른 심리상태 체크',
       icon: <Brain className="w-5 h-5" />,
       color: 'from-primary to-primary-glow',

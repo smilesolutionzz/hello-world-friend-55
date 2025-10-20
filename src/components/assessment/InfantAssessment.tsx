@@ -98,7 +98,7 @@ const InfantAssessment = ({ age, onComplete, onBack }: InfantAssessmentProps) =>
           
           <div className="text-center">
             <div className="text-lg font-semibold text-brand-gradient">
-              영유아 발달검사 ({age}세)
+              영유아 발달체크 ({age}세)
             </div>
             <div className="text-sm text-muted-foreground">
               {currentQuestionIndex + 1} / {allQuestions.length}

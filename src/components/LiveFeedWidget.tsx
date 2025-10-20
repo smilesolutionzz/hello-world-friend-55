@@ -149,7 +149,7 @@ const LiveFeedWidget = () => {
 
   // 샘플 피드백 데이터 (실제 피드백이 없을 때 사용)
   const sampleFeedbacks: LiveFeedback[] = [
-    { id: "1", message: "너무 정확해서 놀랐어요! 믿고 구매합니다 ♡", emoji: "😍", timestamp: getRandomTimestamp(), testType: "발달검사" },
+    { id: "1", message: "너무 정확해서 놀랐어요! 믿고 구매합니다 ♡", emoji: "😍", timestamp: getRandomTimestamp(), testType: "발달체크" },
     { id: "2", message: "AI 분석이 정말 자세하네요~", emoji: "🤩", timestamp: getRandomTimestamp(), testType: "ADHD검사" },
     { id: "3", message: "아이 발달 상태를 정확히 알 수 있어서 감사해요", emoji: "🥰", timestamp: getRandomTimestamp(), testType: "언어발달" },
     { id: "4", message: "전문가 수준의 해석이에요!", emoji: "💯", timestamp: getRandomTimestamp(), testType: "프리미엄검사" },

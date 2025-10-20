@@ -155,7 +155,7 @@ const PremiumAssessmentCard = ({ assessmentKey, info, onStart, isSubscribed }: P
                 <span className="text-muted-foreground">구독 후 이용 가능</span>
               </Button>
               <p className="text-xs text-center text-muted-foreground leading-relaxed">
-                전문 심리검사는 구독자만 이용하실 수 있습니다
+                전문 심리테스트는 구독자만 이용하실 수 있습니다
               </p>
             </div>
           )}

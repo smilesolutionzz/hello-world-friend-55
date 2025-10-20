@@ -161,7 +161,7 @@ const PremiumAssessmentForm = ({
               <Crown className="w-5 h-5 text-yellow-500" />
             </div>
             <div className="text-sm text-muted-foreground">
-              {currentQuestionIndex + 1} / {questions.length} • 프리미엄 심리검사
+              {currentQuestionIndex + 1} / {questions.length} • 프리미엄 심리테스트
             </div>
           </div>
           
@@ -281,7 +281,7 @@ const PremiumAssessmentForm = ({
               <div className="flex items-center justify-center gap-2 text-sm mb-2">
                 <Crown className="w-4 h-4 text-yellow-600" />
                 <span className="text-yellow-800 font-medium">
-                  프리미엄 회원만의 특별한 전문 심리검사를 진행 중입니다
+                  프리미엄 회원만의 특별한 전문 심리테스트를 진행 중입니다
                 </span>
                 <Crown className="w-4 h-4 text-yellow-600" />
               </div>

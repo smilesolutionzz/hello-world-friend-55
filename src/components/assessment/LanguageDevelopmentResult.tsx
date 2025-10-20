@@ -7,6 +7,7 @@ import { languageDevelopmentScoring } from "@/data/languageDevelopmentQuestions"
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 
 interface LanguageDevelopmentResultProps {
   results: Record<string, number>;
@@ -512,7 +513,9 @@ ${aiAnalysis || generateFallbackInterpretation()}
 
         {/* Expert Consultation */}
         <div className="max-w-6xl mx-auto">
-          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+          <ExpertConsultationNotice />
+          
+          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 mt-6">
             <CardContent className="p-6 text-center">
               <h4 className="font-semibold text-blue-900 mb-2">전문가 상담 안내</h4>
               <p className="text-blue-800 text-sm leading-relaxed mb-4">
@@ -520,7 +523,7 @@ ${aiAnalysis || generateFallbackInterpretation()}
                 언어치료사나 소아과 전문의와 상담받으시기를 권장합니다.
               </p>
               <div className="text-xs text-blue-700">
-                ※ 본 검사는 참고용 자가체크이며, 전문적인 진단을 대체하지 않습니다.
+                ※ 본 체크는 참고용 자가체크이며, 전문적인 진단을 대체하지 않습니다.
               </div>
             </CardContent>
           </Card>

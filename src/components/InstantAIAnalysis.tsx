@@ -271,7 +271,7 @@ const InstantAIAnalysis = () => {
         { name: '스트레스 측정', route: '/test/stress', description: '학업 스트레스 수준을 측정합니다', isPremium: false }
       ],
       '대인관계': [
-        { name: '방어기제 분석', route: '/test/defense', description: '관계 패턴과 방어기제를 이해합니다', isPremium: false },
+        { name: '방어기제 분석', route: '/assessment/defense-mechanism-test', description: '관계 패턴과 방어기제를 이해합니다', isPremium: false },
         { name: '종합 심리 평가', route: '/assessment', description: '사회성 및 정서 발달 평가', isPremium: true }
       ],
       '수면문제': [
@@ -279,7 +279,7 @@ const InstantAIAnalysis = () => {
       ],
       '분노조절': [
         { name: '스트레스 측정', route: '/test/stress', description: '분노와 스트레스 관계를 파악합니다', isPremium: false },
-        { name: '방어기제 분석', route: '/test/defense', description: '감정 조절 패턴을 이해합니다', isPremium: false }
+        { name: '방어기제 분석', route: '/assessment/defense-mechanism-test', description: '감정 조절 패턴을 이해합니다', isPremium: false }
       ]
     };
 

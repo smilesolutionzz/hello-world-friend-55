@@ -1,57 +1,27 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
-import { Copy, CheckCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle, CreditCard } from 'lucide-react';
 
 const BankTransferRequest = () => {
-  const [formData, setFormData] = useState({
-    depositorName: '',
-    transferAmount: '',
-    requestedTokens: '',
-    bankName: '',
-    transferDate: '',
-    requestNote: '',
-    requestType: 'token_purchase',
-    subscriptionPlanId: '',
-    subscriptionDurationMonths: 1
-  });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuthGuard();
 
-  const bankInfo = {
-    bankName: "신한은행",
-    accountNumber: "110-421-048730",
-    accountHolder: "이수석"
-  };
-
   const tokenPrices = [
-    { tokens: 50, price: 9900, name: "토큰팩 50" },
-    { tokens: 150, price: 19900, name: "토큰팩 150 (추천)" },
-    { tokens: 400, price: 39900, name: "토큰팩 400" }
+    { tokens: 5, price: 9900, priceId: "price_1QgOkB2MaIV7qwPqJHLrqN3z", name: "스타터 팩" },
+    { tokens: 10, price: 19000, priceId: "price_1QgOl22MaIV7qwPqgXv5cUzi", name: "베이직 팩" },
+    { tokens: 30, price: 49000, priceId: "price_1QgOlP2MaIV7qwPqvDJLEkm5", name: "프리미엄 팩" }
   ];
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "복사 완료",
-      description: "클립보드에 복사되었습니다.",
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handlePurchase = async (priceId: string, tokens: number) => {
     if (!user) {
       toast({
         title: "로그인 필요",
-        description: "먼저 로그인해주세요.",
+        description: "토큰 구매를 위해서는 로그인이 필요합니다.",
         variant: "destructive"
       });
       return;
@@ -59,57 +29,24 @@ const BankTransferRequest = () => {
 
     setIsLoading(true);
     try {
-      const insertData: any = {
-        user_id: user.id,
-        user_email: user.email || '',
-        depositor_name: formData.depositorName,
-        transfer_amount: parseInt(formData.transferAmount),
-        bank_name: formData.bankName,
-        transfer_date: formData.transferDate || null,
-        request_note: formData.requestNote || null,
-        request_type: formData.requestType
-      };
-
-      if (formData.requestType === 'token_purchase') {
-        insertData.requested_tokens = parseInt(formData.requestedTokens);
-      } else if (formData.requestType === 'subscription_payment') {
-        insertData.subscription_plan_id = formData.subscriptionPlanId || null;
-        insertData.subscription_duration_months = formData.subscriptionDurationMonths;
-        insertData.requested_tokens = 0; // 구독은 토큰이 아님
-      }
-
-      const { error } = await supabase
-        .from('bank_transfer_requests')
-        .insert(insertData);
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { priceId, mode: 'payment' }
+      });
 
       if (error) throw error;
 
-      const successMessage = formData.requestType === 'subscription_payment' 
-        ? "구독 결제 신청이 완료되었습니다. 입금 확인 후 구독이 활성화됩니다."
-        : "입금 신청 완료되었습니다. 입금 확인 후 토큰이 지급됩니다.";
-
-      toast({
-        title: "신청 완료",
-        description: successMessage,
-      });
-
-      // 폼 초기화
-      setFormData({
-        depositorName: '',
-        transferAmount: '',
-        requestedTokens: '',
-        bankName: '',
-        transferDate: '',
-        requestNote: '',
-        requestType: 'token_purchase',
-        subscriptionPlanId: '',
-        subscriptionDurationMonths: 1
-      });
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        toast({
+          title: "결제 페이지로 이동",
+          description: "새 창에서 결제를 진행해주세요.",
+        });
+      }
     } catch (error) {
-      console.error('입금 신청 오류:', error);
+      console.error('결제 오류:', error);
       toast({
-        title: "신청 실패",
-        description: "입금 신청 중 오류가 발생했습니다.",
+        title: "결제 실패",
+        description: "결제 처리 중 오류가 발생했습니다.",
         variant: "destructive"
       });
     } finally {
@@ -124,165 +61,64 @@ const BankTransferRequest = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-green-500" />
-            토큰 가격표
+            토큰 구매
           </CardTitle>
-          <CardDescription>원하는 토큰 수량을 확인하고 해당 금액을 입금해주세요.</CardDescription>
+          <CardDescription>원하는 토큰 패키지를 선택하고 카드로 안전하게 결제하세요.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-3 gap-6">
             {tokenPrices.map((plan) => (
-              <div key={plan.tokens} className="p-4 border rounded-lg text-center">
-                <h3 className="font-semibold text-lg">{plan.name}</h3>
-                <div className="text-2xl font-bold text-primary my-2">
-                  {plan.tokens}토큰
-                </div>
-                <div className="text-lg">₩{plan.price.toLocaleString()}</div>
-              </div>
+              <Card key={plan.tokens} className="relative overflow-hidden hover:shadow-lg transition-shadow">
+                <CardHeader className="text-center pb-4">
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <div className="text-4xl font-bold text-primary mt-2">
+                    {plan.tokens}토큰
+                  </div>
+                  <div className="text-2xl font-semibold mt-2">
+                    ₩{plan.price.toLocaleString()}
+                  </div>
+                  <CardDescription className="mt-2">
+                    토큰당 ₩{Math.round(plan.price / plan.tokens).toLocaleString()}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <Button 
+                    className="w-full"
+                    onClick={() => handlePurchase(plan.priceId, plan.tokens)}
+                    disabled={isLoading}
+                  >
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    {isLoading ? '처리 중...' : '카드로 구매하기'}
+                  </Button>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* 계좌 정보 */}
+      {/* 안내사항 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-blue-500" />
-            입금 계좌 정보
-          </CardTitle>
-          <CardDescription>아래 계좌로 토큰 구매 금액을 입금해주세요.</CardDescription>
+          <CardTitle>구매 안내</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="bg-muted/50 p-6 rounded-lg space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="font-medium">은행명</span>
-              <div className="flex items-center gap-2">
-                <span className="font-bold">{bankInfo.bankName}</span>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => copyToClipboard(bankInfo.bankName)}
-                >
-                  <Copy className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="font-medium">계좌번호</span>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-lg">{bankInfo.accountNumber}</span>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => copyToClipboard(bankInfo.accountNumber)}
-                >
-                  <Copy className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="font-medium">예금주</span>
-              <div className="flex items-center gap-2">
-                <span className="font-bold">{bankInfo.accountHolder}</span>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => copyToClipboard(bankInfo.accountHolder)}
-                >
-                  <Copy className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
+        <CardContent className="space-y-3 text-sm text-muted-foreground">
+          <div className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+            <p>결제는 안전한 Stripe 결제 시스템을 통해 처리됩니다.</p>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* 입금 신청 폼 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>입금 완료 신청</CardTitle>
-          <CardDescription>
-            입금 후 아래 정보를 입력하여 토큰 지급을 요청해주세요.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="depositorName">입금자명 *</Label>
-                <Input
-                  id="depositorName"
-                  value={formData.depositorName}
-                  onChange={(e) => setFormData(prev => ({ ...prev, depositorName: e.target.value }))}
-                  placeholder="홍길동"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="transferAmount">입금금액 *</Label>
-                <Input
-                  id="transferAmount"
-                  type="number"
-                  value={formData.transferAmount}
-                  onChange={(e) => setFormData(prev => ({ ...prev, transferAmount: e.target.value }))}
-                  placeholder="9900"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="requestedTokens">요청 토큰 수 *</Label>
-                <Input
-                  id="requestedTokens"
-                  type="number"
-                  value={formData.requestedTokens}
-                  onChange={(e) => setFormData(prev => ({ ...prev, requestedTokens: e.target.value }))}
-                  placeholder="100"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="bankName">입금 은행명</Label>
-                <Input
-                  id="bankName"
-                  value={formData.bankName}
-                  onChange={(e) => setFormData(prev => ({ ...prev, bankName: e.target.value }))}
-                  placeholder="국민은행"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="transferDate">입금일시</Label>
-              <Input
-                id="transferDate"
-                type="date"
-                value={formData.transferDate}
-                onChange={(e) => setFormData(prev => ({ ...prev, transferDate: e.target.value }))}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="requestNote">요청사항</Label>
-              <Textarea
-                id="requestNote"
-                value={formData.requestNote}
-                onChange={(e) => setFormData(prev => ({ ...prev, requestNote: e.target.value }))}
-                placeholder="추가 요청사항이 있으시면 입력해주세요."
-                rows={3}
-              />
-            </div>
-
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading}
-            >
-              {isLoading ? '신청 중...' : '입금 완료 신청'}
-            </Button>
-          </form>
+          <div className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+            <p>구매한 토큰은 즉시 계정에 충전됩니다.</p>
+          </div>
+          <div className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+            <p>토큰은 구매일로부터 1년간 유효합니다.</p>
+          </div>
+          <div className="flex items-start gap-2">
+            <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+            <p>결제 관련 문의사항은 고객센터(aihpro@naver.com)로 연락주세요.</p>
+          </div>
         </CardContent>
       </Card>
     </div>

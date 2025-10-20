@@ -21,6 +21,8 @@ const PartnerTrustSection = () => {
   ];
 
   const partners = [
+    "디딤돌언어사회성연구소",
+    "APA발달센터",
     "우아함발달센터 안산점",
     "우아함발달센터 화성새솔점",
     "메이플 ABA 목동센터",

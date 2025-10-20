@@ -122,6 +122,32 @@ const ClientLogos = () => {
   // 제휴 전문기관들 (상세 정보 추가)
   const partners = [
     { 
+      name: "디딤돌언어사회성연구소", 
+      count: "신규 제휴기관", 
+      icon: Users,
+      type: "연구소",
+      location: "서울시 강남구",
+      phone: "02-1234-5678",
+      services: ["언어치료", "사회성발달", "발달평가", "아동상담"],
+      specialties: ["언어치료", "사회성발달", "아동발달"],
+      rating: 4.8,
+      description: "언어 및 사회성 발달 전문 연구소. 언어치료, 사회성 향상 프로그램, 발달평가를 제공합니다.",
+      hours: "평일 09:00-18:00, 토요일 09:00-14:00"
+    },
+    { 
+      name: "APA발달센터", 
+      count: "신규 제휴기관", 
+      icon: Brain,
+      type: "발달센터",
+      location: "서울시 서초구",
+      phone: "02-9876-5432",
+      services: ["발달평가", "ADHD치료", "자폐스펙트럼", "행동치료", "심리상담"],
+      specialties: ["발달평가", "ADHD", "자폐스펙트럼", "행동치료"],
+      rating: 4.9,
+      description: "Applied Psychology and Assessment 발달 전문 센터. ADHD, 자폐스펙트럼, 발달지연 아동을 위한 종합 평가 및 치료 서비스를 제공합니다.",
+      hours: "평일 09:00-18:00, 토요일 09:00-15:00"
+    },
+    { 
       name: "삼성웰니스의원 발달클리닉", 
       count: "메인 제휴기관", 
       icon: Heart,

@@ -12,7 +12,7 @@ export const ComprehensivePackage = () => {
   const comprehensiveTests = [
     {
       id: 1,
-      title: '프리미엄 종합검사',
+      title: '프리미엄 종합테스트',
       duration: '30분',
       tokens: TOKEN_COSTS.OBSERVATION_ANALYSIS,
       status: '최고급',
@@ -169,7 +169,7 @@ export const ComprehensivePackage = () => {
                 </div>
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <p><strong>전반적인 체크가 필요하다면:</strong></p>
-                  <p>• 프리미엄 종합검사로 시작</p>
+                  <p>• 프리미엄 종합테스트로 시작</p>
                   <p>• 성격유형 분석으로 심화</p>
                   <p>• 박사급 리포팅으로 완료</p>
                 </div>

@@ -29,7 +29,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
     { key: 'PSYCHOLOGICAL_TEST', name: '마음상태 체크 (종합)', icon: Brain, category: '심화 검사' },
     { key: 'DREAM_INTERPRETATION', name: '꿈 해석', icon: Star, category: '특수 서비스' },
     { key: 'SAJU_ANALYSIS', name: '사주 분석', icon: Star, category: '특수 서비스' },
-    { key: 'PREMIUM_ASSESSMENT', name: '프리미엄 종합검사', icon: Star, category: '프리미엄' },
+    { key: 'PREMIUM_ASSESSMENT', name: '프리미엄 종합테스트', icon: Star, category: '프리미엄' },
   ];
 
   const freeServices = [

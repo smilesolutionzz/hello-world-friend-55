@@ -233,7 +233,7 @@ const DietAnalysisResult: React.FC<DietAnalysisResultProps> = ({ result, onResta
                 <div className="space-y-2">
                   <p className="text-sm text-green-700">더 정확한 분석을 원한다면</p>
                   <Button size="sm" variant="outline" className="w-full border-green-300 text-green-700 hover:bg-green-50">
-                    프리미엄 종합검사
+                    프리미엄 종합테스트
                   </Button>
                 </div>
               </CardContent>

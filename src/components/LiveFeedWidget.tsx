@@ -156,7 +156,7 @@ const LiveFeedWidget = () => {
     { id: "5", message: "무료로 이런 서비스를 이용할 수 있다니!", emoji: "🎉", timestamp: getRandomTimestamp(), testType: "기본검사" },
     { id: "6", message: "정말 도움이 많이 됐어요 ㅠㅠ", emoji: "😭", timestamp: getRandomTimestamp(), testType: "스트레스검사" },
     { id: "7", message: "친구들에게도 추천하고 싶어요", emoji: "👍", timestamp: getRandomTimestamp(), testType: "성격검사" },
-    { id: "8", message: "AI가 이렇게까지 발전했다니...", emoji: "🤖", timestamp: getRandomTimestamp(), testType: "종합검사" }
+    { id: "8", message: "AI가 이렇게까지 발전했다니...", emoji: "🤖", timestamp: getRandomTimestamp(), testType: "종합테스트" }
   ];
 
   // 시간 차이를 한국어로 표시하는 함수

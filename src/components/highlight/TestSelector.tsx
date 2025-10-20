@@ -101,7 +101,7 @@ export const TestSelector = () => {
         },
         {
           id: 'premium-assessment',
-          name: '프리미엄 종합검사',
+          name: '프리미엄 종합테스트',
           description: '전문가급 종합 심리 평가',
           typebot_url: '',
           duration_minutes: 3
@@ -176,7 +176,7 @@ export const TestSelector = () => {
   };
 
   const handleGoBack = () => {
-    // 종합검사 페이지로 이동
+    // 종합테스트 페이지로 이동
     navigate('/assessment');
   };
 
@@ -207,7 +207,7 @@ export const TestSelector = () => {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            종합검사로 돌아가기
+            종합테스트로 돌아가기
           </Button>
         </div>
 

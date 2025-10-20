@@ -135,7 +135,7 @@ export default function NeedsBasedOnboarding() {
     },
     {
       id: 'premium-comprehensive',
-      title: '프리미엄 종합검사',
+      title: '프리미엄 종합테스트',
       description: '전문가급 상세 심리분석',
       tokenCost: '8토큰',
       duration: '30분',

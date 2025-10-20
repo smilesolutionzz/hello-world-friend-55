@@ -253,7 +253,7 @@ export default function QuickNeedsAssessment() {
       tests: [
         {
           id: 'premium-full',
-          name: '프리미엄 종합검사',
+          name: '프리미엄 종합테스트',
           tokenCost: '8토큰',
           duration: '30분',
           route: '/premium-assessment',

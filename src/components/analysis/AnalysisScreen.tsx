@@ -150,7 +150,7 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
     } else if (ageGroup === 'child') {
       return `
 ## 임상적 요약
-아동청소년 종합검사 결과, 전체 ${Math.round(percentage)}%의 수행 수준을 보입니다.
+아동청소년 종합테스트 결과, 전체 ${Math.round(percentage)}%의 수행 수준을 보입니다.
 
 ## 인지능력 평가
 - 주의집중력: ${getRandomScore()}%ile

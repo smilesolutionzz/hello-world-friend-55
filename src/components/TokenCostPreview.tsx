@@ -27,7 +27,7 @@ const services: Service[] = [
   { key: 'AI_COACH', name: 'AI 코치', description: '개인맞춤 코칭', category: 'premium', recommended: true },
   { key: 'OBSERVATION_ANALYSIS', name: '관찰 분석', description: '행동 관찰 분석', category: 'premium' },
   { key: 'EXPERT_MATCHING', name: '전문가 매칭', description: '전문가 연결 서비스', category: 'basic' },
-  { key: 'PREMIUM_ASSESSMENT', name: '프리미엄 종합검사', description: '종합 심리검사', category: 'premium' },
+  { key: 'PREMIUM_ASSESSMENT', name: '프리미엄 종합테스트', description: '종합 심리테스트', category: 'premium' },
   { key: 'PROFESSIONAL_REPORT', name: '전문가 리포트', description: '전문 분석 리포트', category: 'premium' },
 ];
 

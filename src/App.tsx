@@ -229,8 +229,8 @@ const App = () => {
           <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<ObservationNew />} />
           <Route path="/observation-old" element={<Observation />} />
-          <Route path="/concern-storage" element={<ConcernStorage />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
+          <Route path="/concern-storage" element={<ConcernStorage />} />
           <Route path="/expert" element={<Expert />} />
           <Route path="/experts" element={<Experts />} />
           <Route path="/expert-dashboard" element={<ExpertDashboard />} />

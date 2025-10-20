@@ -347,14 +347,10 @@ const ChatInterface = () => {
             {message.length}/500 (최소 10자)
           </div>
           
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Clock className="w-3.5 h-3.5 text-primary" />
-              <span>3분 소요</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 bg-primary/10 rounded-lg border border-primary/20">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
-              <span>완전 무료</span>
+              <span className="text-xs font-semibold text-primary">완전무료</span>
             </div>
             <Button
               type="button"
@@ -362,19 +358,17 @@ const ChatInterface = () => {
               size="sm"
               onClick={handleExpandPrompt}
               disabled={isExpanding || isAnalyzing || message.length < 10}
-              className="gap-1.5 text-xs h-8 px-3 sm:h-7 sm:px-2"
+              className="gap-1.5 text-xs h-8 px-3 sm:px-3 border border-primary/30 hover:bg-primary/10"
             >
               {isExpanding ? (
                 <>
                   <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
-                  <span className="hidden xs:inline">다듬는 중...</span>
-                  <span className="xs:hidden">...</span>
+                  <span>다듬는 중...</span>
                 </>
               ) : (
                 <>
                   <Wand2 className="w-3.5 h-3.5" />
-                  <span className="hidden xs:inline">AI 다듬기</span>
-                  <span className="xs:hidden">다듬기</span>
+                  <span>AI다듬기</span>
                 </>
               )}
             </Button>

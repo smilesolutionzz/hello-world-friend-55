@@ -377,13 +377,9 @@ const InstantAIAnalysis = () => {
                   </span>
                   
                   <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 rounded-lg border border-amber-500/20">
-                      <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-500" />
-                      <span className="text-xs font-semibold text-amber-700 dark:text-amber-600">3분 소요</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                    <div className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 bg-amber-500/10 rounded-lg border border-amber-500/20">
                       <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-500" />
-                      <span className="text-xs font-semibold text-amber-700 dark:text-amber-600">완전 무료</span>
+                      <span className="text-xs font-semibold text-amber-700 dark:text-amber-600">완전무료</span>
                     </div>
                     <Button
                       type="button"
@@ -391,19 +387,17 @@ const InstantAIAnalysis = () => {
                       size="sm"
                       onClick={handleExpandPrompt}
                       disabled={isExpanding || isAnalyzing || inputText.length < 10}
-                      className="gap-1.5 text-xs h-8 px-3 sm:h-7 sm:px-2 border border-amber-500/30 hover:bg-amber-500/10 text-amber-700 dark:text-amber-600 hover:text-amber-800 dark:hover:text-amber-500"
+                      className="gap-1.5 text-xs h-8 px-3 sm:px-3 border border-amber-500/30 hover:bg-amber-500/10 text-amber-700 dark:text-amber-600 hover:text-amber-800 dark:hover:text-amber-500"
                     >
                       {isExpanding ? (
                         <>
                           <div className="animate-spin rounded-full h-3 w-3 border-2 border-amber-600 border-t-transparent" />
-                          <span className="hidden xs:inline">다듬는 중...</span>
-                          <span className="xs:hidden">...</span>
+                          <span>다듬는 중...</span>
                         </>
                       ) : (
                         <>
                           <Wand2 className="w-3.5 h-3.5" />
-                          <span className="hidden xs:inline">AI 다듬기</span>
-                          <span className="xs:hidden">다듬기</span>
+                          <span>AI다듬기</span>
                         </>
                       )}
                     </Button>

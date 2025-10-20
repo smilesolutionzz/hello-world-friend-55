@@ -39,9 +39,9 @@ export const mockExperts = [
     id: '3',
     name: '이기훈',
     photo_url: getExpertImage('이기훈') || '/placeholder.svg',
-    credential: '소소쌤언어치료실 기관장, 남',
+    credential: 'APA발달센터 기관장, 남',
     verified: true,
-    categories: ['언어치료', '인지치료', '발달치료', '출산 전후 상담', '계획 성취'],
+    categories: ['특수체육', '발달재활', '행동치료', '부모상담'],
     region: '전국',
     online: true,
     rating: 5.0,
@@ -49,7 +49,7 @@ export const mockExperts = [
     availability_text: '연중무휴 (0세부터 19세 이상)',
     contact_form_url: 'https://forms.gle/example3',
     calendly_url: 'https://calendly.com/example3',
-    intro: '10년 경력의 언어치료 전문가입니다. 소소쌤언어치료실 기관장으로서 다양한 연령대의 언어 및 발달 치료를 제공합니다.',
+    intro: '특수체육, 발달재활, 행동치료, 부모상담 등 폭넓은 전문성을 보유하고 있습니다.',
     visible: true,
     isDirector: true
   }

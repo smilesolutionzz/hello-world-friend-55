@@ -26,7 +26,7 @@ import expertJangYujin from '@/assets/expert-jang-yujin.jpg';
 import expertHanSoyoung from '@/assets/expert-han-soyoung.jpg';
 import expertOhTaehyun from '@/assets/expert-oh-taehyun.jpg';
 import expertLimGayoung from '@/assets/expert-lim-gayoung.jpg';
-import expertLeeGihoon from '@/assets/experts/이기훈.png';
+import expertLeeGihoon from '@/assets/expert-lee-gihoon-male.jpg';
 
 export const expertImages: Record<string, string> = {
   '문기웅': expertMoonGiwung,

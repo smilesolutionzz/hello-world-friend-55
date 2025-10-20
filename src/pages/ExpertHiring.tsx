@@ -1418,8 +1418,12 @@ const ExpertHiring = () => {
                           </AvatarFallback>
                         </Avatar>
             <div className="flex-1 text-center sm:text-left">
-              <div className="flex items-center gap-2 justify-center sm:justify-start mb-2">
+              <div className="flex items-center gap-2 justify-center sm:justify-start mb-2 flex-wrap">
                 <h4 className="font-bold text-base sm:text-lg text-gray-800">{expert.name} 에이전트</h4>
+                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-2 py-0.5">
+                  <Award className="w-3 h-3 mr-1" />
+                  기관장
+                </Badge>
                             {expert.aiMatchScore && (
                               <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
                                 매칭도 {expert.aiMatchScore}%
@@ -1549,7 +1553,13 @@ const ExpertHiring = () => {
                         </AvatarFallback>
                       </Avatar>
             <div className="flex-1">
-              <h4 className="font-bold text-lg text-gray-800">{expert.name} 에이전트</h4>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h4 className="font-bold text-lg text-gray-800">{expert.name} 에이전트</h4>
+                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-2 py-0.5">
+                  <Award className="w-3 h-3 mr-1" />
+                  기관장
+                </Badge>
+              </div>
                         <div className="flex items-center gap-2 mt-1">
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                           <span className="font-medium">{expert.rating}</span>
@@ -2064,8 +2074,12 @@ const ExpertHiring = () => {
                                 </AvatarFallback>
                               </Avatar>
                               <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
                     <h3 className="font-semibold">{expert.name}</h3>
+                    <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-2 py-0.5">
+                      <Award className="w-3 h-3 mr-1" />
+                      기관장
+                    </Badge>
                                   {index === 0 && (
                                     <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white">
                                       🏆 최고 매칭

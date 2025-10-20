@@ -528,32 +528,76 @@ const InstantAIAnalysis = () => {
                 </Card>
               )}
 
-              {/* 실시간 전문가 상담 버튼 */}
-              <Button
-                onClick={() => {
-                  // 고민 분석 내용을 텍스트로 생성
-                  const concernText = `[고민 내용]\n${inputText}\n\n[AI 분석 결과]\n• 유형: ${analysisResult.type}\n• 심각도: ${analysisResult.severity}\n• 조언: ${analysisResult.detailedAdvice}\n\n전문가 상담을 원합니다.`;
+              {/* 실시간 전문가 상담 섹션 */}
+              <Card className="border-green-500/30 shadow-lg bg-gradient-to-br from-green-50/30 to-emerald-50/30 dark:from-green-950/20 dark:to-emerald-950/20">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <div className="relative">
+                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                        <div className="absolute inset-0 w-3 h-3 bg-green-500 rounded-full animate-ping opacity-75" />
+                      </div>
+                      <span className="text-green-900 dark:text-green-100">실시간 전문가 대기중</span>
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center p-3 bg-background/60 rounded-lg">
+                      <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400 mb-1">
+                        <span className="text-2xl">👥</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-1">온라인 전문가</p>
+                      <p className="text-2xl font-bold text-foreground">6명</p>
+                    </div>
+                    <div className="text-center p-3 bg-background/60 rounded-lg">
+                      <div className="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 mb-1">
+                        <Clock className="w-5 h-5" />
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-1">10분 내 응답</p>
+                      <p className="text-2xl font-bold text-foreground">2명</p>
+                    </div>
+                    <div className="text-center p-3 bg-background/60 rounded-lg">
+                      <div className="flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400 mb-1">
+                        <Zap className="w-5 h-5" />
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-1">평균 응답시간</p>
+                      <p className="text-2xl font-bold text-foreground">8분</p>
+                    </div>
+                  </div>
                   
-                  // 카카오톡 오픈채팅 링크
-                  const kakaoLink = `https://open.kakao.com/o/sHLdK3Ch`;
+                  <Button
+                    onClick={() => {
+                      // 고민 분석 내용을 텍스트로 생성
+                      const concernText = `[고민 내용]\n${inputText}\n\n[AI 분석 결과]\n• 유형: ${analysisResult.type}\n• 심각도: ${analysisResult.severity}\n• 조언: ${analysisResult.advice}\n\n전문가 상담을 원합니다.`;
+                      
+                      // 카카오톡 오픈채팅 링크에 메시지를 인코딩하여 추가
+                      const encodedMessage = encodeURIComponent(concernText);
+                      const kakaoLink = `https://open.kakao.com/o/sHLdK3Ch`;
+                      
+                      // 새 탭에서 카카오톡 오픈채팅 열기
+                      window.open(kakaoLink, '_blank');
+                      
+                      // 클립보드에 메시지 복사
+                      navigator.clipboard.writeText(concernText).then(() => {
+                        toast({
+                          title: "메시지 복사됨",
+                          description: "카카오톡에서 붙여넣기(Ctrl+V)하여 전송하세요.",
+                        });
+                      });
+                    }}
+                    className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold text-sm"
+                    size="lg"
+                  >
+                    <span className="mr-2">💬</span>
+                    실시간 전문가에게 내 고민 보내기
+                  </Button>
                   
-                  // 새 탭에서 카카오톡 오픈채팅 열기
-                  window.open(kakaoLink, '_blank');
-                  
-                  // 클립보드에 메시지 복사
-                  navigator.clipboard.writeText(concernText).then(() => {
-                    toast({
-                      title: "메시지 복사됨",
-                      description: "카카오톡에서 붙여넣기(Ctrl+V)하여 전송하세요.",
-                    });
-                  });
-                }}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold"
-                size="lg"
-              >
-                <span className="mr-2">💬</span>
-                실시간 전문가에게 내 고민 보내기
-              </Button>
+                  <p className="text-xs text-center text-muted-foreground">
+                    전문가가 고민을 확인하고 빠르게 응답해드립니다
+                  </p>
+                </CardContent>
+              </Card>
 
               {/* CTA 버튼들 */}
               <div className="space-y-3">

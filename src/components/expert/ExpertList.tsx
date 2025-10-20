@@ -27,6 +27,7 @@ interface Expert {
   kakao_link?: string;
   is_featured?: boolean;
   featured_order?: number;
+  is_director?: boolean;
 }
 
 interface ExpertListProps {
@@ -285,9 +286,17 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                 {/* 전문가 정보 */}
                 <div className="space-y-3 w-full">
                   <div>
-                    <h3 className={`text-xl font-bold ${
-                      expert.is_featured ? 'text-blue-900' : ''
-                    }`}>{expert.full_name}</h3>
+                    <div className="flex items-center gap-2 justify-center flex-wrap">
+                      <h3 className={`text-xl font-bold ${
+                        expert.is_featured ? 'text-blue-900' : ''
+                      }`}>{expert.full_name}</h3>
+                      {expert.is_director && (
+                        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-2 py-0.5">
+                          <Award className="w-3 h-3 mr-1" />
+                          기관장
+                        </Badge>
+                      )}
+                    </div>
                     <p className="text-sm text-muted-foreground mt-1">{expert.professional_title}</p>
                   </div>
 
@@ -376,8 +385,14 @@ export const ExpertList: React.FC<ExpertListProps> = ({
                 {/* 전문가 정보 */}
                 <div className="flex-1 space-y-5">
                   <div>
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-center gap-3 mb-2 flex-wrap">
                       <h3 className="text-2xl font-bold">{expert.full_name} 에이전트</h3>
+                      {expert.is_director && (
+                        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-2 py-0.5">
+                          <Award className="w-3 h-3 mr-1" />
+                          기관장
+                        </Badge>
+                      )}
                       {expert.hourly_rate === 0 && (
                         <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 text-sm">
                           무료 봉사

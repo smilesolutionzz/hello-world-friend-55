@@ -254,14 +254,14 @@ const HanMedicineTest = () => {
             <ExpertValidationBanner />
           </div>
 
-          {/* 진단 프로그램 메뉴 */}
+          {/* 체크 프로그램 메뉴 */}
           <div className="mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl font-bold text-center text-foreground mb-8 sm:mb-12">
               한방체크 프로그램 선택
             </h2>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
-              {/* 3분 빠른 체질 진단 */}
+              {/* 3분 빠른 체질 체크 */}
               <Card className="relative overflow-hidden border-2 border-blue-200 hover:border-blue-300 transition-all group">
                 <div className="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                   추천
@@ -301,10 +301,10 @@ const HanMedicineTest = () => {
                 </CardContent>
               </Card>
 
-              {/* 프리미엄 정밀 체질 진단 - 기능 비활성화로 임시 제거 */}
+              {/* 프리미엄 정밀 체질 분석 - 기능 비활성화로 임시 제거 */}
             </div>
 
-            {/* 추가 특화 진단 프로그램 */}
+            {/* 추가 특화 체크 프로그램 */}
             <div className="space-y-6">
               <h3 className="text-xl font-semibold text-center text-foreground mb-6">
                 특화 체질체크 프로그램
@@ -332,12 +332,12 @@ const HanMedicineTest = () => {
                   </CardContent>
                 </Card>
 
-                {/* 스트레스 진단 */}
+                {/* 스트레스 체크 */}
                 <Card className="border hover:border-primary/30 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
                       <Shield className="h-5 w-5 text-red-600" />
-                      <CardTitle className="text-lg">스트레스 진단</CardTitle>
+                      <CardTitle className="text-lg">스트레스 체크</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -353,12 +353,12 @@ const HanMedicineTest = () => {
                   </CardContent>
                 </Card>
 
-                {/* 여성 건강 진단 */}
+                {/* 여성 건강 체크 */}
                 <Card className="border hover:border-primary/30 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
                       <Heart className="h-5 w-5 text-pink-600" />
-                      <CardTitle className="text-lg">여성 건강 진단</CardTitle>
+                      <CardTitle className="text-lg">여성 건강 체크</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -453,7 +453,7 @@ const HanMedicineTest = () => {
               </div>
               <div className="text-center">
                 <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">50,000+</div>
-                <p className="text-muted-foreground">누적 진단 건수</p>
+                <p className="text-muted-foreground">누적 체크 건수</p>
               </div>
               <div className="text-center">
                 <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">100+</div>

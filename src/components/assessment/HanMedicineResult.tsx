@@ -103,7 +103,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
 🏥 **심각도**: ${result.severity} 단계
 
 💊 **한의학적 접근법**:
-검사 결과를 바탕으로 한의학적 체질 진단과 맞춤형 치료가 필요합니다. ${result.severity === '높음' ? '즉시 전문 한의사와 상담하여 정밀 진단을 받으시길 권합니다.' : '정기적인 관리와 예방 차원의 한방 치료를 고려해보세요.'}
+검사 결과를 바탕으로 한의학적 체질 분석과 맞춤형 관리가 필요합니다. ${result.severity === '높음' ? '즉시 전문 한의사와 상담하여 정밀 체크를 받으시길 권합니다.' : '정기적인 관리와 예방 차원의 한방 관리를 고려해보세요.'}
 
 🌿 **추천 관리법**:
 - 개인 체질에 맞는 한약 처방
@@ -112,7 +112,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
 - 정기적인 전문 상담
 
 ⚕️ **전문 상담 권장**:
-더 정확한 진단과 맞춤 치료를 위해 가까이한의원에서 전문 한의사와 상담받으시길 권합니다.
+더 정확한 체크와 맞춤 관리를 위해 가까이한의원에서 전문 한의사와 상담받으시길 권합니다.
 
 📞 상담 예약: 가까이한의원 1588-1234`;
   };
@@ -173,7 +173,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
             <h4 style="color: #92400E; margin: 0 0 10px 0; font-size: 14px; font-weight: bold;">⚠️ 중요 안내사항</h4>
             <p style="margin: 0; font-size: 12px; color: #92400E; line-height: 1.5;">
               본 검사 결과는 AI 기반 한의학적 분석을 통해 제공되는 참고 자료입니다. 
-              정확한 진단이나 치료가 필요한 경우 반드시 전문 한의사와 상담하시기 바랍니다.
+              정확한 체질 분석이나 맞춤 관리가 필요한 경우 반드시 전문 한의사와 상담하시기 바랍니다.
               한약 처방은 개인의 체질과 상태에 따라 달라질 수 있으므로, 실제 복용 전 반드시 한의사의 진료를 받으시기 바랍니다.
             </p>
           </div>
@@ -330,13 +330,13 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
 
   const getTestTypeName = (type: string) => {
     const names: Record<string, string> = {
-      autism: '자폐 스펙트럼 진단',
-      adhd: 'ADHD 진단',
-      intellectual: '인지능력 진단',
-      atopy: '아토피 진단',
-      stress: '스트레스 진단'
+      autism: '자폐 스펙트럼 체크',
+      adhd: 'ADHD 체크',
+      intellectual: '인지능력 체크',
+      atopy: '아토피 체크',
+      stress: '스트레스 체크'
     };
-    return names[type] || '한방 진단';
+    return names[type] || '한방 체크';
   };
 
   const getSeverityColor = (severity: string) => {
@@ -511,7 +511,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
               </div>
               <p className="text-muted-foreground mb-4">
                 🏥 <strong>GPT-4.1</strong>이 30년 경력 한의사의 전문 지식으로 <br/>
-                <strong>2000자 이상 상세 체질별 맞춤 진단</strong>과 치료법을 제공합니다
+                <strong>2000자 이상 상세 체질별 맞춤 분석</strong>과 관리법을 제공합니다
               </p>
               <div className="flex items-center justify-center mb-4 space-x-4 text-sm text-muted-foreground">
                 <div className="flex items-center">
@@ -578,7 +578,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
                   📋 연계 전문 상담 가능
                 </h4>
                 <p className="text-sm text-green-700">
-                  위 분석을 바탕으로 {clinicInfo.name}에서 더 정밀한 진단과 맞춤 치료를 받으실 수 있습니다.
+                  위 분석을 바탕으로 {clinicInfo.name}에서 더 정밀한 체크와 맞춤 관리를 받으실 수 있습니다.
                 </p>
               </div>
             )}
@@ -630,7 +630,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
                 <ul className="text-sm space-y-2 bg-white/60 rounded-lg p-3">
                   <li className="flex items-center gap-2">
                     <span className="text-green-600">•</span>
-                    개별 체질 진단
+                    개별 체질 분석
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-green-600">•</span>
@@ -719,7 +719,7 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
             <span className="text-lg">✨</span>
             <span className="font-medium text-foreground">
-              전문 한의원 검증 완료 AI 진단
+              전문 한의원 검증 완료 AI 분석
             </span>
           </div>
         </div>

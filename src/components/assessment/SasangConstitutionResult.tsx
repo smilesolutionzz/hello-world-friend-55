@@ -165,7 +165,7 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
 
   const handleShareText = () => {
     const formattedText = formatMedicalTestResult('sasang_constitution', result);
-    shareAsText(formattedText, `사상체질 진단 결과`);
+    shareAsText(formattedText, `사상체질 분석 결과`);
   };
 
   const constitutionData = constitutionInfo[result.constitution as keyof typeof constitutionInfo];

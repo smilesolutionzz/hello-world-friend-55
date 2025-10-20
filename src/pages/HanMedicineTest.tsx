@@ -374,12 +374,12 @@ const HanMedicineTest = () => {
                   </CardContent>
                 </Card>
 
-                {/* 아동 발달 진단 */}
+                {/* 자폐 스펙트럼 체크 */}
                 <Card className="border hover:border-primary/30 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
                       <Smile className="h-5 w-5 text-blue-600" />
-                      <CardTitle className="text-lg">자폐 스펙트럼 진단</CardTitle>
+                      <CardTitle className="text-lg">자폐 스펙트럼 체크</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -395,16 +395,16 @@ const HanMedicineTest = () => {
                   </CardContent>
                 </Card>
 
-                {/* ADHD 진단 */}
+                {/* ADHD 체크 */}
                 <Card className="border hover:border-primary/30 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
                       <Zap className="h-5 w-5 text-yellow-600" />
-                      <CardTitle className="text-lg">ADHD 진단</CardTitle>
+                      <CardTitle className="text-lg">ADHD 체크</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">주의력 결핍 과잉행동 장애</p>
+                    <p className="text-sm text-muted-foreground mb-4">주의력 결핍 과잉행동 확인</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
@@ -416,16 +416,16 @@ const HanMedicineTest = () => {
                   </CardContent>
                 </Card>
 
-                {/* 지적장애 진단 */}
+                {/* 지적발달 체크 */}
                 <Card className="border hover:border-primary/30 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-2">
                       <Brain className="h-5 w-5 text-indigo-600" />
-                      <CardTitle className="text-lg">지적장애 진단</CardTitle>
+                      <CardTitle className="text-lg">지적발달 체크</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">인지 능력 평가</p>
+                    <p className="text-sm text-muted-foreground mb-4">인지 능력 확인</p>
                     <Button 
                       variant="outline" 
                       size="sm" 

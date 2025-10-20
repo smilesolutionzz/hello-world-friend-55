@@ -333,7 +333,6 @@ const ExpertHiring = () => {
   const [filteredInstitutions, setFilteredInstitutions] = useState(mockInstitutions);
   const [institutionSearchTerm, setInstitutionSearchTerm] = useState("");
   const [institutionTypeFilter, setInstitutionTypeFilter] = useState("all");
-  const [institutionRegionFilter, setInstitutionRegionFilter] = useState("all");
   const [voucherOnlyFilter, setVoucherOnlyFilter] = useState(false);
   const [homeServiceFilter, setHomeServiceFilter] = useState(false);
 
@@ -939,7 +938,6 @@ const ExpertHiring = () => {
     if (institutionSearchTerm) {
       filtered = filtered.filter(institution =>
         institution.name.toLowerCase().includes(institutionSearchTerm.toLowerCase()) ||
-        institution.address.toLowerCase().includes(institutionSearchTerm.toLowerCase()) ||
         institution.description.toLowerCase().includes(institutionSearchTerm.toLowerCase()) ||
         institution.services_offered.some(service => 
           service.toLowerCase().includes(institutionSearchTerm.toLowerCase())
@@ -950,12 +948,6 @@ const ExpertHiring = () => {
     if (institutionTypeFilter && institutionTypeFilter !== "all") {
       filtered = filtered.filter(institution =>
         institution.institution_type === institutionTypeFilter
-      );
-    }
-
-    if (institutionRegionFilter && institutionRegionFilter !== "all") {
-      filtered = filtered.filter(institution =>
-        institution.address.includes(institutionRegionFilter)
       );
     }
 
@@ -972,7 +964,7 @@ const ExpertHiring = () => {
     }
 
     setFilteredInstitutions(filtered);
-  }, [institutionSearchTerm, institutionTypeFilter, institutionRegionFilter, voucherOnlyFilter, homeServiceFilter]);
+  }, [institutionSearchTerm, institutionTypeFilter, voucherOnlyFilter, homeServiceFilter]);
 
   const handleHireExpert = (expertId: string) => {
     navigate(`/expert-contract/${expertId}`);
@@ -1130,16 +1122,16 @@ const ExpertHiring = () => {
         </Card>
 
         {/* 탭 네비게이션 - 커뮤니티 스타일 */}
-        <Tabs defaultValue="community" className="space-y-6">
+        <Tabs defaultValue="institutions" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 bg-white shadow-sm">
-            <TabsTrigger value="community" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-              커뮤니티
+            <TabsTrigger value="institutions" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+              제휴 기관
             </TabsTrigger>
             <TabsTrigger value="experts" className="data-[state=active]:bg-primary data-[state=active]:text-white">
               개인 전문가
             </TabsTrigger>
-            <TabsTrigger value="institutions" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-              제휴 기관
+            <TabsTrigger value="community" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+              커뮤니티
             </TabsTrigger>
             <TabsTrigger value="ai-matching" className="data-[state=active]:bg-primary data-[state=active]:text-white">
               <div className="flex items-center gap-2">
@@ -1669,27 +1661,12 @@ const ExpertHiring = () => {
                     <SelectItem value="nursing_home">요양원</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select value={institutionRegionFilter} onValueChange={setInstitutionRegionFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="지역" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">전체 지역</SelectItem>
-                    <SelectItem value="서울">서울특별시</SelectItem>
-                    <SelectItem value="부산">부산광역시</SelectItem>
-                    <SelectItem value="대구">대구광역시</SelectItem>
-                    <SelectItem value="인천">인천광역시</SelectItem>
-                    <SelectItem value="경기">경기도</SelectItem>
-                    <SelectItem value="강원">강원도</SelectItem>
-                    <SelectItem value="충북">충청북도</SelectItem>
-                    <SelectItem value="충남">충청남도</SelectItem>
-                    <SelectItem value="전북">전라북도</SelectItem>
-                    <SelectItem value="전남">전라남도</SelectItem>
-                    <SelectItem value="경북">경상북도</SelectItem>
-                    <SelectItem value="경남">경상남도</SelectItem>
-                    <SelectItem value="제주">제주특별자치도</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center justify-center p-4 bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg">
+                  <Badge className="bg-gradient-to-r from-primary to-primary/80 text-white px-4 py-2">
+                    <Shield className="w-4 h-4 mr-2" />
+                    AIHPRO 인증전문기관
+                  </Badge>
+                </div>
                 <div className="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2">
                   <Badge className="bg-blue-100 text-blue-800 shrink-0">
                     <CheckCircle className="w-3 h-3 mr-1" />
@@ -1732,14 +1709,13 @@ const ExpertHiring = () => {
                   <Building className="w-4 h-4" />
                   <span>총 {filteredInstitutions.length}개 제휴기관</span>
                 </div>
-                {(institutionSearchTerm || institutionTypeFilter !== "all" || institutionRegionFilter !== "all" || voucherOnlyFilter || homeServiceFilter) && (
+                {(institutionSearchTerm || institutionTypeFilter !== "all" || voucherOnlyFilter || homeServiceFilter) && (
                   <Button 
                     variant="outline" 
                     size="sm" 
                     onClick={() => {
                       setInstitutionSearchTerm("");
                       setInstitutionTypeFilter("all");
-                      setInstitutionRegionFilter("all");
                       setVoucherOnlyFilter(false);
                       setHomeServiceFilter(false);
                     }}
@@ -1789,11 +1765,8 @@ const ExpertHiring = () => {
                               : 'bg-purple-100 text-purple-800'
                           }`}>
                             <Shield className="w-3 h-3 mr-1" />
-                            {institution.partnership_status === 'premium' ? '⭐ 프리미엄 제휴기관' : '제휴기관'}
+                            {institution.partnership_status === 'premium' ? '⭐ 프리미엄 제휴기관' : 'AIHPRO 인증전문기관'}
                           </Badge>
-                        </div>
-                        <div className="text-sm text-muted-foreground mb-2">
-                          {institution.address}
                         </div>
                         <div className="flex items-center gap-2 mb-3">
                           <div className="flex items-center gap-1">

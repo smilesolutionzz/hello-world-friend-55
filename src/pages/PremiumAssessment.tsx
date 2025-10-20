@@ -405,7 +405,7 @@ const PremiumAssessment = () => {
                       <Users className="w-6 h-6" />
                     </div>
                     <div>
-                      <CardTitle className="text-lg font-bold">🎭 오트로버트 성격 진단</CardTitle>
+                      <CardTitle className="text-lg font-bold">🎭 오트로버트 성격 체크</CardTitle>
                       <p className="text-sm opacity-90">ASES-OT (Otrovert Spectrum Early Screening)</p>
                     </div>
                   </div>

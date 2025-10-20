@@ -65,7 +65,7 @@ export const mockInstitutions = [
     phone: '02-9876-5432',
     email: 'contact@apacentr.com',
     website_url: 'https://apacentr.com',
-    description: 'Applied Psychology and Assessment 발달 전문 센터. ADHD, 자폐스펙트럼, 발달지연 아동을 위한 종합 평가 및 치료 서비스를 제공합니다.',
+    description: '발달 전문 센터로 ADHD, 자폐스펙트럼, 발달지연 아동을 위한 종합 평가 및 치료 서비스를 제공합니다.',
     latitude: 37.4833,
     longitude: 127.0322,
     is_voucher_approved: true,

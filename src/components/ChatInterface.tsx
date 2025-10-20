@@ -362,17 +362,19 @@ const ChatInterface = () => {
               size="sm"
               onClick={handleExpandPrompt}
               disabled={isExpanding || isAnalyzing || message.length < 10}
-              className="gap-1.5 text-xs h-7 px-2"
+              className="gap-1.5 text-xs h-8 px-3 sm:h-7 sm:px-2"
             >
               {isExpanding ? (
                 <>
                   <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
-                  <span>다듬는 중...</span>
+                  <span className="hidden xs:inline">다듬는 중...</span>
+                  <span className="xs:hidden">...</span>
                 </>
               ) : (
                 <>
                   <Wand2 className="w-3.5 h-3.5" />
-                  <span>AI 다듬기</span>
+                  <span className="hidden xs:inline">AI 다듬기</span>
+                  <span className="xs:hidden">다듬기</span>
                 </>
               )}
             </Button>

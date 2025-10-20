@@ -32,10 +32,9 @@ const BankTransferRequest = () => {
   };
 
   const tokenPrices = [
-    { tokens: 100, price: 9900, name: "스타터 팩" },
-    { tokens: 300, price: 27000, name: "베이직 팩" },
-    { tokens: 500, price: 39500, name: "프리미엄 팩" },
-    { tokens: 1000, price: 69000, name: "프로 팩" }
+    { tokens: 50, price: 9900, name: "토큰팩 50" },
+    { tokens: 150, price: 19900, name: "토큰팩 150 (추천)" },
+    { tokens: 400, price: 39900, name: "토큰팩 400" }
   ];
 
   const copyToClipboard = (text: string) => {

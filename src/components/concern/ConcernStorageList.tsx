@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -393,69 +394,78 @@ export const ConcernStorageList = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
-          {filteredConcerns.map((concern) => (
-            <Card key={concern.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <Badge variant="outline" className="font-semibold">
-                        {concern.analysis_type}
-                      </Badge>
-                      <Badge className={`${getSeverityColor(concern.analysis_severity)} text-white`}>
-                        심각도: {concern.analysis_severity}
-                      </Badge>
+        <Accordion type="single" collapsible className="space-y-4">
+          {filteredConcerns.map((concern, index) => (
+            <AccordionItem key={concern.id} value={`concern-${index}`} className="border rounded-lg">
+              <Card className="border-0">
+                <AccordionTrigger className="hover:no-underline px-6 py-4">
+                  <div className="flex items-start justify-between gap-4 w-full pr-4">
+                    <div className="flex-1 text-left">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <Badge variant="outline" className="font-semibold">
+                          {concern.analysis_type}
+                        </Badge>
+                        <Badge className={`${getSeverityColor(concern.analysis_severity)} text-white`}>
+                          심각도: {concern.analysis_severity}
+                        </Badge>
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                          <Calendar className="w-3 h-3" />
+                          {format(new Date(concern.created_at), 'PPP', { locale: ko })}
+                        </div>
+                      </div>
+                      <p className="text-foreground line-clamp-2 mt-2">{concern.concern_text}</p>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      {format(new Date(concern.created_at), 'PPP', { locale: ko })}
-                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(concern.id);
+                      }}
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(concern.id)}
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-semibold mb-2 text-sm text-muted-foreground">내 고민</h4>
-                  <p className="text-foreground whitespace-pre-wrap line-clamp-3">{concern.concern_text}</p>
-                </div>
+                </AccordionTrigger>
                 
-                <div>
-                  <h4 className="font-semibold mb-2 text-sm text-muted-foreground">AI 조언</h4>
-                  <p className="text-foreground line-clamp-2">{concern.analysis_advice}</p>
-                </div>
-
-                {concern.recommended_tests && Array.isArray(concern.recommended_tests) && concern.recommended_tests.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold mb-2 text-sm text-muted-foreground">추천 검사</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {concern.recommended_tests.map((test: string, index: number) => (
-                        <Button
-                          key={index}
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => navigate('/assessment')}
-                          className="gap-2"
-                        >
-                          {test}
-                          <ExternalLink className="w-3 h-3" />
-                        </Button>
-                      ))}
+                <AccordionContent>
+                  <CardContent className="space-y-4 pt-0 border-t">
+                    <div className="pt-4">
+                      <h4 className="font-semibold mb-2 text-sm text-muted-foreground">내 고민 (전체)</h4>
+                      <p className="text-foreground whitespace-pre-wrap">{concern.concern_text}</p>
                     </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                    
+                    <div className="border-t pt-4">
+                      <h4 className="font-semibold mb-2 text-sm text-muted-foreground">AI 조언 (전체)</h4>
+                      <p className="text-foreground whitespace-pre-wrap">{concern.analysis_advice}</p>
+                    </div>
+
+                    {concern.recommended_tests && Array.isArray(concern.recommended_tests) && concern.recommended_tests.length > 0 && (
+                      <div className="border-t pt-4">
+                        <h4 className="font-semibold mb-2 text-sm text-muted-foreground">추천 검사</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {concern.recommended_tests.map((test: string, index: number) => (
+                            <Button
+                              key={index}
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => navigate('/assessment')}
+                              className="gap-2"
+                            >
+                              {test}
+                              <ExternalLink className="w-3 h-3" />
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </AccordionContent>
+              </Card>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       )}
     </div>
   );

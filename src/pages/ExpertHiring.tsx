@@ -261,6 +261,37 @@ const mockExperts: Expert[] = [
     location: '서울 강북구',
     isOnline: true,
     responseTime: '평균 3시간 이내'
+  },
+  {
+    id: '7',
+    name: '이기훈',
+    specialty: ['특수체육', '행동발달', '언어치료', '인지치료', '발달치료'],
+    credentials: ['소소쌤언어치료실 기관장'],
+    rating: 5.0,
+    reviews: 0,
+    experience: '10년',
+    availability: '연중무휴 (0세부터 19세 이상)',
+    monthlyPrice: 0,
+    hourlyPrice: 0,
+    image: getExpertImage('이기훈') || '/api/placeholder/150/150',
+    description: '특수체육 행동발달 전문가로 모든 발달 관련 상담이 가능합니다. 소소쌤언어치료실 기관장으로서 언어치료, 인지치료, 발달치료, 출산 전후 상담, 계획 성취 등 폭넓은 전문성을 보유하고 있습니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담', '센터상담'],
+    monthlyServices: [
+      '맞춤형 발달 평가 및 상담',
+      '특수체육 및 행동발달 프로그램',
+      '언어치료 및 인지치료',
+      '부모 교육 및 가정 지도',
+      '24시간 긴급 상담 지원'
+    ],
+    portfolio: {
+      cases: 0,
+      successRate: 0,
+      specializations: ['특수체육', '행동발달', '언어치료', '인지치료', '발달치료', '출산전후상담', '계획성취']
+    },
+    location: '전국',
+    isOnline: true,
+    responseTime: '평균 1시간 이내'
   }
 ];
 

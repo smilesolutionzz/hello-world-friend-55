@@ -64,6 +64,7 @@ const mainNavigationItems: NavigationItem[] = [];
 const dataSubmenuItems = [
   { icon: BarChart3, label: '개인DATA', path: '/dashboard', requiresAuth: false },
   { icon: Users, label: '기관DATA', path: '/institution-admin', requiresAuth: false },
+  { icon: Heart, label: '고민 저장소', path: '/concern-storage', requiresAuth: false },
 ];
 
 // AIH 에이전트 하위 메뉴

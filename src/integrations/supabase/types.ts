@@ -1057,6 +1057,42 @@ export type Database = {
         }
         Relationships: []
       }
+      concern_storage: {
+        Row: {
+          analysis_advice: string | null
+          analysis_severity: string | null
+          analysis_type: string | null
+          concern_text: string
+          created_at: string
+          id: string
+          recommended_tests: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis_advice?: string | null
+          analysis_severity?: string | null
+          analysis_type?: string | null
+          concern_text: string
+          created_at?: string
+          id?: string
+          recommended_tests?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis_advice?: string | null
+          analysis_severity?: string | null
+          analysis_type?: string | null
+          concern_text?: string
+          created_at?: string
+          id?: string
+          recommended_tests?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       consultation_access_log: {
         Row: {
           access_type: string

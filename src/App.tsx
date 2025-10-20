@@ -14,6 +14,7 @@ import Analytics from "@/components/common/Analytics";
 import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
 import BankTransfer from "./pages/BankTransfer";
+import ConcernStorage from "./pages/ConcernStorage";
 
 import Payment from "./pages/Payment";
 
@@ -225,9 +226,10 @@ const App = () => {
           <Route path="/kpi-dashboard" element={<KPIDashboard />} />
           <Route path="/institution-admin" element={<InstitutionAdmin />} />
         <Route path="/pricing" element={<Pricing />} />
-        <Route path="/share/:shareId" element={<ShareView />} />
+          <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<ObservationNew />} />
           <Route path="/observation-old" element={<Observation />} />
+          <Route path="/concern-storage" element={<ConcernStorage />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
           <Route path="/expert" element={<Expert />} />
           <Route path="/experts" element={<Experts />} />

@@ -177,6 +177,25 @@ const InstantAIAnalysis = () => {
       setAnalysisResult(result);
       setIsAnalyzing(false);
       setShowResult(true);
+
+      // 고민을 데이터베이스에 저장
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { error: saveError } = await supabase
+          .from('concern_storage')
+          .insert({
+            user_id: user.id,
+            concern_text: inputText,
+            analysis_type: result.type || '기타',
+            analysis_severity: result.severity || '낮음',
+            analysis_advice: result.advice || '',
+            recommended_tests: result.recommendedTests || []
+          });
+
+        if (saveError) {
+          console.error('고민 저장 오류:', saveError);
+        }
+      }
       
       // 분석 완료 후 자동으로 PMF 온보딩 제안
       setTimeout(() => {

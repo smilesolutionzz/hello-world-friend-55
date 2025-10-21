@@ -100,6 +100,7 @@ import ChallengesPage from "./pages/ChallengesPage";
 import GrowthTracker from "./pages/GrowthTracker";
 import AIAssistant from "./pages/AIAssistant";
 import WellnessLifestyle from "./pages/WellnessLifestyle";
+import TestProgressTracker from "./pages/TestProgressTracker";
 
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTests from "./pages/FunTests";
@@ -210,6 +211,7 @@ const App = () => {
           <Route path="/daily-checkin" element={<DailyCheckin />} />
           <Route path="/challenges" element={<ChallengesPage />} />
           <Route path="/growth-tracker" element={<GrowthTracker />} />
+          <Route path="/test-progress" element={<TestProgressTracker />} />
            <Route path="/ai-assistant" element={<AIAssistant />} />
            <Route path="/ai-counselor" element={<AIAssistant />} />
            <Route path="/ai-coach" element={<AIAssistant />} />

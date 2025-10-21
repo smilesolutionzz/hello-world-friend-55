@@ -851,10 +851,15 @@ const Dashboard = () => {
 
               {/* Trend Chart */}
               <Card className="p-4 lg:p-6 hover:shadow-md transition-shadow duration-200">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-green-500" />
-                  최근 12주 점수 추이
-                </h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-green-500" />
+                    최근 12주 점수 추이
+                  </h3>
+                  <Button variant="outline" size="sm" onClick={() => navigate('/test-progress')}>
+                    상세 분석
+                  </Button>
+                </div>
                 {trendData.some(item => item.score > 0) ? (
                   <div className="h-64">
                     <ChartContainer config={{}} className="h-full w-full">

@@ -142,7 +142,62 @@ const PremiumAssessmentResult = ({
   };
 
   const getScoreInterpretation = (score: number, category: string) => {
-    // 7점 척도 기준 해석 (더 높은 점수가 나오도록 범위 조정)
+    const categoryLower = category.toLowerCase();
+    
+    // 번아웃 검사 - 각 영역별로 다른 해석 기준 적용
+    if (categoryLower === 'emotional_exhaustion') {
+      // 감정소진: 높을수록 나쁨
+      if (score >= 5.0) return { level: "높음", color: "bg-orange-500", description: "이 특성이 평균보다 강하게 나타나며, 행동 패턴에 영향을 줍니다" };
+      if (score >= 3.5) return { level: "보통", color: "bg-yellow-500", description: "일반적인 수준으로, 적절한 균형을 보입니다" };
+      if (score >= 2.0) return { level: "다소 낮음", color: "bg-green-500", description: "이 특성이 평균보다 약하게 나타납니다" };
+      return { level: "낮음", color: "bg-blue-500", description: "이 특성이 거의 나타나지 않습니다" };
+    }
+    
+    if (categoryLower === 'depersonalization') {
+      // 비인격화: 높을수록 나쁨
+      if (score >= 4.0) return { level: "높음", color: "bg-orange-500", description: "이 특성이 평균보다 강하게 나타나며, 행동 패턴에 영향을 줍니다" };
+      if (score >= 2.5) return { level: "보통", color: "bg-yellow-500", description: "일반적인 수준으로, 적절한 균형을 보입니다" };
+      if (score >= 1.5) return { level: "다소 낮음", color: "bg-green-500", description: "이 특성이 평균보다 약하게 나타납니다" };
+      return { level: "낮음", color: "bg-blue-500", description: "이 특성이 거의 나타나지 않아 우수합니다" };
+    }
+    
+    if (categoryLower === 'personal_accomplishment') {
+      // 성취감: 낮을수록 나쁨 (역채점)
+      if (score >= 5.0) return { level: "매우 높음", color: "bg-blue-500", description: "성취감이 매우 높아 직무 만족도가 우수합니다" };
+      if (score >= 4.0) return { level: "다소 낮음", color: "bg-green-500", description: "적절한 성취감을 느끼고 있습니다" };
+      if (score >= 3.0) return { level: "보통", color: "bg-yellow-500", description: "성취감이 보통 수준입니다" };
+      if (score >= 2.0) return { level: "낮음", color: "bg-orange-500", description: "성취감이 부족하여 관심이 필요합니다" };
+      return { level: "매우 낮음", color: "bg-red-500", description: "성취감이 매우 낮아 주의가 필요합니다" };
+    }
+    
+    if (categoryLower === 'work_life_balance') {
+      // 일-삶 균형: 낮을수록 나쁨
+      if (score >= 5.0) return { level: "우수", color: "bg-blue-500", description: "일과 삶의 균형이 매우 잘 이루어지고 있습니다" };
+      if (score >= 4.0) return { level: "양호", color: "bg-green-500", description: "일과 삶의 균형이 적절히 유지되고 있습니다" };
+      if (score >= 3.0) return { level: "보통", color: "bg-yellow-500", description: "일반적인 수준의 균형을 보입니다" };
+      if (score >= 2.0) return { level: "낮음", color: "bg-orange-500", description: "균형 개선이 필요합니다" };
+      return { level: "매우 낮음", color: "bg-red-500", description: "균형이 매우 부족하여 주의가 필요합니다" };
+    }
+    
+    // 기타 직장 스트레스 관련 요인들 (높을수록 나쁨)
+    if (['work_overload', 'interpersonal_conflict', 'role_ambiguity'].includes(categoryLower)) {
+      if (score >= 5.0) return { level: "높음", color: "bg-red-500", description: "관심이 필요합니다" };
+      if (score >= 4.0) return { level: "보통", color: "bg-orange-500", description: "적절한 관리가 필요합니다" };
+      if (score >= 3.0) return { level: "다소 낮음", color: "bg-yellow-500", description: "일반적인 수준입니다" };
+      if (score >= 2.0) return { level: "낮음", color: "bg-green-500", description: "양호한 상태입니다" };
+      return { level: "매우 낮음", color: "bg-blue-500", description: "우수한 상태입니다" };
+    }
+    
+    // 긍정적 요인들 (높을수록 좋음)
+    if (['job_satisfaction', 'career_development', 'organizational_support'].includes(categoryLower)) {
+      if (score >= 5.5) return { level: "매우 높음", color: "bg-blue-500", description: "매우 우수한 상태입니다" };
+      if (score >= 4.5) return { level: "높음", color: "bg-green-500", description: "양호한 상태입니다" };
+      if (score >= 3.5) return { level: "보통", color: "bg-yellow-500", description: "일반적인 수준입니다" };
+      if (score >= 2.5) return { level: "낮음", color: "bg-orange-500", description: "개선이 필요합니다" };
+      return { level: "매우 낮음", color: "bg-red-500", description: "관심이 필요합니다" };
+    }
+    
+    // 기본 7점 척도 해석 (일반적인 경우)
     if (score >= 5.5) return { level: "매우 높음", color: "bg-red-500", description: "이 특성이 매우 강하게 나타나며, 일상생활에서 두드러진 영향을 미칩니다" };
     if (score >= 4.5) return { level: "높음", color: "bg-orange-500", description: "이 특성이 평균보다 강하게 나타나며, 행동 패턴에 영향을 줍니다" };
     if (score >= 3.5) return { level: "보통", color: "bg-yellow-500", description: "일반적인 수준으로, 적절한 균형을 보입니다" };
@@ -304,7 +359,9 @@ const PremiumAssessmentResult = ({
       name: translateCategory(category),
       value: score,
       color: interpretation.color.replace('bg-', '').replace('-500', ''),
-      description: interpretation.description
+      description: interpretation.description,
+      level: interpretation.level, // 레벨 정보 추가
+      maxValue: 7 // 최대값 정보 추가
     };
   });
 

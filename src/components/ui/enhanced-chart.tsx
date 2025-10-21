@@ -8,6 +8,8 @@ interface ChartDataPoint {
   value: number;
   color: string;
   description?: string;
+  level?: string;
+  maxValue?: number;
 }
 
 interface EnhancedChartProps {
@@ -42,10 +44,28 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-const getScoreLevel = (value: number) => {
-  if (value >= 80) return { label: '우수', color: 'bg-green-100 text-green-800' };
-  if (value >= 60) return { label: '양호', color: 'bg-blue-100 text-blue-800' };
-  if (value >= 40) return { label: '보통', color: 'bg-yellow-100 text-yellow-800' };
+const getScoreLevel = (value: number, maxValue: number = 100, providedLevel?: string) => {
+  // 제공된 레벨이 있으면 그것을 사용
+  if (providedLevel) {
+    const levelColors: Record<string, string> = {
+      '매우 높음': 'bg-blue-100 text-blue-800',
+      '우수': 'bg-blue-100 text-blue-800',
+      '높음': 'bg-orange-100 text-orange-800',
+      '양호': 'bg-green-100 text-green-800',
+      '보통': 'bg-yellow-100 text-yellow-800',
+      '다소 낮음': 'bg-green-100 text-green-800',
+      '낮음': 'bg-blue-100 text-blue-800',
+      '매우 낮음': 'bg-red-100 text-red-800',
+      '관심필요': 'bg-red-100 text-red-800'
+    };
+    return { label: providedLevel, color: levelColors[providedLevel] || 'bg-gray-100 text-gray-800' };
+  }
+  
+  // 기본 백분율 기준 해석
+  const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
+  if (percentage >= 80) return { label: '우수', color: 'bg-green-100 text-green-800' };
+  if (percentage >= 60) return { label: '양호', color: 'bg-blue-100 text-blue-800' };
+  if (percentage >= 40) return { label: '보통', color: 'bg-yellow-100 text-yellow-800' };
   return { label: '관심필요', color: 'bg-red-100 text-red-800' };
 };
 
@@ -55,10 +75,11 @@ export const EnhancedChart: React.FC<EnhancedChartProps> = ({
   description 
 }) => {
   const averageScore = data.length > 0 
-    ? Math.round(data.reduce((sum, item) => sum + item.value, 0) / data.length)
+    ? data.reduce((sum, item) => sum + item.value, 0) / data.length
     : 0;
 
-  const averageLevel = getScoreLevel(averageScore);
+  const maxValue = data[0]?.maxValue || 7; // 데이터에서 maxValue 가져오기
+  const averageLevel = getScoreLevel(averageScore, maxValue);
 
   return (
     <Card>
@@ -71,7 +92,7 @@ export const EnhancedChart: React.FC<EnhancedChartProps> = ({
             )}
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-foreground">{averageScore}</div>
+            <div className="text-2xl font-bold text-foreground">{averageScore.toFixed(1)}</div>
             <Badge className={averageLevel.color} variant="secondary">
               {averageLevel.label}
             </Badge>
@@ -106,7 +127,7 @@ export const EnhancedChart: React.FC<EnhancedChartProps> = ({
           {/* Legend with details */}
           <div className="flex-1 space-y-3">
             {data.map((item, index) => {
-              const level = getScoreLevel(item.value);
+              const level = getScoreLevel(item.value, item.maxValue || 7, item.level);
               return (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
@@ -124,7 +145,7 @@ export const EnhancedChart: React.FC<EnhancedChartProps> = ({
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold">{item.value}점</div>
+                    <div className="font-bold">{item.value.toFixed(1)}점</div>
                     <Badge className={level.color} variant="secondary">
                       {level.label}
                     </Badge>

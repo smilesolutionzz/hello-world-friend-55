@@ -16,7 +16,8 @@ import {
   BarChart3,
   FileText,
   Home,
-  RefreshCw
+  RefreshCw,
+  Brain
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -462,7 +463,7 @@ const DashboardNew = () => {
             </div>
 
             {/* 빠른 액션 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
               <div 
                 className="bg-white rounded-2xl p-6 shadow-sm border border-border/40 hover:shadow-md transition-all cursor-pointer group" 
                 onClick={() => navigate('/assessment')}
@@ -475,6 +476,26 @@ const DashboardNew = () => {
                     <h3 className="font-semibold text-base mb-1.5 text-foreground">새로운 검사 시작</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       AI 기반 발달·심리 검사로 현재 상태를 확인하세요
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div 
+                className="bg-white rounded-2xl p-6 shadow-sm border border-border/40 hover:shadow-md transition-all cursor-pointer group" 
+                onClick={() => navigate('/iep-generator')}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <Brain className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold text-base text-foreground">맞춤형 IEP 생성</h3>
+                      <Badge className="bg-green-500 text-white text-xs">무료</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      검사 결과 기반 개별교육계획 자동 생성
                     </p>
                   </div>
                 </div>

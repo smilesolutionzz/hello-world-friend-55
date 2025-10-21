@@ -107,25 +107,26 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
       return;
     }
 
-    if (observationLogs.length < 3) {
-      toast({
-        title: "관찰일지 부족",
-        description: "맞춤형 IEP 생성을 위해 최소 3개의 관찰일지 분석이 필요합니다.",
-        variant: "destructive"
-      });
-      return;
-    }
+    // 관찰일지 최소 요구사항 제거 (검사 결과만으로도 생성 가능)
+    // if (observationLogs.length < 3) {
+    //   toast({
+    //     title: "관찰일지 부족",
+    //     description: "맞춤형 IEP 생성을 위해 최소 3개의 관찰일지 분석이 필요합니다.",
+    //     variant: "destructive"
+    //   });
+    //   return;
+    // }
 
-    // 토큰 소진 시도
-    const tokenConsumed = await consumeTokens(TOKEN_COSTS.IEP_GENERATION);
-    if (!tokenConsumed) {
-      toast({
-        title: "토큰 부족",
-        description: `IEP 생성에는 ${TOKEN_COSTS.IEP_GENERATION}토큰이 필요합니다.`,
-        variant: "destructive"
-      });
-      return;
-    }
+    // 무료 기능으로 변경 - 토큰 소진 제거
+    // const tokenConsumed = await consumeTokens(TOKEN_COSTS.IEP_GENERATION);
+    // if (!tokenConsumed) {
+    //   toast({
+    //     title: "토큰 부족",
+    //     description: `IEP 생성에는 ${TOKEN_COSTS.IEP_GENERATION}토큰이 필요합니다.`,
+    //     variant: "destructive"
+    //   });
+    //   return;
+    // }
 
     setIsGenerating(true);
 
@@ -156,7 +157,9 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
       if (data.success) {
         toast({
           title: "맞춤형 IEP 생성 완료",
-          description: `${observationLogs.length}개의 관찰일지를 기반으로 개별교육계획이 생성되었습니다. (${TOKEN_COSTS.IEP_GENERATION}토큰 소진)`,
+          description: observationLogs.length > 0 
+            ? `${observationLogs.length}개의 관찰일지를 기반으로 개별교육계획이 생성되었습니다.`
+            : "검사 결과를 기반으로 개별교육계획이 생성되었습니다.",
         });
         
         if (onGenerated) {
@@ -192,17 +195,17 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
     );
   }
 
-  // 토큰 확인 컴포넌트
-  if (!checkTokenAvailability(TOKEN_COSTS.IEP_GENERATION)) {
-    return (
-      <TokenGate
-        tokensRequired={TOKEN_COSTS.IEP_GENERATION}
-        featureName="맞춤형 IEP 생성"
-        onProceed={handleGenerateIEP}
-        category="premium"
-      />
-    );
-  }
+  // 무료 기능으로 변경 - TokenGate 제거
+  // if (!checkTokenAvailability(TOKEN_COSTS.IEP_GENERATION)) {
+  //   return (
+  //     <TokenGate
+  //       tokensRequired={TOKEN_COSTS.IEP_GENERATION}
+  //       featureName="맞춤형 IEP 생성"
+  //       onProceed={handleGenerateIEP}
+  //       category="premium"
+  //     />
+  //   );
+  // }
 
   return (
     <Card className="max-w-4xl mx-auto">
@@ -210,15 +213,19 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
         <div className="flex items-center justify-center gap-3 mb-2">
           <FileText className="w-8 h-8 text-primary" />
           <CardTitle className="text-2xl">개별교육계획(IEP) 생성기</CardTitle>
+          <Badge className="bg-green-500">무료</Badge>
         </div>
         <p className="text-muted-foreground">
-          {observationLogs.length}개의 관찰일지 분석 결과를 바탕으로 AI가 맞춤형 개별교육계획을 생성합니다
+          {observationLogs.length > 0 
+            ? `${observationLogs.length}개의 관찰일지 분석 결과와 검사 결과를 바탕으로 AI가 맞춤형 개별교육계획을 생성합니다`
+            : "검사 결과를 바탕으로 AI가 맞춤형 개별교육계획을 생성합니다"
+          }
         </p>
       </CardHeader>
 
       <CardContent className="space-y-6">
         {/* 관찰일지 연결 상태 */}
-        {observationLogs.length > 0 ? (
+        {observationLogs.length > 0 && (
           <Card className="bg-green-50 border-green-200">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2 text-green-800">
@@ -245,28 +252,9 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
                   </p>
                 )}
               </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="bg-amber-50 border-amber-200">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-amber-600 mt-1" />
-                <div>
-                  <h3 className="font-semibold text-amber-900">관찰일지 분석 필요</h3>
-                  <p className="text-amber-800 text-sm mt-1">
-                    맞춤형 IEP 생성을 위해 최소 3개의 관찰일지 AI 분석이 필요합니다.
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="mt-3 border-amber-300 text-amber-800 hover:bg-amber-100"
-                    onClick={() => window.location.href = '/observation'}
-                  >
-                    관찰일지 작성하기
-                  </Button>
-                </div>
-              </div>
+              <p className="text-sm text-green-700 mt-3">
+                관찰일지와 검사 결과를 함께 활용하여 더 정확한 IEP를 생성합니다.
+              </p>
             </CardContent>
           </Card>
         )}
@@ -357,16 +345,19 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
           </CardContent>
         </Card>
 
-        {/* 토큰 안내 */}
-        <Card className="bg-amber-50 border-amber-200">
+        {/* 무료 안내 */}
+        <Card className="bg-green-50 border-green-200">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <Coins className="w-5 h-5 text-amber-600" />
+              <CheckCircle className="w-5 h-5 text-green-600" />
               <div>
-                <h3 className="font-semibold text-amber-900">토큰 사용 안내</h3>
-                <p className="text-amber-800 text-sm">
-                  맞춤형 IEP 생성에는 <strong>{TOKEN_COSTS.IEP_GENERATION}토큰</strong>이 소진됩니다. 
-                  {observationLogs.length}개의 관찰일지 AI 분석 결과를 종합하여 고품질 교육계획을 제공합니다.
+                <h3 className="font-semibold text-green-900">완전 무료 서비스</h3>
+                <p className="text-green-800 text-sm">
+                  IEP 생성은 <strong>완전 무료</strong>입니다. 
+                  {observationLogs.length > 0 
+                    ? `${observationLogs.length}개의 관찰일지와 검사 결과를 종합하여 맞춤형 교육계획을 제공합니다.`
+                    : "검사 결과를 바탕으로 맞춤형 교육계획을 제공합니다."
+                  }
                 </p>
               </div>
             </div>
@@ -376,8 +367,8 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
         {/* 생성 버튼 */}
         <Button
           onClick={handleGenerateIEP}
-          disabled={isGenerating || !studentName || !studentAge || tokenLoading || observationLogs.length < 3}
-          className="w-full py-6 text-lg"
+          disabled={isGenerating || !studentName || !studentAge}
+          className="w-full py-6 text-lg bg-gradient-to-r from-primary to-primary-glow"
           size="lg"
         >
           {isGenerating ? (
@@ -385,15 +376,13 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
               <Clock className="w-5 w-5 animate-spin" />
               맞춤형 IEP 생성 중... (약 60초 소요)
             </div>
-          ) : observationLogs.length < 3 ? (
-            <div className="flex items-center gap-2">
-              <AlertCircle className="w-5 h-5" />
-              관찰일지 {3 - observationLogs.length}개 더 필요 (현재 {observationLogs.length}개)
-            </div>
           ) : (
             <div className="flex items-center gap-2">
               <FileText className="w-5 h-5" />
-              {observationLogs.length}개 관찰일지 기반 맞춤형 IEP 생성하기 ({TOKEN_COSTS.IEP_GENERATION}토큰)
+              {observationLogs.length > 0 
+                ? `${observationLogs.length}개 관찰일지 + 검사 결과 기반 맞춤형 IEP 생성하기 (무료)`
+                : "검사 결과 기반 맞춤형 IEP 생성하기 (무료)"
+              }
             </div>
           )}
         </Button>
@@ -405,10 +394,13 @@ const IEPGenerator = ({ assessmentResults = {}, onGenerated }: IEPGeneratorProps
           </p>
           <ul className="space-y-1 list-disc list-inside">
             <li>생성된 IEP는 초안으로, 전문가의 검토와 수정이 필요합니다</li>
-            <li>연결된 {observationLogs.length}개의 관찰일지 AI 분석 결과를 종합하여 개별화된 계획을 작성합니다</li>
-            <li>3개 이상의 관찰일지가 있을 때 가장 정확한 맞춤형 IEP를 생성할 수 있습니다</li>
+            <li>검사 결과를 바탕으로 개별화된 교육계획을 작성합니다</li>
+            {observationLogs.length > 0 && (
+              <li>연결된 {observationLogs.length}개의 관찰일지가 있어 더 정확한 IEP를 생성할 수 있습니다</li>
+            )}
             <li>생성 후 언제든지 내용을 수정하고 업데이트할 수 있습니다</li>
             <li>IEP는 학교와 가정에서 공유하여 일관된 지원을 제공합니다</li>
+            <li>완전 무료로 이용 가능합니다</li>
           </ul>
         </div>
       </CardContent>

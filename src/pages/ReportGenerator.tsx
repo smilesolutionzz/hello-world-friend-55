@@ -24,12 +24,21 @@ import {
   Target,
   Activity,
   BarChart3,
-  Clock
+  Clock,
+  Upload,
+  Image as ImageIcon,
+  CheckCircle2,
+  UserCheck
 } from 'lucide-react';
 
 const ReportGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
+  const [isRequestingExpert, setIsRequestingExpert] = useState(false);
   const [reportData, setReportData] = useState<any>(null);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [coverImage, setCoverImage] = useState<string | null>(null);
+  const [tocImage, setTocImage] = useState<string | null>(null);
   const { toast } = useToast();
 
   // 입력 폼 상태
@@ -42,6 +51,58 @@ const ReportGenerator = () => {
     testResults: '',
     concerns: ''
   });
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsAnalyzingImage(true);
+    
+    try {
+      const imagePromises = Array.from(files).map(file => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target?.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      });
+
+      const base64Images = await Promise.all(imagePromises);
+      setUploadedImages(prev => [...prev, ...base64Images]);
+
+      // Gemini AI로 이미지 분석
+      const { data, error } = await supabase.functions.invoke('analyze-test-images', {
+        body: { images: base64Images }
+      });
+
+      if (error) throw error;
+
+      if (data && data.analysis) {
+        // 분석 결과를 폼에 자동 입력
+        setFormData(prev => ({
+          ...prev,
+          testResults: prev.testResults 
+            ? `${prev.testResults}\n\n[이미지 분석 결과]\n${data.analysis}`
+            : `[이미지 분석 결과]\n${data.analysis}`
+        }));
+
+        toast({
+          title: "이미지 분석 완료!",
+          description: "검사 결과가 자동으로 입력되었습니다.",
+        });
+      }
+    } catch (error) {
+      console.error('이미지 분석 오류:', error);
+      toast({
+        title: "분석 실패",
+        description: "이미지 분석 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzingImage(false);
+    }
+  };
 
   const generateReport = async () => {
     if (!formData.observationNotes && !formData.testResults && !formData.concerns) {
@@ -74,7 +135,10 @@ ${formData.concerns || '없음'}
 `;
 
       const { data, error } = await supabase.functions.invoke('instant-ai-analysis', {
-        body: { inputText: inputText.trim() }
+        body: { 
+          inputText: inputText.trim(),
+          generateImages: true 
+        }
       });
 
       if (error) throw error;
@@ -86,6 +150,14 @@ ${formData.concerns || '없음'}
           personalInfo: formData,
           generatedAt: new Date().toISOString()
         });
+
+        // AI 이미지 생성
+        if (data.reportImage) {
+          setCoverImage(data.reportImage);
+        }
+
+        // 목차 이미지도 생성
+        generateTocImage(data.analysis);
 
         toast({
           title: "리포트 생성 완료!",
@@ -101,6 +173,70 @@ ${formData.concerns || '없음'}
       });
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const generateTocImage = async (analysis: any) => {
+    try {
+      const prompt = `Professional table of contents page for developmental psychology report. 
+Theme: ${analysis.type}. 
+Style: elegant, minimalist, professional. 
+Colors: navy blue, white, gold accents. 
+Layout: centered title "목차" at top, numbered list (1-9) of report sections in elegant typography.
+Modern design with subtle geometric patterns.
+Ultra high resolution.`;
+
+      const { data, error } = await supabase.functions.invoke('generate-report-image', {
+        body: { prompt }
+      });
+
+      if (!error && data?.imageUrl) {
+        setTocImage(data.imageUrl);
+      }
+    } catch (error) {
+      console.error('목차 이미지 생성 오류:', error);
+    }
+  };
+
+  const requestExpertReview = async () => {
+    if (!reportData) return;
+
+    setIsRequestingExpert(true);
+
+    try {
+      // 카카오톡 오픈채팅으로 전문가 제언 요청
+      const concernText = `[전문가 제언 요청]
+
+[대상자 정보]
+이름: ${formData.name}
+나이: ${formData.age}
+성별: ${formData.gender}
+
+[AI 분석 결과]
+• 유형: ${reportData.type}
+• 심각도: ${reportData.severity}
+• 조언: ${reportData.detailedAdvice}
+
+전문가님의 추가 제언을 요청드립니다.`;
+
+      const kakaoLink = `https://open.kakao.com/o/sHLdK3Ch`;
+      window.open(kakaoLink, '_blank');
+
+      navigator.clipboard.writeText(concernText).then(() => {
+        toast({
+          title: "전문가 제언 요청",
+          description: "카카오톡에서 메시지를 붙여넣기(Ctrl+V)하여 전송하세요.",
+        });
+      });
+    } catch (error) {
+      console.error('전문가 제언 요청 오류:', error);
+      toast({
+        title: "요청 실패",
+        description: "전문가 제언 요청 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRequestingExpert(false);
     }
   };
 
@@ -125,23 +261,23 @@ ${formData.concerns || '없음'}
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* 헤더 */}
         <div className="text-center mb-12 space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full border border-blue-500/20">
-            <FileText className="w-4 h-4 text-blue-500" />
-            <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">자동 리포트 생성기</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-full border border-blue-400/30">
+            <FileText className="w-4 h-4 text-blue-300" />
+            <span className="text-sm font-semibold text-blue-200">자동 리포트 생성기</span>
           </div>
 
           <h1 className="text-3xl md:text-5xl font-black leading-tight">
-            <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-300 via-indigo-300 to-purple-300 bg-clip-text text-transparent">
               종합 분석 리포트 생성
             </span>
           </h1>
 
-          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto">
-            관찰 내용과 검사 결과를 입력하면 AI가 9가지 전문 리포트를 자동으로 생성합니다
+          <p className="text-blue-100/80 text-sm md:text-base max-w-2xl mx-auto">
+            관찰 내용과 검사 결과를 입력하거나 이미지로 첨부하면 AI가 9가지 전문 리포트를 자동으로 생성합니다
           </p>
         </div>
 
@@ -206,33 +342,33 @@ ${formData.concerns || '없음'}
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="observationNotes">관찰 내용</Label>
+                  <Label htmlFor="observationNotes" className="text-blue-200">관찰 내용</Label>
                   <Textarea
                     id="observationNotes"
                     placeholder="일상생활에서 관찰한 행동, 패턴, 특징 등을 자유롭게 작성하세요..."
-                    className="min-h-[150px]"
+                    className="min-h-[150px] bg-slate-700/50 border-blue-500/30 text-white placeholder:text-slate-400"
                     value={formData.observationNotes}
                     onChange={(e) => setFormData({ ...formData, observationNotes: e.target.value })}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="testResults">검사 결과</Label>
+                  <Label htmlFor="testResults" className="text-blue-200">검사 결과</Label>
                   <Textarea
                     id="testResults"
                     placeholder="실시한 심리검사, 발달검사 결과를 입력하세요..."
-                    className="min-h-[150px]"
+                    className="min-h-[150px] bg-slate-700/50 border-blue-500/30 text-white placeholder:text-slate-400"
                     value={formData.testResults}
                     onChange={(e) => setFormData({ ...formData, testResults: e.target.value })}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="concerns">주요 고민</Label>
+                  <Label htmlFor="concerns" className="text-blue-200">주요 고민</Label>
                   <Textarea
                     id="concerns"
                     placeholder="현재 가장 걱정되는 부분이나 개선하고 싶은 점을 작성하세요..."
-                    className="min-h-[100px]"
+                    className="min-h-[100px] bg-slate-700/50 border-blue-500/30 text-white placeholder:text-slate-400"
                     value={formData.concerns}
                     onChange={(e) => setFormData({ ...formData, concerns: e.target.value })}
                   />
@@ -244,7 +380,7 @@ ${formData.concerns || '없음'}
               onClick={generateReport}
               disabled={isGenerating}
               size="lg"
-              className="w-full h-16 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+              className="w-full h-16 text-lg font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/50"
             >
               {isGenerating ? (
                 <>
@@ -264,14 +400,37 @@ ${formData.concerns || '없음'}
           <div className="space-y-6">
             <div className="flex justify-end gap-3">
               <Button
-                onClick={() => setReportData(null)}
+                onClick={requestExpertReview}
+                disabled={isRequestingExpert}
+                className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white"
+              >
+                {isRequestingExpert ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    요청 중...
+                  </>
+                ) : (
+                  <>
+                    <UserCheck className="w-4 h-4 mr-2" />
+                    전문가 제언 추가 받기
+                  </>
+                )}
+              </Button>
+              <Button
+                onClick={() => {
+                  setReportData(null);
+                  setUploadedImages([]);
+                  setCoverImage(null);
+                  setTocImage(null);
+                }}
                 variant="outline"
+                className="border-blue-400/30 text-blue-200 hover:bg-blue-900/50"
               >
                 새 리포트 작성
               </Button>
               <Button
                 onClick={downloadPDF}
-                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
               >
                 <Download className="w-4 h-4 mr-2" />
                 PDF 다운로드
@@ -279,17 +438,25 @@ ${formData.concerns || '없음'}
             </div>
 
             {/* PDF 생성용 콘텐츠 */}
-            <div id="report-content" className="bg-white text-black p-8 space-y-8">
+            <div id="report-content" className="bg-gradient-to-br from-slate-50 to-blue-50 p-8 space-y-8 rounded-lg shadow-2xl">
               {/* 리포트 표지 */}
-              <div className="text-center space-y-6 pb-8 border-b-2 border-gray-200">
-                {reportData.reportImage && (
+              <div className="text-center space-y-6 pb-8 border-b-2 border-indigo-200">
+                {coverImage ? (
                   <img 
-                    src={reportData.reportImage} 
+                    src={coverImage} 
                     alt="리포트 커버"
-                    className="w-full max-w-md mx-auto rounded-lg shadow-lg"
+                    className="w-full max-w-md mx-auto rounded-lg shadow-2xl"
                   />
+                ) : (
+                  <div className="w-full max-w-md mx-auto h-96 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-lg shadow-2xl flex items-center justify-center">
+                    <div className="text-center space-y-4 p-8">
+                      <FileText className="w-24 h-24 text-blue-300 mx-auto" />
+                      <h2 className="text-3xl font-black text-white">종합 분석 리포트</h2>
+                      <p className="text-blue-200">Professional Development Report</p>
+                    </div>
+                  </div>
                 )}
-                <h1 className="text-4xl font-black text-gray-900">종합 분석 리포트</h1>
+                <h1 className="text-4xl font-black text-slate-900">종합 분석 리포트</h1>
                 <div className="space-y-2">
                   <p className="text-lg"><strong>이름:</strong> {reportData.personalInfo.name || '미입력'}</p>
                   <p className="text-lg"><strong>나이:</strong> {reportData.personalInfo.age || '미입력'}</p>

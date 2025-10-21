@@ -292,8 +292,71 @@ const mockExperts: Expert[] = [
     location: '전국',
     isOnline: true,
     responseTime: '평균 1시간 이내'
+  },
+  {
+    id: '8',
+    name: '김재민',
+    specialty: ['언어치료'],
+    credentials: ['언어재활사', 'AIHPRO 언어검사 검수자'],
+    rating: 5.0,
+    reviews: 0,
+    experience: '8년',
+    availability: '평일 9-18시',
+    monthlyPrice: 100000,
+    hourlyPrice: 26000,
+    image: getExpertImage('김재민') || '/api/placeholder/150/150',
+    description: 'AIHPRO 언어검사 검수자로 언어치료 전문가입니다. 언어발달지연, 발음장애, 의사소통 문제를 전문적으로 치료합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담', '센터상담'],
+    monthlyServices: [
+      '주 2회 언어치료 (월 8회)',
+      'AIHPRO 언어검사 및 평가',
+      '발음 교정 프로그램',
+      '부모 가정지도 교육',
+      '언어발달 진전 리포트'
+    ],
+    portfolio: {
+      cases: 250,
+      successRate: 93,
+      specializations: ['언어치료', '언어발달', '발음교정', 'AIHPRO언어검사']
+    },
+    location: '전국',
+    isOnline: true,
+    responseTime: '평균 2시간 이내'
+  },
+  {
+    id: '9',
+    name: '조대룡',
+    specialty: ['성인지적장애', '청소년지적장애', '일상생활지도'],
+    credentials: ['기관장', '일상생활지도 전문가'],
+    rating: 5.0,
+    reviews: 0,
+    experience: '15년',
+    availability: '평일 9-18시',
+    monthlyPrice: 120000,
+    hourlyPrice: 30000,
+    image: getExpertImage('조대룡') || '/api/placeholder/150/150',
+    description: '성인 및 청소년 지적장애인의 일상생활 지도 전문가입니다. 장애인의 자립생활과 사회적응을 위한 맞춤형 지도를 제공합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담', '센터상담'],
+    monthlyServices: [
+      '주 2회 일상생활 지도 (월 8회)',
+      '자립생활 훈련 프로그램',
+      '사회적응 교육',
+      '가족 상담 및 교육',
+      '개별화 지원 계획 수립'
+    ],
+    portfolio: {
+      cases: 380,
+      successRate: 95,
+      specializations: ['성인지적장애', '청소년지적장애', '일상생활지도', '자립생활훈련', '사회적응']
+    },
+    location: '전국',
+    isOnline: true,
+    responseTime: '평균 1.5시간 이내'
   }
 ];
+
 
 const ExpertHiring = () => {
   const navigate = useNavigate();

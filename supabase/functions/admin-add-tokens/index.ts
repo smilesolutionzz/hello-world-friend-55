@@ -76,13 +76,13 @@ serve(async (req) => {
     console.log('Adding tokens:', { targetEmail, tokenAmount });
 
     // Find user by email
-    const { data: user, error: userError } = await supabase.auth.admin.listUsers();
+    const { data: usersData, error: listError } = await supabase.auth.admin.listUsers();
     
-    if (userError) {
-      throw new Error(`Failed to fetch users: ${userError.message}`);
+    if (listError) {
+      throw new Error(`Failed to fetch users: ${listError.message}`);
     }
 
-    const targetUser = user.users.find(u => u.email === targetEmail);
+    const targetUser = usersData.users.find(u => u.email === targetEmail);
     
     if (!targetUser) {
       throw new Error(`User with email ${targetEmail} not found`);

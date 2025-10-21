@@ -52,7 +52,8 @@ const TossPaymentWidget = () => {
         return;
       }
 
-      const generatedOrderId = `ORDER_TOKEN_${tokenAmount}_${Date.now()}_${session.user.id}`;
+      const shortUser = session.user.id.slice(0, 8);
+      const generatedOrderId = `OT_${tokenAmount}_${Date.now().toString(36)}_${shortUser}`;
       setOrderId(generatedOrderId);
 
       const paymentWidget = await loadPaymentWidget(TOSS_CLIENT_KEY, session.user.id);
@@ -63,6 +64,9 @@ const TossPaymentWidget = () => {
         currency: 'KRW',
         country: 'KR'
       });
+      
+      // 이용 약관 동의 섹션 렌더링 (필수)
+      await paymentWidget.renderAgreement('#agreement');
       
       setPaymentWidget(paymentWidget);
       setLoading(false);
@@ -147,7 +151,10 @@ const TossPaymentWidget = () => {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : (
-              <div id="payment-widget" />
+              <>
+                <div id="payment-widget" />
+                <div id="agreement" className="mt-4" />
+              </>
             )}
           </div>
 

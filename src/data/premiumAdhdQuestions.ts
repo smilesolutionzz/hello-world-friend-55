@@ -82,7 +82,7 @@ export const premiumAdhdQuestions = {
     },
     {
       id: "adhd_inatt_06",
-      text: "지속적인 정신적 노력을 요구하는 과업을 피하거나 싫어하거나 reluctantly 참여합니다",
+      text: "지속적인 정신적 노력을 요구하는 과업을 피하거나 싫어하거나 마지못해 참여합니다",
       category: "inattention",
       subcategory: "mental_effort_avoidance",
       ahi_criteria: "A6", 

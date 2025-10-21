@@ -98,10 +98,6 @@ import WellnessHub from "./pages/WellnessHub";
 import DailyCheckin from "./pages/DailyCheckin";
 import ChallengesPage from "./pages/ChallengesPage";
 import GrowthTracker from "./pages/GrowthTracker";
-
-// Organization Features
-import OrganizationDashboard from "./pages/OrganizationDashboard";
-import OrganizationSetup from "./pages/OrganizationSetup";
 import AIAssistant from "./pages/AIAssistant";
 import WellnessLifestyle from "./pages/WellnessLifestyle";
 import TestProgressTracker from "./pages/TestProgressTracker";
@@ -226,10 +222,6 @@ const App = () => {
             <Route path="/voice-counseling" element={<VoiceCounseling />} />
             <Route path="/voice-to-text" element={<VoiceToText />} />
             <Route path="/meditation" element={<MeditationPage />} />
-          
-          {/* Organization Features */}
-          <Route path="/organization/dashboard" element={<OrganizationDashboard />} />
-          <Route path="/organization/setup" element={<OrganizationSetup />} />
           
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/community" element={<Community />} />

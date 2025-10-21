@@ -37,6 +37,8 @@ import TherapistManagement from '@/components/institution/TherapistManagement';
 import ConsultationRequestManager from '@/components/institution/ConsultationRequestManager';
 import { AutomatedInstitutionDashboard } from '@/components/institution/AutomatedInstitutionDashboard';
 import VoucherReportGenerator from '@/components/institution/VoucherReportGenerator';
+import { OrganizationChart } from '@/components/organization/OrganizationChart';
+import { TestInsights } from '@/components/organization/TestInsights';
 
 interface InstitutionStats {
   total_members: number;
@@ -75,6 +77,10 @@ export default function InstitutionAdmin() {
   // Data states
   const [stats, setStats] = useState<InstitutionStats | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [dateRange, setDateRange] = useState({
+    start: new Date(new Date().setMonth(new Date().getMonth() - 6)),
+    end: new Date()
+  });
 
   // Institution settings form
   const [institutionForm, setInstitutionForm] = useState({
@@ -610,6 +616,42 @@ export default function InstitutionAdmin() {
 
           {/* 개요 & 자동운영 */}
           <TabsContent value="overview" className="space-y-6">
+            {/* 기간 필터 */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-4">
+                  <Calendar className="w-5 h-5 text-muted-foreground" />
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="month"
+                      value={`${dateRange.start.getFullYear()}-${String(dateRange.start.getMonth() + 1).padStart(2, '0')}`}
+                      onChange={(e) => {
+                        const [year, month] = e.target.value.split('-');
+                        setDateRange({
+                          ...dateRange,
+                          start: new Date(parseInt(year), parseInt(month) - 1, 1)
+                        });
+                      }}
+                      className="px-3 py-2 border rounded-md bg-background"
+                    />
+                    <span>~</span>
+                    <input
+                      type="month"
+                      value={`${dateRange.end.getFullYear()}-${String(dateRange.end.getMonth() + 1).padStart(2, '0')}`}
+                      onChange={(e) => {
+                        const [year, month] = e.target.value.split('-');
+                        setDateRange({
+                          ...dateRange,
+                          end: new Date(parseInt(year), parseInt(month), 0)
+                        });
+                      }}
+                      className="px-3 py-2 border rounded-md bg-background"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* 기관 현황 요약 */}
               <Card>
@@ -695,6 +737,25 @@ export default function InstitutionAdmin() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* 월별 통계 및 취약점 분포 차트 */}
+            {institutionInfo && (
+              <OrganizationChart 
+                organizationId={institutionInfo.id} 
+                dateRange={dateRange}
+              />
+            )}
+
+            {/* 인사이트 */}
+            {institutionInfo && (
+              <div>
+                <h3 className="text-lg font-semibold mb-4">검사 인사이트</h3>
+                <TestInsights 
+                  organizationId={institutionInfo.id} 
+                  dateRange={dateRange}
+                />
+              </div>
+            )}
           </TabsContent>
 
           {/* 회원 & 치료사 관리 */}

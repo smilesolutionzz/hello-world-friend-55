@@ -80,7 +80,7 @@ export function ExpertAnalysisSection({
         </p>
       </CardHeader>
       
-      <CardContent className="p-6 space-y-4">
+      <CardContent className="p-4 md:p-6 space-y-4">
         {sections.length > 1 ? (
           sections.map((section, index) => {
             const [title, ...content] = section.split('\n');
@@ -89,16 +89,16 @@ export function ExpertAnalysisSection({
             return (
               <div 
                 key={index}
-                className={`bg-gradient-to-br ${getSectionColor(index)} rounded-xl p-5 border`}
+                className={`bg-gradient-to-br ${getSectionColor(index)} rounded-xl p-4 md:p-5 border`}
               >
                 <div className="flex items-start gap-3 mb-3">
-                  <div className="p-2 rounded-lg bg-white/50 text-primary">
+                  <div className="p-2 rounded-lg bg-white/50 text-primary flex-shrink-0">
                     {getSectionIcon(index)}
                   </div>
-                  <h3 className="font-semibold text-lg flex-1">{cleanTitle}</h3>
+                  <h3 className="font-semibold text-base md:text-lg flex-1">{cleanTitle}</h3>
                 </div>
-                <div className="pl-11">
-                  <p className="text-sm leading-relaxed whitespace-pre-line">
+                <div className="md:pl-11">
+                  <p className="text-sm md:text-base leading-relaxed whitespace-pre-line">
                     {content.join('\n').trim()}
                   </p>
                 </div>
@@ -106,8 +106,8 @@ export function ExpertAnalysisSection({
             );
           })
         ) : (
-          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-6 border border-primary/20">
-            <p className="leading-relaxed whitespace-pre-line text-sm">
+          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-4 md:p-6 border border-primary/20">
+            <p className="leading-relaxed whitespace-pre-line text-sm md:text-base">
               {analysis}
             </p>
           </div>

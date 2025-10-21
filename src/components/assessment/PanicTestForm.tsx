@@ -15,27 +15,27 @@ interface PanicTestFormProps {
 }
 
 const panicQuestions = [
-  "갑작스러운 심장 두근거림이나 심장이 빨리 뛰는 증상이 있습니까?",
-  "땀이 나거나 몸이 떨리는 증상이 있습니까?",
-  "숨이 막히거나 질식할 것 같은 느낌이 있습니까?",
-  "가슴이 답답하거나 아픈 증상이 있습니까?",
-  "메스꺼움이나 복부 불편감이 있습니까?",
-  "어지럽거나 불안정한 느낌, 또는 기절할 것 같은 느낌이 있습니까?",
-  "춥거나 뜨거운 느낌이 있습니까?",
-  "손발이 저리거나 무감각한 느낌이 있습니까?",
-  "자신이 분리된 것 같거나 비현실적인 느낌이 있습니까?",
-  "통제력을 잃거나 미칠 것 같은 두려움이 있습니까?",
-  "죽을 것 같은 두려움이 있습니까?",
-  "이러한 증상들이 갑작스럽게 나타납니까?",
-  "증상이 최고조에 달하는 데 몇 분 정도 걸립니까?",
-  "이런 증상 때문에 일상생활에 지장이 있습니까?",
-  "특정 장소나 상황을 피하게 됩니까?",
-  "또 다시 이런 증상이 올까봐 걱정이 됩니까?",
-  "이런 증상이 한 달에 몇 번 이상 반복됩니까?",
-  "증상이 나타나면 즉시 그 자리를 벗어나고 싶어집니까?",
-  "다른 사람들이 이런 증상을 알아챌까봐 걱정됩니까?",
-  "이런 증상 때문에 전문가의 도움을 받고 싶다고 생각합니까?",
-  "증상이 나타날 때 현실감을 잃는 느낌이 있습니까?"
+  { text: "갑작스러운 심장 두근거림이나 심장이 빨리 뛰는 증상이 있습니까?", type: "severity" },
+  { text: "땀이 나거나 몸이 떨리는 증상이 있습니까?", type: "severity" },
+  { text: "숨이 막히거나 질식할 것 같은 느낌이 있습니까?", type: "severity" },
+  { text: "가슴이 답답하거나 아픈 증상이 있습니까?", type: "severity" },
+  { text: "메스꺼움이나 복부 불편감이 있습니까?", type: "severity" },
+  { text: "어지럽거나 불안정한 느낌, 또는 기절할 것 같은 느낌이 있습니까?", type: "severity" },
+  { text: "춥거나 뜨거운 느낌이 있습니까?", type: "severity" },
+  { text: "손발이 저리거나 무감각한 느낌이 있습니까?", type: "severity" },
+  { text: "자신이 분리된 것 같거나 비현실적인 느낌이 있습니까?", type: "severity" },
+  { text: "통제력을 잃거나 미칠 것 같은 두려움이 있습니까?", type: "severity" },
+  { text: "죽을 것 같은 두려움이 있습니까?", type: "severity" },
+  { text: "이러한 증상들이 갑작스럽게 나타납니까?", type: "severity" },
+  { text: "증상이 최고조에 달하는 데 몇 분 정도 걸립니까?", type: "severity" },
+  { text: "이런 증상 때문에 일상생활에 지장이 있습니까?", type: "frequency" },
+  { text: "특정 장소나 상황을 피하게 됩니까?", type: "severity" },
+  { text: "또 다시 이런 증상이 올까봐 걱정이 됩니까?", type: "severity" },
+  { text: "이런 증상이 한 달에 몇 번 이상 반복됩니까?", type: "frequency" },
+  { text: "증상이 나타나면 즉시 그 자리를 벗어나고 싶어집니까?", type: "severity" },
+  { text: "다른 사람들이 이런 증상을 알아챌까봐 걱정됩니까?", type: "severity" },
+  { text: "이런 증상 때문에 전문가의 도움을 받고 싶다고 생각합니까?", type: "severity" },
+  { text: "증상이 나타날 때 현실감을 잃는 느낌이 있습니까?", type: "severity" }
 ];
 
 const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
@@ -151,7 +151,7 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
             {/* Question */}
         <div className="space-y-6">
           <h2 className="text-xl font-semibold text-center">
-            {panicQuestions[currentQuestion]}
+            {panicQuestions[currentQuestion].text}
           </h2>
 
           <RadioGroup 
@@ -159,24 +159,49 @@ const PanicTestForm = ({ onComplete, onBack }: PanicTestFormProps) => {
             onValueChange={handleAnswer}
             className="space-y-4"
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="1" id="option1" />
-              <Label htmlFor="option1" className="text-base cursor-pointer">
-                그렇지 않다 (1점)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="2" id="option2" />
-              <Label htmlFor="option2" className="text-base cursor-pointer">
-                보통이다 (2점)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="3" id="option3" />
-              <Label htmlFor="option3" className="text-base cursor-pointer">
-                그렇다 (3점)
-              </Label>
-            </div>
+            {panicQuestions[currentQuestion].type === "frequency" ? (
+              <>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="1" id="option1" />
+                  <Label htmlFor="option1" className="text-base cursor-pointer">
+                    전혀 없음 (1점)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="2" id="option2" />
+                  <Label htmlFor="option2" className="text-base cursor-pointer">
+                    1-2회 (2점)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="3" id="option3" />
+                  <Label htmlFor="option3" className="text-base cursor-pointer">
+                    3회 이상 (3점)
+                  </Label>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="1" id="option1" />
+                  <Label htmlFor="option1" className="text-base cursor-pointer">
+                    그렇지 않다 (1점)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="2" id="option2" />
+                  <Label htmlFor="option2" className="text-base cursor-pointer">
+                    보통이다 (2점)
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="3" id="option3" />
+                  <Label htmlFor="option3" className="text-base cursor-pointer">
+                    그렇다 (3점)
+                  </Label>
+                </div>
+              </>
+            )}
           </RadioGroup>
         </div>
 

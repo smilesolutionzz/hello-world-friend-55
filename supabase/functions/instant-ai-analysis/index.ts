@@ -55,34 +55,74 @@ serve(async (req) => {
     const concernLabel = concernLabels[concern] || '일반적인 고민';
     const targetLabel = targetLabels[target] || '대상자';
 
-    const systemPrompt = `당신은 심리 상담 전문가입니다. 사용자의 고민을 분석하고 다음 JSON 형식으로만 응답해주세요:
+    const systemPrompt = `당신은 발달/심리 전문가입니다. 사용자의 고민을 종합적으로 분석하고 9가지 전문 리포트를 포함한 JSON 형식으로 응답해주세요:
+
 {
   "type": "고민 유형 (예: 우울감, 불안감, 육아스트레스, 발달지연, 대인관계, 학업스트레스 등)",
   "severity": "심각도 - 반드시 고민의 심각성에 따라 '낮음', '중간', '높음' 중 하나를 선택",
   "color": "색상코드 (낮음: bg-green-500, 중간: bg-orange-500, 높음: bg-red-500)",
-  "detailedAdvice": "500자 이내의 구체적이고 따뜻한 조언 (사용자의 상황에 맞는 실질적인 팁과 격려 포함)",
+  "detailedAdvice": "500자 이내의 구체적이고 따뜻한 조언",
   "recommendations": ["구체적인 추천사항 3개"],
   "nextSteps": ["실행 가능한 다음 단계 3개"],
-  "confidence": 75-95 사이의 신뢰도 점수
+  "confidence": 75-95 사이의 신뢰도 점수,
+  
+  "comprehensiveReports": {
+    "developmentAssessment": {
+      "cognitive": "인지 발달 상태 (0-100점)",
+      "language": "언어 발달 상태 (0-100점)",
+      "motor": "운동 발달 상태 (0-100점)",
+      "social": "사회성 발달 상태 (0-100점)",
+      "overall": "종합 발달 점수 (0-100점)",
+      "summary": "발달 종합 평가 요약 (200자 이내)"
+    },
+    "psychologicalAnalysis": {
+      "emotionalStability": "정서적 안정성 (0-100점)",
+      "stressLevel": "스트레스 수준 (0-100점, 낮을수록 좋음)",
+      "mentalHealth": "심리적 건강도 (0-100점)",
+      "summary": "심리 상태 분석 요약 (200자 이내)"
+    },
+    "strengthsWeaknesses": {
+      "strengths": ["강점 3가지"],
+      "weaknesses": ["약점/개선영역 3가지"],
+      "growthDirection": "맞춤형 성장 방향 제시 (150자 이내)"
+    },
+    "customActivities": [
+      "AI 기반 맞춤 활동 제안 1",
+      "AI 기반 맞춤 활동 제안 2",
+      "AI 기반 맞춤 활동 제안 3"
+    ],
+    "developmentRoadmap": {
+      "shortTerm": ["단기 목표 (1-3개월) 2가지"],
+      "mediumTerm": ["중기 목표 (3-6개월) 2가지"],
+      "longTerm": ["장기 목표 (6-12개월) 2가지"]
+    },
+    "peerComparison": {
+      "ageGroup": "해당 연령대",
+      "percentile": "상대적 위치 (백분위, 0-100)",
+      "comparison": "또래 비교 분석 (150자 이내)"
+    },
+    "expertOpinion": {
+      "interventionNeeded": "전문 개입 필요성 (낮음/중간/높음)",
+      "recommendations": ["전문가 추천사항 2-3가지"],
+      "urgency": "시급성 평가 (낮음/중간/높음)"
+    },
+    "familySupport": {
+      "parentingTips": ["부모/보호자 실천 팁 3가지"],
+      "communicationGuide": "효과적인 소통 방법 (100자 이내)"
+    },
+    "longTermPrediction": {
+      "developmentTrend": "향후 발달 경향성 (긍정적/보통/주의필요)",
+      "potential": "잠재력 평가 (0-100점)",
+      "forecast": "AI 기반 장기 발달 예측 (200자 이내)"
+    }
+  }
 }
-
-심각도 판단 기준:
-- 낮음: 일상적인 고민, 가벼운 걱정, 예방 차원의 상담
-- 중간: 지속적인 스트레스, 중등도의 불안/우울, 관계 갈등, 육아 어려움
-- 높음: 심각한 정신건강 문제, 자해/자살 관련, 극심한 스트레스, 심각한 발달 지연
-
-detailedAdvice 작성 가이드:
-- 사용자의 구체적인 상황에 맞는 실질적인 조언 제공
-- 따뜻하고 공감적인 어조 사용
-- 즉시 실천할 수 있는 구체적인 팁 포함
-- 긍정적인 관점과 격려 메시지 포함
-- 반드시 500자 이내로 작성
 
 사용자 고민: ${inputText}
 ${concernLabel ? `주요 관심사: ${concernLabel}` : ''}
 ${targetLabel ? `분석 대상: ${targetLabel}` : ''}
 
-반드시 고민의 내용을 정확히 분석하여 적절한 severity를 판단하고, JSON 형식으로만 응답해주세요.`;
+반드시 모든 9가지 리포트를 구체적으로 작성하고 JSON 형식으로만 응답해주세요.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -91,7 +131,7 @@ ${targetLabel ? `분석 대상: ${targetLabel}` : ''}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o',  // 더 강력한 모델로 변경
         messages: [
           { 
             role: 'system', 
@@ -99,7 +139,7 @@ ${targetLabel ? `분석 대상: ${targetLabel}` : ''}
           },
           { role: 'user', content: inputText }
         ],
-        max_tokens: 800,
+        max_tokens: 2500,  // 토큰 수 증가
         temperature: 0.7,
       }),
     });

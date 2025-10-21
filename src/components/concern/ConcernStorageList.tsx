@@ -23,7 +23,7 @@ import {
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 
 interface ConcernData {
   id: string;
@@ -274,24 +274,39 @@ export const ConcernStorageList = () => {
               <CardTitle className="text-lg">심각도 분포</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={stats.severityData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {stats.severityData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+              {stats.severityData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={250} debounce={50}>
+                  <PieChart>
+                    <Pie
+                      data={stats.severityData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={90}
+                      paddingAngle={3}
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                    >
+                      {stats.severityData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value: any) => [`${value}개`, '고민 수']}
+                      contentStyle={{ 
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[250px] text-muted-foreground">
+                  데이터가 없습니다
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -300,14 +315,46 @@ export const ConcernStorageList = () => {
               <CardTitle className="text-lg">유형별 분포</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={stats.typeData}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#8b5cf6" />
-                </BarChart>
-              </ResponsiveContainer>
+              {stats.typeData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={250} debounce={50}>
+                  <BarChart 
+                    data={stats.typeData}
+                    margin={{ top: 5, right: 20, left: 0, bottom: 40 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis 
+                      dataKey="name"
+                      angle={-45}
+                      textAnchor="end"
+                      height={80}
+                      tick={{ fontSize: 11, fill: '#6b7280' }}
+                      interval={0}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 11, fill: '#6b7280' }}
+                      label={{ value: '고민 수', angle: -90, position: 'insideLeft' }}
+                    />
+                    <Tooltip 
+                      formatter={(value: any) => [`${value}개`, '고민 수']}
+                      contentStyle={{ 
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Bar 
+                      dataKey="value" 
+                      fill="#8b5cf6"
+                      radius={[4, 4, 0, 0]}
+                      animationDuration={500}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[250px] text-muted-foreground">
+                  데이터가 없습니다
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

@@ -17,7 +17,8 @@ import { TypingAnimation } from "@/components/ui/typing-animation";
 import { AIInsightsPanel } from "@/components/ai-wellness/AIInsightsPanel";
 import { AICoachChat } from "@/components/ai-wellness/AICoachChat";
 import { SmartCTA } from "@/components/ai-wellness/SmartCTA";
-import { useNavigate } from "react-router-dom";
+import { BreathingExercise } from "@/components/meditation/BreathingExercise";
+import { MeditationGuide } from "@/components/meditation/MeditationGuide";
 
 interface Challenge {
   id: string;
@@ -36,7 +37,34 @@ interface Challenge {
 const WellnessHub = () => {
   const [activeTab, setActiveTab] = useState("checkin");
   const { toast } = useToast();
-  const navigate = useNavigate();
+
+  // Breathing exercise states
+  const breathingPatterns = [
+    {
+      id: '4-7-8',
+      name: '4-7-8 호흡법',
+      description: '수면 유도와 불안 해소에 효과적',
+      pattern: { inhale: 4, hold: 7, exhale: 8 },
+      cycles: 4
+    },
+    {
+      id: 'box',
+      name: '박스 호흡법',
+      description: '스트레스 관리와 집중력 향상',
+      pattern: { inhale: 4, hold: 4, exhale: 4 },
+      cycles: 5
+    },
+    {
+      id: 'calm',
+      name: '릴렉스 호흡법',
+      description: '긴장 완화와 마음 안정',
+      pattern: { inhale: 3, hold: 2, exhale: 5 },
+      cycles: 6
+    }
+  ];
+
+  const [selectedPattern, setSelectedPattern] = useState(breathingPatterns[0]);
+  const [meditationSubTab, setMeditationSubTab] = useState<'breathing' | 'meditation'>('breathing');
 
   // Daily Check-in States
   const [mood, setMood] = useState<number | null>(null);
@@ -540,57 +568,73 @@ const WellnessHub = () => {
 
             {/* Meditation Tab */}
             <TabsContent value="meditation" className="space-y-6">
-              <div className="max-w-4xl mx-auto text-center">
-                <Card className="bg-gradient-to-br from-purple-50 to-blue-50">
-                  <CardHeader>
-                    <div className="mx-auto w-20 h-20 bg-gradient-to-br from-purple-400 to-blue-500 rounded-full flex items-center justify-center mb-4">
-                      <Wind className="w-10 h-10 text-white" />
-                    </div>
-                    <CardTitle className="text-3xl">명상 & 호흡 가이드</CardTitle>
-                    <CardDescription className="text-lg">
-                      AI 음성 가이드와 함께하는 마음의 평화
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="bg-white/50 rounded-lg p-4">
-                        <div className="text-3xl mb-2">🫁</div>
-                        <h3 className="font-semibold mb-1">호흡 운동</h3>
-                        <p className="text-sm text-muted-foreground">
-                          시각적 가이드와 함께하는 3가지 호흡법
-                        </p>
-                      </div>
-                      <div className="bg-white/50 rounded-lg p-4">
-                        <div className="text-3xl mb-2">🧘</div>
-                        <h3 className="font-semibold mb-1">AI 명상</h3>
-                        <p className="text-sm text-muted-foreground">
-                          상황별 음성 가이드 명상
-                        </p>
-                      </div>
-                      <div className="bg-white/50 rounded-lg p-4">
-                        <div className="text-3xl mb-2">💫</div>
-                        <h3 className="font-semibold mb-1">실시간 효과</h3>
-                        <p className="text-sm text-muted-foreground">
-                          스트레스 감소 & 집중력 향상
-                        </p>
-                      </div>
-                    </div>
+              <Tabs value={meditationSubTab} onValueChange={(v) => setMeditationSubTab(v as 'breathing' | 'meditation')} className="space-y-6">
+                <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+                  <TabsTrigger value="breathing">호흡 운동</TabsTrigger>
+                  <TabsTrigger value="meditation">명상 가이드</TabsTrigger>
+                </TabsList>
 
-                    <Button 
-                      size="lg" 
-                      className="w-full max-w-md"
-                      onClick={() => navigate('/meditation')}
-                    >
-                      <Wind className="w-5 h-5 mr-2" />
-                      명상 시작하기
-                    </Button>
+                <TabsContent value="breathing" className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Wind className="w-5 h-5 text-primary" />
+                        호흡법 선택
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-3 md:grid-cols-3">
+                        {breathingPatterns.map((pattern) => (
+                          <button
+                            key={pattern.id}
+                            onClick={() => setSelectedPattern(pattern)}
+                            className={`p-4 rounded-lg border-2 text-left transition-all ${
+                              selectedPattern.id === pattern.id
+                                ? 'border-primary bg-primary/10'
+                                : 'border-border hover:border-primary/50'
+                            }`}
+                          >
+                            <h3 className="font-semibold mb-1">{pattern.name}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {pattern.description}
+                            </p>
+                            <div className="mt-2 text-xs">
+                              <span className="text-muted-foreground">
+                                {pattern.pattern.inhale}초 들이마시기 · {pattern.pattern.hold}초 멈추기 · {pattern.pattern.exhale}초 내쉬기
+                              </span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                    <p className="text-sm text-muted-foreground">
-                      💡 매일 5-10분 명상으로 마음의 균형을 찾아보세요
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+                  <BreathingExercise
+                    pattern={selectedPattern.pattern}
+                    cycles={selectedPattern.cycles}
+                    onComplete={() => {
+                      toast({
+                        title: "호흡 운동 완료",
+                        description: "훌륭합니다! 마음이 한결 편안해졌나요?",
+                      });
+                    }}
+                  />
+
+                  <div className="text-center text-sm text-muted-foreground space-y-2">
+                    <p>💡 조용하고 편안한 환경에서 진행하세요</p>
+                    <p>🧘 매일 규칙적으로 실천하면 더 큰 효과를 느낄 수 있습니다</p>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="meditation" className="space-y-6">
+                  <MeditationGuide />
+                  
+                  <div className="text-center text-sm text-muted-foreground space-y-2">
+                    <p>💡 조용하고 편안한 환경에서 진행하세요</p>
+                    <p>🧘 매일 규칙적으로 실천하면 더 큰 효과를 느낄 수 있습니다</p>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </TabsContent>
 
             {/* Challenges Tab */}

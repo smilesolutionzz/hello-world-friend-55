@@ -57,16 +57,22 @@ const TossPaymentWidget = () => {
 
       const paymentWidget = await loadPaymentWidget(TOSS_CLIENT_KEY, session.user.id);
       
-      await paymentWidget.renderPaymentMethods('#payment-widget', price);
+      // 올바른 금액 형식으로 렌더링
+      await paymentWidget.renderPaymentMethods('#payment-widget', {
+        value: price,
+        currency: 'KRW',
+        country: 'KR'
+      });
       
       setPaymentWidget(paymentWidget);
       setLoading(false);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Payment widget initialization error:', error);
+      setLoading(false);
       toast({
-        title: '오류',
-        description: '결제 위젯을 불러오는 중 오류가 발생했습니다.',
+        title: '결제 위젯 로딩 실패',
+        description: error?.message || '결제 위젯을 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
         variant: 'destructive',
       });
     }

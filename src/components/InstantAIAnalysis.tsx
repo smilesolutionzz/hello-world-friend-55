@@ -445,7 +445,7 @@ const InstantAIAnalysis = () => {
                       <div>✓ 전문가 소견서</div>
                       <div>✓ 가족 지원 가이드</div>
                     </div>
-                    <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                    <p className="text-xs text-amber-900 dark:text-amber-300 mt-2 font-semibold">
                       + AI 기반 장기 발달 예측까지 무료 제공
                     </p>
                   </div>

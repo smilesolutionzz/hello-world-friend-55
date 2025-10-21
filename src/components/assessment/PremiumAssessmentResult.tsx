@@ -107,113 +107,24 @@ const PremiumAssessmentResult = ({
     }
   };
 
-  const generatePDF = async () => {
-    try {
-      setIsGeneratingPDF(true);
-      
-      // Create PDF content element
-      const element = document.createElement('div');
-      element.innerHTML = `
-        <div style="font-family: 'Noto Sans KR', sans-serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; line-height: 1.6; color: #333;">
-          <div style="text-align: center; margin-bottom: 10px;">
-            <div style="font-size: 20px; font-weight: bold; color: #6366F1; letter-spacing: 1px;">aihpro.com</div>
-          </div>
-          
-          <div style="text-align: center; margin-bottom: 40px; border-bottom: 3px solid #8B5CF6; padding-bottom: 20px;">
-            <h1 style="font-size: 28px; margin: 0 0 10px 0; color: #8B5CF6; font-weight: bold;">프리미엄 AIH 검사 결과 보고서</h1>
-            <h2 style="font-size: 20px; margin: 0 0 10px 0; color: #6366F1;">${assessmentInfo.title}</h2>
-            <p style="margin: 5px 0; color: #666; font-size: 14px;">검사일: ${new Date().toLocaleDateString()}</p>
-            <p style="margin: 5px 0; color: #666; font-size: 14px;">평균 점수: ${averageScore.toFixed(1)}/7.0</p>
-          </div>
-          
-          <div style="margin-bottom: 30px;">
-            <h3 style="font-size: 18px; color: #8B5CF6; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #E5E7EB;">📊 영역별 상세 점수</h3>
-            <div style="display: grid; gap: 15px;">
-              ${Object.entries(results).map(([category, score]) => {
-                const interpretation = getScoreInterpretation(score, category);
-                const categoryDesc = getCategoryDescription(category);
-                const percentage = (score / 7) * 100;
-                return `
-                  <div style="border: 1px solid #E5E7EB; border-radius: 8px; padding: 15px; background: #F9FAFB;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                      <strong style="color: #374151;">${translateCategory(category)}</strong>
-                      <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="background: ${interpretation.color}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">${interpretation.level}</span>
-                        <strong style="color: #111827; font-size: 16px;">${score.toFixed(1)}/7.0</strong>
-                      </div>
-                    </div>
-                    <div style="background: #E5E7EB; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
-                      <div style="background: linear-gradient(90deg, #8B5CF6, #6366F1); height: 100%; width: ${percentage}%; border-radius: 4px;"></div>
-                    </div>
-                    ${categoryDesc ? `<p style="margin: 0 0 5px 0; font-size: 12px; color: #4B5563; line-height: 1.5;">${categoryDesc}</p>` : ''}
-                    <p style="margin: 0; font-size: 12px; color: #6B7280; font-weight: 500;">${interpretation.description}</p>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-          
-          <div style="margin-bottom: 30px;">
-            <h3 style="font-size: 18px; color: #8B5CF6; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #E5E7EB;">🧠 AIH 전문 분석 보고서</h3>
-            <div style="background: linear-gradient(135deg, #F0F9FF, #F3E8FF); border: 1px solid #C7D2FE; border-radius: 12px; padding: 20px;">
-              <div style="white-space: pre-wrap; line-height: 1.7; font-size: 14px; color: #374151;">
-                ${aiAnalysis || "분석을 완료하는 중입니다..."}
-              </div>
-            </div>
-          </div>
-          
-          <div style="margin-bottom: 30px;">
-            <h3 style="font-size: 18px; color: #8B5CF6; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #E5E7EB;">📋 검사 정보</h3>
-            <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 15px;">
-              <p style="margin: 5px 0; font-size: 14px;"><strong>검사 유형:</strong> ${assessmentInfo.title}</p>
-              <p style="margin: 5px 0; font-size: 14px;"><strong>문항 수:</strong> ${assessmentInfo.questions_count || 'N/A'}개</p>
-              <p style="margin: 5px 0; font-size: 14px;"><strong>소요 시간:</strong> ${assessmentInfo.duration || 'N/A'}</p>
-              <p style="margin: 5px 0; font-size: 14px;"><strong>검사 등급:</strong> 프리미엄 전문 검사</p>
-            </div>
-          </div>
-          
-          <div style="background: #FEF3C7; border: 1px solid #F59E0B; border-radius: 8px; padding: 15px; margin-top: 30px;">
-            <h4 style="color: #92400E; margin: 0 0 10px 0; font-size: 14px; font-weight: bold;">⚠️ 중요 안내사항</h4>
-            <p style="margin: 0; font-size: 12px; color: #92400E; line-height: 1.5;">
-              본 검사 결과는 AI 기반 심층 분석을 통해 제공되는 참고 자료입니다. 
-              정확한 진단이나 치료가 필요한 경우 반드시 전문가와 상담하시기 바랍니다.
-              검사 결과는 개인의 현재 상태를 반영하며, 시간이 지남에 따라 변화할 수 있습니다.
-            </p>
-          </div>
-          
-          <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB;">
-            <p style="margin: 0; font-size: 12px; color: #9CA3AF;">AIH - AI Health Platform | 프리미엄 심리검사</p>
-          </div>
-        </div>
-      `;
-      
-      // Configure PDF options
-      const opt = {
-        margin: [10, 10, 10, 10] as [number, number, number, number],
-        filename: `${assessmentInfo.title}_결과보고서_${new Date().toLocaleDateString().replace(/\./g, '')}.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
-      };
-      
-      // Generate PDF
-      await html2pdf().set(opt).from(element).save();
-      
-      toast({
-        title: "PDF 다운로드 완료",
-        description: "프리미엄 분석 보고서가 성공적으로 다운로드되었습니다.",
-      });
-
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      toast({
-        title: "PDF 생성 오류",
-        description: "PDF 생성 중 오류가 발생했습니다. 다시 시도해 주세요.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsGeneratingPDF(false);
-    }
+  const handleDownloadPDF = async () => {
+    await downloadResultAsPDF(
+      'premium-result-content',
+      `${assessmentInfo.title}_분석결과`,
+      () => {
+        toast({
+          title: "PDF 다운로드 완료",
+          description: "프리미엄 분석 보고서가 성공적으로 다운로드되었습니다.",
+        });
+      },
+      (error) => {
+        toast({
+          title: "PDF 생성 오류",
+          description: error.message,
+          variant: "destructive"
+        });
+      }
+    );
   };
 
   const getCategoryDescription = (category: string): string => {
@@ -393,7 +304,12 @@ const PremiumAssessmentResult = ({
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/30 to-blue-50/30 relative overflow-hidden">
+    <div id="premium-result-content" className="min-h-screen bg-gradient-to-br from-background via-purple-50/30 to-blue-50/30 relative overflow-hidden">
+      {/* PDF Header */}
+      <div className="relative z-10">
+        <PDFHeader testName={assessmentInfo.title} />
+      </div>
+      
       {/* Premium Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-200/20 rounded-full blur-3xl animate-float" />
@@ -575,22 +491,13 @@ const PremiumAssessmentResult = ({
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-4 gap-4">
             <Button
-              onClick={generatePDF}
-              disabled={isGeneratingPDF || isAnalyzing}
+              onClick={handleDownloadPDF}
+              disabled={isAnalyzing}
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 flex items-center gap-2"
               size="lg"
             >
-              {isGeneratingPDF ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  생성 중...
-                </>
-              ) : (
-                <>
-                  <Download className="w-5 h-5" />
-                  PDF 다운로드
-                </>
-              )}
+              <Download className="w-4 h-4" />
+              PDF 다운로드
             </Button>
 
             <Button

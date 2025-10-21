@@ -15,6 +15,7 @@ import FixedCTAButton from "@/components/landing/FixedCTAButton";
 import TestimonialSection from "@/components/TestimonialSection";
 import ClientLogos from "@/components/ClientLogos";
 import { NewFeaturesSection } from "@/components/landing/NewFeaturesSection";
+import { AIReportShowcaseSection } from "@/components/landing/AIReportShowcaseSection";
 import BackToTop from "@/components/common/BackToTop";
 import SEOHead from "@/components/common/SEOHead";
 import { SkipLink } from "@/components/ui/skip-link";
@@ -180,6 +181,9 @@ const Index = () => {
           
           {/* 🎯 New Features Section - 매주 업데이트 */}
           <NewFeaturesSection />
+          
+          {/* 📊 AI Report Showcase - 9가지 리포트 */}
+          <AIReportShowcaseSection />
           
           {/* 6️⃣ Result / Report */}
           <ResultReportSection />

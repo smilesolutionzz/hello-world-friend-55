@@ -328,7 +328,7 @@ const mockExperts: Expert[] = [
     id: '9',
     name: '조대룡',
     specialty: ['성인지적장애', '청소년지적장애', '일상생활지도'],
-    credentials: ['기관장', '일상생활지도 전문가'],
+    credentials: ['기관장', '일상생활지도 전문가', '특수교사출신'],
     rating: 5.0,
     reviews: 0,
     experience: '15년',
@@ -336,7 +336,7 @@ const mockExperts: Expert[] = [
     monthlyPrice: 120000,
     hourlyPrice: 30000,
     image: getExpertImage('조대룡') || '/api/placeholder/150/150',
-    description: '성인 및 청소년 지적장애인의 일상생활 지도 전문가입니다. 장애인의 자립생활과 사회적응을 위한 맞춤형 지도를 제공합니다.',
+    description: '성인 및 청소년 지적장애인의 일상생활 지도 전문가입니다. 특수교사 출신으로 장애인의 자립생활과 사회적응을 위한 맞춤형 지도를 제공합니다.',
     languages: ['한국어'],
     consultationTypes: ['화상상담', '방문상담', '센터상담'],
     monthlyServices: [

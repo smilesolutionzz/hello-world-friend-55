@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Loader2, MessageCircle, Brain, Copy } from "lucide-react";
+import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Loader2, MessageCircle, Brain, Copy, Download } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
@@ -14,6 +14,9 @@ import VoiceFeature from '@/components/voice/VoiceFeature';
 import { supabase } from '@/integrations/supabase/client';
 import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
 import { ExpertConsultationNotice } from './ExpertConsultationNotice';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { PDFHeader } from '@/components/common/PDFHeader';
+import { useToast } from '@/hooks/use-toast';
 
 interface DepressionTestResultProps {
   results: {
@@ -127,9 +130,33 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
   };
 
   const recommendation = getRecommendation(severity);
+  const { toast } = useToast();
+
+  const handlePDFDownload = async () => {
+    await downloadResultAsPDF(
+      'depression-result-content',
+      '우울감_체크_결과',
+      () => {
+        toast({
+          title: "PDF 다운로드 완료",
+          description: "우울감 체크 결과가 저장되었습니다.",
+        });
+      },
+      (error) => {
+        toast({
+          title: "다운로드 실패",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    );
+  };
 
   return (
-    <div className="space-y-8">
+    <div id="depression-result-content" className="space-y-8">
+      {/* PDF Header */}
+      <PDFHeader testName="우울감 체크 결과" />
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
@@ -137,7 +164,10 @@ const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) =>
           뒤로가기
         </Button>
         <h1 className="text-3xl font-bold text-brand-gradient">우울감 체크 결과 (참고용)</h1>
-        <div></div>
+        <Button variant="outline" onClick={handlePDFDownload} className="flex items-center gap-2">
+          <Download className="w-4 h-4" />
+          PDF 다운로드
+        </Button>
       </div>
 
       {/* 법적 안전 공지 */}

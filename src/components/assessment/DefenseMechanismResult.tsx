@@ -2,11 +2,12 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Brain, Heart, Sparkles, Home, Share2, TrendingUp, Download } from 'lucide-react';
+import { Shield, Brain, Heart, Sparkles, Home, TrendingUp, Download } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
-import html2pdf from 'html2pdf.js';
 import { useToast } from '@/hooks/use-toast';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { PDFHeader } from '@/components/common/PDFHeader';
 
 interface DefenseMechanismResultProps {
   result: {
@@ -73,32 +74,23 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
   const { toast } = useToast();
 
   const handleDownloadPDF = async () => {
-    try {
-      const element = document.getElementById('defense-result-content');
-      if (!element) return;
-
-      const opt = {
-        margin: 10,
-        filename: '방어기제_분석결과.pdf',
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
-      };
-
-      await html2pdf().set(opt).from(element).save();
-      
-      toast({
-        title: "PDF 다운로드 완료",
-        description: "방어기제 분석 결과가 저장되었습니다.",
-      });
-    } catch (error) {
-      console.error('PDF 생성 오류:', error);
-      toast({
-        title: "다운로드 실패",
-        description: "PDF 생성 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    }
+    await downloadResultAsPDF(
+      'defense-result-content',
+      '방어기제_분석결과',
+      () => {
+        toast({
+          title: "PDF 다운로드 완료",
+          description: "방어기제 분석 결과가 저장되었습니다.",
+        });
+      },
+      (error) => {
+        toast({
+          title: "다운로드 실패",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    );
   };
 
   const getScoreColor = (score: number) => {
@@ -118,6 +110,9 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 p-4">
       <div id="defense-result-content" className="max-w-4xl mx-auto py-8">
+        {/* PDF Header */}
+        <PDFHeader testName="방어기제 분석 결과" />
+        
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full mb-4">

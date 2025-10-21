@@ -10,8 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import FeedbackModal from "@/components/FeedbackModal";
 import EarlyScreeningSection from "@/components/assessment/EarlyScreeningSection";
 import { EnhancedChart } from "@/components/ui/enhanced-chart";
-import html2pdf from "html2pdf.js";
-import { FileText as FileTextIcon } from "lucide-react";
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { PDFHeader } from '@/components/common/PDFHeader';
 
 interface PremiumAssessmentResultProps {
   assessmentType: string;
@@ -647,7 +647,7 @@ const PremiumAssessmentResult = ({
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-                  <FileTextIcon className="w-6 h-6 text-purple-600" />
+                  <FileText className="w-6 h-6 text-purple-600" />
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-purple-900 mb-2">맞춤형 개별교육계획(IEP) 생성</h4>
@@ -664,7 +664,7 @@ const PremiumAssessmentResult = ({
                     })}
                     className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                   >
-                    <FileTextIcon className="w-4 h-4 mr-2" />
+                    <FileText className="w-4 h-4 mr-2" />
                     맞춤형 IEP 생성하기
                   </Button>
                 </div>

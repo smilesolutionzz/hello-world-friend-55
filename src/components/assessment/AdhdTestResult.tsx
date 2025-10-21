@@ -19,6 +19,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
 import { FileText } from 'lucide-react';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { PDFHeader } from '@/components/common/PDFHeader';
 
 interface AdhdTestResultProps {
   results: {
@@ -172,8 +174,31 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
 
   const evaluation = getOverallEvaluation(severity);
 
+  const handlePDFDownload = async () => {
+    await downloadResultAsPDF(
+      'adhd-result-content',
+      'ADHD_자가체크_결과',
+      () => {
+        toast({
+          title: "PDF 다운로드 완료",
+          description: "ADHD 자가체크 결과가 저장되었습니다.",
+        });
+      },
+      (error) => {
+        toast({
+          title: "다운로드 실패",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    );
+  };
+
   return (
-    <div className="space-y-8">
+    <div id="adhd-result-content" className="space-y-8">
+      {/* PDF Header */}
+      <PDFHeader testName="ADHD 자가체크 결과" />
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
@@ -181,7 +206,10 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           뒤로가기
         </Button>
         <h1 className="text-3xl font-bold text-brand-gradient">주의집중력 자가체크 결과 (참고용)</h1>
-        <div></div>
+        <Button variant="outline" onClick={handlePDFDownload} className="flex items-center gap-2">
+          <Download className="w-4 h-4" />
+          PDF 다운로드
+        </Button>
       </div>
 
       {/* 법적 안전 공지 */}

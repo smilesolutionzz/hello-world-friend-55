@@ -60,7 +60,7 @@ const TossPaymentWidget = () => {
       
       // 올바른 금액 형식으로 렌더링
       await paymentWidget.renderPaymentMethods('#payment-widget', {
-        value: price,
+        value: Math.round(price),
         currency: 'KRW',
         country: 'KR'
       });
@@ -146,16 +146,15 @@ const TossPaymentWidget = () => {
 
           {/* 토스페이먼츠 위젯 */}
           <div className="mb-6">
-            {loading ? (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              </div>
-            ) : (
-              <>
-                <div id="payment-widget" />
-                <div id="agreement" className="mt-4" />
-              </>
-            )}
+            <>
+              <div id="payment-widget" />
+              <div id="agreement" className="mt-4" />
+              {loading && (
+                <div className="flex items-center justify-center py-20">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              )}
+            </>
           </div>
 
           {/* 결제 버튼 */}

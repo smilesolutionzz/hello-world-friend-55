@@ -35,7 +35,7 @@ export const ExpertConsultationNotice = () => {
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
             <Button
-              onClick={() => navigate('/consultation')}
+              onClick={() => navigate('/expert-hiring')}
               variant="outline"
               className="flex-1 border-blue-300 text-blue-700 hover:bg-blue-100"
             >

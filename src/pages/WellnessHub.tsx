@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Calendar, Heart, Brain, Zap, CheckCircle, Flame, 
   Trophy, Target, Users, Star, TrendingUp, Award,
-  LineChart as LineChartIcon, BarChart3
+  LineChart as LineChartIcon, BarChart3, Wind
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Bar } from "recharts";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +17,7 @@ import { TypingAnimation } from "@/components/ui/typing-animation";
 import { AIInsightsPanel } from "@/components/ai-wellness/AIInsightsPanel";
 import { AICoachChat } from "@/components/ai-wellness/AICoachChat";
 import { SmartCTA } from "@/components/ai-wellness/SmartCTA";
+import { useNavigate } from "react-router-dom";
 
 interface Challenge {
   id: string;
@@ -35,6 +36,7 @@ interface Challenge {
 const WellnessHub = () => {
   const [activeTab, setActiveTab] = useState("checkin");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Daily Check-in States
   const [mood, setMood] = useState<number | null>(null);
@@ -336,7 +338,7 @@ const WellnessHub = () => {
 
           {/* Main Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="checkin" className="flex items-center gap-2">
                 <Heart className="w-4 h-4" />
                 매일체크
@@ -344,6 +346,10 @@ const WellnessHub = () => {
               <TabsTrigger value="ai-insights" className="flex items-center gap-2">
                 <Brain className="w-4 h-4" />
                 AI 인사이트
+              </TabsTrigger>
+              <TabsTrigger value="meditation" className="flex items-center gap-2">
+                <Wind className="w-4 h-4" />
+                명상/호흡
               </TabsTrigger>
               <TabsTrigger value="challenges" className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
@@ -529,6 +535,61 @@ const WellnessHub = () => {
                     }}
                   />
                 </div>
+              </div>
+            </TabsContent>
+
+            {/* Meditation Tab */}
+            <TabsContent value="meditation" className="space-y-6">
+              <div className="max-w-4xl mx-auto text-center">
+                <Card className="bg-gradient-to-br from-purple-50 to-blue-50">
+                  <CardHeader>
+                    <div className="mx-auto w-20 h-20 bg-gradient-to-br from-purple-400 to-blue-500 rounded-full flex items-center justify-center mb-4">
+                      <Wind className="w-10 h-10 text-white" />
+                    </div>
+                    <CardTitle className="text-3xl">명상 & 호흡 가이드</CardTitle>
+                    <CardDescription className="text-lg">
+                      AI 음성 가이드와 함께하는 마음의 평화
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-white/50 rounded-lg p-4">
+                        <div className="text-3xl mb-2">🫁</div>
+                        <h3 className="font-semibold mb-1">호흡 운동</h3>
+                        <p className="text-sm text-muted-foreground">
+                          시각적 가이드와 함께하는 3가지 호흡법
+                        </p>
+                      </div>
+                      <div className="bg-white/50 rounded-lg p-4">
+                        <div className="text-3xl mb-2">🧘</div>
+                        <h3 className="font-semibold mb-1">AI 명상</h3>
+                        <p className="text-sm text-muted-foreground">
+                          상황별 음성 가이드 명상
+                        </p>
+                      </div>
+                      <div className="bg-white/50 rounded-lg p-4">
+                        <div className="text-3xl mb-2">💫</div>
+                        <h3 className="font-semibold mb-1">실시간 효과</h3>
+                        <p className="text-sm text-muted-foreground">
+                          스트레스 감소 & 집중력 향상
+                        </p>
+                      </div>
+                    </div>
+
+                    <Button 
+                      size="lg" 
+                      className="w-full max-w-md"
+                      onClick={() => navigate('/meditation')}
+                    >
+                      <Wind className="w-5 h-5 mr-2" />
+                      명상 시작하기
+                    </Button>
+
+                    <p className="text-sm text-muted-foreground">
+                      💡 매일 5-10분 명상으로 마음의 균형을 찾아보세요
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
 

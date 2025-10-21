@@ -606,7 +606,7 @@ const PremiumAssessmentResult = ({
             <Button
               onClick={() => {
                 console.log('다른 검사 하기 button clicked');
-                navigate('/premium-assessment');
+                onBack();
               }}
               variant="outline"
               size="lg"

@@ -190,8 +190,18 @@ const InstantAIAnalysis = () => {
             concern_text: inputText,
             analysis_type: analysis.type || '기타',
             analysis_severity: analysis.severity || '낮음',
-            analysis_advice: analysis.advice || '',
-            recommended_tests: analysis.recommendedTests || []
+            analysis_advice: analysis.detailedAdvice || analysis.advice || '',
+            recommended_tests: analysis.recommendedTests || [],
+            full_analysis: {
+              type: analysis.type || '기타',
+              severity: analysis.severity || '낮음',
+              color: analysis.color || 'bg-green-500',
+              detailedAdvice: analysis.detailedAdvice || analysis.advice || '',
+              recommendations: analysis.recommendations || [],
+              confidence: analysis.confidence || 80,
+              nextSteps: analysis.nextSteps || [],
+              recommendedTests: analysis.recommendedTests || []
+            }
           });
 
         if (saveError) {

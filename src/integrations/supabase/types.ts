@@ -1130,6 +1130,7 @@ export type Database = {
           analysis_type: string | null
           concern_text: string
           created_at: string
+          full_analysis: Json | null
           id: string
           recommended_tests: Json | null
           updated_at: string
@@ -1141,6 +1142,7 @@ export type Database = {
           analysis_type?: string | null
           concern_text: string
           created_at?: string
+          full_analysis?: Json | null
           id?: string
           recommended_tests?: Json | null
           updated_at?: string
@@ -1152,6 +1154,7 @@ export type Database = {
           analysis_type?: string | null
           concern_text?: string
           created_at?: string
+          full_analysis?: Json | null
           id?: string
           recommended_tests?: Json | null
           updated_at?: string

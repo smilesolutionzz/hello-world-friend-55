@@ -32,6 +32,16 @@ interface ConcernData {
   analysis_severity: string;
   analysis_advice: string;
   recommended_tests: any;
+  full_analysis?: {
+    type?: string;
+    severity?: string;
+    color?: string;
+    detailedAdvice?: string;
+    recommendations?: string[];
+    confidence?: number;
+    nextSteps?: string[];
+    recommendedTests?: any[];
+  };
   created_at: string;
 }
 
@@ -66,7 +76,7 @@ export const ConcernStorageList = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setConcerns(data || []);
+      setConcerns((data || []) as ConcernData[]);
     } catch (error) {
       console.error('고민 불러오기 오류:', error);
       toast({
@@ -477,28 +487,137 @@ export const ConcernStorageList = () => {
                 </AccordionTrigger>
                 
                 <AccordionContent>
-                  <CardContent className="space-y-4 pt-0 border-t">
-                    <div className="pt-4">
-                      <h4 className="font-semibold mb-2 text-sm text-muted-foreground">내 고민 (전체)</h4>
-                      <p className="text-foreground whitespace-pre-wrap">{concern.concern_text}</p>
+                  <CardContent className="space-y-6 pt-0 border-t">
+                    {/* 내 고민 전체 */}
+                    <div className="pt-6">
+                      <h4 className="font-semibold mb-3 text-base flex items-center gap-2 text-foreground">
+                        <span className="text-2xl">💭</span>
+                        내 고민 (전체)
+                      </h4>
+                      <div className="bg-muted/30 rounded-xl p-4 border border-border/50">
+                        <p className="text-foreground whitespace-pre-wrap leading-relaxed">{concern.concern_text}</p>
+                      </div>
                     </div>
                     
-                    <div className="border-t pt-4">
-                      <h4 className="font-semibold mb-2 text-sm text-muted-foreground">AI 조언 (전체)</h4>
-                      <p className="text-foreground whitespace-pre-wrap">{concern.analysis_advice}</p>
-                    </div>
+                    {/* AI 분석 결과 */}
+                    {concern.full_analysis && Object.keys(concern.full_analysis).length > 0 ? (
+                      <>
+                        {/* 분석 개요 */}
+                        <div className="border-t pt-6">
+                          <h4 className="font-semibold mb-4 text-base flex items-center gap-2 text-foreground">
+                            <span className="text-2xl">🤖</span>
+                            AI 분석 개요
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {concern.full_analysis.type && (
+                              <div className="bg-blue-50 dark:bg-blue-950/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+                                <div className="text-sm text-muted-foreground mb-1">유형</div>
+                                <div className="text-lg font-bold text-blue-700 dark:text-blue-400">{concern.full_analysis.type}</div>
+                              </div>
+                            )}
+                            {concern.full_analysis.severity && (
+                              <div className={`rounded-xl p-4 border ${
+                                concern.full_analysis.severity === '높음' ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800' :
+                                concern.full_analysis.severity === '중간' ? 'bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800' :
+                                'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800'
+                              }`}>
+                                <div className="text-sm text-muted-foreground mb-1">심각도</div>
+                                <div className={`text-lg font-bold ${
+                                  concern.full_analysis.severity === '높음' ? 'text-red-700 dark:text-red-400' :
+                                  concern.full_analysis.severity === '중간' ? 'text-orange-700 dark:text-orange-400' :
+                                  'text-green-700 dark:text-green-400'
+                                }`}>{concern.full_analysis.severity}</div>
+                              </div>
+                            )}
+                            {concern.full_analysis.confidence && (
+                              <div className="bg-purple-50 dark:bg-purple-950/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
+                                <div className="text-sm text-muted-foreground mb-1">신뢰도</div>
+                                <div className="text-lg font-bold text-purple-700 dark:text-purple-400">{concern.full_analysis.confidence}%</div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
 
-                    {concern.recommended_tests && Array.isArray(concern.recommended_tests) && concern.recommended_tests.length > 0 && (
-                      <div className="border-t pt-4">
-                        <h4 className="font-semibold mb-2 text-sm text-muted-foreground">추천 검사</h4>
+                        {/* 상세 조언 */}
+                        {concern.full_analysis.detailedAdvice && (
+                          <div className="border-t pt-6">
+                            <h4 className="font-semibold mb-3 text-base flex items-center gap-2 text-foreground">
+                              <span className="text-2xl">💡</span>
+                              AI 상세 조언
+                            </h4>
+                            <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800">
+                              <p className="text-foreground whitespace-pre-wrap leading-relaxed">{concern.full_analysis.detailedAdvice}</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 추천 사항 */}
+                        {concern.full_analysis.recommendations && concern.full_analysis.recommendations.length > 0 && (
+                          <div className="border-t pt-6">
+                            <h4 className="font-semibold mb-3 text-base flex items-center gap-2 text-foreground">
+                              <span className="text-2xl">✅</span>
+                              추천 사항
+                            </h4>
+                            <div className="space-y-2">
+                              {concern.full_analysis.recommendations.map((rec: string, idx: number) => (
+                                <div key={idx} className="flex items-start gap-3 bg-muted/30 rounded-lg p-3 border border-border/50">
+                                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                                    <span className="text-primary font-bold text-sm">{idx + 1}</span>
+                                  </div>
+                                  <p className="text-foreground flex-1">{rec}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 다음 단계 */}
+                        {concern.full_analysis.nextSteps && concern.full_analysis.nextSteps.length > 0 && (
+                          <div className="border-t pt-6">
+                            <h4 className="font-semibold mb-3 text-base flex items-center gap-2 text-foreground">
+                              <span className="text-2xl">🎯</span>
+                              다음 단계
+                            </h4>
+                            <div className="space-y-2">
+                              {concern.full_analysis.nextSteps.map((step: string, idx: number) => (
+                                <div key={idx} className="flex items-start gap-3 bg-blue-50/50 dark:bg-blue-950/10 rounded-lg p-3 border border-blue-200/50 dark:border-blue-800/50">
+                                  <ArrowUpDown className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                                  <p className="text-foreground flex-1">{step}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      /* Fallback: 기본 조언 표시 */
+                      <div className="border-t pt-6">
+                        <h4 className="font-semibold mb-3 text-base flex items-center gap-2 text-foreground">
+                          <span className="text-2xl">💡</span>
+                          AI 조언
+                        </h4>
+                        <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800">
+                          <p className="text-foreground whitespace-pre-wrap leading-relaxed">{concern.analysis_advice}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 추천 검사 */}
+                    {((concern.full_analysis?.recommendedTests && concern.full_analysis.recommendedTests.length > 0) || 
+                      (concern.recommended_tests && Array.isArray(concern.recommended_tests) && concern.recommended_tests.length > 0)) && (
+                      <div className="border-t pt-6">
+                        <h4 className="font-semibold mb-3 text-base flex items-center gap-2 text-foreground">
+                          <span className="text-2xl">📋</span>
+                          추천 검사
+                        </h4>
                         <div className="flex flex-wrap gap-2">
-                          {concern.recommended_tests.map((test: string, index: number) => (
+                          {(concern.full_analysis?.recommendedTests || concern.recommended_tests || []).map((test: string, index: number) => (
                             <Button
                               key={index}
                               variant="secondary"
                               size="sm"
                               onClick={() => navigate('/assessment')}
-                              className="gap-2"
+                              className="gap-2 bg-primary/10 hover:bg-primary/20 border border-primary/20"
                             >
                               {test}
                               <ExternalLink className="w-3 h-3" />

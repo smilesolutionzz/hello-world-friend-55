@@ -53,12 +53,12 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
       const average = Math.round((total / numericAnswers.length) * 10) / 10;
       
       let severity = "";
-      // 18개 문항 * 2점 = 36점 만점 (ADHD 증상 점수이므로 점수가 낮을수록 좋음)
-      if (total <= 9) {
+      // 18개 문항 * 3점 = 54점 만점 (ADHD 증상 점수이므로 점수가 낮을수록 좋음)
+      if (total <= 18) {
         severity = "정상 범위";
-      } else if (total <= 18) {
-        severity = "경계선 수준";
       } else if (total <= 27) {
+        severity = "경계선 수준";
+      } else if (total <= 36) {
         severity = "중등도 수준";
       } else {
         severity = "심각한 수준";

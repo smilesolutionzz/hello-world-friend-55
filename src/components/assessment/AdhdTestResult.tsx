@@ -159,17 +159,17 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const inattentionScore = results.answers.slice(0, 9).reduce((sum, score) => sum + score, 0);
   const hyperactivityScore = results.answers.slice(9, 18).reduce((sum, score) => sum + score, 0);
   
-  // 기본 ADHD 검사는 2개 영역만 제공 (18문항)
+  // 기본 ADHD 검사는 2개 영역만 제공 (18문항, 각 문항 1-3점)
   const chartData = [
     {
       name: "주의력 결핍",
       value: inattentionScore,
-      fullMark: 18,
+      fullMark: 27,
     },
     {
       name: "과잉행동/충동성",
       value: hyperactivityScore,
-      fullMark: 18,
+      fullMark: 27,
     }
   ];
 
@@ -496,15 +496,15 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">총점</span>
-                <span className="text-2xl font-bold text-brand-gradient">{total}/36점</span>
+                <span className="text-2xl font-bold text-brand-gradient">{total}/54점</span>
               </div>
               <div className="text-center text-sm text-muted-foreground">
-                최대 36점 (18문항 × 2점)
+                최대 54점 (18문항 × 3점)
               </div>
               
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">평균점수</span>
-                <span className="text-2xl font-bold text-brand-gradient">{average.toFixed(1)}/2.0점</span>
+                <span className="text-2xl font-bold text-brand-gradient">{average.toFixed(1)}/3.0점</span>
               </div>
               <div className="text-center text-sm text-muted-foreground">
                 문항당 평균점수
@@ -512,7 +512,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
               
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">규준집단 대비</span>
-                <span className="text-2xl font-bold text-brand-gradient">{((total/36)*100).toFixed(0)}%</span>
+                <span className="text-2xl font-bold text-brand-gradient">{((total/54)*100).toFixed(0)}%</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -541,7 +541,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" fontSize={12} />
-                  <YAxis domain={[0, 18]} />
+                  <YAxis domain={[0, 27]} />
                   <Tooltip />
                   <Bar dataKey="value" fill="hsl(var(--primary))" />
                 </BarChart>
@@ -559,17 +559,17 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           <div className="grid md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">총 점수</p>
-              <p className="text-3xl font-bold text-blue-900">{total}점 / 36점</p>
-              <p className="text-sm text-blue-600 mt-1">만점 대비 {Math.round((total/36)*100)}%</p>
+              <p className="text-3xl font-bold text-blue-900">{total}점 / 54점</p>
+              <p className="text-sm text-blue-600 mt-1">만점 대비 {Math.round((total/54)*100)}%</p>
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">부주의 증상</p>
-              <p className="text-2xl font-bold text-blue-900">{inattentionScore}점 / 18점</p>
+              <p className="text-2xl font-bold text-blue-900">{inattentionScore}점 / 27점</p>
               <p className="text-sm text-blue-600 mt-1">집중력 관련</p>
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">과잉행동/충동</p>
-              <p className="text-2xl font-bold text-blue-900">{hyperactivityScore}점 / 18점</p>
+              <p className="text-2xl font-bold text-blue-900">{hyperactivityScore}점 / 27점</p>
               <p className="text-sm text-blue-600 mt-1">활동성 관련</p>
             </div>
           </div>

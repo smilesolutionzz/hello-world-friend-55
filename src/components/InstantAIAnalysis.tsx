@@ -497,39 +497,39 @@ const InstantAIAnalysis = () => {
                   <div className="space-y-2.5">
                     <div className="flex items-start gap-3 text-sm">
                       <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">1.</span>
-                      <span className="text-foreground font-medium">발달 종합 평가: 인지, 언어, 운동, 사회성 분석</span>
+                      <span className="text-amber-700 dark:text-amber-300 font-medium">발달 종합 평가: 인지, 언어, 운동, 사회성 분석</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
                       <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">2.</span>
-                      <span className="text-foreground font-medium">심리 상태 분석: 정서적 안정성, 스트레스 수준</span>
+                      <span className="text-amber-700 dark:text-amber-300 font-medium">심리 상태 분석: 정서적 안정성, 스트레스 수준</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
                       <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">3.</span>
-                      <span className="text-foreground font-medium">강점/약점 분석: 맞춤형 성장 방향 제시</span>
+                      <span className="text-amber-700 dark:text-amber-300 font-medium">강점/약점 분석: 맞춤형 성장 방향 제시</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
                       <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">4.</span>
-                      <span className="text-foreground font-medium">맞춤형 활동 제안: AI 기반 발달 촉진 활동</span>
+                      <span className="text-amber-700 dark:text-amber-300 font-medium">맞춤형 활동 제안: AI 기반 발달 촉진 활동</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
                       <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">5.</span>
-                      <span className="text-foreground font-medium">발달 로드맵: 단계별 성장 계획</span>
+                      <span className="text-amber-700 dark:text-amber-300 font-medium">발달 로드맵: 단계별 성장 계획</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
                       <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">6.</span>
-                      <span className="text-foreground font-medium">또래 비교 분석: 연령대별 발달 기준</span>
+                      <span className="text-amber-700 dark:text-amber-300 font-medium">또래 비교 분석: 연령대별 발달 기준</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
                       <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">7.</span>
-                      <span className="text-foreground font-medium">전문가 소견서: 전문 개입 필요성 평가</span>
+                      <span className="text-amber-700 dark:text-amber-300 font-medium">전문가 소견서: 전문 개입 필요성 평가</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
                       <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">8.</span>
-                      <span className="text-foreground font-medium">가족 지원 가이드: 부모/보호자 양육 팁</span>
+                      <span className="text-amber-700 dark:text-amber-300 font-medium">가족 지원 가이드: 부모/보호자 양육 팁</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
                       <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">9.</span>
-                      <span className="text-foreground font-medium">장기 발달 예측: AI 기반 향후 경향성 분석</span>
+                      <span className="text-amber-700 dark:text-amber-300 font-medium">장기 발달 예측: AI 기반 향후 경향성 분석</span>
                     </div>
                   </div>
                 </CardContent>

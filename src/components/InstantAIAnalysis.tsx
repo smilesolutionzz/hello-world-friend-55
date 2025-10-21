@@ -26,6 +26,7 @@ const InstantAIAnalysis = () => {
   const [isExpanding, setIsExpanding] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [reportImage, setReportImage] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -37,19 +38,19 @@ const InstantAIAnalysis = () => {
 
       if (error) {
         console.warn('Edge function error, using fallback:', error);
-        return mockAnalysis(text);
+        return { analysis: mockAnalysis(text), reportImage: null };
       }
 
       if (data && data.analysis) {
-        return data.analysis;
+        return { analysis: data.analysis, reportImage: data.reportImage || null };
       } else {
         console.warn('No analysis data received, using fallback');
-        return mockAnalysis(text);
+        return { analysis: mockAnalysis(text), reportImage: null };
       }
     } catch (error) {
       console.warn('AI Analysis error, using fallback:', error);
       // Always return fallback analysis instead of throwing error
-      return mockAnalysis(text);
+      return { analysis: mockAnalysis(text), reportImage: null };
     }
   };
 
@@ -173,8 +174,9 @@ const InstantAIAnalysis = () => {
     
     try {
       // 실제 AI 분석 호출 (fallback 포함)
-      const result = await callAIAnalysis(inputText);
-      setAnalysisResult(result);
+      const { analysis, reportImage } = await callAIAnalysis(inputText);
+      setAnalysisResult(analysis);
+      setReportImage(reportImage);
       setIsAnalyzing(false);
       setShowResult(true);
 
@@ -186,10 +188,10 @@ const InstantAIAnalysis = () => {
           .insert({
             user_id: user.id,
             concern_text: inputText,
-            analysis_type: result.type || '기타',
-            analysis_severity: result.severity || '낮음',
-            analysis_advice: result.advice || '',
-            recommended_tests: result.recommendedTests || []
+            analysis_type: analysis.type || '기타',
+            analysis_severity: analysis.severity || '낮음',
+            analysis_advice: analysis.advice || '',
+            recommended_tests: analysis.recommendedTests || []
           });
 
         if (saveError) {
@@ -212,6 +214,7 @@ const InstantAIAnalysis = () => {
       // 마지막 fallback으로 mockAnalysis 사용
       const fallbackResult = mockAnalysis(inputText);
       setAnalysisResult(fallbackResult);
+      setReportImage(null);
       setShowResult(true);
       
       toast({
@@ -479,6 +482,23 @@ const InstantAIAnalysis = () => {
                   신뢰도 <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">{analysisResult?.confidence}%</span>의 분석 결과입니다
                 </p>
               </div>
+
+              {/* AI 생성 리포트 이미지 */}
+              {reportImage && (
+                <div className="mb-6">
+                  <img 
+                    src={reportImage} 
+                    alt="AI가 생성한 리포트 커버 이미지" 
+                    className="w-full h-64 object-cover rounded-xl shadow-xl border-2 border-amber-200 dark:border-amber-800"
+                  />
+                  <p className="text-xs text-center mt-3 text-muted-foreground flex items-center justify-center gap-2">
+                    <Wand2 className="w-4 h-4 text-amber-500" />
+                    <span className="font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                      Gemini AI가 자동 생성한 리포트 메인 이미지
+                    </span>
+                  </p>
+                </div>
+              )}
 
               {/* 분석 결과 카드 */}
               <Card className="border-border/50 shadow-lg">

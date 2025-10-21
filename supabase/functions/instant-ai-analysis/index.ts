@@ -160,9 +160,49 @@ ${targetLabel ? `분석 대상: ${targetLabel}` : ''}
     const analysisResult = parseAIResponse(aiResponse, inputText);
     logStep("Analysis parsed", analysisResult);
 
+    // Generate report cover image with Gemini AI
+    let reportImageUrl = null;
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    
+    if (LOVABLE_API_KEY) {
+      try {
+        logStep("Starting report image generation");
+        const imagePrompt = `Professional developmental psychology report cover image. Theme: child development and mental health assessment. Style: calming, professional, educational. Colors: soft pastels, warm and trustworthy. Elements: abstract representation of growth, learning, and well-being. Modern minimalist design suitable for a professional report. Ultra high resolution, clean design.`;
+        
+        const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash-image-preview',
+            messages: [
+              {
+                role: 'user',
+                content: imagePrompt
+              }
+            ],
+            modalities: ['image', 'text']
+          })
+        });
+
+        if (imageResponse.ok) {
+          const imageData = await imageResponse.json();
+          reportImageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          logStep("Report image generated successfully");
+        } else {
+          logStep("Image generation failed", { status: imageResponse.status });
+        }
+      } catch (imageError) {
+        logStep("Error generating report image", { error: String(imageError) });
+      }
+    }
+
     return new Response(JSON.stringify({ 
       success: true,
       analysis: analysisResult,
+      reportImage: reportImageUrl,
       originalResponse: aiResponse
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -89,6 +89,7 @@ import VoiceEmotionAnalysis from "./pages/VoiceEmotionAnalysis";
 import VoiceDiary from "./pages/VoiceDiary";
 import PersonalizedAICoaching from "./pages/PersonalizedAICoaching";
 import EnhancedDesignShowcase from "./pages/EnhancedDesignShowcase";
+import VoiceCounseling from "./pages/VoiceCounseling";
 
 // New Retention Features
 import WellnessHub from "./pages/WellnessHub";
@@ -213,6 +214,7 @@ const App = () => {
             <Route path="/voice-emotion-analysis" element={<VoiceEmotionAnalysis />} />
             <Route path="/voice-diary" element={<VoiceDiary />} />
             <Route path="/personalized-ai-coaching" element={<PersonalizedAICoaching />} />
+            <Route path="/voice-counseling" element={<VoiceCounseling />} />
           
           
           <Route path="/corporate" element={<Corporate />} />

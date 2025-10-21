@@ -206,12 +206,15 @@ const IEPView = () => {
         </div>
 
         {/* 학생 정보 */}
-        <Card className="mb-6">
+        <Card className="mb-6 bg-gradient-to-br from-blue-50 to-purple-50">
           <CardHeader>
-            <CardTitle>학생 정보</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              학생 기본 정보
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="text-sm font-medium text-muted-foreground">이름</label>
                 <p className="text-lg font-semibold">{iepData.student_name}</p>
@@ -220,9 +223,71 @@ const IEPView = () => {
                 <label className="text-sm font-medium text-muted-foreground">나이</label>
                 <p className="text-lg font-semibold">{iepData.student_age}세</p>
               </div>
+              {iepData.assessment_results?.studentGrade && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">학년</label>
+                  <p className="text-lg font-semibold">{iepData.assessment_results.studentGrade}</p>
+                </div>
+              )}
+              {iepData.assessment_results?.studentGender && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">성별</label>
+                  <p className="text-lg font-semibold">{iepData.assessment_results.studentGender}</p>
+                </div>
+              )}
+              {iepData.assessment_results?.disability && (
+                <div className="md:col-span-2">
+                  <label className="text-sm font-medium text-muted-foreground">진단명 / 장애 유형</label>
+                  <p className="text-lg font-semibold">{iepData.assessment_results.disability}</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
+
+        {/* AI 생성 이미지 갤러리 */}
+        {iepData.assessment_results?.images && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>🎨 AI 생성 시각 자료</CardTitle>
+              <p className="text-sm text-muted-foreground">학생 맞춤형 AI 이미지로 교육계획을 시각화했습니다</p>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {iepData.assessment_results.images.progress && (
+                  <div className="space-y-2">
+                    <img 
+                      src={iepData.assessment_results.images.progress} 
+                      alt="Progress Chart"
+                      className="w-full rounded-lg border shadow-md"
+                    />
+                    <p className="text-sm text-center font-medium">발달 진전도 그래프</p>
+                  </div>
+                )}
+                {iepData.assessment_results.images.goals && (
+                  <div className="space-y-2">
+                    <img 
+                      src={iepData.assessment_results.images.goals} 
+                      alt="Goals Roadmap"
+                      className="w-full rounded-lg border shadow-md"
+                    />
+                    <p className="text-sm text-center font-medium">목표 달성 로드맵</p>
+                  </div>
+                )}
+                {iepData.assessment_results.images.skills && (
+                  <div className="space-y-2">
+                    <img 
+                      src={iepData.assessment_results.images.skills} 
+                      alt="Skills Chart"
+                      className="w-full rounded-lg border shadow-md"
+                    />
+                    <p className="text-sm text-center font-medium">영역별 기술 차트</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* IEP 내용 */}
         <div className="space-y-6">

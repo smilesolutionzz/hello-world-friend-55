@@ -15,10 +15,15 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 interface IEPGenerationRequest {
   studentName: string
   studentAge: number
+  studentGrade?: string
+  studentGender?: string
+  disability?: string
   assessmentResults: Record<string, any>
-  observationLogs?: any[] // 관찰일지 데이터 추가
+  observationLogs?: any[]
   parentConcerns?: string[]
   teacherObservations?: string[]
+  strengths?: string[]
+  needs?: string[]
   currentPerformance?: Record<string, any>
 }
 
@@ -30,11 +35,16 @@ Deno.serve(async (req) => {
   try {
     const { 
       studentName, 
-      studentAge, 
+      studentAge,
+      studentGrade = '',
+      studentGender = '',
+      disability = '',
       assessmentResults, 
-      observationLogs = [], // 관찰일지 데이터
+      observationLogs = [],
       parentConcerns = [],
       teacherObservations = [],
+      strengths = [],
+      needs = [],
       currentPerformance = {}
     }: IEPGenerationRequest = await req.json()
 
@@ -46,7 +56,7 @@ Deno.serve(async (req) => {
       throw new Error('Unauthorized')
     }
 
-    console.log('IEP 생성 요청:', { studentName, studentAge, observationLogsCount: observationLogs.length, user: user.id })
+    console.log('IEP 생성 요청:', { studentName, studentAge, studentGrade, disability, observationLogsCount: observationLogs.length, user: user.id })
 
     // 관찰일지 분석 데이터를 종합하여 현재 수행 수준 파악
     let observationAnalysis = ''
@@ -71,6 +81,16 @@ ${observationLogs.map((log, index) => `
 `
     }
 
+    // AI 이미지 생성을 위한 프롬프트 준비
+    const generateImagePrompt = (theme: string) => {
+      const themes: Record<string, string> = {
+        progress: `Educational progress graph visualization for ${studentName}, age ${studentAge}. Colorful, encouraging, child-friendly design showing learning growth with upward trend. Include cute icons and positive visual elements. Ultra high resolution, professional educational design.`,
+        goals: `Goal achievement roadmap illustration for special education student. Vibrant, motivational design with milestones, stars, and achievement badges. Child-friendly colors (blue, green, yellow). Clear path showing progress steps. Ultra high resolution.`,
+        skills: `Skills development chart for ${studentAge}-year-old student. Circular radar chart style showing different skill areas (academic, social, behavioral, life skills). Colorful sections with icons. Professional educational infographic style. Ultra high resolution.`
+      };
+      return themes[theme] || themes.progress;
+    };
+
     // OpenAI를 사용하여 IEP 생성
     const prompt = `
 당신은 20년 이상의 경험을 가진 한국의 특수교육 전문가이며, 개별교육계획(IEP) 작성에 있어 최고의 전문성을 보유하고 있습니다.
@@ -80,11 +100,20 @@ ${observationLogs.map((log, index) => `
 ## 학생 정보
 - **이름**: ${studentName}
 - **나이**: ${studentAge}세
+${studentGrade ? `- **학년**: ${studentGrade}` : ''}
+${studentGender ? `- **성별**: ${studentGender}` : ''}
+${disability ? `- **진단명/장애유형**: ${disability}` : ''}
 
 ${observationAnalysis}
 
 ## 평가 결과 분석
 ${assessmentResults ? JSON.stringify(assessmentResults, null, 2) : '평가 결과 없음'}
+
+## 학생의 강점
+${strengths.length > 0 ? '- ' + strengths.join('\n- ') : '강점 분석 필요'}
+
+## 지원 필요 영역
+${needs.length > 0 ? '- ' + needs.join('\n- ') : '지원 필요 영역 분석 필요'}
 
 ## 학부모 우려사항
 ${parentConcerns.length > 0 ? '- ' + parentConcerns.join('\n- ') : '특별한 우려사항 없음'}
@@ -92,8 +121,13 @@ ${parentConcerns.length > 0 ? '- ' + parentConcerns.join('\n- ') : '특별한 �
 ## 교사 관찰사항
 ${teacherObservations.length > 0 ? '- ' + teacherObservations.join('\n- ') : '관찰사항 없음'}
 
-## 현재 수행 수준
-${Object.keys(currentPerformance).length > 0 ? JSON.stringify(currentPerformance, null, 2) : '관찰일지 기반 분석 참조'}
+## 현재 수행 수준 상세
+${currentPerformance.academic ? `### 학업 영역\n${currentPerformance.academic}\n` : ''}
+${currentPerformance.social ? `### 사회성 및 의사소통\n${currentPerformance.social}\n` : ''}
+${currentPerformance.behavior ? `### 행동 및 정서\n${currentPerformance.behavior}\n` : ''}
+${currentPerformance.life ? `### 일상생활 및 자립\n${currentPerformance.life}\n` : ''}
+
+${!currentPerformance.academic && !currentPerformance.social && !currentPerformance.behavior && !currentPerformance.life ? '관찰일지 기반 분석 참조' : ''}
 
 ---
 
@@ -345,14 +379,92 @@ ${Object.keys(currentPerformance).length > 0 ? JSON.stringify(currentPerformance
       }
     }
 
-    // IEP 데이터베이스에 저장
+    // AI 이미지 3개 생성 (병렬 처리로 속도 향상)
+    console.log('AI 이미지 생성 시작...');
+    let images = { progress: '', goals: '', skills: '' };
+    
+    try {
+      const imagePromises = [
+        fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${Deno.env.get('LOVABLE_API_KEY')}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash-image-preview',
+            messages: [{
+              role: 'user',
+              content: generateImagePrompt('progress')
+            }],
+            modalities: ['image', 'text']
+          })
+        }),
+        fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${Deno.env.get('LOVABLE_API_KEY')}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash-image-preview',
+            messages: [{
+              role: 'user',
+              content: generateImagePrompt('goals')
+            }],
+            modalities: ['image', 'text']
+          })
+        }),
+        fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${Deno.env.get('LOVABLE_API_KEY')}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash-image-preview',
+            messages: [{
+              role: 'user',
+              content: generateImagePrompt('skills')
+            }],
+            modalities: ['image', 'text']
+          })
+        })
+      ];
+
+      const responses = await Promise.all(imagePromises);
+      const imageData = await Promise.all(responses.map(r => r.json()));
+      
+      images = {
+        progress: imageData[0]?.choices?.[0]?.message?.images?.[0]?.image_url?.url || '',
+        goals: imageData[1]?.choices?.[0]?.message?.images?.[0]?.image_url?.url || '',
+        skills: imageData[2]?.choices?.[0]?.message?.images?.[0]?.image_url?.url || ''
+      };
+      
+      console.log('AI 이미지 생성 완료:', { 
+        progress: images.progress ? '성공' : '실패',
+        goals: images.goals ? '성공' : '실패',
+        skills: images.skills ? '성공' : '실패'
+      });
+    } catch (imageError) {
+      console.error('이미지 생성 오류 (계속 진행):', imageError);
+      // 이미지 생성 실패해도 IEP는 저장
+    }
+
+    // IEP 데이터베이스에 저장 (이미지 URL 포함)
     const { data: iepRecord, error: insertError } = await supabase
       .from('individual_education_plans')
       .insert({
         user_id: user.id,
         student_name: studentName,
         student_age: studentAge,
-        assessment_results: assessmentResults,
+        assessment_results: {
+          ...assessmentResults,
+          studentGrade,
+          studentGender,
+          disability,
+          images // AI 생성 이미지 저장
+        },
         current_performance: iepData.currentPerformance,
         annual_goals: iepData.annualGoals,
         short_term_objectives: iepData.shortTermObjectives,
@@ -363,7 +475,7 @@ ${Object.keys(currentPerformance).length > 0 ? JSON.stringify(currentPerformance
         transition_services: iepData.transitionServices,
         plan_status: 'draft',
         valid_from: new Date().toISOString().split('T')[0],
-        valid_to: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 1년 후
+        valid_to: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       })
       .select()
       .single()

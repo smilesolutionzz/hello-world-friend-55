@@ -934,9 +934,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border-2 border-purple-400 dark:border-purple-600 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-xl"
                     onClick={() => navigate('/assessment/defense-mechanism-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs px-2 py-1">무료</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xs px-2 py-1 animate-pulse">
                         🆕 NEW

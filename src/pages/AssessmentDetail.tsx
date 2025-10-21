@@ -160,7 +160,15 @@ export default function AssessmentDetail() {
   }
 
   const results = assessment.results || {};
-  const resultEntries = Object.entries(results);
+  
+  // null/NaN 값 필터링
+  const resultEntries = Object.entries(results).filter(([key, value]) => {
+    // 메타데이터 키는 제외
+    if (['ageGroup', 'severity', 'answers'].includes(key)) return false;
+    // null이나 NaN이 아닌 숫자 값만 포함
+    return value !== null && value !== undefined && !isNaN(Number(value));
+  });
+  
   const totalScore = resultEntries.reduce((sum: number, [_, score]) => sum + (Number(score) || 0), 0);
   const averageScore = resultEntries.length > 0 ? totalScore / resultEntries.length : 0;
 
@@ -217,8 +225,9 @@ export default function AssessmentDetail() {
                     영역별 상세 점수
                   </h3>
                   <div className="space-y-3">
-                    {Object.entries(results).map(([category, score]) => {
-                      const interpretation = getScoreInterpretation(Number(score));
+                    {resultEntries.map(([category, score]) => {
+                      const numScore = Number(score) || 0;
+                      const interpretation = getScoreInterpretation(numScore);
                       return (
                         <div key={category} className="space-y-2">
                           <div className="flex items-center justify-between">
@@ -229,14 +238,20 @@ export default function AssessmentDetail() {
                               <Badge variant="outline" className={`${interpretation.color} text-white`}>
                                 {interpretation.level}
                               </Badge>
-                              <span className="font-bold">{Number(score).toFixed(1)}</span>
+                              <span className="font-bold">{numScore.toFixed(1)}</span>
                             </div>
                           </div>
-                          <Progress value={(Number(score) / 7) * 100} className="h-2" />
+                          <Progress value={(numScore / 7) * 100} className="h-2" />
                           <p className="text-xs text-muted-foreground">{interpretation.description}</p>
                         </div>
                       );
                     })}
+                    
+                    {resultEntries.length === 0 && (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <p>표시할 점수 데이터가 없습니다.</p>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div>

@@ -47,8 +47,17 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 테스트 완료
-      const numericAnswers = answers.map(a => parseInt(a));
+      // 테스트 완료 - null/NaN 방지 처리
+      const numericAnswers = answers
+        .map(a => parseInt(a))
+        .filter(a => !isNaN(a)); // NaN 필터링
+      
+      // 모든 문항에 답변했는지 확인
+      if (numericAnswers.length !== questions.length) {
+        console.error('Not all questions answered:', numericAnswers.length, 'of', questions.length);
+        return;
+      }
+      
       const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
       const average = Math.round((total / numericAnswers.length) * 10) / 10;
       

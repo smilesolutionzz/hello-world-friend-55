@@ -37,7 +37,12 @@ interface AdhdTestResultProps {
 }
 
 const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }: AdhdTestResultProps) => {
-  const { total, average, ageGroup, severity, answers } = results;
+  // null/NaN 방지 처리
+  const safeTotal = results.total || 0;
+  const safeAverage = results.average || 0;
+  const safeAnswers = results.answers?.filter(a => a !== null && !isNaN(a)) || [];
+  const { ageGroup, severity } = results;
+  
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { toast } = useToast();
@@ -80,11 +85,11 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
       
       const { data, error } = await supabase.functions.invoke('premium-adhd-analyzer', {
         body: {
-          answers,
+          answers: safeAnswers,
           ageGroup,
           severity,
-          total,
-          average,
+          total: safeTotal,
+          average: safeAverage,
           userId: user.id
         }
       });
@@ -155,9 +160,9 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
     }
   };
   
-  // ADHD 증상 영역별 분석 (부주의, 과잉행동-충동성)
-  const inattentionScore = results.answers.slice(0, 9).reduce((sum, score) => sum + score, 0);
-  const hyperactivityScore = results.answers.slice(9, 18).reduce((sum, score) => sum + score, 0);
+  // ADHD 증상 영역별 분석 (부주의, 과잉행동-충동성) - null 방지
+  const inattentionScore = safeAnswers.slice(0, 9).reduce((sum, score) => sum + (score || 0), 0);
+  const hyperactivityScore = safeAnswers.slice(9, 18).reduce((sum, score) => sum + (score || 0), 0);
   
   // 기본 ADHD 검사는 2개 영역만 제공 (18문항, 각 문항 1-3점)
   const chartData = [
@@ -496,7 +501,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">총점</span>
-                <span className="text-2xl font-bold text-brand-gradient">{total}/54점</span>
+                <span className="text-2xl font-bold text-brand-gradient">{safeTotal}/54점</span>
               </div>
               <div className="text-center text-sm text-muted-foreground">
                 최대 54점 (18문항 × 3점)
@@ -504,7 +509,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
               
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">평균점수</span>
-                <span className="text-2xl font-bold text-brand-gradient">{average.toFixed(1)}/3.0점</span>
+                <span className="text-2xl font-bold text-brand-gradient">{safeAverage.toFixed(1)}/3.0점</span>
               </div>
               <div className="text-center text-sm text-muted-foreground">
                 문항당 평균점수
@@ -512,7 +517,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
               
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">규준집단 대비</span>
-                <span className="text-2xl font-bold text-brand-gradient">{((total/54)*100).toFixed(0)}%</span>
+                <span className="text-2xl font-bold text-brand-gradient">{((safeTotal/54)*100).toFixed(0)}%</span>
               </div>
               
               <div className="flex justify-between items-center">
@@ -559,8 +564,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           <div className="grid md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">총 점수</p>
-              <p className="text-3xl font-bold text-blue-900">{total}점 / 54점</p>
-              <p className="text-sm text-blue-600 mt-1">만점 대비 {Math.round((total/54)*100)}%</p>
+              <p className="text-3xl font-bold text-blue-900">{safeTotal}점 / 54점</p>
+              <p className="text-sm text-blue-600 mt-1">만점 대비 {Math.round((safeTotal/54)*100)}%</p>
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-blue-800">부주의 증상</p>
@@ -578,8 +583,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
             <h4 className="text-xl font-semibold text-purple-800 mb-4">🔍 전문가 상세 해석</h4>
             <div className="prose prose-purple max-w-none">
               <p className="text-base leading-relaxed text-gray-800 whitespace-pre-line">
-                {severity === "정상 범위" 
-                  ? `현재 점수 ${total}점은 ADHD 증상이 일반적인 범위 내에 있는 건강한 상태를 나타냅니다. 부주의 증상 ${inattentionScore}점, 과잉행동/충동성 ${hyperactivityScore}점으로, 일상생활에서 집중력이나 충동 조절에 큰 어려움이 없는 수준입니다.
+                 {severity === "정상 범위" 
+                  ? `현재 점수 ${safeTotal}점은 ADHD 증상이 일반적인 범위 내에 있는 건강한 상태를 나타냅니다. 부주의 증상 ${inattentionScore}점, 과잉행동/충동성 ${hyperactivityScore}점으로, 일상생활에서 집중력이나 충동 조절에 큰 어려움이 없는 수준입니다.
 
 **7가지 구체적 유지 방법:**
 • **규칙적 루틴**: 일정한 생활 패턴으로 집중력과 자기 조절 능력 유지
@@ -591,8 +596,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
 • **정기 점검**: 스트레스나 환경 변화 시 집중력 상태 자가 모니터링
 
 **재평가 권장:** 현재 상태를 유지하면서 6개월 후 재검사를 통해 지속적인 집중력 관리 상태를 확인하시기 바랍니다.`
-                  : severity === "경계선 수준"
-                  ? `현재 점수 ${total}점은 ADHD 증상이 경계선 수준에 있어 주의 깊은 관찰이 필요한 상태입니다. 부주의 증상 ${inattentionScore}점, 과잉행동/충동성 ${hyperactivityScore}점으로, 때때로 일상생활에 경미한 영향을 미칠 수 있습니다.
+                   : severity === "경계선 수준"
+                  ? `현재 점수 ${safeTotal}점은 ADHD 증상이 경계선 수준에 있어 주의 깊은 관찰이 필요한 상태입니다. 부주의 증상 ${inattentionScore}점, 과잉행동/충동성 ${hyperactivityScore}점으로, 때때로 일상생활에 경미한 영향을 미칠 수 있습니다.
 
 **7가지 구체적 개선 방법:**
 • **환경 조성**: 집중하기 쉬운 환경 만들기 (정리정돈, 소음 차단 등)
@@ -605,7 +610,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
 
 **재평가 권장:** 생활 개선 노력 후 3-6개월 뒤 재검사를 통해 증상 변화와 개선 효과를 확인하시기 바랍니다.`
                   : severity === "중등도 수준"
-                  ? `현재 점수 ${total}점은 ADHD 증상이 중등도 수준으로 나타나 전문가의 정확한 평가가 필요한 상태입니다. 부주의 증상 ${inattentionScore}점, 과잉행동/충동성 ${hyperactivityScore}점으로, 학업이나 업무에서 상당한 어려움을 겪을 수 있습니다.
+                  ? `현재 점수 ${safeTotal}점은 ADHD 증상이 중등도 수준으로 나타나 전문가의 정확한 평가가 필요한 상태입니다. 부주의 증상 ${inattentionScore}점, 과잉행동/충동성 ${hyperactivityScore}점으로, 학업이나 업무에서 상당한 어려움을 겪을 수 있습니다.
 
 **7가지 구체적 관리 방법:**
 • **전문가 평가**: ADHD 전문의나 임상심리사와 정확한 진단 평가 받기
@@ -617,7 +622,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
 • **생활 관리**: 규칙적인 운동, 수면, 식단 관리로 증상 완화
 
 **재평가 권장:** 전문가 치료 시작 후 1-3개월 간격으로 정기적 재평가를 통해 치료 효과를 모니터링하고 치료 계획을 조정하시기 바랍니다.`
-                  : `현재 점수 ${total}점은 ADHD 증상이 심각한 수준으로 나타나 즉시 전문가의 도움이 필요한 상태입니다. 부주의 증상 ${inattentionScore}점, 과잉행동/충동성 ${hyperactivityScore}점으로, 일상생활 전반에 상당한 지장을 주고 있을 가능성이 높습니다.
+                  : `현재 점수 ${safeTotal}점은 ADHD 증상이 심각한 수준으로 나타나 즉시 전문가의 도움이 필요한 상태입니다. 부주의 증상 ${inattentionScore}점, 과잉행동/충동성 ${hyperactivityScore}점으로, 일상생활 전반에 상당한 지장을 주고 있을 가능성이 높습니다.
 
 **7가지 즉시 실행 방법:**
 • **응급 평가**: 즉시 ADHD 전문의나 정신건강의학과 예약하여 정확한 진단
@@ -687,10 +692,10 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           onClick={() => generatePDFReport({
             testType: 'ADHD 검사',
             results: {
-              total: results.total,
-              average: results.average,
+              total: safeTotal,
+              average: safeAverage,
               severity,
-              answers
+              answers: safeAnswers
             },
             analysis: `ADHD 검사 결과 분석: ${evaluation.description}`,
             testInfo: {
@@ -713,10 +718,10 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           onClick={() => saveTestResult({
             testType: 'ADHD 검사',
             results: {
-              total: results.total,
-              average: results.average,
+              total: safeTotal,
+              average: safeAverage,
               severity,
-              answers
+              answers: safeAnswers
             },
             analysis: `ADHD 검사 결과 분석: ${evaluation.description}`,
             ageGroup,
@@ -742,7 +747,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
         </p>
         <ImageGenerator
           initialPrompt={`ADHD ${severity} 수준에 맞는 집중력 향상과 마음 안정을 위한 치료 이미지 생성. 평온하고 집중할 수 있는 환경을 표현한 한국어 설명 포함`}
-          context={`ADHD 테스트 결과 - 심각도: ${severity}, 총점: ${total}점. 주의력 결핍: ${inattentionScore}점, 과잉행동/충동성: ${hyperactivityScore}점`}
+          context={`ADHD 테스트 결과 - 심각도: ${severity}, 총점: ${safeTotal}점. 주의력 결핍: ${inattentionScore}점, 과잉행동/충동성: ${hyperactivityScore}점`}
           type="therapy"
         />
       </Card>
@@ -754,7 +759,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
       <Card className="p-6 mb-6 result-content">
         <ShareResultButton
           title={`ADHD 자가진단 결과 - ${severity}`}
-          description={`총점 ${total}점 (평균 ${average}점) - ${severity} 수준으로 확인되었습니다.`}
+          description={`총점 ${safeTotal}점 (평균 ${safeAverage}점) - ${severity} 수준으로 확인되었습니다.`}
           resultData={results}
           showScreenshot={true}
         />
@@ -770,7 +775,7 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
       {/* 음성 기능 */}
       <VoiceFeature 
         title="ADHD 검사 결과 음성 안내"
-        text={`ADHD 검사 결과를 알려드리겠습니다. 총점 ${results.total}점으로 ${evaluation.level} 수준입니다. ${evaluation.description}`}
+        text={`ADHD 검사 결과를 알려드리겠습니다. 총점 ${safeTotal}점으로 ${evaluation.level} 수준입니다. ${evaluation.description}`}
         type="result"
       />
 

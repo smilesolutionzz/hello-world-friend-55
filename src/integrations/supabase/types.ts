@@ -5356,6 +5356,57 @@ export type Database = {
         }
         Relationships: []
       }
+      toss_payments: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          cancel_reason: string | null
+          cancelled_at: string | null
+          created_at: string
+          id: string
+          order_id: string
+          payment_key: string
+          payment_method: string | null
+          receipt_url: string | null
+          status: string
+          tokens_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          approved_at?: string | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          id?: string
+          order_id: string
+          payment_key: string
+          payment_method?: string | null
+          receipt_url?: string | null
+          status?: string
+          tokens_purchased: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string
+          payment_key?: string
+          payment_method?: string | null
+          receipt_url?: string | null
+          status?: string
+          tokens_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       usage_tracking: {
         Row: {
           count: number | null

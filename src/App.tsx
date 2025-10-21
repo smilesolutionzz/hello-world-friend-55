@@ -50,6 +50,7 @@ import Corporate from "./pages/Corporate";
 import Community from "./pages/Community";
 import Subscription from "./pages/Subscription";
 import TokenSubscription from "./pages/TokenSubscription";
+import TossPaymentWidget from "./pages/TossPaymentWidget";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFail from "./pages/PaymentFail";
 import TokenPaymentSuccess from "./pages/TokenPaymentSuccess";
@@ -229,6 +230,7 @@ const App = () => {
           <Route path="/growth-stories" element={<GrowthStories />} />
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
+          <Route path="/toss-payment" element={<TossPaymentWidget />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/kpi-dashboard" element={<KPIDashboard />} />

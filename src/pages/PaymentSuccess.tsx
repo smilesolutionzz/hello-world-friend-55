@@ -1,150 +1,151 @@
-import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, Clock, Receipt } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { CheckCircle2, Loader2, XCircle } from 'lucide-react';
 
 const PaymentSuccess = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
-  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+  const [confirming, setConfirming] = useState(true);
+  const [success, setSuccess] = useState(false);
+  const [tokensPurchased, setTokensPurchased] = useState(0);
 
   useEffect(() => {
-    const confirmPayment = async () => {
-      const paymentKey = searchParams.get('paymentKey');
-      const orderId = searchParams.get('orderId');
-      const amount = searchParams.get('amount');
-
-      if (!paymentKey || !orderId || !amount) {
-        toast({
-          title: "오류",
-          description: "결제 정보가 올바르지 않습니다.",
-          variant: "destructive"
-        });
-        navigate('/token-subscription');
-        return;
-      }
-
-      try {
-        console.log('Confirming payment:', { paymentKey, orderId, amount });
-        
-        // 주문 ID를 통해 토큰 결제인지 구독 결제인지 판단
-        const isTokenPayment = orderId.startsWith('token_');
-        
-        const functionName = isTokenPayment ? 'confirm-token-payment' : 'confirm-toss-payment';
-        
-        const { data, error } = await supabase.functions.invoke(functionName, {
-          body: { paymentKey, orderId, amount: parseInt(amount) }
-        });
-
-        if (error) throw error;
-
-        if (data.success) {
-          setPaymentConfirmed(true);
-          
-          if (isTokenPayment) {
-            toast({
-              title: "토큰 구매 완료",
-              description: `${data.tokenAmount}개의 토큰이 지급되었습니다!`,
-            });
-          } else {
-            toast({
-              title: "결제 완료",
-              description: "구독이 성공적으로 활성화되었습니다!",
-            });
-          }
-        } else {
-          throw new Error(data.error || "결제 확인에 실패했습니다.");
-        }
-      } catch (error: any) {
-        console.error('Payment confirmation error:', error);
-        toast({
-          title: "결제 확인 실패",
-          description: error.message || "결제 확인 중 오류가 발생했습니다.",
-          variant: "destructive"
-        });
-        navigate('/token-subscription');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     confirmPayment();
-  }, [searchParams, navigate, toast]);
+  }, []);
 
-  if (loading) {
+  const confirmPayment = async () => {
+    const paymentKey = searchParams.get('paymentKey');
+    const orderId = searchParams.get('orderId');
+    const amount = searchParams.get('amount');
+
+    if (!paymentKey || !orderId || !amount) {
+      toast({
+        title: '오류',
+        description: '결제 정보가 올바르지 않습니다.',
+        variant: 'destructive',
+      });
+      setConfirming(false);
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('로그인이 필요합니다');
+      }
+
+      // Edge Function을 통해 결제 승인
+      const { data, error } = await supabase.functions.invoke('toss-payments-confirm', {
+        body: {
+          paymentKey,
+          orderId,
+          amount: parseInt(amount),
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.success) {
+        setSuccess(true);
+        setTokensPurchased(data.tokensPurchased);
+        toast({
+          title: '결제 완료!',
+          description: `${data.tokensPurchased}개의 토큰이 충전되었습니다.`,
+        });
+      } else {
+        throw new Error(data.error || '결제 승인에 실패했습니다');
+      }
+    } catch (error: any) {
+      console.error('Payment confirmation error:', error);
+      toast({
+        title: '결제 승인 실패',
+        description: error.message || '결제 승인 중 오류가 발생했습니다.',
+        variant: 'destructive',
+      });
+      setSuccess(false);
+    } finally {
+      setConfirming(false);
+    }
+  };
+
+  if (confirming) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardContent className="flex flex-col items-center p-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-            <p className="text-center text-muted-foreground">결제를 확인하고 있습니다...</p>
-          </CardContent>
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
+        <Card className="p-12 text-center max-w-md">
+          <Loader2 className="w-16 h-16 animate-spin text-primary mx-auto mb-6" />
+          <h2 className="text-2xl font-bold mb-2">결제 처리 중</h2>
+          <p className="text-muted-foreground">
+            잠시만 기다려주세요...
+          </p>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <CheckCircle className="h-16 w-16 text-green-500" />
-          </div>
-          <CardTitle className="text-2xl text-green-600">결제 완료!</CardTitle>
-        </CardHeader>
-        
-        <CardContent className="space-y-6">
-          <div className="text-center">
-            <p className="text-muted-foreground mb-4">
-              구독이 성공적으로 활성화되었습니다. 이제 모든 프리미엄 기능을 이용하실 수 있어요!
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
+      <Card className="p-12 text-center max-w-md">
+        {success ? (
+          <>
+            <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto mb-6" />
+            <h1 className="text-3xl font-bold mb-4">결제 완료!</h1>
+            <p className="text-lg text-muted-foreground mb-2">
+              {tokensPurchased}개의 토큰이
             </p>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-              <Receipt className="h-5 w-5 text-primary" />
-              <div>
-                <p className="font-medium">주문번호</p>
-                <p className="text-sm text-muted-foreground">{searchParams.get('orderId')}</p>
-              </div>
+            <p className="text-lg text-muted-foreground mb-8">
+              성공적으로 충전되었습니다
+            </p>
+            <div className="space-y-3">
+              <Button
+                onClick={() => navigate('/dashboard')}
+                className="w-full"
+                size="lg"
+              >
+                대시보드로 이동
+              </Button>
+              <Button
+                onClick={() => navigate('/token-subscription')}
+                variant="outline"
+                className="w-full"
+                size="lg"
+              >
+                추가 충전하기
+              </Button>
             </div>
-
-            <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
-              <Clock className="h-5 w-5 text-primary" />
-              <div>
-                <p className="font-medium">서비스 시작</p>
-                <p className="text-sm text-muted-foreground">즉시 이용 가능</p>
-              </div>
+          </>
+        ) : (
+          <>
+            <XCircle className="w-20 h-20 text-destructive mx-auto mb-6" />
+            <h1 className="text-3xl font-bold mb-4">결제 실패</h1>
+            <p className="text-lg text-muted-foreground mb-8">
+              결제 처리 중 문제가 발생했습니다
+            </p>
+            <div className="space-y-3">
+              <Button
+                onClick={() => navigate('/token-subscription')}
+                className="w-full"
+                size="lg"
+              >
+                다시 시도하기
+              </Button>
+              <Button
+                onClick={() => navigate('/dashboard')}
+                variant="outline"
+                className="w-full"
+                size="lg"
+              >
+                대시보드로 이동
+              </Button>
             </div>
-          </div>
-
-          <div className="space-y-3">
-            <Button 
-              className="w-full" 
-              onClick={() => navigate('/dashboard')}
-            >
-              대시보드로 이동
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              className="w-full"
-              onClick={() => navigate('/')}
-            >
-              홈으로 돌아가기
-            </Button>
-          </div>
-
-          <div className="text-center text-sm text-muted-foreground">
-            <p>결제 관련 문의사항이 있으시면 고객센터로 연락해주세요.</p>
-          </div>
-        </CardContent>
+          </>
+        )}
       </Card>
     </div>
   );

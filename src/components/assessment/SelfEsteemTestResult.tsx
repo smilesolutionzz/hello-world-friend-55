@@ -10,6 +10,7 @@ import { useTokens } from "@/hooks/useTokens";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
+import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 
 interface SelfEsteemTestResultProps {
   result: {
@@ -314,13 +315,20 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
         {/* AI 결과 분석 */}
         <Card className="border-0 shadow-xl">
           <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Target className="w-6 h-6 text-purple-600" />
-              ✨ AI 전문가 상세 분석
-            </CardTitle>
-            <p className="text-sm text-muted-foreground mt-2">
-              OpenAI GPT-4 기반 1000자 이상 심층 분석
-            </p>
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Target className="w-6 h-6 text-purple-600" />
+                  ✨ AI 전문가 상세 분석
+                </CardTitle>
+                <p className="text-sm text-muted-foreground mt-2">
+                  OpenAI GPT-4 기반 1000자 이상 심층 분석
+                </p>
+              </div>
+              {!isLoadingAnalysis && aiAnalysis && (
+                <TextToSpeechButton text={aiAnalysis} />
+              )}
+            </div>
           </CardHeader>
           <CardContent className="p-6">
             {isLoadingAnalysis ? (

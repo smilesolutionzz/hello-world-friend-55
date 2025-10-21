@@ -13,6 +13,7 @@ import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import ShareResultButton from '@/components/ShareResultButton';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -417,10 +418,13 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
             {/* AI 분석 결과 */}
             <Card className="bg-white/70 border-purple-200">
               <CardHeader>
-                <CardTitle className="text-purple-900 flex items-center gap-2">
-                  <Brain className="w-5 h-5" />
-                  정신과의사급 AI 전문 분석
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-purple-900 flex items-center gap-2">
+                    <Brain className="w-5 h-5" />
+                    정신과의사급 AI 전문 분석
+                  </CardTitle>
+                  <TextToSpeechButton text={aiAnalysis} />
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="prose prose-sm max-w-none">

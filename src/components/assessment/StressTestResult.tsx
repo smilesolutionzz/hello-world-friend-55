@@ -10,6 +10,7 @@ import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { supabase } from '@/integrations/supabase/client';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
+import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 
 interface StressTestResultProps {
   result: {
@@ -271,14 +272,26 @@ const StressTestResult = ({ result, onRestart }: StressTestResultProps) => {
 
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>AI 전문가 상세 분석</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>AI 전문가 상세 분석</CardTitle>
+              {!isAnalyzing && analysis && (
+                <TextToSpeechButton text={analysis} />
+              )}
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="prose prose-sm max-w-none">
-              <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                {analysis}
+            {isAnalyzing ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <span className="ml-3 text-muted-foreground">AI가 분석 중입니다...</span>
               </div>
-            </div>
+            ) : (
+              <div className="prose prose-sm max-w-none">
+                <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                  {analysis}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 

@@ -148,7 +148,7 @@ const ClientLogos = () => {
       hours: "평일 09:00-18:00, 토요일 09:00-15:00"
     },
     { 
-      name: "삼성웰니스의원 발달클리닉", 
+      name: "삼성웰니스의원", 
       count: "메인 제휴기관", 
       icon: Heart,
       type: "의원",
@@ -633,12 +633,12 @@ const ClientLogos = () => {
                   onClick={() => handleInstitutionClick(partner)}
                 >
                   <div className={`w-12 h-12 ${
-                    partner.name === '삼성웰니스의원 발달클리닉' 
+                    partner.name === '삼성웰니스의원'
                       ? 'bg-gradient-to-br from-amber-400 to-yellow-500' 
                       : 'bg-primary/10'
                   } rounded-full flex items-center justify-center mx-auto mb-3`}>
                     <IconComponent className={`w-6 h-6 ${
-                      partner.name === '삼성웰니스의원 발달클리닉' 
+                      partner.name === '삼성웰니스의원' 
                         ? 'text-white' 
                         : 'text-primary'
                     }`} />
@@ -668,12 +668,12 @@ const ClientLogos = () => {
                 {selectedInstitution && (
                   <>
                     <div className={`w-10 h-10 ${
-                      selectedInstitution.name === '삼성웰니스의원 발달클리닉' 
+                      selectedInstitution.name === '삼성웰니스의원'
                         ? 'bg-gradient-to-br from-amber-400 to-yellow-500' 
                         : 'bg-primary/10'
                     } rounded-full flex items-center justify-center`}>
                       <selectedInstitution.icon className={`w-5 h-5 ${
-                        selectedInstitution.name === '삼성웰니스의원 발달클리닉' 
+                        selectedInstitution.name === '삼성웰니스의원'
                           ? 'text-white' 
                           : 'text-primary'
                       }`} />
@@ -681,7 +681,7 @@ const ClientLogos = () => {
                     <div>
                       <h3 className="text-xl font-bold">{selectedInstitution.name}</h3>
                       <Badge className={`${
-                        selectedInstitution.name === '삼성웰니스의원 발달클리닉' 
+                        selectedInstitution.name === '삼성웰니스의원'
                           ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-white' 
                           : 'bg-primary/10 text-primary'
                       }`}>
@@ -720,7 +720,7 @@ const ClientLogos = () => {
                       <Award className="w-4 h-4 text-yellow-500" />
                       <span className="text-sm font-medium">평점 {selectedInstitution.rating}</span>
                     </div>
-                    {selectedInstitution.name === '삼성웰니스의원 발달클리닉' && (
+                    {selectedInstitution.name === '삼성웰니스의원' && (
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4 text-muted-foreground" />
                         <span className="text-sm">전문가 15명</span>

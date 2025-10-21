@@ -162,7 +162,7 @@ const CommunityPlatform = () => {
 
   // 제휴기관 목록
   const institutionsList = [{
-    name: '삼성웰니스의원 발달클리닉',
+    name: '삼성웰니스의원',
     type: '의원',
     location: '서울시 강남구',
     rating: 5.0,

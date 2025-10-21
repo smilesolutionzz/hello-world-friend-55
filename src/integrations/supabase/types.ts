@@ -481,6 +481,72 @@ export type Database = {
         }
         Relationships: []
       }
+      book_idea_analyses: {
+        Row: {
+          additional_recommendations: string | null
+          cover_image: string | null
+          created_at: string | null
+          estimated_cost: number | null
+          estimated_pages: number | null
+          estimated_quantity: number | null
+          format_reason: string | null
+          funnel_strategy: Json | null
+          id: string
+          production_timeline: string | null
+          recommended_format: string | null
+          revenue_forecast: Json | null
+          story_input: string
+          success_probability: number | null
+          target_audience: Json | null
+          toc: Json | null
+          toc_image: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          additional_recommendations?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          estimated_cost?: number | null
+          estimated_pages?: number | null
+          estimated_quantity?: number | null
+          format_reason?: string | null
+          funnel_strategy?: Json | null
+          id?: string
+          production_timeline?: string | null
+          recommended_format?: string | null
+          revenue_forecast?: Json | null
+          story_input: string
+          success_probability?: number | null
+          target_audience?: Json | null
+          toc?: Json | null
+          toc_image?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          additional_recommendations?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          estimated_cost?: number | null
+          estimated_pages?: number | null
+          estimated_quantity?: number | null
+          format_reason?: string | null
+          funnel_strategy?: Json | null
+          id?: string
+          production_timeline?: string | null
+          recommended_format?: string | null
+          revenue_forecast?: Json | null
+          story_input?: string
+          success_probability?: number | null
+          target_audience?: Json | null
+          toc?: Json | null
+          toc_image?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       book_production_requests: {
         Row: {
           actual_completion_date: string | null
@@ -3909,6 +3975,77 @@ export type Database = {
           sort_order?: number
           suitable_for?: string
           template_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      organization_members: {
+        Row: {
+          added_at: string
+          added_by: string | null
+          id: string
+          member_identifier: string | null
+          metadata: Json | null
+          name: string | null
+          organization_id: string
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          added_by?: string | null
+          id?: string
+          member_identifier?: string | null
+          metadata?: Json | null
+          name?: string | null
+          organization_id: string
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          added_by?: string | null
+          id?: string
+          member_identifier?: string | null
+          metadata?: Json | null
+          name?: string | null
+          organization_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          admin_user_id: string | null
+          created_at: string
+          id: string
+          name: string
+          settings: Json | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          admin_user_id?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          settings?: Json | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          admin_user_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          settings?: Json | null
+          type?: string
           updated_at?: string
         }
         Relationships: []

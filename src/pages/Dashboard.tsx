@@ -213,40 +213,21 @@ const DashboardNew = () => {
   }, [filteredObservations]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/10 to-soft-mint/20">
+    <div className="min-h-screen bg-gray-50">
       <UnifiedNavigation />
       
-      {/* Header */}
+      {/* Simplified Header */}
       <header className="bg-white border-b border-border/40 lg:block hidden">
-        <div className="container mx-auto px-6 py-4 max-w-7xl">
+        <div className="container mx-auto px-8 py-5 max-w-7xl">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/')}
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-              >
-                <Home className="w-4 h-4" />
-                홈으로
-              </Button>
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-glow rounded-full flex items-center justify-center">
-                <Heart className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-foreground">가족 케어 대시보드</h1>
-                <p className="text-sm text-muted-foreground">안녕하세요, {profile?.display_name}님</p>
-              </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+              <p className="text-sm text-muted-foreground mt-0.5">{profile?.display_name}님</p>
             </div>
             
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigate('/ai-counselor')}>
-                <MessageCircle className="w-4 h-4 mr-2" />
-                AI 상담
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => navigate('/assessment')}>
-                <TrendingUp className="w-4 h-4 mr-2" />
-                진단하기
+              <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+                <Home className="w-4 h-4" />
               </Button>
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 <LogOut className="w-4 h-4" />
@@ -256,48 +237,28 @@ const DashboardNew = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-12 max-w-7xl">
-        <div className="mb-12 text-center">
-          <div className="inline-block mb-4 px-4 py-2 bg-primary/10 rounded-full">
-            <span className="text-sm font-medium text-primary">AI와 전문가가 함께하는 예방 케어</span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            나의 건강 데이터
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            발달·심리 건강을 예방적으로 관리하고, 변화를 조기 감지합니다
-          </p>
-        </div>
+      <div className="container mx-auto px-8 py-8 max-w-7xl">
 
-        <Tabs defaultValue="overview" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto h-auto p-1 bg-muted/50">
-            <TabsTrigger value="overview" className="py-3">
-              <div className="flex flex-col items-center gap-1">
-                <BarChart3 className="w-5 h-5" />
-                <span className="text-sm">검사 데이터</span>
-              </div>
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="inline-flex h-11 items-center justify-center rounded-lg bg-white border shadow-sm p-1">
+            <TabsTrigger value="overview" className="rounded-md px-6 py-2 text-sm font-medium">
+              검사 데이터
             </TabsTrigger>
-            <TabsTrigger value="assessments" className="py-3">
-              <div className="flex flex-col items-center gap-1">
-                <FileText className="w-5 h-5" />
-                <span className="text-sm">검사 이력</span>
-              </div>
+            <TabsTrigger value="assessments" className="rounded-md px-6 py-2 text-sm font-medium">
+              검사 이력
             </TabsTrigger>
-            <TabsTrigger value="family" className="py-3">
-              <div className="flex flex-col items-center gap-1">
-                <Users className="w-5 h-5" />
-                <span className="text-sm">가족 관리</span>
-              </div>
+            <TabsTrigger value="family" className="rounded-md px-6 py-2 text-sm font-medium">
+              가족 관리
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
             {/* 기간 선택 */}
-            <Card className="p-4">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-border/40">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <Calendar className="w-5 h-5 text-muted-foreground" />
-                  <div className="flex gap-2 items-center">
+                  <span className="text-sm font-medium text-foreground">누적 측정 수</span>
+                  <div className="flex gap-2 items-center text-sm">
                     <input
                       type="month"
                       value={`${dateRange.start.getFullYear()}-${String(dateRange.start.getMonth() + 1).padStart(2, '0')}`}
@@ -308,9 +269,9 @@ const DashboardNew = () => {
                           start: new Date(parseInt(year), parseInt(month) - 1, 1)
                         });
                       }}
-                      className="px-3 py-2 border rounded-md bg-background"
+                      className="px-3 py-2 border rounded-lg bg-background hover:border-primary/50 transition-colors"
                     />
-                    <span>~</span>
+                    <span className="text-muted-foreground">~</span>
                     <input
                       type="month"
                       value={`${dateRange.end.getFullYear()}-${String(dateRange.end.getMonth() + 1).padStart(2, '0')}`}
@@ -321,67 +282,95 @@ const DashboardNew = () => {
                           end: new Date(parseInt(year), parseInt(month), 0)
                         });
                       }}
-                      className="px-3 py-2 border rounded-md bg-background"
+                      className="px-3 py-2 border rounded-lg bg-background hover:border-primary/50 transition-colors"
                     />
                   </div>
                 </div>
-                <Button variant="outline" size="sm" onClick={loadDashboardData}>
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  새로고침
+                <Button variant="ghost" size="sm" onClick={loadDashboardData} className="hover:bg-muted">
+                  <RefreshCw className="w-4 h-4" />
                 </Button>
               </div>
-            </Card>
-
-            {/* 누적 측정 수 */}
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold">누적 측정 수</h3>
-              </div>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <Users className="w-6 h-6 mx-auto mb-2 text-primary" />
-                  <p className="text-sm text-muted-foreground mb-1">전체 누적검사</p>
-                  <p className="text-3xl font-bold">{filteredObservations.length}</p>
+              
+              {/* 통계 카드 */}
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-50/50 rounded-xl p-5 border border-blue-100">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                      <Users className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">전체 누적검사</span>
+                  </div>
+                  <p className="text-3xl font-bold text-gray-900">{filteredObservations.length}</p>
                 </div>
-                <div className="text-center p-4 bg-muted/30 rounded-lg">
-                  <TrendingUp className="w-6 h-6 mx-auto mb-2 text-green-600" />
-                  <p className="text-sm text-muted-foreground mb-1">이달 검사</p>
-                  <p className="text-3xl font-bold">{recent30DaysObservations}</p>
+                <div className="bg-gradient-to-br from-green-50 to-green-50/50 rounded-xl p-5 border border-green-100">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                      <TrendingUp className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">
+                      {String(dateRange.end.getMonth() + 1).padStart(2, '0')}월 누적검사
+                    </span>
+                  </div>
+                  <p className="text-3xl font-bold text-gray-900">{recent30DaysObservations}</p>
                 </div>
               </div>
-            </Card>
+            </div>
 
             {/* 차트 섹션 */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               {/* 월별 누적 추이 */}
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">누적 추이</h3>
-                <p className="text-sm text-muted-foreground mb-4">검사 수 누적 추이</p>
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-border/40">
+                <h3 className="text-base font-semibold mb-1 text-foreground">누적 추이</h3>
+                <p className="text-sm text-muted-foreground mb-6">월별 검사 수 및 누적 추이</p>
                 {monthlyData.length > 0 ? (
                   <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={monthlyData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="count" fill="#10b981" name="월별 검사 수" />
-                        <Bar dataKey="cumulative" fill="#fbbf24" name="누적 검사 수" />
+                      <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                        <XAxis 
+                          dataKey="month" 
+                          tick={{ fontSize: 12, fill: '#6b7280' }}
+                          tickLine={false}
+                          axisLine={{ stroke: '#e5e7eb' }}
+                        />
+                        <YAxis 
+                          tick={{ fontSize: 12, fill: '#6b7280' }}
+                          tickLine={false}
+                          axisLine={{ stroke: '#e5e7eb' }}
+                        />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'white', 
+                            border: '1px solid #e5e7eb', 
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                          }}
+                        />
+                        <Legend 
+                          wrapperStyle={{ fontSize: '13px' }}
+                          iconType="circle"
+                        />
+                        <Bar dataKey="count" fill="#10b981" name="월별 측정 수" radius={[6, 6, 0, 0]} />
+                        <Bar dataKey="cumulative" fill="#fbbf24" name="누적 측정 수" radius={[6, 6, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
                 ) : (
-                  <div className="h-80 flex items-center justify-center text-muted-foreground">
-                    <p>📊 데이터가 없습니다</p>
+                  <div className="h-80 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <BarChart3 className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <p className="text-sm text-muted-foreground">측정 데이터가 없습니다</p>
+                    </div>
                   </div>
                 )}
-              </Card>
+              </div>
 
               {/* 취약점 분포 */}
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4">취약점 분포</h3>
-                <p className="text-sm text-muted-foreground mb-4">검사 영역별 분포</p>
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-border/40">
+                <h3 className="text-base font-semibold mb-1 text-foreground">취약점 분포</h3>
+                <p className="text-sm text-muted-foreground mb-6">검사 영역별 분포</p>
                 {distributionData.some(item => item.value > 0) ? (
                   <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
@@ -392,97 +381,138 @@ const DashboardNew = () => {
                           cy="50%"
                           labelLine={false}
                           label={({ name, percent }) => `${name}\n${(percent * 100).toFixed(1)}%`}
-                          outerRadius={100}
+                          outerRadius={110}
                           fill="#8884d8"
                           dataKey="value"
+                          paddingAngle={2}
                         >
                           {distributionData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
-                        <Tooltip />
-                        <Legend />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'white', 
+                            border: '1px solid #e5e7eb', 
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                          }}
+                        />
+                        <Legend 
+                          wrapperStyle={{ fontSize: '13px' }}
+                          iconType="circle"
+                        />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
                 ) : (
-                  <div className="h-80 flex items-center justify-center text-muted-foreground">
-                    <p>📊 데이터가 없습니다</p>
+                  <div className="h-80 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <BarChart3 className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                      <p className="text-sm text-muted-foreground">측정 데이터가 없습니다</p>
+                    </div>
                   </div>
                 )}
-              </Card>
+              </div>
             </div>
 
             {/* 인사이트 카드 */}
             <div>
-              <h3 className="text-lg font-semibold mb-4">인사이트</h3>
+              <h3 className="text-base font-semibold mb-4 text-foreground">인사이트</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {distributionData
                   .sort((a, b) => b.value - a.value)
                   .slice(0, 3)
-                  .map((item) => (
-                    <Card key={item.name} className="p-6 border-2" style={{ borderColor: item.color }}>
-                      <div className="flex items-center justify-between mb-3">
-                        <h4 className="font-semibold">{item.name} 높은 그룹</h4>
-                        <Badge variant="secondary">{filteredObservations.length}명</Badge>
+                  .map((item, idx) => (
+                    <div 
+                      key={item.name} 
+                      className="bg-white rounded-2xl p-6 shadow-sm border-2 hover:shadow-md transition-shadow"
+                      style={{ borderColor: item.color }}
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h4 className="font-semibold text-base text-foreground mb-1">
+                            {item.name} 높은 그룹(20명)
+                          </h4>
+                          <p className="text-xs text-muted-foreground">
+                            기준: {item.description}
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {item.description} 영역에서 관심이 필요합니다
-                      </p>
-                      <div className="text-2xl font-bold" style={{ color: item.color }}>
-                        {item.value}점
+                      <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {item.description} 영역에서 관심이 필요합니다
+                        </p>
                       </div>
-                    </Card>
+                      <div className="mt-4 pt-4 border-t border-border/40">
+                        <div className="flex items-center justify-center">
+                          <div 
+                            className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl"
+                            style={{ backgroundColor: item.color }}
+                          >
+                            {item.value}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   ))}
               </div>
             </div>
 
             {/* 빠른 액션 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/assessment')}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              <div 
+                className="bg-white rounded-2xl p-6 shadow-sm border border-border/40 hover:shadow-md transition-all cursor-pointer group" 
+                onClick={() => navigate('/assessment')}
+              >
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <FileText className="w-6 h-6 text-white" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg mb-2 text-foreground">새로운 검사 시작</h3>
-                    <p className="text-sm text-muted-foreground">AI 기반 발달·심리 검사로 현재 상태를 확인하세요</p>
-                    <Button className="mt-4" size="sm">
-                      검사 시작하기
-                    </Button>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-base mb-1.5 text-foreground">새로운 검사 시작</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      AI 기반 발달·심리 검사로 현재 상태를 확인하세요
+                    </p>
                   </div>
                 </div>
-              </Card>
+              </div>
 
-              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200" onClick={() => navigate('/concern-storage')}>
+              <div 
+                className="bg-white rounded-2xl p-6 shadow-sm border border-border/40 hover:shadow-md transition-all cursor-pointer group" 
+                onClick={() => navigate('/concern-storage')}
+              >
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <Heart className="w-6 h-6 text-white" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg mb-2 text-foreground">고민 저장소</h3>
-                    <p className="text-sm text-muted-foreground">저장된 고민과 AI 분석 결과를 확인하세요</p>
-                    <Button className="mt-4" size="sm" variant="outline">
-                      고민 보기
-                    </Button>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-base mb-1.5 text-foreground">고민 저장소</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      저장된 고민과 AI 분석 결과를 확인하세요
+                    </p>
                   </div>
                 </div>
-              </Card>
+              </div>
 
-              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/experts')}>
+              <div 
+                className="bg-white rounded-2xl p-6 shadow-sm border border-border/40 hover:shadow-md transition-all cursor-pointer group" 
+                onClick={() => navigate('/experts')}
+              >
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <UserCheck className="w-6 h-6 text-purple-600" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <UserCheck className="w-6 h-6 text-white" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg mb-2 text-foreground">전문가 상담</h3>
-                    <p className="text-sm text-muted-foreground">검사 결과를 바탕으로 전문가와 1:1 상담하세요</p>
-                    <Button className="mt-4" size="sm" variant="outline">
-                      전문가 찾기
-                    </Button>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-base mb-1.5 text-foreground">전문가 상담</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      검사 결과를 바탕으로 전문가와 1:1 상담하세요
+                    </p>
                   </div>
                 </div>
-              </Card>
+              </div>
             </div>
           </TabsContent>
 

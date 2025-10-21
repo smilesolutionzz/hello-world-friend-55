@@ -8,6 +8,7 @@ import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadius
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ExpertConsultationNotice } from './ExpertConsultationNotice';
+import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 
 interface LanguageDevelopmentResultProps {
   results: Record<string, number>;
@@ -514,6 +515,11 @@ ${aiAnalysis || generateFallbackInterpretation()}
         {/* Expert Consultation */}
         <div className="max-w-6xl mx-auto">
           <ExpertConsultationNotice />
+          
+          {/* 연관 검사 추천 */}
+          <div className="mt-6">
+            <RelatedTestRecommendations currentTestType="language-development" />
+          </div>
           
           <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 mt-6">
             <CardContent className="p-6 text-center">

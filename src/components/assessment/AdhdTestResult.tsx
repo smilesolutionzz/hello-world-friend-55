@@ -21,6 +21,7 @@ import { PersonalizedProductRecommendation } from '@/components/product/Personal
 import { FileText } from 'lucide-react';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
+import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 
 interface AdhdTestResultProps {
   results: {
@@ -821,8 +822,11 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
       {/* 전문가 상담 권유 */}
       <ExpertConsultationNotice />
       
+      {/* 연관 검사 추천 */}
+      <RelatedTestRecommendations currentTestType="adhd" />
+      
       {/* 맞춤 추천 및 B2B 제안 */}
-      <PersonalizedProductRecommendation 
+      <PersonalizedProductRecommendation
         testType="adhd"
         testResult={results}
       />

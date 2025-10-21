@@ -9,6 +9,7 @@ import { useTestResultActions } from "@/hooks/useTestResultActions";
 import ProductRecommendation from "../ProductRecommendation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 
 interface ParentingStyleResultProps {
   results: any;
@@ -382,6 +383,11 @@ const ParentingStyleResult = ({
         </div>
 
         <ProductRecommendation category="parenting" />
+        
+        {/* 연관 검사 추천 */}
+        <div className="max-w-6xl mx-auto mt-6">
+          <RelatedTestRecommendations currentTestType="parenting-style" />
+        </div>
 
         {/* Professional Notice */}
         <div className="max-w-6xl mx-auto mt-8">

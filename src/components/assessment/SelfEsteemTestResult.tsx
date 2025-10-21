@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
+import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 
 interface SelfEsteemTestResultProps {
   result: {
@@ -416,6 +417,9 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
             {isSaving ? "저장 중..." : "결과 저장하기"}
           </Button>
         </div>
+        
+        {/* 연관 검사 추천 */}
+        <RelatedTestRecommendations currentTestType="self-esteem" />
       </div>
     </div>
   );

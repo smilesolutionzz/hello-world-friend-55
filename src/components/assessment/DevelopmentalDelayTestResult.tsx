@@ -11,6 +11,7 @@ import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Responsi
 import { useNavigate } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { ExpertConsultationNotice } from './ExpertConsultationNotice';
+import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 
 interface DevelopmentalDelayTestResultProps {
   results: {
@@ -467,6 +468,9 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
           )}
         </CardContent>
       </Card>
+
+      {/* 연관 검사 추천 */}
+      <RelatedTestRecommendations currentTestType="developmental-delay" />
 
       {/* 액션 버튼들 */}
       <div className="flex flex-wrap gap-3">

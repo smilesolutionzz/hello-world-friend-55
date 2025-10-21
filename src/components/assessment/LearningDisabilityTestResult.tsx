@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, LineChart, Line, AreaChart, Area } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 
 interface LearningDisabilityTestResultProps {
   results: {
@@ -490,6 +491,9 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
           )}
         </CardContent>
       </Card>
+
+      {/* 연관 검사 추천 */}
+      <RelatedTestRecommendations currentTestType="learning-disability" />
 
       {/* 액션 버튼들 */}
       <div className="flex flex-wrap gap-3">

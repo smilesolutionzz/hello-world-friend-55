@@ -827,8 +827,9 @@ const Assessment = () => {
                     ⭐ 높은 중요도 - 3분 검사
                   </div>
                   <h3 className="text-2xl font-bold text-foreground mb-2">AIH 전문가 창작 검사</h3>
-                  <p className="text-muted-foreground">
-                    심리전문가가 직접 개발한 신뢰도 높은 창작 검사
+                  <p className="text-muted-foreground flex items-center justify-center gap-2">
+                    <span>심리전문가가 직접 개발한 신뢰도 높은 창작 검사</span>
+                    <Badge className="bg-emerald-500 text-white font-semibold">완전무료</Badge>
                   </p>
                 </div>
                 
@@ -838,9 +839,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('bigfive-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs px-2 py-1">무료</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-red-500 text-white font-bold text-xs px-2 py-1">
                         🔥 1위
@@ -860,9 +858,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('attachment-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs px-2 py-1">무료</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-orange-500 text-white font-bold text-xs px-2 py-1">
                         🔥 2위
@@ -882,9 +877,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('stress-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs px-2 py-1">무료</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-yellow-500 text-white font-bold text-xs px-2 py-1">
                         🔥 3위
@@ -904,9 +896,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('career-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs px-2 py-1">무료</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-blue-500 text-white font-bold text-xs px-2 py-1">
                         📈 4위
@@ -926,9 +915,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('selfesteem-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs px-2 py-1">무료</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-purple-500 text-white font-bold text-xs px-2 py-1">
                         ⭐ 추천

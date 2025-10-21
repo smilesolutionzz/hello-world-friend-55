@@ -57,9 +57,10 @@ const questions: Question[] = [
 
 interface DefenseMechanismTestProps {
   onComplete: (result: any) => void;
+  onBack?: () => void;
 }
 
-export const DefenseMechanismTest: React.FC<DefenseMechanismTestProps> = ({ onComplete }) => {
+export const DefenseMechanismTest: React.FC<DefenseMechanismTestProps> = ({ onComplete, onBack }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -278,15 +279,26 @@ export const DefenseMechanismTest: React.FC<DefenseMechanismTestProps> = ({ onCo
 
         {/* Navigation */}
         <div className="flex justify-between items-center">
-          <Button
-            onClick={handlePrevious}
-            disabled={currentQuestion === 0}
-            variant="outline"
-            className="gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            이전
-          </Button>
+          {currentQuestion === 0 && onBack ? (
+            <Button
+              onClick={onBack}
+              variant="outline"
+              className="gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              3분 테스트
+            </Button>
+          ) : (
+            <Button
+              onClick={handlePrevious}
+              disabled={currentQuestion === 0}
+              variant="outline"
+              className="gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              이전
+            </Button>
+          )}
 
           <div className="text-sm text-muted-foreground">
             {currentQuestion === questions.length - 1 ? '마지막 질문입니다' : '답변을 선택해주세요'}

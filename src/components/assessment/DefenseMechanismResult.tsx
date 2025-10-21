@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Brain, Heart, Sparkles, Home, TrendingUp, Download } from 'lucide-react';
+import { Shield, Brain, Heart, Sparkles, Home, TrendingUp, Download, ArrowLeft } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { useToast } from '@/hooks/use-toast';
@@ -16,6 +16,7 @@ interface DefenseMechanismResultProps {
     analysis: string;
     totalScore: number;
   };
+  onBack?: () => void;
 }
 
 const mechanismInfo: Record<string, { name: string; emoji: string; description: string; healthyTip: string }> = {
@@ -69,7 +70,7 @@ const mechanismInfo: Record<string, { name: string; emoji: string; description: 
   },
 };
 
-export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ result }) => {
+export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ result, onBack }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -248,15 +249,27 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
             PDF 다운로드
           </Button>
           
-          <Button
-            onClick={() => navigate('/')}
-            variant="outline"
-            className="gap-2"
-            size="lg"
-          >
-            <Home className="w-5 h-5" />
-            홈으로
-          </Button>
+          {onBack ? (
+            <Button
+              onClick={onBack}
+              variant="outline"
+              className="gap-2"
+              size="lg"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              3분 테스트
+            </Button>
+          ) : (
+            <Button
+              onClick={() => navigate('/')}
+              variant="outline"
+              className="gap-2"
+              size="lg"
+            >
+              <Home className="w-5 h-5" />
+              홈으로
+            </Button>
+          )}
           
           <Button
             onClick={() => navigate('/assessment')}

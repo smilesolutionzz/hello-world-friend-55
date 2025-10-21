@@ -20,9 +20,10 @@ interface RelationshipStyleResultProps {
     };
     answers: Record<number, string>;
   };
+  onBack?: () => void;
 }
 
-const RelationshipStyleResult = ({ result }: RelationshipStyleResultProps) => {
+const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const IconComponent = result.result.icon;
@@ -457,18 +458,26 @@ const RelationshipStyleResult = ({ result }: RelationshipStyleResultProps) => {
           </div>
         </div>
 
-        <div className="mt-8 text-center">
+        <div className="mt-8 text-center space-x-4">
+          {onBack ? (
+            <Button 
+              variant="outline"
+              onClick={onBack}
+            >
+              3분 테스트
+            </Button>
+          ) : (
+            <Button 
+              variant="outline"
+              onClick={() => navigate('/')}
+            >
+              홈으로 돌아가기
+            </Button>
+          )}
           <Button 
-            variant="outline"
-            onClick={() => navigate('/relationship-package')}
-            className="mr-4"
+            onClick={() => navigate('/assessment')}
           >
-            다른 관계 검사 보기
-          </Button>
-          <Button 
-            onClick={() => navigate('/')}
-          >
-            홈으로 돌아가기
+            다른 테스트 하기
           </Button>
         </div>
       </div>

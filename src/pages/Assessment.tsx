@@ -608,7 +608,8 @@ const Assessment = () => {
               <span className="block text-brand-gradient">마음상태 체크</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              어떤 체크를 받고 싶으신가요? <span className="hidden md:inline">(참고용)</span>
+              어떤 체크를 받고 싶으신가요?<br />
+              <span className="text-lg">(테스트 결과는 진단이 아닌 참고용입니다)</span>
             </p>
           </div>
 

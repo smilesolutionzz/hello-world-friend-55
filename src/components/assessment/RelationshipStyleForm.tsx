@@ -8,9 +8,10 @@ import { Heart, Users, MessageCircle, ShieldCheck } from 'lucide-react';
 
 interface RelationshipStyleFormProps {
   onComplete: (result: any) => void;
+  onBack?: () => void;
 }
 
-const RelationshipStyleForm = ({ onComplete }: RelationshipStyleFormProps) => {
+const RelationshipStyleForm = ({ onComplete, onBack }: RelationshipStyleFormProps) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
 
@@ -253,13 +254,22 @@ const RelationshipStyleForm = ({ onComplete }: RelationshipStyleFormProps) => {
             </RadioGroup>
 
             <div className="flex justify-between pt-6">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentQuestion === 0}
-              >
-                이전
-              </Button>
+              {currentQuestion === 0 && onBack ? (
+                <Button
+                  variant="outline"
+                  onClick={onBack}
+                >
+                  3분 테스트
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={handlePrevious}
+                  disabled={currentQuestion === 0}
+                >
+                  이전
+                </Button>
+              )}
               <Button
                 onClick={handleNext}
                 disabled={!answers[currentQuestion]}

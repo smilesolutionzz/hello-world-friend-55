@@ -55,7 +55,7 @@ serve(async (req) => {
     const concernLabel = concernLabels[concern] || '일반적인 고민';
     const targetLabel = targetLabels[target] || '대상자';
 
-    const systemPrompt = `당신은 발달/심리 전문가입니다. 사용자의 고민을 종합적으로 분석하고 9가지 전문 리포트를 포함한 JSON 형식으로 응답해주세요:
+    const systemPrompt = `당신은 발달/심리 전문가입니다. 사용자의 고민을 종합적으로 분석하고 9가지 전문 리포트와 맞춤형 테스트 추천을 포함한 JSON 형식으로 응답해주세요:
 
 {
   "type": "고민 유형 (예: 우울감, 불안감, 육아스트레스, 발달지연, 대인관계, 학업스트레스 등)",
@@ -65,6 +65,15 @@ serve(async (req) => {
   "recommendations": ["구체적인 추천사항 3개"],
   "nextSteps": ["실행 가능한 다음 단계 3개"],
   "confidence": 75-95 사이의 신뢰도 점수,
+  
+  "recommendedTests": [
+    {
+      "name": "테스트 이름",
+      "description": "테스트 설명 (한 줄)",
+      "reason": "이 고민에 이 테스트가 필요한 이유",
+      "isPremium": false
+    }
+  ],
   
   "comprehensiveReports": {
     "developmentAssessment": {
@@ -122,6 +131,7 @@ serve(async (req) => {
 ${concernLabel ? `주요 관심사: ${concernLabel}` : ''}
 ${targetLabel ? `분석 대상: ${targetLabel}` : ''}
 
+CRITICAL: 반드시 recommendedTests 배열에 이 고민에 가장 적합한 심리/발달 테스트를 3-5개 추천해주세요. 실제 존재하는 표준화된 테스트 이름을 사용하세요 (예: ADHD 테스트, 우울증 선별검사, 불안 척도, 스트레스 측정, 발달 평가 등).
 반드시 모든 9가지 리포트를 구체적으로 작성하고 JSON 형식으로만 응답해주세요.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -261,6 +271,7 @@ function parseAIResponse(response: string, originalText: string) {
           '전문가 매칭 및 상담 예약',
           '맞춤형 솔루션 추천 받기'
         ],
+        recommendedTests: parsed.recommendedTests || [],
         comprehensiveReports: parsed.comprehensiveReports || null,
         aiResponse: response
       };
@@ -367,6 +378,11 @@ function getFallbackAnalysis(text: string) {
       '3분 온보딩으로 정확한 분석 받기',
       '전문가 매칭 및 상담 예약',
       '맞춤형 솔루션 추천 받기'
+    ],
+    recommendedTests: [
+      { name: '스트레스 측정', description: '현재 스트레스 수준을 파악합니다', reason: '고민의 원인과 스트레스 관계 분석', isPremium: false },
+      { name: '종합 심리 평가', description: '전문가 수준의 심층 평가', reason: '정확한 진단을 위한 종합 분석', isPremium: true },
+      { name: '정서 상태 검사', description: '정서적 안정성을 평가합니다', reason: '감정 조절 및 심리 상태 확인', isPremium: false }
     ]
   };
 }

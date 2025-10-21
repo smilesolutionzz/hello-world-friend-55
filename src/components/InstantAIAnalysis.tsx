@@ -483,53 +483,53 @@ const InstantAIAnalysis = () => {
                 </p>
               </div>
 
-              {/* 추천 목차 섹션 */}
+              {/* 추천 리포팅 제안 목차 섹션 */}
               <Card className="border-amber-500/30 bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <span className="text-2xl">📋</span>
                     <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-                      추천 목차
+                      추천 리포팅 제안 목차
                     </span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2.5">
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">1.</span>
-                      <span className="text-amber-700 dark:text-amber-300 font-medium">발달 종합 평가: 인지, 언어, 운동, 사회성 분석</span>
+                      <span className="font-bold text-orange-600 dark:text-orange-400 flex-shrink-0">1.</span>
+                      <span className="text-orange-800 dark:text-orange-200 font-semibold">발달 종합 평가: 인지, 언어, 운동, 사회성 분석</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">2.</span>
-                      <span className="text-amber-700 dark:text-amber-300 font-medium">심리 상태 분석: 정서적 안정성, 스트레스 수준</span>
+                      <span className="font-bold text-orange-600 dark:text-orange-400 flex-shrink-0">2.</span>
+                      <span className="text-orange-800 dark:text-orange-200 font-semibold">심리 상태 분석: 정서적 안정성, 스트레스 수준</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">3.</span>
-                      <span className="text-amber-700 dark:text-amber-300 font-medium">강점/약점 분석: 맞춤형 성장 방향 제시</span>
+                      <span className="font-bold text-orange-600 dark:text-orange-400 flex-shrink-0">3.</span>
+                      <span className="text-orange-800 dark:text-orange-200 font-semibold">강점/약점 분석: 맞춤형 성장 방향 제시</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">4.</span>
-                      <span className="text-amber-700 dark:text-amber-300 font-medium">맞춤형 활동 제안: AI 기반 발달 촉진 활동</span>
+                      <span className="font-bold text-orange-600 dark:text-orange-400 flex-shrink-0">4.</span>
+                      <span className="text-orange-800 dark:text-orange-200 font-semibold">맞춤형 활동 제안: AI 기반 발달 촉진 활동</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">5.</span>
-                      <span className="text-amber-700 dark:text-amber-300 font-medium">발달 로드맵: 단계별 성장 계획</span>
+                      <span className="font-bold text-orange-600 dark:text-orange-400 flex-shrink-0">5.</span>
+                      <span className="text-orange-800 dark:text-orange-200 font-semibold">발달 로드맵: 단계별 성장 계획</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">6.</span>
-                      <span className="text-amber-700 dark:text-amber-300 font-medium">또래 비교 분석: 연령대별 발달 기준</span>
+                      <span className="font-bold text-orange-600 dark:text-orange-400 flex-shrink-0">6.</span>
+                      <span className="text-orange-800 dark:text-orange-200 font-semibold">또래 비교 분석: 연령대별 발달 기준</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">7.</span>
-                      <span className="text-amber-700 dark:text-amber-300 font-medium">전문가 소견서: 전문 개입 필요성 평가</span>
+                      <span className="font-bold text-orange-600 dark:text-orange-400 flex-shrink-0">7.</span>
+                      <span className="text-orange-800 dark:text-orange-200 font-semibold">전문가 소견서: 전문 개입 필요성 평가</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">8.</span>
-                      <span className="text-amber-700 dark:text-amber-300 font-medium">가족 지원 가이드: 부모/보호자 양육 팁</span>
+                      <span className="font-bold text-orange-600 dark:text-orange-400 flex-shrink-0">8.</span>
+                      <span className="text-orange-800 dark:text-orange-200 font-semibold">가족 지원 가이드: 부모/보호자 양육 팁</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">9.</span>
-                      <span className="text-amber-700 dark:text-amber-300 font-medium">장기 발달 예측: AI 기반 향후 경향성 분석</span>
+                      <span className="font-bold text-orange-600 dark:text-orange-400 flex-shrink-0">9.</span>
+                      <span className="text-orange-800 dark:text-orange-200 font-semibold">장기 발달 예측: AI 기반 향후 경향성 분석</span>
                     </div>
                   </div>
                 </CardContent>
@@ -676,38 +676,42 @@ const InstantAIAnalysis = () => {
                 </CardContent>
               </Card>
 
-              {/* 맞춤 테스트 추천 */}
-              {getRecommendedTests(analysisResult?.type).length > 0 && (
+              {/* AI 맞춤 테스트 추천 */}
+              {analysisResult?.recommendedTests && analysisResult.recommendedTests.length > 0 && (
                 <Card className="border-amber-500/30 shadow-lg bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Brain className="w-5 h-5 text-amber-600" />
                       <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-                        이 고민에 맞는 추천 테스트
+                        AI 추천 맞춤 테스트
                       </span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-3">
-                      {getRecommendedTests(analysisResult?.type).map((test, index) => (
-                        <button
+                      {analysisResult.recommendedTests.map((test: any, index: number) => (
+                        <div
                           key={index}
-                          onClick={() => navigate(test.route)}
-                          className="p-4 bg-background/60 backdrop-blur-sm rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-all text-left group"
+                          className="p-4 bg-background/60 backdrop-blur-sm rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-all"
                         >
                           <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
+                            <div className="flex-1 space-y-2">
+                              <div className="flex items-center gap-2">
                                 <Badge variant={test.isPremium ? "default" : "secondary"} className="text-xs">
-                                  {test.isPremium ? "프리미엄" : "3분 테스트"}
+                                  {test.isPremium ? "프리미엄" : "무료"}
                                 </Badge>
                                 <h5 className="font-bold text-foreground">{test.name}</h5>
                               </div>
                               <p className="text-sm text-muted-foreground">{test.description}</p>
+                              {test.reason && (
+                                <p className="text-xs text-amber-700 dark:text-amber-300 font-medium flex items-start gap-1">
+                                  <span className="font-bold">→</span>
+                                  <span>{test.reason}</span>
+                                </p>
+                              )}
                             </div>
-                            <ArrowRight className="w-5 h-5 text-amber-500 group-hover:translate-x-1 transition-transform flex-shrink-0" />
                           </div>
-                        </button>
+                        </div>
                       ))}
                     </div>
                   </CardContent>

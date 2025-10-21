@@ -96,7 +96,7 @@ export const mockInstitutions = [
   },
   {
     id: '1',
-    name: '삼성웰니스의원 발달클리닉',
+    name: '삼성웰니스의원',
     institution_type: 'medical_center',
     address: '서울시 강남구',
     phone: '02-0000-0000',

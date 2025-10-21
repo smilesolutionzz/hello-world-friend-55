@@ -427,6 +427,25 @@ const InstantAIAnalysis = () => {
                     <li>• 예시: "5살 아이 말 늦어요", "우울해요", "아이가 친구 없어요"</li>
                     <li>• <span className="font-semibold text-amber-900 dark:text-amber-100">💬 "AI 다듬기" 버튼</span>을 누르면 고민이 자동으로 확장됩니다</li>
                   </ul>
+                  
+                  <div className="mt-3 pt-3 border-t border-amber-200/50 dark:border-amber-800/50">
+                    <p className="text-xs font-semibold text-amber-900 dark:text-amber-100 mb-1.5">
+                      📊 자동 생성되는 9가지 전문 리포트
+                    </p>
+                    <div className="grid grid-cols-2 gap-1.5 text-xs text-amber-700 dark:text-amber-300">
+                      <div>✓ 발달 종합 평가</div>
+                      <div>✓ 심리 상태 분석</div>
+                      <div>✓ 강점/약점 분석</div>
+                      <div>✓ 맞춤 활동 제안</div>
+                      <div>✓ 발달 로드맵</div>
+                      <div>✓ 또래 비교 분석</div>
+                      <div>✓ 전문가 소견서</div>
+                      <div>✓ 가족 지원 가이드</div>
+                    </div>
+                    <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                      + AI 기반 장기 발달 예측까지 무료 제공
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

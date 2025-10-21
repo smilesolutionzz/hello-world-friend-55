@@ -167,8 +167,8 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
           
           <div class="score-section">
             <h3>영역별 상세 결과</h3>
-            <p><strong>수용언어:</strong> ${results.receptive}점 / 23점 (${results.receptive_percentage}%) - ${receptiveInterpretation.description}</p>
-            <p><strong>표현언어:</strong> ${results.expressive}점 / 22점 (${results.expressive_percentage}%) - ${expressiveInterpretation.description}</p>
+            <p><strong>수용언어:</strong> ${results.receptive.toFixed(1)}점 / 23점 (${results.receptive_percentage}%) - ${receptiveInterpretation.description}</p>
+            <p><strong>표현언어:</strong> ${results.expressive.toFixed(1)}점 / 22점 (${results.expressive_percentage}%) - ${expressiveInterpretation.description}</p>
           </div>
           
           <div class="interpretation">
@@ -244,8 +244,8 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
 📈 해석: ${totalInterpretation.description}
 
 📋 영역별 결과:
-👂 수용언어: ${results.receptive}점 / 39점 (${results.receptive_percentage}%)
-💬 표현언어: ${results.expressive}점 / 38점 (${results.expressive_percentage}%)
+👂 수용언어: ${results.receptive.toFixed(1)}점 / 23점 (${results.receptive_percentage}%)
+💬 표현언어: ${results.expressive.toFixed(1)}점 / 22점 (${results.expressive_percentage}%)
 
 🤖 AI 전문가 해석:
 ${aiAnalysis || generateFallbackInterpretation()}

@@ -39,20 +39,26 @@ const LanguageDevelopmentForm = ({ onComplete, onBack }: LanguageDevelopmentForm
       const receptiveQuestions = questions.filter(q => q.category === 'receptive');
       const expressiveQuestions = questions.filter(q => q.category === 'expressive');
       
+      // 옵션 인덱스(0,1,2)를 실제 점수로 변환
+      // 0 = 잘 못함 (0점), 1 = 보통 (0.5점), 2 = 잘함 (1점)
       const receptiveScore = receptiveQuestions.reduce((sum, q) => {
-        return sum + (answers[q.id] || 0);
+        const answer = answers[q.id] || 0;
+        const score = answer === 0 ? 0 : answer === 1 ? 0.5 : 1;
+        return sum + score;
       }, 0);
       
       const expressiveScore = expressiveQuestions.reduce((sum, q) => {
-        return sum + (answers[q.id] || 0);
+        const answer = answers[q.id] || 0;
+        const score = answer === 0 ? 0 : answer === 1 ? 0.5 : 1;
+        return sum + score;
       }, 0);
       
       const totalScore = receptiveScore + expressiveScore;
 
-      // 최대 점수: 수용언어 23점, 표현언어 22점, 총 45점 (각 문항 최대 2점)
-      const receptiveMaxScore = 23 * 2;
-      const expressiveMaxScore = 22 * 2;
-      const totalMaxScore = 45 * 2;
+      // 최대 점수: 수용언어 23점, 표현언어 22점, 총 45점 (각 문항 최대 1점)
+      const receptiveMaxScore = 23;
+      const expressiveMaxScore = 22;
+      const totalMaxScore = 45;
 
       const results = {
         receptive: receptiveScore,

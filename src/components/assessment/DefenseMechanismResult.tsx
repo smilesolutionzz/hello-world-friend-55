@@ -2,9 +2,11 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Brain, Heart, Sparkles, Home, Share2, TrendingUp } from 'lucide-react';
+import { Shield, Brain, Heart, Sparkles, Home, Share2, TrendingUp, Download } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
+import html2pdf from 'html2pdf.js';
+import { useToast } from '@/hooks/use-toast';
 
 interface DefenseMechanismResultProps {
   result: {
@@ -68,6 +70,36 @@ const mechanismInfo: Record<string, { name: string; emoji: string; description: 
 
 export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ result }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleDownloadPDF = async () => {
+    try {
+      const element = document.getElementById('defense-result-content');
+      if (!element) return;
+
+      const opt = {
+        margin: 10,
+        filename: '방어기제_분석결과.pdf',
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
+      };
+
+      await html2pdf().set(opt).from(element).save();
+      
+      toast({
+        title: "PDF 다운로드 완료",
+        description: "방어기제 분석 결과가 저장되었습니다.",
+      });
+    } catch (error) {
+      console.error('PDF 생성 오류:', error);
+      toast({
+        title: "다운로드 실패",
+        description: "PDF 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-red-600 dark:text-red-400';
@@ -85,7 +117,7 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 p-4">
-      <div className="max-w-4xl mx-auto py-8">
+      <div id="defense-result-content" className="max-w-4xl mx-auto py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full mb-4">
@@ -211,6 +243,16 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button
+            onClick={handleDownloadPDF}
+            variant="outline"
+            className="gap-2"
+            size="lg"
+          >
+            <Download className="w-5 h-5" />
+            PDF 다운로드
+          </Button>
+          
           <Button
             onClick={() => navigate('/')}
             variant="outline"

@@ -10,6 +10,7 @@ interface OrganizationStatsProps {
     start: Date;
     end: Date;
   };
+  selectedCategory?: string;
 }
 
 interface Stats {
@@ -19,7 +20,7 @@ interface Stats {
   completionRate: number;
 }
 
-export const OrganizationStats = ({ organizationId, dateRange }: OrganizationStatsProps) => {
+export const OrganizationStats = ({ organizationId, dateRange, selectedCategory = 'all' }: OrganizationStatsProps) => {
   const [stats, setStats] = useState<Stats>({
     totalMembers: 0,
     totalTests: 0,
@@ -30,7 +31,7 @@ export const OrganizationStats = ({ organizationId, dateRange }: OrganizationSta
 
   useEffect(() => {
     fetchStats();
-  }, [organizationId, dateRange]);
+  }, [organizationId, dateRange, selectedCategory]);
 
   const fetchStats = async () => {
     try {
@@ -51,13 +52,19 @@ export const OrganizationStats = ({ organizationId, dateRange }: OrganizationSta
       const memberIds = members?.map(m => m.user_id) || [];
 
       if (memberIds.length > 0) {
-        // 검사 결과 수와 평균 점수
-        const { data: testResults } = await supabase
+        // 검사 결과 수와 평균 점수 (카테고리 필터 적용)
+        let query = supabase
           .from('test_results')
-          .select('scores, created_at')
+          .select('scores, created_at, test_type_id')
           .in('user_id', memberIds)
           .gte('created_at', dateRange.start.toISOString())
           .lte('created_at', dateRange.end.toISOString());
+
+        if (selectedCategory !== 'all') {
+          query = query.eq('test_type_id', selectedCategory);
+        }
+
+        const { data: testResults } = await query;
 
         const totalTests = testResults?.length || 0;
         

@@ -11,6 +11,7 @@ interface TestInsightsProps {
     start: Date;
     end: Date;
   };
+  selectedCategory?: string;
 }
 
 interface InsightCard {
@@ -20,13 +21,13 @@ interface InsightCard {
   severity: 'high' | 'medium' | 'low';
 }
 
-export const TestInsights = ({ organizationId, dateRange }: TestInsightsProps) => {
+export const TestInsights = ({ organizationId, dateRange, selectedCategory = 'all' }: TestInsightsProps) => {
   const [insights, setInsights] = useState<InsightCard[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchInsights();
-  }, [organizationId, dateRange]);
+  }, [organizationId, dateRange, selectedCategory]);
 
   const fetchInsights = async () => {
     try {
@@ -46,13 +47,19 @@ export const TestInsights = ({ organizationId, dateRange }: TestInsightsProps) =
         return;
       }
 
-      // 검사 결과 가져오기
-      const { data: testResults } = await supabase
+      // 검사 결과 가져오기 (카테고리 필터 적용)
+      let query = supabase
         .from('test_results')
         .select('test_type_id, scores, created_at')
         .in('user_id', memberIds)
         .gte('created_at', dateRange.start.toISOString())
         .lte('created_at', dateRange.end.toISOString());
+
+      if (selectedCategory !== 'all') {
+        query = query.eq('test_type_id', selectedCategory);
+      }
+
+      const { data: testResults } = await query;
 
       // 인사이트 생성
       const insightData: InsightCard[] = [];

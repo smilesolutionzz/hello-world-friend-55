@@ -10,16 +10,17 @@ interface OrganizationChartProps {
     start: Date;
     end: Date;
   };
+  selectedCategory?: string;
 }
 
-export const OrganizationChart = ({ organizationId, dateRange }: OrganizationChartProps) => {
+export const OrganizationChart = ({ organizationId, dateRange, selectedCategory = 'all' }: OrganizationChartProps) => {
   const [monthlyData, setMonthlyData] = useState<any[]>([]);
   const [vulnerabilityData, setVulnerabilityData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchChartData();
-  }, [organizationId, dateRange]);
+  }, [organizationId, dateRange, selectedCategory]);
 
   const fetchChartData = async () => {
     try {
@@ -40,14 +41,20 @@ export const OrganizationChart = ({ organizationId, dateRange }: OrganizationCha
         return;
       }
 
-      // 월별 검사 수 집계
-      const { data: testResults } = await supabase
+      // 월별 검사 수 집계 (카테고리 필터 적용)
+      let query = supabase
         .from('test_results')
         .select('created_at, test_type_id, scores')
         .in('user_id', memberIds)
         .gte('created_at', dateRange.start.toISOString())
         .lte('created_at', dateRange.end.toISOString())
         .order('created_at');
+
+      if (selectedCategory !== 'all') {
+        query = query.eq('test_type_id', selectedCategory);
+      }
+
+      const { data: testResults } = await query;
 
       // 월별 데이터 집계
       const monthlyMap = new Map();

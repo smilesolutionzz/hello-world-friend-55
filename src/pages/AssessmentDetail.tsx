@@ -16,6 +16,18 @@ interface AssessmentDetail {
   analysis: string;
   created_at: string;
   age_group?: string;
+  test_type?: string;
+}
+
+interface EnhancedAnalysis {
+  id: string;
+  assessment_type: string;
+  raw_results: any;
+  enhanced_analysis: string;
+  score_interpretation: any;
+  recommendations: string[];
+  risk_level: string;
+  created_at: string;
 }
 
 export default function AssessmentDetail() {
@@ -23,6 +35,7 @@ export default function AssessmentDetail() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [assessment, setAssessment] = useState<AssessmentDetail | null>(null);
+  const [enhancedAnalysis, setEnhancedAnalysis] = useState<EnhancedAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,15 +52,40 @@ export default function AssessmentDetail() {
         return;
       }
 
-      const { data, error } = await supabase
+      // Load basic assessment
+      const { data: assessmentData, error: assessmentError } = await supabase
         .from('assessments')
         .select('*')
         .eq('id', id)
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
-      setAssessment(data);
+      if (assessmentError) throw assessmentError;
+      
+      if (!assessmentData) {
+        toast({
+          title: "검사 결과를 찾을 수 없습니다",
+          description: "삭제되었거나 접근 권한이 없습니다.",
+          variant: "destructive",
+        });
+        navigate('/dashboard');
+        return;
+      }
+      
+      setAssessment(assessmentData);
+
+      // Load enhanced analysis if available
+      const { data: enhancedData } = await supabase
+        .from('assessment_enhanced_analysis')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (enhancedData) {
+        setEnhancedAnalysis(enhancedData);
+      }
     } catch (error: any) {
       console.error('Error loading assessment detail:', error);
       toast({
@@ -161,16 +199,31 @@ export default function AssessmentDetail() {
 
   const results = assessment.results || {};
   
-  // null/NaN 값 필터링
-  const resultEntries = Object.entries(results).filter(([key, value]) => {
-    // 메타데이터 키는 제외
-    if (['ageGroup', 'severity', 'answers'].includes(key)) return false;
-    // null이나 NaN이 아닌 숫자 값만 포함
-    return value !== null && value !== undefined && !isNaN(Number(value));
-  });
+  // Extract scores from results more reliably
+  const getScoreValue = (value: any): number | null => {
+    if (value === null || value === undefined) return null;
+    const num = Number(value);
+    return isNaN(num) ? null : num;
+  };
+
+  // Filter and process result entries
+  const resultEntries = Object.entries(results)
+    .filter(([key, value]) => {
+      // Exclude metadata keys
+      if (['ageGroup', 'severity', 'answers', 'testType', 'analysis', 'testInfo', 'savedAt'].includes(key)) return false;
+      // Include only valid numeric values
+      return getScoreValue(value) !== null;
+    })
+    .map(([key, value]) => [key, getScoreValue(value)!] as [string, number]);
   
-  const totalScore = resultEntries.reduce((sum: number, [_, score]) => sum + (Number(score) || 0), 0);
+  const totalScore = resultEntries.reduce((sum, [_, score]) => sum + score, 0);
   const averageScore = resultEntries.length > 0 ? totalScore / resultEntries.length : 0;
+
+  // Use enhanced analysis data if available
+  const displayAnalysis = enhancedAnalysis?.enhanced_analysis || assessment.analysis || "분석 데이터가 없습니다.";
+  const scoreInterpretation = enhancedAnalysis?.score_interpretation || {};
+  const recommendations = enhancedAnalysis?.recommendations || [];
+  const riskLevel = enhancedAnalysis?.risk_level || '정보 없음';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/30 to-blue-50/30">
@@ -284,12 +337,98 @@ export default function AssessmentDetail() {
                 </div>
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="prose max-w-none">
-                <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                  {assessment.analysis || "분석 데이터가 없습니다."}
+            <CardContent className="p-6 space-y-6">
+              {/* 점수 해석 */}
+              {scoreInterpretation && Object.keys(scoreInterpretation).length > 0 && (
+                <div>
+                  <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                    <span className="text-2xl">📊</span>
+                    점수 해석
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {scoreInterpretation.normalized !== undefined && (
+                      <div className="bg-blue-50 dark:bg-blue-950/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+                        <div className="text-sm text-muted-foreground mb-1">표준화 점수</div>
+                        <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">{scoreInterpretation.normalized}</div>
+                      </div>
+                    )}
+                    {scoreInterpretation.percentile !== undefined && (
+                      <div className="bg-purple-50 dark:bg-purple-950/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
+                        <div className="text-sm text-muted-foreground mb-1">백분위</div>
+                        <div className="text-2xl font-bold text-purple-700 dark:text-purple-400">{scoreInterpretation.percentile}%</div>
+                      </div>
+                    )}
+                    {scoreInterpretation.normativeLevel && (
+                      <div className="bg-green-50 dark:bg-green-950/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                        <div className="text-sm text-muted-foreground mb-1">규준 수준</div>
+                        <div className="text-2xl font-bold text-green-700 dark:text-green-400">{scoreInterpretation.normativeLevel}</div>
+                      </div>
+                    )}
+                    {scoreInterpretation.tScore !== undefined && (
+                      <div className="bg-orange-50 dark:bg-orange-950/20 rounded-xl p-4 border border-orange-200 dark:border-orange-800">
+                        <div className="text-sm text-muted-foreground mb-1">T 점수</div>
+                        <div className="text-2xl font-bold text-orange-700 dark:text-orange-400">{scoreInterpretation.tScore}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* 위험도 */}
+              {riskLevel && riskLevel !== '정보 없음' && (
+                <div className="border-t pt-6">
+                  <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                    <span className="text-2xl">⚠️</span>
+                    위험도 평가
+                  </h3>
+                  <div className={`rounded-xl p-4 border-2 ${
+                    riskLevel === 'high' ? 'bg-red-50 border-red-300 dark:bg-red-950/20' :
+                    riskLevel === 'medium' ? 'bg-orange-50 border-orange-300 dark:bg-orange-950/20' :
+                    'bg-green-50 border-green-300 dark:bg-green-950/20'
+                  }`}>
+                    <Badge className={`${
+                      riskLevel === 'high' ? 'bg-red-500' :
+                      riskLevel === 'medium' ? 'bg-orange-500' :
+                      'bg-green-500'
+                    } text-white text-lg px-4 py-1`}>
+                      {riskLevel === 'high' ? '높음' : riskLevel === 'medium' ? '중간' : '낮음'}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+
+              {/* AI 분석 내용 */}
+              <div className="border-t pt-6">
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                  <span className="text-2xl">🤖</span>
+                  상세 분석
+                </h3>
+                <div className="prose max-w-none">
+                  <div className="whitespace-pre-wrap text-gray-700 dark:text-gray-300 leading-relaxed bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800">
+                    {displayAnalysis}
+                  </div>
                 </div>
               </div>
+
+              {/* 추천 사항 */}
+              {recommendations && recommendations.length > 0 && (
+                <div className="border-t pt-6">
+                  <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                    <span className="text-2xl">💡</span>
+                    전문가 권장사항
+                  </h3>
+                  <div className="space-y-3">
+                    {recommendations.map((rec: string, idx: number) => (
+                      <div key={idx} className="flex items-start gap-3 bg-muted/30 rounded-lg p-4 border border-border/50">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                          <span className="text-primary font-bold">{idx + 1}</span>
+                        </div>
+                        <p className="text-foreground flex-1 leading-relaxed">{rec}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

@@ -114,7 +114,7 @@ const ValueComparisonSection = () => {
               <div className="bg-gradient-to-r from-primary/10 to-primary/20 p-8 text-center">
                 <p className="text-lg font-semibold mb-4">
                   지금 시작하면 <span className="text-primary">첫 테스트 무료</span> + 
-                  <span className="text-primary"> 5개 토큰 증정</span>
+                  <span className="text-primary"> 10개 토큰 증정</span>
                 </p>
                 <Button 
                   size="lg"

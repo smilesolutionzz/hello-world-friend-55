@@ -483,22 +483,154 @@ const InstantAIAnalysis = () => {
                 </p>
               </div>
 
-              {/* AI 생성 리포트 이미지 */}
-              {reportImage && (
-                <div className="mb-6">
-                  <img 
-                    src={reportImage} 
-                    alt="AI가 생성한 리포트 커버 이미지" 
-                    className="w-full h-64 object-cover rounded-xl shadow-xl border-2 border-amber-200 dark:border-amber-800"
-                  />
-                  <p className="text-xs text-center mt-3 text-muted-foreground flex items-center justify-center gap-2">
-                    <Wand2 className="w-4 h-4 text-amber-500" />
-                    <span className="font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                      Gemini AI가 자동 생성한 리포트 메인 이미지
+              {/* 추천 목차 섹션 */}
+              <Card className="border-amber-500/30 bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <span className="text-2xl">📋</span>
+                    <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+                      추천 목차
                     </span>
-                  </p>
-                </div>
-              )}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2.5">
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">1.</span>
+                      <span className="text-foreground font-medium">발달 종합 평가: 인지, 언어, 운동, 사회성 분석</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">2.</span>
+                      <span className="text-foreground font-medium">심리 상태 분석: 정서적 안정성, 스트레스 수준</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">3.</span>
+                      <span className="text-foreground font-medium">강점/약점 분석: 맞춤형 성장 방향 제시</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">4.</span>
+                      <span className="text-foreground font-medium">맞춤형 활동 제안: AI 기반 발달 촉진 활동</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">5.</span>
+                      <span className="text-foreground font-medium">발달 로드맵: 단계별 성장 계획</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">6.</span>
+                      <span className="text-foreground font-medium">또래 비교 분석: 연령대별 발달 기준</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">7.</span>
+                      <span className="text-foreground font-medium">전문가 소견서: 전문 개입 필요성 평가</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">8.</span>
+                      <span className="text-foreground font-medium">가족 지원 가이드: 부모/보호자 양육 팁</span>
+                    </div>
+                    <div className="flex items-start gap-3 text-sm">
+                      <span className="font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">9.</span>
+                      <span className="text-foreground font-medium">장기 발달 예측: AI 기반 향후 경향성 분석</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* AI 생성 미리보기 섹션 */}
+              <Card className="border-amber-500/30 bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Sparkles className="w-5 h-5 text-amber-500" />
+                    <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+                      AI 생성 미리보기
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {/* 책 표지 (AI 생성 이미지) */}
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground font-semibold">책 표지</p>
+                      <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl overflow-hidden shadow-2xl border border-amber-200 dark:border-amber-800">
+                        {reportImage ? (
+                          <img 
+                            src={reportImage} 
+                            alt="AI가 생성한 리포트 커버 이미지" 
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <div className="text-center space-y-3 p-6">
+                              <Wand2 className="w-12 h-12 text-amber-400 mx-auto" />
+                              <p className="text-sm text-amber-100 font-semibold">
+                                AI가 고민에 맞는<br />커버 이미지를<br />생성 중입니다...
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 목차 페이지 */}
+                    <div className="space-y-2">
+                      <p className="text-xs text-muted-foreground font-semibold">목차 페이지</p>
+                      <div className="relative aspect-[3/4] bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl overflow-hidden shadow-2xl border border-amber-200 dark:border-amber-800 p-8">
+                        <div className="space-y-6">
+                          <h4 className="text-center text-2xl font-bold text-foreground border-b-2 border-amber-300 dark:border-amber-700 pb-4">
+                            목차
+                          </h4>
+                          <div className="space-y-2.5 text-sm">
+                            <div className="flex items-start gap-2">
+                              <span className="font-semibold text-amber-700 dark:text-amber-300">1.</span>
+                              <span className="text-foreground">발달 종합 평가</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="font-semibold text-amber-700 dark:text-amber-300">2.</span>
+                              <span className="text-foreground">심리 상태 분석</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="font-semibold text-amber-700 dark:text-amber-300">3.</span>
+                              <span className="text-foreground">강점/약점 분석</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="font-semibold text-amber-700 dark:text-amber-300">4.</span>
+                              <span className="text-foreground">맞춤형 활동 제안</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="font-semibold text-amber-700 dark:text-amber-300">5.</span>
+                              <span className="text-foreground">발달 로드맵</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="font-semibold text-amber-700 dark:text-amber-300">6.</span>
+                              <span className="text-foreground">또래 비교 분석</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="font-semibold text-amber-700 dark:text-amber-300">7.</span>
+                              <span className="text-foreground">전문가 소견서</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="font-semibold text-amber-700 dark:text-amber-300">8.</span>
+                              <span className="text-foreground">가족 지원 가이드</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="font-semibold text-amber-700 dark:text-amber-300">9.</span>
+                              <span className="text-foreground">장기 발달 예측</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {reportImage && (
+                    <p className="text-xs text-center mt-4 text-muted-foreground flex items-center justify-center gap-2">
+                      <Wand2 className="w-4 h-4 text-amber-500" />
+                      <span className="font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                        Gemini AI가 고민에 맞춰 자동 생성한 리포트 커버 이미지
+                      </span>
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
 
               {/* 분석 결과 카드 */}
               <Card className="border-border/50 shadow-lg">

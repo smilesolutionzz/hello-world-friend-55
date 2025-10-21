@@ -22,6 +22,7 @@ const TossPaymentWidget = () => {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [orderId, setOrderId] = useState('');
+  const [uiReady, setUiReady] = useState(false);
 
   const state = location.state as PaymentWidgetState;
   const { tokenAmount = 0, price = 0 } = state || {};
@@ -58,15 +59,24 @@ const TossPaymentWidget = () => {
 
       const paymentWidget = await loadPaymentWidget(TOSS_CLIENT_KEY, session.user.id);
       
-      // 올바른 금액 형식으로 렌더링
-      await paymentWidget.renderPaymentMethods('#payment-widget', {
+      // 결제수단 렌더링을 먼저 하고
+      const paymentMethods = await paymentWidget.renderPaymentMethods('#payment-widget', {
         value: Math.round(price),
         currency: 'KRW',
         country: 'KR'
       });
       
-      // 이용 약관 동의 섹션 렌더링 (필수)
-      await paymentWidget.renderAgreement('#agreement');
+      // 약관 동의 섹션 렌더링
+      const agreement = await paymentWidget.renderAgreement('#agreement');
+      
+      // 결제 위젯 완전 로드 대기 (간단하게 수정)
+      await new Promise((resolve) => {
+        // 3초 대기 후 UI 준비 완료 처리
+        setTimeout(() => {
+          setUiReady(true);
+          resolve(true);
+        }, 3000);
+      });
       
       setPaymentWidget(paymentWidget);
       setLoading(false);
@@ -83,10 +93,10 @@ const TossPaymentWidget = () => {
   };
 
   const handlePayment = async () => {
-    if (!paymentWidget) {
+    if (!paymentWidget || !uiReady) {
       toast({
-        title: '오류',
-        description: '결제 위젯이 준비되지 않았습니다.',
+        title: '잠시만 기다려주세요',
+        description: '결제 위젯이 아직 준비 중입니다.',
         variant: 'destructive',
       });
       return;
@@ -95,20 +105,34 @@ const TossPaymentWidget = () => {
     setProcessing(true);
 
     try {
-      await paymentWidget.requestPayment({
+      // 결제 요청 전 2초 대기로 UI 안정화
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const result = await paymentWidget.requestPayment({
         orderId,
         orderName: `토큰 ${tokenAmount}개`,
         successUrl: `${window.location.origin}/payment-success`,
         failUrl: `${window.location.origin}/payment-fail`,
       });
-    } catch (error) {
+      
+      console.log('Payment result:', result);
+    } catch (error: any) {
       console.error('Payment request error:', error);
       setProcessing(false);
-      toast({
-        title: '결제 실패',
-        description: '결제 요청 중 오류가 발생했습니다.',
-        variant: 'destructive',
-      });
+      
+      if (error.message?.includes('렌더링되지 않았습니다')) {
+        toast({
+          title: '결제 준비 중',
+          description: '결제 위젯이 준비되는 중입니다. 잠시 후 다시 시도해주세요.',
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: '결제 실패',
+          description: error?.message || '결제 요청 중 오류가 발생했습니다.',
+          variant: 'destructive',
+        });
+      }
     }
   };
 
@@ -161,7 +185,7 @@ const TossPaymentWidget = () => {
           {!loading && (
             <Button
               onClick={handlePayment}
-              disabled={processing}
+              disabled={processing || !uiReady}
               className="w-full py-6 text-lg"
               size="lg"
             >
@@ -169,6 +193,11 @@ const TossPaymentWidget = () => {
                 <>
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                   결제 처리 중...
+                </>
+              ) : !uiReady ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  결제 위젯 준비 중...
                 </>
               ) : (
                 `₩${price.toLocaleString()} 결제하기`

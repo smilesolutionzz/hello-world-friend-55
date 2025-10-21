@@ -155,10 +155,10 @@ const TokenSubscription = () => {
           <p className="text-xl text-muted-foreground mb-8">
             부담 없이 시작하고, 언제든 충전하세요
           </p>
-          <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-2xl mx-auto mb-8">
+            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-2xl mx-auto mb-8">
             <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
               <Info className="w-4 h-4" />
-              회원가입 없이도 구매 가능합니다 (단, 토큰 사용 시에는 회원가입이 필요합니다)
+              토큰 구매는 회원가입이 필요합니다
             </p>
           </div>
           
@@ -266,13 +266,13 @@ const TokenSubscription = () => {
               <div className="space-y-2">
                 <div className="font-medium text-lg mb-3">📊 기능별 토큰 소비</div>
                 <div className="text-sm space-y-1">
-                  <div>• <strong>엔터테인먼트</strong>: 1토큰 (전생직업, 동물상 등)</div>
+                  <div>• <strong>엔터테인먼트</strong>: 무료 (전생직업, 동물상 등)</div>
                   <div>• <strong>기본 심리검사</strong>: 2토큰 (마음상태, 집중력 등)</div>
                   <div>• <strong>AI 코치 세션</strong>: 3토큰</div>
-                  <div>• <strong>꿈해석/관찰분석</strong>: 4토큰</div>
+                  <div>• <strong>관찰분석</strong>: 4토큰</div>
                   <div>• <strong>사주 분석</strong>: 6토큰</div>
-                  <div>• <strong>프리미엄 검사</strong>: 8토큰</div>
-                  <div>• <strong>IEP 생성</strong>: 50토큰</div>
+                  <div>• <strong>프리미엄 검사</strong>: 20토큰</div>
+                  <div>• <strong>IEP 생성</strong>: 무료</div>
                   <div>• <strong>종합 리포팅</strong>: 200토큰</div>
                 </div>
               </div>
@@ -316,7 +316,7 @@ const TokenSubscription = () => {
                   <div className="space-y-3 text-sm">
                     <div className="flex items-start gap-2">
                       <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p><strong>환불 가능 기간:</strong> 구매일로부터 1년 이내</p>
+                      <p><strong>환불 가능 기간:</strong> 구매일로부터 1주 이내</p>
                     </div>
                     <div className="flex items-start gap-2">
                       <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -336,7 +336,7 @@ const TokenSubscription = () => {
                     </div>
                     <div className="flex items-start gap-2">
                       <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <p>환불 문의: 고객센터 (support@example.com)</p>
+                      <p>환불 문의: 고객센터 (aihpro@naver.com)</p>
                     </div>
                   </div>
                 </div>
@@ -360,15 +360,15 @@ const TokenSubscription = () => {
               <div className="bg-card rounded-lg p-6 border border-border">
                 <h3 className="font-semibold text-lg mb-2">회원가입 없이도 구매할 수 있나요?</h3>
                 <p className="text-muted-foreground">
-                  네, 토큰 구매는 회원가입 없이도 가능합니다. 다만, 구매한 토큰을 실제로 사용하시려면 
+                  토큰 구매는 회원가입을 해야만 합니다. 구매한 토큰을 실제로 사용하시려면 
                   회원가입 및 로그인이 필요합니다. 구매 시 입력하신 이메일로 가입하시면 자동으로 토큰이 연결됩니다.
                 </p>
               </div>
               <div className="bg-card rounded-lg p-6 border border-border">
                 <h3 className="font-semibold text-lg mb-2">환불이 가능한가요?</h3>
                 <p className="text-muted-foreground">
-                  네, 가능합니다. 토큰을 사용하지 않은 경우에 한하여 구매일로부터 1년 이내에 환불 요청이 가능하며, 
-                  결제하셨던 동일한 방법으로 환불 처리됩니다. 환불 문의는 고객센터(support@example.com)로 연락 주시기 바랍니다.
+                  네, 가능합니다. 토큰을 사용하지 않은 경우에 한하여 구매일로부터 1주 이내에 환불 요청이 가능하며, 
+                  결제하셨던 동일한 방법으로 환불 처리됩니다. 환불 문의는 고객센터 (aihpro@naver.com)로 연락 주시기 바랍니다.
                 </p>
               </div>
               <div className="bg-card rounded-lg p-6 border border-border">

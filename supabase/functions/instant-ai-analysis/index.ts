@@ -167,7 +167,17 @@ ${targetLabel ? `분석 대상: ${targetLabel}` : ''}
     if (LOVABLE_API_KEY) {
       try {
         logStep("Starting report image generation");
-        const imagePrompt = `Professional developmental psychology report cover image. Theme: child development and mental health assessment. Style: calming, professional, educational. Colors: soft pastels, warm and trustworthy. Elements: abstract representation of growth, learning, and well-being. Modern minimalist design suitable for a professional report. Ultra high resolution, clean design.`;
+        
+        // 고민 내용과 분석 결과를 반영한 맞춤형 이미지 프롬프트
+        const imagePrompt = `Professional developmental psychology report cover image. 
+Context: ${analysisResult.type} - ${concernLabel} for ${targetLabel}. 
+Severity: ${analysisResult.severity}. 
+Theme: Reflect the specific concern - ${inputText.substring(0, 200)}. 
+Style: calming, professional, educational, emotionally supportive. 
+Colors: ${analysisResult.severity === '높음' ? 'warm, supportive tones (soft reds, oranges)' : analysisResult.severity === '중간' ? 'balanced, gentle tones (soft blues, greens)' : 'positive, uplifting tones (soft pastels, yellows)'}.
+Elements: abstract representation of ${concernLabel}, growth, healing, and hope. 
+Modern minimalist design suitable for a professional psychological report. 
+Ultra high resolution, clean design that provides comfort and reassurance.`;
         
         const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
           method: 'POST',
@@ -251,6 +261,7 @@ function parseAIResponse(response: string, originalText: string) {
           '전문가 매칭 및 상담 예약',
           '맞춤형 솔루션 추천 받기'
         ],
+        comprehensiveReports: parsed.comprehensiveReports || null,
         aiResponse: response
       };
     }

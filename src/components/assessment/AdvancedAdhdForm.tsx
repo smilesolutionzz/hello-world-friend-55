@@ -28,10 +28,7 @@ const AdvancedAdhdForm = ({ onComplete, onBack }: AdvancedAdhdFormProps) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = parseInt(value);
     setAnswers(newAnswers);
-    
-    setTimeout(() => {
-      handleNext();
-    }, 500);
+    handleNext();
   };
 
   const handleStartTest = async () => {

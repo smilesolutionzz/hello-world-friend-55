@@ -58,11 +58,7 @@ export default function BigFiveTestForm({ onComplete, onBack }: BigFiveTestFormP
       ...prev,
       [questionId]: value
     }));
-    
-    // 자동으로 다음 문항으로 이동 (0.5초 지연)
-    setTimeout(() => {
-      handleNext();
-    }, 500);
+    handleNext();
   };
 
   const handleNext = () => {

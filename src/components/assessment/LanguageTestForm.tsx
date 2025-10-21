@@ -77,14 +77,11 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
     
-    // 자동으로 다음 질문으로 이동
-    setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-      } else {
-        handleNext();
-      }
-    }, 500);
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      handleNext();
+    }
   };
 
   const handleNext = () => {

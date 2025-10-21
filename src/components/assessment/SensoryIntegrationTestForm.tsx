@@ -51,18 +51,11 @@ const SensoryIntegrationTestForm = ({ onComplete, onBack }: SensoryIntegrationTe
     newAnswers[currentQuestion] = parseInt(value);
     setAnswers(newAnswers);
     
-    toast({
-      description: "답변이 저장되었습니다",
-      duration: 1000,
-    });
-    
-    setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-      } else {
-        handleComplete(newAnswers);
-      }
-    }, 500);
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      handleComplete(newAnswers);
+    }
   };
 
   const handleNext = () => {

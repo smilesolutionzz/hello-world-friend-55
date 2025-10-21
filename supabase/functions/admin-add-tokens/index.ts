@@ -35,9 +35,9 @@ serve(async (req) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser(token);
     
-    if (userError || !user) {
+    if (userError || !currentUser) {
       return new Response(
         JSON.stringify({ error: 'Unauthorized: Invalid token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -46,7 +46,7 @@ serve(async (req) => {
 
     // Check admin role using security definer function
     const { data: roleData, error: roleError } = await supabase
-      .rpc('has_role', { _user_id: user.id, _role: 'admin' });
+      .rpc('has_role', { _user_id: currentUser.id, _role: 'admin' });
 
     if (roleError || !roleData) {
       console.error('Admin check failed:', roleError);

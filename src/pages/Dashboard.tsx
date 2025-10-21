@@ -419,47 +419,86 @@ const DashboardNew = () => {
               </div>
             </div>
 
-            {/* 인사이트 카드 */}
+            {/* 나의 검사 결과 인사이트 */}
             <div>
-              <h3 className="text-base font-semibold mb-4 text-foreground">인사이트</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {distributionData
-                  .sort((a, b) => b.value - a.value)
-                  .slice(0, 3)
-                  .map((item, idx) => (
-                    <div 
-                      key={item.name} 
-                      className="bg-white rounded-2xl p-6 shadow-sm border-2 hover:shadow-md transition-shadow"
-                      style={{ borderColor: item.color }}
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <h4 className="font-semibold text-base text-foreground mb-1">
-                            {item.name} 높은 그룹(20명)
-                          </h4>
-                          <p className="text-xs text-muted-foreground">
-                            기준: {item.description}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {item.description} 영역에서 관심이 필요합니다
-                        </p>
-                      </div>
-                      <div className="mt-4 pt-4 border-t border-border/40">
-                        <div className="flex items-center justify-center">
-                          <div 
-                            className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl"
-                            style={{ backgroundColor: item.color }}
-                          >
-                            {item.value}
+              <div className="mb-4">
+                <h3 className="text-base font-semibold text-foreground">나의 검사 결과 인사이트</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  나의 검사 결과를 바탕으로 분석한 영역별 점수입니다
+                </p>
+              </div>
+              {distributionData.some(item => item.value > 0) ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {distributionData
+                    .sort((a, b) => a.value - b.value)
+                    .slice(0, 3)
+                    .map((item, idx) => {
+                      const getInsightLevel = (value: number) => {
+                        if (value >= 80) return { text: '우수', color: 'text-green-600', bgColor: 'bg-green-50' };
+                        if (value >= 60) return { text: '양호', color: 'text-blue-600', bgColor: 'bg-blue-50' };
+                        if (value >= 40) return { text: '보통', color: 'text-yellow-600', bgColor: 'bg-yellow-50' };
+                        return { text: '관심 필요', color: 'text-red-600', bgColor: 'bg-red-50' };
+                      };
+                      
+                      const level = getInsightLevel(item.value);
+                      
+                      return (
+                        <div 
+                          key={item.name} 
+                          className="bg-white rounded-2xl p-6 shadow-sm border-2 hover:shadow-md transition-shadow"
+                          style={{ borderColor: item.color }}
+                        >
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-lg text-foreground mb-1">
+                                {item.name}
+                              </h4>
+                              <p className="text-xs text-muted-foreground">
+                                {item.description}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-4 pt-4 border-t border-border/40">
+                            <div className="flex items-center justify-between">
+                              <div 
+                                className="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl"
+                                style={{ backgroundColor: item.color }}
+                              >
+                                {item.value}
+                              </div>
+                              <div className="text-right">
+                                <div className={`inline-block px-3 py-1.5 rounded-full ${level.bgColor}`}>
+                                  <span className={`text-sm font-semibold ${level.color}`}>
+                                    {level.text}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-2">
+                                  평균 점수
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
+                      );
+                    })}
+                </div>
+              ) : (
+                <div className="bg-white rounded-2xl p-12 shadow-sm border border-border/40 text-center">
+                  <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <BarChart3 className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    검사 결과가 없습니다. 검사를 시작하여 나의 인사이트를 확인해보세요.
+                  </p>
+                  <Button 
+                    className="mt-4" 
+                    onClick={() => navigate('/assessment')}
+                  >
+                    검사 시작하기
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* 빠른 액션 */}

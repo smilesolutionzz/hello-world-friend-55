@@ -113,7 +113,8 @@ const SocialDevelopmentTestForm = ({ onComplete, onBack }: SocialDevelopmentTest
         </CardHeader>
         <CardContent>
           <RadioGroup
-            value={answers[currentQuestion] >= 0 ? answers[currentQuestion].toString() : undefined}
+            key={currentQuestion}
+            value={answers[currentQuestion] >= 0 ? answers[currentQuestion].toString() : ""}
             onValueChange={handleAnswerChange}
             className="space-y-3"
           >

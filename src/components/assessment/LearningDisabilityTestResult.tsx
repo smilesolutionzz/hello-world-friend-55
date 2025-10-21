@@ -107,6 +107,7 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
 
   useEffect(() => {
     const domains = analyzeLearningDomains();
+    console.log('Learning domains data:', domains); // 디버깅용
     setLearningDomains(domains);
     
     // 상세 분석 데이터 생성
@@ -330,27 +331,51 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
             {/* 영역별 점수 막대 차트 */}
             <div className="h-80">
               <h4 className="text-center font-semibold mb-4 text-orange-700 dark:text-orange-300">영역별 점수 분포</h4>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={learningDomains} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" domain={[0, 100]} />
-                  <YAxis 
-                    type="category" 
-                    dataKey="domain" 
-                    width={70}
-                    tick={{ fontSize: 10 }}
-                  />
-                  <Tooltip 
-                    formatter={(value, name) => [`${value}%`, '어려움도']}
-                    labelFormatter={(label) => `${label}`}
-                  />
-                  <Bar dataKey="percentage" radius={[0, 4, 4, 0]}>
-                    {learningDomains.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              {learningDomains.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%" debounce={50}>
+                  <BarChart 
+                    data={learningDomains} 
+                    margin={{ top: 5, right: 20, left: 0, bottom: 60 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis 
+                      dataKey="domain"
+                      angle={-45}
+                      textAnchor="end"
+                      height={80}
+                      tick={{ fontSize: 10, fill: '#6b7280' }}
+                      interval={0}
+                    />
+                    <YAxis 
+                      domain={[0, 100]}
+                      tick={{ fontSize: 11, fill: '#6b7280' }}
+                      label={{ value: '어려움도 (%)', angle: -90, position: 'insideLeft' }}
+                    />
+                    <Tooltip 
+                      formatter={(value: any) => [`${value}%`, '어려움도']}
+                      contentStyle={{ 
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                        padding: '8px 12px'
+                      }}
+                    />
+                    <Bar 
+                      dataKey="percentage" 
+                      radius={[4, 4, 0, 0]}
+                      animationDuration={500}
+                    >
+                      {learningDomains.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  데이터를 불러오는 중...
+                </div>
+              )}
             </div>
           </div>
         </CardContent>

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Brain, Heart, Sparkles, Home, Share2, TrendingUp } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 
 interface DefenseMechanismResultProps {
   result: {
@@ -190,9 +191,15 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
 
         {/* AI Analysis */}
         <Card className="p-8 mb-6 border-2 border-purple-200 dark:border-purple-800">
-          <div className="flex items-center gap-3 mb-6">
-            <Heart className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-            <h2 className="text-2xl font-bold">AI 심층 분석</h2>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Heart className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              <h2 className="text-2xl font-bold">AI 심층 분석</h2>
+            </div>
+            <TextToSpeechButton 
+              text={result.analysis} 
+              className="ml-auto"
+            />
           </div>
           
           <div className="prose dark:prose-invert max-w-none">

@@ -121,6 +121,7 @@ import InstitutionAdmin from "./pages/InstitutionAdmin";
 import PMFOnboarding from "./pages/PMFOnboarding";
 import KPIDashboard from "./pages/KPIDashboard";
 import PlatformManual from "./pages/PlatformManual";
+import ReportGenerator from "./pages/ReportGenerator";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -236,6 +237,7 @@ const App = () => {
           <Route path="/observation" element={<ObservationNew />} />
           <Route path="/observation-old" element={<Observation />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
+          <Route path="/report-generator" element={<ReportGenerator />} />
           <Route path="/concern-storage" element={<ConcernStorage />} />
           <Route path="/expert" element={<Expert />} />
           <Route path="/experts" element={<Experts />} />

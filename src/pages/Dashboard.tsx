@@ -27,6 +27,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import FamilyManagement from "@/components/family/FamilyManagement";
 import AssessmentHistory from "@/components/history/AssessmentHistory";
+import ImprovementHistory from "@/components/improvement/ImprovementHistory";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, CartesianGrid, Tooltip, Legend, XAxis, YAxis, LineChart, Line } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
@@ -296,6 +297,12 @@ const DashboardNew = () => {
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
               >
                 개요
+              </TabsTrigger>
+              <TabsTrigger 
+                value="improvements" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+              >
+                개선 이력
               </TabsTrigger>
               <TabsTrigger 
                 value="assessments" 
@@ -631,6 +638,11 @@ const DashboardNew = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Improvements Tab */}
+          <TabsContent value="improvements" className="mt-0">
+            <ImprovementHistory observations={filteredObservations} />
           </TabsContent>
 
           {/* Assessments Tab */}

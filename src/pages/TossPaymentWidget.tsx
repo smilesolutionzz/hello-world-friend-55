@@ -84,10 +84,10 @@ const TossPaymentWidget = () => {
   const handlePayment = async () => {
     if (!paymentWidget || !uiReady) {
       toast({
-        title: '잠시만 기다려주세요',
-        description: '결제 위젯이 아직 준비 중입니다.',
-        variant: 'destructive',
+        title: '테스트 모드로 전환',
+        description: '결제 UI가 준비되지 않아 테스트 모달을 엽니다.',
       });
+      setTestOpen(true);
       return;
     }
 
@@ -132,6 +132,10 @@ const TossPaymentWidget = () => {
           return;
         } catch (retryErr: any) {
           console.error('Payment retry failed:', retryErr);
+          setProcessing(false);
+          setTestOpen(true);
+          toast({ title: '테스트 모드로 전환', description: '결제 UI 문제로 테스트 모달을 열었습니다.' });
+          return;
         }
       }
 

@@ -59,27 +59,25 @@ const TossPaymentWidget = () => {
 
       const paymentWidget = await loadPaymentWidget(TOSS_CLIENT_KEY, session.user.id);
       
-      // 결제수단 렌더링을 먼저 하고
-      const paymentMethods = await paymentWidget.renderPaymentMethods('#payment-widget', {
+      setPaymentWidget(paymentWidget);
+      
+      // 결제수단 렌더링
+      await paymentWidget.renderPaymentMethods('#payment-widget', {
         value: Math.round(price),
         currency: 'KRW',
         country: 'KR'
       });
       
       // 약관 동의 섹션 렌더링
-      const agreement = await paymentWidget.renderAgreement('#agreement');
+      await paymentWidget.renderAgreement('#agreement');
       
-      // 결제 위젯 완전 로드 대기 (간단하게 수정)
-      await new Promise((resolve) => {
-        // 3초 대기 후 UI 준비 완료 처리
-        setTimeout(() => {
-          setUiReady(true);
-          resolve(true);
-        }, 3000);
-      });
-      
-      setPaymentWidget(paymentWidget);
       setLoading(false);
+      
+      // UI가 완전히 렌더링될 때까지 대기 (DOM 렌더링 + iframe 로드 시간)
+      setTimeout(() => {
+        setUiReady(true);
+        console.log('✅ Payment widget UI ready');
+      }, 5000);
 
     } catch (error: any) {
       console.error('Payment widget initialization error:', error);

@@ -103,5 +103,22 @@ export const mockExperts = [
     calendly_url: 'https://calendly.com/example6',
     intro: '특수체육전공자로서 운동발달 및 사회성 행동에 관한 상담 가능합니다.',
     visible: true
+  },
+  {
+    id: '7',
+    name: '이효진 박사',
+    photo_url: getExpertImage('이효진') || '/placeholder.svg',
+    credential: '언어치료사, 심리상담사, ABA치료사, 박사, 경력 20년, 여',
+    verified: true,
+    categories: ['언어치료', '심리상담', 'ABA치료'],
+    region: '서울',
+    online: true,
+    rating: 5.0,
+    price_per_50: 70000,
+    availability_text: '전연령 대상 가능',
+    contact_form_url: 'https://forms.gle/example7',
+    calendly_url: 'https://calendly.com/example7',
+    intro: '20년 경력의 언어, 심리, ABA 전문가입니다.',
+    visible: true
   }
 ];

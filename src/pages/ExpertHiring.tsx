@@ -476,6 +476,37 @@ const mockExperts: Expert[] = [
     location: '서울',
     isOnline: true,
     responseTime: '평균 2시간 이내'
+  },
+  {
+    id: '14',
+    name: '이성우',
+    specialty: ['운동재활', '물리치료', '작업치료'],
+    credentials: ['물리치료사', '박사', '경력 20년', '남', '치료사'],
+    rating: 5.0,
+    reviews: 0,
+    experience: '20년',
+    availability: '전연령 대상 가능',
+    monthlyPrice: 200000,
+    hourlyPrice: 50000,
+    image: getExpertImage('이성우') || '/api/placeholder/150/150',
+    description: '20년 경력의 물리치료 전문가로 운동재활, 작업치료 분야의 박사학위를 보유하고 있습니다. 아동부터 성인까지 전 연령대의 신체 기능 회복과 재활을 위한 맞춤형 치료 프로그램을 제공합니다. 과학적 근거에 기반한 체계적인 치료로 최상의 재활 결과를 이끌어냅니다.',
+    languages: ['한국어'],
+    consultationTypes: ['대면상담', '화상상담', '센터상담'],
+    monthlyServices: [
+      '주 1회 물리치료 및 운동재활 (월 4회)',
+      '개인별 맞춤 재활 운동 프로그램',
+      '작업치료 및 일상생활 훈련',
+      '재활 진전도 평가 및 리포트',
+      '가정 내 운동 지도 및 상담'
+    ],
+    portfolio: {
+      cases: 600,
+      successRate: 96,
+      specializations: ['운동재활', '물리치료', '작업치료', '신경재활', '근골격계재활']
+    },
+    location: '전국',
+    isOnline: true,
+    responseTime: '평균 1시간 이내'
   }
 ];
 

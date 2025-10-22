@@ -139,6 +139,12 @@ export default function AssessmentDetail() {
       'executive_function': '실행기능',
       'working_memory': '작업기억',
       
+      // 청소년 마음바로미터 요인
+      'emotional_problems': '정서적 문제',
+      'behavioral_problems': '행동적 문제',
+      'social_adaptation': '사회적 적응',
+      'identity_development': '정체성 발달',
+      
       // 기타 심리학적 영역
       'social_energy': '사회적 에너지',
       'decision_making': '의사결정',

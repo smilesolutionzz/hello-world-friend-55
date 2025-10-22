@@ -131,32 +131,34 @@ const EarlyScreeningSection = ({ assessmentType, results, isAnalyzing }: EarlySc
         break;
         
       case 'cognitive':
-        // 인지 검사는 높은 점수가 더 좋은 것임
+        // 인지 검사는 높은 점수가 더 좋은 것임 (주의: 다른 검사와 반대!)
         const cognitiveScorePercentage = (averageScore / 7) * 100; // 7점 만점을 100점으로 환산
         const attentionScorePercentage = ((results.attention || averageScore) / 7) * 100;
+        
+        console.log(`[인지검사 위험도 분석] 평균점수: ${averageScore}, 백분율: ${cognitiveScorePercentage}%`);
         
         factors.push(
           {
             id: 'cognitive_decline',
             name: '인지기능 저하',
-            description: '기억력, 집중력 등 인지능력 감소 위험',
+            description: '기억력, 집중력 등 인지능력 감소 위험 (점수가 높을수록 인지능력이 좋음)',
             level: cognitiveScorePercentage >= 70 ? 'low' : cognitiveScorePercentage >= 50 ? 'moderate' : 'high',
             score: Math.max(100 - cognitiveScorePercentage, 0), // 인지점수가 낮을수록 위험도 높음
             icon: <Brain className="w-5 h-5" />,
-            recommendation: cognitiveScorePercentage < 50 ? '인지기능 훈련과 정기적인 검진이 권장됩니다.' :
-                           cognitiveScorePercentage < 70 ? '인지기능 유지를 위한 지속적 관리가 필요합니다.' :
-                           '양호한 인지기능을 유지하고 있습니다.'
+            recommendation: cognitiveScorePercentage >= 70 ? '양호한 인지기능을 유지하고 있습니다. 현재 상태를 유지하세요.' :
+                           cognitiveScorePercentage >= 50 ? '인지기능 유지를 위한 지속적 관리가 필요합니다.' :
+                           '인지기능 훈련과 정기적인 검진이 권장됩니다.'
           },
           {
             id: 'attention_deficit',
             name: '주의력 결핍',
-            description: '집중력 저하 및 주의산만 증상 위험',
+            description: '집중력 저하 및 주의산만 증상 위험 (점수가 높을수록 주의력이 좋음)',
             level: attentionScorePercentage >= 70 ? 'low' : attentionScorePercentage >= 50 ? 'moderate' : 'high',
             score: Math.max(100 - attentionScorePercentage, 0), // 주의력 점수가 낮을수록 위험도 높음
             icon: <Eye className="w-5 h-5" />,
-            recommendation: attentionScorePercentage < 50 ? '주의력 향상을 위한 전문적 훈련이 필요합니다.' :
-                           attentionScorePercentage < 70 ? '주의력 향상을 위한 집중력 훈련이 도움이 됩니다.' :
-                           '좋은 주의집중력을 보이고 있습니다.'
+            recommendation: attentionScorePercentage >= 70 ? '좋은 주의집중력을 보이고 있습니다. 현재 수준을 유지하세요.' :
+                           attentionScorePercentage >= 50 ? '주의력 향상을 위한 집중력 훈련이 도움이 됩니다.' :
+                           '주의력 향상을 위한 전문적 훈련이 필요합니다.'
           }
         );
         break;

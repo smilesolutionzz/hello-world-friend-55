@@ -325,6 +325,12 @@ const PremiumAssessmentResult = ({
       'family_relationships': '가족관계',
       'future_anxiety': '미래불안',
       
+      // 청소년 마음바로미터 요인
+      'emotional_problems': '정서적 문제',
+      'behavioral_problems': '행동적 문제',
+      'social_adaptation': '사회적 적응',
+      'identity_development': '정체성 발달',
+      
       // 직업 관련 요인
       'career_interest': '진로관심',
       'work_values': '직업가치관',

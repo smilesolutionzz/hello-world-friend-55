@@ -354,6 +354,97 @@ const mockExperts: Expert[] = [
     location: '전국',
     isOnline: true,
     responseTime: '평균 1.5시간 이내'
+  },
+  {
+    id: '10',
+    name: '양희진',
+    specialty: ['특수체육', '운동발달', '사회성'],
+    credentials: ['특수체육치료사', '학사', '경력 5년', '남'],
+    rating: 4.7,
+    reviews: 0,
+    experience: '5년',
+    availability: '초등~성인 대상 가능',
+    monthlyPrice: 120000,
+    hourlyPrice: 30000,
+    image: getExpertImage('양희진') || '/api/placeholder/150/150',
+    description: '특수체육전공자로서 운동발달 및 사회성 행동에 관한 상담 가능합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['대면상담', '전화상담', '센터상담', '카톡상담'],
+    monthlyServices: [
+      '주 2회 특수체육 치료 (월 8회)',
+      '운동발달 평가 및 프로그램',
+      '사회성 행동 개선 훈련',
+      '부모 상담 및 교육'
+    ],
+    portfolio: {
+      cases: 150,
+      successRate: 88,
+      specializations: ['특수체육', '운동발달', '사회성훈련']
+    },
+    location: '서울',
+    isOnline: true,
+    responseTime: '평균 2시간 이내'
+  },
+  {
+    id: '11',
+    name: '이효진',
+    specialty: ['언어치료', '심리상담', 'ABA치료'],
+    credentials: ['언어치료사', '심리상담사', 'ABA치료사', '박사', '경력 20년', '여'],
+    rating: 5.0,
+    reviews: 0,
+    experience: '20년',
+    availability: '전연령 대상 가능',
+    monthlyPrice: 280000,
+    hourlyPrice: 70000,
+    image: getExpertImage('이효진') || '/api/placeholder/150/150',
+    description: '20년 경력의 언어, 심리, ABA 전문가입니다. 박사 학위를 보유하고 있으며 전 연령대의 다양한 발달 문제에 대한 전문적인 치료를 제공합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['대면상담', '화상상담'],
+    monthlyServices: [
+      '주 2회 전문 치료 (월 8회)',
+      '언어/심리/ABA 통합 평가',
+      '개별화 치료 프로그램',
+      '부모 교육 및 가정 지도',
+      '진전 상황 월간 리포트'
+    ],
+    portfolio: {
+      cases: 500,
+      successRate: 95,
+      specializations: ['언어치료', '심리상담', 'ABA치료', '발달평가']
+    },
+    location: '서울',
+    isOnline: true,
+    responseTime: '평균 1시간 이내'
+  },
+  {
+    id: '12',
+    name: '전우준',
+    specialty: ['미술치료', '심리상담'],
+    credentials: ['미술치료사', '심리상담사', '석사', '경력 2년', '남'],
+    rating: 4.6,
+    reviews: 0,
+    experience: '2년',
+    availability: '유아~청소년 대상 가능',
+    monthlyPrice: 240000,
+    hourlyPrice: 60000,
+    image: getExpertImage('전우준') || '/api/placeholder/150/150',
+    description: '미술치료와 심리상담 전문가입니다. 유아부터 청소년까지 다양한 연령대의 정서적 문제와 심리적 어려움을 미술을 통해 치료합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['대면상담', '센터상담'],
+    monthlyServices: [
+      '주 2회 미술치료 (월 8회)',
+      '심리평가 및 상담',
+      '정서발달 프로그램',
+      '부모 상담 및 교육'
+    ],
+    portfolio: {
+      cases: 80,
+      successRate: 90,
+      specializations: ['미술치료', '심리상담', '정서발달', '아동청소년상담']
+    },
+    location: '서울',
+    isOnline: false,
+    responseTime: '평균 3시간 이내'
   }
 ];
 

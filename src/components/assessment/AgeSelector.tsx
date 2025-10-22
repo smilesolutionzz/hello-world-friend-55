@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Baby, GraduationCap, Briefcase, Heart } from "lucide-react";
+import { Baby, GraduationCap, Briefcase, Heart, ArrowLeft, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
 interface AgeSelectorProps {
   onAgeGroupSelect: (ageGroup: 'infant' | 'child' | 'adult', age: number) => void;
@@ -9,6 +11,7 @@ interface AgeSelectorProps {
 }
 
 const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
+  const navigate = useNavigate();
   const [selectedGroup, setSelectedGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [specificAge, setSpecificAge] = useState<number>(0);
 
@@ -57,13 +60,36 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden">
+      {/* Navigation */}
+      <UnifiedNavigation />
+      
       {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />
         <div className="absolute bottom-32 right-16 w-96 h-96 bg-accent/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
       </div>
 
-      <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
+      <div className="relative z-10 container mx-auto px-6 pt-24 pb-16">
+        {/* Back to Home Button */}
+        <div className="mb-6 flex gap-3">
+          <Button 
+            variant="outline" 
+            onClick={() => window.history.back()}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            뒤로가기
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2"
+          >
+            <Home className="w-4 h-4" />
+            메인으로
+          </Button>
+        </div>
+        
         {/* Header */}
         <div className="text-center mb-16 space-y-6">
           <div className="flex items-center justify-center mb-8">
@@ -131,7 +157,6 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
                       </p>
                       
                       <div className="space-y-2">
-                        <h4 className="font-semibold text-foreground">평가 영역:</h4>
                         <ul className="space-y-1">
                           {group.features.map((feature, index) => (
                             <li key={index} className="text-muted-foreground flex items-center gap-2">

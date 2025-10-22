@@ -347,10 +347,10 @@ const InstantAIAnalysis = () => {
           <div className="bg-transparent rounded-2xl border border-border/50 p-6 space-y-4">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
-              <h2 className="text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">내 고민 입력</h2>
+              <h2 className="text-lg font-bold text-white drop-shadow-[0_2px_4px_rgba(245,158,11,0.5)]">내 고민 입력</h2>
             </div>
             
-            <p className="text-base md:text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent leading-relaxed">
+            <p className="text-base md:text-lg font-bold text-white drop-shadow-[0_2px_4px_rgba(245,158,11,0.5)] leading-relaxed">
               지금 가장 걱정되는 고민이나 문제를 간단히 적어주세요
             </p>
             

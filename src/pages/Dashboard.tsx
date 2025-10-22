@@ -413,17 +413,19 @@ const DashboardNew = () => {
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={monthlyData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                      <XAxis dataKey="month" stroke="#64748b" />
-                      <YAxis stroke="#64748b" />
+                      <XAxis dataKey="month" stroke="#94a3b8" tick={{ fill: '#e2e8f0' }} />
+                      <YAxis stroke="#94a3b8" tick={{ fill: '#e2e8f0' }} />
                       <Tooltip 
                         contentStyle={{ 
                           backgroundColor: '#0F1419', 
                           border: '1px solid #334155',
-                          borderRadius: '8px'
+                          borderRadius: '8px',
+                          color: '#fff'
                         }}
                         labelStyle={{ color: '#fff' }}
+                        itemStyle={{ color: '#fff' }}
                       />
-                      <Legend />
+                      <Legend wrapperStyle={{ color: '#fff' }} />
                       <Bar dataKey="count" fill="#fbbf24" name="월별 검사" />
                       <Bar dataKey="cumulative" fill="#f59e0b" name="누적 검사" />
                     </BarChart>

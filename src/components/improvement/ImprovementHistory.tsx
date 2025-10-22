@@ -183,21 +183,23 @@ const ImprovementHistory: React.FC<ImprovementHistoryProps> = ({ observations })
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
               <XAxis 
                 dataKey="date" 
-                stroke="#64748b"
-                tick={{ fill: '#94a3b8' }}
+                stroke="#94a3b8"
+                tick={{ fill: '#e2e8f0' }}
               />
               <YAxis 
-                stroke="#64748b"
-                tick={{ fill: '#94a3b8' }}
+                stroke="#94a3b8"
+                tick={{ fill: '#e2e8f0' }}
                 domain={[0, 100]}
               />
               <Tooltip 
                 contentStyle={{ 
                   backgroundColor: '#0F1419', 
                   border: '1px solid #334155',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  color: '#fff'
                 }}
                 labelStyle={{ color: '#fff', marginBottom: '8px' }}
+                itemStyle={{ color: '#fff' }}
                 formatter={(value: any, name: string) => [`${value}점`, name]}
                 labelFormatter={(label, payload) => {
                   if (payload && payload[0]) {
@@ -207,7 +209,7 @@ const ImprovementHistory: React.FC<ImprovementHistoryProps> = ({ observations })
                 }}
               />
               <Legend 
-                wrapperStyle={{ paddingTop: '20px' }}
+                wrapperStyle={{ paddingTop: '20px', color: '#fff' }}
                 iconType="line"
               />
               {categoryImprovements.map((cat, index) => (
@@ -304,23 +306,25 @@ const ImprovementHistory: React.FC<ImprovementHistoryProps> = ({ observations })
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
               <XAxis 
                 dataKey="category" 
-                stroke="#64748b"
-                tick={{ fill: '#94a3b8' }}
+                stroke="#94a3b8"
+                tick={{ fill: '#e2e8f0' }}
               />
               <YAxis 
-                stroke="#64748b"
-                tick={{ fill: '#94a3b8' }}
+                stroke="#94a3b8"
+                tick={{ fill: '#e2e8f0' }}
                 domain={[0, 100]}
               />
               <Tooltip 
                 contentStyle={{ 
                   backgroundColor: '#0F1419', 
                   border: '1px solid #334155',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  color: '#fff'
                 }}
                 labelStyle={{ color: '#fff' }}
+                itemStyle={{ color: '#fff' }}
               />
-              <Legend />
+              <Legend wrapperStyle={{ color: '#fff' }} />
               <Bar dataKey="처음" fill="#64748b" radius={[4, 4, 0, 0]} />
               <Bar dataKey="현재" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
             </BarChart>

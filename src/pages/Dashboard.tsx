@@ -101,30 +101,45 @@ const DashboardNew = () => {
       const allObservations: Observation[] = [];
 
       assessmentData?.forEach((assessment: any) => {
-        let totalScore = 75;
-        let categoryScores = { 정서: 75, 행동: 75, 인지: 75, 사회성: 75, 신체: 75 };
+        let totalScore = 0;
+        let categoryScores: { [key: string]: number } = {};
         
+        // 실제 results 데이터 파싱
         if (assessment.results && typeof assessment.results === 'object') {
-          if (assessment.results.total) {
-            totalScore = assessment.results.total;
-          } else if (assessment.results.totalScore) {
-            totalScore = assessment.results.totalScore;
+          // 총점 계산
+          if (assessment.results.total !== undefined) {
+            totalScore = Number(assessment.results.total);
+          } else if (assessment.results.totalScore !== undefined) {
+            totalScore = Number(assessment.results.totalScore);
+          } else if (assessment.results.overallScore !== undefined) {
+            totalScore = Number(assessment.results.overallScore);
           }
           
-          if (assessment.results.categories) {
-            categoryScores = assessment.results.categories;
+          // 카테고리 점수 파싱
+          if (assessment.results.categories && typeof assessment.results.categories === 'object') {
+            categoryScores = { ...assessment.results.categories };
+          } else if (assessment.results.categoryScores && typeof assessment.results.categoryScores === 'object') {
+            categoryScores = { ...assessment.results.categoryScores };
+          }
+          
+          // 총점이 없으면 카테고리 평균으로 계산
+          if (totalScore === 0 && Object.keys(categoryScores).length > 0) {
+            const values = Object.values(categoryScores).filter(v => typeof v === 'number' && v > 0);
+            if (values.length > 0) {
+              totalScore = Math.round(values.reduce((a, b) => a + b, 0) / values.length);
+            }
           }
         }
         
         allObservations.push({
           id: assessment.id,
           user_id: user.id,
-          age_group: assessment.age_group,
-          tags: ['검사', assessment.age_group],
+          age_group: assessment.age_group || '미분류',
+          tags: ['검사', assessment.age_group || '미분류'],
           score_overall: totalScore,
           created_at: assessment.created_at,
           profile: { ...profileData, role: 'user' } as any,
-          categoryScores
+          categoryScores: Object.keys(categoryScores).length > 0 ? categoryScores : undefined
         });
       });
 
@@ -154,65 +169,84 @@ const DashboardNew = () => {
     return obsDate >= thirtyDaysAgo;
   }).length;
 
-  // 월별 검사 데이터 집계
+  // 월별 검사 데이터 집계 - 실제 데이터만 표시
   const monthlyData = React.useMemo(() => {
-    const monthlyMap = new Map<string, { month: string; count: number; cumulative: number }>();
+    const monthlyMap = new Map<string, { month: string; count: number; cumulative: number; sortKey: string }>();
     
     filteredObservations.forEach(obs => {
       const date = new Date(obs.created_at);
-      const monthKey = `${date.getMonth() + 1}월`;
+      const year = date.getFullYear();
+      const monthNum = date.getMonth() + 1;
+      const monthKey = `${year}-${String(monthNum).padStart(2, '0')}`;
+      const monthLabel = `${monthNum}월`;
       
       if (!monthlyMap.has(monthKey)) {
-        monthlyMap.set(monthKey, { month: monthKey, count: 0, cumulative: 0 });
+        monthlyMap.set(monthKey, { month: monthLabel, count: 0, cumulative: 0, sortKey: monthKey });
       }
       
       const monthData = monthlyMap.get(monthKey)!;
       monthData.count += 1;
     });
 
+    // 날짜순으로 정렬
+    const sortedMonths = Array.from(monthlyMap.values()).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+    
+    // 누적 계산
     let cumulative = 0;
-    const months = ['8월', '9월', '10월', '11월', '12월', '1월'];
-    return months.map(month => {
-      const data = monthlyMap.get(month) || { month, count: 0, cumulative: 0 };
-      cumulative += data.count;
-      return { ...data, cumulative };
+    sortedMonths.forEach(month => {
+      cumulative += month.count;
+      month.cumulative = cumulative;
     });
+
+    return sortedMonths;
   }, [filteredObservations]);
 
-  // 영역별 분포 데이터
+  // 영역별 분포 데이터 - 실제 데이터만 사용
   const distributionData = React.useMemo(() => {
     if (filteredObservations.length === 0) {
-      return [
-        { name: '정서', value: 0, color: '#0ea5e9' },
-        { name: '행동', value: 0, color: '#10b981' },
-        { name: '인지', value: 0, color: '#f59e0b' },
-        { name: '사회성', value: 0, color: '#8b5cf6' },
-        { name: '신체', value: 0, color: '#ef4444' }
-      ];
+      return [];
     }
 
-    const totals = { 정서: 0, 행동: 0, 인지: 0, 사회성: 0, 신체: 0 };
-    const counts = { 정서: 0, 행동: 0, 인지: 0, 사회성: 0, 신체: 0 };
+    // 카테고리별 점수 수집
+    const categoryMap = new Map<string, { total: number; count: number }>();
 
     filteredObservations.forEach(obs => {
-      if (obs.categoryScores) {
-        Object.keys(totals).forEach(category => {
-          const score = obs.categoryScores[category];
-          if (score !== undefined) {
-            totals[category as keyof typeof totals] += Number(score);
-            counts[category as keyof typeof counts] += 1;
+      if (obs.categoryScores && typeof obs.categoryScores === 'object') {
+        Object.entries(obs.categoryScores).forEach(([category, score]) => {
+          if (typeof score === 'number' && score > 0) {
+            if (!categoryMap.has(category)) {
+              categoryMap.set(category, { total: 0, count: 0 });
+            }
+            const cat = categoryMap.get(category)!;
+            cat.total += score;
+            cat.count += 1;
           }
         });
       }
     });
 
-    return [
-      { name: '정서', value: Math.round(totals.정서 / Math.max(counts.정서, 1)), color: '#0ea5e9' },
-      { name: '행동', value: Math.round(totals.행동 / Math.max(counts.행동, 1)), color: '#10b981' },
-      { name: '인지', value: Math.round(totals.인지 / Math.max(counts.인지, 1)), color: '#f59e0b' },
-      { name: '사회성', value: Math.round(totals.사회성 / Math.max(counts.사회성, 1)), color: '#8b5cf6' },
-      { name: '신체', value: Math.round(totals.신체 / Math.max(counts.신체, 1)), color: '#ef4444' }
-    ];
+    // 평균 계산 및 색상 할당
+    const colors: { [key: string]: string } = {
+      '정서': '#0ea5e9',
+      '행동': '#10b981',
+      '인지': '#f59e0b',
+      '사회성': '#8b5cf6',
+      '신체': '#ef4444',
+      '언어': '#06b6d4',
+      '감각': '#ec4899',
+      '자조': '#84cc16'
+    };
+
+    const defaultColors = ['#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#ec4899', '#84cc16'];
+    let colorIndex = 0;
+
+    return Array.from(categoryMap.entries())
+      .map(([name, { total, count }]) => ({
+        name,
+        value: Math.round(total / count),
+        color: colors[name] || defaultColors[colorIndex++ % defaultColors.length]
+      }))
+      .filter(item => item.value > 0);
   }, [filteredObservations]);
 
   const averageScore = filteredObservations.length > 0
@@ -385,40 +419,50 @@ const DashboardNew = () => {
                 </CardContent>
               </Card>
 
-              {/* 영역별 점수 분포 */}
               <Card className="bg-[#0F1823] border-slate-800">
                 <CardHeader>
                   <CardTitle className="text-lg font-medium text-white">영역별 점수 분포</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={distributionData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, value }) => `${name}\n${value}점`}
-                        outerRadius={100}
-                        fill="#8884d8"
-                        dataKey="value"
-                        paddingAngle={2}
-                      >
-                        {distributionData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: '#0F1419', 
-                          border: '1px solid #334155',
-                          borderRadius: '8px'
-                        }}
-                        labelStyle={{ color: '#fff' }}
-                      />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {distributionData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={distributionData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, value }) => `${name}\n${value}점`}
+                          outerRadius={100}
+                          fill="#8884d8"
+                          dataKey="value"
+                          paddingAngle={2}
+                        >
+                          {distributionData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: '#0F1419', 
+                            border: '1px solid #334155',
+                            borderRadius: '8px'
+                          }}
+                          labelStyle={{ color: '#fff' }}
+                        />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-[300px] flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <BarChart3 className="w-8 h-8 text-slate-600" />
+                        </div>
+                        <p className="text-sm text-slate-500">영역별 점수 데이터가 없습니다</p>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>

@@ -116,21 +116,52 @@ const TossPaymentWidget = () => {
       console.log('Payment result:', result);
     } catch (error: any) {
       console.error('Payment request error:', error);
-      setProcessing(false);
-      
-      if (error.message?.includes('렌더링되지 않았습니다')) {
-        toast({
-          title: '결제 준비 중',
-          description: '결제 위젯이 준비되는 중입니다. 잠시 후 다시 시도해주세요.',
-          variant: 'destructive',
-        });
-      } else {
-        toast({
-          title: '결제 실패',
-          description: error?.message || '결제 요청 중 오류가 발생했습니다.',
-          variant: 'destructive',
-        });
+
+      // 결제 UI 미렌더 오류인 경우 1회 자동 복구 후 재시도
+      const notRendered =
+        error?.code === 'NOT_RENDERED_PAYMENT_METHODS_UI' ||
+        error?.message?.includes('NOT_RENDERED_PAYMENT_METHODS_UI') ||
+        error?.message?.includes('렌더링되지 않았습니다');
+
+      if (notRendered && paymentWidget) {
+        try {
+          // 컨테이너 초기화 후 재렌더
+          const pw = document.getElementById('payment-widget');
+          const agree = document.getElementById('agreement');
+          if (pw) pw.innerHTML = '';
+          if (agree) agree.innerHTML = '';
+
+          await paymentWidget.renderPaymentMethods('#payment-widget', {
+            value: Math.round(price),
+            currency: 'KRW',
+            country: 'KR',
+          });
+          await paymentWidget.renderAgreement('#agreement');
+
+          setUiReady(true);
+          await new Promise((r) => setTimeout(r, 500));
+
+          // 재시도
+          const retry = await paymentWidget.requestPayment({
+            orderId,
+            orderName: `토큰 ${tokenAmount}개`,
+            successUrl: `${window.location.origin}/payment-success`,
+            failUrl: `${window.location.origin}/payment-fail`,
+          });
+          console.log('Payment retry result:', retry);
+          return;
+        } catch (retryErr: any) {
+          console.error('Payment retry failed:', retryErr);
+        }
       }
+
+      setProcessing(false);
+      toast({
+        title: '결제 실패',
+        description:
+          error?.message || '결제 요청 중 오류가 발생했습니다.',
+        variant: 'destructive',
+      });
     }
   };
 

@@ -240,8 +240,10 @@ const PremiumAssessmentResult = ({
       'hyperactivity': '과잉행동',
       'impulsivity': '충동성',
       'inattention': '부주의',
+      'executive': '실행기능',
       'executive_function': '실행기능',
       'working_memory': '작업기억',
+      'language': '언어능력',
       
       // 발달 관련 요인
       'language_development': '언어발달',

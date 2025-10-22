@@ -137,7 +137,9 @@ export const TestResults = () => {
       attention: '주의력',
       hyperactivity: '과잉행동',
       impulsivity: '충동성',
-      executive_function: '실행기능'
+      executive: '실행기능',
+      executive_function: '실행기능',
+      language: '언어능력'
     };
     return labels[key] || key;
   };

@@ -29,6 +29,9 @@ import expertLimGayoung from '@/assets/expert-lim-gayoung.jpg';
 import expertLeeGihoon from '@/assets/expert-lee-gihoon-male.jpg';
 import expertJoDaeryong from '@/assets/expert-jo-daeryong.jpg';
 import expertKimJaemin from '@/assets/expert-kim-jaemin.jpg';
+import expertYangHuijin from '@/assets/expert-yang-huijin.jpg';
+import expertLeeHyojin from '@/assets/expert-lee-hyojin.jpg';
+import expertJeonWoojun from '@/assets/expert-jeon-woojun.jpg';
 
 export const expertImages: Record<string, string> = {
   '문기웅': expertMoonGiwung,
@@ -61,6 +64,9 @@ export const expertImages: Record<string, string> = {
   '이기훈': expertLeeGihoon,
   '조대룡': expertJoDaeryong,
   '김재민': expertKimJaemin,
+  '양희진': expertYangHuijin,
+  '이효진': expertLeeHyojin,
+  '전우준': expertJeonWoojun,
 };
 
 export const getExpertImage = (name: string): string | null => {

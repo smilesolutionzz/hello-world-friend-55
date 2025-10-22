@@ -94,15 +94,31 @@ const ParentingStyleResult = ({
   };
 
   const handlePDFGeneration = async () => {
-    await generatePDFReport({
-      testType: 'parenting_style',
-      results: results.scores,
-      analysis,
-      testInfo: {
-        childAge: results.childAge,
-        childGender: results.childGender
-      }
-    });
+    try {
+      await generatePDFReport({
+        testType: '부모양육태도 검사',
+        results: results.scores,
+        analysis,
+        testInfo: {
+          childAge: results.childAge,
+          childGender: results.childGender,
+          averageScore: averageScore.toFixed(1),
+          testDate: new Date().toLocaleDateString('ko-KR')
+        }
+      });
+      
+      toast({
+        title: "PDF 다운로드 완료",
+        description: "검사 결과가 PDF로 저장되었습니다.",
+      });
+    } catch (error) {
+      console.error('PDF 생성 오류:', error);
+      toast({
+        title: "PDF 생성 오류",
+        description: "PDF 생성 중 문제가 발생했습니다.",
+        variant: "destructive"
+      });
+    }
   };
 
   const getScoreColor = (score: number) => {

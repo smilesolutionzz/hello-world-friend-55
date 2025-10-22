@@ -145,6 +145,25 @@ export default function AssessmentDetail() {
       'social_adaptation': '사회적 적응',
       'identity_development': '정체성 발달',
       
+      // 청소년 성장역량 요인
+      'internalizing_problems': '내재화 문제',
+      'externalizing_problems': '외현화 문제',
+      'attention_problems': '주의력 문제',
+      'social_competence': '사회적 역량',
+      
+      // 사회성 발달 선별검사 요인
+      'social_interaction': '사회적 상호작용',
+      'communication': '의사소통',
+      'behavioral_patterns': '행동 패턴',
+      'sensory_responses': '감각 반응',
+      
+      // 부모양육태도 요인
+      'warmth_acceptance': '온정수용',
+      'behavioral_control': '행동통제',
+      'psychological_control': '심리통제',
+      'autonomy_support': '자율성지지',
+      'communication_support': '의사소통지지',
+      
       // 기타 심리학적 영역
       'social_energy': '사회적 에너지',
       'decision_making': '의사결정',

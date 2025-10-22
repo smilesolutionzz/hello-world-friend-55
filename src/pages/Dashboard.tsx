@@ -106,13 +106,22 @@ const DashboardNew = () => {
         
         // 실제 results 데이터 파싱
         if (assessment.results && typeof assessment.results === 'object') {
-          // 총점 계산
-          if (assessment.results.total !== undefined) {
+          // 점수 정보 파싱 시도
+          if (assessment.results.scores && typeof assessment.results.scores === 'object') {
+            // scores 객체에서 점수 추출
+            if (assessment.results.scores.total !== undefined) {
+              totalScore = Number(assessment.results.scores.total);
+            } else if (assessment.results.scores.totalScore !== undefined) {
+              totalScore = Number(assessment.results.scores.totalScore);
+            }
+            
+            if (assessment.results.scores.categories) {
+              categoryScores = { ...assessment.results.scores.categories };
+            }
+          } else if (assessment.results.total !== undefined) {
             totalScore = Number(assessment.results.total);
           } else if (assessment.results.totalScore !== undefined) {
             totalScore = Number(assessment.results.totalScore);
-          } else if (assessment.results.overallScore !== undefined) {
-            totalScore = Number(assessment.results.overallScore);
           }
           
           // 카테고리 점수 파싱
@@ -121,16 +130,9 @@ const DashboardNew = () => {
           } else if (assessment.results.categoryScores && typeof assessment.results.categoryScores === 'object') {
             categoryScores = { ...assessment.results.categoryScores };
           }
-          
-          // 총점이 없으면 카테고리 평균으로 계산
-          if (totalScore === 0 && Object.keys(categoryScores).length > 0) {
-            const values = Object.values(categoryScores).filter(v => typeof v === 'number' && v > 0);
-            if (values.length > 0) {
-              totalScore = Math.round(values.reduce((a, b) => a + b, 0) / values.length);
-            }
-          }
         }
         
+        // 점수가 없는 경우 건너뛰지 않고 표시 (분석만 있는 경우도 있음)
         allObservations.push({
           id: assessment.id,
           user_id: user.id,
@@ -485,48 +487,67 @@ const DashboardNew = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredObservations.slice(0, 10).map((obs) => (
-                        <tr key={obs.id} className="border-b border-slate-800 hover:bg-slate-900/50 transition-colors">
-                          <td className="py-3 px-4 text-sm text-white">
-                            {format(new Date(obs.created_at), 'yyyy. MM. dd', { locale: ko })}
-                          </td>
-                          <td className="py-3 px-4 text-sm text-slate-300">{obs.age_group}</td>
-                          <td className="py-3 px-4 text-sm text-white">{obs.score_overall}점</td>
-                          <td className="py-3 px-4">
-                            <Badge 
-                              className={
-                                obs.score_overall >= 80 
-                                  ? 'bg-green-900/30 text-green-400 border-green-800' 
-                                  : obs.score_overall >= 60
-                                  ? 'bg-blue-900/30 text-blue-400 border-blue-800'
-                                  : 'bg-yellow-900/30 text-yellow-400 border-yellow-800'
-                              }
-                            >
-                              {obs.score_overall >= 80 ? '우수' : obs.score_overall >= 60 ? '양호' : '관심필요'}
-                            </Badge>
-                          </td>
-                          <td className="py-3 px-4 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => navigate(`/assessment/${obs.id}`)}
-                                className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => toast({ title: "다운로드 준비 중", description: "검사 결과를 다운로드합니다." })}
-                                className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
-                              >
-                                <Download className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                      {filteredObservations.slice(0, 10).map((obs) => {
+                        const hasScore = obs.score_overall > 0;
+                        const statusText = hasScore 
+                          ? (obs.score_overall >= 80 ? '우수' : obs.score_overall >= 60 ? '양호' : '관심필요')
+                          : '분석완료';
+                        const statusColor = hasScore
+                          ? (obs.score_overall >= 80 
+                              ? 'bg-green-900/30 text-green-400 border-green-800'
+                              : obs.score_overall >= 60
+                              ? 'bg-blue-900/30 text-blue-400 border-blue-800'
+                              : 'bg-yellow-900/30 text-yellow-400 border-yellow-800')
+                          : 'bg-slate-900/30 text-slate-400 border-slate-800';
+                        
+                        return (
+                          <tr key={obs.id} className="border-b border-slate-800 hover:bg-slate-900/50 transition-colors">
+                            <td className="py-3 px-4 text-sm text-white">
+                              {format(new Date(obs.created_at), 'yyyy. MM. dd', { locale: ko })}
+                            </td>
+                            <td className="py-3 px-4 text-sm text-slate-300">{obs.age_group}</td>
+                            <td className="py-3 px-4 text-sm text-white">
+                              {hasScore ? `${obs.score_overall}점` : '-'}
+                            </td>
+                            <td className="py-3 px-4">
+                              <Badge className={statusColor}>
+                                {statusText}
+                              </Badge>
+                            </td>
+                            <td className="py-3 px-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    toast({ 
+                                      title: "검사 결과 보기", 
+                                      description: "검사 결과 상세 페이지로 이동합니다." 
+                                    });
+                                    navigate(`/assessment-detail/${obs.id}`);
+                                  }}
+                                  className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    toast({ 
+                                      title: "다운로드 준비 중", 
+                                      description: "검사 결과를 PDF로 다운로드합니다." 
+                                    });
+                                  }}
+                                  className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
+                                >
+                                  <Download className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                       {filteredObservations.length === 0 && (
                         <tr>
                           <td colSpan={5} className="py-8 text-center text-slate-500">

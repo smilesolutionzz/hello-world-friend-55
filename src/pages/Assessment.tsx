@@ -36,6 +36,10 @@ import DevelopmentalDelayTestResult from "@/components/assessment/DevelopmentalD
 import SensoryIntegrationTestResult from "@/components/assessment/SensoryIntegrationTestResult";
 import LearningDisabilityTestResult from "@/components/assessment/LearningDisabilityTestResult";
 import SocialDevelopmentTestResult from "@/components/assessment/SocialDevelopmentTestResult";
+import ChallengingBehaviorForm from "@/components/assessment/ChallengingBehaviorForm";
+import ChallengingBehaviorResult from "@/components/assessment/ChallengingBehaviorResult";
+import AdaptiveBehaviorForm from "@/components/assessment/AdaptiveBehaviorForm";
+import AdaptiveBehaviorResult from "@/components/assessment/AdaptiveBehaviorResult";
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";
 import PastLifeJobTest from "@/components/assessment/PastLifeJobTest";
@@ -76,8 +80,8 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'emotional-development-test' | 'dream-interpretation' | 'saju-analysis' | 'past-life-job' | 'animal-face-match' | 'inner-animal' | 'grandma-relationship' | 'grandpa-marriage' | 'mz-nagging' | 'wisdom-advice' | 'otrovert' | 'life-achievement' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | null>(null);
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'emotional-development-test' | 'dream-interpretation' | 'saju-analysis' | 'past-life-job' | 'animal-face-match' | 'inner-animal' | 'grandma-relationship' | 'grandpa-marriage' | 'mz-nagging' | 'wisdom-advice' | 'otrovert' | 'life-achievement' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result' | 'challenging-behavior-test' | 'challenging-behavior-result' | 'adaptive-behavior-test' | 'adaptive-behavior-result'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
@@ -97,6 +101,8 @@ const Assessment = () => {
   const [sensoryIntegrationResults, setSensoryIntegrationResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
   const [learningDisabilityResults, setLearningDisabilityResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
   const [socialDevelopmentResults, setSocialDevelopmentResults] = useState<{answers: number[], total: number, average: number, ageGroup: string, severity: string} | null>(null);
+  const [challengingBehaviorResults, setChallengingBehaviorResults] = useState<{answers: number[], total: number, average: number, severity: string} | null>(null);
+  const [adaptiveBehaviorResults, setAdaptiveBehaviorResults] = useState<{answers: number[], total: number, average: number, level: string} | null>(null);
   const [analysisResult, setAnalysisResult] = useState<string>("");
   const [selectedExpert, setSelectedExpert] = useState<ExpertProfile | null>(null);
   const [currentAssessmentResults, setCurrentAssessmentResults] = useState<any>(null);
@@ -219,11 +225,13 @@ const Assessment = () => {
       case 'sensory-integration': return '감각통합장애 검사';
       case 'learning-disability': return '학습장애 검사';
       case 'social-development': return '사회성 발달 검사';
+      case 'challenging-behavior': return '도전행동 평가';
+      case 'adaptive-behavior': return '적응행동 평가';
       default: return '심리상태 체크';
     }
   };
 
-  const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development') => {
+  const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior') => {
     // 로그인 확인
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -257,6 +265,10 @@ const Assessment = () => {
       setCurrentStep('learning-disability-test');
     } else if (type === 'social-development') {
       setCurrentStep('social-development-test');
+    } else if (type === 'challenging-behavior') {
+      setCurrentStep('challenging-behavior-test');
+    } else if (type === 'adaptive-behavior') {
+      setCurrentStep('adaptive-behavior-test');
     } else {
       setCurrentStep('legal-notice');
     }
@@ -811,6 +823,38 @@ const Assessment = () => {
                       <li>• 사회적 기술</li>
                       <li>• 대인관계 능력</li>
                       <li>• 적응행동 평가</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-red-300 dark:border-red-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => handleTestTypeSelect('challenging-behavior')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-red-600 text-white text-xs px-2 py-1 opacity-80">무료</Badge>
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">도전행동 평가</h4>
+                    <p className="text-muted-foreground text-sm mb-3">발달장애인 문제행동 평가</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 자해/공격행동</li>
+                      <li>• 상동/파괴행동</li>
+                      <li>• 행동 심각도 평가</li>
+                    </ul>
+                  </div>
+
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => handleTestTypeSelect('adaptive-behavior')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-blue-600 text-white text-xs px-2 py-1 opacity-80">무료</Badge>
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">적응행동 평가</h4>
+                    <p className="text-muted-foreground text-sm mb-3">일상생활 독립성 평가</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 일상생활 기술</li>
+                      <li>• 사회적 기술</li>
+                      <li>• 의사소통 능력</li>
                     </ul>
                   </div>
                 </div>
@@ -1881,6 +1925,23 @@ const Assessment = () => {
     }} onBack={handleBack} />;
   }
 
+  // 도전행동 및 적응행동 검사 렌더링
+  if (currentStep === 'challenging-behavior-test') {
+    return <ChallengingBehaviorForm onComplete={(results) => {
+      setChallengingBehaviorResults(results);
+      saveTestToTimeline('challenging-behavior', results);
+      setCurrentStep('challenging-behavior-result');
+    }} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'adaptive-behavior-test') {
+    return <AdaptiveBehaviorForm onComplete={(results) => {
+      setAdaptiveBehaviorResults(results);
+      saveTestToTimeline('adaptive-behavior', results);
+      setCurrentStep('adaptive-behavior-result');
+    }} onBack={handleBack} />;
+  }
+
   // 발달 검사 결과 렌더링
   if (currentStep === 'developmental-delay-result' && developmentalDelayResults) {
     return <DevelopmentalDelayTestResult 
@@ -1912,6 +1973,15 @@ const Assessment = () => {
       onBack={handleBack} 
       onRestart={() => setCurrentStep('social-development-test')} 
     />;
+  }
+
+  // 도전행동 및 적응행동 결과 렌더링
+  if (currentStep === 'challenging-behavior-result' && challengingBehaviorResults) {
+    return <ChallengingBehaviorResult results={challengingBehaviorResults} />;
+  }
+
+  if (currentStep === 'adaptive-behavior-result' && adaptiveBehaviorResults) {
+    return <AdaptiveBehaviorResult results={adaptiveBehaviorResults} />;
   }
 
 

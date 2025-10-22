@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Helmet } from 'react-helmet-async';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { mockInstitutions } from '@/data/mockInstitutions';
+import { mockExperts as mockExpertsData } from '@/data/mockExperts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -583,9 +584,41 @@ const ExpertHiring = () => {
         }));
       }
       
-      // mockExperts 중에서 DB에 없는 전문가만 추가 (id: '7', '8', '9')
-      const mockExpertsToAdd = mockExperts.filter(mock => 
-        !formattedExperts.some(db => db.name === mock.name)
+      // mockExperts 중에서 DB에 없는 전문가만 추가
+      // 먼저 src/data/mockExperts.ts의 데이터를 Expert 인터페이스에 맞게 변환
+      const convertedMockExperts = mockExpertsData.map(expert => ({
+        id: expert.id,
+        name: expert.name.replace(' 치료사', '').replace(' 박사', '').replace(' 교수', ''),
+        specialty: expert.categories || [],
+        credentials: [expert.credential],
+        rating: expert.rating,
+        reviews: 0,
+        experience: '경력 다년',
+        availability: expert.availability_text || '평일 9-18시',
+        monthlyPrice: expert.price_per_50 ? expert.price_per_50 * 4 : 0,
+        hourlyPrice: expert.price_per_50 || 0,
+        image: expert.photo_url || '/api/placeholder/150/150',
+        description: expert.intro || '',
+        languages: ['한국어'],
+        consultationTypes: expert.online ? ['화상상담', '방문상담'] : ['방문상담'],
+        monthlyServices: [
+          '주 1회 개별 상담 (월 4회)',
+          '전문가 평가 및 리포트',
+          '상담 진행 관리',
+          '24시간 문의 지원'
+        ],
+        portfolio: {
+          cases: 0,
+          successRate: 90,
+          specializations: expert.categories || []
+        },
+        location: expert.region || '온라인',
+        isOnline: expert.online || false,
+        responseTime: '평균 2시간 이내'
+      }));
+      
+      const mockExpertsToAdd = [...mockExperts, ...convertedMockExperts].filter(mock => 
+        !formattedExperts.some(db => db.name === mock.name || db.name.includes(mock.name))
       );
       
       // DB 전문가 + mock 전문가 결합

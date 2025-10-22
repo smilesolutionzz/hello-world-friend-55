@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import TossPaymentUI from '@/components/payments/TossPaymentUI';
+import TestPaymentModal from '@/components/payments/TestPaymentModal';
 
 const TOSS_CLIENT_KEY = 'test_ck_ORzdMaqN3w22D5wkBxAP85AkYXQG';
 
@@ -26,6 +27,7 @@ const TossPaymentWidget = () => {
   const [uiReady, setUiReady] = useState(false);
   const initRef = useRef(false);
   const [uiKey, setUiKey] = useState(0);
+  const [testOpen, setTestOpen] = useState(false);
 
   const state = location.state as PaymentWidgetState;
   const { tokenAmount = 0, price = 0 } = state || {};
@@ -208,7 +210,16 @@ const TossPaymentWidget = () => {
                 `₩${price.toLocaleString()} 결제하기`
               )}
             </Button>
-          )}
+           )}
+
+           {/* 테스트 결제 버튼 */}
+           {!loading && (
+             <div className="mt-3 text-center">
+               <Button variant="outline" size="sm" onClick={() => setTestOpen(true)}>
+                 테스트 결제(모달)
+               </Button>
+             </div>
+           )}
 
           {/* 안내 문구 */}
           <div className="mt-6 text-sm text-muted-foreground text-center">
@@ -220,6 +231,21 @@ const TossPaymentWidget = () => {
             </p>
           </div>
         </Card>
+
+        <TestPaymentModal
+          open={testOpen}
+          onOpenChange={setTestOpen}
+          amount={price}
+          tokenAmount={tokenAmount}
+          onSuccess={() => {
+            setTestOpen(false);
+            navigate('/payment-success');
+          }}
+          onFail={() => {
+            setTestOpen(false);
+            navigate('/payment-fail');
+          }}
+        />
       </div>
     </div>
   );

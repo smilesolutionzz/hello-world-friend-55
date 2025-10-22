@@ -52,5 +52,22 @@ export const mockExperts = [
     intro: '특수체육, 발달재활, 행동치료, 부모상담 등 폭넓은 전문성을 보유하고 있습니다.',
     visible: true,
     isDirector: true
+  },
+  {
+    id: '4',
+    name: '조문주 치료사',
+    photo_url: getExpertImage('조문주') || '/placeholder.svg',
+    credential: '언어치료사, 심리상담사, ABA치료사, 석사, 경력 20년, 여',
+    verified: true,
+    categories: ['언어치료', '심리상담', 'ABA치료'],
+    region: '서울',
+    online: false,
+    rating: 4.9,
+    price_per_50: 60000,
+    availability_text: '유아~청소년 대상 가능',
+    contact_form_url: 'https://forms.gle/example4',
+    calendly_url: 'https://calendly.com/example4',
+    intro: '사랑이 넘치면서도 유능한 발달장애전문치료사 입니다.',
+    visible: true
   }
 ];

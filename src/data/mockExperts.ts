@@ -69,5 +69,22 @@ export const mockExperts = [
     calendly_url: 'https://calendly.com/example4',
     intro: '사랑이 넘치면서도 유능한 발달장애전문치료사 입니다.',
     visible: true
+  },
+  {
+    id: '5',
+    name: '김지수 치료사',
+    photo_url: getExpertImage('김지수') || '/placeholder.svg',
+    credential: '언어치료사, 석사, 경력 4년, 여',
+    verified: true,
+    categories: ['언어치료'],
+    region: '서울',
+    online: true,
+    rating: 4.8,
+    price_per_50: 35000,
+    availability_text: '영유아~초등 대상 가능',
+    contact_form_url: 'https://forms.gle/example5',
+    calendly_url: 'https://calendly.com/example5',
+    intro: '성장하는 우리 아이의 소중한 시간이 헛되이지 않게 유익하고 재밌는 수업이 되도록 노력하겠습니다.',
+    visible: true
   }
 ];

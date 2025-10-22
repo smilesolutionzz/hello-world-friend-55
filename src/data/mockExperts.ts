@@ -120,5 +120,22 @@ export const mockExperts = [
     calendly_url: 'https://calendly.com/example7',
     intro: '20년 경력의 언어, 심리, ABA 전문가입니다.',
     visible: true
+  },
+  {
+    id: '8',
+    name: '전우준 치료사',
+    photo_url: getExpertImage('전우준') || '/placeholder.svg',
+    credential: '미술치료사, 심리상담사, 석사, 경력 2년, 남',
+    verified: true,
+    categories: ['미술치료', '심리상담'],
+    region: '서울',
+    online: false,
+    rating: 4.6,
+    price_per_50: 60000,
+    availability_text: '유아~청소년 대상 가능',
+    contact_form_url: 'https://forms.gle/example8',
+    calendly_url: 'https://calendly.com/example8',
+    intro: '미술치료와 심리상담 전문가입니다.',
+    visible: true
   }
 ];

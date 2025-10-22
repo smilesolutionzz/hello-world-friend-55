@@ -397,20 +397,20 @@ const InstantAIAnalysis = () => {
                     <Button
                       type="button"
                       variant="ghost"
-                      size="sm"
+                      size="default"
                       onClick={handleExpandPrompt}
                       disabled={isExpanding || isAnalyzing || inputText.length < 10}
-                      className="gap-1.5 text-xs h-8 px-3 sm:px-3 border border-amber-500/30 hover:bg-amber-500/10 text-amber-700 dark:text-amber-600 hover:text-amber-800 dark:hover:text-amber-500 animate-pulse hover:animate-none shadow-lg hover:shadow-amber-500/50 transition-all"
+                      className="gap-2 text-sm font-bold h-10 px-5 border-2 border-amber-500 hover:bg-amber-500/20 text-amber-900 dark:text-amber-100 hover:text-amber-950 dark:hover:text-amber-50 animate-pulse hover:animate-none shadow-lg hover:shadow-amber-500/50 transition-all bg-amber-500/10"
                     >
                       {isExpanding ? (
                         <>
-                          <div className="animate-spin rounded-full h-3 w-3 border-2 border-amber-600 border-t-transparent" />
-                          <span>다듬는 중...</span>
+                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-amber-600 border-t-transparent" />
+                          <span className="text-base">다듬는 중...</span>
                         </>
                       ) : (
                         <>
-                          <Wand2 className="w-3.5 h-3.5 animate-pulse" />
-                          <span className="font-semibold">AI다듬기</span>
+                          <Wand2 className="w-4 h-4 animate-pulse" />
+                          <span className="text-base">AI다듬기</span>
                         </>
                       )}
                     </Button>

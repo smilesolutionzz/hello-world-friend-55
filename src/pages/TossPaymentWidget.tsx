@@ -1,13 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { loadPaymentWidget } from '@tosspayments/payment-widget-sdk';
+import { loadTossPayments } from '@tosspayments/payment-sdk';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2 } from 'lucide-react';
-import TossPaymentUI from '@/components/payments/TossPaymentUI';
-import TestPaymentModal from '@/components/payments/TestPaymentModal';
 
 const TOSS_CLIENT_KEY = 'test_ck_ORzdMaqN3w22D5wkBxAP85AkYXQG';
 
@@ -20,22 +18,12 @@ const TossPaymentWidget = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const [paymentWidget, setPaymentWidget] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
-  const [orderId, setOrderId] = useState('');
-  const [uiReady, setUiReady] = useState(false);
-  const initRef = useRef(false);
-  const [uiKey, setUiKey] = useState(0);
-  const [testOpen, setTestOpen] = useState(false);
 
   const state = location.state as PaymentWidgetState;
   const { tokenAmount = 0, price = 0 } = state || {};
 
   useEffect(() => {
-    if (initRef.current) return;
-    initRef.current = true;
-
     if (!tokenAmount || !price) {
       toast({
         title: '잘못된 접근',
@@ -43,13 +31,12 @@ const TossPaymentWidget = () => {
         variant: 'destructive',
       });
       navigate('/token-subscription');
-      return;
     }
-
-    initializePaymentWidget();
   }, [tokenAmount, price, navigate]);
 
-  const initializePaymentWidget = async () => {
+  const handlePayment = async () => {
+    setProcessing(true);
+
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -61,90 +48,34 @@ const TossPaymentWidget = () => {
         return;
       }
 
+      // orderId 생성 (Stripe처럼 간단)
       const shortUser = session.user.id.slice(0, 8);
-      const generatedOrderId = `OT_${tokenAmount}_${Date.now().toString(36)}_${shortUser}`;
-      setOrderId(generatedOrderId);
+      const orderId = `TOKEN_${tokenAmount}_${Date.now().toString(36)}_${shortUser}`;
 
-      const paymentWidget = await loadPaymentWidget(TOSS_CLIENT_KEY, session.user.id);
-      
-      setPaymentWidget(paymentWidget);
-      setLoading(false);
+      // 토스페이먼츠 결제창 SDK 로드
+      const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
 
-    } catch (error: any) {
-      console.error('Payment widget initialization error:', error);
-      setLoading(false);
-      toast({
-        title: '결제 위젯 로딩 실패',
-        description: error?.message || '결제 위젯을 불러오는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handlePayment = async () => {
-    if (!paymentWidget || !uiReady) {
-      toast({
-        title: '테스트 모드로 전환',
-        description: '결제 UI가 준비되지 않아 테스트 모달을 엽니다.',
-      });
-      setTestOpen(true);
-      return;
-    }
-
-    setProcessing(true);
-
-    try {
-      // 결제 요청 전 2초 대기로 UI 안정화
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const result = await paymentWidget.requestPayment({
+      // 결제창 바로 호출 (위젯 없이!)
+      await tossPayments.requestPayment('카드', {
+        amount: Math.round(price),
         orderId,
         orderName: `토큰 ${tokenAmount}개`,
         successUrl: `${window.location.origin}/payment-success`,
         failUrl: `${window.location.origin}/payment-fail`,
+        customerName: session.user.email?.split('@')[0] || '사용자',
       });
-      
-      console.log('Payment result:', result);
+
     } catch (error: any) {
-      console.error('Payment request error:', error);
-
-      const notRendered =
-        error?.code === 'NOT_RENDERED_PAYMENT_METHODS_UI' ||
-        error?.message?.includes('NOT_RENDERED_PAYMENT_METHODS_UI') ||
-        error?.message?.includes('렌더링되지 않았습니다');
-
-      if (notRendered && paymentWidget) {
-        try {
-          // 위젯을 재마운트하여 복구
-          setUiReady(false);
-          setUiKey((k) => k + 1);
-          toast({ title: '결제 UI 복구 중', description: '잠시 후 자동으로 재시도합니다.' });
-
-          await new Promise((r) => setTimeout(r, 1200));
-
-          const retry = await paymentWidget.requestPayment({
-            orderId,
-            orderName: `토큰 ${tokenAmount}개`,
-            successUrl: `${window.location.origin}/payment-success`,
-            failUrl: `${window.location.origin}/payment-fail`,
-          });
-          console.log('Payment retry result:', retry);
-          return;
-        } catch (retryErr: any) {
-          console.error('Payment retry failed:', retryErr);
-          setProcessing(false);
-          setTestOpen(true);
-          toast({ title: '테스트 모드로 전환', description: '결제 UI 문제로 테스트 모달을 열었습니다.' });
-          return;
-        }
-      }
-
+      console.error('Payment error:', error);
       setProcessing(false);
-      toast({
-        title: '결제 실패',
-        description: error?.message || '결제 요청 중 오류가 발생했습니다.',
-        variant: 'destructive',
-      });
+      
+      if (error.code !== 'USER_CANCEL') {
+        toast({
+          title: '결제 실패',
+          description: error?.message || '결제 요청 중 오류가 발생했습니다.',
+          variant: 'destructive',
+        });
+      }
     }
   };
 
@@ -180,50 +111,22 @@ const TossPaymentWidget = () => {
             </div>
           </div>
 
-          {/* 토스페이먼츠 위젯 */}
-          <div className="mb-6">
-            <>
-              <TossPaymentUI key={uiKey} widget={paymentWidget} amount={Math.round(price)} onReady={setUiReady} />
-              {loading && (
-                <div className="flex items-center justify-center py-20">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                </div>
-              )}
-            </>
-          </div>
-
           {/* 결제 버튼 */}
-          {!loading && (
-            <Button
-              onClick={handlePayment}
-              disabled={processing || !uiReady}
-              className="w-full py-6 text-lg"
-              size="lg"
-            >
-              {processing ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  결제 처리 중...
-                </>
-              ) : !uiReady ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  결제 위젯 준비 중...
-                </>
-              ) : (
-                `₩${price.toLocaleString()} 결제하기`
-              )}
-            </Button>
-           )}
-
-           {/* 테스트 결제 버튼 */}
-           {!loading && (
-             <div className="mt-3 text-center">
-               <Button variant="outline" size="sm" onClick={() => setTestOpen(true)}>
-                 테스트 결제(모달)
-               </Button>
-             </div>
-           )}
+          <Button
+            onClick={handlePayment}
+            disabled={processing}
+            className="w-full py-6 text-lg"
+            size="lg"
+          >
+            {processing ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                결제창 열기 중...
+              </>
+            ) : (
+              `₩${price.toLocaleString()} 결제하기`
+            )}
+          </Button>
 
           {/* 안내 문구 */}
           <div className="mt-6 text-sm text-muted-foreground text-center">
@@ -235,21 +138,6 @@ const TossPaymentWidget = () => {
             </p>
           </div>
         </Card>
-
-        <TestPaymentModal
-          open={testOpen}
-          onOpenChange={setTestOpen}
-          amount={price}
-          tokenAmount={tokenAmount}
-          onSuccess={() => {
-            setTestOpen(false);
-            navigate('/payment-success');
-          }}
-          onFail={() => {
-            setTestOpen(false);
-            navigate('/payment-fail');
-          }}
-        />
       </div>
     </div>
   );

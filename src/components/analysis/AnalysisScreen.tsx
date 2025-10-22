@@ -25,6 +25,7 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
   const [analysis, setAnalysis] = useState<string>("");
   const [predictions, setPredictions] = useState<any>(null);
   const [predictionConfidence, setPredictionConfidence] = useState<string>("");
+  const [estimatedTimeRemaining, setEstimatedTimeRemaining] = useState<number>(15);
   const { consumeTokens, checkTokenAvailability } = useTokens();
   const { toast } = useToast();
 
@@ -49,6 +50,8 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
     // 단계별 진행 시뮬레이션 - 더 신뢰성 있게 수정
     let currentProgress = 0;
     const totalSteps = analysisSteps.length;
+    const totalDuration = analysisSteps.reduce((sum, step) => sum + step.duration, 0);
+    const startTime = Date.now();
 
     for (let i = 0; i < totalSteps; i++) {
       setCurrentStep(analysisSteps[i].step);
@@ -63,6 +66,13 @@ const AnalysisScreen = ({ results, ageGroup, age, onAnalysisComplete }: Analysis
       while (currentProgress < stepProgress) {
         currentProgress = Math.min(currentProgress + progressIncrement, stepProgress);
         setAnalysisProgress(currentProgress);
+        
+        // 남은 시간 계산
+        const elapsed = Date.now() - startTime;
+        const estimatedTotal = (elapsed / currentProgress) * 100;
+        const remaining = Math.max(0, Math.ceil((estimatedTotal - elapsed) / 1000));
+        setEstimatedTimeRemaining(remaining);
+        
         console.log(`📈 Progress: ${currentProgress}%`);
         await new Promise(resolve => setTimeout(resolve, Math.max(100, analysisSteps[i].duration / 15)));
       }
@@ -236,7 +246,14 @@ ${percentage < 60 ? '우울/불안 전문가와의 즉시 상담을 권장합니
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-semibold text-foreground">분석 진행률</span>
-                  <span className="text-2xl font-bold text-primary">{Math.round(analysisProgress)}%</span>
+                  <div className="text-right">
+                    <span className="text-2xl font-bold text-primary">{Math.round(analysisProgress)}%</span>
+                    {!analysisComplete && analysisProgress > 0 && analysisProgress < 100 && (
+                      <div className="text-sm text-muted-foreground mt-1">
+                        약 {estimatedTimeRemaining}초 남음
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <Progress value={analysisProgress} className="h-4" />
               </div>

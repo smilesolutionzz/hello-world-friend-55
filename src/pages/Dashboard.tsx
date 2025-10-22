@@ -264,7 +264,8 @@ const DashboardNew = () => {
   return (
     <div className="min-h-screen bg-[#0A0E1A]">
       {/* Header */}
-      <div className="border-b border-slate-800 bg-[#0F1419]">
+        <Tabs defaultValue="overview">
+          <div className="border-b border-slate-800 bg-[#0F1419]">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
@@ -290,7 +291,7 @@ const DashboardNew = () => {
           </div>
 
           {/* Tab Navigation */}
-          <Tabs defaultValue="overview" className="mt-6">
+          
             <TabsList className="bg-transparent border-b border-slate-800 rounded-none h-auto p-0 w-full justify-start">
               <TabsTrigger 
                 value="overview" 
@@ -317,13 +318,11 @@ const DashboardNew = () => {
                 가족 관리
               </TabsTrigger>
             </TabsList>
-          </Tabs>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-6">
-        <Tabs defaultValue="overview">
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6 mt-0">
             {/* Stats Cards */}
@@ -654,8 +653,8 @@ const DashboardNew = () => {
           <TabsContent value="family" className="mt-0">
             <FamilyManagement onUpdate={loadDashboardData} />
           </TabsContent>
-        </Tabs>
       </div>
+        </Tabs>
     </div>
   );
 };

@@ -163,7 +163,7 @@ const DashboardNew = () => {
 
   const filteredObservations = observations.filter(obs => {
     const obsDate = new Date(obs.created_at);
-    return obsDate >= dateRange.start && obsDate <= dateRange.end;
+    return obsDate >= dateRange.start && obsDate <= dateRange.end && obs.score_overall > 0;
   });
 
   const recent30DaysObservations = observations.filter(obs => {
@@ -256,13 +256,17 @@ const DashboardNew = () => {
     ? Math.round(filteredObservations.reduce((sum, obs) => sum + obs.score_overall, 0) / filteredObservations.length)
     : 0;
 
-  const improvementRate = filteredObservations.length >= 2
-    ? ((filteredObservations[0].score_overall - filteredObservations[filteredObservations.length - 1].score_overall) / 
-       filteredObservations[filteredObservations.length - 1].score_overall * 100)
+  // 개선율: (최신 - 처음) / 처음 * 100
+  // filteredObservations는 내림차순 정렬이므로 [0]이 최신, [length-1]이 처음
+  const firstScore = filteredObservations.length >= 2 ? filteredObservations[filteredObservations.length - 1].score_overall : 0;
+  const latestScore = filteredObservations.length >= 2 ? filteredObservations[0].score_overall : 0;
+  const improvementRate = firstScore > 0
+    ? ((latestScore - firstScore) / firstScore * 100)
     : 0;
 
   return (
     <div className="min-h-screen bg-[#0A0E1A]">
+      <UnifiedNavigation />
       {/* Header */}
         <Tabs defaultValue="overview">
           <div className="border-b border-slate-800 bg-[#0F1419]">

@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { TrendingUp, TrendingDown, Minus, Target } from "lucide-react";
-import { format } from 'date-fns';
+import { format, differenceInWeeks, startOfYear } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 interface Observation {
@@ -37,12 +37,16 @@ const ImprovementHistory: React.FC<ImprovementHistoryProps> = ({ observations })
       }
     });
 
-    // 각 검사별 데이터 생성
+    // 각 검사별 데이터 생성 (주차별)
     return sortedObservations.map((obs, index) => {
+      const obsDate = new Date(obs.created_at);
+      const yearStart = startOfYear(obsDate);
+      const weekNumber = differenceInWeeks(obsDate, yearStart) + 1;
+      
       const dataPoint: any = {
         name: `${index + 1}차`,
-        date: format(new Date(obs.created_at), 'MM/dd', { locale: ko }),
-        fullDate: format(new Date(obs.created_at), 'yyyy.MM.dd', { locale: ko }),
+        date: `${weekNumber}주차`,
+        fullDate: format(obsDate, 'yyyy년 MM월 dd일', { locale: ko }) + ` (${weekNumber}주차)`,
       };
 
       if (obs.categoryScores) {

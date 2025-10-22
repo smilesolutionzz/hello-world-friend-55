@@ -86,5 +86,22 @@ export const mockExperts = [
     calendly_url: 'https://calendly.com/example5',
     intro: '성장하는 우리 아이의 소중한 시간이 헛되이지 않게 유익하고 재밌는 수업이 되도록 노력하겠습니다.',
     visible: true
+  },
+  {
+    id: '6',
+    name: '양희진 치료사',
+    photo_url: getExpertImage('양희진') || '/placeholder.svg',
+    credential: '특수체육치료사, 학사, 경력 5년, 남',
+    verified: true,
+    categories: ['특수체육', '운동발달', '사회성'],
+    region: '서울',
+    online: true,
+    rating: 4.7,
+    price_per_50: 30000,
+    availability_text: '초등~성인 대상 가능',
+    contact_form_url: 'https://forms.gle/example6',
+    calendly_url: 'https://calendly.com/example6',
+    intro: '특수체육전공자로서 운동발달 및 사회성 행동에 관한 상담 가능합니다.',
+    visible: true
   }
 ];

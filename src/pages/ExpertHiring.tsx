@@ -445,6 +445,36 @@ const mockExperts: Expert[] = [
     location: '서울',
     isOnline: false,
     responseTime: '평균 3시간 이내'
+  },
+  {
+    id: '13',
+    name: '김지수',
+    specialty: ['언어치료'],
+    credentials: ['언어치료사', '석사', '경력 4년', '여'],
+    rating: 4.8,
+    reviews: 0,
+    experience: '4년',
+    availability: '영유아~초등 대상 가능',
+    monthlyPrice: 140000,
+    hourlyPrice: 35000,
+    image: getExpertImage('김지수') || '/api/placeholder/150/150',
+    description: '성장하는 우리 아이의 소중한 시간이 헛되이지 않게 유익하고 재밌는 수업이 되도록 노력하겠습니다.',
+    languages: ['한국어'],
+    consultationTypes: ['대면상담', '화상상담'],
+    monthlyServices: [
+      '주 1회 언어치료 (월 4회)',
+      '발음 교정 및 언어 자극',
+      '부모 가정지도 교육',
+      '언어발달 평가서 제공'
+    ],
+    portfolio: {
+      cases: 120,
+      successRate: 90,
+      specializations: ['언어치료', '발음교정', '언어발달']
+    },
+    location: '서울',
+    isOnline: true,
+    responseTime: '평균 2시간 이내'
   }
 ];
 

@@ -252,6 +252,58 @@ const testRecommendations: Record<string, RelatedTest[]> = {
       relevance: 'medium'
     }
   ],
+  'challenging-behavior': [
+    {
+      id: 'adaptive-behavior-test',
+      title: '적응행동 평가',
+      description: '일상생활 독립성과 사회적 기능을 평가합니다',
+      duration: '3분',
+      category: '적응',
+      relevance: 'high'
+    },
+    {
+      id: 'sensory-integration-test',
+      title: '감각통합장애 검사',
+      description: '감각처리 문제가 도전행동의 원인일 수 있습니다',
+      duration: '4분',
+      category: '감각',
+      relevance: 'high'
+    },
+    {
+      id: 'social-development-test',
+      title: '사회성 발달 검사',
+      description: '사회적 상호작용 능력을 평가합니다',
+      duration: '3분',
+      category: '사회성',
+      relevance: 'medium'
+    }
+  ],
+  'adaptive-behavior': [
+    {
+      id: 'challenging-behavior-test',
+      title: '도전행동 평가',
+      description: '문제 행동의 심각도를 평가합니다',
+      duration: '3분',
+      category: '행동',
+      relevance: 'high'
+    },
+    {
+      id: 'developmental-delay-test',
+      title: '발달지연 검사',
+      description: '전반적인 발달 수준을 확인합니다',
+      duration: '3분',
+      category: '발달',
+      relevance: 'high'
+    },
+    {
+      id: 'social-development-test',
+      title: '사회성 발달 검사',
+      description: '사회적 기술과 상호작용을 평가합니다',
+      duration: '3분',
+      category: '사회성',
+      relevance: 'medium'
+    }
+  ],
   'adult-assessment': [
     {
       id: 'adhd-test',

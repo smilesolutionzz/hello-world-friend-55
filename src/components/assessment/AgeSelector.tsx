@@ -17,28 +17,28 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
       key: 'infant' as const,
       title: '영유아',
       subtitle: '0-5세',
-      description: 'AIH 영유아언어발달체크',
+      description: '우울검사',
       icon: Baby,
       color: 'from-gentle-peach to-warm-lavender',
-      features: ['대근육/소근육 발달', '언어 발달', '사회성 발달', '인지 발달']
+      features: ['정서 상태', '행동 변화', '수면/식욕 패턴', '사회적 위축']
     },
     {
       key: 'child' as const, 
       title: '아동청소년',
       subtitle: '6-18세',
-      description: 'ADHD 검사',
+      description: '우울검사',
       icon: GraduationCap,
       color: 'from-calm-blue to-soft-mint',
-      features: ['주의집중력', '사회-정서', '인지능력', '학습능력']
+      features: ['우울 기분', '흥미/즐거움 상실', '자기비하', '신체 증상']
     },
     {
       key: 'adult' as const,
       title: '성인',
       subtitle: '19-64세', 
-      description: 'ADHD 검사',
+      description: '우울검사',
       icon: Briefcase,
       color: 'from-primary to-primary-glow',
-      features: ['불안 증상', '심리적 불안', '신체적 긴장', '회피 행동']
+      features: ['우울 정서', '인지 증상', '신체화 증상', '사회적 기능']
     }
   ];
 

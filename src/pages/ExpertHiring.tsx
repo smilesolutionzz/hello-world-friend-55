@@ -451,7 +451,7 @@ const mockExperts: Expert[] = [
     id: '13',
     name: '김지수',
     specialty: ['언어치료'],
-    credentials: ['언어치료사', '석사', '경력 4년', '여'],
+    credentials: ['언어치료사', '석사', '경력 4년', '여', '치료사'],
     rating: 4.8,
     reviews: 0,
     experience: '4년',

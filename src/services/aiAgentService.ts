@@ -32,7 +32,7 @@ export class AIAgentService {
   private agents: AIAgent[] = [
     {
       id: 'dev-specialist',
-      name: '발달전문 에이전트',
+      name: '백경열 치료사',
       specialty: 'development',
       personality: '따뜻하고 전문적이며 단계별 접근을 선호',
       capabilities: ['발달평가', '마일스톤 추적', '개별화교육계획', '치료계획 수립'],
@@ -40,7 +40,7 @@ export class AIAgentService {
     },
     {
       id: 'emotion-companion',
-      name: '마음돌봄 에이전트',
+      name: '김수현 치료사',
       specialty: 'emotion',
       personality: '공감적이고 따뜻하며 감정 지지에 특화',
       capabilities: ['감정분석', '스트레스 관리', '가족상담', '위기개입'],
@@ -48,7 +48,7 @@ export class AIAgentService {
     },
     {
       id: 'edu-navigator',
-      name: '교육지원 에이전트',
+      name: '정민호 치료사',
       specialty: 'education',
       personality: '체계적이고 실용적이며 리소스 연결 전문',
       capabilities: ['특수교육정보', '기관연계', '지원제도 안내', '학습계획'],
@@ -56,7 +56,7 @@ export class AIAgentService {
     },
     {
       id: 'health-guardian',
-      name: '건강관리 에이전트',
+      name: '윤서현 치료사',
       specialty: 'health',
       personality: '신중하고 과학적이며 예방 중심적 접근',
       capabilities: ['건강모니터링', '치료기관 매칭', '의료정보 제공', '건강 예측'],
@@ -64,7 +64,7 @@ export class AIAgentService {
     },
     {
       id: 'family-harmonizer',
-      name: '가족조화 에이전트',
+      name: '가족조화 치료사',
       specialty: 'family',
       personality: '균형잡힌 시각으로 가족 전체를 고려',
       capabilities: ['가족관계 분석', '형제자매 케어', '부모 지원', '가족 계획'],
@@ -72,7 +72,7 @@ export class AIAgentService {
     },
     {
       id: 'crisis-responder',
-      name: '위기대응 에이전트',
+      name: '위기대응 치료사',
       specialty: 'crisis',
       personality: '침착하고 즉각적이며 안전 최우선',
       capabilities: ['위기감지', '응급대응', '전문기관 연계', '사후관리'],
@@ -351,7 +351,7 @@ export class AIAgentService {
     const involvedAgents = this.agents.filter(agent => agentIds.includes(agent.id));
     
     return `
-    다음 에이전트들이 협업하여 종합적인 지원을 제공합니다:
+    다음 치료사들이 협업하여 종합적인 지원을 제공합니다:
     
     ${involvedAgents.map(agent => `
     🤖 ${agent.name}

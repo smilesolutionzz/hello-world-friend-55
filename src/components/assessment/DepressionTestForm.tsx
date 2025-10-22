@@ -50,21 +50,18 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
-    
-    // 자동으로 다음 문항으로 이동 (0.5초 지연)
-    setTimeout(() => {
-      handleNext();
-    }, 500);
   };
 
   const handleNext = () => {
     if (currentQuestion < depressionQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 테스트 완료 - 모든 답변을 숫자로 변환하고 유효성 검사
+      // 테스트 완료 - 모든 답변을 숫자로 변환하고 역전시킴 (질문이 부정형이므로)
       const numericAnswers = answers.map(a => {
         const parsed = parseInt(a);
-        return isNaN(parsed) ? 0 : parsed;
+        if (isNaN(parsed)) return 0;
+        // 1점(그렇지 않다) -> 3점(우울함), 3점(그렇다) -> 1점(우울하지 않음)으로 역전
+        return 4 - parsed;
       });
       
       // 유효한 답변만 계산에 포함
@@ -177,13 +174,19 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-start pt-6">
+        <div className="flex justify-between pt-6">
           <Button 
             variant="outline" 
             onClick={handlePrevious}
             disabled={currentQuestion === 0}
           >
             이전
+          </Button>
+          <Button 
+            onClick={handleNext}
+            disabled={!canProceed}
+          >
+            {currentQuestion === depressionQuestions.length - 1 ? '결과 보기' : '다음'}
           </Button>
         </div>
       </div>

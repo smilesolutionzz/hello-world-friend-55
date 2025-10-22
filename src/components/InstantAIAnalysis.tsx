@@ -400,11 +400,11 @@ const InstantAIAnalysis = () => {
                       size="default"
                       onClick={handleExpandPrompt}
                       disabled={isExpanding || isAnalyzing || inputText.length < 10}
-                      className="gap-2 text-sm font-bold h-10 px-5 border-2 border-amber-500 hover:bg-amber-500/20 text-amber-900 dark:text-amber-100 hover:text-amber-950 dark:hover:text-amber-50 animate-pulse hover:animate-none shadow-lg hover:shadow-amber-500/50 transition-all bg-amber-500/10"
+                      className="gap-2 text-sm font-bold h-10 px-5 border-2 border-purple-500 hover:bg-purple-500/20 text-purple-900 dark:text-purple-100 hover:text-purple-950 dark:hover:text-purple-50 animate-pulse hover:animate-none shadow-lg hover:shadow-purple-500/50 transition-all bg-gradient-to-r from-purple-500/10 to-pink-500/10"
                     >
                       {isExpanding ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-amber-600 border-t-transparent" />
+                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-600 border-t-transparent" />
                           <span className="text-base">다듬는 중...</span>
                         </>
                       ) : (

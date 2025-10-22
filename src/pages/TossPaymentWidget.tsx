@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { loadPaymentWidget } from '@tosspayments/payment-widget-sdk';
 import { Button } from '@/components/ui/button';
@@ -23,11 +23,15 @@ const TossPaymentWidget = () => {
   const [processing, setProcessing] = useState(false);
   const [orderId, setOrderId] = useState('');
   const [uiReady, setUiReady] = useState(false);
+  const initRef = useRef(false);
 
   const state = location.state as PaymentWidgetState;
   const { tokenAmount = 0, price = 0 } = state || {};
 
   useEffect(() => {
+    if (initRef.current) return;
+    initRef.current = true;
+
     if (!tokenAmount || !price) {
       toast({
         title: '잘못된 접근',
@@ -39,7 +43,7 @@ const TossPaymentWidget = () => {
     }
 
     initializePaymentWidget();
-  }, []);
+  }, [tokenAmount, price, navigate]);
 
   const initializePaymentWidget = async () => {
     try {
@@ -77,7 +81,7 @@ const TossPaymentWidget = () => {
       setTimeout(() => {
         setUiReady(true);
         console.log('✅ Payment widget UI ready');
-      }, 5000);
+      }, 1200);
 
     } catch (error: any) {
       console.error('Payment widget initialization error:', error);

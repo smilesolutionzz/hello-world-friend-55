@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2 } from 'lucide-react';
+import TossPaymentUI from '@/components/payments/TossPaymentUI';
 
 const TOSS_CLIENT_KEY = 'test_ck_ORzdMaqN3w22D5wkBxAP85AkYXQG';
 
@@ -24,6 +25,7 @@ const TossPaymentWidget = () => {
   const [orderId, setOrderId] = useState('');
   const [uiReady, setUiReady] = useState(false);
   const initRef = useRef(false);
+  const [uiKey, setUiKey] = useState(0);
 
   const state = location.state as PaymentWidgetState;
   const { tokenAmount = 0, price = 0 } = state || {};
@@ -64,24 +66,7 @@ const TossPaymentWidget = () => {
       const paymentWidget = await loadPaymentWidget(TOSS_CLIENT_KEY, session.user.id);
       
       setPaymentWidget(paymentWidget);
-      
-      // 결제수단 렌더링
-      await paymentWidget.renderPaymentMethods('#payment-widget', {
-        value: Math.round(price),
-        currency: 'KRW',
-        country: 'KR'
-      });
-      
-      // 약관 동의 섹션 렌더링
-      await paymentWidget.renderAgreement('#agreement');
-      
       setLoading(false);
-      
-      // UI가 완전히 렌더링될 때까지 대기 (DOM 렌더링 + iframe 로드 시간)
-      setTimeout(() => {
-        setUiReady(true);
-        console.log('✅ Payment widget UI ready');
-      }, 1200);
 
     } catch (error: any) {
       console.error('Payment widget initialization error:', error);
@@ -121,7 +106,6 @@ const TossPaymentWidget = () => {
     } catch (error: any) {
       console.error('Payment request error:', error);
 
-      // 결제 UI 미렌더 오류인 경우 1회 자동 복구 후 재시도
       const notRendered =
         error?.code === 'NOT_RENDERED_PAYMENT_METHODS_UI' ||
         error?.message?.includes('NOT_RENDERED_PAYMENT_METHODS_UI') ||
@@ -129,23 +113,13 @@ const TossPaymentWidget = () => {
 
       if (notRendered && paymentWidget) {
         try {
-          // 컨테이너 초기화 후 재렌더
-          const pw = document.getElementById('payment-widget');
-          const agree = document.getElementById('agreement');
-          if (pw) pw.innerHTML = '';
-          if (agree) agree.innerHTML = '';
+          // 위젯을 재마운트하여 복구
+          setUiReady(false);
+          setUiKey((k) => k + 1);
+          toast({ title: '결제 UI 복구 중', description: '잠시 후 자동으로 재시도합니다.' });
 
-          await paymentWidget.renderPaymentMethods('#payment-widget', {
-            value: Math.round(price),
-            currency: 'KRW',
-            country: 'KR',
-          });
-          await paymentWidget.renderAgreement('#agreement');
+          await new Promise((r) => setTimeout(r, 1200));
 
-          setUiReady(true);
-          await new Promise((r) => setTimeout(r, 500));
-
-          // 재시도
           const retry = await paymentWidget.requestPayment({
             orderId,
             orderName: `토큰 ${tokenAmount}개`,
@@ -162,8 +136,7 @@ const TossPaymentWidget = () => {
       setProcessing(false);
       toast({
         title: '결제 실패',
-        description:
-          error?.message || '결제 요청 중 오류가 발생했습니다.',
+        description: error?.message || '결제 요청 중 오류가 발생했습니다.',
         variant: 'destructive',
       });
     }
@@ -204,8 +177,7 @@ const TossPaymentWidget = () => {
           {/* 토스페이먼츠 위젯 */}
           <div className="mb-6">
             <>
-              <div id="payment-widget" />
-              <div id="agreement" className="mt-4" />
+              <TossPaymentUI key={uiKey} widget={paymentWidget} amount={Math.round(price)} onReady={setUiReady} />
               {loading && (
                 <div className="flex items-center justify-center py-20">
                   <Loader2 className="w-8 h-8 animate-spin text-primary" />

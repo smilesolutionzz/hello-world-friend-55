@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,15 +17,21 @@ import {
   FileText,
   Home,
   RefreshCw,
-  Brain
+  Brain,
+  Eye,
+  Download,
+  Activity,
+  Target
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import FamilyManagement from "@/components/family/FamilyManagement";
 import AssessmentHistory from "@/components/history/AssessmentHistory";
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, CartesianGrid, Tooltip, Legend, XAxis, YAxis } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, CartesianGrid, Tooltip, Legend, XAxis, YAxis, LineChart, Line } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 interface Profile {
   id: string;
@@ -77,7 +83,6 @@ const DashboardNew = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Load user profile
       const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
@@ -86,7 +91,6 @@ const DashboardNew = () => {
 
       setProfile({ ...profileData, role: 'user' } as any);
 
-      // Load assessments
       const { data: assessmentData } = await supabase
         .from('assessments')
         .select('*')
@@ -139,7 +143,6 @@ const DashboardNew = () => {
     navigate('/');
   };
 
-  // 기간별 필터링된 검사 데이터
   const filteredObservations = observations.filter(obs => {
     const obsDate = new Date(obs.created_at);
     return obsDate >= dateRange.start && obsDate <= dateRange.end;
@@ -157,7 +160,7 @@ const DashboardNew = () => {
     
     filteredObservations.forEach(obs => {
       const date = new Date(obs.created_at);
-      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const monthKey = `${date.getMonth() + 1}월`;
       
       if (!monthlyMap.has(monthKey)) {
         monthlyMap.set(monthKey, { month: monthKey, count: 0, cumulative: 0 });
@@ -168,24 +171,23 @@ const DashboardNew = () => {
     });
 
     let cumulative = 0;
-    const sortedMonths = Array.from(monthlyMap.values()).sort((a, b) => a.month.localeCompare(b.month));
-    sortedMonths.forEach(month => {
-      cumulative += month.count;
-      month.cumulative = cumulative;
+    const months = ['8월', '9월', '10월', '11월', '12월', '1월'];
+    return months.map(month => {
+      const data = monthlyMap.get(month) || { month, count: 0, cumulative: 0 };
+      cumulative += data.count;
+      return { ...data, cumulative };
     });
-
-    return sortedMonths;
   }, [filteredObservations]);
 
   // 영역별 분포 데이터
   const distributionData = React.useMemo(() => {
     if (filteredObservations.length === 0) {
       return [
-        { name: '정서', value: 0, color: '#0ea5e9', description: '감정 조절 및 표현 능력' },
-        { name: '행동', value: 0, color: '#10b981', description: '적응적 행동 패턴' },
-        { name: '인지', value: 0, color: '#f59e0b', description: '사고력 및 학습 능력' },
-        { name: '사회성', value: 0, color: '#8b5cf6', description: '대인관계 및 소통 능력' },
-        { name: '신체', value: 0, color: '#ef4444', description: '신체 발달 및 건강 상태' }
+        { name: '정서', value: 0, color: '#0ea5e9' },
+        { name: '행동', value: 0, color: '#10b981' },
+        { name: '인지', value: 0, color: '#f59e0b' },
+        { name: '사회성', value: 0, color: '#8b5cf6' },
+        { name: '신체', value: 0, color: '#ef4444' }
       ];
     }
 
@@ -205,382 +207,374 @@ const DashboardNew = () => {
     });
 
     return [
-      { name: '정서', value: Math.round(totals.정서 / Math.max(counts.정서, 1)), color: '#0ea5e9', description: '감정 조절 및 표현 능력' },
-      { name: '행동', value: Math.round(totals.행동 / Math.max(counts.행동, 1)), color: '#10b981', description: '적응적 행동 패턴' },
-      { name: '인지', value: Math.round(totals.인지 / Math.max(counts.인지, 1)), color: '#f59e0b', description: '사고력 및 학습 능력' },
-      { name: '사회성', value: Math.round(totals.사회성 / Math.max(counts.사회성, 1)), color: '#8b5cf6', description: '대인관계 및 소통 능력' },
-      { name: '신체', value: Math.round(totals.신체 / Math.max(counts.신체, 1)), color: '#ef4444', description: '신체 발달 및 건강 상태' }
+      { name: '정서', value: Math.round(totals.정서 / Math.max(counts.정서, 1)), color: '#0ea5e9' },
+      { name: '행동', value: Math.round(totals.행동 / Math.max(counts.행동, 1)), color: '#10b981' },
+      { name: '인지', value: Math.round(totals.인지 / Math.max(counts.인지, 1)), color: '#f59e0b' },
+      { name: '사회성', value: Math.round(totals.사회성 / Math.max(counts.사회성, 1)), color: '#8b5cf6' },
+      { name: '신체', value: Math.round(totals.신체 / Math.max(counts.신체, 1)), color: '#ef4444' }
     ];
   }, [filteredObservations]);
 
+  const averageScore = filteredObservations.length > 0
+    ? Math.round(filteredObservations.reduce((sum, obs) => sum + obs.score_overall, 0) / filteredObservations.length)
+    : 0;
+
+  const improvementRate = filteredObservations.length >= 2
+    ? ((filteredObservations[0].score_overall - filteredObservations[filteredObservations.length - 1].score_overall) / 
+       filteredObservations[filteredObservations.length - 1].score_overall * 100)
+    : 0;
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <UnifiedNavigation />
-      
-      {/* Simplified Header */}
-      <header className="bg-white border-b border-border/40 lg:block hidden">
-        <div className="container mx-auto px-8 py-5 max-w-7xl">
+    <div className="min-h-screen bg-[#0A0E1A]">
+      {/* Header */}
+      <div className="border-b border-slate-800 bg-[#0F1419]">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-              <p className="text-sm text-muted-foreground mt-0.5">{profile?.display_name}님</p>
+              <h1 className="text-2xl font-bold text-white">
+                개인 대시보드
+              </h1>
+              <p className="text-sm text-slate-400 mt-1">
+                {profile?.display_name}님의 검사 데이터
+              </p>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
-                <Home className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut className="w-4 h-4" />
+            <div className="flex items-center gap-3">
+              <Button 
+                onClick={loadDashboardData} 
+                variant="outline" 
+                size="sm"
+                className="bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                새로고침
               </Button>
             </div>
           </div>
+
+          {/* Tab Navigation */}
+          <Tabs defaultValue="overview" className="mt-6">
+            <TabsList className="bg-transparent border-b border-slate-800 rounded-none h-auto p-0 w-full justify-start">
+              <TabsTrigger 
+                value="overview" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+              >
+                개요
+              </TabsTrigger>
+              <TabsTrigger 
+                value="assessments" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+              >
+                검사 이력 ({filteredObservations.length})
+              </TabsTrigger>
+              <TabsTrigger 
+                value="family" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+              >
+                가족 관리
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
-      </header>
+      </div>
 
-      <div className="container mx-auto px-8 py-8 max-w-7xl">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-6">
+        <Tabs defaultValue="overview">
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6 mt-0">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              {/* 총 검사 */}
+              <Card className="bg-[#0F1823] border-slate-800">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">
+                    총 검사
+                  </CardTitle>
+                  <Users className="h-4 w-4 text-amber-500" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-white">{filteredObservations.length}</div>
+                  <p className="text-xs text-slate-500 mt-1">전체 누적 검사</p>
+                </CardContent>
+              </Card>
 
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="inline-flex h-11 items-center justify-center rounded-lg bg-white border shadow-sm p-1">
-            <TabsTrigger value="overview" className="rounded-md px-6 py-2 text-sm font-medium">
-              검사 데이터
-            </TabsTrigger>
-            <TabsTrigger value="assessments" className="rounded-md px-6 py-2 text-sm font-medium">
-              검사 이력
-            </TabsTrigger>
-            <TabsTrigger value="family" className="rounded-md px-6 py-2 text-sm font-medium">
-              가족 관리
-            </TabsTrigger>
-          </TabsList>
+              {/* 이번 달 검사 */}
+              <Card className="bg-[#0F1823] border-slate-800">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">
+                    이번 달
+                  </CardTitle>
+                  <Target className="h-4 w-4 text-orange-500" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-white">{recent30DaysObservations}</div>
+                  <p className="text-xs text-slate-500 mt-1">최근 30일 검사</p>
+                </CardContent>
+              </Card>
 
-          <TabsContent value="overview" className="space-y-6">
-            {/* 기간 선택 */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-border/40">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-medium text-foreground">누적 측정 수</span>
-                  <div className="flex gap-2 items-center text-sm">
-                    <input
-                      type="month"
-                      value={`${dateRange.start.getFullYear()}-${String(dateRange.start.getMonth() + 1).padStart(2, '0')}`}
-                      onChange={(e) => {
-                        const [year, month] = e.target.value.split('-');
-                        setDateRange({
-                          ...dateRange,
-                          start: new Date(parseInt(year), parseInt(month) - 1, 1)
-                        });
-                      }}
-                      className="px-3 py-2 border rounded-lg bg-background hover:border-primary/50 transition-colors"
-                    />
-                    <span className="text-muted-foreground">~</span>
-                    <input
-                      type="month"
-                      value={`${dateRange.end.getFullYear()}-${String(dateRange.end.getMonth() + 1).padStart(2, '0')}`}
-                      onChange={(e) => {
-                        const [year, month] = e.target.value.split('-');
-                        setDateRange({
-                          ...dateRange,
-                          end: new Date(parseInt(year), parseInt(month), 0)
-                        });
-                      }}
-                      className="px-3 py-2 border rounded-lg bg-background hover:border-primary/50 transition-colors"
-                    />
-                  </div>
-                </div>
-                <Button variant="ghost" size="sm" onClick={loadDashboardData} className="hover:bg-muted">
-                  <RefreshCw className="w-4 h-4" />
-                </Button>
-              </div>
-              
-              {/* 통계 카드 */}
-              <div className="grid grid-cols-2 gap-4 mt-6">
-                <div className="bg-gradient-to-br from-blue-50 to-blue-50/50 rounded-xl p-5 border border-blue-100">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-                      <Users className="w-5 h-5 text-white" />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700">전체 누적검사</span>
-                  </div>
-                  <p className="text-3xl font-bold text-gray-900">{filteredObservations.length}</p>
-                </div>
-                <div className="bg-gradient-to-br from-green-50 to-green-50/50 rounded-xl p-5 border border-green-100">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                      <TrendingUp className="w-5 h-5 text-white" />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700">
-                      {String(dateRange.end.getMonth() + 1).padStart(2, '0')}월 누적검사
-                    </span>
-                  </div>
-                  <p className="text-3xl font-bold text-gray-900">{recent30DaysObservations}</p>
-                </div>
-              </div>
+              {/* 평균 점수 */}
+              <Card className="bg-[#0F1823] border-slate-800">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">
+                    평균 점수
+                  </CardTitle>
+                  <Activity className="h-4 w-4 text-amber-400" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-white">{averageScore}점</div>
+                  <p className="text-xs text-slate-500 mt-1">전체 평균</p>
+                </CardContent>
+              </Card>
+
+              {/* 개선율 */}
+              <Card className="bg-[#0F1823] border-slate-800">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">
+                    개선율
+                  </CardTitle>
+                  <TrendingUp className="h-4 w-4 text-blue-500" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-white">{improvementRate.toFixed(1)}%</div>
+                  <p className="text-xs text-slate-500 mt-1">최초 대비 개선</p>
+                </CardContent>
+              </Card>
+
+              {/* 활동 점수 */}
+              <Card className="bg-[#0F1823] border-slate-800">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">
+                    활동 점수
+                  </CardTitle>
+                  <BarChart3 className="h-4 w-4 text-green-500" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold text-white">0.0</div>
+                  <p className="text-xs text-slate-500 mt-1">종합 활동 지수</p>
+                </CardContent>
+              </Card>
             </div>
 
-            {/* 차트 섹션 */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              {/* 월별 누적 추이 */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-border/40">
-                <h3 className="text-base font-semibold mb-1 text-foreground">누적 추이</h3>
-                <p className="text-sm text-muted-foreground mb-6">월별 검사 수 및 누적 추이</p>
-                {monthlyData.length > 0 ? (
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={monthlyData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                        <XAxis 
-                          dataKey="month" 
-                          tick={{ fontSize: 12, fill: '#6b7280' }}
-                          tickLine={false}
-                          axisLine={{ stroke: '#e5e7eb' }}
-                        />
-                        <YAxis 
-                          tick={{ fontSize: 12, fill: '#6b7280' }}
-                          tickLine={false}
-                          axisLine={{ stroke: '#e5e7eb' }}
-                        />
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: 'white', 
-                            border: '1px solid #e5e7eb', 
-                            borderRadius: '8px',
-                            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
-                          }}
-                        />
-                        <Legend 
-                          wrapperStyle={{ fontSize: '13px' }}
-                          iconType="circle"
-                        />
-                        <Bar dataKey="count" fill="#10b981" name="월별 측정 수" radius={[6, 6, 0, 0]} />
-                        <Bar dataKey="cumulative" fill="#fbbf24" name="누적 측정 수" radius={[6, 6, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                ) : (
-                  <div className="h-80 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <BarChart3 className="w-8 h-8 text-muted-foreground" />
-                      </div>
-                      <p className="text-sm text-muted-foreground">측정 데이터가 없습니다</p>
-                    </div>
-                  </div>
-                )}
-              </div>
+            {/* Charts Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 월별 검사 추이 */}
+              <Card className="bg-[#0F1823] border-slate-800">
+                <CardHeader>
+                  <CardTitle className="text-lg font-medium text-white">월별 검사 추이</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={monthlyData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                      <XAxis dataKey="month" stroke="#64748b" />
+                      <YAxis stroke="#64748b" />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: '#0F1419', 
+                          border: '1px solid #334155',
+                          borderRadius: '8px'
+                        }}
+                        labelStyle={{ color: '#fff' }}
+                      />
+                      <Legend />
+                      <Bar dataKey="count" fill="#fbbf24" name="월별 검사" />
+                      <Bar dataKey="cumulative" fill="#f59e0b" name="누적 검사" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
 
-              {/* 취약점 분포 */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-border/40">
-                <h3 className="text-base font-semibold mb-1 text-foreground">취약점 분포</h3>
-                <p className="text-sm text-muted-foreground mb-6">검사 영역별 분포</p>
-                {distributionData.some(item => item.value > 0) ? (
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={distributionData}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={({ name, percent }) => `${name}\n${(percent * 100).toFixed(1)}%`}
-                          outerRadius={110}
-                          fill="#8884d8"
-                          dataKey="value"
-                          paddingAngle={2}
-                        >
-                          {distributionData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: 'white', 
-                            border: '1px solid #e5e7eb', 
-                            borderRadius: '8px',
-                            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
-                          }}
-                        />
-                        <Legend 
-                          wrapperStyle={{ fontSize: '13px' }}
-                          iconType="circle"
-                        />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                ) : (
-                  <div className="h-80 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <BarChart3 className="w-8 h-8 text-muted-foreground" />
-                      </div>
-                      <p className="text-sm text-muted-foreground">측정 데이터가 없습니다</p>
-                    </div>
-                  </div>
-                )}
-              </div>
+              {/* 영역별 점수 분포 */}
+              <Card className="bg-[#0F1823] border-slate-800">
+                <CardHeader>
+                  <CardTitle className="text-lg font-medium text-white">영역별 점수 분포</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={distributionData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, value }) => `${name}\n${value}점`}
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="value"
+                        paddingAngle={2}
+                      >
+                        {distributionData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: '#0F1419', 
+                          border: '1px solid #334155',
+                          borderRadius: '8px'
+                        }}
+                        labelStyle={{ color: '#fff' }}
+                      />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
             </div>
 
-            {/* 나의 검사 결과 인사이트 */}
-            <div>
-              <div className="mb-4">
-                <h3 className="text-base font-semibold text-foreground">나의 검사 결과 인사이트</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  나의 검사 결과를 바탕으로 분석한 영역별 점수입니다
-                </p>
-              </div>
-              {distributionData.some(item => item.value > 0) ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {distributionData
-                    .sort((a, b) => a.value - b.value)
-                    .slice(0, 3)
-                    .map((item, idx) => {
-                      const getInsightLevel = (value: number) => {
-                        if (value >= 80) return { text: '우수', color: 'text-green-600', bgColor: 'bg-green-50' };
-                        if (value >= 60) return { text: '양호', color: 'text-blue-600', bgColor: 'bg-blue-50' };
-                        if (value >= 40) return { text: '보통', color: 'text-yellow-600', bgColor: 'bg-yellow-50' };
-                        return { text: '관심 필요', color: 'text-red-600', bgColor: 'bg-red-50' };
-                      };
-                      
-                      const level = getInsightLevel(item.value);
-                      
-                      return (
-                        <div 
-                          key={item.name} 
-                          className="bg-white rounded-2xl p-6 shadow-sm border-2 hover:shadow-md transition-shadow"
-                          style={{ borderColor: item.color }}
-                        >
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-lg text-foreground mb-1">
-                                {item.name}
-                              </h4>
-                              <p className="text-xs text-muted-foreground">
-                                {item.description}
-                              </p>
-                            </div>
-                          </div>
-                          
-                          <div className="mt-4 pt-4 border-t border-border/40">
-                            <div className="flex items-center justify-between">
-                              <div 
-                                className="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl"
-                                style={{ backgroundColor: item.color }}
+            {/* Assessment Results Table */}
+            <Card className="bg-[#0F1823] border-slate-800">
+              <CardHeader>
+                <CardTitle className="text-lg font-medium text-white">최근 검사 결과</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-slate-800">
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">검사일</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">연령대</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">종합 점수</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">상태</th>
+                        <th className="text-right py-3 px-4 text-sm font-medium text-slate-400">작업</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredObservations.slice(0, 10).map((obs) => (
+                        <tr key={obs.id} className="border-b border-slate-800 hover:bg-slate-900/50 transition-colors">
+                          <td className="py-3 px-4 text-sm text-white">
+                            {format(new Date(obs.created_at), 'yyyy. MM. dd', { locale: ko })}
+                          </td>
+                          <td className="py-3 px-4 text-sm text-slate-300">{obs.age_group}</td>
+                          <td className="py-3 px-4 text-sm text-white">{obs.score_overall}점</td>
+                          <td className="py-3 px-4">
+                            <Badge 
+                              className={
+                                obs.score_overall >= 80 
+                                  ? 'bg-green-900/30 text-green-400 border-green-800' 
+                                  : obs.score_overall >= 60
+                                  ? 'bg-blue-900/30 text-blue-400 border-blue-800'
+                                  : 'bg-yellow-900/30 text-yellow-400 border-yellow-800'
+                              }
+                            >
+                              {obs.score_overall >= 80 ? '우수' : obs.score_overall >= 60 ? '양호' : '관심필요'}
+                            </Badge>
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => navigate(`/assessment/${obs.id}`)}
+                                className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
                               >
-                                {item.value}
-                              </div>
-                              <div className="text-right">
-                                <div className={`inline-block px-3 py-1.5 rounded-full ${level.bgColor}`}>
-                                  <span className={`text-sm font-semibold ${level.color}`}>
-                                    {level.text}
-                                  </span>
-                                </div>
-                                <p className="text-xs text-muted-foreground mt-2">
-                                  평균 점수
-                                </p>
-                              </div>
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => toast({ title: "다운로드 준비 중", description: "검사 결과를 다운로드합니다." })}
+                                className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
+                              >
+                                <Download className="h-4 w-4" />
+                              </Button>
                             </div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                          </td>
+                        </tr>
+                      ))}
+                      {filteredObservations.length === 0 && (
+                        <tr>
+                          <td colSpan={5} className="py-8 text-center text-slate-500">
+                            아직 검사 기록이 없습니다.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
-              ) : (
-                <div className="bg-white rounded-2xl p-12 shadow-sm border border-border/40 text-center">
-                  <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <BarChart3 className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    검사 결과가 없습니다. 검사를 시작하여 나의 인사이트를 확인해보세요.
-                  </p>
-                  <Button 
-                    className="mt-4" 
-                    onClick={() => navigate('/assessment')}
-                  >
-                    검사 시작하기
-                  </Button>
-                </div>
-              )}
-            </div>
+              </CardContent>
+            </Card>
 
-            {/* 빠른 액션 */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
-              <div 
-                className="bg-white rounded-2xl p-6 shadow-sm border border-border/40 hover:shadow-md transition-all cursor-pointer group" 
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card 
+                className="bg-[#0F1823] border-slate-800 cursor-pointer hover:bg-slate-900/50 transition-all"
                 onClick={() => navigate('/assessment')}
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <FileText className="w-6 h-6 text-white" />
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shrink-0">
+                      <FileText className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-base text-white mb-1">새로운 검사</h3>
+                      <p className="text-sm text-slate-400">AI 발달·심리 검사</p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-base mb-1.5 text-foreground">새로운 검사 시작</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      AI 기반 발달·심리 검사로 현재 상태를 확인하세요
-                    </p>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
 
-              <div 
-                className="bg-white rounded-2xl p-6 shadow-sm border border-border/40 hover:shadow-md transition-all cursor-pointer group" 
+              <Card 
+                className="bg-[#0F1823] border-slate-800 cursor-pointer hover:bg-slate-900/50 transition-all"
                 onClick={() => navigate('/iep-generator')}
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <Brain className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-base text-foreground">맞춤형 IEP 생성</h3>
-                      <Badge className="bg-green-500 text-white text-xs">무료</Badge>
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center shrink-0">
+                      <Brain className="w-6 h-6 text-white" />
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      검사 결과 기반 개별교육계획 자동 생성
-                    </p>
+                    <div>
+                      <h3 className="font-semibold text-base text-white mb-1">맞춤형 IEP</h3>
+                      <p className="text-sm text-slate-400">개별교육계획 생성</p>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
 
-              <div 
-                className="bg-white rounded-2xl p-6 shadow-sm border border-border/40 hover:shadow-md transition-all cursor-pointer group" 
+              <Card 
+                className="bg-[#0F1823] border-slate-800 cursor-pointer hover:bg-slate-900/50 transition-all"
                 onClick={() => navigate('/concern-storage')}
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <Heart className="w-6 h-6 text-white" />
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-pink-500 rounded-xl flex items-center justify-center shrink-0">
+                      <Heart className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-base text-white mb-1">고민 저장소</h3>
+                      <p className="text-sm text-slate-400">AI 분석 결과 확인</p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-base mb-1.5 text-foreground">고민 저장소</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      저장된 고민과 AI 분석 결과를 확인하세요
-                    </p>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
 
-              <div 
-                className="bg-white rounded-2xl p-6 shadow-sm border border-border/40 hover:shadow-md transition-all cursor-pointer group" 
+              <Card 
+                className="bg-[#0F1823] border-slate-800 cursor-pointer hover:bg-slate-900/50 transition-all"
                 onClick={() => navigate('/experts')}
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <UserCheck className="w-6 h-6 text-white" />
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center shrink-0">
+                      <UserCheck className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-base text-white mb-1">전문가 상담</h3>
+                      <p className="text-sm text-slate-400">1:1 전문가 상담</p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-base mb-1.5 text-foreground">전문가 상담</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      검사 결과를 바탕으로 전문가와 1:1 상담하세요
-                    </p>
-                  </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
-          <TabsContent value="assessments">
+          {/* Assessments Tab */}
+          <TabsContent value="assessments" className="mt-0">
             <AssessmentHistory />
           </TabsContent>
 
-          <TabsContent value="family">
+          {/* Family Tab */}
+          <TabsContent value="family" className="mt-0">
             <FamilyManagement onUpdate={loadDashboardData} />
           </TabsContent>
         </Tabs>

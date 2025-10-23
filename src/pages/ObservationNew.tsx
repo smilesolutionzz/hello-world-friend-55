@@ -182,26 +182,84 @@ const ObservationNew = () => {
   }
 
   return (
-    <AuthenticationGuard fallbackMessage="관찰일지 시스템을 사용하려면 로그인이 필요합니다.">
-      <UnifiedNavigation />
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-        {/* Header */}
-        <div className="mb-4 sm:mb-8">
-          <h1 className="text-xl sm:text-2xl md:text-4xl font-bold text-foreground mb-2 sm:mb-4 break-keep">
-            🧠 AI 관찰일지 시스템
-          </h1>
-          <p className="text-sm sm:text-lg md:text-xl text-muted-foreground break-keep">
-            전문가급 AI 분석과 맞춤형 리포트로 체계적인 관찰 관리
-          </p>
+    <AuthenticationGuard fallbackMessage="차세대 AI 관찰일지 시스템을 사용하려면 로그인이 필요합니다.">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-100 to-pink-100 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Floating Gradient Orbs */}
+          <div className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-blue-400/40 to-purple-500/40 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-1/3 -right-32 w-[500px] h-[500px] bg-gradient-to-bl from-purple-400/40 to-pink-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s', animationDuration: '3s' }}></div>
+          <div className="absolute -bottom-32 left-1/4 w-[450px] h-[450px] bg-gradient-to-tr from-pink-400/40 to-orange-400/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s', animationDuration: '4s' }}></div>
+          
+          {/* Moving Light Rays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+          
+          {/* Decorative Circles */}
+          <div className="absolute top-40 left-1/2 w-64 h-64 border-2 border-purple-300/30 rounded-full"></div>
+          <div className="absolute bottom-40 right-1/3 w-80 h-80 border-2 border-blue-300/30 rounded-full"></div>
         </div>
+        
+        <UnifiedNavigation />
+        
+        {/* Hero Section */}
+        <section className="pt-24 pb-12 px-4 relative z-10">
+          <div className="container mx-auto max-w-5xl">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+                AI 관찰일지 작성
+              </h1>
+              
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+                간단한 관찰 기록으로 전문가 수준의 분석 리포트를 받아보세요
+              </p>
+
+              {/* Simple 3-Step Guide */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
+                    1
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-1">관찰 시작</h3>
+                  <p className="text-sm text-gray-600">템플릿을 선택하세요</p>
+                </div>
+                
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
+                    2
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-1">관찰 기록</h3>
+                  <p className="text-sm text-gray-600">간단히 입력하세요</p>
+                </div>
+                
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
+                    3
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-1">AI 분석</h3>
+                  <p className="text-sm text-gray-600">즉시 결과를 받아보세요</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 relative z-10">
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 h-auto">
-            <TabsTrigger value="new-observation" className="text-xs sm:text-sm py-2 px-2 break-keep">
-              새 관찰 시작
+          <TabsList className="grid w-full grid-cols-2 h-12 bg-white rounded-lg p-1 shadow mb-8 max-w-md mx-auto">
+            <TabsTrigger 
+              value="new-observation" 
+              className="text-sm data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-md"
+            >
+              <Plus className="h-4 w-4 mr-1.5" />
+              새 관찰
             </TabsTrigger>
-            <TabsTrigger value="my-observations" className="text-xs sm:text-sm py-2 px-2 break-keep">
-              내 관찰 기록 ({sessions.length})
+            <TabsTrigger 
+              value="my-observations" 
+              className="text-sm data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-md"
+            >
+              <ClipboardList className="h-4 w-4 mr-1.5" />
+              내 기록 ({sessions.length})
             </TabsTrigger>
           </TabsList>
 
@@ -491,6 +549,7 @@ const ObservationNew = () => {
             )}
           </TabsContent>
         </Tabs>
+      </div>
       </div>
     </AuthenticationGuard>
   );

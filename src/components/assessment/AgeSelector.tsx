@@ -15,33 +15,67 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
   const [selectedGroup, setSelectedGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [specificAge, setSpecificAge] = useState<number>(0);
 
+  const getAgeGroupContent = (groupKey: 'infant' | 'child' | 'adult') => {
+    if (testType === 'adhd') {
+      const adhdContent = {
+        infant: {
+          description: 'ADHD 검사',
+          features: ['주의력 평가', '과잉행동 관찰', '충동성 체크', '발달 수준']
+        },
+        child: {
+          description: 'ADHD 검사',
+          features: ['주의력 결핍', '과잉행동', '충동성', '집중력 문제']
+        },
+        adult: {
+          description: 'ADHD 검사',
+          features: ['주의력 결핍', '시간관리 어려움', '충동성', '조직화 문제']
+        }
+      };
+      return adhdContent[groupKey];
+    }
+    
+    // 기본 우울검사 내용
+    const depressionContent = {
+      infant: {
+        description: '우울검사',
+        features: ['정서 상태', '행동 변화', '수면/식욕 패턴', '사회적 위축']
+      },
+      child: {
+        description: '우울검사',
+        features: ['우울 기분', '흥미/즐거움 상실', '자기비하', '신체 증상']
+      },
+      adult: {
+        description: '우울검사',
+        features: ['우울 정서', '인지 증상', '신체화 증상', '사회적 기능']
+      }
+    };
+    return depressionContent[groupKey];
+  };
+
   const ageGroups = [
     {
       key: 'infant' as const,
       title: '영유아',
       subtitle: '0-5세',
-      description: '우울검사',
+      ...getAgeGroupContent('infant'),
       icon: Baby,
-      color: 'from-gentle-peach to-warm-lavender',
-      features: ['정서 상태', '행동 변화', '수면/식욕 패턴', '사회적 위축']
+      color: 'from-gentle-peach to-warm-lavender'
     },
     {
       key: 'child' as const, 
       title: '아동청소년',
       subtitle: '6-18세',
-      description: '우울검사',
+      ...getAgeGroupContent('child'),
       icon: GraduationCap,
-      color: 'from-calm-blue to-soft-mint',
-      features: ['우울 기분', '흥미/즐거움 상실', '자기비하', '신체 증상']
+      color: 'from-calm-blue to-soft-mint'
     },
     {
       key: 'adult' as const,
       title: '성인',
-      subtitle: '19-64세', 
-      description: '우울검사',
+      subtitle: '19-64세',
+      ...getAgeGroupContent('adult'),
       icon: Briefcase,
-      color: 'from-primary to-primary-glow',
-      features: ['우울 정서', '인지 증상', '신체화 증상', '사회적 기능']
+      color: 'from-primary to-primary-glow'
     }
   ];
 
@@ -153,7 +187,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
                       </div>
                       
                       <p className="text-lg text-brand-gradient font-semibold">
-                        우울검사
+                        {group.description}
                       </p>
                       
                       <div className="space-y-2">

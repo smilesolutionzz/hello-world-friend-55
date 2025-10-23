@@ -239,10 +239,9 @@ const ObservationDetailView = ({ session, onBack }: ObservationDetailViewProps) 
 
       {/* 탭 컨텐츠 */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">종합 개요</TabsTrigger>
           <TabsTrigger value="analysis">AI 분석</TabsTrigger>
-          <TabsTrigger value="scores">점수 분석</TabsTrigger>
           <TabsTrigger value="media">첨부 파일</TabsTrigger>
           <TabsTrigger value="recommendations">권고사항</TabsTrigger>
         </TabsList>
@@ -355,54 +354,6 @@ const ObservationDetailView = ({ session, onBack }: ObservationDetailViewProps) 
               )}
             </CardContent>
           </Card>
-        </TabsContent>
-
-        {/* 점수 분석 */}
-        <TabsContent value="scores" className="space-y-6">
-          {radarData.length > 0 ? (
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>레이더 차트</CardTitle>
-                  <CardDescription>영역별 점수 분포</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <RadarChart data={radarData}>
-                      <PolarGrid />
-                      <PolarAngleAxis dataKey="domain" />
-                      <PolarRadiusAxis domain={[0, 100]} />
-                      <Radar name="점수" dataKey="score" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6} />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>막대 차트</CardTitle>
-                  <CardDescription>영역별 점수 비교</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={barData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="domain" />
-                      <YAxis domain={[0, 100]} />
-                      <Tooltip />
-                      <Bar dataKey="score" fill="#82ca9d" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="p-6 text-center text-muted-foreground">
-                점수 데이터가 없습니다.
-              </CardContent>
-            </Card>
-          )}
         </TabsContent>
 
         {/* 첨부 파일 */}

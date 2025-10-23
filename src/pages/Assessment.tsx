@@ -611,7 +611,21 @@ const Assessment = () => {
     return (
       <div>
         <UnifiedNavigation />
-        <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden pt-4">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-100 to-pink-100 relative overflow-hidden pt-4">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Floating Gradient Orbs */}
+          <div className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-blue-400/40 to-purple-500/40 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-1/3 -right-32 w-[500px] h-[500px] bg-gradient-to-bl from-purple-400/40 to-pink-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s', animationDuration: '3s' }}></div>
+          <div className="absolute -bottom-32 left-1/4 w-[450px] h-[450px] bg-gradient-to-tr from-pink-400/40 to-orange-400/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s', animationDuration: '4s' }}></div>
+          
+          {/* Moving Light Rays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+          
+          {/* Decorative Circles */}
+          <div className="absolute top-40 left-1/2 w-64 h-64 border-2 border-purple-300/30 rounded-full"></div>
+          <div className="absolute bottom-40 right-1/3 w-80 h-80 border-2 border-blue-300/30 rounded-full"></div>
+        </div>
         
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
           {/* 토큰 비용 안내 배너 */}
@@ -688,13 +702,15 @@ const Assessment = () => {
           </Card>
 
           <div className="text-center mb-16 space-y-6">
-            <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-              <span className="block text-foreground mb-2">3분으로 시작하는</span>
-              <span className="block text-brand-gradient">마음상태 체크</span>
+            <h1 className="text-5xl md:text-6xl font-bold leading-tight text-gray-900">
+              <span className="block mb-3">3분으로 시작하는</span>
+              <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                마음상태 체크
+              </span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto font-medium">
               어떤 체크를 받고 싶으신가요?<br />
-              <span className="text-lg">(테스트 결과는 진단이 아닌 참고용입니다)</span>
+              <span className="text-lg text-gray-600">(테스트 결과는 진단이 아닌 참고용입니다)</span>
             </p>
           </div>
 

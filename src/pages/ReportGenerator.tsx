@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +28,10 @@ import {
   AlertCircle,
   ArrowRight,
   Database,
-  Upload
+  Upload,
+  ChevronDown,
+  ChevronUp,
+  Eye
 } from 'lucide-react';
 
 const ReportGenerator = () => {
@@ -39,6 +43,12 @@ const ReportGenerator = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isAnalyzingImages, setIsAnalyzingImages] = useState(false);
   const [imageAnalysisResults, setImageAnalysisResults] = useState<string>('');
+  const [showDataDetails, setShowDataDetails] = useState({
+    assessments: false,
+    observations: false,
+    observationSessions: false,
+    chatMessages: false
+  });
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -354,41 +364,202 @@ const ReportGenerator = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-4 gap-6">
-                  <div className="bg-gradient-to-br from-blue-600/20 to-blue-800/20 p-6 rounded-xl border border-blue-400/30">
-                    <div className="flex items-center gap-3 mb-3">
-                      <FileText className="w-8 h-8 text-blue-300" />
-                      <p className="text-sm font-semibold text-blue-200">검사 기록</p>
+                  {/* 검사 기록 카드 */}
+                  <Collapsible 
+                    open={showDataDetails.assessments} 
+                    onOpenChange={(open) => setShowDataDetails({...showDataDetails, assessments: open})}
+                  >
+                    <div className="bg-gradient-to-br from-blue-600/20 to-blue-800/20 p-6 rounded-xl border border-blue-400/30">
+                      <div className="flex items-center gap-3 mb-3">
+                        <FileText className="w-8 h-8 text-blue-300" />
+                        <p className="text-sm font-semibold text-blue-200">검사 기록</p>
+                      </div>
+                      <p className="text-4xl font-black text-white">{userData?.totalAssessments || 0}</p>
+                      <p className="text-xs text-blue-300 mt-2">개의 심리/발달 검사</p>
+                      
+                      {(userData?.totalAssessments || 0) > 0 && (
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" className="w-full mt-3 text-blue-200 hover:text-blue-100 hover:bg-blue-600/20">
+                            <Eye className="w-4 h-4 mr-2" />
+                            {showDataDetails.assessments ? '접기' : '자세히 보기'}
+                            {showDataDetails.assessments ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      )}
                     </div>
-                    <p className="text-4xl font-black text-white">{userData?.totalAssessments || 0}</p>
-                    <p className="text-xs text-blue-300 mt-2">개의 심리/발달 검사</p>
-                  </div>
+                    
+                    <CollapsibleContent className="mt-2">
+                      <Card className="bg-slate-900/90 border-blue-400/30">
+                        <CardContent className="p-4 max-h-60 overflow-y-auto space-y-2">
+                          {userData?.assessments?.map((assessment: any, idx: number) => (
+                            <div key={idx} className="p-3 bg-slate-800/50 rounded border border-blue-400/20">
+                              <div className="flex justify-between items-start mb-2">
+                                <Badge variant="outline" className="text-xs">
+                                  {new Date(assessment.created_at).toLocaleDateString('ko-KR')}
+                                </Badge>
+                                <Badge className={
+                                  assessment.risk_level === 'high' ? 'bg-red-500' :
+                                  assessment.risk_level === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                                }>
+                                  {assessment.risk_level || '미분류'}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-slate-300 line-clamp-2">{assessment.analysis || '분석 내용 없음'}</p>
+                            </div>
+                          ))}
+                        </CardContent>
+                      </Card>
+                    </CollapsibleContent>
+                  </Collapsible>
 
-                  <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-800/20 p-6 rounded-xl border border-emerald-400/30">
-                    <div className="flex items-center gap-3 mb-3">
-                      <BookOpen className="w-8 h-8 text-emerald-300" />
-                      <p className="text-sm font-semibold text-emerald-200">관찰 일지</p>
+                  {/* 관찰 일지 카드 */}
+                  <Collapsible 
+                    open={showDataDetails.observations} 
+                    onOpenChange={(open) => setShowDataDetails({...showDataDetails, observations: open})}
+                  >
+                    <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-800/20 p-6 rounded-xl border border-emerald-400/30">
+                      <div className="flex items-center gap-3 mb-3">
+                        <BookOpen className="w-8 h-8 text-emerald-300" />
+                        <p className="text-sm font-semibold text-emerald-200">관찰 일지</p>
+                      </div>
+                      <p className="text-4xl font-black text-white">{userData?.totalObservations || 0}</p>
+                      <p className="text-xs text-emerald-300 mt-2">개의 행동 관찰 기록</p>
+                      
+                      {(userData?.totalObservations || 0) > 0 && (
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" className="w-full mt-3 text-emerald-200 hover:text-emerald-100 hover:bg-emerald-600/20">
+                            <Eye className="w-4 h-4 mr-2" />
+                            {showDataDetails.observations ? '접기' : '자세히 보기'}
+                            {showDataDetails.observations ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      )}
                     </div>
-                    <p className="text-4xl font-black text-white">{userData?.totalObservations || 0}</p>
-                    <p className="text-xs text-emerald-300 mt-2">개의 행동 관찰 기록</p>
-                  </div>
+                    
+                    <CollapsibleContent className="mt-2">
+                      <Card className="bg-slate-900/90 border-emerald-400/30">
+                        <CardContent className="p-4 max-h-60 overflow-y-auto space-y-2">
+                          {userData?.observations?.map((obs: any, idx: number) => (
+                            <div key={idx} className="p-3 bg-slate-800/50 rounded border border-emerald-400/20">
+                              <div className="flex justify-between items-start mb-2">
+                                <Badge variant="outline" className="text-xs">
+                                  {new Date(obs.created_at).toLocaleDateString('ko-KR')}
+                                </Badge>
+                                {obs.severity && (
+                                  <Badge className={
+                                    obs.severity === 'high' ? 'bg-red-500' :
+                                    obs.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                                  }>
+                                    {obs.severity}
+                                  </Badge>
+                                )}
+                              </div>
+                              <p className="text-sm font-semibold text-emerald-200 mb-1">{obs.title || '제목 없음'}</p>
+                              <p className="text-xs text-slate-300 line-clamp-2">{obs.description || '내용 없음'}</p>
+                            </div>
+                          ))}
+                        </CardContent>
+                      </Card>
+                    </CollapsibleContent>
+                  </Collapsible>
 
-                  <div className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 p-6 rounded-xl border border-purple-400/30">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Activity className="w-8 h-8 text-purple-300" />
-                      <p className="text-sm font-semibold text-purple-200">관찰 세션</p>
+                  {/* 관찰 세션 카드 */}
+                  <Collapsible 
+                    open={showDataDetails.observationSessions} 
+                    onOpenChange={(open) => setShowDataDetails({...showDataDetails, observationSessions: open})}
+                  >
+                    <div className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 p-6 rounded-xl border border-purple-400/30">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Activity className="w-8 h-8 text-purple-300" />
+                        <p className="text-sm font-semibold text-purple-200">관찰 세션</p>
+                      </div>
+                      <p className="text-4xl font-black text-white">{userData?.totalObservationSessions || 0}</p>
+                      <p className="text-xs text-purple-300 mt-2">개의 관찰 세션</p>
+                      
+                      {(userData?.totalObservationSessions || 0) > 0 && (
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" className="w-full mt-3 text-purple-200 hover:text-purple-100 hover:bg-purple-600/20">
+                            <Eye className="w-4 h-4 mr-2" />
+                            {showDataDetails.observationSessions ? '접기' : '자세히 보기'}
+                            {showDataDetails.observationSessions ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      )}
                     </div>
-                    <p className="text-4xl font-black text-white">{userData?.totalObservationSessions || 0}</p>
-                    <p className="text-xs text-purple-300 mt-2">개의 관찰 세션</p>
-                  </div>
+                    
+                    <CollapsibleContent className="mt-2">
+                      <Card className="bg-slate-900/90 border-purple-400/30">
+                        <CardContent className="p-4 max-h-60 overflow-y-auto space-y-2">
+                          {userData?.observationSessions?.map((session: any, idx: number) => (
+                            <div key={idx} className="p-3 bg-slate-800/50 rounded border border-purple-400/20">
+                              <div className="flex justify-between items-start mb-2">
+                                <Badge variant="outline" className="text-xs">
+                                  {new Date(session.created_at).toLocaleDateString('ko-KR')}
+                                </Badge>
+                                <Badge>{session.session_type || '세션'}</Badge>
+                              </div>
+                              {session.duration_minutes && (
+                                <p className="text-xs text-purple-300 mb-1">소요 시간: {session.duration_minutes}분</p>
+                              )}
+                              <p className="text-xs text-slate-300 line-clamp-2">{session.summary || '요약 없음'}</p>
+                            </div>
+                          ))}
+                        </CardContent>
+                      </Card>
+                    </CollapsibleContent>
+                  </Collapsible>
 
-                  <div className="bg-gradient-to-br from-pink-600/20 to-pink-800/20 p-6 rounded-xl border border-pink-400/30">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Target className="w-8 h-8 text-pink-300" />
-                      <p className="text-sm font-semibold text-pink-200">AI 상담</p>
+                  {/* AI 상담 카드 */}
+                  <Collapsible 
+                    open={showDataDetails.chatMessages} 
+                    onOpenChange={(open) => setShowDataDetails({...showDataDetails, chatMessages: open})}
+                  >
+                    <div className="bg-gradient-to-br from-pink-600/20 to-pink-800/20 p-6 rounded-xl border border-pink-400/30">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Target className="w-8 h-8 text-pink-300" />
+                        <p className="text-sm font-semibold text-pink-200">AI 상담</p>
+                      </div>
+                      <p className="text-4xl font-black text-white">{userData?.totalChatMessages || 0}</p>
+                      <p className="text-xs text-pink-300 mt-2">개의 상담 메시지</p>
+                      
+                      {(userData?.totalChatMessages || 0) > 0 && (
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" className="w-full mt-3 text-pink-200 hover:text-pink-100 hover:bg-pink-600/20">
+                            <Eye className="w-4 h-4 mr-2" />
+                            {showDataDetails.chatMessages ? '접기' : '자세히 보기'}
+                            {showDataDetails.chatMessages ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+                          </Button>
+                        </CollapsibleTrigger>
+                      )}
                     </div>
-                    <p className="text-4xl font-black text-white">{userData?.totalChatMessages || 0}</p>
-                    <p className="text-xs text-pink-300 mt-2">개의 상담 메시지</p>
-                  </div>
+                    
+                    <CollapsibleContent className="mt-2">
+                      <Card className="bg-slate-900/90 border-pink-400/30">
+                        <CardContent className="p-4 max-h-60 overflow-y-auto space-y-3">
+                          {userData?.chatRooms?.map((room: any, roomIdx: number) => (
+                            <div key={roomIdx} className="space-y-2">
+                              <p className="text-sm font-semibold text-pink-200 border-b border-pink-400/30 pb-1">
+                                채팅방 {roomIdx + 1} ({room.chat_messages?.length || 0}개 메시지)
+                              </p>
+                              {room.chat_messages?.slice(0, 3).map((msg: any, msgIdx: number) => (
+                                <div key={msgIdx} className="p-2 bg-slate-800/50 rounded border border-pink-400/20">
+                                  <Badge variant="outline" className="text-xs mb-1">
+                                    {msg.role === 'user' ? '사용자' : 'AI'}
+                                  </Badge>
+                                  <p className="text-xs text-slate-300 line-clamp-2">{msg.content}</p>
+                                </div>
+                              ))}
+                              {(room.chat_messages?.length || 0) > 3 && (
+                                <p className="text-xs text-pink-400 text-center">
+                                  +{room.chat_messages.length - 3}개 메시지 더 있음
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </CardContent>
+                      </Card>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </div>
 
                 {/* 총 데이터 개수 및 필요 개수 표시 */}

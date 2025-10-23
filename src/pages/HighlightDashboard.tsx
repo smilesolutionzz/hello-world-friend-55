@@ -5,11 +5,13 @@ import { TestSelector } from '@/components/highlight/TestSelector';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, LogOut, History, Crown } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { User, LogOut, History, Crown, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import ImprovementHistory from '@/components/improvement/ImprovementHistory';
 
 interface Profile {
   display_name: string;
@@ -25,10 +27,19 @@ interface RecentTest {
   };
 }
 
+interface Observation {
+  id: string;
+  created_at: string;
+  age_group: string;
+  score_overall: number;
+  categoryScores?: { [key: string]: number };
+}
+
 export default function HighlightDashboard() {
   const { authenticated, loading: authLoading } = useAuthGuard();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [recentTests, setRecentTests] = useState<RecentTest[]>([]);
+  const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -43,6 +54,7 @@ export default function HighlightDashboard() {
     try {
       await fetchProfile();
       await fetchRecentTests();
+      await fetchObservations();
     } catch (error) {
       console.error('Data loading failed:', error);
     } finally {
@@ -136,6 +148,48 @@ export default function HighlightDashboard() {
     }
   };
 
+  const fetchObservations = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('observation_sessions')
+        .select('id, created_at, observations, status')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      // Transform data to match ImprovementHistory interface
+      const transformedData: Observation[] = (data || []).map((obs: any) => {
+        const categoryScores: { [key: string]: number } = {};
+        
+        // observation_sessions의 observations는 Json 타입이므로 파싱
+        if (obs.observations && typeof obs.observations === 'object') {
+          const obsData = obs.observations as any;
+          if (obsData.score_emotion) categoryScores['정서'] = obsData.score_emotion;
+          if (obsData.score_cognition) categoryScores['인지'] = obsData.score_cognition;
+          if (obsData.score_physical) categoryScores['신체'] = obsData.score_physical;
+          if (obsData.score_social) categoryScores['사회성'] = obsData.score_social;
+          if (obsData.score_behavior) categoryScores['행동'] = obsData.score_behavior;
+        }
+        
+        return {
+          id: obs.id,
+          created_at: obs.created_at,
+          age_group: 'general',
+          score_overall: Object.values(categoryScores).reduce((sum, score) => sum + score, 0) / Object.keys(categoryScores).length || 0,
+          categoryScores
+        };
+      });
+      
+      setObservations(transformedData);
+    } catch (error: any) {
+      console.error('Error fetching observations:', error);
+    }
+  };
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/auth');
@@ -203,90 +257,109 @@ export default function HighlightDashboard() {
 
           <main className="flex-1 bg-gradient-to-br from-background to-muted">
             <div className="container mx-auto px-4 py-8">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Main Content */}
-                <div className="lg:col-span-2">
-                  <TestSelector />
-                </div>
+              <Tabs defaultValue="tests" className="space-y-6">
+                <TabsList className="grid w-full grid-cols-2 max-w-md">
+                  <TabsTrigger value="tests" className="flex items-center gap-2">
+                    <History className="w-4 h-4" />
+                    검사 시작
+                  </TabsTrigger>
+                  <TabsTrigger value="improvement" className="flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4" />
+                    개선 이력
+                  </TabsTrigger>
+                </TabsList>
 
-                {/* Sidebar */}
-                <div className="space-y-6">
-                  {/* Recent Tests */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <History className="w-5 h-5" />
-                        최근 검사
-                      </CardTitle>
-                      <CardDescription>
-                        최근 완료한 검사 결과를 확인하세요
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      {recentTests.length > 0 ? (
-                        <div className="space-y-3">
-                          {recentTests.map((test) => (
-                            <div 
-                              key={test.id}
-                              className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                              onClick={() => {
-                                if (test.test_types.name === '프리미엄 검사') {
-                                  navigate(`/assessment-detail/${test.id}`);
-                                } else {
-                                  navigate(`/assessment/${test.id}`);
-                                }
-                              }}
-                            >
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <p className="font-medium text-sm">{test.test_types.name}</p>
-                                  <p className="text-xs text-muted-foreground">
-                                    {new Date(test.completed_at).toLocaleDateString('ko-KR')}
-                                  </p>
+                <TabsContent value="tests" className="space-y-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Main Content */}
+                    <div className="lg:col-span-2">
+                      <TestSelector />
+                    </div>
+
+                    {/* Sidebar */}
+                    <div className="space-y-6">
+                      {/* Recent Tests */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <History className="w-5 h-5" />
+                            최근 검사
+                          </CardTitle>
+                          <CardDescription>
+                            최근 완료한 검사 결과를 확인하세요
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          {recentTests.length > 0 ? (
+                            <div className="space-y-3">
+                              {recentTests.map((test) => (
+                                <div 
+                                  key={test.id}
+                                  className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                                  onClick={() => {
+                                    if (test.test_types.name === '프리미엄 검사') {
+                                      navigate(`/assessment-detail/${test.id}`);
+                                    } else {
+                                      navigate(`/assessment/${test.id}`);
+                                    }
+                                  }}
+                                >
+                                  <div className="flex justify-between items-start">
+                                    <div>
+                                      <p className="font-medium text-sm">{test.test_types.name}</p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {new Date(test.completed_at).toLocaleDateString('ko-KR')}
+                                      </p>
+                                    </div>
+                                    <Badge variant="outline" className="text-xs">
+                                      {test.scores.total_score || 0}점
+                                    </Badge>
+                                  </div>
                                 </div>
-                                <Badge variant="outline" className="text-xs">
-                                  {test.scores.total_score || 0}점
-                                </Badge>
-                              </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-sm text-muted-foreground text-center py-4">
-                          아직 완료한 검사가 없습니다
-                        </p>
-                      )}
-                    </CardContent>
-                  </Card>
+                          ) : (
+                            <p className="text-sm text-muted-foreground text-center py-4">
+                              아직 완료한 검사가 없습니다
+                            </p>
+                          )}
+                        </CardContent>
+                      </Card>
 
-                  {/* Subscription Info */}
-                  {profile?.subscription_tier === 'free' && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>프리미엄 업그레이드</CardTitle>
-                        <CardDescription>
-                          더 많은 기능을 이용해보세요
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="text-sm space-y-2 mb-4">
-                          <li>• 무제한 검사</li>
-                          <li>• 전문가 피드백</li>
-                          <li>• PDF 리포트 다운로드</li>
-                          <li>• 카카오 알림톡</li>
-                        </ul>
-                        <Button 
-                          className="w-full"
-                          onClick={() => navigate('/subscription')}
-                        >
-                          <Crown className="w-4 h-4 mr-2" />
-                          프리미엄 구독하기
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-              </div>
+                      {/* Subscription Info */}
+                      {profile?.subscription_tier === 'free' && (
+                        <Card>
+                          <CardHeader>
+                            <CardTitle>프리미엄 업그레이드</CardTitle>
+                            <CardDescription>
+                              더 많은 기능을 이용해보세요
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <ul className="text-sm space-y-2 mb-4">
+                              <li>• 무제한 검사</li>
+                              <li>• 전문가 피드백</li>
+                              <li>• PDF 리포트 다운로드</li>
+                              <li>• 카카오 알림톡</li>
+                            </ul>
+                            <Button 
+                              className="w-full"
+                              onClick={() => navigate('/subscription')}
+                            >
+                              <Crown className="w-4 h-4 mr-2" />
+                              프리미엄 구독하기
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="improvement">
+                  <ImprovementHistory observations={observations} />
+                </TabsContent>
+              </Tabs>
             </div>
           </main>
         </div>

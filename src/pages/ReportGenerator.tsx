@@ -154,7 +154,15 @@ const ReportGenerator = () => {
         body: { images: imageUrls }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
+
+      if (data?.success === false) {
+        // API 크레딧 부족 또는 기타 에러
+        throw new Error(data.error || '이미지 분석에 실패했습니다.');
+      }
 
       if (data?.analysis) {
         setImageAnalysisResults(data.analysis);
@@ -163,11 +171,20 @@ const ReportGenerator = () => {
           description: "검사 결과가 리포트에 자동 반영됩니다.",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Image analysis error:', error);
+      
+      // 크레딧 부족 에러 체크
+      const errorMessage = error?.message || error?.toString() || '';
+      const isPaymentError = errorMessage.includes('payment_required') || 
+                            errorMessage.includes('Not enough credits') ||
+                            errorMessage.includes('크레딧');
+      
       toast({
-        title: "분석 실패",
-        description: "이미지 분석 중 오류가 발생했습니다.",
+        title: isPaymentError ? "💳 Lovable AI 크레딧 부족" : "분석 실패",
+        description: isPaymentError 
+          ? "Lovable AI 크레딧이 부족합니다. 워크스페이스 설정에서 크레딧을 충전해주세요."
+          : "이미지 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
         variant: "destructive"
       });
     } finally {

@@ -85,28 +85,48 @@ const ReportGenerator = () => {
         .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
 
-      // 4. 프로필 정보 가져오기
+      // 4. 관찰 세션 데이터도 가져오기
+      const { data: observationSessions, error: sessionError } = await supabase
+        .from('observation_sessions')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false });
+
+      // 5. 프로필 정보 가져오기
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', session.user.id)
         .single();
 
+      // 총 데이터 개수 계산
+      const totalDataCount = 
+        (assessments?.length || 0) + 
+        (observations?.length || 0) + 
+        (observationSessions?.length || 0) +
+        (chatRooms?.reduce((acc: number, room: any) => 
+          acc + (room.chat_messages?.length || 0), 0) || 0);
+
       setUserData({
         assessments: assessments || [],
         observations: observations || [],
+        observationSessions: observationSessions || [],
         chatRooms: chatRooms || [],
         profile: profile || {},
         totalAssessments: assessments?.length || 0,
         totalObservations: observations?.length || 0,
+        totalObservationSessions: observationSessions?.length || 0,
         totalChatMessages: chatRooms?.reduce((acc: number, room: any) => 
-          acc + (room.chat_messages?.length || 0), 0) || 0
+          acc + (room.chat_messages?.length || 0), 0) || 0,
+        totalDataCount
       });
 
       console.log('사용자 데이터 로드 완료:', {
         assessments: assessments?.length,
         observations: observations?.length,
-        chatRooms: chatRooms?.length
+        observationSessions: observationSessions?.length,
+        chatRooms: chatRooms?.length,
+        totalDataCount
       });
 
     } catch (error) {
@@ -193,10 +213,13 @@ const ReportGenerator = () => {
   };
 
   const generateComprehensiveReport = async () => {
-    if (!userData || (userData.totalAssessments === 0 && userData.totalObservations === 0 && userData.totalChatMessages === 0)) {
+    const minDataRequired = 50;
+    const totalData = userData?.totalDataCount || 0;
+
+    if (totalData < minDataRequired) {
       toast({
         title: "데이터 부족",
-        description: "리포트를 생성하려면 최소 하나 이상의 검사, 관찰일지 또는 상담 기록이 필요합니다.",
+        description: `종합 리포트 생성을 위해서는 최소 ${minDataRequired}개의 데이터가 필요합니다. (현재: ${totalData}개)`,
         variant: "destructive"
       });
       return;
@@ -217,6 +240,7 @@ const ReportGenerator = () => {
         body: {
           assessments: userData.assessments,
           observations: userData.observations,
+          observationSessions: userData.observationSessions,
           chatRooms: userData.chatRooms,
           profile: userData.profile,
           externalTestImages: imageAnalysisResults
@@ -238,7 +262,9 @@ const ReportGenerator = () => {
           dataSource: {
             assessments: userData.totalAssessments,
             observations: userData.totalObservations,
-            chatMessages: userData.totalChatMessages
+            observationSessions: userData.totalObservationSessions,
+            chatMessages: userData.totalChatMessages,
+            totalDataCount: userData.totalDataCount
           }
         });
 
@@ -327,7 +353,7 @@ const ReportGenerator = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-4 gap-6">
                   <div className="bg-gradient-to-br from-blue-600/20 to-blue-800/20 p-6 rounded-xl border border-blue-400/30">
                     <div className="flex items-center gap-3 mb-3">
                       <FileText className="w-8 h-8 text-blue-300" />
@@ -346,6 +372,15 @@ const ReportGenerator = () => {
                     <p className="text-xs text-emerald-300 mt-2">개의 행동 관찰 기록</p>
                   </div>
 
+                  <div className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 p-6 rounded-xl border border-purple-400/30">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Activity className="w-8 h-8 text-purple-300" />
+                      <p className="text-sm font-semibold text-purple-200">관찰 세션</p>
+                    </div>
+                    <p className="text-4xl font-black text-white">{userData?.totalObservationSessions || 0}</p>
+                    <p className="text-xs text-purple-300 mt-2">개의 관찰 세션</p>
+                  </div>
+
                   <div className="bg-gradient-to-br from-pink-600/20 to-pink-800/20 p-6 rounded-xl border border-pink-400/30">
                     <div className="flex items-center gap-3 mb-3">
                       <Target className="w-8 h-8 text-pink-300" />
@@ -356,7 +391,28 @@ const ReportGenerator = () => {
                   </div>
                 </div>
 
-                {(userData?.totalAssessments === 0 && userData?.totalObservations === 0 && userData?.totalChatMessages === 0) && (
+                {/* 총 데이터 개수 및 필요 개수 표시 */}
+                <div className="mt-6 p-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-400/30 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-purple-200">총 데이터 개수</p>
+                      <p className="text-2xl font-black text-white mt-1">{userData?.totalDataCount || 0}개</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-pink-200">리포트 생성 필요 개수</p>
+                      <p className="text-2xl font-black text-white mt-1">최소 50개</p>
+                    </div>
+                  </div>
+                  {(userData?.totalDataCount || 0) < 50 && (
+                    <div className="mt-3 p-3 bg-orange-500/10 border border-orange-400/30 rounded">
+                      <p className="text-xs text-orange-300">
+                        ⚠️ 종합 리포트 생성을 위해 {50 - (userData?.totalDataCount || 0)}개의 데이터가 더 필요합니다
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {(userData?.totalDataCount === 0) && (
                   <div className="mt-6 p-4 bg-orange-500/10 border border-orange-400/30 rounded-lg">
                     <div className="flex items-start gap-3">
                       <AlertCircle className="w-5 h-5 text-orange-400 mt-0.5" />
@@ -414,9 +470,9 @@ const ReportGenerator = () => {
             {/* 생성 버튼 */}
             <Button
               onClick={generateComprehensiveReport}
-              disabled={isGenerating || (userData?.totalAssessments === 0 && userData?.totalObservations === 0 && userData?.totalChatMessages === 0)}
+              disabled={isGenerating || (userData?.totalDataCount || 0) < 50}
               size="lg"
-              className="w-full h-20 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white shadow-2xl shadow-purple-500/50 border-2 border-purple-400/30 group"
+              className="w-full h-20 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white shadow-2xl shadow-purple-500/50 border-2 border-purple-400/30 group disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isGenerating ? (
                 <div className="flex flex-col items-center gap-2">

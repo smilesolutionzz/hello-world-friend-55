@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Crown, Sparkles, Clock, Users, CheckCircle, Star } from "lucide-react";
+import { ArrowLeft, Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { useEventTracking } from "@/hooks/useEventTracking";
 import PremiumAssessmentCard from "@/components/assessment/PremiumAssessmentCard";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import { useTokens } from "@/hooks/useTokens";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import PremiumAssessmentForm from "@/components/assessment/PremiumAssessmentForm";
 import PremiumAssessmentResult from "@/components/assessment/PremiumAssessmentResult";
 import OtrovertTest from "@/components/assessment/OtrovertTest";
@@ -52,6 +54,7 @@ const PremiumAssessment = () => {
   const [currentTest, setCurrentTest] = useState<string | null>(null);
   const [insuranceResults, setInsuranceResults] = useState<any>(null);
   const { trackTestStart, trackTestComplete, trackPageView } = useEventTracking();
+  const { consumeTokens, checkTokenAvailability } = useTokens();
 
   const assessmentData = {
     autismSpectrumScreening: Object.values(autismSpectrumScreeningQuestions).flat(),
@@ -71,7 +74,19 @@ const PremiumAssessment = () => {
     parentingStyle: Object.values(parentingStyleAssessmentQuestions).flat()
   };
 
-  const handleStartAssessment = (assessmentKey: string) => {
+  const handleStartAssessment = async (assessmentKey: string) => {
+    // 토큰 확인 및 소비
+    const hasTokens = await checkTokenAvailability(TOKEN_COSTS.PREMIUM_ASSESSMENT);
+    if (!hasTokens) {
+      navigate('/token-subscription');
+      return;
+    }
+
+    const consumed = await consumeTokens(TOKEN_COSTS.PREMIUM_ASSESSMENT);
+    if (!consumed) {
+      navigate('/token-subscription');
+      return;
+    }
     
     setSelectedAssessment(assessmentKey);
     setCurrentStep('assessment');
@@ -327,8 +342,17 @@ const PremiumAssessment = () => {
                 <Crown className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
             </div>
-            <p className="text-base sm:text-lg text-muted-foreground font-medium px-4">
+            <p className="text-base sm:text-lg text-muted-foreground font-medium px-4 mb-4">
               전문적이고 정밀한 성향 파악을 위한 AIH전문가의 창작 도구들
+            </p>
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Badge className="bg-purple-500 text-white text-base px-4 py-2 font-bold shadow-lg">
+                <Coins className="w-4 h-4 mr-2" />
+                각 검사당 20토큰 소비
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground/80 text-center px-4">
+              프리미엄 검사 시작 시 자동으로 20토큰이 차감됩니다
             </p>
           </div>
         </div>

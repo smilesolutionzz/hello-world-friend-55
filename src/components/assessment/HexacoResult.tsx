@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { 
   Crown, Brain, Heart, Sparkles, Home, Share2, TrendingUp,
-  Shield, Zap, Target, Users, Star, Lightbulb, ArrowLeft 
+  Shield, Zap, Target, Users, Star, Lightbulb, ArrowLeft, Download 
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { useToast } from '@/hooks/use-toast';
 
 interface HexacoResultProps {
   result: {
@@ -84,6 +86,31 @@ const dimensionInfo: Record<string, {
 
 export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true);
+    try {
+      await downloadResultAsPDF(
+        'hexaco-result',
+        '퍼스널리티_컴퍼스_결과.pdf'
+      );
+      toast({
+        title: "PDF 다운로드 완료",
+        description: "검사 결과가 PDF로 저장되었습니다.",
+      });
+    } catch (error) {
+      console.error('PDF 생성 실패:', error);
+      toast({
+        title: "PDF 생성 실패",
+        description: "잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
 
   const getScoreLevel = (score: number) => {
     if (score >= 70) return { level: '매우 높음', color: 'text-blue-600 dark:text-blue-400' };
@@ -97,7 +124,7 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
     .sort(([, a], [, b]) => b - a);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20 p-4">
+    <div id="hexaco-result" className="min-h-screen bg-gradient-to-b from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/20 p-4">
       <div className="max-w-5xl mx-auto py-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -252,6 +279,17 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
           >
             <Home className="w-5 h-5" />
             홈으로
+          </Button>
+          
+          <Button
+            onClick={handleDownloadPDF}
+            disabled={isGeneratingPDF}
+            variant="outline"
+            className="gap-2"
+            size="lg"
+          >
+            <Download className="w-5 h-5" />
+            {isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 다운로드'}
           </Button>
           
           <Button

@@ -662,7 +662,7 @@ const Assessment = () => {
                 
                 <div className="text-center p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-xl shadow-md hover:shadow-lg transition-shadow border-2 border-purple-200 dark:border-purple-800">
                   <div className="text-4xl mb-3">👑</div>
-                  <h3 className="text-xl font-bold mb-2">프리미엄 분석</h3>
+                  <h3 className="text-xl font-bold mb-2">프리미엄테스트</h3>
                   <div className="inline-flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-full font-bold text-lg mb-3">
                     20토큰
                   </div>

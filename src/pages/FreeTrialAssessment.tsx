@@ -85,115 +85,129 @@ const FreeTrialAssessment = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-4">
-      <div className="container mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Gift className="w-8 h-8 text-primary" />
-            <h1 className="text-3xl font-bold text-brand-gradient">무료 체험 테스트</h1>
-          </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            회원가입 없이 3가지 기본 테스트를 무료로 체험해보세요
-          </p>
-          <div className="relative overflow-hidden rounded-2xl p-6 mt-4 max-w-3xl mx-auto">
-            {/* Premium Glass Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/5 to-pink-500/10 backdrop-blur-xl"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20"></div>
-            <div className="absolute inset-0 border border-white/30 rounded-2xl"></div>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-100 to-pink-100 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Floating Gradient Orbs */}
+        <div className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-blue-400/40 to-purple-500/40 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/3 -right-32 w-[500px] h-[500px] bg-gradient-to-bl from-purple-400/40 to-pink-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s', animationDuration: '3s' }}></div>
+        <div className="absolute -bottom-32 left-1/4 w-[450px] h-[450px] bg-gradient-to-tr from-pink-400/40 to-orange-400/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s', animationDuration: '4s' }}></div>
+        
+        {/* Moving Light Rays */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+        
+        {/* Decorative Circles */}
+        <div className="absolute top-40 left-1/2 w-64 h-64 border-2 border-purple-300/30 rounded-full"></div>
+        <div className="absolute bottom-40 right-1/3 w-80 h-80 border-2 border-blue-300/30 rounded-full"></div>
+      </div>
+      
+      <div className="container mx-auto max-w-6xl p-4 relative z-10">
+        {/* Hero Section */}
+        <section className="pt-16 pb-8">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full mb-6 shadow-lg">
+              <Gift className="w-6 h-6" />
+              <h1 className="text-2xl font-bold">무료 체험 테스트</h1>
+            </div>
+            <p className="text-xl text-gray-700 max-w-2xl mx-auto font-medium">
+              회원가입 없이 3가지 기본 테스트를 무료로 체험해보세요
+            </p>
             
-            <div className="relative z-10">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="text-2xl">💎</div>
-                <div>
-                  <h3 className="font-bold text-lg mb-2 bg-gradient-to-r from-purple-600 via-blue-600 to-pink-600 bg-clip-text text-transparent">
-                    무료 vs 구독 해석 차이점
-                  </h3>
-                  <p className="text-sm text-muted-foreground">지금 바로 체험해보고 차이를 느껴보세요</p>
-                </div>
-              </div>
+            {/* Value Proposition Card */}
+            <div className="relative overflow-hidden rounded-2xl p-8 mt-6 max-w-4xl mx-auto bg-white shadow-2xl border-2 border-purple-200">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50"></div>
               
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                      FREE
-                    </div>
-                    <h4 className="font-semibold text-gray-700">무료 해석</h4>
+              <div className="relative z-10">
+                <div className="flex items-start gap-3 mb-6">
+                  <div className="text-3xl">💎</div>
+                  <div>
+                    <h3 className="font-bold text-2xl mb-2 bg-gradient-to-r from-purple-600 via-blue-600 to-pink-600 bg-clip-text text-transparent">
+                      무료 vs 구독 해석 차이점
+                    </h3>
+                    <p className="text-gray-600">지금 바로 체험해보고 차이를 느껴보세요</p>
                   </div>
-                  <ul className="text-sm text-gray-600 space-y-2">
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                      기본적인 점수 분석
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                      일반적인 결과 요약
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                      표면적 분석
-                    </li>
-                  </ul>
                 </div>
                 
-                <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border-2 border-transparent bg-clip-border relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-xl"></div>
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                        PRO
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div className="p-6 rounded-xl bg-white border-2 border-gray-200">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center text-white font-bold">
+                        FREE
                       </div>
-                      <h4 className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">구독자 해석</h4>
+                      <h4 className="font-bold text-lg text-gray-700">무료 해석</h4>
                     </div>
-                    <ul className="text-sm space-y-2">
+                    <ul className="text-gray-600 space-y-3">
                       <li className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
-                        <span className="font-medium text-blue-700">AI 초정밀 분석 (2000자+)</span>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                        기본적인 점수 분석
                       </li>
                       <li className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
-                        <span className="font-medium text-purple-700">전문가급 상세 해석</span>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                        일반적인 결과 요약
                       </li>
                       <li className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-gradient-to-r from-pink-500 to-blue-500 rounded-full"></div>
-                        <span className="font-medium text-pink-700">개인 맞춤 개선안</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
-                        <span className="font-medium text-blue-700">심층 심리 패턴 분석</span>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                        표면적 분석
                       </li>
                     </ul>
                   </div>
+                  
+                  <div className="p-6 rounded-xl bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 border-2 border-purple-300 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10"></div>
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                          PRO
+                        </div>
+                        <h4 className="font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">구독자 해석</h4>
+                      </div>
+                      <ul className="space-y-3">
+                        <li className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                          <span className="font-semibold text-blue-700">AI 초정밀 분석 (2000자+)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                          <span className="font-semibold text-purple-700">전문가급 상세 해석</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-gradient-to-r from-pink-500 to-blue-500 rounded-full"></div>
+                          <span className="font-semibold text-pink-700">개인 맞춤 개선안</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                          <span className="font-semibold text-blue-700">심층 심리 패턴 분석</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="mt-4 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl">
-                <p className="text-xs text-amber-800 text-center">
-                  ✨ <strong>지금 회원가입하면</strong> 무료 테스트도 <strong className="text-amber-900">AI 초정밀 해석</strong>으로 업그레이드!
-                </p>
+                
+                <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-xl">
+                  <p className="text-sm text-amber-900 text-center font-medium">
+                    ✨ <strong>지금 회원가입하면</strong> 무료 테스트도 <strong className="text-amber-950">AI 초정밀 해석</strong>으로 업그레이드!
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* 무료 테스트 섹션 */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-            <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-sm">FREE</span>
-            </div>
-            무료 체험 테스트
-          </h2>
+        <section className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-2 text-gray-900">무료 체험 테스트</h2>
+            <p className="text-gray-600">회원가입 없이 바로 시작하세요</p>
+          </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {freeTests.map((test) => {
               const IconComponent = test.icon;
               return (
-                <Card key={test.id} className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02] border-primary/20">
+                <Card key={test.id} className="relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl border-2 border-gray-200 bg-white">
                   {/* 무료 배지 */}
-                  <div className="absolute top-2 right-2 z-10">
-                    <Badge className="bg-green-500 text-white text-xs px-2 py-1">
+                  <div className="absolute top-3 right-3 z-10">
+                    <Badge className="bg-green-500 text-white font-bold px-3 py-1.5">
                       {test.badge}
                     </Badge>
                   </div>
@@ -248,16 +262,19 @@ const FreeTrialAssessment = () => {
               );
             })}
           </div>
-        </div>
+        </section>
 
         {/* 프리미엄 테스트 섹션 (차단됨) */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-            <Crown className="w-8 h-8 text-yellow-500" />
-            프리미엄 테스트 (회원가입 필요)
-          </h2>
+        <section className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-2 text-gray-900 flex items-center justify-center gap-2">
+              <Crown className="w-8 h-8 text-yellow-500" />
+              프리미엄 테스트
+            </h2>
+            <p className="text-gray-600">회원가입 후 이용 가능</p>
+          </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {premiumTests.map((test) => (
               <Card key={test.id} className="relative overflow-hidden opacity-60 border-muted">
                 {/* 잠금 배지 */}
@@ -286,12 +303,12 @@ const FreeTrialAssessment = () => {
               </Card>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* CTA 섹션 */}
-        <div className="bg-gradient-to-br from-primary/10 via-white/90 to-secondary/10 rounded-2xl p-8 text-center">
-          <Crown className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h3 className="text-2xl font-bold mb-4">AI 초정밀 전문가급 해석이 필요하시다면?</h3>
+        <section className="bg-white rounded-3xl p-10 text-center shadow-2xl border-2 border-purple-200 max-w-5xl mx-auto">
+          <Crown className="w-16 h-16 text-purple-600 mx-auto mb-6" />
+          <h3 className="text-3xl font-bold mb-4 text-gray-900">AI 초정밀 전문가급 해석이 필요하시다면?</h3>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
             구독하시면 <strong className="text-primary">AI 초정밀 분석 + 전문가급 상세 해석</strong>을 받으실 수 있습니다.
             무료 해석과는 완전히 다른 퀄리티의 분석 결과를 경험해보세요.
@@ -341,7 +358,7 @@ const FreeTrialAssessment = () => {
               홈으로 돌아가기
             </Button>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

@@ -22,7 +22,8 @@ export default {
 				sans: ['Pretendard', 'Inter', 'Noto Sans KR', 'system-ui', 'sans-serif'],
 				korean: ['Noto Sans KR', 'sans-serif'],
 				pretendard: ['Pretendard', 'system-ui', 'sans-serif'],
-				display: ['Pretendard', 'system-ui', 'sans-serif'], // For headings with high visual weight
+				display: ['Outfit', 'Pretendard', 'system-ui', 'sans-serif'], // For headings with high visual weight
+				serif: ['Playfair Display', 'serif'], // For elegant headings
 			},
 			fontSize: {
 				'giant': ['4rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '900' }],

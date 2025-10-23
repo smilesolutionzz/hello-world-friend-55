@@ -38,7 +38,7 @@ export const TOKEN_COSTS = {
   
   // 최고급 서비스 (고가격대)
   COMPREHENSIVE_REPORT: 200, // 박사급 종합 리포팅 (200토큰)
-  IEP_GENERATION: 50,       // IEP 생성 (15→50)
+  IEP_GENERATION: 0,       // IEP 생성 (무료)
   
   // 엔터테인먼트 (최저가격대)
   PAST_LIFE_JOB: 1,         // 전생 직업 분석

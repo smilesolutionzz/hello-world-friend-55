@@ -43,6 +43,10 @@ const ReportGenerator = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isAnalyzingImages, setIsAnalyzingImages] = useState(false);
   const [imageAnalysisResults, setImageAnalysisResults] = useState<string>('');
+  const [userInput, setUserInput] = useState({
+    recentConcerns: '',
+    developmentalNotes: ''
+  });
   const [showDataDetails, setShowDataDetails] = useState({
     assessments: false,
     observations: false,
@@ -253,7 +257,11 @@ const ReportGenerator = () => {
           observationSessions: userData.observationSessions,
           chatRooms: userData.chatRooms,
           profile: userData.profile,
-          externalTestImages: imageAnalysisResults
+          externalTestImages: imageAnalysisResults,
+          userInput: {
+            recentConcerns: userInput.recentConcerns,
+            developmentalNotes: userInput.developmentalNotes
+          }
         }
       });
 
@@ -354,6 +362,63 @@ const ReportGenerator = () => {
 
         {!reportData ? (
           <div className="max-w-5xl mx-auto space-y-8">
+            {/* 사용자 직접 입력 섹션 */}
+            <Card className="bg-gradient-to-br from-slate-900/90 to-indigo-900/90 border-2 border-indigo-500/30 shadow-2xl shadow-indigo-500/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-2xl text-indigo-100">
+                  <Sparkles className="w-7 h-7 text-yellow-400" />
+                  최근 고민 및 발달/심리 소견 작성
+                </CardTitle>
+                <p className="text-sm text-indigo-300 mt-2">
+                  💡 직접 작성한 내용은 AI가 종합 리포트 생성 시 중요한 참고자료로 활용됩니다
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* 최근 고민 입력 */}
+                <div className="space-y-3">
+                  <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                    <Heart className="w-4 h-4" />
+                    최근 가장 큰 고민이나 걱정거리
+                  </label>
+                  <textarea
+                    value={userInput.recentConcerns}
+                    onChange={(e) => setUserInput({...userInput, recentConcerns: e.target.value})}
+                    placeholder="예: 아이가 또래 친구들과 잘 어울리지 못하는 것 같아 걱정됩니다. 말수가 적고 혼자 노는 시간이 많습니다..."
+                    className="w-full min-h-[120px] p-4 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                    maxLength={1000}
+                  />
+                  <p className="text-xs text-slate-400 text-right">
+                    {userInput.recentConcerns.length}/1000
+                  </p>
+                </div>
+
+                {/* 발달/심리 소견 입력 */}
+                <div className="space-y-3">
+                  <label className="text-sm font-semibold text-indigo-200 flex items-center gap-2">
+                    <Brain className="w-4 h-4" />
+                    관찰한 발달/심리적 특징이나 변화
+                  </label>
+                  <textarea
+                    value={userInput.developmentalNotes}
+                    onChange={(e) => setUserInput({...userInput, developmentalNotes: e.target.value})}
+                    placeholder="예: 최근 3개월간 언어 표현이 늘었지만, 감정 조절에 어려움을 보입니다. 작은 일에도 쉽게 좌절하고 울음을 터뜨립니다..."
+                    className="w-full min-h-[120px] p-4 bg-slate-800/50 border border-indigo-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                    maxLength={1000}
+                  />
+                  <p className="text-xs text-slate-400 text-right">
+                    {userInput.developmentalNotes.length}/1000
+                  </p>
+                </div>
+
+                <div className="p-4 bg-blue-500/10 border border-blue-400/30 rounded-lg">
+                  <p className="text-xs text-blue-200">
+                    💬 <strong>작성 팁:</strong> 구체적이고 상세할수록 정확한 분석이 가능합니다. 
+                    언제부터 어떤 상황에서 어떤 행동이나 변화가 있었는지 자세히 적어주세요.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* 데이터 현황 카드 */}
             <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30 shadow-2xl shadow-purple-500/20">
               <CardHeader>

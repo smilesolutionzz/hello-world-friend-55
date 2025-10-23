@@ -92,24 +92,9 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
   // 디버깅을 위한 로그
   console.log('TokenBalance - 현재 토큰:', currentTokens, '낮은 잔액:', isLowBalance);
   
-  // 로그인하지 않은 사용자는 로그인 안내 표시
+  // 로그인하지 않은 사용자는 토큰 정보 숨김
   if (!user && compact) {
-    return (
-      <Badge 
-        variant="outline" 
-        className={`
-          flex items-center gap-2 cursor-pointer px-3 py-1.5 text-sm font-medium
-          transition-all duration-200 ease-in-out
-          hover:scale-105 hover:shadow-lg hover:bg-primary/10 hover:border-primary/30
-          border-2 border-muted-foreground/20 hover:border-primary/50
-          shadow-sm
-        `}
-        onClick={() => navigate('/auth')}
-      >
-        <User className="w-4 h-4" />
-        <span className="font-medium">로그인</span>
-      </Badge>
-    );
+    return null;
   }
 
   if (compact) {

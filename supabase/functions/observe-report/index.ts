@@ -233,12 +233,14 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
 관찰된 내용을 바탕으로 현재 상황을 임상적 관점에서 구체적으로 분석하세요. 행동의 맥락적 의미, 환경적 요인, 심리적 기제를 종합적으로 평가하고, ${requestBody.targetName || '대상자'}의 현재 기능 수준과 적응 양상을 전문적으로 기술해주세요. 관찰된 행동 특성과 연령대별 표준 발달 기준을 비교하여 정량적·정성적으로 평가하고, 개인차를 고려한 종합적 판단을 제시해주세요.
 
 **발달 영역별 상세 평가 및 점수**
-다음 5개 영역을 각각 평가하고 0-100점 척도로 점수를 매겨주세요:
-- 정서 영역: [점수]점 - 평가 근거와 설명 (100-150자)
-- 행동 영역: [점수]점 - 평가 근거와 설명 (100-150자)
-- 인지 영역: [점수]점 - 평가 근거와 설명 (100-150자)
-- 사회성 영역: [점수]점 - 평가 근거와 설명 (100-150자)
-- 신체 영역: [점수]점 - 평가 근거와 설명 (100-150자)
+다음 5개 영역을 각각 평가하고 0-100점 척도로 점수를 매겨주세요. **점수는 반드시 [영역명: XX점] 형식으로 명시**하세요:
+- 정서 영역: [점수]점 - 관찰된 감정 표현, 정서 조절 능력, 스트레스 대응을 바탕으로 평가 (100-150자)
+- 행동 영역: [점수]점 - 관찰된 행동 패턴, 충동 조절, 규칙 준수를 바탕으로 평가 (100-150자)
+- 인지 영역: [점수]점 - 관찰된 이해력, 집중력, 문제해결 능력을 바탕으로 평가 (100-150자)
+- 사회성 영역: [점수]점 - 관찰된 대인관계, 소통 능력, 협력 행동을 바탕으로 평가 (100-150자)
+- 신체 영역: [점수]점 - 관찰된 신체 활동, 운동 능력, 건강 상태를 바탕으로 평가 (100-150자)
+
+**점수 산정 근거**: 관찰 내용에서 확인된 구체적 행동과 상황을 각 영역별로 분석하여 점수를 부여하세요. 정보가 부족한 영역은 60점(중립)으로 설정하고 "정보 부족"을 명시하세요.
 
 **핵심 권고사항 (200-300자)**
 - 즉시 실행 가능한 1차 개입 전략 3가지 (각 50-80자)
@@ -363,7 +365,9 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
     logStep('AI response received', { textLength: analysisText.length });
 
     // Parse the analysis response - Extract domain scores from AI response
-    const domainScores = { 정서: 70, 행동: 70, 인지: 70, 사회성: 70, 신체: 70 };
+    // Use neutral score (60) as default when AI cannot assess properly
+    const domainScores = { 정서: 60, 행동: 60, 인지: 60, 사회성: 60, 신체: 60 };
+    let scoresFound = 0;
     
     // Multiple regex patterns to catch different score formats
     const scorePatterns = [
@@ -380,11 +384,12 @@ ${requestBody.files.length > 0 ? `\n**첨부 미디어:** ${requestBody.files.le
         const score = parseInt(match[2]);
         if (domain in domainScores && score >= 0 && score <= 100) {
           domainScores[domain as keyof typeof domainScores] = score;
+          scoresFound++;
         }
       }
     }
     
-    logStep('Domain scores extracted', domainScores);
+    logStep('Domain scores extracted', { scores: domainScores, foundCount: scoresFound, usedDefaults: scoresFound === 0 });
 
     // Add media notes if files were provided
     const mediaNotes: string[] = [];

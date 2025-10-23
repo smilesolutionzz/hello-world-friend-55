@@ -3322,7 +3322,7 @@ export type Database = {
       legal_disclaimer_views: {
         Row: {
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           page_url: string
           user_agent: string | null
           user_id: string | null
@@ -3330,7 +3330,7 @@ export type Database = {
         }
         Insert: {
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           page_url: string
           user_agent?: string | null
           user_id?: string | null
@@ -3338,7 +3338,7 @@ export type Database = {
         }
         Update: {
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           page_url?: string
           user_agent?: string | null
           user_id?: string | null
@@ -5443,7 +5443,7 @@ export type Database = {
           event_name: string
           event_properties: Json | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           page_path: string | null
           referrer: string | null
           session_id: string
@@ -5455,7 +5455,7 @@ export type Database = {
           event_name: string
           event_properties?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           page_path?: string | null
           referrer?: string | null
           session_id: string
@@ -5467,7 +5467,7 @@ export type Database = {
           event_name?: string
           event_properties?: Json | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           page_path?: string | null
           referrer?: string | null
           session_id?: string
@@ -6515,10 +6515,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      add_daily_tokens: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      add_daily_tokens: { Args: never; Returns: undefined }
       add_tokens: {
         Args: {
           p_amount: number
@@ -6615,14 +6612,8 @@ export type Database = {
         Args: { phone_number: string }
         Returns: boolean
       }
-      cleanup_expert_access_logs: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_financial_audit_logs: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_expert_access_logs: { Args: never; Returns: undefined }
+      cleanup_financial_audit_logs: { Args: never; Returns: undefined }
       consume_tokens: {
         Args: {
           p_amount: number
@@ -6632,16 +6623,10 @@ export type Database = {
         }
         Returns: Json
       }
-      generate_invitation_code: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_referral_code: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_invitation_code: { Args: never; Returns: string }
+      generate_referral_code: { Args: never; Returns: string }
       get_admin_overview: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           total_observations: number
           total_tests: number
@@ -6650,7 +6635,7 @@ export type Database = {
         }[]
       }
       get_anonymous_leaderboard: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           challenge_points: number
           rank: number
@@ -6659,12 +6644,9 @@ export type Database = {
           total_points: number
         }[]
       }
-      get_comment_likes_count: {
-        Args: { comment_id: string }
-        Returns: number
-      }
+      get_comment_likes_count: { Args: { comment_id: string }; Returns: number }
       get_community_posts_safe: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           author_display: string
           comments_count: number
@@ -6682,7 +6664,7 @@ export type Database = {
         }[]
       }
       get_expert_stats: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           average_rating: number
           consultation_count: number
@@ -6693,7 +6675,7 @@ export type Database = {
         }[]
       }
       get_feedback_statistics: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           average_rating: number
           positive_feedback: number
@@ -6706,7 +6688,7 @@ export type Database = {
         Returns: number
       }
       get_my_application_status: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           admin_notes: string
           application_status: string
@@ -6717,7 +6699,7 @@ export type Database = {
         }[]
       }
       get_payment_statistics_secure: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           approved_transfers: number
           average_order_value: number
@@ -6726,10 +6708,7 @@ export type Database = {
           total_revenue: number
         }[]
       }
-      get_post_likes_count: {
-        Args: { post_id: string }
-        Returns: number
-      }
+      get_post_likes_count: { Args: { post_id: string }; Returns: number }
       get_public_expert_info: {
         Args: { expert_id: string }
         Returns: {
@@ -6751,7 +6730,7 @@ export type Database = {
         }[]
       }
       get_public_institutions: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           accessibility_features: string[]
           address: string
@@ -6781,7 +6760,7 @@ export type Database = {
         }[]
       }
       get_transfer_statistics: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           average_request_amount: number
           completed_requests: number
@@ -6831,10 +6810,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      make_user_admin: {
-        Args: { target_email: string }
-        Returns: boolean
-      }
+      make_user_admin: { Args: { target_email: string }; Returns: boolean }
       process_referral_reward: {
         Args: { p_referee_id: string; p_referral_code: string }
         Returns: boolean
@@ -6848,34 +6824,16 @@ export type Database = {
         }
         Returns: Json
       }
-      process_verified_referral_rewards: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      refresh_admin_analytics: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      secure_cleanup_old_payment_data: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      process_verified_referral_rewards: { Args: never; Returns: number }
+      refresh_admin_analytics: { Args: never; Returns: undefined }
+      secure_cleanup_old_payment_data: { Args: never; Returns: undefined }
       track_feature_usage: {
         Args: { p_feature_type: string; p_user_id: string }
         Returns: undefined
       }
-      user_can_access_community: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      user_has_liked_comment: {
-        Args: { comment_id: string }
-        Returns: boolean
-      }
-      user_has_liked_post: {
-        Args: { post_id: string }
-        Returns: boolean
-      }
+      user_can_access_community: { Args: never; Returns: boolean }
+      user_has_liked_comment: { Args: { comment_id: string }; Returns: boolean }
+      user_has_liked_post: { Args: { post_id: string }; Returns: boolean }
       validate_payment_session: {
         Args: { session_id: string; user_id: string }
         Returns: boolean

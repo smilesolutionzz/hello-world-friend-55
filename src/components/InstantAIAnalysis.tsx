@@ -400,11 +400,11 @@ const InstantAIAnalysis = () => {
                       size="default"
                       onClick={handleExpandPrompt}
                       disabled={isExpanding || isAnalyzing || inputText.length < 10}
-                      className="gap-2 text-sm font-bold h-10 px-5 border-2 border-purple-500 hover:bg-purple-500/20 text-purple-900 dark:text-purple-100 hover:text-purple-950 dark:hover:text-purple-50 animate-pulse hover:animate-none shadow-lg hover:shadow-purple-500/50 transition-all bg-gradient-to-r from-purple-500/10 to-pink-500/10"
+                      className="gap-2 text-sm font-bold h-10 px-5 border-2 border-purple-500 hover:bg-purple-500/20 text-purple-50 dark:text-purple-50 hover:text-white dark:hover:text-white animate-glow hover:animate-pulse shadow-[0_0_20px_rgba(168,85,247,0.6)] hover:shadow-[0_0_30px_rgba(168,85,247,0.8)] transition-all bg-gradient-to-r from-purple-500/30 to-pink-500/30"
                     >
                       {isExpanding ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-600 border-t-transparent" />
+                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-100 border-t-transparent" />
                           <span className="text-base">다듬는 중...</span>
                         </>
                       ) : (
@@ -436,9 +436,9 @@ const InstantAIAnalysis = () => {
                     고민 작성 팁
                   </p>
                   <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-1">
+                    <li>• <span className="font-semibold text-amber-900 dark:text-amber-100">💬 "AI 다듬기" 버튼</span>을 누르면 고민이 자동으로 확장됩니다</li>
                     <li>• 최소 10자 이상, 핵심 고민만 간단히 적어주세요</li>
                     <li>• 예시: "5살 아이 말 늦어요", "우울해요", "아이가 친구 없어요"</li>
-                    <li>• <span className="font-semibold text-amber-900 dark:text-amber-100">💬 "AI 다듬기" 버튼</span>을 누르면 고민이 자동으로 확장됩니다</li>
                   </ul>
                   
                   <div className="mt-3 pt-3 border-t border-amber-200/50 dark:border-amber-800/50">

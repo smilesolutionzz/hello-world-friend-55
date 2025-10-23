@@ -3,6 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { useShareText } from '@/utils/shareUtils';
 import { 
   Weight, 
   Target, 
@@ -26,6 +29,65 @@ interface DietAnalysisResultProps {
 
 const DietAnalysisResult: React.FC<DietAnalysisResultProps> = ({ result, onRestart }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { toast } = useToast();
+  const { shareAsText } = useShareText();
+
+  const handleDietPlan = () => {
+    window.open('https://naver.me/xk1XPBhl', '_blank');
+  };
+
+  const handleHerbalConsult = () => {
+    window.open('https://naver.me/xk1XPBhl', '_blank');
+  };
+
+  const handlePDFDownload = async () => {
+    try {
+      await downloadResultAsPDF(
+        'diet-analysis-result',
+        `체질분석_${result.constitutionType}_${new Date().toLocaleDateString()}`,
+        () => {
+          toast({
+            title: "다운로드 완료",
+            description: "PDF 파일이 다운로드되었습니다.",
+          });
+        },
+        (error) => {
+          toast({
+            title: "다운로드 실패",
+            description: error.message,
+            variant: "destructive"
+          });
+        }
+      );
+    } catch (error) {
+      console.error('PDF download error:', error);
+    }
+  };
+
+  const handleShare = () => {
+    const shareText = `
+체질분석 결과
+
+체질: ${result.constitutionType}
+${getConstitutionDescription(result.constitutionType)}
+
+📋 목표: ${result.targetWeight}
+
+🍎 권장 식품
+${result.dietPlan.diet}
+
+⚠️ 주의사항
+${result.dietPlan.caution}
+
+💪 운동 처방
+${result.dietPlan.exercise}
+
+🌿 한약재
+${result.dietPlan.herbs.join(', ')}
+    `.trim();
+
+    shareAsText(shareText, "체질분석 결과");
+  };
 
   const constitutionColors = {
     "태음인": "bg-blue-50 border-blue-200 text-blue-700",
@@ -46,7 +108,7 @@ const DietAnalysisResult: React.FC<DietAnalysisResultProps> = ({ result, onResta
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto" id="diet-analysis-result">
         {/* 헤더 */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
@@ -165,11 +227,11 @@ const DietAnalysisResult: React.FC<DietAnalysisResultProps> = ({ result, onResta
                   <Phone className="h-4 w-4 mr-2" />
                   맞춤한방 전화상담받기
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={handleDietPlan}>
                   <Calendar className="h-4 w-4 mr-2" />
                   다이어트 플랜 받기
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={handleHerbalConsult}>
                   <Pill className="h-4 w-4 mr-2" />
                   한약 처방 문의
                 </Button>
@@ -204,11 +266,11 @@ const DietAnalysisResult: React.FC<DietAnalysisResultProps> = ({ result, onResta
                 <CardTitle className="text-lg">결과 관리</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={handlePDFDownload}>
                   <Download className="h-4 w-4 mr-2" />
                   PDF 다운로드
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={handleShare}>
                   <Share2 className="h-4 w-4 mr-2" />
                   결과 공유하기
                 </Button>

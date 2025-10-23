@@ -274,19 +274,29 @@ const PremiumAssessment = () => {
 
     if (selectedAssessment === 'premiumAdhd') {
       return (
-        <PremiumAdhdForm
-          onComplete={handleAdhdAssessmentComplete}
-          onBack={handleBack}
-        />
+        <div>
+          <UnifiedNavigation />
+          <div className="pt-4">
+            <PremiumAdhdForm
+              onComplete={handleAdhdAssessmentComplete}
+              onBack={handleBack}
+            />
+          </div>
+        </div>
       );
     }
 
     if (selectedAssessment === 'parentingStyle') {
       return (
-        <ParentingStyleForm
-          onComplete={handleAssessmentComplete}
-          onBack={handleBack}
-        />
+        <div>
+          <UnifiedNavigation />
+          <div className="pt-4">
+            <ParentingStyleForm
+              onComplete={handleAssessmentComplete}
+              onBack={handleBack}
+            />
+          </div>
+        </div>
       );
     }
 

@@ -61,11 +61,11 @@ const ReportGenerator = () => {
         return;
       }
 
-      // 1. 검사 기록 가져오기
+      // 1. 검사 기록 가져오기 (user_id와 profile_id 모두 확인)
       const { data: assessments, error: assessError } = await supabase
         .from('assessments')
         .select('*')
-        .eq('profile_id', session.user.id)
+        .or(`user_id.eq.${session.user.id},profile_id.eq.${session.user.id}`)
         .order('created_at', { ascending: false });
 
       // 2. 관찰일지 가져오기

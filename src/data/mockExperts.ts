@@ -137,5 +137,39 @@ export const mockExperts = [
     calendly_url: 'https://calendly.com/example8',
     intro: '미술치료와 심리상담 전문가입니다.',
     visible: true
+  },
+  {
+    id: '9',
+    name: '허승연 치료사',
+    photo_url: getExpertImage('허승연') || '/placeholder.svg',
+    credential: '미술치료사, 석사, 1년, 여',
+    verified: true,
+    categories: ['미술치료'],
+    region: '서울',
+    online: true,
+    rating: 4.8,
+    price_per_50: 45000,
+    availability_text: '초등~성인 대상 가능',
+    contact_form_url: 'https://forms.gle/example9',
+    calendly_url: 'https://calendly.com/example9',
+    intro: '늘 최선을 다합니다.',
+    visible: true
+  },
+  {
+    id: '10',
+    name: '박주현 치료사',
+    photo_url: getExpertImage('박주현') || '/placeholder.svg',
+    credential: '발달치료사, 학사, 10년, 여',
+    verified: true,
+    categories: ['발달재활', '감각통합'],
+    region: '서울',
+    online: false,
+    rating: 4.9,
+    price_per_50: 60000,
+    availability_text: '영유아~청소년 대상 가능',
+    contact_form_url: 'https://forms.gle/example10',
+    calendly_url: 'https://calendly.com/example10',
+    intro: '성실하고 유능하며 아이디어가 풍부한 감각통합치료사!',
+    visible: true
   }
 ];

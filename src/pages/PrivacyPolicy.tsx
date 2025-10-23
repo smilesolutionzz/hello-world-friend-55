@@ -123,8 +123,8 @@ const PrivacyPolicy = () => {
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <p className="font-semibold mb-2">개인정보보호책임자</p>
                 <div className="space-y-1">
-                  <p>• 성명: 개인정보보호책임자</p>
-                  <p>• 연락처: privacy@highlight-ai.com</p>
+                  <p>• 성명: 이수석</p>
+                  <p>• 연락처: aihpro@naver.com</p>
                   <p>• 처리시간: 평일 09:00~18:00</p>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 // 각 기능별 토큰 소진량 정의 (균일화 버전)
 export const TOKEN_COSTS = {
-  // 기본 3분 심리테스트 (5토큰 통일)
+  // 전문 심리검사 및 발달검사 (5토큰 통일)
   PSYCHOLOGICAL_TEST: 5,     // 마음상태 체크
   FOCUS_CHECK: 5,           // AIH 집중력 자가점검
   DEPRESSION_TEST: 5,       // 우울감 자가체크  
@@ -8,22 +8,22 @@ export const TOKEN_COSTS = {
   LANGUAGE_TEST: 5,         // 언어발달 자가체크
   HAN_MEDICINE_TEST: 5,     // 한의학 체질 분석
   
-  // 발달 전문가 검사 (5토큰 통일)
+  // 아동·청소년 발달검사 (5토큰 통일)
   DEVELOPMENTAL_DELAY_TEST: 5,  // 발달지연 검사
   SENSORY_INTEGRATION_TEST: 5,  // 감각통합장애 검사
   LEARNING_DISABILITY_TEST: 5,  // 학습장애 검사
   SOCIAL_DEVELOPMENT_TEST: 5,   // 사회성 발달 검사
   
-  // AIH 전문가 제작 검사 (무료)
-  FIVE_D_PERSONALITY: 0,        // 5D 성격 분석
-  RELATIONSHIP_TYPE: 0,         // 관계유형 진단
-  STRESS_INDEX: 0,              // 스트레스 지수 측정
-  CAREER_INTEREST: 0,           // 진로흥미 탐색
-  SELF_WORTH: 0,                // 자존감 측정
-  DEFENSE_MECHANISM: 0,         // 방어기제 분석
+  // AIH 전문가 창작 검사 - 발달 심리전문가 직접 개발 (3토큰)
+  FIVE_D_PERSONALITY: 3,        // 5D 성격 분석
+  RELATIONSHIP_TYPE: 3,         // 관계유형 진단
+  STRESS_INDEX: 3,              // 스트레스 지수 측정
+  CAREER_INTEREST: 3,           // 진로흥미 탐색
+  SELF_WORTH: 3,                // 자존감 측정
+  DEFENSE_MECHANISM: 3,         // 방어기제 분석
   
   
-  // 재미있는 검사 (무료 전환)
+  // 재미있는 AI 검사 (무료)
   DREAM_INTERPRETATION: 0,  // 꿈 해석 (무료)
   SAJU_ANALYSIS: 0,         // 사주 분석 (무료)
   
@@ -57,7 +57,8 @@ export const TOKEN_COSTS = {
 export const TOKEN_COST_DESCRIPTIONS = {
   0: "무료 서비스",
   1: "엔터테인먼트 테스트 또는 AI 상담 10메시지",
-  5: "3분 심리테스트 및 발달검사", 
+  3: "AIH 전문가 창작 검사 (심리전문가 개발)",
+  5: "전문 심리검사 및 아동·청소년 발달검사", 
   20: "프리미엄 분석 및 전문가급 리포트",
   200: "모든 데이터 종합 박사급 분석 리포트 (3일내 휴대폰 전송)",
 } as const;

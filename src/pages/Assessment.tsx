@@ -63,7 +63,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
-import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target, MessageCircle } from "lucide-react";
+import { Sparkles, Crown, Camera, Heart, Zap, Brain, Target, MessageCircle, Coins } from "lucide-react";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -614,6 +614,68 @@ const Assessment = () => {
         <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 relative overflow-hidden pt-4">
         
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
+          {/* 토큰 비용 안내 배너 */}
+          <Card className="mb-12 border-2 border-primary/30 bg-gradient-to-r from-primary/5 via-primary-glow/5 to-primary/5">
+            <CardHeader className="text-center pb-4">
+              <CardTitle className="text-3xl font-bold text-brand-gradient mb-4">
+                💎 토큰 이용 안내
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <div className="text-center p-6 bg-white dark:bg-card rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                  <div className="text-4xl mb-3">🆓</div>
+                  <h3 className="text-xl font-bold mb-2">무료 검사</h3>
+                  <p className="text-sm text-muted-foreground mb-3">토큰 없이 무제한</p>
+                  <ul className="text-sm space-y-1">
+                    <li>• 5D 성격분석</li>
+                    <li>• 관계유형 진단</li>
+                    <li>• 꿈해석, 사주분석</li>
+                    <li>• 위기감지 등</li>
+                  </ul>
+                </div>
+                
+                <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-xl shadow-md hover:shadow-lg transition-shadow border-2 border-blue-200 dark:border-blue-800">
+                  <div className="text-4xl mb-3">⚡</div>
+                  <h3 className="text-xl font-bold mb-2">3분 심리검사</h3>
+                  <div className="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-full font-bold text-lg mb-3">
+                    5토큰
+                  </div>
+                  <ul className="text-sm space-y-1">
+                    <li>• 마음상태 체크</li>
+                    <li>• 집중력 점검</li>
+                    <li>• 우울/불안 체크</li>
+                    <li>• 발달검사 등</li>
+                  </ul>
+                </div>
+                
+                <div className="text-center p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-xl shadow-md hover:shadow-lg transition-shadow border-2 border-purple-200 dark:border-purple-800">
+                  <div className="text-4xl mb-3">👑</div>
+                  <h3 className="text-xl font-bold mb-2">프리미엄 분석</h3>
+                  <div className="inline-flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-full font-bold text-lg mb-3">
+                    20토큰
+                  </div>
+                  <ul className="text-sm space-y-1">
+                    <li>• 관찰일지 분석</li>
+                    <li>• 전문가 리포트</li>
+                    <li>• 프리미엄 종합테스트</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="text-center pt-4">
+                <Button 
+                  onClick={() => navigate('/token-subscription')}
+                  size="lg"
+                  className="bg-gradient-to-r from-primary to-primary-glow hover:from-primary/90 hover:to-primary-glow/90 text-white font-bold shadow-lg hover:shadow-xl transition-all"
+                >
+                  <Coins className="w-5 h-5 mr-2" />
+                  토큰 충전하기
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="text-center mb-16 space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold leading-tight">
               <span className="block text-foreground mb-2">3분으로 시작하는</span>

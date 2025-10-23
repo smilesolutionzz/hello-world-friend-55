@@ -128,7 +128,7 @@ const RefundPolicy = () => {
                   <li>📧 이메일: aihpro@naver.com</li>
                   <li>🏢 상호명: (AI)하이라이트</li>
                   <li>👤 대표: 이수석</li>
-                  <li>🔢 사업자등록번호: 206-12-62002</li>
+                  <li>🔢 사업자등록번호: 206-42-62002</li>
                 </ul>
               </div>
             </section>

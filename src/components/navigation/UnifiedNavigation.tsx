@@ -351,7 +351,7 @@ export const UnifiedNavigation = () => {
                   }`}
                 >
                   <User className="w-4 h-4 mr-2" />
-                  {user ? '내 계정' : '로그인'}
+                  {user ? '로그아웃' : '로그인'}
                 </Button>
               </div>
             </div>

@@ -180,12 +180,29 @@ const Observation = () => {
 
   return (
     <AuthenticationGuard fallbackMessage="차세대 AI 관찰일지 시스템을 사용하려면 로그인이 필요합니다.">
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Floating Orbs */}
+          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute top-40 right-20 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-pink-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+          
+          {/* Gradient Mesh */}
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/30 to-transparent"></div>
+          
+          {/* Subtle Grid Pattern */}
+          <div className="absolute inset-0 opacity-[0.02]" style={{
+            backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(0, 0, 0, .05) 25%, rgba(0, 0, 0, .05) 26%, transparent 27%, transparent 74%, rgba(0, 0, 0, .05) 75%, rgba(0, 0, 0, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 0, 0, .05) 25%, rgba(0, 0, 0, .05) 26%, transparent 27%, transparent 74%, rgba(0, 0, 0, .05) 75%, rgba(0, 0, 0, .05) 76%, transparent 77%, transparent)`,
+            backgroundSize: '50px 50px'
+          }}></div>
+        </div>
+        
         {/* Unified Navigation */}
         <UnifiedNavigation />
         
         {/* Hero Section - Simplified */}
-        <section className="pt-24 pb-12 px-4">
+        <section className="pt-24 pb-12 px-4 relative z-10">
           <div className="container mx-auto max-w-5xl">
             <div className="text-center mb-12">
               {isBetaTestPeriod() && (
@@ -236,7 +253,7 @@ const Observation = () => {
         </section>
 
         {/* Main Content */}
-        <section className="py-8 px-4">
+        <section className="py-8 px-4 relative z-10">
           <div className="container mx-auto max-w-6xl">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-2 h-12 bg-white rounded-lg p-1 shadow mb-8 max-w-md mx-auto">

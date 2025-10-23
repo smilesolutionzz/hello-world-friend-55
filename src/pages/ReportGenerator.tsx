@@ -26,7 +26,8 @@ import {
   CheckCircle2,
   AlertCircle,
   ArrowRight,
-  Database
+  Database,
+  Upload
 } from 'lucide-react';
 
 const ReportGenerator = () => {
@@ -35,6 +36,9 @@ const ReportGenerator = () => {
   const [reportData, setReportData] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
   const [progress, setProgress] = useState(0);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [isAnalyzingImages, setIsAnalyzingImages] = useState(false);
+  const [imageAnalysisResults, setImageAnalysisResults] = useState<string>('');
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -117,6 +121,60 @@ const ReportGenerator = () => {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsAnalyzingImages(true);
+    toast({
+      title: "이미지 분석 시작",
+      description: "검사 이미지를 AI가 분석하고 있습니다...",
+    });
+
+    try {
+      const imageUrls: string[] = [];
+      
+      // Convert images to base64
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        
+        const base64 = await new Promise<string>((resolve) => {
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(file);
+        });
+        
+        imageUrls.push(base64);
+      }
+
+      setUploadedImages(imageUrls);
+
+      // Analyze images using the edge function
+      const { data, error } = await supabase.functions.invoke('analyze-test-images', {
+        body: { images: imageUrls }
+      });
+
+      if (error) throw error;
+
+      if (data?.analysis) {
+        setImageAnalysisResults(data.analysis);
+        toast({
+          title: "✅ 이미지 분석 완료",
+          description: "검사 결과가 리포트에 자동 반영됩니다.",
+        });
+      }
+    } catch (error) {
+      console.error('Image analysis error:', error);
+      toast({
+        title: "분석 실패",
+        description: "이미지 분석 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzingImages(false);
+    }
+  };
+
   const generateComprehensiveReport = async () => {
     if (!userData || (userData.totalAssessments === 0 && userData.totalObservations === 0 && userData.totalChatMessages === 0)) {
       toast({
@@ -143,7 +201,8 @@ const ReportGenerator = () => {
           assessments: userData.assessments,
           observations: userData.observations,
           chatRooms: userData.chatRooms,
-          profile: userData.profile
+          profile: userData.profile,
+          externalTestImages: imageAnalysisResults
         }
       });
 
@@ -364,10 +423,71 @@ const ReportGenerator = () => {
               )}
             </Button>
 
+            {/* 외부 검사 이미지 업로드 */}
+            <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30">
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Upload className="w-6 h-6 text-purple-400 mt-0.5" />
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-purple-100 mb-2">외부 기관 검사 결과 추가 (선택)</h4>
+                      <p className="text-sm text-purple-300/80 mb-4">
+                        다른 기관에서 받은 검사 결과를 이미지로 업로드하면 AI가 자동으로 분석하여 리포트에 반영합니다
+                      </p>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="test-image-upload"
+                        disabled={isAnalyzingImages}
+                      />
+                      <label htmlFor="test-image-upload">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={isAnalyzingImages}
+                          className="cursor-pointer border-purple-400/50 text-purple-200 hover:bg-purple-900/50"
+                          asChild
+                        >
+                          <span>
+                            {isAnalyzingImages ? (
+                              <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                AI 분석 중...
+                              </>
+                            ) : (
+                              <>
+                                <Upload className="w-4 h-4 mr-2" />
+                                이미지 업로드
+                              </>
+                            )}
+                          </span>
+                        </Button>
+                      </label>
+                      {uploadedImages.length > 0 && (
+                        <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-400/30 rounded-lg">
+                          <p className="text-sm font-semibold text-emerald-300">
+                            ✓ {uploadedImages.length}개 이미지 업로드 완료
+                          </p>
+                          {imageAnalysisResults && (
+                            <p className="text-xs text-emerald-400/80 mt-1">
+                              AI 분석 완료 - 리포트 생성 시 자동 반영됩니다
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* 안내 문구 */}
             <div className="text-center space-y-2">
               <p className="text-sm text-purple-300/80">
-                💎 고급 AI 분석 엔진을 통해 최대 50페이지 분량의 전문 리포트가 생성됩니다
+                💎 고급 AI 분석 엔진을 통해 최대 10페이지 분량의 전문 리포트가 생성됩니다
               </p>
               <p className="text-xs text-purple-400/60">
                 생성 시간: 약 30초 ~ 1분 (데이터 양에 따라 다를 수 있습니다)

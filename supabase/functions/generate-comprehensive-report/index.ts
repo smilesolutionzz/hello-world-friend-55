@@ -31,7 +31,7 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    const { assessments, observations, chatRooms, profile } = await req.json();
+    const { assessments, observations, chatRooms, profile, externalTestImages } = await req.json();
 
     console.log('종합 리포트 생성 요청:', {
       userId: user.id,
@@ -95,6 +95,11 @@ ${JSON.stringify(chatSummary.slice(0, 20), null, 2)}
 
 === 사용자 프로필 ===
 ${JSON.stringify(profile, null, 2)}
+
+${externalTestImages ? `
+=== 외부 기관 검사 결과 분석 ===
+${externalTestImages}
+` : ''}
 
 위 데이터를 종합 분석하여 9가지 섹션의 전문 리포트를 JSON 형식으로 작성해주세요.
 응답 형식:

@@ -957,9 +957,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('bigfive-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 opacity-90">3토큰</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-red-500 text-white font-bold text-xs px-2 py-1">
                         🔥 1위
@@ -979,9 +976,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('attachment-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 opacity-90">3토큰</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-orange-500 text-white font-bold text-xs px-2 py-1">
                         🔥 2위
@@ -1001,9 +995,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('stress-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 opacity-90">3토큰</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-yellow-500 text-white font-bold text-xs px-2 py-1">
                         🔥 3위
@@ -1023,9 +1014,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('career-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 opacity-90">3토큰</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-blue-500 text-white font-bold text-xs px-2 py-1">
                         📈 4위
@@ -1045,9 +1033,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('selfesteem-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 opacity-90">3토큰</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-purple-500 text-white font-bold text-xs px-2 py-1">
                         ⭐ 추천
@@ -1067,9 +1052,6 @@ const Assessment = () => {
                     className="bg-white dark:bg-card hover-glow border-2 border-purple-400 dark:border-purple-600 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-xl"
                     onClick={() => navigate('/assessment/defense-mechanism-test')}
                   >
-                    <div className="absolute top-2 left-2">
-                      <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 opacity-90">3토큰</Badge>
-                    </div>
                     <div className="absolute top-2 right-2">
                       <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xs px-2 py-1 animate-pulse">
                         🆕 NEW

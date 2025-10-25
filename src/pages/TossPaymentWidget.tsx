@@ -12,7 +12,7 @@ const PROD_HOSTS = ['aihpro.com', 'www.aihpro.com'];
 const isProdHost = typeof window !== 'undefined' && PROD_HOSTS.includes(window.location.hostname);
 
 // 라이브 퍼블릭 키 (실결제)
-const TOSS_LIVE_CLIENT_KEY = 'live_ck_5OWRapdA8dG7PRogXoJWro1zEqZK';
+const TOSS_LIVE_CLIENT_KEY = 'live_gck_ma60RZblrqo1lKlBKmjW3wzYWBn1';
 
 // 테스트 퍼블릭 키 (프리뷰/로컬에서만 사용) - 제공받은 키로 교체 가능
 const TOSS_TEST_CLIENT_KEY = '';

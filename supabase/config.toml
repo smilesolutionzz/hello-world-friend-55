@@ -211,3 +211,18 @@ verify_jwt = false
 
 [functions.wellness-ai-sleep]
 verify_jwt = false
+
+[functions.toss-payments-confirm]
+verify_jwt = true
+
+[functions.analyze-test-images]
+verify_jwt = false
+
+[functions.voice-emotion-analysis]
+verify_jwt = false
+
+[functions.voice-to-text]
+verify_jwt = false
+
+[functions.realtime-voice-chat]
+verify_jwt = false

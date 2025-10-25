@@ -62,30 +62,21 @@ export const AuthForm = () => {
       setSignUpData(prev => ({ ...prev, referralCode: storedReferralCode }));
     }
 
-    // 인증 상태 리스너 설정
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('📱 Auth state change:', event, session?.user?.id);
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (event === 'SIGNED_IN' && session?.user) {
-          console.log('✅ 로그인 성공:', session.user.email);
-          navigate('/');
-        }
-      }
-    );
-
-    // 기존 세션 확인
+    // 기존 세션 확인 (한 번만)
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('📱 초기 세션 확인:', session?.user?.id);
-      setSession(session);
-      setUser(session?.user ?? null);
-      
       if (session?.user) {
         navigate('/');
       }
     });
+
+    // 인증 상태 리스너 설정 (navigate만 처리, state 업데이트 제거)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === 'SIGNED_IN' && session?.user) {
+          navigate('/');
+        }
+      }
+    );
 
     return () => subscription.unsubscribe();
   }, [navigate]);

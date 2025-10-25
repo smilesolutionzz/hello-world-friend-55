@@ -67,31 +67,25 @@ export const useAuthGuard = (): AuthGuardReturn => {
       }
     };
 
-    // Auth state listener 설정
+     // Auth state listener 설정 (로그 제거하고 디바운싱 추가)
+    let lastProcessTime = 0;
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('🔄 Auth state change:', event, session?.user?.id);
-        console.log('📱 모바일 세션 상태:', {
-          event,
-          hasSession: !!session,
-          userId: session?.user?.id,
-          email: session?.user?.email,
-          expiresAt: session?.expires_at
-        });
+        // 성능 최적화: 1초 이내 중복 이벤트 무시
+        const now = Date.now();
+        if (now - lastProcessTime < 1000) return;
+        lastProcessTime = now;
         
         if (!mounted) return;
         
         // 페이지 새로고침 시에도 세션 유지
         if (event === 'INITIAL_SESSION' && session) {
-          console.log('🔄 초기 세션 복원:', session.user.email);
           setUser(session.user);
           setAuthenticated(true);
         } else if (event === 'SIGNED_OUT' || !session) {
-          console.log('📤 로그아웃 처리');
           setAuthenticated(false);
           setUser(null);
         } else if (event === 'SIGNED_IN' && session) {
-          console.log('✅ 로그인 성공:', session.user.email);
           setUser(session.user);
           setAuthenticated(true);
         } else if (event === 'TOKEN_REFRESHED' && session) {

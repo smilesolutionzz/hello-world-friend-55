@@ -83,10 +83,95 @@ serve(async (req) => {
       color: #333;
       max-width: 800px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 0;
+    }
+    .cover {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 60px 40px;
+      color: white;
+      page-break-after: always;
+    }
+    .cover h1 {
+      font-size: 48px;
+      margin: 0 0 20px 0;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    .cover .subtitle {
+      font-size: 24px;
+      margin-bottom: 40px;
+      opacity: 0.9;
+    }
+    .cover .profile-info {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      padding: 30px 40px;
+      border-radius: 15px;
+      margin: 40px 0;
+      font-size: 18px;
+    }
+    .cover .date {
+      font-size: 16px;
+      margin-top: 40px;
+      opacity: 0.9;
+    }
+    .toc {
+      padding: 60px 40px;
+      page-break-after: always;
+    }
+    .toc h2 {
+      color: #667eea;
+      font-size: 32px;
+      margin-bottom: 30px;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 15px;
+    }
+    .toc ol {
+      list-style: none;
+      counter-reset: toc-counter;
+      padding: 0;
+    }
+    .toc li {
+      counter-increment: toc-counter;
+      padding: 15px 0;
+      font-size: 18px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .toc li:before {
+      content: counter(toc-counter) ". ";
+      color: #667eea;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    .disclaimer {
+      background: #fff3cd;
+      border-left: 5px solid #ffc107;
+      padding: 30px;
+      margin: 40px;
+      border-radius: 8px;
+      page-break-inside: avoid;
+    }
+    .disclaimer h3 {
+      color: #856404;
+      margin-top: 0;
+      font-size: 20px;
+    }
+    .disclaimer p {
+      color: #856404;
+      margin: 10px 0;
+      line-height: 1.8;
+    }
+    .content {
+      padding: 40px;
     }
     .header {
-      border-bottom: 3px solid #6366f1;
+      border-bottom: 3px solid #667eea;
       padding-bottom: 20px;
       margin-bottom: 30px;
       display: flex;
@@ -94,7 +179,7 @@ serve(async (req) => {
       align-items: center;
     }
     .header h1 {
-      color: #6366f1;
+      color: #667eea;
       margin: 0;
       font-size: 24px;
     }
@@ -107,7 +192,7 @@ serve(async (req) => {
       text-align: right;
     }
     .header .logo .site {
-      color: #6366f1;
+      color: #667eea;
       font-size: 18px;
       font-weight: bold;
       margin-bottom: 5px;
@@ -117,65 +202,113 @@ serve(async (req) => {
       font-size: 12px;
     }
     .section {
-      margin-bottom: 30px;
+      margin-bottom: 40px;
       page-break-inside: avoid;
     }
     .section h2 {
-      color: #6366f1;
-      border-left: 4px solid #6366f1;
+      color: #667eea;
+      border-left: 4px solid #667eea;
       padding-left: 12px;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
+      font-size: 24px;
     }
     .summary {
       background: #f8f9fa;
-      padding: 20px;
+      padding: 30px;
       border-radius: 8px;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
     .footer {
-      margin-top: 50px;
-      padding-top: 20px;
-      border-top: 2px solid #e5e7eb;
+      margin-top: 60px;
+      padding: 30px 40px;
+      border-top: 3px solid #667eea;
       text-align: center;
-      color: #666;
-      font-size: 12px;
+      background: #f8f9fa;
+    }
+    .footer .site-info {
+      font-size: 16px;
+      color: #667eea;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
     .footer .copyright {
       margin-top: 10px;
-      color: #999;
+      color: #666;
+      font-size: 13px;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div>
-      <h1>종합 발달 리포트</h1>
-      <div class="date">${new Date().toLocaleDateString('ko-KR', { 
+  <!-- 커버 페이지 -->
+  <div class="cover">
+    <h1>종합 발달 리포트</h1>
+    <div class="subtitle">Comprehensive Development Report</div>
+    <div class="profile-info">
+      <div style="font-size: 20px; margin-bottom: 10px;">
+        <strong>${profile?.child_name || '아동'}</strong>
+      </div>
+      <div>
+        생년월일: ${profile?.birth_date ? new Date(profile.birth_date).toLocaleDateString('ko-KR') : '-'}
+      </div>
+    </div>
+    <div class="date">
+      ${new Date().toLocaleDateString('ko-KR', { 
         year: 'numeric', 
         month: 'long', 
         day: 'numeric' 
-      })}</div>
+      })}
     </div>
-    <div class="logo">
-      <div class="site">aihpro.com</div>
-      <div class="tagline">AI 심리 분석 전문 플랫폼</div>
+    <div style="margin-top: 60px; font-size: 18px; font-weight: 500;">
+      aihpro.com
     </div>
   </div>
 
-  <div class="summary">
-    ${reportData.summary}
+  <!-- 목차 -->
+  <div class="toc">
+    <h2>목차</h2>
+    <ol>
+      ${reportData.sections.map((section: any) => `
+        <li>${section.title}</li>
+      `).join('')}
+    </ol>
   </div>
 
-  ${reportData.sections.map((section: any) => `
-    <div class="section">
-      <h2>${section.title}</h2>
-      ${section.content}
-    </div>
-  `).join('')}
+  <!-- 중요 안내사항 -->
+  <div class="disclaimer">
+    <h3>⚠️ 중요 안내사항</h3>
+    <p>
+      본 리포트는 <strong>AI 기반 자동 분석 결과</strong>이며, 의학적 진단이나 전문가의 정확한 평가를 대체할 수 없습니다.
+    </p>
+    <p>
+      정확한 평가와 개입을 위해서는 <strong>반드시 전문가와의 상담을 권장</strong>드립니다.
+    </p>
+    <p>
+      본 리포트는 참고 자료로만 활용하시기 바라며, 실제 진단이나 치료 결정은 자격을 갖춘 전문가의 판단을 따라주시기 바랍니다.
+    </p>
+  </div>
 
+  <!-- 본문 내용 -->
+  <div class="content">
+    <div class="summary">
+      <h2 style="color: #667eea; margin-top: 0;">전체 요약</h2>
+      ${reportData.summary}
+    </div>
+
+    ${reportData.sections.map((section: any, index: number) => `
+      <div class="section">
+        <h2>${index + 1}. ${section.title}</h2>
+        ${section.content}
+      </div>
+    `).join('')}
+  </div>
+
+  <!-- 푸터 -->
   <div class="footer">
-    <div><strong>aihpro.com</strong> - AI 심리 분석 전문 플랫폼</div>
-    <div class="copyright">본 리포트는 AI 기반 분석 결과이며, 전문가 상담을 대체하지 않습니다.</div>
+    <div class="site-info">Generated by aihpro.com</div>
+    <div class="copyright">© 2025 All Rights Reserved</div>
+    <div style="margin-top: 15px; color: #999; font-size: 12px;">
+      본 리포트는 AI 기반 분석 결과이며, 전문가 상담을 대체하지 않습니다.
+    </div>
   </div>
 </body>
 </html>

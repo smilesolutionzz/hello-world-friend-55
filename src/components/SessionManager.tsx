@@ -1,13 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 export const SessionManager = () => {
   const { toast } = useToast();
+  const lastCheckTime = useRef<number>(0);
 
   useEffect(() => {
     // 페이지 포커스 시 세션 갱신 체크 (모바일에서 앱 전환 후 복귀 시)
     const handleFocus = async () => {
+      // 최소 30초 간격으로 체크 (성능 최적화)
+      const now = Date.now();
+      if (now - lastCheckTime.current < 30000) {
+        return;
+      }
+      lastCheckTime.current = now;
       try {
         console.log('📱 페이지 포커스 - 세션 상태 확인');
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -63,8 +70,7 @@ export const SessionManager = () => {
       }
     };
 
-    // 이벤트 리스너 등록
-    window.addEventListener('focus', handleFocus);
+    // 이벤트 리스너 등록 (focus 제거 - visibilitychange만 사용)
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('online', handleOnline);
     window.addEventListener('storage', handleStorageChange);
@@ -88,7 +94,6 @@ export const SessionManager = () => {
 
     // 정리
     return () => {
-      window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('storage', handleStorageChange);

@@ -20,12 +20,14 @@ import {
   Volume2,
   Image as ImageIcon,
   CheckCircle2,
-  Loader2
+  Loader2,
+  Mic
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { VoiceEmotionAnalyzer } from '@/components/audio/VoiceEmotionAnalyzer';
 
 const WellnessLifestyle = () => {
   const { toast } = useToast();
@@ -763,6 +765,29 @@ const WellnessLifestyle = () => {
                   </div>
                 </div>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Voice Emotion Analysis Section */}
+          <Card className="bg-gradient-to-br from-pink-50 to-rose-100 border-0 shadow-xl">
+            <CardHeader>
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <CardTitle className="text-2xl font-bold text-rose-900 flex items-center gap-3">
+                  <Mic className="h-8 w-8" />
+                  AI 음성 감정 분석
+                </CardTitle>
+                <Badge className="bg-rose-500 text-white">실시간 분석</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-rose-100">
+                <div className="text-center mb-6">
+                  <p className="text-rose-800 text-lg">
+                    음성으로 당신의 감정 상태를 실시간으로 분석합니다
+                  </p>
+                </div>
+                <VoiceEmotionAnalyzer />
+              </div>
             </CardContent>
           </Card>
 

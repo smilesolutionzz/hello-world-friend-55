@@ -636,13 +636,13 @@ const ReportGenerator = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-semibold text-pink-200">리포트 생성 필요 개수</p>
-                      <p className="text-2xl font-black text-white mt-1">최소 50개</p>
+                      <p className="text-2xl font-black text-white mt-1">최소 30개</p>
                     </div>
                   </div>
-                  {(userData?.totalDataCount || 0) < 50 && (
+                  {(userData?.totalDataCount || 0) < 30 && (
                     <div className="mt-3 p-3 bg-orange-500/10 border border-orange-400/30 rounded">
                       <p className="text-xs text-orange-300">
-                        ⚠️ 종합 리포트 생성을 위해 {50 - (userData?.totalDataCount || 0)}개의 데이터가 더 필요합니다
+                        ⚠️ 종합 리포트 생성을 위해 {30 - (userData?.totalDataCount || 0)}개의 데이터가 더 필요합니다
                       </p>
                     </div>
                   )}

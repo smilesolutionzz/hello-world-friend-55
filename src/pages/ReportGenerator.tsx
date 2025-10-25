@@ -32,7 +32,8 @@ import {
   Upload,
   ChevronDown,
   ChevronUp,
-  Eye
+  Eye,
+  Calendar
 } from 'lucide-react';
 
 const ReportGenerator = () => {
@@ -46,6 +47,9 @@ const ReportGenerator = () => {
   const [imageAnalysisResults, setImageAnalysisResults] = useState<string>('');
   const [selectedReportType, setSelectedReportType] = useState<'basic' | 'detailed' | 'expert'>('basic');
   const [userInput, setUserInput] = useState({
+    name: '',
+    birthDate: '',
+    gender: '',
     recentConcerns: '',
     developmentalNotes: ''
   });
@@ -60,9 +64,9 @@ const ReportGenerator = () => {
   const { tokenBalance, consumeTokens, checkTokenAvailability } = useTokens();
 
   const REPORT_TYPES = {
-    basic: { name: '기본 리포트', tokens: 10, price: '5,000원', description: '5개 핵심 섹션, AI 자동 분석' },
-    detailed: { name: '상세 리포트', tokens: 30, price: '15,000원', description: '9개 전체 섹션 + 외부 이미지 분석' },
-    expert: { name: '전문가 리뷰', tokens: 100, price: '50,000원', description: '상세 리포트 + 실제 전문가 검토' }
+    basic: { name: '기본 리포트', tokens: 25, price: '5,000원', description: '5개 핵심 섹션, AI 자동 분석' },
+    detailed: { name: '상세 리포트', tokens: 76, price: '15,000원', description: '9개 전체 섹션 + 외부 이미지 분석' },
+    expert: { name: '전문가 리뷰', tokens: 253, price: '50,000원', description: '상세 리포트 + 실제 전문가 검토' }
   };
 
   // 사용자 데이터 불러오기
@@ -271,6 +275,16 @@ const ReportGenerator = () => {
 
       console.log('종합 리포트 생성 시작:', { reportType: selectedReportType, tokens: requiredTokens, userData });
 
+      // 개인정보 유효성 검사
+      if (!userInput.name || !userInput.birthDate || !userInput.gender) {
+        toast({
+          title: "필수 정보 누락",
+          description: "이름, 생년월일, 성별은 필수 입력 항목입니다.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('generate-comprehensive-report', {
         body: {
           reportType: selectedReportType,
@@ -281,6 +295,9 @@ const ReportGenerator = () => {
           profile: userData.profile,
           externalTestImages: selectedReportType !== 'basic' ? imageAnalysisResults : null,
           userInput: {
+            name: userInput.name,
+            birthDate: userInput.birthDate,
+            gender: userInput.gender,
             recentConcerns: userInput.recentConcerns,
             developmentalNotes: userInput.developmentalNotes
           }
@@ -422,13 +439,59 @@ const ReportGenerator = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-2xl text-indigo-100">
                   <Sparkles className="w-7 h-7 text-yellow-400" />
-                  최근 고민 및 발달/심리 소견 작성
+                  리포트 대상자 정보 및 추가 입력
                 </CardTitle>
                 <p className="text-sm text-indigo-300 mt-2">
-                  💡 직접 작성한 내용은 AI가 종합 리포트 생성 시 중요한 참고자료로 활용됩니다
+                  💡 입력한 정보는 AI가 종합 리포트 생성 시 중요한 참고자료로 활용됩니다
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* 개인정보 입력 */}
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      이름 *
+                    </label>
+                    <input
+                      type="text"
+                      value={userInput.name}
+                      onChange={(e) => setUserInput({...userInput, name: e.target.value})}
+                      placeholder="예: 홍길동"
+                      className="w-full p-3 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      maxLength={50}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      생년월일 *
+                    </label>
+                    <input
+                      type="date"
+                      value={userInput.birthDate}
+                      onChange={(e) => setUserInput({...userInput, birthDate: e.target.value})}
+                      className="w-full p-3 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      성별 *
+                    </label>
+                    <select
+                      value={userInput.gender}
+                      onChange={(e) => setUserInput({...userInput, gender: e.target.value})}
+                      className="w-full p-3 bg-slate-800/50 border border-purple-400/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                      <option value="">선택하세요</option>
+                      <option value="남성">남성</option>
+                      <option value="여성">여성</option>
+                      <option value="기타">기타</option>
+                    </select>
+                  </div>
+                </div>
+
                 {/* 최근 고민 입력 */}
                 <div className="space-y-3">
                   <label className="text-sm font-semibold text-purple-200 flex items-center gap-2">
@@ -758,42 +821,44 @@ const ReportGenerator = () => {
               </CardContent>
             </Card>
 
-            {/* 외부 검사 이미지 업로드 */}
-            <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30">
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <Upload className="w-6 h-6 text-purple-400 mt-0.5" />
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-purple-100 mb-2">외부 기관 검사 결과 추가 (선택)</h4>
-                      <p className="text-sm text-purple-300/80 mb-4">
-                        다른 기관에서 받은 검사 결과를 이미지로 업로드하면 AI가 자동으로 분석하여 리포트에 반영합니다
-                      </p>
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        disabled={isAnalyzingImages}
-                        className="block w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer"
-                      />
-                      {isAnalyzingImages && (
-                        <div className="mt-3 flex items-center gap-2 text-purple-300">
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          <span className="text-sm">AI가 이미지를 분석하고 있습니다...</span>
-                        </div>
-                      )}
-                      {uploadedImages.length > 0 && !isAnalyzingImages && (
-                        <div className="mt-3 flex items-center gap-2 text-emerald-300">
-                          <CheckCircle2 className="w-4 h-4" />
-                          <span className="text-sm">{uploadedImages.length}개의 이미지 분석 완료</span>
-                        </div>
-                      )}
+            {/* 외부 검사 이미지 업로드 (상세 리포트와 전문가 리뷰만 가능) */}
+            {selectedReportType !== 'basic' && (
+              <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30">
+                <CardContent className="pt-6">
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <Upload className="w-6 h-6 text-purple-400 mt-0.5" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-purple-100 mb-2">외부 기관 검사 결과 추가 (선택)</h4>
+                        <p className="text-sm text-purple-300/80 mb-4">
+                          다른 기관에서 받은 검사 결과를 이미지로 업로드하면 AI가 자동으로 분석하여 리포트에 반영합니다
+                        </p>
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          disabled={isAnalyzingImages}
+                          className="block w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer"
+                        />
+                        {isAnalyzingImages && (
+                          <div className="mt-3 flex items-center gap-2 text-purple-300">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span className="text-sm">AI가 이미지를 분석하고 있습니다...</span>
+                          </div>
+                        )}
+                        {uploadedImages.length > 0 && !isAnalyzingImages && (
+                          <div className="mt-3 flex items-center gap-2 text-emerald-300">
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span className="text-sm">{uploadedImages.length}개의 이미지 분석 완료</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
             {/* 리포트 타입 선택 */}
             <Card className="bg-gradient-to-br from-slate-900/90 to-indigo-900/90 border-2 border-indigo-500/30 shadow-2xl shadow-indigo-500/20">

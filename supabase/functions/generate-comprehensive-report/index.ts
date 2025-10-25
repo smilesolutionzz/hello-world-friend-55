@@ -38,7 +38,10 @@ serve(async (req) => {
       reportType,
       assessmentsCount: assessments?.length || 0,
       observationsCount: observations?.length || 0,
-      chatRoomsCount: chatRooms?.length || 0
+      chatRoomsCount: chatRooms?.length || 0,
+      userName: userInput?.name,
+      userBirthDate: userInput?.birthDate,
+      userGender: userInput?.gender
     });
 
     // 데이터 정리 및 요약
@@ -66,7 +69,22 @@ serve(async (req) => {
     ) || [];
 
     // HTML 템플릿 생성 함수
-    const generateReportHTML = (reportData: any, profile: any, stats: any) => {
+    const generateReportHTML = (reportData: any, userInput: any, stats: any) => {
+      // 나이 계산
+      const calculateAge = (birthDate: string) => {
+        if (!birthDate) return '';
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+          age--;
+        }
+        return age;
+      };
+
+      const age = calculateAge(userInput?.birthDate);
+      
       return `
 <!DOCTYPE html>
 <html lang="ko">
@@ -323,8 +341,22 @@ serve(async (req) => {
       
       <div class="profile-info">
         <div style="font-size: 24px; margin-bottom: 15px; font-weight: 600;">
-          이름: ${profile?.child_name || '사용자'}
+          이름: ${userInput?.name || '사용자'}
         </div>
+        ${userInput?.birthDate ? `
+        <div style="font-size: 16px; margin-bottom: 10px; opacity: 0.95;">
+          생년월일: ${new Date(userInput.birthDate).toLocaleDateString('ko-KR', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })} (만 ${age}세)
+        </div>
+        ` : ''}
+        ${userInput?.gender ? `
+        <div style="font-size: 16px; margin-bottom: 10px; opacity: 0.95;">
+          성별: ${userInput.gender}
+        </div>
+        ` : ''}
         <div style="font-size: 16px; opacity: 0.95;">
           보고서 생성일: ${new Date().toLocaleDateString('ko-KR', { 
             year: 'numeric', 
@@ -592,6 +624,13 @@ serve(async (req) => {
 
     const userPrompt = `다음 데이터를 기반으로 종합 리포트를 생성해주세요:
 
+=== 대상자 정보 ===
+이름: ${userInput?.name || '미제공'}
+생년월일: ${userInput?.birthDate || '미제공'}
+성별: ${userInput?.gender || '미제공'}
+
+**중요: 이 정보를 기반으로 나이에 맞는 발달 기준과 성별 특성을 고려하여 리포트를 작성해주세요.**
+
 === 검사 기록 (${assessmentSummary.length}건) ===
 ${JSON.stringify(assessmentSummary, null, 2)}
 
@@ -805,7 +844,7 @@ ${userInput.developmentalNotes}
       imagesCount: externalTestImages ? 1 : 0, // 외부 이미지가 있으면 1로 카운트
       chatCount: Math.floor(chatSummary.length / 2) // 메시지를 대화 세션으로 변환 (왕복)
     };
-    const htmlReport = generateReportHTML(reportData, profile, stats);
+    const htmlReport = generateReportHTML(reportData, userInput, stats);
 
     return new Response(
       JSON.stringify({

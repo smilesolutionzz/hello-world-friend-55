@@ -65,6 +65,7 @@ const dataSubmenuItems = [
   { icon: BarChart3, label: '개인DATA', path: '/dashboard', requiresAuth: false },
   { icon: Users, label: '기관DATA', path: '/institution-admin', requiresAuth: false },
   { icon: Heart, label: '고민 저장소', path: '/concern-storage', requiresAuth: false },
+  { icon: FileText, label: '종합 리포트', path: '/report-generator', requiresAuth: false, badge: 'NEW' },
 ];
 
 // AIH 에이전트 하위 메뉴
@@ -266,7 +267,7 @@ export const UnifiedNavigation = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant={isActive('/dashboard') || isActive('/institution-admin') ? "default" : "ghost"}
+                    variant={isActive('/dashboard') || isActive('/institution-admin') || isActive('/report-generator') ? "default" : "ghost"}
                     size="sm"
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
@@ -275,7 +276,7 @@ export const UnifiedNavigation = () => {
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-[380px] bg-background shadow-xl border rounded-xl p-5 z-50">
+                <DropdownMenuContent align="start" className="w-[400px] bg-background shadow-xl border rounded-xl p-5 z-50">
                   <h3 className="text-sm font-bold mb-3 px-1">데이터 관리</h3>
                   <div className="space-y-1">
                     {dataSubmenuItems.map((item) => (
@@ -288,10 +289,20 @@ export const UnifiedNavigation = () => {
                           <item.icon className="w-4 h-4 text-primary" />
                         </div>
                         <div className="flex-1">
-                          <div className="font-semibold text-sm mb-0.5">{item.label}</div>
+                          <div className="font-semibold text-sm mb-0.5 flex items-center gap-2">
+                            {item.label}
+                            {item.badge && (
+                              <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                                <Zap className="w-2 h-2 mr-1" />
+                                {item.badge}
+                              </Badge>
+                            )}
+                          </div>
                           <div className="text-xs text-muted-foreground">
                             {item.label === '개인DATA' && '내 검사 기록 및 통계 분석'}
                             {item.label === '기관DATA' && '기관 회원 종합 데이터 관리'}
+                            {item.label === '고민 저장소' && '일상 고민 기록 및 관리'}
+                            {item.label === '종합 리포트' && 'AI 기반 종합 분석 리포트 생성'}
                           </div>
                         </div>
                       </button>

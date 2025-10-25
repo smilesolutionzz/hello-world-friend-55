@@ -706,7 +706,7 @@ const ReportGenerator = () => {
             {/* 생성 버튼 */}
             <Button
               onClick={generateComprehensiveReport}
-              disabled={isGenerating || (userData?.totalDataCount || 0) < 50}
+              disabled={isGenerating || (userData?.totalDataCount || 0) < 30}
               size="lg"
               className="w-full h-20 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white shadow-2xl shadow-purple-500/50 border-2 border-purple-400/30 group disabled:opacity-50 disabled:cursor-not-allowed"
             >

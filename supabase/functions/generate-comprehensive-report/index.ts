@@ -363,12 +363,49 @@ ${userInput.developmentalNotes}
           }
         );
       }
+
+      // 레이트 리미트 에러 처리
+      if (aiResponse.status === 429) {
+        return new Response(
+          JSON.stringify({
+            error: 'LOVABLE_AI_RATE_LIMITED',
+            message: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.'
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 429
+          }
+        );
+      }
       
       throw new Error(`AI 분석 실패: ${aiResponse.status}`);
     }
 
-    const aiData = await aiResponse.json();
-    console.log('AI 응답:', JSON.stringify(aiData).substring(0, 500));
+    // 응답 파싱을 견고하게 처리 (빈 본문, 잘린 JSON, SSE 라인 등)
+    let aiData: any = null;
+    const rawText = await aiResponse.text();
+    try {
+      if (rawText && rawText.trim()) {
+        // SSE 형태 가능성 대비: data: ... 라인에서 마지막 JSON 시도
+        if (rawText.includes('\ndata: ')) {
+          const lines = rawText.split('\n').filter(l => l.startsWith('data: '));
+          const last = lines.reverse().find(l => l.trim() !== 'data: [DONE]');
+          const jsonStr = last ? last.slice(6).trim() : rawText.trim();
+          aiData = JSON.parse(jsonStr);
+        } else {
+          aiData = JSON.parse(rawText);
+        }
+      }
+    } catch (e) {
+      console.error('AI 응답 JSON 파싱 실패, 원문 사용 불가:', e);
+      // aiData를 null로 두고 폴백 사용
+    }
+
+    if (!aiData) {
+      console.warn('AI 응답 본문이 비어있거나 파싱 실패. 폴백 리포트를 사용합니다.');
+    }
+
+    console.log('AI 응답(요약 원문):', rawText?.slice(0, 500));
 
     let reportData;
     try {

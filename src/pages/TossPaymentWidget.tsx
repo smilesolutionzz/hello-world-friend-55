@@ -7,17 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
-// 환경별 토스페이먼츠 클라이언트 키 설정 (공개 키)
-const PROD_HOSTS = ['aihpro.com', 'www.aihpro.com'];
-const isProdHost = typeof window !== 'undefined' && PROD_HOSTS.includes(window.location.hostname);
-
-// 라이브 퍼블릭 키 (실결제)
-const TOSS_LIVE_CLIENT_KEY = 'live_gck_ma60RZblrqo1lKlBKmjW3wzYWBn1';
-
-// 테스트 퍼블릭 키 (프리뷰/로컬에서만 사용) - 제공받은 키로 교체 가능
-const TOSS_TEST_CLIENT_KEY = '';
-
-const TOSS_CLIENT_KEY = isProdHost ? TOSS_LIVE_CLIENT_KEY : TOSS_TEST_CLIENT_KEY;
+const TOSS_CLIENT_KEY = 'test_ck_ORzdMaqN3w22D5wkBxAP85AkYXQG';
 
 interface PaymentWidgetState {
   tokenAmount: number;
@@ -48,17 +38,6 @@ const TossPaymentWidget = () => {
     setProcessing(true);
 
     try {
-      // 프리뷰/로컬 환경에서는 실결제 방지 및 안내
-      if (!isProdHost) {
-        toast({
-          title: '프로덕션에서만 실결제 가능',
-          description: '실제 결제는 aihpro.com 도메인에서만 가능합니다. 해당 페이지를 새 창으로 열어드릴게요.',
-          variant: 'destructive',
-        });
-        setProcessing(false);
-        window.open('https://aihpro.com/toss-payment', '_blank');
-        return;
-      }
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({

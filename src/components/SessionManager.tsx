@@ -6,16 +6,8 @@ export const SessionManager = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    let lastCheckTime = 0;
-
     // 페이지 포커스 시 세션 갱신 체크 (모바일에서 앱 전환 후 복귀 시)
     const handleFocus = async () => {
-      // 최소 1분 간격으로 체크 (성능 최적화)
-      const now = Date.now();
-      if (now - lastCheckTime < 60000) {
-        return;
-      }
-      lastCheckTime = now;
       try {
         console.log('📱 페이지 포커스 - 세션 상태 확인');
         const { data: { session }, error } = await supabase.auth.getSession();

@@ -227,7 +227,7 @@ const ReportGenerator = () => {
   };
 
   const generateComprehensiveReport = async () => {
-    const minDataRequired = 50;
+    const minDataRequired = 30;
     const totalData = userData?.totalDataCount || 0;
 
     if (totalData < minDataRequired) {

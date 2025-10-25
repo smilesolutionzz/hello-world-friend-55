@@ -69,10 +69,10 @@ const dataSubmenuItems = [
 ];
 
 // AIH 에이전트 하위 메뉴
-const aihSubmenuItems = [
+const aihSubmenuItems: NavigationItem[] = [
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
-  { icon: Heart, label: '라이프 허브', path: '/wellness-lifestyle', requiresAuth: false, badge: '음성분석 포함' },
+  { icon: Heart, label: '라이프 허브', path: '/wellness-lifestyle', requiresAuth: false },
 ];
 
 // 3분테스트 하위 메뉴

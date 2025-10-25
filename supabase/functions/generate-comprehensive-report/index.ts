@@ -349,6 +349,21 @@ ${userInput.developmentalNotes}
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
       console.error('AI 응답 오류:', aiResponse.status, errorText);
+      
+      // 크레딧 부족 에러 처리
+      if (aiResponse.status === 402) {
+        return new Response(
+          JSON.stringify({ 
+            error: 'LOVABLE_AI_CREDITS_INSUFFICIENT',
+            message: 'Lovable AI 크레딧이 부족합니다. 워크스페이스 설정에서 크레딧을 충전해주세요.'
+          }),
+          { 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 402
+          }
+        );
+      }
+      
       throw new Error(`AI 분석 실패: ${aiResponse.status}`);
     }
 

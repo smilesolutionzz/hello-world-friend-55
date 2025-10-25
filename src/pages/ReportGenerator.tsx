@@ -273,6 +273,16 @@ const ReportGenerator = () => {
         throw error;
       }
 
+      // 크레딧 부족 에러 체크
+      if (data?.error === 'LOVABLE_AI_CREDITS_INSUFFICIENT') {
+        toast({
+          title: "💳 Lovable AI 크레딧 부족",
+          description: data.message || "Lovable AI 크레딧이 부족합니다. 워크스페이스 설정에서 크레딧을 충전해주세요.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       if (data && data.report) {
         setReportData({
           ...data.report,
@@ -291,11 +301,21 @@ const ReportGenerator = () => {
           description: "9가지 전문 분석이 포함된 리포트가 생성되었습니다.",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('리포트 생성 오류:', error);
+      
+      // 에러 메시지에서 크레딧 부족 확인
+      const errorMessage = error?.message || error?.toString() || '';
+      const isPaymentError = errorMessage.includes('402') || 
+                            errorMessage.includes('payment_required') || 
+                            errorMessage.includes('Not enough credits') ||
+                            errorMessage.includes('크레딧');
+      
       toast({
-        title: "생성 실패",
-        description: "리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        title: isPaymentError ? "💳 Lovable AI 크레딧 부족" : "생성 실패",
+        description: isPaymentError 
+          ? "Lovable AI 크레딧이 부족합니다. 워크스페이스 설정에서 크레딧을 충전해주세요."
+          : "리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
         variant: "destructive"
       });
     } finally {

@@ -7,8 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
-// 환경 변수에서 클라이언트 키 가져오기
-const TOSS_CLIENT_KEY = import.meta.env.VITE_TOSS_CLIENT_KEY || '';
+// 토스페이먼츠 클라이언트 키 (공개 키이므로 하드코딩 가능)
+const TOSS_CLIENT_KEY = 'live_ck_5OWRapdA8dG7PRogXoJWro1zEqZK';
 
 interface PaymentWidgetState {
   tokenAmount: number;

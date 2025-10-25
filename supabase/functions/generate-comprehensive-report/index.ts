@@ -64,6 +64,124 @@ serve(async (req) => {
       })) || []
     ) || [];
 
+    // HTML 템플릿 생성 함수
+    const generateReportHTML = (reportData: any, profile: any) => {
+      return `
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>종합 발달 리포트</title>
+  <style>
+    @page {
+      margin: 20mm;
+    }
+    body {
+      font-family: 'Noto Sans KR', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      border-bottom: 3px solid #6366f1;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      color: #6366f1;
+      margin: 0;
+      font-size: 24px;
+    }
+    .header .date {
+      color: #666;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    .header .logo {
+      text-align: right;
+    }
+    .header .logo .site {
+      color: #6366f1;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .header .logo .tagline {
+      color: #999;
+      font-size: 12px;
+    }
+    .section {
+      margin-bottom: 30px;
+      page-break-inside: avoid;
+    }
+    .section h2 {
+      color: #6366f1;
+      border-left: 4px solid #6366f1;
+      padding-left: 12px;
+      margin-bottom: 15px;
+    }
+    .summary {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+    .footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+    }
+    .footer .copyright {
+      margin-top: 10px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>종합 발달 리포트</h1>
+      <div class="date">${new Date().toLocaleDateString('ko-KR', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })}</div>
+    </div>
+    <div class="logo">
+      <div class="site">aihpro.com</div>
+      <div class="tagline">AI 심리 분석 전문 플랫폼</div>
+    </div>
+  </div>
+
+  <div class="summary">
+    ${reportData.summary}
+  </div>
+
+  ${reportData.sections.map((section: any) => `
+    <div class="section">
+      <h2>${section.title}</h2>
+      ${section.content}
+    </div>
+  `).join('')}
+
+  <div class="footer">
+    <div><strong>aihpro.com</strong> - AI 심리 분석 전문 플랫폼</div>
+    <div class="copyright">본 리포트는 AI 기반 분석 결과이며, 전문가 상담을 대체하지 않습니다.</div>
+  </div>
+</body>
+</html>
+      `;
+    };
+
     // AI에게 전달할 시스템 프롬프트
     const systemPrompt = `당신은 발달심리학 및 임상심리 전문가입니다. 
 사용자의 검사 기록, 관찰 일지, AI 상담 기록을 종합 분석하여 9가지 섹션으로 구성된 전문 리포트를 생성해야 합니다.
@@ -256,10 +374,14 @@ ${userInput.developmentalNotes}
       console.error('리포트 저장 오류:', saveError);
     }
 
+    // HTML 리포트 생성
+    const htmlReport = generateReportHTML(reportData, profile);
+
     return new Response(
       JSON.stringify({
         success: true,
-        report: reportData
+        report: reportData,
+        html: htmlReport
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

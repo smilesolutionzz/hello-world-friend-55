@@ -65,7 +65,7 @@ serve(async (req) => {
     ) || [];
 
     // HTML 템플릿 생성 함수
-    const generateReportHTML = (reportData: any, profile: any) => {
+    const generateReportHTML = (reportData: any, profile: any, stats: any) => {
       return `
 <!DOCTYPE html>
 <html lang="ko">
@@ -87,7 +87,7 @@ serve(async (req) => {
     }
     .cover {
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -96,41 +96,103 @@ serve(async (req) => {
       padding: 60px 40px;
       color: white;
       page-break-after: always;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .cover-content {
+      position: relative;
+      z-index: 1;
     }
     .cover h1 {
-      font-size: 48px;
-      margin: 0 0 20px 0;
-      font-weight: 700;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      font-size: 56px;
+      margin: 0 0 15px 0;
+      font-weight: 800;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      letter-spacing: -1px;
     }
     .cover .subtitle {
-      font-size: 24px;
-      margin-bottom: 40px;
-      opacity: 0.9;
+      font-size: 22px;
+      margin-bottom: 50px;
+      opacity: 0.95;
+      font-weight: 300;
+      letter-spacing: 2px;
     }
     .cover .profile-info {
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(10px);
-      padding: 30px 40px;
-      border-radius: 15px;
-      margin: 40px 0;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(20px);
+      padding: 40px 50px;
+      border-radius: 20px;
+      margin: 50px 0;
       font-size: 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-top: 40px;
+      max-width: 700px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(15px);
+      padding: 25px 20px;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.4);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    .stat-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 8px 0;
+    }
+    .stat-label {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 500;
     }
     .cover .date {
       font-size: 16px;
-      margin-top: 40px;
+      margin-top: 50px;
       opacity: 0.9;
+      font-weight: 300;
+    }
+    .cover .branding {
+      margin-top: 60px;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
     .toc {
       padding: 60px 40px;
       page-break-after: always;
     }
     .toc h2 {
-      color: #667eea;
-      font-size: 32px;
+      color: #1e40af;
+      font-size: 36px;
       margin-bottom: 30px;
-      border-bottom: 3px solid #667eea;
+      border-bottom: 4px solid #3b82f6;
       padding-bottom: 15px;
+      font-weight: 700;
     }
     .toc ol {
       list-style: none;
@@ -145,9 +207,10 @@ serve(async (req) => {
     }
     .toc li:before {
       content: counter(toc-counter) ". ";
-      color: #667eea;
-      font-weight: bold;
+      color: #3b82f6;
+      font-weight: 700;
       margin-right: 10px;
+      font-size: 20px;
     }
     .disclaimer {
       background: #fff3cd;
@@ -206,60 +269,91 @@ serve(async (req) => {
       page-break-inside: avoid;
     }
     .section h2 {
-      color: #667eea;
-      border-left: 4px solid #667eea;
-      padding-left: 12px;
+      color: #1e40af;
+      border-left: 5px solid #3b82f6;
+      padding-left: 15px;
       margin-bottom: 20px;
-      font-size: 24px;
+      font-size: 26px;
+      font-weight: 700;
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
+      padding: 15px;
+      border-radius: 0 8px 8px 0;
     }
     .summary {
-      background: #f8f9fa;
-      padding: 30px;
-      border-radius: 8px;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      padding: 35px;
+      border-radius: 12px;
       margin-bottom: 40px;
+      border: 2px solid #bfdbfe;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    }
+    .summary h2 {
+      color: #1e40af;
+      margin-top: 0;
+      font-weight: 700;
     }
     .footer {
       margin-top: 60px;
-      padding: 30px 40px;
-      border-top: 3px solid #667eea;
+      padding: 40px;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
       text-align: center;
-      background: #f8f9fa;
+      color: white;
     }
     .footer .site-info {
-      font-size: 16px;
-      color: #667eea;
-      font-weight: bold;
-      margin-bottom: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
     }
     .footer .copyright {
       margin-top: 10px;
-      color: #666;
+      color: rgba(255,255,255,0.9);
       font-size: 13px;
+      font-weight: 300;
     }
   </style>
 </head>
 <body>
   <!-- 커버 페이지 -->
   <div class="cover">
-    <h1>종합 발달 리포트</h1>
-    <div class="subtitle">Comprehensive Development Report</div>
-    <div class="profile-info">
-      <div style="font-size: 20px; margin-bottom: 10px;">
-        <strong>${profile?.child_name || '아동'}</strong>
+    <div class="cover-content">
+      <h1>AI 종합 분석 리포트</h1>
+      <div class="subtitle">COMPREHENSIVE ANALYSIS REPORT</div>
+      
+      <div class="profile-info">
+        <div style="font-size: 24px; margin-bottom: 15px; font-weight: 600;">
+          이름: ${profile?.child_name || '사용자'}
+        </div>
+        <div style="font-size: 16px; opacity: 0.95;">
+          보고서 생성일: ${new Date().toLocaleDateString('ko-KR', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          })}
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-number">${stats.assessmentsCount}</div>
+            <div class="stat-label">검사</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🖼️</div>
+            <div class="stat-number">${stats.imagesCount || 0}</div>
+            <div class="stat-label">이미지</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💬</div>
+            <div class="stat-number">${stats.chatCount}</div>
+            <div class="stat-label">상담</div>
+          </div>
+        </div>
       </div>
-      <div>
-        생년월일: ${profile?.birth_date ? new Date(profile.birth_date).toLocaleDateString('ko-KR') : '-'}
+      
+      <div class="branding">
+        aihpro.com
       </div>
-    </div>
-    <div class="date">
-      ${new Date().toLocaleDateString('ko-KR', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      })}
-    </div>
-    <div style="margin-top: 60px; font-size: 18px; font-weight: 500;">
-      aihpro.com
     </div>
   </div>
 
@@ -614,7 +708,12 @@ ${userInput.developmentalNotes}
     }
 
     // HTML 리포트 생성
-    const htmlReport = generateReportHTML(reportData, profile);
+    const stats = {
+      assessmentsCount: assessmentSummary.length,
+      imagesCount: externalTestImages ? 1 : 0, // 외부 이미지가 있으면 1로 카운트
+      chatCount: Math.floor(chatSummary.length / 2) // 메시지를 대화 세션으로 변환 (왕복)
+    };
+    const htmlReport = generateReportHTML(reportData, profile, stats);
 
     return new Response(
       JSON.stringify({

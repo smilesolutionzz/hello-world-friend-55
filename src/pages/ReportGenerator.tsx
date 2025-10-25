@@ -6,6 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useTokens } from '@/hooks/useTokens';
 import html2pdf from 'html2pdf.js';
 import {
   FileText,
@@ -43,6 +44,7 @@ const ReportGenerator = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isAnalyzingImages, setIsAnalyzingImages] = useState(false);
   const [imageAnalysisResults, setImageAnalysisResults] = useState<string>('');
+  const [selectedReportType, setSelectedReportType] = useState<'basic' | 'detailed' | 'expert'>('basic');
   const [userInput, setUserInput] = useState({
     recentConcerns: '',
     developmentalNotes: ''
@@ -55,6 +57,13 @@ const ReportGenerator = () => {
   });
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { tokenBalance, consumeTokens, checkTokenAvailability } = useTokens();
+
+  const REPORT_TYPES = {
+    basic: { name: '기본 리포트', tokens: 10, price: '5,000원', description: '5개 핵심 섹션, AI 자동 분석' },
+    detailed: { name: '상세 리포트', tokens: 30, price: '15,000원', description: '9개 전체 섹션 + 외부 이미지 분석' },
+    expert: { name: '전문가 리뷰', tokens: 100, price: '50,000원', description: '상세 리포트 + 실제 전문가 검토' }
+  };
 
   // 사용자 데이터 불러오기
   useEffect(() => {
@@ -239,6 +248,18 @@ const ReportGenerator = () => {
       return;
     }
 
+    const requiredTokens = REPORT_TYPES[selectedReportType].tokens;
+
+    // 토큰 확인
+    if (!checkTokenAvailability(requiredTokens)) {
+      toast({
+        title: "토큰 부족",
+        description: `${REPORT_TYPES[selectedReportType].name} 생성에는 ${requiredTokens}토큰이 필요합니다. 현재 잔액: ${tokenBalance?.current_tokens || 0}토큰`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsGenerating(true);
     setProgress(0);
 
@@ -248,16 +269,17 @@ const ReportGenerator = () => {
         setProgress(prev => Math.min(prev + 10, 90));
       }, 800);
 
-      console.log('종합 리포트 생성 시작:', userData);
+      console.log('종합 리포트 생성 시작:', { reportType: selectedReportType, tokens: requiredTokens, userData });
 
       const { data, error } = await supabase.functions.invoke('generate-comprehensive-report', {
         body: {
+          reportType: selectedReportType,
           assessments: userData.assessments,
           observations: userData.observations,
           observationSessions: userData.observationSessions,
           chatRooms: userData.chatRooms,
           profile: userData.profile,
-          externalTestImages: imageAnalysisResults,
+          externalTestImages: selectedReportType !== 'basic' ? imageAnalysisResults : null,
           userInput: {
             recentConcerns: userInput.recentConcerns,
             developmentalNotes: userInput.developmentalNotes
@@ -284,8 +306,21 @@ const ReportGenerator = () => {
       }
 
       if (data && data.report) {
+        // 토큰 차감
+        const consumed = await consumeTokens(requiredTokens);
+        if (!consumed) {
+          toast({
+            title: "토큰 차감 실패",
+            description: "토큰 차감 중 오류가 발생했습니다.",
+            variant: "destructive"
+          });
+          return;
+        }
+
         setReportData({
           ...data.report,
+          reportType: selectedReportType,
+          tokensUsed: requiredTokens,
           generatedAt: new Date().toISOString(),
           dataSource: {
             assessments: userData.totalAssessments,
@@ -297,8 +332,8 @@ const ReportGenerator = () => {
         });
 
         toast({
-          title: "🎉 종합 리포트 생성 완료!",
-          description: "9가지 전문 분석이 포함된 리포트가 생성되었습니다.",
+          title: `🎉 ${REPORT_TYPES[selectedReportType].name} 생성 완료!`,
+          description: `${requiredTokens}토큰이 차감되었습니다. 리포트가 생성되었습니다.`,
         });
       }
     } catch (error: any) {
@@ -723,10 +758,106 @@ const ReportGenerator = () => {
               </CardContent>
             </Card>
 
+            {/* 외부 검사 이미지 업로드 */}
+            <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30">
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Upload className="w-6 h-6 text-purple-400 mt-0.5" />
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-purple-100 mb-2">외부 기관 검사 결과 추가 (선택)</h4>
+                      <p className="text-sm text-purple-300/80 mb-4">
+                        다른 기관에서 받은 검사 결과를 이미지로 업로드하면 AI가 자동으로 분석하여 리포트에 반영합니다
+                      </p>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={isAnalyzingImages}
+                        className="block w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer"
+                      />
+                      {isAnalyzingImages && (
+                        <div className="mt-3 flex items-center gap-2 text-purple-300">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span className="text-sm">AI가 이미지를 분석하고 있습니다...</span>
+                        </div>
+                      )}
+                      {uploadedImages.length > 0 && !isAnalyzingImages && (
+                        <div className="mt-3 flex items-center gap-2 text-emerald-300">
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span className="text-sm">{uploadedImages.length}개의 이미지 분석 완료</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 리포트 타입 선택 */}
+            <Card className="bg-gradient-to-br from-slate-900/90 to-indigo-900/90 border-2 border-indigo-500/30 shadow-2xl shadow-indigo-500/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-2xl text-indigo-100">
+                  <Award className="w-7 h-7 text-yellow-400" />
+                  리포트 타입 선택
+                </CardTitle>
+                <p className="text-sm text-indigo-300 mt-2">
+                  필요에 맞는 리포트 타입을 선택하세요
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {(Object.keys(REPORT_TYPES) as Array<keyof typeof REPORT_TYPES>).map((type) => {
+                    const report = REPORT_TYPES[type];
+                    const isSelected = selectedReportType === type;
+                    const hasEnoughTokens = (tokenBalance?.current_tokens || 0) >= report.tokens;
+                    
+                    return (
+                      <button
+                        key={type}
+                        onClick={() => setSelectedReportType(type)}
+                        disabled={!hasEnoughTokens}
+                        className={`p-6 rounded-xl border-2 transition-all text-left ${
+                          isSelected
+                            ? 'border-purple-400 bg-purple-500/20 shadow-lg shadow-purple-500/30'
+                            : 'border-slate-700/50 bg-slate-800/50 hover:border-purple-400/50'
+                        } ${!hasEnoughTokens ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="text-lg font-bold text-white">{report.name}</h3>
+                          {isSelected && <CheckCircle2 className="w-6 h-6 text-purple-400" />}
+                        </div>
+                        <p className="text-sm text-slate-300 mb-4">{report.description}</p>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-2xl font-black text-purple-300">{report.tokens} 토큰</div>
+                            <div className="text-xs text-slate-400">{report.price}</div>
+                          </div>
+                          {!hasEnoughTokens && (
+                            <Badge variant="destructive" className="text-xs">토큰 부족</Badge>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {/* 현재 토큰 잔액 표시 */}
+                <div className="mt-6 p-4 bg-blue-500/10 border border-blue-400/30 rounded-lg flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-yellow-400" />
+                    <span className="text-sm font-semibold text-blue-200">현재 토큰 잔액</span>
+                  </div>
+                  <span className="text-2xl font-black text-white">{tokenBalance?.current_tokens || 0} 토큰</span>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* 생성 버튼 */}
             <Button
               onClick={generateComprehensiveReport}
-              disabled={isGenerating || (userData?.totalDataCount || 0) < 30}
+              disabled={isGenerating || (userData?.totalDataCount || 0) < 30 || !checkTokenAvailability(REPORT_TYPES[selectedReportType].tokens)}
               size="lg"
               className="w-full h-20 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-700 hover:via-pink-700 hover:to-orange-700 text-white shadow-2xl shadow-purple-500/50 border-2 border-purple-400/30 group disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -746,7 +877,7 @@ const ReportGenerator = () => {
               ) : (
                 <div className="flex items-center gap-3">
                   <Zap className="w-7 h-7 group-hover:animate-pulse" />
-                  <span>프리미엄 종합 리포트 생성하기</span>
+                  <span>{REPORT_TYPES[selectedReportType].name} 생성하기 ({REPORT_TYPES[selectedReportType].tokens} 토큰)</span>
                   <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </div>
               )}

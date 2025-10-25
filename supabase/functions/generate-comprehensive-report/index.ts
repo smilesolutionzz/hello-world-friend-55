@@ -31,10 +31,11 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    const { assessments, observations, chatRooms, profile, externalTestImages, userInput } = await req.json();
+    const { reportType = 'basic', assessments, observations, chatRooms, profile, externalTestImages, userInput } = await req.json();
 
     console.log('종합 리포트 생성 요청:', {
       userId: user.id,
+      reportType,
       assessmentsCount: assessments?.length || 0,
       observationsCount: observations?.length || 0,
       chatRoomsCount: chatRooms?.length || 0
@@ -409,9 +410,117 @@ serve(async (req) => {
       `;
     };
 
-    // AI에게 전달할 시스템 프롬프트
-    const systemPrompt = `당신은 발달심리학 및 임상심리 전문가입니다. 
-제공된 모든 검사 기록, 관찰 일지, 외부 기관 검사 결과, AI 상담 기록을 매우 꼼꼼하게 분석하여 9가지 섹션으로 구성된 상세한 전문 리포트를 생성해야 합니다.
+    // 리포트 타입별 설정
+    const reportTypeConfig = {
+      basic: {
+        model: 'google/gemini-2.5-flash-lite',
+        sectionCount: 5,
+        minLength: 200,
+        sections: ['발달 종합 평가', '심리 상태 분석', '강점/약점 분석', '맞춤 활동 제안', '종합 요약 및 제언']
+      },
+      detailed: {
+        model: 'google/gemini-2.5-flash',
+        sectionCount: 9,
+        minLength: 400,
+        sections: ['발달 종합 평가', '심리 상태 분석', '강점/약점 분석', '맞춤 활동 제안', '발달 로드맵', '또래 비교 분석', '전문가 소견서', '가족 지원 가이드', '종합 요약 및 제언']
+      },
+      expert: {
+        model: 'google/gemini-2.5-flash',
+        sectionCount: 9,
+        minLength: 400,
+        sections: ['발달 종합 평가', '심리 상태 분석', '강점/약점 분석', '맞춤 활동 제안', '발달 로드맵', '또래 비교 분석', '전문가 소견서', '가족 지원 가이드', '종합 요약 및 제언']
+      }
+    };
+
+    const config = reportTypeConfig[reportType as keyof typeof reportTypeConfig] || reportTypeConfig.basic;
+
+    // AI에게 전달할 시스템 프롬프트 (타입별로 조정)
+    const systemPrompt = reportType === 'basic' 
+      ? `당신은 발달심리학 및 임상심리 전문가입니다. 
+제공된 검사 기록, 관찰 일지, AI 상담 기록을 분석하여 ${config.sectionCount}가지 핵심 섹션으로 구성된 기본 리포트를 생성해야 합니다.
+
+각 섹션별 작성 지침 (최소 ${config.minLength}자):
+
+1. **발달 종합 평가** - 검사 결과의 주요 점수와 핵심 발달 특성 요약
+2. **심리 상태 분석** - 정서적 특성과 심리 상태의 전반적 평가
+3. **강점/약점 분석** - 주요 강점 2-3가지와 개선 필요 영역 2-3가지
+4. **맞춤 활동 제안** - 즉시 실천 가능한 구체적 활동 3-5가지
+5. **종합 요약 및 제언** - 핵심 내용 요약과 중요한 실천 사항 3가지
+
+**작성 원칙:**
+- 간결하고 명확한 표현
+- 실용적이고 즉시 활용 가능한 내용 중심
+- 각 섹션은 HTML로 구조화 (<div>, <p>, <ul>, <li>, <strong> 활용)`
+      : `당신은 발달심리학 및 임상심리 전문가입니다. 
+제공된 모든 검사 기록, 관찰 일지, 외부 기관 검사 결과, AI 상담 기록을 매우 꼼꼼하게 분석하여 ${config.sectionCount}가지 섹션으로 구성된 상세한 전문 리포트를 생성해야 합니다.
+
+**중요: 각 섹션은 반드시 제공된 실제 데이터(검사 결과, 관찰 기록, 외부 검사 자료)를 구체적으로 인용하고 분석해야 합니다.**
+
+각 섹션별 상세 작성 지침:
+
+1. **발달 종합 평가** (최소 ${config.minLength}자 이상)
+   - 제공된 모든 검사 결과의 구체적 점수와 해석 포함
+   - 인지, 언어, 운동, 사회성 발달을 각각 상세 분석
+   - 외부 기관 검사 결과가 있다면 반드시 구체적으로 언급
+   - 관찰 일지에서 발견된 발달 특성 구체적 인용
+
+2. **심리 상태 분석** (최소 ${Math.floor(config.minLength * 0.9)}자 이상)
+   - 검사에서 나타난 정서적 특성을 점수와 함께 분석
+   - 관찰된 행동 패턴과 심리 상태의 연관성 설명
+   - 스트레스 요인, 불안 수준 등 구체적 데이터 기반 분석
+   - 보호자가 기록한 고민사항과 연결하여 해석
+
+3. **강점/약점 분석** (최소 ${config.minLength}자 이상)
+   - 검사와 관찰에서 드러난 구체적 강점 3-5가지 (예시 포함)
+   - 개선이 필요한 영역 3-5가지 (구체적 상황 예시 포함)
+   - 각 항목마다 실제 데이터 근거 명시
+   - 강점을 활용한 약점 개선 방안 제시
+
+4. **맞춤 활동 제안** (최소 ${Math.floor(config.minLength * 1.1)}자 이상)
+   - 현재 발달 수준과 필요에 맞는 구체적 활동 5-7가지
+   - 각 활동의 목적, 방법, 예상 효과 상세 설명
+   - 일상에서 즉시 실천 가능한 활동 중심
+   - 난이도 조절 방법 포함
+
+5. **발달 로드맵** (최소 ${config.minLength}자 이상)
+   - 단기(1-3개월), 중기(3-6개월), 장기(6-12개월) 목표 구체화
+   - 각 목표의 달성 기준과 평가 방법 명시
+   - 단계별 구체적 실천 계획
+   - 예상되는 어려움과 대응 방안
+
+6. **또래 비교 분석** (최소 ${Math.floor(config.minLength * 0.9)}자 이상)
+   - 동일 연령대 발달 기준과 비교한 구체적 수치
+   - 검사 결과의 백분위 또는 표준점수 해석
+   - 평균 대비 빠르거나 느린 영역 명확히 제시
+   - 개인차의 정상 범위 설명으로 불안 완화
+
+7. **전문가 소견서** (최소 ${config.minLength}자 이상)
+   - 검사와 관찰 결과에 대한 전문가 종합 의견
+   - 전문적 개입(치료, 상담 등) 필요성과 시급성 평가
+   - 구체적인 전문가 유형과 개입 방법 권장
+   - 의료기관 방문이 필요한 경우 명확히 명시
+
+8. **가족 지원 가이드** (최소 ${Math.floor(config.minLength * 1.1)}자 이상)
+   - 가정에서 실천할 구체적 양육 팁 7-10가지
+   - 각 팁의 실행 방법을 단계별로 상세 설명
+   - 부모의 정서적 지원 방법
+   - 형제자매가 있는 경우 가족 역학 고려
+   - 피해야 할 행동과 권장 행동 비교 제시
+
+9. **종합 요약 및 제언** (최소 ${config.minLength}자 이상)
+   - 전체 분석의 핵심 내용 요약
+   - 가장 중요한 3가지 실천 사항 강조
+   - 긍정적 예후와 함께 격려 메시지
+   - 추가 검사나 전문가 상담이 필요한 경우 안내
+   - 장기적 발전 가능성과 잠재력 평가
+
+**작성 원칙:**
+- 모든 내용은 제공된 실제 데이터에 근거해야 함
+- 일반론이 아닌 이 아동/성인만을 위한 맞춤 분석
+- 구체적 예시, 수치, 인용을 풍부하게 사용
+- 전문적이면서도 이해하기 쉬운 언어 사용
+- 부정적 표현보다는 발전 가능성에 초점
+- 각 섹션은 HTML 형식으로 <div>, <p>, <ul>, <li>, <strong> 태그를 활용하여 가독성 높게 구조화`;
 
 **중요: 각 섹션은 반드시 제공된 실제 데이터(검사 결과, 관찰 기록, 외부 검사 자료)를 구체적으로 인용하고 분석해야 합니다.**
 
@@ -510,7 +619,7 @@ ${userInput?.developmentalNotes ? `
 ${userInput.developmentalNotes}
 ` : ''}
 
-위 데이터를 종합 분석하여 9가지 섹션의 전문 리포트를 JSON 형식으로 작성해주세요.
+위 데이터를 종합 분석하여 ${config.sectionCount}가지 섹션의 전문 리포트를 JSON 형식으로 작성해주세요.
 응답 형식:
 {
   "sections": [
@@ -518,7 +627,7 @@ ${userInput.developmentalNotes}
       "title": "발달 종합 평가",
       "content": "<div>상세 HTML 내용...</div>"
     },
-    // ... 9개 섹션
+    // ... ${config.sectionCount}개 섹션
   ],
   "summary": "<div>전체 종합 요약 HTML</div>"
 }`;
@@ -531,7 +640,7 @@ ${userInput.developmentalNotes}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: config.model,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -541,7 +650,7 @@ ${userInput.developmentalNotes}
             type: 'function',
             function: {
               name: 'generate_comprehensive_report',
-              description: '9가지 섹션으로 구성된 종합 리포트를 생성합니다.',
+              description: `${config.sectionCount}가지 섹션으로 구성된 종합 리포트를 생성합니다.`,
               parameters: {
                 type: 'object',
                 properties: {
@@ -555,8 +664,8 @@ ${userInput.developmentalNotes}
                       },
                       required: ['title', 'content']
                     },
-                    minItems: 9,
-                    maxItems: 9
+                    minItems: config.sectionCount,
+                    maxItems: config.sectionCount
                   },
                   summary: {
                     type: 'string',
@@ -644,46 +753,29 @@ ${userInput.developmentalNotes}
       }
     } catch (parseError) {
       console.error('AI 응답 파싱 오류:', parseError);
-      // 폴백: 기본 구조 생성
+      // 폴백: 기본 구조 생성 (타입별로 다르게)
+      const fallbackSections = reportType === 'basic' 
+        ? [
+            { title: '발달 종합 평가', content: '<div class="space-y-4"><p>검사 데이터를 기반으로 종합 분석 중입니다...</p></div>' },
+            { title: '심리 상태 분석', content: '<div class="space-y-4"><p>심리 상태를 분석하고 있습니다...</p></div>' },
+            { title: '강점/약점 분석', content: '<div class="space-y-4"><p>강점과 약점을 파악하고 있습니다...</p></div>' },
+            { title: '맞춤 활동 제안', content: '<div class="space-y-4"><p>맞춤형 활동을 제안하고 있습니다...</p></div>' },
+            { title: '종합 요약 및 제언', content: '<div class="space-y-4"><p>종합 요약을 작성하고 있습니다...</p></div>' }
+          ]
+        : [
+            { title: '발달 종합 평가', content: '<div class="space-y-4"><p>검사 데이터를 기반으로 종합 분석 중입니다...</p></div>' },
+            { title: '심리 상태 분석', content: '<div class="space-y-4"><p>심리 상태를 분석하고 있습니다...</p></div>' },
+            { title: '강점/약점 분석', content: '<div class="space-y-4"><p>강점과 약점을 파악하고 있습니다...</p></div>' },
+            { title: '맞춤 활동 제안', content: '<div class="space-y-4"><p>맞춤형 활동을 제안하고 있습니다...</p></div>' },
+            { title: '발달 로드맵', content: '<div class="space-y-4"><p>발달 로드맵을 작성하고 있습니다...</p></div>' },
+            { title: '또래 비교 분석', content: '<div class="space-y-4"><p>또래 비교 분석을 진행하고 있습니다...</p></div>' },
+            { title: '전문가 소견서', content: '<div class="space-y-4"><p>전문가 소견을 작성하고 있습니다...</p></div>' },
+            { title: '가족 지원 가이드', content: '<div class="space-y-4"><p>가족 지원 가이드를 준비하고 있습니다...</p></div>' },
+            { title: '종합 요약 및 ��언', content: '<div class="space-y-4"><p>종합 요약을 작성하고 있습니다...</p></div>' }
+          ];
+      
       reportData = {
-        sections: [
-          {
-            title: '발달 종합 평가',
-            content: '<div class="space-y-4"><p>검사 데이터를 기반으로 종합 분석 중입니다...</p></div>'
-          },
-          {
-            title: '심리 상태 분석',
-            content: '<div class="space-y-4"><p>심리 상태를 분석하고 있습니다...</p></div>'
-          },
-          {
-            title: '강점/약점 분석',
-            content: '<div class="space-y-4"><p>강점과 약점을 파악하고 있습니다...</p></div>'
-          },
-          {
-            title: '맞춤 활동 제안',
-            content: '<div class="space-y-4"><p>맞춤형 활동을 제안하고 있습니다...</p></div>'
-          },
-          {
-            title: '발달 로드맵',
-            content: '<div class="space-y-4"><p>발달 로드맵을 작성하고 있습니다...</p></div>'
-          },
-          {
-            title: '또래 비교 분석',
-            content: '<div class="space-y-4"><p>또래 비교 분석을 진행하고 있습니다...</p></div>'
-          },
-          {
-            title: '전문가 소견서',
-            content: '<div class="space-y-4"><p>전문가 소견을 작성하고 있습니다...</p></div>'
-          },
-          {
-            title: '가족 지원 가이드',
-            content: '<div class="space-y-4"><p>가족 지원 가이드를 준비하고 있습니다...</p></div>'
-          },
-          {
-            title: '장기 발달 예측',
-            content: '<div class="space-y-4"><p>장기 발달을 예측하고 있습니다...</p></div>'
-          }
-        ],
+        sections: fallbackSections,
         summary: '<div><p>종합 리포트가 생성되었습니다. 각 섹션을 확인해주세요.</p></div>'
       };
     }

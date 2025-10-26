@@ -347,6 +347,17 @@ export const UnifiedNavigation = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* 칼럼 */}
+              <Button
+                variant={isActive('/column') ? "default" : "ghost"}
+                size="sm"
+                onClick={() => handleNavigation('/column')}
+                className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
+              >
+                <Heart className="w-4 h-4 mr-2" />
+                칼럼
+              </Button>
+
               {/* Login Button */}
               <div className="ml-4 pl-4 border-l border-border">
                 <Button

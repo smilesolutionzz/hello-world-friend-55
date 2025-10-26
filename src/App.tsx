@@ -125,6 +125,7 @@ import PMFOnboarding from "./pages/PMFOnboarding";
 import KPIDashboard from "./pages/KPIDashboard";
 import PlatformManual from "./pages/PlatformManual";
 import ReportGenerator from "./pages/ReportGenerator";
+import Column from "./pages/Column";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -263,6 +264,7 @@ const App = () => {
           <Route path="/bank-transfer" element={<BankTransfer />} />
           
           <Route path="/platform-manual" element={<PlatformManual />} />
+          <Route path="/column" element={<Column />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />

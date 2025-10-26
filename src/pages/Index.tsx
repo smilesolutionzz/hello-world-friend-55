@@ -16,6 +16,7 @@ import TestimonialSection from "@/components/TestimonialSection";
 import ClientLogos from "@/components/ClientLogos";
 import { NewFeaturesSection } from "@/components/landing/NewFeaturesSection";
 import { AIReportShowcaseSection } from "@/components/landing/AIReportShowcaseSection";
+import FounderLetterSection from "@/components/landing/FounderLetterSection";
 import BackToTop from "@/components/common/BackToTop";
 import SEOHead from "@/components/common/SEOHead";
 import { SkipLink } from "@/components/ui/skip-link";
@@ -194,6 +195,9 @@ const Index = () => {
           {/* Social Proof */}
           <TestimonialSection />
           <ClientLogos />
+          
+          {/* 📝 Founder's Letter - 창립자의 손편지 */}
+          <FounderLetterSection />
           
           {/* 7️⃣ Call to Action */}
           <CTABannerSection />

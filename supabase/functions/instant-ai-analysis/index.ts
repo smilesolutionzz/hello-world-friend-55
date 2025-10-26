@@ -299,6 +299,7 @@ Ultra high resolution, clean design that provides comfort and reassurance.`;
       success: true,
       analysis: analysisResult,
       reportImage: reportImageUrl,
+      tableOfContents: generateTableOfContents(analysisResult),
       originalResponse: aiResponse
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -315,6 +316,7 @@ Ultra high resolution, clean design that provides comfort and reassurance.`;
     return new Response(JSON.stringify({ 
       success: true,  // fallback이지만 성공으로 처리
       analysis: fallbackAnalysis,
+      tableOfContents: null,
       fallback: true,
       originalError: errorMessage
     }), {
@@ -461,4 +463,66 @@ function getFallbackAnalysis(text: string) {
       { name: '정서 상태 검사', description: '정서적 안정성을 평가합니다', reason: '감정 조절 및 심리 상태 확인', isPremium: false }
     ]
   };
+}
+
+// Generate dynamic table of contents based on analysis
+function generateTableOfContents(analysisResult: any): Array<{index: number, title: string}> {
+  const contents = [];
+  const reports = analysisResult.comprehensiveReports;
+  
+  if (!reports) {
+    // 기본 목차
+    return [
+      { index: 1, title: '발달 종합 평가' },
+      { index: 2, title: '심리 상태 분석' },
+      { index: 3, title: '강점/약점 분석' },
+      { index: 4, title: '맞춤형 활동 제안' },
+      { index: 5, title: '발달 로드맵' },
+      { index: 6, title: '또래 비교 분석' },
+      { index: 7, title: '전문가 소견서' },
+      { index: 8, title: '가족 지원 가이드' },
+      { index: 9, title: '장기 발달 예측' }
+    ];
+  }
+
+  // 분석 타입에 따른 동적 목차 생성
+  const type = analysisResult.type || '';
+  
+  if (reports.developmentAssessment) {
+    contents.push({ index: contents.length + 1, title: `${type} 발달 종합 평가` });
+  }
+  
+  if (reports.psychologicalAnalysis) {
+    contents.push({ index: contents.length + 1, title: `심리·정서 상태 분석` });
+  }
+  
+  if (reports.strengthsWeaknesses) {
+    contents.push({ index: contents.length + 1, title: '개인 강점 및 개선 영역' });
+  }
+  
+  if (reports.customActivities) {
+    contents.push({ index: contents.length + 1, title: '맞춤 활동 및 실천 방안' });
+  }
+  
+  if (reports.developmentRoadmap) {
+    contents.push({ index: contents.length + 1, title: '단계별 성장 로드맵' });
+  }
+  
+  if (reports.peerComparison) {
+    contents.push({ index: contents.length + 1, title: `${reports.peerComparison.ageGroup} 비교 분석` });
+  }
+  
+  if (reports.expertOpinion) {
+    contents.push({ index: contents.length + 1, title: '전문가 소견 및 권고사항' });
+  }
+  
+  if (reports.familySupport) {
+    contents.push({ index: contents.length + 1, title: '가족 및 양육자 지원 가이드' });
+  }
+  
+  if (reports.longTermPrediction) {
+    contents.push({ index: contents.length + 1, title: 'AI 기반 장기 발달 예측' });
+  }
+  
+  return contents;
 }

@@ -27,6 +27,7 @@ const InstantAIAnalysis = () => {
   const [showResult, setShowResult] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [reportImage, setReportImage] = useState<string | null>(null);
+  const [tableOfContents, setTableOfContents] = useState<Array<{index: number, title: string}> | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -38,19 +39,23 @@ const InstantAIAnalysis = () => {
 
       if (error) {
         console.warn('Edge function error, using fallback:', error);
-        return { analysis: mockAnalysis(text), reportImage: null };
+        return { analysis: mockAnalysis(text), reportImage: null, tableOfContents: null };
       }
 
       if (data && data.analysis) {
-        return { analysis: data.analysis, reportImage: data.reportImage || null };
+        return { 
+          analysis: data.analysis, 
+          reportImage: data.reportImage || null,
+          tableOfContents: data.tableOfContents || null
+        };
       } else {
         console.warn('No analysis data received, using fallback');
-        return { analysis: mockAnalysis(text), reportImage: null };
+        return { analysis: mockAnalysis(text), reportImage: null, tableOfContents: null };
       }
     } catch (error) {
       console.warn('AI Analysis error, using fallback:', error);
       // Always return fallback analysis instead of throwing error
-      return { analysis: mockAnalysis(text), reportImage: null };
+      return { analysis: mockAnalysis(text), reportImage: null, tableOfContents: null };
     }
   };
 
@@ -174,9 +179,10 @@ const InstantAIAnalysis = () => {
     
     try {
       // 실제 AI 분석 호출 (fallback 포함)
-      const { analysis, reportImage } = await callAIAnalysis(inputText);
+      const { analysis, reportImage, tableOfContents } = await callAIAnalysis(inputText);
       setAnalysisResult(analysis);
       setReportImage(reportImage);
+      setTableOfContents(tableOfContents);
       setIsAnalyzing(false);
       setShowResult(true);
 
@@ -225,6 +231,7 @@ const InstantAIAnalysis = () => {
       const fallbackResult = mockAnalysis(inputText);
       setAnalysisResult(fallbackResult);
       setReportImage(null);
+      setTableOfContents(null);
       setShowResult(true);
       
       toast({
@@ -576,42 +583,22 @@ const InstantAIAnalysis = () => {
                             목차
                           </h4>
                           <div className="space-y-2.5 text-sm">
-                            <div className="flex items-start gap-2">
-                              <span className="font-semibold text-amber-700 dark:text-amber-300">1.</span>
-                              <span className="text-foreground">발달 종합 평가</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <span className="font-semibold text-amber-700 dark:text-amber-300">2.</span>
-                              <span className="text-foreground">심리 상태 분석</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <span className="font-semibold text-amber-700 dark:text-amber-300">3.</span>
-                              <span className="text-foreground">강점/약점 분석</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <span className="font-semibold text-amber-700 dark:text-amber-300">4.</span>
-                              <span className="text-foreground">맞춤형 활동 제안</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <span className="font-semibold text-amber-700 dark:text-amber-300">5.</span>
-                              <span className="text-foreground">발달 로드맵</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <span className="font-semibold text-amber-700 dark:text-amber-300">6.</span>
-                              <span className="text-foreground">또래 비교 분석</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <span className="font-semibold text-amber-700 dark:text-amber-300">7.</span>
-                              <span className="text-foreground">전문가 소견서</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <span className="font-semibold text-amber-700 dark:text-amber-300">8.</span>
-                              <span className="text-foreground">가족 지원 가이드</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <span className="font-semibold text-amber-700 dark:text-amber-300">9.</span>
-                              <span className="text-foreground">장기 발달 예측</span>
-                            </div>
+                            {(tableOfContents || [
+                              { index: 1, title: '발달 종합 평가' },
+                              { index: 2, title: '심리 상태 분석' },
+                              { index: 3, title: '강점/약점 분석' },
+                              { index: 4, title: '맞춤형 활동 제안' },
+                              { index: 5, title: '발달 로드맵' },
+                              { index: 6, title: '또래 비교 분석' },
+                              { index: 7, title: '전문가 소견서' },
+                              { index: 8, title: '가족 지원 가이드' },
+                              { index: 9, title: '장기 발달 예측' }
+                            ]).map((item) => (
+                              <div key={item.index} className="flex items-start gap-2">
+                                <span className="font-semibold text-amber-700 dark:text-amber-300">{item.index}.</span>
+                                <span className="text-foreground">{item.title}</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>

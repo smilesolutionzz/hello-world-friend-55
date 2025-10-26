@@ -182,7 +182,8 @@ serve(async (req) => {
 
         // 이미지 생성
         console.log(`${contentType.type} 이미지 생성 중...`);
-        const imagePrompt = contentData.imagePrompt || `Modern Instagram post design for "${contentData.title}". Professional, clean, visually appealing, high quality.`;
+        const baseImagePrompt = contentData.imagePrompt || `Modern Instagram post design for "${contentData.title}". Professional, clean, visually appealing, high quality.`;
+        const imagePrompt = `${baseImagePrompt}. Featured person should be Korean or East Asian appearance. Natural Korean style.`;
         
         const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
           method: 'POST',

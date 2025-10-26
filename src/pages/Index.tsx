@@ -5,7 +5,7 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import HeroSection from "@/components/HeroSection";
 import ProblemVisionSection from "@/components/landing/ProblemVisionSection";
 import CoreServiceSection from "@/components/landing/CoreServiceSection";
-import HowItWorksSection from "@/components/landing/HowItWorksSection";
+import DataDrivenReportSection from "@/components/landing/DataDrivenReportSection";
 import ResultReportSection from "@/components/landing/ResultReportSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
 import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
@@ -15,7 +15,6 @@ import FixedCTAButton from "@/components/landing/FixedCTAButton";
 import TestimonialSection from "@/components/TestimonialSection";
 import ClientLogos from "@/components/ClientLogos";
 import { NewFeaturesSection } from "@/components/landing/NewFeaturesSection";
-import { AIReportShowcaseSection } from "@/components/landing/AIReportShowcaseSection";
 import FounderLetterSection from "@/components/landing/FounderLetterSection";
 import BackToTop from "@/components/common/BackToTop";
 import SEOHead from "@/components/common/SEOHead";
@@ -177,14 +176,11 @@ const Index = () => {
           {/* 4️⃣ Core Service */}
           <CoreServiceSection />
           
-          {/* 5️⃣ How It Works */}
-          <HowItWorksSection />
+          {/* 5️⃣ 데이터 기반 초개인화 리포트 (통합 섹션) */}
+          <DataDrivenReportSection />
           
           {/* 🎯 New Features Section - 매주 업데이트 */}
           <NewFeaturesSection />
-          
-          {/* 📊 AI Report Showcase - 9가지 리포트 */}
-          <AIReportShowcaseSection />
           
           {/* 6️⃣ Result / Report */}
           <ResultReportSection />

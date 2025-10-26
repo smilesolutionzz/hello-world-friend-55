@@ -1,32 +1,39 @@
-import { Brain, FileText, Users, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { Brain, FileText, Users, ArrowRight, ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 const CoreServiceSection = () => {
   const navigate = useNavigate();
+  const [expandedService, setExpandedService] = useState<number | null>(null);
+  
   
   const services = [
     {
       icon: Brain,
       title: "AI 자가진단",
       description: "3분 만에 정확한 상태 분석",
-      path: "/pmf-onboarding",
+      details: "딥러닝 AI가 여러분의 응답을 실시간 분석하여 정확한 심리 상태를 파악합니다. 검증된 알고리즘으로 ADHD, 우울증, 스트레스 등 다양한 영역을 종합적으로 평가합니다.",
+      path: "/assessment",
       gradient: "from-blue-50 to-indigo-50",
       iconColor: "text-blue-600"
     },
     {
       icon: FileText,
-      title: "AI 리포트",
-      description: "개인화된 분석 결과 제공",
-      path: "/dashboard",
+      title: "초개인화 AI 리포트",
+      description: "데이터가 쌓일수록 정확해지는 분석",
+      details: "일상 속 기록이 쌓이면 AI가 자동으로 종합 리포트를 생성합니다. 단순한 숫자가 아닌, 여러분만의 성장 스토리를 데이터로 보여드립니다. 전문가 검토를 거쳐 정확한 회복과 예방을 돕습니다.",
+      path: "/report-generator",
       gradient: "from-purple-50 to-pink-50",
-      iconColor: "text-purple-600"
+      iconColor: "text-purple-600",
+      highlight: true
     },
     {
       icon: Users,
       title: "전문가 연계",
-      description: "맞춤형 상담사 매칭",
+      description: "AI 분석 + 전문가 검토",
+      details: "AI가 발견한 패턴을 전문가가 검토하고, 여러분의 마음을 이해합니다. 1:1 맞춤형 상담으로 진정한 변화를 시작하세요.",
       path: "/expert-hiring",
       gradient: "from-emerald-50 to-teal-50",
       iconColor: "text-emerald-600"
@@ -45,33 +52,62 @@ const CoreServiceSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="space-y-6">
           {services.map((service, index) => {
             const Icon = service.icon;
+            const isExpanded = expandedService === index;
             return (
               <Card 
                 key={index}
-                className={`group relative p-8 bg-gradient-to-br ${service.gradient} border-0 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 cursor-pointer overflow-hidden`}
-                onClick={() => navigate(service.path)}
+                className={`group relative p-8 bg-gradient-to-br ${service.gradient} border-2 ${service.highlight ? 'border-primary/30' : 'border-transparent'} rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden`}
               >
+                {service.highlight && (
+                  <div className="absolute top-4 right-4">
+                    <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded-full">
+                      데이터 기반
+                    </span>
+                  </div>
+                )}
+                
                 {/* Hover Glow Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
-                <div className="relative z-10">
-                  <div className="w-16 h-16 bg-background/80 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <Icon className={`w-8 h-8 ${service.iconColor}`} />
+                <div 
+                  className="relative z-10 cursor-pointer"
+                  onClick={() => setExpandedService(isExpanded ? null : index)}
+                >
+                  <div className="flex items-start gap-6">
+                    <div className="flex-shrink-0 w-16 h-16 bg-background/80 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <Icon className={`w-8 h-8 ${service.iconColor}`} />
+                    </div>
+                    
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-2xl font-bold text-foreground">{service.title}</h3>
+                        <ChevronDown 
+                          className={`w-6 h-6 text-foreground/50 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                        />
+                      </div>
+                      <p className="text-card-foreground mb-4 leading-relaxed">{service.description}</p>
+                      
+                      {/* 확장 내용 */}
+                      {isExpanded && (
+                        <div className="mt-4 pt-4 border-t border-foreground/10 animate-in slide-in-from-top-2 duration-300">
+                          <p className="text-foreground/80 leading-relaxed mb-6">{service.details}</p>
+                          <Button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(service.path);
+                            }}
+                            className="bg-primary hover:bg-primary/90"
+                          >
+                            시작하기
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  
-                  <h3 className="text-2xl font-bold text-foreground mb-3">{service.title}</h3>
-                  <p className="text-card-foreground mb-6 leading-relaxed">{service.description}</p>
-                  
-                  <Button 
-                    variant="ghost" 
-                    className="group-hover:translate-x-2 transition-transform duration-300 p-0 h-auto text-primary font-semibold"
-                  >
-                    자세히 보기
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
                 </div>
               </Card>
             );

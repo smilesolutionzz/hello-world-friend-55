@@ -5,6 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { downloadResultAsPDF } from "@/utils/pdfDownload";
+import ReactMarkdown from "react-markdown";
 import { 
   Send, 
   Bot, 
@@ -16,7 +19,9 @@ import {
   BarChart3,
   Sparkles,
   Upload,
-  FileText
+  FileText,
+  Download,
+  Loader2
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -40,10 +45,11 @@ export default function MarketingAIAssistant() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [report, setReport] = useState<string>("");
   const [institutionData, setInstitutionData] = useState<InstitutionData>({});
   const [showDataForm, setShowDataForm] = useState(true);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const { toast } = useToast();
-  const scrollRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -54,7 +60,7 @@ export default function MarketingAIAssistant() {
     scrollToBottom();
   }, [messages]);
 
-  const handleDataSubmit = () => {
+  const handleDataSubmit = async () => {
     if (!institutionData.name || !institutionData.type) {
       toast({
         title: "정보 입력 필요",
@@ -65,12 +71,53 @@ export default function MarketingAIAssistant() {
     }
 
     setShowDataForm(false);
-    const welcomeMessage: Message = {
-      role: "assistant",
-      content: `안녕하세요! ${institutionData.name}의 마케팅 전략을 분석하는 AI 어시스턴트입니다.\n\n입력하신 기관 정보를 바탕으로 맞춤형 마케팅 전략을 제안해드리겠습니다.\n\n다음과 같은 질문을 해주세요:\n- 우리 기관에 적합한 마케팅 채널은?\n- 타겟 고객층 분석과 세분화 전략\n- 경쟁사 대비 차별화 포인트\n- 마케팅 예산 배분 전략\n- 효과적인 콘텐츠 마케팅 방안\n\n무엇을 도와드릴까요?`,
-      timestamp: new Date(),
-    };
-    setMessages([welcomeMessage]);
+    setIsGeneratingReport(true);
+
+    try {
+      const { data: reportData, error } = await supabase.functions.invoke('marketing-ai-assistant', {
+        body: { 
+          type: 'generate_report',
+          institutionData 
+        }
+      });
+
+      if (error) throw error;
+
+      setReport(reportData.report);
+      toast({
+        title: "리포트 생성 완료",
+        description: "종합 마케팅 전략 리포트가 생성되었습니다.",
+      });
+    } catch (error) {
+      console.error('리포트 생성 오류:', error);
+      toast({
+        title: "오류 발생",
+        description: "리포트 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    downloadResultAsPDF(
+      'marketing-report',
+      `마케팅전략리포트_${institutionData?.name}_${new Date().toISOString().split('T')[0]}`,
+      () => {
+        toast({
+          title: "다운로드 완료",
+          description: "PDF 파일이 다운로드되었습니다.",
+        });
+      },
+      (error) => {
+        toast({
+          title: "다운로드 실패",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    );
   };
 
   const streamChat = async (userMessage: Message) => {
@@ -84,6 +131,7 @@ export default function MarketingAIAssistant() {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({
+          type: 'chat',
           messages: messages.concat(userMessage).map(m => ({
             role: m.role,
             content: m.content
@@ -109,7 +157,6 @@ export default function MarketingAIAssistant() {
       let textBuffer = "";
       let assistantContent = "";
 
-      // 즉시 빈 assistant 메시지 추가
       const assistantMessage: Message = {
         role: "assistant",
         content: "",
@@ -150,7 +197,6 @@ export default function MarketingAIAssistant() {
               });
             }
           } catch (e) {
-            // 파싱 실패 시 다음 청크 기다림
             textBuffer = line + "\n" + textBuffer;
             break;
           }
@@ -163,7 +209,6 @@ export default function MarketingAIAssistant() {
         description: error instanceof Error ? error.message : "메시지 전송 중 오류가 발생했습니다.",
         variant: "destructive",
       });
-      // 에러 발생 시 마지막 assistant 메시지 제거
       setMessages(prev => prev.filter(m => m.content !== ""));
     }
   };
@@ -205,7 +250,7 @@ export default function MarketingAIAssistant() {
                 <div>
                   <CardTitle className="text-3xl">마케팅 AI 어시스턴트</CardTitle>
                   <p className="text-muted-foreground mt-1">
-                    기관 데이터 기반 맞춤형 마케팅 전략을 제안합니다
+                    AI가 종합 마케팅 전략 리포트를 생성합니다
                   </p>
                 </div>
               </div>
@@ -299,7 +344,7 @@ export default function MarketingAIAssistant() {
                 size="lg"
               >
                 <Upload className="w-5 h-5 mr-2" />
-                분석 시작하기
+                리포트 생성하기
               </Button>
 
               <p className="text-xs text-muted-foreground text-center">
@@ -312,110 +357,148 @@ export default function MarketingAIAssistant() {
     );
   }
 
+  if (isGeneratingReport) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center p-4">
+        <Card className="max-w-md w-full border-2 border-primary/20">
+          <CardContent className="p-12">
+            <div className="flex flex-col items-center justify-center gap-4">
+              <Loader2 className="w-12 h-12 text-primary animate-spin" />
+              <h3 className="text-xl font-semibold text-center">마케팅 전략 리포트 생성 중...</h3>
+              <p className="text-muted-foreground text-center text-sm">
+                AI가 귀하의 기관에 맞는 종합 마케팅 전략을 분석하고 있습니다.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      <div className="max-w-5xl mx-auto h-screen flex flex-col p-4">
-        <Card className="flex-1 flex flex-col border-2 border-primary/20 shadow-xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/20">
-                  <TrendingUp className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-xl">마케팅 AI 어시스턴트</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {institutionData.name} - 데이터 기반 전략 분석
-                  </p>
-                </div>
-              </div>
-              <Badge variant="outline" className="gap-1">
-                <Sparkles className="w-3 h-3" />
-                AI 분석
-              </Badge>
-            </div>
-          </CardHeader>
-
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-4 pb-4">
-              {messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex gap-3 ${
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  }`}
-                >
-                  {message.role === "assistant" && (
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <Bot className="w-5 h-5 text-primary" />
+      <div className="max-w-7xl mx-auto p-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* 리포트 영역 */}
+          <div className="lg:col-span-2">
+            <Card className="border-2 border-primary/20 shadow-xl">
+              <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/20">
+                      <Sparkles className="w-6 h-6 text-primary" />
                     </div>
-                  )}
-                  <div
-                    className={`max-w-[80%] rounded-2xl p-4 ${
-                      message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
-                    }`}
+                    <div>
+                      <CardTitle className="text-xl">종합 마케팅 전략 리포트</CardTitle>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {institutionData.name}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleDownloadPDF}
+                    variant="outline"
+                    size="sm"
                   >
-                    <p className="text-sm md:text-base whitespace-pre-wrap leading-relaxed">
-                      {message.content}
-                    </p>
-                    <p className="text-xs opacity-70 mt-2">
-                      {message.timestamp.toLocaleTimeString("ko-KR", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                  {message.role === "user" && (
-                    <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                      <User className="w-5 h-5 text-secondary" />
-                    </div>
-                  )}
+                    <Download className="w-4 h-4 mr-2" />
+                    PDF
+                  </Button>
                 </div>
-              ))}
-              {isLoading && (
-                <div className="flex gap-3 justify-start">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Bot className="w-5 h-5 text-primary animate-pulse" />
+              </CardHeader>
+              <CardContent className="p-6">
+                <ScrollArea className="h-[calc(100vh-220px)]">
+                  <div id="marketing-report" className="prose prose-sm max-w-none dark:prose-invert">
+                    <ReactMarkdown>{report}</ReactMarkdown>
                   </div>
-                  <div className="bg-muted rounded-2xl p-4">
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" />
-                      <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce delay-100" />
-                      <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce delay-200" />
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-          </ScrollArea>
-
-          <div className="border-t p-4 bg-background">
-            <div className="flex gap-2">
-              <Textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="마케팅 전략에 대해 질문하세요..."
-                className="min-h-[60px] resize-none"
-                disabled={isLoading}
-              />
-              <Button
-                onClick={handleSend}
-                disabled={!input.trim() || isLoading}
-                size="icon"
-                className="h-[60px] w-[60px] flex-shrink-0"
-              >
-                <Send className="w-5 h-5" />
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              Shift + Enter로 줄바꿈, Enter로 전송
-            </p>
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </div>
-        </Card>
+
+          {/* 채팅 영역 */}
+          <div className="lg:col-span-1">
+            <Card className="border-2 border-primary/20 shadow-xl h-full flex flex-col">
+              <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b">
+                <div className="flex items-center gap-2">
+                  <Bot className="w-5 h-5 text-primary" />
+                  <CardTitle className="text-lg">추가 질문</CardTitle>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  리포트에 대해 궁금한 점을 물어보세요
+                </p>
+              </CardHeader>
+              <CardContent className="p-4 flex-1 flex flex-col min-h-0">
+                <ScrollArea className="flex-1 pr-2 mb-4">
+                  <div className="space-y-3">
+                    {messages.map((message, index) => (
+                      <div
+                        key={index}
+                        className={`flex gap-2 ${
+                          message.role === 'user' ? 'justify-end' : 'justify-start'
+                        }`}
+                      >
+                        {message.role === 'assistant' && (
+                          <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                            <Bot className="w-4 h-4 text-primary" />
+                          </div>
+                        )}
+                        <div
+                          className={`max-w-[85%] rounded-lg p-3 text-sm ${
+                            message.role === 'user'
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-muted'
+                          }`}
+                        >
+                          <p className="whitespace-pre-wrap text-xs">{message.content}</p>
+                        </div>
+                        {message.role === 'user' && (
+                          <div className="w-6 h-6 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                            <User className="w-4 h-4 text-secondary" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {isLoading && (
+                      <div className="flex gap-2 justify-start">
+                        <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                          <Bot className="w-4 h-4 text-primary animate-pulse" />
+                        </div>
+                        <div className="bg-muted rounded-lg p-3">
+                          <div className="flex gap-1">
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce delay-100" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce delay-200" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
+                </ScrollArea>
+
+                <div className="flex gap-2 pt-2 border-t">
+                  <Textarea
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    placeholder="질문을 입력하세요..."
+                    className="min-h-[50px] resize-none text-sm"
+                    rows={2}
+                    disabled={isLoading}
+                  />
+                  <Button
+                    onClick={handleSend}
+                    disabled={!input.trim() || isLoading}
+                    size="icon"
+                    className="h-[50px] w-[50px] flex-shrink-0"
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

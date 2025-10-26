@@ -714,6 +714,325 @@ const InstantAIAnalysis = () => {
                 </CardContent>
               </Card>
 
+              {/* 9가지 종합 전문 리포트 */}
+              {analysisResult?.comprehensiveReports && (
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent mb-2">
+                      📊 9가지 종합 전문 리포트
+                    </h3>
+                    <p className="text-sm text-muted-foreground">AI가 분석한 상세한 전문 리포트를 확인하세요</p>
+                  </div>
+
+                  {/* 1. 발달 종합 평가 */}
+                  {analysisResult.comprehensiveReports.developmentAssessment && (
+                    <Card className="border-blue-500/30 bg-gradient-to-br from-blue-50/30 to-indigo-50/30 dark:from-blue-950/20 dark:to-indigo-950/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <span className="text-2xl">🧠</span>
+                          <span className="text-blue-900 dark:text-blue-100">1. 발달 종합 평가</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="p-3 bg-background/60 rounded-lg">
+                            <p className="text-xs text-muted-foreground mb-1">인지 발달</p>
+                            <p className="text-2xl font-bold text-foreground">{analysisResult.comprehensiveReports.developmentAssessment.cognitive}점</p>
+                          </div>
+                          <div className="p-3 bg-background/60 rounded-lg">
+                            <p className="text-xs text-muted-foreground mb-1">언어 발달</p>
+                            <p className="text-2xl font-bold text-foreground">{analysisResult.comprehensiveReports.developmentAssessment.language}점</p>
+                          </div>
+                          <div className="p-3 bg-background/60 rounded-lg">
+                            <p className="text-xs text-muted-foreground mb-1">운동 발달</p>
+                            <p className="text-2xl font-bold text-foreground">{analysisResult.comprehensiveReports.developmentAssessment.motor}점</p>
+                          </div>
+                          <div className="p-3 bg-background/60 rounded-lg">
+                            <p className="text-xs text-muted-foreground mb-1">사회성 발달</p>
+                            <p className="text-2xl font-bold text-foreground">{analysisResult.comprehensiveReports.developmentAssessment.social}점</p>
+                          </div>
+                        </div>
+                        <div className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-lg border border-blue-200 dark:border-blue-800">
+                          <p className="font-bold text-blue-900 dark:text-blue-100 mb-2">종합 발달 점수: {analysisResult.comprehensiveReports.developmentAssessment.overall}점</p>
+                          <p className="text-sm text-blue-800 dark:text-blue-200">{analysisResult.comprehensiveReports.developmentAssessment.summary}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* 2. 심리 상태 분석 */}
+                  {analysisResult.comprehensiveReports.psychologicalAnalysis && (
+                    <Card className="border-purple-500/30 bg-gradient-to-br from-purple-50/30 to-pink-50/30 dark:from-purple-950/20 dark:to-pink-950/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <span className="text-2xl">💜</span>
+                          <span className="text-purple-900 dark:text-purple-100">2. 심리 상태 분석</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid grid-cols-3 gap-3">
+                          <div className="p-3 bg-background/60 rounded-lg text-center">
+                            <p className="text-xs text-muted-foreground mb-1">정서 안정성</p>
+                            <p className="text-xl font-bold text-foreground">{analysisResult.comprehensiveReports.psychologicalAnalysis.emotionalStability}점</p>
+                          </div>
+                          <div className="p-3 bg-background/60 rounded-lg text-center">
+                            <p className="text-xs text-muted-foreground mb-1">스트레스</p>
+                            <p className="text-xl font-bold text-foreground">{analysisResult.comprehensiveReports.psychologicalAnalysis.stressLevel}점</p>
+                          </div>
+                          <div className="p-3 bg-background/60 rounded-lg text-center">
+                            <p className="text-xs text-muted-foreground mb-1">심리 건강</p>
+                            <p className="text-xl font-bold text-foreground">{analysisResult.comprehensiveReports.psychologicalAnalysis.mentalHealth}점</p>
+                          </div>
+                        </div>
+                        <div className="p-4 bg-purple-50 dark:bg-purple-950/40 rounded-lg border border-purple-200 dark:border-purple-800">
+                          <p className="text-sm text-purple-800 dark:text-purple-200">{analysisResult.comprehensiveReports.psychologicalAnalysis.summary}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* 3. 강점/약점 분석 */}
+                  {analysisResult.comprehensiveReports.strengthsWeaknesses && (
+                    <Card className="border-green-500/30 bg-gradient-to-br from-green-50/30 to-emerald-50/30 dark:from-green-950/20 dark:to-emerald-950/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <span className="text-2xl">💪</span>
+                          <span className="text-green-900 dark:text-green-100">3. 강점/약점 분석</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✨ 강점</h4>
+                            <ul className="space-y-2">
+                              {analysisResult.comprehensiveReports.strengthsWeaknesses.strengths.map((strength: string, idx: number) => (
+                                <li key={idx} className="text-sm text-foreground flex items-start gap-2">
+                                  <span className="text-green-500">•</span>
+                                  <span>{strength}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-orange-700 dark:text-orange-300 mb-2">📈 개선 영역</h4>
+                            <ul className="space-y-2">
+                              {analysisResult.comprehensiveReports.strengthsWeaknesses.weaknesses.map((weakness: string, idx: number) => (
+                                <li key={idx} className="text-sm text-foreground flex items-start gap-2">
+                                  <span className="text-orange-500">•</span>
+                                  <span>{weakness}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="p-4 bg-green-50 dark:bg-green-950/40 rounded-lg border border-green-200 dark:border-green-800">
+                          <p className="font-bold text-green-900 dark:text-green-100 mb-1">맞춤형 성장 방향</p>
+                          <p className="text-sm text-green-800 dark:text-green-200">{analysisResult.comprehensiveReports.strengthsWeaknesses.growthDirection}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* 4. 맞춤형 활동 제안 */}
+                  {analysisResult.comprehensiveReports.customActivities && (
+                    <Card className="border-yellow-500/30 bg-gradient-to-br from-yellow-50/30 to-amber-50/30 dark:from-yellow-950/20 dark:to-amber-950/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <span className="text-2xl">🎯</span>
+                          <span className="text-yellow-900 dark:text-yellow-100">4. AI 기반 맞춤형 활동 제안</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-3">
+                          {analysisResult.comprehensiveReports.customActivities.map((activity: string, idx: number) => (
+                            <li key={idx} className="p-3 bg-background/60 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                              <div className="flex items-start gap-3">
+                                <span className="flex-shrink-0 w-6 h-6 bg-yellow-500/20 rounded-full flex items-center justify-center text-yellow-700 dark:text-yellow-300 font-bold text-sm">
+                                  {idx + 1}
+                                </span>
+                                <span className="text-sm text-foreground flex-1">{activity}</span>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* 5. 발달 로드맵 */}
+                  {analysisResult.comprehensiveReports.developmentRoadmap && (
+                    <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-50/30 to-blue-50/30 dark:from-indigo-950/20 dark:to-blue-950/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <span className="text-2xl">🗺️</span>
+                          <span className="text-indigo-900 dark:text-indigo-100">5. 단계별 발달 로드맵</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div>
+                          <h4 className="font-bold text-indigo-700 dark:text-indigo-300 mb-2">📅 단기 목표 (1-3개월)</h4>
+                          <ul className="space-y-2">
+                            {analysisResult.comprehensiveReports.developmentRoadmap.shortTerm.map((goal: string, idx: number) => (
+                              <li key={idx} className="text-sm text-foreground flex items-start gap-2">
+                                <span className="text-indigo-500">•</span>
+                                <span>{goal}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-blue-700 dark:text-blue-300 mb-2">📅 중기 목표 (3-6개월)</h4>
+                          <ul className="space-y-2">
+                            {analysisResult.comprehensiveReports.developmentRoadmap.mediumTerm.map((goal: string, idx: number) => (
+                              <li key={idx} className="text-sm text-foreground flex items-start gap-2">
+                                <span className="text-blue-500">•</span>
+                                <span>{goal}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-purple-700 dark:text-purple-300 mb-2">📅 장기 목표 (6-12개월)</h4>
+                          <ul className="space-y-2">
+                            {analysisResult.comprehensiveReports.developmentRoadmap.longTerm.map((goal: string, idx: number) => (
+                              <li key={idx} className="text-sm text-foreground flex items-start gap-2">
+                                <span className="text-purple-500">•</span>
+                                <span>{goal}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* 6. 또래 비교 분석 */}
+                  {analysisResult.comprehensiveReports.peerComparison && (
+                    <Card className="border-teal-500/30 bg-gradient-to-br from-teal-50/30 to-cyan-50/30 dark:from-teal-950/20 dark:to-cyan-950/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <span className="text-2xl">👥</span>
+                          <span className="text-teal-900 dark:text-teal-100">6. 또래 비교 분석</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="p-3 bg-background/60 rounded-lg">
+                            <p className="text-xs text-muted-foreground mb-1">연령대</p>
+                            <p className="text-lg font-bold text-foreground">{analysisResult.comprehensiveReports.peerComparison.ageGroup}</p>
+                          </div>
+                          <div className="p-3 bg-background/60 rounded-lg">
+                            <p className="text-xs text-muted-foreground mb-1">백분위</p>
+                            <p className="text-lg font-bold text-foreground">{analysisResult.comprehensiveReports.peerComparison.percentile}%</p>
+                          </div>
+                        </div>
+                        <div className="p-4 bg-teal-50 dark:bg-teal-950/40 rounded-lg border border-teal-200 dark:border-teal-800">
+                          <p className="text-sm text-teal-800 dark:text-teal-200">{analysisResult.comprehensiveReports.peerComparison.comparison}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* 7. 전문가 소견서 */}
+                  {analysisResult.comprehensiveReports.expertOpinion && (
+                    <Card className="border-red-500/30 bg-gradient-to-br from-red-50/30 to-orange-50/30 dark:from-red-950/20 dark:to-orange-950/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <span className="text-2xl">👨‍⚕️</span>
+                          <span className="text-red-900 dark:text-red-100">7. 전문가 소견서</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="p-3 bg-background/60 rounded-lg">
+                            <p className="text-xs text-muted-foreground mb-1">전문 개입 필요성</p>
+                            <Badge variant={analysisResult.comprehensiveReports.expertOpinion.interventionNeeded === '높음' ? 'destructive' : 'secondary'}>
+                              {analysisResult.comprehensiveReports.expertOpinion.interventionNeeded}
+                            </Badge>
+                          </div>
+                          <div className="p-3 bg-background/60 rounded-lg">
+                            <p className="text-xs text-muted-foreground mb-1">시급성</p>
+                            <Badge variant={analysisResult.comprehensiveReports.expertOpinion.urgency === '높음' ? 'destructive' : 'secondary'}>
+                              {analysisResult.comprehensiveReports.expertOpinion.urgency}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">전문가 권장사항</h4>
+                          <ul className="space-y-2">
+                            {analysisResult.comprehensiveReports.expertOpinion.recommendations.map((rec: string, idx: number) => (
+                              <li key={idx} className="text-sm text-foreground flex items-start gap-2 p-2 bg-background/60 rounded">
+                                <span className="text-red-500">•</span>
+                                <span>{rec}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* 8. 가족 지원 가이드 */}
+                  {analysisResult.comprehensiveReports.familySupport && (
+                    <Card className="border-pink-500/30 bg-gradient-to-br from-pink-50/30 to-rose-50/30 dark:from-pink-950/20 dark:to-rose-950/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <span className="text-2xl">❤️</span>
+                          <span className="text-pink-900 dark:text-pink-100">8. 가족 지원 가이드</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div>
+                          <h4 className="font-bold text-pink-700 dark:text-pink-300 mb-2">부모/보호자 실천 팁</h4>
+                          <ul className="space-y-2">
+                            {analysisResult.comprehensiveReports.familySupport.parentingTips.map((tip: string, idx: number) => (
+                              <li key={idx} className="text-sm text-foreground flex items-start gap-2 p-2 bg-background/60 rounded">
+                                <span className="text-pink-500">•</span>
+                                <span>{tip}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="p-4 bg-pink-50 dark:bg-pink-950/40 rounded-lg border border-pink-200 dark:border-pink-800">
+                          <p className="font-bold text-pink-900 dark:text-pink-100 mb-1">효과적인 소통 방법</p>
+                          <p className="text-sm text-pink-800 dark:text-pink-200">{analysisResult.comprehensiveReports.familySupport.communicationGuide}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* 9. 장기 발달 예측 */}
+                  {analysisResult.comprehensiveReports.longTermPrediction && (
+                    <Card className="border-violet-500/30 bg-gradient-to-br from-violet-50/30 to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/20">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <span className="text-2xl">🔮</span>
+                          <span className="text-violet-900 dark:text-violet-100">9. AI 기반 장기 발달 예측</span>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="p-3 bg-background/60 rounded-lg">
+                            <p className="text-xs text-muted-foreground mb-1">발달 경향성</p>
+                            <Badge variant={analysisResult.comprehensiveReports.longTermPrediction.developmentTrend === '긍정적' ? 'default' : 'secondary'}>
+                              {analysisResult.comprehensiveReports.longTermPrediction.developmentTrend}
+                            </Badge>
+                          </div>
+                          <div className="p-3 bg-background/60 rounded-lg">
+                            <p className="text-xs text-muted-foreground mb-1">잠재력</p>
+                            <p className="text-xl font-bold text-foreground">{analysisResult.comprehensiveReports.longTermPrediction.potential}점</p>
+                          </div>
+                        </div>
+                        <div className="p-4 bg-violet-50 dark:bg-violet-950/40 rounded-lg border border-violet-200 dark:border-violet-800">
+                          <p className="font-bold text-violet-900 dark:text-violet-100 mb-2">장기 전망</p>
+                          <p className="text-sm text-violet-800 dark:text-violet-200">{analysisResult.comprehensiveReports.longTermPrediction.forecast}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              )}
+
               {/* AI 맞춤 테스트 추천 */}
               {analysisResult?.recommendedTests && analysisResult.recommendedTests.length > 0 && (
                 <Card className="border-amber-500/30 shadow-lg bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">

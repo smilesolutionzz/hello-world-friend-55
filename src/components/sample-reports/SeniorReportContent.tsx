@@ -306,58 +306,7 @@ export const SeniorReportContent = () => {
         </CardContent>
       </Card>
 
-      {/* 간략한 섹션들 (5-8번) */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-primary" />
-            5-8. 추가 건강 평가 영역
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4 text-sm text-foreground/80">
-            <div className="p-3 bg-background/50 rounded-lg border border-border">
-              <p className="font-semibold mb-2 flex items-center gap-2">
-                <Users className="w-4 h-4 text-primary" />
-                5. 사회적 관계 및 활동
-              </p>
-              <p className="text-muted-foreground">• 사회 활동 참여: 주 4회 (복지관, 교회, 등산 모임)</p>
-              <p className="text-muted-foreground">• 가족 관계: 자녀와 주 2회 연락, 월 1회 방문 - 양호</p>
-              <p className="text-muted-foreground">• 친구 관계: 친밀한 친구 3명, 정기적 만남 - 우수</p>
-            </div>
-            <div className="p-3 bg-background/50 rounded-lg border border-border">
-              <p className="font-semibold mb-2 flex items-center gap-2">
-                <Pill className="w-4 h-4 text-primary" />
-                6. 신체 건강 및 만성질환 관리
-              </p>
-              <p className="text-muted-foreground">• 만성질환: 고혈압, 당뇨병 (약물 치료 중)</p>
-              <p className="text-muted-foreground">• 혈압: 평균 138/85 mmHg (목표: 130/80 이하) - 개선 필요</p>
-              <p className="text-muted-foreground">• 혈당: 공복 혈당 125 mg/dL (목표: 100 이하) - 관리 필요</p>
-              <p className="text-muted-foreground">• 약물 복용 순응도: 85% - 양호</p>
-            </div>
-            <div className="p-3 bg-background/50 rounded-lg border border-border">
-              <p className="font-semibold mb-2 flex items-center gap-2">
-                <Shield className="w-4 h-4 text-primary" />
-                7. 낙상 위험도 및 영양 상태
-              </p>
-              <p className="text-muted-foreground">• 낙상 위험도: 중간 (지난 1년간 낙상 경험 1회)</p>
-              <p className="text-muted-foreground">• 균형 감각: 한발 서기 8초 유지 (정상: 10초 이상) - 훈련 필요</p>
-              <p className="text-muted-foreground">• BMI: 21.2 (정상 범위), 최근 3개월간 체중 3kg 감소 - 주의</p>
-              <p className="text-muted-foreground">• 영양 상태: 단백질 섭취 부족, 영양 보충 권장</p>
-            </div>
-            <div className="p-3 bg-background/50 rounded-lg border border-border">
-              <p className="font-semibold mb-2 flex items-center gap-2">
-                <Apple className="w-4 h-4 text-primary" />
-                8. 맞춤형 건강 관리 계획 (6개월)
-              </p>
-              <p className="text-muted-foreground">• 1-2개월: 혈압·혈당 집중 관리, 주 2회 혈압 측정</p>
-              <p className="text-muted-foreground">• 3-4개월: 근력 운동 시작 (낙상 예방), 영양 개선</p>
-              <p className="text-muted-foreground">• 5-6개월: 생활 습관 유지, 재평가 및 계획 조정</p>
-            </div>
-            <p className="text-xs mt-4 italic text-muted-foreground">* 실제 리포트에는 각 영역별 상세 측정 결과, 건강 트렌드 그래프, 개인 맞춤 운동·식단 가이드가 포함됩니다.</p>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Note: 상세 섹션 5-8은 위에 이미 추가되어 있습니다 */}
 
       {/* 건강 관리 제안 */}
       <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-secondary/5">

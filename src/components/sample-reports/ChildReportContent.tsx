@@ -13,7 +13,8 @@ import {
   CheckCircle,
   AlertCircle,
   Target,
-  FileText
+  FileText,
+  Activity
 } from "lucide-react";
 
 export const ChildReportContent = () => {
@@ -260,34 +261,247 @@ export const ChildReportContent = () => {
         </CardContent>
       </Card>
 
-      {/* 간략한 섹션들 (5-7번) */}
+      {/* 5. 신체 및 운동 발달 */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-primary" />
-            5-7. 추가 발달 영역
+            <Activity className="w-5 h-5 text-primary" />
+            5. 신체 및 운동 발달
           </CardTitle>
+          <CardDescription>
+            대근육, 소근육 운동 능력 평가
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3 text-sm text-foreground/80">
+        <CardContent className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-background/50 rounded-lg border border-border">
+              <h4 className="font-semibold mb-3 text-sm flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-600" />
+                소근육 운동 능력
+              </h4>
+              <div className="space-y-3">
+                <div>
+                  <div className="flex justify-between mb-1 text-sm">
+                    <span>가위질</span>
+                    <span className="text-green-600">우수</span>
+                  </div>
+                  <Progress value={95} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1 text-sm">
+                    <span>색칠하기</span>
+                    <span className="text-green-600">우수</span>
+                  </div>
+                  <Progress value={92} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1 text-sm">
+                    <span>블록 쌓기</span>
+                    <span className="text-green-600">우수</span>
+                  </div>
+                  <Progress value={90} className="h-2" />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-3">손가락 협응력이 매우 뛰어남</p>
+            </div>
+            
+            <div className="p-4 bg-background/50 rounded-lg border border-border">
+              <h4 className="font-semibold mb-3 text-sm flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-amber-600" />
+                대근육 운동 능력
+              </h4>
+              <div className="space-y-3">
+                <div>
+                  <div className="flex justify-between mb-1 text-sm">
+                    <span>달리기</span>
+                    <span className="text-muted-foreground">보통</span>
+                  </div>
+                  <Progress value={70} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1 text-sm">
+                    <span>공 던지기/받기</span>
+                    <span className="text-muted-foreground">보통</span>
+                  </div>
+                  <Progress value={75} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1 text-sm">
+                    <span>균형 잡기</span>
+                    <span className="text-green-600">양호</span>
+                  </div>
+                  <Progress value={80} className="h-2" />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-3">야외 활동 증가 필요</p>
+            </div>
+          </div>
+
+          <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-900">
+            <h4 className="font-semibold mb-2 text-blue-900 dark:text-blue-100">발달 촉진 활동</h4>
+            <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+              <li>• 주 3-4회 공원에서 자전거 타기, 공놀이</li>
+              <li>• 평균대 걷기, 한발 뛰기 등 균형 운동</li>
+              <li>• 줄넘기, 훌라후프 등 전신 운동</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 6. 주의력 및 실행 기능 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Brain className="w-5 h-5 text-primary" />
+            6. 주의력 및 실행 기능
+          </CardTitle>
+          <CardDescription>
+            집중력, 충동 조절, 계획 능력 평가
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
             <div>
-              <p className="font-semibold mb-1">5. 신체 및 운동 발달</p>
-              <p className="text-muted-foreground">• 소근육 운동: 가위질, 색칠하기 우수 (95점)</p>
-              <p className="text-muted-foreground">• 대근육 운동: 달리기, 공 던지기 평균 수준 (73점) - 발달 자극 필요</p>
+              <div className="flex justify-between mb-2 text-sm">
+                <span className="font-medium">선택적 주의력</span>
+                <span className="text-muted-foreground">85/100</span>
+              </div>
+              <Progress value={85} className="h-2" />
+              <p className="text-xs text-muted-foreground mt-1">흥미 활동에 20분 이상 집중 가능 (우수)</p>
             </div>
             <div>
-              <p className="font-semibold mb-1">6. 주의력 및 실행 기능</p>
-              <p className="text-muted-foreground">• 선택적 주의력: 우수 (흥미 활동에 20분 이상 집중)</p>
-              <p className="text-muted-foreground">• 지속적 주의력: 보통 (반복 과제에서 10분 정도 유지)</p>
-              <p className="text-muted-foreground">• 충동 조절: 개선 필요 (즉각적 보상 선호)</p>
+              <div className="flex justify-between mb-2 text-sm">
+                <span className="font-medium">지속적 주의력</span>
+                <span className="text-muted-foreground">72/100</span>
+              </div>
+              <Progress value={72} className="h-2" />
+              <p className="text-xs text-muted-foreground mt-1">반복 과제에서 10분 정도 유지 (보통)</p>
             </div>
             <div>
-              <p className="font-semibold mb-1">7. 양육 가이드 및 발달 지원 계획</p>
-              <p className="text-muted-foreground">• 대근육 발달: 주 3회 야외 활동, 자전거 타기 권장</p>
-              <p className="text-muted-foreground">• 정서 조절: 감정 이름 붙이기, 진정 전략 연습</p>
-              <p className="text-muted-foreground">• 주의력 향상: 짧은 과제로 시작하여 점진적으로 시간 연장</p>
+              <div className="flex justify-between mb-2 text-sm">
+                <span className="font-medium">충동 조절</span>
+                <span className="text-muted-foreground">68/100</span>
+              </div>
+              <Progress value={68} className="h-2" />
+              <p className="text-xs text-muted-foreground mt-1">즉각적 보상 선호 경향 (개선 필요)</p>
             </div>
-            <p className="text-xs mt-4 italic text-muted-foreground">* 실제 리포트에는 각 영역별 상세한 평가 결과, 관찰 사례, 맞춤 발달 활동이 포함됩니다.</p>
+            <div>
+              <div className="flex justify-between mb-2 text-sm">
+                <span className="font-medium">계획 및 조직화</span>
+                <span className="text-muted-foreground">78/100</span>
+              </div>
+              <Progress value={78} className="h-2" />
+              <p className="text-xs text-muted-foreground mt-1">단순한 계획 수립 가능 (양호)</p>
+            </div>
+          </div>
+
+          <div className="bg-amber-50 dark:bg-amber-950/20 p-4 rounded-lg border border-amber-200 dark:border-amber-900">
+            <div className="flex gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
+              <div className="space-y-2">
+                <h4 className="font-semibold text-amber-900 dark:text-amber-100">주의 필요 영역</h4>
+                <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-1">
+                  <li>• 지루한 과제에서 주의 산만</li>
+                  <li>• 기다리기 어려워함 (자기 차례)</li>
+                  <li>• 활동 간 전환 시 어려움</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg border border-green-200 dark:border-green-900">
+            <h4 className="font-semibold mb-2 text-green-900 dark:text-green-100">집중력 향상 전략</h4>
+            <ul className="text-sm text-green-800 dark:text-green-200 space-y-1">
+              <li>• 짧은 과제로 시작 (10분) → 점진적 연장</li>
+              <li>• 시각적 타이머 사용</li>
+              <li>• 과제 완료 후 즉각적 보상 (스티커, 칭찬)</li>
+              <li>• 주의 집중 게임 (퍼즐, 레고, 숨은그림찾기)</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* 7. 양육 가이드 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="w-5 h-5 text-primary" />
+            7. 양육 가이드 및 발달 지원 계획
+          </CardTitle>
+          <CardDescription>
+            가정에서 실천 가능한 맞춤형 발달 지원 전략
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-4">
+            <div className="p-4 bg-background/80 rounded-lg border border-primary/20">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-sm font-bold">1</span>
+                대근육 발달 집중 (주 3-4회)
+              </h4>
+              <ul className="text-sm space-y-2 text-foreground/80">
+                <li>• <strong>자전거 타기:</strong> 공원에서 30분씩 (균형 감각, 다리 근력)</li>
+                <li>• <strong>공놀이:</strong> 던지고 받기, 발로 차기 (협응력)</li>
+                <li>• <strong>평균대 걷기:</strong> 집에서 만든 평균대로 연습</li>
+                <li>• <strong>음악에 맞춰 춤추기:</strong> 전신 운동 + 즐거움</li>
+              </ul>
+            </div>
+
+            <div className="p-4 bg-background/80 rounded-lg border border-secondary/20">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-secondary/10 text-secondary text-sm font-bold">2</span>
+                정서 조절 능력 향상 (매일)
+              </h4>
+              <ul className="text-sm space-y-2 text-foreground/80">
+                <li>• <strong>감정 카드:</strong> 다양한 감정 이름 익히기</li>
+                <li>• <strong>진정 전략:</strong> 화났을 때 깊게 숨쉬기 3번</li>
+                <li>• <strong>감정 일기:</strong> 그림으로 오늘의 기분 표현</li>
+                <li>• <strong>즉각적 칭찬:</strong> 좋은 행동 바로 인정하기</li>
+              </ul>
+            </div>
+
+            <div className="p-4 bg-background/80 rounded-lg border border-primary/20">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-sm font-bold">3</span>
+                집중력 훈련 (주 5회)
+              </h4>
+              <ul className="text-sm space-y-2 text-foreground/80">
+                <li>• <strong>단계적 연장:</strong> 10분 과제 → 15분까지</li>
+                <li>• <strong>집중 놀이:</strong> 퍼즐, 레고, 색칠하기</li>
+                <li>• <strong>보상 체계:</strong> 완료 후 스티커 차트</li>
+                <li>• <strong>조용한 환경:</strong> TV, 스마트폰 제거</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-green-50 dark:bg-green-950/20 p-4 rounded-lg border border-green-200 dark:border-green-900">
+            <div className="flex gap-3">
+              <Sparkles className="w-5 h-5 text-green-600 dark:text-green-500 shrink-0 mt-0.5" />
+              <div className="space-y-2">
+                <h4 className="font-semibold text-green-900 dark:text-green-100">강점 강화 전략</h4>
+                <ul className="text-sm text-green-800 dark:text-green-200 space-y-1">
+                  <li>• 언어 능력: 책 읽기, 이야기 만들기 놀이 지속</li>
+                  <li>• 사회성: 또래 놀이 기회 확대 (주 2-3회)</li>
+                  <li>• 문제해결: 연령에 맞는 도전 과제 제공</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg border border-blue-200 dark:border-blue-900">
+            <div className="flex gap-3">
+              <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-500 shrink-0 mt-0.5" />
+              <div className="space-y-2">
+                <h4 className="font-semibold text-blue-900 dark:text-blue-100">전문가 개입 고려 시점</h4>
+                <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+                  <li>• 3개월 후 재평가 시 주의력 개선 없을 경우</li>
+                  <li>• 또래와의 상호작용 지속적 어려움</li>
+                  <li>• 정서 폭발 주 3회 이상 반복</li>
+                  <li>• 일상생활 기능에 심각한 지장</li>
+                  <li className="font-semibold text-blue-900 dark:text-blue-100 mt-2">→ 현재는 가정 내 지원으로 충분</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

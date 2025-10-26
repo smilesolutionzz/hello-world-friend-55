@@ -13,6 +13,7 @@ interface ContentPost {
   goal: string;
   result: string[];
   imageUrl: string;
+  hashtags: string[];
 }
 
 serve(async (req) => {
@@ -26,8 +27,50 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const { brandInfo, targetAudience } = await req.json();
-    console.log('콘텐츠 생성 요청:', { brandInfo, targetAudience });
+    const { brandInfo, targetAudience, action } = await req.json();
+    console.log('요청:', { action, brandInfo, targetAudience });
+
+    // 프롬프트 확장 기능
+    if (action === 'expand-prompt') {
+      const expandResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { 
+              role: 'system', 
+              content: '당신은 비즈니스 마케팅 전문가입니다. 사용자가 입력한 간단한 브랜드 정보를 구체적이고 전략적인 내용으로 확장해주세요. 브랜드의 핵심 가치, 차별점, 타겟 고객의 페인 포인트, 제공하는 솔루션 등을 명확하게 표현해주세요. 200-300자 정도로 확장하세요.'
+            },
+            { 
+              role: 'user', 
+              content: `다음 브랜드 정보를 구체적으로 확장해주세요:\n\n${brandInfo}` 
+            }
+          ]
+        })
+      });
+
+      if (!expandResponse.ok) {
+        throw new Error('프롬프트 확장 실패');
+      }
+
+      const expandData = await expandResponse.json();
+      const expandedPrompt = expandData.choices?.[0]?.message?.content;
+
+      return new Response(
+        JSON.stringify({ 
+          success: true,
+          expandedPrompt
+        }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200 
+        }
+      );
+    }
 
     // 4가지 콘텐츠 유형 정의
     const contentTypes = [
@@ -48,6 +91,7 @@ serve(async (req) => {
   "subPoints": ["포인트1", "포인트2", "포인트3"],
   "goal": "이 콘텐츠의 목적",
   "result": ["기대효과1", "기대효과2"],
+  "hashtags": ["#해시태그1", "#해시태그2", "#해시태그3", "#해시태그4", "#해시태그5"],
   "imagePrompt": "이미지 생성을 위한 상세한 영문 프롬프트"
 }`
       },
@@ -68,6 +112,7 @@ serve(async (req) => {
   "subPoints": ["포인트1", "포인트2"],
   "goal": "이 콘텐츠의 목적",
   "result": ["기대효과1", "기대효과2"],
+  "hashtags": ["#해시태그1", "#해시태그2", "#해시태그3", "#해시태그4", "#해시태그5"],
   "imagePrompt": "이미지 생성을 위한 상세한 영문 프롬프트"
 }`
       },
@@ -88,6 +133,7 @@ serve(async (req) => {
   "subPoints": ["팁1", "팁2", "팁3"],
   "goal": "이 콘텐츠의 목적",
   "result": ["기대효과1", "기대효과2", "기대효과3"],
+  "hashtags": ["#해시태그1", "#해시태그2", "#해시태그3", "#해시태그4", "#해시태그5"],
   "imagePrompt": "이미지 생성을 위한 상세한 영문 프롬프트"
 }`
       },
@@ -108,6 +154,7 @@ serve(async (req) => {
   "subPoints": ["해결방법1", "해결방법2"],
   "goal": "이 콘텐츠의 목적",
   "result": ["결과1", "결과2"],
+  "hashtags": ["#해시태그1", "#해시태그2", "#해시태그3", "#해시태그4", "#해시태그5"],
   "imagePrompt": "이미지 생성을 위한 상세한 영문 프롬프트"
 }`
       }
@@ -197,6 +244,7 @@ serve(async (req) => {
           subPoints: contentData.subPoints || [],
           goal: contentData.goal || '',
           result: contentData.result || [],
+          hashtags: contentData.hashtags || [],
           imageUrl: imageUrl
         });
 

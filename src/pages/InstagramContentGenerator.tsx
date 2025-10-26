@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Download, RefreshCw, Instagram, Loader2 } from "lucide-react";
+import { Sparkles, Download, RefreshCw, Instagram, Loader2, Copy, Wand2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
@@ -16,6 +16,7 @@ interface ContentPost {
   goal: string;
   result: string[];
   imageUrl: string;
+  hashtags: string[];
 }
 
 const InstagramContentGenerator = () => {
@@ -23,6 +24,7 @@ const InstagramContentGenerator = () => {
   const [targetAudience, setTargetAudience] = useState("");
   const [contents, setContents] = useState<ContentPost[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isExpandingPrompt, setIsExpandingPrompt] = useState(false);
   const { toast } = useToast();
 
   const contentTypes = [
@@ -31,6 +33,47 @@ const InstagramContentGenerator = () => {
     { type: '가진_지식', emoji: '🎓', color: 'from-blue-500 to-cyan-500', title: '3. 내가 가진 지식' },
     { type: '문제_해결', emoji: '💡', color: 'from-orange-500 to-yellow-500', title: '4. 나의 문제 해결 사례' }
   ];
+
+  const expandPrompt = async () => {
+    if (!brandInfo.trim()) {
+      toast({
+        title: "정보 입력 필요",
+        description: "브랜드/비즈니스 정보를 먼저 입력해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsExpandingPrompt(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('instagram-content-generator', {
+        body: {
+          action: 'expand-prompt',
+          brandInfo,
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.expandedPrompt) {
+        setBrandInfo(data.expandedPrompt);
+        toast({
+          title: "프롬프트 확장 완료! ✨",
+          description: "브랜드 정보가 구체적으로 확장되었습니다.",
+        });
+      }
+    } catch (error) {
+      console.error('프롬프트 확장 오류:', error);
+      toast({
+        title: "확장 실패",
+        description: "프롬프트 확장 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExpandingPrompt(false);
+    }
+  };
 
   const generateWeeklyContent = async () => {
     if (!brandInfo.trim()) {
@@ -47,6 +90,7 @@ const InstagramContentGenerator = () => {
     try {
       const { data, error } = await supabase.functions.invoke('instagram-content-generator', {
         body: {
+          action: 'generate',
           brandInfo,
           targetAudience,
         }
@@ -70,6 +114,44 @@ const InstagramContentGenerator = () => {
       });
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const copyToClipboard = async (text: string, type: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "복사 완료",
+        description: `${type}이(가) 클립보드에 복사되었습니다.`,
+      });
+    } catch (error) {
+      console.error('복사 오류:', error);
+      toast({
+        title: "복사 실패",
+        description: "복사 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const copyImageToClipboard = async (imageUrl: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      await navigator.clipboard.write([
+        new ClipboardItem({ [blob.type]: blob })
+      ]);
+      toast({
+        title: "이미지 복사 완료",
+        description: "이미지가 클립보드에 복사되었습니다. 인스타그램에 붙여넣기 하세요!",
+      });
+    } catch (error) {
+      console.error('이미지 복사 오류:', error);
+      toast({
+        title: "이미지 복사 실패",
+        description: "이미지 복사를 지원하지 않는 브라우저입니다. 다운로드를 이용해주세요.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -98,6 +180,18 @@ const InstagramContentGenerator = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const copyFullContent = (content: ContentPost) => {
+    const fullText = `${content.title}
+
+${content.mainText}
+
+${content.subPoints.map(point => `• ${point}`).join('\n')}
+
+${content.hashtags.join(' ')}`;
+    
+    copyToClipboard(fullText, "전체 콘텐츠");
   };
 
   return (
@@ -133,13 +227,34 @@ const InstagramContentGenerator = () => {
               <label className="text-sm font-medium mb-2 block">
                 브랜드/비즈니스 정보 *
               </label>
-              <Textarea
-                placeholder="예: 발달심리 전문 플랫폼으로 아동/청소년/성인의 심리 검사와 AI 분석을 제공합니다. 부모님들이 자녀의 발달 상태를 쉽게 확인하고 전문가 상담을 받을 수 있도록 돕습니다."
-                value={brandInfo}
-                onChange={(e) => setBrandInfo(e.target.value)}
-                rows={4}
-                className="resize-none"
-              />
+              <div className="space-y-2">
+                <Textarea
+                  placeholder="예: 발달심리 전문 플랫폼으로 아동/청소년/성인의 심리 검사와 AI 분석을 제공합니다. 부모님들이 자녀의 발달 상태를 쉽게 확인하고 전문가 상담을 받을 수 있도록 돕습니다."
+                  value={brandInfo}
+                  onChange={(e) => setBrandInfo(e.target.value)}
+                  rows={4}
+                  className="resize-none"
+                />
+                <Button
+                  onClick={expandPrompt}
+                  disabled={isExpandingPrompt || !brandInfo.trim()}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  {isExpandingPrompt ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      AI가 프롬프트 확장 중...
+                    </>
+                  ) : (
+                    <>
+                      <Wand2 className="w-4 h-4 mr-2" />
+                      AI로 프롬프트 확장하기
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
             
             <div>
@@ -207,12 +322,22 @@ const InstagramContentGenerator = () => {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {/* 이미지 */}
-                      <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
+                      <div className="relative aspect-square rounded-lg overflow-hidden bg-muted group">
                         <img 
                           src={content.imageUrl} 
                           alt={content.title}
                           className="w-full h-full object-cover"
                         />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          <Button
+                            onClick={() => copyImageToClipboard(content.imageUrl)}
+                            size="sm"
+                            variant="secondary"
+                          >
+                            <Copy className="w-4 h-4 mr-2" />
+                            이미지 복사
+                          </Button>
+                        </div>
                       </div>
 
                       {/* 콘텐츠 내용 */}
@@ -251,17 +376,32 @@ const InstagramContentGenerator = () => {
                             </ul>
                           </div>
                         )}
+
+                        {content.hashtags.length > 0 && (
+                          <div>
+                            <p className="font-semibold text-sm text-primary mb-1">🏷️ 해시태그</p>
+                            <p className="text-sm text-muted-foreground">{content.hashtags.join(' ')}</p>
+                          </div>
+                        )}
                       </div>
 
                       {/* 액션 버튼 */}
-                      <Button
-                        onClick={() => downloadImage(content.imageUrl, content.title)}
-                        variant="outline"
-                        className="w-full"
-                      >
-                        <Download className="w-4 h-4 mr-2" />
-                        이미지 다운로드
-                      </Button>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          onClick={() => downloadImage(content.imageUrl, content.title)}
+                          variant="outline"
+                        >
+                          <Download className="w-4 h-4 mr-2" />
+                          이미지 저장
+                        </Button>
+                        <Button
+                          onClick={() => copyFullContent(content)}
+                          variant="outline"
+                        >
+                          <Copy className="w-4 h-4 mr-2" />
+                          텍스트 복사
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 );

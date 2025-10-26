@@ -20,11 +20,8 @@ interface ContentPost {
 }
 
 const InstagramContentGenerator = () => {
-  const [brandInfo, setBrandInfo] = useState("");
-  const [targetAudience, setTargetAudience] = useState("");
   const [contents, setContents] = useState<ContentPost[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isExpandingPrompt, setIsExpandingPrompt] = useState(false);
   const { toast } = useToast();
 
   const contentTypes = [
@@ -34,65 +31,14 @@ const InstagramContentGenerator = () => {
     { type: '문제_해결', emoji: '💡', color: 'from-orange-500 to-yellow-500', title: '4. 나의 문제 해결 사례' }
   ];
 
-  const expandPrompt = async () => {
-    if (!brandInfo.trim()) {
-      toast({
-        title: "정보 입력 필요",
-        description: "브랜드/비즈니스 정보를 먼저 입력해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsExpandingPrompt(true);
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('instagram-content-generator', {
-        body: {
-          action: 'expand-prompt',
-          brandInfo,
-        }
-      });
-
-      if (error) throw error;
-
-      if (data?.expandedPrompt) {
-        setBrandInfo(data.expandedPrompt);
-        toast({
-          title: "프롬프트 확장 완료! ✨",
-          description: "브랜드 정보가 구체적으로 확장되었습니다.",
-        });
-      }
-    } catch (error) {
-      console.error('프롬프트 확장 오류:', error);
-      toast({
-        title: "확장 실패",
-        description: "프롬프트 확장 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsExpandingPrompt(false);
-    }
-  };
-
   const generateWeeklyContent = async () => {
-    if (!brandInfo.trim()) {
-      toast({
-        title: "정보 입력 필요",
-        description: "브랜드/비즈니스 정보를 입력해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
 
     setIsGenerating(true);
     
     try {
       const { data, error } = await supabase.functions.invoke('instagram-content-generator', {
         body: {
-          action: 'generate',
-          brandInfo,
-          targetAudience,
+          action: 'generate'
         }
       });
 
@@ -211,65 +157,18 @@ ${content.hashtags.join(' ')}`;
           </p>
         </div>
 
-        {/* 입력 섹션 */}
+        {/* 생성 버튼 */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
-              콘텐츠 생성 정보
+              AI 콘텐츠 생성
             </CardTitle>
             <CardDescription>
-              브랜드와 타겟 고객 정보를 입력하면 맞춤형 콘텐츠를 생성합니다
+              플랫폼 맞춤형 4가지 콘텐츠를 AI가 자동 생성합니다
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">
-                브랜드/비즈니스 정보 *
-              </label>
-              <div className="space-y-2">
-                <Textarea
-                  placeholder="예: 발달심리 전문 플랫폼으로 아동/청소년/성인의 심리 검사와 AI 분석을 제공합니다. 부모님들이 자녀의 발달 상태를 쉽게 확인하고 전문가 상담을 받을 수 있도록 돕습니다."
-                  value={brandInfo}
-                  onChange={(e) => setBrandInfo(e.target.value)}
-                  rows={4}
-                  className="resize-none"
-                />
-                <Button
-                  onClick={expandPrompt}
-                  disabled={isExpandingPrompt || !brandInfo.trim()}
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                >
-                  {isExpandingPrompt ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      AI가 프롬프트 확장 중...
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 className="w-4 h-4 mr-2" />
-                      AI로 프롬프트 확장하기
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-            
-            <div>
-              <label className="text-sm font-medium mb-2 block">
-                타겟 고객 (선택사항)
-              </label>
-              <Textarea
-                placeholder="예: 3-12세 자녀를 둔 부모님, 자녀의 발달과 심리 상태에 관심이 많은 30-40대"
-                value={targetAudience}
-                onChange={(e) => setTargetAudience(e.target.value)}
-                rows={3}
-                className="resize-none"
-              />
-            </div>
-
+          <CardContent>
             <Button 
               onClick={generateWeeklyContent}
               disabled={isGenerating}
@@ -417,8 +316,8 @@ ${content.hashtags.join(' ')}`;
               <Instagram className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-xl font-semibold mb-2">콘텐츠를 생성해보세요</h3>
               <p className="text-muted-foreground mb-6">
-                브랜드 정보를 입력하고 생성 버튼을 클릭하면<br />
-                AI가 전략적인 4가지 콘텐츠를 자동으로 만들어드립니다
+                생성 버튼을 클릭하면<br />
+                AI가 플랫폼에 최적화된 4가지 콘텐츠를 자동으로 만들어드립니다
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
                 {contentTypes.map((type) => (

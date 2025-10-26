@@ -28,7 +28,7 @@ const FounderLetterSection = () => {
             </div>
             <div className="flex items-center justify-center gap-3">
               <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent">
-                창립자의 손편지
+                창립자 이수석의 손편지
               </h2>
               <ChevronDown 
                 className={`w-6 h-6 text-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
@@ -92,7 +92,7 @@ const FounderLetterSection = () => {
                   <div className="mt-12 pt-8 border-t border-border">
                     <p className="text-right text-foreground/70">
                       진심을 담아,<br />
-                      <span className="font-semibold text-primary text-lg">AI하이라이트PRO 창립자</span>
+                      <span className="font-semibold text-primary text-lg">AI하이라이트PRO 창립자 이수석</span>
                     </p>
                   </div>
                 </div>
@@ -107,7 +107,7 @@ const FounderLetterSection = () => {
               onClick={() => navigate('/column')}
               className="border-primary/30 hover:bg-primary/5"
             >
-              창립자의 칼럼 더보기
+              창립자 이수석의 칼럼 더보기
               <ChevronDown className="w-4 h-4 ml-2 -rotate-90" />
             </Button>
           </div>

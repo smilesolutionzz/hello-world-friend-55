@@ -35,7 +35,7 @@ const SampleReport = () => {
           </div>
 
           {/* Accordion for Report Types */}
-          <Accordion type="single" collapsible defaultValue="adult" className="mb-8">
+          <Accordion type="single" collapsible className="mb-8">
             {/* 성인 리포트 */}
             <AccordionItem value="adult" className="border border-primary/20 rounded-lg mb-4 px-6 bg-gradient-to-br from-primary/5 to-background">
               <AccordionTrigger className="hover:no-underline py-6">

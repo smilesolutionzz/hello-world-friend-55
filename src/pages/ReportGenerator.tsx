@@ -64,7 +64,6 @@ const ReportGenerator = () => {
   const { tokenBalance, consumeTokens, checkTokenAvailability } = useTokens();
 
   const REPORT_TYPES = {
-    basic: { name: '기본 리포트', tokens: 25, price: '5,000원', description: '5개 핵심 섹션, AI 자동 분석' },
     detailed: { name: '상세 리포트', tokens: 76, price: '15,000원', description: '9개 전체 섹션 + 외부 이미지 분석' },
     expert: { name: '전문가 리뷰', tokens: 253, price: '50,000원', description: '상세 리포트 + 실제 전문가 검토' }
   };
@@ -821,9 +820,8 @@ const ReportGenerator = () => {
               </CardContent>
             </Card>
 
-            {/* 외부 검사 이미지 업로드 (상세 리포트와 전문가 리뷰만 가능) */}
-            {selectedReportType !== 'basic' && (
-              <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30">
+            {/* 외부 검사 이미지 업로드 */}
+            <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30">
                 <CardContent className="pt-6">
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
@@ -858,7 +856,6 @@ const ReportGenerator = () => {
                   </div>
                 </CardContent>
               </Card>
-            )}
 
             {/* 리포트 타입 선택 */}
             <Card className="bg-gradient-to-br from-slate-900/90 to-indigo-900/90 border-2 border-indigo-500/30 shadow-2xl shadow-indigo-500/20">
@@ -872,7 +869,7 @@ const ReportGenerator = () => {
                 </p>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   {(Object.keys(REPORT_TYPES) as Array<keyof typeof REPORT_TYPES>).map((type) => {
                     const report = REPORT_TYPES[type];
                     const isSelected = selectedReportType === type;

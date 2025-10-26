@@ -127,6 +127,7 @@ import PlatformManual from "./pages/PlatformManual";
 import ReportGenerator from "./pages/ReportGenerator";
 import Column from "./pages/Column";
 import SampleReport from "./pages/SampleReport";
+import MarketingAIAssistant from "./pages/MarketingAIAssistant";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -267,6 +268,7 @@ const App = () => {
           
           <Route path="/platform-manual" element={<PlatformManual />} />
           <Route path="/column" element={<Column />} />
+          <Route path="/marketing-ai-assistant" element={<MarketingAIAssistant />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />

@@ -45,7 +45,7 @@ const ReportGenerator = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isAnalyzingImages, setIsAnalyzingImages] = useState(false);
   const [imageAnalysisResults, setImageAnalysisResults] = useState<string>('');
-  const [selectedReportType, setSelectedReportType] = useState<'basic' | 'detailed' | 'expert'>('basic');
+  const [selectedReportType, setSelectedReportType] = useState<'detailed' | 'expert'>('detailed');
   const [userInput, setUserInput] = useState({
     name: '',
     birthDate: '',
@@ -292,7 +292,7 @@ const ReportGenerator = () => {
           observationSessions: userData.observationSessions,
           chatRooms: userData.chatRooms,
           profile: userData.profile,
-          externalTestImages: selectedReportType !== 'basic' ? imageAnalysisResults : null,
+          externalTestImages: imageAnalysisResults,
           userInput: {
             name: userInput.name,
             birthDate: userInput.birthDate,

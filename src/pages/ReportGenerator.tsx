@@ -8,7 +8,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useTokens } from '@/hooks/useTokens';
 import html2pdf from 'html2pdf.js';
-import { HighlightNavigation } from '@/components/navigation/HighlightNavigation';
 import {
   FileText,
   Download,
@@ -410,7 +409,6 @@ const ReportGenerator = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950">
-      <HighlightNavigation />
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* 프리미엄 헤더 */}
         <div className="text-center mb-16 space-y-6">

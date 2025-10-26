@@ -1035,37 +1035,60 @@ const InstantAIAnalysis = () => {
 
               {/* AI 맞춤 테스트 추천 */}
               {analysisResult?.recommendedTests && analysisResult.recommendedTests.length > 0 && (
-                <Card className="border-amber-500/30 shadow-lg bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">
+                <Card className="border-primary/30 shadow-lg bg-gradient-to-br from-primary/5 to-primary/10">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Brain className="w-5 h-5 text-amber-600" />
-                      <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-                        AI 추천 맞춤 테스트
-                      </span>
+                      <Target className="w-5 h-5 text-primary" />
+                      <span className="text-foreground">우리 플랫폼 추천 검사</span>
                     </CardTitle>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      AI가 분석한 결과를 바탕으로 추천하는 정밀 검사입니다
+                    </p>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid gap-3">
+                    <div className="grid gap-4">
                       {analysisResult.recommendedTests.map((test: any, index: number) => (
                         <div
                           key={index}
-                          className="p-4 bg-background/60 backdrop-blur-sm rounded-lg border border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-all"
+                          className="p-4 bg-background/60 backdrop-blur-sm rounded-lg border border-border hover:border-primary/50 transition-all"
                         >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1 space-y-2">
+                          <div className="space-y-3">
+                            <div className="flex items-start justify-between gap-3">
                               <div className="flex items-center gap-2">
-                                <Badge variant={test.isPremium ? "default" : "secondary"} className="text-xs">
-                                  {test.isPremium ? "프리미엄" : "무료"}
+                                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                                  {index + 1}
                                 </Badge>
-                                <h5 className="font-bold text-foreground">{test.name}</h5>
+                                <h5 className="font-bold text-foreground text-lg">{test.name}</h5>
                               </div>
-                              <p className="text-sm text-muted-foreground">{test.description}</p>
-                              {test.reason && (
-                                <p className="text-xs text-amber-700 dark:text-amber-300 font-medium flex items-start gap-1">
-                                  <span className="font-bold">→</span>
-                                  <span>{test.reason}</span>
-                                </p>
+                            </div>
+                            
+                            <div className="space-y-2 pl-8">
+                              <div>
+                                <p className="text-xs text-muted-foreground font-semibold mb-1">추천 이유</p>
+                                <p className="text-sm text-foreground">{test.reason}</p>
+                              </div>
+                              
+                              {test.expectedFindings && (
+                                <div>
+                                  <p className="text-xs text-muted-foreground font-semibold mb-1">예상 결과</p>
+                                  <p className="text-sm text-muted-foreground/80">{test.expectedFindings}</p>
+                                </div>
                               )}
+                            </div>
+
+                            <div className="flex justify-end pt-2">
+                              <Button
+                                size="sm"
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                                onClick={() => {
+                                  if (test.testId) {
+                                    navigate(`/assessment?type=${test.testId}`);
+                                  }
+                                }}
+                              >
+                                <Sparkles className="w-4 h-4 mr-2" />
+                                검사 시작하기
+                              </Button>
                             </div>
                           </div>
                         </div>

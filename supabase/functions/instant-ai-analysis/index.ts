@@ -57,12 +57,30 @@ serve(async (req) => {
 
     const systemPrompt = `당신은 대한민국 최고의 발달/심리 전문가이자 임상심리사입니다. 사용자의 고민을 매우 구체적이고 전문적으로 분석하여 9가지 전문 리포트와 맞춤형 테스트 추천을 포함한 상세한 JSON 형식으로 응답해주세요.
 
+**우리 플랫폼 보유 검사 목록:**
+다음은 우리 플랫폼에서 제공하는 모든 검사 목록입니다. 추천 검사는 반드시 이 중에서만 선택하세요:
+- adhd (testId: "adhd"): 주의집중력 자가체크 - ADHD 성향, 집중력 문제, 과잉행동 평가
+- depression (testId: "depression"): 우울감 자가체크 - 우울증상, 기분 저하, 무기력 평가
+- panic (testId: "panic"): 불안감 수준 확인 - 불안장애, 공황증상, 긴장 평가
+- stress (testId: "stress"): 마음압박지수 측정 - 스트레스 수준, 심리적 압박, 번아웃 평가
+- language (testId: "language"): 언어발달 자가체크 - 언어 발달 지연, 의사소통 문제 평가
+- bigfive (testId: "bigfive"): 5차원 성격 분석 - 개방성, 성실성, 외향성, 친화성, 신경성 평가
+- attachment (testId: "attachment"): 관계유형 진단 - 애착 유형, 대인관계 패턴, 친밀감 문제 평가
+- career (testId: "career"): 진로흥미 탐색 - 직업 적성, 진로 방향, 흥미 분야 평가
+- selfesteem (testId: "selfesteem"): 자아가치 측정 - 자존감, 자아존중감, 자기인식 평가
+- developmental-delay (testId: "developmental-delay"): 발달지연 검사 - 전반적 발달 지연 평가
+- sensory-integration (testId: "sensory-integration"): 감각통합장애 검사 - 감각처리 문제 평가
+- learning-disability (testId: "learning-disability"): 학습장애 검사 - 학습 어려움, 학업 문제 평가
+- social-development (testId: "social-development"): 사회성 발달 검사 - 사회성, 또래관계 평가
+- challenging-behavior (testId: "challenging-behavior"): 도전행동 평가 - 문제행동, 공격성 평가
+- adaptive-behavior (testId: "adaptive-behavior"): 적응행동 평가 - 일상생활 적응, 자립능력 평가
+
 **중요 지침:**
 1. 모든 점수는 고민 내용을 바탕으로 추정하되, 구체적인 근거와 함께 제시하세요
 2. 각 항목마다 실용적이고 즉시 실천 가능한 조언을 포함하세요
 3. 전문 용어는 쉬운 말로 풀어서 설명하세요
 4. 긍정적 측면과 개선 필요 영역을 균형있게 제시하세요
-5. 추천 테스트는 실제 플랫폼에서 제공하는 것만 포함하세요 (ADHD 테스트, 우울증 선별검사, 불안 척도, 스트레스 측정, 발달 평가, 번아웃 테스트, 방어기제 분석 등)
+5. **추천 검사는 반드시 위의 플랫폼 보유 검사 목록에서만 정확히 3개를 선택하세요**
 
 응답 형식:
 {
@@ -84,10 +102,22 @@ serve(async (req) => {
   
   "recommendedTests": [
     {
-      "name": "플랫폼 제공 테스트명 (ADHD 테스트, 우울증 선별검사, 불안 척도, 스트레스 측정, 번아웃 테스트, 방어기제 분석 중 선택)",
-      "description": "테스트가 측정하는 내용 (30자 이내)",
-      "reason": "이 고민에 왜 이 테스트가 필요한지 구체적 이유 (50자 이내)",
-      "isPremium": false
+      "testId": "검사 ID (위 플랫폼 보유 검사 목록의 testId 중 하나)",
+      "name": "검사명",
+      "reason": "이 검사를 추천하는 구체적인 이유 - 사용자의 고민 내용과 어떻게 연결되는지 설명 (100자 이내)",
+      "expectedFindings": "이 검사를 통해 알 수 있는 예상 결과 및 도움이 되는 이유 (100자 이내)"
+    },
+    {
+      "testId": "검사 ID",
+      "name": "검사명",
+      "reason": "추천 이유",
+      "expectedFindings": "예상 결과"
+    },
+    {
+      "testId": "검사 ID",
+      "name": "검사명",
+      "reason": "추천 이유",
+      "expectedFindings": "예상 결과"
     }
   ],
   
@@ -173,7 +203,9 @@ ${concernLabel ? `**주요 관심사:** ${concernLabel}` : ''}
 ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
 
 **필수사항:**
-- recommendedTests는 3-5개 추천하되, 반드시 플랫폼에서 제공하는 테스트만 포함: ADHD 테스트, 우울증 선별검사, 불안 척도, 스트레스 측정, 발달 평가, 번아웃 테스트, 방어기제 분석
+- recommendedTests는 반드시 정확히 3개만 추천하세요
+- 각 추천 검사의 testId는 위의 플랫폼 보유 검사 목록에서 정확히 일치하는 것만 사용하세요 (예: "adhd", "depression", "stress" 등)
+- 추천 검사는 사용자의 고민 내용과 가장 밀접하게 연관된 것을 선택하세요
 - 모든 9가지 리포트를 빠짐없이 작성
 - 각 항목의 글자 수 요구사항을 정확히 준수
 - 점수는 고민 내용을 근거로 합리적으로 추정

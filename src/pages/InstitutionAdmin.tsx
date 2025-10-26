@@ -641,6 +641,13 @@ export default function InstitutionAdmin() {
               >
                 결제 ({stats?.this_month_payments || 0})
               </TabsTrigger>
+              <TabsTrigger 
+                value="marketing" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+              >
+                <Bot className="h-4 w-4 mr-2" />
+                마케팅 AI
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -978,6 +985,32 @@ export default function InstitutionAdmin() {
                     결제 내역이 없습니다.
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Marketing AI Tab */}
+          <TabsContent value="marketing" className="mt-0">
+            <Card className="bg-[#0F1823] border-slate-800">
+              <CardHeader className="border-b border-slate-800">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/20">
+                    <Bot className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl text-white">마케팅 AI 어시스턴트</CardTitle>
+                    <p className="text-sm text-slate-400 mt-1">
+                      기관 데이터를 기반으로 맞춤형 마케팅 전략을 제안받으세요
+                    </p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <iframe
+                  src="/marketing-ai-assistant"
+                  className="w-full h-[calc(100vh-300px)] border-0"
+                  title="마케팅 AI 어시스턴트"
+                />
               </CardContent>
             </Card>
           </TabsContent>

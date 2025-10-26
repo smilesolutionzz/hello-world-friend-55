@@ -80,6 +80,7 @@ import GrowthCommunity from "./pages/GrowthCommunity";
 import TokenTest from "./pages/TokenTest";
 import StressPackage from "./pages/StressPackage";
 import DepressionPackage from "./pages/DepressionPackage";
+import InstagramContentGenerator from "./pages/InstagramContentGenerator";
 import AnxietyPackage from "./pages/AnxietyPackage";
 import FocusPackage from "./pages/FocusPackage";
 import ChildPackage from "./pages/ChildPackage";
@@ -199,6 +200,7 @@ const App = () => {
           <Route path="/institution-onboarding" element={<InstitutionOnboarding />} />
           <Route path="/stress-package" element={<StressPackage />} />
           <Route path="/depression-package" element={<DepressionPackage />} />
+          <Route path="/instagram-content" element={<InstagramContentGenerator />} />
           <Route path="/anxiety-package" element={<AnxietyPackage />} />
           <Route path="/focus-package" element={<FocusPackage />} />
           <Route path="/child-package" element={<ChildPackage />} />

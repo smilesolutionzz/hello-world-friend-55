@@ -133,6 +133,9 @@ verify_jwt = false
 [functions.instant-ai-analysis]
 verify_jwt = false
 
+[functions.instagram-content-generator]
+verify_jwt = false
+
 [functions.instant-report]
 verify_jwt = false
 

@@ -809,6 +809,57 @@ const Column = () => {
             </p>
           </div>
 
+          {/* Mission Section */}
+          <Card className="mb-16 overflow-hidden border-primary/20 bg-gradient-to-br from-card via-primary/5 to-card">
+            <CardContent className="p-8 md:p-12">
+              <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20 mb-4">
+                    <Heart className="w-4 h-4 text-secondary" />
+                    <span className="text-sm font-semibold text-secondary">Our Mission</span>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent mb-4">
+                    AI와 사람의 온기가 만나는 곳
+                  </h2>
+                </div>
+
+                <div className="space-y-6 text-center">
+                  <p className="text-lg md:text-xl text-foreground/90 leading-relaxed">
+                    지난 <span className="font-bold text-primary">14년간 5,000명 이상</span>의 학부모, 청소년, 아동과 함께해온 현장 경험이<br />
+                    AI 기술과 만나 새로운 가능성을 열었습니다.
+                  </p>
+
+                  <div className="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg text-left">
+                    <p className="text-base md:text-lg font-medium text-foreground/90 leading-relaxed">
+                      "수천 번의 상담에서 배운 것은, 진정한 변화는 데이터와 사람의 따뜻함이 함께할 때 일어난다는 것입니다. 
+                      AI가 발견한 패턴에 전문가의 통찰이 더해질 때, 비로소 한 사람의 인생이 달라집니다."
+                    </p>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-6 pt-6">
+                    <div className="text-center space-y-2">
+                      <div className="text-4xl md:text-5xl font-bold text-primary">14년</div>
+                      <div className="text-sm text-muted-foreground">현장 경험</div>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <div className="text-4xl md:text-5xl font-bold text-primary">5,000+</div>
+                      <div className="text-sm text-muted-foreground">상담 케이스</div>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <div className="text-4xl md:text-5xl font-bold text-primary">∞</div>
+                      <div className="text-sm text-muted-foreground">무한한 가능성</div>
+                    </div>
+                  </div>
+
+                  <p className="text-base text-muted-foreground pt-4">
+                    학부모의 불안, 청소년의 방황, 아동의 작은 신호 하나하나가<br />
+                    모두 소중한 성장의 기회입니다. 함께 만들어가겠습니다.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Category Filter */}
           <div className="flex flex-wrap justify-center gap-2 mb-12">
             {categories.map((category) => (

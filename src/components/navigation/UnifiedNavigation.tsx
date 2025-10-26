@@ -347,7 +347,7 @@ export const UnifiedNavigation = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* 칼럼 */}
+              {/* 창립자의 칼럼 */}
               <Button
                 variant={isActive('/column') ? "default" : "ghost"}
                 size="sm"
@@ -355,7 +355,7 @@ export const UnifiedNavigation = () => {
                 className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
               >
                 <Heart className="w-4 h-4 mr-2" />
-                칼럼
+                창립자의 칼럼
               </Button>
 
               {/* Login Button */}
@@ -506,6 +506,19 @@ export const UnifiedNavigation = () => {
                             {item.label}
                           </Button>
                         ))}
+                      </div>
+                      
+                      {/* 창립자의 칼럼 */}
+                      <div className="pl-2 space-y-1">
+                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">칼럼</p>
+                        <Button
+                          variant={isActive('/column') ? "default" : "ghost"}
+                          className="w-full justify-start gap-3"
+                          onClick={() => handleNavigation('/column')}
+                        >
+                          <Heart className="w-4 h-4" />
+                          창립자의 칼럼
+                        </Button>
                       </div>
                       
                     </div>

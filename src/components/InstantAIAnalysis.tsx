@@ -426,66 +426,24 @@ const InstantAIAnalysis = () => {
           
           {/* 고민 작성 팁 */}
           {!showResult && (
-            <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20 backdrop-blur-sm rounded-xl border border-amber-200/30 dark:border-amber-800/30 p-5">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
-                  <span className="text-base">💡</span>
+            <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20 backdrop-blur-sm rounded-xl border border-amber-200/30 dark:border-amber-800/30 p-4">
+              <div className="flex items-start gap-2.5">
+                <div className="flex-shrink-0 w-7 h-7 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
+                  <span className="text-sm">💡</span>
                 </div>
                 <div className="flex-1 space-y-2">
                   <p className="text-sm font-bold text-amber-900 dark:text-amber-100">
                     고민 작성 팁
                   </p>
-                  <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-1">
-                    <li>• <span className="font-semibold text-amber-900 dark:text-amber-100">💬 "AI 다듬기" 버튼</span>을 누르면 고민이 자동으로 확장됩니다</li>
-                    <li>• 최소 10자 이상, 핵심 고민만 간단히 적어주세요</li>
-                    <li>• 예시: "5살 아이 말 늦어요", "우울해요", "아이가 친구 없어요"</li>
+                  <ul className="text-xs text-amber-800 dark:text-amber-200 space-y-0.5">
+                    <li>• 10자 이상 핵심 고민만 간단히 적어주세요</li>
+                    <li>• 예: "5살 아이 말 늦어요", "아이가 친구 없어요"</li>
                   </ul>
                   
-                  <div className="mt-3 pt-3 border-t border-amber-200/50 dark:border-amber-800/50">
-                    <p className="text-sm font-bold text-amber-900 dark:text-amber-100 mb-2.5 flex items-center gap-1.5">
-                      <span className="text-base">📊</span>
-                      <span>자동 생성되는 9가지 전문 리포트</span>
+                  <div className="mt-2 pt-2 border-t border-amber-200/50 dark:border-amber-800/50">
+                    <p className="text-xs text-amber-800 dark:text-amber-200">
+                      <span className="font-bold">📊 9가지 전문 리포트</span> + AI 발달 예측 무료 제공
                     </p>
-                    <div className="grid grid-cols-2 gap-2 text-sm text-amber-800 dark:text-amber-200 font-medium">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-green-600 dark:text-green-400 font-bold">✓</span>
-                        <span>발달 종합 평가</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-green-600 dark:text-green-400 font-bold">✓</span>
-                        <span>심리 상태 분석</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-green-600 dark:text-green-400 font-bold">✓</span>
-                        <span>강점/약점 분석</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-green-600 dark:text-green-400 font-bold">✓</span>
-                        <span>맞춤 활동 제안</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-green-600 dark:text-green-400 font-bold">✓</span>
-                        <span>발달 로드맵</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-green-600 dark:text-green-400 font-bold">✓</span>
-                        <span>또래 비교 분석</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-green-600 dark:text-green-400 font-bold">✓</span>
-                        <span>전문가 소견서</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-green-600 dark:text-green-400 font-bold">✓</span>
-                        <span>가족 지원 가이드</span>
-                      </div>
-                    </div>
-                    <div className="mt-3 p-2 bg-gradient-to-r from-amber-100/80 to-orange-100/80 dark:from-amber-900/30 dark:to-orange-900/30 rounded-lg">
-                      <p className="text-sm text-amber-900 dark:text-amber-200 font-bold flex items-center gap-1.5">
-                        <span className="text-lg">+</span>
-                        <span>AI 기반 장기 발달 예측까지 무료 제공</span>
-                      </p>
-                    </div>
                   </div>
                 </div>
               </div>

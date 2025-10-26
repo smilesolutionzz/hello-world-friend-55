@@ -126,6 +126,7 @@ import KPIDashboard from "./pages/KPIDashboard";
 import PlatformManual from "./pages/PlatformManual";
 import ReportGenerator from "./pages/ReportGenerator";
 import Column from "./pages/Column";
+import SampleReport from "./pages/SampleReport";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -244,6 +245,7 @@ const App = () => {
           <Route path="/observation-old" element={<Observation />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
           <Route path="/report-generator" element={<ReportGenerator />} />
+          <Route path="/sample-report" element={<SampleReport />} />
           <Route path="/concern-storage" element={<ConcernStorage />} />
           <Route path="/expert" element={<Expert />} />
           <Route path="/experts" element={<Experts />} />

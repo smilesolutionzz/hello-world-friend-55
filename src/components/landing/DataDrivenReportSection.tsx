@@ -286,7 +286,7 @@ const DataDrivenReportSection = () => {
             <Button
               size="lg"
               variant="outline"
-              onClick={() => navigate('/report-generator')}
+              onClick={() => navigate('/sample-report')}
               className="border-primary/30 hover:bg-primary/5"
             >
               <FileText className="w-5 h-5 mr-2" />

@@ -120,21 +120,6 @@ const HeroSection = () => {
             </button>
           </div>
 
-          {/* 신뢰 지표 */}
-          <div className="flex flex-wrap gap-6 justify-center items-center text-white/70 text-sm mt-4">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span>실시간 2,000+ 사용자</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>⭐</span>
-              <span>평균 4.8/5.0 만족도</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>🔒</span>
-              <span>100% 익명 보장</span>
-            </div>
-          </div>
         </div>
 
         {/* Scroll Indicator */}

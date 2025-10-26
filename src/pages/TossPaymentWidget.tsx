@@ -5,47 +5,23 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Loader2, CreditCard, Building2, FileText } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 
-const TOSS_CLIENT_KEY = 'live_gck_ma60RZblrqo1lKlBKmjW3wzYWBn1';
+const TOSS_CLIENT_KEY = 'test_ck_ORzdMaqN3w22D5wkBxAP85AkYXQG';
 
 interface PaymentWidgetState {
   tokenAmount: number;
   price: number;
 }
 
-type PaymentMethod = '카드' | '계좌이체' | '가상계좌';
-
 const TossPaymentWidget = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
   const [processing, setProcessing] = useState(false);
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('계좌이체');
 
   const state = location.state as PaymentWidgetState;
   const { tokenAmount = 0, price = 0 } = state || {};
-
-  const paymentMethods = [
-    { 
-      value: '카드' as PaymentMethod, 
-      label: '신용/체크카드', 
-      icon: CreditCard,
-      description: '카드사 심사 진행중'
-    },
-    { 
-      value: '계좌이체' as PaymentMethod, 
-      label: '실시간 계좌이체', 
-      icon: Building2,
-      description: '즉시 이용 가능'
-    },
-    { 
-      value: '가상계좌' as PaymentMethod, 
-      label: '가상계좌', 
-      icon: FileText,
-      description: '입금 확인 후 이용'
-    },
-  ];
 
   useEffect(() => {
     if (!tokenAmount || !price) {
@@ -79,8 +55,8 @@ const TossPaymentWidget = () => {
       // 토스페이먼츠 결제창 SDK 로드
       const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
 
-      // 결제창 바로 호출 (선택한 결제 수단으로)
-      await tossPayments.requestPayment(selectedMethod, {
+      // 결제창 바로 호출 (위젯 없이!)
+      await tossPayments.requestPayment('카드', {
         amount: Math.round(price),
         orderId,
         orderName: `토큰 ${tokenAmount}개`,
@@ -120,56 +96,6 @@ const TossPaymentWidget = () => {
           <p className="text-muted-foreground mb-8">
             안전한 토스페이먼츠로 결제하세요
           </p>
-
-          {/* 결제 수단 선택 */}
-          <div className="mb-6">
-            <h2 className="text-sm font-semibold mb-3">결제 수단 선택</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {paymentMethods.map((method) => {
-                const Icon = method.icon;
-                const isSelected = selectedMethod === method.value;
-                const isCardDisabled = method.value === '카드';
-                
-                return (
-                  <button
-                    key={method.value}
-                    onClick={() => !isCardDisabled && setSelectedMethod(method.value)}
-                    disabled={isCardDisabled}
-                    className={`
-                      relative p-4 rounded-lg border-2 transition-all text-left
-                      ${isSelected 
-                        ? 'border-primary bg-primary/5' 
-                        : isCardDisabled
-                        ? 'border-muted bg-muted/30 cursor-not-allowed opacity-60'
-                        : 'border-muted hover:border-primary/50 hover:bg-muted/50 cursor-pointer'
-                      }
-                    `}
-                  >
-                    <div className="flex items-start gap-3">
-                      <Icon className={`w-5 h-5 mt-0.5 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
-                      <div className="flex-1">
-                        <div className="font-medium mb-1">{method.label}</div>
-                        <div className={`text-xs ${
-                          isCardDisabled 
-                            ? 'text-muted-foreground' 
-                            : isSelected 
-                            ? 'text-primary' 
-                            : 'text-muted-foreground'
-                        }`}>
-                          {method.description}
-                        </div>
-                      </div>
-                      {isSelected && !isCardDisabled && (
-                        <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-white" />
-                        </div>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
 
           {/* 결제 정보 */}
           <div className="bg-muted/50 rounded-lg p-6 mb-6">

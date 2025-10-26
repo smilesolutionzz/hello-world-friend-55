@@ -8,10 +8,7 @@ const corsHeaders = {
 interface ContentPost {
   type: '나의_이야기' | '라이프스타일' | '가진_지식' | '문제_해결';
   title: string;
-  mainText: string;
-  subPoints: string[];
-  goal: string;
-  result: string[];
+  caption: string;
   originalImageUrl: string;
   textOverlayImageUrl: string;
   hashtags: string[];
@@ -84,17 +81,13 @@ serve(async (req) => {
       // Create text overlay image
       const textOverlayImageUrl = await createTextOverlayImage(
         originalImageUrl, 
-        contentText.title,
-        contentText.mainText
+        contentText.title
       );
 
       contents.push({
         type: contentType.type as any,
         title: contentText.title,
-        mainText: contentText.mainText,
-        subPoints: contentText.subPoints,
-        goal: contentText.goal,
-        result: contentText.result,
+        caption: contentText.caption,
         originalImageUrl: originalImageUrl,
         textOverlayImageUrl: textOverlayImageUrl,
         hashtags: contentText.hashtags
@@ -126,16 +119,27 @@ function getImagePrompt(contentType: string): string {
 }
 
 async function generateContentText(contentType: string, apiKey: string) {
-  const prompt = `당신은 인스타그램 콘텐츠 전문가입니다. "${contentType}" 주제로 매력적인 게시물 내용을 한국어로 작성해주세요.
+  const contentTypeExamples = {
+    '나의_이야기': '개인적인 경험이나 일상 이야기',
+    '라이프스타일': '일상 루틴, 취미, 라이프스타일 팁',
+    '가진_지식': '전문 지식이나 노하우 공유',
+    '문제_해결': '겪었던 문제와 해결 방법 공유'
+  };
+
+  const prompt = `당신은 인스타그램 콘텐츠 전문가입니다. "${contentType}" (${contentTypeExamples[contentType]}) 주제로 사람들의 관심을 끄는 매력적인 인스타그램 게시글을 작성해주세요.
+
+요구사항:
+1. 첫 문장부터 강력한 후킹으로 시작 (질문, 공감, 흥미로운 사실 등)
+2. 이모지를 적절히 활용하여 시각적으로 매력적이게
+3. 단락을 나누어 가독성 좋게 작성
+4. 실제 인스타그램 게시글처럼 자연스럽게
+5. 마지막에 질문이나 행동 유도로 마무리
 
 다음 JSON 형식으로 응답해주세요:
 {
-  "title": "매력적인 제목 (15자 이내)",
-  "mainText": "메인 텍스트 (40자 이내, 흥미롭고 공감되는 내용)",
-  "subPoints": ["포인트1", "포인트2", "포인트3"] (각 15자 이내),
-  "goal": "이 콘텐츠의 목적 (30자 이내)",
-  "result": ["기대결과1", "기대결과2"],
-  "hashtags": ["#해시태그1", "#해시태그2", "#해시태그3", "#해시태그4", "#해시태그5"]
+  "title": "이미지에 들어갈 짧은 제목 (10자 이내)",
+  "caption": "바로 복사해서 업로드할 수 있는 완성된 게시글 본문 (이모지 포함, 300-500자)",
+  "hashtags": ["#해시태그1", "#해시태그2", "#해시태그3", "#해시태그4", "#해시태그5", "#해시태그6", "#해시태그7", "#해시태그8"]
 }`;
 
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -165,7 +169,7 @@ async function generateContentText(contentType: string, apiKey: string) {
   return content;
 }
 
-async function createTextOverlayImage(baseImageUrl: string, title: string, mainText: string): Promise<string> {
+async function createTextOverlayImage(baseImageUrl: string, title: string): Promise<string> {
   // Create canvas and draw text overlay
   // Since Deno doesn't have canvas, we'll use a simple SVG overlay approach
   
@@ -192,24 +196,14 @@ async function createTextOverlayImage(baseImageUrl: string, title: string, mainT
       </defs>
       
       <!-- Title text -->
-      <text x="540" y="880" 
+      <text x="540" y="950" 
             font-family="Arial, sans-serif" 
-            font-size="48" 
+            font-size="56" 
             font-weight="bold" 
             fill="white" 
             text-anchor="middle"
             filter="url(#shadow)">
         ${escapeXml(title)}
-      </text>
-      
-      <!-- Main text -->
-      <text x="540" y="950" 
-            font-family="Arial, sans-serif" 
-            font-size="32" 
-            fill="white" 
-            text-anchor="middle"
-            filter="url(#shadow)">
-        ${escapeXml(mainText)}
       </text>
     </svg>
   `;

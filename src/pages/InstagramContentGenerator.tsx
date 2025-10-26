@@ -11,10 +11,7 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 interface ContentPost {
   type: '나의_이야기' | '라이프스타일' | '가진_지식' | '문제_해결';
   title: string;
-  mainText: string;
-  subPoints: string[];
-  goal: string;
-  result: string[];
+  caption: string;
   originalImageUrl: string;
   textOverlayImageUrl?: string;
   hashtags: string[];
@@ -79,11 +76,8 @@ const InstagramContentGenerator = () => {
         line = testLine;
       }
     }
-    ctx.fillText(line, 540, y);
-
-    // 메인 텍스트
-    ctx.font = '42px Arial, sans-serif';
-    ctx.fillText(content.mainText, 540, y + 80);
+    // 제목만 표시
+    ctx.fillText(line, 540, 950);
   };
 
   const contentTypes = [
@@ -198,15 +192,11 @@ const InstagramContentGenerator = () => {
   };
 
   const copyFullContent = (content: ContentPost) => {
-    const fullText = `${content.title}
-
-${content.mainText}
-
-${content.subPoints.map(point => `• ${point}`).join('\n')}
+    const fullText = `${content.caption}
 
 ${content.hashtags.join(' ')}`;
     
-    copyToClipboard(fullText, "전체 콘텐츠");
+    copyToClipboard(fullText, "게시글");
   };
 
   return (
@@ -372,43 +362,15 @@ ${content.hashtags.join(' ')}`;
                       {/* 콘텐츠 내용 */}
                       <div className="space-y-3">
                         <div>
-                          <p className="font-semibold text-sm text-muted-foreground mb-1">메인 텍스트</p>
-                          <p className="text-sm">{content.mainText}</p>
-                        </div>
-
-                        {content.subPoints.length > 0 && (
-                          <div>
-                            <p className="font-semibold text-sm text-muted-foreground mb-1">주요 포인트</p>
-                            <ul className="space-y-1">
-                              {content.subPoints.map((point, i) => (
-                                <li key={i} className="text-sm flex items-start gap-2">
-                                  <span className="text-primary">→</span>
-                                  <span>{point}</span>
-                                </li>
-                              ))}
-                            </ul>
+                          <p className="font-semibold text-sm text-muted-foreground mb-2">📝 게시글</p>
+                          <div className="text-sm whitespace-pre-wrap bg-muted/30 p-4 rounded-lg border">
+                            {content.caption}
                           </div>
-                        )}
-
-                        <div className="pt-2 border-t">
-                          <p className="font-semibold text-sm text-primary mb-1">🎯 목적</p>
-                          <p className="text-sm text-muted-foreground">{content.goal}</p>
                         </div>
-
-                        {content.result.length > 0 && (
-                          <div>
-                            <p className="font-semibold text-sm text-primary mb-1">💫 기대 결과</p>
-                            <ul className="space-y-1">
-                              {content.result.map((res, i) => (
-                                <li key={i} className="text-sm text-muted-foreground">- {res}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
 
                         {content.hashtags.length > 0 && (
                           <div>
-                            <p className="font-semibold text-sm text-primary mb-1">🏷️ 해시태그</p>
+                            <p className="font-semibold text-sm text-primary mb-2">🏷️ 해시태그</p>
                             <p className="text-sm text-muted-foreground">{content.hashtags.join(' ')}</p>
                           </div>
                         )}
@@ -458,7 +420,7 @@ ${content.hashtags.join(' ')}`;
                           size="sm"
                         >
                           <Copy className="w-4 h-4 mr-1" />
-                          텍스트
+                          게시글 복사
                         </Button>
                       </div>
                     </CardContent>

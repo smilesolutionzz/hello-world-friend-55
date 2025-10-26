@@ -2,9 +2,10 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import Footer from "@/components/ui/footer";
 import SEOHead from "@/components/common/SEOHead";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Sparkles, User, Baby } from "lucide-react";
+import { Sparkles, User, Baby, HeartPulse } from "lucide-react";
 import { AdultReportContent } from "@/components/sample-reports/AdultReportContent";
 import { ChildReportContent } from "@/components/sample-reports/ChildReportContent";
+import { SeniorReportContent } from "@/components/sample-reports/SeniorReportContent";
 
 const SampleReport = () => {
   return (
@@ -29,7 +30,7 @@ const SampleReport = () => {
               종합 분석 리포트 샘플
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              성인 심리 검사와 아동 발달 평가의 실제 리포트 예시를 확인해보세요
+              성인 심리, 아동 발달, 노인 건강 평가의 실제 리포트 예시를 확인해보세요
             </p>
           </div>
 
@@ -54,7 +55,7 @@ const SampleReport = () => {
             </AccordionItem>
 
             {/* 아동 발달 리포트 */}
-            <AccordionItem value="child" className="border border-secondary/20 rounded-lg px-6 bg-gradient-to-br from-secondary/5 to-background">
+            <AccordionItem value="child" className="border border-secondary/20 rounded-lg mb-4 px-6 bg-gradient-to-br from-secondary/5 to-background">
               <AccordionTrigger className="hover:no-underline py-6">
                 <div className="flex items-center gap-4 text-left">
                   <div className="flex items-center justify-center w-12 h-12 rounded-full bg-secondary/10 shrink-0">
@@ -68,6 +69,24 @@ const SampleReport = () => {
               </AccordionTrigger>
               <AccordionContent className="pt-6">
                 <ChildReportContent />
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* 노인 건강 리포트 */}
+            <AccordionItem value="senior" className="border border-primary/20 rounded-lg px-6 bg-gradient-to-br from-primary/5 to-background">
+              <AccordionTrigger className="hover:no-underline py-6">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 shrink-0">
+                    <HeartPulse className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">노인 건강 종합 리포트</h2>
+                    <p className="text-sm text-muted-foreground mt-1">인지·건강 평가 및 맞춤 관리 계획 (이○○ 님, 만 72세)</p>
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="pt-6">
+                <SeniorReportContent />
               </AccordionContent>
             </AccordionItem>
           </Accordion>

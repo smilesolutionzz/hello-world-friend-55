@@ -355,7 +355,7 @@ export const UnifiedNavigation = () => {
                 className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
               >
                 <Heart className="w-4 h-4 mr-2" />
-                창립자 이수석의 칼럼
+                창립자칼럼
               </Button>
 
               {/* Login Button */}
@@ -517,7 +517,7 @@ export const UnifiedNavigation = () => {
                           onClick={() => handleNavigation('/column')}
                         >
                           <Heart className="w-4 h-4" />
-                          창립자 이수석의 칼럼
+                          창립자칼럼
                         </Button>
                       </div>
                       

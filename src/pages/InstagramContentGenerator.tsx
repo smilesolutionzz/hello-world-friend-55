@@ -15,14 +15,76 @@ interface ContentPost {
   subPoints: string[];
   goal: string;
   result: string[];
-  imageUrl: string;
+  originalImageUrl: string;
+  textOverlayImageUrl?: string;
   hashtags: string[];
 }
 
 const InstagramContentGenerator = () => {
   const [contents, setContents] = useState<ContentPost[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [activeImageView, setActiveImageView] = useState<{[key: number]: 'overlay' | 'original'}>({});
   const { toast } = useToast();
+
+  // 텍스트를 이미지에 오버레이하는 함수
+  const drawTextOverlay = (index: number, content: ContentPost) => {
+    const canvas = document.getElementById(`canvas-${index}`) as HTMLCanvasElement;
+    const img = document.getElementById(`original-${index}`) as HTMLImageElement;
+    
+    if (!canvas || !img || !img.complete) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // 캔버스 크기 설정
+    canvas.width = 1080;
+    canvas.height = 1080;
+
+    // 원본 이미지 그리기
+    ctx.drawImage(img, 0, 0, 1080, 1080);
+
+    // 그라디언트 오버레이
+    const gradient = ctx.createLinearGradient(0, 0, 0, 1080);
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.7)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1080, 1080);
+
+    // 텍스트 그림자 설정
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 4;
+
+    // 제목 텍스트
+    ctx.font = 'bold 64px Arial, sans-serif';
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    // 텍스트가 너무 길면 줄바꿈
+    const maxWidth = 900;
+    const words = content.title.split(' ');
+    let line = '';
+    let y = 880;
+    
+    for (let i = 0; i < words.length; i++) {
+      const testLine = line + words[i] + ' ';
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth && i > 0) {
+        ctx.fillText(line, 540, y);
+        line = words[i] + ' ';
+        y += 70;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, 540, y);
+
+    // 메인 텍스트
+    ctx.font = '42px Arial, sans-serif';
+    ctx.fillText(content.mainText, 540, y + 80);
+  };
 
   const contentTypes = [
     { type: '나의_이야기', emoji: '📖', color: 'from-red-500 to-pink-500', title: '1. 나의 이야기' },
@@ -46,6 +108,13 @@ const InstagramContentGenerator = () => {
 
       if (data?.contents) {
         setContents(data.contents);
+        // 모든 컨텐츠의 초기 뷰를 'overlay'로 설정
+        const initialViews: {[key: number]: 'overlay' | 'original'} = {};
+        data.contents.forEach((_: any, index: number) => {
+          initialViews[index] = 'overlay';
+        });
+        setActiveImageView(initialViews);
+        
         toast({
           title: "콘텐츠 생성 완료! 🎉",
           description: "이번 주 4개의 콘텐츠가 생성되었습니다.",
@@ -220,22 +289,83 @@ ${content.hashtags.join(' ')}`;
                       <CardTitle className="text-xl">{content.title}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      {/* 이미지 */}
-                      <div className="relative aspect-square rounded-lg overflow-hidden bg-muted group">
-                        <img 
-                          src={content.imageUrl} 
-                          alt={content.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      {/* 이미지 탭 */}
+                      <div className="space-y-3">
+                        <div className="flex gap-2 border-b pb-2">
                           <Button
-                            onClick={() => copyImageToClipboard(content.imageUrl)}
+                            variant={activeImageView[index] === 'overlay' ? 'default' : 'ghost'}
                             size="sm"
-                            variant="secondary"
+                            className="flex-1"
+                            onClick={() => setActiveImageView({...activeImageView, [index]: 'overlay'})}
                           >
-                            <Copy className="w-4 h-4 mr-2" />
-                            이미지 복사
+                            텍스트 삽입
                           </Button>
+                          <Button
+                            variant={activeImageView[index] === 'original' ? 'default' : 'ghost'}
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => setActiveImageView({...activeImageView, [index]: 'original'})}
+                          >
+                            원본 이미지
+                          </Button>
+                        </div>
+
+                        {/* 이미지 표시 */}
+                        <div className="relative aspect-square rounded-lg overflow-hidden bg-muted group">
+                          {activeImageView[index] === 'overlay' ? (
+                            <>
+                              <canvas 
+                                id={`canvas-${index}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <img 
+                                id={`original-${index}`}
+                                src={content.originalImageUrl} 
+                                alt={content.title}
+                                className="hidden"
+                                crossOrigin="anonymous"
+                                onLoad={() => drawTextOverlay(index, content)}
+                              />
+                            </>
+                          ) : (
+                            <img 
+                              src={content.originalImageUrl} 
+                              alt={`${content.title} 원본`}
+                              className="w-full h-full object-cover"
+                              crossOrigin="anonymous"
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <Button
+                              onClick={() => {
+                                const isOverlay = activeImageView[index] === 'overlay';
+                                if (isOverlay) {
+                                  const canvas = document.getElementById(`canvas-${index}`) as HTMLCanvasElement;
+                                  if (canvas) {
+                                    canvas.toBlob((blob) => {
+                                      if (blob) {
+                                        navigator.clipboard.write([
+                                          new ClipboardItem({ [blob.type]: blob })
+                                        ]).then(() => {
+                                          toast({
+                                            title: "이미지 복사 완료",
+                                            description: "텍스트가 삽입된 이미지가 복사되었습니다.",
+                                          });
+                                        });
+                                      }
+                                    });
+                                  }
+                                } else {
+                                  copyImageToClipboard(content.originalImageUrl);
+                                }
+                              }}
+                              size="sm"
+                              variant="secondary"
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              복사
+                            </Button>
+                          </div>
                         </div>
                       </div>
 
@@ -285,20 +415,50 @@ ${content.hashtags.join(' ')}`;
                       </div>
 
                       {/* 액션 버튼 */}
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-3 gap-2">
                         <Button
-                          onClick={() => downloadImage(content.imageUrl, content.title)}
+                          onClick={() => {
+                            const canvas = document.getElementById(`canvas-${index}`) as HTMLCanvasElement;
+                            if (canvas) {
+                              canvas.toBlob((blob) => {
+                                if (blob) {
+                                  const url = window.URL.createObjectURL(blob);
+                                  const a = document.createElement('a');
+                                  a.href = url;
+                                  a.download = `${content.title}_텍스트삽입.png`;
+                                  document.body.appendChild(a);
+                                  a.click();
+                                  document.body.removeChild(a);
+                                  window.URL.revokeObjectURL(url);
+                                  toast({
+                                    title: "다운로드 완료",
+                                    description: "텍스트가 삽입된 이미지가 저장되었습니다.",
+                                  });
+                                }
+                              });
+                            }
+                          }}
                           variant="outline"
+                          size="sm"
                         >
-                          <Download className="w-4 h-4 mr-2" />
-                          이미지 저장
+                          <Download className="w-4 h-4 mr-1" />
+                          텍스트 이미지
+                        </Button>
+                        <Button
+                          onClick={() => downloadImage(content.originalImageUrl, `${content.title}_원본`)}
+                          variant="outline"
+                          size="sm"
+                        >
+                          <Download className="w-4 h-4 mr-1" />
+                          원본 이미지
                         </Button>
                         <Button
                           onClick={() => copyFullContent(content)}
                           variant="outline"
+                          size="sm"
                         >
-                          <Copy className="w-4 h-4 mr-2" />
-                          텍스트 복사
+                          <Copy className="w-4 h-4 mr-1" />
+                          텍스트
                         </Button>
                       </div>
                     </CardContent>

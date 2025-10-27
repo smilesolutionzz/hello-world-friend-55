@@ -424,8 +424,8 @@ export function SocialContentGenerator({ institutionName }: SocialContentGenerat
           {contents.length === 0 && !isGenerating && (
             <Card className="bg-muted/30">
               <CardContent className="py-12 text-center">
-                <Sparkles className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">
+                <Sparkles className="w-16 h-16 mx-auto mb-4 text-primary" />
+                <p className="text-foreground">
                   기관명을 입력하고 채널을 선택한 후 생성 버튼을 눌러 맞춤형 콘텐츠를 만들어보세요.
                 </p>
               </CardContent>

@@ -36,24 +36,6 @@ const SampleReport = () => {
 
           {/* Accordion for Report Types */}
           <Accordion type="single" collapsible className="mb-8">
-            {/* 성인 리포트 */}
-            <AccordionItem value="adult" className="border border-primary/20 rounded-lg mb-4 px-6 bg-gradient-to-br from-primary/5 to-background">
-              <AccordionTrigger className="hover:no-underline py-6">
-                <div className="flex items-center gap-4 text-left">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 shrink-0">
-                    <User className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold">성인 종합 심리 리포트</h2>
-                    <p className="text-sm text-muted-foreground mt-1">30일간의 데이터 기반 심층 분석 (김○○ 님, 가명)</p>
-                  </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pt-6">
-                <AdultReportContent />
-              </AccordionContent>
-            </AccordionItem>
-
             {/* 아동 발달 리포트 */}
             <AccordionItem value="child" className="border border-secondary/20 rounded-lg mb-4 px-6 bg-gradient-to-br from-secondary/5 to-background">
               <AccordionTrigger className="hover:no-underline py-6">
@@ -69,6 +51,24 @@ const SampleReport = () => {
               </AccordionTrigger>
               <AccordionContent className="pt-6">
                 <ChildReportContent />
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* 성인 리포트 */}
+            <AccordionItem value="adult" className="border border-primary/20 rounded-lg mb-4 px-6 bg-gradient-to-br from-primary/5 to-background">
+              <AccordionTrigger className="hover:no-underline py-6">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 shrink-0">
+                    <User className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">성인 종합 심리 리포트</h2>
+                    <p className="text-sm text-muted-foreground mt-1">30일간의 데이터 기반 심층 분석 (김○○ 님, 가명)</p>
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="pt-6">
+                <AdultReportContent />
               </AccordionContent>
             </AccordionItem>
 

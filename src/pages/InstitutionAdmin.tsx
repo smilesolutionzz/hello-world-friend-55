@@ -650,6 +650,13 @@ export default function InstitutionAdmin() {
                 <Bot className="h-4 w-4 mr-2" />
                 마케팅 AI
               </TabsTrigger>
+              <TabsTrigger 
+                value="voucher" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                바우처 일지
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -1032,6 +1039,17 @@ export default function InstitutionAdmin() {
                   className="w-full h-[calc(100vh-300px)] border-0"
                   title="마케팅 AI 어시스턴트"
                 />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Voucher Report Tab */}
+          <TabsContent value="voucher" className="mt-0">
+            <Card className="bg-[#0F1823] border-slate-800">
+              <CardContent className="p-6">
+                {institutionInfo?.id && (
+                  <VoucherReportGenerator institutionId={institutionInfo.id} />
+                )}
               </CardContent>
             </Card>
           </TabsContent>

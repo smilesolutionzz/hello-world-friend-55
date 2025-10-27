@@ -310,21 +310,6 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
 
   return (
     <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-white">
-            <Sparkles className="w-6 h-6 text-primary" />
-            AI 일지 자동생성
-          </h2>
-          <p className="text-slate-300">Claude AI가 전문적인 치료 일지를 자동으로 작성합니다</p>
-        </div>
-        <Badge variant="outline" className="text-primary border-primary">
-          <Sparkles className="w-4 h-4 mr-1" />
-          Claude Sonnet 4.5
-        </Badge>
-      </div>
-
       <Tabs defaultValue="generate" className="w-full">
         <TabsList className="grid w-full grid-cols-2 bg-slate-800">
           <TabsTrigger value="generate" className="data-[state=active]:bg-primary">일지 생성</TabsTrigger>
@@ -538,7 +523,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                 {isGenerating ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Claude AI가 전문 일지 작성 중...
+                    AIHPRO에서 최적화된 엔진으로 일지 작성 중...
                   </>
                 ) : (
                   <>

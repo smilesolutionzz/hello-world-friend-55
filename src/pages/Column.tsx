@@ -7,6 +7,7 @@ import { Heart, Calendar, ArrowRight, Sparkles, Brain, Users, TrendingUp, Chevro
 import { useNavigate } from "react-router-dom";
 import Footer from "@/components/ui/footer";
 import SEOHead from "@/components/common/SEOHead";
+import { AnimatedBackground } from "@/components/ui/animated-background";
 
 interface Column {
   id: string;
@@ -790,7 +791,8 @@ const Column = () => {
         keywords="AI심리상담,데이터기반케어,개인화리포트,심리분석,전문가상담,정신건강,AI비전"
       />
       
-      <div className="min-h-screen bg-background">
+      <AnimatedBackground />
+      <div className="min-h-screen bg-background/95 backdrop-blur-sm">
         <UnifiedNavigation />
         
         <main className="container mx-auto px-4 py-12 max-w-7xl">

@@ -312,8 +312,8 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
     <div className="space-y-6">
       <Tabs defaultValue="generate" className="w-full">
         <TabsList className="grid w-full grid-cols-2 bg-slate-800">
-          <TabsTrigger value="generate" className="data-[state=active]:bg-primary">일지 생성</TabsTrigger>
-          <TabsTrigger value="history" className="data-[state=active]:bg-primary">생성 이력</TabsTrigger>
+          <TabsTrigger value="generate" className="data-[state=active]:bg-primary text-sm sm:text-base whitespace-nowrap">일지 생성</TabsTrigger>
+          <TabsTrigger value="history" className="data-[state=active]:bg-primary text-sm sm:text-base whitespace-nowrap">생성 이력</TabsTrigger>
         </TabsList>
 
         <TabsContent value="generate" className="space-y-6">
@@ -364,8 +364,8 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
           {/* 일지 생성 폼 */}
           <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
-              <CardTitle className="text-white">간편 일지 생성</CardTitle>
-              <CardDescription className="text-slate-300">
+              <CardTitle className="text-white text-lg sm:text-xl">간편 일지 생성</CardTitle>
+              <CardDescription className="text-slate-300 text-sm sm:text-base">
                 바우처 유형을 선택하고 간단한 정보만 입력하면 AI가 공식 서식에 맞는 전문 일지를 작성합니다
               </CardDescription>
             </CardHeader>
@@ -390,19 +390,19 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                     ))}
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-slate-500 flex items-center gap-1">
-                  <Info className="w-3 h-3" />
-                  선택한 바우처에 맞는 공식 서식으로 일지가 생성됩니다
+                <p className="text-xs text-primary/80 flex items-start gap-1 leading-relaxed">
+                  <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                  <span>선택한 바우처에 맞는 공식 서식으로 일지가 생성됩니다</span>
                 </p>
               </div>
 
               {/* 간편 입력 폼 */}
-              <div className="space-y-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+              <div className="space-y-4 p-3 sm:p-4 bg-slate-800/50 rounded-lg border border-slate-700">
                 <div className="flex items-start gap-2">
-                  <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-medium text-white">최소 입력으로 전문 일지 생성</p>
-                    <p className="text-xs text-slate-400">기본 정보만 입력하면 AI가 해당 바우처의 공식 서식에 맞춰 작성합니다</p>
+                    <p className="text-xs sm:text-sm font-medium text-white">최소 입력으로 전문 일지 생성</p>
+                    <p className="text-xs text-slate-400 leading-relaxed">기본 정보만 입력하면 AI가 해당 바우처의 공식 서식에 맞춰 작성합니다</p>
                   </div>
                 </div>
 
@@ -517,18 +517,18 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
               <Button 
                 onClick={generateDiary} 
                 disabled={isGenerating}
-                className="w-full bg-primary hover:bg-primary/90"
+                className="w-full bg-primary hover:bg-primary/90 text-sm sm:text-base py-5 sm:py-6"
                 size="lg"
               >
                 {isGenerating ? (
                   <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    AIHPRO에서 최적화된 엔진으로 일지 작성 중...
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin flex-shrink-0" />
+                    <span className="truncate">AIHPRO 최적화 엔진으로 작성 중...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-5 h-5 mr-2" />
-                    AI 일지 생성하기
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" />
+                    <span>AI 일지 생성하기</span>
                   </>
                 )}
               </Button>
@@ -590,10 +590,10 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="flex-1 bg-slate-800 border-slate-600 text-slate-100 hover:bg-slate-700 hover:text-white"
+                            className="flex-1 bg-slate-800 border-slate-600 text-slate-100 hover:bg-slate-700 hover:text-white text-xs sm:text-sm"
                           >
-                            <Eye className="w-4 h-4 mr-2" />
-                            자세히보기
+                            <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 flex-shrink-0" />
+                            <span className="whitespace-nowrap">자세히보기</span>
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-slate-900 border-slate-700">
@@ -616,19 +616,19 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                         onClick={() => copyToClipboard(diary.content)}
                         variant="outline"
                         size="sm"
-                        className="flex-1 bg-slate-800 border-slate-600 text-slate-100 hover:bg-slate-700 hover:text-white"
+                        className="flex-1 bg-slate-800 border-slate-600 text-slate-100 hover:bg-slate-700 hover:text-white text-xs sm:text-sm"
                       >
-                        <Copy className="w-4 h-4 mr-2" />
-                        복사
+                        <Copy className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 flex-shrink-0" />
+                        <span className="whitespace-nowrap">복사</span>
                       </Button>
                       <Button
                         onClick={() => downloadDiary(diary)}
                         variant="outline"
                         size="sm"
-                        className="flex-1 bg-slate-800 border-slate-600 text-slate-100 hover:bg-slate-700 hover:text-white"
+                        className="flex-1 bg-slate-800 border-slate-600 text-slate-100 hover:bg-slate-700 hover:text-white text-xs sm:text-sm"
                       >
-                        <Download className="w-4 h-4 mr-2" />
-                        다운로드
+                        <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 flex-shrink-0" />
+                        <span className="whitespace-nowrap">다운로드</span>
                       </Button>
                     </div>
                   </CardContent>

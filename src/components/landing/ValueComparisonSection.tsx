@@ -134,21 +134,6 @@ const ValueComparisonSection = () => {
           </Card>
         </div>
 
-        {/* Additional Trust Elements */}
-        <div className="grid md:grid-cols-3 gap-6 mt-16 max-w-4xl mx-auto">
-          <Card className="text-center p-6 bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
-            <div className="text-4xl font-bold text-primary mb-2">2,000+</div>
-            <p className="text-sm text-muted-foreground">누적 사용자</p>
-          </Card>
-          <Card className="text-center p-6 bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
-            <div className="text-4xl font-bold text-primary mb-2">4.8/5.0</div>
-            <p className="text-sm text-muted-foreground">평균 만족도</p>
-          </Card>
-          <Card className="text-center p-6 bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
-            <div className="text-4xl font-bold text-primary mb-2">95%</div>
-            <p className="text-sm text-muted-foreground">재구매율</p>
-          </Card>
-        </div>
       </div>
     </section>
   );

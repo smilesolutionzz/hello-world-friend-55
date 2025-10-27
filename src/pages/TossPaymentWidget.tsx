@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
-const TOSS_CLIENT_KEY = 'live_gck_ma60RZblrqo1lKlBKmjW3wzYWBn1';
+const TOSS_CLIENT_KEY = 'test_ck_ORzdMaqN3w22D5wkBxAP85AkYXQG';
 
 interface PaymentWidgetState {
   tokenAmount: number;
@@ -45,20 +45,17 @@ const TossPaymentWidget = () => {
           description: '결제하려면 로그인이 필요합니다.',
         });
         navigate('/auth');
-        setProcessing(false);
         return;
       }
 
-      // orderId 생성
+      // orderId 생성 (Stripe처럼 간단)
       const shortUser = session.user.id.slice(0, 8);
       const orderId = `TOKEN_${tokenAmount}_${Date.now().toString(36)}_${shortUser}`;
 
-      console.log('토스페이먼츠 결제 시작:', { orderId, amount: price, tokenAmount });
-
-      // 토스페이먼츠 SDK 로드
+      // 토스페이먼츠 결제창 SDK 로드
       const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
 
-      // 결제창 호출
+      // 결제창 바로 호출 (위젯 없이!)
       await tossPayments.requestPayment('카드', {
         amount: Math.round(price),
         orderId,
@@ -66,11 +63,10 @@ const TossPaymentWidget = () => {
         successUrl: `${window.location.origin}/payment-success`,
         failUrl: `${window.location.origin}/payment-fail`,
         customerName: session.user.email?.split('@')[0] || '사용자',
-        customerEmail: session.user.email,
       });
 
     } catch (error: any) {
-      console.error('결제 오류:', error);
+      console.error('Payment error:', error);
       setProcessing(false);
       
       if (error.code !== 'USER_CANCEL') {

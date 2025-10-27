@@ -20,7 +20,7 @@ serve(async (req) => {
   }
 
   try {
-    const { action } = await req.json();
+    const { action, institutionName, contentTopic } = await req.json();
 
     if (action !== 'generate') {
       return new Response(
@@ -76,7 +76,12 @@ serve(async (req) => {
       }
 
       // Generate content text using AI
-      const contentText = await generateContentText(contentType.type, LOVABLE_API_KEY);
+      const contentText = await generateContentText(
+        contentType.type, 
+        LOVABLE_API_KEY, 
+        institutionName, 
+        contentTopic
+      );
 
       // Create text overlay image
       const textOverlayImageUrl = await createTextOverlayImage(
@@ -118,7 +123,12 @@ function getImagePrompt(contentType: string): string {
   return prompts[contentType] || prompts['나의_이야기'];
 }
 
-async function generateContentText(contentType: string, apiKey: string) {
+async function generateContentText(
+  contentType: string, 
+  apiKey: string,
+  institutionName?: string,
+  contentTopic?: string
+) {
   const contentTypeExamples = {
     '나의_이야기': '개인적인 경험이나 일상 이야기',
     '라이프스타일': '일상 루틴, 취미, 라이프스타일 팁',
@@ -126,7 +136,15 @@ async function generateContentText(contentType: string, apiKey: string) {
     '문제_해결': '겪었던 문제와 해결 방법 공유'
   };
 
-  const prompt = `당신은 인스타그램 콘텐츠 전문가입니다. "${contentType}" (${contentTypeExamples[contentType]}) 주제로 사람들의 관심을 끄는 매력적인 인스타그램 게시글을 작성해주세요.
+  const institutionContext = institutionName 
+    ? `\n\n기관 정보: ${institutionName}\n이 기관의 관점에서 작성해주세요.` 
+    : '';
+  
+  const topicContext = contentTopic 
+    ? `\n특정 주제: ${contentTopic}\n이 주제와 관련된 내용으로 작성해주세요.` 
+    : '';
+
+  const prompt = `당신은 인스타그램 콘텐츠 전문가입니다. "${contentType}" (${contentTypeExamples[contentType]}) 주제로 사람들의 관심을 끄는 매력적인 인스타그램 게시글을 작성해주세요.${institutionContext}${topicContext}
 
 요구사항:
 1. 첫 문장부터 강력한 후킹으로 시작 (질문, 공감, 흥미로운 사실 등)

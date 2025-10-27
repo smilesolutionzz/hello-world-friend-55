@@ -31,7 +31,8 @@ import {
   Download,
   DollarSign,
   Activity,
-  Target
+  Target,
+  Instagram
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -45,6 +46,7 @@ import { AutomatedInstitutionDashboard } from '@/components/institution/Automate
 import VoucherReportGenerator from '@/components/institution/VoucherReportGenerator';
 import { OrganizationChart } from '@/components/organization/OrganizationChart';
 import { TestInsights } from '@/components/organization/TestInsights';
+import { InstagramContentGenerator } from '@/components/institution/InstagramContentGenerator';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -990,7 +992,26 @@ export default function InstitutionAdmin() {
           </TabsContent>
 
           {/* Marketing AI Tab */}
-          <TabsContent value="marketing" className="mt-0">
+          <TabsContent value="marketing" className="mt-0 space-y-6">
+            <Card className="bg-[#0F1823] border-slate-800">
+              <CardHeader className="border-b border-slate-800">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-pink-500/20">
+                    <Instagram className="w-6 h-6 text-pink-500" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl text-white">Instagram 콘텐츠 생성</CardTitle>
+                    <p className="text-sm text-slate-400 mt-1">
+                      AI가 기관에 맞는 인스타그램 콘텐츠를 자동으로 생성합니다
+                    </p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                <InstagramContentGenerator institutionName={institutionInfo?.institution_name} />
+              </CardContent>
+            </Card>
+
             <Card className="bg-[#0F1823] border-slate-800">
               <CardHeader className="border-b border-slate-800">
                 <div className="flex items-center gap-3">

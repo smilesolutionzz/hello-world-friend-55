@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Download, RefreshCw, Instagram, Loader2, Copy, FileText, MessageSquare } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Sparkles, Download, RefreshCw, Instagram, Loader2, Copy, FileText, MessageSquare, Eye, History } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -30,7 +31,30 @@ export function SocialContentGenerator({ institutionName }: SocialContentGenerat
   const [customInstitutionName, setCustomInstitutionName] = useState(institutionName || "");
   const [contentTopic, setContentTopic] = useState("");
   const [selectedChannels, setSelectedChannels] = useState<string[]>(['instagram', 'blog', 'threads']);
+  const [historyItems, setHistoryItems] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  const loadHistory = async () => {
+    try {
+      setIsLoadingHistory(true);
+      const { data, error } = await supabase
+        .from('social_media_generations')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setHistoryItems(data || []);
+    } catch (error) {
+      console.error('이력 불러오기 오류:', error);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
 
   const channels = [
     { id: 'instagram', label: 'Instagram', icon: Instagram, color: 'text-pink-500' },
@@ -81,6 +105,29 @@ export function SocialContentGenerator({ institutionName }: SocialContentGenerat
 
       if (data?.contents) {
         setContents(data.contents);
+        
+        // 데이터베이스에 저장
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        for (const content of data.contents) {
+          await supabase.from('social_media_generations').insert({
+            platform: content.channel,
+            content_type: content.type,
+            generated_text: content.content,
+            image_url: content.imageUrl,
+            hashtags: content.hashtags || [],
+            metadata: {
+              title: content.title,
+              seoKeywords: content.seoKeywords,
+              institutionName: customInstitutionName,
+              contentTopic: contentTopic
+            },
+            created_by: user?.id
+          });
+        }
+        
+        await loadHistory();
+        
         toast({
           title: "콘텐츠 생성 완료! 🎉",
           description: `${data.contents.length}개의 맞춤형 콘텐츠가 생성되었습니다.`,
@@ -154,15 +201,28 @@ export function SocialContentGenerator({ institutionName }: SocialContentGenerat
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-pink-500/10 via-blue-500/10 to-purple-500/10 rounded-lg p-4 border border-primary/20">
-        <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-5 h-5 text-primary" />
-          <h3 className="font-semibold text-foreground">🎉 체험 기간 - 모든 고객 이용 가능!</h3>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          현재 체험 기간으로 일반 고객도 무료로 이용하실 수 있습니다. AI가 Instagram, Blog, Threads에 맞춤화된 콘텐츠를 자동으로 생성합니다.
-        </p>
-      </div>
+      <Tabs defaultValue="generate" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 bg-slate-800">
+          <TabsTrigger value="generate" className="data-[state=active]:bg-primary">
+            <Sparkles className="w-4 h-4 mr-2" />
+            콘텐츠 생성
+          </TabsTrigger>
+          <TabsTrigger value="history" className="data-[state=active]:bg-primary">
+            <History className="w-4 h-4 mr-2" />
+            생성 이력
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="generate" className="space-y-6">
+          <div className="bg-gradient-to-r from-pink-500/10 via-blue-500/10 to-purple-500/10 rounded-lg p-4 border border-primary/20">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <h3 className="font-semibold text-foreground">🎉 체험 기간 - 모든 고객 이용 가능!</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              현재 체험 기간으로 일반 고객도 무료로 이용하실 수 있습니다. AI가 Instagram, Blog, Threads에 맞춤화된 콘텐츠를 자동으로 생성합니다.
+            </p>
+          </div>
 
       <Card>
         <CardHeader>
@@ -361,16 +421,146 @@ export function SocialContentGenerator({ institutionName }: SocialContentGenerat
         </div>
       )}
 
-      {contents.length === 0 && !isGenerating && (
-        <Card className="bg-muted/30">
-          <CardContent className="py-12 text-center">
-            <Sparkles className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">
-              기관명을 입력하고 채널을 선택한 후 생성 버튼을 눌러 맞춤형 콘텐츠를 만들어보세요.
-            </p>
-          </CardContent>
-        </Card>
-      )}
+          {contents.length === 0 && !isGenerating && (
+            <Card className="bg-muted/30">
+              <CardContent className="py-12 text-center">
+                <Sparkles className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground">
+                  기관명을 입력하고 채널을 선택한 후 생성 버튼을 눌러 맞춤형 콘텐츠를 만들어보세요.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="history" className="space-y-4">
+          {isLoadingHistory ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <Loader2 className="w-8 h-8 mx-auto mb-4 animate-spin text-primary" />
+                <p className="text-muted-foreground">이력을 불러오는 중...</p>
+              </CardContent>
+            </Card>
+          ) : historyItems.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <History className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-medium mb-2">생성된 콘텐츠가 없습니다</h3>
+                <p className="text-muted-foreground">새로운 콘텐츠를 생성해보세요</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {historyItems.map((item) => {
+                const metadata = item.metadata as any;
+                return (
+                  <Card key={item.id} className="overflow-hidden">
+                    <CardHeader>
+                      <div className="flex items-center gap-2 mb-2">
+                        {getChannelIcon(item.platform)}
+                        <Badge variant="outline">{item.content_type}</Badge>
+                      </div>
+                      <CardTitle className="text-lg">{metadata?.title || '제목 없음'}</CardTitle>
+                      <CardDescription>
+                        {new Date(item.created_at).toLocaleDateString('ko-KR', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {item.image_url && (
+                        <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
+                          <img 
+                            src={item.image_url} 
+                            alt={metadata?.title || '이미지'}
+                            className="w-full h-full object-cover"
+                            crossOrigin="anonymous"
+                          />
+                        </div>
+                      )}
+                      
+                      <div className="text-sm text-muted-foreground line-clamp-3 bg-muted/30 p-3 rounded-lg">
+                        {item.generated_text.substring(0, 150)}...
+                      </div>
+
+                      {item.hashtags && item.hashtags.length > 0 && (
+                        <div className="text-xs text-primary">
+                          {item.hashtags.slice(0, 5).join(' ')}
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-3 gap-2">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Eye className="w-4 h-4 mr-1" />
+                              보기
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle>{metadata?.title || '제목 없음'}</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              {item.image_url && (
+                                <img 
+                                  src={item.image_url} 
+                                  alt={metadata?.title}
+                                  className="w-full rounded-lg"
+                                  crossOrigin="anonymous"
+                                />
+                              )}
+                              <div className="whitespace-pre-wrap text-sm">
+                                {item.generated_text}
+                              </div>
+                              {item.hashtags && item.hashtags.length > 0 && (
+                                <div className="text-sm text-primary">
+                                  {item.hashtags.join(' ')}
+                                </div>
+                              )}
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                        
+                        <Button
+                          onClick={() => {
+                            const fullText = item.hashtags && item.hashtags.length > 0
+                              ? `${item.generated_text}\n\n${item.hashtags.join(' ')}`
+                              : item.generated_text;
+                            copyToClipboard(fullText, "콘텐츠");
+                          }}
+                          variant="outline"
+                          size="sm"
+                          className="w-full"
+                        >
+                          <Copy className="w-4 h-4 mr-1" />
+                          복사
+                        </Button>
+                        
+                        {item.image_url && (
+                          <Button
+                            onClick={() => downloadImage(item.image_url, metadata?.title || 'image')}
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                          >
+                            <Download className="w-4 h-4 mr-1" />
+                            이미지
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

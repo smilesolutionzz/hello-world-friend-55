@@ -4809,6 +4809,45 @@ export type Database = {
         }
         Relationships: []
       }
+      social_media_generations: {
+        Row: {
+          content_type: string
+          created_at: string
+          created_by: string
+          generated_text: string
+          hashtags: string[] | null
+          id: string
+          image_data: string | null
+          image_url: string | null
+          metadata: Json | null
+          platform: string
+        }
+        Insert: {
+          content_type: string
+          created_at?: string
+          created_by: string
+          generated_text: string
+          hashtags?: string[] | null
+          id?: string
+          image_data?: string | null
+          image_url?: string | null
+          metadata?: Json | null
+          platform: string
+        }
+        Update: {
+          content_type?: string
+          created_at?: string
+          created_by?: string
+          generated_text?: string
+          hashtags?: string[] | null
+          id?: string
+          image_data?: string | null
+          image_url?: string | null
+          metadata?: Json | null
+          platform?: string
+        }
+        Relationships: []
+      }
       subscribers: {
         Row: {
           created_at: string

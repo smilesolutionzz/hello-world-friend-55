@@ -3,7 +3,7 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Calendar, ArrowRight, Sparkles, Brain, Users, TrendingUp } from "lucide-react";
+import { Heart, Calendar, ArrowRight, Sparkles, Brain, Users, TrendingUp, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Footer from "@/components/ui/footer";
 import SEOHead from "@/components/common/SEOHead";
@@ -951,7 +951,10 @@ const Column = () => {
           {/* Featured Column */}
           {featuredColumn && selectedCategory === "전체" && (
             <Card className="mb-12 overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-              <div className="grid md:grid-cols-2 gap-8 p-8 md:p-12">
+              <div 
+                className="grid md:grid-cols-2 gap-8 p-8 md:p-12 cursor-pointer"
+                onClick={() => setExpandedId(expandedId === featuredColumn.id ? null : featuredColumn.id)}
+              >
                 <div className="space-y-6">
                   <div className="flex items-center gap-2">
                     <Badge className="bg-primary text-primary-foreground">
@@ -977,14 +980,10 @@ const Column = () => {
                     <div>· {featuredColumn.readTime} 읽기</div>
                   </div>
                   
-                  <Button 
-                    size="lg"
-                    className="group bg-gradient-to-r from-primary to-primary/80"
-                    onClick={() => navigate('/')}
-                  >
-                    전체 글 읽기
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  <div className="flex items-center gap-2 text-primary font-medium">
+                    {expandedId === featuredColumn.id ? '접기' : '전체 글 읽기'}
+                    <ArrowRight className={`w-4 h-4 transition-transform ${expandedId === featuredColumn.id ? 'rotate-90' : ''}`} />
+                  </div>
                 </div>
                 
                 <div className="hidden md:flex items-center justify-center">
@@ -1013,6 +1012,17 @@ const Column = () => {
                   </div>
                 </div>
               </div>
+              
+              {/* Expanded Content */}
+              {expandedId === featuredColumn.id && (
+                <CardContent className="pt-0 px-8 md:px-12 pb-8 animate-in slide-in-from-top-4 duration-500">
+                  <div className="prose prose-lg max-w-none border-t border-border pt-8">
+                    <div className="space-y-6 text-foreground/90 leading-relaxed whitespace-pre-line">
+                      {featuredColumn.fullContent}
+                    </div>
+                  </div>
+                </CardContent>
+              )}
             </Card>
           )}
 

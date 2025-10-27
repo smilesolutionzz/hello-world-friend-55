@@ -336,12 +336,12 @@ const WellnessLifestyle = () => {
               <span className="font-semibold text-blue-800">AI 웰니스 대시보드</span>
             </div>
             
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent whitespace-nowrap">
+            <h1 className="text-2xl sm:text-3xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent whitespace-nowrap leading-tight">
               당신만의 AI 건강 코치
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-snug">
-              OpenAI, ElevenLabs, 이미지 생성을 활용한<br className="block sm:hidden" />
+            <p className="text-sm sm:text-base md:text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-snug">
+              OpenAI, ElevenLabs, 이미지 생성을 활용한<br />
               최첨단 웰니스 솔루션
             </p>
 
@@ -444,7 +444,7 @@ const WellnessLifestyle = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <Button 
-                className="w-full md:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-6 text-lg"
+                className="w-full md:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-4 sm:py-6 text-sm sm:text-base md:text-lg"
                 onClick={handleMeditation}
                 disabled={loading === 'meditation'}
               >

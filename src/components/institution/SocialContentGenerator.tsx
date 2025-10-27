@@ -57,9 +57,9 @@ export function SocialContentGenerator({ institutionName }: SocialContentGenerat
   };
 
   const channels = [
-    { id: 'instagram', label: 'Instagram', icon: Instagram, color: 'text-pink-500' },
-    { id: 'blog', label: 'Blog', icon: FileText, color: 'text-blue-500' },
-    { id: 'threads', label: 'Threads', icon: MessageSquare, color: 'text-purple-500' }
+    { id: 'instagram', label: '인스타', icon: Instagram, color: 'text-pink-500' },
+    { id: 'blog', label: '블로그', icon: FileText, color: 'text-blue-500' },
+    { id: 'threads', label: '스레드', icon: MessageSquare, color: 'text-purple-500' }
   ];
 
   const handleChannelToggle = (channelId: string) => {
@@ -214,23 +214,23 @@ export function SocialContentGenerator({ institutionName }: SocialContentGenerat
         </TabsList>
 
         <TabsContent value="generate" className="space-y-6">
-          <div className="bg-gradient-to-r from-pink-500/10 via-blue-500/10 to-purple-500/10 rounded-lg p-4 border border-primary/20">
+          <div className="bg-gradient-to-r from-pink-500/10 via-blue-500/10 to-purple-500/10 rounded-lg p-3 sm:p-4 border border-primary/20">
             <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold text-foreground">🎉 체험 기간 - 모든 고객 이용 가능!</h3>
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              <h3 className="text-sm sm:text-base font-semibold text-foreground">🎉 체험 기간 - 모든 고객 이용 가능!</h3>
             </div>
-            <p className="text-sm text-muted-foreground">
-              현재 체험 기간으로 일반 고객도 무료로 이용하실 수 있습니다. AI가 Instagram, Blog, Threads에 맞춤화된 콘텐츠를 자동으로 생성합니다.
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              현재 체험 기간으로 일반 고객도 무료로 이용하실 수 있습니다. AI가 인스타, 블로그, 스레드에 맞춤화된 콘텐츠를 자동으로 생성합니다.
             </p>
           </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" />
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
             소셜 미디어 콘텐츠 생성
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-foreground text-xs sm:text-sm">
             기관명과 주제를 입력하면 AI가 각 채널에 최적화된 콘텐츠를 생성합니다
           </CardDescription>
         </CardHeader>
@@ -257,7 +257,7 @@ export function SocialContentGenerator({ institutionName }: SocialContentGenerat
 
           <div className="space-y-3">
             <Label>발행 채널 선택</Label>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               {channels.map((channel) => {
                 const Icon = channel.icon;
                 const isSelected = selectedChannels.includes(channel.id);
@@ -265,7 +265,7 @@ export function SocialContentGenerator({ institutionName }: SocialContentGenerat
                   <div
                     key={channel.id}
                     onClick={() => handleChannelToggle(channel.id)}
-                    className={`flex items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                    className={`flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 p-2 sm:p-3 rounded-lg border-2 cursor-pointer transition-all ${
                       isSelected 
                         ? 'border-primary bg-primary/5' 
                         : 'border-border hover:border-primary/50'
@@ -274,9 +274,10 @@ export function SocialContentGenerator({ institutionName }: SocialContentGenerat
                     <Checkbox
                       checked={isSelected}
                       onCheckedChange={() => handleChannelToggle(channel.id)}
+                      className="mb-1 sm:mb-0"
                     />
                     <Icon className={`w-4 h-4 ${channel.color}`} />
-                    <span className="text-sm font-medium">{channel.label}</span>
+                    <span className="text-xs sm:text-sm font-medium">{channel.label}</span>
                   </div>
                 );
               })}

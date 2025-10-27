@@ -464,7 +464,7 @@ export default function InstitutionAdmin() {
               <h1 className="text-2xl font-bold text-white">
                 기관 대시보드
               </h1>
-              <p className="text-sm text-slate-400 mt-1">
+              <p className="text-sm text-slate-300 mt-1">
                 {institutionInfo?.institution_name || '제휴기관'}
               </p>
             </div>
@@ -494,7 +494,7 @@ export default function InstitutionAdmin() {
                 <DialogContent className="max-w-2xl bg-[#0F1419] border-slate-700">
                   <DialogHeader>
                     <DialogTitle className="text-white">기관 정보 설정</DialogTitle>
-                    <DialogDescription className="text-slate-400">
+                    <DialogDescription className="text-slate-300">
                       기관의 기본 정보를 수정하세요
                     </DialogDescription>
                   </DialogHeader>
@@ -622,38 +622,38 @@ export default function InstitutionAdmin() {
             <TabsList className="bg-transparent border-b border-slate-800 rounded-none h-auto p-0 w-full justify-start">
               <TabsTrigger 
                 value="overview" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white"
               >
                 개요
               </TabsTrigger>
               <TabsTrigger 
                 value="members" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white"
               >
                 회원 관리 ({stats?.total_members || 0})
               </TabsTrigger>
               <TabsTrigger 
                 value="tests" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white"
               >
                 검사 ({stats?.total_tests || 0})
               </TabsTrigger>
               <TabsTrigger 
                 value="reports" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white"
               >
                 결제 ({stats?.this_month_payments || 0})
               </TabsTrigger>
               <TabsTrigger 
                 value="marketing" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white"
               >
                 <Sparkles className="h-4 w-4 mr-2" />
                 AI일지생성
               </TabsTrigger>
               <TabsTrigger 
                 value="voucher" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white"
               >
                 <FileText className="h-4 w-4 mr-2" />
                 소셜 컨텐츠
@@ -673,7 +673,7 @@ export default function InstitutionAdmin() {
               {/* 신청 */}
               <Card className="bg-[#0F1823] border-slate-800">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-400">
+                  <CardTitle className="text-sm font-medium text-slate-300">
                     총 신청
                   </CardTitle>
                   <Users className="h-4 w-4 text-amber-500" />
@@ -687,7 +687,7 @@ export default function InstitutionAdmin() {
               {/* 전환율 */}
               <Card className="bg-[#0F1823] border-slate-800">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-400">
+                  <CardTitle className="text-sm font-medium text-slate-300">
                     전환율
                   </CardTitle>
                   <Target className="h-4 w-4 text-orange-500" />
@@ -701,7 +701,7 @@ export default function InstitutionAdmin() {
               {/* 매출 */}
               <Card className="bg-[#0F1823] border-slate-800">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-400">
+                  <CardTitle className="text-sm font-medium text-slate-300">
                     매출
                   </CardTitle>
                   <DollarSign className="h-4 w-4 text-amber-400" />
@@ -715,7 +715,7 @@ export default function InstitutionAdmin() {
               {/* 월간 추출금액 */}
               <Card className="bg-[#0F1823] border-slate-800">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-400">
+                  <CardTitle className="text-sm font-medium text-slate-300">
                     월간 추출금액
                   </CardTitle>
                   <Activity className="h-4 w-4 text-blue-500" />
@@ -729,7 +729,7 @@ export default function InstitutionAdmin() {
               {/* MoM 성장율 */}
               <Card className="bg-[#0F1823] border-slate-800">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-400">
+                  <CardTitle className="text-sm font-medium text-slate-300">
                     MoM 성장율
                   </CardTitle>
                   <TrendingUp className="h-4 w-4 text-green-500" />
@@ -821,12 +821,12 @@ export default function InstitutionAdmin() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-800">
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">회원명</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">검사명</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">검사일</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">점수</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">상태</th>
-                        <th className="text-right py-3 px-4 text-sm font-medium text-slate-400">작업</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-300">회원명</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-300">검사명</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-300">검사일</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-300">점수</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-300">상태</th>
+                        <th className="text-right py-3 px-4 text-sm font-medium text-slate-300">작업</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -834,7 +834,7 @@ export default function InstitutionAdmin() {
                         <tr key={test.id} className="border-b border-slate-800 hover:bg-slate-900/50 transition-colors">
                           <td className="py-3 px-4 text-sm text-white">{test.member_name}</td>
                           <td className="py-3 px-4 text-sm text-slate-300">{test.test_name}</td>
-                          <td className="py-3 px-4 text-sm text-slate-400">
+                          <td className="py-3 px-4 text-sm text-slate-300">
                             {format(new Date(test.completed_at), 'yyyy. MM. dd', { locale: ko })}
                           </td>
                           <td className="py-3 px-4 text-sm text-white">{test.score}점</td>
@@ -852,7 +852,7 @@ export default function InstitutionAdmin() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleViewTestResult(test.id)}
-                                className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
+                                className="h-8 w-8 p-0 text-slate-300 hover:text-white hover:bg-slate-800"
                               >
                                 <Eye className="h-4 w-4" />
                               </Button>
@@ -860,7 +860,7 @@ export default function InstitutionAdmin() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleDownloadTestResult(test.id)}
-                                className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
+                                className="h-8 w-8 p-0 text-slate-300 hover:text-white hover:bg-slate-800"
                               >
                                 <Download className="h-4 w-4" />
                               </Button>
@@ -900,12 +900,12 @@ export default function InstitutionAdmin() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-800">
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">회원명</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">검사명</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">검사일</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">점수</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">상태</th>
-                        <th className="text-right py-3 px-4 text-sm font-medium text-slate-400">작업</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-300">회원명</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-300">검사명</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-300">검사일</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-300">점수</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-300">상태</th>
+                        <th className="text-right py-3 px-4 text-sm font-medium text-slate-300">작업</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -913,7 +913,7 @@ export default function InstitutionAdmin() {
                         <tr key={test.id} className="border-b border-slate-800 hover:bg-slate-900/50 transition-colors">
                           <td className="py-3 px-4 text-sm text-white">{test.member_name}</td>
                           <td className="py-3 px-4 text-sm text-slate-300">{test.test_name}</td>
-                          <td className="py-3 px-4 text-sm text-slate-400">
+                          <td className="py-3 px-4 text-sm text-slate-300">
                             {format(new Date(test.completed_at), 'yyyy. MM. dd HH:mm', { locale: ko })}
                           </td>
                           <td className="py-3 px-4 text-sm text-white">{test.score}점</td>
@@ -931,7 +931,7 @@ export default function InstitutionAdmin() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleViewTestResult(test.id)}
-                                className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
+                                className="h-8 w-8 p-0 text-slate-300 hover:text-white hover:bg-slate-800"
                               >
                                 <Eye className="h-4 w-4" />
                               </Button>
@@ -939,7 +939,7 @@ export default function InstitutionAdmin() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleDownloadTestResult(test.id)}
-                                className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
+                                className="h-8 w-8 p-0 text-slate-300 hover:text-white hover:bg-slate-800"
                               >
                                 <Download className="h-4 w-4" />
                               </Button>
@@ -966,7 +966,7 @@ export default function InstitutionAdmin() {
                     <Card className="bg-[#0A0E1A] border-slate-700">
                       <CardContent className="pt-6">
                         <div className="text-center">
-                          <p className="text-sm text-slate-400 mb-2">이번 달 총 결제</p>
+                          <p className="text-sm text-slate-300 mb-2">이번 달 총 결제</p>
                           <p className="text-3xl font-bold text-white">{(stats?.this_month_payments || 0).toLocaleString()}원</p>
                         </div>
                       </CardContent>
@@ -974,7 +974,7 @@ export default function InstitutionAdmin() {
                     <Card className="bg-[#0A0E1A] border-slate-700">
                       <CardContent className="pt-6">
                         <div className="text-center">
-                          <p className="text-sm text-slate-400 mb-2">누적 총 결제</p>
+                          <p className="text-sm text-slate-300 mb-2">누적 총 결제</p>
                           <p className="text-3xl font-bold text-white">{(stats?.total_payments || 0).toLocaleString()}원</p>
                         </div>
                       </CardContent>
@@ -982,7 +982,7 @@ export default function InstitutionAdmin() {
                     <Card className="bg-[#0A0E1A] border-slate-700">
                       <CardContent className="pt-6">
                         <div className="text-center">
-                          <p className="text-sm text-slate-400 mb-2">평균 결제액</p>
+                          <p className="text-sm text-slate-300 mb-2">평균 결제액</p>
                           <p className="text-3xl font-bold text-white">
                             {stats?.total_members ? Math.floor((stats?.total_payments || 0) / stats.total_members).toLocaleString() : 0}원
                           </p>
@@ -1009,7 +1009,7 @@ export default function InstitutionAdmin() {
                   </div>
                   <div>
                     <CardTitle className="text-xl text-white">AI 일지 자동생성</CardTitle>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-slate-300 mt-1">
                       Claude AI가 전문적인 치료 일지를 자동으로 작성합니다
                     </p>
                   </div>
@@ -1033,7 +1033,7 @@ export default function InstitutionAdmin() {
                   </div>
                   <div>
                     <CardTitle className="text-xl text-white">소셜 미디어 콘텐츠 생성</CardTitle>
-                    <p className="text-sm text-slate-400 mt-1">
+                    <p className="text-sm text-slate-300 mt-1">
                       AI가 Instagram, Blog, Threads에 맞는 콘텐츠를 자동으로 생성합니다
                     </p>
                   </div>

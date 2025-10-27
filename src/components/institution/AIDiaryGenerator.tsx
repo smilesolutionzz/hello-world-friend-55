@@ -291,7 +291,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
             <Sparkles className="w-6 h-6 text-primary" />
             AI 일지 자동생성
           </h2>
-          <p className="text-slate-400">Claude AI가 전문적인 치료 일지를 자동으로 작성합니다</p>
+          <p className="text-slate-300">Claude AI가 전문적인 치료 일지를 자동으로 작성합니다</p>
         </div>
         <Badge variant="outline" className="text-primary border-primary">
           <Sparkles className="w-4 h-4 mr-1" />
@@ -354,7 +354,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
           <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="text-white">간편 일지 생성</CardTitle>
-              <CardDescription className="text-slate-400">
+              <CardDescription className="text-slate-300">
                 바우처 유형을 선택하고 간단한 정보만 입력하면 AI가 공식 서식에 맞는 전문 일지를 작성합니다
               </CardDescription>
             </CardHeader>
@@ -542,7 +542,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
                         <CardTitle className="text-white">{diary.voucherType}</CardTitle>
-                        <CardDescription className="text-slate-400">
+                        <CardDescription className="text-slate-300">
                           {diary.periodStart} ~ {diary.periodEnd}
                         </CardDescription>
                       </div>
@@ -556,11 +556,11 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                     {diary.summary && (
                       <div className="grid grid-cols-2 gap-4 p-4 bg-slate-800 rounded-lg">
                         <div>
-                          <p className="text-sm text-slate-400">출석률</p>
+                          <p className="text-sm text-slate-300">출석률</p>
                           <p className="text-lg font-semibold text-white">{diary.summary.attendanceRate}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-slate-400">대상자</p>
+                          <p className="text-sm text-slate-300">대상자</p>
                           <p className="text-lg font-semibold text-white">{diary.summary.uniqueClients}명</p>
                         </div>
                       </div>
@@ -568,7 +568,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
 
                     {/* 일지 내용 미리보기 */}
                     <div 
-                      className="prose prose-sm max-w-none text-slate-300 bg-slate-800/50 p-4 rounded-lg max-h-64 overflow-y-auto"
+                      className="prose prose-sm max-w-none text-slate-200 bg-slate-800/50 p-4 rounded-lg max-h-64 overflow-y-auto"
                       dangerouslySetInnerHTML={{ __html: diary.content.substring(0, 500) + '...' }}
                     />
 
@@ -585,17 +585,17 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                             자세히보기
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-slate-900 border-slate-800">
+                        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-slate-900 border-slate-700">
                           <DialogHeader>
                             <DialogTitle className="text-white text-xl">{diary.voucherType} 일지</DialogTitle>
                           </DialogHeader>
                           <div className="space-y-4">
-                            <div className="flex justify-between items-center text-sm text-slate-400">
+                            <div className="flex justify-between items-center text-sm text-slate-300">
                               <span>{diary.periodStart} ~ {diary.periodEnd}</span>
                               <span>{new Date(diary.createdAt).toLocaleDateString('ko-KR')}</span>
                             </div>
                             <div 
-                              className="prose prose-sm prose-invert max-w-none"
+                              className="prose prose-sm prose-invert max-w-none text-slate-100"
                               dangerouslySetInnerHTML={{ __html: diary.content }}
                             />
                           </div>

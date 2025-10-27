@@ -32,7 +32,7 @@ import {
   DollarSign,
   Activity,
   Target,
-  Instagram
+  Sparkles
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -46,7 +46,7 @@ import { AutomatedInstitutionDashboard } from '@/components/institution/Automate
 import VoucherReportGenerator from '@/components/institution/VoucherReportGenerator';
 import { OrganizationChart } from '@/components/organization/OrganizationChart';
 import { TestInsights } from '@/components/organization/TestInsights';
-import { InstagramContentGenerator } from '@/components/institution/InstagramContentGenerator';
+import { SocialContentGenerator } from '@/components/institution/SocialContentGenerator';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -1003,19 +1003,19 @@ export default function InstitutionAdmin() {
             <Card className="bg-[#0F1823] border-slate-800">
               <CardHeader className="border-b border-slate-800">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-pink-500/20">
-                    <Instagram className="w-6 h-6 text-pink-500" />
+                  <div className="p-2 rounded-lg bg-gradient-to-r from-pink-500/20 via-blue-500/20 to-purple-500/20">
+                    <Sparkles className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl text-white">Instagram 콘텐츠 생성</CardTitle>
+                    <CardTitle className="text-xl text-white">소셜 미디어 콘텐츠 생성</CardTitle>
                     <p className="text-sm text-slate-400 mt-1">
-                      AI가 기관에 맞는 인스타그램 콘텐츠를 자동으로 생성합니다
+                      AI가 Instagram, Blog, Threads에 맞는 콘텐츠를 자동으로 생성합니다
                     </p>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="p-6">
-                <InstagramContentGenerator institutionName={institutionInfo?.institution_name} />
+                <SocialContentGenerator institutionName={institutionInfo?.institution_name} />
               </CardContent>
             </Card>
 

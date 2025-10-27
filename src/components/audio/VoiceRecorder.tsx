@@ -111,8 +111,13 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onTranscription })
         <div className="flex flex-col items-center gap-4">
           <div className="text-center">
             <h3 className="text-lg font-semibold mb-2">음성 녹음</h3>
-            <p className="text-sm text-muted-foreground">
-              {isRecording ? '녹음 중...' : '버튼을 눌러 녹음을 시작하세요'}
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              {isRecording ? '녹음 중...' : (
+                <>
+                  버튼을 눌러<br className="block sm:hidden" />
+                  녹음을 시작하세요
+                </>
+              )}
             </p>
           </div>
 

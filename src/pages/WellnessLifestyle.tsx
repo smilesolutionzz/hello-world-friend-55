@@ -336,12 +336,13 @@ const WellnessLifestyle = () => {
               <span className="font-semibold text-blue-800">AI 웰니스 대시보드</span>
             </div>
             
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent whitespace-nowrap">
               당신만의 AI 건강 코치
             </h1>
             
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              OpenAI, ElevenLabs, 이미지 생성을 활용한 최첨단 웰니스 솔루션
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-snug">
+              OpenAI, ElevenLabs, 이미지 생성을 활용한<br className="block sm:hidden" />
+              최첨단 웰니스 솔루션
             </p>
 
             {/* Achievement Progress */}
@@ -549,8 +550,8 @@ const WellnessLifestyle = () => {
           <Card className="bg-gradient-to-br from-green-50 to-emerald-100 border-0 shadow-xl">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold text-green-900 flex items-center gap-3">
-                  <Dumbbell className="h-8 w-8" />
+                <CardTitle className="text-xl sm:text-2xl font-bold text-green-900 flex items-center gap-3 whitespace-nowrap">
+                  <Dumbbell className="h-6 h-8 w-6 sm:w-8" />
                   맞춤 운동 플랜
                 </CardTitle>
                 <Badge className="bg-green-500 text-white">AI 생성</Badge>
@@ -684,8 +685,8 @@ const WellnessLifestyle = () => {
           <Card className="bg-gradient-to-br from-purple-50 to-pink-100 border-0 shadow-xl">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold text-purple-900 flex items-center gap-3">
-                  <Moon className="h-8 w-8" />
+                <CardTitle className="text-xl sm:text-2xl font-bold text-purple-900 flex items-center gap-3 whitespace-nowrap">
+                  <Moon className="h-6 sm:h-8 w-6 sm:w-8" />
                   스마트 수면 분석
                 </CardTitle>
                 <Badge className="bg-purple-500 text-white">AI 분석</Badge>
@@ -772,8 +773,8 @@ const WellnessLifestyle = () => {
           <Card className="bg-gradient-to-br from-pink-50 to-rose-100 border-0 shadow-xl">
             <CardHeader>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <CardTitle className="text-2xl font-bold text-rose-900 flex items-center gap-3">
-                  <Mic className="h-8 w-8" />
+                <CardTitle className="text-xl sm:text-2xl font-bold text-rose-900 flex items-center gap-3 whitespace-nowrap">
+                  <Mic className="h-6 sm:h-8 w-6 sm:w-8" />
                   AI 음성 감정 분석
                 </CardTitle>
                 <Badge className="bg-rose-500 text-white">실시간 분석</Badge>
@@ -782,8 +783,10 @@ const WellnessLifestyle = () => {
             <CardContent>
               <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-rose-100">
                 <div className="text-center mb-6">
-                  <p className="text-rose-800 text-lg">
-                    음성으로 당신의 감정 상태를 실시간으로 분석합니다
+                  <p className="text-sm sm:text-base md:text-lg text-rose-800 leading-relaxed">
+                    음성으로 당신의 감정 상태를<br className="block sm:hidden" />
+                    실시간으로<br className="block sm:hidden" />
+                    분석합니다
                   </p>
                 </div>
                 <VoiceEmotionAnalyzer />

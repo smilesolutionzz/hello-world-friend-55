@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -30,9 +31,9 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
     const selectedChannels = channels || ['instagram', 'blog', 'threads'];
@@ -43,44 +44,45 @@ serve(async (req) => {
       
       for (const contentType of contentTypes) {
         try {
-          // Generate image
+          // Generate image using OpenAI
           const imagePrompt = getImagePrompt(channel, contentType.type);
-          const imageResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          const imageResponse = await fetch("https://api.openai.com/v1/images/generations", {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${LOVABLE_API_KEY}`,
+              Authorization: `Bearer ${OPENAI_API_KEY}`,
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              model: "google/gemini-2.5-flash-image-preview",
-              messages: [
-                {
-                  role: "user",
-                  content: imagePrompt
-                }
-              ],
-              modalities: ["image", "text"]
+              model: "gpt-image-1",
+              prompt: imagePrompt,
+              n: 1,
+              size: "1024x1024",
+              quality: "high",
+              output_format: "png"
             })
           });
 
           if (!imageResponse.ok) {
-            console.error(`Image generation failed for ${channel}-${contentType.type}: ${imageResponse.statusText}`);
+            const errorText = await imageResponse.text();
+            console.error(`Image generation failed for ${channel}-${contentType.type}: ${imageResponse.statusText}`, errorText);
             continue;
           }
 
           const imageData = await imageResponse.json();
-          const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          const imageUrl = imageData.data?.[0]?.b64_json;
 
           if (!imageUrl) {
-            console.error(`No image URL for ${channel}-${contentType.type}`);
+            console.error(`No image data for ${channel}-${contentType.type}`);
             continue;
           }
 
-          // Generate content text
+          const base64ImageUrl = `data:image/png;base64,${imageUrl}`;
+
+          // Generate content text using OpenAI
           const contentText = await generateContentText(
             channel,
             contentType.type, 
-            LOVABLE_API_KEY, 
+            OPENAI_API_KEY, 
             institutionName, 
             contentTopic
           );
@@ -90,7 +92,7 @@ serve(async (req) => {
             type: contentType.type,
             title: contentText.title,
             content: contentText.content,
-            imageUrl: imageUrl,
+            imageUrl: base64ImageUrl,
             hashtags: contentText.hashtags,
             seoKeywords: contentText.seoKeywords
           });
@@ -141,22 +143,22 @@ function getContentTypesForChannel(channel: string) {
 function getImagePrompt(channel: string, contentType: string): string {
   const prompts = {
     'instagram': {
-      'story': 'Create a warm and emotional Instagram post background with soft gradients, warm colors (pink, orange, peach), and subtle bokeh effects. Minimalist and clean design suitable for personal storytelling. High quality, professional, 1080x1080 aspect ratio.',
-      'lifestyle': 'Create a bright and stylish Instagram post background with modern aesthetics, clean lines, pastel colors (mint, lavender, cream), and minimalist geometric patterns. Perfect for lifestyle content. High quality, professional, 1080x1080 aspect ratio.',
-      'knowledge': 'Create a professional and trustworthy Instagram post background with blue and white tones, subtle grid patterns, and clean modern design. Suitable for educational and knowledge-sharing content. High quality, professional, 1080x1080 aspect ratio.',
-      'solution': 'Create an inspiring and energetic Instagram post background with vibrant colors (orange, yellow, green), dynamic shapes, and uplifting gradients. Perfect for problem-solving and motivational content. High quality, professional, 1080x1080 aspect ratio.'
+      'story': 'A warm and emotional Instagram post background with soft gradients, warm colors like pink, orange, and peach, subtle bokeh effects. Minimalist and clean design suitable for personal storytelling. High quality, professional, square 1:1 aspect ratio.',
+      'lifestyle': 'A bright and stylish Instagram post background with modern aesthetics, clean lines, pastel colors like mint, lavender, and cream, minimalist geometric patterns. Perfect for lifestyle content. High quality, professional, square 1:1 aspect ratio.',
+      'knowledge': 'A professional and trustworthy Instagram post background with blue and white tones, subtle grid patterns, and clean modern design. Suitable for educational and knowledge-sharing content. High quality, professional, square 1:1 aspect ratio.',
+      'solution': 'An inspiring and energetic Instagram post background with vibrant colors like orange, yellow, and green, dynamic shapes, and uplifting gradients. Perfect for problem-solving and motivational content. High quality, professional, square 1:1 aspect ratio.'
     },
     'blog': {
-      'howto': 'Create a professional blog header image with clean layout, modern typography space, instructional feel, blue and white color scheme. High quality, 1200x630 aspect ratio.',
-      'casestudy': 'Create a data-driven blog header with charts, graphs, professional business aesthetic, blue and grey tones. High quality, 1200x630 aspect ratio.',
-      'tips': 'Create a friendly and approachable blog header with bright colors, icons, bullet points aesthetic, warm and inviting. High quality, 1200x630 aspect ratio.',
-      'insight': 'Create a thought-leadership blog header with abstract patterns, professional colors, deep blue and gold accents. High quality, 1200x630 aspect ratio.'
+      'howto': 'A professional blog header image with clean layout, modern typography space, instructional feel, blue and white color scheme. High quality, 16:9 aspect ratio.',
+      'casestudy': 'A data-driven blog header with abstract charts and graphs elements, professional business aesthetic, blue and grey tones. High quality, 16:9 aspect ratio.',
+      'tips': 'A friendly and approachable blog header with bright colors, icon-style elements, bullet points aesthetic, warm and inviting. High quality, 16:9 aspect ratio.',
+      'insight': 'A thought-leadership blog header with abstract patterns, professional colors, deep blue and gold accents. High quality, 16:9 aspect ratio.'
     },
     'threads': {
-      'quick-tip': 'Create a simple and eye-catching Threads post background with bold colors, minimal design, fast-paced feel. Square format, 1080x1080.',
-      'opinion': 'Create a discussion-oriented Threads background with speech bubble elements, conversational colors, warm tones. Square format, 1080x1080.',
-      'question': 'Create an engaging question-style Threads background with question mark motifs, curious colors, interactive feel. Square format, 1080x1080.',
-      'trend': 'Create a trendy and modern Threads background with dynamic shapes, vibrant gradients, energetic feel. Square format, 1080x1080.'
+      'quick-tip': 'A simple and eye-catching Threads post background with bold colors, minimal design, fast-paced feel. Square format, 1:1 aspect ratio.',
+      'opinion': 'A discussion-oriented Threads background with speech bubble elements, conversational colors, warm tones. Square format, 1:1 aspect ratio.',
+      'question': 'An engaging question-style Threads background with question mark motifs, curious colors, interactive feel. Square format, 1:1 aspect ratio.',
+      'trend': 'A trendy and modern Threads background with dynamic shapes, vibrant gradients, energetic feel. Square format, 1:1 aspect ratio.'
     }
   };
   return prompts[channel]?.[contentType] || prompts['instagram']['story'];
@@ -177,51 +179,61 @@ async function generateContentText(
     ? `\n특정 주제: ${contentTopic}\n이 주제와 관련된 내용으로 작성해주세요.` 
     : '';
 
-  let prompt = '';
+  let systemPrompt = '';
+  let userPrompt = '';
   
   if (channel === 'instagram') {
-    prompt = `당신은 인스타그램 콘텐츠 전문가입니다. "${contentType}" 주제로 사람들의 관심을 끄는 매력적인 인스타그램 게시글을 작성해주세요.${institutionContext}${topicContext}
+    systemPrompt = `당신은 자연스럽고 인간적인 인스타그램 콘텐츠를 작성하는 소셜 미디어 전문가입니다. 
+AI가 쓴 것처럼 느껴지지 않도록, 실제 사람이 쓴 것처럼 자연스럽고 따뜻하게 작성하세요.
+볼드체나 불필요한 강조 없이 담백하게 작성하세요.`;
 
-요구사항:
-1. 첫 문장부터 강력한 후킹으로 시작
-2. 이모지를 적절히 활용하여 시각적으로 매력적이게
-3. 단락을 나누어 가독성 좋게 작성
-4. 실제 인스타그램 게시글처럼 자연스럽게
-5. 마지막에 질문이나 행동 유도로 마무리
+    userPrompt = `"${contentType}" 주제로 인스타그램 게시글을 작성해주세요.${institutionContext}${topicContext}
 
-다음 JSON 형식으로 응답해주세요:
+작성 가이드:
+- 진솔하고 따뜻한 대화체로 작성 (실제 사람이 쓴 느낌)
+- 자연스러운 문장과 친근한 어투
+- 이모지는 딱 필요한 곳에만 1-2개 사용
+- 볼드체나 특수문자 강조 없이 깔끔하게
+- 마지막은 가볍게 질문이나 공감을 유도
+
+다음 JSON 형식으로만 응답:
 {
   "title": "이미지에 들어갈 짧은 제목 (10자 이내)",
-  "content": "바로 복사해서 업로드할 수 있는 완성된 게시글 본문 (이모지 포함, 300-500자)",
+  "content": "자연스러운 게시글 본문 (300-500자)",
   "hashtags": ["#해시태그1", "#해시태그2", "#해시태그3", "#해시태그4", "#해시태그5"]
 }`;
   } else if (channel === 'blog') {
-    prompt = `당신은 블로그 콘텐츠 전문가입니다. "${contentType}" 주제로 SEO에 최적화된 블로그 포스트를 작성해주세요.${institutionContext}${topicContext}
+    systemPrompt = `당신은 전문적이면서도 읽기 쉬운 블로그 글을 작성하는 콘텐츠 전문가입니다.
+AI가 쓴 것처럼 느껴지지 않도록 자연스럽고 실용적으로 작성하세요.
+불필요한 볼드체나 강조 없이 깔끔하게 작성하세요.`;
 
-요구사항:
-1. SEO 친화적인 제목 (60자 이내)
-2. 구조화된 본문 (소제목 포함)
-3. 읽기 쉬운 문단 구성
-4. 전문적이면서도 접근하기 쉬운 톤
-5. 실용적인 정보와 가치 제공
+    userPrompt = `"${contentType}" 주제로 블로그 포스트를 작성해주세요.${institutionContext}${topicContext}
 
-다음 JSON 형식으로 응답해주세요:
+작성 가이드:
+- 자연스럽고 읽기 쉬운 문체
+- 소제목은 ## 로만 구분 (볼드 없이)
+- 실용적이고 구체적인 정보 제공
+- 전문적이지만 어렵지 않게
+
+다음 JSON 형식으로만 응답:
 {
-  "title": "SEO 최적화된 블로그 제목",
-  "content": "마크다운 형식의 블로그 본문 (800-1200자, ## 소제목 포함)",
+  "title": "SEO 최적화된 블로그 제목 (60자 이내)",
+  "content": "마크다운 형식의 본문 (800-1200자, ## 소제목만 사용, 볼드 없음)",
   "seoKeywords": ["키워드1", "키워드2", "키워드3", "키워드4", "키워드5"]
 }`;
   } else if (channel === 'threads') {
-    prompt = `당신은 Threads 콘텐츠 전문가입니다. "${contentType}" 주제로 대화를 유도하는 짧고 강렬한 포스트를 작성해주세요.${institutionContext}${topicContext}
+    systemPrompt = `당신은 캐주얼하고 대화를 잘 이끄는 Threads 콘텐츠 작성자입니다.
+AI가 쓴 것처럼 느껴지지 않도록 자연스럽고 진솔하게 작성하세요.`;
 
-요구사항:
-1. 짧고 임팩트 있는 문장 (150-300자)
-2. 대화를 시작하는 질문이나 의견
-3. 이모지 1-2개 사용
-4. 캐주얼하고 진솔한 톤
-5. 리플라이를 유도하는 내용
+    userPrompt = `"${contentType}" 주제로 Threads 포스트를 작성해주세요.${institutionContext}${topicContext}
 
-다음 JSON 형식으로 응답해주세요:
+작성 가이드:
+- 짧고 자연스러운 대화체
+- 이모지 1개만 사용
+- 볼드나 강조 없이 깔끔하게
+- 대화를 유도하는 가벼운 질문이나 의견
+
+다음 JSON 형식으로만 응답:
 {
   "title": "첫 줄 (20자 이내)",
   "content": "Threads 포스트 본문 (150-300자)",
@@ -229,21 +241,20 @@ async function generateContentText(
 }`;
   }
 
-  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
+      model: "gpt-5-2025-08-07",
       messages: [
-        {
-          role: "user",
-          content: prompt
-        }
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
       ],
-      response_format: { type: "json_object" }
+      response_format: { type: "json_object" },
+      max_completion_tokens: 2000
     })
   });
 

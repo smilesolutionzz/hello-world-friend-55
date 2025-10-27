@@ -579,7 +579,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="flex-1 border-slate-700 text-white hover:bg-slate-800"
+                            className="flex-1 bg-slate-800 border-slate-600 text-slate-100 hover:bg-slate-700 hover:text-white"
                           >
                             <Eye className="w-4 h-4 mr-2" />
                             자세히보기
@@ -605,7 +605,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                         onClick={() => copyToClipboard(diary.content)}
                         variant="outline"
                         size="sm"
-                        className="flex-1 border-slate-700 text-white hover:bg-slate-800"
+                        className="flex-1 bg-slate-800 border-slate-600 text-slate-100 hover:bg-slate-700 hover:text-white"
                       >
                         <Copy className="w-4 h-4 mr-2" />
                         복사
@@ -614,7 +614,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                         onClick={() => downloadDiary(diary)}
                         variant="outline"
                         size="sm"
-                        className="flex-1 border-slate-700 text-white hover:bg-slate-800"
+                        className="flex-1 bg-slate-800 border-slate-600 text-slate-100 hover:bg-slate-700 hover:text-white"
                       >
                         <Download className="w-4 h-4 mr-2" />
                         다운로드

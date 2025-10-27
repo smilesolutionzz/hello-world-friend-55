@@ -205,13 +205,22 @@ serve(async (req) => {
 ---
 `).join('\n');
 
+    // 스타일별 정확한 글자 수 제한
+    const characterLimits: Record<string, { min: number; max: number }> = {
+      'detailed': { min: 1500, max: 2000 },
+      'concise': { min: 800, max: 1000 },
+      'professional': { min: 1200, max: 1500 }
+    };
+    
+    const targetLimit = characterLimits[reportStyle];
+
     const systemPrompt = `당신은 20년 경력의 전문 치료사이자 일지 작성 전문가입니다.
 ${voucherTypePrompt}
 
 작성 스타일:
-${reportStyle === 'detailed' ? '- 상세형: 모든 활동과 반응을 구체적으로 기록 (1500-2000자)\n- 치료 과정의 세부 사항, 아동의 미묘한 반응 변화까지 포착' : ''}
-${reportStyle === 'concise' ? '- 간결형: 핵심 내용만 명확하게 요약 (800-1000자)\n- 주요 활동, 반응, 평가를 간략하게 정리' : ''}
-${reportStyle === 'professional' ? '- 전문형: 전문적이면서 읽기 쉽게 작성 (1200-1500자)\n- 전문 용어와 일반 용어를 적절히 혼합하여 사용' : ''}
+${reportStyle === 'detailed' ? '- 상세형: 모든 활동과 반응을 구체적으로 기록\n- 치료 과정의 세부 사항, 아동의 미묘한 반응 변화까지 포착' : ''}
+${reportStyle === 'concise' ? '- 간결형: 핵심 내용만 명확하게 요약\n- 주요 활동, 반응, 평가를 간략하게 정리' : ''}
+${reportStyle === 'professional' ? '- 전문형: 전문적이면서 읽기 쉽게 작성\n- 전문 용어와 일반 용어를 적절히 혼합하여 사용' : ''}
 
 필수 작성 원칙:
 1. **구체성**: 모호한 표현 대신 구체적 행동과 반응 기술
@@ -244,12 +253,17 @@ ${sessionSummary}
 
 위 데이터를 바탕으로 ${voucherType}의 공식 서식에 맞는 전문 치료 일지를 작성해주세요.
 
+**⚠️ 글자 수 제한 (매우 중요)**:
+- 정확히 ${targetLimit.min}자 ~ ${targetLimit.max}자 사이로 작성해야 합니다
+- 문장이 중간에 잘리면 안 됩니다 - 반드시 완전한 문장으로 끝내세요
+- ${targetLimit.max}자에 근접하면, 새로운 내용을 추가하지 말고 마무리 문장으로 종료하세요
+- 글자 수를 맞추기 위해 불필요한 내용을 반복하지 마세요
+
 작성 시 주의사항:
 - 제공된 세션 데이터의 구체적 내용을 인용하여 작성
 - 각 섹션은 HTML 형식으로 구조화 (<h3>, <p>, <ul>, <li>, <strong> 사용)
 - 객관적 관찰과 전문가 의견을 명확히 구분
 - 긍정적 변화와 개선 필요 영역을 균형있게 서술
-- ${reportStyle === 'detailed' ? '1500-2000자' : reportStyle === 'concise' ? '800-1000자' : '1200-1500자'} 분량으로 작성
 `;
 
     console.log('Claude API 호출 시작');

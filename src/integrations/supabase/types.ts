@@ -1617,6 +1617,48 @@ export type Database = {
         }
         Relationships: []
       }
+      diary_generations: {
+        Row: {
+          character_count: number
+          client_name: string | null
+          created_at: string
+          created_by: string
+          generated_content: string
+          id: string
+          main_activity: string | null
+          metadata: Json | null
+          report_style: string
+          session_number: number | null
+          voucher_type: string
+        }
+        Insert: {
+          character_count: number
+          client_name?: string | null
+          created_at?: string
+          created_by: string
+          generated_content: string
+          id?: string
+          main_activity?: string | null
+          metadata?: Json | null
+          report_style: string
+          session_number?: number | null
+          voucher_type: string
+        }
+        Update: {
+          character_count?: number
+          client_name?: string | null
+          created_at?: string
+          created_by?: string
+          generated_content?: string
+          id?: string
+          main_activity?: string | null
+          metadata?: Json | null
+          report_style?: string
+          session_number?: number | null
+          voucher_type?: string
+        }
+        Relationships: []
+      }
       diary_likes: {
         Row: {
           created_at: string
@@ -1645,6 +1687,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      dream_records: {
+        Row: {
+          created_at: string
+          dream_content: string
+          dream_date: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dream_content: string
+          dream_date: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dream_content?: string
+          dream_date?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       expert_application_access_log: {
         Row: {
@@ -3700,6 +3769,7 @@ export type Database = {
           created_at: string
           emotion_analysis: Json | null
           id: string
+          is_important: boolean | null
           is_public: boolean | null
           likes_count: number | null
           memory_extracted: string | null
@@ -3719,6 +3789,7 @@ export type Database = {
           created_at?: string
           emotion_analysis?: Json | null
           id?: string
+          is_important?: boolean | null
           is_public?: boolean | null
           likes_count?: number | null
           memory_extracted?: string | null
@@ -3738,6 +3809,7 @@ export type Database = {
           created_at?: string
           emotion_analysis?: Json | null
           id?: string
+          is_important?: boolean | null
           is_public?: boolean | null
           likes_count?: number | null
           memory_extracted?: string | null
@@ -5473,6 +5545,39 @@ export type Database = {
           session_id?: string
           user_agent?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_book_builder_projects: {
+        Row: {
+          book_type: string
+          created_at: string | null
+          current_step: number | null
+          id: string
+          last_modified: string | null
+          project_data: Json
+          title: string
+          user_id: string
+        }
+        Insert: {
+          book_type: string
+          created_at?: string | null
+          current_step?: number | null
+          id?: string
+          last_modified?: string | null
+          project_data?: Json
+          title: string
+          user_id: string
+        }
+        Update: {
+          book_type?: string
+          created_at?: string | null
+          current_step?: number | null
+          id?: string
+          last_modified?: string | null
+          project_data?: Json
+          title?: string
+          user_id?: string
         }
         Relationships: []
       }

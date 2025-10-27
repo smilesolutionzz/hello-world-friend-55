@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -19,7 +20,8 @@ import {
   Clock,
   TrendingUp,
   Copy,
-  Info
+  Info,
+  Eye
 } from 'lucide-react';
 
 interface SessionRecord {
@@ -57,6 +59,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
   
   const [generatedDiaries, setGeneratedDiaries] = useState<GeneratedDiary[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [reportForm, setReportForm] = useState({
     voucher_type: '발달재활서비스',
     period_start: '',
@@ -74,6 +77,48 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
   });
 
   const { toast } = useToast();
+
+  // 생성 이력 불러오기
+  useEffect(() => {
+    loadDiaryHistory();
+  }, []);
+
+  const loadDiaryHistory = async () => {
+    try {
+      setIsLoadingHistory(true);
+      const { data, error } = await supabase
+        .from('diary_generations')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (data) {
+        const formattedDiaries: GeneratedDiary[] = data.map(item => {
+          const metadata = item.metadata as any;
+          return {
+            id: item.id,
+            voucherType: item.voucher_type,
+            content: item.generated_content,
+            periodStart: metadata?.periodStart || '',
+            periodEnd: metadata?.periodEnd || '',
+            createdAt: item.created_at,
+            metadata: item.metadata,
+            summary: metadata?.summary || {
+              totalSessions: 1,
+              attendanceRate: '100%',
+              uniqueClients: 1
+            }
+          };
+        });
+        setGeneratedDiaries(formattedDiaries);
+      }
+    } catch (error) {
+      console.error('이력 불러오기 오류:', error);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
 
   const voucherTypes = [
     { id: '발달재활서비스', name: '발달재활서비스', description: '대상자 정보, 치료 목표, 활동 내용, 평가' },
@@ -141,13 +186,47 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
       if (error) throw error;
 
       if (data?.success) {
+        // 데이터베이스에 저장
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        const { data: savedDiary, error: saveError } = await supabase
+          .from('diary_generations')
+          .insert({
+            voucher_type: reportForm.voucher_type,
+            report_style: reportForm.report_style,
+            client_name: quickInput.clientName || sessionRecords[0]?.client_name,
+            session_number: quickInput.sessionNumber ? parseInt(quickInput.sessionNumber) : null,
+            main_activity: quickInput.mainActivity || sessionRecords[0]?.session_notes,
+            generated_content: data.content,
+            character_count: data.content.replace(/<[^>]*>/g, '').length,
+            metadata: {
+              periodStart,
+              periodEnd,
+              summary: data.summary,
+              reportStyle: reportForm.report_style,
+              ...data.metadata
+            },
+            created_by: user?.id
+          })
+          .select()
+          .single();
+
+        if (saveError) {
+          console.error('저장 오류:', saveError);
+          toast({
+            title: "저장 실패",
+            description: "일지는 생성되었으나 저장에 실패했습니다.",
+            variant: "destructive"
+          });
+        }
+
         const newDiary: GeneratedDiary = {
-          id: Date.now().toString(),
+          id: savedDiary?.id || Date.now().toString(),
           voucherType: reportForm.voucher_type,
           content: data.content,
           periodStart,
           periodEnd,
-          createdAt: new Date().toISOString(),
+          createdAt: savedDiary?.created_at || new Date().toISOString(),
           metadata: data.metadata,
           summary: data.summary
         };
@@ -495,6 +574,33 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
 
                     {/* 액션 버튼 */}
                     <div className="flex gap-2">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1 border-slate-700 text-white hover:bg-slate-800"
+                          >
+                            <Eye className="w-4 h-4 mr-2" />
+                            자세히보기
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-slate-900 border-slate-800">
+                          <DialogHeader>
+                            <DialogTitle className="text-white text-xl">{diary.voucherType} 일지</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div className="flex justify-between items-center text-sm text-slate-400">
+                              <span>{diary.periodStart} ~ {diary.periodEnd}</span>
+                              <span>{new Date(diary.createdAt).toLocaleDateString('ko-KR')}</span>
+                            </div>
+                            <div 
+                              className="prose prose-sm prose-invert max-w-none"
+                              dangerouslySetInnerHTML={{ __html: diary.content }}
+                            />
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                       <Button
                         onClick={() => copyToClipboard(diary.content)}
                         variant="outline"

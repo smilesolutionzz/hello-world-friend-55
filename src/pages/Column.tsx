@@ -936,7 +936,7 @@ const Column = () => {
                     <div className="mt-12 pt-8 border-t-2 border-primary/20">
                       <p className="text-right text-foreground/80 text-lg">
                         14년간의 현장 경험을 담아,<br />
-                        <span className="font-bold text-primary text-2xl">AI하이라이트PRO 창립자 이수석</span>
+                        <span className="font-bold text-primary text-4xl md:text-5xl block mt-2">AI하이라이트PRO<br />창립자 이수석</span>
                       </p>
                     </div>
                   </div>

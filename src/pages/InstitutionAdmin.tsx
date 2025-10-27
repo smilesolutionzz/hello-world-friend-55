@@ -623,40 +623,40 @@ export default function InstitutionAdmin() {
               <TabsList className="bg-transparent border-b border-slate-800 rounded-none h-auto p-0 w-max min-w-full justify-start flex-nowrap">
                 <TabsTrigger 
                   value="overview" 
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-4"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-3 text-xs sm:text-sm h-10"
                 >
                   개요
                 </TabsTrigger>
                 <TabsTrigger 
                   value="members" 
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-4"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-3 text-xs sm:text-sm h-10"
                 >
                   회원 관리 ({stats?.total_members || 0})
                 </TabsTrigger>
                 <TabsTrigger 
                   value="tests" 
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-4"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-3 text-xs sm:text-sm h-10"
                 >
                   검사 ({stats?.total_tests || 0})
                 </TabsTrigger>
                 <TabsTrigger 
                   value="reports" 
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-4"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-3 text-xs sm:text-sm h-10"
                 >
                   결제 ({stats?.this_month_payments || 0})
                 </TabsTrigger>
                 <TabsTrigger 
                   value="marketing" 
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-4"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-3 text-xs sm:text-sm h-10 flex items-center"
                 >
-                  <Sparkles className="h-4 w-4 mr-2" />
+                  <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   AI일지생성
                 </TabsTrigger>
                 <TabsTrigger 
                   value="voucher" 
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-4"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-3 text-xs sm:text-sm h-10 flex items-center"
                 >
-                  <FileText className="h-4 w-4 mr-2" />
+                  <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   소셜 컨텐츠
                 </TabsTrigger>
               </TabsList>

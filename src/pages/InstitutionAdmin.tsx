@@ -46,6 +46,7 @@ import { AutomatedInstitutionDashboard } from '@/components/institution/Automate
 import VoucherReportGenerator from '@/components/institution/VoucherReportGenerator';
 import { OrganizationChart } from '@/components/organization/OrganizationChart';
 import { TestInsights } from '@/components/organization/TestInsights';
+import { AIDiaryGenerator } from '@/components/institution/AIDiaryGenerator';
 import { SocialContentGenerator } from '@/components/institution/SocialContentGenerator';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -647,15 +648,15 @@ export default function InstitutionAdmin() {
                 value="marketing" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
               >
-                <Bot className="h-4 w-4 mr-2" />
-                마케팅 AI
+                <Sparkles className="h-4 w-4 mr-2" />
+                AI일지생성
               </TabsTrigger>
               <TabsTrigger 
                 value="voucher" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
               >
                 <FileText className="h-4 w-4 mr-2" />
-                바우처 일지
+                소셜 컨텐츠
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -998,8 +999,32 @@ export default function InstitutionAdmin() {
             </Card>
           </TabsContent>
 
-          {/* Marketing AI Tab */}
-          <TabsContent value="marketing" className="mt-0 space-y-6">
+          {/* AI Diary Generation Tab */}
+          <TabsContent value="marketing" className="mt-0">
+            <Card className="bg-[#0F1823] border-slate-800">
+              <CardHeader className="border-b border-slate-800">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-gradient-to-r from-primary/20 to-purple-500/20">
+                    <Sparkles className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl text-white">AI 일지 자동생성</CardTitle>
+                    <p className="text-sm text-slate-400 mt-1">
+                      Claude AI가 전문적인 치료 일지를 자동으로 작성합니다
+                    </p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                {institutionInfo?.id && (
+                  <AIDiaryGenerator institutionId={institutionInfo.id} />
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Social Content Tab */}
+          <TabsContent value="voucher" className="mt-0">
             <Card className="bg-[#0F1823] border-slate-800">
               <CardHeader className="border-b border-slate-800">
                 <div className="flex items-center gap-3">
@@ -1016,40 +1041,6 @@ export default function InstitutionAdmin() {
               </CardHeader>
               <CardContent className="p-6">
                 <SocialContentGenerator institutionName={institutionInfo?.institution_name} />
-              </CardContent>
-            </Card>
-
-            <Card className="bg-[#0F1823] border-slate-800">
-              <CardHeader className="border-b border-slate-800">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/20">
-                    <Bot className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl text-white">마케팅 AI 어시스턴트</CardTitle>
-                    <p className="text-sm text-slate-400 mt-1">
-                      기관 데이터를 기반으로 맞춤형 마케팅 전략을 제안받으세요
-                    </p>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                <iframe
-                  src="/marketing-ai-assistant"
-                  className="w-full h-[calc(100vh-300px)] border-0"
-                  title="마케팅 AI 어시스턴트"
-                />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Voucher Report Tab */}
-          <TabsContent value="voucher" className="mt-0">
-            <Card className="bg-[#0F1823] border-slate-800">
-              <CardContent className="p-6">
-                {institutionInfo?.id && (
-                  <VoucherReportGenerator institutionId={institutionInfo.id} />
-                )}
               </CardContent>
             </Card>
           </TabsContent>

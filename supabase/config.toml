@@ -136,6 +136,9 @@ verify_jwt = false
 [functions.instagram-content-generator]
 verify_jwt = false
 
+[functions.ai-diary-generator]
+verify_jwt = false
+
 [functions.social-content-generator]
 verify_jwt = false
 

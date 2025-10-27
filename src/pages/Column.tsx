@@ -810,17 +810,27 @@ const Column = () => {
           </div>
 
           {/* Mission Section - 아코디언 */}
-          <div className="mb-16 max-w-5xl mx-auto">
+          <div className="mb-16 max-w-5xl mx-auto relative">
+            {/* Animated warm background */}
+            <div className="absolute inset-0 -z-10 overflow-hidden rounded-3xl">
+              <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse" 
+                   style={{ animationDuration: '4s' }} />
+              <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse" 
+                   style={{ animationDuration: '5s', animationDelay: '1s' }} />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse" 
+                   style={{ animationDuration: '6s', animationDelay: '2s' }} />
+            </div>
+            
             <div 
-              className="text-center mb-8 space-y-6 cursor-pointer group"
+              className="text-center mb-8 space-y-6 cursor-pointer group relative"
               onClick={() => setExpandedId(expandedId === 'mission' ? null : 'mission')}
             >
-              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-secondary/20 to-primary/20 border-2 border-primary/30 mb-4 shadow-lg">
+              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-secondary/20 to-primary/20 border-2 border-primary/30 mb-4 shadow-lg backdrop-blur-sm">
                 <Heart className="w-5 h-5 text-primary" />
                 <span className="text-base font-bold text-primary uppercase tracking-wide">Our Mission</span>
               </div>
               <div className="flex items-center justify-center gap-4">
-                <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent drop-shadow-sm">
+                <h2 className="text-4xl md:text-5xl font-black text-primary drop-shadow-lg">
                   14년, 5,000명과 함께한 진심
                 </h2>
                 <ArrowRight 

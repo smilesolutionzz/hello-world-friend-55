@@ -624,8 +624,8 @@ const WellnessLifestyle = () => {
           <Card className="bg-gradient-to-br from-orange-50 to-amber-100 border-0 shadow-xl">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold text-orange-900 flex items-center gap-3">
-                  <Apple className="h-8 w-8" />
+                <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold text-orange-900 flex items-center gap-2 sm:gap-3 whitespace-nowrap">
+                  <Apple className="h-6 sm:h-8 w-6 sm:w-8" />
                   영양 분석 & 추천
                 </CardTitle>
                 <Badge className="bg-orange-500 text-white">이미지 생성</Badge>
@@ -633,7 +633,7 @@ const WellnessLifestyle = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <Button 
-                className="w-full md:w-auto bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-6 text-lg"
+                className="w-full md:w-auto bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-4 sm:py-6 text-sm sm:text-base md:text-lg"
                 onClick={handleNutrition}
                 disabled={loading === 'nutrition'}
               >

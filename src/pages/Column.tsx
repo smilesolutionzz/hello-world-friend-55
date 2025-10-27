@@ -810,121 +810,121 @@ const Column = () => {
           </div>
 
           {/* Mission Section - 아코디언 */}
-          <div className="mb-16 max-w-4xl mx-auto">
+          <div className="mb-16 max-w-5xl mx-auto">
             <div 
-              className="text-center mb-6 space-y-4 cursor-pointer"
+              className="text-center mb-8 space-y-6 cursor-pointer group"
               onClick={() => setExpandedId(expandedId === 'mission' ? null : 'mission')}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20 mb-4">
-                <Heart className="w-4 h-4 text-secondary" />
-                <span className="text-sm font-semibold text-secondary">Our Mission</span>
+              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-secondary/20 to-primary/20 border-2 border-primary/30 mb-4 shadow-lg">
+                <Heart className="w-5 h-5 text-primary" />
+                <span className="text-base font-bold text-primary uppercase tracking-wide">Our Mission</span>
               </div>
-              <div className="flex items-center justify-center gap-3">
-                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent">
+              <div className="flex items-center justify-center gap-4">
+                <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent drop-shadow-sm">
                   14년, 5,000명과 함께한 진심
                 </h2>
                 <ArrowRight 
-                  className={`w-6 h-6 text-primary transition-transform duration-300 ${expandedId === 'mission' ? 'rotate-90' : ''}`}
+                  className={`w-7 h-7 text-primary transition-all duration-300 group-hover:translate-x-1 ${expandedId === 'mission' ? 'rotate-90' : ''}`}
                 />
               </div>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-xl text-foreground/80 font-medium max-w-2xl mx-auto">
                 데이터와 사람의 온기가 만나는 곳
               </p>
             </div>
 
             {expandedId === 'mission' && (
-              <Card className="p-8 md:p-12 bg-card/80 backdrop-blur-xl border-primary/20 shadow-2xl animate-in slide-in-from-top-4 duration-500">
+              <Card className="p-10 md:p-16 bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-xl border-2 border-primary/30 shadow-2xl animate-in slide-in-from-top-4 duration-500">
                 <div className="prose prose-lg max-w-none">
-                  <div className="space-y-6 text-foreground/90 leading-relaxed">
-                    <p className="text-xl font-medium text-primary text-center">
+                  <div className="space-y-8 text-foreground/90 leading-relaxed">
+                    <p className="text-2xl font-bold text-primary text-center border-b-2 border-primary/20 pb-6">
                       수천 번의 상담에서 발견한 단 하나의 진실
                     </p>
 
-                    <p className="text-base">
+                    <p className="text-lg leading-loose">
                       지난 14년간, 저는 5,000명이 넘는 학부모, 청소년, 아동을 만나왔습니다. 
                       새벽같이 찾아오신 불안한 부모님들, 말없이 눈물만 흘리던 아이들, 
                       "이제 너무 늦은 건 아닐까요?"라며 떨리는 목소리로 물으시던 분들... 
-                      <span className="font-semibold text-primary">그 하나하나가 모두 제 사명이 되었습니다.</span>
+                      <span className="font-bold text-primary text-xl">그 하나하나가 모두 제 사명이 되었습니다.</span>
                     </p>
 
-                    <div className="grid md:grid-cols-2 gap-6 my-8">
-                      <div className="bg-primary/5 border border-primary/20 rounded-lg p-6 text-center space-y-3">
-                        <div className="text-5xl font-bold text-primary">14년</div>
-                        <div className="text-sm text-muted-foreground">
+                    <div className="grid md:grid-cols-2 gap-8 my-10">
+                      <div className="bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 rounded-xl p-8 text-center space-y-4 shadow-lg">
+                        <div className="text-6xl font-bold text-primary drop-shadow-md">14년</div>
+                        <div className="text-base text-foreground/80 font-medium">
                           매일 현장에서 쌓아온<br />생생한 임상 경험
                         </div>
                       </div>
-                      <div className="bg-secondary/5 border border-secondary/20 rounded-lg p-6 text-center space-y-3">
-                        <div className="text-5xl font-bold text-secondary">5,000+</div>
-                        <div className="text-sm text-muted-foreground">
+                      <div className="bg-gradient-to-br from-secondary/10 to-secondary/5 border-2 border-secondary/30 rounded-xl p-8 text-center space-y-4 shadow-lg">
+                        <div className="text-6xl font-bold text-secondary drop-shadow-md">5,000+</div>
+                        <div className="text-base text-foreground/80 font-medium">
                           함께 울고 웃으며<br />성장한 소중한 인연들
                         </div>
                       </div>
                     </div>
 
-                    <p className="text-base">
+                    <p className="text-lg leading-loose">
                       상담실에서 마주한 수많은 이야기들은 공통된 진실을 말해주었습니다. 
-                      <span className="font-semibold text-primary"> 사람들은 단순한 조언이 아닌, 
+                      <span className="font-bold text-primary text-xl"> 사람들은 단순한 조언이 아닌, 
                       자신을 깊이 이해하고 함께 걸어줄 누군가를 원한다는 것</span>을요. 
                       하지만 현실은 가혹했습니다. 한 명의 전문가가 돌볼 수 있는 사람은 한정되어 있고, 
                       많은 분들이 도움의 손길을 받지 못한 채 혼자 고통받고 계셨습니다.
                     </p>
 
-                    <div className="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg my-8">
-                      <p className="text-base font-medium italic">
+                    <div className="bg-gradient-to-r from-primary/15 to-secondary/15 border-l-4 border-primary p-8 rounded-r-xl my-10 shadow-md">
+                      <p className="text-lg font-bold italic text-foreground/90 leading-relaxed">
                         "어떻게 하면 더 많은 사람들에게<br />
                         전문가의 따뜻한 손길을 전할 수 있을까?<br />
                         어떻게 하면 한계를 넘어설 수 있을까?"
                       </p>
                     </div>
 
-                    <p className="text-base">
+                    <p className="text-lg leading-loose">
                       그 답을 AI에서 찾았습니다. 하지만 차갑고 기계적인 AI가 아닌, 
-                      <span className="font-semibold text-primary"> 14년간 쌓아온 임상 경험과 
+                      <span className="font-bold text-primary text-xl"> 14년간 쌓아온 임상 경험과 
                       5,000번의 상담에서 배운 인간에 대한 이해가 담긴 AI</span>였습니다. 
                       AI가 24시간 데이터를 관찰하고 패턴을 발견하면, 
                       전문가는 그 속에서 한 사람만의 이야기를 읽어냅니다.
                     </p>
 
-                    <p className="text-base">
+                    <p className="text-lg leading-loose">
                       기술은 더 많은 사람을 만날 수 있게 해주었지만, 
                       제가 절대 포기할 수 없는 것이 있습니다. 
-                      <span className="font-semibold text-primary"> 그것은 바로 '사람의 온기'입니다.</span> 
+                      <span className="font-bold text-primary text-xl"> 그것은 바로 '사람의 온기'입니다.</span> 
                       아무리 정교한 AI라도, 부모의 떨리는 손을 잡아주는 따뜻함은 대신할 수 없습니다. 
                       아무리 정확한 데이터라도, "괜찮을 거예요"라는 진심 어린 위로는 담을 수 없습니다.
                     </p>
 
-                    <p className="text-base">
+                    <p className="text-lg leading-loose">
                       그래서 AI하이라이트PRO는 AI 플랫폼이면서도, 
-                      <span className="font-semibold text-primary"> 반드시 사람이 포함되는 시스템</span>으로 만들었습니다. 
+                      <span className="font-bold text-primary text-xl"> 반드시 사람이 포함되는 시스템</span>으로 만들었습니다. 
                       여러분의 데이터는 AI가 분석하지만, 최종 리포트는 반드시 전문가의 검토를 거칩니다. 
                       숫자 너머의 이야기를, 패턴 속의 감정을, 데이터 안의 사람을 읽어내기 위해서입니다.
                     </p>
 
-                    <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-6 my-8 text-center">
-                      <p className="text-lg font-semibold text-foreground mb-4">
+                    <div className="bg-gradient-to-r from-primary/15 via-secondary/15 to-primary/15 rounded-xl p-8 my-10 text-center border-2 border-primary/20 shadow-lg">
+                      <p className="text-xl font-bold text-foreground mb-6 leading-relaxed">
                         학부모의 불안 하나,<br />
                         청소년의 침묵 하나,<br />
                         아동의 작은 신호 하나가<br />
                         모두 저에게는 소중한 사명입니다.
                       </p>
-                      <p className="text-base text-muted-foreground">
+                      <p className="text-lg text-foreground/80 leading-relaxed">
                         14년 전 첫 상담실을 열던 그날의 다짐,<br />
-                        "한 사람 한 사람을 진심으로"<br />
+                        <span className="font-bold text-primary">"한 사람 한 사람을 진심으로"</span><br />
                         그 마음은 지금도, 앞으로도 변하지 않을 것입니다.
                       </p>
                     </div>
 
-                    <p className="text-base">
+                    <p className="text-lg leading-loose">
                       여러분의 성장 여정에 함께할 수 있어 진심으로 감사합니다. 
                       AI와 전문가가, 기술과 사람이, 데이터와 온기가 함께하는 그날까지 
                       멈추지 않고 나아가겠습니다.
                     </p>
 
-                    <div className="mt-12 pt-8 border-t border-border">
-                      <p className="text-right text-foreground/70">
+                    <div className="mt-12 pt-8 border-t-2 border-primary/20">
+                      <p className="text-right text-foreground/80 text-lg">
                         14년간의 현장 경험을 담아,<br />
-                        <span className="font-semibold text-primary text-lg">AI하이라이트PRO 창립자 이수석</span>
+                        <span className="font-bold text-primary text-2xl">AI하이라이트PRO 창립자 이수석</span>
                       </p>
                     </div>
                   </div>

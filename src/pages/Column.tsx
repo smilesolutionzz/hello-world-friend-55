@@ -802,7 +802,7 @@ const Column = () => {
               <Heart className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold text-primary">매달 업데이트</span>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent whitespace-nowrap">
               창립자 이수석의 칼럼
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

@@ -558,95 +558,184 @@ export default function MemberManagement({ adminId }: MemberManagementProps) {
               <p className="mt-2 text-muted-foreground">회원 목록을 불러오는 중...</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>회원명</TableHead>
-                  <TableHead>연락처</TableHead>
-                  <TableHead>나이</TableHead>
-                  <TableHead>상태</TableHead>
-                  <TableHead>등록일</TableHead>
-                  <TableHead>활동</TableHead>
-                  <TableHead>액션</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              {/* Desktop Table */}
+              <div className="hidden lg:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>회원명</TableHead>
+                      <TableHead>연락처</TableHead>
+                      <TableHead>나이</TableHead>
+                      <TableHead>상태</TableHead>
+                      <TableHead>등록일</TableHead>
+                      <TableHead>활동</TableHead>
+                      <TableHead>액션</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredMembers.map((member) => (
+                      <TableRow key={member.id}>
+                        <TableCell>
+                          <div className="font-medium">{member.member_name}</div>
+                          {member.custom_fields?.grade && (
+                            <div className="text-sm text-muted-foreground">{member.custom_fields.grade}</div>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            {member.member_email && (
+                              <div className="flex items-center text-sm">
+                                <Mail className="w-3 h-3 mr-1" />
+                                {member.member_email}
+                              </div>
+                            )}
+                            {member.member_phone && (
+                              <div className="flex items-center text-sm">
+                                <Phone className="w-3 h-3 mr-1" />
+                                {member.member_phone}
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {calculateAge(member.birth_date || '')}
+                        </TableCell>
+                        <TableCell>
+                          {getStatusBadge(member.status)}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center text-sm">
+                            <Calendar className="w-3 h-3 mr-1" />
+                            {formatDate(member.enrollment_date)}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="space-y-1">
+                            <div className="text-sm">검사: {member.test_count || 0}회</div>
+                            <div className="text-sm">관찰: {member.observation_count || 0}회</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex space-x-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                openEditDialog(member);
+                                setShowAddDialog(true);
+                              }}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteMember(member)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {filteredMembers.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center py-8">
+                          <User className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
+                          <p className="text-muted-foreground">등록된 회원이 없습니다.</p>
+                          <p className="text-sm text-muted-foreground">새 회원 등록 버튼을 눌러 회원을 추가하세요.</p>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="lg:hidden space-y-4">
                 {filteredMembers.map((member) => (
-                  <TableRow key={member.id}>
-                    <TableCell>
-                      <div className="font-medium">{member.member_name}</div>
-                      {member.custom_fields?.grade && (
-                        <div className="text-sm text-muted-foreground">{member.custom_fields.grade}</div>
+                  <div key={member.id} className="p-4 border rounded-lg space-y-3 bg-card">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-base">{member.member_name}</h3>
+                        {member.custom_fields?.grade && (
+                          <p className="text-sm text-muted-foreground">{member.custom_fields.grade}</p>
+                        )}
+                      </div>
+                      <div className="ml-2">
+                        {getStatusBadge(member.status)}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2 text-sm">
+                      {member.member_email && (
+                        <div className="flex items-center gap-2">
+                          <Mail className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                          <span className="truncate">{member.member_email}</span>
+                        </div>
                       )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        {member.member_email && (
-                          <div className="flex items-center text-sm">
-                            <Mail className="w-3 h-3 mr-1" />
-                            {member.member_email}
-                          </div>
-                        )}
-                        {member.member_phone && (
-                          <div className="flex items-center text-sm">
-                            <Phone className="w-3 h-3 mr-1" />
-                            {member.member_phone}
-                          </div>
-                        )}
+                      {member.member_phone && (
+                        <div className="flex items-center gap-2">
+                          <Phone className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                          <span>{member.member_phone}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                        <span>{calculateAge(member.birth_date || '')}</span>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      {calculateAge(member.birth_date || '')}
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(member.status)}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center text-sm">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        {formatDate(member.enrollment_date)}
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                        <span>{formatDate(member.enrollment_date)}</span>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        <div className="text-sm">검사: {member.test_count || 0}회</div>
-                        <div className="text-sm">관찰: {member.observation_count || 0}회</div>
+                    </div>
+
+                    <div className="flex gap-3 pt-2 text-sm">
+                      <div className="flex-1 p-2 bg-muted/50 rounded text-center">
+                        <div className="text-muted-foreground text-xs">검사</div>
+                        <div className="font-semibold">{member.test_count || 0}회</div>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            openEditDialog(member);
-                            setShowAddDialog(true);
-                          }}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteMember(member)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                      <div className="flex-1 p-2 bg-muted/50 rounded text-center">
+                        <div className="text-muted-foreground text-xs">관찰</div>
+                        <div className="font-semibold">{member.observation_count || 0}회</div>
                       </div>
-                    </TableCell>
-                  </TableRow>
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => {
+                          openEditDialog(member);
+                          setShowAddDialog(true);
+                        }}
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        수정
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => handleDeleteMember(member)}
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        삭제
+                      </Button>
+                    </div>
+                  </div>
                 ))}
                 {filteredMembers.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      <User className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
-                      <p className="text-muted-foreground">등록된 회원이 없습니다.</p>
-                      <p className="text-sm text-muted-foreground">새 회원 등록 버튼을 눌러 회원을 추가하세요.</p>
-                    </TableCell>
-                  </TableRow>
+                  <div className="text-center py-12">
+                    <User className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
+                    <p className="text-muted-foreground">등록된 회원이 없습니다.</p>
+                    <p className="text-sm text-muted-foreground mt-1">새 회원 등록 버튼을 눌러 회원을 추가하세요.</p>
+                  </div>
                 )}
-              </TableBody>
-            </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

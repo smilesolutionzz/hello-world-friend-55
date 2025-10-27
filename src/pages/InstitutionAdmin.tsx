@@ -896,7 +896,8 @@ export default function InstitutionAdmin() {
                 <CardTitle className="text-white">전체 검사 내역</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
+                {/* Desktop Table */}
+                <div className="hidden lg:block overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-800">
@@ -949,6 +950,69 @@ export default function InstitutionAdmin() {
                       ))}
                     </tbody>
                   </table>
+                </div>
+
+                {/* Mobile Card View */}
+                <div className="lg:hidden space-y-4">
+                  {memberTests.map((test) => (
+                    <div key={test.id} className="p-4 bg-slate-900/50 rounded-lg border border-slate-800 space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-white text-base">{test.member_name}</h3>
+                          <p className="text-sm text-slate-300 truncate">{test.test_name}</p>
+                        </div>
+                        <Badge 
+                          variant={test.status === 'completed' ? 'default' : 'secondary'}
+                          className={test.status === 'completed' ? 'bg-green-900/30 text-green-400 border-green-800 flex-shrink-0' : 'bg-yellow-900/30 text-yellow-400 border-yellow-800 flex-shrink-0'}
+                        >
+                          {test.status === 'completed' ? '완료' : '진행중'}
+                        </Badge>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                          <div className="text-xs text-slate-400 mb-1">검사일</div>
+                          <div className="text-slate-300">
+                            {format(new Date(test.completed_at), 'yyyy. MM. dd', { locale: ko })}
+                          </div>
+                          <div className="text-xs text-slate-400">
+                            {format(new Date(test.completed_at), 'HH:mm', { locale: ko })}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-xs text-slate-400 mb-1">점수</div>
+                          <div className="text-lg font-semibold text-white">{test.score}점</div>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 bg-slate-800 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700"
+                          onClick={() => handleViewTestResult(test.id)}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          자세히보기
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 bg-slate-800 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700"
+                          onClick={() => handleDownloadTestResult(test.id)}
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          다운로드
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  {memberTests.length === 0 && (
+                    <div className="text-center py-12">
+                      <FileText className="w-12 h-12 mx-auto text-slate-600 mb-2" />
+                      <p className="text-slate-400">검사 내역이 없습니다.</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

@@ -60,6 +60,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
   const [generatedDiaries, setGeneratedDiaries] = useState<GeneratedDiary[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [voucherTypes, setVoucherTypes] = useState<Array<{ id: string; name: string; description: string }>>([]);
   const [reportForm, setReportForm] = useState({
     voucher_type: '발달재활서비스',
     period_start: '',
@@ -78,10 +79,43 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
 
   const { toast } = useToast();
 
-  // 생성 이력 불러오기
+  // 바우처 유형 및 생성 이력 불러오기
   useEffect(() => {
+    loadVoucherTypes();
     loadDiaryHistory();
   }, []);
+
+  const loadVoucherTypes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('voucher_types')
+        .select('id, name, description')
+        .eq('is_active', true)
+        .order('name');
+
+      if (error) throw error;
+
+      if (data) {
+        setVoucherTypes(data.map(v => ({
+          id: v.name,
+          name: v.name,
+          description: v.description || '치료 일지 작성'
+        })));
+        
+        // 첫 번째 바우처 유형으로 초기화
+        if (data.length > 0 && !reportForm.voucher_type) {
+          setReportForm(prev => ({ ...prev, voucher_type: data[0].name }));
+        }
+      }
+    } catch (error) {
+      console.error('바우처 유형 불러오기 오류:', error);
+      // 실패시 기본 하드코딩된 목록 사용
+      setVoucherTypes([
+        { id: '발달재활서비스', name: '발달재활서비스', description: '대상자 정보, 치료 목표, 활동 내용, 평가' },
+        { id: '언어발달지원', name: '언어발달지원', description: 'SOAP 형식 (주관적/객관적/평가/계획)' },
+      ]);
+    }
+  };
 
   const loadDiaryHistory = async () => {
     try {
@@ -120,14 +154,6 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
     }
   };
 
-  const voucherTypes = [
-    { id: '발달재활서비스', name: '발달재활서비스', description: '대상자 정보, 치료 목표, 활동 내용, 평가' },
-    { id: '언어발달지원', name: '언어발달지원', description: 'SOAP 형식 (주관적/객관적/평가/계획)' },
-    { id: '미술심리치료', name: '미술심리치료', description: '내담자 상태, 작업 과정, 표현 분석' },
-    { id: '놀이심리치료', name: '놀이심리치료', description: '입실 태도, 놀이 내용, 치료적 개입' },
-    { id: '교육청서비스', name: '교육청서비스', description: 'IEP 목표, 학습 활동, 행동 관찰' },
-    { id: '지역사회서비스', name: '지역사회서비스', description: '서비스 제공, 이용자 반응, 사회적응' },
-  ];
 
   const reportStyles = [
     { value: 'detailed', label: '상세형 (1500-2000자)', description: '모든 내용을 구체적으로 기록' },

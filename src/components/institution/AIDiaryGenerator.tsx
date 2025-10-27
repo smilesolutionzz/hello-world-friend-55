@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
@@ -15,11 +16,10 @@ import {
   Sparkles,
   Loader2,
   CheckCircle,
-  Users,
   Clock,
   TrendingUp,
   Copy,
-  RefreshCw
+  Info
 } from 'lucide-react';
 
 interface SessionRecord {
@@ -53,97 +53,87 @@ interface AIDiaryGeneratorProps {
 }
 
 export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
-  const [sessionRecords] = useState<SessionRecord[]>([
-    {
-      id: '1',
-      client_name: '김민수',
-      therapist_name: '이선생',
-      session_date: '2025-01-15',
-      duration: 50,
-      voucher_type: '언어발달지원',
-      session_notes: '단어 카드를 활용한 어휘 확장 활동. 동물 이름 10개 학습',
-      progress_notes: '이전 세션 대비 발음이 명확해짐. 자발적 표현 증가',
-      attendance_status: '출석',
-      session_goals: '명사 어휘 10개 이상 습득',
-      observations: '집중력 향상, 적극적 참여',
-      interventions: '시각적 자료 활용, 반복 연습'
-    },
-    {
-      id: '2',
-      client_name: '김민수',
-      therapist_name: '이선생',
-      session_date: '2025-01-17',
-      duration: 50,
-      voucher_type: '언어발달지원',
-      session_notes: '그림책 읽기를 통한 문장 구성 연습',
-      progress_notes: '2-3어절 문장 구성 가능. 문맥 이해도 향상',
-      attendance_status: '출석',
-      session_goals: '짧은 문장 만들기',
-      observations: '이야기 순서 이해 능력 발달',
-      interventions: '반복적 질문과 응답 유도'
-    },
-  ]);
-
+  const [sessionRecords] = useState<SessionRecord[]>([]);
+  
   const [generatedDiaries, setGeneratedDiaries] = useState<GeneratedDiary[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [reportForm, setReportForm] = useState({
-    voucher_type: '',
+    voucher_type: '발달재활서비스',
     period_start: '',
     period_end: '',
-    report_style: 'detailed' as 'detailed' | 'concise' | 'professional'
+    report_style: 'professional' as 'detailed' | 'concise' | 'professional'
+  });
+
+  // 간편 입력 폼
+  const [quickInput, setQuickInput] = useState({
+    clientName: '',
+    sessionNumber: '',
+    mainActivity: '',
+    childResponse: '',
+    specialNotes: ''
   });
 
   const { toast } = useToast();
 
   const voucherTypes = [
-    { id: '언어발달지원', name: '언어발달지원', category: '정부바우처' },
-    { id: '발달재활서비스', name: '발달재활서비스', category: '정부바우처' },
-    { id: '교육청서비스', name: '교육청서비스', category: '교육청' },
-    { id: '지역사회서비스', name: '지역사회서비스', category: '지역바우처' },
+    { id: '발달재활서비스', name: '발달재활서비스', description: '대상자 정보, 치료 목표, 활동 내용, 평가' },
+    { id: '언어발달지원', name: '언어발달지원', description: 'SOAP 형식 (주관적/객관적/평가/계획)' },
+    { id: '미술심리치료', name: '미술심리치료', description: '내담자 상태, 작업 과정, 표현 분석' },
+    { id: '놀이심리치료', name: '놀이심리치료', description: '입실 태도, 놀이 내용, 치료적 개입' },
+    { id: '교육청서비스', name: '교육청서비스', description: 'IEP 목표, 학습 활동, 행동 관찰' },
+    { id: '지역사회서비스', name: '지역사회서비스', description: '서비스 제공, 이용자 반응, 사회적응' },
   ];
 
   const reportStyles = [
-    { value: 'detailed', label: '상세형', description: '모든 내용을 자세히 기록' },
-    { value: 'concise', label: '간결형', description: '핵심 내용만 요약' },
-    { value: 'professional', label: '전문가형', description: '공식 보고서 형식' },
+    { value: 'detailed', label: '상세형 (1500-2000자)', description: '모든 내용을 구체적으로 기록' },
+    { value: 'concise', label: '간결형 (800-1000자)', description: '핵심 내용만 요약' },
+    { value: 'professional', label: '전문형 (1200-1500자)', description: '전문적이고 균형있게' },
   ];
 
   const generateDiary = async () => {
-    if (!reportForm.voucher_type || !reportForm.period_start || !reportForm.period_end) {
-      toast({
-        title: "입력 오류",
-        description: "모든 필수 항목을 입력해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsGenerating(true);
-
     try {
-      // 해당 기간의 세션 데이터 필터링
-      const relevantSessions = sessionRecords.filter(session => 
-        session.voucher_type === reportForm.voucher_type &&
-        session.session_date >= reportForm.period_start &&
-        session.session_date <= reportForm.period_end
-      );
+      setIsGenerating(true);
+      
+      // 간편 입력 또는 세션 기록 사용
+      let sessionData = sessionRecords;
+      
+      if (sessionRecords.length === 0) {
+        // 간편 입력 유효성 검사
+        if (!quickInput.clientName || !quickInput.mainActivity) {
+          toast({
+            title: "입력 필요",
+            description: "아동명과 주요 활동을 입력해주세요.",
+            variant: "destructive"
+          });
+          setIsGenerating(false);
+          return;
+        }
 
-      if (relevantSessions.length === 0) {
-        toast({
-          title: "데이터 없음",
-          description: "해당 기간에 세션 기록이 없습니다.",
-          variant: "destructive",
-        });
-        setIsGenerating(false);
-        return;
+        // 간편 입력으로 세션 데이터 생성
+        sessionData = [{
+          id: Date.now().toString(),
+          client_name: quickInput.clientName,
+          therapist_name: "담당 치료사",
+          session_date: new Date().toISOString().split('T')[0],
+          duration: 50,
+          voucher_type: reportForm.voucher_type,
+          session_notes: quickInput.mainActivity,
+          progress_notes: quickInput.childResponse || '긍정적 반응',
+          attendance_status: '출석',
+          session_goals: `${reportForm.voucher_type} 목표`,
+          observations: quickInput.specialNotes || '특이사항 없음'
+        }];
       }
+
+      const periodStart = reportForm.period_start || new Date().toISOString().split('T')[0];
+      const periodEnd = reportForm.period_end || new Date().toISOString().split('T')[0];
 
       const { data, error } = await supabase.functions.invoke('ai-diary-generator', {
         body: {
           voucherType: reportForm.voucher_type,
-          sessionData: relevantSessions,
-          periodStart: reportForm.period_start,
-          periodEnd: reportForm.period_end,
+          sessionData: sessionData,
+          periodStart,
+          periodEnd,
           reportStyle: reportForm.report_style
         }
       });
@@ -155,14 +145,23 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
           id: Date.now().toString(),
           voucherType: reportForm.voucher_type,
           content: data.content,
-          periodStart: reportForm.period_start,
-          periodEnd: reportForm.period_end,
+          periodStart,
+          periodEnd,
           createdAt: new Date().toISOString(),
           metadata: data.metadata,
           summary: data.summary
         };
 
         setGeneratedDiaries([newDiary, ...generatedDiaries]);
+        
+        // 입력 폼 초기화
+        setQuickInput({
+          clientName: '',
+          sessionNumber: '',
+          mainActivity: '',
+          childResponse: '',
+          specialNotes: ''
+        });
 
         toast({
           title: "일지 생성 완료! 🎉",
@@ -228,118 +227,201 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
         </TabsList>
 
         <TabsContent value="generate" className="space-y-6">
-          {/* 통계 카드 */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">총 세션</CardTitle>
-                <Calendar className="h-4 w-4 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">{sessionRecords.length}건</div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">생성된 일지</CardTitle>
-                <FileText className="h-4 w-4 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">{generatedDiaries.length}개</div>
-              </CardContent>
-            </Card>
+          {sessionRecords.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card className="bg-slate-900 border-slate-800">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">총 세션</CardTitle>
+                  <Calendar className="h-4 w-4 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-white">{sessionRecords.length}건</div>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-slate-900 border-slate-800">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">생성된 일지</CardTitle>
+                  <FileText className="h-4 w-4 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-white">{generatedDiaries.length}개</div>
+                </CardContent>
+              </Card>
 
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">지원 바우처</CardTitle>
-                <CheckCircle className="h-4 w-4 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">{voucherTypes.length}개</div>
-              </CardContent>
-            </Card>
+              <Card className="bg-slate-900 border-slate-800">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">지원 바우처</CardTitle>
+                  <CheckCircle className="h-4 w-4 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-white">{voucherTypes.length}개</div>
+                </CardContent>
+              </Card>
 
-            <Card className="bg-slate-900 border-slate-800">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-400">평균 시간</CardTitle>
-                <Clock className="h-4 w-4 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">50분</div>
-              </CardContent>
-            </Card>
-          </div>
+              <Card className="bg-slate-900 border-slate-800">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium text-slate-400">평균 시간</CardTitle>
+                  <Clock className="h-4 w-4 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-white">50분</div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
           {/* 일지 생성 폼 */}
           <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
-              <CardTitle className="text-white">새 일지 생성</CardTitle>
+              <CardTitle className="text-white">간편 일지 생성</CardTitle>
               <CardDescription className="text-slate-400">
-                AI가 세션 데이터를 분석하여 전문적인 치료 일지를 자동으로 작성합니다
+                바우처 유형을 선택하고 간단한 정보만 입력하면 AI가 공식 서식에 맞는 전문 일지를 작성합니다
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="voucher_type" className="text-slate-300">바우처 유형 *</Label>
-                  <Select 
-                    value={reportForm.voucher_type} 
-                    onValueChange={(value) => setReportForm({...reportForm, voucher_type: value})}
-                  >
-                    <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
-                      <SelectValue placeholder="바우처 유형 선택" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-slate-800 border-slate-700">
-                      {voucherTypes.map((voucher) => (
-                        <SelectItem key={voucher.id} value={voucher.id} className="text-white">
-                          {voucher.name} ({voucher.category})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="voucher_type" className="text-slate-300">바우처 유형 *</Label>
+                <Select 
+                  value={reportForm.voucher_type} 
+                  onValueChange={(value) => setReportForm({...reportForm, voucher_type: value})}
+                >
+                  <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700">
+                    {voucherTypes.map((voucher) => (
+                      <SelectItem key={voucher.id} value={voucher.id} className="text-white">
+                        <div className="flex flex-col">
+                          <span className="font-medium">{voucher.name}</span>
+                          <span className="text-xs text-slate-400">{voucher.description}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-slate-500 flex items-center gap-1">
+                  <Info className="w-3 h-3" />
+                  선택한 바우처에 맞는 공식 서식으로 일지가 생성됩니다
+                </p>
+              </div>
+
+              {/* 간편 입력 폼 */}
+              <div className="space-y-4 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                <div className="flex items-start gap-2">
+                  <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-white">최소 입력으로 전문 일지 생성</p>
+                    <p className="text-xs text-slate-400">기본 정보만 입력하면 AI가 해당 바우처의 공식 서식에 맞춰 작성합니다</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="clientName" className="text-slate-300">아동명 *</Label>
+                    <Input
+                      id="clientName"
+                      placeholder="예: 김OO"
+                      value={quickInput.clientName}
+                      onChange={(e) => setQuickInput({...quickInput, clientName: e.target.value})}
+                      className="bg-slate-800 border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="sessionNumber" className="text-slate-300">회기 번호</Label>
+                    <Input
+                      id="sessionNumber"
+                      placeholder="예: 10회기"
+                      value={quickInput.sessionNumber}
+                      onChange={(e) => setQuickInput({...quickInput, sessionNumber: e.target.value})}
+                      className="bg-slate-800 border-slate-700 text-white"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="report_style" className="text-slate-300">작성 스타일</Label>
-                  <Select 
-                    value={reportForm.report_style} 
-                    onValueChange={(value: any) => setReportForm({...reportForm, report_style: value})}
-                  >
-                    <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-slate-800 border-slate-700">
-                      {reportStyles.map((style) => (
-                        <SelectItem key={style.value} value={style.value} className="text-white">
-                          {style.label} - {style.description}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="period_start" className="text-slate-300">시작일 *</Label>
-                  <Input
-                    id="period_start"
-                    type="date"
-                    value={reportForm.period_start}
-                    onChange={(e) => setReportForm({...reportForm, period_start: e.target.value})}
+                  <Label htmlFor="mainActivity" className="text-slate-300">주요 활동 *</Label>
+                  <Textarea
+                    id="mainActivity"
+                    placeholder="예: 소근육 발달 활동, 블록 쌓기"
+                    value={quickInput.mainActivity}
+                    onChange={(e) => setQuickInput({...quickInput, mainActivity: e.target.value})}
+                    rows={2}
                     className="bg-slate-800 border-slate-700 text-white"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="period_end" className="text-slate-300">종료일 *</Label>
-                  <Input
-                    id="period_end"
-                    type="date"
-                    value={reportForm.period_end}
-                    onChange={(e) => setReportForm({...reportForm, period_end: e.target.value})}
+                  <Label htmlFor="childResponse" className="text-slate-300">아동 반응</Label>
+                  <Textarea
+                    id="childResponse"
+                    placeholder="예: 적극적으로 참여, 집중력 양호"
+                    value={quickInput.childResponse}
+                    onChange={(e) => setQuickInput({...quickInput, childResponse: e.target.value})}
+                    rows={2}
                     className="bg-slate-800 border-slate-700 text-white"
                   />
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="specialNotes" className="text-slate-300">특이사항</Label>
+                  <Textarea
+                    id="specialNotes"
+                    placeholder="예: 이전보다 집중 시간 증가"
+                    value={quickInput.specialNotes}
+                    onChange={(e) => setQuickInput({...quickInput, specialNotes: e.target.value})}
+                    rows={2}
+                    className="bg-slate-800 border-slate-700 text-white"
+                  />
+                </div>
+              </div>
+
+              {sessionRecords.length > 0 && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="period_start" className="text-slate-300">시작일</Label>
+                    <Input
+                      id="period_start"
+                      type="date"
+                      value={reportForm.period_start}
+                      onChange={(e) => setReportForm({...reportForm, period_start: e.target.value})}
+                      className="bg-slate-800 border-slate-700 text-white"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="period_end" className="text-slate-300">종료일</Label>
+                    <Input
+                      id="period_end"
+                      type="date"
+                      value={reportForm.period_end}
+                      onChange={(e) => setReportForm({...reportForm, period_end: e.target.value})}
+                      className="bg-slate-800 border-slate-700 text-white"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="report_style" className="text-slate-300">작성 스타일</Label>
+                <Select 
+                  value={reportForm.report_style} 
+                  onValueChange={(value: any) => setReportForm({...reportForm, report_style: value})}
+                >
+                  <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-slate-700">
+                    {reportStyles.map((style) => (
+                      <SelectItem key={style.value} value={style.value} className="text-white">
+                        <div className="flex flex-col">
+                          <span className="font-medium">{style.label}</span>
+                          <span className="text-xs text-slate-400">{style.description}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <Button 
@@ -351,12 +433,12 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                 {isGenerating ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    AI가 일지를 작성하고 있습니다...
+                    Claude AI가 전문 일지 작성 중...
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5 mr-2" />
-                    일지 생성하기
+                    AI 일지 생성하기
                   </>
                 )}
               </Button>

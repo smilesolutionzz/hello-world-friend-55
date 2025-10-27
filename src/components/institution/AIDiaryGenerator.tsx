@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import html2pdf from 'html2pdf.js';
 import { 
   FileText,
   Download,
@@ -294,51 +293,19 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
     });
   };
 
-  const downloadDiary = async (diary: GeneratedDiary) => {
-    try {
-      toast({
-        title: "PDF 생성 중...",
-        description: "잠시만 기다려주세요.",
-      });
-
-      // HTML 컨텐츠를 PDF 변환에 적합한 형식으로 준비
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = `
-        <div style="padding: 40px; font-family: 'Noto Sans KR', sans-serif;">
-          <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #1a1a1a;">
-            ${diary.voucherType} 일지
-          </h1>
-          <p style="color: #666; margin-bottom: 30px; font-size: 14px;">
-            기간: ${diary.periodStart} ~ ${diary.periodEnd}
-          </p>
-          <div style="line-height: 1.8; color: #333;">
-            ${diary.content}
-          </div>
-        </div>
-      `;
-
-      const opt = {
-        margin: 1,
-        filename: `${diary.voucherType}_일지_${diary.periodStart}_${diary.periodEnd}.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' as const }
-      };
-
-      await html2pdf().set(opt).from(tempDiv).save();
-
-      toast({
-        title: "다운로드 완료",
-        description: "PDF 파일이 다운로드되었습니다.",
-      });
-    } catch (error) {
-      console.error('PDF 다운로드 오류:', error);
-      toast({
-        title: "다운로드 실패",
-        description: "PDF 생성 중 오류가 발생했습니다.",
-        variant: "destructive"
-      });
-    }
+  const downloadDiary = (diary: GeneratedDiary) => {
+    const element = document.createElement('a');
+    const file = new Blob([diary.content], { type: 'text/html' });
+    element.href = URL.createObjectURL(file);
+    element.download = `${diary.voucherType}_일지_${diary.periodStart}_${diary.periodEnd}.html`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    
+    toast({
+      title: "다운로드 완료",
+      description: "일지가 다운로드되었습니다.",
+    });
   };
 
   return (

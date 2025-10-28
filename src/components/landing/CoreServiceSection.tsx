@@ -3,6 +3,7 @@ import { Brain, FileText, Users, ArrowRight, ChevronDown } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import bgImage from '@/assets/core-service-bg.jpg';
 
 const CoreServiceSection = () => {
   const navigate = useNavigate();
@@ -41,8 +42,17 @@ const CoreServiceSection = () => {
   ];
 
   return (
-    <section className="py-32 bg-background">
-      <div className="container mx-auto px-6">
+    <section className="relative py-32 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      >
+        <div className="absolute inset-0 bg-background/85" />
+      </div>
+      
+      {/* Content */}
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             주요 서비스

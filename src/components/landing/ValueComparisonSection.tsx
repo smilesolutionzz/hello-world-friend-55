@@ -57,7 +57,7 @@ const ValueComparisonSection = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${bgImage})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background/95" />
+        <div className="absolute inset-0 bg-background/80" />
       </div>
       
       {/* Content */}

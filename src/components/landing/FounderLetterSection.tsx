@@ -27,7 +27,7 @@ const FounderLetterSection = () => {
               <span className="text-sm font-semibold text-primary">매달 업데이트</span>
             </div>
             <div className="flex items-center justify-center gap-3">
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent">
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground">
                 창립자 이수석의 손편지
               </h2>
               <ChevronDown 

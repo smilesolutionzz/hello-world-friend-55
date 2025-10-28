@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import bgImage from '@/assets/result-report-bg.jpg';
 
 const ResultReportSection = () => {
   const [showModal, setShowModal] = useState(false);
@@ -42,8 +43,17 @@ const ResultReportSection = () => {
   ];
 
   return (
-    <section className="py-32 bg-background">
-      <div className="container mx-auto px-6">
+    <section className="relative py-32 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      >
+        <div className="absolute inset-0 bg-background/85" />
+      </div>
+      
+      {/* Content */}
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 whitespace-nowrap">
             AI 리포트 & 데이터 해석

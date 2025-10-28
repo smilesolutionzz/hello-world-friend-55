@@ -49,7 +49,7 @@ const ResultReportSection = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${bgImage})` }}
       >
-        <div className="absolute inset-0 bg-background/85" />
+        <div className="absolute inset-0 bg-background/95" />
       </div>
       
       {/* Content */}
@@ -58,7 +58,7 @@ const ResultReportSection = () => {
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 whitespace-nowrap">
             AI 리포트 & 데이터 해석
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-foreground font-semibold max-w-2xl mx-auto">
             전문가 수준의 상세한 분석 결과
           </p>
         </div>
@@ -75,7 +75,7 @@ const ResultReportSection = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-foreground mb-1">{feature.title}</h3>
-                    <p className="text-muted-foreground">{feature.description}</p>
+                    <p className="text-foreground font-medium">{feature.description}</p>
                   </div>
                 </div>
               );

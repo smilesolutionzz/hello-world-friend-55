@@ -57,7 +57,7 @@ const CoreServiceSection = () => {
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             주요 서비스
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-foreground font-semibold max-w-2xl mx-auto">
             AI와 전문가가 함께하는 통합 케어
           </p>
         </div>

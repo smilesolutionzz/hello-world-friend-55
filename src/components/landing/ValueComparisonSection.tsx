@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Check, X, Sparkles, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import bgImage from '@/assets/value-comparison-bg.jpg';
 
 const ValueComparisonSection = () => {
   const navigate = useNavigate();
@@ -50,8 +51,17 @@ const ValueComparisonSection = () => {
   ];
 
   return (
-    <section className="py-24 bg-gradient-to-b from-background to-background/50">
-      <div className="container mx-auto px-6">
+    <section className="relative py-24 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background/95" />
+      </div>
+      
+      {/* Content */}
+      <div className="container mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">

@@ -25,6 +25,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
+import { LazyLoad } from '@/components/ui/lazy-load';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -168,35 +169,58 @@ const Index = () => {
           <HeroSection />
           
           {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
-          <ValueComparisonSection />
+          <LazyLoad className="animate-fade-in">
+            <ValueComparisonSection />
+          </LazyLoad>
           
           {/* 3️⃣ Problem & Vision */}
-          <ProblemVisionSection />
+          <LazyLoad className="animate-fade-in">
+            <ProblemVisionSection />
+          </LazyLoad>
           
           {/* 4️⃣ Core Service */}
-          <CoreServiceSection />
+          <LazyLoad className="animate-fade-in">
+            <CoreServiceSection />
+          </LazyLoad>
           
           {/* 5️⃣ 데이터 기반 초개인화 리포트 (통합 섹션) */}
-          <DataDrivenReportSection />
+          <LazyLoad className="animate-fade-in">
+            <DataDrivenReportSection />
+          </LazyLoad>
           
           {/* 🎯 New Features Section - 매주 업데이트 */}
-          <NewFeaturesSection />
+          <LazyLoad className="animate-fade-in">
+            <NewFeaturesSection />
+          </LazyLoad>
           
           {/* 6️⃣ Result / Report */}
-          <ResultReportSection />
+          <LazyLoad className="animate-fade-in">
+            <ResultReportSection />
+          </LazyLoad>
           
           {/* Trust & Partner Section */}
-          <PartnerTrustSection />
+          <LazyLoad className="animate-fade-in">
+            <PartnerTrustSection />
+          </LazyLoad>
           
           {/* Social Proof */}
-          <TestimonialSection />
-          <ClientLogos />
+          <LazyLoad className="animate-fade-in">
+            <TestimonialSection />
+          </LazyLoad>
+          
+          <LazyLoad className="animate-fade-in">
+            <ClientLogos />
+          </LazyLoad>
           
           {/* 📝 Founder's Letter - 창립자의 손편지 */}
-          <FounderLetterSection />
+          <LazyLoad className="animate-fade-in">
+            <FounderLetterSection />
+          </LazyLoad>
           
           {/* 7️⃣ Call to Action */}
-          <CTABannerSection />
+          <LazyLoad className="animate-fade-in">
+            <CTABannerSection />
+          </LazyLoad>
           
           {/* 8️⃣ Footer */}
           <Footer />

@@ -27,7 +27,7 @@ const InstantAIAnalysis = () => {
   const [isExpanding, setIsExpanding] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
-  const [reportImage, setReportImage] = useState<string | null>(null);
+  const [reportImages, setReportImages] = useState<string[]>([]);
   const [tableOfContents, setTableOfContents] = useState<Array<{index: number, title: string}> | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -40,23 +40,22 @@ const InstantAIAnalysis = () => {
 
       if (error) {
         console.warn('Edge function error, using fallback:', error);
-        return { analysis: mockAnalysis(text), reportImage: null, tableOfContents: null };
+        return { analysis: mockAnalysis(text), reportImages: [], tableOfContents: null };
       }
 
       if (data && data.analysis) {
         return { 
           analysis: data.analysis, 
-          reportImage: data.reportImage || null,
+          reportImages: data.reportImages || [],
           tableOfContents: data.tableOfContents || null
         };
       } else {
         console.warn('No analysis data received, using fallback');
-        return { analysis: mockAnalysis(text), reportImage: null, tableOfContents: null };
+        return { analysis: mockAnalysis(text), reportImages: [], tableOfContents: null };
       }
     } catch (error) {
       console.warn('AI Analysis error, using fallback:', error);
-      // Always return fallback analysis instead of throwing error
-      return { analysis: mockAnalysis(text), reportImage: null, tableOfContents: null };
+      return { analysis: mockAnalysis(text), reportImages: [], tableOfContents: null };
     }
   };
 
@@ -180,9 +179,9 @@ const InstantAIAnalysis = () => {
     
     try {
       // 실제 AI 분석 호출 (fallback 포함)
-      const { analysis, reportImage, tableOfContents } = await callAIAnalysis(inputText);
+      const { analysis, reportImages, tableOfContents } = await callAIAnalysis(inputText);
       setAnalysisResult(analysis);
-      setReportImage(reportImage);
+      setReportImages(reportImages || []);
       setTableOfContents(tableOfContents);
       setIsAnalyzing(false);
       setShowResult(true);
@@ -231,7 +230,7 @@ const InstantAIAnalysis = () => {
       // 마지막 fallback으로 mockAnalysis 사용
       const fallbackResult = mockAnalysis(inputText);
       setAnalysisResult(fallbackResult);
-      setReportImage(null);
+      setReportImages([]);
       setTableOfContents(null);
       setShowResult(true);
       
@@ -589,69 +588,66 @@ const InstantAIAnalysis = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {/* 책 표지 (AI 생성 이미지) */}
-                    <div className="space-y-2">
-                      <p className="text-xs text-muted-foreground font-semibold">책 표지</p>
-                      <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl overflow-hidden shadow-2xl border border-amber-200 dark:border-amber-800">
-                        {reportImage ? (
-                          <img 
-                            src={reportImage} 
-                            alt="AI가 생성한 리포트 커버 이미지" 
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <div className="text-center space-y-3 p-6">
-                              <Wand2 className="w-12 h-12 text-amber-400 mx-auto" />
-                              <p className="text-sm text-amber-100 font-semibold">
-                                AI가 고민에 맞는<br />커버 이미지를<br />생성 중입니다...
+                  <div className="space-y-4">
+                    {/* AI 생성 이미지 갤러리 */}
+                    {reportImages.length > 0 && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-semibold text-amber-900 dark:text-amber-100 flex items-center gap-2">
+                            <Wand2 className="w-4 h-4" />
+                            AI 생성 리포트 이미지 ({reportImages.length}개)
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {reportImages.map((img, idx) => (
+                            <div key={idx} className="space-y-2">
+                              <p className="text-xs text-muted-foreground font-medium">
+                                {idx === 0 ? '커버 이미지' : idx === 1 ? '정서 분석' : '성장 로드맵'}
                               </p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* 목차 페이지 */}
-                    <div className="space-y-2">
-                      <p className="text-xs text-muted-foreground font-semibold">목차 페이지</p>
-                      <div className="relative aspect-[3/4] bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl overflow-hidden shadow-2xl border border-amber-200 dark:border-amber-800 p-8">
-                        <div className="space-y-6">
-                          <h4 className="text-center text-2xl font-bold text-foreground border-b-2 border-amber-300 dark:border-amber-700 pb-4">
-                            목차
-                          </h4>
-                          <div className="space-y-2.5 text-sm">
-                            {(tableOfContents || [
-                              { index: 1, title: '발달 종합 평가' },
-                              { index: 2, title: '심리 상태 분석' },
-                              { index: 3, title: '강점/약점 분석' },
-                              { index: 4, title: '맞춤형 활동 제안' },
-                              { index: 5, title: '발달 로드맵' },
-                              { index: 6, title: '또래 비교 분석' },
-                              { index: 7, title: '전문가 소견서' },
-                              { index: 8, title: '가족 지원 가이드' },
-                              { index: 9, title: '장기 발달 예측' }
-                            ]).map((item) => (
-                              <div key={item.index} className="flex items-start gap-2">
-                                <span className="font-semibold text-amber-700 dark:text-amber-300">{item.index}.</span>
-                                <span className="text-foreground">{item.title}</span>
+                              <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl overflow-hidden shadow-xl border border-amber-200 dark:border-amber-800">
+                                <img 
+                                  src={img} 
+                                  alt={`AI 생성 이미지 ${idx + 1}`}
+                                  className="w-full h-full object-cover"
+                                />
                               </div>
-                            ))}
-                          </div>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-2">
+                          <Sparkles className="w-3 h-3 text-amber-500" />
+                          <span className="font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                            Gemini AI가 당신의 고민에 맞춰 자동 생성한 전문 리포트 이미지
+                          </span>
+                        </p>
+                      </div>
+                    )}
+
+                    {/* 책 형태 미리보기 */}
+                    <div>
+                      <p className="text-sm font-semibold text-foreground mb-3">📖 리포트 미리보기</p>
+                      <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800">
+                        <div className="space-y-2.5 text-sm">
+                          {(tableOfContents || [
+                            { index: 1, title: '발달 종합 평가' },
+                            { index: 2, title: '심리 상태 분석' },
+                            { index: 3, title: '강점/약점 분석' },
+                            { index: 4, title: '맞춤형 활동 제안' },
+                            { index: 5, title: '발달 로드맵' },
+                            { index: 6, title: '또래 비교 분석' },
+                            { index: 7, title: '전문가 소견서' },
+                            { index: 8, title: '가족 지원 가이드' },
+                            { index: 9, title: '장기 발달 예측' }
+                          ]).map((item) => (
+                            <div key={item.index} className="flex items-start gap-2">
+                              <span className="font-semibold text-amber-700 dark:text-amber-300">{item.index}.</span>
+                              <span className="text-foreground">{item.title}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
                   </div>
-
-                  {reportImage && (
-                    <p className="text-xs text-center mt-4 text-muted-foreground flex items-center justify-center gap-2">
-                      <Wand2 className="w-4 h-4 text-amber-500" />
-                      <span className="font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                        Gemini AI가 고민에 맞춰 자동 생성한 리포트 커버 이미지
-                      </span>
-                    </p>
-                  )}
                 </CardContent>
               </Card>
 

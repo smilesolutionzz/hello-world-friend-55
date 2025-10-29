@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -23,10 +23,10 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    if (!openAIApiKey) {
-      throw new Error("OPENAI_API_KEY is not set");
+    if (!lovableApiKey) {
+      throw new Error("LOVABLE_API_KEY is not set");
     }
-    logStep("OpenAI API key verified");
+    logStep("Lovable API key verified");
 
     const { inputText, concern, target } = await req.json();
     logStep("Request received", { inputTextLength: inputText?.length, concern, target });
@@ -211,14 +211,14 @@ ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
 - 점수는 고민 내용을 근거로 합리적으로 추정
 - 순수 JSON만 반환 (마크다운이나 다른 텍스트 없이)`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',  // 최신 GPT-5 모델 사용
+        model: 'google/gemini-2.5-flash',
         messages: [
           { 
             role: 'system', 
@@ -226,16 +226,22 @@ ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
           },
           { role: 'user', content: inputText }
         ],
-        max_completion_tokens: 4000,  // 토큰 수 대폭 증가
       }),
     });
 
-    logStep("OpenAI API response received", { status: response.status });
+    logStep("Lovable AI response received", { status: response.status });
 
     if (!response.ok) {
       const errorData = await response.text();
-      logStep("OpenAI API error", { status: response.status, error: errorData });
-      throw new Error(`OpenAI API error: ${response.status} - ${errorData}`);
+      logStep("Lovable AI error", { status: response.status, error: errorData });
+      
+      if (response.status === 429) {
+        throw new Error("요청이 너무 많습니다. 잠시 후 다시 시도해주세요.");
+      }
+      if (response.status === 402) {
+        throw new Error("AI 사용 한도를 초과했습니다. 잠시 후 다시 시도해주세요.");
+      }
+      throw new Error(`AI 분석 중 오류가 발생했습니다: ${response.status}`);
     }
 
     const data = await response.json();
@@ -246,59 +252,89 @@ ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
     const analysisResult = parseAIResponse(aiResponse, inputText);
     logStep("Analysis parsed", analysisResult);
 
-    // Generate report cover image with Gemini AI
-    let reportImageUrl = null;
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    // Generate multiple report images with Gemini AI
+    const reportImages: string[] = [];
     
-    if (LOVABLE_API_KEY) {
+    if (lovableApiKey) {
       try {
-        logStep("Starting report image generation");
+        logStep("Starting multiple report images generation");
         
-        // 고민 내용과 분석 결과를 반영한 맞춤형 이미지 프롬프트
-        const imagePrompt = `Professional developmental psychology report cover image. 
-Context: ${analysisResult.type} - ${concernLabel} for ${targetLabel}. 
-Severity: ${analysisResult.severity}. 
-Theme: Reflect the specific concern - ${inputText.substring(0, 200)}. 
-Style: calming, professional, educational, emotionally supportive. 
-Colors: ${analysisResult.severity === '높음' ? 'warm, supportive tones (soft reds, oranges)' : analysisResult.severity === '중간' ? 'balanced, gentle tones (soft blues, greens)' : 'positive, uplifting tones (soft pastels, yellows)'}.
-Elements: abstract representation of ${concernLabel}, growth, healing, and hope. 
-Modern minimalist design suitable for a professional psychological report. 
-Ultra high resolution, clean design that provides comfort and reassurance.`;
-        
-        const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-            'Content-Type': 'application/json',
+        // 3가지 다른 테마의 이미지 생성
+        const imagePrompts = [
+          {
+            name: 'cover',
+            prompt: `Professional psychological analysis report cover image in Korean style. 
+Main theme: ${analysisResult.type} - ${concernLabel}. 
+Visual mood: ${analysisResult.severity === '높음' ? 'warm, caring, supportive' : analysisResult.severity === '중간' ? 'balanced, hopeful, gentle' : 'positive, encouraging, bright'}.
+Style: Modern Korean healthcare design, minimalist, professional yet warm and approachable.
+Colors: Soft ${analysisResult.severity === '높음' ? 'coral and peach tones' : analysisResult.severity === '중간' ? 'teal and mint tones' : 'sky blue and lavender tones'}.
+Elements: Abstract Korean-inspired patterns, gentle gradients, subtle symbols of ${concernLabel}, healing journey concept.
+Text-free clean design. Ultra high resolution. Evokes trust and hope.`
           },
-          body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-image-preview',
-            messages: [
-              {
-                role: 'user',
-                content: imagePrompt
-              }
-            ],
-            modalities: ['image', 'text']
-          })
-        });
+          {
+            name: 'emotion',
+            prompt: `Emotional wellness illustration showing ${concernLabel} concept. 
+Context: ${inputText.substring(0, 150)}
+Style: Gentle watercolor effect, Korean emotional design aesthetic, therapeutic art.
+Mood: Empathetic, understanding, healing-focused.
+Elements: Abstract representation of emotions, journey from struggle to healing, supportive atmosphere.
+Colors: Harmonious ${analysisResult.severity === '높음' ? 'warm sunset palette' : analysisResult.severity === '중간' ? 'ocean breeze palette' : 'spring garden palette'}.
+Ultra high resolution. Professional psychological report quality.`
+          },
+          {
+            name: 'growth',
+            prompt: `Personal growth and development visualization for ${targetLabel}.
+Theme: ${concernLabel} - path to improvement and wellness.
+Style: Infographic-inspired, modern Korean design, inspirational yet professional.
+Visual concept: Growth trajectory, upward movement, transformation symbolism.
+Colors: Gradient from ${analysisResult.severity === '높음' ? 'deep coral to bright gold' : analysisResult.severity === '중간' ? 'teal to emerald' : 'lavender to bright yellow'}.
+Elements: Abstract shapes suggesting progress, Korean minimalist aesthetic, hopeful atmosphere.
+Clean, text-free design. Ultra high resolution.`
+          }
+        ];
+        
+        // 병렬로 이미지 생성
+        const imagePromises = imagePrompts.map(async ({ prompt }) => {
+          try {
+            const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${lovableApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'google/gemini-2.5-flash-image-preview',
+                messages: [{ role: 'user', content: prompt }],
+                modalities: ['image', 'text']
+              })
+            });
 
-        if (imageResponse.ok) {
-          const imageData = await imageResponse.json();
-          reportImageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-          logStep("Report image generated successfully");
-        } else {
-          logStep("Image generation failed", { status: imageResponse.status });
-        }
+            if (imageResponse.ok) {
+              const imageData = await imageResponse.json();
+              const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+              return imageUrl || null;
+            }
+            return null;
+          } catch (err) {
+            logStep("Individual image generation error", { error: String(err) });
+            return null;
+          }
+        });
+        
+        const generatedImages = await Promise.all(imagePromises);
+        reportImages.push(...generatedImages.filter(img => img !== null));
+        logStep("Report images generated", { count: reportImages.length });
+        
       } catch (imageError) {
-        logStep("Error generating report image", { error: String(imageError) });
+        logStep("Error in batch image generation", { error: String(imageError) });
       }
     }
 
     return new Response(JSON.stringify({ 
       success: true,
       analysis: analysisResult,
-      reportImage: reportImageUrl,
+      reportImages: reportImages.length > 0 ? reportImages : null,
+      reportImage: reportImages.length > 0 ? reportImages[0] : null, // 호환성을 위해 첫 이미지
       tableOfContents: generateTableOfContents(analysisResult),
       originalResponse: aiResponse
     }), {

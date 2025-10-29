@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,14 +25,14 @@ serve(async (req) => {
 
     console.log('프롬프트 확장 요청:', prompt);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [
           {
             role: 'system',
@@ -71,8 +71,14 @@ serve(async (req) => {
     const data = await response.json();
     
     if (!response.ok) {
-      console.error('OpenAI API 오류:', data);
-      throw new Error(data.error?.message || 'OpenAI API 호출 실패');
+      console.error('AI API 오류:', data);
+      if (response.status === 429) {
+        throw new Error('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
+      }
+      if (response.status === 402) {
+        throw new Error('크레딧이 부족합니다. Lovable AI 워크스페이스에 크레딧을 추가해주세요.');
+      }
+      throw new Error(data.error?.message || 'AI API 호출 실패');
     }
 
     const expandedPrompt = data.choices[0].message.content.trim();

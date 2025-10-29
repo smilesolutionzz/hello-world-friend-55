@@ -32,6 +32,7 @@ interface ConcernData {
   analysis_severity: string;
   analysis_advice: string;
   recommended_tests: any;
+  report_images?: string[];
   full_analysis?: {
     type?: string;
     severity?: string;
@@ -598,6 +599,30 @@ export const ConcernStorageList = () => {
                         </h4>
                         <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800">
                           <p className="text-foreground whitespace-pre-wrap leading-relaxed">{concern.analysis_advice}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 리포트 이미지 */}
+                    {concern.report_images && concern.report_images.length > 0 && (
+                      <div className="border-t pt-6">
+                        <h4 className="font-semibold mb-3 text-base flex items-center gap-2 text-foreground">
+                          <span className="text-2xl">🖼️</span>
+                          분석 리포트 이미지
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {concern.report_images.map((imageUrl, index) => (
+                            <div key={index} className="relative group rounded-lg overflow-hidden border border-border/50 bg-muted/20">
+                              <img 
+                                src={imageUrl} 
+                                alt={`분석 리포트 이미지 ${index + 1}`} 
+                                className="w-full h-auto object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.src = '/placeholder.svg';
+                                }}
+                              />
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}

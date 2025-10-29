@@ -76,10 +76,12 @@ const InstantAIAnalysis = () => {
         .insert({
           user_id: user.id,
           concern_text: inputText,
-          ai_analysis: JSON.stringify(analysisResult),
-          report_images: reportImages,
           analysis_type: analysisResult.type || '기타',
           analysis_severity: analysisResult.severity || '낮음',
+          analysis_advice: analysisResult.advice || analysisResult.detailedAdvice || '',
+          recommended_tests: analysisResult.recommendedTests || null,
+          full_analysis: analysisResult,
+          report_images: reportImages,
         });
 
       if (error) throw error;

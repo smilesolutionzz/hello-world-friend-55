@@ -103,6 +103,9 @@ verify_jwt = false
 [functions.enhanced-assessment-analyzer]
 verify_jwt = false
 
+[functions.expand-prompt]
+verify_jwt = false
+
 [functions.expert-matcher]
 verify_jwt = false
 

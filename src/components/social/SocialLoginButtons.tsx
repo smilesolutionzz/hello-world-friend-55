@@ -16,24 +16,35 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
     try {
       setIsLoading?.(true);
       
-      // 현재 URL이 auth 페이지인지 확인
-      const isAuthPage = window.location.pathname.includes('/auth') || 
-                        window.location.pathname.includes('/highlight-auth');
+      console.log('🔵 구글 로그인 시도 시작');
+      console.log('📍 현재 위치:', window.location.href);
+      
+      // redirectTo는 인증 후 돌아올 URL
+      const redirectTo = `${window.location.origin}/`;
+      console.log('🔄 redirectTo:', redirectTo);
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: isAuthPage ? `${window.location.origin}/` : window.location.href,
+          redirectTo: redirectTo,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
         }
       });
 
       if (error) {
-        console.error('Google login error:', error);
-        toast.error('구글 로그인 중 오류가 발생했습니다.');
+        console.error('❌ 구글 로그인 에러:', error);
+        console.error('에러 상세:', JSON.stringify(error, null, 2));
+        toast.error(`구글 로그인 중 오류가 발생했습니다: ${error.message}`);
+      } else {
+        console.log('✅ 구글 로그인 요청 성공:', data);
       }
-    } catch (error) {
-      console.error('Google login error:', error);
-      toast.error('구글 로그인 중 오류가 발생했습니다.');
+    } catch (error: any) {
+      console.error('💥 구글 로그인 예외:', error);
+      console.error('예외 상세:', error?.message);
+      toast.error(`구글 로그인 중 오류가 발생했습니다: ${error?.message || '알 수 없는 오류'}`);
     } finally {
       setIsLoading?.(false);
     }

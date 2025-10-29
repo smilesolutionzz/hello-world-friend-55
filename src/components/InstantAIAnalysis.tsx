@@ -19,6 +19,7 @@ import {
   Zap,
   Wand2
 } from 'lucide-react';
+import instantAnalysisBg from '@/assets/instant-analysis-bg.jpg';
 
 const InstantAIAnalysis = () => {
   const [inputText, setInputText] = useState('');
@@ -329,22 +330,33 @@ const InstantAIAnalysis = () => {
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
-      {/* 헤더 섹션 */}
-      <div className="text-center mb-12 space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-full border border-amber-500/20">
-          <Sparkles className="w-4 h-4 text-amber-500" />
-          <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">AI 즉시 분석</span>
+      {/* 헤더 섹션 with Background */}
+      <div className="relative -mx-4 mb-12 py-12 overflow-hidden rounded-3xl">
+        {/* Background Image with Overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${instantAnalysisBg})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0A0E1A]/90 via-[#0A0E1A]/85 to-[#0A0E1A]/90" />
         </div>
-        
-        <h1 className="text-xl sm:text-3xl md:text-5xl font-black leading-tight">
-          <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-            내 고민으로<br />어떤 솔루션을<br className="sm:hidden" /> 받을 수 있을까?
-          </span>
-        </h1>
-        
-        <p className="text-muted-foreground text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-          AI가 당신의 고민을 분석하고<br className="sm:hidden" /> 최적의 상담 유형, 심각도,<br className="sm:hidden" /> 맞춤 솔루션을 즉시 알려드립니다
-        </p>
+
+        {/* Content */}
+        <div className="relative z-10 text-center space-y-4 px-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-md rounded-full border border-amber-500/30">
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span className="text-sm font-semibold text-amber-300">AI 즉시 분석</span>
+          </div>
+          
+          <h1 className="text-xl sm:text-3xl md:text-5xl font-black leading-tight">
+            <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent drop-shadow-lg">
+              내 고민으로<br />어떤 솔루션을<br className="sm:hidden" /> 받을 수 있을까?
+            </span>
+          </h1>
+          
+          <p className="text-white/90 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed drop-shadow-md">
+            AI가 당신의 고민을 분석하고<br className="sm:hidden" /> 최적의 상담 유형, 심각도,<br className="sm:hidden" /> 맞춤 솔루션을 즉시 알려드립니다
+          </p>
+        </div>
       </div>
 
       {/* 메인 콘텐츠 - 모바일은 세로, 데스크톱은 2열 레이아웃 */}

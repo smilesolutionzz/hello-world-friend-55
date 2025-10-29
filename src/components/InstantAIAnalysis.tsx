@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,7 +17,8 @@ import {
   Heart,
   Clock,
   Zap,
-  Wand2
+  Wand2,
+  Save
 } from 'lucide-react';
 import instantAnalysisBg from '@/assets/instant-analysis-bg.jpg';
 
@@ -29,8 +30,81 @@ const InstantAIAnalysis = () => {
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [reportImages, setReportImages] = useState<string[]>([]);
   const [tableOfContents, setTableOfContents] = useState<Array<{index: number, title: string}> | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSaveReport = async () => {
+    if (!user) {
+      toast({
+        title: "로그인이 필요합니다",
+        description: "분석 결과를 저장하려면 로그인해주세요.",
+        variant: "destructive",
+      });
+      navigate('/auth');
+      return;
+    }
+
+    if (!analysisResult) {
+      toast({
+        title: "저장할 내용이 없습니다",
+        description: "먼저 고민을 분석해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('concern_storage')
+        .insert({
+          user_id: user.id,
+          concern_text: inputText,
+          ai_analysis: JSON.stringify(analysisResult),
+          report_images: reportImages,
+          analysis_type: analysisResult.type || '기타',
+          analysis_severity: analysisResult.severity || '낮음',
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "저장 완료",
+        description: "분석 리포트가 저장되었습니다.",
+      });
+
+      setTimeout(() => {
+        if (window.confirm('고민 저장소로 이동하시겠습니까?')) {
+          navigate('/concern-storage');
+        }
+      }, 1000);
+    } catch (error: any) {
+      console.error('Save error:', error);
+      toast({
+        title: "저장 실패",
+        description: error.message || "분석 리포트 저장 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const callAIAnalysis = async (text: string) => {
     try {
@@ -1176,6 +1250,27 @@ const InstantAIAnalysis = () => {
                     다시 분석
                   </Button>
                 </div>
+
+                {user && (
+                  <Button
+                    onClick={handleSaveReport}
+                    disabled={isSaving}
+                    size="lg"
+                    className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 font-semibold"
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        저장 중...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 mr-2" />
+                        분석 리포트 저장하기
+                      </>
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
           )}

@@ -31,7 +31,6 @@ const InstantAIAnalysis = () => {
   const [reportImages, setReportImages] = useState<string[]>([]);
   const [tableOfContents, setTableOfContents] = useState<Array<{index: number, title: string}> | null>(null);
   const [user, setUser] = useState<any>(null);
-  const [isSaving, setIsSaving] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -48,65 +47,6 @@ const InstantAIAnalysis = () => {
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const handleSaveReport = async () => {
-    if (!user) {
-      toast({
-        title: "로그인이 필요합니다",
-        description: "분석 결과를 저장하려면 로그인해주세요.",
-        variant: "destructive",
-      });
-      navigate('/auth');
-      return;
-    }
-
-    if (!analysisResult) {
-      toast({
-        title: "저장할 내용이 없습니다",
-        description: "먼저 고민을 분석해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      const { error } = await supabase
-        .from('concern_storage')
-        .insert({
-          user_id: user.id,
-          concern_text: inputText,
-          analysis_type: analysisResult.type || '기타',
-          analysis_severity: analysisResult.severity || '낮음',
-          analysis_advice: analysisResult.advice || analysisResult.detailedAdvice || '',
-          recommended_tests: analysisResult.recommendedTests || null,
-          full_analysis: analysisResult,
-          report_images: reportImages,
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "저장 완료",
-        description: "분석 리포트가 저장되었습니다.",
-      });
-
-      setTimeout(() => {
-        if (window.confirm('고민 저장소로 이동하시겠습니까?')) {
-          navigate('/concern-storage');
-        }
-      }, 1000);
-    } catch (error: any) {
-      console.error('Save error:', error);
-      toast({
-        title: "저장 실패",
-        description: error.message || "분석 리포트 저장 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   const callAIAnalysis = async (text: string) => {
     try {
@@ -262,7 +202,7 @@ const InstantAIAnalysis = () => {
       setIsAnalyzing(false);
       setShowResult(true);
 
-      // 고민을 데이터베이스에 저장
+      // 고민을 데이터베이스에 자동 저장 (로그인한 사용자)
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { error: saveError } = await supabase
@@ -274,6 +214,7 @@ const InstantAIAnalysis = () => {
             analysis_severity: analysis.severity || '낮음',
             analysis_advice: analysis.detailedAdvice || analysis.advice || '',
             recommended_tests: analysis.recommendedTests || [],
+            report_images: reportImages || [],
             full_analysis: {
               type: analysis.type || '기타',
               severity: analysis.severity || '낮음',
@@ -287,7 +228,12 @@ const InstantAIAnalysis = () => {
           });
 
         if (saveError) {
-          console.error('고민 저장 오류:', saveError);
+          console.error('고민 자동 저장 오류:', saveError);
+        } else {
+          toast({
+            title: "자동 저장 완료",
+            description: "분석 결과가 고민 저장소에 저장되었습니다.",
+          });
         }
       }
       
@@ -443,6 +389,42 @@ const InstantAIAnalysis = () => {
               <Sparkles className="w-5 h-5 text-amber-500" />
               <h2 className="text-lg font-bold text-white drop-shadow-[0_2px_4px_rgba(245,158,11,0.5)]">내 고민 입력</h2>
             </div>
+            
+            {/* 로그인 안내 */}
+            {!user ? (
+              <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-xl p-4 mb-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
+                    <Save className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-blue-100 mb-1">분석 결과 자동 저장</h3>
+                    <p className="text-sm text-blue-200/80 leading-relaxed mb-3">
+                      로그인하고 분석하면 결과가 자동으로 고민 저장소에 저장됩니다. 언제든 다시 확인할 수 있어요!
+                    </p>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => navigate('/auth')}
+                      className="gap-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 text-blue-100"
+                    >
+                      로그인하고 시작하기
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl p-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <Save className="w-4 h-4 text-green-400" />
+                  </div>
+                  <p className="text-sm text-green-100 font-medium">
+                    분석 결과가 자동으로 고민 저장소에 저장됩니다
+                  </p>
+                </div>
+              </div>
+            )}
             
             <p className="text-base md:text-lg font-bold text-white drop-shadow-[0_2px_4px_rgba(245,158,11,0.5)] leading-relaxed">
               지금 가장 걱정되는 고민이나 문제를 간단히 적어주세요
@@ -1255,22 +1237,12 @@ const InstantAIAnalysis = () => {
 
                 {user && (
                   <Button
-                    onClick={handleSaveReport}
-                    disabled={isSaving}
+                    onClick={() => navigate('/concern-storage')}
                     size="lg"
-                    className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 font-semibold"
+                    className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-semibold"
                   >
-                    {isSaving ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        저장 중...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4 mr-2" />
-                        분석 리포트 저장하기
-                      </>
-                    )}
+                    <Save className="w-4 h-4 mr-2" />
+                    고민 저장소 보기
                   </Button>
                 )}
               </div>

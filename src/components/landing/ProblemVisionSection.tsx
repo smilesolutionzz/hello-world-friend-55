@@ -1,5 +1,6 @@
 import { Heart, Shield, Users, Building2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import problemVisionBg from '@/assets/problem-vision-bg.jpg';
 
 const ProblemVisionSection = () => {
   const problems = [
@@ -26,8 +27,16 @@ const ProblemVisionSection = () => {
   ];
 
   return (
-    <section className="py-32 bg-secondary">
-      <div className="container mx-auto px-6">
+    <section className="relative py-32 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${problemVisionBg})` }}
+      >
+        <div className="absolute inset-0 bg-background/90" />
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <p className="text-sm font-semibold text-primary mb-4 tracking-wide uppercase">Why AI Highlight Pro?</p>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">

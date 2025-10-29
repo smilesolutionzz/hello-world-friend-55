@@ -7,6 +7,7 @@ import FloatingKeywords from "./FloatingKeywords";
 import { useState } from "react";
 import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
 import { ExpertOnlineStatus } from "@/components/urgency/ExpertOnlineStatus";
+import heroBg from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -27,7 +28,15 @@ const HeroSection = () => {
     "남편이 바람피웠어요... 용서해야 할지 이혼해야 할지 매일 울면서 고민해요"
   ];
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-[#0A0E1A] via-[#1B2333] to-[#0A0E1A] overflow-hidden">
+    <section className="relative min-h-screen overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroBg})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/95 via-[#1B2333]/90 to-[#0A0E1A]/95" />
+      </div>
+
       {/* Background Blur Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 -left-40 w-96 h-96 bg-[#5E8FFF]/20 rounded-full blur-[120px]" />

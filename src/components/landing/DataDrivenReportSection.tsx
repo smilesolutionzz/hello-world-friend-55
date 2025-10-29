@@ -19,6 +19,7 @@ import {
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import dataReportBg from '@/assets/data-report-bg.jpg';
 
 const DataDrivenReportSection = () => {
   const navigate = useNavigate();
@@ -120,8 +121,16 @@ const DataDrivenReportSection = () => {
   ];
 
   return (
-    <section className="py-32 bg-gradient-to-br from-secondary/30 via-background to-primary/10">
-      <div className="container mx-auto px-6">
+    <section className="relative py-32 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${dataReportBg})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-primary/20" />
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         {/* 섹션 헤더 */}
         <div className="text-center mb-20">
           <div className="inline-block mb-4">

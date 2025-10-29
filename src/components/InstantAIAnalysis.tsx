@@ -469,6 +469,33 @@ const InstantAIAnalysis = () => {
               </div>
             </div>
           )}
+
+          {/* 분석 버튼 */}
+          {!showResult && (
+            <div>
+              <Button
+                onClick={handleAnalyze}
+                disabled={isAnalyzing || inputText.length < 10}
+                size="lg"
+                className="w-full h-16 text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 border-0 shadow-xl"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <Loader2 className="w-6 h-6 mr-2 animate-spin" />
+                    AI가 분석 중입니다...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-6 h-6 mr-2" />
+                    무료로 분석하기
+                  </>
+                )}
+              </Button>
+              <p className="text-center text-xs sm:text-sm text-muted-foreground mt-3">
+                분석은 완전 무료이며, 30초 이내 완료됩니다
+              </p>
+            </div>
+          )}
         </div>
 
         {/* 오른쪽: 결과 영역 */}
@@ -1158,33 +1185,6 @@ const InstantAIAnalysis = () => {
           )}
         </div>
       </div>
-      
-      {/* 하단 버튼 */}
-      {!showResult && (
-        <div className="max-w-2xl mx-auto">
-          <Button
-            onClick={handleAnalyze}
-            disabled={isAnalyzing || inputText.length < 10}
-            size="lg"
-            className="w-full h-16 text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 border-0 shadow-xl"
-          >
-            {isAnalyzing ? (
-              <>
-                <Loader2 className="w-6 h-6 mr-2 animate-spin" />
-                AI가 분석 중입니다...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-6 h-6 mr-2" />
-                무료로 분석하기
-              </>
-            )}
-          </Button>
-          <p className="text-center text-xs sm:text-sm text-muted-foreground mt-3">
-            분석은 완전 무료이며, 30초 이내 완료됩니다
-          </p>
-        </div>
-      )}
     </div>
   );
 };

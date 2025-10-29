@@ -1,12 +1,21 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ctaBannerBg from '@/assets/cta-banner-bg.jpg';
 
 const CTABannerSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-32 bg-gradient-to-br from-[#0A0E1A] to-[#1B2333] relative overflow-hidden">
+    <section className="relative py-32 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${ctaBannerBg})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/95 via-[#1B2333]/90 to-[#0A0E1A]/95" />
+      </div>
+
       {/* Background Effects */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#5E8FFF]/20 rounded-full blur-[120px]" />

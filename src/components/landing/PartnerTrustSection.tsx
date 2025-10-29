@@ -1,4 +1,5 @@
 import { Shield, Award, Lock, CheckCircle } from 'lucide-react';
+import partnerTrustBg from '@/assets/partner-trust-bg.jpg';
 
 const PartnerTrustSection = () => {
   const trustBadges = [
@@ -58,8 +59,16 @@ const PartnerTrustSection = () => {
   ];
 
   return (
-    <section className="py-24 bg-[#F5F7FA]">
-      <div className="container mx-auto px-6">
+    <section className="relative py-24 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${partnerTrustBg})` }}
+      >
+        <div className="absolute inset-0 bg-background/95" />
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         {/* Trust Badges */}
         <div className="text-center mb-16">
           <p className="text-sm font-semibold text-gray-600 mb-6 uppercase tracking-wider">

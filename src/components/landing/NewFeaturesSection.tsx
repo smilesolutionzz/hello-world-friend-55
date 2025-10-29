@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Sparkles, TrendingUp, Zap, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import newFeaturesBg from '@/assets/new-features-bg.jpg';
 
 const newFeatures = [
   {
@@ -38,8 +39,16 @@ export const NewFeaturesSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
-      <div className="container mx-auto px-6">
+    <section className="relative py-16 overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${newFeaturesBg})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-background/85 via-background/80 to-background/85" />
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         {/* 헤더 */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full mb-4 animate-pulse">

@@ -57,7 +57,7 @@ export const MedicalDisclaimer: React.FC<MedicalDisclaimerProps> = ({
         <div className="text-sm space-y-2 leading-relaxed">
           <p><strong>1. 의료행위 아님:</strong> 본 서비스는 <strong className="text-red-700 dark:text-red-300">의료행위가 아니며</strong>, 질병의 진단, 치료, 예방, 처방을 목적으로 하지 않습니다. (의료법 제27조 준수)</p>
           <p><strong>2. 참고자료:</strong> 제공되는 모든 검사, 평가, 분석은 <strong>교육 및 참고 목적</strong>이며, 의학적 진단이나 전문적 의료 조언을 대체할 수 없습니다.</p>
-          <p><strong>3. 전문가 상담 필수:</strong> 건강 문제, 발달 문제, 정신건강 문제에 대한 의사결정은 <strong>반드시 의료기관 및 면허를 가진 전문의(의사, 언어재활사 등)와 직접 상담</strong> 후 진행하시기 바랍니다.</p>
+          <p><strong>3. 전문가 상담 필수:</strong> 건강 문제, 발달 문제, 정신건강 문제에 대한 의사결정은 <strong>반드시 의료기관 및 면허를 가진 전문의(의사, 한의사를 포함)와 직접 상담</strong> 후 진행하시기 바랍니다.</p>
           <p><strong>4. AI 분석의 한계:</strong> AI 분석 결과는 알고리즘에 기반한 참고 정보이며, 의학적 정확성을 보장하지 않습니다.</p>
           <p><strong>5. 응급상황:</strong> 자해, 자살 충동 등 응급상황 시 즉시 119 또는 정신건강위기상담전화 1577-0199로 연락하십시오.</p>
           <p className="font-semibold text-red-700 dark:text-red-300">• 본 서비스 이용으로 인한 어떠한 직접적, 간접적 손해 또는 결과에 대해서도 운영자는 법적 책임을 지지 않습니다.</p>

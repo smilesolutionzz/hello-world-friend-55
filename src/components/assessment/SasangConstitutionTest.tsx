@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { TOKEN_COSTS } from '@/constants/tokenCosts';
 import { useTokens } from '@/hooks/useTokens';
+import { MedicalDisclaimer } from '@/components/legal/MedicalDisclaimer';
 
 const questions = [
   {
@@ -301,8 +302,12 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader className="text-center">
+    <div className="w-full max-w-4xl mx-auto space-y-6 p-4">
+      {/* 법적 고지사항 */}
+      <MedicalDisclaimer variant="full" />
+      
+      <Card className="w-full">
+        <CardHeader className="text-center">
         <div className="flex items-center justify-center gap-2 mb-4">
           <div className="w-8 h-8 text-primary flex items-center justify-center">
             ⚊⚊
@@ -373,5 +378,6 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
         </div>
       </CardContent>
     </Card>
+    </div>
   );
 };

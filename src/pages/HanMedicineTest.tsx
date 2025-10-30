@@ -5,6 +5,7 @@ import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, Check
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import ExpertValidationBanner from '@/components/ExpertValidationBanner';
 import HerbalClinic3DBackground from '@/components/HerbalClinic3DBackground';
+import { MedicalDisclaimer } from '@/components/legal/MedicalDisclaimer';
 import { SasangConstitutionTest } from '@/components/assessment/SasangConstitutionTest';
 import { SasangConstitutionResult } from '@/components/assessment/SasangConstitutionResult';
 import { HanMedicinePremiumTest } from '@/components/assessment/HanMedicinePremiumTest';
@@ -161,6 +162,11 @@ const HanMedicineTest = () => {
       <UnifiedNavigation />
       <div className="min-h-screen py-4 sm:py-8 px-4 pt-4">
         <div className="max-w-6xl mx-auto">
+          {/* 법적 고지사항 */}
+          <div className="mb-8">
+            <MedicalDisclaimer variant="full" />
+          </div>
+
           {/* 헤더 - 가운데 정렬 */}
           <div className="text-center mb-8 sm:mb-12 flex flex-col items-center px-2">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4">

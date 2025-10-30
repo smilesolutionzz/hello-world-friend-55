@@ -142,7 +142,7 @@ const DataDrivenReportSection = () => {
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-6">
             데이터가 쌓이면, <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">초개인화된 종합 리포트가 자동 생성됩니다</span>
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base md:text-lg text-foreground drop-shadow-md max-w-2xl mx-auto">
             일상 속 작은 기록들이 모여 여러분만의 성장 스토리가 됩니다
           </p>
         </div>
@@ -185,7 +185,7 @@ const DataDrivenReportSection = () => {
                           {step.number}
                         </div>
                         <h3 className="text-xl font-bold text-foreground">{step.title}</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed px-2">{step.description}</p>
+                        <p className="text-sm text-foreground drop-shadow-md leading-relaxed px-2">{step.description}</p>
                       </div>
                     </div>
                   );
@@ -215,7 +215,7 @@ const DataDrivenReportSection = () => {
                       {step.number}
                     </div>
                     <h3 className="text-lg font-bold text-foreground mb-2">{step.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                    <p className="text-sm text-foreground drop-shadow-md leading-relaxed">{step.description}</p>
                   </div>
                 </div>
               );
@@ -234,7 +234,7 @@ const DataDrivenReportSection = () => {
                   9가지 전문 리포트 자동 생성
                 </span>
               </h3>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-lg text-foreground drop-shadow-md max-w-2xl mx-auto">
                 전문가 검토를 거쳐 정확한 회복과 예방을 돕습니다
               </p>
             </div>
@@ -257,7 +257,7 @@ const DataDrivenReportSection = () => {
                         {report.title}
                       </h3>
                       
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-sm text-foreground drop-shadow-md leading-relaxed">
                         {report.description}
                       </p>
                     </div>
@@ -275,7 +275,7 @@ const DataDrivenReportSection = () => {
             <p className="text-sm sm:text-lg md:text-xl font-semibold text-foreground">
               추가 비용 없이 모든 리포트 무료 제공
             </p>
-            <p className="text-xs sm:text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-foreground drop-shadow-md">
               데이터가 쌓일수록 더 정확한 분석을 받으실 수 있습니다
             </p>
           </div>

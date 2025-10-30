@@ -57,7 +57,7 @@ const ProblemVisionSection = () => {
                   <Icon className="w-7 h-7 text-primary" />
                 </div>
                 <h3 className="text-base sm:text-xl font-bold text-foreground mb-3 whitespace-nowrap">{problem.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{problem.description}</p>
+                <p className="text-foreground drop-shadow-md leading-relaxed">{problem.description}</p>
               </Card>
             );
           })}

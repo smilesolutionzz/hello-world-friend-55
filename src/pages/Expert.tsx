@@ -35,7 +35,7 @@ const Expert = () => {
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             전문 에이전트와 함께하는
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-foreground drop-shadow-md max-w-2xl mx-auto">
             검증된 전문가들이 당신의 성장과 발달을 지원합니다
           </p>
         </div>

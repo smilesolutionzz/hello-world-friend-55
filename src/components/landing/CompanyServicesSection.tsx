@@ -1,6 +1,7 @@
 import React from 'react';
 import { BookHeart, Zap, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import aihproLogo from '@/assets/aihpro-logo.png';
 
 const CompanyServicesSection = () => {
   const services = [
@@ -42,9 +43,11 @@ const CompanyServicesSection = () => {
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-purple-600 to-purple-700">
-              <Zap className="w-8 h-8 text-white" />
-            </div>
+            <img 
+              src={aihproLogo} 
+              alt="AIH PRO Logo" 
+              className="w-16 h-16 object-contain"
+            />
             <h2 className="text-4xl md:text-5xl font-bold">
               <span className="text-white">AIH </span>
               <span className="text-orange-500">PRO</span>
@@ -100,10 +103,17 @@ const CompanyServicesSection = () => {
         {/* Divider */}
         <div className="w-full h-px bg-slate-800 mb-8" />
 
-        {/* Footer text */}
-        <div className="text-center space-y-2 text-sm text-slate-500">
-          <p>© 2025 AIH PRO. All rights reserved.</p>
-          <p>AI시대에 Human touch는 필수입니다.</p>
+        {/* Footer with Logo */}
+        <div className="text-center space-y-4">
+          <img 
+            src={aihproLogo} 
+            alt="AIH PRO Logo" 
+            className="w-12 h-12 object-contain mx-auto"
+          />
+          <div className="space-y-2 text-sm text-slate-500">
+            <p>© 2025 AIH PRO. All rights reserved.</p>
+            <p>AI시대에 Human touch는 필수입니다.</p>
+          </div>
         </div>
       </div>
     </section>

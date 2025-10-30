@@ -633,7 +633,7 @@ const InstantAIAnalysis = () => {
                 )}
               </Button>
               <p className="text-center text-xs sm:text-sm text-muted-foreground mt-3">
-                완전 무료, 30초 완료
+                무료, 30초 완료
               </p>
             </div>
           )}

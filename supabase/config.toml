@@ -223,3 +223,9 @@ verify_jwt = false
 
 [functions.wellness-ai-sleep]
 verify_jwt = false
+
+[functions.send-concern-report]
+verify_jwt = true
+
+[functions.send-report-email]
+verify_jwt = true

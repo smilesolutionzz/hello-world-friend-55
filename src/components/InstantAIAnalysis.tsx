@@ -18,7 +18,8 @@ import {
   Clock,
   Zap,
   Wand2,
-  Save
+  Save,
+  Mail
 } from 'lucide-react';
 import instantAnalysisBg from '@/assets/instant-analysis-bg.jpg';
 
@@ -31,6 +32,7 @@ const InstantAIAnalysis = () => {
   const [reportImages, setReportImages] = useState<string[]>([]);
   const [tableOfContents, setTableOfContents] = useState<Array<{index: number, title: string}> | null>(null);
   const [user, setUser] = useState<any>(null);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -170,6 +172,85 @@ const InstantAIAnalysis = () => {
         '맞춤형 솔루션 추천 받기'
       ]
     };
+  };
+
+  const handleSendEmail = async () => {
+    if (!user) {
+      toast({
+        title: "로그인이 필요합니다",
+        description: "이메일 발송 기능은 로그인 후 사용 가능합니다.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!analysisResult) {
+      toast({
+        title: "분석 결과가 없습니다",
+        description: "먼저 고민 분석을 진행해주세요.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // 이메일 주소 입력 받기
+    const email = prompt("리포트를 받을 이메일 주소를 입력해주세요:");
+    
+    if (!email) {
+      return;
+    }
+
+    // 간단한 이메일 유효성 검사
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: "유효하지 않은 이메일",
+        description: "올바른 이메일 주소를 입력해주세요.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSendingEmail(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('send-concern-report', {
+        body: {
+          email,
+          concernText: inputText,
+          analysis: {
+            type: analysisResult.type,
+            severity: analysisResult.severity,
+            detailedAdvice: analysisResult.detailedAdvice || analysisResult.advice,
+            recommendations: analysisResult.recommendations || [],
+            nextSteps: analysisResult.nextSteps || [],
+            confidence: analysisResult.confidence
+          }
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.success) {
+        toast({
+          title: "이메일 발송 완료!",
+          description: `${email}로 리포트가 발송되었습니다. (5토큰 차감)`,
+        });
+      } else {
+        throw new Error(data?.error || '이메일 발송에 실패했습니다.');
+      }
+    } catch (error: any) {
+      console.error('이메일 발송 오류:', error);
+      toast({
+        title: "이메일 발송 실패",
+        description: error.message || "다시 시도해주세요.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSendingEmail(false);
+    }
   };
 
   const handleAnalyze = async () => {
@@ -1236,14 +1317,36 @@ const InstantAIAnalysis = () => {
                 </div>
 
                 {user && (
-                  <Button
-                    onClick={() => navigate('/concern-storage')}
-                    size="lg"
-                    className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-semibold"
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    고민 저장소 보기
-                  </Button>
+                  <>
+                    <Button
+                      onClick={() => navigate('/concern-storage')}
+                      size="lg"
+                      className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-semibold"
+                    >
+                      <Save className="w-4 h-4 mr-2" />
+                      고민 저장소 보기
+                    </Button>
+                    
+                    <Button
+                      onClick={handleSendEmail}
+                      disabled={isSendingEmail}
+                      size="lg"
+                      variant="outline"
+                      className="w-full border-primary text-primary hover:bg-primary/10 font-semibold"
+                    >
+                      {isSendingEmail ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          발송 중...
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="w-4 h-4 mr-2" />
+                          이메일로 리포트 받기 (5토큰)
+                        </>
+                      )}
+                    </Button>
+                  </>
                 )}
               </div>
             </div>

@@ -800,7 +800,7 @@ const Column = () => {
           backgroundAttachment: 'fixed'
         }}
       >
-        <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px]" />
         <div className="relative z-10">
           <UnifiedNavigation />
           

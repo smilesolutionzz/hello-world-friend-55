@@ -16,6 +16,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { MakeOneProjectBanner } from '@/components/cross-promotion/MakeOneProjectBanner';
 
 interface Expert {
   id: string;
@@ -122,6 +123,11 @@ const ExpertList = () => {
             </Button>
           </div>
         </Card>
+
+        {/* Make One Project 배너 */}
+        <div className="mb-8">
+          <MakeOneProjectBanner />
+        </div>
 
         {/* 전문가 리스트 */}
         <div className="space-y-6">

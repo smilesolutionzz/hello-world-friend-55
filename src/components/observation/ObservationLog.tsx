@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
 import ShareObservationButton from '@/components/observation/ShareObservationButton';
+import { MemoryLegacyRecommendation } from '@/components/cross-promotion/MemoryLegacyRecommendation';
 
 interface ObservationLogProps {
   profileId: string;
@@ -40,6 +41,7 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
 
   const [currentTag, setCurrentTag] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMemoryLegacy, setShowMemoryLegacy] = useState(false);
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -100,6 +102,9 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
         description: "관찰 내용이 성공적으로 저장되었습니다.",
       });
 
+      // Memory Legacy 추천 표시
+      setShowMemoryLegacy(true);
+
       onSave?.();
     } catch (error) {
       console.error('Error saving observation:', error);
@@ -114,7 +119,13 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <>
+      <MemoryLegacyRecommendation 
+        show={showMemoryLegacy}
+        onDismiss={() => setShowMemoryLegacy(false)}
+      />
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-6">
           <FileText className="h-5 w-5 text-primary" />
@@ -423,5 +434,6 @@ export const ObservationLog: React.FC<ObservationLogProps> = ({ profileId, onSav
         </div>
       </Card>
     </form>
+    </>
   );
 };

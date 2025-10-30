@@ -1,10 +1,11 @@
 import { Card } from "./card";
+import { BookOpen, Rocket } from "lucide-react";
 
 const Footer = () => {
   return (
     <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4">하이라이트 AI</h3>
             <p className="text-sm text-muted-foreground">
@@ -28,6 +29,40 @@ const Footer = () => {
               <li><a href="/privacy-policy" className="hover:text-foreground">개인정보처리방침</a></li>
               <li><a href="/refund-policy" className="hover:text-foreground">환불정책</a></li>
               <li>문의: aihpro@naver.com</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-medium mb-4">자매 서비스</h4>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <a 
+                  href="https://memolegacy.com?ref=highlight" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-purple-600 transition-colors group"
+                >
+                  <BookOpen className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  <div>
+                    <div className="font-medium text-foreground">Memory Legacy</div>
+                    <div className="text-xs">추억을 책으로</div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://makeoneproject.com?ref=highlight" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-blue-600 transition-colors group"
+                >
+                  <Rocket className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  <div>
+                    <div className="font-medium text-foreground">Make One Project</div>
+                    <div className="text-xs">7일 만에 MVP</div>
+                  </div>
+                </a>
+              </li>
             </ul>
           </div>
         </div>

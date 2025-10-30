@@ -51,7 +51,6 @@ import Community from "./pages/Community";
 import Subscription from "./pages/Subscription";
 import TokenSubscription from "./pages/TokenSubscription";
 import TossPaymentWidget from "./pages/TossPaymentWidget";
-import StripeTokenPayment from "./pages/StripeTokenPayment";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFail from "./pages/PaymentFail";
 import TokenPaymentSuccess from "./pages/TokenPaymentSuccess";
@@ -237,7 +236,6 @@ const App = () => {
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/token-subscription" element={<TokenSubscription />} />
           <Route path="/toss-payment" element={<TossPaymentWidget />} />
-          <Route path="/stripe-token-payment" element={<StripeTokenPayment />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/kpi-dashboard" element={<KPIDashboard />} />

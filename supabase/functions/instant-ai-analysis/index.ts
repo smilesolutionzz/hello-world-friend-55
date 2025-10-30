@@ -293,9 +293,10 @@ Clean, text-free design. Ultra high resolution.`
           }
         ];
         
-        // 병렬로 이미지 생성
+        // 병렬로 고품질 이미지 생성 (Nano banana 모델 사용)
         const imagePromises = imagePrompts.map(async ({ prompt }) => {
           try {
+            logStep("Generating image with Nano banana", { promptLength: prompt.length });
             const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
               method: 'POST',
               headers: {
@@ -304,7 +305,10 @@ Clean, text-free design. Ultra high resolution.`
               },
               body: JSON.stringify({
                 model: 'google/gemini-2.5-flash-image-preview',
-                messages: [{ role: 'user', content: prompt }],
+                messages: [{ 
+                  role: 'user', 
+                  content: prompt
+                }],
                 modalities: ['image', 'text']
               })
             });

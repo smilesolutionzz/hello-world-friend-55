@@ -1350,6 +1350,39 @@ export type Database = {
           },
         ]
       }
+      cross_promotion_rewards: {
+        Row: {
+          created_at: string
+          id: string
+          is_claimed: boolean
+          reward_date: string
+          reward_tokens: number
+          service_name: string
+          user_id: string
+          verification_code: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_claimed?: boolean
+          reward_date?: string
+          reward_tokens?: number
+          service_name: string
+          user_id: string
+          verification_code?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_claimed?: boolean
+          reward_date?: string
+          reward_tokens?: number
+          service_name?: string
+          user_id?: string
+          verification_code?: string | null
+        }
+        Relationships: []
+      }
       daily_brain_training: {
         Row: {
           assigned_game_name: string
@@ -6758,6 +6791,10 @@ export type Database = {
       check_phone_availability: {
         Args: { phone_number: string }
         Returns: boolean
+      }
+      claim_cross_promotion_reward: {
+        Args: { p_service_name: string; p_verification_code: string }
+        Returns: Json
       }
       cleanup_expert_access_logs: { Args: never; Returns: undefined }
       cleanup_financial_audit_logs: { Args: never; Returns: undefined }

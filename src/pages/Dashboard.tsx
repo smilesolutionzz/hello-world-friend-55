@@ -28,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import FamilyManagement from "@/components/family/FamilyManagement";
 import AssessmentHistory from "@/components/history/AssessmentHistory";
 import ImprovementHistory from "@/components/improvement/ImprovementHistory";
+import { SisterServicesCard } from "@/components/cross-promotion/SisterServicesCard";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, CartesianGrid, Tooltip, Legend, XAxis, YAxis, LineChart, Line } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
@@ -479,6 +480,11 @@ const DashboardNew = () => {
                   )}
                 </CardContent>
               </Card>
+            </div>
+
+            {/* Sister Services Card */}
+            <div className="my-6">
+              <SisterServicesCard />
             </div>
 
             {/* Assessment Results Table */}

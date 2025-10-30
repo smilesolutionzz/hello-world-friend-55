@@ -129,6 +129,7 @@ import ReportGenerator from "./pages/ReportGenerator";
 import Column from "./pages/Column";
 import SampleReport from "./pages/SampleReport";
 import MarketingAIAssistant from "./pages/MarketingAIAssistant";
+import CrossPromotionReward from "./pages/CrossPromotionReward";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -267,6 +268,7 @@ const App = () => {
           <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
           <Route path="/token-test" element={<TokenTest />} />
           <Route path="/bank-transfer" element={<BankTransfer />} />
+          <Route path="/cross-promotion-reward" element={<CrossPromotionReward />} />
           
           <Route path="/platform-manual" element={<PlatformManual />} />
           <Route path="/column" element={<Column />} />

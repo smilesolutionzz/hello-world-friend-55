@@ -19,7 +19,9 @@ import {
   Zap,
   Wand2,
   Save,
-  Mail
+  Mail,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import instantAnalysisBg from '@/assets/instant-analysis-bg.jpg';
 
@@ -33,6 +35,7 @@ const InstantAIAnalysis = () => {
   const [tableOfContents, setTableOfContents] = useState<Array<{index: number, title: string}> | null>(null);
   const [user, setUser] = useState<any>(null);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isAdviceExpanded, setIsAdviceExpanded] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -809,9 +812,29 @@ const InstantAIAnalysis = () => {
                         <Heart className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                         AI 전문가의 조언
                       </h4>
-                      <p className="text-sm leading-relaxed text-amber-950 dark:text-amber-50 font-medium">
+                      <div className={`text-sm leading-relaxed text-amber-950 dark:text-amber-50 font-medium ${!isAdviceExpanded && analysisResult.detailedAdvice.length > 200 ? 'line-clamp-3' : ''}`}>
                         {analysisResult.detailedAdvice}
-                      </p>
+                      </div>
+                      {analysisResult.detailedAdvice.length > 200 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsAdviceExpanded(!isAdviceExpanded)}
+                          className="mt-2 text-amber-700 dark:text-amber-300 hover:text-amber-900 dark:hover:text-amber-100 p-0 h-auto font-semibold"
+                        >
+                          {isAdviceExpanded ? (
+                            <>
+                              <ChevronUp className="w-4 h-4 mr-1" />
+                              접기
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="w-4 h-4 mr-1" />
+                              더보기
+                            </>
+                          )}
+                        </Button>
+                      )}
                     </div>
                   )}
 

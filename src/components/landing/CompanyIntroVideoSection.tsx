@@ -64,22 +64,6 @@ const CompanyIntroVideoSection = () => {
           <div className="absolute -top-4 -right-4 w-24 h-24 bg-primary/10 rounded-full blur-3xl animate-pulse" />
           <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-secondary/10 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
-
-        {/* Additional Info */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center p-6 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
-            <div className="text-3xl font-bold text-brand-gradient mb-2">3분</div>
-            <p className="text-sm text-muted-foreground">빠른 AI 심리검사</p>
-          </div>
-          <div className="text-center p-6 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
-            <div className="text-3xl font-bold text-brand-gradient mb-2">1,247+</div>
-            <p className="text-sm text-muted-foreground">누적 사용자</p>
-          </div>
-          <div className="text-center p-6 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
-            <div className="text-3xl font-bold text-brand-gradient mb-2">4.8/5.0</div>
-            <p className="text-sm text-muted-foreground">사용자 만족도</p>
-          </div>
-        </div>
       </div>
     </section>
   );

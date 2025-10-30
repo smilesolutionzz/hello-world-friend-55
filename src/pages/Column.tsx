@@ -1008,8 +1008,8 @@ const Column = () => {
                           <div className="text-base font-bold text-foreground">패턴 발견</div>
                         </div>
                         <div className="text-center space-y-2">
-                          <Users className="w-8 h-8 text-secondary mx-auto" />
-                          <div className="text-2xl font-bold text-secondary">전문가</div>
+                          <Users className="w-8 h-8 text-primary mx-auto" />
+                          <div className="text-2xl font-bold text-primary">전문가</div>
                           <div className="text-base font-bold text-foreground">마음 이해</div>
                         </div>
                         <div className="col-span-2 text-center space-y-2 pt-4 border-t-2 border-primary/30">

@@ -127,7 +127,7 @@ const DataDrivenReportSection = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${dataReportBg})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-background/98 via-background/95 to-primary/30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-primary/20" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -139,10 +139,10 @@ const DataDrivenReportSection = () => {
               데이터 기반 초개인화
             </span>
           </div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-6 drop-shadow-lg">
-            데이터가 쌓이면, <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary drop-shadow-lg">초개인화된 종합 리포트가 자동 생성됩니다</span>
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-6">
+            데이터가 쌓이면, <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">초개인화된 종합 리포트가 자동 생성됩니다</span>
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-foreground max-w-2xl mx-auto drop-shadow-md font-medium">
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             일상 속 작은 기록들이 모여 여러분만의 성장 스토리가 됩니다
           </p>
         </div>
@@ -184,8 +184,8 @@ const DataDrivenReportSection = () => {
                         <div className={`text-4xl font-bold ${step.highlight ? 'text-primary' : 'text-primary/20'}`}>
                           {step.number}
                         </div>
-                        <h3 className="text-xl font-bold text-foreground drop-shadow-md">{step.title}</h3>
-                        <p className="text-sm text-foreground/90 leading-relaxed px-2 drop-shadow-md font-medium">{step.description}</p>
+                        <h3 className="text-xl font-bold text-foreground">{step.title}</h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed px-2">{step.description}</p>
                       </div>
                     </div>
                   );
@@ -214,8 +214,8 @@ const DataDrivenReportSection = () => {
                     <div className={`text-2xl font-bold ${step.highlight ? 'text-primary' : 'text-primary/20'} mb-2`}>
                       {step.number}
                     </div>
-                    <h3 className="text-lg font-bold text-foreground mb-2 drop-shadow-md">{step.title}</h3>
-                    <p className="text-sm text-foreground/90 leading-relaxed drop-shadow-md font-medium">{step.description}</p>
+                    <h3 className="text-lg font-bold text-foreground mb-2">{step.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                   </div>
                 </div>
               );
@@ -270,12 +270,12 @@ const DataDrivenReportSection = () => {
 
         {/* CTA Section */}
         <div className="text-center space-y-6">
-          <div className="inline-flex flex-col items-center gap-4 px-8 py-6 bg-card/95 backdrop-blur-sm border-2 border-primary/30 rounded-3xl shadow-xl">
-            <Sparkles className="w-8 h-8 text-primary drop-shadow-lg" />
-            <p className="text-sm sm:text-lg md:text-xl font-bold text-foreground drop-shadow-md">
+          <div className="inline-flex flex-col items-center gap-4 px-8 py-6 bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/20 rounded-3xl">
+            <Sparkles className="w-8 h-8 text-primary" />
+            <p className="text-sm sm:text-lg md:text-xl font-semibold text-foreground">
               추가 비용 없이 모든 리포트 무료 제공
             </p>
-            <p className="text-xs sm:text-sm text-foreground/80 drop-shadow-md font-medium">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               데이터가 쌓일수록 더 정확한 분석을 받으실 수 있습니다
             </p>
           </div>

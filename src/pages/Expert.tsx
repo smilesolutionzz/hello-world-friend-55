@@ -32,10 +32,10 @@ const Expert = () => {
       <div className="container mx-auto px-4 py-16">
         {/* Hero Section */}
         <div className="text-center mb-16 space-y-6">
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent drop-shadow-lg">
+          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             전문 에이전트와 함께하는
           </h1>
-          <p className="text-xl text-foreground max-w-2xl mx-auto drop-shadow-md font-medium">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             검증된 전문가들이 당신의 성장과 발달을 지원합니다
           </p>
         </div>

@@ -42,10 +42,10 @@ const CompanyIntroVideoSection = () => {
                   
                   {/* Text */}
                   <div className="space-y-1">
-                    <p className="text-base sm:text-lg md:text-xl font-bold text-foreground drop-shadow-lg">
+                    <p className="text-base sm:text-lg md:text-xl font-bold text-foreground">
                       소개 영상 보기
                     </p>
-                    <p className="text-xs sm:text-sm text-foreground/80 drop-shadow-md font-medium">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       2분으로 알아보는 AIHUMANPRO
                     </p>
                   </div>

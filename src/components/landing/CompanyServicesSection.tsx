@@ -105,7 +105,7 @@ const CompanyServicesSection = () => {
         {/* Footer text */}
         <div className="text-center space-y-2 text-sm text-muted-foreground">
           <p>© 2025 AIH PRO. All rights reserved.</p>
-          <p>최신에게 Human touch 는 필수입니다</p>
+          <p>AI시대에 Human touch는 필수입니다.</p>
         </div>
       </div>
     </section>

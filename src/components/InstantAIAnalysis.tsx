@@ -923,22 +923,22 @@ const InstantAIAnalysis = () => {
                       <CardContent className="space-y-4">
                         <div className="grid md:grid-cols-2 gap-4">
                           <div>
-                            <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✨ 강점</h4>
+                            <h4 className="font-bold text-green-800 dark:text-green-200 mb-2">✨ 강점</h4>
                             <ul className="space-y-2">
                               {analysisResult.comprehensiveReports.strengthsWeaknesses.strengths.map((strength: string, idx: number) => (
-                                <li key={idx} className="text-sm text-foreground flex items-start gap-2">
-                                  <span className="text-green-500">•</span>
+                                <li key={idx} className="text-sm text-gray-900 dark:text-gray-100 flex items-start gap-2">
+                                  <span className="text-green-600 dark:text-green-400">•</span>
                                   <span>{strength}</span>
                                 </li>
                               ))}
                             </ul>
                           </div>
                           <div>
-                            <h4 className="font-bold text-orange-700 dark:text-orange-300 mb-2">📈 개선 영역</h4>
+                            <h4 className="font-bold text-orange-800 dark:text-orange-200 mb-2">📈 개선 영역</h4>
                             <ul className="space-y-2">
                               {analysisResult.comprehensiveReports.strengthsWeaknesses.weaknesses.map((weakness: string, idx: number) => (
-                                <li key={idx} className="text-sm text-foreground flex items-start gap-2">
-                                  <span className="text-orange-500">•</span>
+                                <li key={idx} className="text-sm text-gray-900 dark:text-gray-100 flex items-start gap-2">
+                                  <span className="text-orange-600 dark:text-orange-400">•</span>
                                   <span>{weakness}</span>
                                 </li>
                               ))}

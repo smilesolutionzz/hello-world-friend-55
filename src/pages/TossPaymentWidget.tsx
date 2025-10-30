@@ -7,7 +7,17 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
-const TOSS_CLIENT_KEY = 'test_ck_ORzdMaqN3w22D5wkBxAP85AkYXQG';
+// 환경변수에서 클라이언트 키 가져오기 (라이브 키 사용)
+const getTossClientKey = async () => {
+  try {
+    const { data, error } = await supabase.functions.invoke('get-toss-client-key');
+    if (error) throw error;
+    return data.clientKey;
+  } catch (error) {
+    console.error('Failed to get Toss client key:', error);
+    throw new Error('결제 시스템 초기화에 실패했습니다.');
+  }
+};
 
 interface PaymentWidgetState {
   tokenAmount: number;
@@ -48,12 +58,13 @@ const TossPaymentWidget = () => {
         return;
       }
 
-      // orderId 생성 (Stripe처럼 간단)
+      // orderId 생성
       const shortUser = session.user.id.slice(0, 8);
       const orderId = `TOKEN_${tokenAmount}_${Date.now().toString(36)}_${shortUser}`;
 
-      // 토스페이먼츠 결제창 SDK 로드
-      const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
+      // 토스페이먼츠 클라이언트 키 가져오기 및 결제창 SDK 로드
+      const clientKey = await getTossClientKey();
+      const tossPayments = await loadTossPayments(clientKey);
 
       // 결제창 바로 호출 (위젯 없이!)
       await tossPayments.requestPayment('카드', {

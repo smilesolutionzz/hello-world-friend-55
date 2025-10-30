@@ -42,8 +42,8 @@ serve(async (req) => {
 
     console.log('User authenticated:', user.id);
 
-    // 토스페이먼츠 시크릿 키
-    const tossSecretKey = Deno.env.get('TOSS_PAYMENTS_SECRET_KEY');
+    // 토스페이먼츠 시크릿 키 (라이브 키 사용)
+    const tossSecretKey = Deno.env.get('TOSS_SECRET_KEY');
     if (!tossSecretKey) {
       throw new Error('토스페이먼츠 시크릿 키가 설정되지 않았습니다');
     }
@@ -69,11 +69,12 @@ serve(async (req) => {
       throw new Error(tossData.message || '결제 승인에 실패했습니다');
     }
 
-    // orderId에서 토큰 정보 파싱 (형식: ORDER_TOKEN_{tokens}_{timestamp}_{userId})
-    const orderParts = orderId.split('_');
-    const tokensPurchased = parseInt(orderParts[2]) || 0;
+    // orderId에서 토큰 정보 파싱 (형식: TOKEN_{tokens}_{timestamp}_{userId})
+    const tokenMatch = orderId.match(/TOKEN_(\d+)_/);
+    const tokensPurchased = tokenMatch ? parseInt(tokenMatch[1]) : 0;
 
     if (tokensPurchased <= 0) {
+      console.error('Invalid order ID format:', orderId);
       throw new Error('유효하지 않은 주문 정보입니다');
     }
 

@@ -716,6 +716,11 @@ const Assessment = () => {
             </CardContent>
           </Card>
 
+          {/* 법적 고지사항 */}
+          <div className="mb-8">
+            <MedicalDisclaimer variant="full" />
+          </div>
+
           <div className="text-center mb-16 space-y-6">
             <h1 className="text-5xl md:text-7xl font-display font-black leading-tight text-gray-900 tracking-tight">
               <span className="block mb-3 animate-fade-in">3분으로 시작하는</span>

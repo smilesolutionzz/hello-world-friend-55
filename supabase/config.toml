@@ -233,3 +233,7 @@ verify_jwt = true
 
 [functions.toss-payments-webhook]
 verify_jwt = false
+
+# Stripe Functions
+[functions.create-token-checkout]
+verify_jwt = true

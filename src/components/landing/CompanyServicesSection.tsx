@@ -54,7 +54,7 @@ const CompanyServicesSection = () => {
             </h2>
           </div>
           <p className="text-lg text-slate-400">
-            AI 기술로 더 나은 삶을 만드는 혁신 서비스
+            AI 기술과 사람의 터치로 더 나은 삶을 만드는 혁신 서비스
           </p>
         </div>
 

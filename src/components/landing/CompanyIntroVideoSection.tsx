@@ -32,7 +32,7 @@ const CompanyIntroVideoSection = () => {
           {/* Video Thumbnail with Play Button */}
           <YouTubePlayer
             title="AI하이라이트PRO 회사 소개 영상"
-            youtubeUrl="https://www.youtube.com/watch?v=cY_20T0UZh4"
+            youtubeUrl="https://www.youtube.com/watch?v=oe7ZTRkqMf8&t=13s"
           >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer transition-all duration-300 hover:shadow-primary/20 hover:scale-[1.02]">
               {/* Thumbnail Image */}

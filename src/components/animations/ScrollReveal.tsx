@@ -17,13 +17,13 @@ export const ScrollReveal = ({
   duration = 0.6
 }: ScrollRevealProps) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "0px" });
 
   const directionOffset = {
-    up: { y: 40, x: 0 },
-    down: { y: -40, x: 0 },
-    left: { y: 0, x: 40 },
-    right: { y: 0, x: -40 }
+    up: { y: 60, x: 0 },
+    down: { y: -60, x: 0 },
+    left: { y: 0, x: 60 },
+    right: { y: 0, x: -60 }
   };
 
   return (
@@ -62,7 +62,7 @@ export const ScrollStagger = ({
   staggerDelay = 0.1
 }: ScrollStaggerProps) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "0px" });
 
   return (
     <motion.div
@@ -94,12 +94,12 @@ export const ScrollStaggerItem = ({
     <motion.div
       className={className}
       variants={{
-        hidden: { opacity: 0, y: 30 },
+        hidden: { opacity: 0, y: 50 },
         visible: { 
           opacity: 1, 
           y: 0,
           transition: {
-            duration: 0.5,
+            duration: 0.6,
             ease: [0.25, 0.4, 0.25, 1]
           }
         }
@@ -122,16 +122,16 @@ export const ScrollScale = ({
   delay = 0
 }: ScrollScaleProps) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "0px" });
 
   return (
     <motion.div
       ref={ref}
       className={className}
-      initial={{ opacity: 0, scale: 0.8 }}
+      initial={{ opacity: 0, scale: 0.85 }}
       animate={isInView ? { opacity: 1, scale: 1 } : {}}
       transition={{ 
-        duration: 0.6,
+        duration: 0.7,
         delay,
         ease: [0.25, 0.4, 0.25, 1]
       }}

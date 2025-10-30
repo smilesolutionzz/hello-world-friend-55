@@ -12,7 +12,7 @@ const CompanyServicesSection = () => {
       iconBg: 'bg-slate-800',
       iconColor: 'text-orange-500',
       url: 'https://memolegacy.com',
-      buttonText: '현재 서비스',
+      buttonText: '서비스 바로가기 →',
       buttonColor: 'bg-orange-500 hover:bg-orange-600'
     },
     {
@@ -22,7 +22,7 @@ const CompanyServicesSection = () => {
       iconBg: 'bg-slate-800',
       iconColor: 'text-blue-500',
       url: '/',
-      buttonText: '서비스 바로가기 →',
+      buttonText: '현재 서비스',
       buttonColor: 'bg-blue-500 hover:bg-blue-600'
     },
     {

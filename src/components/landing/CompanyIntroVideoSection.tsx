@@ -1,9 +1,9 @@
-import React from 'react';
-import YouTubePlayer from '@/components/ui/youtube-player';
+import React, { useState } from 'react';
 import { Play } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 const CompanyIntroVideoSection = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  
   return (
     <section className="relative py-20 px-4 bg-gradient-to-b from-background via-muted/30 to-background overflow-hidden">
       {/* Background decoration */}
@@ -29,14 +29,13 @@ const CompanyIntroVideoSection = () => {
 
         {/* Video Container */}
         <div className="relative group">
-          {/* Video Thumbnail with Play Button */}
-          <YouTubePlayer
-            title="AIHUMANPRO 회사 소개 영상"
-            youtubeUrl="https://www.youtube.com/watch?v=oe7ZTRkqMf8&t=13s"
-          >
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer transition-all duration-300 hover:shadow-primary/20 hover:scale-[1.02]">
-              {/* Thumbnail Image */}
-              <div className="aspect-video bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 flex items-center justify-center">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 hover:shadow-primary/20">
+            {!isPlaying ? (
+              /* Thumbnail with Play Button */
+              <div 
+                className="aspect-video bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 flex items-center justify-center cursor-pointer"
+                onClick={() => setIsPlaying(true)}
+              >
                 <div className="text-center space-y-6">
                   {/* Play Button */}
                   <div className="mx-auto w-20 h-20 rounded-full bg-primary/90 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/50">
@@ -53,12 +52,24 @@ const CompanyIntroVideoSection = () => {
                     </p>
                   </div>
                 </div>
-              </div>
 
-              {/* Decorative overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-          </YouTubePlayer>
+                {/* Decorative overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            ) : (
+              /* YouTube Player */
+              <div className="aspect-video">
+                <iframe
+                  src="https://www.youtube.com/embed/oe7ZTRkqMf8?autoplay=1&start=13&rel=0&modestbranding=1"
+                  title="AIHUMANPRO 회사 소개 영상"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
+            )}
+          </div>
 
           {/* Floating elements */}
           <div className="absolute -top-4 -right-4 w-24 h-24 bg-primary/10 rounded-full blur-3xl animate-pulse" />

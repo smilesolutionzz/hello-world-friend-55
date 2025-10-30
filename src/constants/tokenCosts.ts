@@ -1,5 +1,8 @@
 // 각 기능별 토큰 소진량 정의 (균일화 버전)
 export const TOKEN_COSTS = {
+  // 분석 저장
+  SAVE_ANALYSIS_REPORT: 5, // 즉석 분석 리포트 저장
+  
   // 전문 심리검사 및 발달검사 (5토큰 통일)
   PSYCHOLOGICAL_TEST: 5,     // 마음상태 체크
   FOCUS_CHECK: 5,           // AIH 집중력 자가점검

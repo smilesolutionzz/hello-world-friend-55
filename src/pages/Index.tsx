@@ -27,6 +27,7 @@ import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
+import CompanyServicesSection from '@/components/landing/CompanyServicesSection';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -226,6 +227,11 @@ const Index = () => {
           {/* 7️⃣ Call to Action */}
           <LazyLoad className="animate-fade-in">
             <CTABannerSection />
+          </LazyLoad>
+          
+          {/* 🏢 회사 서비스 소개 */}
+          <LazyLoad className="animate-fade-in">
+            <CompanyServicesSection />
           </LazyLoad>
           
           {/* 8️⃣ Footer */}

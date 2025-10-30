@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, TrendingDown, CheckCircle, ArrowLeft, Download, MessageCircle, ExternalLink, Brain } from "lucide-react";
+import { AlertTriangle, TrendingDown, CheckCircle, ArrowLeft, Download, MessageCircle, ExternalLink, Brain, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from 'recharts';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
@@ -10,6 +10,7 @@ import { PDFHeader } from '@/components/common/PDFHeader';
 import { useToast } from '@/hooks/use-toast';
 import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ChallengingBehaviorResultProps {
   results: {
@@ -24,6 +25,8 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
   const navigate = useNavigate();
   const { toast } = useToast();
   const [showDetails, setShowDetails] = useState(false);
+  const [expertInterpretation, setExpertInterpretation] = useState<string>("");
+  const [isLoadingInterpretation, setIsLoadingInterpretation] = useState(false);
 
   // 카테고리별 점수 계산 (각 카테고리 문항 수에 맞게)
   const categoryScores = {
@@ -152,6 +155,32 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
       }
     );
   };
+
+  useEffect(() => {
+    const fetchExpertInterpretation = async () => {
+      setIsLoadingInterpretation(true);
+      try {
+        const { data, error } = await supabase.functions.invoke('behavior-expert-interpretation', {
+          body: {
+            assessmentType: 'challenging-behavior',
+            results,
+            categoryScores
+          }
+        });
+
+        if (error) throw error;
+        if (data?.interpretation) {
+          setExpertInterpretation(data.interpretation);
+        }
+      } catch (error) {
+        console.error('전문가 해석 생성 실패:', error);
+      } finally {
+        setIsLoadingInterpretation(false);
+      }
+    };
+
+    fetchExpertInterpretation();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-secondary/30 py-8">
@@ -311,6 +340,35 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
             </div>
           </CardContent>
         </Card>
+
+        {/* AI 전문가 해석 */}
+        {isLoadingInterpretation ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="w-6 h-6 text-primary animate-pulse" />
+                AI 전문가 해석 생성 중...
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center justify-center py-8">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </CardContent>
+          </Card>
+        ) : expertInterpretation && (
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-secondary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="w-6 h-6 text-primary" />
+                AI 전문가 해석
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="p-4 bg-background/80 rounded-lg">
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">{expertInterpretation}</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* 권장 개입 전략 */}
         <Card>

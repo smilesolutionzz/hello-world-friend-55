@@ -677,40 +677,40 @@ const InstantAIAnalysis = () => {
                 <CardContent>
                   <div className="space-y-2.5">
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-white flex-shrink-0">1.</span>
-                      <span className="text-white font-semibold">발달 종합 평가: 인지, 언어, 운동, 사회성 분석</span>
+                      <span className="font-bold text-foreground flex-shrink-0">1.</span>
+                      <span className="text-foreground font-semibold">발달 종합 평가: 인지, 언어, 운동, 사회성 분석</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-white flex-shrink-0">2.</span>
-                      <span className="text-white font-semibold">심리 상태 분석: 정서적 안정성, 스트레스 수준</span>
+                      <span className="font-bold text-foreground flex-shrink-0">2.</span>
+                      <span className="text-foreground font-semibold">심리 상태 분석: 정서적 안정성, 스트레스 수준</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-white flex-shrink-0">3.</span>
-                      <span className="text-white font-semibold">강점/약점 분석: 맞춤형 성장 방향 제시</span>
+                      <span className="font-bold text-foreground flex-shrink-0">3.</span>
+                      <span className="text-foreground font-semibold">강점/약점 분석: 맞춤형 성장 방향 제시</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-white flex-shrink-0">4.</span>
-                      <span className="text-white font-semibold">맞춤형 활동 제안: AI 기반 발달 촉진 활동</span>
+                      <span className="font-bold text-foreground flex-shrink-0">4.</span>
+                      <span className="text-foreground font-semibold">맞춤형 활동 제안: AI 기반 발달 촉진 활동</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-white flex-shrink-0">5.</span>
-                      <span className="text-white font-semibold">발달 로드맵: 단계별 성장 계획</span>
+                      <span className="font-bold text-foreground flex-shrink-0">5.</span>
+                      <span className="text-foreground font-semibold">발달 로드맵: 단계별 성장 계획</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-white flex-shrink-0">6.</span>
-                      <span className="text-white font-semibold">또래 비교 분석: 연령대별 발달 기준</span>
+                      <span className="font-bold text-foreground flex-shrink-0">6.</span>
+                      <span className="text-foreground font-semibold">또래 비교 분석: 연령대별 발달 기준</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-white flex-shrink-0">7.</span>
-                      <span className="text-white font-semibold">전문가 소견서: 전문 개입 필요성 평가</span>
+                      <span className="font-bold text-foreground flex-shrink-0">7.</span>
+                      <span className="text-foreground font-semibold">전문가 소견서: 전문 개입 필요성 평가</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-white flex-shrink-0">8.</span>
-                      <span className="text-white font-semibold">가족 지원 가이드: 부모/보호자 양육 팁</span>
+                      <span className="font-bold text-foreground flex-shrink-0">8.</span>
+                      <span className="text-foreground font-semibold">가족 지원 가이드: 부모/보호자 양육 팁</span>
                     </div>
                     <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-white flex-shrink-0">9.</span>
-                      <span className="text-white font-semibold">장기 발달 예측: AI 기반 향후 경향성 분석</span>
+                      <span className="font-bold text-foreground flex-shrink-0">9.</span>
+                      <span className="text-foreground font-semibold">장기 발달 예측: AI 기반 향후 경향성 분석</span>
                     </div>
                   </div>
                 </CardContent>
@@ -985,12 +985,12 @@ const InstantAIAnalysis = () => {
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-lg">
                           <span className="text-2xl">🗺️</span>
-                          <span className="text-indigo-900 dark:text-indigo-100">5. 단계별 발달 로드맵</span>
+                          <span className="text-foreground">5. 단계별 발달 로드맵</span>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div>
-                          <h4 className="font-bold text-indigo-700 dark:text-indigo-300 mb-2">📅 단기 목표 (1-3개월)</h4>
+                          <h4 className="font-bold text-foreground mb-2">📅 단기 목표 (1-3개월)</h4>
                           <ul className="space-y-2">
                             {analysisResult.comprehensiveReports.developmentRoadmap.shortTerm.map((goal: string, idx: number) => (
                               <li key={idx} className="text-sm text-foreground flex items-start gap-2">
@@ -1001,7 +1001,7 @@ const InstantAIAnalysis = () => {
                           </ul>
                         </div>
                         <div>
-                          <h4 className="font-bold text-blue-700 dark:text-blue-300 mb-2">📅 중기 목표 (3-6개월)</h4>
+                          <h4 className="font-bold text-foreground mb-2">📅 중기 목표 (3-6개월)</h4>
                           <ul className="space-y-2">
                             {analysisResult.comprehensiveReports.developmentRoadmap.mediumTerm.map((goal: string, idx: number) => (
                               <li key={idx} className="text-sm text-foreground flex items-start gap-2">
@@ -1012,7 +1012,7 @@ const InstantAIAnalysis = () => {
                           </ul>
                         </div>
                         <div>
-                          <h4 className="font-bold text-purple-700 dark:text-purple-300 mb-2">📅 장기 목표 (6-12개월)</h4>
+                          <h4 className="font-bold text-foreground mb-2">📅 장기 목표 (6-12개월)</h4>
                           <ul className="space-y-2">
                             {analysisResult.comprehensiveReports.developmentRoadmap.longTerm.map((goal: string, idx: number) => (
                               <li key={idx} className="text-sm text-foreground flex items-start gap-2">
@@ -1032,7 +1032,7 @@ const InstantAIAnalysis = () => {
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-lg">
                           <span className="text-2xl">👥</span>
-                          <span className="text-teal-900 dark:text-teal-100">6. 또래 비교 분석</span>
+                          <span className="text-foreground">6. 또래 비교 분석</span>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-3">
@@ -1046,9 +1046,9 @@ const InstantAIAnalysis = () => {
                             <p className="text-lg font-bold text-foreground">{analysisResult.comprehensiveReports.peerComparison.percentile}%</p>
                           </div>
                         </div>
-                        <div className="p-4 bg-teal-50 dark:bg-teal-950/40 rounded-lg border border-teal-200 dark:border-teal-800">
-                          <p className="text-sm text-teal-800 dark:text-teal-200">{analysisResult.comprehensiveReports.peerComparison.comparison}</p>
-                        </div>
+                          <div className="p-4 bg-teal-50 dark:bg-teal-950/40 rounded-lg border border-teal-200 dark:border-teal-800">
+                            <p className="text-sm text-foreground">{analysisResult.comprehensiveReports.peerComparison.comparison}</p>
+                          </div>
                       </CardContent>
                     </Card>
                   )}

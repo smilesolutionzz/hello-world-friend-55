@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { BetaBanner } from "@/components/BetaBanner";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
+import legalDisclaimerImage from "@/assets/legal/legal-disclaimer-assessment.png";
 import { useEventTracking } from "@/hooks/useEventTracking";
 import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
@@ -2134,7 +2135,7 @@ const Assessment = () => {
         
         {/* 법적 고지사항 */}
         <div className="container mx-auto max-w-6xl px-4 py-8 mt-12">
-          <MedicalDisclaimer variant="full" />
+          <img src={legalDisclaimerImage} alt="법적 고지사항 (의료법 준수)" loading="lazy" className="w-full h-auto" />
         </div>
       </div>
     </div>

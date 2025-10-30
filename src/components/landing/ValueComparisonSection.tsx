@@ -69,7 +69,7 @@ const ValueComparisonSection = () => {
             <span className="text-sm font-semibold text-primary">똑똑한 선택</span>
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight">
-            왜 AI하이라이트PRO를<br className="sm:hidden" /> 선택해야 할까요?
+            왜 AI휴먼PRO를<br className="sm:hidden" /> 선택해야 할까요?
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             기존 심리 상담과 비교해보세요
@@ -89,7 +89,7 @@ const ValueComparisonSection = () => {
                 <div className="p-6 text-center bg-gradient-to-br from-primary/20 to-primary/10">
                   <div className="flex items-center justify-center gap-2">
                     <Sparkles className="w-5 h-5 text-primary" />
-                    <p className="text-sm font-bold text-primary">AI하이라이트PRO</p>
+                    <p className="text-sm font-bold text-primary">AI휴먼PRO</p>
                   </div>
                 </div>
               </div>

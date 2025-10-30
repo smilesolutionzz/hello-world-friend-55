@@ -48,7 +48,7 @@ const CompanyServicesSection = () => {
               alt="AIH PRO Logo" 
               className="w-16 h-16 object-contain"
             />
-            <h2 className="text-4xl md:text-5xl font-bold">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
               <span className="text-white">AIH </span>
               <span className="text-orange-500">PRO</span>
             </h2>

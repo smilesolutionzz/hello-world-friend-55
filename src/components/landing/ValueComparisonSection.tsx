@@ -68,10 +68,10 @@ const ValueComparisonSection = () => {
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-sm font-semibold text-primary">똑똑한 선택</span>
           </div>
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight">
+          <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 leading-tight">
             왜 AiHumanPro를 선택해야 할까요?
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             기존 심리 상담과 비교해보세요
           </p>
         </div>

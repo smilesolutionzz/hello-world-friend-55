@@ -41,11 +41,11 @@ const CompanyIntroVideoSection = () => {
                   </div>
                   
                   {/* Text */}
-                  <div className="space-y-2">
-                    <p className="text-2xl font-bold text-foreground">
+                  <div className="space-y-1">
+                    <p className="text-base sm:text-lg md:text-xl font-bold text-foreground">
                       소개 영상 보기
                     </p>
-                    <p className="text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       2분으로 알아보는 AIHUMANPRO
                     </p>
                   </div>

@@ -39,9 +39,8 @@ const ProblemVisionSection = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <p className="text-sm font-semibold text-primary mb-4 tracking-wide uppercase">Why AI Highlight Pro?</p>
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
-            왜 AIHumanPro가<br className="sm:hidden" />
-            필요한가요?
+          <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-6">
+            왜 AIHumanPro가 필요한가요?
           </h2>
         </div>
 
@@ -66,10 +65,8 @@ const ProblemVisionSection = () => {
 
         {/* Solution Statement */}
         <div className="text-center">
-          <p className="text-lg sm:text-2xl font-semibold text-foreground max-w-3xl mx-auto leading-relaxed">
-            AIHumanPro는<br />
-            <span className="text-primary">AI 기술과 전문가의 협업</span>으로<br />
-            예방부터 회복까지 함께 돕습니다
+          <p className="text-base sm:text-lg md:text-xl font-semibold text-foreground max-w-3xl mx-auto leading-relaxed">
+            AIHumanPro는 <span className="text-primary">AI 기술과 전문가의 협업</span>으로 예방부터 회복까지 함께 돕습니다
           </p>
         </div>
       </div>

@@ -7,7 +7,7 @@ import { Heart, Calendar, ArrowRight, Sparkles, Brain, Users, TrendingUp, Chevro
 import { useNavigate } from "react-router-dom";
 import Footer from "@/components/ui/footer";
 import SEOHead from "@/components/common/SEOHead";
-import { AnimatedBackground } from "@/components/ui/animated-background";
+import columnBg from "@/assets/column-bg.jpg";
 
 interface Column {
   id: string;
@@ -791,11 +791,20 @@ const Column = () => {
         keywords="AI심리상담,데이터기반케어,개인화리포트,심리분석,전문가상담,정신건강,AI비전"
       />
       
-      <AnimatedBackground />
-      <div className="min-h-screen bg-background/95 backdrop-blur-sm">
-        <UnifiedNavigation />
-        
-        <main className="container mx-auto px-4 py-12 max-w-7xl">
+      <div 
+        className="min-h-screen relative"
+        style={{
+          backgroundImage: `url(${columnBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
+        <div className="relative z-10">
+          <UnifiedNavigation />
+          
+          <main className="container mx-auto px-4 py-12 max-w-7xl">
           {/* Header */}
           <div className="text-center mb-16 space-y-4">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
@@ -1158,9 +1167,10 @@ const Column = () => {
               </div>
             </CardContent>
           </Card>
-        </main>
-
-        <Footer />
+          </main>
+          
+          <Footer />
+        </div>
       </div>
     </>
   );

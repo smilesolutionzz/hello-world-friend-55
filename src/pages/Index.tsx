@@ -26,6 +26,7 @@ import { useToast } from '@/hooks/use-toast';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
+import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -167,6 +168,11 @@ const Index = () => {
         <main id="main-content" className="w-full">
           {/* 1️⃣ Hero Section */}
           <HeroSection />
+          
+          {/* 🎬 회사 소개 영상 */}
+          <LazyLoad className="animate-fade-in">
+            <CompanyIntroVideoSection />
+          </LazyLoad>
           
           {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
           <LazyLoad className="animate-fade-in">

@@ -13,7 +13,7 @@ interface SEOHeadProps {
 }
 
 const SEOHead = ({
-  title = "AI하이라이트PRO - 전생애 통합 케어 플랫폼",
+  title = "AIHUMANPRO - 전생애 통합 케어 플랫폼",
   description = "AI와 전문가가 함께하는 통합 케어 서비스. ADHD, 우울증, 스트레스 검사부터 심리상담, 발달평가, 건강관리까지 전생애 케어를 제공합니다.",
   keywords = "AI심리테스트,정신건강,ADHD체크,우울증테스트,스트레스체크,전문가상담,심리분석",
   ogImage = "/lovable-uploads/ec886850-04ce-4489-b96e-d4ac8f73d95e.png",
@@ -21,7 +21,7 @@ const SEOHead = ({
   noIndex = false,
   structuredData,
   ogType = "website",
-  author = "AI하이라이트PRO"
+  author = "AIHUMANPRO"
 }: SEOHeadProps) => {
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const canonical = canonicalUrl || currentUrl;
@@ -70,7 +70,7 @@ const SEOHead = ({
       <meta property="og:image:alt" content={title} />
       <meta property="og:url" content={canonical} />
       <meta property="og:type" content={ogType} />
-      <meta property="og:site_name" content="AI하이라이트PRO" />
+      <meta property="og:site_name" content="AIHUMANPRO" />
       
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />

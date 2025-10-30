@@ -18,7 +18,7 @@ const CompanyIntroVideoSection = () => {
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold">
-            <span className="text-brand-gradient">AI하이라이트PRO</span>를 소개합니다
+            <span className="text-brand-gradient">AIHUMANPRO</span>를 소개합니다
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             AI와 전문가가 함께하는 전생애 통합 케어 서비스,
@@ -31,7 +31,7 @@ const CompanyIntroVideoSection = () => {
         <div className="relative group">
           {/* Video Thumbnail with Play Button */}
           <YouTubePlayer
-            title="AI하이라이트PRO 회사 소개 영상"
+            title="AIHUMANPRO 회사 소개 영상"
             youtubeUrl="https://www.youtube.com/watch?v=oe7ZTRkqMf8&t=13s"
           >
             <div className="relative rounded-2xl overflow-hidden shadow-2xl cursor-pointer transition-all duration-300 hover:shadow-primary/20 hover:scale-[1.02]">
@@ -49,7 +49,7 @@ const CompanyIntroVideoSection = () => {
                       소개 영상 보기
                     </p>
                     <p className="text-muted-foreground">
-                      2분으로 알아보는 AI하이라이트PRO
+                      2분으로 알아보는 AIHUMANPRO
                     </p>
                   </div>
                 </div>

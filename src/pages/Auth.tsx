@@ -222,7 +222,7 @@ const Auth = () => {
             <Heart className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-foreground mb-2">AIHPRO</h1>
-          <p className="text-muted-foreground">데이터로 읽는 마음, AI하이라이트프로</p>
+          <p className="text-muted-foreground">데이터로 읽는 마음, AIHUMANPRO</p>
         </div>
 
         <Card className="p-6">

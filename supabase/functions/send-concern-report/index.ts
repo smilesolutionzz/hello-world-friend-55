@@ -60,11 +60,11 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('토큰이 부족합니다. (필요: 5토큰)');
     }
 
+    // 토큰 차감
     const { error: deductError } = await supabaseClient
       .from('user_tokens')
       .update({ 
-        current_tokens: tokenData.current_tokens - 5,
-        total_used: supabaseClient.rpc('increment', { x: 5 })
+        current_tokens: tokenData.current_tokens - 5
       })
       .eq('user_id', user.id);
 
@@ -72,6 +72,20 @@ const handler = async (req: Request): Promise<Response> => {
       console.error('토큰 차감 오류:', deductError);
       throw new Error('토큰 차감에 실패했습니다.');
     }
+
+    // 사용량 추적
+    await supabaseClient
+      .from('usage_tracking')
+      .insert({
+        user_id: user.id,
+        feature_type: 'concern_email',
+        usage_date: new Date().toISOString().split('T')[0],
+        count: 5
+      })
+      .onConflict(['user_id', 'feature_type', 'usage_date'])
+      .merge({
+        count: supabaseClient.raw('usage_tracking.count + 5')
+      });
 
     const { email, concernText, analysis }: ConcernReportEmailRequest = await req.json();
 

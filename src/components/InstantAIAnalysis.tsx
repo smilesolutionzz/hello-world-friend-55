@@ -945,22 +945,22 @@ const InstantAIAnalysis = () => {
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="grid md:grid-cols-2 gap-4">
-                          <div>
-                            <h4 className="font-bold text-green-800 dark:text-green-200 mb-2">✨ 강점</h4>
+                          <div className="p-4 bg-green-50 dark:bg-green-950/40 rounded-lg border border-green-200 dark:border-green-800">
+                            <h4 className="font-bold text-green-800 dark:text-green-200 mb-3">✨ 강점</h4>
                             <ul className="space-y-2">
                               {analysisResult.comprehensiveReports.strengthsWeaknesses.strengths.map((strength: string, idx: number) => (
-                                <li key={idx} className="text-sm text-gray-900 dark:text-gray-100 flex items-start gap-2">
+                                <li key={idx} className="text-sm text-foreground flex items-start gap-2">
                                   <span className="text-green-600 dark:text-green-400">•</span>
                                   <span>{strength}</span>
                                 </li>
                               ))}
                             </ul>
                           </div>
-                          <div>
-                            <h4 className="font-bold text-orange-800 dark:text-orange-200 mb-2">📈 개선 영역</h4>
+                          <div className="p-4 bg-orange-50 dark:bg-orange-950/40 rounded-lg border border-orange-200 dark:border-orange-800">
+                            <h4 className="font-bold text-orange-800 dark:text-orange-200 mb-3">📈 개선 영역</h4>
                             <ul className="space-y-2">
                               {analysisResult.comprehensiveReports.strengthsWeaknesses.weaknesses.map((weakness: string, idx: number) => (
-                                <li key={idx} className="text-sm text-gray-900 dark:text-gray-100 flex items-start gap-2">
+                                <li key={idx} className="text-sm text-foreground flex items-start gap-2">
                                   <span className="text-orange-600 dark:text-orange-400">•</span>
                                   <span>{weakness}</span>
                                 </li>
@@ -1012,8 +1012,8 @@ const InstantAIAnalysis = () => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <div>
-                          <h4 className="font-bold text-foreground mb-2">📅 단기 목표 (1-3개월)</h4>
+                        <div className="p-4 bg-indigo-50 dark:bg-indigo-950/40 rounded-lg border border-indigo-200 dark:border-indigo-800">
+                          <h4 className="font-bold text-foreground mb-3">📅 단기 목표 (1-3개월)</h4>
                           <ul className="space-y-2">
                             {analysisResult.comprehensiveReports.developmentRoadmap.shortTerm.map((goal: string, idx: number) => (
                               <li key={idx} className="text-sm text-foreground flex items-start gap-2">
@@ -1023,8 +1023,8 @@ const InstantAIAnalysis = () => {
                             ))}
                           </ul>
                         </div>
-                        <div>
-                          <h4 className="font-bold text-foreground mb-2">📅 중기 목표 (3-6개월)</h4>
+                        <div className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-lg border border-blue-200 dark:border-blue-800">
+                          <h4 className="font-bold text-foreground mb-3">📅 중기 목표 (3-6개월)</h4>
                           <ul className="space-y-2">
                             {analysisResult.comprehensiveReports.developmentRoadmap.mediumTerm.map((goal: string, idx: number) => (
                               <li key={idx} className="text-sm text-foreground flex items-start gap-2">
@@ -1034,8 +1034,8 @@ const InstantAIAnalysis = () => {
                             ))}
                           </ul>
                         </div>
-                        <div>
-                          <h4 className="font-bold text-foreground mb-2">📅 장기 목표 (6-12개월)</h4>
+                        <div className="p-4 bg-purple-50 dark:bg-purple-950/40 rounded-lg border border-purple-200 dark:border-purple-800">
+                          <h4 className="font-bold text-foreground mb-3">📅 장기 목표 (6-12개월)</h4>
                           <ul className="space-y-2">
                             {analysisResult.comprehensiveReports.developmentRoadmap.longTerm.map((goal: string, idx: number) => (
                               <li key={idx} className="text-sm text-foreground flex items-start gap-2">

@@ -30,7 +30,7 @@ const CTABannerSection = () => {
           </div>
 
           <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight">
-            AI하이라이트PRO와 함께<br />
+            AIHumanPro와 함께<br />
             당신의 회복을 시작하세요
           </h2>
           

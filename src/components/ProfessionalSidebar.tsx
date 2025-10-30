@@ -91,7 +91,7 @@ const ProfessionalSidebar = () => {
       <div className="p-6 border-b border-gray-100">
         <div className="flex items-center gap-3 mb-3">
           <div>
-            <h2 className="font-bold text-gray-900">AI하이라이트PRO</h2>
+            <h2 className="font-bold text-gray-900">AIHumanPro</h2>
             <p className="text-sm text-gray-500">AI 기반 통합 케어 플랫폼</p>
           </div>
         </div>

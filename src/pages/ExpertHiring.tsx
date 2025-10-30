@@ -522,7 +522,7 @@ const ExpertHiring = () => {
     "serviceType": "전문가 고용 및 상담",
     "provider": {
       "@type": "Organization",
-      "name": "AI하이라이트PRO",
+      "name": "AIHumanPro",
       "description": "전문가 매칭 및 상담 서비스"
     },
     "areaServed": "KR",
@@ -1313,13 +1313,13 @@ const ExpertHiring = () => {
   return (
     <>
       <Helmet>
-        <title>전문가 고용 - AI하이라이트PRO | 검증된 전문가 매칭 서비스</title>
+        <title>전문가 고용 - AIHumanPro | 검증된 전문가 매칭 서비스</title>
         <meta name="description" content="40+ 제휴기관의 검증된 전문가와 연결하세요. AI 매칭으로 최적의 전문가를 찾아 심리상담, 발달평가, 언어치료 등 전문 서비스를 받으실 수 있습니다." />
         <meta name="keywords" content="전문가 고용, 전문가 매칭, AI 매칭, 심리상담사, 발달전문가, 언어치료사, 전문상담" />
         <link rel="canonical" href="https://aihpro.com/expert-hiring" />
         
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="전문가 고용 - AI하이라이트PRO" />
+        <meta property="og:title" content="전문가 고용 - AIHumanPro" />
         <meta property="og:description" content="40+ 제휴기관의 검증된 전문가와 연결. AI 매칭으로 최적의 전문가 찾기" />
         <meta property="og:url" content="https://aihpro.com/expert-hiring" />
         

@@ -9,10 +9,10 @@ const ExpertApplicationPage = () => {
     "@context": "https://schema.org",
     "@type": "JobPosting",
     "title": "전문가 모집",
-    "description": "AI하이라이트PRO와 함께 전문가로 활동하세요",
+    "description": "AIHumanPro와 함께 전문가로 활동하세요",
     "hiringOrganization": {
       "@type": "Organization",
-      "name": "AI하이라이트PRO"
+      "name": "AIHumanPro"
     },
     "jobLocation": {
       "@type": "Place",
@@ -26,8 +26,8 @@ const ExpertApplicationPage = () => {
   return (
     <>
       <Helmet>
-        <title>전문가 신청 - AI하이라이트PRO | 전문가 모집</title>
-        <meta name="description" content="AI하이라이트PRO 전문가로 지원하세요. 심리상담, 발달평가, 언어치료 등 전문 분야에서 활동하며 수익을 창출하세요." />
+        <title>전문가 신청 - AIHumanPro | 전문가 모집</title>
+        <meta name="description" content="AIHumanPro 전문가로 지원하세요. 심리상담, 발달평가, 언어치료 등 전문 분야에서 활동하며 수익을 창출하세요." />
         <meta name="keywords" content="전문가 신청, 전문가 모집, 심리상담사 모집, 발달전문가 채용" />
         <link rel="canonical" href="https://aihpro.com/expert-application" />
         

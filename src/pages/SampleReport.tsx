@@ -11,7 +11,7 @@ const SampleReport = () => {
   return (
     <>
       <SEOHead
-        title="종합 심리 리포트 예시 - AI하이라이트PRO"
+        title="종합 심리 리포트 예시 - AIHumanPro"
         description="AI와 전문가가 함께 만드는 초개인화 종합 심리 분석 리포트 예시를 확인해보세요."
         keywords="심리리포트,AI심리분석,개인화리포트,정신건강리포트,심리검사결과,아동발달평가"
       />

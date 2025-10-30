@@ -114,7 +114,7 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ data, onReport
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `AI하이라이트_종합분석리포트_${data.childName}_${new Date().toISOString().split('T')[0]}.pdf`;
+      a.download = `AIHumanPro_종합분석리포트_${data.childName}_${new Date().toISOString().split('T')[0]}.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);

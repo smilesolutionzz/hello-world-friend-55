@@ -56,7 +56,7 @@ const FounderLetterSection = () => {
                   </p>
 
                   <p className="text-base">
-                    AI하이라이트PRO는 단순한 AI 플랫폼이 아닙니다. 여러분의 일상 속 작은 순간들을 기록하고, 
+                    AIHumanPro는 단순한 AI 플랫폼이 아닙니다. 여러분의 일상 속 작은 순간들을 기록하고, 
                     그 데이터가 쌓여 <span className="font-semibold text-primary">초개인화된 종합 리포트</span>로 탄생합니다. 
                     하지만 여기서 멈추지 않습니다. 그 리포트는 반드시 <span className="font-semibold text-primary">전문가의 검토</span>를 거쳐, 
                     정확한 회복과 예방의 길로 안내됩니다.
@@ -92,7 +92,7 @@ const FounderLetterSection = () => {
                   <div className="mt-12 pt-8 border-t border-border">
                     <p className="text-right text-foreground/70">
                       진심을 담아,<br />
-                      <span className="font-semibold text-primary text-lg">AI하이라이트PRO 창립자 이수석</span>
+                      <span className="font-semibold text-primary text-lg">AIHumanPro 창립자 이수석</span>
                     </p>
                   </div>
                 </div>

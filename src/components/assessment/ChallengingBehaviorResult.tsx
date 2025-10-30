@@ -27,6 +27,8 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
   const [showDetails, setShowDetails] = useState(false);
   const [expertInterpretation, setExpertInterpretation] = useState<string>("");
   const [isLoadingInterpretation, setIsLoadingInterpretation] = useState(false);
+  const [reportImage, setReportImage] = useState<string>("");
+  const [isLoadingImage, setIsLoadingImage] = useState(false);
 
   // 카테고리별 점수 계산 (각 카테고리 문항 수에 맞게)
   const categoryScores = {
@@ -179,7 +181,28 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
       }
     };
 
+    const fetchReportImage = async () => {
+      setIsLoadingImage(true);
+      try {
+        const prompt = `도전행동 평가 결과를 표현하는 따뜻하고 전문적인 이미지를 생성해주세요. 아동 발달 심리 상담의 긍정적이고 희망적인 분위기를 담아주세요. 부드러운 색상과 치료적인 느낌의 실사 이미지로 만들어주세요.`;
+        
+        const { data, error } = await supabase.functions.invoke('generate-report-image', {
+          body: { prompt }
+        });
+
+        if (error) throw error;
+        if (data?.imageUrl) {
+          setReportImage(data.imageUrl);
+        }
+      } catch (error) {
+        console.error('리포트 이미지 생성 실패:', error);
+      } finally {
+        setIsLoadingImage(false);
+      }
+    };
+
     fetchExpertInterpretation();
+    fetchReportImage();
   }, []);
 
   return (
@@ -340,6 +363,28 @@ const ChallengingBehaviorResult = ({ results }: ChallengingBehaviorResultProps) 
             </div>
           </CardContent>
         </Card>
+
+        {/* AI 생성 이미지 */}
+        {(isLoadingImage || reportImage) && (
+          <Card className="overflow-hidden">
+            <CardContent className="p-0">
+              {isLoadingImage ? (
+                <div className="flex items-center justify-center py-16 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
+                  <div className="text-center">
+                    <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+                    <p className="text-sm text-gray-600 dark:text-gray-400">AI 이미지 생성 중...</p>
+                  </div>
+                </div>
+              ) : reportImage ? (
+                <img 
+                  src={reportImage} 
+                  alt="평가 결과 이미지" 
+                  className="w-full h-auto object-cover"
+                />
+              ) : null}
+            </CardContent>
+          </Card>
+        )}
 
         {/* AI 전문가 해석 */}
         {isLoadingInterpretation ? (

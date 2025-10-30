@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { BetaBanner } from "@/components/BetaBanner";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
-import legalDisclaimerImage from "@/assets/legal/legal-disclaimer-assessment.png";
 import { useEventTracking } from "@/hooks/useEventTracking";
 import AgeSelector from "@/components/assessment/AgeSelector";
 import InfantAssessment from "@/components/assessment/InfantAssessment";
@@ -716,7 +715,6 @@ const Assessment = () => {
               </div>
             </CardContent>
           </Card>
-
 
           <div className="text-center mb-16 space-y-6">
             <h1 className="text-5xl md:text-7xl font-display font-black leading-tight text-gray-900 tracking-tight">
@@ -2135,7 +2133,29 @@ const Assessment = () => {
         
         {/* 법적 고지사항 */}
         <div className="container mx-auto max-w-6xl px-4 py-8 mt-12">
-          <img src={legalDisclaimerImage} alt="법적 고지사항 (의료법 준수)" loading="lazy" className="w-full h-auto" />
+          <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-6">
+            <h3 className="font-bold text-lg text-yellow-900 mb-4 flex items-center gap-2">
+              <span>⚠️</span> 법적 고지사항
+            </h3>
+            <div className="space-y-3 text-sm text-yellow-900">
+              <p className="flex items-start gap-2">
+                <span className="mt-1">•</span>
+                <span>본 서비스는 의료행위가 아니며, 질병의 진단, 치료, 예방을 목적으로 하지 않습니다.</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <span className="mt-1">•</span>
+                <span>제공되는 모든 정보는 참고용이며, 전문적인 의학적 조언을 대체할 수 없습니다.</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <span className="mt-1">•</span>
+                <span>의료 관련 의사결정은 반드시 의료기관 및 전문의와 상담 후 진행하시기 바랍니다.</span>
+              </p>
+              <p className="flex items-start gap-2">
+                <span className="mt-1">•</span>
+                <span>본 서비스 이용으로 인한 어떠한 결과에 대해서도 법적 책임을 지지 않습니다.</span>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

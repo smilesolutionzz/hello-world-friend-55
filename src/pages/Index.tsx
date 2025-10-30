@@ -26,7 +26,6 @@ import { useToast } from '@/hooks/use-toast';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
-import { ScrollReveal, ScrollStagger, ScrollScale } from '@/components/animations/ScrollReveal';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -170,58 +169,58 @@ const Index = () => {
           <HeroSection />
           
           {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
-          <ScrollReveal direction="up" delay={0.1}>
+          <LazyLoad className="animate-fade-in">
             <ValueComparisonSection />
-          </ScrollReveal>
+          </LazyLoad>
           
           {/* 3️⃣ Problem & Vision */}
-          <ScrollReveal direction="left" delay={0.1}>
+          <LazyLoad className="animate-fade-in">
             <ProblemVisionSection />
-          </ScrollReveal>
+          </LazyLoad>
           
           {/* 4️⃣ Core Service */}
-          <ScrollScale delay={0.2}>
+          <LazyLoad className="animate-fade-in">
             <CoreServiceSection />
-          </ScrollScale>
+          </LazyLoad>
           
           {/* 5️⃣ 데이터 기반 초개인화 리포트 (통합 섹션) */}
-          <ScrollReveal direction="right" delay={0.1}>
+          <LazyLoad className="animate-fade-in">
             <DataDrivenReportSection />
-          </ScrollReveal>
+          </LazyLoad>
           
           {/* 🎯 New Features Section - 매주 업데이트 */}
-          <ScrollReveal direction="up" delay={0.15}>
+          <LazyLoad className="animate-fade-in">
             <NewFeaturesSection />
-          </ScrollReveal>
+          </LazyLoad>
           
           {/* 6️⃣ Result / Report */}
-          <ScrollScale delay={0.2}>
+          <LazyLoad className="animate-fade-in">
             <ResultReportSection />
-          </ScrollScale>
+          </LazyLoad>
           
           {/* Trust & Partner Section */}
-          <ScrollReveal direction="up" delay={0.1}>
+          <LazyLoad className="animate-fade-in">
             <PartnerTrustSection />
-          </ScrollReveal>
+          </LazyLoad>
           
           {/* Social Proof */}
-          <ScrollReveal direction="left" delay={0.15}>
+          <LazyLoad className="animate-fade-in">
             <TestimonialSection />
-          </ScrollReveal>
+          </LazyLoad>
           
-          <ScrollReveal direction="up" delay={0.1}>
+          <LazyLoad className="animate-fade-in">
             <ClientLogos />
-          </ScrollReveal>
+          </LazyLoad>
           
           {/* 📝 Founder's Letter - 창립자의 손편지 */}
-          <ScrollScale delay={0.2}>
+          <LazyLoad className="animate-fade-in">
             <FounderLetterSection />
-          </ScrollScale>
+          </LazyLoad>
           
           {/* 7️⃣ Call to Action */}
-          <ScrollReveal direction="up" delay={0.1}>
+          <LazyLoad className="animate-fade-in">
             <CTABannerSection />
-          </ScrollReveal>
+          </LazyLoad>
           
           {/* 8️⃣ Footer */}
           <Footer />

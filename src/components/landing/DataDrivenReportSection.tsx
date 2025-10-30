@@ -141,7 +141,7 @@ const DataDrivenReportSection = () => {
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
             데이터가 쌓이면,<br />
-            <span className="text-primary font-bold">
+            <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
               초개인화된 종합 리포트가 자동 생성됩니다
             </span>
           </h2>

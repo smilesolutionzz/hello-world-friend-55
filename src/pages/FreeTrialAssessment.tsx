@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { Clock, Brain, Heart, Target, Gift, Crown, Lock } from 'lucide-react';
-import { MedicalDisclaimer } from '@/components/legal/MedicalDisclaimer';
 
 const FreeTrialAssessment = () => {
   const navigate = useNavigate();
@@ -103,13 +102,8 @@ const FreeTrialAssessment = () => {
       </div>
       
       <div className="container mx-auto max-w-6xl p-4 relative z-10">
-        {/* 법적 고지사항 */}
-        <div className="pt-8 pb-4">
-          <MedicalDisclaimer variant="full" />
-        </div>
-
         {/* Hero Section */}
-        <section className="pt-8 pb-8">
+        <section className="pt-16 pb-8">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full mb-6 shadow-lg">
               <Gift className="w-6 h-6" />

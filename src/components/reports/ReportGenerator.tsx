@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
-import { FileText, Download, Share2, Eye, AlertTriangle, CheckCircle, User, Calendar, TrendingUp, Mail } from 'lucide-react';
+import { FileText, Download, Share2, Eye, AlertTriangle, CheckCircle, User, Calendar, TrendingUp } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -152,85 +152,6 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ data, onReport
     }
   };
 
-  const sendEmail = async () => {
-    if (!generatedReportUrl) {
-      toast({
-        title: "오류",
-        description: "먼저 리포트를 생성해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const email = prompt("리포트를 받을 이메일 주소를 입력하세요:");
-    if (!email) return;
-
-    // 간단한 이메일 유효성 검사
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast({
-        title: "오류",
-        description: "유효한 이메일 주소를 입력해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsGenerating(true);
-    setProgress(10);
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
-          title: "오류",
-          description: "로그인이 필요합니다.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      setProgress(30);
-
-      const { data: result, error } = await supabase.functions.invoke("send-report-email", {
-        body: {
-          reportUrl: generatedReportUrl,
-          reportData: {
-            childName: data.childName,
-            reportType: data.reportType === 'ai_expert_combined' ? 'AI + 전문가 종합 분석' : 'AI 분석',
-            aiAnalysis: {
-              strengths: data.aiAnalysis?.developmental_insights?.strengths || [],
-              concerns: data.aiAnalysis?.developmental_insights?.concerns || [],
-              recommendations: data.aiAnalysis?.developmental_insights?.recommendations || []
-            },
-            riskLevel: data.aiAnalysis?.risk_level === 'high' ? '높음' : 
-                       data.aiAnalysis?.risk_level === 'medium' ? '중간' : '낮음'
-          },
-          recipientEmail: email
-        }
-      });
-
-      setProgress(100);
-
-      if (error) throw error;
-
-      toast({
-        title: "발송 완료",
-        description: `${email}로 리포트가 발송되었습니다! (5토큰 사용)`,
-      });
-    } catch (error: any) {
-      console.error("Error sending email:", error);
-      toast({
-        title: "발송 실패",
-        description: error.message || "이메일 발송 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsGenerating(false);
-      setProgress(0);
-    }
-  };
-
   const getRiskLevelBadge = (level: string) => {
     const variants = {
       high: { variant: 'destructive' as const, text: '주의 필요' },
@@ -363,14 +284,6 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ data, onReport
               <Button onClick={shareReport} variant="outline">
                 <Share2 className="mr-2 h-4 w-4" />
                 링크 공유
-              </Button>
-              <Button 
-                onClick={sendEmail}
-                variant="outline"
-                disabled={isGenerating}
-              >
-                <Mail className="mr-2 h-4 w-4" />
-                이메일 발송
               </Button>
               <Button 
                 onClick={() => window.open(generatedReportUrl, '_blank')}

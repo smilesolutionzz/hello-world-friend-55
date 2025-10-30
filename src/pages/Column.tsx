@@ -1000,21 +1000,22 @@ const Column = () => {
                 
                 <div className="hidden md:flex items-center justify-center">
                   <div className="relative">
-                    <div className="relative bg-background/95 backdrop-blur-sm rounded-2xl p-8 border-2 border-primary/30 shadow-lg">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full blur-3xl opacity-20 animate-pulse" />
+                    <div className="relative bg-card/50 backdrop-blur-xl rounded-2xl p-8 border border-primary/20">
                       <div className="grid grid-cols-2 gap-6">
                         <div className="text-center space-y-2">
                           <Brain className="w-8 h-8 text-primary mx-auto" />
                           <div className="text-2xl font-bold text-primary">AI</div>
-                          <div className="text-base font-bold text-foreground">패턴 발견</div>
+                          <div className="text-xs text-muted-foreground">패턴 발견</div>
                         </div>
                         <div className="text-center space-y-2">
-                          <Users className="w-8 h-8 text-primary mx-auto" />
-                          <div className="text-2xl font-bold text-primary">전문가</div>
-                          <div className="text-base font-bold text-foreground">마음 이해</div>
+                          <Users className="w-8 h-8 text-secondary mx-auto" />
+                          <div className="text-2xl font-bold text-secondary">전문가</div>
+                          <div className="text-xs text-muted-foreground">마음 이해</div>
                         </div>
-                        <div className="col-span-2 text-center space-y-2 pt-4 border-t-2 border-primary/30">
+                        <div className="col-span-2 text-center space-y-2 pt-4 border-t border-border">
                           <TrendingUp className="w-10 h-10 text-primary mx-auto" />
-                          <div className="text-3xl font-bold text-primary">
+                          <div className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                             진정한 변화
                           </div>
                         </div>

@@ -223,17 +223,3 @@ verify_jwt = false
 
 [functions.wellness-ai-sleep]
 verify_jwt = false
-
-# Toss Payments Functions (라이브)
-[functions.get-toss-client-key]
-verify_jwt = false
-
-[functions.toss-payments-confirm]
-verify_jwt = true
-
-[functions.toss-payments-webhook]
-verify_jwt = false
-
-# Resend Email Functions
-[functions.send-report-email]
-verify_jwt = true

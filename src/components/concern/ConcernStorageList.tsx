@@ -636,21 +636,18 @@ export const ConcernStorageList = () => {
                           추천 검사
                         </h4>
                         <div className="flex flex-wrap gap-2">
-                          {(concern.full_analysis?.recommendedTests || concern.recommended_tests || []).map((test: any, index: number) => {
-                            const testName = typeof test === 'string' ? test : test?.name || '검사명 없음';
-                            return (
-                              <Button
-                                key={index}
-                                variant="secondary"
-                                size="sm"
-                                onClick={() => navigate('/assessment')}
-                                className="gap-2 bg-primary/10 hover:bg-primary/20 border border-primary/20"
-                              >
-                                {testName}
-                                <ExternalLink className="w-3 h-3" />
-                              </Button>
-                            );
-                          })}
+                          {(concern.full_analysis?.recommendedTests || concern.recommended_tests || []).map((test: string, index: number) => (
+                            <Button
+                              key={index}
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => navigate('/assessment')}
+                              className="gap-2 bg-primary/10 hover:bg-primary/20 border border-primary/20"
+                            >
+                              {test}
+                              <ExternalLink className="w-3 h-3" />
+                            </Button>
+                          ))}
                         </div>
                       </div>
                     )}

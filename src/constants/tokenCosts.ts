@@ -1,8 +1,5 @@
 // 각 기능별 토큰 소진량 정의 (균일화 버전)
 export const TOKEN_COSTS = {
-  // 분석 저장
-  SAVE_ANALYSIS_REPORT: 5, // 즉석 분석 리포트 저장
-  
   // 전문 심리검사 및 발달검사 (5토큰 통일)
   PSYCHOLOGICAL_TEST: 5,     // 마음상태 체크
   FOCUS_CHECK: 5,           // AIH 집중력 자가점검
@@ -51,9 +48,6 @@ export const TOKEN_COSTS = {
   
   // AI 상담 (사용량 기반)
   AI_COUNSELOR_CHAT: 1,     // AI 상담사 10메시지당 1토큰
-  
-  // 이메일 발송
-  EMAIL_REPORT: 5,          // 리포트 이메일 발송
   
   // 무료 유지 서비스
   CRISIS_DETECTION: 0,      // 위기감지 (긴급상황이므로 무료 유지)

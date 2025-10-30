@@ -139,8 +139,8 @@ const DataDrivenReportSection = () => {
               데이터 기반 초개인화
             </span>
           </div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-6">
-            데이터가 쌓이면, <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">초개인화된 종합 리포트가 자동 생성됩니다</span>
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground drop-shadow-md mb-6">
+            데이터가 쌓이면, 초개인화된 종합 리포트가 자동 생성됩니다
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-foreground drop-shadow-md max-w-2xl mx-auto">
             일상 속 작은 기록들이 모여 여러분만의 성장 스토리가 됩니다
@@ -227,12 +227,10 @@ const DataDrivenReportSection = () => {
         {showReports && (
           <div className="animate-in slide-in-from-top-4 duration-500">
             <div className="text-center mb-12">
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">
-                <span className="text-foreground">단 한 번의 분석으로</span>
+              <h3 className="text-3xl md:text-4xl font-bold mb-4 text-foreground drop-shadow-md">
+                단 한 번의 분석으로
                 <br />
-                <span className="text-gradient bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                  9가지 전문 리포트 자동 생성
-                </span>
+                9가지 전문 리포트 자동 생성
               </h3>
               <p className="text-lg text-foreground drop-shadow-md max-w-2xl mx-auto">
                 전문가 검토를 거쳐 정확한 회복과 예방을 돕습니다

@@ -272,10 +272,10 @@ const DataDrivenReportSection = () => {
         <div className="text-center space-y-6">
           <div className="inline-flex flex-col items-center gap-4 px-8 py-6 bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/20 rounded-3xl">
             <Sparkles className="w-8 h-8 text-primary" />
-            <p className="text-xl font-semibold text-foreground">
+            <p className="text-sm sm:text-lg md:text-xl font-semibold text-foreground">
               추가 비용 없이 모든 리포트 무료 제공
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               데이터가 쌓일수록 더 정확한 분석을 받으실 수 있습니다
             </p>
           </div>

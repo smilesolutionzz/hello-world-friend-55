@@ -19,6 +19,26 @@ const ResultReportSection = () => {
     window.open(googleDriveUrl, '_blank');
   };
 
+  // 점수에 따른 백분위 계산
+  const calculatePercentile = (score: number) => {
+    if (score >= 95) return '상위 1%';
+    if (score >= 90) return '상위 5%';
+    if (score >= 85) return '상위 15%';
+    if (score >= 80) return '상위 25%';
+    if (score >= 75) return '상위 35%';
+    if (score >= 70) return '상위 45%';
+    if (score >= 65) return '상위 55%';
+    if (score >= 60) return '중위 50%';
+    if (score >= 55) return '하위 45%';
+    if (score >= 50) return '하위 40%';
+    if (score >= 45) return '하위 35%';
+    if (score >= 40) return '하위 30%';
+    return '하위 20%';
+  };
+
+  const overallScore = 85;
+  const percentile = calculatePercentile(overallScore);
+
   const features = [
     {
       icon: BarChart3,
@@ -156,9 +176,9 @@ const ResultReportSection = () => {
                     <div>
                       <div className="flex justify-between mb-2">
                         <span className="text-sm font-semibold">전체 평균 대비</span>
-                        <span className="text-sm font-bold text-purple-600">상위 15%</span>
+                        <span className="text-sm font-bold text-purple-600">{percentile}</span>
                       </div>
-                      <Progress value={85} className="h-3 bg-white/50" />
+                      <Progress value={overallScore} className="h-3 bg-white/50" />
                     </div>
                     <div className="flex gap-2">
                       <div className="bg-green-500/10 text-green-700 px-3 py-1 rounded-full text-xs font-bold">

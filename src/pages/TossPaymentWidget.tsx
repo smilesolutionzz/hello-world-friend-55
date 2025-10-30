@@ -12,7 +12,11 @@ const getTossClientKey = async () => {
   try {
     const { data, error } = await supabase.functions.invoke('get-toss-client-key');
     if (error) throw error;
-    return data.clientKey;
+    // mode는 디버깅용 메타데이터 (live/test)
+    if (data?.mode) {
+      console.info('[Toss] Client key mode:', data.mode);
+    }
+    return data.clientKey as string;
   } catch (error) {
     console.error('Failed to get Toss client key:', error);
     throw new Error('결제 시스템 초기화에 실패했습니다.');
@@ -81,9 +85,13 @@ const TossPaymentWidget = () => {
       setProcessing(false);
       
       if (error.code !== 'USER_CANCEL') {
+        const msg =
+          error?.code === 'INVALID_CLIENT_KEY' || /시크릿|client key|클라이언트 키/i.test(error?.message || '')
+            ? '키를 다시 확인해주세요: 결제위젯 클라이언트 키(live_ck_...) · 시크릿 키(live_sk_...), 그리고 Toss 대시보드에 aihpro.com 도메인이 등록되어 있어야 합니다.'
+            : (error?.message || '결제 요청 중 오류가 발생했습니다.');
         toast({
           title: '결제 실패',
-          description: error?.message || '결제 요청 중 오류가 발생했습니다.',
+          description: msg,
           variant: 'destructive',
         });
       }

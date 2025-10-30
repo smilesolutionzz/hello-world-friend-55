@@ -52,6 +52,9 @@ export const TOKEN_COSTS = {
   // AI 상담 (사용량 기반)
   AI_COUNSELOR_CHAT: 1,     // AI 상담사 10메시지당 1토큰
   
+  // 이메일 발송
+  EMAIL_REPORT: 5,          // 리포트 이메일 발송
+  
   // 무료 유지 서비스
   CRISIS_DETECTION: 0,      // 위기감지 (긴급상황이므로 무료 유지)
 } as const;

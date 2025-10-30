@@ -233,3 +233,7 @@ verify_jwt = true
 
 [functions.toss-payments-webhook]
 verify_jwt = false
+
+# Resend Email Functions
+[functions.send-report-email]
+verify_jwt = true

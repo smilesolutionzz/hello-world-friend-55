@@ -217,7 +217,7 @@ ${Object.entries(results).map(([key, value]) => `${key}: ${value}점`).join('\n'
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07', // 검사 분석용 고품질 모델
+        model: 'gpt-4o', // 검사 분석용 고품질 모델
         messages: [
           { role: 'system', content: '당신은 임상심리학 전문가입니다. 정확하고 전문적인 심리검사 분석을 제공합니다.' },
           { role: 'user', content: analysisPrompt }

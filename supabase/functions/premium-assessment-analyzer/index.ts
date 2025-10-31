@@ -401,7 +401,7 @@ ${Object.entries(actualResults).map(([domain, score]) => `- ${domain}: ${score}�
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07', // 프리미엄 분석용 고품질 모델
+        model: 'gpt-4o', // 프리미엄 분석용 고품질 모델
         messages: [
           {
             role: 'system',

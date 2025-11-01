@@ -7,7 +7,7 @@ import FloatingKeywords from "./FloatingKeywords";
 import { useState } from "react";
 import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
 import { ExpertOnlineStatus } from "@/components/urgency/ExpertOnlineStatus";
-import heroBg from "@/assets/hero-main-bg.jpg";
+import heroBg from "@/assets/hero-family-bg.jpg";
 
 const HeroSection = () => {
   const navigate = useNavigate();

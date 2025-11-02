@@ -87,6 +87,12 @@ export const RealtimeVoiceChatComponent: React.FC = () => {
 
   const startRecording = async () => {
     try {
+      // AudioContext 확실히 활성화
+      if (chatRef.current?.audioContext?.state === 'suspended') {
+        await chatRef.current.audioContext.resume();
+        console.log('AudioContext resumed on recording start');
+      }
+      
       await chatRef.current?.startRecording();
       setIsRecording(true);
       toast({

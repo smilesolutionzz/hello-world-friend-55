@@ -68,33 +68,50 @@ class AudioQueue {
   }
 
   async addToQueue(audioData: Uint8Array) {
+    console.log('Adding audio to queue, size:', audioData.length);
     this.queue.push(audioData);
     if (!this.isPlaying) {
+      console.log('Starting playback');
       await this.playNext();
     }
   }
 
   private async playNext() {
     if (this.queue.length === 0) {
+      console.log('Audio queue empty');
       this.isPlaying = false;
       return;
     }
 
     this.isPlaying = true;
     const audioData = this.queue.shift()!;
+    console.log('Playing audio chunk, size:', audioData.length);
 
     try {
+      // Ensure AudioContext is running
+      if (this.audioContext.state === 'suspended') {
+        console.log('Resuming AudioContext...');
+        await this.audioContext.resume();
+      }
+      
       const wavData = this.createWavFromPCM(audioData);
+      console.log('WAV data created, size:', wavData.length);
+      
       // Create a new ArrayBuffer from the Uint8Array to avoid SharedArrayBuffer issues
       const arrayBuffer = wavData.buffer.slice(0) as ArrayBuffer;
       const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+      console.log('Audio decoded, duration:', audioBuffer.duration, 'seconds');
       
       const source = this.audioContext.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(this.audioContext.destination);
       
-      source.onended = () => this.playNext();
+      source.onended = () => {
+        console.log('Audio chunk finished');
+        this.playNext();
+      };
       source.start(0);
+      console.log('Audio playback started');
     } catch (error) {
       console.error('Error playing audio:', error);
       this.playNext();
@@ -171,7 +188,7 @@ export const encodeAudioForAPI = (float32Array: Float32Array): string => {
 export class RealtimeVoiceChat {
   private ws: WebSocket | null = null;
   private recorder: AudioRecorder | null = null;
-  private audioContext: AudioContext | null = null;
+  public audioContext: AudioContext | null = null;
   private audioQueue: AudioQueue | null = null;
   private onMessage: (message: any) => void;
   private onSpeakingChange: (speaking: boolean) => void;
@@ -194,6 +211,14 @@ export class RealtimeVoiceChat {
       this.ws = new WebSocket(wsUrl);
       
       this.audioContext = new AudioContext({ sampleRate: 24000 });
+      console.log('AudioContext state:', this.audioContext.state);
+      
+      // Resume AudioContext immediately
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+        console.log('AudioContext resumed, new state:', this.audioContext.state);
+      }
+      
       this.audioQueue = new AudioQueue(this.audioContext);
 
       this.ws.onopen = () => {
@@ -207,14 +232,22 @@ export class RealtimeVoiceChat {
         this.onMessage(data);
 
         if (data.type === 'response.audio.delta' && data.delta) {
+          console.log('Receiving audio delta, length:', data.delta.length);
           this.onSpeakingChange(true);
-          const binaryString = atob(data.delta);
-          const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
+          
+          try {
+            const binaryString = atob(data.delta);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+            }
+            console.log('Decoded audio bytes:', bytes.length);
+            await this.audioQueue?.addToQueue(bytes);
+          } catch (error) {
+            console.error('Error processing audio delta:', error);
           }
-          await this.audioQueue?.addToQueue(bytes);
         } else if (data.type === 'response.audio.done') {
+          console.log('Audio response complete');
           this.onSpeakingChange(false);
         } else if (data.type === 'session.created') {
           console.log('Session created, ready for recording');

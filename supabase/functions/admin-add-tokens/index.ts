@@ -75,19 +75,19 @@ serve(async (req) => {
 
     console.log('Adding tokens:', { targetEmail, tokenAmount });
 
-    // Find user by email
-    const { data: usersData, error: listError } = await supabase.auth.admin.listUsers();
+    // Find user by email using direct lookup
+    const { data: userData, error: userLookupError } = await supabase.auth.admin.getUserByEmail(targetEmail);
     
-    if (listError) {
-      throw new Error(`Failed to fetch users: ${listError.message}`);
+    if (userLookupError) {
+      console.error('User lookup error:', userLookupError);
+      throw new Error(`Failed to find user: ${userLookupError.message}`);
     }
 
-    const targetUser = usersData.users.find(u => u.email === targetEmail);
-    
-    if (!targetUser) {
+    if (!userData || !userData.user) {
       throw new Error(`User with email ${targetEmail} not found`);
     }
 
+    const targetUser = userData.user;
     console.log('Found user:', targetUser.id);
 
     // Add tokens using the admin function

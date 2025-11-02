@@ -175,6 +175,7 @@ export class RealtimeVoiceChat {
   private audioQueue: AudioQueue | null = null;
   private onMessage: (message: any) => void;
   private onSpeakingChange: (speaking: boolean) => void;
+  private isRecording = false;
 
   constructor(
     onMessage: (message: any) => void,
@@ -216,8 +217,8 @@ export class RealtimeVoiceChat {
         } else if (data.type === 'response.audio.done') {
           this.onSpeakingChange(false);
         } else if (data.type === 'session.created') {
-          console.log('Session created, starting recording...');
-          await this.startRecording();
+          console.log('Session created, ready for recording');
+          // 수동 녹음 모드이므로 자동으로 녹음 시작하지 않음
         }
       };
 
@@ -236,10 +237,12 @@ export class RealtimeVoiceChat {
     }
   }
 
-  private async startRecording() {
+  async startRecording() {
+    if (this.isRecording) return;
+    
     try {
       this.recorder = new AudioRecorder((audioData) => {
-        if (this.ws?.readyState === WebSocket.OPEN) {
+        if (this.ws?.readyState === WebSocket.OPEN && this.isRecording) {
           this.ws.send(JSON.stringify({
             type: 'input_audio_buffer.append',
             audio: encodeAudioForAPI(audioData)
@@ -247,9 +250,37 @@ export class RealtimeVoiceChat {
         }
       });
       await this.recorder.start();
+      this.isRecording = true;
       console.log('Recording started');
     } catch (error) {
       console.error('Error starting recording:', error);
+      throw error;
+    }
+  }
+
+  async stopRecordingAndSend() {
+    if (!this.isRecording) return;
+    
+    try {
+      // 녹음 중지
+      this.recorder?.stop();
+      this.isRecording = false;
+      console.log('Recording stopped');
+
+      // 오디오 커밋하고 응답 요청
+      if (this.ws?.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify({
+          type: 'input_audio_buffer.commit'
+        }));
+        
+        this.ws.send(JSON.stringify({
+          type: 'response.create'
+        }));
+        
+        console.log('Audio committed and response requested');
+      }
+    } catch (error) {
+      console.error('Error stopping recording:', error);
       throw error;
     }
   }

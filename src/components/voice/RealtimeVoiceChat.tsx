@@ -16,6 +16,7 @@ export const RealtimeVoiceChatComponent: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const chatRef = useRef<RealtimeVoiceChat | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -69,8 +70,8 @@ export const RealtimeVoiceChatComponent: React.FC = () => {
       setIsConnected(true);
       
       toast({
-        title: "음성 상담 시작",
-        description: "AI 상담사와 대화를 시작합니다. 마이크에 대고 말씀해주세요.",
+        title: "상담 준비 완료",
+        description: "녹음 버튼을 눌러 말씀을 시작하세요.",
       });
     } catch (error) {
       console.error('Error starting conversation:', error);
@@ -81,6 +82,42 @@ export const RealtimeVoiceChatComponent: React.FC = () => {
       });
     } finally {
       setIsConnecting(false);
+    }
+  };
+
+  const startRecording = async () => {
+    try {
+      await chatRef.current?.startRecording();
+      setIsRecording(true);
+      toast({
+        title: "녹음 중",
+        description: "말씀하신 후 전송 버튼을 눌러주세요.",
+      });
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      toast({
+        title: "녹음 실패",
+        description: "녹음을 시작할 수 없습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const stopAndSend = async () => {
+    try {
+      await chatRef.current?.stopRecordingAndSend();
+      setIsRecording(false);
+      toast({
+        title: "전송 완료",
+        description: "AI가 응답 중입니다...",
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: "전송 실패",
+        description: "메시지를 전송할 수 없습니다.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -172,26 +209,43 @@ export const RealtimeVoiceChatComponent: React.FC = () => {
                   ) : (
                     <>
                       <Phone className="w-5 h-5 mr-2" />
-                      음성 상담 시작
+                      음성 상담 연결
                     </>
                   )}
                 </Button>
               ) : (
-                <Button
-                  onClick={endConversation}
-                  variant="destructive"
-                  size="lg"
-                  className="w-full max-w-sm"
-                >
-                  <PhoneOff className="w-5 h-5 mr-2" />
-                  상담 종료
-                </Button>
-              )}
-
-              {isConnected && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Mic className="w-4 h-4" />
-                  <span>마이크가 활성화되어 있습니다</span>
+                <div className="flex flex-col gap-3 w-full max-w-sm">
+                  {!isRecording ? (
+                    <Button
+                      onClick={startRecording}
+                      disabled={isSpeaking}
+                      size="lg"
+                      className="w-full"
+                    >
+                      <Mic className="w-5 h-5 mr-2" />
+                      녹음 시작
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={stopAndSend}
+                      size="lg"
+                      variant="default"
+                      className="w-full animate-pulse"
+                    >
+                      <MicOff className="w-5 h-5 mr-2" />
+                      전송하기
+                    </Button>
+                  )}
+                  
+                  <Button
+                    onClick={endConversation}
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                  >
+                    <PhoneOff className="w-4 h-4 mr-2" />
+                    상담 종료
+                  </Button>
                 </div>
               )}
             </div>

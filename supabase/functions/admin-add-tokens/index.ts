@@ -75,19 +75,45 @@ serve(async (req) => {
 
     console.log('Adding tokens:', { targetEmail, tokenAmount });
 
-    // Find user by email using direct lookup
-    const { data: userData, error: userLookupError } = await supabase.auth.admin.getUserByEmail(targetEmail);
-    
-    if (userLookupError) {
-      console.error('User lookup error:', userLookupError);
-      throw new Error(`Failed to find user: ${userLookupError.message}`);
+    // Find user by email with pagination (getUserByEmail not available in v2)
+    let targetUser: any = null;
+    let page = 1;
+    const perPage = 100;
+    const maxPages = 100; // safety guard
+
+    while (page <= maxPages) {
+      const { data: usersPage, error: listError } = await (supabase as any).auth.admin.listUsers({ page, perPage });
+
+      if (listError) {
+        console.error('User list error:', listError);
+        return new Response(
+          JSON.stringify({ error: `Failed to fetch users: ${listError.message}` }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const users = usersPage?.users || [];
+      targetUser = users.find((u: any) => (u.email || '').toLowerCase() === targetEmail.toLowerCase());
+
+      if (targetUser) {
+        break;
+      }
+
+      if (!usersPage || users.length < perPage) {
+        // no more pages
+        break;
+      }
+
+      page += 1;
     }
 
-    if (!userData || !userData.user) {
-      throw new Error(`User with email ${targetEmail} not found`);
+    if (!targetUser) {
+      return new Response(
+        JSON.stringify({ error: `User with email ${targetEmail} not found` }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    const targetUser = userData.user;
     console.log('Found user:', targetUser.id);
 
     // Add tokens using the admin function

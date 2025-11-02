@@ -104,6 +104,7 @@ import GrowthTracker from "./pages/GrowthTracker";
 import AIAssistant from "./pages/AIAssistant";
 import WellnessLifestyle from "./pages/WellnessLifestyle";
 import TestProgressTracker from "./pages/TestProgressTracker";
+import ProgressTracking from "./pages/ProgressTracking";
 
 import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTests from "./pages/FunTests";
@@ -165,6 +166,7 @@ const App = () => {
           <Route path="/design-showcase" element={<EnhancedDesignShowcase />} />
           <Route path="/auth" element={<HighlightAuth />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/progress-tracking" element={<ProgressTracking />} />
           <Route path="/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/free-trial" element={<FreeTrialAssessment />} />

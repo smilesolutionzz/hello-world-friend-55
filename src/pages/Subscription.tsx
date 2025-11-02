@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import TokenBalance from '@/components/TokenBalance';
+import { PromotionBanner } from '@/components/promotion/PromotionBanner';
 
 interface TokenPackage {
   name: string;
@@ -152,6 +153,11 @@ const Subscription = () => {
       </div>
       
       <div className="container mx-auto px-4 py-16">
+        {/* 프로모션 배너 */}
+        <div className="mb-12 max-w-4xl mx-auto">
+          <PromotionBanner variant="subscription" />
+        </div>
+
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">

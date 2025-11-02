@@ -7,6 +7,7 @@ import FloatingKeywords from "./FloatingKeywords";
 import { useState } from "react";
 import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
 import { ExpertOnlineStatus } from "@/components/urgency/ExpertOnlineStatus";
+import { PromotionBanner } from "@/components/promotion/PromotionBanner";
 import heroBg from "@/assets/hero-family-bg.jpg";
 
 const HeroSection = () => {
@@ -84,6 +85,11 @@ const HeroSection = () => {
           </div>
         </div>
 
+
+        {/* 프로모션 배너 */}
+        <div className="mb-8">
+          <PromotionBanner variant="hero" />
+        </div>
 
         {/* Instant AI Analysis - 즉시 후킹 요소 */}
         <div className="mb-12">

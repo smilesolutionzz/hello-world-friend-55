@@ -658,18 +658,21 @@ ${userInput?.developmentalNotes ? `
 ${userInput.developmentalNotes}
 ` : ''}
 
-위 데이터를 종합 분석하여 ${config.sectionCount}가지 섹션의 전문 리포트를 JSON 형식으로 작성해주세요.
-응답 형식:
+위 데이터를 종합 분석하여 ${config.sectionCount}가지 섹션의 전문 리포트를 작성해주세요.
+
+**중요: 응답은 반드시 아래 JSON 형식으로만 작성하세요. 다른 텍스트나 설명 없이 순수 JSON만 반환하세요.**
+
 {
   "sections": [
     {
-      "title": "발달 종합 평가",
-      "content": "<div>상세 HTML 내용...</div>"
-    },
-    // ... ${config.sectionCount}개 섹션
+      "title": "섹션 제목",
+      "content": "<div>HTML 형식의 상세 내용...</div>"
+    }
   ],
   "summary": "<div>전체 종합 요약 HTML</div>"
-}`;
+}
+
+필수 섹션: ${config.sections.join(', ')}`;
 
     // Lovable AI 호출
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -681,43 +684,11 @@ ${userInput.developmentalNotes}
       body: JSON.stringify({
         model: config.model,
         messages: [
-          { role: 'system', content: systemPrompt },
+          { role: 'system', content: systemPrompt + '\n\n중요: 응답은 반드시 유효한 JSON 형식으로만 작성하세요. 코드블록이나 다른 텍스트 없이 순수 JSON만 반환하세요.' },
           { role: 'user', content: userPrompt }
         ],
-        tools: [
-          {
-            type: 'function',
-            function: {
-              name: 'generate_comprehensive_report',
-              description: `${config.sectionCount}가지 섹션으로 구성된 종합 리포트를 생성합니다.`,
-              parameters: {
-                type: 'object',
-                properties: {
-                  sections: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        title: { type: 'string' },
-                        content: { type: 'string' }
-                      },
-                      required: ['title', 'content']
-                    },
-                    minItems: config.sectionCount,
-                    maxItems: config.sectionCount
-                  },
-                  summary: {
-                    type: 'string',
-                    description: '전체 리포트의 종합 요약'
-                  }
-                },
-                required: ['sections', 'summary'],
-                additionalProperties: false
-              }
-            }
-          }
-        ],
-        tool_choice: { type: 'function', function: { name: 'generate_comprehensive_report' } }
+        temperature: 0.7,
+        response_format: { type: "json_object" }
       }),
     });
 
@@ -756,42 +727,44 @@ ${userInput.developmentalNotes}
       throw new Error(`AI 분석 실패: ${aiResponse.status}`);
     }
 
-    // 응답 파싱을 견고하게 처리 (빈 본문, 잘린 JSON, SSE 라인 등)
-    let aiData: any = null;
+    // 응답 파싱
     const rawText = await aiResponse.text();
-    try {
-      if (rawText && rawText.trim()) {
-        // SSE 형태 가능성 대비: data: ... 라인에서 마지막 JSON 시도
-        if (rawText.includes('\ndata: ')) {
-          const lines = rawText.split('\n').filter(l => l.startsWith('data: '));
-          const last = lines.reverse().find(l => l.trim() !== 'data: [DONE]');
-          const jsonStr = last ? last.slice(6).trim() : rawText.trim();
-          aiData = JSON.parse(jsonStr);
-        } else {
-          aiData = JSON.parse(rawText);
-        }
-      }
-    } catch (e) {
-      console.error('AI 응답 JSON 파싱 실패, 원문 사용 불가:', e);
-      // aiData를 null로 두고 폴백 사용
-    }
-
-    if (!aiData) {
-      console.warn('AI 응답 본문이 비어있거나 파싱 실패. 폴백 리포트를 사용합니다.');
-    }
-
-    console.log('AI 응답(요약 원문):', rawText?.slice(0, 500));
+    console.log('AI 응답(원문 길이):', rawText?.length);
+    console.log('AI 응답(처음 500자):', rawText?.slice(0, 500));
 
     let reportData;
     try {
-      const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
-      if (toolCall && toolCall.function?.arguments) {
-        reportData = JSON.parse(toolCall.function.arguments);
-      } else {
-        throw new Error('Tool call not found in AI response');
+      if (!rawText || !rawText.trim()) {
+        throw new Error('AI 응답이 비어있습니다.');
       }
+
+      const aiData = JSON.parse(rawText);
+      
+      // response_format: json_object를 사용하므로 직접 content에서 파싱
+      const messageContent = aiData.choices?.[0]?.message?.content;
+      
+      if (!messageContent) {
+        throw new Error('AI 응답에 content가 없습니다.');
+      }
+
+      console.log('AI content 길이:', messageContent.length);
+      
+      reportData = JSON.parse(messageContent);
+      
+      // 검증: sections와 summary 존재 확인
+      if (!reportData.sections || !Array.isArray(reportData.sections) || reportData.sections.length === 0) {
+        throw new Error('섹션 데이터가 올바르지 않습니다.');
+      }
+      
+      if (!reportData.summary) {
+        throw new Error('요약 데이터가 없습니다.');
+      }
+
+      console.log('리포트 데이터 파싱 성공, 섹션 수:', reportData.sections.length);
+
     } catch (parseError) {
       console.error('AI 응답 파싱 오류:', parseError);
+      console.error('파싱 실패한 원문(전체):', rawText);
       // 폴백: 기본 구조 생성 (타입별로 다르게)
       const fallbackSections = reportType === 'basic' 
         ? [
@@ -819,23 +792,18 @@ ${userInput.developmentalNotes}
       };
     }
 
-    // 리포트 저장 (선택사항)
-    const { error: saveError } = await supabaseClient
-      .from('expert_feedback_requests')
-      .insert({
-        user_id: user.id,
-        request_type: 'comprehensive_report',
-        status: 'completed',
-        analysis_data: {
-          assessmentsCount: assessmentSummary.length,
-          observationsCount: observationSummary.length,
-          chatMessagesCount: chatSummary.length,
-          reportSections: reportData.sections.length
-        }
-      });
-
-    if (saveError) {
-      console.error('리포트 저장 오류:', saveError);
+    // 리포트 메타데이터 저장 (간소화)
+    try {
+      await supabaseClient
+        .from('expert_feedback_requests')
+        .insert({
+          user_id: user.id,
+          request_type: 'comprehensive_report',
+          status: 'completed'
+        });
+    } catch (saveError) {
+      console.error('리포트 메타데이터 저장 오류:', saveError);
+      // 저장 실패해도 리포트는 계속 반환
     }
 
     // HTML 리포트 생성

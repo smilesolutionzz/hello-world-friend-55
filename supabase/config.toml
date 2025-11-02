@@ -232,3 +232,6 @@ verify_jwt = true
 
 [functions.send-report-email]
 verify_jwt = true
+
+[functions.realtime-voice-chat]
+verify_jwt = false

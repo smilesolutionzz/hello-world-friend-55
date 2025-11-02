@@ -14,13 +14,15 @@ serve(async (req) => {
 
   console.log("Client WebSocket connection established");
 
+  let sessionCreated = false;
+
   clientSocket.onopen = async () => {
     console.log("Opening connection to OpenAI Realtime API...");
     
     try {
-      // Connect to OpenAI Realtime API
+      // Connect to OpenAI Realtime API with correct model version
       openaiWs = new WebSocket(
-        "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01",
+        "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17",
         {
           headers: {
             "Authorization": `Bearer ${OPENAI_API_KEY}`,
@@ -31,14 +33,26 @@ serve(async (req) => {
 
       openaiWs.onopen = () => {
         console.log("Connected to OpenAI Realtime API");
+      };
+
+      openaiWs.onmessage = (event) => {
+        const data = typeof event.data === 'string' ? event.data : new TextDecoder().decode(event.data);
         
-        // Send session configuration after connection
-        const sessionConfig = {
-          type: "session.update",
-          session: {
-            modalities: ["text", "audio"],
-            instructions: `당신은 따뜻하고 전문적인 심리상담 AI입니다. 
+        try {
+          const message = JSON.parse(data);
+          console.log("OpenAI message type:", message.type);
+          
+          // Send session.update AFTER receiving session.created
+          if (message.type === 'session.created' && !sessionCreated) {
+            sessionCreated = true;
+            console.log("Session created, sending session.update...");
             
+            const sessionConfig = {
+              type: "session.update",
+              session: {
+                modalities: ["text", "audio"],
+                instructions: `당신은 따뜻하고 전문적인 심리상담 AI입니다. 
+                
 역할:
 - 내담자의 고민을 경청하고 공감적으로 응답합니다
 - 심리검사 결과에 대한 이해를 돕고 실질적인 조언을 제공합니다
@@ -50,33 +64,26 @@ serve(async (req) => {
 - 한국어로 자연스럽게 대화합니다
 - 경청하는 자세로 질문을 많이 합니다
 - 위기 상황 시 즉시 전문가 상담을 권유합니다`,
-            voice: "alloy",
-            input_audio_format: "pcm16",
-            output_audio_format: "pcm16",
-            input_audio_transcription: {
-              model: "whisper-1"
-            },
-            turn_detection: {
-              type: "server_vad",
-              threshold: 0.5,
-              prefix_padding_ms: 300,
-              silence_duration_ms: 1000
-            },
-            temperature: 0.8,
-            max_response_output_tokens: "inf"
+                voice: "alloy",
+                input_audio_format: "pcm16",
+                output_audio_format: "pcm16",
+                input_audio_transcription: {
+                  model: "whisper-1"
+                },
+                turn_detection: {
+                  type: "server_vad",
+                  threshold: 0.5,
+                  prefix_padding_ms: 300,
+                  silence_duration_ms: 1000
+                },
+                temperature: 0.8,
+                max_response_output_tokens: "inf"
+              }
+            };
+            
+            openaiWs?.send(JSON.stringify(sessionConfig));
+            console.log("Session configuration sent");
           }
-        };
-        
-        openaiWs?.send(JSON.stringify(sessionConfig));
-        console.log("Session configuration sent");
-      };
-
-      openaiWs.onmessage = (event) => {
-        const data = typeof event.data === 'string' ? event.data : new TextDecoder().decode(event.data);
-        
-        try {
-          const message = JSON.parse(data);
-          console.log("OpenAI message type:", message.type);
           
           // Forward all messages to client
           if (clientSocket.readyState === WebSocket.OPEN) {

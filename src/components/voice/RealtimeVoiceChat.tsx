@@ -51,6 +51,11 @@ export const RealtimeVoiceChatComponent: React.FC = () => {
         ...prev,
         { role: 'user', content: event.transcript, timestamp: new Date() }
       ]);
+    } else if (event.type === 'assistant.text' && event.content) {
+      setMessages(prev => [
+        ...prev,
+        { role: 'assistant', content: event.content, timestamp: new Date() }
+      ]);
     }
   };
 

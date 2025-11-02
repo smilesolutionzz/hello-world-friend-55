@@ -235,3 +235,6 @@ verify_jwt = true
 
 [functions.realtime-voice-chat]
 verify_jwt = false
+
+[functions.voice-counselor]
+verify_jwt = false

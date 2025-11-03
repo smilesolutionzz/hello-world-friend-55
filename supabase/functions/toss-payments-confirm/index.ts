@@ -43,10 +43,12 @@ serve(async (req) => {
     console.log('User authenticated:', user.id);
 
     // 토스페이먼츠 시크릿 키
-    const tossSecretKey = Deno.env.get('TOSS_PAYMENTS_SECRET_KEY');
+    const tossSecretKey = Deno.env.get('TOSS_SECRET_KEY');
     if (!tossSecretKey) {
       throw new Error('토스페이먼츠 시크릿 키가 설정되지 않았습니다');
     }
+
+    console.log('Using Toss Secret Key for payment confirmation');
 
     // 토스페이먼츠 결제 승인 API 호출
     const tossResponse = await fetch('https://api.tosspayments.com/v1/payments/confirm', {

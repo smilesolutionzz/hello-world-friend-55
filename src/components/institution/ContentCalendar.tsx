@@ -517,7 +517,7 @@ const ContentCalendar = () => {
                   </tr>
                 ) : (
                   filteredItems.map((item) => (
-                    <tr key={item.id} className={`hover:bg-slate-700/50 transition-colors ${item.status === 'completed' ? 'opacity-60' : ''}`}>
+                    <tr key={item.id} className={`hover:bg-slate-700/50 transition-colors ${item.status === 'completed' ? 'opacity-50' : ''}`}>
                       <td className="px-4 py-3">
                         <div className="flex justify-center">
                           <Button
@@ -530,15 +530,15 @@ const ContentCalendar = () => {
                           </Button>
                         </div>
                       </td>
-                      <td className={`px-4 py-3 text-sm text-slate-200 ${item.status === 'completed' ? 'line-through' : ''}`}>{item.week_number}주차</td>
-                      <td className={`px-4 py-3 text-sm text-slate-200 ${item.status === 'completed' ? 'line-through' : ''}`}>{item.date}</td>
+                      <td className={`px-4 py-3 text-sm text-slate-200 ${item.status === 'completed' ? 'line-through decoration-2' : ''}`}>{item.week_number}주차</td>
+                      <td className={`px-4 py-3 text-sm text-slate-200 ${item.status === 'completed' ? 'line-through decoration-2' : ''}`}>{item.date}</td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getChannelStyle(item.channel)}`}>
                           {item.channel}
                         </span>
                       </td>
-                      <td className={`px-4 py-3 text-sm text-white ${item.status === 'completed' ? 'line-through' : ''}`}>{item.topic}</td>
-                      <td className={`px-4 py-3 text-sm text-slate-200 ${item.status === 'completed' ? 'line-through' : ''}`}>{item.content_type}</td>
+                      <td className={`px-4 py-3 text-sm text-white ${item.status === 'completed' ? 'line-through decoration-2' : ''}`}>{item.topic}</td>
+                      <td className={`px-4 py-3 text-sm text-slate-200 ${item.status === 'completed' ? 'line-through decoration-2' : ''}`}>{item.content_type}</td>
                       <td className="px-4 py-3 text-sm text-slate-300">{item.notes || '-'}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-center gap-2">
@@ -572,7 +572,7 @@ const ContentCalendar = () => {
             filteredItems.map((item) => (
               <div 
                 key={item.id} 
-                className={`bg-slate-800 border border-slate-700 rounded-lg p-4 ${item.status === 'completed' ? 'opacity-60' : ''}`}
+                className={`bg-slate-800 border border-slate-700 rounded-lg p-4 ${item.status === 'completed' ? 'opacity-50' : ''}`}
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -589,15 +589,15 @@ const ContentCalendar = () => {
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getChannelStyle(item.channel)}`}>
                           {item.channel}
                         </span>
-                        <span className="text-xs text-slate-400">{item.week_number}주차</span>
+                        <span className={`text-xs text-slate-400 ${item.status === 'completed' ? 'line-through decoration-2' : ''}`}>{item.week_number}주차</span>
                       </div>
-                      <h3 className={`text-base font-medium text-white mb-1 ${item.status === 'completed' ? 'line-through' : ''}`}>
+                      <h3 className={`text-base font-medium text-white mb-1 ${item.status === 'completed' ? 'line-through decoration-2' : ''}`}>
                         {item.topic}
                       </h3>
                       <div className="flex items-center gap-2 text-sm text-slate-300">
-                        <span className={item.status === 'completed' ? 'line-through' : ''}>{item.date}</span>
+                        <span className={item.status === 'completed' ? 'line-through decoration-2' : ''}>{item.date}</span>
                         <span>•</span>
-                        <span className={item.status === 'completed' ? 'line-through' : ''}>{item.content_type}</span>
+                        <span className={item.status === 'completed' ? 'line-through decoration-2' : ''}>{item.content_type}</span>
                       </div>
                       {item.notes && (
                         <p className="text-sm text-slate-400 mt-2 line-clamp-2">{item.notes}</p>

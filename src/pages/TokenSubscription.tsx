@@ -89,8 +89,8 @@ const TokenSubscription = () => {
         return;
       }
 
-      // 토스페이먼츠 결제 페이지로 이동
-      navigate('/toss-payment', { 
+      // 새로운 토큰 구매 페이지로 이동
+      navigate('/token-purchase', { 
         state: { 
           tokenAmount: pkg.tokens,
           price: pkg.price

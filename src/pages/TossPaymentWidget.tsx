@@ -91,13 +91,41 @@ const TossPaymentWidget = () => {
         message: error?.message,
         stack: error?.stack
       });
-      
+
       setProcessing(false);
-      
-      if (error.code !== 'USER_CANCEL') {
+
+      const code = error?.code || error?.data?.code;
+      const inIframe = (() => {
+        try { return window.self !== window.top; } catch { return true; }
+      })();
+
+      let description = '';
+      switch (code) {
+        case 'NOT_ALLOWED_ORIGIN':
+        case 'NOT_ALLOWED_DOMAIN':
+        case 'INVALID_SUCCESS_URL':
+        case 'INVALID_FAIL_URL':
+          description = `현재 도메인(${window.location.origin})이 토스 대시보드에 허용 URL로 등록되어야 합니다.`;
+          break;
+        case 'INVALID_CLIENT_KEY':
+          description = '토스 클라이언트 키가 유효하지 않습니다. 라이브 클라이언트 키를 확인하세요.';
+          break;
+        case 'REQUEST_PAY_FAILED':
+        case 'PAY_PROCESS_ABORTED':
+          description = '결제창을 여는 중 문제가 발생했습니다. 새로고침 후 다시 시도해주세요.';
+          break;
+        default:
+          description = error?.message || '결제 요청 중 오류가 발생했습니다.';
+      }
+
+      if (inIframe) {
+        description += ' (미리보기/임베드 환경에서는 결제창이 차단될 수 있습니다. 실제 도메인에서 테스트해주세요)';
+      }
+
+      if (code !== 'USER_CANCEL') {
         toast({
           title: '결제 실패',
-          description: error?.message || '결제 요청 중 오류가 발생했습니다.',
+          description,
           variant: 'destructive',
         });
       }

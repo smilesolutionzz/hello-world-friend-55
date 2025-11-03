@@ -390,7 +390,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                     ))}
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-primary/80 flex items-start gap-1 leading-relaxed">
+                <p className="text-xs text-foreground flex items-start gap-1 leading-relaxed">
                   <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
                   <span>선택한 바우처에 맞는 공식 서식으로 일지가 생성됩니다</span>
                 </p>

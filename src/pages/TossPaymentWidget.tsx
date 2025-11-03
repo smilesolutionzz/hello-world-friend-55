@@ -35,29 +35,44 @@ const TossPaymentWidget = () => {
   }, [tokenAmount, price, navigate]);
 
   const handlePayment = async () => {
+    console.log('🔴 결제 버튼 클릭됨');
     setProcessing(true);
 
     try {
+      console.log('🔵 세션 확인 중...');
       const { data: { session } } = await supabase.auth.getSession();
+      
       if (!session) {
+        console.error('❌ 세션 없음');
         toast({
           title: '로그인 필요',
           description: '결제하려면 로그인이 필요합니다.',
         });
         navigate('/auth');
+        setProcessing(false);
         return;
       }
 
-      // orderId 생성 (Stripe처럼 간단)
+      console.log('✅ 세션 확인됨:', session.user.email);
+
+      // orderId 생성
       const shortUser = session.user.id.slice(0, 8);
       const orderId = `TOKEN_${tokenAmount}_${Date.now().toString(36)}_${shortUser}`;
 
-      console.log('🔵 결제 시작:', { orderId, amount: Math.round(price), tokenAmount });
+      console.log('🔵 결제 정보:', { 
+        orderId, 
+        amount: Math.round(price), 
+        tokenAmount,
+        clientKey: TOSS_CLIENT_KEY 
+      });
 
       // 토스페이먼츠 인스턴스 생성
+      console.log('🔵 토스페이먼츠 SDK 로드 중...');
       const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
+      console.log('✅ 토스페이먼츠 SDK 로드 완료');
 
-      // 결제창 바로 호출 (위젯 없이!)
+      // 결제창 호출
+      console.log('🔵 결제창 호출 중...');
       const paymentResult = await tossPayments.requestPayment('카드', {
         amount: Math.round(price),
         orderId,
@@ -71,6 +86,12 @@ const TossPaymentWidget = () => {
 
     } catch (error: any) {
       console.error('❌ 결제 오류:', error);
+      console.error('❌ 오류 상세:', {
+        code: error?.code,
+        message: error?.message,
+        stack: error?.stack
+      });
+      
       setProcessing(false);
       
       if (error.code !== 'USER_CANCEL') {

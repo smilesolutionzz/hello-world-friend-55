@@ -492,8 +492,8 @@ const ContentCalendar = () => {
           ))}
         </div>
 
-        {/* Content Table */}
-        <div className="border border-slate-700 rounded-lg overflow-hidden bg-slate-800">
+        {/* Desktop Table View */}
+        <div className="hidden md:block border border-slate-700 rounded-lg overflow-hidden bg-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-slate-700">
@@ -558,6 +558,64 @@ const ContentCalendar = () => {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden space-y-3">
+          {filteredItems.length === 0 ? (
+            <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 text-center">
+              <Calendar className="w-12 h-12 mx-auto text-slate-600 mb-3" />
+              <p className="text-slate-400">콘텐츠가 없습니다.</p>
+              <p className="text-sm text-slate-500 mt-1">새 콘텐츠를 추가해보세요.</p>
+            </div>
+          ) : (
+            filteredItems.map((item) => (
+              <div 
+                key={item.id} 
+                className={`bg-slate-800 border border-slate-700 rounded-lg p-4 ${item.status === 'completed' ? 'opacity-60' : ''}`}
+              >
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex items-start gap-3 flex-1 min-w-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleToggleComplete(item.id, item.status)}
+                      className={`h-10 w-10 p-0 flex-shrink-0 ${item.status === 'completed' ? 'text-green-400' : 'text-slate-400'}`}
+                    >
+                      <Check className={`w-6 h-6 ${item.status === 'completed' ? 'stroke-[3]' : ''}`} />
+                    </Button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getChannelStyle(item.channel)}`}>
+                          {item.channel}
+                        </span>
+                        <span className="text-xs text-slate-400">{item.week_number}주차</span>
+                      </div>
+                      <h3 className={`text-base font-medium text-white mb-1 ${item.status === 'completed' ? 'line-through' : ''}`}>
+                        {item.topic}
+                      </h3>
+                      <div className="flex items-center gap-2 text-sm text-slate-300">
+                        <span className={item.status === 'completed' ? 'line-through' : ''}>{item.date}</span>
+                        <span>•</span>
+                        <span className={item.status === 'completed' ? 'line-through' : ''}>{item.content_type}</span>
+                      </div>
+                      {item.notes && (
+                        <p className="text-sm text-slate-400 mt-2 line-clamp-2">{item.notes}</p>
+                      )}
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDelete(item.id)}
+                    className="text-slate-400 hover:text-red-400 h-10 w-10 p-0 flex-shrink-0"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </CardContent>
     </Card>

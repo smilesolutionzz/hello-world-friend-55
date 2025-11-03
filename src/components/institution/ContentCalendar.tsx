@@ -35,10 +35,10 @@ interface ContentItem {
 
 const CHANNELS = [
   { value: '블로그', label: '블로그', color: 'bg-blue-100 text-blue-800' },
-  { value: '교육소', label: '교육소', color: 'bg-red-100 text-red-800' },
+  { value: '스레드', label: '스레드', color: 'bg-red-100 text-red-800' },
   { value: '인스타그램', label: '인스타그램', color: 'bg-pink-100 text-pink-800' },
   { value: '카페', label: '카페', color: 'bg-green-100 text-green-800' },
-  { value: '아티클', label: '아티클', color: 'bg-purple-100 text-purple-800' },
+  { value: '유튜브', label: '유튜브', color: 'bg-purple-100 text-purple-800' },
 ];
 
 const ContentCalendar = () => {
@@ -207,7 +207,7 @@ const ContentCalendar = () => {
     const month = bulkFormData.month;
     const daysInMonth = new Date(year, month, 0).getDate();
 
-    const channels = ['블로그', '교육소', '인스타그램', '카페', '아티클'];
+    const channels = ['블로그', '스레드', '인스타그램', '카페', '유튜브'];
     const contentTypes = ['정보성', '교육', '홍보', '이벤트', '소식'];
     
     const monthlyContents = [];

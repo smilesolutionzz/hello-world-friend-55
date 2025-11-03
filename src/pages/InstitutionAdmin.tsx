@@ -48,6 +48,7 @@ import { OrganizationChart } from '@/components/organization/OrganizationChart';
 import { TestInsights } from '@/components/organization/TestInsights';
 import { AIDiaryGenerator } from '@/components/institution/AIDiaryGenerator';
 import { SocialContentGenerator } from '@/components/institution/SocialContentGenerator';
+import ContentCalendar from '@/components/institution/ContentCalendar';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -659,6 +660,13 @@ export default function InstitutionAdmin() {
                   <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   소셜 컨텐츠
                 </TabsTrigger>
+                <TabsTrigger 
+                  value="calendar" 
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-3 text-xs sm:text-sm h-10 flex items-center"
+                >
+                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  콘텐츠 캘린더
+                </TabsTrigger>
               </TabsList>
             </div>
           </Tabs>
@@ -1109,6 +1117,11 @@ export default function InstitutionAdmin() {
                 <SocialContentGenerator institutionName={institutionInfo?.institution_name} />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Content Calendar Tab */}
+          <TabsContent value="calendar" className="mt-0">
+            <ContentCalendar />
           </TabsContent>
         </Tabs>
       </div>

@@ -2867,6 +2867,56 @@ export type Database = {
           },
         ]
       }
+      institution_content_calendar: {
+        Row: {
+          channel: string
+          content_type: string
+          created_at: string
+          date: string
+          id: string
+          institution_id: string | null
+          notes: string | null
+          status: string | null
+          topic: string
+          updated_at: string
+          week_number: number
+        }
+        Insert: {
+          channel: string
+          content_type: string
+          created_at?: string
+          date: string
+          id?: string
+          institution_id?: string | null
+          notes?: string | null
+          status?: string | null
+          topic: string
+          updated_at?: string
+          week_number: number
+        }
+        Update: {
+          channel?: string
+          content_type?: string
+          created_at?: string
+          date?: string
+          id?: string
+          institution_id?: string | null
+          notes?: string | null
+          status?: string | null
+          topic?: string
+          updated_at?: string
+          week_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institution_content_calendar_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       institution_experts: {
         Row: {
           available_days: string[] | null

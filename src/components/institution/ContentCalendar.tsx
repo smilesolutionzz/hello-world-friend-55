@@ -16,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Calendar, Plus, Download, Edit, Trash2 } from 'lucide-react';
+import { Calendar, Plus, Download, Edit, Trash2, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
@@ -152,6 +152,30 @@ const ContentCalendar = () => {
     setIsDialogOpen(false);
     setEditingItem(null);
     resetForm();
+    fetchContentItems();
+  };
+
+  const handleToggleComplete = async (id: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'completed' ? 'planned' : 'completed';
+    
+    const { error } = await supabase
+      .from('institution_content_calendar')
+      .update({ status: newStatus })
+      .eq('id', id);
+
+    if (error) {
+      toast({
+        title: '오류',
+        description: '상태 변경에 실패했습니다.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    toast({
+      title: '성공',
+      description: newStatus === 'completed' ? '완료로 표시되었습니다.' : '미완료로 변경되었습니다.',
+    });
     fetchContentItems();
   };
 
@@ -474,6 +498,7 @@ const ContentCalendar = () => {
             <table className="w-full">
               <thead className="bg-slate-700">
                 <tr>
+                  <th className="px-4 py-3 text-center text-sm font-medium text-slate-100">완료</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-slate-100">주차</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-slate-100">날짜</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-slate-100">채널</th>
@@ -486,22 +511,34 @@ const ContentCalendar = () => {
               <tbody className="divide-y divide-slate-700">
                 {filteredItems.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-8 text-center text-slate-400">
+                    <td colSpan={8} className="px-4 py-8 text-center text-slate-400">
                       콘텐츠가 없습니다. 새 콘텐츠를 추가해보세요.
                     </td>
                   </tr>
                 ) : (
                   filteredItems.map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-700/50 transition-colors">
-                      <td className="px-4 py-3 text-sm text-slate-200">{item.week_number}주차</td>
-                      <td className="px-4 py-3 text-sm text-slate-200">{item.date}</td>
+                    <tr key={item.id} className={`hover:bg-slate-700/50 transition-colors ${item.status === 'completed' ? 'opacity-60' : ''}`}>
+                      <td className="px-4 py-3">
+                        <div className="flex justify-center">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleToggleComplete(item.id, item.status)}
+                            className={`h-8 w-8 p-0 ${item.status === 'completed' ? 'text-green-400 hover:text-green-300' : 'text-slate-400 hover:text-slate-200'}`}
+                          >
+                            <Check className={`w-5 h-5 ${item.status === 'completed' ? 'stroke-[3]' : ''}`} />
+                          </Button>
+                        </div>
+                      </td>
+                      <td className={`px-4 py-3 text-sm text-slate-200 ${item.status === 'completed' ? 'line-through' : ''}`}>{item.week_number}주차</td>
+                      <td className={`px-4 py-3 text-sm text-slate-200 ${item.status === 'completed' ? 'line-through' : ''}`}>{item.date}</td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getChannelStyle(item.channel)}`}>
                           {item.channel}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-white">{item.topic}</td>
-                      <td className="px-4 py-3 text-sm text-slate-200">{item.content_type}</td>
+                      <td className={`px-4 py-3 text-sm text-white ${item.status === 'completed' ? 'line-through' : ''}`}>{item.topic}</td>
+                      <td className={`px-4 py-3 text-sm text-slate-200 ${item.status === 'completed' ? 'line-through' : ''}`}>{item.content_type}</td>
                       <td className="px-4 py-3 text-sm text-slate-300">{item.notes || '-'}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-center gap-2">

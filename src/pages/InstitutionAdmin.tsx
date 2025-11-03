@@ -621,7 +621,7 @@ export default function InstitutionAdmin() {
           {/* Tab Navigation */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
             <div className="overflow-x-auto -mx-6 px-6">
-              <TabsList className="bg-transparent border-b border-slate-800 rounded-none h-auto p-0 w-max min-w-full justify-start flex-nowrap">
+              <TabsList className="bg-transparent border-b border-slate-800 rounded-none h-auto p-0 w-full justify-start flex-wrap gap-2">
                 <TabsTrigger 
                   value="overview" 
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-300 data-[state=active]:text-white whitespace-nowrap px-3 text-xs sm:text-sm h-10"

@@ -1,159 +1,148 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
+import { CheckCircle, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle2, Loader2, XCircle } from 'lucide-react';
+
+const SUPABASE_URL = 'https://hrcqxjetmzxoephgyjlb.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyY3F4amV0bXp4b2VwaGd5amxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NjUzNDAsImV4cCI6MjA3MTI0MTM0MH0.LPXwumPDk6kq5W7jRI6yx39ajYxXw15yTQvfKYtmzzg';
 
 const PaymentSuccess = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { toast } = useToast();
-  const [confirming, setConfirming] = useState(true);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
-  const [tokensPurchased, setTokensPurchased] = useState(0);
+  const [paymentData, setPaymentData] = useState<any>(null);
 
   useEffect(() => {
-    confirmPayment();
-  }, []);
+    const processPayment = async () => {
+      const paymentKey = searchParams.get('paymentKey');
+      const orderId = searchParams.get('orderId');
+      const amount = Number(searchParams.get('amount'));
+      const pack = searchParams.get('pack') || null;
 
-  const confirmPayment = async () => {
-    const paymentKey = searchParams.get('paymentKey');
-    const orderId = searchParams.get('orderId');
-    const amount = searchParams.get('amount');
-
-    console.log('🔵 결제 승인 시작:', { paymentKey, orderId, amount });
-
-    if (!paymentKey || !orderId || !amount) {
-      console.error('❌ 결제 정보 누락:', { paymentKey, orderId, amount });
-      toast({
-        title: '오류',
-        description: '결제 정보가 올바르지 않습니다.',
-        variant: 'destructive',
-      });
-      setConfirming(false);
-      return;
-    }
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        throw new Error('로그인이 필요합니다');
+      if (!paymentKey || !orderId || !amount) {
+        alert('필수 값 누락. 홈으로 이동합니다.');
+        navigate('/');
+        return;
       }
 
-      console.log('🔵 Edge Function 호출 중...');
-
-      // Edge Function을 통해 결제 승인
-      const { data, error } = await supabase.functions.invoke('toss-payments-confirm', {
-        body: {
-          paymentKey,
-          orderId,
-          amount: parseInt(amount),
-        },
-      });
-
-      console.log('📦 Edge Function 응답:', { data, error });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data.success) {
-        setSuccess(true);
-        setTokensPurchased(data.tokensPurchased);
-        toast({
-          title: '결제 완료!',
-          description: `${data.tokensPurchased}개의 토큰이 충전되었습니다.`,
+      try {
+        // 1) 서버 승인
+        const confirmRes = await supabase.functions.invoke('toss-payments-confirm', {
+          body: { paymentKey, orderId, amount }
         });
-      } else {
-        console.error('❌ 결제 승인 실패:', data);
-        throw new Error(data.error || '결제 승인에 실패했습니다');
-      }
-    } catch (error: any) {
-      console.error('❌ Payment confirmation error:', error);
-      toast({
-        title: '결제 승인 실패',
-        description: error.message || '결제 승인 중 오류가 발생했습니다.',
-        variant: 'destructive',
-      });
-      setSuccess(false);
-    } finally {
-      setConfirming(false);
-    }
-  };
 
-  if (confirming) {
+        if (confirmRes.error) {
+          alert(`결제 승인 실패: ${confirmRes.error.message || '알 수 없는 오류'}`);
+          setLoading(false);
+          return;
+        }
+
+        const result = confirmRes.data;
+
+        // 2) Supabase payments 테이블에 저장
+        const saveRes = await fetch(`${SUPABASE_URL}/rest/v1/payments`, {
+          method: 'POST',
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            Prefer: 'return=representation'
+          },
+          body: JSON.stringify({
+            order_id: orderId,
+            token_pack: pack,
+            amount: amount,
+            customer_name: 'AI Highlight 사용자',
+            payment_key: paymentKey,
+            method: result.method || 'CARD',
+            approved_at: result.approvedAt
+          })
+        });
+
+        if (!saveRes.ok) {
+          const err = await saveRes.json().catch(() => ({}));
+          console.warn('DB 저장 실패', err);
+        }
+
+        setPaymentData({
+          pack,
+          amount,
+          orderId,
+          approvedAt: result.approvedAt
+        });
+        setSuccess(true);
+      } catch (error: any) {
+        console.error('Payment processing error:', error);
+        alert(`오류: ${error.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    processPayment();
+  }, [searchParams, navigate]);
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
-        <Card className="p-12 text-center max-w-md">
-          <Loader2 className="w-16 h-16 animate-spin text-primary mx-auto mb-6" />
-          <h2 className="text-2xl font-bold mb-2">결제 처리 중</h2>
-          <p className="text-muted-foreground">
-            잠시만 기다려주세요...
-          </p>
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="max-w-md w-full">
+          <CardContent className="p-8 text-center">
+            <h2 className="text-2xl font-bold mb-4">결제 처리 실패</h2>
+            <p className="text-muted-foreground mb-6">다시 시도해주세요.</p>
+            <Button onClick={() => navigate('/')} style={{ backgroundColor: '#0064FF' }}>
+              홈으로 돌아가기
+            </Button>
+          </CardContent>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
-      <Card className="p-12 text-center max-w-md">
-        {success ? (
-          <>
-            <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto mb-6" />
-            <h1 className="text-3xl font-bold mb-4">결제 완료!</h1>
-            <p className="text-lg text-muted-foreground mb-2">
-              {tokensPurchased}개의 토큰이
-            </p>
-            <p className="text-lg text-muted-foreground mb-8">
-              성공적으로 충전되었습니다
-            </p>
-            <div className="space-y-3">
-              <Button
-                onClick={() => navigate('/dashboard')}
-                className="w-full"
-                size="lg"
-              >
-                대시보드로 이동
-              </Button>
-              <Button
-                onClick={() => navigate('/token-subscription')}
-                variant="outline"
-                className="w-full"
-                size="lg"
-              >
-                추가 충전하기
-              </Button>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <Card className="max-w-md w-full border-2">
+        <CardContent className="p-8 text-center">
+          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+          <h2 className="text-3xl font-bold mb-6">결제가 완료되었습니다</h2>
+          
+          <div className="space-y-3 text-left mb-6">
+            <div className="flex justify-between p-3 bg-muted rounded">
+              <span className="font-medium">상품명</span>
+              <span>{paymentData.pack || '토큰팩'}</span>
             </div>
-          </>
-        ) : (
-          <>
-            <XCircle className="w-20 h-20 text-destructive mx-auto mb-6" />
-            <h1 className="text-3xl font-bold mb-4">결제 실패</h1>
-            <p className="text-lg text-muted-foreground mb-8">
-              결제 처리 중 문제가 발생했습니다
-            </p>
-            <div className="space-y-3">
-              <Button
-                onClick={() => navigate('/token-subscription')}
-                className="w-full"
-                size="lg"
-              >
-                다시 시도하기
-              </Button>
-              <Button
-                onClick={() => navigate('/dashboard')}
-                variant="outline"
-                className="w-full"
-                size="lg"
-              >
-                대시보드로 이동
-              </Button>
+            <div className="flex justify-between p-3 bg-muted rounded">
+              <span className="font-medium">결제금액</span>
+              <span className="font-bold">₩{paymentData.amount.toLocaleString()}</span>
             </div>
-          </>
-        )}
+            <div className="flex justify-between p-3 bg-muted rounded">
+              <span className="font-medium">주문번호</span>
+              <span className="text-sm">{paymentData.orderId}</span>
+            </div>
+            <div className="flex justify-between p-3 bg-muted rounded">
+              <span className="font-medium">승인시각</span>
+              <span className="text-sm">{paymentData.approvedAt || ''}</span>
+            </div>
+          </div>
+
+          <Button 
+            onClick={() => navigate('/')} 
+            className="w-full"
+            style={{ backgroundColor: '#0064FF' }}
+          >
+            홈으로 돌아가기
+          </Button>
+        </CardContent>
       </Card>
     </div>
   );

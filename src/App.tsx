@@ -268,6 +268,7 @@ const App = () => {
           <Route path="/institution-marketing" element={<InstitutionMarketingPresentation />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
+          <Route path="/payment-fail" element={<PaymentFail />} />
           <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />
           <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
           <Route path="/token-test" element={<TokenTest />} />

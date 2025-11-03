@@ -336,13 +336,13 @@ const ContentCalendar = () => {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-slate-900 border-slate-800">
       <CardHeader>
         <div className="flex items-center gap-2 mb-2">
           <Calendar className="w-6 h-6 text-primary" />
-          <CardTitle>콘텐츠 캘린더</CardTitle>
+          <CardTitle className="text-white">콘텐츠 캘린더</CardTitle>
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-slate-300">
           마케팅 콘텐츠를 계획하고 관리해보세요
         </p>
       </CardHeader>
@@ -469,48 +469,49 @@ const ContentCalendar = () => {
         </div>
 
         {/* Content Table */}
-        <div className="border rounded-lg overflow-hidden">
+        <div className="border border-slate-700 rounded-lg overflow-hidden bg-slate-800">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-muted">
+              <thead className="bg-slate-700">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium">주차</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">날짜</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">채널</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">주제</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">타입</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium">비고</th>
-                  <th className="px-4 py-3 text-center text-sm font-medium">작업</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-slate-100">주차</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-slate-100">날짜</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-slate-100">채널</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-slate-100">주제</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-slate-100">타입</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-slate-100">비고</th>
+                  <th className="px-4 py-3 text-center text-sm font-medium text-slate-100">작업</th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-slate-700">
                 {filteredItems.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                    <td colSpan={7} className="px-4 py-8 text-center text-slate-400">
                       콘텐츠가 없습니다. 새 콘텐츠를 추가해보세요.
                     </td>
                   </tr>
                 ) : (
                   filteredItems.map((item) => (
-                    <tr key={item.id} className="hover:bg-muted/50 transition-colors">
-                      <td className="px-4 py-3 text-sm">{item.week_number}주차</td>
-                      <td className="px-4 py-3 text-sm">{item.date}</td>
+                    <tr key={item.id} className="hover:bg-slate-700/50 transition-colors">
+                      <td className="px-4 py-3 text-sm text-slate-200">{item.week_number}주차</td>
+                      <td className="px-4 py-3 text-sm text-slate-200">{item.date}</td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getChannelStyle(item.channel)}`}>
                           {item.channel}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm">{item.topic}</td>
-                      <td className="px-4 py-3 text-sm">{item.content_type}</td>
-                      <td className="px-4 py-3 text-sm text-muted-foreground">{item.notes || '-'}</td>
+                      <td className="px-4 py-3 text-sm text-white">{item.topic}</td>
+                      <td className="px-4 py-3 text-sm text-slate-200">{item.content_type}</td>
+                      <td className="px-4 py-3 text-sm text-slate-300">{item.notes || '-'}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-center gap-2">
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDelete(item.id)}
+                            className="text-slate-300 hover:text-red-400 hover:bg-slate-700"
                           >
-                            <Trash2 className="w-4 h-4 text-destructive" />
+                            <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
                       </td>

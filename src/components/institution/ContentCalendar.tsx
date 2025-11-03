@@ -59,6 +59,12 @@ const ContentCalendar = () => {
     notes: '',
   });
 
+  const [bulkFormData, setBulkFormData] = useState({
+    company_name: '',
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+  });
+
   useEffect(() => {
     fetchContentItems();
   }, []);
@@ -184,6 +190,67 @@ const ContentCalendar = () => {
     setIsDialogOpen(true);
   };
 
+  const generateMonthlyContent = async () => {
+    if (!bulkFormData.company_name) {
+      toast({
+        title: '입력 필요',
+        description: '회사명을 입력해주세요.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const year = bulkFormData.year;
+    const month = bulkFormData.month;
+    const daysInMonth = new Date(year, month, 0).getDate();
+
+    const channels = ['블로그', '교육소', '인스타그램', '카페', '아티클'];
+    const contentTypes = ['정보성', '교육', '홍보', '이벤트', '소식'];
+    
+    const monthlyContents = [];
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      const channel = channels[day % channels.length];
+      const contentType = contentTypes[day % contentTypes.length];
+      const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      
+      monthlyContents.push({
+        institution_id: user.id,
+        week_number: Math.ceil(day / 7),
+        date: date,
+        channel: channel,
+        topic: `${bulkFormData.company_name} ${contentType} 콘텐츠 ${day}일`,
+        content_type: contentType,
+        notes: `${month}월 ${day}일 자동 생성 콘텐츠`,
+        status: 'planned',
+      });
+    }
+
+    const { error } = await supabase
+      .from('institution_content_calendar')
+      .insert(monthlyContents);
+
+    if (error) {
+      toast({
+        title: '오류',
+        description: '1달치 콘텐츠 생성에 실패했습니다.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    toast({
+      title: '성공',
+      description: `${month}월 ${daysInMonth}일치 콘텐츠가 생성되었습니다.`,
+    });
+
+    setIsDialogOpen(false);
+    fetchContentItems();
+  };
+
   const resetForm = () => {
     setFormData({
       week_number: 1,
@@ -249,94 +316,73 @@ const ContentCalendar = () => {
               <DialogTrigger asChild>
                 <Button onClick={() => { resetForm(); setEditingItem(null); }}>
                   <Plus className="w-4 h-4 mr-2" />
-                  콘텐츠 만들기
+                  1달치 자동생성
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>
-                    {editingItem ? '콘텐츠 수정' : '새 콘텐츠 만들기'}
-                  </DialogTitle>
+                  <DialogTitle>1달치 콘텐츠 자동 생성</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-4">
+                  <div>
+                    <Label>회사명 *</Label>
+                    <Input
+                      value={bulkFormData.company_name}
+                      onChange={(e) => setBulkFormData({ ...bulkFormData, company_name: e.target.value })}
+                      placeholder="예: AIHumanPro"
+                      required
+                    />
+                  </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label>주차</Label>
-                      <Input
-                        type="number"
-                        value={formData.week_number}
-                        onChange={(e) => setFormData({ ...formData, week_number: parseInt(e.target.value) })}
-                        required
-                        min="1"
-                        max="52"
-                      />
+                      <Label>년도</Label>
+                      <Select
+                        value={String(bulkFormData.year)}
+                        onValueChange={(value) => setBulkFormData({ ...bulkFormData, year: parseInt(value) })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[2024, 2025, 2026].map((year) => (
+                            <SelectItem key={year} value={String(year)}>
+                              {year}년
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
+
                     <div>
-                      <Label>날짜</Label>
-                      <Input
-                        type="date"
-                        value={formData.date}
-                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                        required
-                      />
+                      <Label>월</Label>
+                      <Select
+                        value={String(bulkFormData.month)}
+                        onValueChange={(value) => setBulkFormData({ ...bulkFormData, month: parseInt(value) })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                            <SelectItem key={month} value={String(month)}>
+                              {month}월
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
-                  <div>
-                    <Label>채널</Label>
-                    <Select value={formData.channel} onValueChange={(value) => setFormData({ ...formData, channel: value })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="채널 선택" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CHANNELS.map(channel => (
-                          <SelectItem key={channel.value} value={channel.value}>
-                            {channel.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label>주제</Label>
-                    <Input
-                      value={formData.topic}
-                      onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
-                      placeholder="콘텐츠 주제를 입력하세요"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label>타입</Label>
-                    <Input
-                      value={formData.content_type}
-                      onChange={(e) => setFormData({ ...formData, content_type: e.target.value })}
-                      placeholder="예: 정보성, 교육, 홍보 등"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label>비고</Label>
-                    <Textarea
-                      value={formData.notes}
-                      onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                      placeholder="추가 메모나 참고사항"
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="flex justify-end gap-2">
+                  <div className="flex justify-end gap-2 pt-4">
                     <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                       취소
                     </Button>
-                    <Button type="submit">
-                      {editingItem ? '수정' : '추가'}
+                    <Button onClick={generateMonthlyContent}>
+                      생성하기
                     </Button>
                   </div>
-                </form>
+                </div>
               </DialogContent>
             </Dialog>
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -20,8 +20,22 @@ const TossPaymentWidget = () => {
   const { toast } = useToast();
   const [processing, setProcessing] = useState(false);
 
-  const state = location.state as PaymentWidgetState;
-  const { tokenAmount = 0, price = 0 } = state || {};
+  const [searchParams] = useSearchParams();
+  const state = location.state as PaymentWidgetState | null;
+  const tokenParam = Number(searchParams.get('tokens') || '0');
+  const priceParam = Number(searchParams.get('price') || '0');
+  const tokenAmount = state?.tokenAmount ?? tokenParam;
+  const price = state?.price ?? priceParam;
+  const inIframe = (() => { try { return window.self !== window.top; } catch { return true; } })();
+  const autoPay = searchParams.get('autopay') === '1';
+
+  const openNewTab = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('tokens', String(tokenAmount));
+    url.searchParams.set('price', String(Math.round(price)));
+    url.searchParams.set('autopay', '1');
+    window.open(url.toString(), '_blank', 'noopener');
+  };
 
   useEffect(() => {
     if (!tokenAmount || !price) {
@@ -37,6 +51,17 @@ const TossPaymentWidget = () => {
   const handlePayment = async () => {
     console.log('🔴 결제 버튼 클릭됨');
     setProcessing(true);
+
+    // 미리보기(iFrame) 환경에서는 새 창으로 이동하여 결제 진행
+    if (inIframe) {
+      openNewTab();
+      toast({
+        title: '새 창에서 결제 진행',
+        description: '결제창이 새 탭에서 열립니다. 팝업 차단을 해제해주세요.',
+      });
+      setProcessing(false);
+      return;
+    }
 
     try {
       console.log('🔵 세션 확인 중...');
@@ -132,6 +157,14 @@ const TossPaymentWidget = () => {
     }
   };
 
+  // 자동 결제: 새 탭에서 돌아온 경우 바로 실행
+  useEffect(() => {
+    if (autoPay && !inIframe && tokenAmount && price) {
+      console.log('⚡ 자동 결제 실행');
+      handlePayment();
+    }
+  }, [autoPay, inIframe, tokenAmount, price]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background p-4">
       <div className="container mx-auto max-w-2xl py-8">
@@ -149,6 +182,12 @@ const TossPaymentWidget = () => {
           <p className="text-muted-foreground mb-8">
             안전한 토스페이먼츠로 결제하세요
           </p>
+
+          {inIframe && (
+            <div className="mb-6 rounded-lg border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
+              미리보기/임베드 환경에서는 결제창이 차단될 수 있습니다. 아래 "새 창에서 결제하기" 버튼을 사용해주세요.
+            </div>
+          )}
 
           {/* 결제 정보 */}
           <div className="bg-muted/50 rounded-lg p-6 mb-6">
@@ -180,6 +219,23 @@ const TossPaymentWidget = () => {
               `₩${price.toLocaleString()} 결제하기`
             )}
           </Button>
+
+          {inIframe && (
+            <Button
+              onClick={() => {
+                openNewTab();
+                toast({
+                  title: '새 창에서 결제 진행',
+                  description: '결제창이 새 탭에서 열립니다. 팝업 차단을 해제해주세요.',
+                });
+              }}
+              variant="outline"
+              className="w-full mt-3"
+              size="lg"
+            >
+              새 창에서 결제하기
+            </Button>
+          )}
 
           {/* 안내 문구 */}
           <div className="mt-6 text-sm text-muted-foreground text-center">

@@ -455,13 +455,6 @@ const ContentCalendar = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleEdit(item)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
                             onClick={() => handleDelete(item.id)}
                           >
                             <Trash2 className="w-4 h-4 text-destructive" />

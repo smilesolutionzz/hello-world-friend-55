@@ -52,11 +52,13 @@ const TossPaymentWidget = () => {
       const shortUser = session.user.id.slice(0, 8);
       const orderId = `TOKEN_${tokenAmount}_${Date.now().toString(36)}_${shortUser}`;
 
+      console.log('🔵 결제 시작:', { orderId, amount: Math.round(price), tokenAmount });
+
       // 토스페이먼츠 인스턴스 생성
       const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
 
       // 결제창 바로 호출 (위젯 없이!)
-      await tossPayments.requestPayment('카드', {
+      const paymentResult = await tossPayments.requestPayment('카드', {
         amount: Math.round(price),
         orderId,
         orderName: `토큰 ${tokenAmount}개`,
@@ -65,8 +67,10 @@ const TossPaymentWidget = () => {
         customerName: session.user.email?.split('@')[0] || '사용자',
       });
 
+      console.log('✅ 결제창 호출 성공:', paymentResult);
+
     } catch (error: any) {
-      console.error('Payment error:', error);
+      console.error('❌ 결제 오류:', error);
       setProcessing(false);
       
       if (error.code !== 'USER_CANCEL') {

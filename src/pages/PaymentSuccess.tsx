@@ -23,7 +23,10 @@ const PaymentSuccess = () => {
     const orderId = searchParams.get('orderId');
     const amount = searchParams.get('amount');
 
+    console.log('🔵 결제 승인 시작:', { paymentKey, orderId, amount });
+
     if (!paymentKey || !orderId || !amount) {
+      console.error('❌ 결제 정보 누락:', { paymentKey, orderId, amount });
       toast({
         title: '오류',
         description: '결제 정보가 올바르지 않습니다.',
@@ -39,6 +42,8 @@ const PaymentSuccess = () => {
         throw new Error('로그인이 필요합니다');
       }
 
+      console.log('🔵 Edge Function 호출 중...');
+
       // Edge Function을 통해 결제 승인
       const { data, error } = await supabase.functions.invoke('toss-payments-confirm', {
         body: {
@@ -47,6 +52,8 @@ const PaymentSuccess = () => {
           amount: parseInt(amount),
         },
       });
+
+      console.log('📦 Edge Function 응답:', { data, error });
 
       if (error) {
         throw error;
@@ -60,10 +67,11 @@ const PaymentSuccess = () => {
           description: `${data.tokensPurchased}개의 토큰이 충전되었습니다.`,
         });
       } else {
+        console.error('❌ 결제 승인 실패:', data);
         throw new Error(data.error || '결제 승인에 실패했습니다');
       }
     } catch (error: any) {
-      console.error('Payment confirmation error:', error);
+      console.error('❌ Payment confirmation error:', error);
       toast({
         title: '결제 승인 실패',
         description: error.message || '결제 승인 중 오류가 발생했습니다.',

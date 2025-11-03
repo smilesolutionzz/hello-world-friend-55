@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
-const TOSS_CLIENT_KEY = 'live_gck_ma60RZblrqo1lKlBKmjW3wzYWBn1';
+const TOSS_CLIENT_KEY = 'live_gck_ma60RZbIrqo1lKlBKmjW3wzYWBn1';
 
 interface PaymentWidgetState {
   tokenAmount: number;

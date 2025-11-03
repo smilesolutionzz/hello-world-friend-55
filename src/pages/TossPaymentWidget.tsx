@@ -52,7 +52,7 @@ const TossPaymentWidget = () => {
       const shortUser = session.user.id.slice(0, 8);
       const orderId = `TOKEN_${tokenAmount}_${Date.now().toString(36)}_${shortUser}`;
 
-      // 토스페이먼츠 결제창 SDK 로드
+      // 토스페이먼츠 인스턴스 생성
       const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
 
       // 결제창 바로 호출 (위젯 없이!)

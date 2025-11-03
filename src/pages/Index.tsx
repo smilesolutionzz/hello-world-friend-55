@@ -28,6 +28,7 @@ import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
 import CompanyServicesSection from '@/components/landing/CompanyServicesSection';
+import InsurancePartnerSection from '@/components/landing/InsurancePartnerSection';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -222,6 +223,11 @@ const Index = () => {
           {/* 📝 Founder's Letter - 창립자의 손편지 */}
           <LazyLoad className="animate-fade-in">
             <FounderLetterSection />
+          </LazyLoad>
+          
+          {/* 🤝 Insurance Partnership Section */}
+          <LazyLoad className="animate-fade-in">
+            <InsurancePartnerSection />
           </LazyLoad>
           
           {/* 7️⃣ Call to Action */}

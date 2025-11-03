@@ -133,6 +133,7 @@ import SampleReport from "./pages/SampleReport";
 import MarketingAIAssistant from "./pages/MarketingAIAssistant";
 import CrossPromotionReward from "./pages/CrossPromotionReward";
 import InstallGuide from "./pages/InstallGuide";
+import InsurancePartnership from "./pages/InsurancePartnership";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -283,6 +284,7 @@ const App = () => {
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
+          <Route path="/insurance-partnership" element={<InsurancePartnership />} />
           
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />

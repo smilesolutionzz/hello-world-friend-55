@@ -238,3 +238,6 @@ verify_jwt = false
 
 [functions.voice-counselor]
 verify_jwt = false
+
+[functions.attachment-analysis]
+verify_jwt = false

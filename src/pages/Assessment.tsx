@@ -984,6 +984,30 @@ const Assessment = () => {
                 
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                   {/* 🔥 TOP 인기 3분 테스트 1위 */}
+                  {/* 애착 유형 심층 분석 - 새로운 검사 */}
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border-2 border-purple-300 dark:border-purple-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-lg"
+                    onClick={() => navigate('/assessment/attachment-style-test')}
+                  >
+                    <div className="absolute top-2 right-2 flex gap-1">
+                      <Badge className="bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold text-xs px-2 py-1 animate-pulse">
+                        ✨ NEW
+                      </Badge>
+                      <Badge className="bg-purple-500 text-white text-xs px-2 py-1">프리미엄</Badge>
+                    </div>
+                    <div className="mb-3">
+                      <span className="text-3xl">💞</span>
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-2">애착 유형 심층 분석</h4>
+                    <p className="text-muted-foreground text-sm mb-3">AI 전문가 분석 + 그래프</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 30문항 심층 분석</li>
+                      <li>• OpenAI 전문가 해석</li>
+                      <li>• 레이더/바 차트 시각화</li>
+                      <li>• 4가지 애착 유형 분석</li>
+                    </ul>
+                  </div>
+
                   <div 
                     className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
                     onClick={() => setCurrentStep('bigfive-test')}

@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, Share2, Heart, AlertCircle, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Download, Share2, Heart, AlertCircle, TrendingUp, Loader2, BarChart3 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
+import { supabase } from '@/integrations/supabase/client';
+import { 
+  RadarChart, 
+  PolarGrid, 
+  PolarAngleAxis, 
+  PolarRadiusAxis, 
+  Radar, 
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  Cell
+} from 'recharts';
 
 interface AttachmentStyleDeepResultProps {
   result: {
@@ -61,6 +78,54 @@ const styleColors = {
 const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ result, onBack }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [aiAnalysis, setAiAnalysis] = useState<string>('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  useEffect(() => {
+    fetchAIAnalysis();
+  }, []);
+
+  const fetchAIAnalysis = async () => {
+    setIsAnalyzing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('attachment-analysis', {
+        body: { result }
+      });
+
+      if (error) throw error;
+      
+      setAiAnalysis(data.analysis || '');
+    } catch (error) {
+      console.error('AI 분석 오류:', error);
+      toast({
+        title: "분석 오류",
+        description: "AI 분석 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  // 차트 데이터 준비
+  const radarData = result.averageScores.map(({ category, average }) => ({
+    category: result.allStyles[category].name,
+    score: average,
+    fullMark: 5
+  }));
+
+  const barData = result.averageScores.map(({ category, average }) => ({
+    name: result.allStyles[category].name,
+    점수: average,
+    emoji: result.allStyles[category].emoji
+  }));
+
+  const COLORS = {
+    secure: '#10b981',
+    anxious: '#f59e0b',
+    avoidant: '#3b82f6',
+    fearful: '#a855f7'
+  };
 
   const handleDownloadPDF = async () => {
     await downloadResultAsPDF(
@@ -137,7 +202,71 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
             </CardContent>
           </Card>
 
-          {/* All Attachment Styles Scores */}
+          {/* AI 심층 분석 */}
+          <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50/50 to-pink-50/50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-purple-800">
+                <BarChart3 className="w-6 h-6" />
+                AI 심층 분석
+              </CardTitle>
+              <CardDescription>
+                OpenAI가 당신의 애착 유형을 전문적으로 분석합니다
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isAnalyzing ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+                  <span className="ml-3 text-lg text-purple-600">AI가 분석 중입니다...</span>
+                </div>
+              ) : (
+                <div className="prose prose-sm max-w-none">
+                  <div className="whitespace-pre-wrap text-gray-700 leading-relaxed bg-white p-6 rounded-lg">
+                    {aiAnalysis || 'AI 분석을 불러오는 중...'}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* 레이더 차트 */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="w-5 h-5" />
+                애착 유형 분포도
+              </CardTitle>
+              <CardDescription>
+                각 애착 유형의 경향성을 시각적으로 확인하세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={400}>
+                <RadarChart data={radarData}>
+                  <PolarGrid stroke="#e5e7eb" />
+                  <PolarAngleAxis 
+                    dataKey="category" 
+                    tick={{ fill: '#6b7280', fontSize: 14 }}
+                  />
+                  <PolarRadiusAxis 
+                    angle={90} 
+                    domain={[0, 5]} 
+                    tick={{ fill: '#6b7280' }}
+                  />
+                  <Radar
+                    name="점수"
+                    dataKey="score"
+                    stroke="#8b5cf6"
+                    fill="#8b5cf6"
+                    fillOpacity={0.6}
+                  />
+                  <Tooltip />
+                </RadarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* 막대 그래프 */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -148,27 +277,55 @@ const AttachmentStyleDeepResult: React.FC<AttachmentStyleDeepResultProps> = ({ r
                 각 애착 유형의 경향성을 확인해보세요
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {result.averageScores.map(({ category, average }) => {
-                const styleInfo = result.allStyles[category];
-                const percentage = (average / 5) * 100;
-                const styleColor = styleColors[category as keyof typeof styleColors];
-                
-                return (
-                  <div key={category} className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl">{styleInfo.emoji}</span>
-                        <span className="font-semibold">{styleInfo.name}</span>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={barData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey="name" 
+                    tick={{ fill: '#6b7280', fontSize: 12 }}
+                  />
+                  <YAxis 
+                    domain={[0, 5]} 
+                    tick={{ fill: '#6b7280' }}
+                  />
+                  <Tooltip />
+                  <Bar dataKey="점수" radius={[8, 8, 0, 0]}>
+                    {barData.map((entry, index) => {
+                      const category = result.averageScores[index].category;
+                      return (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={COLORS[category as keyof typeof COLORS]} 
+                        />
+                      );
+                    })}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+              
+              <div className="mt-6 space-y-3">
+                {result.averageScores.map(({ category, average }) => {
+                  const styleInfo = result.allStyles[category];
+                  const percentage = (average / 5) * 100;
+                  const styleColor = styleColors[category as keyof typeof styleColors];
+                  
+                  return (
+                    <div key={category} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">{styleInfo.emoji}</span>
+                          <span className="font-semibold">{styleInfo.name}</span>
+                        </div>
+                        <span className={`font-bold ${styleColor.text}`}>
+                          {average.toFixed(1)}/5.0
+                        </span>
                       </div>
-                      <span className={`font-bold ${styleColor.text}`}>
-                        {average.toFixed(1)}/5.0
-                      </span>
+                      <Progress value={percentage} className="h-3" />
                     </div>
-                    <Progress value={percentage} className="h-3" />
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </CardContent>
           </Card>
 

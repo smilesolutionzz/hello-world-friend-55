@@ -210,6 +210,55 @@ const ContentCalendar = () => {
     const channels = ['블로그', '스레드', '인스타그램', '카페', '유튜브'];
     const contentTypes = ['정보성', '교육', '홍보', '이벤트', '소식'];
     
+    // 채널별 구체적인 주제 템플릿
+    const topicTemplates: Record<string, string[]> = {
+      '블로그': [
+        '발달 단계별 특징 상세 가이드',
+        '전문가 인터뷰: 심층 분석',
+        '부모를 위한 실전 육아 팁 5가지',
+        '발달 체크리스트 및 관찰 포인트',
+        '성공 사례: 학생 성장 스토리',
+        '이달의 발달 주제 완벽 정리',
+        '놓치기 쉬운 발달 신호 가이드'
+      ],
+      '스레드': [
+        '오늘의 발달 팁',
+        '부모님들께 드리는 짧은 조언',
+        '이 주의 센터 활동 하이라이트',
+        'Q&A: 자주 묻는 질문',
+        '전문가의 한마디',
+        '간단한 놀이 활동 추천',
+        '부모 공감 메시지'
+      ],
+      '인스타그램': [
+        '센터 일상 비하인드',
+        '아이들의 활동 사진',
+        '부모 후기 & 감동 메시지',
+        '센터 프로그램 소개 카드뉴스',
+        '이벤트 & 공지사항',
+        '발달 놀이 아이디어',
+        '센터 시설 소개'
+      ],
+      '카페': [
+        '부모 커뮤니티 질문 답변',
+        '월간 센터 소식 및 공지',
+        '발달 관련 유용한 자료',
+        '부모님들의 고민 상담',
+        '센터 이벤트 참여 후기',
+        '추천 도서 & 교구 소개',
+        '우리 센터 특별 프로그램'
+      ],
+      '유튜브': [
+        '센터 활동 영상',
+        '전문가 강의: 완벽 가이드',
+        '부모 인터뷰 & 변화 스토리',
+        '발달 놀이 따라하기',
+        '센터 투어 & 시설 소개',
+        '주간 하이라이트 모음',
+        '전문가 Q&A 세션'
+      ]
+    };
+    
     const monthlyContents = [];
     
     for (let day = 1; day <= daysInMonth; day++) {
@@ -217,14 +266,18 @@ const ContentCalendar = () => {
       const contentType = contentTypes[day % contentTypes.length];
       const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       
+      // 채널별 주제 템플릿에서 순환 선택
+      const channelTopics = topicTemplates[channel] || [];
+      const topicTemplate = channelTopics[day % channelTopics.length];
+      
       monthlyContents.push({
         institution_id: user.id,
         week_number: Math.ceil(day / 7),
         date: date,
         channel: channel,
-        topic: `${bulkFormData.company_name} ${contentType} 콘텐츠 ${day}일`,
+        topic: `[${bulkFormData.company_name}] ${topicTemplate}`,
         content_type: contentType,
-        notes: `${month}월 ${day}일 자동 생성 콘텐츠`,
+        notes: `${month}월 ${day}일 - ${channel} 콘텐츠 가이드:\n• 회사 브랜드 정체성 반영\n• 타겟 고객층 고려\n• 호출-투-액션(CTA) 포함`,
         status: 'planned',
       });
     }

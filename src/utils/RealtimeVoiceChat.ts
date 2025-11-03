@@ -1,3 +1,5 @@
+import { supabase } from '@/integrations/supabase/client';
+
 export class AudioRecorder {
   private stream: MediaStream | null = null;
   private audioContext: AudioContext | null = null;
@@ -304,7 +306,6 @@ export class RealtimeVoiceChat {
       const wavBase64 = this.toBase64(wav);
 
       // Call edge function
-      const { supabase } = await import('@/integrations/supabase/client');
       const { data, error } = await (supabase as any).functions.invoke('voice-counselor', {
         body: { audio: wavBase64 }
       });

@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { CheckCircle, ArrowRight, Sparkles, Heart, Brain, Target, Clock, Gift } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PMFOnboardingFlowProps {
   onComplete: (data: any) => void;
@@ -83,7 +84,6 @@ const PMFOnboardingFlow: React.FC<PMFOnboardingFlowProps> = ({ onComplete }) => 
             description: "잠시만 기다려주세요",
           });
 
-          const { supabase } = await import('@/integrations/supabase/client');
           const { data, error } = await supabase.functions.invoke('instant-ai-analysis', {
             body: { 
               inputText: userData.instantInput,

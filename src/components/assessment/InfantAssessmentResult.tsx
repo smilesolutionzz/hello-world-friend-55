@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { PremiumAnalysisOffer } from "@/components/premium/PremiumAnalysisOffer";
 // import { generatePDFReport } from '@/utils/pdfGenerator';
+import { supabase } from '@/integrations/supabase/client';
 
 interface InfantAssessmentResultProps {
   results: {
@@ -29,7 +30,6 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
   
   useState(() => {
     const getUser = async () => {
-      const { supabase } = await import('@/integrations/supabase/client');
       const { data: { user } } = await supabase.auth.getUser();
       setUserId(user?.id);
     };

@@ -4424,6 +4424,42 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          created_at: string | null
+          customer_name: string | null
+          id: string
+          method: string | null
+          order_id: string
+          payment_key: string
+          token_pack: string | null
+        }
+        Insert: {
+          amount: number
+          approved_at?: string | null
+          created_at?: string | null
+          customer_name?: string | null
+          id?: string
+          method?: string | null
+          order_id: string
+          payment_key: string
+          token_pack?: string | null
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          created_at?: string | null
+          customer_name?: string | null
+          id?: string
+          method?: string | null
+          order_id?: string
+          payment_key?: string
+          token_pack?: string | null
+        }
+        Relationships: []
+      }
       personality_test_results: {
         Row: {
           answers: Json

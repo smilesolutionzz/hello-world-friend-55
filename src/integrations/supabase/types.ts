@@ -2907,15 +2907,7 @@ export type Database = {
           updated_at?: string
           week_number?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "institution_content_calendar_institution_id_fkey"
-            columns: ["institution_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       institution_experts: {
         Row: {

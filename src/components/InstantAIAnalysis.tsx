@@ -476,21 +476,21 @@ const InstantAIAnalysis = () => {
             
             {/* 로그인 안내 */}
             {!user ? (
-              <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-xl p-3 sm:p-4 mb-4 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-xl p-2.5 sm:p-4 mb-4 overflow-hidden">
                 <div className="flex items-start gap-2 sm:gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
-                    <Save className="w-5 h-5 text-blue-400" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
+                    <Save className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-blue-100 mb-1">분석 결과 자동 저장</h3>
-                    <p className="text-sm text-blue-200/80 leading-relaxed mb-3">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-blue-100 mb-1 text-sm sm:text-base">분석 결과 자동 저장</h3>
+                    <p className="text-[11px] sm:text-sm text-blue-200/80 leading-snug sm:leading-relaxed mb-2.5 sm:mb-3">
                       로그인하고 분석하면 결과가 자동으로 고민 저장소에 저장됩니다. 언제든 다시 확인할 수 있어요!
                     </p>
                     <Button
                       variant="secondary"
                       size="sm"
                       onClick={() => navigate('/auth')}
-                      className="gap-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 text-blue-100"
+                      className="gap-1.5 sm:gap-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 text-blue-100 text-xs sm:text-sm h-8 sm:h-9 px-3 sm:px-4"
                     >
                       로그인하고 시작하기
                     </Button>

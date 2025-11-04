@@ -158,7 +158,7 @@ serve(async (req) => {
       
       // 사용자의 현재 토큰 잔액 조회
       const { data: tokenBalance, error: balanceError } = await supabaseService
-        .from('token_balances')
+        .from('user_tokens')
         .select('*')
         .eq('user_id', payment.user_id)
         .maybeSingle();
@@ -173,7 +173,7 @@ serve(async (req) => {
       // 토큰 잔액 업데이트 또는 생성
       if (tokenBalance) {
         const { error: updateError } = await supabaseService
-          .from('token_balances')
+          .from('user_tokens')
           .update({ 
             current_tokens: newTokenAmount,
             updated_at: new Date().toISOString()
@@ -183,7 +183,7 @@ serve(async (req) => {
         if (updateError) throw updateError;
       } else {
         const { error: insertError } = await supabaseService
-          .from('token_balances')
+          .from('user_tokens')
           .insert({
             user_id: payment.user_id,
             current_tokens: newTokenAmount,

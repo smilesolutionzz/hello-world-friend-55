@@ -40,7 +40,8 @@ import {
   Building,
   GraduationCap,
   FileText,
-  Shield
+  Shield,
+  XCircle
 } from 'lucide-react';
 import MemberDetailView from '@/components/institution/MemberDetailView';
 import { AdminNotifications } from '@/components/AdminNotifications';
@@ -440,6 +441,37 @@ export default function AdminDashboard() {
       fetchInstitutionMembers()
     ]);
     setLoading(false);
+  };
+
+  const handleCancelPayment = async (paymentId: string) => {
+    if (!confirm('이 결제를 취소하시겠습니까? 지급된 토큰이 회수됩니다.')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      const { data, error } = await supabase.functions.invoke('cancel-payment', {
+        body: { 
+          paymentId,
+          cancelReason: '관리자 요청에 의한 취소'
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        alert(`결제가 취소되었습니다. ${data.tokensDeducted || 0}토큰이 회수되었습니다.`);
+        await loadAllData();
+      } else {
+        throw new Error(data.error || '취소 실패');
+      }
+    } catch (error) {
+      console.error('결제 취소 오류:', error);
+      alert('결제 취소 중 오류가 발생했습니다: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const exportData = (type: string) => {
@@ -1257,6 +1289,7 @@ export default function AdminDashboard() {
                       <TableHead>유형</TableHead>
                       <TableHead>상태</TableHead>
                       <TableHead>결제일</TableHead>
+                      <TableHead>관리</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -1270,14 +1303,35 @@ export default function AdminDashboard() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={payment.status === 'paid' ? 'default' : payment.status === 'pending' ? 'secondary' : 'destructive'}>
+                          <Badge variant={
+                            payment.status === 'paid' ? 'default' : 
+                            payment.status === 'pending' ? 'secondary' : 
+                            payment.status === 'cancelled' ? 'outline' : 
+                            'destructive'
+                          }>
                             {payment.status === 'paid' && <CheckCircle className="h-3 w-3 mr-1" />}
                             {payment.status === 'pending' && <Clock className="h-3 w-3 mr-1" />}
                             {payment.status === 'failed' && <AlertCircle className="h-3 w-3 mr-1" />}
-                            {payment.status === 'paid' ? '완료' : payment.status === 'pending' ? '대기' : '실패'}
+                            {payment.status === 'cancelled' && <XCircle className="h-3 w-3 mr-1" />}
+                            {payment.status === 'paid' ? '완료' : 
+                             payment.status === 'pending' ? '대기' : 
+                             payment.status === 'cancelled' ? '취소됨' : 
+                             '실패'}
                           </Badge>
                         </TableCell>
                         <TableCell>{formatDate(payment.created_at)}</TableCell>
+                        <TableCell>
+                          {payment.status === 'paid' && (
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleCancelPayment(payment.id)}
+                            >
+                              <XCircle className="h-4 w-4 mr-1" />
+                              취소
+                            </Button>
+                          )}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

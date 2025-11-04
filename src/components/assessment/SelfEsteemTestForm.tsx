@@ -9,77 +9,77 @@ import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 const questions = [
   {
     id: "selfesteem1",
-    text: "나는 다른 사람들처럼 가치 있는 사람이라고 생각한다",
+    text: "우리 아이는 다른 아이들처럼 가치 있는 아이라고 생각하는 것 같다",
     reverse: false
   },
   {
     id: "selfesteem2",
-    text: "나는 내가 좋은 장점들을 많이 가지고 있다고 생각한다",
+    text: "우리 아이는 좋은 장점들을 많이 가지고 있다",
     reverse: false
   },
   {
     id: "selfesteem3",
-    text: "대체로 나는 내가 실패자라고 생각하는 경향이 있다",
+    text: "우리 아이는 자신을 실패자라고 생각하는 경향이 있다",
     reverse: true
   },
   {
     id: "selfesteem4",
-    text: "나는 대부분의 다른 사람들만큼 일을 잘 할 수 있다",
+    text: "우리 아이는 다른 아이들만큼 일을 잘 할 수 있다",
     reverse: false
   },
   {
     id: "selfesteem5",
-    text: "나는 자랑할 것이 별로 없다고 느낀다",
+    text: "우리 아이는 자랑할 것이 별로 없다고 느끼는 것 같다",
     reverse: true
   },
   {
     id: "selfesteem6",
-    text: "나는 나 자신에 대해 긍정적인 태도를 가지고 있다",
+    text: "우리 아이는 자신에 대해 긍정적인 태도를 가지고 있다",
     reverse: false
   },
   {
     id: "selfesteem7",
-    text: "전반적으로 나는 나 자신에게 만족한다",
+    text: "우리 아이는 자기 자신에게 만족하는 것 같다",
     reverse: false
   },
   {
     id: "selfesteem8",
-    text: "나는 나 자신을 좀 더 존중할 수 있었으면 좋겠다",
+    text: "우리 아이는 자신을 좀 더 존중했으면 하는 것 같다",
     reverse: true
   },
   {
     id: "selfesteem9",
-    text: "나는 때때로 내가 쓸모없는 사람이라고 느낀다",
+    text: "우리 아이는 때때로 자신이 쓸모없다고 느끼는 것 같다",
     reverse: true
   },
   {
     id: "selfesteem10",
-    text: "때때로 나는 내가 전혀 좋지 않은 사람이라고 생각한다",
+    text: "우리 아이는 때때로 자신이 좋지 않은 아이라고 생각하는 것 같다",
     reverse: true
   },
   {
     id: "selfesteem11",
-    text: "나는 내 능력을 믿고 있다",
+    text: "우리 아이는 자신의 능력을 믿고 있다",
     reverse: false
   },
   {
     id: "selfesteem12",
-    text: "나는 나만의 독특한 매력이 있다고 생각한다",
+    text: "우리 아이는 자신만의 독특한 매력이 있다",
     reverse: false
   },
   {
     id: "selfesteem13",
-    text: "다른 사람들이 나를 어떻게 생각하는지 자주 걱정한다",
+    text: "우리 아이는 다른 사람들이 자신을 어떻게 생각하는지 자주 걱정한다",
     reverse: true
   },
   {
     id: "selfesteem14",
-    text: "나는 어려운 상황에서도 나 자신을 믿는다",
+    text: "우리 아이는 어려운 상황에서도 자신을 믿는다",
     reverse: false
   },
   {
     id: "selfesteem15",
-    text: "나는 내 결정에 대해 확신을 가지고 있다",
+    text: "우리 아이는 자신의 결정에 대해 확신을 가지고 있다",
     reverse: false
   }
 ];

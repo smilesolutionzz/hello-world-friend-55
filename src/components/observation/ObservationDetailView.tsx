@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ContentRecommendationPanel from "./ContentRecommendationPanel";
+import { ResourceRecommendations } from "./ResourceRecommendations";
 import { 
   ArrowLeft, 
   Download, 
@@ -460,6 +461,13 @@ const ObservationDetailView = ({ session, onBack }: ObservationDetailViewProps) 
 
           {/* Content Recommendations */}
           <ContentRecommendationPanel session={session} />
+
+          {/* AI Powered Resource Recommendations */}
+          <ResourceRecommendations 
+            keywords={aiReport.keywords || []}
+            childAge={session.child_age}
+            behaviorType={aiReport.behavior_type || '발달'}
+          />
         </TabsContent>
       </Tabs>
     </div>

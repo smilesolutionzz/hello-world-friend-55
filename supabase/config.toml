@@ -241,3 +241,9 @@ verify_jwt = false
 
 [functions.attachment-analysis]
 verify_jwt = false
+
+[functions.crawl-parenting-resources]
+verify_jwt = false
+
+[functions.cancel-payment]
+verify_jwt = true

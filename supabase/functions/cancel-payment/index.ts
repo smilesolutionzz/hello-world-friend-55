@@ -69,7 +69,7 @@ serve(async (req) => {
     }
 
     // Get Toss payment details
-    const tossPaymentKey = payment.toss_payment_key;
+    const tossPaymentKey = payment.payment_key;
     if (!tossPaymentKey) {
       throw new Error('Toss payment key not found');
     }
@@ -121,8 +121,8 @@ serve(async (req) => {
       throw updateError;
     }
 
-    // Deduct tokens if they were granted
-    const tokensGranted = payment.tokens || 0;
+      // Deduct tokens if they were granted
+    const tokensGranted = payment.token_amount || 0;
     if (tokensGranted > 0 && payment.user_id) {
       // Get current token balance
       const { data: tokenBalance, error: balanceError } = await supabaseService

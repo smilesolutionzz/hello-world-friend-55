@@ -20,8 +20,9 @@ const CompanyIntroVideoSection = () => {
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
             <span className="text-brand-gradient">AIHUMANPRO</span>를 소개합니다
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-foreground drop-shadow-md max-w-2xl mx-auto">
-            AI와 전문가가 함께하는 전생애 통합 케어 서비스,<br />3분 만에 시작하는 당신의 심리건강 여정
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-foreground drop-shadow-md max-w-2xl mx-auto">
+            AI와 전문가가 함께하는 전생애 통합 케어 서비스,<br className="hidden sm:block" />
+            <span className="sm:hidden"> </span>3분 만에 시작하는 당신의 심리건강 여정
           </p>
         </div>
 

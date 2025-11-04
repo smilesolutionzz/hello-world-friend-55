@@ -630,10 +630,10 @@ const ClientLogos = () => {
         {/* 파트너 기관 섹션 */}
         <div className="bg-white/60 rounded-2xl p-8 border border-gray-200/60">
           <div className="text-center mb-8">
-            <h3 className="text-base sm:text-xl md:text-2xl font-bold text-foreground mb-2">
+            <h3 className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold text-foreground mb-2">
               전문기관과 함께하는 <span className="text-brand-gradient">신뢰할 수 있는 분석</span>
             </h3>
-            <p className="text-xs sm:text-sm md:text-base text-muted-foreground">의료진과 전문가들이 인정한 AIH 통합분석 시스템</p>
+            <p className="text-[10px] sm:text-xs md:text-sm lg:text-base text-muted-foreground">의료진과 전문가들이 인정한 AIH 통합분석 시스템</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">

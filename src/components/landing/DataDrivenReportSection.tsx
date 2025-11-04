@@ -139,10 +139,10 @@ const DataDrivenReportSection = () => {
               데이터 기반 초개인화
             </span>
           </div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground drop-shadow-md mb-6">
+          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground drop-shadow-md mb-6">
             데이터가 쌓이면, 초개인화된 종합 리포트가 자동 생성됩니다
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-foreground drop-shadow-md max-w-2xl mx-auto">
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-foreground drop-shadow-md max-w-2xl mx-auto">
             일상 속 작은 기록들이 모여 여러분만의 성장 스토리가 됩니다
           </p>
         </div>
@@ -273,8 +273,9 @@ const DataDrivenReportSection = () => {
             <p className="text-sm sm:text-lg md:text-xl font-semibold text-foreground">
               추가 비용 없이 모든 리포트 무료 제공
             </p>
-            <p className="text-xs sm:text-sm text-foreground drop-shadow-md">
-              데이터가 쌓일수록 더 정확한 분석을 받으실 수 있습니다
+            <p className="text-[10px] leading-tight sm:text-xs md:text-sm text-foreground drop-shadow-md">
+              데이터가 쌓일수록 더 정확한<br className="sm:hidden" />
+              <span className="sm:hidden"> </span>분석을 받으실 수 있습니다
             </p>
           </div>
 

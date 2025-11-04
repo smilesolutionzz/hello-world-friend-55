@@ -75,8 +75,8 @@ const ResultReportSection = () => {
       {/* Content */}
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 whitespace-nowrap">
-            AI 리포트 & 데이터 해석
+          <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+            AI 분석 리포트
           </h2>
           <p className="text-xl text-foreground font-semibold max-w-2xl mx-auto">
             전문가 수준의 상세한 분석 결과
@@ -152,7 +152,7 @@ const ResultReportSection = () => {
                   <span className="font-bold">AI 딥러닝 분석 완료</span>
                 </div>
                 <h3 className="text-3xl font-bold mb-2">김지우님의 심리 프로파일</h3>
-                <p className="text-white/90">32세 • 직장인 • 2025년 10월 분석</p>
+                <p className="text-white/90">32세 • 직장인 • 2025년 11월 분석</p>
               </div>
             </div>
 

@@ -35,7 +35,7 @@ const FounderLetterSection = () => {
               />
             </div>
             <p className="text-lg text-muted-foreground">
-              2025년 10월, 여러분께 전하는 진심
+              2025년 11월, 여러분께 전하는 진심
             </p>
           </div>
 

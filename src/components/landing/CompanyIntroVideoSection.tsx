@@ -17,7 +17,7 @@ const CompanyIntroVideoSection = () => {
               회사 소개
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
             <span className="text-brand-gradient">AIHUMANPRO</span>를 소개합니다
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-foreground drop-shadow-md max-w-2xl mx-auto">

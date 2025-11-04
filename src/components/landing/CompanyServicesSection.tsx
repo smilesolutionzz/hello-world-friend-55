@@ -53,7 +53,7 @@ const CompanyServicesSection = () => {
               <span className="text-orange-500">PRO</span>
             </h2>
           </div>
-          <p className="text-xs sm:text-sm md:text-base text-slate-400">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
             AI 기술과 사람의 터치로 더 나은 삶을 만드는 혁신 서비스
           </p>
         </div>

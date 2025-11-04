@@ -476,8 +476,8 @@ const InstantAIAnalysis = () => {
             
             {/* 로그인 안내 */}
             {!user ? (
-              <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-xl p-4 mb-4">
-                <div className="flex items-start gap-3">
+              <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-xl p-3 sm:p-4 mb-4 overflow-hidden">
+                <div className="flex items-start gap-2 sm:gap-3">
                   <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
                     <Save className="w-5 h-5 text-blue-400" />
                   </div>

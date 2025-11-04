@@ -5,6 +5,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { AutoSaveManager, useBackupRecovery } from "@/components/mvp/AutoSaveManager";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const questions = [
   {
@@ -155,6 +167,34 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const { toast } = useToast();
+  const { hasBackup, restoreBackup, discardBackup } = useBackupRecovery('stress-test-form');
+  const [showRestoreDialog, setShowRestoreDialog] = useState(false);
+
+  // 백업 데이터가 있으면 복구 대화상자 표시
+  useState(() => {
+    if (hasBackup) {
+      setShowRestoreDialog(true);
+    }
+  });
+
+  const handleRestoreBackup = () => {
+    const backup = restoreBackup();
+    if (backup) {
+      setAnswers(backup.answers || {});
+      setCurrentQuestion(backup.currentQuestion || 0);
+      toast({
+        title: "백업 복구됨",
+        description: "이전에 작성하던 내용을 불러왔습니다.",
+      });
+    }
+    setShowRestoreDialog(false);
+  };
+
+  const handleDiscardBackup = () => {
+    discardBackup();
+    setShowRestoreDialog(false);
+  };
 
   const handleAnswer = (questionId: string, value: string) => {
     setAnswers(prev => ({
@@ -233,7 +273,36 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-4">
+    <>
+      {/* 자동 저장 관리자 */}
+      <AutoSaveManager
+        data={{ answers, currentQuestion }}
+        formId="stress-test-form"
+        interval={30000}
+        showIndicator={true}
+      />
+
+      {/* 백업 복구 대화상자 */}
+      <AlertDialog open={showRestoreDialog} onOpenChange={setShowRestoreDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>이전 작성 내용 발견</AlertDialogTitle>
+            <AlertDialogDescription>
+              이전에 작성하다 중단한 내용이 있습니다. 계속 작성하시겠습니까?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleDiscardBackup}>
+              새로 시작
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleRestoreBackup}>
+              이어서 작성
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-4">
       <div className="max-w-2xl mx-auto pt-8">
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
@@ -286,5 +355,6 @@ export default function StressTestForm({ onComplete, onBack }: StressTestFormPro
         </Card>
       </div>
     </div>
+    </>
   );
 }

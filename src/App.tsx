@@ -119,6 +119,7 @@ import LifeAchievementBadges from "./pages/LifeAchievementBadges";
 import LifeAchievementGoals from "./pages/LifeAchievementGoals";
 import DefenseMechanismTest from "./pages/DefenseMechanismTest";
 import AttachmentStyleTest from "./pages/AttachmentStyleTest";
+import EducationFeed from "./pages/EducationFeed";
 
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
@@ -285,6 +286,7 @@ const App = () => {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/insurance-partnership" element={<InsurancePartnership />} />
+          <Route path="/education-feed" element={<EducationFeed />} />
           
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />

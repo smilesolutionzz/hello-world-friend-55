@@ -247,3 +247,12 @@ verify_jwt = false
 
 [functions.cancel-payment]
 verify_jwt = true
+
+[functions.fact-check-post]
+verify_jwt = false
+
+[functions.monitor-competitors]
+verify_jwt = false
+
+[functions.curate-education-content]
+verify_jwt = false

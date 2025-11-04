@@ -1123,6 +1123,45 @@ export type Database = {
         }
         Relationships: []
       }
+      competitor_monitoring: {
+        Row: {
+          category: string | null
+          changes_detected: Json | null
+          competitor_name: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          last_checked_at: string | null
+          monitoring_data: Json | null
+          updated_at: string | null
+          website_url: string
+        }
+        Insert: {
+          category?: string | null
+          changes_detected?: Json | null
+          competitor_name: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_checked_at?: string | null
+          monitoring_data?: Json | null
+          updated_at?: string | null
+          website_url: string
+        }
+        Update: {
+          category?: string | null
+          changes_detected?: Json | null
+          competitor_name?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_checked_at?: string | null
+          monitoring_data?: Json | null
+          updated_at?: string | null
+          website_url?: string
+        }
+        Relationships: []
+      }
       concern_storage: {
         Row: {
           analysis_advice: string | null
@@ -1350,6 +1389,104 @@ export type Database = {
           },
         ]
       }
+      corporate_clients: {
+        Row: {
+          company_name: string
+          company_size: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          contract_end_date: string | null
+          contract_start_date: string | null
+          contract_value: number | null
+          created_at: string
+          created_by: string | null
+          id: string
+          industry: string | null
+          notes: string | null
+          seats_purchased: number | null
+          seats_used: number | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          company_size?: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          contract_value?: number | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          industry?: string | null
+          notes?: string | null
+          seats_purchased?: number | null
+          seats_used?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          company_size?: string | null
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          contract_value?: number | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          industry?: string | null
+          notes?: string | null
+          seats_purchased?: number | null
+          seats_used?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      corporate_user_assignments: {
+        Row: {
+          assigned_at: string
+          corporate_client_id: string
+          department: string | null
+          id: string
+          position: string | null
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          corporate_client_id: string
+          department?: string | null
+          id?: string
+          position?: string | null
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string
+          corporate_client_id?: string
+          department?: string | null
+          id?: string
+          position?: string | null
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_user_assignments_corporate_client_id_fkey"
+            columns: ["corporate_client_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cross_promotion_rewards: {
         Row: {
           created_at: string
@@ -1380,6 +1517,57 @@ export type Database = {
           service_name?: string
           user_id?: string
           verification_code?: string | null
+        }
+        Relationships: []
+      }
+      curated_education_content: {
+        Row: {
+          content_type: string | null
+          created_at: string | null
+          full_content: string | null
+          id: string
+          is_published: boolean | null
+          published_at: string | null
+          relevance_score: number | null
+          source_name: string | null
+          source_url: string
+          summary: string | null
+          tags: string[] | null
+          target_age_group: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content_type?: string | null
+          created_at?: string | null
+          full_content?: string | null
+          id?: string
+          is_published?: boolean | null
+          published_at?: string | null
+          relevance_score?: number | null
+          source_name?: string | null
+          source_url: string
+          summary?: string | null
+          tags?: string[] | null
+          target_age_group?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content_type?: string | null
+          created_at?: string | null
+          full_content?: string | null
+          id?: string
+          is_published?: boolean | null
+          published_at?: string | null
+          relevance_score?: number | null
+          source_name?: string | null
+          source_url?: string
+          summary?: string | null
+          tags?: string[] | null
+          target_age_group?: string | null
+          title?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1723,6 +1911,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      digital_legacies: {
+        Row: {
+          attachments: Json | null
+          content: string | null
+          created_at: string
+          encrypted_content: string | null
+          id: string
+          is_released: boolean | null
+          legacy_type: string
+          recipients: string[] | null
+          release_condition: string | null
+          release_date: string | null
+          released_at: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attachments?: Json | null
+          content?: string | null
+          created_at?: string
+          encrypted_content?: string | null
+          id?: string
+          is_released?: boolean | null
+          legacy_type: string
+          recipients?: string[] | null
+          release_condition?: string | null
+          release_date?: string | null
+          released_at?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attachments?: Json | null
+          content?: string | null
+          created_at?: string
+          encrypted_content?: string | null
+          id?: string
+          is_released?: boolean | null
+          legacy_type?: string
+          recipients?: string[] | null
+          release_condition?: string | null
+          release_date?: string | null
+          released_at?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       dream_records: {
         Row: {
@@ -2303,6 +2542,80 @@ export type Database = {
         }
         Relationships: []
       }
+      fact_check_results: {
+        Row: {
+          check_status: string
+          checked_at: string | null
+          confidence_score: number | null
+          created_at: string | null
+          id: string
+          post_id: string | null
+          sources: Json | null
+          summary: string | null
+        }
+        Insert: {
+          check_status: string
+          checked_at?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          sources?: Json | null
+          summary?: string | null
+        }
+        Update: {
+          check_status?: string
+          checked_at?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          sources?: Json | null
+          summary?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fact_check_results_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_connections: {
+        Row: {
+          connected_user_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          relationship: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          connected_user_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          relationship: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          connected_user_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          relationship?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       family_invitations: {
         Row: {
           accepted_at: string | null
@@ -2406,6 +2719,79 @@ export type Database = {
             columns: ["family_id"]
             isOneToOne: false
             referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_memory_reactions: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          reaction_type: string | null
+          shared_memory_id: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          reaction_type?: string | null
+          shared_memory_id: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          reaction_type?: string | null
+          shared_memory_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_memory_reactions_shared_memory_id_fkey"
+            columns: ["shared_memory_id"]
+            isOneToOne: false
+            referencedRelation: "family_shared_memories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_shared_memories: {
+        Row: {
+          can_comment: boolean | null
+          can_react: boolean | null
+          id: string
+          memory_id: string
+          shared_at: string
+          shared_by: string
+          shared_with: string[]
+        }
+        Insert: {
+          can_comment?: boolean | null
+          can_react?: boolean | null
+          id?: string
+          memory_id: string
+          shared_at?: string
+          shared_by: string
+          shared_with?: string[]
+        }
+        Update: {
+          can_comment?: boolean | null
+          can_react?: boolean | null
+          id?: string
+          memory_id?: string
+          shared_at?: string
+          shared_by?: string
+          shared_with?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_shared_memories_memory_id_fkey"
+            columns: ["memory_id"]
+            isOneToOne: false
+            referencedRelation: "memory_conversations"
             referencedColumns: ["id"]
           },
         ]
@@ -2607,6 +2993,68 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      health_diaries: {
+        Row: {
+          ai_insights: Json | null
+          created_at: string | null
+          entry_date: string
+          exercise_minutes: number | null
+          health_status: string | null
+          id: string
+          medications: string[] | null
+          mood: string | null
+          notes: string | null
+          policy_id: string | null
+          sleep_hours: number | null
+          symptoms: string[] | null
+          updated_at: string | null
+          user_id: string
+          water_intake: number | null
+        }
+        Insert: {
+          ai_insights?: Json | null
+          created_at?: string | null
+          entry_date?: string
+          exercise_minutes?: number | null
+          health_status?: string | null
+          id?: string
+          medications?: string[] | null
+          mood?: string | null
+          notes?: string | null
+          policy_id?: string | null
+          sleep_hours?: number | null
+          symptoms?: string[] | null
+          updated_at?: string | null
+          user_id: string
+          water_intake?: number | null
+        }
+        Update: {
+          ai_insights?: Json | null
+          created_at?: string | null
+          entry_date?: string
+          exercise_minutes?: number | null
+          health_status?: string | null
+          id?: string
+          medications?: string[] | null
+          mood?: string | null
+          notes?: string | null
+          policy_id?: string | null
+          sleep_hours?: number | null
+          symptoms?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+          water_intake?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_diaries_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_policies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       home_service_bookings: {
         Row: {
@@ -3380,6 +3828,48 @@ export type Database = {
         }
         Relationships: []
       }
+      insurance_policies: {
+        Row: {
+          created_at: string | null
+          end_date: string | null
+          id: string
+          policy_number: string | null
+          policy_type: string
+          premium_amount: number | null
+          provider: string | null
+          start_date: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          policy_number?: string | null
+          policy_type: string
+          premium_amount?: number | null
+          provider?: string | null
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          policy_number?: string | null
+          policy_type?: string
+          premium_amount?: number | null
+          provider?: string | null
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       intervention_plans: {
         Row: {
           created_at: string
@@ -3462,6 +3952,107 @@ export type Database = {
           scheduled_date?: string | null
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      legacy_settings: {
+        Row: {
+          auto_deliver: boolean | null
+          beneficiaries: Json
+          created_at: string | null
+          custom_message: string | null
+          delivery_format: string | null
+          id: string
+          inactivity_days: number | null
+          include_health_data: boolean | null
+          include_memories: boolean | null
+          include_voice_messages: boolean | null
+          policy_id: string | null
+          status: string | null
+          trigger_condition: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          auto_deliver?: boolean | null
+          beneficiaries?: Json
+          created_at?: string | null
+          custom_message?: string | null
+          delivery_format?: string | null
+          id?: string
+          inactivity_days?: number | null
+          include_health_data?: boolean | null
+          include_memories?: boolean | null
+          include_voice_messages?: boolean | null
+          policy_id?: string | null
+          status?: string | null
+          trigger_condition?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          auto_deliver?: boolean | null
+          beneficiaries?: Json
+          created_at?: string | null
+          custom_message?: string | null
+          delivery_format?: string | null
+          id?: string
+          inactivity_days?: number | null
+          include_health_data?: boolean | null
+          include_memories?: boolean | null
+          include_voice_messages?: boolean | null
+          policy_id?: string | null
+          status?: string | null
+          trigger_condition?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legacy_settings_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legacy_trustees: {
+        Row: {
+          accepted_at: string | null
+          id: string
+          invited_at: string
+          permissions: Json | null
+          relationship: string | null
+          status: string | null
+          trustee_email: string | null
+          trustee_name: string
+          trustee_user_id: string | null
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          id?: string
+          invited_at?: string
+          permissions?: Json | null
+          relationship?: string | null
+          status?: string | null
+          trustee_email?: string | null
+          trustee_name: string
+          trustee_user_id?: string | null
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          id?: string
+          invited_at?: string
+          permissions?: Json | null
+          relationship?: string | null
+          status?: string | null
+          trustee_email?: string | null
+          trustee_name?: string
+          trustee_user_id?: string | null
           user_id?: string
         }
         Relationships: []
@@ -3834,6 +4425,156 @@ export type Database = {
           likes_count?: number | null
           share_type?: string
           title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      life_logs: {
+        Row: {
+          ai_summary: string | null
+          content: string | null
+          created_at: string | null
+          health_data: Json | null
+          id: string
+          is_legacy_included: boolean | null
+          is_private: boolean | null
+          log_date: string
+          log_type: string
+          media_urls: string[] | null
+          mood: string | null
+          tags: string[] | null
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          content?: string | null
+          created_at?: string | null
+          health_data?: Json | null
+          id?: string
+          is_legacy_included?: boolean | null
+          is_private?: boolean | null
+          log_date?: string
+          log_type: string
+          media_urls?: string[] | null
+          mood?: string | null
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_summary?: string | null
+          content?: string | null
+          created_at?: string | null
+          health_data?: Json | null
+          id?: string
+          is_legacy_included?: boolean | null
+          is_private?: boolean | null
+          log_date?: string
+          log_type?: string
+          media_urls?: string[] | null
+          mood?: string | null
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      media_albums: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_shared: boolean | null
+          name: string
+          shared_with: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_shared?: boolean | null
+          name: string
+          shared_with?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_shared?: boolean | null
+          name?: string
+          shared_with?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      media_archives: {
+        Row: {
+          album_id: string | null
+          created_at: string
+          date_taken: string | null
+          description: string | null
+          file_size: number | null
+          file_url: string
+          id: string
+          is_archived: boolean | null
+          is_public: boolean | null
+          location: string | null
+          media_type: string
+          metadata: Json | null
+          tags: string[] | null
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          album_id?: string | null
+          created_at?: string
+          date_taken?: string | null
+          description?: string | null
+          file_size?: number | null
+          file_url: string
+          id?: string
+          is_archived?: boolean | null
+          is_public?: boolean | null
+          location?: string | null
+          media_type: string
+          metadata?: Json | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          album_id?: string | null
+          created_at?: string
+          date_taken?: string | null
+          description?: string | null
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          is_archived?: boolean | null
+          is_public?: boolean | null
+          location?: string | null
+          media_type?: string
+          metadata?: Json | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -4845,6 +5586,47 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_transactions: {
+        Row: {
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          points: number
+          reason: string | null
+          reward_id: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          points: number
+          reason?: string | null
+          reward_id?: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          points?: number
+          reason?: string | null
+          reward_id?: string | null
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_transactions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "user_rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_reviews: {
         Row: {
           created_at: string
@@ -5004,38 +5786,53 @@ export type Database = {
       subscription_plans: {
         Row: {
           created_at: string
+          custom_templates: boolean | null
           description: string | null
           features: string[] | null
           id: string
           is_active: boolean
+          max_ai_conversations: number | null
+          max_memories: number | null
           name: string
           price: number
+          priority_support: boolean | null
           type: string
           updated_at: string
+          voice_cloning: boolean | null
           yearly_price: number | null
         }
         Insert: {
           created_at?: string
+          custom_templates?: boolean | null
           description?: string | null
           features?: string[] | null
           id?: string
           is_active?: boolean
+          max_ai_conversations?: number | null
+          max_memories?: number | null
           name: string
           price?: number
+          priority_support?: boolean | null
           type?: string
           updated_at?: string
+          voice_cloning?: boolean | null
           yearly_price?: number | null
         }
         Update: {
           created_at?: string
+          custom_templates?: boolean | null
           description?: string | null
           features?: string[] | null
           id?: string
           is_active?: boolean
+          max_ai_conversations?: number | null
+          max_memories?: number | null
           name?: string
           price?: number
+          priority_support?: boolean | null
           type?: string
           updated_at?: string
+          voice_cloning?: boolean | null
           yearly_price?: number | null
         }
         Relationships: []
@@ -6194,6 +6991,53 @@ export type Database = {
         }
         Relationships: []
       }
+      user_rewards: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_activity_date: string | null
+          points: number | null
+          policy_id: string | null
+          streak_days: number | null
+          tier: string | null
+          total_earned: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_activity_date?: string | null
+          points?: number | null
+          policy_id?: string | null
+          streak_days?: number | null
+          tier?: string | null
+          total_earned?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_activity_date?: string | null
+          points?: number | null
+          policy_id?: string | null
+          streak_days?: number | null
+          tier?: string | null
+          total_earned?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_rewards_policy_id_fkey"
+            columns: ["policy_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_policies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -6849,6 +7693,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: boolean
+      }
+      calculate_daily_reward_points: {
+        Args: { p_entry_date: string; p_user_id: string }
+        Returns: number
       }
       calculate_weekly_brain_stats: {
         Args: { p_user_id: string; p_week_start: string }

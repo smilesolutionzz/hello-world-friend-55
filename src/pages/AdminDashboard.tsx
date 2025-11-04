@@ -54,6 +54,7 @@ import AdminTokenAdd from '@/components/AdminTokenAdd';
 import { SystemMonitoring } from '@/components/admin/SystemMonitoring';
 import { AutomatedModeration } from '@/components/admin/AutomatedModeration';
 import { FinancialAutomation } from '@/components/admin/FinancialAutomation';
+import { CompetitorMonitoring } from '@/components/admin/CompetitorMonitoring';
 
 interface AdminAnalytics {
   total_users: number;
@@ -967,7 +968,7 @@ export default function AdminDashboard() {
 
         {/* Enhanced Management Tabs */}
         <Tabs defaultValue="notifications" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 md:grid-cols-10">
+          <TabsList className="grid w-full grid-cols-6 md:grid-cols-11">
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
               알림
@@ -1007,6 +1008,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="financial" className="flex items-center gap-2">
               <DollarSign className="h-4 w-4" />
               금융자동화
+            </TabsTrigger>
+            <TabsTrigger value="competitors" className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              경쟁사
             </TabsTrigger>
           </TabsList>
 
@@ -1382,6 +1387,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="financial">
             <FinancialAutomation />
+          </TabsContent>
+
+          <TabsContent value="competitors">
+            <CompetitorMonitoring />
           </TabsContent>
 
           <TabsContent value="members">

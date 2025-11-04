@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Heart, MessageCircle, Share2, Camera, FileText, Play, MoreVertical } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { FactCheckBadge } from './FactCheckBadge';
 
 interface MediaItem {
   url: string;
@@ -90,6 +91,11 @@ export default function CommunityPostCard({ post, onLike, onComment, onShare }: 
                   <TypeIcon className="w-3 h-3 mr-1" />
                   {typeInfo.label}
                 </Badge>
+                <FactCheckBadge 
+                  postId={post.id} 
+                  postTitle={post.title} 
+                  postContent={post.content}
+                />
               </div>
               <div className="text-sm text-muted-foreground">
                 {formatDistanceToNow(new Date(post.created_at), { 

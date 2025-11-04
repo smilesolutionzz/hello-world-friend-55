@@ -26,6 +26,7 @@ const Footer = () => {
             <h4 className="font-medium mb-4">고객지원</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><a href="/platform-manual" className="hover:text-foreground">플랫폼 메뉴얼 보기</a></li>
+              <li><a href="/terms-of-service" className="hover:text-foreground">이용약관</a></li>
               <li><a href="/privacy-policy" className="hover:text-foreground">개인정보처리방침</a></li>
               <li><a href="/refund-policy" className="hover:text-foreground">환불정책</a></li>
               <li>문의: aihpro@naver.com</li>

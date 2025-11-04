@@ -80,14 +80,14 @@ const SimplifiedCoreServices = () => {
             <Clock className="w-5 h-5 mr-2" />
             3분이면 충분합니다
           </Badge>
-          <h2 className="text-5xl md:text-6xl font-bold tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight">
             <span className="bg-gradient-to-r from-primary via-purple-500 to-primary bg-clip-text text-transparent">
               간단한 3단계
             </span>
             <br />
             <span className="text-foreground">당신만의 케어 여정</span>
           </h2>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             무료 체험부터 전문가 상담까지, 단계별로 필요한 케어를 제공합니다
           </p>
         </div>
@@ -120,7 +120,7 @@ const SimplifiedCoreServices = () => {
                 {/* 헤더 */}
                 <div className="mb-6 space-y-3">
                   <div className="flex items-center gap-3">
-                    <h3 className="text-3xl font-bold text-foreground">
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
                       {service.title}
                     </h3>
                     <Badge variant="secondary" className="text-xs font-semibold">

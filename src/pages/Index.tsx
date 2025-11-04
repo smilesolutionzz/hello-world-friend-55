@@ -190,7 +190,7 @@ const Index = () => {
             <SimplifiedCoreServices />
           </LazyLoad>
           
-          {/* 5️⃣ 데이터 기반 초개인화 리포트 (통합 섹션) */}
+          {/* 5️⃣ 데이터 기반 초개인화 리포트 (HowItWorks 통합) */}
           <LazyLoad className="animate-fade-in">
             <DataDrivenReportSection />
           </LazyLoad>

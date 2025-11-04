@@ -139,7 +139,7 @@ const DataDrivenReportSection = () => {
               데이터 기반 초개인화
             </span>
           </div>
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground drop-shadow-md mb-6">
+          <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-foreground drop-shadow-md mb-6">
             데이터가 쌓이면, 초개인화된 종합 리포트가 자동 생성됩니다
           </h2>
           <p className="text-xs sm:text-sm md:text-base lg:text-lg text-foreground drop-shadow-md max-w-2xl mx-auto">

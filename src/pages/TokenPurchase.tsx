@@ -76,8 +76,8 @@ const TokenPurchase = () => {
       await paymentWidgetRef.current.requestPayment({
         orderId,
         orderName,
-        successUrl: `${window.location.origin}/payment-success`,
-        failUrl: `${window.location.origin}/payment-fail`,
+        successUrl: `${window.location.origin}/token-payment-success`,
+        failUrl: `${window.location.origin}/token-payment-fail`,
         customerEmail: '',
         customerName: 'AI Highlight 사용자',
       });

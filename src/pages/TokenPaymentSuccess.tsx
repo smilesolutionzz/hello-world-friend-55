@@ -2,32 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle, ArrowRight, Home, Coins, Clock, CreditCard } from 'lucide-react';
+import { CheckCircle, ArrowRight, Home, Coins, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useTokens } from '@/hooks/useTokens';
 
 const TokenPaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { refreshTokenBalance } = useTokens();
   const [loading, setLoading] = useState(true);
   const [confirmed, setConfirmed] = useState(false);
-  const [tokenData, setTokenData] = useState<any>(null);
+  const [paymentInfo, setPaymentInfo] = useState<any>(null);
 
   useEffect(() => {
     const confirmPayment = async () => {
-      const sessionId = searchParams.get('session_id');
+      const paymentKey = searchParams.get('paymentKey');
+      const orderId = searchParams.get('orderId');
+      const amount = searchParams.get('amount');
 
-      if (!sessionId) {
+      if (!paymentKey || !orderId || !amount) {
         toast({
           title: "결제 정보 오류",
-          description: "세션 정보가 누락되었습니다.",
+          description: "결제 정보가 누락되었습니다.",
           variant: "destructive"
         });
-        navigate('/token-subscription');
+        navigate('/token-purchase');
         return;
       }
 
@@ -35,58 +34,70 @@ const TokenPaymentSuccess = () => {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
+          toast({
+            title: "인증 필요",
+            description: "로그인이 필요합니다.",
+            variant: "destructive"
+          });
           navigate('/auth');
           return;
         }
 
-        const { data, error } = await supabase.functions.invoke('confirm-token-order', {
+        console.log('🔄 토스페이먼츠 결제 승인 요청:', { orderId, amount });
+
+        const { data, error } = await supabase.functions.invoke('confirm-toss-payment', {
           headers: {
             Authorization: `Bearer ${session.access_token}`,
           },
-          body: { sessionId }
+          body: { 
+            paymentKey,
+            orderId,
+            amount: parseInt(amount)
+          }
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error('❌ 결제 확인 에러:', error);
+          throw error;
+        }
+
+        console.log('✅ 결제 확인 성공:', data);
 
         if (data.success) {
           setConfirmed(true);
-          setTokenData({
-            tokens_added: data.tokensAdded,
-            payment_intent: sessionId
-          });
+          setPaymentInfo(data.paymentResult);
           
-          // 토큰 잔액 새로고침
-          await refreshTokenBalance();
-
           toast({
-            title: "토큰 충전 완료!",
-            description: `${data.tokensAdded}개의 토큰이 성공적으로 충전되었습니다.`,
+            title: "결제 완료!",
+            description: "토큰 충전이 완료되었습니다.",
           });
         } else {
-          throw new Error('결제 처리에 실패했습니다.');
+          throw new Error(data.error || '결제 처리에 실패했습니다.');
         }
 
       } catch (error: any) {
-        console.error('Payment confirmation error:', error);
+        console.error('❌ Payment confirmation error:', error);
         toast({
           title: "결제 확인 실패",
           description: error.message || "결제 확인 중 오류가 발생했습니다.",
           variant: "destructive"
         });
+        // 에러 발생 시 실패 페이지로 리다이렉트
+        navigate(`/token-payment-fail?code=CONFIRM_ERROR&message=${encodeURIComponent(error.message)}`);
       } finally {
         setLoading(false);
       }
     };
 
     confirmPayment();
-  }, [searchParams, toast, refreshTokenBalance, navigate]);
+  }, [searchParams, toast, navigate]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
             <CardTitle>결제 확인 중...</CardTitle>
             <CardDescription>
               토스페이먼츠에서 결제를 확인하고 있습니다.
@@ -98,87 +109,74 @@ const TokenPaymentSuccess = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
+      <Card className="w-full max-w-2xl shadow-xl">
         <CardHeader className="text-center pb-6">
           <div className="flex justify-center mb-6">
-            <div className="bg-green-100 p-4 rounded-full">
+            <div className="bg-green-100 dark:bg-green-900/30 p-4 rounded-full">
               <CheckCircle className="h-16 w-16 text-green-600" />
             </div>
           </div>
           
-          <CardTitle className="text-3xl font-bold text-slate-900 mb-2">
+          <CardTitle className="text-3xl font-bold mb-2">
             🎉 토큰 충전 완료!
           </CardTitle>
-          <CardDescription className="text-lg text-slate-600">
+          <CardDescription className="text-lg">
             결제가 성공적으로 완료되어 토큰이 충전되었습니다.
           </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* 충전 정보 */}
-          {confirmed && tokenData && (
-            <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-              <h3 className="font-semibold text-blue-900 mb-4 flex items-center gap-2">
-                <Coins className="h-5 w-5" />
-                충전 내역
+          {/* 결제 정보 */}
+          {confirmed && paymentInfo && (
+            <div className="bg-card border rounded-lg p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Coins className="h-5 w-5 text-primary" />
+                결제 정보
               </h3>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-slate-600">충전된 토큰:</span>
-                  <div className="font-semibold text-blue-600 text-lg">
-                    +{tokenData.tokens_added}개
-                  </div>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">주문명:</span>
+                  <span className="font-semibold">{paymentInfo.orderName}</span>
                 </div>
-                <div>
-                  <span className="text-slate-600">현재 잔액:</span>
-                  <div className="font-semibold text-green-600 text-lg">
-                    {tokenData.new_balance}개
-                  </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">결제 금액:</span>
+                  <span className="font-semibold text-primary text-lg">
+                    ₩{paymentInfo.amount?.toLocaleString()}
+                  </span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">결제 방식:</span>
+                  <span className="font-semibold">
+                    {paymentInfo.method === 'CARD' ? '카드' : 
+                     paymentInfo.method === 'VIRTUAL_ACCOUNT' ? '가상계좌' :
+                     paymentInfo.method === 'TRANSFER' ? '계좌이체' :
+                     paymentInfo.method === 'MOBILE_PHONE' ? '휴대폰' : paymentInfo.method}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">결제 ID:</span>
+                  <span className="font-mono text-xs">
+                    {searchParams.get('orderId')?.slice(0, 20)}...
+                  </span>
+                </div>
+                {paymentInfo.approvedAt && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">승인 시간:</span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      {new Date(paymentInfo.approvedAt).toLocaleString('ko-KR')}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           )}
 
-          {/* 주문 정보 */}
-          <div className="bg-slate-50 p-6 rounded-lg">
-            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              <CreditCard className="h-5 w-5" />
-              결제 정보
-            </h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-600">세션 ID:</span>
-                <span className="font-mono text-xs bg-white px-2 py-1 rounded border">
-                  {searchParams.get('session_id')?.slice(0, 24)}...
-                </span>
-              </div>
-              {tokenData?.payment_intent && (
-                <div className="flex justify-between">
-                  <span className="text-slate-600">결제 ID:</span>
-                  <span className="font-mono text-xs bg-white px-2 py-1 rounded border">
-                    {tokenData.payment_intent.slice(0, 20)}...
-                  </span>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-slate-600">결제일시:</span>
-                <span className="flex items-center gap-1 text-slate-800">
-                  <Clock className="h-4 w-4" />
-                  {new Date().toLocaleString('ko-KR')}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-600">결제 방식:</span>
-                <span className="font-semibold">무통장입금</span>
-              </div>
-            </div>
-          </div>
-
           {/* 다음 단계 안내 */}
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-lg border border-purple-200">
-            <h3 className="font-semibold text-purple-900 mb-3">✨ 이제 무엇을 할 수 있나요?</h3>
-            <ul className="space-y-2 text-sm text-purple-800">
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 p-6 rounded-lg border">
+            <h3 className="font-semibold mb-3">✨ 이제 무엇을 할 수 있나요?</h3>
+            <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
                 3분 기본 테스트로 빠른 분석 받기 (5토큰)
@@ -197,16 +195,16 @@ const TokenPaymentSuccess = () => {
           {/* 액션 버튼 */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button 
-              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 text-base font-semibold"
-              onClick={() => navigate('/assessment')}
+              className="flex-1 py-6 text-base font-semibold"
+              onClick={() => navigate('/dashboard')}
             >
               <ArrowRight className="w-5 h-5 mr-2" />
-              AI 분석 시작하기
+              대시보드로 이동
             </Button>
             
             <Button 
               variant="outline" 
-              className="flex-1 py-3 text-base"
+              className="flex-1 py-6 text-base"
               onClick={() => navigate('/')}
             >
               <Home className="w-5 h-5 mr-2" />
@@ -215,11 +213,11 @@ const TokenPaymentSuccess = () => {
           </div>
 
           {/* 고객 지원 */}
-          <div className="text-center pt-4 border-t border-slate-200">
-            <p className="text-sm text-slate-600 mb-2">
+          <div className="text-center pt-4 border-t">
+            <p className="text-sm text-muted-foreground mb-2">
               결제나 토큰 사용에 문제가 있으신가요?
             </p>
-            <Button variant="link" className="text-blue-600 h-auto p-0 text-sm">
+            <Button variant="link" className="h-auto p-0 text-sm">
               고객 지원센터 →
             </Button>
           </div>

@@ -5,14 +5,16 @@ import { TypingAnimation } from "@/components/ui/typing-animation";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import FloatingKeywords from "./FloatingKeywords";
 import { useState } from "react";
-import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
+import { ArrowRight, Sparkles, BookOpen, Zap, Timer } from "lucide-react";
 import { ExpertOnlineStatus } from "@/components/urgency/ExpertOnlineStatus";
 import { PromotionBanner } from "@/components/promotion/PromotionBanner";
 import heroBg from "@/assets/hero-family-bg.jpg";
+import QuickOnboarding from "@/components/onboarding/QuickOnboarding";
 
 const HeroSection = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [showQuickOnboarding, setShowQuickOnboarding] = useState(false);
 
   const handleStartAssessment = async (path: string) => {
     setIsLoading(true);
@@ -103,17 +105,29 @@ const HeroSection = () => {
         
         {/* CTA Buttons - 명확한 행동 유도 */}
         <div className="flex flex-col gap-6 justify-center items-center mb-16">
-          {/* 메인 CTA */}
+          {/* 메인 CTA - 30초 퀵 온보딩 */}
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Button 
               size="lg"
-              onClick={() => navigate('/assessment')}
+              onClick={() => setShowQuickOnboarding(true)}
               className="group relative w-full sm:w-auto px-12 py-7 bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] hover:from-[#4A7FEF] hover:to-[#7AA8EF] text-white text-xl font-extrabold rounded-2xl shadow-[0_8px_32px_rgba(94,143,255,0.5)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.7)] transition-all duration-300 transform hover:scale-105"
             >
               <span className="flex items-center gap-3">
-                <Sparkles className="w-6 h-6 animate-pulse" />
-                무료로 3분 테스트 시작
+                <Zap className="w-6 h-6 animate-pulse" />
+                30초만에 무료 체험
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+              </span>
+            </Button>
+            
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => navigate('/assessment')}
+              className="group relative w-full sm:w-auto px-8 py-7 bg-white/10 hover:bg-white/20 text-white text-lg font-bold rounded-2xl border-2 border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300"
+            >
+              <span className="flex items-center gap-2">
+                <Timer className="w-5 h-5" />
+                3분 정밀 검사
               </span>
             </Button>
           </div>
@@ -144,6 +158,12 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      {/* 퀵 온보딩 다이얼로그 */}
+      <QuickOnboarding 
+        open={showQuickOnboarding} 
+        onClose={() => setShowQuickOnboarding(false)} 
+      />
     </section>
   );
 };

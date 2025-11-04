@@ -4,7 +4,7 @@ import type { User } from '@supabase/supabase-js';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import HeroSection from "@/components/HeroSection";
 import ProblemVisionSection from "@/components/landing/ProblemVisionSection";
-import CoreServiceSection from "@/components/landing/CoreServiceSection";
+import SimplifiedCoreServices from "@/components/landing/SimplifiedCoreServices";
 import DataDrivenReportSection from "@/components/landing/DataDrivenReportSection";
 import ResultReportSection from "@/components/landing/ResultReportSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
@@ -185,9 +185,9 @@ const Index = () => {
             <ProblemVisionSection />
           </LazyLoad>
           
-          {/* 4️⃣ Core Service */}
+          {/* 4️⃣ Core Service - 단순화된 3가지 핵심 서비스 */}
           <LazyLoad className="animate-fade-in">
-            <CoreServiceSection />
+            <SimplifiedCoreServices />
           </LazyLoad>
           
           {/* 5️⃣ 데이터 기반 초개인화 리포트 (통합 섹션) */}

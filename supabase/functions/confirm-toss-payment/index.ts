@@ -58,8 +58,9 @@ serve(async (req) => {
       throw new Error(result.message || '결제 승인에 실패했습니다.');
     }
 
-    // 결제 내역 업데이트
-    const { data: payment, error: paymentUpdateError } = await supabaseService
+    // 결제 내역 업데이트 시도 + 부족 시 복구 로직
+    let payment: any = null;
+    const { data: updatedPayment, error: paymentUpdateError } = await supabaseService
       .from('payment_history')
       .update({
         payment_key: paymentKey,
@@ -75,8 +76,79 @@ serve(async (req) => {
       throw paymentUpdateError;
     }
 
-    if (!payment) {
-      throw new Error('결제 내역을 찾을 수 없습니다. (사전 생성된 주문 없음)');
+    if (!updatedPayment) {
+      // 사전 생성된 주문이 없을 때(과거 경로) 복구 로직: 인증된 사용자 기반으로 결제내역 생성 후 처리
+      try {
+        const authHeader = req.headers.get('Authorization') || req.headers.get('authorization');
+        if (!authHeader) {
+          throw new Error('Authorization 헤더가 없습니다.');
+        }
+        const token = authHeader.replace('Bearer ', '');
+        const supabaseAuth = createClient(
+          Deno.env.get('SUPABASE_URL') ?? '',
+          Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+        );
+        const { data: userData, error: authError } = await supabaseAuth.auth.getUser(token);
+        if (authError || !userData?.user) {
+          console.error('Auth fallback failed:', authError);
+          throw new Error('사용자 인증 실패로 결제내역 복구 불가');
+        }
+
+        const user = userData.user;
+
+        // 금액 또는 주문명으로 토큰 패키지 매칭
+        let tokenPackage: any = null;
+        const { data: pkgByPrice } = await supabaseService
+          .from('token_packages')
+          .select('*')
+          .eq('price_krw', result.totalAmount)
+          .eq('is_active', true)
+          .maybeSingle();
+        if (pkgByPrice) tokenPackage = pkgByPrice;
+
+        if (!tokenPackage && typeof result.orderName === 'string') {
+          const match = result.orderName.match(/(\d+)\s*토큰|\((\d+)토큰\)/);
+          const count = match ? parseInt(match[1] || match[2], 10) : null;
+          if (count) {
+            const { data: pkgByCount } = await supabaseService
+              .from('token_packages')
+              .select('*')
+              .eq('token_count', count)
+              .eq('is_active', true)
+              .maybeSingle();
+            if (pkgByCount) tokenPackage = pkgByCount;
+          }
+        }
+
+        const { data: inserted, error: insertError } = await supabaseService
+          .from('payment_history')
+          .insert({
+            user_id: user.id,
+            toss_order_id: orderId,
+            amount: result.totalAmount,
+            plan_id: null,
+            subscription_type: 'token',
+            status: 'completed',
+            token_package_id: tokenPackage?.id ?? null,
+            token_amount: tokenPackage?.token_count ?? null,
+            payment_key: paymentKey,
+            payment_method: result.method
+          })
+          .select('*, user_id')
+          .maybeSingle();
+
+        if (insertError) {
+          console.error('Fallback payment insert error:', insertError);
+          throw insertError;
+        }
+
+        payment = inserted;
+      } catch (fallbackErr) {
+        console.error('Payment fallback creation failed:', fallbackErr);
+        throw new Error('결제 내역을 찾을 수 없습니다. (사전 생성된 주문 없음)');
+      }
+    } else {
+      payment = updatedPayment;
     }
 
     // 결제 유형 확인 (토큰 구매 vs 구독)

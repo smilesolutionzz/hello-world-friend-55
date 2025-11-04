@@ -46,20 +46,36 @@ const TokenPurchase = () => {
     if (selectedPack && paymentWidgetRef.current) {
       const renderPaymentMethods = async () => {
         try {
-          const paymentMethodsWidget = paymentWidgetRef.current?.renderPaymentMethods(
+          console.log('🎨 결제 수단 렌더링 시작:', selectedPack);
+          setIsPaymentReady(false);
+          
+          // 기존 위젯이 있다면 제거
+          const widgetContainer = document.getElementById('payment-widget');
+          if (widgetContainer) {
+            widgetContainer.innerHTML = '';
+          }
+
+          const paymentMethodsWidget = await paymentWidgetRef.current?.renderPaymentMethods(
             '#payment-widget',
             { value: selectedPack.price },
             { variantKey: 'DEFAULT' }
           );
+          
           paymentMethodsWidgetRef.current = paymentMethodsWidget;
+          console.log('✅ 결제 수단 렌더링 완료');
           setIsPaymentReady(true);
         } catch (error) {
-          console.error('결제 수단 렌더링 실패:', error);
+          console.error('❌ 결제 수단 렌더링 실패:', error);
+          toast({
+            title: '결제 수단 로드 실패',
+            description: '결제 수단을 불러오는데 실패했습니다. 페이지를 새로고침 해주세요.',
+            variant: 'destructive'
+          });
         }
       };
       renderPaymentMethods();
     }
-  }, [selectedPack]);
+  }, [selectedPack, toast]);
 
   const handlePackSelect = (pack: typeof TOKEN_PACKS[0]) => {
     setSelectedPack(pack);
@@ -67,11 +83,31 @@ const TokenPurchase = () => {
   };
 
   const requestPayment = async () => {
-    if (!selectedPack || !paymentWidgetRef.current) return;
+    if (!selectedPack || !paymentWidgetRef.current) {
+      console.error('❌ 결제 요청 불가: selectedPack 또는 paymentWidget 없음');
+      toast({
+        title: '결제 준비 중',
+        description: '결제 준비가 완료될 때까지 기다려주세요.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (!isPaymentReady) {
+      console.error('❌ 결제 UI가 아직 렌더링되지 않음');
+      toast({
+        title: '결제 UI 로딩 중',
+        description: '결제 수단이 로딩 중입니다. 잠시만 기다려주세요.',
+        variant: 'destructive'
+      });
+      return;
+    }
 
     try {
       const orderId = `order-${Date.now()}`;
       const orderName = `${selectedPack.name} (${selectedPack.tokens}토큰)`;
+
+      console.log('💳 결제 요청 시작:', { orderId, orderName, amount: selectedPack.price });
 
       await paymentWidgetRef.current.requestPayment({
         orderId,
@@ -82,7 +118,7 @@ const TokenPurchase = () => {
         customerName: 'AI Highlight 사용자',
       });
     } catch (err: any) {
-      console.error('결제 요청 오류:', err);
+      console.error('❌ 결제 요청 오류:', err);
       toast({
         title: '결제 오류',
         description: err.message || '결제 처리 중 오류가 발생했습니다.',

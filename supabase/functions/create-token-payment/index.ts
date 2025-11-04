@@ -83,8 +83,8 @@ serve(async (req) => {
     if (paymentError) throw paymentError;
 
     // 토스페이먼츠 결제 요청
-    const tossClientKey = Deno.env.get("TOSS_PAYMENTS_CLIENT_KEY");
-    const tossSecretKey = Deno.env.get("TOSS_PAYMENTS_SECRET_KEY");
+    const tossClientKey = Deno.env.get("TOSS_CLIENT_KEY");
+    const tossSecretKey = Deno.env.get("TOSS_SECRET_KEY");
     
     console.log('TossPayments keys check:', {
       clientKeyExists: !!tossClientKey,

@@ -68,70 +68,145 @@ serve(async (req) => {
       })
       .eq('toss_order_id', orderId)  // 'order_id' 대신 'toss_order_id' 사용
       .select('*, user_id')
-      .single();
+      .maybeSingle();
 
     if (paymentUpdateError) {
       console.error('Payment update error:', paymentUpdateError);
       throw paymentUpdateError;
     }
 
-    // 결제된 주문에서 플랜 ID 추출 (주문명에서 플랜 정보 추출 또는 별도 테이블 조회)
-    // 여기서는 간단히 주문명 기반으로 플랜 결정
-    const planName = result.orderName.includes('프로') ? '프로' : 
-                     result.orderName.includes('프리미엄') ? '프리미엄' : '무료';
-    const subscriptionType = result.orderName.includes('연간') ? 'yearly' : 'monthly';
+    if (!payment) {
+      // toss_order_id로 매칭되지 않으면 order_id로도 한 번 더 시도
+      const { data: paymentAlt, error: paymentUpdateErrorAlt } = await supabaseService
+        .from('payment_history')
+        .update({
+          payment_key: paymentKey,
+          status: 'completed',
+          payment_method: result.method
+        })
+        .eq('order_id', orderId)
+        .select('*, user_id')
+        .maybeSingle();
 
-    // 플랜 ID 조회
-    const { data: plan, error: planError } = await supabaseService
-      .from('subscription_plans')
-      .select('*')
-      .eq('name', planName)
-      .single();
+      if (paymentUpdateErrorAlt) {
+        console.error('Payment update (alt) error:', paymentUpdateErrorAlt);
+        throw paymentUpdateErrorAlt;
+      }
 
-    if (planError || !plan) {
-      throw new Error("구독 플랜을 찾을 수 없습니다.");
+      if (!paymentAlt) {
+        throw new Error('결제 내역을 찾을 수 없습니다. (orderId 불일치)');
+      }
+
+      // 대체 결과를 사용
+      var _payment = paymentAlt as typeof payment; // keep typing simple in Deno
+      // @ts-ignore
+      payment = _payment;
     }
 
-    // 구독 생성 또는 업데이트
-    const startDate = new Date();
-    const endDate = new Date();
-    endDate.setMonth(endDate.getMonth() + (subscriptionType === 'yearly' ? 12 : 1));
+    // 결제 유형 확인 (토큰 구매 vs 구독)
+    if (payment.subscription_type === 'token' && payment.token_package_id) {
+      // 토큰 구매 처리
+      console.log('Processing token purchase for user:', payment.user_id);
+      
+      // 사용자의 현재 토큰 잔액 조회
+      const { data: tokenBalance, error: balanceError } = await supabaseService
+        .from('token_balances')
+        .select('*')
+        .eq('user_id', payment.user_id)
+        .maybeSingle();
 
-    // 기존 구독 취소
-    await supabaseService
-      .from('user_subscriptions')
-      .update({ status: 'cancelled' })
-      .eq('user_id', payment.user_id)
-      .eq('status', 'active');
+      if (balanceError) {
+        throw balanceError;
+      }
 
-    // 새 구독 생성
-    const { error: subError } = await supabaseService
-      .from('user_subscriptions')
-      .insert({
-        user_id: payment.user_id,
-        plan_id: plan.id,
-        subscription_type: subscriptionType,
-        payment_method: 'toss',
-        current_period_start: startDate.toISOString().split('T')[0],
-        current_period_end: endDate.toISOString().split('T')[0],
-        status: 'active'
-      });
+      const currentTokens = tokenBalance?.current_tokens || 0;
+      const newTokenAmount = currentTokens + payment.token_amount;
 
-    if (subError) throw subError;
+      // 토큰 잔액 업데이트 또는 생성
+      if (tokenBalance) {
+        const { error: updateError } = await supabaseService
+          .from('token_balances')
+          .update({ 
+            current_tokens: newTokenAmount,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', payment.user_id);
 
-    // 결제 내역에 구독 ID 업데이트
-    const { data: subscription } = await supabaseService
-      .from('user_subscriptions')
-      .select('id')
-      .eq('user_id', payment.user_id)
-      .eq('status', 'active')
-      .single();
+        if (updateError) throw updateError;
+      } else {
+        const { error: insertError } = await supabaseService
+          .from('token_balances')
+          .insert({
+            user_id: payment.user_id,
+            current_tokens: newTokenAmount,
+            total_purchased: payment.token_amount,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
 
-    if (subscription) {
+        if (insertError) throw insertError;
+      }
+
+      console.log(`✅ Added ${payment.token_amount} tokens to user ${payment.user_id}`);
+      
+    } else {
+      // 구독 결제 처리 (기존 로직)
+      const planName = result.orderName.includes('프로') ? '프로' : 
+                       result.orderName.includes('프리미엄') ? '프리미엄' : '무료';
+      const subscriptionType = result.orderName.includes('연간') ? 'yearly' : 'monthly';
+
+      // 플랜 ID 조회
+      const { data: plan, error: planError } = await supabaseService
+        .from('subscription_plans')
+        .select('*')
+        .eq('name', planName)
+        .single();
+
+      if (planError || !plan) {
+        throw new Error("구독 플랜을 찾을 수 없습니다.");
+      }
+
+      // 구독 생성 또는 업데이트
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + (subscriptionType === 'yearly' ? 12 : 1));
+
+      // 기존 구독 취소
       await supabaseService
-        .from('payment_history')
-        .update({ subscription_id: subscription.id })
-        .eq('id', payment.id);
+        .from('user_subscriptions')
+        .update({ status: 'cancelled' })
+        .eq('user_id', payment.user_id)
+        .eq('status', 'active');
+
+      // 새 구독 생성
+      const { error: subError } = await supabaseService
+        .from('user_subscriptions')
+        .insert({
+          user_id: payment.user_id,
+          plan_id: plan.id,
+          subscription_type: subscriptionType,
+          payment_method: 'toss',
+          current_period_start: startDate.toISOString().split('T')[0],
+          current_period_end: endDate.toISOString().split('T')[0],
+          status: 'active'
+        });
+
+      if (subError) throw subError;
+
+      // 결제 내역에 구독 ID 업데이트
+      const { data: subscription } = await supabaseService
+        .from('user_subscriptions')
+        .select('id')
+        .eq('user_id', payment.user_id)
+        .eq('status', 'active')
+        .single();
+
+      if (subscription) {
+        await supabaseService
+          .from('payment_history')
+          .update({ subscription_id: subscription.id })
+          .eq('id', payment.id);
+      }
     }
 
     return new Response(JSON.stringify({ 

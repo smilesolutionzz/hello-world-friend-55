@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Coins, CreditCard, Building2, Smartphone, Receipt } from 'lucide-react';
 import { loadPaymentWidget, PaymentWidgetInstance } from '@tosspayments/payment-widget-sdk';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { nanoid } from 'nanoid';
 
@@ -104,18 +105,54 @@ const TokenPurchase = () => {
     }
 
     try {
-      const orderId = `order-${Date.now()}`;
-      const orderName = `${selectedPack.name} (${selectedPack.tokens}토큰)`;
+      // 먼저 create-token-payment API를 호출하여 결제 정보 생성
+      console.log('🔄 토큰 결제 생성 요청 시작');
+      
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) {
+        toast({
+          title: '로그인 필요',
+          description: '로그인 후 결제를 진행해주세요.',
+          variant: 'destructive'
+        });
+        navigate('/auth');
+        return;
+      }
 
-      console.log('💳 결제 요청 시작:', { orderId, orderName, amount: selectedPack.price });
+      // 토큰 패키지 ID 찾기 (현재는 간단하게 인덱스로 매핑)
+      const packageId = TOKEN_PACKS.findIndex(pack => pack.tokens === selectedPack.tokens) + 1;
+      
+      const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-token-payment', {
+        headers: {
+          Authorization: `Bearer ${sessionData.session.access_token}`,
+        },
+        body: { 
+          packageId,
+          paymentType: 'token'
+        }
+      });
+
+      if (paymentError || !paymentData) {
+        console.error('❌ 토큰 결제 생성 실패:', paymentError);
+        throw new Error(paymentError?.message || '결제 정보 생성에 실패했습니다.');
+      }
+
+      const { paymentData: tossPaymentData } = paymentData;
+      console.log('✅ 토큰 결제 정보 생성 완료:', tossPaymentData);
+
+      console.log('💳 결제 요청 시작:', { 
+        orderId: tossPaymentData.orderId, 
+        orderName: tossPaymentData.orderName, 
+        amount: tossPaymentData.amount 
+      });
 
       await paymentWidgetRef.current.requestPayment({
-        orderId,
-        orderName,
+        orderId: tossPaymentData.orderId,
+        orderName: tossPaymentData.orderName,
         successUrl: `${window.location.origin}/token-payment-success`,
         failUrl: `${window.location.origin}/token-payment-fail`,
-        customerEmail: '',
-        customerName: 'AI Highlight 사용자',
+        customerEmail: tossPaymentData.customerEmail,
+        customerName: tossPaymentData.customerName,
       });
     } catch (err: any) {
       console.error('❌ 결제 요청 오류:', err);

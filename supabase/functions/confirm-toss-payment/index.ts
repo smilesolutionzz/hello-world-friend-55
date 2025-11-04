@@ -76,31 +76,7 @@ serve(async (req) => {
     }
 
     if (!payment) {
-      // toss_order_id로 매칭되지 않으면 order_id로도 한 번 더 시도
-      const { data: paymentAlt, error: paymentUpdateErrorAlt } = await supabaseService
-        .from('payment_history')
-        .update({
-          payment_key: paymentKey,
-          status: 'completed',
-          payment_method: result.method
-        })
-        .eq('order_id', orderId)
-        .select('*, user_id')
-        .maybeSingle();
-
-      if (paymentUpdateErrorAlt) {
-        console.error('Payment update (alt) error:', paymentUpdateErrorAlt);
-        throw paymentUpdateErrorAlt;
-      }
-
-      if (!paymentAlt) {
-        throw new Error('결제 내역을 찾을 수 없습니다. (orderId 불일치)');
-      }
-
-      // 대체 결과를 사용
-      var _payment = paymentAlt as typeof payment; // keep typing simple in Deno
-      // @ts-ignore
-      payment = _payment;
+      throw new Error('결제 내역을 찾을 수 없습니다. (사전 생성된 주문 없음)');
     }
 
     // 결제 유형 확인 (토큰 구매 vs 구독)

@@ -2,9 +2,31 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Brain, Users } from 'lucide-react';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { Progress } from '@/components/ui/progress';
+import { useLoadingTimer, AnalysisType, ANALYSIS_DURATIONS } from '@/hooks/useLoadingTimer';
 
-const LoadingCompassion: React.FC = () => {
+interface LoadingCompassionProps {
+  analysisType?: AnalysisType;
+}
+
+const LoadingCompassion: React.FC<LoadingCompassionProps> = ({ 
+  analysisType = 'default' 
+}) => {
   const [currentStep, setCurrentStep] = React.useState(0);
+  
+  const { timeLeft, progress, start } = useLoadingTimer({
+    estimatedDuration: ANALYSIS_DURATIONS[analysisType],
+  });
+
+  React.useEffect(() => {
+    start();
+  }, []);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const steps = [
     {
@@ -49,13 +71,23 @@ const LoadingCompassion: React.FC = () => {
           </div>
           
           <div className="space-y-3">
-            <h3 className="text-xl font-bold text-gray-800">
+            <h3 className="text-xl font-bold text-gray-800 flex items-center justify-center gap-2">
               {currentStepData.title}
+              <span className="text-base font-normal text-muted-foreground">
+                ({formatTime(timeLeft)})
+              </span>
             </h3>
             
             <p className="text-gray-600 leading-relaxed">
               {currentStepData.message}
             </p>
+            
+            <div className="pt-2">
+              <Progress value={progress} className="h-2" />
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                {Math.round(progress)}% 완료
+              </p>
+            </div>
           </div>
           
           <div className="flex justify-center">

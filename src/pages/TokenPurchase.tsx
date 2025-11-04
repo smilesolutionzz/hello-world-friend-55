@@ -11,19 +11,62 @@ import { nanoid } from 'nanoid';
 const TOSS_CLIENT_KEY = 'live_ck_5OWRapdA8dG7PRogXoJWro1zEqZK';
 const CUSTOMER_KEY = 'ai-highlight-customer-' + nanoid();
 
-const TOKEN_PACKS = [
-  { tokens: 50, price: 9900, name: '토큰팩 50' },
-  { tokens: 150, price: 19900, name: '토큰팩 150' },
-  { tokens: 400, price: 39900, name: '토큰팩 400' }
-];
+interface TokenPackage {
+  id: string;
+  name: string;
+  tokens: number;
+  price: number;
+  is_active: boolean;
+}
 
 const TokenPurchase = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
   const paymentMethodsWidgetRef = useRef<ReturnType<PaymentWidgetInstance['renderPaymentMethods']> | null>(null);
-  const [selectedPack, setSelectedPack] = useState<typeof TOKEN_PACKS[0] | null>(null);
+  const [tokenPackages, setTokenPackages] = useState<TokenPackage[]>([]);
+  const [selectedPack, setSelectedPack] = useState<TokenPackage | null>(null);
   const [isPaymentReady, setIsPaymentReady] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // 실제 DB에서 토큰 패키지 조회
+  useEffect(() => {
+    const fetchTokenPackages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('token_packages')
+          .select('*')
+          .eq('is_active', true)
+          .order('token_count', { ascending: true });
+
+        if (error) throw error;
+
+        console.log('✅ 토큰 패키지 조회 완료:', data);
+        
+        // DB 컬럼명을 인터페이스에 맞게 변환
+        const mappedPackages: TokenPackage[] = (data || []).map(pkg => ({
+          id: pkg.id,
+          name: pkg.name,
+          tokens: pkg.token_count,
+          price: pkg.price_krw,
+          is_active: pkg.is_active
+        }));
+        
+        setTokenPackages(mappedPackages);
+      } catch (error) {
+        console.error('❌ 토큰 패키지 조회 오류:', error);
+        toast({
+          title: '패키지 조회 실패',
+          description: '토큰 패키지 정보를 불러오는데 실패했습니다.',
+          variant: 'destructive',
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTokenPackages();
+  }, [toast]);
 
   useEffect(() => {
     const initializePaymentWidget = async () => {
@@ -78,7 +121,8 @@ const TokenPurchase = () => {
     }
   }, [selectedPack, toast]);
 
-  const handlePackSelect = (pack: typeof TOKEN_PACKS[0]) => {
+  const handlePackSelect = (pack: TokenPackage) => {
+    console.log('📦 선택된 패키지:', pack);
     setSelectedPack(pack);
     setIsPaymentReady(false);
   };
@@ -107,6 +151,7 @@ const TokenPurchase = () => {
     try {
       // 먼저 create-token-payment API를 호출하여 결제 정보 생성
       console.log('🔄 토큰 결제 생성 요청 시작');
+      console.log('📦 선택된 패키지 ID:', selectedPack.id);
       
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session) {
@@ -118,16 +163,13 @@ const TokenPurchase = () => {
         navigate('/auth');
         return;
       }
-
-      // 토큰 패키지 ID 찾기 (현재는 간단하게 인덱스로 매핑)
-      const packageId = TOKEN_PACKS.findIndex(pack => pack.tokens === selectedPack.tokens) + 1;
       
       const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-token-payment', {
         headers: {
           Authorization: `Bearer ${sessionData.session.access_token}`,
         },
         body: { 
-          packageId,
+          packageId: selectedPack.id, // 실제 DB의 패키지 ID 사용
           paymentType: 'token'
         }
       });
@@ -179,14 +221,18 @@ const TokenPurchase = () => {
           <p className="text-muted-foreground">원하는 토큰팩과 결제 방법을 선택해주세요</p>
         </div>
 
-        {!selectedPack ? (
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-lg text-muted-foreground">토큰 패키지 정보를 불러오는 중...</p>
+          </div>
+        ) : !selectedPack ? (
           <>
             <div className="text-center mb-8">
               <h2 className="text-2xl font-semibold mb-4">토큰팩 선택</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {TOKEN_PACKS.map((pack, idx) => (
-                <Card key={idx} className="shadow-xl border-2 hover:border-primary/50 transition-colors cursor-pointer">
+              {tokenPackages.map((pack) => (
+                <Card key={pack.id} className="shadow-xl border-2 hover:border-primary/50 transition-colors cursor-pointer">
                   <CardHeader className="text-center bg-gradient-to-r from-blue-500 to-purple-500 text-white">
                     <Coins className="w-12 h-12 mx-auto mb-2" />
                     <CardTitle className="text-2xl font-bold">{pack.name}</CardTitle>

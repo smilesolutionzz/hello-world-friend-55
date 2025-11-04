@@ -7,7 +7,7 @@ import { loadPaymentWidget, PaymentWidgetInstance } from '@tosspayments/payment-
 import { useToast } from '@/hooks/use-toast';
 import { nanoid } from 'nanoid';
 
-const TOSS_CLIENT_KEY = 'live_gck_ma60RZbIrqo1lKlBKmjW3wzYWBn1';
+const TOSS_CLIENT_KEY = 'live_ck_5OWRapdA8dG7PRogXoJWro1zEqZK';
 const CUSTOMER_KEY = 'ai-highlight-customer-' + nanoid();
 
 const TOKEN_PACKS = [

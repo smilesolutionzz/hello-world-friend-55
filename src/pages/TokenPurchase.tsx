@@ -30,6 +30,8 @@ const TokenPurchase = () => {
   const [loading, setLoading] = useState(true);
   const [tossClientKey, setTossClientKey] = useState<string | null>(null);
   const [widgetReady, setWidgetReady] = useState(false);
+  const [inIframe, setInIframe] = useState(false);
+  const [widgetVisible, setWidgetVisible] = useState(false);
 
   // 실제 DB에서 토큰 패키지 조회
   useEffect(() => {
@@ -80,6 +82,15 @@ const TokenPurchase = () => {
 
     fetchTokenPackages();
   }, [toast, searchParams]);
+
+  // 프리뷰(iFrame) 환경 감지
+  useEffect(() => {
+    try {
+      setInIframe(window.self !== window.top);
+    } catch {
+      setInIframe(true);
+    }
+  }, []);
 
   // Toss Client Key 가져오기
   useEffect(() => {
@@ -167,6 +178,7 @@ const TokenPurchase = () => {
         });
         
         setIsPaymentReady(false);
+        setWidgetVisible(false);
         
         // 기존 위젯이 있다면 제거
         const widgetContainer = document.getElementById('payment-widget');
@@ -175,6 +187,7 @@ const TokenPurchase = () => {
           widgetContainer.innerHTML = '';
         } else {
           console.error('❌ payment-widget 컨테이너를 찾을 수 없음');
+          setWidgetVisible(false);
           return;
         }
 
@@ -187,12 +200,19 @@ const TokenPurchase = () => {
         
         paymentMethodsWidgetRef.current = paymentMethodsWidget;
         console.log('✅ 결제 수단 렌더링 완료');
-        setIsPaymentReady(true);
+        
+        // 렌더 후 실제 iframe이 들어왔는지 확인 (iFrame/도메인 이슈 감지)
+        setTimeout(() => {
+          const mounted = !!document.querySelector('#payment-widget iframe');
+          setWidgetVisible(mounted);
+          setIsPaymentReady(mounted);
+          console.log(mounted ? '👀 위젯 표시됨' : '⚠️ 위젯이 표시되지 않음 (도메인/iFrame 차단 가능)');
+        }, 800);
       } catch (error) {
         console.error('❌ 결제 수단 렌더링 실패:', error);
         toast({
           title: '결제 수단 로드 실패',
-          description: '결제 수단을 불러오는데 실패했습니다. 페이지를 새로고침 해주세요.',
+          description: '도메인 미등록 또는 브라우저 차단으로 위젯이 표시되지 않을 수 있어요.',
           variant: 'destructive'
         });
       }
@@ -395,7 +415,24 @@ const TokenPurchase = () => {
                   ))}
                 </div>
 
-                <div id="payment-widget" className="min-h-[400px]" />
+                <div id="payment-widget" className="min-h-[400px] relative rounded-md border border-muted/40" />
+
+                {!widgetVisible && (
+                  <div className="mt-3 text-sm text-muted-foreground">
+                    결제 위젯이 보이지 않으면 도메인 미등록 또는 브라우저 차단 때문일 수 있어요.
+                    {inIframe && (
+                      <div className="mt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => window.open(window.location.href, '_blank', 'noopener')}
+                        >
+                          새 창에서 열기
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="flex gap-4 mt-6">
                   <Button

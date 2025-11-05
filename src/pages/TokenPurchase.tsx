@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Coins, CreditCard, Building2, Smartphone, Receipt } from 'lucide-react';
@@ -21,6 +21,7 @@ interface TokenPackage {
 const TokenPurchase = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
   const paymentMethodsWidgetRef = useRef<ReturnType<PaymentWidgetInstance['renderPaymentMethods']> | null>(null);
   const [tokenPackages, setTokenPackages] = useState<TokenPackage[]>([]);
@@ -53,6 +54,17 @@ const TokenPurchase = () => {
         }));
         
         setTokenPackages(mappedPackages);
+
+        // URL 파라미터에서 토큰 수량이 있으면 해당 패키지 자동 선택
+        const requestedTokens = searchParams.get('tokens');
+        if (requestedTokens && mappedPackages.length > 0) {
+          const targetTokens = parseInt(requestedTokens);
+          const matchingPackage = mappedPackages.find(pkg => pkg.tokens === targetTokens);
+          if (matchingPackage) {
+            console.log('✅ URL 파라미터로 자동 선택된 패키지:', matchingPackage);
+            setSelectedPack(matchingPackage);
+          }
+        }
       } catch (error) {
         console.error('❌ 토큰 패키지 조회 오류:', error);
         toast({
@@ -66,7 +78,7 @@ const TokenPurchase = () => {
     };
 
     fetchTokenPackages();
-  }, [toast]);
+  }, [toast, searchParams]);
 
   // Toss Client Key 가져오기
   useEffect(() => {

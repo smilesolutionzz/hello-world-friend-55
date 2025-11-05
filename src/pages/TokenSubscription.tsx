@@ -89,13 +89,8 @@ const TokenSubscription = () => {
         return;
       }
 
-      // 새로운 토큰 구매 페이지로 이동
-      navigate('/token-purchase', { 
-        state: { 
-          tokenAmount: pkg.tokens,
-          price: pkg.price
-        } 
-      });
+      // 토큰 수량을 URL 파라미터로 전달
+      navigate(`/token-purchase?tokens=${pkg.tokens}`);
 
     } catch (error: any) {
       console.error('토큰 구매 오류:', error);

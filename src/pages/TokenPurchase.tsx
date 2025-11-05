@@ -293,12 +293,21 @@ const TokenPurchase = () => {
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-2">
                         {pack.tokens.toLocaleString()} 토큰
+                        {pack.tokens === 400 && (
+                          <div className="text-lg text-orange-500 font-semibold mt-1">
+                            + 50 보너스 토큰 🎁
+                          </div>
+                        )}
                       </div>
                       <div className="text-2xl font-semibold">
                         ₩{pack.price.toLocaleString()}
                       </div>
                       <div className="text-sm text-muted-foreground mt-2">
-                        토큰당 ₩{Math.round(pack.price / pack.tokens)}
+                        {pack.tokens === 400 ? (
+                          <span className="text-orange-600 font-semibold">토큰당 ₩88 (이벤트가)</span>
+                        ) : (
+                          <span>토큰당 ₩{Math.round(pack.price / pack.tokens)}</span>
+                        )}
                       </div>
                     </div>
 
@@ -323,6 +332,11 @@ const TokenPurchase = () => {
                     <CardTitle className="text-2xl">선택한 상품</CardTitle>
                     <p className="text-muted-foreground mt-2">
                       {selectedPack.name} - {selectedPack.tokens.toLocaleString()}토큰
+                      {selectedPack.tokens === 400 && (
+                        <span className="text-orange-500 font-semibold ml-2">
+                          + 보너스 50토큰 🎁
+                        </span>
+                      )}
                     </p>
                   </div>
                   <div className="text-right">

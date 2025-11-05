@@ -54,12 +54,14 @@ const TOKEN_PACKAGES: TokenPackage[] = [
     tokens: 400,
     price: 39900,
     features: [
+      '🎉 11월 특별 이벤트: +50 보너스 토큰!',
+      '총 450토큰 지급 (400 + 보너스 50)',
       '기본 심리검사 200회',
       '프리미엄 검사 50회',
       'IEP 생성 8회',
       '종합리포트 2회',
       '모든 기능 자유 이용',
-      '토큰당 99원으로 최고 할인율',
+      '토큰당 88원으로 최고 할인율',
       '장기간 안심 이용',
       '전문가급 서비스'
     ]
@@ -172,6 +174,8 @@ const TokenSubscription = () => {
               className={`relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                 pkg.popular 
                   ? 'border-2 border-purple-400 shadow-lg scale-105' 
+                  : index === 2
+                  ? 'border-2 border-orange-400 shadow-lg'
                   : 'border border-border hover:border-primary/20'
               }`}
               style={{ overflow: 'visible' }}
@@ -180,6 +184,13 @@ const TokenSubscription = () => {
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
                   <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
                     🌟 인기
+                  </Badge>
+                </div>
+              )}
+              {index === 2 && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 text-sm font-bold shadow-lg animate-pulse">
+                    🎉 11월 특별
                   </Badge>
                 </div>
               )}
@@ -196,12 +207,21 @@ const TokenSubscription = () => {
                 <div className="space-y-2">
                   <div className="text-4xl font-bold text-foreground">
                     {pkg.tokens} <span className="text-xl text-muted-foreground">토큰</span>
+                    {index === 2 && (
+                      <div className="text-lg text-orange-500 font-semibold mt-1">
+                        + 50 보너스 🎁
+                      </div>
+                    )}
                   </div>
                   <div className="text-3xl font-bold text-primary">
                     ₩{formatPrice(pkg.price)}
                   </div>
                   <div className="mt-2 text-sm text-muted-foreground">
-                    토큰당 ₩{Math.round(pkg.price / pkg.tokens)}
+                    {index === 2 ? (
+                      <span className="text-orange-600 font-semibold">토큰당 ₩88 (이벤트가)</span>
+                    ) : (
+                      <span>토큰당 ₩{Math.round(pkg.price / pkg.tokens)}</span>
+                    )}
                   </div>
                   <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-2">
                     <Clock className="w-4 h-4" />
@@ -225,6 +245,8 @@ const TokenSubscription = () => {
                     className={`w-full py-3 text-lg font-bold ${
                       pkg.popular
                         ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
+                        : index === 2
+                        ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white'
                         : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white'
                     }`}
                     disabled={loading}
@@ -239,7 +261,7 @@ const TokenSubscription = () => {
                       ) : (
                         <>
                           <Coins className="w-5 h-5" />
-                          구매하기
+                          {index === 2 ? '🎁 특별가로 구매하기' : '구매하기'}
                         </>
                       )}
                     </div>

@@ -507,6 +507,37 @@ const mockExperts: Expert[] = [
     location: '전국',
     isOnline: true,
     responseTime: '평균 1시간 이내'
+  },
+  {
+    id: '15',
+    name: '윤은민',
+    specialty: ['언어치료', '인지상담', '비언어성지능검사'],
+    credentials: ['언어재활사', '박사', '언어치료전문가', '경력 다년', '여'],
+    rating: 5.0,
+    reviews: 0,
+    experience: '다년',
+    availability: '전연령 대상 가능',
+    monthlyPrice: 240000,
+    hourlyPrice: 60000,
+    image: getExpertImage('윤은민') || '/api/placeholder/150/150',
+    description: '언어치료 전문가이자 박사 학위 소지자로, 언어발달지연, 조음장애, 의사소통 문제를 전문적으로 다룹니다. 비언어성지능검사를 통한 정확한 평가와 인지상담을 통해 아동의 전반적인 발달을 지원합니다. 과학적 근거에 기반한 체계적인 언어치료 프로그램으로 최상의 결과를 제공합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['대면상담', '화상상담', '센터상담'],
+    monthlyServices: [
+      '주 2회 언어치료 (월 8회)',
+      '비언어성지능검사 및 평가',
+      '인지상담 및 발달 지원',
+      '언어발달 평가 리포트',
+      '부모 교육 및 가정 지도'
+    ],
+    portfolio: {
+      cases: 400,
+      successRate: 94,
+      specializations: ['언어치료', '인지상담', '비언어성지능검사', '조음장애', '언어발달지연']
+    },
+    location: '전국',
+    isOnline: true,
+    responseTime: '평균 1.5시간 이내'
   }
 ];
 

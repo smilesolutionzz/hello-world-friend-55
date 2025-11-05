@@ -360,7 +360,7 @@ const mockExperts: Expert[] = [
     id: '10',
     name: '양희진',
     specialty: ['특수체육', '운동발달', '사회성'],
-    credentials: ['특수체육치료사', '학사', '경력 5년', '남'],
+    credentials: ['특수체육치료사', '학사', '남'],
     rating: 4.7,
     reviews: 0,
     experience: '5년',
@@ -390,7 +390,7 @@ const mockExperts: Expert[] = [
     id: '11',
     name: '이효진',
     specialty: ['언어치료', '심리상담', 'ABA치료'],
-    credentials: ['언어치료사', '심리상담사', 'ABA치료사', '박사', '경력 20년', '여'],
+    credentials: ['언어치료사', '심리상담사', 'ABA치료사', '박사', '여'],
     rating: 5.0,
     reviews: 0,
     experience: '20년',
@@ -421,7 +421,7 @@ const mockExperts: Expert[] = [
     id: '12',
     name: '전우준',
     specialty: ['미술치료', '심리상담'],
-    credentials: ['미술치료사', '심리상담사', '석사', '경력 2년', '남'],
+    credentials: ['미술치료사', '심리상담사', '석사', '남'],
     rating: 4.6,
     reviews: 0,
     experience: '2년',
@@ -451,7 +451,7 @@ const mockExperts: Expert[] = [
     id: '13',
     name: '김지수',
     specialty: ['언어치료'],
-    credentials: ['언어치료사', '석사', '경력 4년', '여', '치료사'],
+    credentials: ['언어치료사', '석사', '여'],
     rating: 4.8,
     reviews: 0,
     experience: '4년',
@@ -481,7 +481,7 @@ const mockExperts: Expert[] = [
     id: '14',
     name: '이성우',
     specialty: ['운동재활', '물리치료', '작업치료'],
-    credentials: ['물리치료사', '박사', '경력 20년', '남', '치료사'],
+    credentials: ['물리치료사', '박사', '남'],
     rating: 5.0,
     reviews: 0,
     experience: '20년',
@@ -512,7 +512,7 @@ const mockExperts: Expert[] = [
     id: '15',
     name: '윤은민',
     specialty: ['언어치료', '인지상담', '비언어성지능검사'],
-    credentials: ['언어재활사', '박사', '언어치료전문가', '경력 다년', '여'],
+    credentials: ['언어재활사', '박사', '언어치료전문가', '여'],
     rating: 5.0,
     reviews: 0,
     experience: '다년',
@@ -679,8 +679,18 @@ const ExpertHiring = () => {
         responseTime: '평균 2시간 이내'
       }));
       
-      const mockExpertsToAdd = [...mockExperts, ...convertedMockExperts].filter(mock => 
-        !formattedExperts.some(db => db.name === mock.name || db.name.includes(mock.name))
+      // 중복 제거: 이름이 같은 전문가는 하나만 남기기
+      const allCombined = [...mockExperts, ...convertedMockExperts];
+      const uniqueExperts = new Map();
+      
+      allCombined.forEach(expert => {
+        if (!uniqueExperts.has(expert.name)) {
+          uniqueExperts.set(expert.name, expert);
+        }
+      });
+      
+      const mockExpertsToAdd = Array.from(uniqueExperts.values()).filter(mock => 
+        !formattedExperts.some(db => db.name === mock.name || db.name.includes(mock.name) || mock.name.includes(db.name))
       );
       
       // DB 전문가 + mock 전문가 결합

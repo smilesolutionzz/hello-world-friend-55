@@ -190,12 +190,12 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
         </Card>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-3xl mx-auto">
           <Button
             size="lg"
             variant="outline"
             onClick={handleDownload}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 flex-1"
           >
             <Download className="w-4 h-4" />
             결과 다운로드
@@ -203,6 +203,7 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
           <Button
             size="lg"
             onClick={() => navigate('/expert-counseling')}
+            className="flex-1"
           >
             전문 상담 연결
           </Button>
@@ -210,7 +211,7 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
             size="lg"
             variant="outline"
             onClick={() => navigate('/')}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 flex-1"
           >
             <Home className="w-4 h-4" />
             홈으로

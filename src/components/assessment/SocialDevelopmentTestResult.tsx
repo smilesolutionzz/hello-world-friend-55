@@ -326,8 +326,11 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" domain={[0, 100]} />
                     <YAxis dataKey="domain" type="category" width={80} tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Bar dataKey="percentage" fill="#8B5CF6" radius={[0, 4, 4, 0]}>
+                    <Tooltip 
+                      formatter={(value: number) => `${value}%`}
+                      labelFormatter={(label: string) => `${label}`}
+                    />
+                    <Bar dataKey="percentage" fill="#8B5CF6" radius={[0, 4, 4, 0]} label={{ position: 'right', formatter: (value: number) => `${value}%` }}>
                       {socialDomains.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}

@@ -28,22 +28,43 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
   const today = new Date().toLocaleDateString('ko-KR');
   
   const getCategoryName = (category: string) => {
-    const names = {
-      depression: "우울감 지수",
-      anxiety: "불안감 수준",
-      personality: "성격 특성",
-      workplace: "직장 적응도",
-      resilience: "회복력 지수",
-      leadership: "리더십 역량",
-      empathy: "공감 능력",
-      problem_solving: "문제해결력",
-      communication: "소통 능력",
+    const names: Record<string, string> = {
+      depression: "우울감",
+      dep: "우울감",
+      anxiety: "불안감",
+      anx: "불안감",
+      personality: "성격",
+      workplace: "직장적응",
+      work: "직장적응",
+      resilience: "회복력",
+      res: "회복력",
+      leadership: "리더십",
+      lead: "리더십",
+      empathy: "공감",
+      emp: "공감",
+      problem_solving: "문제해결",
+      prob: "문제해결",
+      communication: "소통",
+      comm: "소통",
       focus: "집중력",
+      foc: "집중력",
       creativity: "창의성",
+      cre: "창의성",
       adaptability: "적응력",
+      adap: "적응력",
       persistence: "끈기",
-      collaboration: "협력 능력"
+      collaboration: "협력",
+      coll: "협력"
     };
+    
+    // 축약형이 있으면 변환
+    const lowerCategory = category.toLowerCase();
+    for (const [key, value] of Object.entries(names)) {
+      if (lowerCategory.includes(key)) {
+        return value;
+      }
+    }
+    
     return names[category as keyof typeof names] || category;
   };
 
@@ -146,9 +167,11 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" fontSize={12} />
+                  <XAxis dataKey="name" fontSize={10} angle={-15} textAnchor="end" height={80} />
                   <YAxis domain={[0, 3]} />
-                  <Tooltip />
+                  <Tooltip 
+                    formatter={(value: number, name: string) => [`${value.toFixed(1)}점`, getCategoryName(name)]}
+                  />
                   <Bar dataKey="value" fill="hsl(var(--primary))" />
                 </BarChart>
               </ResponsiveContainer>

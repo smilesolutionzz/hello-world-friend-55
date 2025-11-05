@@ -18,8 +18,66 @@ interface PanicTestResultProps {
   onBack: () => void;
 }
 
+const getSeverityLevel = (total: number) => {
+  if (total <= 15) return "정상";
+  if (total <= 30) return "경미";
+  if (total <= 45) return "중등도";
+  return "심각";
+};
+
+const getSeverityColor = (severity: string) => {
+  switch (severity) {
+    case "정상":
+      return "bg-green-100 text-green-800 border-green-200";
+    case "경미":
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    case "중등도":
+      return "bg-orange-100 text-orange-800 border-orange-200";
+    case "심각":
+      return "bg-red-100 text-red-800 border-red-200";
+    default:
+      return "bg-gray-100 text-gray-800 border-gray-200";
+  }
+};
+
+const getRecommendation = (severity: string) => {
+  switch (severity) {
+    case "정상":
+      return {
+        icon: <CheckCircle className="w-6 h-6 text-green-600" />,
+        title: "양호한 상태",
+        description: "현재 공황장애 증상이 거의 없는 상태입니다. 정기적인 자가관리를 통해 현재 상태를 유지하시기 바랍니다."
+      };
+    case "경미":
+      return {
+        icon: <Heart className="w-6 h-6 text-yellow-600" />,
+        title: "경미한 증상",
+        description: "가벼운 불안 증상이 있을 수 있습니다. 스트레스 관리와 이완 기법을 통해 증상을 완화할 수 있습니다."
+      };
+    case "중등도":
+      return {
+        icon: <AlertTriangle className="w-6 h-6 text-orange-600" />,
+        title: "중등도 증상",
+        description: "공황장애 증상이 중등도 수준입니다. 전문가와 상담하여 적절한 치료 방법을 찾아보시는 것을 권장합니다."
+      };
+    case "심각":
+      return {
+        icon: <AlertTriangle className="w-6 h-6 text-red-600" />,
+        title: "심각한 증상",
+        description: "즉시 전문가의 도움이 필요합니다. 통합건강의학과 전문의와 상담받으시기를 적극 권장드립니다."
+      };
+    default:
+      return {
+        icon: <Heart className="w-6 h-6 text-gray-600" />,
+        title: "검사 완료",
+        description: "검사가 완료되었습니다."
+      };
+  }
+};
+
 const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
-  const { total, average, severity } = results;
+  const { total, average } = results;
+  const severity = getSeverityLevel(total);
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { shareAsText } = useShareText();
   
@@ -30,56 +88,6 @@ const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
       fullMark: 63,
     }
   ];
-
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case "정상":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "경미":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "중등도":
-        return "bg-orange-100 text-orange-800 border-orange-200";
-      case "심각":
-        return "bg-red-100 text-red-800 border-red-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
-  const getRecommendation = (severity: string) => {
-    switch (severity) {
-      case "정상":
-        return {
-          icon: <CheckCircle className="w-6 h-6 text-green-600" />,
-          title: "양호한 상태",
-          description: "현재 공황장애 증상이 거의 없는 상태입니다. 정기적인 자가관리를 통해 현재 상태를 유지하시기 바랍니다."
-        };
-      case "경미":
-        return {
-          icon: <Heart className="w-6 h-6 text-yellow-600" />,
-          title: "경미한 증상",
-          description: "가벼운 불안 증상이 있을 수 있습니다. 스트레스 관리와 이완 기법을 통해 증상을 완화할 수 있습니다."
-        };
-      case "중등도":
-        return {
-          icon: <AlertTriangle className="w-6 h-6 text-orange-600" />,
-          title: "중등도 증상",
-          description: "공황장애 증상이 중등도 수준입니다. 전문가와 상담하여 적절한 치료 방법을 찾아보시는 것을 권장합니다."
-        };
-      case "심각":
-        return {
-          icon: <AlertTriangle className="w-6 h-6 text-red-600" />,
-          title: "심각한 증상",
-          description: "즉시 전문가의 도움이 필요합니다. 통합건강의학과 전문의와 상담받으시기를 적극 권장드립니다."
-        };
-      default:
-        return {
-          icon: <Heart className="w-6 h-6 text-gray-600" />,
-          title: "검사 완료",
-          description: "검사가 완료되었습니다."
-        };
-    }
-  };
 
   const recommendation = getRecommendation(severity);
 

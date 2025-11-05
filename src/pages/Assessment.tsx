@@ -1729,7 +1729,11 @@ const Assessment = () => {
         <div className="container mx-auto max-w-4xl">
           <DepressionTestResult 
             results={depressionResults}
-            onBack={handleBack}
+            onBack={() => setCurrentStep('depression-test')}
+            onRestart={() => {
+              setDepressionResults(null);
+              setCurrentStep('depression-test');
+            }}
           />
         </div>
       </div>
@@ -1742,7 +1746,11 @@ const Assessment = () => {
         <div className="container mx-auto max-w-4xl">
           <PanicTestResult 
             results={panicResults}
-            onBack={handleBack}
+            onBack={() => setCurrentStep('panic-test')}
+            onRestart={() => {
+              setPanicResults(null);
+              setCurrentStep('panic-test');
+            }}
           />
         </div>
       </div>

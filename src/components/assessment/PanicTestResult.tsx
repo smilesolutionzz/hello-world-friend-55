@@ -16,6 +16,7 @@ interface PanicTestResultProps {
     severity: string;
   };
   onBack: () => void;
+  onRestart?: () => void;
 }
 
 const getSeverityLevel = (total: number) => {
@@ -75,7 +76,7 @@ const getRecommendation = (severity: string) => {
   }
 };
 
-const PanicTestResult = ({ results, onBack }: PanicTestResultProps) => {
+const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) => {
   const { total, average } = results;
   const severity = getSeverityLevel(total);
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();

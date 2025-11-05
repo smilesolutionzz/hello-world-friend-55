@@ -102,14 +102,17 @@ const AdhdTestForm = ({ ageGroup, onComplete, onBack }: AdhdTestFormProps) => {
       const average = Math.round((total / numericAnswers.length) * 10) / 10;
       
       let severity = "";
-      // 18개 문항 * 3점 = 54점 만점 (ADHD 증상 점수이므로 점수가 낮을수록 좋음)
-      if (total <= 18) {
+      // ADHD 테스트는 0-3점 척도 (0=전혀없음, 1=가끔, 2=자주, 3=매우자주)
+      // 18개 문항 * 3점 = 54점 만점
+      // 점수가 높을수록 ADHD 증상이 심함
+      // 점수 분포를 재조정하여 더 정확한 평가
+      if (total <= 13) {  // 약 24% 이하
         severity = "정상 범위";
-      } else if (total <= 27) {
+      } else if (total <= 22) {  // 약 41% 이하
         severity = "경계선 수준";
-      } else if (total <= 36) {
+      } else if (total <= 35) {  // 약 65% 이하
         severity = "중등도 수준";
-      } else {
+      } else {  // 65% 초과
         severity = "심각한 수준";
       }
       

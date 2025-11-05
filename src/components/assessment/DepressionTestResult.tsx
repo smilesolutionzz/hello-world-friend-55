@@ -26,9 +26,10 @@ interface DepressionTestResultProps {
     severity: string;
   };
   onBack: () => void;
+  onRestart?: () => void;
 }
 
-const DepressionTestResult = ({ results, onBack }: DepressionTestResultProps) => {
+const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResultProps) => {
   const navigate = useNavigate();
   const { total, average, severity, answers } = results;
   const [aiAnalysis, setAiAnalysis] = useState<string>("");

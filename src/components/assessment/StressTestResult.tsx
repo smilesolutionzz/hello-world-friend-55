@@ -299,18 +299,23 @@ const StressTestResult = ({ result, onRestart }: StressTestResultProps) => {
           <CardContent className="pt-6">
             <div className="flex flex-col gap-3">
               <Button 
-                onClick={() => generatePDFReport({
-                  testType: 'stress',
-                  results: {
-                    ...result,
-                    ageGroup: '성인'
-                  },
-                  analysis: analysis,
-                  testInfo: {
+                onClick={() => {
+                  const testData = {
+                    testType: 'stress',
                     testName: '스트레스 지수 측정',
+                    results: {
+                      total: result.total,
+                      average: result.average,
+                      severity: result.severity,
+                      answers: result.answers,
+                      ageGroup: '성인'
+                    },
+                    analysis: analysis || '스트레스 분석 결과',
                     date: new Date().toLocaleDateString('ko-KR')
-                  }
-                })}
+                  };
+                  console.log('📄 PDF 생성 데이터:', testData);
+                  generatePDFReport(testData);
+                }}
                 disabled={isGeneratingPDF}
                 className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700"
               >

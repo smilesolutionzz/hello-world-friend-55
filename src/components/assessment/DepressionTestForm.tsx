@@ -60,15 +60,14 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
       const numericAnswers = answers.map(a => {
         const parsed = parseInt(a);
         if (isNaN(parsed)) return 0;
-        // 1점(그렇지 않다) -> 3점(우울함), 3점(그렇다) -> 1점(우울하지 않음)으로 역전
-        return 4 - parsed;
+        // 3점(그렇다) -> 0점(정상), 2점(보통) -> 1점, 1점(그렇지 않다) -> 2점(우울함)으로 역전
+        return 3 - parsed;
       });
       
-      // 유효한 답변만 계산에 포함
-      const validAnswers = numericAnswers.filter(a => a > 0);
-      const total = validAnswers.reduce((sum, answer) => sum + answer, 0);
-      const average = validAnswers.length > 0 
-        ? Math.round((total / validAnswers.length) * 10) / 10 
+      // 총점 계산 (0-42점 범위)
+      const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
+      const average = total > 0 
+        ? Math.round((total / 21) * 10) / 10 
         : 0;
       
       let severity = "";

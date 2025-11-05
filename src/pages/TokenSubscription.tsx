@@ -91,7 +91,7 @@ const TokenSubscription = () => {
         return;
       }
 
-      // 토큰 수량을 URL 파라미터로 전달
+      // 토큰 수량을 URL 파라미터로 전달하여 해당 패키지 자동 선택
       navigate(`/token-purchase?tokens=${pkg.tokens}`);
 
     } catch (error: any) {

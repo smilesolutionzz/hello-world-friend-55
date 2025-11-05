@@ -14,6 +14,31 @@ serve(async (req) => {
   try {
     const { packageId, paymentType = 'token' } = await req.json();
     
+    // 토스페이먼츠 키 확인
+    const tossClientKey = Deno.env.get("TOSS_CLIENT_KEY");
+    const tossSecretKey = Deno.env.get("TOSS_SECRET_KEY");
+    
+    console.log('TossPayments keys check:', {
+      clientKeyExists: !!tossClientKey,
+      secretKeyExists: !!tossSecretKey,
+      clientKeyPrefix: tossClientKey?.substring(0, 10) + '...',
+    });
+    
+    if (!tossClientKey || !tossSecretKey) {
+      throw new Error("토스페이먼츠 API 키가 설정되지 않았습니다.");
+    }
+
+    // packageId가 'temp'인 경우 clientKey만 반환
+    if (packageId === 'temp') {
+      console.log('Client key request only');
+      return new Response(JSON.stringify({ 
+        success: true,
+        clientKey: tossClientKey
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    
     // Supabase 클라이언트 생성 (인증용)
     const supabaseAuth = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -36,6 +61,8 @@ serve(async (req) => {
     if (!user) {
       throw new Error("User not authenticated");
     }
+
+    console.log('Token payment request for package:', packageId);
 
     // 토큰 패키지 정보 가져오기
     const { data: tokenPackage, error: packageError } = await supabaseAdmin
@@ -81,20 +108,6 @@ serve(async (req) => {
       });
 
     if (paymentError) throw paymentError;
-
-    // 토스페이먼츠 결제 요청
-    const tossClientKey = Deno.env.get("TOSS_CLIENT_KEY");
-    const tossSecretKey = Deno.env.get("TOSS_SECRET_KEY");
-    
-    console.log('TossPayments keys check:', {
-      clientKeyExists: !!tossClientKey,
-      secretKeyExists: !!tossSecretKey,
-      clientKeyPrefix: tossClientKey?.substring(0, 10) + '...',
-    });
-    
-    if (!tossClientKey || !tossSecretKey) {
-      throw new Error("토스페이먼츠 API 키가 설정되지 않았습니다.");
-    }
 
     console.log('Token payment request created:', paymentData);
 

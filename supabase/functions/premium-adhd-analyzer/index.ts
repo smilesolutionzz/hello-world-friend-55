@@ -18,6 +18,14 @@ interface ADHDAnalysisRequest {
   total: number;
   average: number;
   userId?: string;
+  scores?: {
+    inattention: number;
+    hyperactivity: number;
+    impulsivity: number;
+    executiveDysfunction: number;
+    comorbidity: number;
+    functionalImpairment: number;
+  };
 }
 
 serve(async (req) => {
@@ -30,14 +38,15 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl!, supabaseKey!);
     console.log('[PREMIUM-ADHD-ANALYZER] 요청 시작');
 
-    const { answers, ageGroup, severity, total, average, userId }: ADHDAnalysisRequest = await req.json();
+    const { answers, ageGroup, severity, total, average, userId, scores }: ADHDAnalysisRequest = await req.json();
     
     console.log('[PREMIUM-ADHD-ANALYZER] 분석 시작:', {
       answersCount: answers.length,
       ageGroup,
       severity,
       total,
-      average
+      average,
+      scores
     });
 
     // 토큰 확인 및 차감
@@ -78,31 +87,63 @@ serve(async (req) => {
       console.log(`ADHD 전문 분석 - 토큰 차감: 8, 잔액: ${userTokens.current_tokens - 8}`);
     }
 
-    // 기본 ADHD 검사는 18문항 (주의력 결핍 9문항 + 과잉행동/충동성 9문항)
-    const adhdDomains = [
-      { name: '주의력 결핍', items: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
-      { name: '과잉행동/충동성', items: [10, 11, 12, 13, 14, 15, 16, 17, 18] }
-    ];
-
-    // 도메인별 점수 계산
-    const domainScores = adhdDomains.map(domain => {
-      const domainAnswers = domain.items.map(item => answers[item - 1] || 0);
-      const domainTotal = domainAnswers.reduce((sum, score) => sum + score, 0);
-      const domainAverage = domainTotal / domainAnswers.length;
-      const domainPercentage = (domainAverage / 4) * 100; // 4점 만점 기준
-
-      return {
-        name: domain.name,
-        score: domainTotal,
-        average: domainAverage,
-        percentage: domainPercentage,
-        severity: domainPercentage >= 75 ? '높음' : 
-                 domainPercentage >= 50 ? '중간' : 
-                 domainPercentage >= 25 ? '낮음' : '매우낮음',
-        items: domain.items,
-        answers: domainAnswers
-      };
-    });
+    // 프리미엄 ADHD 검사 영역별 점수 (실제 점수 사용)
+    const domainScores = scores ? [
+      {
+        name: '부주의',
+        score: scores.inattention,
+        maxScore: 200,
+        percentage: (scores.inattention / 200) * 100,
+        severity: scores.inattention >= 150 ? '매우 높음' : 
+                 scores.inattention >= 100 ? '높음' : 
+                 scores.inattention >= 50 ? '보통' : '낮음'
+      },
+      {
+        name: '과잉행동',
+        score: scores.hyperactivity,
+        maxScore: 200,
+        percentage: (scores.hyperactivity / 200) * 100,
+        severity: scores.hyperactivity >= 150 ? '매우 높음' : 
+                 scores.hyperactivity >= 100 ? '높음' : 
+                 scores.hyperactivity >= 50 ? '보통' : '낮음'
+      },
+      {
+        name: '충동성',
+        score: scores.impulsivity,
+        maxScore: 200,
+        percentage: (scores.impulsivity / 200) * 100,
+        severity: scores.impulsivity >= 150 ? '매우 높음' : 
+                 scores.impulsivity >= 100 ? '높음' : 
+                 scores.impulsivity >= 50 ? '보통' : '낮음'
+      },
+      {
+        name: '실행기능',
+        score: scores.executiveDysfunction,
+        maxScore: 200,
+        percentage: (scores.executiveDysfunction / 200) * 100,
+        severity: scores.executiveDysfunction >= 150 ? '매우 높음' : 
+                 scores.executiveDysfunction >= 100 ? '높음' : 
+                 scores.executiveDysfunction >= 50 ? '보통' : '낮음'
+      },
+      {
+        name: '동반증상',
+        score: scores.comorbidity,
+        maxScore: 100,
+        percentage: (scores.comorbidity / 100) * 100,
+        severity: scores.comorbidity >= 75 ? '매우 높음' : 
+                 scores.comorbidity >= 50 ? '높음' : 
+                 scores.comorbidity >= 25 ? '보통' : '낮음'
+      },
+      {
+        name: '기능수준',
+        score: scores.functionalImpairment,
+        maxScore: 100,
+        percentage: (scores.functionalImpairment / 100) * 100,
+        severity: scores.functionalImpairment >= 75 ? '매우 높음' : 
+                 scores.functionalImpairment >= 50 ? '높음' : 
+                 scores.functionalImpairment >= 25 ? '보통' : '낮음'
+      }
+    ] : [];
 
     // AI 프롬프트 구성
     const analysisPrompt = `
@@ -118,11 +159,9 @@ serve(async (req) => {
 ## 도메인별 상세 점수:
 ${domainScores.map(domain => `
 **${domain.name}**
-- 점수: ${domain.score}/${domain.items.length * 4}점
-- 평균: ${domain.average.toFixed(2)}/4점  
+- 점수: ${domain.score}/${domain.maxScore}점
 - 백분율: ${domain.percentage.toFixed(1)}%
 - 심각도: ${domain.severity}
-- 응답 패턴: [${domain.answers.join(', ')}]
 `).join('\n')}
 
 ## 분석 요구사항:

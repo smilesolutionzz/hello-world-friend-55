@@ -54,14 +54,17 @@ const PremiumAdhdResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat
       try {
         setIsAnalyzing(true);
         
+        // answers를 배열로 변환
+        const answersArray = Object.values(results.answers);
+        
         // ADHD 전용 분석 데이터 구조
         const analysisData = {
+          answers: answersArray,
           ageGroup: results.ageGroup,
-          answers: results.answers,
-          domainScores: {
-            inattention: results.scores.inattention,
-            hyperactivity_impulsivity: results.scores.hyperactivity + results.scores.impulsivity
-          }
+          severity: results.severityLevel,
+          total: results.totalScore,
+          average: results.totalScore / answersArray.length,
+          scores: results.scores
         };
 
         console.log('Calling premium-adhd-analyzer with data:', analysisData);

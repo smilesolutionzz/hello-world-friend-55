@@ -1010,11 +1010,55 @@ const ExpertHiring = () => {
           title: '가족치료 경험담',
           content: '온 가족이 함께 상담받기 시작했어요. 처음엔 어색했는데 이제는 서로 마음을 열고 대화할 수 있게 되었습니다. 문제는 개인의 문제가 아니라 가족 전체가 함께 해결해야 한다는 걸 배웠어요.',
           user_id: 'mock-user-10',
-          created_at: '2024-09-06T09:15:00Z',
+          created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
           likes_count: 33,
           comments_count: 20,
           is_anonymous: true,
           tags: ['가족의힘']
+        },
+        {
+          id: 'mock-11',
+          title: '언어치료 시작했어요',
+          content: '우리 아이 3살인데 말이 늦어서 걱정했는데요, 여기서 전문가 추천받아서 언어치료 시작했어요! 아직 한 달밖에 안됐는데 벌써 단어 수가 늘어나는게 느껴져요 ㅠㅠ 진작 시작할걸 그랬어요',
+          user_id: 'mock-user-11',
+          created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          likes_count: 12,
+          comments_count: 8,
+          is_anonymous: true,
+          tags: ['희망맘']
+        },
+        {
+          id: 'mock-12',
+          title: '',
+          content: '아이 ADHD로 힘들어하시는 분들한테 꼭 말씀드리고 싶어요. 저희도 처음엔 많이 힘들었는데 전문가 상담 받으면서 아이를 이해하는 방법을 배웠고, 지금은 많이 좋아졌어요. 포기하지 마시고 꼭 도움 받으세요!',
+          user_id: 'mock-user-12',
+          created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          likes_count: 27,
+          comments_count: 15,
+          is_anonymous: true,
+          tags: ['민준맘']
+        },
+        {
+          id: 'mock-13',
+          title: '감각통합치료 후기',
+          content: '감각통합치료 받으면서 아이가 정말 많이 변했어요. 예전엔 옷 입는것도 싫어하고 특정 소리에 민감하게 반응했는데, 지금은 일상생활이 훨씬 편해졌어요. 같은 고민 있으신 분들 상담 꼭 받아보세요~',
+          user_id: 'mock-user-13',
+          created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          likes_count: 19,
+          comments_count: 11,
+          is_anonymous: true,
+          tags: ['서준이엄마']
+        },
+        {
+          id: 'mock-14',
+          title: '심리상담 추천합니다',
+          content: '애 키우면서 제 마음도 많이 힘들었거든요.. 근데 상담 받으면서 저 자신도 돌봐야 아이도 잘 돌볼 수 있다는 걸 알게 됐어요. 엄마들 자신을 위한 시간도 꼭 가지세요 ㅎㅎ',
+          user_id: 'mock-user-14',
+          created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          likes_count: 35,
+          comments_count: 23,
+          is_anonymous: true,
+          tags: ['지우맘']
         }
       ];
       

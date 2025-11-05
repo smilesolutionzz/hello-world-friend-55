@@ -113,10 +113,46 @@ export const mockGrowthStories = [
     before_story: '70세가 되면서 건강도 나빠지고 외로움을 많이 느꼈어요. 자식들은 바쁘고 친구들도 하나둘 세상을 떠나서 우울한 날이 많았습니다. 집에만 있으니 의욕도 없어졌어요.',
     after_story: '노인 전문 상담을 받으면서 새로운 활동을 시작했어요. 동네 복지관에서 서예도 배우고 봉사활동도 하게 되었습니다. 2개월 후 새로운 친구들도 사귀고 삶의 의미를 다시 찾았어요. 매일이 즐겁습니다.',
     category: 'emotional',
-    transformation_date: '2025-05-15',
+    transformation_date: '2024-11-15',
     is_anonymous: true,
     likes_count: 26,
-    created_at: '2025-08-28T14:05:00Z',
+    created_at: '2024-11-28T14:05:00Z',
     user_id: 'story-user-10'
+  },
+  {
+    id: 'story-11',
+    title: '6살 딸의 또래관계 개선 스토리',
+    before_story: '유치원에서 친구들과 어울리지 못하고 혼자 노는 시간이 많았어요. 선생님께서도 사회성 발달이 조금 느린 것 같다고 하셨고, 다른 아이들이 놀자고 해도 거절하거나 피하는 모습이 많아서 걱정이 컸습니다.',
+    after_story: '사회성 전문 선생님과 함께 놀이치료를 시작했어요. 그룹 활동도 참여하면서 점차 친구들과 눈을 맞추고 웃으며 놀기 시작했습니다. 이제는 유치원 가는 걸 좋아하고 "오늘 친구랑 이렇게 놀았어요!" 하며 신나게 이야기해줘요.',
+    category: 'social',
+    transformation_date: '2024-10-20',
+    is_anonymous: true,
+    likes_count: 18,
+    created_at: '2024-10-28T10:15:00Z',
+    user_id: 'story-user-11'
+  },
+  {
+    id: 'story-12',
+    title: '초등 3학년 아들 집중력 향상기',
+    before_story: '수업 시간에 집중을 못하고 자리에서 일어나거나 다른 생각을 하는 시간이 많았어요. 숙제도 30분이면 끝날 걸 2시간 넘게 걸리고, 시험 볼 때도 문제를 끝까지 안 읽고 답을 쓰곤 했습니다.',
+    after_story: '주의력 훈련 프로그램과 함께 전문가의 도움을 받았어요. 짧은 시간부터 집중하는 연습을 하고, 보상 시스템도 활용했습니다. 3개월 후 숙제도 집중해서 하고, 학교에서도 수업을 잘 따라간다는 칭찬을 받았어요.',
+    category: 'education',
+    transformation_date: '2024-10-15',
+    is_anonymous: true,
+    likes_count: 24,
+    created_at: '2024-10-25T14:30:00Z',
+    user_id: 'story-user-12'
+  },
+  {
+    id: 'story-13',
+    title: '8살 아이의 감정조절 성장기',
+    before_story: '화가 나면 물건을 던지거나 소리를 지르는 일이 잦았어요. 동생이랑도 자주 싸우고, 마음에 안 들면 바로 울음을 터뜨렸습니다. 감정 기복이 심해서 어떻게 대처해야 할지 몰라 힘들었어요.',
+    after_story: '감정조절 상담과 놀이치료를 병행했어요. 감정을 말로 표현하는 연습을 하고, 화났을 때 대처 방법도 배웠습니다. 이제는 화가 나도 "엄마 나 지금 화났어"라고 말하고, 심호흡하며 진정하는 모습을 보여줘요.',
+    category: 'emotional',
+    transformation_date: '2024-10-08',
+    is_anonymous: true,
+    likes_count: 31,
+    created_at: '2024-10-18T16:45:00Z',
+    user_id: 'story-user-13'
   }
 ];

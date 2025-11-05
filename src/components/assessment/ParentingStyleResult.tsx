@@ -38,9 +38,19 @@ const ParentingStyleResult = ({
     try {
       setIsAnalyzing(true);
       
+      // 결과 데이터 구조 검증
+      console.log('[ParentingStyle] AI 분석 요청 데이터:', {
+        results: results.scores,
+        assessmentType: 'parentingStyle',
+        childAge: results.childAge,
+        childGender: results.childGender,
+        scoresKeys: Object.keys(results.scores),
+        scoresValues: Object.values(results.scores)
+      });
+      
       const { data, error } = await supabase.functions.invoke('parenting-style-analyzer', {
         body: {
-          results: results.scores,
+          results: results.scores, // scores 객체 전달
           assessmentType: 'parentingStyle',
           childAge: results.childAge,
           childGender: results.childGender

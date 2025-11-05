@@ -56,10 +56,29 @@ serve(async (req) => {
     const actualResults = results || answers;
     const actualAssessmentType = assessmentType || testType || 'han_medicine_premium';
     
+    // 데이터 구조 검증 로깅
+    console.log('[PREMIUM-ASSESSMENT-ANALYZER] 요청 데이터 구조:', {
+      assessmentType: actualAssessmentType,
+      resultsType: typeof actualResults,
+      resultsKeys: actualResults ? Object.keys(actualResults) : [],
+      resultsValues: actualResults ? Object.values(actualResults) : [],
+      resultsSample: actualResults ? Object.entries(actualResults).slice(0, 3) : [],
+      requestBodyKeys: Object.keys(requestBody)
+    });
+    
     // Input validation
     if (!actualResults || typeof actualResults !== 'object') {
       console.error('[PREMIUM-ASSESSMENT-ANALYZER] 유효하지 않은 데이터:', { requestBody });
       return new Response(JSON.stringify({ error: '유효하지 않은 결과 데이터입니다.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
+    // 빈 객체 검증
+    if (Object.keys(actualResults).length === 0) {
+      console.error('[PREMIUM-ASSESSMENT-ANALYZER] 빈 결과 데이터:', { requestBody });
+      return new Response(JSON.stringify({ error: '결과 데이터가 비어있습니다.' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });

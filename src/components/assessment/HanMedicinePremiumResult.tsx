@@ -30,9 +30,21 @@ export const HanMedicinePremiumResult: React.FC<HanMedicinePremiumResultProps> =
 
   const generateAnalysis = async () => {
     try {
+      // 결과 데이터 구조 검증 및 변환
+      const resultsObject = result.answers || result.scores || result;
+      
+      console.log('[HanMedicine] AI 분석 요청 데이터:', {
+        testType: 'han_medicine_premium',
+        resultsObject,
+        originalResult: result,
+        resultKeys: Object.keys(resultsObject),
+        resultValues: Object.values(resultsObject)
+      });
+      
       const response = await supabase.functions.invoke('premium-assessment-analyzer', {
         body: {
-          answers: result.answers,
+          results: resultsObject, // answers를 results로 전달
+          assessmentType: 'han_medicine_premium',
           testType: 'han_medicine_premium'
         }
       });

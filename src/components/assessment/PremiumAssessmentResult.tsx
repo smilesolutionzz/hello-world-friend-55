@@ -42,10 +42,20 @@ const PremiumAssessmentResult = ({
     try {
       setIsAnalyzing(true);
       
+      // 결과 데이터 구조 검증
+      console.log('[PremiumAssessment] AI 분석 요청 데이터:', {
+        assessmentType,
+        results,
+        assessmentInfo,
+        resultKeys: Object.keys(results),
+        resultValues: Object.values(results),
+        timestamp: new Date().toISOString()
+      });
+      
       const response = await supabase.functions.invoke('premium-assessment-analyzer', {
         body: {
           assessmentType,
-          results,
+          results, // 점수 데이터 전달
           assessmentInfo,
           timestamp: new Date().toISOString()
         }

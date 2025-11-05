@@ -70,10 +70,19 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
   useEffect(() => {
     const generateAIAnalysis = async () => {
       try {
+        // 결과 데이터 구조 검증
+        console.log('[LanguageDevelopment] AI 분석 요청 데이터:', {
+          results,
+          answers,
+          ageGroup: '영유아',
+          resultsKeys: Object.keys(results),
+          resultsValues: Object.values(results)
+        });
+        
         const { data, error } = await supabase.functions.invoke('language-development-analyzer', {
           body: {
-            results,
-            answers,
+            results, // 점수 데이터
+            answers, // 원본 답변
             ageGroup: '영유아' // 필요시 동적으로 전달
           }
         });

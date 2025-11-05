@@ -8,7 +8,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { nanoid } from 'nanoid';
 
-const TOSS_CLIENT_KEY = 'live_ck_5OWRapdA8dG7PRogXoJWro1zEqZK';
 const CUSTOMER_KEY = 'ai-highlight-customer-' + nanoid();
 
 interface TokenPackage {
@@ -28,6 +27,7 @@ const TokenPurchase = () => {
   const [selectedPack, setSelectedPack] = useState<TokenPackage | null>(null);
   const [isPaymentReady, setIsPaymentReady] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [tossClientKey, setTossClientKey] = useState<string | null>(null);
 
   // 실제 DB에서 토큰 패키지 조회
   useEffect(() => {
@@ -68,13 +68,52 @@ const TokenPurchase = () => {
     fetchTokenPackages();
   }, [toast]);
 
+  // Toss Client Key 가져오기
+  useEffect(() => {
+    const fetchClientKey = async () => {
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData.session) {
+          console.log('로그인 필요');
+          return;
+        }
+
+        const { data, error } = await supabase.functions.invoke('create-token-payment', {
+          headers: {
+            Authorization: `Bearer ${sessionData.session.access_token}`,
+          },
+          body: { 
+            packageId: 'temp', // 임시값으로 clientKey만 가져오기
+            paymentType: 'token'
+          }
+        });
+
+        if (!error && data?.clientKey) {
+          console.log('✅ Toss Client Key 로드 완료');
+          setTossClientKey(data.clientKey);
+        }
+      } catch (error) {
+        console.error('❌ Client Key 로드 실패:', error);
+      }
+    };
+
+    fetchClientKey();
+  }, []);
+
   useEffect(() => {
     const initializePaymentWidget = async () => {
+      if (!tossClientKey) {
+        console.log('⏳ Toss Client Key 대기 중...');
+        return;
+      }
+
       try {
-        const paymentWidget = await loadPaymentWidget(TOSS_CLIENT_KEY, CUSTOMER_KEY);
+        console.log('🔧 결제 위젯 초기화 시작');
+        const paymentWidget = await loadPaymentWidget(tossClientKey, CUSTOMER_KEY);
         paymentWidgetRef.current = paymentWidget;
+        console.log('✅ 결제 위젯 초기화 완료');
       } catch (error) {
-        console.error('결제 위젯 초기화 실패:', error);
+        console.error('❌ 결제 위젯 초기화 실패:', error);
         toast({
           title: '결제 시스템 오류',
           description: '결제 위젯을 불러오는데 실패했습니다.',
@@ -84,7 +123,7 @@ const TokenPurchase = () => {
     };
 
     initializePaymentWidget();
-  }, [toast]);
+  }, [tossClientKey, toast]);
 
   useEffect(() => {
     if (selectedPack && paymentWidgetRef.current) {

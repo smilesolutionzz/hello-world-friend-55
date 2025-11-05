@@ -6281,6 +6281,7 @@ export type Database = {
       }
       token_packages: {
         Row: {
+          bonus_tokens: number
           created_at: string
           description: string | null
           id: string
@@ -6292,6 +6293,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          bonus_tokens?: number
           created_at?: string
           description?: string | null
           id?: string
@@ -6303,6 +6305,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          bonus_tokens?: number
           created_at?: string
           description?: string | null
           id?: string

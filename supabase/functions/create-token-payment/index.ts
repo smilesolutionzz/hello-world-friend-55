@@ -82,18 +82,24 @@ serve(async (req) => {
     // 주문 ID 생성
     const orderId = `token_${user.id}_${Date.now()}`;
 
+    // 보너스 토큰 포함한 총 토큰
+    const bonusTokens = tokenPackage.bonus_tokens || 0;
+    const totalTokens = tokenPackage.token_count + bonusTokens;
+    
     // 토스페이먼츠 결제 요청 준비
     const paymentData = {
       amount,
       orderId,
-      orderName: `${tokenPackage.name} (${tokenPackage.token_count}토큰)`,
+      orderName: bonusTokens > 0 
+        ? `${tokenPackage.name} (${tokenPackage.token_count}+${bonusTokens} 총 ${totalTokens}토큰)`
+        : `${tokenPackage.name} (${tokenPackage.token_count}토큰)`,
       customerEmail: user.email,
       customerName: user.email?.split('@')[0] || '사용자',
       successUrl: `${req.headers.get("origin")}/payment-success?orderId=${orderId}`,
       failUrl: `${req.headers.get("origin")}/payment-fail?orderId=${orderId}`,
     };
 
-    // 결제 내역 저장 (Service Role 키 사용)
+    // 결제 내역 저장 (Service Role 키 사용, 보너스 포함한 총 토큰으로 저장)
     const { error: paymentError } = await supabaseAdmin
       .from('payment_history')
       .insert({
@@ -104,7 +110,7 @@ serve(async (req) => {
         subscription_type: 'token',
         status: 'pending',
         token_package_id: packageId,
-        token_amount: tokenPackage.token_count
+        token_amount: totalTokens  // 보너스 포함한 총 토큰
       });
 
     if (paymentError) throw paymentError;

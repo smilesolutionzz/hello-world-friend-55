@@ -16,6 +16,7 @@ interface TokenPackage {
   tokens: number;
   price: number;
   is_active: boolean;
+  bonus_tokens: number;
 }
 
 const TokenPurchase = () => {
@@ -53,7 +54,8 @@ const TokenPurchase = () => {
           name: pkg.name,
           tokens: pkg.token_count,
           price: pkg.price_krw,
-          is_active: pkg.is_active
+          is_active: pkg.is_active,
+          bonus_tokens: pkg.bonus_tokens || 0
         }));
         
         setTokenPackages(mappedPackages);
@@ -342,9 +344,9 @@ const TokenPurchase = () => {
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-2">
                         {pack.tokens.toLocaleString()} 토큰
-                        {pack.tokens === 400 && (
+                        {pack.bonus_tokens > 0 && (
                           <div className="text-lg text-orange-500 font-semibold mt-1">
-                            + 50 보너스 토큰 🎁
+                            + {pack.bonus_tokens} 보너스 토큰 🎁
                           </div>
                         )}
                       </div>
@@ -352,8 +354,10 @@ const TokenPurchase = () => {
                         ₩{pack.price.toLocaleString()}
                       </div>
                       <div className="text-sm text-muted-foreground mt-2">
-                        {pack.tokens === 400 ? (
-                          <span className="text-orange-600 font-semibold">토큰당 ₩88 (이벤트가)</span>
+                        {pack.bonus_tokens > 0 ? (
+                          <span className="text-orange-600 font-semibold">
+                            총 {(pack.tokens + pack.bonus_tokens).toLocaleString()}토큰 (토큰당 ₩{Math.round(pack.price / (pack.tokens + pack.bonus_tokens))})
+                          </span>
                         ) : (
                           <span>토큰당 ₩{Math.round(pack.price / pack.tokens)}</span>
                         )}
@@ -381,9 +385,9 @@ const TokenPurchase = () => {
                     <CardTitle className="text-2xl">선택한 상품</CardTitle>
                     <p className="text-muted-foreground mt-2">
                       {selectedPack.name} - {selectedPack.tokens.toLocaleString()}토큰
-                      {selectedPack.tokens === 400 && (
+                      {selectedPack.bonus_tokens > 0 && (
                         <span className="text-orange-500 font-semibold ml-2">
-                          + 보너스 50토큰 🎁
+                          + 보너스 {selectedPack.bonus_tokens}토큰 🎁 (총 {(selectedPack.tokens + selectedPack.bonus_tokens).toLocaleString()}토큰)
                         </span>
                       )}
                     </p>

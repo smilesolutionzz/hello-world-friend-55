@@ -29,6 +29,7 @@ const TokenPurchase = () => {
   const [isPaymentReady, setIsPaymentReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tossClientKey, setTossClientKey] = useState<string | null>(null);
+  const [widgetReady, setWidgetReady] = useState(false);
 
   // 실제 DB에서 토큰 패키지 조회
   useEffect(() => {
@@ -121,11 +122,14 @@ const TokenPurchase = () => {
 
       try {
         console.log('🔧 결제 위젯 초기화 시작');
+        setWidgetReady(false);
         const paymentWidget = await loadPaymentWidget(tossClientKey, CUSTOMER_KEY);
         paymentWidgetRef.current = paymentWidget;
+        setWidgetReady(true);
         console.log('✅ 결제 위젯 초기화 완료');
       } catch (error) {
         console.error('❌ 결제 위젯 초기화 실패:', error);
+        setWidgetReady(false);
         toast({
           title: '결제 시스템 오류',
           description: '결제 위젯을 불러오는데 실패했습니다.',
@@ -138,7 +142,7 @@ const TokenPurchase = () => {
   }, [tossClientKey, toast]);
 
   useEffect(() => {
-    if (selectedPack && paymentWidgetRef.current) {
+    if (selectedPack && widgetReady && paymentWidgetRef.current) {
       const renderPaymentMethods = async () => {
         try {
           console.log('🎨 결제 수단 렌더링 시작:', selectedPack);
@@ -170,7 +174,7 @@ const TokenPurchase = () => {
       };
       renderPaymentMethods();
     }
-  }, [selectedPack, toast]);
+  }, [selectedPack, widgetReady, toast]);
 
   const handlePackSelect = (pack: TokenPackage) => {
     console.log('📦 선택된 패키지:', pack);

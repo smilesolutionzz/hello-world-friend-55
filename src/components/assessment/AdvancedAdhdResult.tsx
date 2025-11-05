@@ -41,8 +41,9 @@ const AdvancedAdhdResult = ({ results }: AdvancedAdhdResultProps) => {
     return "bg-red-500";
   };
 
-  const handleDownload = () => {
-    const content = `
+  const handleDownload = async () => {
+    try {
+      const content = `
 # 12가지 ADHD 유형 분석 결과
 
 검사 일시: ${new Date(results.timestamp).toLocaleString('ko-KR')}
@@ -67,15 +68,20 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
 
 ---
 본 결과는 참고용이며, 정확한 진단은 전문가 상담이 필요합니다.
-    `;
+      `;
 
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ADHD_유형분석_${new Date().toLocaleDateString('ko-KR')}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ADHD_유형분석_${new Date().toLocaleDateString('ko-KR').replace(/\./g, '_')}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('다운로드 오류:', error);
+    }
   };
 
   return (
@@ -83,21 +89,21 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <Card className="p-8 text-center">
-          <h1 className="text-3xl font-bold mb-4">12가지 ADHD 유형 분석 결과</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold mb-4">12가지 ADHD 유형 분석 결과</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
             검사 완료: {new Date(results.timestamp).toLocaleString('ko-KR')}
           </p>
         </Card>
 
         {/* Dominant Type Card */}
-        <Card className="p-8">
+        <Card className="p-6 md:p-8">
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">주요 ADHD 유형</h2>
-              <div className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${dominantTypeData.colorGradient} text-white text-xl font-semibold`}>
+              <h2 className="text-xl md:text-2xl font-bold mb-2">주요 ADHD 유형</h2>
+              <div className={`inline-block px-4 py-2 md:px-6 md:py-3 rounded-full bg-gradient-to-r ${dominantTypeData.colorGradient} text-white text-base md:text-xl font-semibold`}>
                 {dominantTypeData.name}
               </div>
-              <p className="text-muted-foreground mt-4">
+              <p className="text-sm md:text-base text-muted-foreground mt-4">
                 {dominantTypeData.description}
               </p>
             </div>
@@ -131,8 +137,8 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
         </Card>
 
         {/* All Types Visualization */}
-        <Card className="p-8">
-          <h2 className="text-2xl font-bold mb-6 text-center">전체 ADHD 유형 프로파일</h2>
+        <Card className="p-6 md:p-8">
+          <h2 className="text-xl md:text-2xl font-bold mb-6 text-center">전체 ADHD 유형 프로파일</h2>
           
           <div className="space-y-6">
             {Object.entries(typeScores)
@@ -146,8 +152,8 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
                   <div key={typeId} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <div className="font-medium">{typeData.name}</div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="text-sm md:text-base font-medium">{typeData.name}</div>
+                        <div className="text-xs md:text-sm text-muted-foreground">
                           {score}/54 • {severity.level} ({severity.percentage}%)
                         </div>
                       </div>

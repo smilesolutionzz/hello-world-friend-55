@@ -124,6 +124,7 @@ import EducationFeed from "./pages/EducationFeed";
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdvancedAdhdTest from "./pages/AdvancedAdhdTest";
 import InstitutionAdmin from "./pages/InstitutionAdmin";
 import PMFOnboarding from "./pages/PMFOnboarding";
 import KPIDashboard from "./pages/KPIDashboard";
@@ -217,6 +218,7 @@ const App = () => {
           <Route path="/comprehensive-package" element={<ComprehensivePackage />} />
           <Route path="/family" element={<ChildPackage />} />
           <Route path="/han-medicine-test" element={<HanMedicineTest />} />
+          <Route path="/advanced-adhd-test" element={<AdvancedAdhdTest />} />
           <Route path="/iep-generator" element={<IEPGenerator />} />
           <Route path="/iep-view/:id" element={<IEPView />} />
           

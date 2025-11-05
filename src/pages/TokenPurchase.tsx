@@ -142,38 +142,63 @@ const TokenPurchase = () => {
   }, [tossClientKey, toast]);
 
   useEffect(() => {
-    if (selectedPack && widgetReady && paymentWidgetRef.current) {
-      const renderPaymentMethods = async () => {
-        try {
-          console.log('🎨 결제 수단 렌더링 시작:', selectedPack);
-          setIsPaymentReady(false);
-          
-          // 기존 위젯이 있다면 제거
-          const widgetContainer = document.getElementById('payment-widget');
-          if (widgetContainer) {
-            widgetContainer.innerHTML = '';
-          }
+    const renderPaymentMethods = async () => {
+      if (!selectedPack) {
+        console.log('⏳ 패키지 선택 대기 중');
+        return;
+      }
+      
+      if (!widgetReady) {
+        console.log('⏳ 위젯 준비 대기 중');
+        return;
+      }
+      
+      if (!paymentWidgetRef.current) {
+        console.log('⏳ paymentWidget 대기 중');
+        return;
+      }
 
-          const paymentMethodsWidget = await paymentWidgetRef.current?.renderPaymentMethods(
-            '#payment-widget',
-            { value: selectedPack.price },
-            { variantKey: 'DEFAULT' }
-          );
-          
-          paymentMethodsWidgetRef.current = paymentMethodsWidget;
-          console.log('✅ 결제 수단 렌더링 완료');
-          setIsPaymentReady(true);
-        } catch (error) {
-          console.error('❌ 결제 수단 렌더링 실패:', error);
-          toast({
-            title: '결제 수단 로드 실패',
-            description: '결제 수단을 불러오는데 실패했습니다. 페이지를 새로고침 해주세요.',
-            variant: 'destructive'
-          });
+      try {
+        console.log('🎨 결제 수단 렌더링 시작:', {
+          pack: selectedPack.name,
+          price: selectedPack.price,
+          widgetReady,
+          hasWidget: !!paymentWidgetRef.current
+        });
+        
+        setIsPaymentReady(false);
+        
+        // 기존 위젯이 있다면 제거
+        const widgetContainer = document.getElementById('payment-widget');
+        if (widgetContainer) {
+          console.log('🧹 기존 위젯 컨테이너 초기화');
+          widgetContainer.innerHTML = '';
+        } else {
+          console.error('❌ payment-widget 컨테이너를 찾을 수 없음');
+          return;
         }
-      };
-      renderPaymentMethods();
-    }
+
+        console.log('💳 renderPaymentMethods 호출 시작');
+        const paymentMethodsWidget = paymentWidgetRef.current.renderPaymentMethods(
+          '#payment-widget',
+          { value: selectedPack.price },
+          { variantKey: 'DEFAULT' }
+        );
+        
+        paymentMethodsWidgetRef.current = paymentMethodsWidget;
+        console.log('✅ 결제 수단 렌더링 완료');
+        setIsPaymentReady(true);
+      } catch (error) {
+        console.error('❌ 결제 수단 렌더링 실패:', error);
+        toast({
+          title: '결제 수단 로드 실패',
+          description: '결제 수단을 불러오는데 실패했습니다. 페이지를 새로고침 해주세요.',
+          variant: 'destructive'
+        });
+      }
+    };
+    
+    renderPaymentMethods();
   }, [selectedPack, widgetReady, toast]);
 
   const handlePackSelect = (pack: TokenPackage) => {

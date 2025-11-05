@@ -415,7 +415,7 @@ const TokenPurchase = () => {
                   ))}
                 </div>
 
-                <div id="payment-widget" className="min-h-[400px] relative rounded-md border border-muted/40" />
+                <div id="payment-widget" className="w-full" style={{ minHeight: '400px' }} />
 
                 {!widgetVisible && (
                   <div className="mt-3 text-sm text-muted-foreground">

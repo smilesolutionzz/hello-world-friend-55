@@ -60,7 +60,7 @@ export const PromotionBanner = ({ variant = 'hero' }: PromotionBannerProps) => {
               </span>
             </div>
             <Button 
-              onClick={() => navigate('/subscription')}
+              onClick={() => navigate('/token-purchase?tokens=400')}
               className="bg-white text-red-600 hover:bg-white/90 font-bold shadow-lg"
             >
               지금 받기

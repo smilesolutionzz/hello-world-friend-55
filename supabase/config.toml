@@ -259,3 +259,12 @@ verify_jwt = false
 
 [functions.create-consultation-booking]
 verify_jwt = true
+
+[functions.send-booking-notification]
+verify_jwt = false
+
+[functions.cancel-booking]
+verify_jwt = true
+
+[functions.booking-reminder-cron]
+verify_jwt = false

@@ -41,6 +41,7 @@ import { useTokens } from '@/hooks/useTokens';
 import { supabase } from '@/integrations/supabase/client';
 import TokenBalance from '@/components/TokenBalance';
 import AIPlatformChat from '@/components/AIPlatformChat';
+import { BookingNotificationBell } from '@/components/booking/BookingNotificationBell';
 import secretTalkCharacter from '@/assets/secret-talk-character.png';
 
 interface NavigationItem {
@@ -357,6 +358,11 @@ export const UnifiedNavigation = () => {
                 <Heart className="w-4 h-4 mr-2" />
                 창립자칼럼
               </Button>
+
+              {/* Notification Bell */}
+              {user && (
+                <BookingNotificationBell />
+              )}
 
               {/* Login Button */}
               <div className="ml-4 pl-4 border-l border-border">

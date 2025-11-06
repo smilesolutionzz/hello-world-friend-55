@@ -108,32 +108,56 @@ export const BookingList = ({ userView = true }: { userView?: boolean }) => {
     }
   };
 
-  const cancelBooking = async (bookingId: string) => {
-    if (!confirm('정말 예약을 취소하시겠습니까?')) return;
+  const cancelBooking = async (bookingId: string, bookingDate: string, startTime: string) => {
+    // Calculate refund policy
+    const bookingDateTime = new Date(`${bookingDate}T${startTime}`);
+    const now = new Date();
+    const hoursUntil = (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+    
+    let refundInfo = '';
+    if (hoursUntil >= 24) {
+      refundInfo = '24시간 이상 전 취소 - 100% 환불';
+    } else if (hoursUntil >= 12) {
+      refundInfo = '12-24시간 전 취소 - 50% 환불';
+    } else if (hoursUntil >= 0) {
+      refundInfo = '12시간 미만 취소 - 환불 없음';
+    } else {
+      toast({
+        title: '취소 불가',
+        description: '지난 예약은 취소할 수 없습니다.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (!confirm(`정말 예약을 취소하시겠습니까?\n\n${refundInfo}`)) return;
 
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from('consultation_bookings')
-        .update({ 
-          status: 'cancelled',
-          cancelled_at: new Date().toISOString()
-        })
-        .eq('id', bookingId);
+      const { data, error } = await supabase.functions.invoke('cancel-booking', {
+        body: {
+          bookingId,
+          reason: '사용자 취소'
+        }
+      });
 
       if (error) throw error;
 
+      if (!data.success) {
+        throw new Error(data.error || '취소 실패');
+      }
+
       toast({
         title: '예약 취소 완료',
-        description: '예약이 취소되었습니다.'
+        description: data.message
       });
 
       loadBookings();
-    } catch (error) {
+    } catch (error: any) {
       console.error('예약 취소 실패:', error);
       toast({
         title: '취소 실패',
-        description: '예약 취소에 실패했습니다.',
+        description: error.message || '예약 취소에 실패했습니다.',
         variant: 'destructive'
       });
     } finally {
@@ -252,11 +276,11 @@ export const BookingList = ({ userView = true }: { userView?: boolean }) => {
                         확정
                       </Button>
                     )}
-                    {booking.status === 'pending' && (
+                    {(booking.status === 'pending' || booking.status === 'confirmed') && (
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => cancelBooking(booking.id)}
+                        onClick={() => cancelBooking(booking.id, booking.booking_date, booking.start_time)}
                         disabled={loading}
                       >
                         <X className="w-4 h-4" />

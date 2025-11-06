@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BookingCalendar } from '@/components/booking/BookingCalendar';
 import { BookingList } from '@/components/booking/BookingList';
 import { ExpertScheduleManager } from '@/components/booking/ExpertScheduleManager';
+import { CancellationPolicyInfo } from '@/components/booking/CancellationPolicyInfo';
 import { supabase } from '@/integrations/supabase/client';
 import { Calendar, Clock, List, Settings } from 'lucide-react';
 
@@ -87,6 +88,7 @@ const BookingManagement = () => {
           ) : (
             // User View
             <div className="space-y-6">
+              <CancellationPolicyInfo />
               <BookingList userView={true} />
             </div>
           )}

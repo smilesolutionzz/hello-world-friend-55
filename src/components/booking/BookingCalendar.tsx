@@ -222,6 +222,19 @@ export const BookingCalendar = ({ expertId }: { expertId: string }) => {
         description: `${format(selectedDate, 'M월 d일 (E)', { locale: ko })} ${selectedTime.substring(0, 5)} 예약이 완료되었습니다.`
       });
 
+      // Send confirmation notification
+      try {
+        await supabase.functions.invoke('send-booking-notification', {
+          body: {
+            bookingId: data.booking.id,
+            notificationType: 'confirmation'
+          }
+        });
+      } catch (notifError) {
+        console.error('알림 전송 실패:', notifError);
+        // Don't throw - booking is already created
+      }
+
       // Reset form and reload data
       setSelectedTime('');
       setNotes('');

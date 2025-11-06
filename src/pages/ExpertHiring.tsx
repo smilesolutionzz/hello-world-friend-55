@@ -55,6 +55,7 @@ import GrowthStoryFeed from '@/components/growth/GrowthStoryFeed';
 import GrowthStoryShare from '@/components/growth/GrowthStoryShare';
 import { getExpertImage } from '@/components/expert/ExpertImages';
 import { QuickConsultationRequest } from '@/components/booking/QuickConsultationRequest';
+import { KakaoStyleReviews } from '@/components/reviews/KakaoStyleReviews';
 
 interface Expert {
   id: string;
@@ -2553,9 +2554,28 @@ const ExpertHiring = () => {
           </TabsContent>
         </Tabs>
 
-        {/* 실제 성장 스토리 섹션 */}
-        <Card className="mt-12 bg-gradient-to-r from-green-50 to-blue-50 border-none shadow-lg">
+        {/* 카카오톡 스타일 리뷰 섹션 */}
+        <Card className="mt-12 bg-gradient-to-r from-blue-50 to-purple-50 border-none shadow-lg">
           <CardContent className="p-8">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <MessageCircle className="w-8 h-8 text-primary" />
+                <h2 className="text-2xl font-bold text-gray-900">실제 이용 후기</h2>
+              </div>
+              <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
+                AIHPRO를 실제로 이용한 고객님들의 생생한 후기를 확인해보세요
+                <br />
+                <span className="text-sm font-medium text-primary">
+                  고객들의 진실된 목소리를 들어보세요
+                </span>
+              </p>
+            </div>
+
+            {/* 카카오톡 스타일 리뷰 */}
+            <div className="mb-8">
+              <KakaoStyleReviews />
+            </div>
+            
             <div className="text-center mb-8">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <Sparkles className="w-8 h-8 text-yellow-500" />

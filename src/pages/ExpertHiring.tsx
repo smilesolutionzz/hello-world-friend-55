@@ -1450,32 +1450,33 @@ const ExpertHiring = () => {
         {/* CTA 배너 섹션 */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {/* 제휴기관 CTA */}
-          <Card className="bg-gradient-to-br from-purple-500 via-purple-600 to-pink-600 border-none shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer group overflow-hidden relative">
+          <Card className="bg-gradient-to-br from-purple-500 via-purple-600 to-pink-600 border-none shadow-2xl hover:shadow-3xl transition-all duration-500 cursor-pointer group overflow-hidden relative">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
             <CardContent className="p-8 relative">
               <div className="flex items-start justify-between mb-6">
-                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                  <Building className="w-10 h-10 text-white" />
+                <div className="bg-white/25 backdrop-blur-md p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
+                  <Building className="w-10 h-10 text-white drop-shadow-lg" />
                 </div>
-                <Badge className="bg-white/20 backdrop-blur-sm text-white border-white/30 px-3 py-1">
-                  <Shield className="w-3 h-3 mr-1" />
+                <Badge className="bg-white/25 backdrop-blur-md text-white border-white/40 px-4 py-1.5 font-pretendard font-semibold shadow-lg">
+                  <Shield className="w-3.5 h-3.5 mr-1.5" />
                   40+ 인증기관
                 </Badge>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-3">
+              <h3 className="text-3xl font-pretendard font-bold text-white mb-4 leading-tight drop-shadow-lg">
                 제휴기관에서<br />상담예약하기
               </h3>
-              <p className="text-white/90 mb-6 text-sm leading-relaxed">
+              <p className="text-white/95 mb-7 text-base leading-relaxed font-pretendard font-medium drop-shadow">
                 AIHPRO 인증을 받은 40개 이상의 전문 제휴기관에서<br />
                 바우처 지원과 함께 전문적인 상담 서비스를 받아보세요
               </p>
-              <div className="flex items-center gap-2 mb-6">
-                <CheckCircle className="w-4 h-4 text-white/80" />
-                <span className="text-white/80 text-sm">바우처 지원 가능</span>
+              <div className="flex items-center gap-2.5 mb-7">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                <span className="text-white/90 text-sm font-pretendard font-medium">바우처 지원 가능</span>
               </div>
               <Button 
                 size="lg"
-                className="w-full bg-white text-purple-600 hover:bg-white/90 font-semibold shadow-lg group-hover:scale-105 transition-transform duration-300"
+                className="w-full bg-white text-purple-600 hover:bg-white/95 font-pretendard font-bold text-base shadow-xl hover:shadow-2xl group-hover:scale-105 transition-all duration-300"
                 onClick={() => {
                   const tabsList = document.querySelector('[value="institutions"]') as HTMLElement;
                   if (tabsList) tabsList.click();
@@ -1490,32 +1491,33 @@ const ExpertHiring = () => {
           </Card>
 
           {/* 개인전문가 CTA */}
-          <Card className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-600 border-none shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer group overflow-hidden relative">
+          <Card className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-600 border-none shadow-2xl hover:shadow-3xl transition-all duration-500 cursor-pointer group overflow-hidden relative">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
             <CardContent className="p-8 relative">
               <div className="flex items-start justify-between mb-6">
-                <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                  <UserCheck className="w-10 h-10 text-white" />
+                <div className="bg-white/25 backdrop-blur-md p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
+                  <UserCheck className="w-10 h-10 text-white drop-shadow-lg" />
                 </div>
-                <Badge className="bg-white/20 backdrop-blur-sm text-white border-white/30 px-3 py-1">
-                  <Zap className="w-3 h-3 mr-1" />
+                <Badge className="bg-white/25 backdrop-blur-md text-white border-white/40 px-4 py-1.5 font-pretendard font-semibold shadow-lg">
+                  <Zap className="w-3.5 h-3.5 mr-1.5" />
                   129명 전문가
                 </Badge>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-3">
+              <h3 className="text-3xl font-pretendard font-bold text-white mb-4 leading-tight drop-shadow-lg">
                 개인전문가<br />즉시상담하기
               </h3>
-              <p className="text-white/90 mb-6 text-sm leading-relaxed">
+              <p className="text-white/95 mb-7 text-base leading-relaxed font-pretendard font-medium drop-shadow">
                 검증된 129명의 개인 전문가와 바로 연결되어<br />
                 맞춤형 1:1 상담을 즉시 시작할 수 있습니다
               </p>
-              <div className="flex items-center gap-2 mb-6">
-                <Zap className="w-4 h-4 text-white/80" />
-                <span className="text-white/80 text-sm">평균 응답시간 2시간</span>
+              <div className="flex items-center gap-2.5 mb-7">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                <span className="text-white/90 text-sm font-pretendard font-medium">평균 응답시간 2시간</span>
               </div>
               <Button 
                 size="lg"
-                className="w-full bg-white text-blue-600 hover:bg-white/90 font-semibold shadow-lg group-hover:scale-105 transition-transform duration-300"
+                className="w-full bg-white text-blue-600 hover:bg-white/95 font-pretendard font-bold text-base shadow-xl hover:shadow-2xl group-hover:scale-105 transition-all duration-300"
                 onClick={() => {
                   const tabsList = document.querySelector('[value="experts"]') as HTMLElement;
                   if (tabsList) tabsList.click();

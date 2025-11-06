@@ -3679,6 +3679,60 @@ export type Database = {
           },
         ]
       }
+      institution_bookings: {
+        Row: {
+          booking_date: string
+          consultation_type: string
+          created_at: string
+          duration_minutes: number
+          end_time: string
+          id: string
+          institution_id: string
+          institution_name: string
+          notes: string | null
+          start_time: string
+          status: string
+          updated_at: string
+          user_id: string
+          user_name: string
+          user_phone: string
+        }
+        Insert: {
+          booking_date: string
+          consultation_type?: string
+          created_at?: string
+          duration_minutes?: number
+          end_time: string
+          id?: string
+          institution_id: string
+          institution_name: string
+          notes?: string | null
+          start_time: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          user_name: string
+          user_phone: string
+        }
+        Update: {
+          booking_date?: string
+          consultation_type?: string
+          created_at?: string
+          duration_minutes?: number
+          end_time?: string
+          id?: string
+          institution_id?: string
+          institution_name?: string
+          notes?: string | null
+          start_time?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          user_name?: string
+          user_phone?: string
+        }
+        Relationships: []
+      }
       institution_content_calendar: {
         Row: {
           channel: string

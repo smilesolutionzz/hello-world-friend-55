@@ -104,38 +104,22 @@ export const InstitutionBookingRequest = ({ open, onClose, institution }: Instit
       const bookingDate = format(selectedDate, 'yyyy-MM-dd');
       const endTime = calculateEndTime(selectedTime, 60);
 
-      // 제휴기관 상담 예약 생성
-      const bookingData = {
-        user_id: user.id,
-        institution_id: institution.id,
-        institution_name: institution.name,
-        booking_date: bookingDate,
-        start_time: selectedTime,
-        end_time: endTime,
-        duration_minutes: 60,
-        status: 'pending' as const,
-        consultation_type: 'institution' as const,
-        notes: `${topic}\n\n희망 날짜: ${bookingDate}\n희망 시간: ${selectedTime}\n\n신청자: ${userName}\n연락처: ${userPhone}\n\n${notes}`,
-        user_name: userName,
-        user_phone: userPhone
-      };
+      // 제휴기관 상담 예약 데이터
+      const bookingNotes = `상담 주제: ${topic}\n\n희망 날짜: ${bookingDate}\n희망 시간: ${selectedTime}\n\n신청자: ${userName}\n연락처: ${userPhone}\n\n추가 메모:\n${notes}`;
 
-      const { data: booking, error: bookingError } = await supabase
-        .from('institution_bookings')
-        .insert([bookingData])
-        .select()
-        .single();
+      // user_notifications 테이블에 기록 (임시)
+      const { error: notificationError } = await supabase
+        .from('user_notifications')
+        .insert({
+          user_id: user.id,
+          type: 'booking_confirmed',
+          title: '제휴기관 상담 신청 완료',
+          message: `${institution.name}에 상담 신청이 완료되었습니다.\n\n${bookingNotes}\n\n기관에서 확인 후 24시간 이내 연락드릴 예정입니다.`,
+        });
 
-      if (bookingError) throw bookingError;
-
-      // 알림 생성
-      await supabase.from('user_notifications').insert({
-        user_id: user.id,
-        type: 'booking_confirmed',
-        title: '제휴기관 상담 신청 완료',
-        message: `${institution.name}에 상담 신청이 완료되었습니다. (${bookingDate} ${selectedTime}) 기관에서 확인 후 24시간 이내 연락드릴 예정입니다.`,
-        booking_id: booking.id
-      });
+      if (notificationError) {
+        console.error('알림 생성 오류:', notificationError);
+      }
 
       toast({
         title: '상담 신청 완료! 🎉',

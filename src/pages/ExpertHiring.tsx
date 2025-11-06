@@ -1463,16 +1463,16 @@ const ExpertHiring = () => {
                   40+ 인증기관
                 </Badge>
               </div>
-              <h3 className="text-3xl font-pretendard font-bold text-white mb-4 leading-tight drop-shadow-lg">
+              <h3 className="text-3xl font-pretendard font-bold text-gray-900 mb-4 leading-tight drop-shadow-lg">
                 제휴기관에서<br />상담예약하기
               </h3>
-              <p className="text-white/95 mb-7 text-base leading-relaxed font-pretendard font-medium drop-shadow">
+              <p className="text-gray-800 mb-7 text-base leading-relaxed font-pretendard font-medium drop-shadow">
                 AIHPRO 인증을 받은 40개 이상의 전문 제휴기관에서<br />
                 바우처 지원과 함께 전문적인 상담 서비스를 받아보세요
               </p>
               <div className="flex items-center gap-2.5 mb-7">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                <span className="text-white/90 text-sm font-pretendard font-medium">바우처 지원 가능</span>
+                <div className="w-2 h-2 bg-gray-900 rounded-full animate-pulse"></div>
+                <span className="text-gray-800 text-sm font-pretendard font-medium">바우처 지원 가능</span>
               </div>
               <Button 
                 size="lg"
@@ -1504,16 +1504,16 @@ const ExpertHiring = () => {
                   129명 전문가
                 </Badge>
               </div>
-              <h3 className="text-3xl font-pretendard font-bold text-white mb-4 leading-tight drop-shadow-lg">
+              <h3 className="text-3xl font-pretendard font-bold text-gray-900 mb-4 leading-tight drop-shadow-lg">
                 개인전문가<br />즉시상담하기
               </h3>
-              <p className="text-white/95 mb-7 text-base leading-relaxed font-pretendard font-medium drop-shadow">
+              <p className="text-gray-800 mb-7 text-base leading-relaxed font-pretendard font-medium drop-shadow">
                 검증된 129명의 개인 전문가와 바로 연결되어<br />
                 맞춤형 1:1 상담을 즉시 시작할 수 있습니다
               </p>
               <div className="flex items-center gap-2.5 mb-7">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                <span className="text-white/90 text-sm font-pretendard font-medium">평균 응답시간 2시간</span>
+                <div className="w-2 h-2 bg-gray-900 rounded-full animate-pulse"></div>
+                <span className="text-gray-800 text-sm font-pretendard font-medium">평균 응답시간 2시간</span>
               </div>
               <Button 
                 size="lg"

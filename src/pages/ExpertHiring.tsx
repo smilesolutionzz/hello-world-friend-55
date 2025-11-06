@@ -54,6 +54,7 @@ import { ko } from "date-fns/locale";
 import GrowthStoryFeed from '@/components/growth/GrowthStoryFeed';
 import GrowthStoryShare from '@/components/growth/GrowthStoryShare';
 import { getExpertImage } from '@/components/expert/ExpertImages';
+import { QuickConsultationRequest } from '@/components/booking/QuickConsultationRequest';
 
 interface Expert {
   id: string;
@@ -595,6 +596,10 @@ const ExpertHiring = () => {
   const [commentAnonymousNickname, setCommentAnonymousNickname] = useState("");
   const [showStoryShare, setShowStoryShare] = useState(false);
   const [storyRefreshTrigger, setStoryRefreshTrigger] = useState(0);
+
+  // 즉시 상담 모달 상태
+  const [quickConsultModalOpen, setQuickConsultModalOpen] = useState(false);
+  const [selectedQuickExpert, setSelectedQuickExpert] = useState<any>(null);
 
   // 실제 전문가 데이터 로드
   const loadExperts = async () => {
@@ -1313,7 +1318,7 @@ const ExpertHiring = () => {
     navigate(`/expert-contract/${expertId}`);
   };
 
-  const handleConsultExpert = async (expertId: string) => {
+  const handleConsultExpert = async (expertIdParam: string) => {
     try {
       // 로그인 확인
       const { data: { user } } = await supabase.auth.getUser();
@@ -1327,7 +1332,7 @@ const ExpertHiring = () => {
       const { data: dbExpert, error: expertErr } = await supabase
         .from('experts')
         .select('*')
-        .eq('id', expertId)
+        .eq('id', expertIdParam)
         .maybeSingle();
 
       if (expertErr) {
@@ -1346,15 +1351,9 @@ const ExpertHiring = () => {
         return;
       }
 
-      // BookingManagement 페이지로 이동하면서 전문가 정보 전달
-      toast.success(`${dbExpert.full_name} 전문가 예약 페이지로 이동합니다.`);
-      navigate('/booking-management', { 
-        state: { 
-          expertId: dbExpert.id,
-          expertName: dbExpert.full_name,
-          autoOpenBooking: true 
-        } 
-      });
+      // 즉시 상담 모달 열기
+      setSelectedQuickExpert(dbExpert);
+      setQuickConsultModalOpen(true);
     } catch (error) {
       console.error('상담 시작 오류:', error);
       toast.error('상담 시작 중 오류가 발생했습니다.');
@@ -2661,6 +2660,18 @@ const ExpertHiring = () => {
         </Card>
       </div>
     </div>
+
+    {/* 즉시 상담 신청 모달 */}
+    {selectedQuickExpert && (
+      <QuickConsultationRequest
+        open={quickConsultModalOpen}
+        onClose={() => {
+          setQuickConsultModalOpen(false);
+          setSelectedQuickExpert(null);
+        }}
+        expert={selectedQuickExpert}
+      />
+    )}
     </>
   );
 };

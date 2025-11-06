@@ -498,10 +498,106 @@ function getFallbackAnalysis(text: string) {
       '맞춤형 솔루션 추천 받기'
     ],
     recommendedTests: [
-      { name: '스트레스 측정', description: '현재 스트레스 수준을 파악합니다', reason: '고민의 원인과 스트레스 관계 분석', isPremium: false },
-      { name: '종합 심리 평가', description: '전문가 수준의 심층 평가', reason: '정확한 진단을 위한 종합 분석', isPremium: true },
-      { name: '정서 상태 검사', description: '정서적 안정성을 평가합니다', reason: '감정 조절 및 심리 상태 확인', isPremium: false }
-    ]
+      { 
+        testId: 'stress',
+        name: '스트레스 측정', 
+        reason: '고민의 원인과 스트레스 관계 분석', 
+        expectedFindings: '현재 스트레스 수준과 주요 원인을 파악할 수 있습니다'
+      },
+      { 
+        testId: 'depression',
+        name: '우울감 자가체크', 
+        reason: '정서적 어려움의 정도를 객관적으로 평가', 
+        expectedFindings: '우울 증상의 심각도와 개선이 필요한 영역을 확인할 수 있습니다'
+      },
+      { 
+        testId: 'panic',
+        name: '불안감 수준 확인', 
+        reason: '불안 및 긴장 수준 파악', 
+        expectedFindings: '불안장애 위험도와 대처 방법을 알 수 있습니다'
+      }
+    ],
+    comprehensiveReports: {
+      developmentAssessment: {
+        cognitive: severity === '높음' ? 45 : severity === '중간' ? 65 : 75,
+        language: severity === '높음' ? 50 : severity === '중간' ? 70 : 80,
+        motor: severity === '높음' ? 55 : severity === '중간' ? 72 : 82,
+        social: severity === '높음' ? 40 : severity === '중간' ? 60 : 78,
+        overall: severity === '높음' ? 48 : severity === '중간' ? 67 : 79,
+        summary: `현재 ${detectedType} 관련하여 ${severity === '높음' ? '전문가 개입이 필요한 수준' : severity === '중간' ? '관찰과 관리가 필요한 수준' : '안정적인 수준'}으로 평가됩니다. 지속적인 관심과 적절한 지원을 통해 긍정적인 변화를 기대할 수 있습니다. 특히 강점을 활용하여 약점을 보완하는 전략이 효과적일 것으로 예상됩니다.`
+      },
+      psychologicalAnalysis: {
+        emotionalStability: severity === '높음' ? 35 : severity === '중간' ? 55 : 75,
+        stressLevel: severity === '높음' ? 85 : severity === '중간' ? 65 : 40,
+        mentalHealth: severity === '높음' ? 40 : severity === '중간' ? 60 : 78,
+        summary: `현재 경험하고 계신 ${detectedType}는 ${severity === '높음' ? '즉각적인 관심이 필요합니다' : severity === '중간' ? '체계적인 관리가 도움이 됩니다' : '예방적 관리가 권장됩니다'}. 스트레스 관리와 정서적 안정을 위한 구체적인 실천 방안이 필요합니다. 전문가의 도움을 받으면 더욱 효과적인 대처가 가능합니다.`
+      },
+      strengthsWeaknesses: {
+        strengths: [
+          '문제를 인식하고 해결하려는 의지가 있습니다',
+          '도움을 구하는 용기가 있습니다',
+          '변화와 성장에 대한 열린 태도를 가지고 있습니다'
+        ],
+        weaknesses: [
+          '현재 겪고 있는 어려움에 대한 체계적 대응이 필요합니다',
+          '스트레스 관리 방법을 구체적으로 익힐 필요가 있습니다',
+          '지속적인 자기 관찰과 모니터링이 필요합니다'
+        ],
+        growthDirection: '강점인 문제 인식 능력과 변화 의지를 활용하여, 체계적인 관리 방법을 익히고 전문가의 도움을 받으면 빠른 개선이 가능합니다'
+      },
+      customActivities: [
+        '매일 아침 5분 마음챙김 호흡 연습하기 - 스트레스 관리에 즉각적 도움',
+        '하루 10분 감정 일기 작성하기 - 패턴 파악과 자기 이해 증진',
+        '주 3회 30분 산책하기 - 신체 활동을 통한 정서 안정',
+        '주말마다 좋아하는 취미 활동 30분 - 긍정적 감정 경험',
+        '매주 신뢰하는 사람과 대화 시간 갖기 - 사회적 지지 강화'
+      ],
+      developmentRoadmap: {
+        shortTerm: [
+          '매일 감정 상태를 기록하며 패턴 파악하기',
+          '스트레스 관리 기법(호흡, 명상) 익히고 실천하기',
+          '규칙적인 수면과 식사 패턴 만들기'
+        ],
+        mediumTerm: [
+          '전문가 상담을 통해 구체적인 대처 방안 배우기',
+          '취미나 관심사 활동을 통해 긍정적 경험 늘리기',
+          '사회적 관계망 강화하고 지지 체계 구축하기'
+        ],
+        longTerm: [
+          '건강한 생활 습관과 스트레스 관리가 자연스럽게 유지되기',
+          '어려움을 스스로 잘 대처할 수 있는 회복탄력성 갖추기',
+          '삶의 질이 전반적으로 향상되고 안정감 느끼기'
+        ]
+      },
+      peerComparison: {
+        ageGroup: '성인',
+        percentile: severity === '높음' ? 25 : severity === '중간' ? 50 : 70,
+        comparison: `같은 연령대와 비교했을 때 ${severity === '높음' ? '하위 25% 수준으로 전문적 지원이 필요' : severity === '중간' ? '중간 수준으로 적절한 관리가 필요' : '상위 30% 수준으로 양호한 편'}합니다. 적절한 개입과 노력을 통해 충분히 개선 가능한 상태입니다.`
+      },
+      expertOpinion: {
+        interventionNeeded: severity === '높음' ? '높음' : severity === '중간' ? '중간' : '낮음',
+        recommendations: [
+          severity === '높음' ? '즉각적인 정신건강 전문가 상담이 권장됩니다' : severity === '중간' ? '전문가 상담을 통한 체계적 관리가 도움됩니다' : '예방 차원의 상담이 도움될 수 있습니다',
+          '임상심리사 또는 정신건강의학과 전문의 상담 권장',
+          detectedType + ' 관련 전문적 평가와 맞춤형 치료 계획 수립'
+        ],
+        urgency: severity === '높음' ? '높음 - 가능한 빠른 시일 내 전문가 상담 필요' : severity === '중간' ? '중간 - 2주 내 전문가 상담 권장' : '낮음 - 필요시 전문가 상담 고려'
+      },
+      familySupport: {
+        parentingTips: [
+          '충분한 경청과 공감으로 심리적 안정감 제공하기',
+          '작은 성취와 노력을 인정하고 격려하기',
+          '규칙적인 생활 패턴 유지를 도와주기',
+          '전문가 상담에 동행하여 지지 표현하기'
+        ],
+        communicationGuide: '비난이나 평가보다는 "힘들었겠다", "이해한다"와 같은 공감 표현을 사용하세요. "왜 그랬어?"보다는 "어떻게 도와줄까?"라고 물어보세요. 상대방의 감정과 경험을 인정하고 존중하는 태도가 중요합니다.'
+      },
+      longTermPrediction: {
+        developmentTrend: severity === '높음' ? '주의필요' : severity === '중간' ? '보통' : '긍정적',
+        potential: severity === '높음' ? 55 : severity === '중간' ? 70 : 85,
+        forecast: `현재 상태를 방치할 경우 ${severity === '높음' ? '더 심각한 문제로 발전할 위험이 있습니다' : severity === '중간' ? '개선이 더디거나 유지될 수 있습니다' : '안정적으로 유지될 것으로 예상됩니다'}. 하지만 적절한 전문가 개입과 체계적인 관리를 받으면 ${severity === '높음' ? '6-12개월 내 상당한 호전이 가능' : severity === '중간' ? '3-6개월 내 눈에 띄는 개선이 기대' : '1-3개월 내 더욱 안정적인 상태 도달'}됩니다. 꾸준한 노력과 적절한 지원이 핵심입니다.`
+      }
+    }
   };
 }
 

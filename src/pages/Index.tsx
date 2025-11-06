@@ -12,6 +12,7 @@ import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
 
 import ValueComparisonSection from "@/components/landing/ValueComparisonSection";
 import FixedCTAButton from "@/components/landing/FixedCTAButton";
+import KakaoCustomerService from "@/components/KakaoCustomerService";
 import TestimonialSection from "@/components/TestimonialSection";
 import ClientLogos from "@/components/ClientLogos";
 import { NewFeaturesSection } from "@/components/landing/NewFeaturesSection";
@@ -240,6 +241,9 @@ const Index = () => {
         
         {/* Fixed CTA Button (Mobile + Desktop) */}
         <FixedCTAButton />
+        
+        {/* Kakao Customer Service */}
+        <KakaoCustomerService />
         
         <BackToTop />
         

@@ -26,9 +26,9 @@ const HeroSection = () => {
   };
   
   const typingPhrases = [
-    "2살인데 아직 말을 한 마디도 안 해요... 발달장애일까봐 밤마다 울어요",
-    "중2 딸이 자해를 시작했어요... 어떻게 해야 할지 모르겠고 너무 무서워요",
-    "남편이 바람피웠어요... 용서해야 할지 이혼해야 할지 매일 울면서 고민해요"
+    "우리 아이 발달이 또래보다 느린 것 같아요",
+    "청소년기 자녀와 대화가 잘 안 돼요",
+    "부부 관계 개선이 필요해요"
   ];
   return (
     <section className="relative min-h-screen overflow-hidden">
@@ -78,9 +78,9 @@ const HeroSection = () => {
             <div className="text-left text-base text-white/90 leading-relaxed min-h-[4rem] flex items-center">
               <TypingAnimation 
                 phrases={typingPhrases}
-                typingSpeed={50}
-                deletingSpeed={30}
-                pauseDuration={2000}
+                typingSpeed={80}
+                deletingSpeed={50}
+                pauseDuration={3000}
                 className="text-white/90"
               />
             </div>

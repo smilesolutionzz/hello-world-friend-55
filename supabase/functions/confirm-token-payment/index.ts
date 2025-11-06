@@ -84,12 +84,12 @@ serve(async (req) => {
       }
 
       if (currentTokens) {
-        // 기존 토큰 잔액 업데이트
+        // 기존 토큰 잔액 업데이트 - total_purchased는 실제 구매한 토큰만 추가
         const { error: updateTokenError } = await supabaseAdmin
           .from('user_tokens')
           .update({
             current_tokens: currentTokens.current_tokens + paymentRecord.token_amount,
-            total_purchased: currentTokens.total_purchased + paymentRecord.token_amount
+            total_purchased: (currentTokens.total_purchased || 0) + paymentRecord.token_amount
           })
           .eq('user_id', paymentRecord.user_id);
 

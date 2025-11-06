@@ -82,12 +82,12 @@ serve(async (req) => {
     const tokensToAdd = parseInt(tokenCount);
 
     if (existingTokens) {
-      // 기존 토큰 업데이트
+      // 기존 토큰 업데이트 - total_purchased는 실제 구매한 토큰만 추가
       const { error: updateError } = await supabaseAdmin
         .from('user_tokens')
         .update({
           current_tokens: existingTokens.current_tokens + tokensToAdd,
-          total_purchased: existingTokens.total_purchased + tokensToAdd,
+          total_purchased: (existingTokens.total_purchased || 0) + tokensToAdd,
           updated_at: new Date().toISOString()
         })
         .eq('user_id', userId);

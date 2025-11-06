@@ -1345,13 +1345,7 @@ const ExpertHiring = () => {
         return;
       }
 
-      // 카카오 오픈채팅 링크가 있으면 외부로 이동
-      if (dbExpert.kakao_link) {
-        window.open(dbExpert.kakao_link, '_blank');
-        return;
-      }
-
-      // 즉시 상담 모달 열기
+      // 즉시 상담 모달 열기 (카카오톡 링크 무시)
       setSelectedQuickExpert(dbExpert);
       setQuickConsultModalOpen(true);
     } catch (error) {

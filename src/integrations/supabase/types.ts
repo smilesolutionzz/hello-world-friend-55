@@ -2807,6 +2807,27 @@ export type Database = {
           },
         ]
       }
+      expert_views: {
+        Row: {
+          expert_id: string
+          id: string
+          user_id: string
+          viewed_at: string
+        }
+        Insert: {
+          expert_id: string
+          id?: string
+          user_id: string
+          viewed_at?: string
+        }
+        Update: {
+          expert_id?: string
+          id?: string
+          user_id?: string
+          viewed_at?: string
+        }
+        Relationships: []
+      }
       experts: {
         Row: {
           average_rating: number | null
@@ -7097,6 +7118,27 @@ export type Database = {
           },
         ]
       }
+      user_favorites: {
+        Row: {
+          created_at: string
+          expert_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expert_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expert_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_feedback: {
         Row: {
           created_at: string
@@ -7274,6 +7316,47 @@ export type Database = {
             columns: ["mission_id"]
             isOneToOne: false
             referencedRelation: "weekly_missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_notifications: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notifications_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "consultation_bookings"
             referencedColumns: ["id"]
           },
         ]

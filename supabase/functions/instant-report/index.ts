@@ -3,16 +3,11 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.55.0';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL');
 const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
 if (!openAIApiKey) {
   throw new Error('OPENAI_API_KEY is required');
-}
-
-if (!lovableApiKey) {
-  throw new Error('LOVABLE_API_KEY is required');
 }
 
 const supabase = createClient(supabaseUrl!, supabaseServiceRoleKey!);
@@ -198,87 +193,6 @@ JSON 형식으로만 응답:
 
     console.log('OpenAI response received:', reportContent.length, 'characters');
 
-    // Generate image using Lovable AI (Nano Banana)
-    console.log('Generating personalized image with Nano Banana...');
-    let generatedImageUrl = null;
-    
-    try {
-      // 고민 내용을 분석해서 맞춤형 이미지 프롬프트 생성
-      const imagePromptResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${openAIApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [
-            {
-              role: 'system',
-              content: '당신은 예술 감독입니다. 사용자의 고민 내용을 분석하여 고급스럽고 감성적인 이미지 생성 프롬프트를 작성합니다.'
-            },
-            {
-              role: 'user',
-              content: `다음 고민에 어울리는 따뜻하고 희망적인 이미지 프롬프트를 작성해주세요:
-
-고민 내용: ${message}
-
-요구사항:
-- 수채화 또는 파스텔 스타일
-- 부드러운 그라데이션 배경 (핑크, 오렌지, 옐로우, 퍼플 톤)
-- 사람들이 서로를 지지하고 돌보는 모습 (추상적, 예술적)
-- 따뜻하고 희망적인 분위기
-- 고급스럽고 전문적인 느낌
-- 영어로 200자 이내로 작성`
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 300,
-        }),
-      });
-
-      let imagePrompt = '고급스럽고 따뜻한 심리 상담 이미지를 생성해주세요. 부드러운 파스텔 톤의 그라데이션 배경에 사람들이 서로를 돌보고 지지하는 모습을 추상적이고 예술적으로 표현해주세요. 수채화 스타일로 따뜻하고 희망적인 분위기를 담아주세요. 전문적이면서도 부드러운 느낌으로.';
-      
-      if (imagePromptResponse.ok) {
-        const promptData = await imagePromptResponse.json();
-        imagePrompt = promptData.choices[0].message.content.trim();
-        console.log('Personalized image prompt:', imagePrompt);
-      }
-      
-      const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${lovableApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'google/gemini-2.5-flash-image-preview',
-          messages: [
-            {
-              role: 'user',
-              content: imagePrompt
-            }
-          ],
-          modalities: ['image', 'text']
-        }),
-      });
-
-      if (imageResponse.ok) {
-        const imageData = await imageResponse.json();
-        const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-        if (imageUrl) {
-          generatedImageUrl = imageUrl;
-          console.log('Personalized image generated successfully');
-        }
-      } else {
-        const errorText = await imageResponse.text();
-        console.error('Image generation failed:', errorText);
-      }
-    } catch (imageError) {
-      console.error('Error generating image:', imageError);
-      // Continue without image if generation fails
-    }
-
     // Create final result
     const analysisResult = {
       report: reportContent.trim(),
@@ -286,7 +200,6 @@ JSON 형식으로만 응답:
       needsExpertConsultation: riskAssessment.needsExpertConsultation,
       recommendedTreatments: riskAssessment.recommendedTreatments || [],
       recommendedContent: riskAssessment.recommendedContent || [],
-      imageUrl: generatedImageUrl,
       timestamp: new Date().toISOString()
     };
 

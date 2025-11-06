@@ -15,7 +15,6 @@ interface InstantReport {
   needsExpertConsultation: boolean;
   recommendedTreatments?: string[];
   recommendedContent?: string[];
-  imageUrl?: string;
   timestamp: string;
 }
 
@@ -168,22 +167,6 @@ const ChatInterface = () => {
                 {new Date(report.timestamp).toLocaleString('ko-KR')}
               </div>
             </div>
-
-            {/* AI 생성 이미지 */}
-            {report.imageUrl && (
-              <div className="relative w-full overflow-hidden rounded-xl shadow-xl">
-                <img 
-                  src={report.imageUrl} 
-                  alt="AI 생성 심리 상담 이미지" 
-                  className="w-full h-auto object-cover rounded-xl"
-                />
-                <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 bg-white/90 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs text-gray-700 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" />
-                  <span className="hidden sm:inline">Gemini AI가 당신의 고민에 맞춰 생성한 전문 리포트 이미지</span>
-                  <span className="sm:hidden">AI 생성 이미지</span>
-                </div>
-              </div>
-            )}
 
             {/* 법적 안전 공지 */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">

@@ -667,7 +667,7 @@ const Assessment = () => {
                   <div className="text-4xl mb-3">⭐</div>
                   <h3 className="text-xl font-bold mb-2">AIH 전문가 창작</h3>
                   <div className="inline-flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-full font-bold text-lg mb-3">
-                    3토큰
+                    5토큰
                   </div>
                   <ul className="text-sm space-y-1">
                     <li>• 5D 성격분석</li>

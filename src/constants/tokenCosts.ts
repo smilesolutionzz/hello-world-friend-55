@@ -14,13 +14,13 @@ export const TOKEN_COSTS = {
   LEARNING_DISABILITY_TEST: 5,  // 학습장애 검사
   SOCIAL_DEVELOPMENT_TEST: 5,   // 사회성 발달 검사
   
-  // AIH 전문가 창작 검사 - 발달 심리전문가 직접 개발 (3토큰)
-  FIVE_D_PERSONALITY: 3,        // 5D 성격 분석
-  RELATIONSHIP_TYPE: 3,         // 관계유형 진단
-  STRESS_INDEX: 3,              // 스트레스 지수 측정
-  CAREER_INTEREST: 3,           // 진로흥미 탐색
-  SELF_WORTH: 3,                // 자존감 측정
-  DEFENSE_MECHANISM: 3,         // 방어기제 분석
+  // AIH 전문가 창작 검사 - 발달 심리전문가 직접 개발 (5토큰으로 통일)
+  FIVE_D_PERSONALITY: 5,        // 5D 성격 분석
+  RELATIONSHIP_TYPE: 5,         // 관계유형 진단
+  STRESS_INDEX: 5,              // 스트레스 지수 측정
+  CAREER_INTEREST: 5,           // 진로흥미 탐색
+  SELF_WORTH: 5,                // 자존감 측정
+  DEFENSE_MECHANISM: 5,         // 방어기제 분석
   
   
   // 재미있는 AI 검사 (무료)
@@ -57,8 +57,7 @@ export const TOKEN_COSTS = {
 export const TOKEN_COST_DESCRIPTIONS = {
   0: "무료 서비스",
   1: "엔터테인먼트 테스트 또는 AI 상담 10메시지",
-  3: "AIH 전문가 창작 검사 (심리전문가 개발)",
-  5: "전문 심리검사 및 아동·청소년 발달검사", 
+  5: "전문 심리검사 및 AIH 전문가 창작 검사", 
   20: "프리미엄 분석 및 전문가급 리포트",
   200: "모든 데이터 종합 박사급 분석 리포트 (3일내 휴대폰 전송)",
 } as const;

@@ -2,6 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Heart, Users, TrendingUp, Lightbulb, ArrowLeft, RefreshCw } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 interface AttachmentStyleResultProps {
   result: {
@@ -11,6 +14,7 @@ interface AttachmentStyleResultProps {
     style: string;
     total: number;
     average: number;
+    analysis?: string;
   };
   onRestart: () => void;
 }
@@ -18,22 +22,146 @@ interface AttachmentStyleResultProps {
 const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, onRestart }) => {
   const navigate = useNavigate();
 
+  const getStyleColor = (style: string) => {
+    switch(style) {
+      case "안정형": return "bg-green-500";
+      case "불안형": return "bg-orange-500";
+      case "회피형": return "bg-blue-500";
+      case "혼란형": return "bg-purple-500";
+      default: return "bg-gray-500";
+    }
+  };
+
+  const getStyleDescription = (style: string) => {
+    switch(style) {
+      case "안정형": return "건강한 관계를 형성하는 유형";
+      case "불안형": return "관계에 대한 걱정이 많은 유형";
+      case "회피형": return "독립성을 중시하는 유형";
+      case "혼란형": return "친밀함과 거리감 사이에서 혼란스러운 유형";
+      default: return "";
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>애착 유형: {result.style}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>불안 점수: {result.anxietyScore}</p>
-          <p>회피 점수: {result.avoidanceScore}</p>
-          <p>총점: {result.total}</p>
-          <p>평균: {result.average}</p>
-        </CardContent>
-      </Card>
-      <div className="flex gap-3">
-        <Button onClick={onRestart}>다시 검사</Button>
-        <Button variant="outline" onClick={() => navigate('/assessment')}>검사 목록</Button>
+    <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-4 py-8">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* 헤더 */}
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" onClick={() => navigate('/assessment')} className="flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            검사 목록
+          </Button>
+          <Button variant="outline" onClick={onRestart} className="flex items-center gap-2">
+            <RefreshCw className="w-4 h-4" />
+            다시 검사
+          </Button>
+        </div>
+
+        {/* 결과 요약 카드 */}
+        <Card className="border-2">
+          <CardHeader className="text-center pb-4">
+            <div className="flex justify-center mb-4">
+              <Badge className={`${getStyleColor(result.style)} text-white text-lg px-6 py-2`}>
+                {result.style}
+              </Badge>
+            </div>
+            <CardTitle className="text-3xl mb-2">애착 유형 검사 결과</CardTitle>
+            <p className="text-muted-foreground text-lg">
+              {getStyleDescription(result.style)}
+            </p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {/* 불안 점수 */}
+              <div className="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 p-6 rounded-lg">
+                <div className="flex items-center gap-3 mb-3">
+                  <Heart className="w-6 h-6 text-orange-600" />
+                  <h3 className="font-bold text-lg">불안 점수</h3>
+                </div>
+                <div className="text-4xl font-bold text-orange-600 mb-2">
+                  {result.anxietyScore.toFixed(1)} / 7
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {result.anxietyScore < 4 
+                    ? "관계에서 안정감을 느끼는 편입니다" 
+                    : "관계에 대한 걱정이 있는 편입니다"}
+                </p>
+              </div>
+
+              {/* 회피 점수 */}
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-6 rounded-lg">
+                <div className="flex items-center gap-3 mb-3">
+                  <Users className="w-6 h-6 text-blue-600" />
+                  <h3 className="font-bold text-lg">회피 점수</h3>
+                </div>
+                <div className="text-4xl font-bold text-blue-600 mb-2">
+                  {result.avoidanceScore.toFixed(1)} / 7
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {result.avoidanceScore < 4 
+                    ? "타인과 가까워지는 것을 편하게 느낍니다" 
+                    : "독립성을 중시하는 편입니다"}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* AI 상세 분석 */}
+        {result.analysis && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Lightbulb className="w-6 h-6 text-primary" />
+                <CardTitle>AI 전문가 분석</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="prose prose-slate dark:prose-invert max-w-none">
+                <ReactMarkdown
+                  components={{
+                    h1: ({node, ...props}) => <h2 className="text-2xl font-bold mt-6 mb-4" {...props} />,
+                    h2: ({node, ...props}) => <h3 className="text-xl font-bold mt-5 mb-3" {...props} />,
+                    h3: ({node, ...props}) => <h4 className="text-lg font-semibold mt-4 mb-2" {...props} />,
+                    p: ({node, ...props}) => <p className="mb-4 leading-relaxed" {...props} />,
+                    ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-4 space-y-2" {...props} />,
+                    ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-4 space-y-2" {...props} />,
+                    li: ({node, ...props}) => <li className="leading-relaxed" {...props} />,
+                    strong: ({node, ...props}) => <strong className="font-bold text-primary" {...props} />,
+                  }}
+                >
+                  {result.analysis}
+                </ReactMarkdown>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 행동 버튼 */}
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="py-6">
+            <div className="flex items-start gap-3 mb-4">
+              <TrendingUp className="w-5 h-5 text-primary mt-0.5" />
+              <div>
+                <h3 className="font-semibold mb-2">다음 단계</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  이 결과를 바탕으로 더 깊이 있는 상담이나 다른 심리 검사를 진행해보세요.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button onClick={() => navigate('/assessment')} variant="outline">
+                다른 검사 해보기
+              </Button>
+              <Button onClick={() => navigate('/token-history')} variant="outline">
+                토큰 이력 확인
+              </Button>
+              <Button onClick={() => navigate('/')} variant="secondary">
+                홈으로
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

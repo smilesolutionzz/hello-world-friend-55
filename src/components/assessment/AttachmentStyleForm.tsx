@@ -5,6 +5,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { useTokens } from "@/hooks/useTokens";
+import { TOKEN_COSTS } from "@/constants/tokenCosts";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const questions = [
   {
@@ -89,6 +93,7 @@ interface AttachmentStyleFormProps {
     style: string;
     total: number;
     average: number;
+    analysis?: string;
   }) => void;
   onBack: () => void;
 }
@@ -99,6 +104,8 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
+  const { consumeTokens, checkTokenAvailability } = useTokens();
+  const { toast } = useToast();
 
   const handleAnswer = (questionId: string, value: string) => {
     setAnswers(prev => ({
@@ -126,18 +133,28 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
     }
   };
 
-  const analyzeResults = () => {
+  const analyzeResults = async () => {
+    // 토큰 확인
+    const requiredTokens = TOKEN_COSTS.RELATIONSHIP_TYPE;
+    if (!checkTokenAvailability(requiredTokens)) {
+      toast({
+        title: "토큰이 부족합니다",
+        description: `이 검사를 진행하려면 ${requiredTokens}토큰이 필요합니다.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsAnalyzing(true);
-    setTimeLeft(30); // 30초 예상
+    setTimeLeft(60);
     setAnalysisProgress(0);
 
-    // 진행률 시뮬레이션
     const progressInterval = setInterval(() => {
-      setAnalysisProgress(prev => Math.min(prev + 3, 95));
-      setTimeLeft(prev => Math.max(0, prev - 1));
+      setAnalysisProgress(prev => Math.min(prev + 2, 95));
+      setTimeLeft(prev => Math.max(0, prev - 2));
     }, 1000);
     
-    setTimeout(() => {
+    try {
       let anxietyScore = 0;
       let avoidanceScore = 0;
       let anxietyCount = 0;
@@ -156,11 +173,9 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
         }
       });
       
-      // 평균 계산
       anxietyScore = anxietyScore / anxietyCount;
       avoidanceScore = avoidanceScore / avoidanceCount;
       
-      // 애착 유형 결정
       let style: string;
       if (anxietyScore < 4 && avoidanceScore < 4) {
         style = "안정형";
@@ -172,6 +187,31 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
         style = "혼란형";
       }
       
+      // 토큰 소비
+      const tokenConsumed = await consumeTokens(requiredTokens);
+      if (!tokenConsumed) {
+        throw new Error("토큰 소비에 실패했습니다");
+      }
+
+      // AI 분석 요청
+      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: analysisData, error: analysisError } = await supabase.functions.invoke(
+        'analyze-attachment-style',
+        {
+          headers: {
+            Authorization: `Bearer ${sessionData.session?.access_token}`,
+          },
+          body: {
+            anxietyScore,
+            avoidanceScore,
+            style,
+            answers
+          }
+        }
+      );
+
+      if (analysisError) throw analysisError;
+
       const answerValues = Object.fromEntries(
         Object.entries(answers).map(([key, value]) => [key, parseInt(value)])
       );
@@ -179,20 +219,29 @@ export default function AttachmentStyleForm({ onComplete, onBack }: AttachmentSt
       const total = anxietyScore + avoidanceScore;
       const average = total / 2;
       
+      clearInterval(progressInterval);
+      setAnalysisProgress(100);
+      setTimeLeft(0);
+
       onComplete({
         answers: answerValues,
         anxietyScore,
         avoidanceScore,
         style,
         total,
-        average
+        average,
+        analysis: analysisData?.analysis
       });
-      
+    } catch (error) {
+      console.error('분석 오류:', error);
+      toast({
+        title: "분석 실패",
+        description: "분석 중 오류가 발생했습니다. 다시 시도해주세요.",
+        variant: "destructive",
+      });
       clearInterval(progressInterval);
-      setAnalysisProgress(100);
-      setTimeLeft(0);
       setIsAnalyzing(false);
-    }, 2000);
+    }
   };
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;

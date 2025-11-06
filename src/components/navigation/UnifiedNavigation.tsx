@@ -340,6 +340,7 @@ export const UnifiedNavigation = () => {
                           <div className="font-semibold text-sm mb-0.5">{item.label}</div>
                           <div className="text-xs text-muted-foreground">
                             {item.label === '전문가고용' && '전문 상담사 1:1 매칭 및 예약'}
+                            {item.label === '예약 관리' && '상담 예약 일정 및 패키지 관리'}
                             {item.label === '토큰 충전' && 'AI 서비스 이용권 구매'}
                           </div>
                         </div>

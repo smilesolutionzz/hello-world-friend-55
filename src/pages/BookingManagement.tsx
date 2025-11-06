@@ -5,8 +5,10 @@ import { BookingCalendar } from '@/components/booking/BookingCalendar';
 import { BookingList } from '@/components/booking/BookingList';
 import { ExpertScheduleManager } from '@/components/booking/ExpertScheduleManager';
 import { CancellationPolicyInfo } from '@/components/booking/CancellationPolicyInfo';
+import { PackagesView } from '@/components/booking/PackagesView';
+import { MyPackages } from '@/components/booking/MyPackages';
 import { supabase } from '@/integrations/supabase/client';
-import { Calendar, Clock, List, Settings } from 'lucide-react';
+import { Calendar, Clock, List, Settings, Package } from 'lucide-react';
 
 const BookingManagement = () => {
   const [expertId, setExpertId] = useState<string | null>(null);
@@ -87,10 +89,28 @@ const BookingManagement = () => {
             </Tabs>
           ) : (
             // User View
-            <div className="space-y-6">
-              <CancellationPolicyInfo />
-              <BookingList userView={true} />
-            </div>
+            <Tabs defaultValue="bookings" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="bookings" className="flex items-center gap-2">
+                  <List className="w-4 h-4" />
+                  내 예약
+                </TabsTrigger>
+                <TabsTrigger value="packages" className="flex items-center gap-2">
+                  <Package className="w-4 h-4" />
+                  패키지
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="bookings" className="space-y-6">
+                <MyPackages />
+                <CancellationPolicyInfo />
+                <BookingList userView={true} />
+              </TabsContent>
+
+              <TabsContent value="packages" className="space-y-6">
+                <PackagesView />
+              </TabsContent>
+            </Tabs>
           )}
         </div>
       </div>

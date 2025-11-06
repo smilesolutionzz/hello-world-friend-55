@@ -678,6 +678,63 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_waitlist: {
+        Row: {
+          created_at: string | null
+          duration_minutes: number
+          expert_id: string
+          id: string
+          notified_at: string | null
+          preferred_date: string
+          preferred_time_end: string | null
+          preferred_time_start: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          duration_minutes?: number
+          expert_id: string
+          id?: string
+          notified_at?: string | null
+          preferred_date: string
+          preferred_time_end?: string | null
+          preferred_time_start?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          duration_minutes?: number
+          expert_id?: string
+          id?: string
+          notified_at?: string | null
+          preferred_date?: string
+          preferred_time_end?: string | null
+          preferred_time_start?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_waitlist_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
+          },
+          {
+            foreignKeyName: "booking_waitlist_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "experts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brain_health_stats: {
         Row: {
           cognitive_age: number | null
@@ -1245,6 +1302,7 @@ export type Database = {
           end_time: string
           expert_id: string
           id: string
+          is_quick_consultation: boolean | null
           meeting_link: string | null
           meeting_platform: string | null
           notes: string | null
@@ -1264,6 +1322,7 @@ export type Database = {
           end_time: string
           expert_id: string
           id?: string
+          is_quick_consultation?: boolean | null
           meeting_link?: string | null
           meeting_platform?: string | null
           notes?: string | null
@@ -1283,6 +1342,7 @@ export type Database = {
           end_time?: string
           expert_id?: string
           id?: string
+          is_quick_consultation?: boolean | null
           meeting_link?: string | null
           meeting_platform?: string | null
           notes?: string | null
@@ -1335,6 +1395,45 @@ export type Database = {
           monthly_consultations?: number
           priority_level?: number
           subscription_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      consultation_packages: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          discount_percentage: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+          price_per_session: number
+          sessions_count: number
+          total_tokens: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          discount_percentage?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price_per_session: number
+          sessions_count: number
+          total_tokens: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          discount_percentage?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price_per_session?: number
+          sessions_count?: number
+          total_tokens?: number
           updated_at?: string | null
         }
         Relationships: []
@@ -7175,6 +7274,50 @@ export type Database = {
             columns: ["mission_id"]
             isOneToOne: false
             referencedRelation: "weekly_missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_packages: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          package_id: string
+          purchased_at: string | null
+          sessions_remaining: number
+          sessions_total: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          package_id: string
+          purchased_at?: string | null
+          sessions_remaining: number
+          sessions_total: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          package_id?: string
+          purchased_at?: string | null
+          sessions_remaining?: number
+          sessions_total?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_packages_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "consultation_packages"
             referencedColumns: ["id"]
           },
         ]

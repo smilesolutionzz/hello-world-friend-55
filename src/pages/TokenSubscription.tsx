@@ -121,6 +121,43 @@ const TokenSubscription = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <UnifiedNavigation />
       
+      {/* 롤칭 기념 특별 프로모션 배너 */}
+      <div className="bg-gradient-to-r from-orange-400 via-pink-500 to-pink-600 text-white py-8 px-4 relative overflow-hidden shadow-2xl">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] animate-pulse"></div>
+        </div>
+        <div className="container mx-auto relative z-10 max-w-4xl">
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-2 text-2xl font-bold mb-2">
+              <Sparkles className="w-8 h-8 animate-bounce" />
+              <span className="text-3xl">🎉 롤칭 기념 특별 프로모션 🎊</span>
+              <Sparkles className="w-8 h-8 animate-bounce" />
+            </div>
+            
+            <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-6 inline-block shadow-xl border-4 border-white/30">
+              <div className="text-6xl font-black mb-2 drop-shadow-lg">
+                50% 할인
+              </div>
+              <div className="text-xl font-semibold">
+                + 보너스 토큰 50개 추가 증정
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-center gap-3 text-xl mt-6">
+              <Clock className="w-6 h-6" />
+              <span className="font-semibold">남은 시간:</span>
+              <div className="bg-white/30 backdrop-blur-sm px-4 py-2 rounded-lg font-mono font-bold text-2xl border-2 border-white/50">
+                11:54:35
+              </div>
+            </div>
+            
+            <p className="text-sm opacity-90 mt-4">
+              * 오늘 자정까지만 유효한 혜택입니다
+            </p>
+          </div>
+        </div>
+      </div>
+      
       {/* 토큰제 안내 배너 */}
       <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white py-6 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 animate-pulse"></div>

@@ -141,23 +141,45 @@ const BookingManagement = () => {
               제휴기관 목록으로 돌아가기
             </Button>
 
-            <Card>
+            <Card className="bg-blue-50 border-blue-200">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="w-5 h-5" />
                   {selectedInstitution} 예약
                 </CardTitle>
                 <CardDescription>
-                  제휴기관 상담 예약 서비스를 준비 중입니다. 곧 이용하실 수 있습니다.
+                  제휴기관 상담 예약 서비스 준비 중입니다. 곧 이용하실 수 있습니다.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="text-center py-12">
-                <p className="text-muted-foreground mb-4">
-                  현재 제휴기관과의 상담 예약 시스템을 구축 중입니다.
-                </p>
-                <Button onClick={() => navigate('/expert-hiring')}>
-                  개인 전문가 예약하기
-                </Button>
+              <CardContent className="space-y-6">
+                <div className="text-center py-6">
+                  <p className="text-muted-foreground mb-6">
+                    현재 제휴기관과의 상담 예약 시스템을 구축 중입니다.
+                  </p>
+                  <div className="space-y-3">
+                    <p className="font-semibold text-lg mb-4">임시 안내</p>
+                    <p className="text-sm text-muted-foreground mb-6">
+                      아래 버튼을 클릭하시면 네이버 지도에서 <strong>{selectedInstitution}</strong>을(를) 검색하실 수 있습니다.
+                    </p>
+                    <div className="flex gap-3 justify-center">
+                      <Button 
+                        onClick={() => {
+                          const searchQuery = encodeURIComponent(selectedInstitution);
+                          window.open(`https://map.naver.com/v5/search/${searchQuery}`, '_blank');
+                        }}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        네이버 지도에서 검색하기
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => navigate('/expert-hiring')}
+                      >
+                        개인 전문가 예약하기
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -8,11 +8,13 @@ import { ExpertScheduleManager } from '@/components/booking/ExpertScheduleManage
 import { CancellationPolicyInfo } from '@/components/booking/CancellationPolicyInfo';
 import { PackagesView } from '@/components/booking/PackagesView';
 import { MyPackages } from '@/components/booking/MyPackages';
+import { InstitutionBookingRequest } from '@/components/booking/InstitutionBookingRequest';
 import { supabase } from '@/integrations/supabase/client';
 import { Calendar, Clock, List, Settings, Package } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { mockInstitutions } from '@/data/mockInstitutions';
 
 const BookingManagement = () => {
   const location = useLocation();
@@ -21,9 +23,11 @@ const BookingManagement = () => {
   const [selectedExpertId, setSelectedExpertId] = useState<string | null>(null);
   const [selectedExpertName, setSelectedExpertName] = useState<string>('');
   const [selectedInstitution, setSelectedInstitution] = useState<string>('');
+  const [selectedInstitutionData, setSelectedInstitutionData] = useState<any>(null);
   const [isExpert, setIsExpert] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showBookingCalendar, setShowBookingCalendar] = useState(false);
+  const [showInstitutionBooking, setShowInstitutionBooking] = useState(false);
 
   useEffect(() => {
     checkExpertStatus();
@@ -39,10 +43,19 @@ const BookingManagement = () => {
       
       if (institutionName) {
         setSelectedInstitution(institutionName);
+        // mockInstitutions에서 기관 데이터 찾기
+        const institution = mockInstitutions.find(inst => inst.name === institutionName);
+        if (institution) {
+          setSelectedInstitutionData(institution);
+        }
       }
       
       if (autoOpenBooking) {
-        setShowBookingCalendar(true);
+        if (institutionName) {
+          setShowInstitutionBooking(true);
+        } else {
+          setShowBookingCalendar(true);
+        }
       }
     }
   }, [location]);
@@ -122,68 +135,20 @@ const BookingManagement = () => {
     );
   }
 
-  // 제휴기관 예약 모드
-  if (showBookingCalendar && selectedInstitution) {
+  // 제휴기관 예약 모달
+  if (selectedInstitutionData) {
     return (
       <div className="min-h-screen bg-background">
         <UnifiedNavigation />
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setShowBookingCalendar(false);
-                navigate('/expert-hiring');
-              }}
-              className="mb-6"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              제휴기관 목록으로 돌아가기
-            </Button>
-
-            <Card className="bg-blue-50 border-blue-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  {selectedInstitution} 예약
-                </CardTitle>
-                <CardDescription>
-                  제휴기관 상담 예약 서비스 준비 중입니다. 곧 이용하실 수 있습니다.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="text-center py-6">
-                  <p className="text-muted-foreground mb-6">
-                    현재 제휴기관과의 상담 예약 시스템을 구축 중입니다.
-                  </p>
-                  <div className="space-y-3">
-                    <p className="font-semibold text-lg mb-4">임시 안내</p>
-                    <p className="text-sm text-muted-foreground mb-6">
-                      아래 버튼을 클릭하시면 네이버 지도에서 <strong>{selectedInstitution}</strong>을(를) 검색하실 수 있습니다.
-                    </p>
-                    <div className="flex gap-3 justify-center">
-                      <Button 
-                        onClick={() => {
-                          const searchQuery = encodeURIComponent(selectedInstitution);
-                          window.open(`https://map.naver.com/v5/search/${searchQuery}`, '_blank');
-                        }}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        네이버 지도에서 검색하기
-                      </Button>
-                      <Button 
-                        variant="outline"
-                        onClick={() => navigate('/expert-hiring')}
-                      >
-                        개인 전문가 예약하기
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        <InstitutionBookingRequest
+          open={showInstitutionBooking}
+          onClose={() => {
+            setShowInstitutionBooking(false);
+            setSelectedInstitutionData(null);
+            navigate('/expert-hiring');
+          }}
+          institution={selectedInstitutionData}
+        />
       </div>
     );
   }

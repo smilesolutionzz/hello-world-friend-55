@@ -1458,8 +1458,8 @@ const ExpertHiring = () => {
                 <div className="bg-white/25 backdrop-blur-md p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
                   <Building className="w-10 h-10 text-white drop-shadow-lg" />
                 </div>
-                <Badge className="bg-white/25 backdrop-blur-md text-white border-white/40 px-4 py-1.5 font-pretendard font-semibold shadow-lg">
-                  <Shield className="w-3.5 h-3.5 mr-1.5" />
+                <Badge className="bg-white/25 backdrop-blur-md text-gray-900 border-white/40 px-4 py-1.5 font-pretendard font-semibold shadow-lg">
+                  <Shield className="w-3.5 h-3.5 mr-1.5 text-gray-900" />
                   40+ 인증기관
                 </Badge>
               </div>
@@ -1499,8 +1499,8 @@ const ExpertHiring = () => {
                 <div className="bg-white/25 backdrop-blur-md p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
                   <UserCheck className="w-10 h-10 text-white drop-shadow-lg" />
                 </div>
-                <Badge className="bg-white/25 backdrop-blur-md text-white border-white/40 px-4 py-1.5 font-pretendard font-semibold shadow-lg">
-                  <Zap className="w-3.5 h-3.5 mr-1.5" />
+                <Badge className="bg-white/25 backdrop-blur-md text-gray-900 border-white/40 px-4 py-1.5 font-pretendard font-semibold shadow-lg">
+                  <Zap className="w-3.5 h-3.5 mr-1.5 text-gray-900" />
                   129명 전문가
                 </Badge>
               </div>

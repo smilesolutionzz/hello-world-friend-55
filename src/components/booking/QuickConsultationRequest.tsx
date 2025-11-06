@@ -10,6 +10,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
 import { useNavigate } from 'react-router-dom';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 interface Expert {
   id: string;
@@ -27,22 +32,43 @@ interface QuickConsultationRequestProps {
   expert: Expert;
 }
 
-const QUICK_CONSULTATION_COST = 10; // 즉시 상담 토큰 비용
 
 export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsultationRequestProps) => {
   const [topic, setTopic] = useState('');
   const [notes, setNotes] = useState('');
-  const [preferredTime, setPreferredTime] = useState<'now' | 'within_1h' | 'within_3h'>('now');
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState('09:00');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { balance, consumeTokens, checkTokenAvailability } = useTokens();
   const navigate = useNavigate();
+
+  // 전문가의 hourly_rate를 토큰 비용으로 사용
+  const CONSULTATION_COST = expert.hourly_rate || 30000;
 
   const handleSubmit = async () => {
     if (!topic.trim()) {
       toast({
         title: '상담 주제를 입력해주세요',
         description: '상담받고 싶은 내용을 간단히 적어주세요.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (!selectedDate) {
+      toast({
+        title: '상담 날짜를 선택해주세요',
+        description: '희망하시는 상담 날짜를 선택해주세요.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    if (!selectedTime) {
+      toast({
+        title: '상담 시간을 입력해주세요',
+        description: '희망하시는 상담 시간을 선택해주세요.',
         variant: 'destructive'
       });
       return;
@@ -63,32 +89,36 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
       }
 
       // 토큰 확인
-      const hasEnoughTokens = checkTokenAvailability(QUICK_CONSULTATION_COST);
+      const hasEnoughTokens = checkTokenAvailability(CONSULTATION_COST);
       if (!hasEnoughTokens) {
         toast({
           title: '토큰이 부족합니다',
-          description: `즉시 상담 신청에는 ${QUICK_CONSULTATION_COST} 토큰이 필요합니다.`,
+          description: `상담 신청에는 ${CONSULTATION_COST.toLocaleString()} 토큰이 필요합니다.`,
           variant: 'destructive'
         });
         navigate('/token-subscription');
         return;
       }
 
-      // 즉시 상담 예약 생성
+      // 상담 예약 생성
+      const bookingDate = format(selectedDate, 'yyyy-MM-dd');
+      const endTime = calculateEndTime(selectedTime, 60); // 60분 상담 기준
+
+
       const bookingData = {
         user_id: user.id,
         expert_id: expert.id,
         expert_name: expert.full_name,
-        booking_date: new Date().toISOString().split('T')[0],
-        start_time: new Date().toTimeString().split(' ')[0].slice(0, 5),
-        end_time: new Date(Date.now() + 30 * 60 * 1000).toTimeString().split(' ')[0].slice(0, 5),
-        duration_minutes: 30,
+        booking_date: bookingDate,
+        start_time: selectedTime,
+        end_time: endTime,
+        duration_minutes: 60,
         status: 'pending' as const,
         consultation_type: 'quick' as const,
         is_quick_consultation: true,
-        notes: `${topic}\n\n희망 시간: ${getPreferredTimeLabel(preferredTime)}\n\n${notes}`,
-        total_price: expert.hourly_rate / 2, // 30분 기준
-        tokens_paid: QUICK_CONSULTATION_COST
+        notes: `${topic}\n\n희망 날짜: ${bookingDate}\n희망 시간: ${selectedTime}\n\n${notes}`,
+        total_price: expert.hourly_rate,
+        tokens_paid: CONSULTATION_COST
       };
 
       const { data: booking, error: bookingError } = await supabase
@@ -100,7 +130,7 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
       if (bookingError) throw bookingError;
 
       // 토큰 차감
-      const tokenConsumed = await consumeTokens(QUICK_CONSULTATION_COST);
+      const tokenConsumed = await consumeTokens(CONSULTATION_COST);
 
       if (!tokenConsumed) {
         // 예약 취소
@@ -112,23 +142,23 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
       await supabase.from('user_notifications').insert({
         user_id: user.id,
         type: 'booking_confirmed',
-        title: '즉시 상담 신청 완료',
-        message: `${expert.full_name} 전문가에게 즉시 상담 신청이 완료되었습니다. 전문가가 확인 후 곧 연락드릴 예정입니다.`,
+        title: '상담 신청 완료',
+        message: `${expert.full_name} 전문가에게 상담 신청이 완료되었습니다. (${bookingDate} ${selectedTime}) 전문가가 확인 후 24시간 이내 연락드릴 예정입니다.`,
         booking_id: booking.id
       });
 
       toast({
-        title: '즉시 상담 신청 완료! 🎉',
-        description: `${expert.full_name} 전문가가 곧 연락드릴 예정입니다.`
+        title: '상담 신청 완료! 🎉',
+        description: `${expert.full_name} 전문가가 24시간 이내 연락드릴 예정입니다.`
       });
 
       onClose();
       navigate('/booking-management');
     } catch (error) {
-      console.error('즉시 상담 신청 오류:', error);
+      console.error('상담 신청 오류:', error);
       toast({
         title: '신청 실패',
-        description: '즉시 상담 신청 중 오류가 발생했습니다.',
+        description: '상담 신청 중 오류가 발생했습니다.',
         variant: 'destructive'
       });
     } finally {
@@ -136,13 +166,13 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
     }
   };
 
-  const getPreferredTimeLabel = (time: string) => {
-    switch (time) {
-      case 'now': return '지금 즉시';
-      case 'within_1h': return '1시간 이내';
-      case 'within_3h': return '3시간 이내';
-      default: return '지금 즉시';
-    }
+  // 종료 시간 계산 함수
+  const calculateEndTime = (startTime: string, durationMinutes: number): string => {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes + durationMinutes;
+    const endHours = Math.floor(totalMinutes / 60) % 24;
+    const endMinutes = totalMinutes % 60;
+    return `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`;
   };
 
   return (
@@ -150,11 +180,11 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl flex items-center gap-2">
-            <Zap className="w-6 h-6 text-yellow-500" />
-            즉시 상담 신청
+            <Calendar className="w-6 h-6 text-primary" />
+            상담 신청
           </DialogTitle>
           <DialogDescription>
-            전문가가 빠른 시간 내에 연락드립니다
+            전문가가 24시간 이내 연락드립니다
           </DialogDescription>
         </DialogHeader>
 
@@ -214,30 +244,50 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
             />
           </div>
 
-          {/* 희망 시간 */}
+          {/* 희망 상담 날짜 */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold">희망 상담 시간</label>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { value: 'now', label: '지금 즉시', icon: Zap },
-                { value: 'within_1h', label: '1시간 이내', icon: Clock },
-                { value: 'within_3h', label: '3시간 이내', icon: Calendar }
-              ].map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => setPreferredTime(option.value as any)}
-                  className={`p-4 border-2 rounded-lg transition-all ${
-                    preferredTime === option.value
-                      ? 'border-primary bg-primary/10'
-                      : 'border-border hover:border-primary/50'
-                  }`}
+            <label className="text-sm font-semibold">
+              희망 상담 날짜 <span className="text-red-500">*</span>
+            </label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !selectedDate && "text-muted-foreground"
+                  )}
                 >
-                  <option.icon className={`w-5 h-5 mx-auto mb-2 ${
-                    preferredTime === option.value ? 'text-primary' : 'text-muted-foreground'
-                  }`} />
-                  <div className="text-sm font-medium">{option.label}</div>
-                </button>
-              ))}
+                  <Calendar className="mr-2 h-4 w-4" />
+                  {selectedDate ? format(selectedDate, 'PPP', { locale: ko }) : "날짜를 선택하세요"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <CalendarComponent
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                  initialFocus
+                  locale={ko}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          {/* 희망 상담 시간 */}
+          <div className="space-y-2">
+            <label className="text-sm font-semibold">
+              희망 상담 시간 <span className="text-red-500">*</span>
+            </label>
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5 text-muted-foreground" />
+              <input
+                type="time"
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
             </div>
           </div>
 
@@ -259,14 +309,14 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Zap className="w-5 h-5 text-yellow-500" />
-                  <span className="font-semibold">소요 토큰</span>
+                  <span className="font-semibold">소요 토큰 (1시간 기준)</span>
                 </div>
                 <div className="text-right">
                   <div className="text-2xl font-bold text-primary">
-                    {QUICK_CONSULTATION_COST} 토큰
+                    {CONSULTATION_COST.toLocaleString()} 토큰
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    잔액: {balance?.current_tokens || 0} 토큰
+                    잔액: {balance?.current_tokens?.toLocaleString() || 0} 토큰
                   </div>
                 </div>
               </div>
@@ -281,7 +331,7 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <p className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-green-600" />
-                    전문가가 확인 후 빠른 시간 내에 연락드립니다
+                    전문가가 확인 후 24시간 이내 연락드립니다
                   </p>
                   <p className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-green-600" />
@@ -289,7 +339,7 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
                   </p>
                   <p className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-green-600" />
-                    평균 응답 시간: 2시간 이내
+                    상담 시간은 1시간 기준입니다
                   </p>
                 </div>
               </div>
@@ -309,7 +359,7 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
             <Button
               onClick={handleSubmit}
               className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-              disabled={loading || !topic.trim()}
+              disabled={loading || !topic.trim() || !selectedDate || !selectedTime}
             >
               {loading ? (
                 <>
@@ -319,7 +369,7 @@ export const QuickConsultationRequest = ({ open, onClose, expert }: QuickConsult
               ) : (
                 <>
                   <MessageCircle className="w-4 h-4 mr-2" />
-                  즉시 상담 신청하기
+                  상담 신청하기
                 </>
               )}
             </Button>

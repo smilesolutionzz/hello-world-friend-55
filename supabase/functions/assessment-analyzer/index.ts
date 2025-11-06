@@ -49,8 +49,8 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    // 토큰 차감 처리 (기본 심리검사는 2토큰)
-    const tokenCost = 2;
+    // 토큰 차감 처리 (AIH 전문가 창작 검사는 5토큰)
+    const tokenCost = 5;
     
     // 현재 토큰 잔액 확인
     const { data: tokenData, error: tokenError } = await supabaseServiceClient

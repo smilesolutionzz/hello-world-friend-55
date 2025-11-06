@@ -978,7 +978,7 @@ const Assessment = () => {
                   <h3 className="text-2xl font-bold text-foreground mb-2">AIH 전문가 창작 검사</h3>
                   <p className="text-muted-foreground flex items-center justify-center gap-2">
                     <span>발달 심리전문가가 직접 개발한 신뢰도 높은 창작 검사</span>
-                    <Badge className="bg-emerald-500 text-white font-semibold">3토큰</Badge>
+                    <Badge className="bg-emerald-500 text-white font-semibold">5토큰</Badge>
                   </p>
                 </div>
                 

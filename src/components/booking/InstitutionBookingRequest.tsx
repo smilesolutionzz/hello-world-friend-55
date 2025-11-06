@@ -102,12 +102,33 @@ export const InstitutionBookingRequest = ({ open, onClose, institution }: Instit
       }
 
       const bookingDate = format(selectedDate, 'yyyy-MM-dd');
-      const endTime = calculateEndTime(selectedTime, 60);
 
-      // 제휴기관 상담 예약 데이터
+      // Edge Function 호출하여 이메일 발송
+      const { error: emailError } = await supabase.functions.invoke(
+        'send-institution-booking-notification',
+        {
+          body: {
+            institutionName: institution.name,
+            institutionEmail: institution.email || 'support@aihpro.kr', // 기관 이메일이 없으면 기본 이메일 사용
+            userName: userName,
+            userPhone: userPhone,
+            userEmail: user.email || '',
+            topic: topic,
+            bookingDate: bookingDate,
+            bookingTime: selectedTime,
+            notes: notes
+          }
+        }
+      );
+
+      if (emailError) {
+        console.error('이메일 발송 오류:', emailError);
+        // 이메일 실패해도 알림은 생성
+      }
+
       const bookingNotes = `상담 주제: ${topic}\n\n희망 날짜: ${bookingDate}\n희망 시간: ${selectedTime}\n\n신청자: ${userName}\n연락처: ${userPhone}\n\n추가 메모:\n${notes}`;
 
-      // user_notifications 테이블에 기록 (임시)
+      // user_notifications 테이블에 기록
       const { error: notificationError } = await supabase
         .from('user_notifications')
         .insert({

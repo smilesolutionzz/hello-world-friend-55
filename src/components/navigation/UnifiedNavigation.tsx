@@ -56,7 +56,6 @@ interface NavigationItem {
 const expertSubmenuItems = [
   { icon: UserCheck, label: '전문가고용', path: '/expert-hiring', requiresAuth: false },
   { icon: Calendar, label: '예약 관리', path: '/booking-management', requiresAuth: true },
-  { icon: Crown, label: '구독 관리', path: '/subscription', requiresAuth: true },
   { icon: Zap, label: '토큰 충전', path: '/token-subscription', requiresAuth: false },
 ];
 

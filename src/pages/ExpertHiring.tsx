@@ -1315,7 +1315,15 @@ const ExpertHiring = () => {
 
   const handleConsultExpert = async (expertId: string) => {
     try {
-      // 1) DB에서 전문가 정보 조회
+      // 로그인 확인
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('로그인이 필요합니다.');
+        navigate('/auth');
+        return;
+      }
+
+      // 전문가 정보 조회
       const { data: dbExpert, error: expertErr } = await supabase
         .from('experts')
         .select('*')
@@ -1332,63 +1340,45 @@ const ExpertHiring = () => {
         return;
       }
 
-      // 2) 카카오 오픈채팅 링크가 있으면 즉시 외부로 이동 (로그인 불필요)
+      // 카카오 오픈채팅 링크가 있으면 외부로 이동
       if (dbExpert.kakao_link) {
         window.open(dbExpert.kakao_link, '_blank');
         return;
       }
 
-      // 3) 내부 상담 흐름 (로그인 필요)
-      const { data: { user } } = await supabase.auth.getUser();
+      // BookingManagement 페이지로 이동하면서 전문가 정보 전달
+      toast.success(`${dbExpert.full_name} 전문가 예약 페이지로 이동합니다.`);
+      navigate('/booking-management', { 
+        state: { 
+          expertId: dbExpert.id,
+          expertName: dbExpert.full_name,
+          autoOpenBooking: true 
+        } 
+      });
+    } catch (error) {
+      console.error('상담 시작 오류:', error);
+      toast.error('상담 시작 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleInstitutionBooking = (institutionName: string) => {
+    // 로그인 확인
+    supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) {
         toast.error('로그인이 필요합니다.');
         navigate('/auth');
         return;
       }
 
-      const consultationData = {
-        user_id: user.id,
-        expert_id: dbExpert.id,
-        consultation_type: 'text',
-        status: 'pending',
-        price: dbExpert.hourly_rate ?? 0,
-        scheduled_at: new Date().toISOString()
-      } as const;
-
-      const { data: consultation, error } = await supabase
-        .from('consultations')
-        .insert(consultationData)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('상담 생성 오류:', error);
-        toast.error('상담 요청 중 오류가 발생했습니다.');
-        return;
-      }
-
-      const { data: chatRoom, error: chatError } = await supabase
-        .from('chat_rooms')
-        .insert({
-          user_id: user.id,
-          expert_id: dbExpert.id,
-          status: 'active'
-        })
-        .select()
-        .single();
-
-      if (chatError) {
-        console.error('채팅방 생성 오류:', chatError);
-        toast.error('채팅방 생성 중 오류가 발생했습니다.');
-        return;
-      }
-
-      toast.success(`${dbExpert.full_name} 에이전트와의 상담이 시작됩니다.`);
-      navigate(`/consultation/${chatRoom.id}`);
-    } catch (error) {
-      console.error('상담 시작 오류:', error);
-      toast.error('상담 시작 중 오류가 발생했습니다.');
-    }
+      // BookingManagement 페이지로 이동하면서 기관 정보 전달
+      toast.success(`${institutionName} 예약 페이지로 이동합니다.`);
+      navigate('/booking-management', { 
+        state: { 
+          institutionName: institutionName,
+          autoOpenBooking: true 
+        } 
+      });
+    });
   };
 
   const formatPrice = (price: number) => {
@@ -2244,9 +2234,7 @@ const ExpertHiring = () => {
                             ? 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700' 
                             : 'bg-purple-600 hover:bg-purple-700'
                         }`}
-                        onClick={() => {
-                          toast("제휴기관 상담 예약 서비스를 준비 중입니다. 곧 이용하실 수 있습니다.");
-                        }}
+                        onClick={() => handleInstitutionBooking(institution.name)}
                       >
                         상담 예약하기
                       </Button>

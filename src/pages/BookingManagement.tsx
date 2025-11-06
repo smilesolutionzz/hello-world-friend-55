@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BookingCalendar } from '@/components/booking/BookingCalendar';
@@ -9,15 +10,42 @@ import { PackagesView } from '@/components/booking/PackagesView';
 import { MyPackages } from '@/components/booking/MyPackages';
 import { supabase } from '@/integrations/supabase/client';
 import { Calendar, Clock, List, Settings, Package } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 const BookingManagement = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [expertId, setExpertId] = useState<string | null>(null);
+  const [selectedExpertId, setSelectedExpertId] = useState<string | null>(null);
+  const [selectedExpertName, setSelectedExpertName] = useState<string>('');
+  const [selectedInstitution, setSelectedInstitution] = useState<string>('');
   const [isExpert, setIsExpert] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showBookingCalendar, setShowBookingCalendar] = useState(false);
 
   useEffect(() => {
     checkExpertStatus();
-  }, []);
+    
+    // URL state에서 전문가/기관 정보 확인
+    if (location.state) {
+      const { expertId, expertName, institutionName, autoOpenBooking } = location.state as any;
+      
+      if (expertId) {
+        setSelectedExpertId(expertId);
+        setSelectedExpertName(expertName || '');
+      }
+      
+      if (institutionName) {
+        setSelectedInstitution(institutionName);
+      }
+      
+      if (autoOpenBooking) {
+        setShowBookingCalendar(true);
+      }
+    }
+  }, [location]);
 
   const checkExpertStatus = async () => {
     try {
@@ -50,6 +78,89 @@ const BookingManagement = () => {
         <UnifiedNavigation />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // 예약 캘린더 표시 모드
+  if (showBookingCalendar && selectedExpertId) {
+    return (
+      <div className="min-h-screen bg-background">
+        <UnifiedNavigation />
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setShowBookingCalendar(false);
+                navigate('/expert-hiring');
+              }}
+              className="mb-6"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              전문가 목록으로 돌아가기
+            </Button>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  {selectedExpertName} 전문가 예약
+                </CardTitle>
+                <CardDescription>
+                  원하시는 날짜와 시간을 선택하여 상담을 예약하세요
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <BookingCalendar expertId={selectedExpertId} />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 제휴기관 예약 모드
+  if (showBookingCalendar && selectedInstitution) {
+    return (
+      <div className="min-h-screen bg-background">
+        <UnifiedNavigation />
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setShowBookingCalendar(false);
+                navigate('/expert-hiring');
+              }}
+              className="mb-6"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              제휴기관 목록으로 돌아가기
+            </Button>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  {selectedInstitution} 예약
+                </CardTitle>
+                <CardDescription>
+                  제휴기관 상담 예약 서비스를 준비 중입니다. 곧 이용하실 수 있습니다.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center py-12">
+                <p className="text-muted-foreground mb-4">
+                  현재 제휴기관과의 상담 예약 시스템을 구축 중입니다.
+                </p>
+                <Button onClick={() => navigate('/expert-hiring')}>
+                  개인 전문가 예약하기
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     );

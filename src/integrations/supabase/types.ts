@@ -1245,6 +1245,8 @@ export type Database = {
           end_time: string
           expert_id: string
           id: string
+          meeting_link: string | null
+          meeting_platform: string | null
           notes: string | null
           start_time: string
           status: string
@@ -1262,6 +1264,8 @@ export type Database = {
           end_time: string
           expert_id: string
           id?: string
+          meeting_link?: string | null
+          meeting_platform?: string | null
           notes?: string | null
           start_time: string
           status?: string
@@ -1279,6 +1283,8 @@ export type Database = {
           end_time?: string
           expert_id?: string
           id?: string
+          meeting_link?: string | null
+          meeting_platform?: string | null
           notes?: string | null
           start_time?: string
           status?: string
@@ -1287,6 +1293,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "consultation_bookings_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
+          },
           {
             foreignKeyName: "consultation_bookings_expert_id_fkey"
             columns: ["expert_id"]
@@ -1325,6 +1338,61 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      consultation_reviews: {
+        Row: {
+          booking_id: string
+          comment: string | null
+          created_at: string | null
+          expert_id: string
+          id: string
+          rating: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          booking_id: string
+          comment?: string | null
+          created_at?: string | null
+          expert_id: string
+          id?: string
+          rating: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          booking_id?: string
+          comment?: string | null
+          created_at?: string | null
+          expert_id?: string
+          id?: string
+          rating?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultation_reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "consultation_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultation_reviews_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
+          },
+          {
+            foreignKeyName: "consultation_reviews_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "experts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       consultations: {
         Row: {
@@ -1385,6 +1453,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "chat_rooms"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultations_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
           },
           {
             foreignKeyName: "consultations_expert_id_fkey"
@@ -2228,6 +2303,13 @@ export type Database = {
             foreignKeyName: "expert_availability_expert_id_fkey"
             columns: ["expert_id"]
             isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
+          },
+          {
+            foreignKeyName: "expert_availability_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
             referencedRelation: "experts"
             referencedColumns: ["id"]
           },
@@ -2340,6 +2422,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "consultations"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_earnings_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
           },
           {
             foreignKeyName: "expert_earnings_expert_id_fkey"
@@ -2528,6 +2617,7 @@ export type Database = {
       }
       expert_schedules: {
         Row: {
+          buffer_minutes: number | null
           created_at: string | null
           day_of_week: number
           end_time: string
@@ -2538,6 +2628,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          buffer_minutes?: number | null
           created_at?: string | null
           day_of_week: number
           end_time: string
@@ -2548,6 +2639,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          buffer_minutes?: number | null
           created_at?: string | null
           day_of_week?: number
           end_time?: string
@@ -2558,6 +2650,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "expert_schedules_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
+          },
           {
             foreignKeyName: "expert_schedules_expert_id_fkey"
             columns: ["expert_id"]
@@ -2593,6 +2692,13 @@ export type Database = {
           start_date?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "expert_time_off_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
+          },
           {
             foreignKeyName: "expert_time_off_expert_id_fkey"
             columns: ["expert_id"]
@@ -5623,6 +5729,13 @@ export type Database = {
             foreignKeyName: "realtime_consultation_sessions_expert_id_fkey"
             columns: ["expert_id"]
             isOneToOne: false
+            referencedRelation: "expert_booking_stats"
+            referencedColumns: ["expert_id"]
+          },
+          {
+            foreignKeyName: "realtime_consultation_sessions_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
             referencedRelation: "experts"
             referencedColumns: ["id"]
           },
@@ -7755,7 +7868,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      expert_booking_stats: {
+        Row: {
+          average_rating: number | null
+          cancellation_rate: number | null
+          cancelled_bookings: number | null
+          completed_bookings: number | null
+          confirmed_bookings: number | null
+          expert_id: string | null
+          review_count: number | null
+          total_bookings: number | null
+          total_tokens_earned: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       add_daily_tokens: { Args: never; Returns: undefined }

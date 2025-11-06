@@ -4,12 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar, Clock, User, X } from 'lucide-react';
+import { Calendar, Clock, User, X, Star } from 'lucide-react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { BookingReviewModal } from './BookingReviewModal';
 
 interface Booking {
   id: string;
+  user_id: string;
   booking_date: string;
   start_time: string;
   end_time: string;
@@ -18,6 +20,8 @@ interface Booking {
   tokens_paid: number;
   notes: string | null;
   expert_id: string;
+  meeting_link?: string;
+  meeting_platform?: 'zoom' | 'kakao' | 'google_meet' | 'other';
   experts: {
     full_name: string;
     professional_title: string;
@@ -36,7 +40,18 @@ const STATUS_LABELS = {
 export const BookingList = ({ userView = true }: { userView?: boolean }) => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(false);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) setCurrentUserId(user.id);
+    };
+    loadUser();
+  }, []);
 
   useEffect(() => {
     loadBookings();
@@ -166,13 +181,21 @@ export const BookingList = ({ userView = true }: { userView?: boolean }) => {
   };
 
   const confirmBooking = async (bookingId: string) => {
+    const meetingLink = prompt('화상 상담 링크를 입력하세요 (Zoom, 카카오톡 등):');
+    if (!meetingLink) return;
+
+    const platform = prompt('플랫폼을 선택하세요 (zoom, kakao, google_meet, other):', 'zoom');
+    if (!platform) return;
+
     setLoading(true);
     try {
       const { error } = await supabase
         .from('consultation_bookings')
         .update({ 
           status: 'confirmed',
-          confirmed_at: new Date().toISOString()
+          confirmed_at: new Date().toISOString(),
+          meeting_link: meetingLink,
+          meeting_platform: platform as 'zoom' | 'kakao' | 'google_meet' | 'other'
         })
         .eq('id', bookingId);
 
@@ -180,7 +203,7 @@ export const BookingList = ({ userView = true }: { userView?: boolean }) => {
 
       toast({
         title: '예약 확정 완료',
-        description: '예약이 확정되었습니다.'
+        description: '예약이 확정되고 상담 링크가 전송되었습니다.'
       });
 
       loadBookings();
@@ -257,6 +280,16 @@ export const BookingList = ({ userView = true }: { userView?: boolean }) => {
                         {booking.notes}
                       </p>
                     )}
+                    {booking.meeting_link && (
+                      <a 
+                        href={booking.meeting_link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline inline-block"
+                      >
+                        🔗 {booking.meeting_platform === 'zoom' ? 'Zoom' : booking.meeting_platform === 'kakao' ? '카카오톡' : booking.meeting_platform === 'google_meet' ? 'Google Meet' : '상담'} 링크 열기
+                      </a>
+                    )}
                     <div className="flex items-center gap-2">
                       <Badge className={STATUS_LABELS[booking.status].color}>
                         {STATUS_LABELS[booking.status].label}
@@ -320,11 +353,37 @@ export const BookingList = ({ userView = true }: { userView?: boolean }) => {
                       {STATUS_LABELS[booking.status].label}
                     </Badge>
                   </div>
+                  {userView && booking.status === 'completed' && currentUserId && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedBooking(booking);
+                        setReviewModalOpen(true);
+                      }}
+                    >
+                      <Star className="w-4 h-4 mr-1" />
+                      리뷰
+                    </Button>
+                  )}
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {selectedBooking && currentUserId && (
+        <BookingReviewModal
+          bookingId={selectedBooking.id}
+          expertId={selectedBooking.expert_id}
+          userId={currentUserId}
+          isOpen={reviewModalOpen}
+          onClose={() => {
+            setReviewModalOpen(false);
+            setSelectedBooking(null);
+          }}
+        />
       )}
     </div>
   );

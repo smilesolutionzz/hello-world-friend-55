@@ -141,12 +141,12 @@ const Subscription = () => {
               </div>
               <h2 className="text-2xl font-bold">🪙 간편한 토큰제 시스템</h2>
             </div>
-            <p className="text-xl font-medium">
+            <p className="text-sm md:text-xl font-medium">
               필요한 만큼만 구매하고, 1년간 자유롭게 사용하세요
             </p>
-            <div className="flex items-center justify-center gap-2 text-lg">
-              <Clock className="w-5 h-5" />
-              <span>토큰 유효기간: <strong>구매일로부터 1년</strong></span>
+            <div className="flex items-center justify-center gap-2 text-sm md:text-lg">
+              <Clock className="w-4 h-4 md:w-5 md:h-5" />
+              <span className="whitespace-nowrap">토큰 유효기간: <strong>구매일로부터 1년</strong></span>
             </div>
           </div>
         </div>
@@ -163,7 +163,7 @@ const Subscription = () => {
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
             토큰 패키지 선택
           </h1>
-          <p className="text-xl text-muted-foreground mb-8">
+          <p className="text-sm md:text-xl text-muted-foreground mb-8 whitespace-nowrap">
             부담 없이 시작하고, 언제든 충전하세요
           </p>
           
@@ -314,21 +314,21 @@ const Subscription = () => {
             <h2 className="text-3xl font-bold text-center mb-12">자주 묻는 질문</h2>
             <div className="space-y-6">
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">토큰은 언제까지 사용할 수 있나요?</h3>
-                <p className="text-muted-foreground">
+                <h3 className="font-semibold text-sm md:text-lg mb-2">토큰은 언제까지 사용할 수 있나요?</h3>
+                <p className="text-muted-foreground text-sm">
                   구매한 토큰은 구매일로부터 <strong>1년간</strong> 사용 가능합니다. 기간 내에 자유롭게 사용하세요.
                 </p>
               </div>
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">토큰이 부족하면 어떻게 하나요?</h3>
-                <p className="text-muted-foreground">
+                <h3 className="font-semibold text-sm md:text-lg mb-2">토큰이 부족하면 어떻게 하나요?</h3>
+                <p className="text-muted-foreground text-sm">
                   언제든 추가로 토큰을 구매할 수 있습니다. 새로 구매한 토큰은 기존 토큰과 합산되며, 
                   새로운 유효기간이 부여됩니다.
                 </p>
               </div>
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">환불이 가능한가요?</h3>
-                <p className="text-muted-foreground">
+                <h3 className="font-semibold text-sm md:text-lg mb-2">환불이 가능한가요?</h3>
+                <p className="text-muted-foreground text-sm">
                   토큰을 사용하지 않은 경우, 구매일로부터 7일 이내에 전액 환불이 가능합니다. 
                   일부 사용한 경우, 사용한 금액을 제외하고 환불됩니다.
                 </p>

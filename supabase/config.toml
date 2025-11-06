@@ -256,3 +256,6 @@ verify_jwt = false
 
 [functions.curate-education-content]
 verify_jwt = false
+
+[functions.create-consultation-booking]
+verify_jwt = true

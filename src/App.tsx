@@ -69,6 +69,7 @@ import ExpertApplication from "./pages/ExpertApplication";
 import ExpertContract from "./pages/ExpertContract";
 import ExpertContractSuccess from "./pages/ExpertContractSuccess";
 import ExpertHiring from "./pages/ExpertHiring";
+import BookingManagement from "./pages/BookingManagement";
 import Institutions from "./pages/Institutions";
 import HomeService from "./pages/HomeService";
 import NotFound from "./pages/NotFound";
@@ -267,6 +268,7 @@ const App = () => {
           <Route path="/expert-contract/:expertId" element={<ExpertContract />} />
           <Route path="/expert-contract-success" element={<ExpertContractSuccess />} />
           <Route path="/expert-hiring" element={<ExpertHiring />} />
+          <Route path="/booking-management" element={<BookingManagement />} />
           <Route path="/expert-application" element={<ExpertApplication />} />
           <Route path="/institutions" element={<Institutions />} />
           <Route path="/home-service" element={<HomeService />} />

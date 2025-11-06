@@ -190,16 +190,25 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
                 </div>
               )}
 
-              {/* 토큰충전하기 버튼 */}
-              <Button
-                onClick={() => navigate('/token-subscription')}
-                className="w-full"
-                variant="secondary"
-              >
-                <BarChart3 className="w-4 h-4 mr-2" />
-                토큰충전하기
-              </Button>
-
+              {/* 토큰 관리 버튼들 */}
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  onClick={() => navigate('/token-history')}
+                  className="w-full"
+                  variant="outline"
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  토큰 이력
+                </Button>
+                <Button
+                  onClick={() => navigate('/token-subscription')}
+                  className="w-full"
+                  variant="secondary"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  토큰 충전
+                </Button>
+              </div>
 
               {/* 자주묻는질문 버튼 */}
               <Button

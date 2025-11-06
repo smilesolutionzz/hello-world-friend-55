@@ -1,20 +1,11 @@
 import React, { useState } from 'react';
 import { Play } from 'lucide-react';
-import introBg from '@/assets/intro-video-bg.jpg';
 
 const CompanyIntroVideoSection = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   
   return (
-    <section className="relative py-20 px-4 overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${introBg})` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background/80" />
-      </div>
-      
+    <section className="relative py-20 px-4 bg-gradient-to-b from-background via-muted/30 to-background overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
       

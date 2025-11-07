@@ -1341,34 +1341,14 @@ const InstantAIAnalysis = () => {
 
                 {user && (
                   <>
-                    <Button
-                      onClick={() => navigate('/concern-storage')}
-                      size="lg"
-                      className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-semibold"
-                    >
-                      <Save className="w-4 h-4 mr-2" />
-                      고민 저장소 보기
-                    </Button>
-                    
-                    <Button
-                      onClick={handleSendEmail}
-                      disabled={isSendingEmail}
-                      size="lg"
-                      variant="outline"
-                      className="w-full border-primary text-primary hover:bg-primary/10 font-semibold"
-                    >
-                      {isSendingEmail ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          발송 중...
-                        </>
-                      ) : (
-                        <>
-                          <Mail className="w-4 h-4 mr-2" />
-                          이메일로 리포트 받기 (5토큰)
-                        </>
-                      )}
-                    </Button>
+                <Button
+                  onClick={() => navigate('/concern-storage')}
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-semibold"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  고민 저장소 보기
+                </Button>
                   </>
                 )}
               </div>

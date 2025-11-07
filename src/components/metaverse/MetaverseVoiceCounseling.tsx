@@ -220,8 +220,9 @@ const MetaverseVoiceCounseling = () => {
           </Card>
 
           {/* Info */}
-          <p className="text-white/70 text-sm text-center max-w-md">
-            마이크 권한을 허용하고 대화를 시작하세요. AI가 자동으로 음성을 인식하고 응답합니다.
+          <p className="text-white/70 text-base md:text-lg text-center max-w-md leading-relaxed">
+            마이크 권한을 허용하고 대화를 시작하세요.<br />
+            AI가 자동으로 음성을 인식하고 응답합니다.
           </p>
         </div>
       </CounselingRoom>

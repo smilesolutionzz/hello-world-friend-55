@@ -185,9 +185,7 @@ export class RealtimeVoiceChat {
       this.audioContext = new AudioContext({ sampleRate: 24000 });
       this.audioQueue = new AudioQueue(this.audioContext);
 
-      // Get project ref from URL
-      const projectRef = window.location.hostname.split('.')[0];
-      const wsUrl = `wss://${projectRef}.supabase.co/functions/v1/realtime-voice`;
+      const wsUrl = `wss://hrcqxjetmzxoephgyjlb.functions.supabase.co/functions/v1/realtime-voice`;
       
       console.log("Connecting to:", wsUrl);
       this.ws = new WebSocket(wsUrl);

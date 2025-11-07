@@ -169,48 +169,47 @@ interface CounselingRoomProps {
 
 const CounselingRoom = ({ children }: CounselingRoomProps) => {
   return (
-    <div className="fixed inset-0 -z-10">
-      <Canvas>
-        <PerspectiveCamera makeDefault position={[0, 2, 8]} fov={60} />
-        
-        {/* 조명 설정 */}
-        <ambientLight intensity={0.6} color="#F0F8FF" />
-        <directionalLight 
-          position={[10, 10, 5]} 
-          intensity={1} 
-          color="#FFE4B5"
-          castShadow
-        />
-        
-        {/* 환경 */}
-        <Environment preset="sunset" />
-        
-        {/* 3D 상담실 */}
-        <Room />
-        
-        {/* 떠다니는 파티클 */}
-        <FloatingParticles />
-        
-        {/* 카메라 컨트롤 */}
-        <OrbitControls 
-          enablePan={false}
-          enableZoom={false}
-          enableRotate={true}
-          autoRotate={true}
-          autoRotateSpeed={0.5}
-          maxPolarAngle={Math.PI / 2.2}
-          minPolarAngle={Math.PI / 3}
-          target={[0, 0, 0]}
-        />
-      </Canvas>
-      
-      {/* 콘텐츠는 3D 배경 위에 오버레이 */}
-      <div className="absolute inset-0 bg-black/10 pointer-events-none">
-        <div className="pointer-events-auto w-full h-full">
-          {children}
-        </div>
+    <>
+      <div className="fixed inset-0 -z-10 pointer-events-none">
+        <Canvas>
+          <PerspectiveCamera makeDefault position={[0, 2, 8]} fov={60} />
+          
+          {/* 조명 설정 */}
+          <ambientLight intensity={0.6} color="#F0F8FF" />
+          <directionalLight 
+            position={[10, 10, 5]} 
+            intensity={1} 
+            color="#FFE4B5"
+            castShadow
+          />
+          
+          {/* 환경 */}
+          <Environment preset="sunset" />
+          
+          {/* 3D 상담실 */}
+          <Room />
+          
+          {/* 떠다니는 파티클 */}
+          <FloatingParticles />
+          
+          {/* 카메라 컨트롤 */}
+          <OrbitControls 
+            enablePan={false}
+            enableZoom={false}
+            enableRotate={true}
+            autoRotate={true}
+            autoRotateSpeed={0.5}
+            maxPolarAngle={Math.PI / 2.2}
+            minPolarAngle={Math.PI / 3}
+            target={[0, 0, 0]}
+          />
+        </Canvas>
       </div>
-    </div>
+      {/* 포그라운드 콘텐츠 (클릭 가능) */}
+      <div className="relative z-10">
+        {children}
+      </div>
+    </>
   );
 };
 

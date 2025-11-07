@@ -3,546 +3,33 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Calendar } from '@/components/ui/calendar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Heart, 
   Brain, 
-  Activity, 
-  Apple, 
-  Moon, 
-  Sparkles,
   Dumbbell,
-  BarChart3,
-  Play,
-  Flame,
+  Sparkles,
+  Apple,
+  Moon,
   Trophy,
-  Volume2,
-  Image as ImageIcon,
   CheckCircle2,
-  Loader2,
-  Mic,
-  Square,
-  Save,
-  Calendar as CalendarIcon,
-  TrendingUp
+  Phone,
+  Heart
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { useState, useRef, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
-import { ko } from 'date-fns/locale';
-
-interface EmotionEntry {
-  id: string;
-  recorded_at: string;
-  transcription: string;
-  primary_emotion: string;
-  emotion_score: number;
-  mood_rating: number;
-  detected_emotions: any;
-  tags: string[];
-  notes?: string;
-}
+import { useState } from 'react';
+import { VoiceCounselingTab } from '@/components/wellness/VoiceCounselingTab';
+import { MeditationTab } from '@/components/wellness/MeditationTab';
 
 const WellnessLifestyle = () => {
-  const { toast } = useToast();
-  const [loading, setLoading] = useState<string | null>(null);
-  
-  // Meditation state
-  const [meditationContent, setMeditationContent] = useState<any>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  
-  // Workout state
-  const [workoutPlan, setWorkoutPlan] = useState<any>(null);
-  const [workoutDuration, setWorkoutDuration] = useState('30');
-  
-  // Nutrition state
-  const [nutritionPlan, setNutritionPlan] = useState<any>(null);
-  
-  // Sleep state
-  const [sleepAnalysis, setSleepAnalysis] = useState<any>(null);
-  const [bedtime, setBedtime] = useState('23:00');
-  const [wakeupTime, setWakeupTime] = useState('07:00');
-  
-  // Achievement state
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
-
-  // Voice Emotion Diary state
-  const [isRecording, setIsRecording] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [transcription, setTranscription] = useState('');
-  const [emotionAnalysis, setEmotionAnalysis] = useState<any>(null);
-  const [notes, setNotes] = useState('');
-  const [entries, setEntries] = useState<EmotionEntry[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  
-  const mediaRecorder = useRef<MediaRecorder | null>(null);
-  const audioChunks = useRef<Blob[]>([]);
-
-  useEffect(() => {
-    loadEntries();
-  }, []);
-
-  const loadEntries = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('emotion_diaries')
-        .select('*')
-        .order('recorded_at', { ascending: false })
-        .limit(30);
-
-      if (error) throw error;
-      setEntries(data || []);
-    } catch (error) {
-      console.error('Failed to load entries:', error);
-    }
-  };
-
-  const handleMeditation = async () => {
-    setLoading('meditation');
-    try {
-      toast({ 
-        title: '🎵 AI 명상 생성 중...', 
-        description: '맞춤 명상 스크립트와 음성을 생성하고 있습니다.' 
-      });
-
-      const { data, error } = await supabase.functions.invoke('wellness-ai-meditation');
-      
-      if (error) throw error;
-      
-      setMeditationContent(data);
-      if (!completedTasks.includes('meditation')) {
-        setCompletedTasks([...completedTasks, 'meditation']);
-      }
-      
-      if (!data?.audioContent) {
-        toast({
-          title: '음성이 아직 준비되지 않았습니다',
-          description: 'OpenAI API 키가 설정되지 않았습니다. 텍스트로 먼저 제공됩니다.',
-        });
-      }
-      
-      toast({
-        title: '✨ AI 명상 준비 완료!',
-        description: '오늘의 맞춤 명상을 시작하세요.',
-      });
-    } catch (error) {
-      console.error('Meditation error:', error);
-      toast({
-        title: '오류 발생',
-        description: '명상 생성 중 오류가 발생했습니다.',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const handleWorkout = async () => {
-    setLoading('workout');
-    try {
-      toast({ 
-        title: '💪 운동 플랜 생성 중...', 
-        description: '개인 맞춤형 운동 계획을 만들고 있습니다.' 
-      });
-
-      const { data, error } = await supabase.functions.invoke('wellness-ai-workout', {
-        body: { 
-          userLevel: 'intermediate',
-          goals: '체력 증진',
-          duration: parseInt(workoutDuration)
-        }
-      });
-      
-      if (error) throw error;
-      
-      setWorkoutPlan(data);
-      if (!completedTasks.includes('workout')) {
-        setCompletedTasks([...completedTasks, 'workout']);
-      }
-      
-      toast({
-        title: '✨ 운동 플랜 완성!',
-        description: '오늘의 맞춤 운동을 확인하세요.',
-      });
-    } catch (error) {
-      console.error('Workout error:', error);
-      toast({
-        title: '오류 발생',
-        description: '운동 플랜 생성 중 오류가 발생했습니다.',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const handleNutrition = async () => {
-    setLoading('nutrition');
-    try {
-      toast({ 
-        title: '🥗 영양 분석 중...', 
-        description: '맞춤 식단과 영양제를 추천하고 있습니다.' 
-      });
-
-      const { data, error } = await supabase.functions.invoke('wellness-ai-nutrition', {
-        body: {
-          dietaryRestrictions: '없음',
-          healthGoals: '건강한 체중 유지',
-          allergies: '없음'
-        }
-      });
-      
-      if (error) throw error;
-      
-      setNutritionPlan(data);
-      if (!completedTasks.includes('nutrition')) {
-        setCompletedTasks([...completedTasks, 'nutrition']);
-      }
-      
-      toast({
-        title: '✨ 영양 분석 완료!',
-        description: '맞춤 식단과 영양제를 확인하세요.',
-      });
-    } catch (error) {
-      console.error('Nutrition error:', error);
-      toast({
-        title: '오류 발생',
-        description: '영양 분석 중 오류가 발생했습니다.',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const handleSleepAnalysis = async () => {
-    setLoading('sleep');
-    try {
-      toast({ 
-        title: '🌙 수면 분석 중...', 
-        description: '맞춤 수면 계획을 생성하고 있습니다.' 
-      });
-
-      const { data, error } = await supabase.functions.invoke('wellness-ai-sleep', {
-        body: {
-          bedtime,
-          wakeupTime,
-          sleepIssues: '없음'
-        }
-      });
-      
-      if (error) throw error;
-      
-      setSleepAnalysis(data);
-      if (!completedTasks.includes('sleep')) {
-        setCompletedTasks([...completedTasks, 'sleep']);
-      }
-      
-      toast({
-        title: '✨ 수면 분석 완료!',
-        description: '맞춤 수면 개선 계획을 확인하세요.',
-      });
-    } catch (error) {
-      console.error('Sleep analysis error:', error);
-      toast({
-        title: '오류 발생',
-        description: '수면 분석 중 오류가 발생했습니다.',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const toggleAudio = (base64Audio: string) => {
-    if (isPlaying && audioRef.current) {
-      // Stop current playback
-      audioRef.current.pause();
-      audioRef.current = null;
-      setIsPlaying(false);
-      toast({ title: '재생 중지', description: '명상 가이드 재생을 중지했습니다.' });
-      return;
-    }
-
-    try {
-      console.log('🎵 Starting audio playback...');
-      console.log('Base64 audio length:', base64Audio?.length);
-
-      if (!base64Audio || base64Audio.length === 0) {
-        throw new Error('No audio data provided');
-      }
-
-      // Clean base64 string
-      const cleanedBase64 = base64Audio
-        .replace(/^data:audio\/[a-zA-Z0-9.+-]+;base64,/, '')
-        .replace(/[\r\n\s]/g, '');
-
-      console.log('Cleaned base64 length:', cleanedBase64.length);
-
-      // Decode base64 to binary
-      const binaryString = atob(cleanedBase64);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-
-      console.log('Binary audio size:', bytes.length, 'bytes');
-
-      // Create blob from binary data
-      const audioBlob = new Blob([bytes], { type: 'audio/mpeg' });
-      const audioUrl = URL.createObjectURL(audioBlob);
-
-      console.log('Blob URL created:', audioUrl);
-
-      // Create audio element
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-
-      audio.onloadedmetadata = () => {
-        console.log('✅ Audio loaded, duration:', audio.duration, 'seconds');
-      };
-
-      audio.onplay = () => {
-        console.log('▶️ Audio playback started');
-      };
-
-      audio.onended = () => {
-        console.log('⏹️ Audio playback ended');
-        setIsPlaying(false);
-        URL.revokeObjectURL(audioUrl); // Clean up
-        toast({ title: '재생 완료', description: '명상 가이드가 끝났습니다.' });
-      };
-
-      audio.onerror = (e) => {
-        console.error('❌ Audio error:', e);
-        console.error('Error details:', {
-          error: audio.error,
-          code: audio.error?.code,
-          message: audio.error?.message
-        });
-        setIsPlaying(false);
-        URL.revokeObjectURL(audioUrl); // Clean up
-        toast({
-          title: '오디오 재생 오류',
-          description: '오디오를 재생할 수 없습니다. 다시 생성해주세요.',
-          variant: 'destructive',
-        });
-      };
-
-      // Play audio
-      audio.play()
-        .then(() => {
-          setIsPlaying(true);
-          toast({ 
-            title: '🎵 AI 음성 나레이션 재생 중', 
-            description: 'OpenAI TTS로 생성된 명상 가이드를 들려드립니다.' 
-          });
-        })
-        .catch((error) => {
-          console.error('❌ Play error:', error);
-          setIsPlaying(false);
-          URL.revokeObjectURL(audioUrl); // Clean up
-          toast({ 
-            title: '재생 오류', 
-            description: `오디오 재생에 실패했습니다: ${error.message}`, 
-            variant: 'destructive' 
-          });
-        });
-
-    } catch (error) {
-      console.error('❌ Audio processing error:', error);
-      setIsPlaying(false);
-      toast({ 
-        title: '오디오 처리 오류', 
-        description: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.', 
-        variant: 'destructive' 
-      });
-    }
-  };
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder.current = new MediaRecorder(stream);
-      audioChunks.current = [];
-
-      mediaRecorder.current.ondataavailable = (event) => {
-        audioChunks.current.push(event.data);
-      };
-
-      mediaRecorder.current.onstop = async () => {
-        const audioBlob = new Blob(audioChunks.current, { type: 'audio/webm' });
-        await processAudio(audioBlob);
-      };
-
-      mediaRecorder.current.start();
-      setIsRecording(true);
-      
-      toast({
-        title: "녹음 시작",
-        description: "감정을 편하게 말해보세요."
-      });
-    } catch (error) {
-      console.error('Failed to start recording:', error);
-      toast({
-        title: "녹음 실패",
-        description: "마이크 접근 권한을 확인해주세요.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorder.current && isRecording) {
-      mediaRecorder.current.stop();
-      mediaRecorder.current.stream.getTracks().forEach(track => track.stop());
-      setIsRecording(false);
-    }
-  };
-
-  const processAudio = async (audioBlob: Blob) => {
-    setIsAnalyzing(true);
-    try {
-      const reader = new FileReader();
-      reader.readAsDataURL(audioBlob);
-      
-      reader.onloadend = async () => {
-        const base64Audio = (reader.result as string).split(',')[1];
-        
-        const { data, error } = await supabase.functions.invoke('voice-emotion-diary', {
-          body: { audio: base64Audio }
-        });
-
-        if (error) throw error;
-
-        setTranscription(data.transcription);
-        setEmotionAnalysis(data);
-        
-        if (!completedTasks.includes('emotion')) {
-          setCompletedTasks([...completedTasks, 'emotion']);
-        }
-        
-        toast({
-          title: "분석 완료",
-          description: `주요 감정: ${getEmotionLabel(data.primary_emotion)}`
-        });
-      };
-    } catch (error) {
-      console.error('Failed to process audio:', error);
-      toast({
-        title: "분석 실패",
-        description: "음성 분석 중 오류가 발생했습니다.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
-  const saveEntry = async () => {
-    if (!emotionAnalysis) {
-      toast({
-        title: "저장 실패",
-        description: "먼저 음성을 녹음하고 분석해주세요.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "로그인 필요",
-          description: "일기를 저장하려면 로그인이 필요합니다.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('emotion_diaries')
-        .insert({
-          user_id: user.id,
-          transcription: transcription,
-          detected_emotions: emotionAnalysis.detected_emotions,
-          primary_emotion: emotionAnalysis.primary_emotion,
-          emotion_score: emotionAnalysis.emotion_score,
-          mood_rating: emotionAnalysis.mood_rating,
-          tags: emotionAnalysis.suggested_tags || [],
-          notes: notes
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "저장 완료",
-        description: "감정 일기가 저장되었습니다."
-      });
-
-      setTranscription('');
-      setEmotionAnalysis(null);
-      setNotes('');
-      loadEntries();
-    } catch (error) {
-      console.error('Failed to save entry:', error);
-      toast({
-        title: "저장 실패",
-        description: "일기 저장 중 오류가 발생했습니다.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const getEmotionLabel = (emotion: string) => {
-    const labels: Record<string, string> = {
-      'joy': '기쁨',
-      'sadness': '슬픔',
-      'anger': '분노',
-      'anxiety': '불안',
-      'calm': '평온',
-      '기쁨': '기쁨',
-      '슬픔': '슬픔',
-      '분노': '분노',
-      '불안': '불안',
-      '평온': '평온',
-      '피곤': '피곤',
-      '스트레스': '스트레스'
-    };
-    return labels[emotion] || emotion;
-  };
-
-  const getEmotionColor = (emotion: string) => {
-    const colors: Record<string, string> = {
-      'joy': 'bg-yellow-500',
-      'sadness': 'bg-blue-500',
-      'anger': 'bg-red-500',
-      'anxiety': 'bg-purple-500',
-      'calm': 'bg-green-500',
-      '기쁨': 'bg-yellow-500',
-      '슬픔': 'bg-blue-500',
-      '분노': 'bg-red-500',
-      '불안': 'bg-purple-500',
-      '평온': 'bg-green-500',
-      '피곤': 'bg-gray-500',
-      '스트레스': 'bg-orange-500'
-    };
-    return colors[emotion] || 'bg-gray-500';
-  };
 
   const achievementPercentage = (completedTasks.length / 5) * 100;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <Helmet>
-        <title>AI 웰니스 대시보드 - 개인 맞춤형 건강 관리</title>
-        <meta name="description" content="AI 기반 명상, 운동, 영양, 수면 분석으로 당신의 건강을 관리하세요" />
+        <title>AI 라이프허브 - 종합 웰니스 관리</title>
+        <meta name="description" content="AI 기반 음성 상담, 명상, 감정 일기로 당신의 웰니스를 관리하세요" />
       </Helmet>
       
       <UnifiedNavigation />
@@ -553,16 +40,16 @@ const WellnessLifestyle = () => {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 px-6 py-3 rounded-full mb-6">
               <Sparkles className="h-5 w-5 text-blue-600" />
-              <span className="font-semibold text-blue-800">AI 웰니스 대시보드</span>
+              <span className="font-semibold text-blue-800">AI 라이프허브</span>
             </div>
             
-            <h1 className="text-2xl sm:text-3xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent whitespace-nowrap leading-tight">
-              당신만의 AI 건강 코치
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+              당신만의 AI 웰니스 허브
             </h1>
             
-            <p className="text-sm sm:text-base md:text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-snug">
-              OpenAI, ElevenLabs, 이미지 생성을 활용한<br />
-              최첨단 웰니스 솔루션
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+              음성 상담부터 명상, 감정 일기까지<br />
+              모든 웰니스 기능을 하나로
             </p>
 
             {/* Achievement Progress */}
@@ -571,7 +58,7 @@ const WellnessLifestyle = () => {
                 <CardTitle className="flex items-center justify-between">
                   <span className="flex items-center gap-2">
                     <Trophy className="h-6 w-6 text-yellow-500" />
-                    전체 성취도
+                    오늘의 성취도
                   </span>
                   <span className="text-2xl font-bold text-blue-600">{achievementPercentage.toFixed(0)}%</span>
                 </CardTitle>
@@ -604,555 +91,78 @@ const WellnessLifestyle = () => {
         </div>
       </section>
 
-      {/* Main Dashboard */}
+      {/* Main Content - Tabs */}
       <section className="py-12 px-4">
-        <div className="container mx-auto max-w-7xl space-y-8">
+        <div className="container mx-auto max-w-7xl">
           
-          {/* Meditation Section */}
-          <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-0 shadow-xl">
-            <CardHeader>
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <CardTitle className="text-2xl font-bold text-blue-900 flex items-center gap-3">
-                  <Brain className="h-8 w-8" />
-                  AI 맞춤 명상
-                </CardTitle>
-                <div className="flex items-center gap-3">
-                  <Badge className="bg-blue-500 text-white">AI 음성</Badge>
-                  
-                  {/* 명상 듣기 CTA 버튼 - 우측 상단 */}
-                  {meditationContent && (
-                    <Button
-                      onClick={() => {
-                        if (meditationContent.audioContent) {
-                          toggleAudio(meditationContent.audioContent);
-                        } else {
-                          toast({
-                            title: "음성 생성 중",
-                            description: "음성이 아직 생성되지 않았습니다. 잠시 후 다시 시도해주세요.",
-                            variant: "destructive"
-                          });
-                        }
-                      }}
-                      disabled={!meditationContent.audioContent}
-                      className={`${
-                        !meditationContent.audioContent
-                          ? 'bg-gray-400 cursor-not-allowed'
-                          : isPlaying 
-                            ? 'bg-red-500 hover:bg-red-600' 
-                            : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
-                      } text-white px-6 py-3 shadow-lg transition-all flex items-center gap-2`}
-                    >
-                      {!meditationContent.audioContent ? (
-                        <>
-                          <Volume2 className="h-5 w-5 opacity-50" />
-                          음성 생성 중...
-                        </>
-                      ) : isPlaying ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-white"></div>
-                          정지
-                        </>
-                      ) : (
-                        <>
-                          <Volume2 className="h-5 w-5" />
-                          명상 듣기
-                        </>
-                      )}
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <Button 
-                className="w-full md:w-auto bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-4 sm:py-6 text-sm sm:text-base md:text-lg"
-                onClick={handleMeditation}
-                disabled={loading === 'meditation'}
-              >
-                {loading === 'meditation' ? (
-                  <><Loader2 className="h-5 w-5 mr-2 animate-spin" /> 생성 중...</>
-                ) : (
-                  <><Play className="h-5 w-5 mr-2" /> 오늘의 맞춤 명상 시작</>
-                )}
-              </Button>
+          <Tabs defaultValue="voice-counseling" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto gap-2 bg-white/80 p-2 mb-8">
+              <TabsTrigger value="voice-counseling" className="data-[state=active]:bg-green-500 data-[state=active]:text-white py-3">
+                <Phone className="h-4 w-4 mr-2" />
+                음성 상담
+              </TabsTrigger>
+              <TabsTrigger value="meditation" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white py-3">
+                <Sparkles className="h-4 w-4 mr-2" />
+                실시간 명상
+              </TabsTrigger>
+              <TabsTrigger value="emotion-diary" className="data-[state=active]:bg-rose-500 data-[state=active]:text-white py-3">
+                <Heart className="h-4 w-4 mr-2" />
+                감정 일기
+              </TabsTrigger>
+              <TabsTrigger value="ai-wellness" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white py-3">
+                <Brain className="h-4 w-4 mr-2" />
+                AI 웰니스
+              </TabsTrigger>
+            </TabsList>
 
-              {meditationContent && (
-                <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-blue-100">
-                  {meditationContent.meditationImage && (
-                    <div className="rounded-xl overflow-hidden shadow-xl">
-                      <img 
-                        src={meditationContent.meditationImage} 
-                        alt="명상 이미지" 
-                        className="w-full h-64 object-cover"
-                      />
-                    </div>
-                  )}
-                  
-                  {meditationContent.audioContent && (
-                    <div className="space-y-4 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border-2 border-blue-200 shadow-inner">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center animate-pulse">
-                            <Volume2 className="h-6 w-6 text-white" />
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-blue-900">AI 음성 나레이션</h3>
-                            <p className="text-sm text-blue-700">
-                              {isPlaying ? '재생 중...' : 'ElevenLabs 맞춤 명상 가이드'}
-                            </p>
-                          </div>
-                        </div>
-                        <Button
-                          onClick={() => toggleAudio(meditationContent.audioContent)}
-                          className={`w-full md:w-auto px-8 py-6 text-lg font-semibold ${
-                            isPlaying 
-                              ? 'bg-red-500 hover:bg-red-600' 
-                              : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
-                          } text-white shadow-lg transition-all`}
-                        >
-                          {isPlaying ? (
-                            <>
-                              <div className="w-4 h-4 mr-2 border-2 border-white"></div>
-                              정지
-                            </>
-                          ) : (
-                            <>
-                              <Play className="h-5 w-5 mr-2" />
-                              듣기
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                      
-                      {isPlaying && (
-                        <div className="flex items-center gap-2 text-blue-700 animate-pulse">
-                          <div className="flex gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <div
-                                key={i}
-                                className="w-1 bg-blue-500 rounded-full animate-pulse"
-                                style={{
-                                  height: `${Math.random() * 20 + 10}px`,
-                                  animationDelay: `${i * 0.1}s`
-                                }}
-                              ></div>
-                            ))}
-                          </div>
-                          <span className="text-sm font-medium">재생 중...</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  
-                  <div className="prose max-w-none">
-                    <div 
-                      className="text-gray-700 leading-relaxed"
-                      dangerouslySetInnerHTML={{
-                        __html: meditationContent.content
-                          .split('\n\n')
-                          .map((section: string) => {
-                            if (section.startsWith('## ')) {
-                              return `<h2 class="text-xl font-bold text-blue-900 mt-6 mb-3 pb-2 border-b-2 border-blue-200">${section.replace('## ', '')}</h2>`;
-                            } else if (section.startsWith('**') || section.startsWith('•')) {
-                              return `<div class="bg-blue-50 p-4 rounded-lg my-3 border-l-4 border-blue-500">${section}</div>`;
-                            }
-                            return `<p class="mb-3">${section}</p>`;
-                          })
-                          .join('')
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+            <TabsContent value="voice-counseling">
+              <VoiceCounselingTab />
+            </TabsContent>
 
-          {/* Workout Section */}
-          <Card className="bg-gradient-to-br from-green-50 to-emerald-100 border-0 shadow-xl">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-xl sm:text-2xl font-bold text-green-900 flex items-center gap-3 whitespace-nowrap">
-                  <Dumbbell className="h-6 h-8 w-6 sm:w-8" />
-                  맞춤 운동 플랜
-                </CardTitle>
-                <Badge className="bg-green-500 text-white">AI 생성</Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <Label>운동 시간 (분)</Label>
-                  <Input
-                    type="number"
-                    value={workoutDuration}
-                    onChange={(e) => setWorkoutDuration(e.target.value)}
-                    min="10"
-                    max="120"
-                    className="mt-2"
-                  />
-                </div>
-                <Button 
-                  className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-6 md:mt-7"
-                  onClick={handleWorkout}
-                  disabled={loading === 'workout'}
-                >
-                  {loading === 'workout' ? (
-                    <><Loader2 className="h-5 w-5 mr-2 animate-spin" /> 생성 중...</>
-                  ) : (
-                    <><Flame className="h-5 w-5 mr-2" /> 운동 플랜 생성</>
-                  )}
-                </Button>
-              </div>
+            <TabsContent value="meditation">
+              <MeditationTab />
+            </TabsContent>
 
-              {workoutPlan && (
-                <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-green-100">
-                  {workoutPlan.motivationImage && (
-                    <div className="rounded-xl overflow-hidden shadow-xl">
-                      <img 
-                        src={workoutPlan.motivationImage} 
-                        alt="운동 동기부여 이미지" 
-                        className="w-full h-64 object-cover"
-                      />
-                    </div>
-                  )}
-                  
-                  <div className="prose max-w-none">
-                    <div 
-                      className="text-gray-700 leading-relaxed"
-                      dangerouslySetInnerHTML={{
-                        __html: workoutPlan.workoutPlan
-                          .split('\n\n')
-                          .map((section: string) => {
-                            if (section.startsWith('## ')) {
-                              return `<h2 class="text-xl font-bold text-green-900 mt-6 mb-3 pb-2 border-b-2 border-green-200">${section.replace('## ', '')}</h2>`;
-                            } else if (section.startsWith('**')) {
-                              return `<div class="bg-green-50 p-4 rounded-lg my-3 border-l-4 border-green-500">${section}</div>`;
-                            } else if (section.startsWith('•')) {
-                              return `<div class="ml-4 my-2">${section}</div>`;
-                            }
-                            return `<p class="mb-3">${section}</p>`;
-                          })
-                          .join('')
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Nutrition Section */}
-          <Card className="bg-gradient-to-br from-orange-50 to-amber-100 border-0 shadow-xl">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold text-orange-900 flex items-center gap-2 sm:gap-3 whitespace-nowrap">
-                  <Apple className="h-6 sm:h-8 w-6 sm:w-8" />
-                  영양 분석 & 추천
-                </CardTitle>
-                <Badge className="bg-orange-500 text-white">이미지 생성</Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <Button 
-                className="w-full md:w-auto bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-4 sm:py-6 text-sm sm:text-base md:text-lg"
-                onClick={handleNutrition}
-                disabled={loading === 'nutrition'}
-              >
-                {loading === 'nutrition' ? (
-                  <><Loader2 className="h-5 w-5 mr-2 animate-spin" /> 분석 중...</>
-                ) : (
-                  <><Apple className="h-5 w-5 mr-2" /> 맞춤 식단 & 영양제 추천</>
-                )}
-              </Button>
-
-              {nutritionPlan && (
-                <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-orange-100">
-                  {nutritionPlan.mealImage && (
-                    <div className="rounded-xl overflow-hidden shadow-xl">
-                      <img 
-                        src={nutritionPlan.mealImage} 
-                        alt="식사 이미지" 
-                        className="w-full h-64 object-cover"
-                      />
-                    </div>
-                  )}
-                  
-                  <div className="prose max-w-none">
-                    <div 
-                      className="text-gray-700 leading-relaxed"
-                      dangerouslySetInnerHTML={{
-                        __html: nutritionPlan.nutritionPlan
-                          .split('\n\n')
-                          .map((section: string) => {
-                            if (section.startsWith('## ')) {
-                              return `<h2 class="text-xl font-bold text-orange-900 mt-6 mb-3 pb-2 border-b-2 border-orange-200">${section.replace('## ', '')}</h2>`;
-                            } else if (section.startsWith('**')) {
-                              return `<div class="bg-orange-50 p-4 rounded-lg my-3 border-l-4 border-orange-500">${section}</div>`;
-                            } else if (section.startsWith('•')) {
-                              return `<div class="ml-4 my-2">${section}</div>`;
-                            }
-                            return `<p class="mb-3">${section}</p>`;
-                          })
-                          .join('')
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Sleep Section */}
-          <Card className="bg-gradient-to-br from-purple-50 to-pink-100 border-0 shadow-xl">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-xl sm:text-2xl font-bold text-purple-900 flex items-center gap-3 whitespace-nowrap">
-                  <Moon className="h-6 sm:h-8 w-6 sm:w-8" />
-                  스마트 수면 분석
-                </CardTitle>
-                <Badge className="bg-purple-500 text-white">AI 분석</Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label>취침 시간</Label>
-                  <Input
-                    type="time"
-                    value={bedtime}
-                    onChange={(e) => setBedtime(e.target.value)}
-                    className="mt-2"
-                  />
-                </div>
-                <div>
-                  <Label>기상 시간</Label>
-                  <Input
-                    type="time"
-                    value={wakeupTime}
-                    onChange={(e) => setWakeupTime(e.target.value)}
-                    className="mt-2"
-                  />
-                </div>
-              </div>
-              
-              <Button 
-                className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white py-6 text-lg"
-                onClick={handleSleepAnalysis}
-                disabled={loading === 'sleep'}
-              >
-                {loading === 'sleep' ? (
-                  <><Loader2 className="h-5 w-5 mr-2 animate-spin" /> 분석 중...</>
-                ) : (
-                  <><Moon className="h-5 w-5 mr-2" /> 수면 분석 시작</>
-                )}
-              </Button>
-
-              {sleepAnalysis && (
-                <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-purple-100">
-                  {sleepAnalysis.sleepEnvironmentImage && (
-                    <div className="rounded-xl overflow-hidden shadow-xl">
-                      <img 
-                        src={sleepAnalysis.sleepEnvironmentImage} 
-                        alt="수면 환경 이미지" 
-                        className="w-full h-64 object-cover"
-                      />
-                    </div>
-                  )}
-                  
-                  <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-5 rounded-xl border-l-4 border-purple-500 shadow-inner">
-                    <p className="text-purple-900 font-bold text-lg">
-                      ⏰ 예상 수면 시간: {sleepAnalysis.sleepDuration}
+            <TabsContent value="emotion-diary">
+              <Card className="bg-gradient-to-br from-rose-50 to-pink-100 border-0 shadow-xl">
+                <CardHeader>
+                  <CardTitle className="text-rose-900">
+                    <Heart className="inline-block w-6 h-6 mr-2" />
+                    AI 음성 감정 일기
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-12">
+                    <Heart className="h-16 w-16 mx-auto mb-4 text-rose-400" />
+                    <h3 className="text-xl font-semibold text-rose-900 mb-2">준비 중입니다</h3>
+                    <p className="text-rose-700">
+                      음성으로 감정을 기록하는 기능이<br />곧 추가될 예정입니다.
                     </p>
                   </div>
-                  
-                  <div className="prose max-w-none">
-                    <div 
-                      className="text-gray-700 leading-relaxed"
-                      dangerouslySetInnerHTML={{
-                        __html: sleepAnalysis.sleepAnalysis
-                          .split('\n\n')
-                          .map((section: string) => {
-                            if (section.startsWith('## ')) {
-                              return `<h2 class="text-xl font-bold text-purple-900 mt-6 mb-3 pb-2 border-b-2 border-purple-200">${section.replace('## ', '')}</h2>`;
-                            } else if (section.startsWith('**')) {
-                              return `<div class="bg-purple-50 p-4 rounded-lg my-3 border-l-4 border-purple-500">${section}</div>`;
-                            } else if (section.startsWith('•')) {
-                              return `<div class="ml-4 my-2">${section}</div>`;
-                            }
-                            return `<p class="mb-3">${section}</p>`;
-                          })
-                          .join('')
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          {/* Voice Emotion Diary Section */}
-          <Card className="bg-gradient-to-br from-pink-50 to-rose-100 border-0 shadow-xl">
-            <CardHeader>
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <CardTitle className="text-xl sm:text-2xl font-bold text-rose-900 flex items-center gap-3">
-                  <Heart className="h-6 sm:h-8 w-6 sm:w-8" />
-                  AI 음성 감정 일기
-                </CardTitle>
-                <Badge className="bg-rose-500 text-white">실시간 분석</Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Recording Section */}
-                <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-6 border-2 border-rose-100">
-                  <div className="text-center space-y-3">
-                    <p className="text-sm sm:text-base text-rose-800">
-                      음성으로 당신의 감정을 기록하고<br />
-                      AI가 실시간으로 분석합니다
+            <TabsContent value="ai-wellness">
+              <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-0 shadow-xl">
+                <CardHeader>
+                  <CardTitle className="text-blue-900">
+                    <Brain className="inline-block w-6 h-6 mr-2" />
+                    AI 웰니스 분석
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-12">
+                    <Brain className="h-16 w-16 mx-auto mb-4 text-blue-400" />
+                    <h3 className="text-xl font-semibold text-blue-900 mb-2">준비 중입니다</h3>
+                    <p className="text-blue-700">
+                      운동, 영양, 수면 분석 기능이<br />곧 추가될 예정입니다.
                     </p>
                   </div>
-
-                  {/* Recording Button */}
-                  <div className="flex justify-center">
-                    {!isRecording ? (
-                      <Button
-                        size="lg"
-                        onClick={startRecording}
-                        disabled={isAnalyzing}
-                        className="px-12 py-8 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700"
-                      >
-                        <Mic className="h-8 w-8 mr-3" />
-                        녹음 시작
-                      </Button>
-                    ) : (
-                      <Button
-                        size="lg"
-                        variant="destructive"
-                        onClick={stopRecording}
-                        className="px-12 py-8 rounded-full animate-pulse"
-                      >
-                        <Square className="h-8 w-8 mr-3" />
-                        녹음 중지
-                      </Button>
-                    )}
-                  </div>
-
-                  {/* Analysis Results */}
-                  {isAnalyzing && (
-                    <div className="text-center py-8">
-                      <Loader2 className="animate-spin h-12 w-12 text-rose-500 mx-auto mb-4" />
-                      <p className="text-rose-700">감정을 분석하는 중...</p>
-                    </div>
-                  )}
-
-                  {emotionAnalysis && (
-                    <div className="space-y-4">
-                      <div className="p-4 bg-rose-50 rounded-lg border border-rose-200">
-                        <h3 className="font-semibold text-rose-900 mb-2">음성 텍스트</h3>
-                        <p className="text-sm text-gray-700">{transcription}</p>
-                      </div>
-
-                      <div className="space-y-2">
-                        <h3 className="font-semibold text-rose-900">감정 분석 결과</h3>
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <Badge className={`${getEmotionColor(emotionAnalysis.primary_emotion)} text-white`}>
-                            {getEmotionLabel(emotionAnalysis.primary_emotion)}
-                          </Badge>
-                          <span className="text-sm text-gray-600">
-                            강도: {(emotionAnalysis.emotion_score * 100).toFixed(0)}%
-                          </span>
-                          <span className="text-sm text-gray-600">
-                            기분: {emotionAnalysis.mood_rating}/10
-                          </span>
-                        </div>
-                      </div>
-
-                      {emotionAnalysis.summary && (
-                        <div className="p-3 bg-rose-100 rounded-lg border border-rose-200">
-                          <p className="text-sm text-rose-900">{emotionAnalysis.summary}</p>
-                        </div>
-                      )}
-
-                      {emotionAnalysis.suggested_tags && (
-                        <div className="flex flex-wrap gap-2">
-                          {emotionAnalysis.suggested_tags.map((tag: string, index: number) => (
-                            <Badge key={index} variant="outline" className="border-rose-300 text-rose-700">
-                              #{tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-
-                      <Textarea
-                        placeholder="추가 메모를 입력하세요..."
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                        className="min-h-[100px] border-rose-200 focus:border-rose-400"
-                      />
-
-                      <Button onClick={saveEntry} className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700">
-                        <Save className="mr-2 h-4 w-4" />
-                        일기 저장
-                      </Button>
-                    </div>
-                  )}
-                </div>
-
-                {/* Calendar & History */}
-                <div className="space-y-4">
-                  <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border-2 border-rose-100">
-                    <h3 className="text-lg font-semibold flex items-center gap-2 mb-3 text-rose-900">
-                      <CalendarIcon className="h-5 w-5" />
-                      감정 캘린더
-                    </h3>
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={setSelectedDate}
-                      locale={ko}
-                      className="rounded-md border border-rose-200"
-                    />
-                  </div>
-
-                  <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border-2 border-rose-100">
-                    <h3 className="text-lg font-semibold flex items-center gap-2 mb-3 text-rose-900">
-                      <TrendingUp className="h-5 w-5" />
-                      최근 기록
-                    </h3>
-                    <div className="space-y-3 max-h-[400px] overflow-y-auto">
-                      {entries.map((entry) => (
-                        <div key={entry.id} className="p-3 border border-rose-200 rounded-lg hover:bg-rose-50 transition-colors">
-                          <div className="flex items-center justify-between mb-2">
-                            <Badge className={`${getEmotionColor(entry.primary_emotion)} text-white text-xs`}>
-                              {getEmotionLabel(entry.primary_emotion)}
-                            </Badge>
-                            <span className="text-xs text-gray-500">
-                              {format(new Date(entry.recorded_at), 'M월 d일 HH:mm', { locale: ko })}
-                            </span>
-                          </div>
-                          <p className="text-sm line-clamp-2 text-gray-700">{entry.transcription}</p>
-                          {entry.tags && entry.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              {entry.tags.map((tag, index) => (
-                                <Badge key={index} variant="outline" className="text-xs border-rose-200 text-rose-600">
-                                  #{tag}
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      {entries.length === 0 && (
-                        <p className="text-center text-gray-500 py-8 text-sm">
-                          아직 기록된 일기가 없습니다
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
 
         </div>
       </section>

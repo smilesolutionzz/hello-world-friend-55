@@ -205,8 +205,10 @@ const CounselingRoom = ({ children }: CounselingRoomProps) => {
       </Canvas>
       
       {/* 콘텐츠는 3D 배경 위에 오버레이 */}
-      <div className="absolute inset-0 bg-black/10">
-        {children}
+      <div className="absolute inset-0 bg-black/10 pointer-events-none">
+        <div className="pointer-events-auto w-full h-full">
+          {children}
+        </div>
       </div>
     </div>
   );

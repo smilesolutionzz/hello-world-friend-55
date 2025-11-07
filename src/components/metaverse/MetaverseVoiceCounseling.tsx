@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Mic, MicOff, Phone, Loader2 } from 'lucide-react';
 import CounselingRoom from '@/components/3d/CounselingRoom';
-import { RealtimeVoiceChat } from '@/utils/RealtimeVoiceChat';
+import { RealtimeChat } from '@/utils/RealtimeAudio';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -18,7 +18,7 @@ const MetaverseVoiceCounseling = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  const chatRef = useRef<RealtimeVoiceChat | null>(null);
+  const chatRef = useRef<RealtimeChat | null>(null);
 
   const handleMessage = (event: any) => {
     console.log('Received event:', event.type);
@@ -45,11 +45,11 @@ const MetaverseVoiceCounseling = () => {
         content: event.transcript,
         timestamp: new Date()
       }]);
+    } else if (event.type === 'response.audio.delta') {
+      setIsSpeaking(true);
+    } else if (event.type === 'response.audio.done') {
+      setIsSpeaking(false);
     }
-  };
-
-  const handleSpeakingChange = (speaking: boolean) => {
-    setIsSpeaking(speaking);
   };
 
   const startConversation = async () => {
@@ -59,7 +59,7 @@ const MetaverseVoiceCounseling = () => {
       // Request microphone permission
       await navigator.mediaDevices.getUserMedia({ audio: true });
 
-      chatRef.current = new RealtimeVoiceChat(handleMessage, handleSpeakingChange);
+      chatRef.current = new RealtimeChat(handleMessage);
       await chatRef.current.init();
       
       setIsConnected(true);
@@ -67,7 +67,7 @@ const MetaverseVoiceCounseling = () => {
       
       toast({
         title: "연결 완료",
-        description: "AI 상담사와 대화를 시작하세요",
+        description: "AI 상담사와 대화를 시작하세요. AI가 먼저 인사할 거예요!",
       });
     } catch (error) {
       console.error('Error starting conversation:', error);

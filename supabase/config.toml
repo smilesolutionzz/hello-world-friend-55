@@ -280,3 +280,6 @@ verify_jwt = false
 
 [functions.realtime-voice]
 verify_jwt = false
+
+[functions.get-realtime-token]
+verify_jwt = false

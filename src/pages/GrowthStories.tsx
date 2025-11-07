@@ -73,13 +73,13 @@ const GrowthStories = () => {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <CardHeader>
               <TabsList className="grid w-full grid-cols-2 bg-gray-100/50">
-                <TabsTrigger value="feed" className="flex items-center gap-2">
+                <TabsTrigger value="feed" className="flex items-center gap-2 text-sm md:text-base px-2 md:px-4">
                   <Sparkles className="w-4 h-4" />
-                  스토리 보기
+                  <span className="truncate">스토리 보기</span>
                 </TabsTrigger>
-                <TabsTrigger value="share" className="flex items-center gap-2">
+                <TabsTrigger value="share" className="flex items-center gap-2 text-sm md:text-base px-2 md:px-4">
                   <PlusCircle className="w-4 h-4" />
-                  스토리 공유하기
+                  <span className="truncate">스토리 작성</span>
                 </TabsTrigger>
               </TabsList>
             </CardHeader>

@@ -173,36 +173,50 @@ const DashboardNew = () => {
     return obsDate >= thirtyDaysAgo;
   }).length;
 
-  // 월별 검사 데이터 집계 - 실제 데이터만 표시
+  // 월별 검사 데이터 집계 - 최근 3개월 고정 표시 (9월, 10월, 11월)
   const monthlyData = React.useMemo(() => {
-    const monthlyMap = new Map<string, { month: string; count: number; cumulative: number; sortKey: string }>();
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // 11월 = 11
+    
+    // 최근 3개월 생성
+    const last3Months = [];
+    for (let i = 2; i >= 0; i--) {
+      const monthNum = currentMonth - i;
+      const year = monthNum > 0 ? currentYear : currentYear - 1;
+      const adjustedMonth = monthNum > 0 ? monthNum : 12 + monthNum;
+      last3Months.push({
+        year,
+        monthNum: adjustedMonth,
+        monthKey: `${year}-${String(adjustedMonth).padStart(2, '0')}`,
+        monthLabel: `${adjustedMonth}월`
+      });
+    }
+    
+    // 각 월별로 데이터 집계
+    const monthlyMap = new Map<string, { month: string; count: number; sortKey: string }>();
+    
+    last3Months.forEach(m => {
+      monthlyMap.set(m.monthKey, { 
+        month: m.monthLabel, 
+        count: 0, 
+        sortKey: m.monthKey 
+      });
+    });
     
     filteredObservations.forEach(obs => {
       const date = new Date(obs.created_at);
       const year = date.getFullYear();
       const monthNum = date.getMonth() + 1;
       const monthKey = `${year}-${String(monthNum).padStart(2, '0')}`;
-      const monthLabel = `${monthNum}월`;
       
-      if (!monthlyMap.has(monthKey)) {
-        monthlyMap.set(monthKey, { month: monthLabel, count: 0, cumulative: 0, sortKey: monthKey });
+      if (monthlyMap.has(monthKey)) {
+        const monthData = monthlyMap.get(monthKey)!;
+        monthData.count += 1;
       }
-      
-      const monthData = monthlyMap.get(monthKey)!;
-      monthData.count += 1;
     });
 
-    // 날짜순으로 정렬
-    const sortedMonths = Array.from(monthlyMap.values()).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
-    
-    // 누적 계산
-    let cumulative = 0;
-    sortedMonths.forEach(month => {
-      cumulative += month.count;
-      month.cumulative = cumulative;
-    });
-
-    return sortedMonths;
+    return Array.from(monthlyMap.values()).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
   }, [filteredObservations]);
 
   // 영역별 분포 데이터 - 실제 데이터만 사용
@@ -251,6 +265,33 @@ const DashboardNew = () => {
         color: colors[name] || defaultColors[colorIndex++ % defaultColors.length]
       }))
       .filter(item => item.value > 0);
+  }, [filteredObservations]);
+
+  // 영역별 점수 타임라인 데이터 (최근 10개 검사)
+  const categoryTimelineData = React.useMemo(() => {
+    const recentTests = filteredObservations.slice(0, 10).reverse();
+    
+    return recentTests.map((obs, idx) => {
+      const dataPoint: any = {
+        name: `${idx + 1}회`,
+        date: format(new Date(obs.created_at), 'MM/dd')
+      };
+      
+      if (obs.categoryScores) {
+        Object.entries(obs.categoryScores).forEach(([category, score]) => {
+          if (typeof score === 'number' && score > 0) {
+            dataPoint[category] = score;
+          }
+        });
+      }
+      
+      // 점수가 없으면 종합 점수라도 표시
+      if (Object.keys(dataPoint).length === 2 && obs.score_overall > 0) {
+        dataPoint['종합'] = obs.score_overall;
+      }
+      
+      return dataPoint;
+    });
   }, [filteredObservations]);
 
   const averageScore = filteredObservations.length > 0
@@ -405,10 +446,10 @@ const DashboardNew = () => {
 
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* 월별 검사 추이 */}
+              {/* 월별 검사 추이 - 최근 3개월 */}
               <Card className="bg-[#0F1823] border-slate-800">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-white">월별 검사 추이</CardTitle>
+                  <CardTitle className="text-lg font-medium text-white">월별 검사 추이 (최근 3개월)</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -427,8 +468,7 @@ const DashboardNew = () => {
                         itemStyle={{ color: '#fff' }}
                       />
                       <Legend wrapperStyle={{ color: '#fff' }} />
-                      <Bar dataKey="count" fill="#fbbf24" name="월별 검사" />
-                      <Bar dataKey="cumulative" fill="#f59e0b" name="누적 검사" />
+                      <Bar dataKey="count" fill="#fbbf24" name="검사 횟수" radius={[8, 8, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -436,7 +476,7 @@ const DashboardNew = () => {
 
               <Card className="bg-[#0F1823] border-slate-800">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-white">영역별 점수 분포</CardTitle>
+                  <CardTitle className="text-lg font-medium text-white">영역별 평균 점수</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {distributionData.length > 0 ? (
@@ -481,6 +521,60 @@ const DashboardNew = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* 영역별 점수 타임라인 */}
+            {categoryTimelineData.length > 0 && (
+              <Card className="bg-[#0F1823] border-slate-800">
+                <CardHeader>
+                  <CardTitle className="text-lg font-medium text-white">영역별 점수 추이 (최근 10회)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <LineChart data={categoryTimelineData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                      <XAxis 
+                        dataKey="date" 
+                        stroke="#94a3b8" 
+                        tick={{ fill: '#e2e8f0' }}
+                      />
+                      <YAxis stroke="#94a3b8" tick={{ fill: '#e2e8f0' }} />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: '#0F1419', 
+                          border: '1px solid #334155',
+                          borderRadius: '8px',
+                          color: '#fff'
+                        }}
+                        labelStyle={{ color: '#fff' }}
+                      />
+                      <Legend wrapperStyle={{ color: '#fff' }} />
+                      {distributionData.map((category, idx) => (
+                        <Line 
+                          key={category.name}
+                          type="monotone" 
+                          dataKey={category.name} 
+                          stroke={category.color}
+                          strokeWidth={2}
+                          dot={{ fill: category.color, r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                      ))}
+                      {/* 종합 점수 라인 (영역별 데이터가 없을 때) */}
+                      {distributionData.length === 0 && (
+                        <Line 
+                          type="monotone" 
+                          dataKey="종합" 
+                          stroke="#fbbf24"
+                          strokeWidth={2}
+                          dot={{ fill: '#fbbf24', r: 4 }}
+                          activeDot={{ r: 6 }}
+                        />
+                      )}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Sister Services Card */}
             <div className="my-6">

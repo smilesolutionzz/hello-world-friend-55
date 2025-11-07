@@ -15,6 +15,7 @@ serve(async (req) => {
   const upgradeHeader = headers.get("upgrade") || "";
 
   if (upgradeHeader.toLowerCase() !== "websocket") {
+    console.log("Not a WebSocket request");
     return new Response("Expected WebSocket connection", { status: 400 });
   }
 
@@ -35,6 +36,8 @@ serve(async (req) => {
       
       // Connect to OpenAI Realtime API
       const url = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01";
+      console.log("Connecting to OpenAI:", url);
+      
       openAISocket = new WebSocket(url, {
         headers: {
           "Authorization": `Bearer ${OPENAI_API_KEY}`,
@@ -49,7 +52,7 @@ serve(async (req) => {
       openAISocket.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          console.log("OpenAI message type:", data.type);
+          console.log("OpenAI -> Client:", data.type);
           
           // Forward all messages to client
           if (clientSocket.readyState === WebSocket.OPEN) {
@@ -70,8 +73,8 @@ serve(async (req) => {
         }
       };
 
-      openAISocket.onclose = () => {
-        console.log("OpenAI WebSocket closed");
+      openAISocket.onclose = (event) => {
+        console.log("OpenAI WebSocket closed:", event.code, event.reason);
         if (clientSocket.readyState === WebSocket.OPEN) {
           clientSocket.close();
         }
@@ -80,9 +83,14 @@ serve(async (req) => {
 
     clientSocket.onmessage = (event) => {
       try {
+        const data = JSON.parse(event.data);
+        console.log("Client -> OpenAI:", data.type);
+        
         // Forward client messages to OpenAI
         if (openAISocket && openAISocket.readyState === WebSocket.OPEN) {
           openAISocket.send(event.data);
+        } else {
+          console.error("OpenAI socket not ready, state:", openAISocket?.readyState);
         }
       } catch (error) {
         console.error("Error forwarding client message:", error);
@@ -93,8 +101,8 @@ serve(async (req) => {
       console.error("Client WebSocket error:", error);
     };
 
-    clientSocket.onclose = () => {
-      console.log("Client WebSocket closed");
+    clientSocket.onclose = (event) => {
+      console.log("Client WebSocket closed:", event.code, event.reason);
       if (openAISocket && openAISocket.readyState === WebSocket.OPEN) {
         openAISocket.close();
       }
@@ -103,6 +111,6 @@ serve(async (req) => {
     return response;
   } catch (error) {
     console.error("WebSocket upgrade error:", error);
-    return new Response("WebSocket upgrade failed", { status: 500 });
+    return new Response("WebSocket upgrade failed: " + error.message, { status: 500 });
   }
 });

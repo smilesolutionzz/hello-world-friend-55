@@ -197,12 +197,12 @@ export class RealtimeVoiceChat {
       this.ws.onmessage = async (event) => {
         try {
           const data = JSON.parse(event.data);
-          console.log("Received message type:", data.type);
+          console.log("📨 Received:", data.type);
 
           this.onMessage(data);
 
           if (data.type === 'session.created' && !this.isSessionStarted) {
-            console.log("Session created, sending configuration...");
+            console.log("✅ Session created, sending configuration...");
             this.isSessionStarted = true;
             
             // Send session configuration
@@ -230,6 +230,7 @@ export class RealtimeVoiceChat {
 
             // Start recording after session is configured
             await this.startRecordingInternal();
+            console.log("🎤 Recording started, speak now!");
           } else if (data.type === 'response.audio.delta') {
             const binaryString = atob(data.delta);
             const bytes = new Uint8Array(binaryString.length);
@@ -248,11 +249,11 @@ export class RealtimeVoiceChat {
       };
 
       this.ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
+        console.error("❌ WebSocket error:", error);
       };
 
-      this.ws.onclose = () => {
-        console.log("WebSocket closed");
+      this.ws.onclose = (event) => {
+        console.log("🔌 WebSocket closed:", event.code, event.reason);
         this.cleanup();
       };
 

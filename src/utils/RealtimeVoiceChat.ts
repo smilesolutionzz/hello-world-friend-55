@@ -228,9 +228,28 @@ export class RealtimeVoiceChat {
               }
             }));
 
+            // AI가 먼저 인사하고 질문하도록 메시지 전송
+            setTimeout(() => {
+              this.ws?.send(JSON.stringify({
+                type: 'conversation.item.create',
+                item: {
+                  type: 'message',
+                  role: 'user',
+                  content: [{
+                    type: 'input_text',
+                    text: '안녕하세요. 친근하게 인사하고 오늘 기분이 어떤지 물어봐주세요.'
+                  }]
+                }
+              }));
+
+              this.ws?.send(JSON.stringify({
+                type: 'response.create'
+              }));
+            }, 500);
+
             // Start recording after session is configured
             await this.startRecordingInternal();
-            console.log("🎤 Recording started, speak now!");
+            console.log("🎤 Recording started, AI will greet you first!");
           } else if (data.type === 'response.audio.delta') {
             const binaryString = atob(data.delta);
             const bytes = new Uint8Array(binaryString.length);

@@ -27,7 +27,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import FamilyManagement from "@/components/family/FamilyManagement";
 import AssessmentHistory from "@/components/history/AssessmentHistory";
-import ImprovementHistory from "@/components/improvement/ImprovementHistory";
+import AIInsights from "@/components/dashboard/AIInsights";
+import WellnessAnalysis from "@/components/dashboard/WellnessAnalysis";
 import { SisterServicesCard } from "@/components/cross-promotion/SisterServicesCard";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, CartesianGrid, Tooltip, Legend, XAxis, YAxis, LineChart, Line } from "recharts";
 import { useToast } from "@/hooks/use-toast";
@@ -346,10 +347,16 @@ const DashboardNew = () => {
                 개요
               </TabsTrigger>
               <TabsTrigger 
-                value="improvements" 
+                value="wellness" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
               >
-                개선 이력
+                웰니스 분석
+              </TabsTrigger>
+              <TabsTrigger 
+                value="ai-insights" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+              >
+                AI 인사이트
               </TabsTrigger>
               <TabsTrigger 
                 value="assessments" 
@@ -745,9 +752,14 @@ const DashboardNew = () => {
             </div>
           </TabsContent>
 
-          {/* Improvements Tab */}
-          <TabsContent value="improvements" className="mt-0">
-            <ImprovementHistory observations={filteredObservations} />
+          {/* Wellness Analysis Tab */}
+          <TabsContent value="wellness" className="mt-0">
+            <WellnessAnalysis observations={filteredObservations} />
+          </TabsContent>
+
+          {/* AI Insights Tab */}
+          <TabsContent value="ai-insights" className="mt-0">
+            <AIInsights observations={filteredObservations} />
           </TabsContent>
 
           {/* Assessments Tab */}

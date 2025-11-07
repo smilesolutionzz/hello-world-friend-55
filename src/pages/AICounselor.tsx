@@ -17,11 +17,11 @@ import {
   Lock,
   Sparkle
 } from "lucide-react";
-import { chatWithAICounselor } from "@/services/openai";
 import { useNavigate } from "react-router-dom";
 import { useTokens } from "@/hooks/useTokens";
 import { TOKEN_COSTS } from "@/constants/tokenCosts";
 import { useToast } from "@/hooks/use-toast";
+import { useStreamingChat } from "@/hooks/useStreamingChat";
 
 interface ChatMessage {
   id: string;
@@ -35,18 +35,27 @@ const AICounselor = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { consumeTokens, checkTokenAvailability } = useTokens();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
   const [riskLevel, setRiskLevel] = useState<'low' | 'medium' | 'high'>('low');
   const [showEmergencyAlert, setShowEmergencyAlert] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const { messages: streamMessages, isStreaming, sendMessage: sendStreamMessage, setMessages } = useStreamingChat({
+    sessionType: 'counselor',
+    onError: (error) => {
+      toast({
+        title: "오류 발생",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  });
 
   useEffect(() => {
     // 환영 메시지
-    const welcomeMessage: ChatMessage = {
+    const welcomeMessage = {
       id: 'welcome',
-      sender: 'ai',
+      role: 'assistant' as const,
       content: `안녕! 나는 너의 비밀친구야 🌙✨
 
 여기서는 아무도 모르게 마음속 이야기를 다 털어놓을 수 있어. 
@@ -59,11 +68,11 @@ const AICounselor = () => {
       timestamp: new Date()
     };
     setMessages([welcomeMessage]);
-  }, []);
+  }, [setMessages]);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [streamMessages]);
 
   useEffect(() => {
     // 고위험 상황 감지 시 응급 알림
@@ -77,7 +86,7 @@ const AICounselor = () => {
   };
 
   const handleSendMessage = async () => {
-    if (!currentMessage.trim()) return;
+    if (!currentMessage.trim() || isStreaming) return;
 
     // 토큰 체크
     if (!checkTokenAvailability(TOKEN_COSTS.AI_COUNSELOR_CHAT)) {
@@ -100,56 +109,11 @@ const AICounselor = () => {
       return;
     }
 
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      sender: 'user',
-      content: currentMessage,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    const messageToSend = currentMessage;
     setCurrentMessage("");
-    setIsTyping(true);
 
-    try {
-      // AI 상담사와 대화
-      const conversationHistory = messages.map(msg => ({
-        role: msg.sender === 'user' ? 'user' as const : 'assistant' as const,
-        content: msg.content
-      }));
-
-      const { response, riskLevel: detectedRisk } = await chatWithAICounselor(
-        currentMessage, 
-        conversationHistory
-      );
-
-      const aiMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        sender: 'ai',
-        content: response,
-        timestamp: new Date(),
-        riskLevel: detectedRisk
-      };
-
-      setMessages(prev => [...prev, aiMessage]);
-      setRiskLevel(detectedRisk);
-
-    } catch (error) {
-      console.error('AI Counselor Error:', error);
-      
-      const errorMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        sender: 'ai',
-        content: "죄송합니다. 일시적인 문제가 발생했습니다. 긴급한 상황이라면 정신건강위기상담전화 1577-0199로 연락해주세요.",
-        timestamp: new Date(),
-        riskLevel: 'medium'
-      };
-      
-      setMessages(prev => [...prev, errorMessage]);
-      setRiskLevel('medium');
-    }
-
-    setIsTyping(false);
+    // 스트리밍으로 메시지 전송
+    await sendStreamMessage(messageToSend, streamMessages);
   };
 
   const handleEmergencyCall = () => {
@@ -289,9 +253,9 @@ const AICounselor = () => {
           <div className="secret-chat-container">
             {/* Chat Messages */}
             <div className="flex-1 p-6 overflow-y-auto space-y-6">
-              {messages.map(message => (
-                <div key={message.id} className={`flex items-end gap-3 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  {message.sender === 'ai' && (
+              {streamMessages.map(message => (
+                <div key={message.id} className={`flex items-end gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  {message.role === 'assistant' && (
                     <div className="secret-friend-avatar">
                       <div className="avatar-inner">
                         <div className="avatar-sparkle"></div>
@@ -300,9 +264,9 @@ const AICounselor = () => {
                     </div>
                   )}
                   
-                  <div className={`max-w-xs lg:max-w-md ${message.sender === 'user' ? 'order-2' : 'order-1'}`}>
+                  <div className={`max-w-xs lg:max-w-md ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
                     <div className={`secret-message ${
-                      message.sender === 'user' 
+                      message.role === 'user' 
                         ? 'secret-message-user' 
                         : 'secret-message-ai'
                     }`}>
@@ -310,14 +274,11 @@ const AICounselor = () => {
                       <div className={`text-xs mt-2 flex items-center gap-2 opacity-70`}>
                         <Clock className="w-3 h-3" />
                         {message.timestamp.toLocaleTimeString()}
-                        {message.riskLevel && message.sender === 'ai' && (
-                          <span className="ml-2">{getRiskBadge(message.riskLevel)}</span>
-                        )}
                       </div>
                     </div>
                   </div>
                   
-                  {message.sender === 'user' && (
+                  {message.role === 'user' && (
                     <div className="secret-user-avatar">
                       <div className="avatar-inner">
                         <div className="avatar-sparkle"></div>
@@ -328,7 +289,7 @@ const AICounselor = () => {
                 </div>
               ))}
               
-              {isTyping && (
+              {isStreaming && (
                 <div className="flex items-end gap-3 justify-start">
                   <div className="secret-friend-avatar">
                     <div className="avatar-inner typing-animation">
@@ -362,11 +323,11 @@ const AICounselor = () => {
                   onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
                   placeholder="🤫 비밀 이야기를 들려주세요..."
                   className="secret-input"
-                  disabled={isTyping}
+                  disabled={isStreaming}
                 />
                 <Button 
                   onClick={handleSendMessage}
-                  disabled={!currentMessage.trim() || isTyping}
+                  disabled={!currentMessage.trim() || isStreaming}
                   className="secret-send-button"
                 >
                   <Send className="w-4 h-4" />

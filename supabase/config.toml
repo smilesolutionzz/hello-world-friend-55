@@ -73,6 +73,9 @@ verify_jwt = false
 [functions.ai-counselor-chat]
 verify_jwt = false
 
+[functions.ai-counselor-stream]
+verify_jwt = false
+
 [functions.ai-health-insights]
 verify_jwt = false
 

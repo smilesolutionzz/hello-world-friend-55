@@ -459,7 +459,7 @@ const InstantAIAnalysis = () => {
           </h1>
           
           <p className="text-white/90 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-            AI가 당신의 고민을 분석하고<br className="sm:hidden" /> 최적의 상담 유형, 심각도,<br className="sm:hidden" /> 맞춤 솔루션을 즉시 알려드립니다
+            고민 입력하면 AI가 즉시 분석하고 맞춤 솔루션을 제안합니다
           </p>
         </div>
       </div>

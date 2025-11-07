@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar } from '@/components/ui/calendar';
 import { 
   Heart, 
   Brain, 
@@ -21,13 +23,30 @@ import {
   Image as ImageIcon,
   CheckCircle2,
   Loader2,
-  Mic
+  Mic,
+  Square,
+  Save,
+  Calendar as CalendarIcon,
+  TrendingUp
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { VoiceEmotionAnalyzer } from '@/components/audio/VoiceEmotionAnalyzer';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+
+interface EmotionEntry {
+  id: string;
+  recorded_at: string;
+  transcription: string;
+  primary_emotion: string;
+  emotion_score: number;
+  mood_rating: number;
+  detected_emotions: any;
+  tags: string[];
+  notes?: string;
+}
 
 const WellnessLifestyle = () => {
   const { toast } = useToast();
@@ -52,6 +71,37 @@ const WellnessLifestyle = () => {
   
   // Achievement state
   const [completedTasks, setCompletedTasks] = useState<string[]>([]);
+
+  // Voice Emotion Diary state
+  const [isRecording, setIsRecording] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [transcription, setTranscription] = useState('');
+  const [emotionAnalysis, setEmotionAnalysis] = useState<any>(null);
+  const [notes, setNotes] = useState('');
+  const [entries, setEntries] = useState<EmotionEntry[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  
+  const mediaRecorder = useRef<MediaRecorder | null>(null);
+  const audioChunks = useRef<Blob[]>([]);
+
+  useEffect(() => {
+    loadEntries();
+  }, []);
+
+  const loadEntries = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('emotion_diaries')
+        .select('*')
+        .order('recorded_at', { ascending: false })
+        .limit(30);
+
+      if (error) throw error;
+      setEntries(data || []);
+    } catch (error) {
+      console.error('Failed to load entries:', error);
+    }
+  };
 
   const handleMeditation = async () => {
     setLoading('meditation');
@@ -316,7 +366,177 @@ const WellnessLifestyle = () => {
     }
   };
 
-  const achievementPercentage = (completedTasks.length / 4) * 100;
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder.current = new MediaRecorder(stream);
+      audioChunks.current = [];
+
+      mediaRecorder.current.ondataavailable = (event) => {
+        audioChunks.current.push(event.data);
+      };
+
+      mediaRecorder.current.onstop = async () => {
+        const audioBlob = new Blob(audioChunks.current, { type: 'audio/webm' });
+        await processAudio(audioBlob);
+      };
+
+      mediaRecorder.current.start();
+      setIsRecording(true);
+      
+      toast({
+        title: "녹음 시작",
+        description: "감정을 편하게 말해보세요."
+      });
+    } catch (error) {
+      console.error('Failed to start recording:', error);
+      toast({
+        title: "녹음 실패",
+        description: "마이크 접근 권한을 확인해주세요.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder.current && isRecording) {
+      mediaRecorder.current.stop();
+      mediaRecorder.current.stream.getTracks().forEach(track => track.stop());
+      setIsRecording(false);
+    }
+  };
+
+  const processAudio = async (audioBlob: Blob) => {
+    setIsAnalyzing(true);
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(audioBlob);
+      
+      reader.onloadend = async () => {
+        const base64Audio = (reader.result as string).split(',')[1];
+        
+        const { data, error } = await supabase.functions.invoke('voice-emotion-diary', {
+          body: { audio: base64Audio }
+        });
+
+        if (error) throw error;
+
+        setTranscription(data.transcription);
+        setEmotionAnalysis(data);
+        
+        if (!completedTasks.includes('emotion')) {
+          setCompletedTasks([...completedTasks, 'emotion']);
+        }
+        
+        toast({
+          title: "분석 완료",
+          description: `주요 감정: ${getEmotionLabel(data.primary_emotion)}`
+        });
+      };
+    } catch (error) {
+      console.error('Failed to process audio:', error);
+      toast({
+        title: "분석 실패",
+        description: "음성 분석 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const saveEntry = async () => {
+    if (!emotionAnalysis) {
+      toast({
+        title: "저장 실패",
+        description: "먼저 음성을 녹음하고 분석해주세요.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "로그인 필요",
+          description: "일기를 저장하려면 로그인이 필요합니다.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('emotion_diaries')
+        .insert({
+          user_id: user.id,
+          transcription: transcription,
+          detected_emotions: emotionAnalysis.detected_emotions,
+          primary_emotion: emotionAnalysis.primary_emotion,
+          emotion_score: emotionAnalysis.emotion_score,
+          mood_rating: emotionAnalysis.mood_rating,
+          tags: emotionAnalysis.suggested_tags || [],
+          notes: notes
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "저장 완료",
+        description: "감정 일기가 저장되었습니다."
+      });
+
+      setTranscription('');
+      setEmotionAnalysis(null);
+      setNotes('');
+      loadEntries();
+    } catch (error) {
+      console.error('Failed to save entry:', error);
+      toast({
+        title: "저장 실패",
+        description: "일기 저장 중 오류가 발생했습니다.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const getEmotionLabel = (emotion: string) => {
+    const labels: Record<string, string> = {
+      'joy': '기쁨',
+      'sadness': '슬픔',
+      'anger': '분노',
+      'anxiety': '불안',
+      'calm': '평온',
+      '기쁨': '기쁨',
+      '슬픔': '슬픔',
+      '분노': '분노',
+      '불안': '불안',
+      '평온': '평온',
+      '피곤': '피곤',
+      '스트레스': '스트레스'
+    };
+    return labels[emotion] || emotion;
+  };
+
+  const getEmotionColor = (emotion: string) => {
+    const colors: Record<string, string> = {
+      'joy': 'bg-yellow-500',
+      'sadness': 'bg-blue-500',
+      'anger': 'bg-red-500',
+      'anxiety': 'bg-purple-500',
+      'calm': 'bg-green-500',
+      '기쁨': 'bg-yellow-500',
+      '슬픔': 'bg-blue-500',
+      '분노': 'bg-red-500',
+      '불안': 'bg-purple-500',
+      '평온': 'bg-green-500',
+      '피곤': 'bg-gray-500',
+      '스트레스': 'bg-orange-500'
+    };
+    return colors[emotion] || 'bg-gray-500';
+  };
+
+  const achievementPercentage = (completedTasks.length / 5) * 100;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -358,12 +578,13 @@ const WellnessLifestyle = () => {
               </CardHeader>
               <CardContent>
                 <Progress value={achievementPercentage} className="h-4 mb-4" />
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   {[
                     { id: 'meditation', icon: Brain, label: '명상' },
                     { id: 'workout', icon: Dumbbell, label: '운동' },
                     { id: 'nutrition', icon: Apple, label: '영양' },
-                    { id: 'sleep', icon: Moon, label: '수면' }
+                    { id: 'sleep', icon: Moon, label: '수면' },
+                    { id: 'emotion', icon: Heart, label: '감정' }
                   ].map(item => (
                     <div key={item.id} className="flex items-center gap-2">
                       {completedTasks.includes(item.id) ? (
@@ -769,27 +990,166 @@ const WellnessLifestyle = () => {
             </CardContent>
           </Card>
 
-          {/* Voice Emotion Analysis Section */}
+          {/* Voice Emotion Diary Section */}
           <Card className="bg-gradient-to-br from-pink-50 to-rose-100 border-0 shadow-xl">
             <CardHeader>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <CardTitle className="text-xl sm:text-2xl font-bold text-rose-900 flex items-center gap-3 whitespace-nowrap">
-                  <Mic className="h-6 sm:h-8 w-6 sm:w-8" />
-                  AI 음성 감정 분석
+                <CardTitle className="text-xl sm:text-2xl font-bold text-rose-900 flex items-center gap-3">
+                  <Heart className="h-6 sm:h-8 w-6 sm:w-8" />
+                  AI 음성 감정 일기
                 </CardTitle>
                 <Badge className="bg-rose-500 text-white">실시간 분석</Badge>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-2 border-rose-100">
-                <div className="text-center mb-6">
-                  <p className="text-sm sm:text-base md:text-lg text-rose-800 leading-relaxed">
-                    음성으로 당신의 감정 상태를<br className="block sm:hidden" />
-                    실시간으로<br className="block sm:hidden" />
-                    분석합니다
-                  </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Recording Section */}
+                <div className="space-y-6 bg-white/70 backdrop-blur-sm rounded-2xl p-6 border-2 border-rose-100">
+                  <div className="text-center space-y-3">
+                    <p className="text-sm sm:text-base text-rose-800">
+                      음성으로 당신의 감정을 기록하고<br />
+                      AI가 실시간으로 분석합니다
+                    </p>
+                  </div>
+
+                  {/* Recording Button */}
+                  <div className="flex justify-center">
+                    {!isRecording ? (
+                      <Button
+                        size="lg"
+                        onClick={startRecording}
+                        disabled={isAnalyzing}
+                        className="px-12 py-8 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700"
+                      >
+                        <Mic className="h-8 w-8 mr-3" />
+                        녹음 시작
+                      </Button>
+                    ) : (
+                      <Button
+                        size="lg"
+                        variant="destructive"
+                        onClick={stopRecording}
+                        className="px-12 py-8 rounded-full animate-pulse"
+                      >
+                        <Square className="h-8 w-8 mr-3" />
+                        녹음 중지
+                      </Button>
+                    )}
+                  </div>
+
+                  {/* Analysis Results */}
+                  {isAnalyzing && (
+                    <div className="text-center py-8">
+                      <Loader2 className="animate-spin h-12 w-12 text-rose-500 mx-auto mb-4" />
+                      <p className="text-rose-700">감정을 분석하는 중...</p>
+                    </div>
+                  )}
+
+                  {emotionAnalysis && (
+                    <div className="space-y-4">
+                      <div className="p-4 bg-rose-50 rounded-lg border border-rose-200">
+                        <h3 className="font-semibold text-rose-900 mb-2">음성 텍스트</h3>
+                        <p className="text-sm text-gray-700">{transcription}</p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h3 className="font-semibold text-rose-900">감정 분석 결과</h3>
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <Badge className={`${getEmotionColor(emotionAnalysis.primary_emotion)} text-white`}>
+                            {getEmotionLabel(emotionAnalysis.primary_emotion)}
+                          </Badge>
+                          <span className="text-sm text-gray-600">
+                            강도: {(emotionAnalysis.emotion_score * 100).toFixed(0)}%
+                          </span>
+                          <span className="text-sm text-gray-600">
+                            기분: {emotionAnalysis.mood_rating}/10
+                          </span>
+                        </div>
+                      </div>
+
+                      {emotionAnalysis.summary && (
+                        <div className="p-3 bg-rose-100 rounded-lg border border-rose-200">
+                          <p className="text-sm text-rose-900">{emotionAnalysis.summary}</p>
+                        </div>
+                      )}
+
+                      {emotionAnalysis.suggested_tags && (
+                        <div className="flex flex-wrap gap-2">
+                          {emotionAnalysis.suggested_tags.map((tag: string, index: number) => (
+                            <Badge key={index} variant="outline" className="border-rose-300 text-rose-700">
+                              #{tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+
+                      <Textarea
+                        placeholder="추가 메모를 입력하세요..."
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        className="min-h-[100px] border-rose-200 focus:border-rose-400"
+                      />
+
+                      <Button onClick={saveEntry} className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700">
+                        <Save className="mr-2 h-4 w-4" />
+                        일기 저장
+                      </Button>
+                    </div>
+                  )}
                 </div>
-                <VoiceEmotionAnalyzer />
+
+                {/* Calendar & History */}
+                <div className="space-y-4">
+                  <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border-2 border-rose-100">
+                    <h3 className="text-lg font-semibold flex items-center gap-2 mb-3 text-rose-900">
+                      <CalendarIcon className="h-5 w-5" />
+                      감정 캘린더
+                    </h3>
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate}
+                      locale={ko}
+                      className="rounded-md border border-rose-200"
+                    />
+                  </div>
+
+                  <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border-2 border-rose-100">
+                    <h3 className="text-lg font-semibold flex items-center gap-2 mb-3 text-rose-900">
+                      <TrendingUp className="h-5 w-5" />
+                      최근 기록
+                    </h3>
+                    <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                      {entries.map((entry) => (
+                        <div key={entry.id} className="p-3 border border-rose-200 rounded-lg hover:bg-rose-50 transition-colors">
+                          <div className="flex items-center justify-between mb-2">
+                            <Badge className={`${getEmotionColor(entry.primary_emotion)} text-white text-xs`}>
+                              {getEmotionLabel(entry.primary_emotion)}
+                            </Badge>
+                            <span className="text-xs text-gray-500">
+                              {format(new Date(entry.recorded_at), 'M월 d일 HH:mm', { locale: ko })}
+                            </span>
+                          </div>
+                          <p className="text-sm line-clamp-2 text-gray-700">{entry.transcription}</p>
+                          {entry.tags && entry.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {entry.tags.map((tag, index) => (
+                                <Badge key={index} variant="outline" className="text-xs border-rose-200 text-rose-600">
+                                  #{tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      {entries.length === 0 && (
+                        <p className="text-center text-gray-500 py-8 text-sm">
+                          아직 기록된 일기가 없습니다
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

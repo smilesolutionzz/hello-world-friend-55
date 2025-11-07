@@ -82,7 +82,11 @@ export default function RealtimeMeditation() {
         throw new Error('Failed to get session URL');
       }
 
-      await conversation.startSession({ url: data.signed_url });
+      const conversationId = await conversation.startSession({ 
+        signedUrl: data.signed_url 
+      });
+      
+      console.log('Meditation session started:', conversationId);
       setIsActive(true);
       
       toast({

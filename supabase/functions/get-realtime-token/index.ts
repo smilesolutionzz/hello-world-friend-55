@@ -29,6 +29,18 @@ serve(async (req) => {
         model: "gpt-4o-realtime-preview-2024-12-17",
         voice: "shimmer",
         instructions: "당신은 친절하고 공감적인 한국어 심리 상담사입니다. 대화가 시작되면 먼저 따뜻하게 인사하고 '오늘 기분이 어떠세요?'라고 물어보세요. 사용자의 감정을 이해하고 따뜻하게 대화하세요.",
+        modalities: ["text", "audio"],
+        input_audio_format: "pcm16",
+        output_audio_format: "pcm16",
+        input_audio_transcription: { model: "whisper-1" },
+        turn_detection: {
+          type: "server_vad",
+          threshold: 0.6,
+          prefix_padding_ms: 500,
+          silence_duration_ms: 1500
+        },
+        temperature: 0.8,
+        max_response_output_tokens: "inf"
       }),
     });
 

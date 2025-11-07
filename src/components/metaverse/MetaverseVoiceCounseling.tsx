@@ -18,6 +18,7 @@ const MetaverseVoiceCounseling = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [showSubtitles, setShowSubtitles] = useState(true);
   const chatRef = useRef<RealtimeChat | null>(null);
 
   const handleMessage = (event: any) => {
@@ -132,28 +133,38 @@ const MetaverseVoiceCounseling = () => {
               </div>
             )}
 
-            {/* Messages */}
+            {/* Subtitles Toggle + Messages */}
             {messages.length > 0 && (
-              <div className="max-h-64 overflow-y-auto mb-6 space-y-3">
-                {messages.map((msg, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-3 rounded-lg ${
-                      msg.role === 'user'
-                        ? 'bg-primary/10 ml-8'
-                        : 'bg-muted mr-8'
-                    }`}
-                  >
-                    <div className="flex items-start gap-2">
-                      <span className="text-xs font-semibold text-muted-foreground">
-                        {msg.role === 'user' ? '나' : 'AI'}
-                      </span>
-                      <p className="text-sm flex-1">{msg.content}</p>
-                    </div>
+              <div className="mb-6">
+                <div className="flex justify-end mb-2">
+                  <Button variant="ghost" size="sm" onClick={() => setShowSubtitles((v) => !v)}>
+                    {showSubtitles ? '자막 숨기기' : '자막 표시'}
+                  </Button>
+                </div>
+                {showSubtitles && (
+                  <div className="max-h-64 overflow-y-auto space-y-3">
+                    {messages.map((msg, idx) => (
+                      <div
+                        key={idx}
+                        className={`p-3 rounded-lg ${
+                          msg.role === 'user'
+                            ? 'bg-primary/10 ml-8'
+                            : 'bg-muted mr-8'
+                        }`}
+                      >
+                        <div className="flex items-start gap-2">
+                          <span className="text-xs font-semibold text-muted-foreground">
+                            {msg.role === 'user' ? '나' : 'AI'}
+                          </span>
+                          <p className="text-sm flex-1 whitespace-pre-wrap break-words leading-relaxed">{msg.content}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
             )}
+
 
             {/* Controls */}
             <div className="flex flex-col gap-4">

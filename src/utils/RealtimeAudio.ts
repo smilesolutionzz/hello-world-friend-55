@@ -109,7 +109,11 @@ export class RealtimeChat {
       });
 
       this.dc.onopen = () => {
-        console.log("✅ Data channel open");
+        console.log("✅ Data channel open - triggering AI to start conversation");
+        // Trigger AI to start the conversation
+        if (this.dc) {
+          this.dc.send(JSON.stringify({ type: 'response.create' }));
+        }
       };
 
       // Create and set local description

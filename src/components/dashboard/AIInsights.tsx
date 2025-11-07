@@ -38,7 +38,7 @@ const AIInsights: React.FC<AIInsightsProps> = ({ observations }) => {
         if (!user) return;
 
         // AI Health Insights 가져오기
-        const { data: aiInsights } = await supabase
+        const aiInsightsQuery = await (supabase as any)
           .from('ai_health_insights')
           .select('insight_type, content, created_at')
           .eq('user_id', user.id)
@@ -46,15 +46,15 @@ const AIInsights: React.FC<AIInsightsProps> = ({ observations }) => {
           .limit(5);
 
         // 상담 데이터 가져오기
-        const { data: consultationData } = await supabase
+        const consultationQuery = await (supabase as any)
           .from('consultations')
           .select('notes, created_at')
           .eq('patient_id', user.id)
           .order('created_at', { ascending: false })
           .limit(3);
 
-        setAiHealthInsights(aiInsights || []);
-        setConsultations(consultationData || []);
+        setAiHealthInsights(aiInsightsQuery.data || []);
+        setConsultations(consultationQuery.data || []);
       } catch (error) {
         console.error('Error loading enhanced data:', error);
       } finally {

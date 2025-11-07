@@ -163,19 +163,46 @@ const FloatingParticles = () => {
   );
 };
 
+export type RoomType = 'counseling' | 'office' | 'home' | 'bedroom' | 'school' | 'club' | 'living' | 'outdoor';
+
 interface CounselingRoomProps {
   children?: React.ReactNode;
+  roomType?: RoomType;
 }
 
-const CounselingRoom = ({ children }: CounselingRoomProps) => {
+const CounselingRoom = ({ children, roomType = 'counseling' }: CounselingRoomProps) => {
+  // 공간별 설정
+  const getRoomSettings = () => {
+    switch (roomType) {
+      case 'office':
+        return { preset: 'city' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#E0E8F0' };
+      case 'home':
+        return { preset: 'apartment' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#FFF5E6' };
+      case 'bedroom':
+        return { preset: 'night' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#E6E6FA' };
+      case 'school':
+        return { preset: 'dawn' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#F0F8FF' };
+      case 'club':
+        return { preset: 'warehouse' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#FFF0F5' };
+      case 'living':
+        return { preset: 'sunset' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#FFF8DC' };
+      case 'outdoor':
+        return { preset: 'park' as const, cameraPos: [0, 3, 10] as [number, number, number], ambientColor: '#E0FFE0' };
+      default:
+        return { preset: 'sunset' as const, cameraPos: [0, 2, 8] as [number, number, number], ambientColor: '#F0F8FF' };
+    }
+  };
+
+  const settings = getRoomSettings();
+
   return (
     <>
       <div className="fixed inset-0 -z-10 pointer-events-none">
         <Canvas>
-          <PerspectiveCamera makeDefault position={[0, 2, 8]} fov={60} />
+          <PerspectiveCamera makeDefault position={settings.cameraPos} fov={60} />
           
           {/* 조명 설정 */}
-          <ambientLight intensity={0.6} color="#F0F8FF" />
+          <ambientLight intensity={0.6} color={settings.ambientColor} />
           <directionalLight 
             position={[10, 10, 5]} 
             intensity={1} 
@@ -184,7 +211,7 @@ const CounselingRoom = ({ children }: CounselingRoomProps) => {
           />
           
           {/* 환경 */}
-          <Environment preset="sunset" />
+          <Environment preset={settings.preset} />
           
           {/* 3D 상담실 */}
           <Room />

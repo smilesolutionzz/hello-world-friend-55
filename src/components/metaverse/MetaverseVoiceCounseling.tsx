@@ -4,8 +4,8 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare } from 'lucide-react';
-import CounselingRoom from '@/components/3d/CounselingRoom';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees } from 'lucide-react';
+import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 
 interface Message {
@@ -14,11 +14,23 @@ interface Message {
   timestamp: Date;
 }
 
+const roomOptions = [
+  { id: 'counseling' as RoomType, name: '상담실', icon: Sofa, description: '따뜻한 상담실' },
+  { id: 'office' as RoomType, name: '회사 사무실', icon: Building2, description: '업무 공간' },
+  { id: 'home' as RoomType, name: '친정 엄마집', icon: Home, description: '편안한 집' },
+  { id: 'bedroom' as RoomType, name: '안방', icon: Bed, description: '아늑한 침실' },
+  { id: 'school' as RoomType, name: '학교', icon: GraduationCap, description: '학교 교실' },
+  { id: 'club' as RoomType, name: '대학 동아리실', icon: Users, description: '동아리 공간' },
+  { id: 'living' as RoomType, name: '거실', icon: Sofa, description: '편안한 거실' },
+  { id: 'outdoor' as RoomType, name: '야외 잔디구장', icon: Trees, description: '자연 속에서' },
+];
+
 const MetaverseVoiceCounseling = () => {
   const { toast } = useToast();
   const [hasEntered, setHasEntered] = useState(false);
   const [userName, setUserName] = useState('');
   const [consultTopic, setConsultTopic] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState<RoomType>('counseling');
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -123,9 +135,9 @@ const MetaverseVoiceCounseling = () => {
   if (!hasEntered) {
     return (
       <div className="relative min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-        <CounselingRoom>
+        <CounselingRoom roomType={selectedRoom}>
           <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
-            <Card className="bg-background/95 backdrop-blur-lg p-8 max-w-lg w-full animate-scale-in">
+            <Card className="bg-background/95 backdrop-blur-lg p-8 max-w-2xl w-full animate-scale-in">
               <div className="text-center mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                   AI 메타버스 상담실
@@ -148,6 +160,32 @@ const MetaverseVoiceCounseling = () => {
                     onChange={(e) => setUserName(e.target.value)}
                     className="text-lg"
                   />
+                </div>
+
+                <div className="space-y-3">
+                  <Label className="flex items-center gap-2">
+                    <Sofa className="w-4 h-4" />
+                    상담 공간 선택
+                  </Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {roomOptions.map((room) => {
+                      const Icon = room.icon;
+                      return (
+                        <Button
+                          key={room.id}
+                          variant={selectedRoom === room.id ? "default" : "outline"}
+                          className="h-auto flex-col gap-2 p-4"
+                          onClick={() => setSelectedRoom(room.id)}
+                        >
+                          <Icon className="w-6 h-6" />
+                          <div className="text-center">
+                            <div className="font-medium">{room.name}</div>
+                            <div className="text-xs opacity-70">{room.description}</div>
+                          </div>
+                        </Button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -189,7 +227,7 @@ const MetaverseVoiceCounseling = () => {
   // 입장 후 상담 화면
   return (
     <div className="relative min-h-screen">
-      <CounselingRoom>
+      <CounselingRoom roomType={selectedRoom}>
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* Header */}
           <div className="text-center mb-8 animate-fade-in">

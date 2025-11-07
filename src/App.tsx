@@ -98,6 +98,7 @@ import VoiceCounseling from "./pages/VoiceCounseling";
 import VoiceToText from "./pages/VoiceToText";
 import MeditationPage from "./pages/MeditationPage";
 import RealtimeMeditation from "./pages/RealtimeMeditation";
+import VoiceEmotionDiary from "./pages/VoiceEmotionDiary";
 
 // New Retention Features
 import WellnessHub from "./pages/WellnessHub";
@@ -243,6 +244,7 @@ const App = () => {
             <Route path="/voice-to-text" element={<VoiceToText />} />
             <Route path="/meditation" element={<MeditationPage />} />
             <Route path="/realtime-meditation" element={<RealtimeMeditation />} />
+            <Route path="/voice-emotion-diary" element={<VoiceEmotionDiary />} />
           
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/community" element={<Community />} />

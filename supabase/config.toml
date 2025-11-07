@@ -3,6 +3,9 @@ project_id = "hrcqxjetmzxoephgyjlb"
 [functions.get-eleven-labs-session]
 verify_jwt = false
 
+[functions.voice-emotion-diary]
+verify_jwt = false
+
 [api]
 enabled = true
 port = 54321

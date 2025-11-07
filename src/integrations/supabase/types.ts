@@ -2226,6 +2226,54 @@ export type Database = {
         }
         Relationships: []
       }
+      emotion_diaries: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          detected_emotions: Json
+          emotion_score: number | null
+          id: string
+          mood_rating: number | null
+          notes: string | null
+          primary_emotion: string | null
+          recorded_at: string
+          tags: string[] | null
+          transcription: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          detected_emotions?: Json
+          emotion_score?: number | null
+          id?: string
+          mood_rating?: number | null
+          notes?: string | null
+          primary_emotion?: string | null
+          recorded_at?: string
+          tags?: string[] | null
+          transcription: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          detected_emotions?: Json
+          emotion_score?: number | null
+          id?: string
+          mood_rating?: number | null
+          notes?: string | null
+          primary_emotion?: string | null
+          recorded_at?: string
+          tags?: string[] | null
+          transcription?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       expert_application_access_log: {
         Row: {
           access_reason: string | null

@@ -29,6 +29,7 @@ import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
 import CompanyServicesSection from '@/components/landing/CompanyServicesSection';
+import { ExpertOnlineStatus } from '@/components/urgency/ExpertOnlineStatus';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -170,6 +171,13 @@ const Index = () => {
         <main id="main-content" className="w-full">
           {/* 1️⃣ Hero Section */}
           <HeroSection />
+          
+          {/* 실시간 전문가 현황 */}
+          <LazyLoad className="animate-fade-in">
+            <div className="container mx-auto px-4 py-8">
+              <ExpertOnlineStatus />
+            </div>
+          </LazyLoad>
           
           {/* 🎬 회사 소개 영상 */}
           <LazyLoad className="animate-fade-in">

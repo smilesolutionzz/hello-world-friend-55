@@ -231,14 +231,14 @@ const MetaverseVoiceCounseling = () => {
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* Header */}
           <div className="text-center mb-8 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 drop-shadow-lg">
               안녕하세요, {userName}님
             </h1>
-            <p className="text-lg text-white/90 drop-shadow-md mb-3">
+            <p className="text-lg text-foreground/90 drop-shadow-md mb-3">
               {consultTopic ? `${consultTopic}에 대해 편하게 이야기 나눠봐요` : '편하게 이야기 나눠봐요'}
             </p>
             <div className="inline-block bg-green-500/20 backdrop-blur-sm border border-green-400/30 rounded-lg px-4 py-2 mt-2">
-              <p className="text-sm md:text-base text-green-100 font-medium">
+              <p className="text-sm md:text-base text-foreground font-medium">
                 🔒 대화 내용은 저장되지 않습니다 • 마음껏 표현하세요
               </p>
             </div>
@@ -353,11 +353,11 @@ const MetaverseVoiceCounseling = () => {
 
           {/* Info */}
           <div className="bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-xl p-4 max-w-md">
-            <p className="text-white/90 text-base md:text-lg text-center leading-relaxed">
+            <p className="text-foreground/90 text-base md:text-lg text-center leading-relaxed">
               💬 마이크 권한을 허용하고 대화를 시작하세요.<br />
               AI가 자동으로 음성을 인식하고 응답합니다.
             </p>
-            <p className="text-white/70 text-sm text-center mt-3">
+            <p className="text-foreground/70 text-sm text-center mt-3">
               ✨ 비밀 보장 • 편하게 스트레스 풀어내세요
             </p>
           </div>

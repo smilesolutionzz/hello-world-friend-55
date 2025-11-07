@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2 } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare } from 'lucide-react';
 import CounselingRoom from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 
@@ -14,6 +16,9 @@ interface Message {
 
 const MetaverseVoiceCounseling = () => {
   const { toast } = useToast();
+  const [hasEntered, setHasEntered] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [consultTopic, setConsultTopic] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -92,12 +97,96 @@ const MetaverseVoiceCounseling = () => {
     });
   };
 
+  const handleEnterRoom = () => {
+    if (!userName.trim()) {
+      toast({
+        title: "이름을 입력해주세요",
+        description: "상담실 입장을 위해 이름이 필요합니다",
+        variant: "destructive",
+      });
+      return;
+    }
+    setHasEntered(true);
+    toast({
+      title: "상담실 입장",
+      description: `${userName}님, 환영합니다!`,
+    });
+  };
+
   useEffect(() => {
     return () => {
       chatRef.current?.disconnect();
     };
   }, []);
 
+  // 입장 전 설정 화면
+  if (!hasEntered) {
+    return (
+      <div className="relative min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+        <CounselingRoom>
+          <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
+            <Card className="bg-background/95 backdrop-blur-lg p-8 max-w-lg w-full animate-scale-in">
+              <div className="text-center mb-8">
+                <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  AI 메타버스 상담실
+                </h1>
+                <p className="text-muted-foreground">
+                  가상 공간에서 AI 상담사와 실시간 음성 대화
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="userName" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    이름 또는 닉네임
+                  </Label>
+                  <Input
+                    id="userName"
+                    placeholder="어떻게 불러드릴까요?"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    className="text-lg"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="consultTopic" className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4" />
+                    상담 주제 (선택사항)
+                  </Label>
+                  <Input
+                    id="consultTopic"
+                    placeholder="오늘은 어떤 이야기를 나누고 싶으세요?"
+                    value={consultTopic}
+                    onChange={(e) => setConsultTopic(e.target.value)}
+                  />
+                </div>
+
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground text-center">
+                    🔒 대화 내용은 저장되지 않으며<br />
+                    완전히 비밀이 보장됩니다
+                  </p>
+                </div>
+
+                <Button
+                  onClick={handleEnterRoom}
+                  size="lg"
+                  className="w-full gap-2 text-lg"
+                >
+                  상담실 입장하기
+                  <ArrowRight className="w-5 h-5" />
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </CounselingRoom>
+      </div>
+    );
+  }
+
+  // 입장 후 상담 화면
   return (
     <div className="relative min-h-screen">
       <CounselingRoom>
@@ -105,10 +194,10 @@ const MetaverseVoiceCounseling = () => {
           {/* Header */}
           <div className="text-center mb-8 animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-              AI 메타버스 상담실
+              안녕하세요, {userName}님
             </h1>
             <p className="text-lg text-white/90 drop-shadow-md mb-3">
-              가상 공간에서 AI 상담사와 실시간 음성 대화
+              {consultTopic ? `${consultTopic}에 대해 편하게 이야기 나눠봐요` : '편하게 이야기 나눠봐요'}
             </p>
             <div className="inline-block bg-green-500/20 backdrop-blur-sm border border-green-400/30 rounded-lg px-4 py-2 mt-2">
               <p className="text-sm md:text-base text-green-100 font-medium">

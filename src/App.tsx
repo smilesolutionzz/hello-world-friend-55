@@ -140,6 +140,7 @@ import MarketingAIAssistant from "./pages/MarketingAIAssistant";
 import CrossPromotionReward from "./pages/CrossPromotionReward";
 import InstallGuide from "./pages/InstallGuide";
 import InsurancePartnership from "./pages/InsurancePartnership";
+import MetaverseVoice from "./pages/MetaverseVoice";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -245,6 +246,7 @@ const App = () => {
             <Route path="/meditation" element={<MeditationPage />} />
             <Route path="/realtime-meditation" element={<RealtimeMeditation />} />
             <Route path="/voice-emotion-diary" element={<VoiceEmotionDiary />} />
+            <Route path="/metaverse-voice" element={<MetaverseVoice />} />
           
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/community" element={<Community />} />

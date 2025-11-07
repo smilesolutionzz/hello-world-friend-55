@@ -1,0 +1,108 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, upgrade',
+};
+
+serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  const { headers } = req;
+  const upgradeHeader = headers.get("upgrade") || "";
+
+  if (upgradeHeader.toLowerCase() !== "websocket") {
+    return new Response("Expected WebSocket connection", { status: 400 });
+  }
+
+  try {
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      console.error("OPENAI_API_KEY is not set");
+      return new Response("Server configuration error", { status: 500 });
+    }
+
+    console.log("Upgrading to WebSocket connection...");
+    const { socket: clientSocket, response } = Deno.upgradeWebSocket(req);
+    
+    let openAISocket: WebSocket | null = null;
+
+    clientSocket.onopen = () => {
+      console.log("Client WebSocket connected");
+      
+      // Connect to OpenAI Realtime API
+      const url = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17";
+      openAISocket = new WebSocket(url, {
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "OpenAI-Beta": "realtime=v1"
+        }
+      });
+
+      openAISocket.onopen = () => {
+        console.log("Connected to OpenAI Realtime API");
+      };
+
+      openAISocket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log("OpenAI message type:", data.type);
+          
+          // Forward all messages to client
+          if (clientSocket.readyState === WebSocket.OPEN) {
+            clientSocket.send(event.data);
+          }
+        } catch (error) {
+          console.error("Error processing OpenAI message:", error);
+        }
+      };
+
+      openAISocket.onerror = (error) => {
+        console.error("OpenAI WebSocket error:", error);
+        if (clientSocket.readyState === WebSocket.OPEN) {
+          clientSocket.send(JSON.stringify({ 
+            type: 'error', 
+            error: 'OpenAI connection error' 
+          }));
+        }
+      };
+
+      openAISocket.onclose = () => {
+        console.log("OpenAI WebSocket closed");
+        if (clientSocket.readyState === WebSocket.OPEN) {
+          clientSocket.close();
+        }
+      };
+    };
+
+    clientSocket.onmessage = (event) => {
+      try {
+        // Forward client messages to OpenAI
+        if (openAISocket && openAISocket.readyState === WebSocket.OPEN) {
+          openAISocket.send(event.data);
+        }
+      } catch (error) {
+        console.error("Error forwarding client message:", error);
+      }
+    };
+
+    clientSocket.onerror = (error) => {
+      console.error("Client WebSocket error:", error);
+    };
+
+    clientSocket.onclose = () => {
+      console.log("Client WebSocket closed");
+      if (openAISocket && openAISocket.readyState === WebSocket.OPEN) {
+        openAISocket.close();
+      }
+    };
+
+    return response;
+  } catch (error) {
+    console.error("WebSocket upgrade error:", error);
+    return new Response("WebSocket upgrade failed", { status: 500 });
+  }
+});

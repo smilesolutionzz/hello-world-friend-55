@@ -134,10 +134,10 @@ const MetaverseVoiceCounseling = () => {
   // 입장 전 설정 화면
   if (!hasEntered) {
     return (
-      <div className="relative min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+      <div className="relative min-h-screen bg-background">
         <CounselingRoom roomType={selectedRoom}>
           <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
-            <Card className="bg-background/95 backdrop-blur-lg p-8 max-w-2xl w-full animate-scale-in">
+            <Card className="bg-background/90 p-8 max-w-2xl w-full animate-scale-in shadow-xl border-2">
               <div className="text-center mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                   AI 메타버스 상담실
@@ -245,7 +245,7 @@ const MetaverseVoiceCounseling = () => {
           </div>
 
           {/* Status Card */}
-          <Card className="bg-background/80 backdrop-blur-lg p-8 mb-6 max-w-2xl w-full animate-scale-in">
+          <Card className="bg-background/90 p-8 mb-6 max-w-2xl w-full animate-scale-in shadow-xl border-2">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className={`w-4 h-4 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-muted'}`} />
               <span className="text-lg font-medium">

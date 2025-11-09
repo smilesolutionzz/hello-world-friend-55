@@ -2,15 +2,37 @@ import { useState, useEffect } from 'react';
 import { Users, Clock, TrendingUp } from 'lucide-react';
 
 export const ExpertOnlineStatus = () => {
-  const [onlineExperts, setOnlineExperts] = useState(5);
-  const [urgentSlots, setUrgentSlots] = useState(3);
+  const [onlineExperts, setOnlineExperts] = useState(0);
+  const [urgentSlots, setUrgentSlots] = useState(0);
 
   useEffect(() => {
-    // 실시간 느낌을 주기 위한 랜덤 변화
-    const interval = setInterval(() => {
-      setOnlineExperts(Math.floor(Math.random() * 5) + 3);
-      setUrgentSlots(Math.floor(Math.random() * 3) + 1);
-    }, 8000);
+    const calculateOnlineUsers = () => {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setHours(0, 0, 0, 0);
+      
+      // 자정부터 경과한 밀리초
+      const elapsed = now.getTime() - midnight.getTime();
+      // 하루 전체 밀리초 (24시간)
+      const totalDay = 24 * 60 * 60 * 1000;
+      
+      // 0에서 1000까지 선형 증가
+      const baseCount = Math.floor((elapsed / totalDay) * 1000);
+      
+      // ±30명의 자연스러운 변동 추가
+      const variance = Math.floor(Math.random() * 61) - 30;
+      const finalCount = Math.max(0, Math.min(1000, baseCount + variance));
+      
+      setOnlineExperts(finalCount);
+      // 긴급 슬롯은 전체의 5~10% 정도로 설정
+      setUrgentSlots(Math.floor(finalCount * (0.05 + Math.random() * 0.05)));
+    };
+
+    // 초기 계산
+    calculateOnlineUsers();
+
+    // 30초마다 업데이트
+    const interval = setInterval(calculateOnlineUsers, 30000);
 
     return () => clearInterval(interval);
   }, []);

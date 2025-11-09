@@ -141,6 +141,8 @@ import CrossPromotionReward from "./pages/CrossPromotionReward";
 import InstallGuide from "./pages/InstallGuide";
 import InsurancePartnership from "./pages/InsurancePartnership";
 import MetaverseVoice from "./pages/MetaverseVoice";
+import ParentLanding from "./pages/ParentLanding";
+import DashboardRouter from "./pages/DashboardRouter";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -172,10 +174,12 @@ const App = () => {
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
+          <Route path="/parent" element={<ParentLanding />} />
           <Route path="/pmf-onboarding" element={<PMFOnboarding />} />
           <Route path="/design-showcase" element={<EnhancedDesignShowcase />} />
           <Route path="/auth" element={<HighlightAuth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<DashboardRouter />} />
+          <Route path="/dashboard-old" element={<Dashboard />} />
           <Route path="/progress-tracking" element={<ProgressTracking />} />
           <Route path="/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/assessment" element={<Assessment />} />

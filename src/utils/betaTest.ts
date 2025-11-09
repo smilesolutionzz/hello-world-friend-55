@@ -14,14 +14,14 @@ export const getBetaTestMessage = (): string => {
   return `🎉 100일 무료 체험! 2026년 2월 17일까지 모든 기능 무료 (D-${diffDays})`;
 };
 
-// 무료 플랜 제공 기능
+// 무료 플랜 제공 기능 (100일간)
 export const FREE_PLAN_FEATURES = {
-  basicTests: 3, // 월 3회 기본 검사
-  observations: 5, // 월 5회 관찰일지
-  aiAnalysis: 0, // AI 분석 불가
-  expertConsultation: 0, // 전문가 상담 불가
-  premiumTests: 0, // 프리미엄 검사 불가
-  dataStorage: 30, // 30일 데이터 보관
+  basicTests: 5, // 월 5회 기본 검사
+  observations: 10, // 월 10회 관찰일지
+  aiAnalysis: 0, // AI 분석 유료
+  expertConsultation: 0, // 전문가 상담 유료
+  premiumTests: 0, // 프리미엄 검사 유료
+  dataStorage: 90, // 90일 데이터 보관
 };
 
 // 프리미엄 플랜 제공 기능

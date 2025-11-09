@@ -23,9 +23,12 @@ const FixedCTAButton = () => {
     <>
       {/* Mobile Fixed CTA */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl safe-area-pb">
-        <div className="mb-2 text-center">
+        <div className="mb-2 text-center space-y-1">
+          <span className="block text-xs text-muted-foreground font-medium">
+            친구 추천 시 30일 추가!
+          </span>
           <span className="inline-block px-3 py-1 bg-gradient-to-r from-[#5E8FFF] to-[#9D6CFF] text-white text-xs font-bold rounded-full">
-            🎉 바이럴 확산 기념 100일 무료!
+            🎉 100일 무료 + 바이럴 리워드
           </span>
         </div>
         <Button 
@@ -42,9 +45,12 @@ const FixedCTAButton = () => {
 
       {/* Desktop Floating CTA */}
       <div className="hidden md:block fixed bottom-8 right-8 z-50">
-        <div className="mb-3 text-right">
+        <div className="mb-3 text-right space-y-2">
+          <div className="text-sm text-muted-foreground font-medium">
+            친구 추천 시 30일 추가! 📱
+          </div>
           <span className="inline-block px-4 py-2 bg-gradient-to-r from-[#5E8FFF] to-[#9D6CFF] text-white text-sm font-bold rounded-full shadow-lg">
-            🎉 바이럴 확산 기념 100일 무료!
+            🎉 100일 무료 + 바이럴 리워드
           </span>
         </div>
         <Button 

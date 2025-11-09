@@ -7,25 +7,13 @@ export const ExpertOnlineStatus = () => {
 
   useEffect(() => {
     const calculateOnlineUsers = () => {
-      const now = new Date();
-      const midnight = new Date(now);
-      midnight.setHours(0, 0, 0, 0);
+      // 실시간 전문가: 1-9명 사이로 랜덤 설정
+      const experts = Math.floor(Math.random() * 9) + 1;
+      setOnlineExperts(experts);
       
-      // 자정부터 경과한 밀리초
-      const elapsed = now.getTime() - midnight.getTime();
-      // 하루 전체 밀리초 (24시간)
-      const totalDay = 24 * 60 * 60 * 1000;
-      
-      // 0에서 1000까지 선형 증가
-      const baseCount = Math.floor((elapsed / totalDay) * 1000);
-      
-      // ±30명의 자연스러운 변동 추가
-      const variance = Math.floor(Math.random() * 61) - 30;
-      const finalCount = Math.max(0, Math.min(1000, baseCount + variance));
-      
-      setOnlineExperts(finalCount);
-      // 긴급 슬롯은 전체의 5~10% 정도로 설정
-      setUrgentSlots(Math.floor(finalCount * (0.05 + Math.random() * 0.05)));
+      // 10분 내 응답: 전문가 수보다 1-2명 적게
+      const slots = Math.max(1, experts - Math.floor(Math.random() * 2) - 1);
+      setUrgentSlots(slots);
     };
 
     // 초기 계산

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,8 +22,8 @@ const ReferralCard = () => {
     });
   };
 
-  const shareToSocial = (platform: 'kakao' | 'twitter' | 'facebook') => {
-    const message = `마음AI와 함께 우리 아이 마음 건강 케어하세요! 🎁 지금 가입하면 ${REFERRAL_REWARDS.invitee}일 무료!`;
+  const shareToSocial = async (platform: 'kakao' | 'twitter' | 'facebook') => {
+    const message = `마음AI와 함께 우리 아이 마음 건강 케어하세요! 🎁 지금 가입하면 ${REFERRAL_REWARDS.invitee}토큰 무료!`;
     
     switch (platform) {
       case 'kakao':
@@ -37,10 +38,26 @@ const ReferralCard = () => {
         break;
     }
     
-    toast({
-      title: "SNS 공유 준비!",
-      description: `${REFERRAL_REWARDS.socialShare}일 무료 기간이 곧 추가됩니다.`,
-    });
+    // SNS 공유 보상 처리
+    try {
+      const { data, error } = await supabase.functions.invoke('share-social', {
+        body: { platform }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "공유 완료!",
+        description: data.message,
+      });
+    } catch (error) {
+      console.error('Share reward error:', error);
+      toast({
+        title: "공유 실패",
+        description: "나중에 다시 시도해주세요.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -54,7 +71,7 @@ const ReferralCard = () => {
             친구 초대하고 무료 기간 연장! 🎉
           </h3>
           <p className="text-sm text-muted-foreground">
-            친구 1명당 {REFERRAL_REWARDS.inviter}일 추가 · SNS 공유 시 {REFERRAL_REWARDS.socialShare}일 추가
+            친구 1명당 {REFERRAL_REWARDS.inviter}토큰 · SNS 공유 시 {REFERRAL_REWARDS.socialShare}토큰
           </p>
         </div>
       </div>
@@ -106,7 +123,7 @@ const ReferralCard = () => {
       <div className="mt-4 pt-4 border-t border-border/50">
         <p className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
           <Share2 className="w-4 h-4" />
-          SNS에 공유하고 {REFERRAL_REWARDS.socialShare}일 추가 받기
+          SNS에 공유하고 {REFERRAL_REWARDS.socialShare}토큰 받기
         </p>
         <div className="grid grid-cols-3 gap-2">
           <Button
@@ -143,7 +160,7 @@ const ReferralCard = () => {
           <span>초대한 친구: <strong className="text-foreground">0명</strong></span>
         </div>
         <div className="text-muted-foreground">
-          누적 보너스: <strong className="text-primary">+0일</strong>
+          누적 보너스: <strong className="text-primary">+0토큰</strong>
         </div>
       </div>
     </Card>

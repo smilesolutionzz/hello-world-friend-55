@@ -6002,6 +6002,36 @@ export type Database = {
           },
         ]
       }
+      referral_rewards: {
+        Row: {
+          created_at: string
+          id: string
+          referee_id: string | null
+          referral_code: string | null
+          referrer_id: string
+          reward_type: string
+          tokens_awarded: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referee_id?: string | null
+          referral_code?: string | null
+          referrer_id: string
+          reward_type: string
+          tokens_awarded: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referee_id?: string | null
+          referral_code?: string | null
+          referrer_id?: string
+          reward_type?: string
+          tokens_awarded?: number
+        }
+        Relationships: []
+      }
       referrals: {
         Row: {
           completed_at: string | null
@@ -7607,6 +7637,36 @@ export type Database = {
           id?: string
           lifestyle_preferences?: Json | null
           primary_concerns?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_referrals: {
+        Row: {
+          created_at: string
+          id: string
+          referral_code: string
+          total_bonus_tokens: number | null
+          total_invites: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referral_code: string
+          total_bonus_tokens?: number | null
+          total_invites?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referral_code?: string
+          total_bonus_tokens?: number | null
+          total_invites?: number | null
           updated_at?: string
           user_id?: string
         }

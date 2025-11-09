@@ -1,9 +1,9 @@
 // 리퍼럴 시스템 유틸리티
 
 export const REFERRAL_REWARDS = {
-  inviter: 30, // 추천인에게 30일 추가
-  invitee: 7, // 피추천인에게 7일 추가
-  socialShare: 14, // SNS 공유 시 14일 추가
+  inviter: 500, // 추천인에게 500토큰
+  invitee: 100, // 피추천인에게 100토큰
+  socialShare: 200, // SNS 공유 시 200토큰
 };
 
 // 리퍼럴 코드 생성
@@ -29,11 +29,11 @@ export const getReferralCodeFromUrl = (): string | null => {
 export const getReferralRewardMessage = (type: 'inviter' | 'invitee' | 'social'): string => {
   switch (type) {
     case 'inviter':
-      return `🎉 친구 초대 성공! ${REFERRAL_REWARDS.inviter}일 무료 기간이 추가되었습니다!`;
+      return `🎉 친구 초대 성공! ${REFERRAL_REWARDS.inviter}토큰이 지급되었습니다!`;
     case 'invitee':
-      return `🎁 초대 코드 적용! ${REFERRAL_REWARDS.invitee}일 무료 기간이 추가되었습니다!`;
+      return `🎁 초대 코드 적용! ${REFERRAL_REWARDS.invitee}토큰이 지급되었습니다!`;
     case 'social':
-      return `📱 SNS 공유 완료! ${REFERRAL_REWARDS.socialShare}일 무료 기간이 추가되었습니다!`;
+      return `📱 SNS 공유 완료! ${REFERRAL_REWARDS.socialShare}토큰이 지급되었습니다!`;
     default:
       return '';
   }

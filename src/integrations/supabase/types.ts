@@ -5190,6 +5190,7 @@ export type Database = {
           is_crisis: boolean | null
           location: string | null
           media_files: Json | null
+          organization_id: string | null
           session_name: string | null
           severity: number | null
           tags: string[] | null
@@ -5208,6 +5209,7 @@ export type Database = {
           is_crisis?: boolean | null
           location?: string | null
           media_files?: Json | null
+          organization_id?: string | null
           session_name?: string | null
           severity?: number | null
           tags?: string[] | null
@@ -5226,6 +5228,7 @@ export type Database = {
           is_crisis?: boolean | null
           location?: string | null
           media_files?: Json | null
+          organization_id?: string | null
           session_name?: string | null
           severity?: number | null
           tags?: string[] | null
@@ -5240,6 +5243,13 @@ export type Database = {
             columns: ["family_member_id"]
             isOneToOne: false
             referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "observation_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -5843,39 +5853,53 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_type: Database["public"]["Enums"]["account_type"] | null
           birth_date: string | null
           created_at: string
           display_name: string | null
           email: string | null
           id: string
+          organization_id: string | null
           phone: string | null
           subscription_tier: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          account_type?: Database["public"]["Enums"]["account_type"] | null
           birth_date?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
+          organization_id?: string | null
           phone?: string | null
           subscription_tier?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          account_type?: Database["public"]["Enums"]["account_type"] | null
           birth_date?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
+          organization_id?: string | null
           phone?: string | null
           subscription_tier?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       realtime_consultation_messages: {
         Row: {
@@ -8550,9 +8574,16 @@ export type Database = {
       }
     }
     Enums: {
+      account_type: "parent" | "teacher" | "therapist" | "admin"
       app_role: "admin" | "expert" | "user"
       consultation_session_status: "waiting" | "active" | "ended"
       message_type: "text" | "image" | "file"
+      organization_type:
+        | "academy"
+        | "daycare"
+        | "kindergarten"
+        | "development_center"
+        | "none"
       subscription_type: "free" | "token_pack" | "monthly_unlimited"
     }
     CompositeTypes: {
@@ -8681,9 +8712,17 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_type: ["parent", "teacher", "therapist", "admin"],
       app_role: ["admin", "expert", "user"],
       consultation_session_status: ["waiting", "active", "ended"],
       message_type: ["text", "image", "file"],
+      organization_type: [
+        "academy",
+        "daycare",
+        "kindergarten",
+        "development_center",
+        "none",
+      ],
       subscription_type: ["free", "token_pack", "monthly_unlimited"],
     },
   },

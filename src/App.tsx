@@ -142,6 +142,9 @@ import InstallGuide from "./pages/InstallGuide";
 import InsurancePartnership from "./pages/InsurancePartnership";
 import MetaverseVoice from "./pages/MetaverseVoice";
 import ParentLanding from "./pages/ParentLanding";
+import AcademyLanding from "./pages/AcademyLanding";
+import DevelopmentCenterLanding from "./pages/DevelopmentCenterLanding";
+import DaycareLanding from "./pages/DaycareLanding";
 import DashboardRouter from "./pages/DashboardRouter";
 
 import { SessionManager } from "./components/SessionManager";
@@ -174,7 +177,13 @@ const App = () => {
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
+          
+          {/* Target-specific Landing Pages */}
           <Route path="/parent" element={<ParentLanding />} />
+          <Route path="/academy" element={<AcademyLanding />} />
+          <Route path="/development-center" element={<DevelopmentCenterLanding />} />
+          <Route path="/daycare" element={<DaycareLanding />} />
+          
           <Route path="/pmf-onboarding" element={<PMFOnboarding />} />
           <Route path="/design-showcase" element={<EnhancedDesignShowcase />} />
           <Route path="/auth" element={<HighlightAuth />} />

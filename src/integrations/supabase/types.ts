@@ -5392,30 +5392,45 @@ export type Database = {
       }
       organizations: {
         Row: {
+          address: string | null
           admin_user_id: string | null
           created_at: string
+          email: string | null
           id: string
+          is_active: boolean | null
           name: string
+          org_type: Database["public"]["Enums"]["organization_type"]
+          phone: string | null
+          registration_number: string | null
           settings: Json | null
-          type: string
           updated_at: string
         }
         Insert: {
+          address?: string | null
           admin_user_id?: string | null
           created_at?: string
+          email?: string | null
           id?: string
+          is_active?: boolean | null
           name: string
+          org_type: Database["public"]["Enums"]["organization_type"]
+          phone?: string | null
+          registration_number?: string | null
           settings?: Json | null
-          type: string
           updated_at?: string
         }
         Update: {
+          address?: string | null
           admin_user_id?: string | null
           created_at?: string
+          email?: string | null
           id?: string
+          is_active?: boolean | null
           name?: string
+          org_type?: Database["public"]["Enums"]["organization_type"]
+          phone?: string | null
+          registration_number?: string | null
           settings?: Json | null
-          type?: string
           updated_at?: string
         }
         Relationships: []

@@ -58,7 +58,7 @@ export const useOrganization = () => {
           .single();
 
         if (org) {
-          setOrganization(org);
+          setOrganization(org as any);
         }
       }
 
@@ -116,7 +116,7 @@ export const useOrganization = () => {
         .update({ organization_id: data.id })
         .eq('user_id', user.id);
 
-      setOrganization(data);
+      setOrganization(data as any);
       
       toast({
         title: '조직 생성 완료',
@@ -145,7 +145,7 @@ export const useOrganization = () => {
 
       if (error) throw error;
 
-      setOrganization({ ...organization, ...updates });
+      setOrganization({ ...organization, ...updates } as any);
       
       toast({
         title: '조직 정보 수정 완료',

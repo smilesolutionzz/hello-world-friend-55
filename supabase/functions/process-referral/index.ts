@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const REFERRAL_REWARDS = {
-  inviter: 500,  // 추천인에게 500토큰
+  inviter: 50,  // 추천인에게 50토큰
   invitee: 100,  // 피추천인에게 100토큰
 };
 

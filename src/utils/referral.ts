@@ -1,7 +1,7 @@
 // 리퍼럴 시스템 유틸리티
 
 export const REFERRAL_REWARDS = {
-  inviter: 500, // 추천인에게 500토큰
+  inviter: 50, // 추천인에게 50토큰
   invitee: 100, // 피추천인에게 100토큰
   socialShare: 200, // SNS 공유 시 200토큰
 };

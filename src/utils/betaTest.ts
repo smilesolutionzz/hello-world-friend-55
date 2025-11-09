@@ -1,8 +1,9 @@
-// 베타테스트 종료 - 유료화 시작
-export const BETA_TEST_END_DATE = new Date('2024-12-31T23:59:59+09:00');
+// PMF 검증 기간 - 2025년 Q1 무료 운영
+export const BETA_TEST_END_DATE = new Date('2025-03-31T23:59:59+09:00');
 
 export const isBetaTestPeriod = (): boolean => {
-  return false; // 베타 기간 종료 - 유료화 활성화
+  const now = new Date();
+  return now < BETA_TEST_END_DATE; // 2025년 3월 31일까지 무료
 };
 
 export const getBetaTestMessage = (): string => {
@@ -10,7 +11,7 @@ export const getBetaTestMessage = (): string => {
   const now = new Date();
   const diffTime = BETA_TEST_END_DATE.getTime() - now.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return `🎉 베타 테스트 기간! 모든 기능 무료 (D-${diffDays})`;
+  return `🎉 PMF 검증 기간! 2025년 3월까지 모든 기능 무료 (D-${diffDays})`;
 };
 
 // 무료 플랜 제공 기능

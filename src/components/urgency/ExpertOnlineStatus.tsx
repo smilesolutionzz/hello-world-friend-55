@@ -36,7 +36,7 @@ export const ExpertOnlineStatus = () => {
         <div className="flex items-center gap-3">
           <Users className="w-5 h-5 text-green-400" />
           <div>
-            <p className="text-foreground/70 text-xs font-medium">온라인 전문가</p>
+            <p className="text-foreground text-xs font-medium">온라인 전문가</p>
             <p className="text-foreground font-bold text-xl">{onlineExperts}명</p>
           </div>
         </div>
@@ -44,7 +44,7 @@ export const ExpertOnlineStatus = () => {
         <div className="flex items-center gap-3">
           <Clock className="w-5 h-5 text-yellow-400" />
           <div>
-            <p className="text-foreground/70 text-xs font-medium">10분 내 응답</p>
+            <p className="text-foreground text-xs font-medium">10분 내 응답</p>
             <p className="text-foreground font-bold text-xl">{urgentSlots}명</p>
           </div>
         </div>
@@ -52,7 +52,7 @@ export const ExpertOnlineStatus = () => {
         <div className="flex items-center gap-3">
           <TrendingUp className="w-5 h-5 text-blue-400" />
           <div>
-            <p className="text-foreground/70 text-xs font-medium">평균 응답시간</p>
+            <p className="text-foreground text-xs font-medium">평균 응답시간</p>
             <p className="text-foreground font-bold text-xl">8분</p>
           </div>
         </div>

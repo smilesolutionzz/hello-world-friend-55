@@ -2,8 +2,9 @@
 
 export const REFERRAL_REWARDS = {
   inviter: 50, // 추천인에게 50토큰
-  invitee: 100, // 피추천인에게 100토큰
+  invitee: 50, // 피추천인에게 50토큰
   socialShare: 200, // SNS 공유 시 200토큰
+  maxReferrals: 10, // 최대 10명까지 추천 가능
 };
 
 // 리퍼럴 코드 생성

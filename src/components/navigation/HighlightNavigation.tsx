@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby } from 'lucide-react';
+import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   NavigationMenu,
@@ -72,6 +72,12 @@ export const HighlightNavigation = () => {
       label: '프로필', 
       path: '/profile',
       description: '내 정보 관리'
+    },
+    { 
+      icon: CreditCard, 
+      label: '가격 안내', 
+      path: '/pricing',
+      description: '플랜별 가격 및 기능 비교'
     },
     { 
       icon: Settings, 

@@ -23,12 +23,9 @@ const FixedCTAButton = () => {
     <>
       {/* Mobile Fixed CTA */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl safe-area-pb">
-        <div className="mb-2 text-center space-y-1">
-          <span className="block text-xs text-muted-foreground font-medium">
-            친구 추천 시 친구도 50, 나도 50토큰! (최대 10명)
-          </span>
+        <div className="mb-2 text-center">
           <span className="inline-block px-3 py-1 bg-gradient-to-r from-[#5E8FFF] to-[#9D6CFF] text-white text-xs font-bold rounded-full">
-            🎉 100일 무료 + 바이럴 리워드
+            🎉 친구 추천 시 친구도 50, 나도 50토큰! (최대 10명)
           </span>
         </div>
         <Button 
@@ -37,7 +34,7 @@ const FixedCTAButton = () => {
           className="w-full py-6 bg-[#5E8FFF] hover:bg-[#4A7FEF] text-white text-lg font-bold rounded-xl shadow-[0_4px_20px_rgba(94,143,255,0.4)]"
         >
           <span className="flex items-center justify-center gap-2">
-            지금 바로 무료 시작
+            무료로 시작
             <ArrowRight className="w-5 h-5" />
           </span>
         </Button>

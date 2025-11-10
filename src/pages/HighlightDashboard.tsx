@@ -205,22 +205,22 @@ export default function HighlightDashboard() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-slate-950">
         <AppSidebar />
         
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="border-b bg-background/95 backdrop-blur-sm">
+          <div className="border-b border-slate-800 bg-slate-900/95 backdrop-blur-sm">
             <div className="container mx-auto px-4 py-4 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="mr-2" />
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-                  HIGHLIGHT
+                <h1 className="text-2xl font-bold text-white">
+                  개인 대시보드
                 </h1>
                 {profile && (
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">{profile.display_name || '사용자'}</span>
+                    <User className="w-4 h-4 text-slate-400" />
+                    <span className="text-sm font-medium text-slate-200">{profile.display_name || '사용자'}</span>
                     <Badge variant={profile.subscription_tier === 'premium' ? 'default' : 'secondary'}>
                       {profile.subscription_tier === 'premium' ? (
                         <>
@@ -255,7 +255,7 @@ export default function HighlightDashboard() {
             </div>
           </div>
 
-          <main className="flex-1 bg-gradient-to-br from-background to-muted">
+          <main className="flex-1 bg-slate-950">
             <div className="container mx-auto px-4 py-8">
               <Tabs defaultValue="tests" className="space-y-6">
                 <TabsList className="grid w-full grid-cols-2 max-w-md">
@@ -279,13 +279,13 @@ export default function HighlightDashboard() {
                     {/* Sidebar */}
                     <div className="space-y-6">
                       {/* Recent Tests */}
-                      <Card>
+                      <Card className="bg-slate-900 border-slate-800">
                         <CardHeader>
-                          <CardTitle className="flex items-center gap-2">
+                          <CardTitle className="flex items-center gap-2 text-white">
                             <History className="w-5 h-5" />
                             최근 검사
                           </CardTitle>
-                          <CardDescription>
+                          <CardDescription className="text-slate-400">
                             최근 완료한 검사 결과를 확인하세요
                           </CardDescription>
                         </CardHeader>
@@ -295,7 +295,7 @@ export default function HighlightDashboard() {
                               {recentTests.map((test) => (
                                 <div 
                                   key={test.id}
-                                  className="p-3 border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                                  className="p-3 border border-slate-700 rounded-lg cursor-pointer hover:bg-slate-800/50 transition-colors"
                                   onClick={() => {
                                     if (test.test_types.name === '프리미엄 검사') {
                                       navigate(`/assessment-detail/${test.id}`);
@@ -306,12 +306,12 @@ export default function HighlightDashboard() {
                                 >
                                   <div className="flex justify-between items-start">
                                     <div>
-                                      <p className="font-medium text-sm">{test.test_types.name}</p>
-                                      <p className="text-xs text-muted-foreground">
+                                      <p className="font-medium text-sm text-slate-200">{test.test_types.name}</p>
+                                      <p className="text-xs text-slate-500">
                                         {new Date(test.completed_at).toLocaleDateString('ko-KR')}
                                       </p>
                                     </div>
-                                    <Badge variant="outline" className="text-xs">
+                                    <Badge variant="outline" className="text-xs border-slate-600 text-slate-300">
                                       {test.scores.total_score || 0}점
                                     </Badge>
                                   </div>
@@ -319,7 +319,7 @@ export default function HighlightDashboard() {
                               ))}
                             </div>
                           ) : (
-                            <p className="text-sm text-muted-foreground text-center py-4">
+                            <p className="text-sm text-slate-500 text-center py-4">
                               아직 완료한 검사가 없습니다
                             </p>
                           )}
@@ -328,15 +328,15 @@ export default function HighlightDashboard() {
 
                       {/* Subscription Info */}
                       {profile?.subscription_tier === 'free' && (
-                        <Card>
+                        <Card className="bg-slate-900 border-slate-800">
                           <CardHeader>
-                            <CardTitle>프리미엄 업그레이드</CardTitle>
-                            <CardDescription>
+                            <CardTitle className="text-white">프리미엄 업그레이드</CardTitle>
+                            <CardDescription className="text-slate-400">
                               더 많은 기능을 이용해보세요
                             </CardDescription>
                           </CardHeader>
                           <CardContent>
-                            <ul className="text-sm space-y-2 mb-4">
+                            <ul className="text-sm space-y-2 mb-4 text-slate-300">
                               <li>• 무제한 검사</li>
                               <li>• 전문가 피드백</li>
                               <li>• PDF 리포트 다운로드</li>

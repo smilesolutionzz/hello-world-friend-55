@@ -42,11 +42,6 @@ const FixedCTAButton = () => {
 
       {/* Desktop Floating CTA */}
       <div className="hidden md:block fixed bottom-8 right-8 z-50">
-        <div className="mb-3 text-right">
-          <div className="text-sm text-muted-foreground font-medium">
-            친구 추천 시 친구도 50, 나도 50토큰! (최대 10명) 📱
-          </div>
-        </div>
         <Button 
           size="lg"
           onClick={() => navigate('/pmf-onboarding')}

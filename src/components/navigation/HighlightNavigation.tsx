@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard } from 'lucide-react';
+import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   NavigationMenu,
@@ -46,24 +46,6 @@ export const HighlightNavigation = () => {
       path: '/comprehensive-reporting',
       description: '전문가 맞춤 종합 리포트'
     },
-    { 
-      icon: GraduationCap, 
-      label: '교육기관용', 
-      path: '/academy',
-      description: '유치원/어린이집을 위한 솔루션'
-    },
-    { 
-      icon: Building2, 
-      label: '발달센터용', 
-      path: '/development-center',
-      description: '전문 발달센터를 위한 시스템'
-    },
-    { 
-      icon: Baby, 
-      label: '어린이집용', 
-      path: '/daycare',
-      description: '어린이집 맞춤 관리 시스템'
-    },
   ];
 
   const accountItems = [
@@ -72,12 +54,6 @@ export const HighlightNavigation = () => {
       label: '프로필', 
       path: '/profile',
       description: '내 정보 관리'
-    },
-    { 
-      icon: CreditCard, 
-      label: '가격 안내', 
-      path: '/pricing',
-      description: '플랜별 가격 및 기능 비교'
     },
     { 
       icon: Settings, 

@@ -72,7 +72,6 @@ const dataSubmenuItems = [
 
 // AIH 에이전트 하위 메뉴
 const aihSubmenuItems: NavigationItem[] = [
-  { icon: Mic, label: 'AI 메타버스', path: '/metaverse-voice', requiresAuth: false, badge: 'NEW' },
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
   { icon: Heart, label: '라이프 허브', path: '/wellness-lifestyle', requiresAuth: false },
@@ -221,11 +220,11 @@ export const UnifiedNavigation = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant={isActive('/ai-assistant') || isActive('/observation') || isActive('/wellness-lifestyle') || isActive('/voice-emotion-analysis') || isActive('/metaverse-voice') ? "default" : "ghost"}
+                    variant={isActive('/ai-assistant') || isActive('/observation') || isActive('/wellness-lifestyle') || isActive('/voice-emotion-analysis') ? "default" : "ghost"}
                     size="sm"
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
-                    <Bot className="w-4 h-4 mr-2" />
+                    <MessageCircle className="w-4 h-4 mr-2" />
                     AI 상담
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
@@ -253,7 +252,6 @@ export const UnifiedNavigation = () => {
                             )}
                           </div>
                           <div className="text-xs text-muted-foreground">
-                            {item.label === 'AI 메타버스' && '가상공간에서 음성으로 AI와 실시간 대화'}
                             {item.label === 'AI 상담' && '24시간 AI 심리 상담 및 코칭'}
                             {item.label === '관찰일지' && '아이 행동 기록 및 패턴 분석'}
                             {item.label === '라이프 허브' && '일상 건강 및 웰니스 관리 + 음성 감정 분석'}

@@ -73,35 +73,19 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('토큰 차감에 실패했습니다.');
     }
 
-    // 사용량 추적 - 기존 레코드 확인 후 업데이트 또는 생성
-    const usageDate = new Date().toISOString().split('T')[0];
-    const { data: existingUsage } = await supabaseClient
+    // 사용량 추적
+    await supabaseClient
       .from('usage_tracking')
-      .select('count')
-      .eq('user_id', user.id)
-      .eq('feature_type', 'concern_email')
-      .eq('usage_date', usageDate)
-      .single();
-
-    if (existingUsage) {
-      // 기존 레코드가 있으면 count 증가
-      await supabaseClient
-        .from('usage_tracking')
-        .update({ count: existingUsage.count + 5 })
-        .eq('user_id', user.id)
-        .eq('feature_type', 'concern_email')
-        .eq('usage_date', usageDate);
-    } else {
-      // 새 레코드 생성
-      await supabaseClient
-        .from('usage_tracking')
-        .insert({
-          user_id: user.id,
-          feature_type: 'concern_email',
-          usage_date: usageDate,
-          count: 5
-        });
-    }
+      .insert({
+        user_id: user.id,
+        feature_type: 'concern_email',
+        usage_date: new Date().toISOString().split('T')[0],
+        count: 5
+      })
+      .onConflict(['user_id', 'feature_type', 'usage_date'])
+      .merge({
+        count: supabaseClient.raw('usage_tracking.count + 5')
+      });
 
     const { email, concernText, analysis }: ConcernReportEmailRequest = await req.json();
 

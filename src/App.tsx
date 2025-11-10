@@ -140,12 +140,6 @@ import MarketingAIAssistant from "./pages/MarketingAIAssistant";
 import CrossPromotionReward from "./pages/CrossPromotionReward";
 import InstallGuide from "./pages/InstallGuide";
 import InsurancePartnership from "./pages/InsurancePartnership";
-import MetaverseVoice from "./pages/MetaverseVoice";
-import ParentLanding from "./pages/ParentLanding";
-import AcademyLanding from "./pages/AcademyLanding";
-import DevelopmentCenterLanding from "./pages/DevelopmentCenterLanding";
-import DaycareLanding from "./pages/DaycareLanding";
-import DashboardRouter from "./pages/DashboardRouter";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -177,18 +171,10 @@ const App = () => {
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />
-          
-          {/* Target-specific Landing Pages */}
-          <Route path="/parent" element={<ParentLanding />} />
-          <Route path="/academy" element={<AcademyLanding />} />
-          <Route path="/development-center" element={<DevelopmentCenterLanding />} />
-          <Route path="/daycare" element={<DaycareLanding />} />
-          
           <Route path="/pmf-onboarding" element={<PMFOnboarding />} />
           <Route path="/design-showcase" element={<EnhancedDesignShowcase />} />
           <Route path="/auth" element={<HighlightAuth />} />
-          <Route path="/dashboard" element={<DashboardRouter />} />
-          <Route path="/dashboard-old" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/progress-tracking" element={<ProgressTracking />} />
           <Route path="/premium-assessment" element={<PremiumAssessment />} />
           <Route path="/assessment" element={<Assessment />} />
@@ -259,7 +245,6 @@ const App = () => {
             <Route path="/meditation" element={<MeditationPage />} />
             <Route path="/realtime-meditation" element={<RealtimeMeditation />} />
             <Route path="/voice-emotion-diary" element={<VoiceEmotionDiary />} />
-            <Route path="/metaverse-voice" element={<MetaverseVoice />} />
           
           <Route path="/corporate" element={<Corporate />} />
           <Route path="/community" element={<Community />} />

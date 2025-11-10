@@ -88,7 +88,7 @@ const SimplifiedCoreServices = () => {
             <span className="text-foreground">당신만의 케어 여정</span>
           </h2>
           <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            무료 체험부터 전문가 상담까지 단계별 맞춤 케어
+            무료 체험부터 전문가 상담까지, 단계별로 필요한 케어를 제공합니다
           </p>
         </div>
 

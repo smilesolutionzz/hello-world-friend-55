@@ -5190,7 +5190,6 @@ export type Database = {
           is_crisis: boolean | null
           location: string | null
           media_files: Json | null
-          organization_id: string | null
           session_name: string | null
           severity: number | null
           tags: string[] | null
@@ -5209,7 +5208,6 @@ export type Database = {
           is_crisis?: boolean | null
           location?: string | null
           media_files?: Json | null
-          organization_id?: string | null
           session_name?: string | null
           severity?: number | null
           tags?: string[] | null
@@ -5228,7 +5226,6 @@ export type Database = {
           is_crisis?: boolean | null
           location?: string | null
           media_files?: Json | null
-          organization_id?: string | null
           session_name?: string | null
           severity?: number | null
           tags?: string[] | null
@@ -5243,13 +5240,6 @@ export type Database = {
             columns: ["family_member_id"]
             isOneToOne: false
             referencedRelation: "family_members"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "observation_logs_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -5392,45 +5382,30 @@ export type Database = {
       }
       organizations: {
         Row: {
-          address: string | null
           admin_user_id: string | null
           created_at: string
-          email: string | null
           id: string
-          is_active: boolean | null
           name: string
-          org_type: Database["public"]["Enums"]["organization_type"]
-          phone: string | null
-          registration_number: string | null
           settings: Json | null
+          type: string
           updated_at: string
         }
         Insert: {
-          address?: string | null
           admin_user_id?: string | null
           created_at?: string
-          email?: string | null
           id?: string
-          is_active?: boolean | null
           name: string
-          org_type: Database["public"]["Enums"]["organization_type"]
-          phone?: string | null
-          registration_number?: string | null
           settings?: Json | null
+          type: string
           updated_at?: string
         }
         Update: {
-          address?: string | null
           admin_user_id?: string | null
           created_at?: string
-          email?: string | null
           id?: string
-          is_active?: boolean | null
           name?: string
-          org_type?: Database["public"]["Enums"]["organization_type"]
-          phone?: string | null
-          registration_number?: string | null
           settings?: Json | null
+          type?: string
           updated_at?: string
         }
         Relationships: []
@@ -5734,33 +5709,6 @@ export type Database = {
         }
         Relationships: []
       }
-      personality_analysis: {
-        Row: {
-          analysis_text: string
-          created_at: string
-          data_sources: Json | null
-          id: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          analysis_text: string
-          created_at?: string
-          data_sources?: Json | null
-          id?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          analysis_text?: string
-          created_at?: string
-          data_sources?: Json | null
-          id?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       personality_test_results: {
         Row: {
           answers: Json
@@ -5895,53 +5843,39 @@ export type Database = {
       }
       profiles: {
         Row: {
-          account_type: Database["public"]["Enums"]["account_type"] | null
           birth_date: string | null
           created_at: string
           display_name: string | null
           email: string | null
           id: string
-          organization_id: string | null
           phone: string | null
           subscription_tier: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
-          account_type?: Database["public"]["Enums"]["account_type"] | null
           birth_date?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
-          organization_id?: string | null
           phone?: string | null
           subscription_tier?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
-          account_type?: Database["public"]["Enums"]["account_type"] | null
           birth_date?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
-          organization_id?: string | null
           phone?: string | null
           subscription_tier?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       realtime_consultation_messages: {
         Row: {
@@ -6028,36 +5962,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      referral_rewards: {
-        Row: {
-          created_at: string
-          id: string
-          referee_id: string | null
-          referral_code: string | null
-          referrer_id: string
-          reward_type: string
-          tokens_awarded: number
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          referee_id?: string | null
-          referral_code?: string | null
-          referrer_id: string
-          reward_type: string
-          tokens_awarded: number
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          referee_id?: string | null
-          referral_code?: string | null
-          referrer_id?: string
-          reward_type?: string
-          tokens_awarded?: number
-        }
-        Relationships: []
       }
       referrals: {
         Row: {
@@ -7669,36 +7573,6 @@ export type Database = {
         }
         Relationships: []
       }
-      user_referrals: {
-        Row: {
-          created_at: string
-          id: string
-          referral_code: string
-          total_bonus_tokens: number | null
-          total_invites: number | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          referral_code: string
-          total_bonus_tokens?: number | null
-          total_invites?: number | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          referral_code?: string
-          total_bonus_tokens?: number | null
-          total_invites?: number | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       user_rewards: {
         Row: {
           created_at: string | null
@@ -8676,16 +8550,9 @@ export type Database = {
       }
     }
     Enums: {
-      account_type: "parent" | "teacher" | "therapist" | "admin"
       app_role: "admin" | "expert" | "user"
       consultation_session_status: "waiting" | "active" | "ended"
       message_type: "text" | "image" | "file"
-      organization_type:
-        | "academy"
-        | "daycare"
-        | "kindergarten"
-        | "development_center"
-        | "none"
       subscription_type: "free" | "token_pack" | "monthly_unlimited"
     }
     CompositeTypes: {
@@ -8814,17 +8681,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      account_type: ["parent", "teacher", "therapist", "admin"],
       app_role: ["admin", "expert", "user"],
       consultation_session_status: ["waiting", "active", "ended"],
       message_type: ["text", "image", "file"],
-      organization_type: [
-        "academy",
-        "daycare",
-        "kindergarten",
-        "development_center",
-        "none",
-      ],
       subscription_type: ["free", "token_pack", "monthly_unlimited"],
     },
   },

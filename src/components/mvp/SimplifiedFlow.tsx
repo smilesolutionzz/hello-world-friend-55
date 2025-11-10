@@ -104,7 +104,7 @@ export const SimplifiedFlow = ({ onStepComplete }: SimplifiedFlowProps) => {
             가족건강 여정을 함께 걸어보세요
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
-            무료 체험부터 전문가 상담까지 맞춤 심리 케어
+            무료 체험부터 전문가 상담까지, 당신에게 맞는 심리 케어를 선택하세요
           </p>
         </div>
 

@@ -7,20 +7,11 @@ import newFeaturesBg from '@/assets/new-features-bg.jpg';
 
 const newFeatures = [
   {
-    id: 'ai_metaverse',
-    title: '🎭 AI 메타버스 상담실',
-    description: '실시간 음성 API로 가상공간에서 실제 상담사와 자연스러운 대화하듯 구현',
-    date: '2025-11-08',
-    badge: 'NEW',
-    color: 'from-cyan-500 to-blue-500',
-    path: '/metaverse-voice'
-  },
-  {
     id: 'attachment_deep',
     title: '💞 애착 유형 심층 분석',
     description: 'OpenAI 전문가 분석 + 차트! 4가지 애착 유형 30문항 심층 분석',
     date: '2025-10-17',
-    badge: 'HOT',
+    badge: 'NEW',
     color: 'from-pink-500 to-purple-500',
     path: '/assessment/attachment-style-test'
   },
@@ -32,6 +23,15 @@ const newFeatures = [
     badge: 'HOT',
     color: 'from-purple-500 to-pink-500',
     path: '/assessment/defense-mechanism-test'
+  },
+  {
+    id: 'personality_compass',
+    title: '🧠 퍼스널리티 컴퍼스',
+    description: '48문항 심층 성격 분석! AI가 6가지 성격 차원을 분석',
+    date: '2025-10-16',
+    badge: 'HOT',
+    color: 'from-blue-500 to-cyan-500',
+    path: '/premium-assessment'
   }
 ];
 

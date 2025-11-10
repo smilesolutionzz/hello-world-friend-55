@@ -172,6 +172,13 @@ const Index = () => {
           {/* 1️⃣ Hero Section */}
           <HeroSection />
           
+          {/* 실시간 전문가 현황 */}
+          <LazyLoad className="animate-fade-in">
+            <div className="container mx-auto px-4 py-8">
+              <ExpertOnlineStatus />
+            </div>
+          </LazyLoad>
+          
           {/* 🎬 회사 소개 영상 */}
           <LazyLoad className="animate-fade-in">
             <CompanyIntroVideoSection />

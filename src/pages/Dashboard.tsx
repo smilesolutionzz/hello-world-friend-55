@@ -761,7 +761,7 @@ const DashboardNew = () => {
           {/* AI Insights Tab */}
           <TabsContent value="ai-insights" className="mt-0">
             <div className="space-y-6">
-              <PersonalityAnalysis />
+              <PersonalityAnalysis testData={[]} observations={filteredObservations} />
               <AIInsights observations={filteredObservations} />
             </div>
           </TabsContent>

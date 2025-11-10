@@ -12,6 +12,7 @@ import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import ImprovementHistory from '@/components/improvement/ImprovementHistory';
+import { PersonalityAnalysis } from '@/components/dashboard/PersonalityAnalysis';
 
 interface Profile {
   display_name: string;
@@ -270,6 +271,12 @@ export default function HighlightDashboard() {
                 </TabsList>
 
                 <TabsContent value="tests" className="space-y-6">
+                  {/* AI 성격 분석 섹션 */}
+                  <PersonalityAnalysis 
+                    testData={recentTests}
+                    observations={observations}
+                  />
+                  
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Content */}
                     <div className="lg:col-span-2">

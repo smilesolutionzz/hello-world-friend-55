@@ -42,13 +42,10 @@ const FixedCTAButton = () => {
 
       {/* Desktop Floating CTA */}
       <div className="hidden md:block fixed bottom-8 right-8 z-50">
-        <div className="mb-3 text-right space-y-2">
+        <div className="mb-3 text-right">
           <div className="text-sm text-muted-foreground font-medium">
             친구 추천 시 친구도 50, 나도 50토큰! (최대 10명) 📱
           </div>
-          <span className="inline-block px-4 py-2 bg-gradient-to-r from-[#5E8FFF] to-[#9D6CFF] text-white text-sm font-bold rounded-full shadow-lg">
-            🎉 100일 무료 + 바이럴 리워드
-          </span>
         </div>
         <Button 
           size="lg"

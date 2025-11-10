@@ -28,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import FamilyManagement from "@/components/family/FamilyManagement";
 import AssessmentHistory from "@/components/history/AssessmentHistory";
 import AIInsights from "@/components/dashboard/AIInsights";
+import { PersonalityAnalysis } from "@/components/dashboard/PersonalityAnalysis";
 import WellnessAnalysis from "@/components/dashboard/WellnessAnalysis";
 import { SisterServicesCard } from "@/components/cross-promotion/SisterServicesCard";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, CartesianGrid, Tooltip, Legend, XAxis, YAxis, LineChart, Line } from "recharts";
@@ -759,7 +760,10 @@ const DashboardNew = () => {
 
           {/* AI Insights Tab */}
           <TabsContent value="ai-insights" className="mt-0">
-            <AIInsights observations={filteredObservations} />
+            <div className="space-y-6">
+              <PersonalityAnalysis />
+              <AIInsights observations={filteredObservations} />
+            </div>
           </TabsContent>
 
           {/* Assessments Tab */}

@@ -283,3 +283,6 @@ verify_jwt = false
 
 [functions.get-realtime-token]
 verify_jwt = false
+
+[functions.personality-analyzer]
+verify_jwt = false

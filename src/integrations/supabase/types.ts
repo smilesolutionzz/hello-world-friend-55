@@ -5734,6 +5734,33 @@ export type Database = {
         }
         Relationships: []
       }
+      personality_analysis: {
+        Row: {
+          analysis_text: string
+          created_at: string
+          data_sources: Json | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis_text: string
+          created_at?: string
+          data_sources?: Json | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis_text?: string
+          created_at?: string
+          data_sources?: Json | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       personality_test_results: {
         Row: {
           answers: Json

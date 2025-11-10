@@ -13,24 +13,76 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    // 관찰 데이터를 분석용 텍스트로 변환
-    const observationSummary = observations.map((obs: any, idx: number) => {
-      const categories = Object.entries(obs.categoryScores || {})
-        .map(([cat, score]) => `${cat}: ${score}점`)
-        .join(", ");
-      return `검사 ${idx + 1}: ${categories}`;
-    }).join("\n");
+    // 데이터 통계 분석
+    const categoryStats = new Map<string, number[]>();
+    observations.forEach((obs: any) => {
+      if (obs.categoryScores) {
+        Object.entries(obs.categoryScores).forEach(([category, score]) => {
+          if (!categoryStats.has(category)) {
+            categoryStats.set(category, []);
+          }
+          categoryStats.get(category)!.push(score as number);
+        });
+      }
+    });
 
-    const systemPrompt = `당신은 심리 분석 전문가입니다. 사용자의 여러 검사 데이터를 분석하여 핵심 성격 특성을 파악해주세요.
+    // 각 카테고리별 평균, 최대, 최소, 표준편차 계산
+    const statsAnalysis = Array.from(categoryStats.entries()).map(([category, scores]) => {
+      const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+      const max = Math.max(...scores);
+      const min = Math.min(...scores);
+      const variance = scores.reduce((sum, score) => sum + Math.pow(score - avg, 2), 0) / scores.length;
+      const stdDev = Math.sqrt(variance);
+      const trend = scores.length > 1 ? (scores[scores.length - 1] - scores[0]) : 0;
+      
+      return {
+        category,
+        average: avg.toFixed(1),
+        max,
+        min,
+        stdDev: stdDev.toFixed(1),
+        trend: trend > 0 ? '상승' : trend < 0 ? '하락' : '안정',
+        consistency: stdDev < 10 ? '일관적' : stdDev < 20 ? '보통' : '변동적'
+      };
+    });
 
-분석 지침:
-1. 점수 패턴에서 일관되게 높거나 낮은 영역을 찾아 성격 특성을 도출
-2. 시간에 따른 변화 추이가 있다면 성장 방향성 파악
-3. 각 영역 간 균형도를 고려하여 전반적 성격 유형 설명
-4. 긍정적이고 건설적인 톤으로 작성
-5. 3-4가지 핵심 특성만 간결하게 제시 (각 특성당 20-30자)`;
+    // 분석 데이터를 구조화된 형태로 정리
+    const dataAnalysis = {
+      총검사수: observations.length,
+      영역별통계: statsAnalysis,
+      최고영역: statsAnalysis.reduce((max, curr) => 
+        parseFloat(curr.average) > parseFloat(max.average) ? curr : max
+      ),
+      최저영역: statsAnalysis.reduce((min, curr) => 
+        parseFloat(curr.average) < parseFloat(min.average) ? curr : min
+      ),
+      가장일관된영역: statsAnalysis.reduce((min, curr) => 
+        parseFloat(curr.stdDev) < parseFloat(min.stdDev) ? curr : min
+      )
+    };
 
-    const userPrompt = `다음은 사용자의 검사 기록입니다:\n\n${observationSummary}\n\n이 데이터를 바탕으로 사용자의 핵심 성격 특성 3-4가지를 분석해주세요.`;
+    const systemPrompt = `당신은 데이터 기반 심리 분석 전문가입니다. 통계 데이터를 바탕으로 객관적이고 정확한 성격 특성을 도출합니다.
+
+분석 원칙:
+1. 제공된 통계 수치(평균, 표준편차, 추세)를 근거로 분석
+2. 점수 패턴의 일관성과 변동성을 고려
+3. 영역 간 점수 차이로 강점과 약점 파악
+4. 시간에 따른 변화 추세 반영
+5. 데이터 기반의 객관적 표현 사용 (예: "정서 영역 평균 85점으로 상위권", "인지 영역 표준편차 5점으로 매우 일관적")`;
+
+    const userPrompt = `다음은 ${dataAnalysis.총검사수}회의 검사 데이터 분석 결과입니다:
+
+영역별 통계:
+${dataAnalysis.영역별통계.map(stat => 
+  `- ${stat.category}: 평균 ${stat.average}점, 최고 ${stat.max}점, 최저 ${stat.min}점, 표준편차 ${stat.stdDev}, 추세 ${stat.trend}, 일관성 ${stat.consistency}`
+).join('\n')}
+
+주요 특징:
+- 가장 높은 영역: ${dataAnalysis.최고영역.category} (평균 ${dataAnalysis.최고영역.average}점)
+- 가장 낮은 영역: ${dataAnalysis.최저영역.category} (평균 ${dataAnalysis.최저영역.average}점)
+- 가장 일관된 영역: ${dataAnalysis.가장일관된영역.category} (표준편차 ${dataAnalysis.가장일관된영역.stdDev})
+
+이 데이터를 바탕으로 사용자의 핵심 성격 특성 3-4가지를 통계적 근거와 함께 분석해주세요.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

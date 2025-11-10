@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import { 
   Users, 
   Plus, 
@@ -21,7 +22,8 @@ import {
   Eye,
   Download,
   Activity,
-  Target
+  Target,
+  Sparkles
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -56,12 +58,25 @@ interface Observation {
   categoryScores?: { [key: string]: number };
 }
 
+interface PersonalityTrait {
+  title: string;
+  description: string;
+  score: number;
+}
+
+interface PersonalityAnalysis {
+  traits: PersonalityTrait[];
+  summary: string;
+}
+
 const DashboardNew = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [personalityAnalysis, setPersonalityAnalysis] = useState<PersonalityAnalysis | null>(null);
+  const [analyzingPersonality, setAnalyzingPersonality] = useState(false);
   const [dateRange, setDateRange] = useState({
     start: new Date(new Date().setMonth(new Date().getMonth() - 6)),
     end: new Date()
@@ -161,6 +176,57 @@ const DashboardNew = () => {
     await supabase.auth.signOut();
     navigate('/');
   };
+
+  // 성격 분석 실행
+  const analyzePersonality = async () => {
+    const validObservations = observations.filter(obs => 
+      obs.score_overall > 0 || (obs.categoryScores && Object.keys(obs.categoryScores).length > 0)
+    );
+
+    if (validObservations.length === 0) {
+      toast({
+        title: "분석 불가",
+        description: "검사 데이터가 부족합니다. 2개 이상의 검사를 완료해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setAnalyzingPersonality(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-personality', {
+        body: { observations: validObservations }
+      });
+
+      if (error) throw error;
+
+      setPersonalityAnalysis(data);
+      toast({
+        title: "성격 분석 완료",
+        description: "AI가 당신의 성격 특성을 분석했습니다.",
+      });
+    } catch (error: any) {
+      console.error('Personality analysis error:', error);
+      toast({
+        title: "분석 실패",
+        description: error.message || "성격 분석에 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setAnalyzingPersonality(false);
+    }
+  };
+
+  // 자동 분석 (데이터가 2개 이상일 때)
+  useEffect(() => {
+    const validObservations = observations.filter(obs => 
+      obs.score_overall > 0 || (obs.categoryScores && Object.keys(obs.categoryScores).length > 0)
+    );
+    
+    if (validObservations.length >= 2 && !personalityAnalysis && !analyzingPersonality) {
+      analyzePersonality();
+    }
+  }, [observations.length]);
 
   const filteredObservations = observations.filter(obs => {
     const obsDate = new Date(obs.created_at);
@@ -476,46 +542,63 @@ const DashboardNew = () => {
 
               <Card className="bg-[#0F1823] border-slate-800">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-white">영역별 평균 점수</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg font-medium text-white flex items-center gap-2">
+                        <Brain className="w-5 h-5 text-purple-400" />
+                        AI 성격 분석
+                      </CardTitle>
+                      <p className="text-sm text-slate-400 mt-1">
+                        검사 데이터로 분석한 당신의 성격 특성
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={analyzePersonality}
+                      disabled={analyzingPersonality || observations.filter(obs => 
+                        obs.score_overall > 0 || (obs.categoryScores && Object.keys(obs.categoryScores).length > 0)
+                      ).length < 2}
+                      className="border-slate-700"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      {analyzingPersonality ? "분석 중..." : "재분석"}
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  {distributionData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={300}>
-                      <PieChart>
-                        <Pie
-                          data={distributionData}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={({ name, value }) => `${name}\n${value}점`}
-                          outerRadius={100}
-                          fill="#8884d8"
-                          dataKey="value"
-                          paddingAngle={2}
-                        >
-                          {distributionData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: '#0F1419', 
-                            border: '1px solid #334155',
-                            borderRadius: '8px'
-                          }}
-                          labelStyle={{ color: '#fff' }}
-                        />
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <div className="h-[300px] flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3">
-                          <BarChart3 className="w-8 h-8 text-slate-600" />
-                        </div>
-                        <p className="text-sm text-slate-500">영역별 점수 데이터가 없습니다</p>
+                  {analyzingPersonality ? (
+                    <div className="text-center py-8">
+                      <Brain className="w-12 h-12 text-purple-400 mx-auto mb-4 animate-pulse" />
+                      <p className="text-slate-300 mb-2">AI가 성격을 분석하는 중...</p>
+                      <p className="text-sm text-slate-500">잠시만 기다려주세요</p>
+                    </div>
+                  ) : personalityAnalysis ? (
+                    <div className="space-y-6">
+                      {/* 요약 */}
+                      <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-purple-800/30 rounded-lg p-4">
+                        <p className="text-slate-200 leading-relaxed">{personalityAnalysis.summary}</p>
                       </div>
+
+                      {/* 특성 카드들 */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {personalityAnalysis.traits.map((trait, index) => (
+                          <div key={index} className="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-3">
+                              <h4 className="text-white font-semibold">{trait.title}</h4>
+                              <span className="text-sm text-purple-400 font-medium">{trait.score}%</span>
+                            </div>
+                            <p className="text-sm text-slate-400 mb-3">{trait.description}</p>
+                            <Progress value={trait.score} className="h-2" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Brain className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                      <p className="text-slate-400 mb-2">검사 데이터가 부족합니다</p>
+                      <p className="text-sm text-slate-500">2개 이상의 검사를 완료하면 성격 분석이 가능합니다</p>
                     </div>
                   )}
                 </CardContent>

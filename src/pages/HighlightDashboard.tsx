@@ -13,6 +13,9 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import ImprovementHistory from '@/components/improvement/ImprovementHistory';
 import { PersonalityAnalysis } from '@/components/dashboard/PersonalityAnalysis';
+import { DashboardStats } from '@/components/dashboard/DashboardStats';
+import { DashboardCharts } from '@/components/dashboard/DashboardCharts';
+import { GoalTracker } from '@/components/dashboard/GoalTracker';
 
 interface Profile {
   display_name: string;
@@ -271,6 +274,21 @@ export default function HighlightDashboard() {
                 </TabsList>
 
                 <TabsContent value="tests" className="space-y-6">
+                  {/* 통계 카드 섹션 */}
+                  <DashboardStats 
+                    recentTests={recentTests}
+                    observations={observations}
+                  />
+                  
+                  {/* 목표 추적 섹션 */}
+                  <GoalTracker />
+                  
+                  {/* 차트 섹션 */}
+                  <DashboardCharts 
+                    recentTests={recentTests}
+                    observations={observations}
+                  />
+                  
                   {/* AI 성격 분석 섹션 */}
                   <PersonalityAnalysis 
                     testData={recentTests}

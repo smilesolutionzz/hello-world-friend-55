@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2 } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 
@@ -12,6 +12,7 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  responseId?: string;
 }
 
 const roomOptions = [
@@ -36,37 +37,60 @@ const MetaverseVoiceCounseling = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [showSubtitles, setShowSubtitles] = useState(true);
+  const [currentResponseId, setCurrentResponseId] = useState<string | null>(null);
   const chatRef = useRef<RealtimeChat | null>(null);
 
   const handleMessage = (event: any) => {
     console.log('Received event:', event.type);
     
-    if (event.type === 'response.audio_transcript.delta') {
+    // 새 응답 시작 감지
+    if (event.type === 'response.created') {
+      setCurrentResponseId(event.response?.id || Date.now().toString());
+      setIsSpeaking(true);
+    }
+    
+    // AI 응답 텍스트 (delta는 변화분만 포함)
+    else if (event.type === 'response.audio_transcript.delta') {
+      const responseId = event.response_id || currentResponseId;
+      
       setMessages(prev => {
         const newMessages = [...prev];
         const lastMessage = newMessages[newMessages.length - 1];
         
-        if (lastMessage && lastMessage.role === 'assistant') {
+        // 같은 응답 ID의 마지막 메시지에만 추가
+        if (lastMessage && lastMessage.role === 'assistant' && lastMessage.responseId === responseId) {
           lastMessage.content += event.delta;
         } else {
+          // 새 AI 응답 메시지 생성
           newMessages.push({
             role: 'assistant',
             content: event.delta,
-            timestamp: new Date()
+            timestamp: new Date(),
+            responseId
           });
         }
         return newMessages;
       });
-    } else if (event.type === 'conversation.item.input_audio_transcription.completed') {
+    }
+    
+    // 사용자 음성 인식 완료
+    else if (event.type === 'conversation.item.input_audio_transcription.completed') {
       setMessages(prev => [...prev, {
         role: 'user',
         content: event.transcript,
         timestamp: new Date()
       }]);
-    } else if (event.type === 'response.audio.delta') {
+    }
+    
+    // AI 음성 재생 중
+    else if (event.type === 'response.audio.delta') {
       setIsSpeaking(true);
-    } else if (event.type === 'response.audio.done') {
+    }
+    
+    // AI 응답 완료
+    else if (event.type === 'response.done') {
       setIsSpeaking(false);
+      setCurrentResponseId(null);
     }
   };
 
@@ -106,6 +130,70 @@ const MetaverseVoiceCounseling = () => {
     toast({
       title: "상담 종료",
       description: "대화가 종료되었습니다",
+    });
+  };
+
+  // 대화 내용 텍스트로 변환
+  const getConversationText = () => {
+    const header = `AI 메타버스 상담 기록\n날짜: ${new Date().toLocaleString('ko-KR')}\n이름: ${userName}\n${consultTopic ? `주제: ${consultTopic}\n` : ''}\n${'='.repeat(50)}\n\n`;
+    
+    const conversation = messages.map((msg) => {
+      const time = msg.timestamp.toLocaleTimeString('ko-KR');
+      const speaker = msg.role === 'user' ? userName : 'AI 상담사';
+      return `[${time}] ${speaker}:\n${msg.content}\n`;
+    }).join('\n');
+    
+    return header + conversation;
+  };
+
+  // 텍스트 다운로드
+  const downloadConversation = () => {
+    const text = getConversationText();
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `AI상담_${new Date().toISOString().slice(0, 10)}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "다운로드 완료",
+      description: "대화 내용이 저장되었습니다",
+    });
+  };
+
+  // 클립보드 복사
+  const copyToClipboard = async () => {
+    try {
+      const text = getConversationText();
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "복사 완료",
+        description: "대화 내용이 클립보드에 복사되었습니다",
+      });
+    } catch (error) {
+      toast({
+        title: "복사 실패",
+        description: "클립보드 복사에 실패했습니다",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // 카카오톡 공유
+  const shareToKakao = () => {
+    const text = getConversationText();
+    const encodedText = encodeURIComponent(text);
+    const kakaoUrl = `https://open.kakao.com/me`;
+    
+    // 텍스트를 클립보드에 복사하고 카카오톡 열기
+    navigator.clipboard.writeText(text).then(() => {
+      window.open(kakaoUrl, '_blank');
+      toast({
+        title: "카카오톡으로 이동",
+        description: "대화 내용이 복사되었습니다. 카카오톡에서 붙여넣기 하세요",
+      });
     });
   };
 
@@ -268,16 +356,47 @@ const MetaverseVoiceCounseling = () => {
             {/* Subtitles Toggle + Messages */}
             {messages.length > 0 && (
               <div className="mb-6">
-                <div className="flex justify-end mb-2">
+                <div className="flex justify-between items-center mb-2">
                   <Button variant="ghost" size="sm" onClick={() => setShowSubtitles((v) => !v)}>
                     {showSubtitles ? '자막 숨기기' : '자막 표시'}
                   </Button>
+                  
+                  {/* 대화 저장/공유 버튼 */}
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={downloadConversation}
+                      className="gap-2"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span className="hidden sm:inline">다운로드</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={copyToClipboard}
+                      className="gap-2"
+                    >
+                      <Copy className="w-4 h-4" />
+                      <span className="hidden sm:inline">복사</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={shareToKakao}
+                      className="gap-2"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      <span className="hidden sm:inline">카톡공유</span>
+                    </Button>
+                  </div>
                 </div>
                 {showSubtitles && (
                   <div className="max-h-64 overflow-y-auto space-y-3">
                     {messages.map((msg, idx) => (
                       <div
-                        key={idx}
+                        key={`${msg.responseId || ''}-${idx}`}
                         className={`p-3 rounded-lg ${
                           msg.role === 'user'
                             ? 'bg-primary/10 ml-8'

@@ -72,8 +72,8 @@ const dataSubmenuItems = [
 
 // AIH 에이전트 하위 메뉴
 const aihSubmenuItems: NavigationItem[] = [
-  { icon: Mic, label: 'AI 메타버스', path: '/metaverse-voice', requiresAuth: false, badge: 'NEW' },
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false },
+  { icon: Mic, label: 'AI 메타버스', path: '/metaverse-voice', requiresAuth: false, badge: 'NEW' },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
   { icon: Heart, label: '라이프 허브', path: '/wellness-lifestyle', requiresAuth: false },
 ];

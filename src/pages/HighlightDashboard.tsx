@@ -16,6 +16,7 @@ import { PersonalityAnalysis } from '@/components/dashboard/PersonalityAnalysis'
 import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { DashboardCharts } from '@/components/dashboard/DashboardCharts';
 import { GoalTracker } from '@/components/dashboard/GoalTracker';
+import { ThreeBackground } from '@/components/dashboard/ThreeBackground';
 
 interface Profile {
   display_name: string;
@@ -209,22 +210,23 @@ export default function HighlightDashboard() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-slate-950">
+      <ThreeBackground />
+      <div className="min-h-screen flex w-full">
         <AppSidebar />
         
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col relative">
           {/* Header */}
-          <div className="border-b border-slate-800 bg-slate-900/95 backdrop-blur-sm">
+          <div className="border-b border-purple-500/20 bg-gradient-to-r from-slate-950/95 via-purple-950/95 to-slate-950/95 backdrop-blur-xl shadow-lg shadow-purple-500/10">
             <div className="container mx-auto px-4 py-4 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="mr-2" />
-                <h1 className="text-2xl font-bold text-white">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent animate-pulse">
                   개인 대시보드
                 </h1>
                 {profile && (
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-slate-400" />
-                    <span className="text-sm font-medium text-slate-200">{profile.display_name || '사용자'}</span>
+                    <User className="w-4 h-4 text-purple-400" />
+                    <span className="text-sm font-medium text-purple-200">{profile.display_name || '사용자'}</span>
                     <Badge variant={profile.subscription_tier === 'premium' ? 'default' : 'secondary'}>
                       {profile.subscription_tier === 'premium' ? (
                         <>
@@ -244,6 +246,7 @@ export default function HighlightDashboard() {
                   variant="outline" 
                   size="sm"
                   onClick={() => navigate('/subscription')}
+                  className="border-purple-500/30 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/50 backdrop-blur-sm"
                 >
                   구독 관리
                 </Button>
@@ -251,6 +254,7 @@ export default function HighlightDashboard() {
                   variant="ghost" 
                   size="sm"
                   onClick={handleSignOut}
+                  className="text-purple-300 hover:bg-purple-500/20"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   로그아웃
@@ -259,15 +263,21 @@ export default function HighlightDashboard() {
             </div>
           </div>
 
-          <main className="flex-1 bg-slate-950">
+          <main className="flex-1 relative">
             <div className="container mx-auto px-4 py-8">
               <Tabs defaultValue="tests" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-2 max-w-md">
-                  <TabsTrigger value="tests" className="flex items-center gap-2">
+                <TabsList className="grid w-full grid-cols-2 max-w-md bg-slate-900/80 backdrop-blur-xl border border-purple-500/20 shadow-lg shadow-purple-500/10">
+                  <TabsTrigger 
+                    value="tests" 
+                    className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+                  >
                     <History className="w-4 h-4" />
                     검사 시작
                   </TabsTrigger>
-                  <TabsTrigger value="improvement" className="flex items-center gap-2">
+                  <TabsTrigger 
+                    value="improvement" 
+                    className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white"
+                  >
                     <TrendingUp className="w-4 h-4" />
                     개선 이력
                   </TabsTrigger>
@@ -304,13 +314,13 @@ export default function HighlightDashboard() {
                     {/* Sidebar */}
                     <div className="space-y-6">
                       {/* Recent Tests */}
-                      <Card className="bg-slate-900 border-slate-800">
+                      <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
                         <CardHeader>
-                          <CardTitle className="flex items-center gap-2 text-white">
-                            <History className="w-5 h-5" />
+                          <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                            <History className="w-5 h-5 text-purple-400" />
                             최근 검사
                           </CardTitle>
-                          <CardDescription className="text-slate-400">
+                          <CardDescription className="text-purple-300/70">
                             최근 완료한 검사 결과를 확인하세요
                           </CardDescription>
                         </CardHeader>
@@ -320,7 +330,7 @@ export default function HighlightDashboard() {
                               {recentTests.map((test) => (
                                 <div 
                                   key={test.id}
-                                  className="p-3 border border-slate-700 rounded-lg cursor-pointer hover:bg-slate-800/50 transition-colors"
+                                  className="p-3 border border-purple-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 hover:border-purple-400/40 hover:shadow-lg hover:shadow-purple-500/20"
                                   onClick={() => {
                                     if (test.test_types.name === '프리미엄 검사') {
                                       navigate(`/assessment-detail/${test.id}`);
@@ -331,12 +341,12 @@ export default function HighlightDashboard() {
                                 >
                                   <div className="flex justify-between items-start">
                                     <div>
-                                      <p className="font-medium text-sm text-slate-200">{test.test_types.name}</p>
-                                      <p className="text-xs text-slate-500">
+                                      <p className="font-medium text-sm bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">{test.test_types.name}</p>
+                                      <p className="text-xs text-purple-400/70">
                                         {new Date(test.completed_at).toLocaleDateString('ko-KR')}
                                       </p>
                                     </div>
-                                    <Badge variant="outline" className="text-xs border-slate-600 text-slate-300">
+                                    <Badge variant="outline" className="text-xs border-purple-500/30 bg-purple-500/10 text-purple-300">
                                       {test.scores.total_score || 0}점
                                     </Badge>
                                   </div>
@@ -344,7 +354,7 @@ export default function HighlightDashboard() {
                               ))}
                             </div>
                           ) : (
-                            <p className="text-sm text-slate-500 text-center py-4">
+                            <p className="text-sm text-purple-400/60 text-center py-4">
                               아직 완료한 검사가 없습니다
                             </p>
                           )}
@@ -353,22 +363,22 @@ export default function HighlightDashboard() {
 
                       {/* Subscription Info */}
                       {profile?.subscription_tier === 'free' && (
-                        <Card className="bg-slate-900 border-slate-800">
+                        <Card className="bg-gradient-to-br from-amber-900/30 to-orange-900/30 backdrop-blur-xl border border-amber-500/30 hover:shadow-lg hover:shadow-amber-500/20 transition-all duration-300">
                           <CardHeader>
-                            <CardTitle className="text-white">프리미엄 업그레이드</CardTitle>
-                            <CardDescription className="text-slate-400">
+                            <CardTitle className="bg-gradient-to-r from-amber-300 to-orange-300 bg-clip-text text-transparent">프리미엄 업그레이드</CardTitle>
+                            <CardDescription className="text-amber-300/70">
                               더 많은 기능을 이용해보세요
                             </CardDescription>
                           </CardHeader>
                           <CardContent>
-                            <ul className="text-sm space-y-2 mb-4 text-slate-300">
+                            <ul className="text-sm space-y-2 mb-4 text-amber-200/90">
                               <li>• 무제한 검사</li>
                               <li>• 전문가 피드백</li>
                               <li>• PDF 리포트 다운로드</li>
                               <li>• 카카오 알림톡</li>
                             </ul>
                             <Button 
-                              className="w-full"
+                              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-500/30"
                               onClick={() => navigate('/subscription')}
                             >
                               <Crown className="w-4 h-4 mr-2" />

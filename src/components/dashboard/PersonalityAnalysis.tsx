@@ -56,13 +56,13 @@ export function PersonalityAnalysis({ testData, observations }: PersonalityAnaly
   };
 
   return (
-    <Card className="bg-slate-900 border-slate-800">
+    <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-white">
+        <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
           <Brain className="w-5 h-5 text-purple-400" />
           AI 성격 분석
         </CardTitle>
-        <CardDescription className="text-slate-400">
+        <CardDescription className="text-purple-300/70">
           검사 데이터를 기반으로 한 객관적인 성격 분석
         </CardDescription>
       </CardHeader>
@@ -78,7 +78,7 @@ export function PersonalityAnalysis({ testData, observations }: PersonalityAnaly
             <Button 
               onClick={generateAnalysis}
               disabled={loading || (testData.length === 0 && observations.length === 0)}
-              className="bg-purple-600 hover:bg-purple-700"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg shadow-purple-500/30"
             >
               {loading ? (
                 <>

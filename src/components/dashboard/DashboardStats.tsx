@@ -73,19 +73,22 @@ export function DashboardStats({ recentTests, observations }: DashboardStatsProp
       {stats.map((stat, index) => {
         const Icon = stat.icon;
         return (
-          <Card key={index} className="bg-slate-900 border-slate-800">
+          <Card 
+            key={index} 
+            className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 hover:-translate-y-1"
+          >
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-slate-400">{stat.title}</span>
-                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+                <span className="text-xs text-purple-300/80">{stat.title}</span>
+                <div className={`p-2 rounded-lg ${stat.bgColor} backdrop-blur-sm shadow-lg`}>
                   <Icon className={`w-4 h-4 ${stat.color}`} />
                 </div>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-bold text-white">
+                <span className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
                   {stat.value}
                 </span>
-                <span className="text-sm text-slate-400">{stat.suffix}</span>
+                <span className="text-sm text-purple-300/70">{stat.suffix}</span>
               </div>
             </CardContent>
           </Card>

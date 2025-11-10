@@ -61,12 +61,12 @@ export function DashboardCharts({ recentTests, observations }: DashboardChartsPr
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* 월별 검사 추이 */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
         <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
+          <CardTitle className="bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent flex items-center gap-2">
             월별 검사 추이 (최근 3개월)
           </CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-purple-300/70">
             월별 검사 횟수 통계
           </CardDescription>
         </CardHeader>
@@ -108,13 +108,13 @@ export function DashboardCharts({ recentTests, observations }: DashboardChartsPr
       </Card>
 
       {/* 점수 추이 */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
         <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
+          <CardTitle className="bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-green-400" />
             점수 추이 (최근 10회)
           </CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-purple-300/70">
             시간에 따른 점수 변화
           </CardDescription>
         </CardHeader>

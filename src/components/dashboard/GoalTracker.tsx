@@ -217,15 +217,15 @@ export function GoalTracker() {
   const completedGoals = goals.filter(g => g.status === 'completed');
 
   return (
-    <Card className="bg-slate-900 border-slate-800">
+    <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent flex items-center gap-2">
               <Target className="w-5 h-5 text-blue-400" />
               발달 목표 추적
             </CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardDescription className="text-purple-300/70">
               목표를 설정하고 진행 상황을 추적하세요
             </CardDescription>
           </div>
@@ -234,17 +234,17 @@ export function GoalTracker() {
             if (!open) resetForm();
           }}>
             <DialogTrigger asChild>
-              <Button className="bg-blue-600 hover:bg-blue-700">
+              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/30">
                 <Plus className="w-4 h-4 mr-2" />
                 목표 추가
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-800">
+            <DialogContent className="bg-gradient-to-br from-slate-900 to-slate-950 border-purple-500/30 backdrop-blur-xl">
               <DialogHeader>
-                <DialogTitle className="text-white">
+                <DialogTitle className="bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
                   {editingGoal ? '목표 수정' : '새 목표 추가'}
                 </DialogTitle>
-                <DialogDescription className="text-slate-400">
+                <DialogDescription className="text-purple-300/70">
                   발달 목표를 설정하고 추적하세요
                 </DialogDescription>
               </DialogHeader>
@@ -336,27 +336,27 @@ export function GoalTracker() {
         ) : goals.length === 0 ? (
           <div className="text-center py-8">
             <Target className="w-12 h-12 mx-auto mb-4 text-slate-600" />
-            <p className="text-slate-400 mb-2">아직 설정한 목표가 없습니다</p>
-            <p className="text-sm text-slate-500">첫 목표를 추가해보세요!</p>
+            <p className="text-sm text-purple-400/60 mb-2">아직 설정한 목표가 없습니다</p>
+            <p className="text-sm text-purple-300/50">첫 목표를 추가해보세요!</p>
           </div>
         ) : (
           <div className="space-y-6">
             {activeGoals.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-slate-300 mb-3">진행 중인 목표</h3>
+                <h3 className="text-sm font-semibold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent mb-3">진행 중인 목표</h3>
                 <div className="space-y-4">
                   {activeGoals.map((goal) => {
                     const progress = (goal.current_value / goal.target_value) * 100;
                     return (
-                      <div key={goal.id} className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
+                      <div key={goal.id} className="p-4 bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-purple-500/20 rounded-lg hover:border-purple-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
-                            <h4 className="font-medium text-white mb-1">{goal.title}</h4>
+                            <h4 className="font-medium bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent mb-1">{goal.title}</h4>
                             {goal.description && (
-                              <p className="text-sm text-slate-400 mb-2">{goal.description}</p>
+                              <p className="text-sm text-purple-300/70 mb-2">{goal.description}</p>
                             )}
-                            <div className="flex items-center gap-3 text-xs text-slate-500">
-                              <span className="px-2 py-1 bg-slate-700 rounded">{goal.category}</span>
+                            <div className="flex items-center gap-3 text-xs text-purple-400/60">
+                              <span className="px-2 py-1 bg-purple-500/20 border border-purple-500/30 rounded">{goal.category}</span>
                               {goal.deadline && (
                                 <span className="flex items-center gap-1">
                                   <Calendar className="w-3 h-3" />
@@ -370,7 +370,7 @@ export function GoalTracker() {
                               size="sm"
                               variant="ghost"
                               onClick={() => toggleStatus(goal)}
-                              className="text-slate-400 hover:text-slate-300"
+                              className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/20"
                             >
                               <Pause className="w-4 h-4" />
                             </Button>
@@ -378,7 +378,7 @@ export function GoalTracker() {
                               size="sm"
                               variant="ghost"
                               onClick={() => openEditDialog(goal)}
-                              className="text-slate-400 hover:text-slate-300"
+                              className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/20"
                             >
                               <Edit className="w-4 h-4" />
                             </Button>
@@ -386,7 +386,7 @@ export function GoalTracker() {
                               size="sm"
                               variant="ghost"
                               onClick={() => deleteGoal(goal.id)}
-                              className="text-red-400 hover:text-red-300"
+                              className="text-red-400 hover:text-red-300 hover:bg-red-500/20"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
@@ -394,7 +394,7 @@ export function GoalTracker() {
                         </div>
                         <div className="space-y-2">
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-slate-400">
+                            <span className="text-purple-300/70">
                               {goal.current_value} / {goal.target_value}
                             </span>
                             <span className="font-medium text-blue-400">{progress.toFixed(0)}%</span>
@@ -406,7 +406,7 @@ export function GoalTracker() {
                               variant="outline"
                               onClick={() => updateProgress(goal.id, Math.max(0, goal.current_value - 1))}
                               disabled={goal.current_value === 0}
-                              className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                              className="border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
                             >
                               -
                             </Button>
@@ -415,7 +415,7 @@ export function GoalTracker() {
                               variant="outline"
                               onClick={() => updateProgress(goal.id, Math.min(goal.target_value, goal.current_value + 1))}
                               disabled={goal.current_value >= goal.target_value}
-                              className="border-slate-700 text-slate-300 hover:bg-slate-800 flex-1"
+                              className="border-purple-500/30 text-purple-300 hover:bg-purple-500/20 flex-1"
                             >
                               진행도 +1
                             </Button>
@@ -423,7 +423,7 @@ export function GoalTracker() {
                               size="sm"
                               variant="outline"
                               onClick={() => updateProgress(goal.id, goal.current_value + 1)}
-                              className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                              className="border-purple-500/30 text-purple-300 hover:bg-purple-500/20"
                             >
                               +
                             </Button>
@@ -438,17 +438,17 @@ export function GoalTracker() {
 
             {completedGoals.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold bg-gradient-to-r from-green-300 to-emerald-300 bg-clip-text text-transparent mb-3 flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-green-400" />
                   완료된 목표
                 </h3>
                 <div className="space-y-2">
                   {completedGoals.map((goal) => (
-                    <div key={goal.id} className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                    <div key={goal.id} className="p-3 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-lg hover:border-green-400/40 transition-all duration-300">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h4 className="font-medium text-green-400">{goal.title}</h4>
-                          <p className="text-xs text-slate-500 mt-1">
+                          <h4 className="font-medium text-green-300">{goal.title}</h4>
+                          <p className="text-xs text-green-400/60 mt-1">
                             {goal.current_value} / {goal.target_value} 달성
                           </p>
                         </div>
@@ -456,7 +456,7 @@ export function GoalTracker() {
                           size="sm"
                           variant="ghost"
                           onClick={() => deleteGoal(goal.id)}
-                          className="text-slate-400 hover:text-slate-300"
+                          className="text-green-400/60 hover:text-green-300 hover:bg-green-500/20"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

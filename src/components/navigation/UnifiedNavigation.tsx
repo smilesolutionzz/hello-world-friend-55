@@ -73,6 +73,7 @@ const dataSubmenuItems = [
 // AIH 에이전트 하위 메뉴
 const aihSubmenuItems: NavigationItem[] = [
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false },
+  { icon: Mic, label: 'AI 음성 상담', path: '/voice-counseling', requiresAuth: false, badge: 'NEW' },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
   { icon: Heart, label: '라이프 허브', path: '/wellness-lifestyle', requiresAuth: false },
 ];
@@ -220,7 +221,7 @@ export const UnifiedNavigation = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant={isActive('/ai-assistant') || isActive('/observation') || isActive('/wellness-lifestyle') || isActive('/voice-emotion-analysis') ? "default" : "ghost"}
+                    variant={isActive('/ai-assistant') || isActive('/observation') || isActive('/wellness-lifestyle') || isActive('/voice-emotion-analysis') || isActive('/voice-counseling') ? "default" : "ghost"}
                     size="sm"
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
@@ -253,6 +254,7 @@ export const UnifiedNavigation = () => {
                           </div>
                           <div className="text-xs text-muted-foreground">
                             {item.label === 'AI 상담' && '24시간 AI 심리 상담 및 코칭'}
+                            {item.label === 'AI 음성 상담' && '실시간 음성으로 AI와 대화하기'}
                             {item.label === '관찰일지' && '아이 행동 기록 및 패턴 분석'}
                             {item.label === '라이프 허브' && '일상 건강 및 웰니스 관리 + 음성 감정 분석'}
                           </div>

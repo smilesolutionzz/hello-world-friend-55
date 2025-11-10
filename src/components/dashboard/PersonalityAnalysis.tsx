@@ -9,6 +9,8 @@ export const PersonalityAnalysis = () => {
   const [analysis, setAnalysis] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [lastAnalysis, setLastAnalysis] = useState<any>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [dataCounts, setDataCounts] = useState<any>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -65,18 +67,31 @@ export const PersonalityAnalysis = () => {
       }
 
       if (data.error) {
-        toast({
-          title: "오류 발생",
-          description: data.error,
-          variant: "destructive"
-        });
-        if (data.analysis) {
+        if (data.error === 'insufficient_data') {
           setAnalysis(data.analysis);
+          setSuggestions(data.suggestions || []);
+          setDataCounts(data.dataCounts);
+          toast({
+            title: "데이터 부족",
+            description: data.message,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "오류 발생",
+            description: data.error,
+            variant: "destructive"
+          });
+          if (data.analysis) {
+            setAnalysis(data.analysis);
+          }
         }
         return;
       }
 
       setAnalysis(data.analysis);
+      setSuggestions([]);
+      setDataCounts(null);
       toast({
         title: "분석 완료!",
         description: "너에 대한 종합 분석이 완료됐어 👀"
@@ -197,8 +212,30 @@ export const PersonalityAnalysis = () => {
                 {formatAnalysisText(analysis)}
               </p>
             </div>
+
+            {dataCounts && suggestions.length > 0 && (
+              <div className="mt-6 p-6 bg-muted/50 rounded-lg border-2 border-primary/20">
+                <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  더 정확한 분석을 위한 추천
+                </h4>
+                <div className="mb-4 text-sm text-muted-foreground">
+                  현재 데이터: {dataCounts.total}개 / 권장: {dataCounts.required}개 이상
+                </div>
+                <div className="space-y-2">
+                  {suggestions.map((suggestion, idx) => (
+                    <div 
+                      key={idx}
+                      className="p-3 bg-background rounded-lg border border-border hover:border-primary/50 transition-colors"
+                    >
+                      <p className="text-sm text-foreground">{suggestion}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             
-            {lastAnalysis?.data_sources && (
+            {lastAnalysis?.data_sources && !dataCounts && (
               <div className="mt-6 pt-6 border-t border-border">
                 <p className="text-xs text-muted-foreground text-center">
                   📊 이 분석은 검사 {lastAnalysis.data_sources.assessments_count}건, 

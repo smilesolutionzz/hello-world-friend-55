@@ -35,11 +35,52 @@ serve(async (req) => {
     const consultations = consultationsRes.data || [];
     const observations = observationsRes.data || [];
 
+    const assessmentsCount = assessments.length;
+    const consultationsCount = consultations.length;
+    const observationsCount = observations.length;
+    const totalDataPoints = assessmentsCount + consultationsCount + observationsCount;
+
     console.log('Fetched data:', { 
-      assessments: assessments.length, 
-      consultations: consultations.length,
-      observations: observations.length 
+      assessments: assessmentsCount, 
+      consultations: consultationsCount,
+      observations: observationsCount,
+      total: totalDataPoints
     });
+
+    // 최소 데이터 요구사항 체크 (최소 2개 이상)
+    if (totalDataPoints < 2) {
+      const suggestions = [];
+      
+      if (assessmentsCount === 0) {
+        suggestions.push("📝 MBTI 성격유형검사 - 기본 성향 파악");
+        suggestions.push("🎨 다중지능검사 - 강점 영역 발견");
+      }
+      
+      if (consultationsCount === 0 && observationsCount === 0) {
+        suggestions.push("💬 전문가 상담 - 심층 분석");
+        suggestions.push("👀 행동 관찰 기록 - 일상 패턴 파악");
+      }
+
+      return new Response(
+        JSON.stringify({
+          error: 'insufficient_data',
+          message: '분석하기에 데이터가 부족해!',
+          dataCounts: {
+            assessments: assessmentsCount,
+            consultations: consultationsCount,
+            observations: observationsCount,
+            total: totalDataPoints,
+            required: 2
+          },
+          suggestions: suggestions,
+          analysis: `지금은 데이터가 ${totalDataPoints}개밖에 없어서 정확한 분석이 어려워 😅\n\n최소 2개 이상의 데이터(검사, 상담, 관찰)가 있어야 너에 대해 제대로 분석할 수 있어!\n\n추천하는 것들:\n${suggestions.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\n이것들 중에서 하나라도 해보고 다시 분석 버튼을 눌러줘! 그럼 훨씬 더 정확하게 분석해줄 수 있을 거야 ✨`
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200
+        }
+      );
+    }
 
     // Construct prompt for AI
     const systemPrompt = `너는 심리 분석 전문가야. 사용자의 검사 결과, 상담 내역, 관찰 데이터를 종합해서 ChatGPT처럼 친근하고 반말로 성향을 분석해줘.
@@ -69,13 +110,13 @@ serve(async (req) => {
 
     const userPrompt = `사용자 데이터:
 
-검사 결과 (${assessments.length}건):
+검사 결과 (${assessmentsCount}건):
 ${assessments.slice(0, 5).map(a => `- ${a.assessment_type}: 점수 ${a.total_score || 'N/A'}, 심각도 ${a.severity || 'N/A'}`).join('\n')}
 
-상담 내역 (${consultations.length}건):
+상담 내역 (${consultationsCount}건):
 ${consultations.slice(0, 5).map(c => `- ${c.consultation_type || '일반'}: ${c.notes?.substring(0, 100) || '상담 진행'}`).join('\n')}
 
-관찰 기록 (${observations.length}건):
+관찰 기록 (${observationsCount}건):
 ${observations.slice(0, 5).map(o => `- 인지: ${o.cognitive_score}, 언어: ${o.language_score}, 사회성: ${o.social_score}, 운동: ${o.motor_score}`).join('\n')}
 
 위 데이터를 바탕으로 사용자의 성향을 친근하게 반말로 분석해줘.`;
@@ -129,18 +170,18 @@ ${observations.slice(0, 5).map(o => `- 인지: ${o.cognitive_score}, 언어: ${o
       user_id: userId,
       analysis_text: analysis,
       data_sources: {
-        assessments_count: assessments.length,
-        consultations_count: consultations.length,
-        observations_count: observations.length
+        assessments_count: assessmentsCount,
+        consultations_count: consultationsCount,
+        observations_count: observationsCount
       }
     });
 
     return new Response(JSON.stringify({ 
       analysis,
       dataCount: {
-        assessments: assessments.length,
-        consultations: consultations.length,
-        observations: observations.length
+        assessments: assessmentsCount,
+        consultations: consultationsCount,
+        observations: observationsCount
       }
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

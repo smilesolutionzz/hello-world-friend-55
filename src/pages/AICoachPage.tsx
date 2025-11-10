@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageCircle, Brain, Heart, Target, Lightbulb, Send, Bot, User, Sparkles } from "lucide-react";
+import { MessageCircle, Brain, Heart, Target, Lightbulb, Send, Bot, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
@@ -180,18 +180,9 @@ const AICoachPage = () => {
                 className="text-gradient"
               />
             </h1>
-            <p className="text-lg text-muted-foreground mb-4">
+            <p className="text-lg text-muted-foreground">
               24/7 개인 맞춤형 심리 코칭 서비스
             </p>
-            
-            {/* AI 테라피 스튜디오 버튼 */}
-            <Button
-              onClick={() => window.location.href = '/ai-therapy-studio'}
-              className="bg-gradient-to-r from-primary to-primary/70 hover:from-primary/90 hover:to-primary/60 shadow-lg"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              AI 테라피 스튜디오 (메타버스)
-            </Button>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

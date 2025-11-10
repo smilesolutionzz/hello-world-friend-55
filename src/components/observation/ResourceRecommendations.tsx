@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { BookOpen, ExternalLink, RefreshCw, Sparkles } from 'lucide-react';
+import { BookOpen, ExternalLink, RefreshCw, Search, Sparkles } from 'lucide-react';
 
 interface Resource {
   source: string;
@@ -27,13 +27,22 @@ export function ResourceRecommendations({ keywords, childAge, behaviorType }: Re
   const [loading, setLoading] = useState(false);
   const [resources, setResources] = useState<Resource[]>([]);
   const [query, setQuery] = useState('');
+  const [autoFetched, setAutoFetched] = useState(false);
+
+  // 키워드가 있으면 자동으로 자료 검색
+  useEffect(() => {
+    if (keywords && keywords.length > 0 && !autoFetched) {
+      fetchResources();
+      setAutoFetched(true);
+    }
+  }, [keywords, autoFetched]);
 
   const fetchResources = async () => {
     if (!keywords || keywords.length === 0) {
       toast({
-        title: '키워드가 필요합니다',
-        description: '관찰일지를 먼저 작성해주세요.',
-        variant: 'destructive',
+        title: '분석 중입니다',
+        description: '관찰일지 AI 분석이 완료되면 자동으로 육아 자료를 검색합니다.',
+        variant: 'default',
       });
       return;
     }
@@ -82,30 +91,25 @@ export function ResourceRecommendations({ keywords, childAge, behaviorType }: Re
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
-            <CardTitle>AI 추천 육아 자료</CardTitle>
+            <BookOpen className="h-5 w-5 text-primary" />
+            <CardTitle>🌟 AI 추천 육아 자료</CardTitle>
           </div>
-          <Button
-            onClick={fetchResources}
-            disabled={loading}
-            size="sm"
-            variant="outline"
-          >
-            {loading ? (
-              <>
-                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                수집 중...
-              </>
-            ) : (
-              <>
-                <BookOpen className="h-4 w-4 mr-2" />
-                자료 찾기
-              </>
-            )}
-          </Button>
+          {resources.length > 0 && (
+            <Button 
+              onClick={fetchResources}
+              disabled={loading}
+              variant="outline"
+              size="sm"
+            >
+              <Search className="h-4 w-4 mr-2" />
+              자료 새로고침
+            </Button>
+          )}
         </div>
         <CardDescription>
-          관찰일지 내용을 바탕으로 전문 육아 자료를 자동으로 수집합니다
+          {keywords && keywords.length > 0 
+            ? `관찰일지 내용을 바탕으로 전문 육아 자료를 자동으로 수집합니다` 
+            : `AI 분석이 완료되면 자동으로 관련 육아 자료를 검색합니다`}
         </CardDescription>
       </CardHeader>
 
@@ -124,8 +128,8 @@ export function ResourceRecommendations({ keywords, childAge, behaviorType }: Re
         {!loading && resources.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
             <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>아직 수집된 자료가 없습니다.</p>
-            <p className="text-sm mt-2">위의 '자료 찾기' 버튼을 눌러 관련 정보를 찾아보세요.</p>
+            <p>AI 분석 완료 후 자동으로 육아 자료를 검색합니다</p>
+            <p className="text-sm mt-2">관찰일지 분석 내용을 기반으로 맞춤 자료를 추천해드립니다</p>
           </div>
         )}
 

@@ -21,12 +21,10 @@ const FloatingChatCTA = () => {
         {!isOpen ? (
           <Button
             onClick={() => setIsOpen(true)}
-            className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 
-                     text-white rounded-full px-4 py-2 sm:px-6 sm:py-3 shadow-lg hover:shadow-xl transform hover:scale-105 
-                     transition-all duration-300 flex items-center gap-2 text-sm sm:text-base"
+            size="icon"
+            className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded-full w-12 h-12 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
           >
-            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="font-medium">질문 있나요?</span>
+            <MessageCircle className="w-5 h-5" />
           </Button>
         ) : (
           <div className="relative">

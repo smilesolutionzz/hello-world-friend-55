@@ -1,13 +1,9 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from "recharts";
-import { TrendingUp, TrendingDown, Minus, Target, Brain, Sparkles } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, Target } from "lucide-react";
 import { format, differenceInWeeks, startOfYear } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
 
 interface Observation {
   id: string;
@@ -21,64 +17,13 @@ interface ImprovementHistoryProps {
   observations: Observation[];
 }
 
-interface PersonalityTrait {
-  title: string;
-  description: string;
-  score: number;
-}
-
-interface PersonalityAnalysis {
-  traits: PersonalityTrait[];
-  summary: string;
-}
-
 const ImprovementHistory: React.FC<ImprovementHistoryProps> = ({ observations }) => {
-  const { toast } = useToast();
-  const [personalityAnalysis, setPersonalityAnalysis] = useState<PersonalityAnalysis | null>(null);
-  const [analyzingPersonality, setAnalyzingPersonality] = useState(false);
-
   // 시간순 정렬 (오래된 것부터)
   const sortedObservations = useMemo(() => {
     return [...observations]
       .filter(obs => obs.score_overall > 0 || (obs.categoryScores && Object.keys(obs.categoryScores).length > 0))
       .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
   }, [observations]);
-
-  // 성격 분석 실행
-  const analyzePersonality = async () => {
-    if (sortedObservations.length === 0) return;
-    
-    setAnalyzingPersonality(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('analyze-personality', {
-        body: { observations: sortedObservations }
-      });
-
-      if (error) throw error;
-
-      setPersonalityAnalysis(data);
-      toast({
-        title: "성격 분석 완료",
-        description: "AI가 당신의 성격 특성을 분석했습니다.",
-      });
-    } catch (error: any) {
-      console.error('Personality analysis error:', error);
-      toast({
-        title: "분석 실패",
-        description: error.message || "성격 분석에 실패했습니다.",
-        variant: "destructive",
-      });
-    } finally {
-      setAnalyzingPersonality(false);
-    }
-  };
-
-  // 자동 분석 (데이터가 2개 이상일 때)
-  useEffect(() => {
-    if (sortedObservations.length >= 2 && !personalityAnalysis) {
-      analyzePersonality();
-    }
-  }, [sortedObservations.length]);
 
   // 카테고리별 점수 추이 데이터 생성
   const categoryTrendData = useMemo(() => {
@@ -284,68 +229,64 @@ const ImprovementHistory: React.FC<ImprovementHistoryProps> = ({ observations })
         </CardContent>
       </Card>
 
-      {/* AI 성격 분석 카드 */}
-      <Card className="bg-[#0F1823] border-slate-800">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-lg font-medium text-white flex items-center gap-2">
-                <Brain className="w-5 h-5 text-purple-400" />
-                AI 성격 분석
-              </CardTitle>
-              <p className="text-sm text-slate-400 mt-1">
-                검사 데이터로 분석한 당신의 성격 특성
-              </p>
-            </div>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={analyzePersonality}
-              disabled={analyzingPersonality || sortedObservations.length < 2}
-              className="border-slate-700"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              {analyzingPersonality ? "분석 중..." : "재분석"}
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {analyzingPersonality ? (
-            <div className="text-center py-8">
-              <Brain className="w-12 h-12 text-purple-400 mx-auto mb-4 animate-pulse" />
-              <p className="text-slate-300 mb-2">AI가 성격을 분석하는 중...</p>
-              <p className="text-sm text-slate-500">잠시만 기다려주세요</p>
-            </div>
-          ) : personalityAnalysis ? (
-            <div className="space-y-6">
-              {/* 요약 */}
-              <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-purple-800/30 rounded-lg p-4">
-                <p className="text-slate-200 leading-relaxed">{personalityAnalysis.summary}</p>
+      {/* 카테고리별 개선율 카드 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {categoryImprovements.map((cat) => (
+          <Card key={cat.category} className="bg-[#0F1823] border-slate-800">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-semibold text-white">{cat.category}</h3>
+                  <p className="text-sm text-slate-400">영역별 개선도</p>
+                </div>
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                  cat.trend === 'up' 
+                    ? 'bg-green-900/30' 
+                    : cat.trend === 'down' 
+                    ? 'bg-red-900/30' 
+                    : 'bg-slate-900/30'
+                }`}>
+                  {cat.trend === 'up' ? (
+                    <TrendingUp className="w-5 h-5 text-green-400" />
+                  ) : cat.trend === 'down' ? (
+                    <TrendingDown className="w-5 h-5 text-red-400" />
+                  ) : (
+                    <Minus className="w-5 h-5 text-slate-400" />
+                  )}
+                </div>
               </div>
-
-              {/* 특성 카드들 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {personalityAnalysis.traits.map((trait, index) => (
-                  <div key={index} className="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-white font-semibold">{trait.title}</h4>
-                      <span className="text-sm text-purple-400 font-medium">{trait.score}%</span>
-                    </div>
-                    <p className="text-sm text-slate-400 mb-3">{trait.description}</p>
-                    <Progress value={trait.score} className="h-2" />
+              
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-400">처음</span>
+                  <span className="text-lg font-semibold text-slate-300">{cat.firstScore}점</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-400">현재</span>
+                  <span className="text-lg font-semibold text-white">{cat.lastScore}점</span>
+                </div>
+                <div className="pt-3 border-t border-slate-800">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-slate-400">개선도</span>
+                    <span className={`text-lg font-bold ${
+                      cat.trend === 'up' 
+                        ? 'text-green-400' 
+                        : cat.trend === 'down' 
+                        ? 'text-red-400' 
+                        : 'text-slate-400'
+                    }`}>
+                      {cat.improvement > 0 ? '+' : ''}{cat.improvement}점
+                      <span className="text-sm ml-1">
+                        ({cat.improvementPercent > 0 ? '+' : ''}{cat.improvementPercent.toFixed(1)}%)
+                      </span>
+                    </span>
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <Brain className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-              <p className="text-slate-400 mb-2">검사 데이터가 부족합니다</p>
-              <p className="text-sm text-slate-500">2개 이상의 검사를 완료하면 성격 분석이 가능합니다</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       {/* 카테고리별 비교 바 차트 */}
       <Card className="bg-[#0F1823] border-slate-800">

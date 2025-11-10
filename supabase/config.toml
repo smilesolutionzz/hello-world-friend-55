@@ -46,9 +46,6 @@ double_confirm_changes = true
 enable_confirmations = false
 
 # AI and Core Functions
-[functions.analyze-personality]
-verify_jwt = false
-
 [functions.analyze-emotional-development]
 verify_jwt = false
 
@@ -74,6 +71,9 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.ai-counselor-chat]
+verify_jwt = false
+
+[functions.ai-counselor-stream]
 verify_jwt = false
 
 [functions.ai-health-insights]
@@ -276,4 +276,13 @@ verify_jwt = false
 verify_jwt = true
 
 [functions.booking-reminder-cron]
+verify_jwt = false
+
+[functions.realtime-voice]
+verify_jwt = false
+
+[functions.get-realtime-token]
+verify_jwt = false
+
+[functions.personality-analyzer]
 verify_jwt = false

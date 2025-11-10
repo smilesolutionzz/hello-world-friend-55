@@ -40,6 +40,21 @@ const MetaverseVoiceCounseling = () => {
   const [currentResponseId, setCurrentResponseId] = useState<string | null>(null);
   const chatRef = useRef<RealtimeChat | null>(null);
 
+  // 스트리밍 자막에서 발생하는 말더듬/중복어 제거
+  const cleanTranscript = (input: string) => {
+    if (!input) return "";
+    let text = input;
+    // 1) 한글 문자 반복 축약 (예: 위위위 → 위)
+    text = text.replace(/([\uAC00-\uD7A3])\1{1,}/g, "$1");
+    // 2) 단어 반복 축약 (예: 하지만 하지만 → 하지만)
+    text = text.replace(/\b([\p{L}\uAC00-\uD7A3]{1,})\b(?:\s+\1\b)+/gu, "$1");
+    // 3) 구두점 반복 축약 (예: ..../!!! → . / !)
+    text = text.replace(/([,.!?…])\1+/g, "$1");
+    // 4) 공백 정리
+    text = text.replace(/\s{2,}/g, " ");
+    return text.trim();
+  };
+
   const handleMessage = (event: any) => {
     console.log('Received event:', event.type);
     
@@ -57,14 +72,13 @@ const MetaverseVoiceCounseling = () => {
         const newMessages = [...prev];
         const lastMessage = newMessages[newMessages.length - 1];
         
-        // 같은 응답 ID의 마지막 메시지에만 추가
         if (lastMessage && lastMessage.role === 'assistant' && lastMessage.responseId === responseId) {
-          lastMessage.content += event.delta;
+          const merged = (lastMessage.content || '') + (event.delta || '');
+          lastMessage.content = cleanTranscript(merged);
         } else {
-          // 새 AI 응답 메시지 생성
           newMessages.push({
             role: 'assistant',
-            content: event.delta,
+            content: cleanTranscript(event.delta || ''),
             timestamp: new Date(),
             responseId
           });
@@ -73,21 +87,35 @@ const MetaverseVoiceCounseling = () => {
       });
     }
     
+    // 최종 자막 (완료본으로 교체)
+    else if (event.type === 'response.audio_transcript.done') {
+      const responseId = event.response_id || currentResponseId;
+      const finalText = cleanTranscript(event.transcript || '');
+      setMessages(prev => prev.map((m, i, arr) => {
+        if (m.role === 'assistant' && (m.responseId === responseId || (i === arr.length - 1 && !m.responseId))) {
+          return { ...m, content: finalText, responseId };
+        }
+        return m;
+      }));
+    }
+    
     // 사용자 음성 인식 완료
     else if (event.type === 'conversation.item.input_audio_transcription.completed') {
       setMessages(prev => [...prev, {
         role: 'user',
-        content: event.transcript,
+        content: cleanTranscript(event.transcript || ''),
         timestamp: new Date()
       }]);
     }
     
-    // AI 음성 재생 중
+    // AI 음성 재생 중/완료
     else if (event.type === 'response.audio.delta') {
       setIsSpeaking(true);
+    } else if (event.type === 'response.audio.done') {
+      setIsSpeaking(false);
     }
     
-    // AI 응답 완료
+    // 응답 전체 완료
     else if (event.type === 'response.done') {
       setIsSpeaking(false);
       setCurrentResponseId(null);

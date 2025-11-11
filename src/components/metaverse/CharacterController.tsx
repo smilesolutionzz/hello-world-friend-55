@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -19,6 +19,11 @@ export const CharacterController = ({
   const velocityRef = useRef(new THREE.Vector3());
   const keysPressed = useRef<Set<string>>(new Set());
   const { camera } = useThree();
+  const [isMouseDragging, setIsMouseDragging] = useState(false);
+  const mouseDownTime = useRef(0);
+  const lastMousePos = useRef({ x: 0, y: 0 });
+  const cameraOffset = useRef(new THREE.Vector3(0, 3, 5));
+  const targetCameraPos = useRef(new THREE.Vector3());
 
   useEffect(() => {
     if (!enabled) return;
@@ -31,12 +36,50 @@ export const CharacterController = ({
       keysPressed.current.delete(e.key.toLowerCase());
     };
 
+    const handleMouseDown = (e: MouseEvent) => {
+      mouseDownTime.current = Date.now();
+      lastMousePos.current = { x: e.clientX, y: e.clientY };
+      setIsMouseDragging(false);
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (mouseDownTime.current > 0) {
+        const dx = Math.abs(e.clientX - lastMousePos.current.x);
+        const dy = Math.abs(e.clientY - lastMousePos.current.y);
+        if (dx > 5 || dy > 5) {
+          setIsMouseDragging(true);
+          
+          // 마우스 드래그로 카메라 회전
+          const deltaX = (e.clientX - lastMousePos.current.x) * 0.01;
+          const deltaY = (e.clientY - lastMousePos.current.y) * 0.01;
+          
+          // 카메라 오프셋 회전
+          const rotationMatrix = new THREE.Matrix4();
+          rotationMatrix.makeRotationY(-deltaX);
+          cameraOffset.current.applyMatrix4(rotationMatrix);
+          
+          lastMousePos.current = { x: e.clientX, y: e.clientY };
+        }
+      }
+    };
+
+    const handleMouseUp = () => {
+      mouseDownTime.current = 0;
+      setTimeout(() => setIsMouseDragging(false), 100);
+    };
+
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
   }, [enabled]);
 
@@ -85,13 +128,25 @@ export const CharacterController = ({
       if (onPositionChange) {
         onPositionChange(groupRef.current.position);
       }
-
-      // 카메라가 캐릭터를 따라가도록
-      const cameraOffset = new THREE.Vector3(0, 3, 5);
-      const targetCameraPos = groupRef.current.position.clone().add(cameraOffset);
-      camera.position.lerp(targetCameraPos, 0.1);
-      camera.lookAt(groupRef.current.position);
     }
+
+    // 스무스 카메라 추적 (마우스 드래그 중이 아닐 때 자동 복귀)
+    if (!isMouseDragging) {
+      // 카메라 오프셋을 캐릭터 뒤쪽으로 서서히 복귀
+      const targetOffset = new THREE.Vector3(0, 3, 5);
+      cameraOffset.current.lerp(targetOffset, 0.05);
+    }
+
+    // 목표 카메라 위치 계산
+    targetCameraPos.current.copy(groupRef.current.position).add(cameraOffset.current);
+    
+    // 카메라 부드럽게 이동
+    camera.position.lerp(targetCameraPos.current, 0.1);
+    
+    // 카메라가 캐릭터를 바라보도록
+    const lookAtPos = groupRef.current.position.clone();
+    lookAtPos.y += 1; // 캐릭터 중앙 높이
+    camera.lookAt(lookAtPos);
   });
 
   return (
@@ -108,12 +163,15 @@ export const MovementGuide = ({ visible = true }: { visible?: boolean }) => {
   return (
     <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20 animate-fade-in">
       <div className="text-white text-sm space-y-1">
-        <div className="font-semibold text-center mb-2">🎮 이동 조작법</div>
+        <div className="font-semibold text-center mb-2">🎮 조작법</div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-          <div><kbd className="px-2 py-1 bg-white/20 rounded">W</kbd> 또는 <kbd className="px-2 py-1 bg-white/20 rounded">↑</kbd> 앞으로</div>
-          <div><kbd className="px-2 py-1 bg-white/20 rounded">S</kbd> 또는 <kbd className="px-2 py-1 bg-white/20 rounded">↓</kbd> 뒤로</div>
-          <div><kbd className="px-2 py-1 bg-white/20 rounded">A</kbd> 또는 <kbd className="px-2 py-1 bg-white/20 rounded">←</kbd> 왼쪽</div>
-          <div><kbd className="px-2 py-1 bg-white/20 rounded">D</kbd> 또는 <kbd className="px-2 py-1 bg-white/20 rounded">→</kbd> 오른쪽</div>
+          <div><kbd className="px-2 py-1 bg-white/20 rounded">W</kbd> / <kbd className="px-2 py-1 bg-white/20 rounded">↑</kbd> 앞으로</div>
+          <div><kbd className="px-2 py-1 bg-white/20 rounded">S</kbd> / <kbd className="px-2 py-1 bg-white/20 rounded">↓</kbd> 뒤로</div>
+          <div><kbd className="px-2 py-1 bg-white/20 rounded">A</kbd> / <kbd className="px-2 py-1 bg-white/20 rounded">←</kbd> 왼쪽</div>
+          <div><kbd className="px-2 py-1 bg-white/20 rounded">D</kbd> / <kbd className="px-2 py-1 bg-white/20 rounded">→</kbd> 오른쪽</div>
+        </div>
+        <div className="text-center pt-2 text-xs opacity-80">
+          🖱️ 마우스 드래그로 카메라 회전
         </div>
       </div>
     </div>

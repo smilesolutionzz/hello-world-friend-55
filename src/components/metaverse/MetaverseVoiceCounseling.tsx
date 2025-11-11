@@ -5,13 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2 } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
 import { MovementGuide } from '@/components/metaverse/CharacterController';
 import { EmotionDetector, EmotionType } from '@/utils/EmotionDetector';
 import { useInteractiveObjects } from '@/components/metaverse/InteractiveObject';
+import { AvatarPreview } from '@/components/metaverse/AvatarPreview';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -353,46 +354,50 @@ const MetaverseVoiceCounseling = () => {
                     />
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <Label className="flex items-center gap-2">
-                      <UserCircle className="w-4 h-4" />
-                      아바타 설정
+                      <Link2 className="w-4 h-4" />
+                      아바타 URL 입력
                     </Label>
                     
-                    <Button
-                      variant="outline"
-                      className="w-full gap-2"
-                      onClick={openAvatarCreator}
-                    >
-                      <UserCircle className="w-4 h-4" />
-                      Ready Player Me에서 아바타 만들기
-                    </Button>
-
                     <div className="relative">
                       <Input
-                        placeholder="또는 아바타 URL을 붙여넣으세요"
+                        placeholder="Ready Player Me 아바타 URL (.glb) 붙여넣기"
                         value={avatarUrl}
                         onChange={(e) => {
                           const url = e.target.value.trim();
                           setAvatarUrl(url);
-                          if (url && (url.includes('readyplayer.me') || url.includes('.glb'))) {
+                          if (url && url.includes('readyplayer.me') && url.endsWith('.glb')) {
                             toast({
-                              title: "아바타 URL 설정 완료 ✓",
-                              description: "입장 후 아바타가 적용됩니다",
+                              title: "아바타 URL 인식됨 ✓",
+                              description: "미리보기에서 확인하세요",
                             });
                           }
                         }}
                         className="pr-10"
                       />
-                      {avatarUrl && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      {avatarUrl && avatarUrl.includes('readyplayer.me') && avatarUrl.endsWith('.glb') && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
                           ✓
                         </div>
                       )}
                     </div>
+
+                    {/* 아바타 미리보기 */}
+                    <AvatarPreview avatarUrl={avatarUrl} />
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full gap-2"
+                      onClick={openAvatarCreator}
+                    >
+                      <UserCircle className="w-4 h-4" />
+                      또는 Ready Player Me에서 새로 만들기
+                    </Button>
                     
                     <p className="text-xs text-muted-foreground">
-                      💡 Ready Player Me에서 생성한 .glb URL을 위 필드에 붙여넣으세요
+                      💡 아바타 생성 후 "Copy the link" 버튼을 누르고 URL을 위에 붙여넣으세요
                     </p>
                   </div>
                 </div>

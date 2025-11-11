@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, Gamepad2, TrendingUp } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, Gamepad2, TrendingUp, X } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
@@ -932,24 +932,83 @@ const MetaverseVoiceCounseling = () => {
               </div>
             )}
 
+            {/* 게임 및 차트 버튼 - 채팅창 바깥쪽 좌측 하단 */}
+            {isConnected && (
+              <div className="fixed left-4 bottom-4 flex flex-col gap-2 z-40">
+                <Button
+                  onClick={() => {
+                    setGameType('catch');
+                    setShowGame(!showGame);
+                  }}
+                  variant={showGame && gameType === 'catch' ? "default" : "outline"}
+                  size="sm"
+                  className="gap-2 shadow-lg bg-background/90 backdrop-blur-sm"
+                >
+                  <Gamepad2 className="w-4 h-4" />
+                  <span>캐치볼</span>
+                </Button>
+                <Button
+                  onClick={() => {
+                    setGameType('puzzle');
+                    setShowGame(!showGame);
+                  }}
+                  variant={showGame && gameType === 'puzzle' ? "default" : "outline"}
+                  size="sm"
+                  className="gap-2 shadow-lg bg-background/90 backdrop-blur-sm"
+                >
+                  <span>🧩</span>
+                  <span>퍼즐</span>
+                </Button>
+                <Button
+                  onClick={() => setShowEmotionChart(!showEmotionChart)}
+                  variant={showEmotionChart ? "default" : "outline"}
+                  size="sm"
+                  className="gap-2 shadow-lg bg-background/90 backdrop-blur-sm"
+                >
+                  <TrendingUp className="w-4 h-4" />
+                  <span>감정 분석</span>
+                </Button>
+              </div>
+            )}
+
             {/* 감정 트렌드 차트 */}
             {showEmotionChart && emotionHistory.length > 0 && (
               <div className="fixed left-4 top-20 z-[100]">
-                <EmotionTrendChart emotionHistory={emotionHistory} />
+                <div className="relative">
+                  <Button
+                    onClick={() => setShowEmotionChart(false)}
+                    variant="ghost"
+                    size="icon"
+                    className="absolute -top-2 -right-2 z-10 bg-background shadow-md rounded-full w-8 h-8"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                  <EmotionTrendChart emotionHistory={emotionHistory} />
+                </div>
               </div>
             )}
 
             {/* 퍼즐 게임 */}
             {showGame && gameType === 'puzzle' && (
               <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[100]">
-                <PuzzleGame
-                  onComplete={() => {
-                    toast({
-                      title: "🎉 퍼즐 완성!",
-                      description: "훌륭합니다! 집중력이 높아졌습니다.",
-                    });
-                  }}
-                />
+                <div className="relative">
+                  <Button
+                    onClick={() => setShowGame(false)}
+                    variant="ghost"
+                    size="icon"
+                    className="absolute -top-2 -right-2 z-10 bg-background shadow-md rounded-full w-8 h-8"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                  <PuzzleGame
+                    onComplete={() => {
+                      toast({
+                        title: "🎉 퍼즐 완성!",
+                        description: "훌륭합니다! 집중력이 높아졌습니다.",
+                      });
+                    }}
+                  />
+                </div>
               </div>
             )}
           </Card>

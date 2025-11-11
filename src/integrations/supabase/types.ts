@@ -6106,6 +6106,33 @@ export type Database = {
           },
         ]
       }
+      referral_records: {
+        Row: {
+          created_at: string
+          id: string
+          referred_user_id: string
+          referrer_code: string
+          reward_status: string
+          tokens_awarded: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referred_user_id: string
+          referrer_code: string
+          reward_status?: string
+          tokens_awarded?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referred_user_id?: string
+          referrer_code?: string
+          reward_status?: string
+          tokens_awarded?: number
+        }
+        Relationships: []
+      }
       referral_rewards: {
         Row: {
           created_at: string
@@ -7741,6 +7768,42 @@ export type Database = {
           id?: string
           lifestyle_preferences?: Json | null
           primary_concerns?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          referral_code: string
+          referred_by_code: string | null
+          tokens: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          referral_code: string
+          referred_by_code?: string | null
+          tokens?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          referral_code?: string
+          referred_by_code?: string | null
+          tokens?: number
           updated_at?: string
           user_id?: string
         }

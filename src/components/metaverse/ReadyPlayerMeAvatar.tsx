@@ -238,9 +238,12 @@ export const useReadyPlayerMe = () => {
   const openAvatarCreator = () => {
     setIsCreating(true);
     
+    // 현재 페이지 URL을 returnUrl로 설정
+    const currentUrl = window.location.origin + window.location.pathname;
+    
     // Ready Player Me iframe을 열기
     const frame = document.createElement('iframe');
-    frame.src = 'https://demo.readyplayer.me/avatar?frameApi';
+    frame.src = `https://demo.readyplayer.me/avatar?frameApi&clearCache`;
     frame.allow = 'camera *; microphone *';
     frame.style.cssText = `
       position: fixed;
@@ -252,7 +255,72 @@ export const useReadyPlayerMe = () => {
       z-index: 9999;
     `;
     
+    // 닫기 버튼 추가
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '✕ 닫기';
+    closeBtn.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+      padding: 12px 24px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      border: 2px solid white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    `;
+    closeBtn.onmouseover = () => {
+      closeBtn.style.background = 'rgba(255, 255, 255, 0.2)';
+      closeBtn.style.transform = 'scale(1.05)';
+    };
+    closeBtn.onmouseout = () => {
+      closeBtn.style.background = 'rgba(0, 0, 0, 0.8)';
+      closeBtn.style.transform = 'scale(1)';
+    };
+    closeBtn.onclick = () => {
+      document.body.removeChild(frame);
+      document.body.removeChild(closeBtn);
+      document.body.removeChild(helpText);
+      setIsCreating(false);
+      window.removeEventListener('message', handleMessage);
+    };
+    
+    // 도움말 텍스트 추가
+    const helpText = document.createElement('div');
+    helpText.innerHTML = `
+      <div style="text-align: center;">
+        <p style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+          🎨 캐릭터를 생성하고 <strong>NEXT</strong> 버튼을 눌러주세요
+        </p>
+        <p style="font-size: 14px; opacity: 0.9;">
+          완료하면 자동으로 메타버스 상담실로 돌아옵니다
+        </p>
+      </div>
+    `;
+    helpText.style.cssText = `
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10000;
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      max-width: 90%;
+    `;
+    
     document.body.appendChild(frame);
+    document.body.appendChild(closeBtn);
+    document.body.appendChild(helpText);
 
     const handleMessage = (event: MessageEvent) => {
       const json = parse(event);
@@ -260,8 +328,32 @@ export const useReadyPlayerMe = () => {
         if (json.eventName === 'v1.avatar.exported') {
           setAvatarUrl(json.data.url);
           document.body.removeChild(frame);
+          document.body.removeChild(closeBtn);
+          document.body.removeChild(helpText);
           setIsCreating(false);
           window.removeEventListener('message', handleMessage);
+          
+          // 성공 알림
+          const successMsg = document.createElement('div');
+          successMsg.innerHTML = '✅ 캐릭터가 성공적으로 생성되었습니다!';
+          successMsg.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            padding: 24px 48px;
+            background: rgba(34, 197, 94, 0.95);
+            color: white;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          `;
+          document.body.appendChild(successMsg);
+          setTimeout(() => {
+            document.body.removeChild(successMsg);
+          }, 3000);
         }
       }
     };

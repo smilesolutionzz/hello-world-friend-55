@@ -10,6 +10,9 @@ import { EmotionType } from '@/utils/EmotionDetector';
 import { GroupPresence } from '../metaverse/GroupPresence';
 import type { AvatarCustomization } from '../metaverse/AvatarCustomization';
 import type { GestureType } from '@/utils/GestureSystem';
+import type { CounselorEmotion } from '@/utils/CounselorEmotionDetector';
+import { CatchBallGame } from '../metaverse/CatchBallGame';
+import { useToast } from '@/hooks/use-toast';
 
 // Room components with different layouts
 const Room = ({ type = 'counseling' }: { type?: RoomType }) => {
@@ -376,10 +379,12 @@ interface CounselingRoomProps {
   onObjectInteract?: (id: string, content: string) => void;
   isSpeaking?: boolean;
   counselorGesture?: GestureType | null;
+  counselorEmotion?: CounselorEmotion;
   avatarCustomization?: AvatarCustomization;
   groupMode?: boolean;
   userName?: string;
   avatarPosition?: { x: number; y: number; z: number };
+  showGame?: boolean;
 }
 
 const CounselingRoom = ({
@@ -392,11 +397,14 @@ const CounselingRoom = ({
   onObjectInteract,
   isSpeaking = false,
   counselorGesture,
+  counselorEmotion = 'neutral',
   avatarCustomization,
   groupMode = false,
   userName = 'User',
-  avatarPosition
+  avatarPosition,
+  showGame = false
 }: CounselingRoomProps) => {
+  const { toast } = useToast();
   // 공간별 설정
   const getRoomSettings = () => {
     switch (roomType) {
@@ -496,6 +504,8 @@ const CounselingRoom = ({
             position={[-4, -1.5, 2]} 
             isSpeaking={isSpeaking}
             name="메타상담사"
+            gesture={counselorGesture}
+            emotion={counselorEmotion}
           />
           
           {/* 아바타와 이동 컨트롤러 */}
@@ -530,6 +540,20 @@ const CounselingRoom = ({
               position={avatarPosition}
               emotion={emotion}
               enabled={groupMode}
+            />
+          )}
+          
+          {/* 캐치볼 게임 */}
+          {showGame && (
+            <CatchBallGame 
+              position={[2, -1, 0]}
+              isActive={showGame}
+              onCatch={() => {
+                toast({
+                  title: "🎯 캐치!",
+                  description: "잘했어요! 스트레스가 해소됩니다.",
+                });
+              }}
             />
           )}
           

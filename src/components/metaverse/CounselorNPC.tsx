@@ -11,6 +11,7 @@ interface CounselorNPCProps {
   name?: string;
   gesture?: GestureType | null;
   message?: string;
+  emotion?: 'empathy' | 'encouragement' | 'concern' | 'joy' | 'neutral';
 }
 
 export const CounselorNPC = ({ 
@@ -18,7 +19,8 @@ export const CounselorNPC = ({
   isSpeaking = false,
   name = "AI 상담사",
   gesture = null,
-  message = ""
+  message = "",
+  emotion = 'neutral'
 }: CounselorNPCProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const lightRef = useRef<THREE.PointLight>(null);
@@ -91,18 +93,44 @@ export const CounselorNPC = ({
     }
   });
 
+  // 감정에 따른 색상 설정
+  const getEmotionColors = () => {
+    switch (emotion) {
+      case 'empathy':
+        return { head: '#98D8C8', body: '#6FB3A0', light: '#98D8C8' };
+      case 'encouragement':
+        return { head: '#FFD93D', body: '#FFC107', light: '#FFD93D' };
+      case 'concern':
+        return { head: '#A8B5E0', body: '#7B89C4', light: '#A8B5E0' };
+      case 'joy':
+        return { head: '#FFB6C1', body: '#FF69B4', light: '#FFB6C1' };
+      default:
+        return { head: '#87CEEB', body: '#4682B4', light: '#87CEEB' };
+    }
+  };
+
+  const colors = getEmotionColors();
+
   return (
     <group ref={groupRef} position={position}>
       {/* 머리 */}
       <mesh position={[0, 1.5, 0]} castShadow>
         <sphereGeometry args={[0.3, 16, 16]} />
-        <meshStandardMaterial color="#87CEEB" />
+        <meshStandardMaterial 
+          color={colors.head}
+          emissive={colors.head}
+          emissiveIntensity={emotion !== 'neutral' ? 0.2 : 0}
+        />
       </mesh>
 
       {/* 몸 */}
       <mesh ref={bodyRef} position={[0, 0.8, 0]} castShadow>
         <capsuleGeometry args={[0.25, 0.8, 8, 8]} />
-        <meshStandardMaterial color="#4682B4" />
+        <meshStandardMaterial 
+          color={colors.body}
+          emissive={colors.body}
+          emissiveIntensity={emotion !== 'neutral' ? 0.15 : 0}
+        />
       </mesh>
 
       {/* 왼팔 */}
@@ -148,7 +176,7 @@ export const CounselorNPC = ({
         position={[0, 1.5, 0]}
         intensity={1.5}
         distance={3}
-        color={isSpeaking ? "#FFD700" : "#87CEEB"}
+        color={isSpeaking ? "#FFD700" : colors.light}
       />
 
       {/* 말할 때 파티클 효과 */}
@@ -176,9 +204,9 @@ export const CounselorNPC = ({
       <mesh position={[0, 1, 0]}>
         <sphereGeometry args={[1.2, 16, 16]} />
         <meshBasicMaterial
-          color="#87CEEB"
+          color={colors.light}
           transparent
-          opacity={0.1}
+          opacity={emotion !== 'neutral' ? 0.15 : 0.1}
           side={THREE.BackSide}
         />
       </mesh>

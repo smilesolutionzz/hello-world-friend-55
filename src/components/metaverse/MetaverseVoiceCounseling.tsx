@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, Gamepad2 } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
@@ -18,9 +18,11 @@ import { getSoundEffects } from '@/utils/SoundEffects';
 import { getMusicPlayer, MUSIC_OPTIONS, type MusicType } from '@/utils/BackgroundMusic';
 import { GestureManager, GESTURES, type GestureType } from '@/utils/GestureSystem';
 import { detectCounselorGesture } from '@/utils/CounselorGestureDetector';
+import { detectCounselorEmotion, type CounselorEmotion } from '@/utils/CounselorEmotionDetector';
 import { SessionRecorder } from '@/utils/SessionRecorder';
 import { RecordingConsent } from './RecordingConsent';
 import { AvatarCustomization, type AvatarCustomization as AvatarCustomizationType } from './AvatarCustomization';
+import { SessionTimeline } from './SessionTimeline';
 import { Slider } from '@/components/ui/slider';
 
 interface Message {
@@ -67,6 +69,7 @@ const MetaverseVoiceCounseling = () => {
   const [musicVolume, setMusicVolume] = useState(0.3);
   const [currentGesture, setCurrentGesture] = useState<GestureType | null>(null);
   const [counselorGesture, setCounselorGesture] = useState<GestureType | null>(null);
+  const [counselorEmotion, setCounselorEmotion] = useState<CounselorEmotion>('neutral');
   const [groupMode, setGroupMode] = useState(false);
   const [avatarPosition, setAvatarPosition] = useState({ x: 0, y: -1.5, z: 3 });
   const gestureManagerRef = useRef<GestureManager | null>(null);
@@ -82,6 +85,9 @@ const MetaverseVoiceCounseling = () => {
     hasGlasses: false,
     glassesStyle: 0
   });
+  const [showTimeline, setShowTimeline] = useState(false);
+  const [sessionStartTime] = useState(new Date());
+  const [showGame, setShowGame] = useState(false);
 
 
   // 초기화
@@ -198,6 +204,11 @@ const MetaverseVoiceCounseling = () => {
             setCounselorGesture(gesture);
             setTimeout(() => setCounselorGesture(null), 2000);
           }
+          
+          // 감정 감지
+          const emotion = detectCounselorEmotion(fullMessage.content);
+          setCounselorEmotion(emotion);
+          setTimeout(() => setCounselorEmotion('neutral'), 3000);
           
           return fullMessage;
         }
@@ -673,9 +684,13 @@ const MetaverseVoiceCounseling = () => {
         emotionIntensity={emotionIntensity}
         onObjectInteract={handleObjectInteraction}
         isSpeaking={isSpeaking}
+        counselorGesture={counselorGesture}
+        counselorEmotion={counselorEmotion}
+        avatarCustomization={avatarCustomization}
         groupMode={groupMode}
         userName={userName}
         avatarPosition={avatarPosition}
+        showGame={showGame}
       >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* 이동 가이드 */}
@@ -769,6 +784,15 @@ const MetaverseVoiceCounseling = () => {
                   
                   {/* 대화 저장/공유 버튼 */}
                   <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowTimeline(!showTimeline)}
+                      className="gap-2"
+                    >
+                      <Clock className="w-4 h-4" />
+                      <span className="hidden sm:inline">타임라인</span>
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"
@@ -874,6 +898,32 @@ const MetaverseVoiceCounseling = () => {
                 </div>
               )}
             </div>
+
+            {/* 타임라인 패널 */}
+            {showTimeline && messages.length > 0 && (
+              <div className="fixed right-4 top-20 z-40">
+                <SessionTimeline 
+                  messages={messages}
+                  sessionStartTime={sessionStartTime}
+                  onDownload={downloadConversation}
+                />
+              </div>
+            )}
+
+            {/* 미니게임 버튼 */}
+            {isConnected && (
+              <div className="fixed bottom-20 right-4">
+                <Button
+                  onClick={() => setShowGame(!showGame)}
+                  variant={showGame ? "default" : "outline"}
+                  size="lg"
+                  className="gap-2 shadow-lg"
+                >
+                  <Gamepad2 className="w-5 h-5" />
+                  {showGame ? '게임 종료' : '캐치볼'}
+                </Button>
+              </div>
+            )}
           </Card>
 
           {/* Info */}

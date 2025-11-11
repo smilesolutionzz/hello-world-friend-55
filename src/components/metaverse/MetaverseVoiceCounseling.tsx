@@ -5,11 +5,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
 import { MovementGuide } from '@/components/metaverse/CharacterController';
+import { EmotionDetector, EmotionType } from '@/utils/EmotionDetector';
+import { useInteractiveObjects } from '@/components/metaverse/InteractiveObject';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -43,8 +45,12 @@ const MetaverseVoiceCounseling = () => {
   const [currentResponseId, setCurrentResponseId] = useState<string | null>(null);
   const [enableMovement, setEnableMovement] = useState(true);
   const [showMovementGuide, setShowMovementGuide] = useState(true);
+  const [currentEmotion, setCurrentEmotion] = useState<EmotionType>('neutral');
+  const [emotionIntensity, setEmotionIntensity] = useState(0.5);
   const chatRef = useRef<RealtimeChat | null>(null);
+  const emotionDetectorRef = useRef<EmotionDetector | null>(null);
   const { avatarUrl, openAvatarCreator } = useReadyPlayerMe();
+  const { activeObject, objectContent, handleObjectInteraction, closeInteraction } = useInteractiveObjects();
 
   // 스트리밍 자막에서 발생하는 말더듬/중복어 제거
   const cleanTranscript = (input: string) => {
@@ -133,7 +139,15 @@ const MetaverseVoiceCounseling = () => {
       setIsLoading(true);
       
       // Request microphone permission
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      // 감정 인식 시작
+      emotionDetectorRef.current = new EmotionDetector((emotionState) => {
+        setCurrentEmotion(emotionState.emotion);
+        setEmotionIntensity(emotionState.intensity);
+        console.log('Emotion detected:', emotionState);
+      });
+      await emotionDetectorRef.current.init(stream);
 
       chatRef.current = new RealtimeChat(handleMessage);
       await chatRef.current.init();
@@ -158,8 +172,10 @@ const MetaverseVoiceCounseling = () => {
 
   const endConversation = () => {
     chatRef.current?.disconnect();
+    emotionDetectorRef.current?.disconnect();
     setIsConnected(false);
     setIsSpeaking(false);
+    setCurrentEmotion('neutral');
     
     toast({
       title: "상담 종료",
@@ -250,6 +266,7 @@ const MetaverseVoiceCounseling = () => {
   useEffect(() => {
     return () => {
       chatRef.current?.disconnect();
+      emotionDetectorRef.current?.disconnect();
     };
   }, []);
 
@@ -376,10 +393,32 @@ const MetaverseVoiceCounseling = () => {
   // 입장 후 상담 화면
   return (
     <div className="relative min-h-screen">
-      <CounselingRoom roomType={selectedRoom} enableMovement={enableMovement} avatarUrl={avatarUrl}>
+      <CounselingRoom 
+        roomType={selectedRoom} 
+        enableMovement={enableMovement} 
+        avatarUrl={avatarUrl}
+        emotion={currentEmotion}
+        emotionIntensity={emotionIntensity}
+        onObjectInteract={handleObjectInteraction}
+      >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* 이동 가이드 */}
           {enableMovement && <MovementGuide visible={showMovementGuide} />}
+          
+          {/* 인터랙티브 오브젝트 콘텐츠 모달 */}
+          {activeObject && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <Card className="bg-slate-900/95 border border-purple-500/30 p-6 max-w-lg w-full">
+                <div className="space-y-4">
+                  <h3 className="text-xl font-bold text-white">{activeObject}</h3>
+                  <p className="text-purple-200/80">{objectContent}</p>
+                  <Button onClick={closeInteraction} className="w-full">
+                    닫기
+                  </Button>
+                </div>
+              </Card>
+            </div>
+          )}
           {/* Header */}
           <div className="text-center mb-8 animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 drop-shadow-lg">
@@ -388,12 +427,28 @@ const MetaverseVoiceCounseling = () => {
             <p className="text-lg text-foreground/90 drop-shadow-md mb-3">
               {consultTopic ? `${consultTopic}에 대해 편하게 이야기 나눠봐요` : '편하게 이야기 나눠봐요'}
             </p>
-            <div className="flex flex-wrap gap-2 justify-center">
+            <div className="flex flex-wrap gap-2 justify-center items-center">
               <div className="inline-block bg-green-500/20 backdrop-blur-sm border border-green-400/30 rounded-lg px-4 py-2">
                 <p className="text-sm md:text-base text-foreground font-medium">
                   🔒 대화 내용은 저장되지 않습니다
                 </p>
               </div>
+              
+              {/* 현재 감정 표시 */}
+              {isConnected && (
+                <div className="inline-flex items-center gap-2 bg-purple-500/20 backdrop-blur-sm border border-purple-400/30 rounded-lg px-4 py-2">
+                  <Smile className="w-4 h-4" />
+                  <span className="text-sm font-medium">
+                    감정: {currentEmotion === 'happy' ? '😊 행복' : 
+                           currentEmotion === 'sad' ? '😢 슬픔' : 
+                           currentEmotion === 'angry' ? '😠 화남' :
+                           currentEmotion === 'surprised' ? '😲 놀람' :
+                           currentEmotion === 'thinking' ? '🤔 생각 중' :
+                           '😐 평온'}
+                  </span>
+                </div>
+              )}
+              
               {enableMovement && (
                 <Button
                   variant="ghost"

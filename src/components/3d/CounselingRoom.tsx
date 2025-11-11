@@ -4,6 +4,8 @@ import { OrbitControls, Environment, PerspectiveCamera } from '@react-three/drei
 import * as THREE from 'three';
 import { ReadyPlayerMeAvatar } from '@/components/metaverse/ReadyPlayerMeAvatar';
 import { CharacterController } from '@/components/metaverse/CharacterController';
+import { InteractiveObject } from '@/components/metaverse/InteractiveObject';
+import { EmotionType } from '@/utils/EmotionDetector';
 
 // Room components with different layouts
 const Room = ({ type = 'counseling' }: { type?: RoomType }) => {
@@ -365,13 +367,19 @@ interface CounselingRoomProps {
   roomType?: RoomType;
   enableMovement?: boolean;
   avatarUrl?: string;
+  emotion?: EmotionType;
+  emotionIntensity?: number;
+  onObjectInteract?: (id: string, content: string) => void;
 }
 
 const CounselingRoom = ({ 
   children, 
   roomType = 'counseling',
   enableMovement = false,
-  avatarUrl
+  avatarUrl,
+  emotion = 'neutral',
+  emotionIntensity = 0.5,
+  onObjectInteract
 }: CounselingRoomProps) => {
   // 공간별 설정
   const getRoomSettings = () => {
@@ -421,6 +429,52 @@ const CounselingRoom = ({
           {/* 떠다니는 파티클 */}
           <FloatingParticles />
           
+          {/* 인터랙티브 오브젝트들 */}
+          {roomType === 'counseling' && (
+            <>
+              <InteractiveObject
+                position={[-3, -0.5, -2]}
+                type="document"
+                label="📄 상담 가이드"
+                content="이 공간은 안전한 상담 공간입니다. 편하게 마음을 열고 이야기해주세요. 모든 대화는 비밀이 보장됩니다."
+                onInteract={() => onObjectInteract?.('상담 가이드', '이 공간은 안전한 상담 공간입니다. 편하게 마음을 열고 이야기해주세요. 모든 대화는 비밀이 보장됩니다.')}
+              />
+              <InteractiveObject
+                position={[3, -0.5, -2]}
+                type="decoration"
+                label="🌿 힐링 플랜트"
+                content="자연의 치유력을 느껴보세요. 깊게 숨을 들이쉬고 내쉬세요."
+                onInteract={() => onObjectInteract?.('힐링 플랜트', '자연의 치유력을 느껴보세요. 깊게 숨을 들이쉬고 내쉬세요.')}
+                color="#228B22"
+              />
+            </>
+          )}
+          
+          {roomType === 'office' && (
+            <>
+              <InteractiveObject
+                position={[-3, 0, 0]}
+                type="document"
+                label="📊 업무 자료"
+                content="업무 스트레스 관리 가이드: 정기적인 휴식, 우선순위 설정, 건강한 경계 설정이 중요합니다."
+                onInteract={() => onObjectInteract?.('업무 자료', '업무 스트레스 관리 가이드: 정기적인 휴식, 우선순위 설정, 건강한 경계 설정이 중요합니다.')}
+              />
+            </>
+          )}
+          
+          {roomType === 'home' && (
+            <>
+              <InteractiveObject
+                position={[-2, -0.5, 0]}
+                type="decoration"
+                label="🖼️ 가족 사진"
+                content="소중한 추억들이 담긴 공간입니다. 가족과의 좋은 순간들을 떠올려보세요."
+                onInteract={() => onObjectInteract?.('가족 사진', '소중한 추억들이 담긴 공간입니다. 가족과의 좋은 순간들을 떠올려보세요.')}
+                color="#FFD700"
+              />
+            </>
+          )}
+          
           {/* 아바타와 이동 컨트롤러 */}
           {enableMovement ? (
             <CharacterController speed={0.15} enabled={enableMovement}>
@@ -428,6 +482,8 @@ const CounselingRoom = ({
                 position={[0, 0, 0]} 
                 avatarUrl={avatarUrl}
                 scale={1.8}
+                emotion={emotion}
+                emotionIntensity={emotionIntensity}
               />
             </CharacterController>
           ) : (
@@ -435,6 +491,8 @@ const CounselingRoom = ({
               position={[0, -2, 4]} 
               avatarUrl={avatarUrl}
               scale={1.8}
+              emotion={emotion}
+              emotionIntensity={emotionIntensity}
             />
           )}
           

@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, LogOut, History, Crown, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import ImprovementHistory from '@/components/improvement/ImprovementHistory';
@@ -17,6 +16,7 @@ import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { DashboardCharts } from '@/components/dashboard/DashboardCharts';
 import { GoalTracker } from '@/components/dashboard/GoalTracker';
 import { ThreeBackground } from '@/components/dashboard/ThreeBackground';
+import AuthenticationGuard from '@/components/observation/AuthenticationGuard';
 
 interface Profile {
   display_name: string;
@@ -40,8 +40,7 @@ interface Observation {
   categoryScores?: { [key: string]: number };
 }
 
-export default function HighlightDashboard() {
-  const { authenticated, loading: authLoading } = useAuthGuard();
+function DashboardContent() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [recentTests, setRecentTests] = useState<RecentTest[]>([]);
   const [observations, setObservations] = useState<Observation[]>([]);
@@ -50,10 +49,8 @@ export default function HighlightDashboard() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (authenticated) {
-      loadData();
-    }
-  }, [authenticated]);
+    loadData();
+  }, []);
 
   const loadData = async () => {
     try {
@@ -200,7 +197,7 @@ export default function HighlightDashboard() {
     navigate('/auth');
   };
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -400,5 +397,16 @@ export default function HighlightDashboard() {
         </div>
       </div>
     </SidebarProvider>
+  );
+}
+
+export default function HighlightDashboard() {
+  return (
+    <AuthenticationGuard 
+      fallbackMessage="개인 대시보드를 이용하려면 로그인이 필요합니다."
+      redirectPath="/auth"
+    >
+      <DashboardContent />
+    </AuthenticationGuard>
   );
 }

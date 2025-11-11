@@ -49,7 +49,7 @@ const MetaverseVoiceCounseling = () => {
   const [emotionIntensity, setEmotionIntensity] = useState(0.5);
   const chatRef = useRef<RealtimeChat | null>(null);
   const emotionDetectorRef = useRef<EmotionDetector | null>(null);
-  const { avatarUrl, openAvatarCreator } = useReadyPlayerMe();
+  const { avatarUrl, setAvatarUrl, openAvatarCreator } = useReadyPlayerMe();
   const { activeObject, objectContent, handleObjectInteraction, closeInteraction } = useInteractiveObjects();
 
   // 스트리밍 자막에서 발생하는 말더듬/중복어 제거
@@ -353,14 +353,48 @@ const MetaverseVoiceCounseling = () => {
                     />
                   </div>
 
-                  <Button
-                    variant="outline"
-                    className="w-full gap-2"
-                    onClick={openAvatarCreator}
-                  >
-                    <UserCircle className="w-4 h-4" />
-                    나만의 아바타 만들기 (선택)
-                  </Button>
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <UserCircle className="w-4 h-4" />
+                      아바타 설정
+                    </Label>
+                    
+                    <Button
+                      variant="outline"
+                      className="w-full gap-2"
+                      onClick={openAvatarCreator}
+                    >
+                      <UserCircle className="w-4 h-4" />
+                      Ready Player Me에서 아바타 만들기
+                    </Button>
+
+                    <div className="relative">
+                      <Input
+                        placeholder="또는 아바타 URL을 붙여넣으세요"
+                        value={avatarUrl}
+                        onChange={(e) => {
+                          const url = e.target.value.trim();
+                          setAvatarUrl(url);
+                          if (url && (url.includes('readyplayer.me') || url.includes('.glb'))) {
+                            toast({
+                              title: "아바타 URL 설정 완료 ✓",
+                              description: "입장 후 아바타가 적용됩니다",
+                            });
+                          }
+                        }}
+                        className="pr-10"
+                      />
+                      {avatarUrl && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          ✓
+                        </div>
+                      )}
+                    </div>
+                    
+                    <p className="text-xs text-muted-foreground">
+                      💡 Ready Player Me에서 생성한 .glb URL을 위 필드에 붙여넣으세요
+                    </p>
+                  </div>
                 </div>
 
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">
@@ -400,6 +434,7 @@ const MetaverseVoiceCounseling = () => {
         emotion={currentEmotion}
         emotionIntensity={emotionIntensity}
         onObjectInteract={handleObjectInteraction}
+        isSpeaking={isSpeaking}
       >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* 이동 가이드 */}

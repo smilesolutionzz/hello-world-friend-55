@@ -185,12 +185,6 @@ export const ReadyPlayerMeAvatar = ({
   );
 };
 
-// Ready Player Me 아바타 선택기 UI
-interface AvatarSelectorProps {
-  onSelect: (url: string) => void;
-  currentUrl?: string;
-}
-
 export const useReadyPlayerMe = () => {
   const [avatarUrl, setAvatarUrl] = useState<string>('');
   const [isCreating, setIsCreating] = useState(false);
@@ -214,16 +208,19 @@ export const useReadyPlayerMe = () => {
     
     document.body.appendChild(frame);
 
-    window.addEventListener('message', (event) => {
+    const handleMessage = (event: MessageEvent) => {
       const json = parse(event);
       if (json?.source === 'readyplayerme') {
         if (json.eventName === 'v1.avatar.exported') {
           setAvatarUrl(json.data.url);
           document.body.removeChild(frame);
           setIsCreating(false);
+          window.removeEventListener('message', handleMessage);
         }
       }
-    });
+    };
+
+    window.addEventListener('message', handleMessage);
 
     const parse = (event: MessageEvent) => {
       try {

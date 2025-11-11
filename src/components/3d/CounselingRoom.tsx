@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { ReadyPlayerMeAvatar } from '@/components/metaverse/ReadyPlayerMeAvatar';
 import { CharacterController } from '@/components/metaverse/CharacterController';
 import { InteractiveObject } from '@/components/metaverse/InteractiveObject';
+import { CounselorNPC } from '@/components/metaverse/CounselorNPC';
 import { EmotionType } from '@/utils/EmotionDetector';
 
 // Room components with different layouts
@@ -370,6 +371,7 @@ interface CounselingRoomProps {
   emotion?: EmotionType;
   emotionIntensity?: number;
   onObjectInteract?: (id: string, content: string) => void;
+  isSpeaking?: boolean;
 }
 
 const CounselingRoom = ({ 
@@ -379,7 +381,8 @@ const CounselingRoom = ({
   avatarUrl,
   emotion = 'neutral',
   emotionIntensity = 0.5,
-  onObjectInteract
+  onObjectInteract,
+  isSpeaking = false
 }: CounselingRoomProps) => {
   // 공간별 설정
   const getRoomSettings = () => {
@@ -474,6 +477,13 @@ const CounselingRoom = ({
               />
             </>
           )}
+
+          {/* AI 상담사 NPC - 항상 공간의 왼쪽에 배치 */}
+          <CounselorNPC 
+            position={[-4, -1.5, 2]} 
+            isSpeaking={isSpeaking}
+            name="AI 상담사"
+          />
           
           {/* 아바타와 이동 컨트롤러 */}
           {enableMovement ? (

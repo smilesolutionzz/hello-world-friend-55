@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, LogOut, History, Crown, TrendingUp, Brain, Activity, MessageSquare } from 'lucide-react';
+import { User, LogOut, History, Crown, TrendingUp, Brain, Activity, MessageSquare, Settings, RotateCcw, GripVertical } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -17,7 +17,34 @@ import { DashboardCharts } from '@/components/dashboard/DashboardCharts';
 import { GoalTracker } from '@/components/dashboard/GoalTracker';
 import { ThreeBackground } from '@/components/dashboard/ThreeBackground';
 import { TestComparison } from '@/components/dashboard/TestComparison';
+import { ActivityTimeline } from '@/components/dashboard/ActivityTimeline';
 import AuthenticationGuard from '@/components/observation/AuthenticationGuard';
+import { useDashboardWidgets, WidgetType } from '@/hooks/useDashboardWidgets';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Profile {
   display_name: string;
@@ -41,13 +68,83 @@ interface Observation {
   categoryScores?: { [key: string]: number };
 }
 
+interface SortableWidgetProps {
+  id: string;
+  children: React.ReactNode;
+  isCustomizing: boolean;
+}
+
+function SortableWidget({ id, children, isCustomizing }: SortableWidgetProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="relative group">
+      {isCustomizing && (
+        <div 
+          {...attributes} 
+          {...listeners}
+          className="absolute -left-2 top-1/2 -translate-y-1/2 z-10 cursor-grab active:cursor-grabbing bg-purple-600/80 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          <GripVertical className="w-5 h-5 text-white" />
+        </div>
+      )}
+      <div className={isCustomizing ? 'pointer-events-none' : ''}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function DashboardContent() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [recentTests, setRecentTests] = useState<RecentTest[]>([]);
   const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isCustomizing, setIsCustomizing] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { widgets, reorderWidgets, toggleWidget, resetWidgets } = useDashboardWidgets();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (over && active.id !== over.id) {
+      const oldIndex = widgets.findIndex((w) => w.id === active.id);
+      const newIndex = widgets.findIndex((w) => w.id === over.id);
+      
+      const newOrder = arrayMove(widgets, oldIndex, newIndex).map((widget, index) => ({
+        ...widget,
+        order: index,
+      }));
+      
+      reorderWidgets(newOrder);
+      
+      toast({
+        title: "위젯 순서 변경됨",
+        description: "대시보드 레이아웃이 업데이트되었습니다.",
+      });
+    }
+  };
 
   useEffect(() => {
     loadData();
@@ -240,6 +337,37 @@ function DashboardContent() {
               </div>
               
               <div className="flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="border-purple-500/30 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/50 backdrop-blur-sm"
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      대시보드 설정
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-slate-900/95 border-purple-500/30">
+                    <DropdownMenuLabel className="text-purple-200">위젯 관리</DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-purple-500/20" />
+                    <DropdownMenuItem 
+                      onClick={() => setIsCustomizing(!isCustomizing)}
+                      className="text-purple-300 focus:bg-purple-500/20 focus:text-purple-200"
+                    >
+                      <GripVertical className="w-4 h-4 mr-2" />
+                      {isCustomizing ? '편집 완료' : '위젯 재배치'}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={resetWidgets}
+                      className="text-purple-300 focus:bg-purple-500/20 focus:text-purple-200"
+                    >
+                      <RotateCcw className="w-4 h-4 mr-2" />
+                      초기화
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                
                 <Button 
                   variant="outline" 
                   size="sm"
@@ -282,13 +410,7 @@ function DashboardContent() {
                 </TabsList>
 
                 <TabsContent value="tests" className="space-y-6">
-                  {/* 통계 카드 섹션 */}
-                  <DashboardStats 
-                    recentTests={recentTests}
-                    observations={observations}
-                  />
-                  
-                  {/* 빠른 시작 CTA 섹션 */}
+                  {/* 빠른 시작 CTA 섹션 - 고정 */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Card 
                       className="bg-gradient-to-br from-blue-900/40 to-blue-950/40 backdrop-blur-xl border border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 cursor-pointer group"
@@ -341,156 +463,193 @@ function DashboardContent() {
                       </CardContent>
                     </Card>
                   </div>
-                  
-                  {/* 검사 결과 비교 섹션 */}
-                  <TestComparison 
-                    recentTests={recentTests}
-                    observations={observations}
-                  />
-                  
-                  {/* 목표 추적 섹션 */}
-                  <GoalTracker />
-                  
-                  {/* 차트 섹션 */}
-                  <DashboardCharts 
-                    recentTests={recentTests}
-                    observations={observations}
-                  />
-                  
-                  {/* AI 성격 분석 섹션 */}
-                  <PersonalityAnalysis 
-                    testData={recentTests}
-                    observations={observations}
-                  />
-                  
-                  {/* 최근 검사 & 추천 섹션 */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Recent Tests */}
-                    <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-                          <History className="w-5 h-5 text-purple-400" />
-                          최근 검사
-                        </CardTitle>
-                        <CardDescription className="text-purple-300/70">
-                          최근 완료한 검사 결과를 확인하세요
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        {recentTests.length > 0 ? (
-                          <div className="space-y-3">
-                            {recentTests.slice(0, 3).map((test) => (
-                              <div 
-                                key={test.id}
-                                className="p-3 border border-purple-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 hover:border-purple-400/40 hover:shadow-lg hover:shadow-purple-500/20"
-                                onClick={() => {
-                                  if (test.test_types.name === '프리미엄 검사') {
-                                    navigate(`/assessment-detail/${test.id}`);
-                                  } else {
-                                    navigate(`/assessment/${test.id}`);
-                                  }
-                                }}
-                              >
-                                <div className="flex justify-between items-start">
-                                  <div>
-                                    <p className="font-medium text-sm bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">{test.test_types.name}</p>
-                                    <p className="text-xs text-purple-400/70">
-                                      {new Date(test.completed_at).toLocaleDateString('ko-KR')}
-                                    </p>
+
+                  {/* 드래그 가능한 위젯들 */}
+                  {isCustomizing && (
+                    <Card className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 backdrop-blur-xl border border-purple-500/40">
+                      <CardContent className="p-4">
+                        <p className="text-sm text-purple-200 flex items-center gap-2">
+                          <GripVertical className="w-4 h-4" />
+                          위젯 옆의 아이콘을 드래그해서 순서를 변경하세요
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={widgets.filter(w => w.enabled).map(w => w.id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="space-y-6">
+                        {widgets.filter(w => w.enabled).map((widget) => (
+                          <SortableWidget key={widget.id} id={widget.id} isCustomizing={isCustomizing}>
+                            {widget.id === 'stats' && (
+                              <DashboardStats 
+                                recentTests={recentTests}
+                                observations={observations}
+                              />
+                            )}
+                            {widget.id === 'timeline' && (
+                              <ActivityTimeline
+                                recentTests={recentTests}
+                                observations={observations}
+                              />
+                            )}
+                            {widget.id === 'comparison' && (
+                              <TestComparison 
+                                recentTests={recentTests}
+                                observations={observations}
+                              />
+                            )}
+                            {widget.id === 'goals' && <GoalTracker />}
+                            {widget.id === 'charts' && (
+                              <DashboardCharts 
+                                recentTests={recentTests}
+                                observations={observations}
+                              />
+                            )}
+                            {widget.id === 'personality' && (
+                              <PersonalityAnalysis 
+                                testData={recentTests}
+                                observations={observations}
+                              />
+                            )}
+                            {widget.id === 'recent' && (
+                              <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20">
+                                <CardHeader>
+                                  <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                                    <History className="w-5 h-5 text-purple-400" />
+                                    최근 검사
+                                  </CardTitle>
+                                  <CardDescription className="text-purple-300/70">
+                                    최근 완료한 검사 결과를 확인하세요
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                  {recentTests.length > 0 ? (
+                                    <div className="space-y-3">
+                                      {recentTests.slice(0, 3).map((test) => (
+                                        <div 
+                                          key={test.id}
+                                          className="p-3 border border-purple-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-purple-500/10 hover:to-blue-500/10 transition-all"
+                                          onClick={() => {
+                                            if (test.test_types.name === '프리미엄 검사') {
+                                              navigate(`/assessment-detail/${test.id}`);
+                                            } else {
+                                              navigate(`/assessment/${test.id}`);
+                                            }
+                                          }}
+                                        >
+                                          <div className="flex justify-between items-start">
+                                            <div>
+                                              <p className="font-medium text-sm text-white">{test.test_types.name}</p>
+                                              <p className="text-xs text-purple-400/70">
+                                                {new Date(test.completed_at).toLocaleDateString('ko-KR')}
+                                              </p>
+                                            </div>
+                                            <Badge variant="outline" className="text-xs border-purple-500/30 bg-purple-500/10 text-purple-300">
+                                              {test.scores.total_score || 0}점
+                                            </Badge>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <div className="text-center py-8">
+                                      <Brain className="w-12 h-12 mx-auto mb-4 text-purple-500/30" />
+                                      <p className="text-sm text-purple-400/60 mb-4">아직 완료한 검사가 없습니다</p>
+                                      <Button 
+                                        onClick={() => navigate('/assessment')}
+                                        className="bg-gradient-to-r from-purple-600 to-blue-600"
+                                      >
+                                        첫 검사 시작하기
+                                      </Button>
+                                    </div>
+                                  )}
+                                </CardContent>
+                              </Card>
+                            )}
+                            {widget.id === 'recommendations' && (
+                              <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20">
+                                <CardHeader>
+                                  <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                                    <TrendingUp className="w-5 h-5 text-emerald-400" />
+                                    추천 기능
+                                  </CardTitle>
+                                  <CardDescription className="text-purple-300/70">
+                                    맞춤형 검사 및 기능 추천
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-3">
+                                  <div 
+                                    className="p-3 border border-emerald-500/20 rounded-lg cursor-pointer hover:bg-emerald-500/10 transition-all"
+                                    onClick={() => navigate('/metaverse-voice')}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div className="p-2 bg-emerald-500/10 rounded-lg">
+                                        <MessageSquare className="w-5 h-5 text-emerald-400" />
+                                      </div>
+                                      <div>
+                                        <p className="font-medium text-sm text-white">메타버스 음성 상담</p>
+                                        <p className="text-xs text-purple-400/70">실시간 AI 상담 체험</p>
+                                      </div>
+                                    </div>
                                   </div>
-                                  <Badge variant="outline" className="text-xs border-purple-500/30 bg-purple-500/10 text-purple-300">
-                                    {test.scores.total_score || 0}점
-                                  </Badge>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-center py-8">
-                            <Brain className="w-12 h-12 mx-auto mb-4 text-purple-500/30" />
-                            <p className="text-sm text-purple-400/60 mb-4">아직 완료한 검사가 없습니다</p>
-                            <Button 
-                              onClick={() => navigate('/assessment')}
-                              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                            >
-                              첫 검사 시작하기
-                            </Button>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
+                                  
+                                  <div 
+                                    className="p-3 border border-blue-500/20 rounded-lg cursor-pointer hover:bg-blue-500/10 transition-all"
+                                    onClick={() => navigate('/observation')}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div className="p-2 bg-blue-500/10 rounded-lg">
+                                        <Activity className="w-5 h-5 text-blue-400" />
+                                      </div>
+                                      <div>
+                                        <p className="font-medium text-sm text-white">관찰 기록하기</p>
+                                        <p className="text-xs text-purple-400/70">일상 행동 기록 및 분석</p>
+                                      </div>
+                                    </div>
+                                  </div>
 
-                    {/* 추천 기능 */}
-                    <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-                          <TrendingUp className="w-5 h-5 text-emerald-400" />
-                          추천 기능
-                        </CardTitle>
-                        <CardDescription className="text-purple-300/70">
-                          맞춤형 검사 및 기능 추천
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        <div 
-                          className="p-3 border border-emerald-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-emerald-500/10 hover:to-emerald-500/5 transition-all duration-300"
-                          onClick={() => navigate('/metaverse-voice')}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-emerald-500/10 rounded-lg">
-                              <MessageSquare className="w-5 h-5 text-emerald-400" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-sm text-white">메타버스 음성 상담</p>
-                              <p className="text-xs text-purple-400/70">실시간 AI 상담 체험</p>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div 
-                          className="p-3 border border-blue-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-blue-500/10 hover:to-blue-500/5 transition-all duration-300"
-                          onClick={() => navigate('/observation')}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-500/10 rounded-lg">
-                              <Activity className="w-5 h-5 text-blue-400" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-sm text-white">관찰 기록하기</p>
-                              <p className="text-xs text-purple-400/70">일상 행동 기록 및 분석</p>
-                            </div>
-                          </div>
-                        </div>
+                                  <div 
+                                    className="p-3 border border-amber-500/20 rounded-lg cursor-pointer hover:bg-amber-500/10 transition-all"
+                                    onClick={() => navigate('/stress-test')}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div className="p-2 bg-amber-500/10 rounded-lg">
+                                        <Brain className="w-5 h-5 text-amber-400" />
+                                      </div>
+                                      <div>
+                                        <p className="font-medium text-sm text-white">스트레스 검사</p>
+                                        <p className="text-xs text-purple-400/70">현재 스트레스 수준 체크</p>
+                                      </div>
+                                    </div>
+                                  </div>
 
-                        <div 
-                          className="p-3 border border-amber-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-amber-500/10 hover:to-amber-500/5 transition-all duration-300"
-                          onClick={() => navigate('/stress-test')}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-amber-500/10 rounded-lg">
-                              <Brain className="w-5 h-5 text-amber-400" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-sm text-white">스트레스 검사</p>
-                              <p className="text-xs text-purple-400/70">현재 스트레스 수준 체크</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {profile?.subscription_tier === 'free' && (
-                          <div className="pt-2 border-t border-purple-500/20">
-                            <Button 
-                              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-500/30"
-                              onClick={() => navigate('/subscription')}
-                            >
-                              <Crown className="w-4 h-4 mr-2" />
-                              프리미엄 구독하기
-                            </Button>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </div>
+                                  {profile?.subscription_tier === 'free' && (
+                                    <div className="pt-2 border-t border-purple-500/20">
+                                      <Button 
+                                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                                        onClick={() => navigate('/subscription')}
+                                      >
+                                        <Crown className="w-4 h-4 mr-2" />
+                                        프리미엄 구독하기
+                                      </Button>
+                                    </div>
+                                  )}
+                                </CardContent>
+                              </Card>
+                            )}
+                          </SortableWidget>
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 </TabsContent>
 
                 <TabsContent value="improvement">

@@ -489,7 +489,7 @@ const CounselingRoom = ({
           {enableMovement ? (
             <CharacterController speed={0.15} enabled={enableMovement}>
               <ReadyPlayerMeAvatar 
-                position={[0, -1.5, 0]} 
+                position={[0, 0, 0]} 
                 avatarUrl={avatarUrl}
                 scale={2}
                 emotion={emotion}

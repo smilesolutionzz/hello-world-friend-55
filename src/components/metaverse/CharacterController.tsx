@@ -95,7 +95,7 @@ export const CharacterController = ({
   });
 
   return (
-    <group ref={groupRef} position={[0, -2, 4]}>
+    <group ref={groupRef} position={[0, -1.5, 3]}>
       {children}
     </group>
   );

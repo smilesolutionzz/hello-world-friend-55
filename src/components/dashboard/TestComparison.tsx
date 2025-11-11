@@ -45,10 +45,19 @@ export function TestComparison({ recentTests, observations }: TestComparisonProp
   }, [test1, test2]);
 
   const compareTests = () => {
-    const testA = allTests.find(t => t.id === test1);
-    const testB = allTests.find(t => t.id === test2);
+    let testA = allTests.find(t => t.id === test1);
+    let testB = allTests.find(t => t.id === test2);
 
     if (!testA || !testB) return;
+
+    // 날짜 기준으로 정렬 (이전 검사가 더 과거여야 함)
+    const dateA = new Date(testA.date).getTime();
+    const dateB = new Date(testB.date).getTime();
+    
+    if (dateA > dateB) {
+      // 날짜 순서가 잘못된 경우 swap
+      [testA, testB] = [testB, testA];
+    }
 
     // 점수 차이 계산
     const scoreDiff = testB.score - testA.score;
@@ -153,11 +162,14 @@ export function TestComparison({ recentTests, observations }: TestComparisonProp
               <Card className="bg-gradient-to-br from-blue-900/40 to-blue-950/40 backdrop-blur-xl border border-blue-500/30">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-blue-300/80">이전 점수</span>
+                    <span className="text-xs text-blue-300/80">이전 검사</span>
                     <Calendar className="w-4 h-4 text-blue-400" />
                   </div>
+                  <p className="text-sm font-semibold text-white mb-1">
+                    {comparisonData.testA.name}
+                  </p>
                   <p className="text-2xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
-                    {comparisonData.testA.score.toFixed(1)}
+                    {comparisonData.testA.score.toFixed(1)}점
                   </p>
                   <p className="text-xs text-blue-300/70 mt-1">
                     {format(new Date(comparisonData.testA.date), 'yyyy년 MM월 dd일', { locale: ko })}
@@ -183,11 +195,14 @@ export function TestComparison({ recentTests, observations }: TestComparisonProp
               <Card className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 backdrop-blur-xl border border-emerald-500/30">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-emerald-300/80">이후 점수</span>
+                    <span className="text-xs text-emerald-300/80">이후 검사</span>
                     <Award className="w-4 h-4 text-emerald-400" />
                   </div>
+                  <p className="text-sm font-semibold text-white mb-1">
+                    {comparisonData.testB.name}
+                  </p>
                   <p className="text-2xl font-bold bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
-                    {comparisonData.testB.score.toFixed(1)}
+                    {comparisonData.testB.score.toFixed(1)}점
                   </p>
                   <p className="text-xs text-emerald-300/70 mt-1">
                     {format(new Date(comparisonData.testB.date), 'yyyy년 MM월 dd일', { locale: ko })}

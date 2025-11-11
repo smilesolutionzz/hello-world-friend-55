@@ -109,7 +109,24 @@ export const CounselorNPC = ({
     }
   };
 
+  // 감정에 따른 얼굴 표정
+  const getFaceExpression = () => {
+    switch (emotion) {
+      case 'empathy':
+        return { eyeScale: 1.1, eyeY: 0.05, mouthCurve: 0.1, mouthY: -0.05 };
+      case 'encouragement':
+        return { eyeScale: 1.2, eyeY: 0.08, mouthCurve: 0.15, mouthY: 0 };
+      case 'concern':
+        return { eyeScale: 0.9, eyeY: 0.02, mouthCurve: -0.05, mouthY: -0.08 };
+      case 'joy':
+        return { eyeScale: 1.3, eyeY: 0.1, mouthCurve: 0.2, mouthY: 0.02 };
+      default:
+        return { eyeScale: 1, eyeY: 0, mouthCurve: 0, mouthY: 0 };
+    }
+  };
+
   const colors = getEmotionColors();
+  const face = getFaceExpression();
 
   return (
     <group ref={groupRef} position={position}>
@@ -121,6 +138,24 @@ export const CounselorNPC = ({
           emissive={colors.head}
           emissiveIntensity={emotion !== 'neutral' ? 0.2 : 0}
         />
+      </mesh>
+
+      {/* 눈 (왼쪽) */}
+      <mesh position={[-0.1, 1.55 + face.eyeY, 0.25]} scale={[1, face.eyeScale, 1]}>
+        <sphereGeometry args={[0.05, 8, 8]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+
+      {/* 눈 (오른쪽) */}
+      <mesh position={[0.1, 1.55 + face.eyeY, 0.25]} scale={[1, face.eyeScale, 1]}>
+        <sphereGeometry args={[0.05, 8, 8]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+
+      {/* 입 */}
+      <mesh position={[0, 1.4 + face.mouthY, 0.25]} rotation={[0, 0, face.mouthCurve]}>
+        <torusGeometry args={[0.08, 0.02, 8, 16, Math.PI]} />
+        <meshStandardMaterial color="#000000" />
       </mesh>
 
       {/* 몸 */}

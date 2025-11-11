@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, Gamepad2 } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, Gamepad2, TrendingUp } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
@@ -23,6 +23,8 @@ import { SessionRecorder } from '@/utils/SessionRecorder';
 import { RecordingConsent } from './RecordingConsent';
 import { AvatarCustomization, type AvatarCustomization as AvatarCustomizationType } from './AvatarCustomization';
 import { SessionTimeline } from './SessionTimeline';
+import { EmotionTrendChart } from './EmotionTrendChart';
+import { PuzzleGame } from './PuzzleGame';
 import { Slider } from '@/components/ui/slider';
 
 interface Message {
@@ -59,6 +61,17 @@ const MetaverseVoiceCounseling = () => {
   const [showMovementGuide, setShowMovementGuide] = useState(true);
   const [currentEmotion, setCurrentEmotion] = useState<EmotionType>('neutral');
   const [emotionIntensity, setEmotionIntensity] = useState(0.5);
+  
+  // 감정 변화 추적
+  useEffect(() => {
+    if (isConnected && currentEmotion) {
+      setEmotionHistory(prev => [...prev, {
+        timestamp: new Date(),
+        emotion: currentEmotion,
+        intensity: emotionIntensity
+      }]);
+    }
+  }, [currentEmotion, emotionIntensity, isConnected]);
   const chatRef = useRef<RealtimeChat | null>(null);
   const emotionDetectorRef = useRef<EmotionDetector | null>(null);
   const { avatarUrl, setAvatarUrl, openAvatarCreator } = useReadyPlayerMe();
@@ -88,6 +101,13 @@ const MetaverseVoiceCounseling = () => {
   const [showTimeline, setShowTimeline] = useState(false);
   const [sessionStartTime] = useState(new Date());
   const [showGame, setShowGame] = useState(false);
+  const [gameType, setGameType] = useState<'catch' | 'puzzle'>('catch');
+  const [emotionHistory, setEmotionHistory] = useState<Array<{
+    timestamp: Date;
+    emotion: EmotionType;
+    intensity: number;
+  }>>([]);
+  const [showEmotionChart, setShowEmotionChart] = useState(false);
 
 
   // 초기화
@@ -910,18 +930,65 @@ const MetaverseVoiceCounseling = () => {
               </div>
             )}
 
-            {/* 미니게임 버튼 */}
+            {/* 게임 및 차트 버튼 */}
             {isConnected && (
-              <div className="fixed bottom-20 right-4">
+              <div className="fixed bottom-20 right-4 flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      setGameType('catch');
+                      setShowGame(!showGame);
+                    }}
+                    variant={showGame && gameType === 'catch' ? "default" : "outline"}
+                    size="lg"
+                    className="gap-2 shadow-lg"
+                  >
+                    <Gamepad2 className="w-5 h-5" />
+                    캐치볼
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setGameType('puzzle');
+                      setShowGame(!showGame);
+                    }}
+                    variant={showGame && gameType === 'puzzle' ? "default" : "outline"}
+                    size="lg"
+                    className="gap-2 shadow-lg"
+                  >
+                    🧩
+                    퍼즐
+                  </Button>
+                </div>
                 <Button
-                  onClick={() => setShowGame(!showGame)}
-                  variant={showGame ? "default" : "outline"}
+                  onClick={() => setShowEmotionChart(!showEmotionChart)}
+                  variant={showEmotionChart ? "default" : "outline"}
                   size="lg"
                   className="gap-2 shadow-lg"
                 >
-                  <Gamepad2 className="w-5 h-5" />
-                  {showGame ? '게임 종료' : '캐치볼'}
+                  <TrendingUp className="w-5 h-5" />
+                  감정 분석
                 </Button>
+              </div>
+            )}
+
+            {/* 감정 트렌드 차트 */}
+            {showEmotionChart && emotionHistory.length > 0 && (
+              <div className="fixed left-4 top-20 z-40">
+                <EmotionTrendChart emotionHistory={emotionHistory} />
+              </div>
+            )}
+
+            {/* 퍼즐 게임 */}
+            {showGame && gameType === 'puzzle' && (
+              <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-40">
+                <PuzzleGame
+                  onComplete={() => {
+                    toast({
+                      title: "🎉 퍼즐 완성!",
+                      description: "훌륭합니다! 집중력이 높아졌습니다.",
+                    });
+                  }}
+                />
               </div>
             )}
           </Card>

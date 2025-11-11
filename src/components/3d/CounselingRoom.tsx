@@ -557,7 +557,6 @@ const CounselingRoom = ({
             />
           )}
           
-          
           {/* 카메라 컨트롤 */}
           <OrbitControls 
             enablePan={false}

@@ -1,21 +1,39 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
+import type { GestureType } from '@/utils/GestureSystem';
+import { getGestureAnimation } from '@/utils/GestureSystem';
 
 interface CounselorNPCProps {
   position: [number, number, number];
   isSpeaking?: boolean;
   name?: string;
+  gesture?: GestureType | null;
+  message?: string;
 }
 
 export const CounselorNPC = ({ 
   position, 
   isSpeaking = false,
-  name = "AI 상담사"
+  name = "AI 상담사",
+  gesture = null,
+  message = ""
 }: CounselorNPCProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const lightRef = useRef<THREE.PointLight>(null);
+  const leftArmRef = useRef<THREE.Mesh>(null);
+  const rightArmRef = useRef<THREE.Mesh>(null);
+  const bodyRef = useRef<THREE.Mesh>(null);
+  const gestureStartTime = useRef<number>(0);
+  const currentGesture = useRef<GestureType | null>(null);
+
+  useEffect(() => {
+    if (gesture !== currentGesture.current) {
+      currentGesture.current = gesture;
+      gestureStartTime.current = Date.now();
+    }
+  }, [gesture]);
 
   useFrame((state) => {
     if (groupRef.current) {
@@ -27,6 +45,41 @@ export const CounselorNPC = ({
       if (isSpeaking) {
         const speak = Math.sin(state.clock.elapsedTime * 8) * 0.05;
         groupRef.current.scale.setScalar(1.8 + speak);
+      }
+    }
+
+    // 제스처 애니메이션
+    if (currentGesture.current && currentGesture.current !== 'idle') {
+      const elapsed = Date.now() - gestureStartTime.current;
+      const progress = Math.min(elapsed / 2000, 1); // 2초 동안 진행
+      
+      const animation = getGestureAnimation(currentGesture.current, progress);
+      
+      if (leftArmRef.current && rightArmRef.current) {
+        leftArmRef.current.rotation.z = Math.PI / 6 + (animation.armRotation || 0);
+        rightArmRef.current.rotation.z = -Math.PI / 6 - (animation.armRotation || 0);
+        leftArmRef.current.position.y = 0.8 + (animation.armRaise || 0);
+        rightArmRef.current.position.y = 0.8 + (animation.armRaise || 0);
+      }
+      
+      if (bodyRef.current && animation.bodyBend) {
+        bodyRef.current.rotation.x = animation.bodyBend;
+      }
+      
+      // 제스처 완료 후 초기화
+      if (progress >= 1) {
+        currentGesture.current = null;
+      }
+    } else {
+      // 기본 자세로 복귀
+      if (leftArmRef.current && rightArmRef.current) {
+        leftArmRef.current.rotation.z = Math.PI / 6;
+        rightArmRef.current.rotation.z = -Math.PI / 6;
+        leftArmRef.current.position.y = 0.8;
+        rightArmRef.current.position.y = 0.8;
+      }
+      if (bodyRef.current) {
+        bodyRef.current.rotation.x = 0;
       }
     }
 
@@ -47,19 +100,19 @@ export const CounselorNPC = ({
       </mesh>
 
       {/* 몸 */}
-      <mesh position={[0, 0.8, 0]} castShadow>
+      <mesh ref={bodyRef} position={[0, 0.8, 0]} castShadow>
         <capsuleGeometry args={[0.25, 0.8, 8, 8]} />
         <meshStandardMaterial color="#4682B4" />
       </mesh>
 
       {/* 왼팔 */}
-      <mesh position={[-0.35, 0.8, 0]} rotation={[0, 0, Math.PI / 6]} castShadow>
+      <mesh ref={leftArmRef} position={[-0.35, 0.8, 0]} rotation={[0, 0, Math.PI / 6]} castShadow>
         <capsuleGeometry args={[0.08, 0.5, 6, 6]} />
         <meshStandardMaterial color="#87CEEB" />
       </mesh>
 
       {/* 오른팔 */}
-      <mesh position={[0.35, 0.8, 0]} rotation={[0, 0, -Math.PI / 6]} castShadow>
+      <mesh ref={rightArmRef} position={[0.35, 0.8, 0]} rotation={[0, 0, -Math.PI / 6]} castShadow>
         <capsuleGeometry args={[0.08, 0.5, 6, 6]} />
         <meshStandardMaterial color="#87CEEB" />
       </mesh>

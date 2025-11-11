@@ -15,9 +15,12 @@ import { useInteractiveObjects } from '@/components/metaverse/InteractiveObject'
 import { AvatarPreview } from '@/components/metaverse/AvatarPreview';
 import { AvatarGallery } from '@/components/metaverse/AvatarGallery';
 import { getSoundEffects } from '@/utils/SoundEffects';
-import { getMusicPlayer, MUSIC_OPTIONS, MusicType } from '@/utils/BackgroundMusic';
-import { GestureManager, GESTURES, GestureType, GestureState } from '@/utils/GestureSystem';
-import { GroupPresence, GroupUserList, UserPresence } from '@/components/metaverse/GroupPresence';
+import { getMusicPlayer, MUSIC_OPTIONS, type MusicType } from '@/utils/BackgroundMusic';
+import { GestureManager, GESTURES, type GestureType } from '@/utils/GestureSystem';
+import { detectCounselorGesture } from '@/utils/CounselorGestureDetector';
+import { SessionRecorder } from '@/utils/SessionRecorder';
+import { RecordingConsent } from './RecordingConsent';
+import { AvatarCustomization, type AvatarCustomization as AvatarCustomizationType } from './AvatarCustomization';
 import { Slider } from '@/components/ui/slider';
 
 interface Message {
@@ -62,17 +65,37 @@ const MetaverseVoiceCounseling = () => {
   // 새로운 기능 상태
   const [backgroundMusic, setBackgroundMusic] = useState<MusicType>('none');
   const [musicVolume, setMusicVolume] = useState(0.3);
-  const [currentGesture, setCurrentGesture] = useState<GestureState | null>(null);
+  const [currentGesture, setCurrentGesture] = useState<GestureType | null>(null);
+  const [counselorGesture, setCounselorGesture] = useState<GestureType | null>(null);
   const [groupMode, setGroupMode] = useState(false);
-  const [groupUsers, setGroupUsers] = useState<UserPresence[]>([]);
   const [avatarPosition, setAvatarPosition] = useState({ x: 0, y: -1.5, z: 3 });
-  const gestureManagerRef = useRef<GestureManager>(new GestureManager(setCurrentGesture));
+  const gestureManagerRef = useRef<GestureManager | null>(null);
+  const sessionRecorderRef = useRef<SessionRecorder | null>(null);
+  const [showRecordingConsent, setShowRecordingConsent] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [showCustomization, setShowCustomization] = useState(false);
+  const [avatarCustomization, setAvatarCustomization] = useState<AvatarCustomizationType>({
+    skinTone: 30,
+    hairColor: 30,
+    shirtColor: 210,
+    pantsColor: 220,
+    hasGlasses: false,
+    glassesStyle: 0
+  });
 
+
+  // 초기화
+  useEffect(() => {
+    gestureManagerRef.current = new GestureManager((gesture) => {
+      setCurrentGesture(gesture?.type || null);
+    });
+    sessionRecorderRef.current = new SessionRecorder();
+  }, []);
 
   // 제스처 키 이벤트 핸들러
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (!isConnected) return;
+      if (!isConnected || !gestureManagerRef.current) return;
       
       switch(e.key) {
         case '1':
@@ -162,7 +185,21 @@ const MetaverseVoiceCounseling = () => {
       const finalText = cleanTranscript(event.transcript || '');
       setMessages(prev => prev.map((m, i, arr) => {
         if (m.role === 'assistant' && (m.responseId === responseId || (i === arr.length - 1 && !m.responseId))) {
-          return { ...m, content: finalText, responseId };
+          const fullMessage = { ...m, content: finalText, responseId };
+          
+          // 녹음 중이면 메시지 추가
+          if (sessionRecorderRef.current?.getIsRecording()) {
+            sessionRecorderRef.current.addMessage('assistant', fullMessage.content);
+          }
+          
+          // 제스처 감지
+          const gesture = detectCounselorGesture(fullMessage.content);
+          if (gesture) {
+            setCounselorGesture(gesture);
+            setTimeout(() => setCounselorGesture(null), 2000);
+          }
+          
+          return fullMessage;
         }
         return m;
       }));
@@ -170,11 +207,17 @@ const MetaverseVoiceCounseling = () => {
     
     // 사용자 음성 인식 완료
     else if (event.type === 'conversation.item.input_audio_transcription.completed') {
+      const userText = cleanTranscript(event.transcript || '');
       setMessages(prev => [...prev, {
         role: 'user',
-        content: cleanTranscript(event.transcript || ''),
+        content: userText,
         timestamp: new Date()
       }]);
+      
+      // 녹음 중이면 사용자 메시지 추가
+      if (sessionRecorderRef.current?.getIsRecording()) {
+        sessionRecorderRef.current.addMessage('user', userText);
+      }
     }
     
     // AI 음성 재생 중/완료
@@ -195,6 +238,23 @@ const MetaverseVoiceCounseling = () => {
     try {
       setIsLoading(true);
       
+      // 녹음 동의 요청
+      setShowRecordingConsent(true);
+    } catch (error) {
+      console.error('Error starting conversation:', error);
+      toast({
+        title: "연결 실패",
+        description: "음성 상담 연결에 실패했습니다.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
+  };
+
+  const handleRecordingConsent = async (consent: boolean) => {
+    setShowRecordingConsent(false);
+    
+    try {
       // Request microphone permission
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -217,22 +277,53 @@ const MetaverseVoiceCounseling = () => {
       const ambientType = selectedRoom === 'outdoor' ? 'outdoor' : 'indoor';
       soundEffects.startAmbient(ambientType);
       
+      // 녹음 시작 (동의한 경우)
+      if (consent && sessionRecorderRef.current) {
+        const sessionId = await sessionRecorderRef.current.startRecording(true);
+        if (sessionId) {
+          setIsRecording(true);
+          console.log('Recording started:', sessionId);
+        }
+      }
+      
       toast({
         title: "연결 완료",
         description: "AI 상담사와 대화를 시작하세요. AI가 먼저 인사할 거예요!",
       });
     } catch (error) {
       console.error('Error starting conversation:', error);
-      setIsLoading(false);
       toast({
         title: "연결 실패",
         description: error instanceof Error ? error.message : '대화를 시작할 수 없습니다',
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const endConversation = () => {
+  const endConversation = async () => {
+    console.log('Ending conversation...');
+    
+    // 녹음 중지 및 저장
+    if (isRecording && sessionRecorderRef.current) {
+      const session = await sessionRecorderRef.current.stopRecording();
+      if (session) {
+        setIsRecording(false);
+        toast({
+          title: "세션 저장됨",
+          description: "상담 내용이 저장되었습니다. 다운로드할 수 있습니다.",
+        });
+        
+        // 자동 다운로드 옵션 제공
+        setTimeout(() => {
+          if (window.confirm('상담 세션을 다운로드하시겠습니까?')) {
+            sessionRecorderRef.current?.downloadSession(session.id);
+          }
+        }, 1000);
+      }
+    }
+    
     chatRef.current?.disconnect();
     emotionDetectorRef.current?.disconnect();
     
@@ -517,8 +608,16 @@ const MetaverseVoiceCounseling = () => {
                     )}
                   </div>
 
-                  {/* 아바타 미리보기 */}
-                  <AvatarPreview avatarUrl={avatarUrl} />
+                  {/* 아바타 미리보기와 커스터마이징 */}
+                  <div className="flex gap-4">
+                    <AvatarPreview avatarUrl={avatarUrl} onUrlChange={setAvatarUrl} />
+                    {isConnected && (
+                      <Button variant="outline" onClick={() => setShowCustomization(!showCustomization)} className="h-auto">
+                        🎨 꾸미기
+                      </Button>
+                    )}
+                  </div>
+                  {showCustomization && <AvatarCustomization onCustomize={setAvatarCustomization} />}
                   
                   <Button
                     variant="outline"
@@ -788,7 +887,16 @@ const MetaverseVoiceCounseling = () => {
             </p>
           </div>
         </div>
+        
+        {isRecording && (
+          <div className="fixed top-4 right-4 bg-destructive/90 text-destructive-foreground px-4 py-2 rounded-lg flex items-center gap-2 animate-pulse">
+            <div className="w-3 h-3 bg-destructive-foreground rounded-full" />
+            녹음 중
+          </div>
+        )}
       </CounselingRoom>
+      
+      <RecordingConsent open={showRecordingConsent} onConsent={handleRecordingConsent} />
     </div>
   );
 };

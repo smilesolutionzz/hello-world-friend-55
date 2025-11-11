@@ -7,7 +7,9 @@ import { CharacterController } from '@/components/metaverse/CharacterController'
 import { InteractiveObject } from '@/components/metaverse/InteractiveObject';
 import { CounselorNPC } from '@/components/metaverse/CounselorNPC';
 import { EmotionType } from '@/utils/EmotionDetector';
-import { GroupPresence, UserPresence } from '@/components/metaverse/GroupPresence';
+import { GroupPresence } from '../metaverse/GroupPresence';
+import type { AvatarCustomization } from '../metaverse/AvatarCustomization';
+import type { GestureType } from '@/utils/GestureSystem';
 
 // Room components with different layouts
 const Room = ({ type = 'counseling' }: { type?: RoomType }) => {
@@ -373,6 +375,8 @@ interface CounselingRoomProps {
   emotionIntensity?: number;
   onObjectInteract?: (id: string, content: string) => void;
   isSpeaking?: boolean;
+  counselorGesture?: GestureType | null;
+  avatarCustomization?: AvatarCustomization;
   groupMode?: boolean;
   userName?: string;
   avatarPosition?: { x: number; y: number; z: number };
@@ -387,6 +391,8 @@ const CounselingRoom = ({
   emotionIntensity = 0.5,
   onObjectInteract,
   isSpeaking = false,
+  counselorGesture,
+  avatarCustomization,
   groupMode = false,
   userName = 'User',
   avatarPosition
@@ -501,6 +507,7 @@ const CounselingRoom = ({
                 scale={2}
                 emotion={emotion}
                 emotionIntensity={emotionIntensity}
+                customization={avatarCustomization}
               />
             </CharacterController>
           ) : (
@@ -510,6 +517,7 @@ const CounselingRoom = ({
               scale={2}
               emotion={emotion}
               emotionIntensity={emotionIntensity}
+              customization={avatarCustomization}
             />
           )}
           

@@ -125,7 +125,7 @@ export const PuzzleGame = ({ onComplete, gridSize = 3 }: PuzzleGameProps) => {
   }, []);
 
   return (
-    <Card className="bg-background/95 backdrop-blur-sm border-border p-6 max-w-md">
+    <Card className="bg-background border-border p-6 max-w-md shadow-2xl">
       <div className="space-y-4">
         {/* 헤더 */}
         <div className="flex items-center justify-between">

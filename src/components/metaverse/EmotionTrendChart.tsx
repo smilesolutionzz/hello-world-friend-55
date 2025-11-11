@@ -61,7 +61,7 @@ export const EmotionTrendChart = ({ emotionHistory }: EmotionTrendChartProps) =>
   const totalCount = emotionHistory.length;
 
   return (
-    <Card className="bg-background/95 backdrop-blur-sm border-border p-6 max-w-2xl">
+    <Card className="bg-background border-border p-6 max-w-2xl shadow-2xl">
       <div className="space-y-6">
         {/* 헤더 */}
         <div className="flex items-center justify-between">

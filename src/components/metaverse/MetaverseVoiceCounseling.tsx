@@ -921,7 +921,7 @@ const MetaverseVoiceCounseling = () => {
 
             {/* 타임라인 패널 */}
             {showTimeline && messages.length > 0 && (
-              <div className="fixed right-4 top-20 z-40">
+              <div className="fixed right-4 top-20 z-[100]">
                 <SessionTimeline 
                   messages={messages}
                   sessionStartTime={sessionStartTime}
@@ -932,7 +932,7 @@ const MetaverseVoiceCounseling = () => {
 
             {/* 게임 및 차트 버튼 */}
             {isConnected && (
-              <div className="fixed bottom-20 right-4 flex flex-col gap-2">
+              <div className="fixed bottom-20 right-4 flex flex-col gap-2 z-40">
                 <div className="flex gap-2">
                   <Button
                     onClick={() => {
@@ -973,14 +973,14 @@ const MetaverseVoiceCounseling = () => {
 
             {/* 감정 트렌드 차트 */}
             {showEmotionChart && emotionHistory.length > 0 && (
-              <div className="fixed left-4 top-20 z-40">
+              <div className="fixed left-4 top-20 z-[100]">
                 <EmotionTrendChart emotionHistory={emotionHistory} />
               </div>
             )}
 
             {/* 퍼즐 게임 */}
             {showGame && gameType === 'puzzle' && (
-              <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-40">
+              <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[100]">
                 <PuzzleGame
                   onComplete={() => {
                     toast({

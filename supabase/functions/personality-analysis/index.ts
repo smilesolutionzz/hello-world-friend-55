@@ -18,32 +18,30 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // 데이터 요약 생성
-    const testSummary = testData.map((test: any) => 
-      `${test.test_types?.name || '검사'}: ${test.scores?.total_score || 0}점`
-    ).join(', ');
+    // 검사 데이터 요약
+    const testSummary = testData.map((test: any) => ({
+      name: test.test_types?.name || '검사',
+      date: test.completed_at,
+      score: test.scores?.total_score || 0,
+      categories: test.scores
+    })).slice(0, 5);
 
-    const obsSummary = observations.map((obs: any) => {
-      const categories = Object.entries(obs.categoryScores || {})
-        .map(([key, value]) => `${key}: ${value}`)
-        .join(', ');
-      return `전체 점수: ${obs.score_overall?.toFixed(1) || 0}점 (${categories})`;
-    }).join(' | ');
+    const obsSummary = observations.map((obs: any) => ({
+      date: obs.created_at,
+      score: obs.score_overall || 0,
+      categories: obs.categoryScores || {}
+    })).slice(0, 5);
 
-    const prompt = `당신은 아동 발달 전문가입니다. 다음 검사 데이터를 분석하여 성격 및 발달 특성을 객관적으로 분석해주세요.
+    const systemPrompt = `당신은 아동 발달 및 심리 분석 전문가입니다. 제공된 검사 데이터를 바탕으로 객관적이고 구체적인 성격 분석을 제공합니다.`;
 
-검사 결과: ${testSummary || '데이터 없음'}
-관찰 데이터: ${obsSummary || '데이터 없음'}
+    const userPrompt = `다음은 수집된 검사 데이터입니다:
 
-다음 형식으로 분석해주세요:
-1. 주요 강점 (2-3가지)
-2. 개선 필요 영역 (2-3가지)
-3. 발달 단계 평가
-4. 맞춤형 추천사항
+검사 결과: ${JSON.stringify(testSummary, null, 2)}
+관찰 기록: ${JSON.stringify(obsSummary, null, 2)}
 
-간결하고 전문적으로 작성하되, 부모가 이해하기 쉽게 설명해주세요.`;
+이 데이터를 종합하여 성격 분석을 제공해주세요.`;
 
-    console.log("Calling Lovable AI with prompt:", prompt);
+    console.log("Calling Lovable AI with structured data");
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -54,9 +52,60 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
-          { role: "system", content: "당신은 아동 발달 전문가로서, 검사 데이터를 기반으로 객관적이고 전문적인 성격 분석을 제공합니다." },
-          { role: "user", content: prompt }
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt }
         ],
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "analyze_personality",
+              description: "성격 분석 결과를 구조화된 형태로 반환",
+              parameters: {
+                type: "object",
+                properties: {
+                  personalityType: { 
+                    type: "string",
+                    description: "주요 성격 유형 (예: 외향적-분석형, 내향적-창의형 등)" 
+                  },
+                  strengths: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "주요 강점 3가지"
+                  },
+                  weaknesses: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "개선이 필요한 영역 3가지"
+                  },
+                  recommendations: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "발전 방향 및 추천사항 3가지"
+                  },
+                  categories: {
+                    type: "object",
+                    properties: {
+                      "정서": { type: "number", description: "0-100 사이의 점수" },
+                      "인지": { type: "number", description: "0-100 사이의 점수" },
+                      "사회성": { type: "number", description: "0-100 사이의 점수" },
+                      "신체": { type: "number", description: "0-100 사이의 점수" },
+                      "행동": { type: "number", description: "0-100 사이의 점수" }
+                    },
+                    description: "각 카테고리별 종합 평가 점수"
+                  },
+                  summary: { 
+                    type: "string",
+                    description: "전체 분석을 요약한 2-3문장" 
+                  }
+                },
+                required: ["personalityType", "strengths", "weaknesses", "recommendations", "categories", "summary"],
+                additionalProperties: false
+              }
+            }
+          }
+        ],
+        tool_choice: { type: "function", function: { name: "analyze_personality" } }
       }),
     });
 
@@ -80,10 +129,17 @@ serve(async (req) => {
       throw new Error(`AI gateway error: ${response.status}`);
     }
 
-    const data = await response.json();
-    const analysis = data.choices?.[0]?.message?.content;
+    const result = await response.json();
+    console.log("AI Response:", JSON.stringify(result, null, 2));
 
-    console.log("AI analysis generated successfully");
+    // Tool call 결과 추출
+    const toolCall = result.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) {
+      throw new Error("AI 응답 형식이 올바르지 않습니다.");
+    }
+
+    const analysis = JSON.parse(toolCall.function.arguments);
+    console.log("AI analysis generated successfully:", analysis);
 
     return new Response(
       JSON.stringify({ analysis }),

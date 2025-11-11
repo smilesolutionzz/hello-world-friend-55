@@ -16,6 +16,7 @@ import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { DashboardCharts } from '@/components/dashboard/DashboardCharts';
 import { GoalTracker } from '@/components/dashboard/GoalTracker';
 import { ThreeBackground } from '@/components/dashboard/ThreeBackground';
+import { TestComparison } from '@/components/dashboard/TestComparison';
 import AuthenticationGuard from '@/components/observation/AuthenticationGuard';
 
 interface Profile {
@@ -340,6 +341,12 @@ function DashboardContent() {
                       </CardContent>
                     </Card>
                   </div>
+                  
+                  {/* 검사 결과 비교 섹션 */}
+                  <TestComparison 
+                    recentTests={recentTests}
+                    observations={observations}
+                  />
                   
                   {/* 목표 추적 섹션 */}
                   <GoalTracker />

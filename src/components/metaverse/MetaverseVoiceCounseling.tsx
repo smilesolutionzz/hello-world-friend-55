@@ -932,49 +932,6 @@ const MetaverseVoiceCounseling = () => {
               </div>
             )}
 
-            {/* 게임 및 차트 버튼 - 모바일에서는 상단, 데스크탑에서는 하단 */}
-            {isConnected && (
-              <div className="fixed top-4 right-4 lg:top-auto lg:bottom-20 lg:right-4 flex flex-col gap-2 z-40">
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <Button
-                    onClick={() => {
-                      setGameType('catch');
-                      setShowGame(!showGame);
-                    }}
-                    variant={showGame && gameType === 'catch' ? "default" : "outline"}
-                    size="sm"
-                    className="gap-2 shadow-lg text-xs sm:text-sm"
-                  >
-                    <Gamepad2 className="w-4 h-4" />
-                    <span className="hidden sm:inline">캐치볼</span>
-                    <span className="sm:hidden">🎮</span>
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setGameType('puzzle');
-                      setShowGame(!showGame);
-                    }}
-                    variant={showGame && gameType === 'puzzle' ? "default" : "outline"}
-                    size="sm"
-                    className="gap-2 shadow-lg text-xs sm:text-sm"
-                  >
-                    <span>🧩</span>
-                    <span className="hidden sm:inline">퍼즐</span>
-                  </Button>
-                  <Button
-                    onClick={() => setShowEmotionChart(!showEmotionChart)}
-                    variant={showEmotionChart ? "default" : "outline"}
-                    size="sm"
-                    className="gap-2 shadow-lg text-xs sm:text-sm"
-                  >
-                    <TrendingUp className="w-4 h-4" />
-                    <span className="hidden sm:inline">감정 분석</span>
-                    <span className="sm:hidden">📊</span>
-                  </Button>
-                </div>
-              </div>
-            )}
-
             {/* 감정 트렌드 차트 */}
             {showEmotionChart && emotionHistory.length > 0 && (
               <div className="fixed left-4 top-20 z-[100]">

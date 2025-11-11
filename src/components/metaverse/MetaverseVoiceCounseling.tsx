@@ -3,10 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2 } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
+import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
+import { MovementGuide } from '@/components/metaverse/CharacterController';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -38,7 +41,10 @@ const MetaverseVoiceCounseling = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [showSubtitles, setShowSubtitles] = useState(true);
   const [currentResponseId, setCurrentResponseId] = useState<string | null>(null);
+  const [enableMovement, setEnableMovement] = useState(true);
+  const [showMovementGuide, setShowMovementGuide] = useState(true);
   const chatRef = useRef<RealtimeChat | null>(null);
+  const { avatarUrl, openAvatarCreator } = useReadyPlayerMe();
 
   // 스트리밍 자막에서 발생하는 말더듬/중복어 제거
   const cleanTranscript = (input: string) => {
@@ -251,15 +257,15 @@ const MetaverseVoiceCounseling = () => {
   if (!hasEntered) {
     return (
       <div className="relative min-h-screen">
-        <CounselingRoom roomType={selectedRoom}>
+        <CounselingRoom roomType={selectedRoom} enableMovement={false}>
           <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
             <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-8 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20">
               <div className="text-center mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                  AI 메타버스 상담실
+                  🎭 AI 메타버스 상담실
                 </h1>
                 <p className="text-purple-200/80">
-                  가상 공간에서 AI 상담사와 실시간 음성 대화
+                  가상 공간에서 AI 상담사와 실시간 음성 대화 • 자유롭게 이동하며 상담하세요
                 </p>
               </div>
 
@@ -317,11 +323,38 @@ const MetaverseVoiceCounseling = () => {
                   />
                 </div>
 
-                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <UserCircle className="w-4 h-4" />
+                      <Label htmlFor="movement" className="cursor-pointer">캐릭터 이동 활성화</Label>
+                    </div>
+                    <Switch
+                      id="movement"
+                      checked={enableMovement}
+                      onCheckedChange={setEnableMovement}
+                    />
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    className="w-full gap-2"
+                    onClick={openAvatarCreator}
+                  >
+                    <UserCircle className="w-4 h-4" />
+                    나만의 아바타 만들기 (선택)
+                  </Button>
+                </div>
+
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">
                   <p className="text-sm text-muted-foreground text-center">
-                    🔒 대화 내용은 저장되지 않으며<br />
-                    완전히 비밀이 보장됩니다
+                    🔒 대화 내용은 저장되지 않으며 완전히 비밀이 보장됩니다
                   </p>
+                  {enableMovement && (
+                    <p className="text-xs text-muted-foreground text-center">
+                      💡 입장 후 WASD 또는 방향키로 공간을 자유롭게 이동할 수 있습니다
+                    </p>
+                  )}
                 </div>
 
                 <Button
@@ -343,20 +376,34 @@ const MetaverseVoiceCounseling = () => {
   // 입장 후 상담 화면
   return (
     <div className="relative min-h-screen">
-      <CounselingRoom roomType={selectedRoom}>
+      <CounselingRoom roomType={selectedRoom} enableMovement={enableMovement} avatarUrl={avatarUrl}>
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
+          {/* 이동 가이드 */}
+          {enableMovement && <MovementGuide visible={showMovementGuide} />}
           {/* Header */}
           <div className="text-center mb-8 animate-fade-in">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 drop-shadow-lg">
-              안녕하세요, {userName}님
+              안녕하세요, {userName}님 👋
             </h1>
             <p className="text-lg text-foreground/90 drop-shadow-md mb-3">
               {consultTopic ? `${consultTopic}에 대해 편하게 이야기 나눠봐요` : '편하게 이야기 나눠봐요'}
             </p>
-            <div className="inline-block bg-green-500/20 backdrop-blur-sm border border-green-400/30 rounded-lg px-4 py-2 mt-2">
-              <p className="text-sm md:text-base text-foreground font-medium">
-                🔒 대화 내용은 저장되지 않습니다 • 마음껏 표현하세요
-              </p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <div className="inline-block bg-green-500/20 backdrop-blur-sm border border-green-400/30 rounded-lg px-4 py-2">
+                <p className="text-sm md:text-base text-foreground font-medium">
+                  🔒 대화 내용은 저장되지 않습니다
+                </p>
+              </div>
+              {enableMovement && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowMovementGuide(!showMovementGuide)}
+                  className="text-foreground"
+                >
+                  {showMovementGuide ? '🎮 조작법 숨기기' : '🎮 조작법 보기'}
+                </Button>
+              )}
             </div>
           </div>
 

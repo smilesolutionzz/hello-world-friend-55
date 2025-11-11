@@ -2268,6 +2268,41 @@ export type Database = {
         }
         Relationships: []
       }
+      education_bookmarks: {
+        Row: {
+          category: string | null
+          content_id: string
+          created_at: string | null
+          id: string
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          content_id: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          content_id?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "education_bookmarks_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "curated_education_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       emotion_diaries: {
         Row: {
           audio_url: string | null

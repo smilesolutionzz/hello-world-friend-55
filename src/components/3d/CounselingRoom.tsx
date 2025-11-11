@@ -1,7 +1,9 @@
 import { useRef, useMemo } from 'react';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
-import { OrbitControls, Environment, PerspectiveCamera, Text } from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Environment, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
+import { ReadyPlayerMeAvatar } from '@/components/metaverse/ReadyPlayerMeAvatar';
+import { CharacterController } from '@/components/metaverse/CharacterController';
 
 // Room components with different layouts
 const Room = ({ type = 'counseling' }: { type?: RoomType }) => {
@@ -361,9 +363,16 @@ export type RoomType = 'counseling' | 'office' | 'home' | 'bedroom' | 'school' |
 interface CounselingRoomProps {
   children?: React.ReactNode;
   roomType?: RoomType;
+  enableMovement?: boolean;
+  avatarUrl?: string;
 }
 
-const CounselingRoom = ({ children, roomType = 'counseling' }: CounselingRoomProps) => {
+const CounselingRoom = ({ 
+  children, 
+  roomType = 'counseling',
+  enableMovement = false,
+  avatarUrl
+}: CounselingRoomProps) => {
   // 공간별 설정
   const getRoomSettings = () => {
     switch (roomType) {
@@ -412,12 +421,29 @@ const CounselingRoom = ({ children, roomType = 'counseling' }: CounselingRoomPro
           {/* 떠다니는 파티클 */}
           <FloatingParticles />
           
+          {/* 아바타와 이동 컨트롤러 */}
+          {enableMovement ? (
+            <CharacterController speed={0.15} enabled={enableMovement}>
+              <ReadyPlayerMeAvatar 
+                position={[0, 0, 0]} 
+                avatarUrl={avatarUrl}
+                scale={1.8}
+              />
+            </CharacterController>
+          ) : (
+            <ReadyPlayerMeAvatar 
+              position={[0, -2, 4]} 
+              avatarUrl={avatarUrl}
+              scale={1.8}
+            />
+          )}
+          
           {/* 카메라 컨트롤 */}
           <OrbitControls 
             enablePan={false}
-            enableZoom={false}
-            enableRotate={true}
-            autoRotate={true}
+            enableZoom={!enableMovement}
+            enableRotate={!enableMovement}
+            autoRotate={!enableMovement}
             autoRotateSpeed={0.5}
             maxPolarAngle={Math.PI / 2.2}
             minPolarAngle={Math.PI / 3}

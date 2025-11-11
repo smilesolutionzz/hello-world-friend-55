@@ -666,7 +666,7 @@ const MetaverseVoiceCounseling = () => {
                     🔒 대화 내용은 저장되지 않으며 완전히 비밀이 보장됩니다
                   </p>
                   {enableMovement && (
-                    <p className="text-xs text-muted-foreground text-center">
+                    <p className="text-xs text-foreground text-center">
                       💡 WASD/방향키로 이동 • 1,2,3 키로 제스처
                     </p>
                   )}

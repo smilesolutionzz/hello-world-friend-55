@@ -77,10 +77,12 @@ export const ReadyPlayerMeAvatar = ({
       setIsLoading(false);
     } else {
       // Ready Player Me 모델 로드
+      console.log('🎭 Loading Ready Player Me avatar from:', avatarUrl);
       const loader = new GLTFLoader();
       loader.load(
         avatarUrl,
         (gltf) => {
+          console.log('✅ Avatar loaded successfully');
           const avatar = gltf.scene;
           avatar.traverse((child) => {
             if ((child as THREE.Mesh).isMesh) {
@@ -91,9 +93,12 @@ export const ReadyPlayerMeAvatar = ({
           setModel(avatar);
           setIsLoading(false);
         },
-        undefined,
+        (progress) => {
+          console.log('📥 Loading progress:', Math.round((progress.loaded / progress.total) * 100) + '%');
+        },
         (error) => {
-          console.error('Error loading Ready Player Me avatar:', error);
+          console.error('❌ Error loading Ready Player Me avatar:', error);
+          console.log('🔄 Using default avatar instead');
           // 로드 실패시 기본 아바타 사용
           setIsLoading(false);
         }
@@ -137,6 +142,12 @@ export const ReadyPlayerMeAvatar = ({
 
   return (
     <group ref={groupRef} position={position} rotation={rotation} scale={[scale, scale, scale]}>
+      {isLoading && (
+        <mesh position={[0, 1, 0]}>
+          <sphereGeometry args={[0.3, 16, 16]} />
+          <meshStandardMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.5} />
+        </mesh>
+      )}
       {model && <primitive object={model} />}
       
       {/* 감정 표현 라이트 */}

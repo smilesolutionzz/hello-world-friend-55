@@ -491,7 +491,7 @@ const CounselingRoom = ({
               <ReadyPlayerMeAvatar 
                 position={[0, -1.5, 0]} 
                 avatarUrl={avatarUrl}
-                scale={1}
+                scale={2}
                 emotion={emotion}
                 emotionIntensity={emotionIntensity}
               />
@@ -500,7 +500,7 @@ const CounselingRoom = ({
             <ReadyPlayerMeAvatar 
               position={[2, -1.5, 3]} 
               avatarUrl={avatarUrl}
-              scale={1}
+              scale={2}
               emotion={emotion}
               emotionIntensity={emotionIntensity}
             />

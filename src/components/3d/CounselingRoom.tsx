@@ -7,6 +7,7 @@ import { CharacterController } from '@/components/metaverse/CharacterController'
 import { InteractiveObject } from '@/components/metaverse/InteractiveObject';
 import { CounselorNPC } from '@/components/metaverse/CounselorNPC';
 import { EmotionType } from '@/utils/EmotionDetector';
+import { GroupPresence, UserPresence } from '@/components/metaverse/GroupPresence';
 
 // Room components with different layouts
 const Room = ({ type = 'counseling' }: { type?: RoomType }) => {
@@ -372,9 +373,12 @@ interface CounselingRoomProps {
   emotionIntensity?: number;
   onObjectInteract?: (id: string, content: string) => void;
   isSpeaking?: boolean;
+  groupMode?: boolean;
+  userName?: string;
+  avatarPosition?: { x: number; y: number; z: number };
 }
 
-const CounselingRoom = ({ 
+const CounselingRoom = ({
   children, 
   roomType = 'counseling',
   enableMovement = false,
@@ -382,7 +386,10 @@ const CounselingRoom = ({
   emotion = 'neutral',
   emotionIntensity = 0.5,
   onObjectInteract,
-  isSpeaking = false
+  isSpeaking = false,
+  groupMode = false,
+  userName = 'User',
+  avatarPosition
 }: CounselingRoomProps) => {
   // 공간별 설정
   const getRoomSettings = () => {
@@ -505,6 +512,19 @@ const CounselingRoom = ({
               emotionIntensity={emotionIntensity}
             />
           )}
+          
+          {/* 그룹 Presence - 다른 사용자들 */}
+          {groupMode && (
+            <GroupPresence
+              roomId={roomType}
+              userName={userName}
+              avatarUrl={avatarUrl}
+              position={avatarPosition}
+              emotion={emotion}
+              enabled={groupMode}
+            />
+          )}
+          
           
           {/* 카메라 컨트롤 */}
           <OrbitControls 

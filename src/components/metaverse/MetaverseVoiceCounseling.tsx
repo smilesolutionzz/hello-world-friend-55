@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2 } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
@@ -15,6 +15,10 @@ import { useInteractiveObjects } from '@/components/metaverse/InteractiveObject'
 import { AvatarPreview } from '@/components/metaverse/AvatarPreview';
 import { AvatarGallery } from '@/components/metaverse/AvatarGallery';
 import { getSoundEffects } from '@/utils/SoundEffects';
+import { getMusicPlayer, MUSIC_OPTIONS, MusicType } from '@/utils/BackgroundMusic';
+import { GestureManager, GESTURES, GestureType, GestureState } from '@/utils/GestureSystem';
+import { GroupPresence, GroupUserList, UserPresence } from '@/components/metaverse/GroupPresence';
+import { Slider } from '@/components/ui/slider';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -54,6 +58,56 @@ const MetaverseVoiceCounseling = () => {
   const emotionDetectorRef = useRef<EmotionDetector | null>(null);
   const { avatarUrl, setAvatarUrl, openAvatarCreator } = useReadyPlayerMe();
   const { activeObject, objectContent, handleObjectInteraction, closeInteraction } = useInteractiveObjects();
+  
+  // 새로운 기능 상태
+  const [backgroundMusic, setBackgroundMusic] = useState<MusicType>('none');
+  const [musicVolume, setMusicVolume] = useState(0.3);
+  const [currentGesture, setCurrentGesture] = useState<GestureState | null>(null);
+  const [groupMode, setGroupMode] = useState(false);
+  const [groupUsers, setGroupUsers] = useState<UserPresence[]>([]);
+  const [avatarPosition, setAvatarPosition] = useState({ x: 0, y: -1.5, z: 3 });
+  const gestureManagerRef = useRef<GestureManager>(new GestureManager(setCurrentGesture));
+
+
+  // 제스처 키 이벤트 핸들러
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (!isConnected) return;
+      
+      switch(e.key) {
+        case '1':
+          gestureManagerRef.current.playGesture('wave');
+          toast({ title: `${GESTURES.wave.icon} ${GESTURES.wave.name}` });
+          break;
+        case '2':
+          gestureManagerRef.current.playGesture('clap');
+          toast({ title: `${GESTURES.clap.icon} ${GESTURES.clap.name}` });
+          break;
+        case '3':
+          gestureManagerRef.current.playGesture('bow');
+          toast({ title: `${GESTURES.bow.icon} ${GESTURES.bow.name}` });
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isConnected, toast]);
+
+  // 배경음악 변경
+  useEffect(() => {
+    const musicPlayer = getMusicPlayer();
+    musicPlayer.init().then(() => {
+      musicPlayer.play(backgroundMusic);
+      musicPlayer.setVolume(musicVolume);
+    });
+  }, [backgroundMusic]);
+
+  // 음악 볼륨 변경
+  useEffect(() => {
+    const musicPlayer = getMusicPlayer();
+    musicPlayer.setVolume(musicVolume);
+  }, [musicVolume]);
 
   // 스트리밍 자막에서 발생하는 말더듬/중복어 제거
   const cleanTranscript = (input: string) => {
@@ -281,9 +335,11 @@ const MetaverseVoiceCounseling = () => {
     return () => {
       chatRef.current?.disconnect();
       emotionDetectorRef.current?.disconnect();
-      // 정리 시 사운드도 중지
+      // 정리 시 사운드와 음악도 중지
       const soundEffects = getSoundEffects();
       soundEffects.cleanup();
+      const musicPlayer = getMusicPlayer();
+      musicPlayer.cleanup();
     };
   }, []);
 
@@ -358,6 +414,7 @@ const MetaverseVoiceCounseling = () => {
                 </div>
 
                 <div className="space-y-3">
+                  {/* 캐릭터 이동 */}
                   <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
                     <div className="flex items-center gap-2">
                       <UserCircle className="w-4 h-4" />
@@ -370,64 +427,108 @@ const MetaverseVoiceCounseling = () => {
                     />
                   </div>
 
-                  <div className="space-y-3">
-                    <Label className="flex items-center gap-2">
-                      <Link2 className="w-4 h-4" />
-                      아바타 설정
-                    </Label>
-                    
-                    {/* 샘플 아바타 갤러리 */}
-                    <AvatarGallery 
-                      selectedUrl={avatarUrl}
-                      onSelect={(url) => {
-                        setAvatarUrl(url);
-                        toast({
-                          title: "샘플 아바타 선택됨 ✓",
-                          description: "미리보기에서 확인하세요",
-                        });
-                      }}
-                    />
-                    
-                    <div className="relative">
-                      <Input
-                        placeholder="또는 커스텀 아바타 URL (.glb) 붙여넣기"
-                        value={avatarUrl}
-                        onChange={(e) => {
-                          const url = e.target.value.trim();
-                          setAvatarUrl(url);
-                          if (url && url.includes('readyplayer.me') && url.endsWith('.glb')) {
-                            toast({
-                              title: "아바타 URL 인식됨 ✓",
-                              description: "미리보기에서 확인하세요",
-                            });
-                          }
-                        }}
-                        className="pr-10"
-                      />
-                      {avatarUrl && avatarUrl.includes('readyplayer.me') && avatarUrl.endsWith('.glb') && (
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
-                          ✓
-                        </div>
-                      )}
+                  {/* 그룹 상담 모드 */}
+                  <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      <Label htmlFor="groupMode" className="cursor-pointer">그룹 상담 모드</Label>
                     </div>
-
-                    {/* 아바타 미리보기 */}
-                    <AvatarPreview avatarUrl={avatarUrl} />
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full gap-2"
-                      onClick={openAvatarCreator}
-                    >
-                      <UserCircle className="w-4 h-4" />
-                      Ready Player Me에서 새로 만들기
-                    </Button>
-                    
-                    <p className="text-xs text-muted-foreground">
-                      💡 샘플을 선택하거나 Ready Player Me에서 생성한 URL을 붙여넣으세요
-                    </p>
+                    <Switch
+                      id="groupMode"
+                      checked={groupMode}
+                      onCheckedChange={setGroupMode}
+                    />
                   </div>
+
+                  {/* 배경음악 선택 */}
+                  <div className="space-y-2 p-3 bg-background/50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Music className="w-4 h-4" />
+                      <Label>배경음악</Label>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {(Object.keys(MUSIC_OPTIONS) as MusicType[]).map((type) => (
+                        <Button
+                          key={type}
+                          variant={backgroundMusic === type ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setBackgroundMusic(type)}
+                          className="flex flex-col gap-1 h-auto py-2"
+                        >
+                          <span className="text-lg">{MUSIC_OPTIONS[type].icon}</span>
+                          <span className="text-xs">{MUSIC_OPTIONS[type].name}</span>
+                        </Button>
+                      ))}
+                    </div>
+                    {backgroundMusic !== 'none' && (
+                      <div className="space-y-1">
+                        <Label className="text-xs">볼륨</Label>
+                        <Slider
+                          value={[musicVolume * 100]}
+                          onValueChange={(value) => setMusicVolume(value[0] / 100)}
+                          max={100}
+                          step={1}
+                          className="w-full"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 아바타 설정 */}
+                <div className="space-y-3">
+                  <Label className="flex items-center gap-2">
+                    <Link2 className="w-4 h-4" />
+                    아바타 설정
+                  </Label>
+                  
+                  {/* 샘플 아바타 갤러리 */}
+                  <AvatarGallery 
+                    selectedUrl={avatarUrl}
+                    onSelect={(url) => {
+                      setAvatarUrl(url);
+                      toast({
+                        title: "샘플 아바타 선택됨 ✓",
+                        description: "미리보기에서 확인하세요",
+                      });
+                    }}
+                  />
+                  
+                  <div className="relative">
+                    <Input
+                      placeholder="또는 커스텀 아바타 URL (.glb) 붙여넣기"
+                      value={avatarUrl}
+                      onChange={(e) => {
+                        const url = e.target.value.trim();
+                        setAvatarUrl(url);
+                        if (url && url.includes('readyplayer.me') && url.endsWith('.glb')) {
+                          toast({
+                            title: "아바타 URL 인식됨 ✓",
+                            description: "미리보기에서 확인하세요",
+                          });
+                        }
+                      }}
+                      className="pr-10"
+                    />
+                    {avatarUrl && avatarUrl.includes('readyplayer.me') && avatarUrl.endsWith('.glb') && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
+                        ✓
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 아바타 미리보기 */}
+                  <AvatarPreview avatarUrl={avatarUrl} />
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2"
+                    onClick={openAvatarCreator}
+                  >
+                    <UserCircle className="w-4 h-4" />
+                    Ready Player Me에서 새로 만들기
+                  </Button>
                 </div>
 
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">
@@ -436,7 +537,12 @@ const MetaverseVoiceCounseling = () => {
                   </p>
                   {enableMovement && (
                     <p className="text-xs text-muted-foreground text-center">
-                      💡 입장 후 WASD 또는 방향키로 공간을 자유롭게 이동할 수 있습니다
+                      💡 WASD/방향키로 이동 • 1,2,3 키로 제스처
+                    </p>
+                  )}
+                  {groupMode && (
+                    <p className="text-xs text-primary text-center font-medium">
+                      👥 그룹 모드: 다른 사용자들과 함께 상담받을 수 있습니다
                     </p>
                   )}
                 </div>
@@ -468,6 +574,9 @@ const MetaverseVoiceCounseling = () => {
         emotionIntensity={emotionIntensity}
         onObjectInteract={handleObjectInteraction}
         isSpeaking={isSpeaking}
+        groupMode={groupMode}
+        userName={userName}
+        avatarPosition={avatarPosition}
       >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* 이동 가이드 */}

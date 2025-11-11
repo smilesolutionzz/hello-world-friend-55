@@ -250,15 +250,15 @@ const MetaverseVoiceCounseling = () => {
   // 입장 전 설정 화면
   if (!hasEntered) {
     return (
-      <div className="relative min-h-screen bg-background">
+      <div className="relative min-h-screen">
         <CounselingRoom roomType={selectedRoom}>
           <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
-            <Card className="bg-background/90 p-8 max-w-2xl w-full animate-scale-in shadow-xl border-2">
+            <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-8 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20">
               <div className="text-center mb-8">
-                <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                   AI 메타버스 상담실
                 </h1>
-                <p className="text-muted-foreground">
+                <p className="text-purple-200/80">
                   가상 공간에서 AI 상담사와 실시간 음성 대화
                 </p>
               </div>
@@ -361,10 +361,10 @@ const MetaverseVoiceCounseling = () => {
           </div>
 
           {/* Status Card */}
-          <Card className="bg-background/90 p-8 mb-6 max-w-2xl w-full animate-scale-in shadow-xl border-2">
+          <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-8 mb-6 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20">
             <div className="flex items-center justify-center gap-4 mb-6">
-              <div className={`w-4 h-4 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-muted'}`} />
-              <span className="text-lg font-medium">
+              <div className={`w-4 h-4 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-purple-500/50'}`} />
+              <span className="text-lg font-medium text-white">
                 {isConnected ? '연결됨' : '대기중'}
               </span>
             </div>

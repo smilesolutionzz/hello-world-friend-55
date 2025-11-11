@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import MetaverseVoiceCounseling from '@/components/metaverse/MetaverseVoiceCounseling';
+import { ThreeBackground } from '@/components/dashboard/ThreeBackground';
 import { useToast } from '@/hooks/use-toast';
 
 const MetaverseVoicePage = () => {
@@ -25,7 +26,14 @@ const MetaverseVoicePage = () => {
     checkAuth();
   }, [navigate, toast]);
 
-  return <MetaverseVoiceCounseling />;
+  return (
+    <div className="relative">
+      <ThreeBackground />
+      <div className="relative z-10">
+        <MetaverseVoiceCounseling />
+      </div>
+    </div>
+  );
 };
 
 export default MetaverseVoicePage;

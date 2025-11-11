@@ -10,7 +10,6 @@ import { User, LogOut, History, Crown, TrendingUp, Brain, Activity, MessageSquar
 import { useToast } from '@/hooks/use-toast';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import ImprovementHistory from '@/components/improvement/ImprovementHistory';
 import { PersonalityAnalysis } from '@/components/dashboard/PersonalityAnalysis';
 import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { DashboardCharts } from '@/components/dashboard/DashboardCharts';
@@ -392,20 +391,13 @@ function DashboardContent() {
           <main className="flex-1 relative">
             <div className="container mx-auto px-4 py-8">
               <Tabs defaultValue="tests" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-2 max-w-md bg-slate-900/80 backdrop-blur-xl border border-purple-500/20 shadow-lg shadow-purple-500/10">
+                <TabsList className="grid w-full grid-cols-1 max-w-md bg-slate-900/80 backdrop-blur-xl border border-purple-500/20 shadow-lg shadow-purple-500/10">
                   <TabsTrigger 
                     value="tests" 
                     className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white"
                   >
                     <History className="w-4 h-4" />
-                    검사 시작
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="improvement" 
-                    className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white"
-                  >
-                    <TrendingUp className="w-4 h-4" />
-                    개선 이력
+                    대시보드
                   </TabsTrigger>
                 </TabsList>
 
@@ -650,10 +642,6 @@ function DashboardContent() {
                       </div>
                     </SortableContext>
                   </DndContext>
-                </TabsContent>
-
-                <TabsContent value="improvement">
-                  <ImprovementHistory observations={observations} />
                 </TabsContent>
               </Tabs>
             </div>

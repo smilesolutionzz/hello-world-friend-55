@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' &&
     componentTagger(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'AI하이라이트PRO - 심리검사',
@@ -50,7 +50,8 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         cleanupOutdatedCaches: true,
-        skipWaiting: true,
+        skipWaiting: false,
+        clientsClaim: false,
         maximumFileSizeToCacheInBytes: 20 * 1024 * 1024 // 20MB
       }
     })

@@ -146,6 +146,7 @@ import DashboardRouter from "./pages/DashboardRouter";
 import Referral from "./pages/Referral";
 
 import { SessionManager } from "./components/SessionManager";
+import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -172,6 +173,7 @@ const App = () => {
               <Analytics />
               <NetworkStatus />
               <SessionManager />
+              <UpdatePrompt />
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />

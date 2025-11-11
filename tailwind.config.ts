@@ -217,6 +217,16 @@ export default {
 					'66%': {
 						transform: 'translateX(-5px) rotate(-0.5deg)'
 					}
+				},
+				'slide-up': {
+					'0%': {
+						transform: 'translateY(100%)',
+						opacity: '0'
+					},
+					'100%': {
+						transform: 'translateY(0)',
+						opacity: '1'
+					}
 				}
 			},
 			animation: {
@@ -228,6 +238,7 @@ export default {
 				'glow': 'glow 2s ease-in-out infinite alternate',
 				'visual-emphasis': 'visual-emphasis 3s ease-in-out infinite',
 				'balance-flow': 'balance-flow 6s ease-in-out infinite',
+				'slide-up': 'slide-up 0.4s ease-out',
 			},
 			transitionTimingFunction: {
 				'gentle': 'cubic-bezier(0.4, 0, 0.2, 1)',

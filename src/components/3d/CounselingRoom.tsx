@@ -482,25 +482,25 @@ const CounselingRoom = ({
           <CounselorNPC 
             position={[-4, -1.5, 2]} 
             isSpeaking={isSpeaking}
-            name="AI 상담사"
+            name="메타상담사"
           />
           
           {/* 아바타와 이동 컨트롤러 */}
           {enableMovement ? (
             <CharacterController speed={0.15} enabled={enableMovement}>
               <ReadyPlayerMeAvatar 
-                position={[0, 0, 0]} 
+                position={[0, -1.5, 0]} 
                 avatarUrl={avatarUrl}
-                scale={1.8}
+                scale={1}
                 emotion={emotion}
                 emotionIntensity={emotionIntensity}
               />
             </CharacterController>
           ) : (
             <ReadyPlayerMeAvatar 
-              position={[0, -2, 4]} 
+              position={[2, -1.5, 3]} 
               avatarUrl={avatarUrl}
-              scale={1.8}
+              scale={1}
               emotion={emotion}
               emotionIntensity={emotionIntensity}
             />

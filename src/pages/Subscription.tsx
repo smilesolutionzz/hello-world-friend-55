@@ -94,14 +94,8 @@ const Subscription = () => {
         return;
       }
 
-      // 무통장입금 페이지로 이동
-      navigate('/bank-transfer', { 
-        state: { 
-          requestType: 'token_purchase',
-          tokenAmount: pkg.tokens + pkg.bonus,
-          price: pkg.price
-        } 
-      });
+      // 토스페이먼츠 결제로 이동
+      navigate('/token-subscription');
 
     } catch (error: any) {
       console.error('토큰 구매 오류:', error);

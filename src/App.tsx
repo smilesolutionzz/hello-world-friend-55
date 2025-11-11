@@ -13,7 +13,6 @@ import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 import Analytics from "@/components/common/Analytics";
 import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
-import BankTransfer from "./pages/BankTransfer";
 import ConcernStorage from "./pages/ConcernStorage";
 
 import Payment from "./pages/Payment";
@@ -52,7 +51,6 @@ import Subscription from "./pages/Subscription";
 import TokenSubscription from "./pages/TokenSubscription";
 import TokenPurchase from "./pages/TokenPurchase";
 import TokenHistory from "./pages/TokenHistory";
-import StripeTokenPayment from "./pages/StripeTokenPayment";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFail from "./pages/PaymentFail";
 import TokenPaymentSuccess from "./pages/TokenPaymentSuccess";
@@ -139,7 +137,6 @@ import SampleReport from "./pages/SampleReport";
 import MarketingAIAssistant from "./pages/MarketingAIAssistant";
 import CrossPromotionReward from "./pages/CrossPromotionReward";
 import InstallGuide from "./pages/InstallGuide";
-import InsurancePartnership from "./pages/InsurancePartnership";
 import MetaverseVoice from "./pages/MetaverseVoice";
 import ParentLanding from "./pages/ParentLanding";
 import AcademyLanding from "./pages/AcademyLanding";
@@ -269,7 +266,6 @@ const App = () => {
           <Route path="/token-subscription" element={<TokenSubscription />} />
           <Route path="/token-purchase" element={<TokenPurchase />} />
           <Route path="/token-history" element={<TokenHistory />} />
-          <Route path="/stripe-token-payment" element={<StripeTokenPayment />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/kpi-dashboard" element={<KPIDashboard />} />
@@ -300,7 +296,6 @@ const App = () => {
           <Route path="/token-payment-success" element={<TokenPaymentSuccess />} />
           <Route path="/token-payment-fail" element={<TokenPaymentFail />} />
           <Route path="/token-test" element={<TokenTest />} />
-          <Route path="/bank-transfer" element={<BankTransfer />} />
           <Route path="/cross-promotion-reward" element={<CrossPromotionReward />} />
           
           <Route path="/platform-manual" element={<PlatformManual />} />
@@ -310,7 +305,6 @@ const App = () => {
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
-          <Route path="/insurance-partnership" element={<InsurancePartnership />} />
           <Route path="/education-feed" element={<EducationFeed />} />
           
           {/* Stripe subscription routes removed

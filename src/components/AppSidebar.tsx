@@ -48,8 +48,8 @@ export function AppSidebar() {
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
-      ? "flex items-center gap-2 bg-accent text-accent-foreground font-medium" 
-      : "flex items-center gap-2 hover:bg-accent/50"
+      ? "flex items-center gap-2 bg-accent text-white font-medium" 
+      : "flex items-center gap-2 text-white hover:bg-accent/50"
 
   return (
     <Sidebar
@@ -58,7 +58,7 @@ export function AppSidebar() {
     >
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>메인</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white/70">메인</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainItems.map((item) => (
@@ -80,7 +80,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>계정</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white/70">계정</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {accountItems.map((item) => (

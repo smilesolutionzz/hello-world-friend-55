@@ -4,13 +4,21 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EmotionType, getEmotionEffect } from '@/utils/EmotionDetector';
 
-interface ReadyPlayerMeAvatarProps {
+export interface ReadyPlayerMeAvatarProps {
   position: [number, number, number];
   rotation?: [number, number, number];
   avatarUrl?: string;
   scale?: number;
   emotion?: EmotionType;
   emotionIntensity?: number;
+  customization?: {
+    skinTone: number;
+    hairColor: number;
+    shirtColor: number;
+    pantsColor: number;
+    hasGlasses: boolean;
+    glassesStyle: number;
+  };
 }
 
 export const ReadyPlayerMeAvatar = ({ 

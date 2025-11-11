@@ -7,6 +7,7 @@ import { ReadyPlayerMeAvatar } from './ReadyPlayerMeAvatar';
 
 interface AvatarPreviewProps {
   avatarUrl: string;
+  onUrlChange?: (url: string) => void;
 }
 
 export const AvatarPreview = ({ avatarUrl }: AvatarPreviewProps) => {

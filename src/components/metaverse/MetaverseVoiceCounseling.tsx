@@ -774,7 +774,8 @@ const MetaverseVoiceCounseling = () => {
           </div>
 
           {/* Status Card */}
-          <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-8 mb-6 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20">
+          <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-4 sm:p-8 mb-6 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20 pointer-events-none">
+            <div className="pointer-events-auto">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className={`w-4 h-4 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-purple-500/50'}`} />
               <span className="text-lg font-medium text-white">
@@ -918,6 +919,7 @@ const MetaverseVoiceCounseling = () => {
                 </div>
               )}
             </div>
+            </div>
 
             {/* 타임라인 패널 */}
             {showTimeline && messages.length > 0 && (
@@ -930,21 +932,22 @@ const MetaverseVoiceCounseling = () => {
               </div>
             )}
 
-            {/* 게임 및 차트 버튼 */}
+            {/* 게임 및 차트 버튼 - 모바일에서는 상단, 데스크탑에서는 하단 */}
             {isConnected && (
-              <div className="fixed bottom-20 right-4 flex flex-col gap-2 z-40">
-                <div className="flex gap-2">
+              <div className="fixed top-4 right-4 lg:top-auto lg:bottom-20 lg:right-4 flex flex-col gap-2 z-40">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button
                     onClick={() => {
                       setGameType('catch');
                       setShowGame(!showGame);
                     }}
                     variant={showGame && gameType === 'catch' ? "default" : "outline"}
-                    size="lg"
-                    className="gap-2 shadow-lg"
+                    size="sm"
+                    className="gap-2 shadow-lg text-xs sm:text-sm"
                   >
-                    <Gamepad2 className="w-5 h-5" />
-                    캐치볼
+                    <Gamepad2 className="w-4 h-4" />
+                    <span className="hidden sm:inline">캐치볼</span>
+                    <span className="sm:hidden">🎮</span>
                   </Button>
                   <Button
                     onClick={() => {
@@ -952,22 +955,23 @@ const MetaverseVoiceCounseling = () => {
                       setShowGame(!showGame);
                     }}
                     variant={showGame && gameType === 'puzzle' ? "default" : "outline"}
-                    size="lg"
-                    className="gap-2 shadow-lg"
+                    size="sm"
+                    className="gap-2 shadow-lg text-xs sm:text-sm"
                   >
-                    🧩
-                    퍼즐
+                    <span>🧩</span>
+                    <span className="hidden sm:inline">퍼즐</span>
+                  </Button>
+                  <Button
+                    onClick={() => setShowEmotionChart(!showEmotionChart)}
+                    variant={showEmotionChart ? "default" : "outline"}
+                    size="sm"
+                    className="gap-2 shadow-lg text-xs sm:text-sm"
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="hidden sm:inline">감정 분석</span>
+                    <span className="sm:hidden">📊</span>
                   </Button>
                 </div>
-                <Button
-                  onClick={() => setShowEmotionChart(!showEmotionChart)}
-                  variant={showEmotionChart ? "default" : "outline"}
-                  size="lg"
-                  className="gap-2 shadow-lg"
-                >
-                  <TrendingUp className="w-5 h-5" />
-                  감정 분석
-                </Button>
               </div>
             )}
 

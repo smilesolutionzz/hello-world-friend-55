@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { getSoundEffects } from '@/utils/SoundEffects';
 
 interface CharacterControllerProps {
   children: React.ReactNode;
@@ -24,6 +25,8 @@ export const CharacterController = ({
   const lastMousePos = useRef({ x: 0, y: 0 });
   const cameraOffset = useRef(new THREE.Vector3(0, 3, 5));
   const targetCameraPos = useRef(new THREE.Vector3());
+  const soundEffects = useRef(getSoundEffects());
+  const wasMoving = useRef(false);
 
   useEffect(() => {
     if (!enabled) return;
@@ -113,7 +116,9 @@ export const CharacterController = ({
     }
 
     // 위치 업데이트
-    if (velocity.length() > 0) {
+    const isCurrentlyMoving = velocity.length() > 0;
+    
+    if (isCurrentlyMoving) {
       groupRef.current.position.add(velocity);
       
       // 캐릭터가 이동 방향을 바라보도록 회전
@@ -127,6 +132,18 @@ export const CharacterController = ({
       // 위치 변경 콜백
       if (onPositionChange) {
         onPositionChange(groupRef.current.position);
+      }
+      
+      // 발자국 소리 시작
+      if (!wasMoving.current) {
+        soundEffects.current.startFootsteps();
+        wasMoving.current = true;
+      }
+    } else {
+      // 발자국 소리 중지
+      if (wasMoving.current) {
+        soundEffects.current.stopFootsteps();
+        wasMoving.current = false;
       }
     }
 

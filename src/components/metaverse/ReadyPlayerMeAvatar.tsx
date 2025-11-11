@@ -143,20 +143,47 @@ export const ReadyPlayerMeAvatar = ({
   return (
     <group ref={groupRef} position={position} rotation={rotation} scale={[scale, scale, scale]}>
       {isLoading && (
-        <mesh position={[0, 1, 0]}>
+        <mesh position={[0, 1, 0]} castShadow>
           <sphereGeometry args={[0.3, 16, 16]} />
           <meshStandardMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.5} />
         </mesh>
       )}
-      {model && <primitive object={model} />}
+      {model && <primitive object={model} castShadow receiveShadow />}
       
-      {/* 감정 표현 라이트 */}
+      {/* 강화된 그림자를 위한 바닥 평면 */}
+      <mesh 
+        position={[0, 0.01, 0]} 
+        rotation={[-Math.PI / 2, 0, 0]} 
+        receiveShadow
+      >
+        <circleGeometry args={[1.5, 32]} />
+        <shadowMaterial opacity={0.3} />
+      </mesh>
+      
+      {/* 감정 표현 라이트 - 강화된 조명 */}
       <pointLight
         ref={lightRef}
         position={[0, 1.5, 0]}
-        intensity={emotionIntensity * 2}
-        distance={3}
+        intensity={emotionIntensity * 3}
+        distance={4}
         decay={2}
+        castShadow
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+      />
+      
+      {/* 추가 림 라이트 (입체감 강화) */}
+      <pointLight
+        position={[1.5, 1, -1]}
+        intensity={0.8}
+        distance={3}
+        color="#87CEEB"
+      />
+      <pointLight
+        position={[-1.5, 1, -1]}
+        intensity={0.8}
+        distance={3}
+        color="#FFB6C1"
       />
 
       {/* 감정 파티클 효과 */}

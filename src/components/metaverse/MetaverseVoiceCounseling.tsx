@@ -13,6 +13,8 @@ import { MovementGuide } from '@/components/metaverse/CharacterController';
 import { EmotionDetector, EmotionType } from '@/utils/EmotionDetector';
 import { useInteractiveObjects } from '@/components/metaverse/InteractiveObject';
 import { AvatarPreview } from '@/components/metaverse/AvatarPreview';
+import { AvatarGallery } from '@/components/metaverse/AvatarGallery';
+import { getSoundEffects } from '@/utils/SoundEffects';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -156,6 +158,11 @@ const MetaverseVoiceCounseling = () => {
       setIsConnected(true);
       setIsLoading(false);
       
+      // 환경음 시작 (선택한 공간 타입에 따라)
+      const soundEffects = getSoundEffects();
+      const ambientType = selectedRoom === 'outdoor' ? 'outdoor' : 'indoor';
+      soundEffects.startAmbient(ambientType);
+      
       toast({
         title: "연결 완료",
         description: "AI 상담사와 대화를 시작하세요. AI가 먼저 인사할 거예요!",
@@ -174,6 +181,12 @@ const MetaverseVoiceCounseling = () => {
   const endConversation = () => {
     chatRef.current?.disconnect();
     emotionDetectorRef.current?.disconnect();
+    
+    // 사운드 중지
+    const soundEffects = getSoundEffects();
+    soundEffects.stopFootsteps();
+    soundEffects.stopAmbient();
+    
     setIsConnected(false);
     setIsSpeaking(false);
     setCurrentEmotion('neutral');
@@ -268,6 +281,9 @@ const MetaverseVoiceCounseling = () => {
     return () => {
       chatRef.current?.disconnect();
       emotionDetectorRef.current?.disconnect();
+      // 정리 시 사운드도 중지
+      const soundEffects = getSoundEffects();
+      soundEffects.cleanup();
     };
   }, []);
 
@@ -357,12 +373,24 @@ const MetaverseVoiceCounseling = () => {
                   <div className="space-y-3">
                     <Label className="flex items-center gap-2">
                       <Link2 className="w-4 h-4" />
-                      아바타 URL 입력
+                      아바타 설정
                     </Label>
+                    
+                    {/* 샘플 아바타 갤러리 */}
+                    <AvatarGallery 
+                      selectedUrl={avatarUrl}
+                      onSelect={(url) => {
+                        setAvatarUrl(url);
+                        toast({
+                          title: "샘플 아바타 선택됨 ✓",
+                          description: "미리보기에서 확인하세요",
+                        });
+                      }}
+                    />
                     
                     <div className="relative">
                       <Input
-                        placeholder="Ready Player Me 아바타 URL (.glb) 붙여넣기"
+                        placeholder="또는 커스텀 아바타 URL (.glb) 붙여넣기"
                         value={avatarUrl}
                         onChange={(e) => {
                           const url = e.target.value.trim();
@@ -393,11 +421,11 @@ const MetaverseVoiceCounseling = () => {
                       onClick={openAvatarCreator}
                     >
                       <UserCircle className="w-4 h-4" />
-                      또는 Ready Player Me에서 새로 만들기
+                      Ready Player Me에서 새로 만들기
                     </Button>
                     
                     <p className="text-xs text-muted-foreground">
-                      💡 아바타 생성 후 "Copy the link" 버튼을 누르고 URL을 위에 붙여넣으세요
+                      💡 샘플을 선택하거나 Ready Player Me에서 생성한 URL을 붙여넣으세요
                     </p>
                   </div>
                 </div>

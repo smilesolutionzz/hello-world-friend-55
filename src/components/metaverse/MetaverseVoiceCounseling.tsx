@@ -662,7 +662,7 @@ const MetaverseVoiceCounseling = () => {
                 </div>
 
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">
-                  <p className="text-sm text-muted-foreground text-center">
+                  <p className="text-sm text-foreground text-center">
                     🔒 대화 내용은 저장되지 않으며 완전히 비밀이 보장됩니다
                   </p>
                   {enableMovement && (

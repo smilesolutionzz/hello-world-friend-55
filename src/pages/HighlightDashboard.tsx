@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, LogOut, History, Crown, TrendingUp } from 'lucide-react';
+import { User, LogOut, History, Crown, TrendingUp, Brain, Activity, MessageSquare } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -287,6 +287,60 @@ function DashboardContent() {
                     observations={observations}
                   />
                   
+                  {/* 빠른 시작 CTA 섹션 */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card 
+                      className="bg-gradient-to-br from-blue-900/40 to-blue-950/40 backdrop-blur-xl border border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 cursor-pointer group"
+                      onClick={() => navigate('/assessment')}
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-4">
+                          <div className="p-3 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors">
+                            <Brain className="w-8 h-8 text-blue-400" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">종합 검사</h3>
+                            <p className="text-sm text-blue-300/70">전문 심리검사 시작하기</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card 
+                      className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/30 cursor-pointer group"
+                      onClick={() => navigate('/simple-observation')}
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-4">
+                          <div className="p-3 bg-emerald-500/20 rounded-xl group-hover:bg-emerald-500/30 transition-colors">
+                            <Activity className="w-8 h-8 text-emerald-400" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">바로 검사</h3>
+                            <p className="text-sm text-emerald-300/70">1분 빠른 체크</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card 
+                      className="bg-gradient-to-br from-purple-900/40 to-purple-950/40 backdrop-blur-xl border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/30 cursor-pointer group"
+                      onClick={() => navigate('/premium-assessment')}
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-4">
+                          <div className="p-3 bg-purple-500/20 rounded-xl group-hover:bg-purple-500/30 transition-colors">
+                            <Crown className="w-8 h-8 text-purple-400" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">프리미엄 검사</h3>
+                            <p className="text-sm text-purple-300/70">AI 심층 분석</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  
                   {/* 목표 추적 섹션 */}
                   <GoalTracker />
                   
@@ -302,78 +356,122 @@ function DashboardContent() {
                     observations={observations}
                   />
                   
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Content */}
-                    <div className="lg:col-span-2">
-                      <TestSelector />
-                    </div>
-
-                    {/* Sidebar */}
-                    <div className="space-y-6">
-                      {/* Recent Tests */}
-                      <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-                            <History className="w-5 h-5 text-purple-400" />
-                            최근 검사
-                          </CardTitle>
-                          <CardDescription className="text-purple-300/70">
-                            최근 완료한 검사 결과를 확인하세요
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          {recentTests.length > 0 ? (
-                            <div className="space-y-3">
-                              {recentTests.map((test) => (
-                                <div 
-                                  key={test.id}
-                                  className="p-3 border border-purple-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 hover:border-purple-400/40 hover:shadow-lg hover:shadow-purple-500/20"
-                                  onClick={() => {
-                                    if (test.test_types.name === '프리미엄 검사') {
-                                      navigate(`/assessment-detail/${test.id}`);
-                                    } else {
-                                      navigate(`/assessment/${test.id}`);
-                                    }
-                                  }}
-                                >
-                                  <div className="flex justify-between items-start">
-                                    <div>
-                                      <p className="font-medium text-sm bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">{test.test_types.name}</p>
-                                      <p className="text-xs text-purple-400/70">
-                                        {new Date(test.completed_at).toLocaleDateString('ko-KR')}
-                                      </p>
-                                    </div>
-                                    <Badge variant="outline" className="text-xs border-purple-500/30 bg-purple-500/10 text-purple-300">
-                                      {test.scores.total_score || 0}점
-                                    </Badge>
+                  {/* 최근 검사 & 추천 섹션 */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Recent Tests */}
+                    <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                          <History className="w-5 h-5 text-purple-400" />
+                          최근 검사
+                        </CardTitle>
+                        <CardDescription className="text-purple-300/70">
+                          최근 완료한 검사 결과를 확인하세요
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        {recentTests.length > 0 ? (
+                          <div className="space-y-3">
+                            {recentTests.slice(0, 3).map((test) => (
+                              <div 
+                                key={test.id}
+                                className="p-3 border border-purple-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 hover:border-purple-400/40 hover:shadow-lg hover:shadow-purple-500/20"
+                                onClick={() => {
+                                  if (test.test_types.name === '프리미엄 검사') {
+                                    navigate(`/assessment-detail/${test.id}`);
+                                  } else {
+                                    navigate(`/assessment/${test.id}`);
+                                  }
+                                }}
+                              >
+                                <div className="flex justify-between items-start">
+                                  <div>
+                                    <p className="font-medium text-sm bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">{test.test_types.name}</p>
+                                    <p className="text-xs text-purple-400/70">
+                                      {new Date(test.completed_at).toLocaleDateString('ko-KR')}
+                                    </p>
                                   </div>
+                                  <Badge variant="outline" className="text-xs border-purple-500/30 bg-purple-500/10 text-purple-300">
+                                    {test.scores.total_score || 0}점
+                                  </Badge>
                                 </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <p className="text-sm text-purple-400/60 text-center py-4">
-                              아직 완료한 검사가 없습니다
-                            </p>
-                          )}
-                        </CardContent>
-                      </Card>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-8">
+                            <Brain className="w-12 h-12 mx-auto mb-4 text-purple-500/30" />
+                            <p className="text-sm text-purple-400/60 mb-4">아직 완료한 검사가 없습니다</p>
+                            <Button 
+                              onClick={() => navigate('/assessment')}
+                              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                            >
+                              첫 검사 시작하기
+                            </Button>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
 
-                      {/* Subscription Info */}
-                      {profile?.subscription_tier === 'free' && (
-                        <Card className="bg-gradient-to-br from-amber-900/30 to-orange-900/30 backdrop-blur-xl border border-amber-500/30 hover:shadow-lg hover:shadow-amber-500/20 transition-all duration-300">
-                          <CardHeader>
-                            <CardTitle className="bg-gradient-to-r from-amber-300 to-orange-300 bg-clip-text text-transparent">프리미엄 업그레이드</CardTitle>
-                            <CardDescription className="text-amber-300/70">
-                              더 많은 기능을 이용해보세요
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                            <ul className="text-sm space-y-2 mb-4 text-amber-200/90">
-                              <li>• 무제한 검사</li>
-                              <li>• 전문가 피드백</li>
-                              <li>• PDF 리포트 다운로드</li>
-                              <li>• 카카오 알림톡</li>
-                            </ul>
+                    {/* 추천 기능 */}
+                    <Card className="bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-xl border border-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                          <TrendingUp className="w-5 h-5 text-emerald-400" />
+                          추천 기능
+                        </CardTitle>
+                        <CardDescription className="text-purple-300/70">
+                          맞춤형 검사 및 기능 추천
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div 
+                          className="p-3 border border-emerald-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-emerald-500/10 hover:to-emerald-500/5 transition-all duration-300"
+                          onClick={() => navigate('/metaverse-voice')}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-emerald-500/10 rounded-lg">
+                              <MessageSquare className="w-5 h-5 text-emerald-400" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-sm text-white">메타버스 음성 상담</p>
+                              <p className="text-xs text-purple-400/70">실시간 AI 상담 체험</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div 
+                          className="p-3 border border-blue-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-blue-500/10 hover:to-blue-500/5 transition-all duration-300"
+                          onClick={() => navigate('/observation')}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-500/10 rounded-lg">
+                              <Activity className="w-5 h-5 text-blue-400" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-sm text-white">관찰 기록하기</p>
+                              <p className="text-xs text-purple-400/70">일상 행동 기록 및 분석</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div 
+                          className="p-3 border border-amber-500/20 rounded-lg cursor-pointer hover:bg-gradient-to-br hover:from-amber-500/10 hover:to-amber-500/5 transition-all duration-300"
+                          onClick={() => navigate('/stress-test')}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-amber-500/10 rounded-lg">
+                              <Brain className="w-5 h-5 text-amber-400" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-sm text-white">스트레스 검사</p>
+                              <p className="text-xs text-purple-400/70">현재 스트레스 수준 체크</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {profile?.subscription_tier === 'free' && (
+                          <div className="pt-2 border-t border-purple-500/20">
                             <Button 
                               className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-500/30"
                               onClick={() => navigate('/subscription')}
@@ -381,10 +479,10 @@ function DashboardContent() {
                               <Crown className="w-4 h-4 mr-2" />
                               프리미엄 구독하기
                             </Button>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </div>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
                   </div>
                 </TabsContent>
 

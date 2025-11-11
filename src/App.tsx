@@ -143,6 +143,7 @@ import AcademyLanding from "./pages/AcademyLanding";
 import DevelopmentCenterLanding from "./pages/DevelopmentCenterLanding";
 import DaycareLanding from "./pages/DaycareLanding";
 import DashboardRouter from "./pages/DashboardRouter";
+import Referral from "./pages/Referral";
 
 import { SessionManager } from "./components/SessionManager";
 
@@ -306,6 +307,7 @@ const App = () => {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/education-feed" element={<EducationFeed />} />
+          <Route path="/referral" element={<Referral />} />
           
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />

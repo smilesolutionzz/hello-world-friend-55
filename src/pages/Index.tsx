@@ -12,7 +12,6 @@ import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
 
 import ValueComparisonSection from "@/components/landing/ValueComparisonSection";
 import FixedCTAButton from "@/components/landing/FixedCTAButton";
-import KakaoCustomerService from "@/components/KakaoCustomerService";
 import TestimonialSection from "@/components/TestimonialSection";
 import ClientLogos from "@/components/ClientLogos";
 import { NewFeaturesSection } from "@/components/landing/NewFeaturesSection";
@@ -29,7 +28,6 @@ import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
 import CompanyServicesSection from '@/components/landing/CompanyServicesSection';
-import { ExpertOnlineStatus } from '@/components/urgency/ExpertOnlineStatus';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -242,9 +240,6 @@ const Index = () => {
         
         {/* Fixed CTA Button (Mobile + Desktop) */}
         <FixedCTAButton />
-        
-        {/* Kakao Customer Service */}
-        <KakaoCustomerService />
         
         <BackToTop />
         

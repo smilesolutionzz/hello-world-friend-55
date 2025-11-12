@@ -109,10 +109,34 @@ export class RealtimeChat {
       });
 
       this.dc.onopen = () => {
-        console.log("✅ Data channel open - triggering AI to start conversation");
+        console.log("✅ Data channel open - configuring Korean session and starting conversation");
+        // Force Korean responses and transcription
+        try {
+          this.dc?.send(
+            JSON.stringify({
+              type: "session.update",
+              session: {
+                // Always respond in Korean
+                instructions:
+                  "너는 한국어 상담사야. 모든 답변과 자막은 100% 한국어로만 말해. 영어 입력이 오더라도 한국어로 공손하고 간결하게 답해.",
+                // Prefer Korean STT
+                input_audio_transcription: {
+                  model: "gpt-4o-transcribe",
+                  language: "ko",
+                },
+                // Ensure both audio and text are returned
+                modalities: ["text", "audio"],
+                // Set a default voice (optional)
+                voice: "alloy",
+              },
+            })
+          );
+        } catch (e) {
+          console.warn("Failed to send session.update:", e);
+        }
         // Trigger AI to start the conversation
         if (this.dc) {
-          this.dc.send(JSON.stringify({ type: 'response.create' }));
+          this.dc.send(JSON.stringify({ type: "response.create" }));
         }
       };
 

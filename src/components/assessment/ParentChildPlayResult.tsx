@@ -93,24 +93,45 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
     let currentSection = '';
 
     lines.forEach(line => {
-      if (line.includes('진단') || line.includes('스타일')) {
+      const trimmedLine = line.trim();
+      
+      // 섹션 헤더 감지
+      if (trimmedLine.match(/놀이\s*스타일\s*진단/) || (trimmedLine.startsWith('**') && trimmedLine.includes('스타일'))) {
         currentSection = 'diagnosis';
-        sections.diagnosis = line.replace(/^[0-9.]+\s*/, '').replace(/놀이\s*스타일\s*진단[:：]?\s*/i, '');
-      } else if (line.includes('강점')) {
+        // **로 감싸진 진단 내용 추출
+        const diagnosisMatch = trimmedLine.match(/\*\*(.+?)\*\*/);
+        if (diagnosisMatch) {
+          sections.diagnosis = diagnosisMatch[1];
+        }
+      } else if (trimmedLine.match(/강점\s*\d*가지/)) {
         currentSection = 'strengths';
-      } else if (line.includes('개선') || line.includes('제안')) {
+      } else if (trimmedLine.match(/개선|제안/)) {
         currentSection = 'improvements';
-      } else if (line.includes('놀이') && line.includes('활동')) {
+      } else if (trimmedLine.match(/놀이\s*활동/)) {
         currentSection = 'activities';
-      } else if (line.includes('지침') || line.includes('행동')) {
+      } else if (trimmedLine.match(/지침|행동/)) {
         currentSection = 'guidelines';
-      } else if (currentSection && line.trim().startsWith('-') || line.trim().startsWith('•')) {
-        const text = line.replace(/^[-•]\s*/, '').trim();
-        if (text) {
-          if (currentSection === 'strengths') sections.strengths.push(text);
-          else if (currentSection === 'improvements') sections.improvements.push(text);
-          else if (currentSection === 'activities') sections.activities.push(text);
-          else if (currentSection === 'guidelines') sections.guidelines.push(text);
+      } else if (currentSection && (trimmedLine.startsWith('*') || trimmedLine.startsWith('-') || trimmedLine.startsWith('•'))) {
+        // 리스트 항목 추출 (*, -, • 지원)
+        let text = trimmedLine.replace(/^[*\-•]\s*/, '').trim();
+        // ** 볼드 제거
+        text = text.replace(/\*\*/g, '');
+        
+        if (text && text.length > 3) { // 너무 짧은 항목 제외
+          switch (currentSection) {
+            case 'strengths':
+              sections.strengths.push(text);
+              break;
+            case 'improvements':
+              sections.improvements.push(text);
+              break;
+            case 'activities':
+              sections.activities.push(text);
+              break;
+            case 'guidelines':
+              sections.guidelines.push(text);
+              break;
+          }
         }
       }
     });

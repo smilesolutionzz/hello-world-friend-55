@@ -1,14 +1,14 @@
-import InstantAIAnalysis from "./InstantAIAnalysis";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import FloatingKeywords from "./FloatingKeywords";
 import { useState } from "react";
-import { ArrowRight, Sparkles, BookOpen, Zap, Timer, Mic } from "lucide-react";
+import { ArrowRight, Sparkles, BookOpen, Zap, Timer, Mic, Gift } from "lucide-react";
 import { PromotionBanner } from "@/components/promotion/PromotionBanner";
 import heroBg from "@/assets/hero-family-bg.jpg";
 import QuickOnboarding from "@/components/onboarding/QuickOnboarding";
+import InstantAIAnalysis from "./InstantAIAnalysis";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -132,17 +132,17 @@ const HeroSection = () => {
             </p>
           </div>
 
-          {/* 서브 CTA */}
+          {/* 서브 CTA - 친구 추천 강조 */}
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Button 
               size="lg"
-              onClick={() => setShowQuickOnboarding(true)}
-              className="group relative w-full sm:w-auto px-8 py-6 bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] hover:from-[#4A7FEF] hover:to-[#7AA8EF] text-white text-lg font-bold rounded-2xl shadow-[0_8px_32px_rgba(94,143,255,0.4)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.6)] transition-all duration-300 transform hover:scale-105"
+              onClick={() => navigate('/referral')}
+              className="group relative w-full sm:w-auto px-8 py-6 bg-gradient-to-r from-[#5E8FFF] via-[#8FB9FF] to-[#5E8FFF] hover:from-[#4A7FEF] hover:via-[#7AA8EF] hover:to-[#4A7FEF] text-white text-lg font-bold rounded-2xl shadow-[0_8px_32px_rgba(94,143,255,0.4)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.6)] transition-all duration-300 transform hover:scale-105"
             >
               <span className="flex items-center gap-2">
-                <Zap className="w-5 h-5" />
-                30초 무료 체험
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                <Gift className="w-5 h-5 animate-bounce" />
+                🎉 친구 추천하고 토큰 받기!
+                <span className="px-2 py-0.5 bg-white/30 backdrop-blur-sm rounded-full text-xs">매달 10명</span>
               </span>
             </Button>
             

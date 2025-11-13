@@ -149,7 +149,7 @@ const HeroSection = () => {
             <Button
               size="lg"
               variant="outline"
-              onClick={() => navigate('/subscription')}
+              onClick={() => navigate('/premium-assessment')}
               className="group relative w-full sm:w-auto px-8 py-6 bg-white/10 hover:bg-white/20 text-white text-lg font-bold rounded-2xl border-2 border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300"
             >
               <span className="flex items-center gap-2">

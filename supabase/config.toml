@@ -289,3 +289,6 @@ verify_jwt = false
 
 [functions.personality-analysis]
 verify_jwt = false
+
+[functions.process-pending-referrals]
+verify_jwt = false

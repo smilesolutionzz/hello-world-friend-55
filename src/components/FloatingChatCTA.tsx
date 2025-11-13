@@ -8,8 +8,8 @@ const FloatingChatCTA = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   
-  // 결과 페이지에서는 숨김
-  const hideOnRoutes = ['/fun-test-result', '/han-medicine-test'];
+  // 결과 페이지와 메타버스 페이지에서는 숨김
+  const hideOnRoutes = ['/fun-test-result', '/han-medicine-test', '/metaverse-voice'];
   if (hideOnRoutes.some(route => location.pathname.includes(route))) {
     return null;
   }

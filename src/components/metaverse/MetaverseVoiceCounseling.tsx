@@ -802,17 +802,15 @@ const MetaverseVoiceCounseling = () => {
           )}
           {/* Header */}
           <div className="text-center mb-8 animate-fade-in">
-            {/* UI 접기/펼치기 버튼 (모바일) */}
-            {isMobile && (
-              <Button
-                onClick={() => setIsUICollapsed(!isUICollapsed)}
-                className="fixed top-4 right-4 z-50 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-purple-600 shadow-xl border-2 border-white/30 p-0"
-              >
-                {isUICollapsed ? '📱' : '✕'}
-              </Button>
-            )}
+            {/* UI 접기/펼치기 버튼 */}
+            <Button
+              onClick={() => setIsUICollapsed(!isUICollapsed)}
+              className="fixed top-4 right-4 z-50 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-purple-600 shadow-xl border-2 border-white/30 p-0"
+            >
+              {isUICollapsed ? '📱' : '✕'}
+            </Button>
             
-            {(!isMobile || !isUICollapsed) && (
+            {!isUICollapsed && (
               <>
                 <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 drop-shadow-lg">
                   안녕하세요, {userName}님 👋
@@ -823,7 +821,7 @@ const MetaverseVoiceCounseling = () => {
               </>
             )}
             
-            {(!isMobile || !isUICollapsed) && (
+            {!isUICollapsed && (
               <div className="flex flex-wrap gap-2 justify-center items-center">
               <div className="inline-block bg-green-500/20 backdrop-blur-sm border border-green-400/30 rounded-lg px-4 py-2">
                 <p className="text-sm md:text-base text-foreground font-medium">
@@ -861,7 +859,7 @@ const MetaverseVoiceCounseling = () => {
           </div>
 
           {/* Status Card */}
-          {(!isMobile || !isUICollapsed) && (
+          {!isUICollapsed && (
           <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-4 sm:p-8 mb-6 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20 pointer-events-none">
             <div className="pointer-events-auto">
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -1056,7 +1054,7 @@ const MetaverseVoiceCounseling = () => {
           )}
 
           {/* Info */}
-          {(!isMobile || !isUICollapsed) && (
+          {!isUICollapsed && (
           <div className="bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-xl p-4 max-w-md">
             <p className="text-foreground/90 text-base md:text-lg text-center leading-relaxed">
               💬 마이크 권한을 허용하고 대화를 시작하세요.<br />

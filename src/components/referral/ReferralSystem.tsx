@@ -317,19 +317,19 @@ export const ReferralSystem = () => {
             <Button 
               onClick={() => setShowDialog(true)}
               variant="outline"
-              size="lg"
-              className="w-full"
+              size="default"
+              className="w-full text-sm font-medium"
             >
-              <Users className="w-4 h-4 mr-2" />
+              <Users className="w-3.5 h-3.5 mr-1.5" />
               초대 현황
             </Button>
             <Button 
               onClick={shareViaKakao}
-              size="lg"
-              className="w-full bg-[#FEE500] hover:bg-[#FDD835] text-black font-bold"
+              size="default"
+              className="w-full bg-[#FEE500] hover:bg-[#FDD835] text-black text-sm font-semibold"
               disabled={isLimitReached}
             >
-              <span className="text-lg mr-1">💬</span>
+              <span className="mr-1">💬</span>
               카톡 공유
             </Button>
           </div>

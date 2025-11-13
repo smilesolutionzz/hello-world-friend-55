@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { TypingAnimation } from "@/components/ui/typing-animation";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import FloatingKeywords from "./FloatingKeywords";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowRight, Sparkles, BookOpen, Zap, Timer, Mic, Gift } from "lucide-react";
 import { PromotionBanner } from "@/components/promotion/PromotionBanner";
 import heroBg from "@/assets/hero-family-bg.jpg";
@@ -14,6 +14,17 @@ const HeroSection = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [showQuickOnboarding, setShowQuickOnboarding] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Parallax 스크롤 효과
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleStartAssessment = async (path: string) => {
     setIsLoading(true);
@@ -42,11 +53,14 @@ const HeroSection = () => {
     "애가 학교에서 왕따 당해요... 어떻게 도와줘야 하나요?"
   ];
   return (
-    <section className="relative min-h-screen overflow-hidden">
-      {/* Background Image with Overlay - 밝기 개선 */}
+    <section ref={sectionRef} className="relative min-h-screen overflow-hidden animate-fade-in">
+      {/* Background Image with Overlay - 밝기 개선 + Parallax */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroBg})` }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-100"
+        style={{ 
+          backgroundImage: `url(${heroBg})`,
+          transform: `translateY(${scrollY * 0.5}px)` // Parallax 효과
+        }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/80 via-[#1B2333]/75 to-[#0A0E1A]/80" />
       </div>
@@ -65,11 +79,11 @@ const HeroSection = () => {
             <span className="text-xs sm:text-sm font-bold text-white whitespace-nowrap">혁신력 1위 AI 심리·발달 케어 플랫폼</span>
           </div>
           
-          <h1 className="text-2xl leading-tight sm:text-6xl md:text-7xl font-extrabold">
-            <span className="block text-white mb-2 sm:mb-3 text-xl sm:text-6xl">
+          <h1 className="text-3xl leading-tight sm:text-5xl md:text-6xl lg:text-7xl font-extrabold">
+            <span className="block text-white mb-2 sm:mb-3 text-2xl sm:text-5xl md:text-6xl">
               심리 고민, ADHD,<br className="sm:hidden" /> 발달 평가
             </span>
-            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent mb-4 text-xl sm:text-6xl">
+            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent mb-4 text-2xl sm:text-5xl md:text-6xl">
               3분이면<br className="sm:hidden" /> 전문가급 분석 완료
             </span>
           </h1>
@@ -100,67 +114,67 @@ const HeroSection = () => {
 
 
         {/* Primary CTA - 3분 무료 분석 시작 */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <Button 
             size="lg"
             onClick={() => navigate('/premium-assessment')}
-            className="group relative w-full max-w-2xl mx-auto px-12 py-8 bg-gradient-to-r from-[#5E8FFF] via-[#7AA8FF] to-[#5E8FFF] hover:from-[#4A7FEF] hover:via-[#6A98EF] hover:to-[#4A7FEF] text-white text-2xl sm:text-3xl font-extrabold rounded-2xl shadow-[0_12px_48px_rgba(94,143,255,0.6)] hover:shadow-[0_16px_56px_rgba(94,143,255,0.8)] transition-all duration-300 transform hover:scale-105 border-2 border-white/30 animate-pulse"
+            className="group relative w-full max-w-2xl mx-auto px-8 sm:px-12 py-6 sm:py-8 bg-gradient-to-r from-[#5E8FFF] via-[#7AA8FF] to-[#5E8FFF] hover:from-[#4A7FEF] hover:via-[#6A98EF] hover:to-[#4A7FEF] text-white text-xl sm:text-2xl md:text-3xl font-extrabold rounded-2xl shadow-[0_12px_48px_rgba(94,143,255,0.6)] hover:shadow-[0_16px_56px_rgba(94,143,255,0.8)] transition-all duration-300 transform hover:scale-105 active:scale-95 border-2 border-white/30 animate-pulse"
           >
-            <span className="flex items-center justify-center gap-3">
-              <Zap className="w-7 h-7 sm:w-8 sm:h-8" />
+            <span className="flex items-center justify-center gap-2 sm:gap-3">
+              <Zap className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 group-hover:rotate-12 transition-transform" />
               <span>⚡ 3분 무료 분석 시작</span>
-              <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 group-hover:translate-x-1 transition-transform" />
             </span>
           </Button>
-          <p className="text-center text-white/80 text-sm sm:text-base mt-3 font-medium">
+          <p className="text-center text-white/80 text-xs sm:text-sm md:text-base mt-3 font-medium px-4">
             회원가입 없이 바로 시작 • 전문가급 AI 분석 무료 체험
           </p>
         </div>
 
         {/* 프로모션 배너 */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <PromotionBanner variant="hero" />
         </div>
 
         {/* Instant AI Analysis - 즉시 후킹 요소 */}
-        <div className="mb-12">
+        <div className="mb-8 sm:mb-12">
           <InstantAIAnalysis />
         </div>
         
         {/* Secondary CTA Buttons - 명확한 행동 유도 */}
-        <div className="flex flex-col gap-6 justify-center items-center mb-16">
+        <div className="flex flex-col gap-4 sm:gap-6 justify-center items-center mb-12 sm:mb-16">
           {/* 메인 CTA - 메타버스 체험 강조 */}
-          <div className="w-full max-w-2xl">
+          <div className="w-full max-w-2xl px-4">
             <Button 
               size="lg"
               onClick={() => navigate('/metaverse-voice')}
-              className="group relative w-full px-12 py-8 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 text-white text-xl sm:text-2xl font-extrabold rounded-2xl shadow-[0_8px_32px_rgba(59,130,246,0.5)] hover:shadow-[0_12px_40px_rgba(59,130,246,0.7)] transition-all duration-300 transform hover:scale-105 border-2 border-white/20"
+              className="group relative w-full px-8 sm:px-12 py-6 sm:py-8 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 text-white text-lg sm:text-xl md:text-2xl font-extrabold rounded-2xl shadow-[0_8px_32px_rgba(59,130,246,0.5)] hover:shadow-[0_12px_40px_rgba(59,130,246,0.7)] transition-all duration-300 transform hover:scale-105 active:scale-95 border-2 border-white/20"
             >
-              <span className="flex items-center justify-center gap-3">
+              <span className="flex items-center justify-center gap-2 sm:gap-3">
                 <div className="relative">
-                  <Mic className="w-7 h-7 animate-pulse" />
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping" />
+                  <Mic className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 animate-pulse" />
+                  <div className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-ping" />
                 </div>
-                <span>🎭 AI 메타버스 상담실 체험</span>
-                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-sm animate-pulse">NEW</span>
+                <span className="text-base sm:text-xl md:text-2xl">🎭 AI 메타버스 상담실 체험</span>
+                <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-white/30 backdrop-blur-sm rounded-full text-xs sm:text-sm animate-pulse">NEW</span>
               </span>
             </Button>
-            <p className="text-center text-white/70 text-sm mt-3">
+            <p className="text-center text-white/70 text-xs sm:text-sm mt-2 sm:mt-3 px-4">
               가상공간에서 음성으로 AI와 실시간 대화 🎙️
             </p>
           </div>
 
           {/* 서브 CTA - 친구 추천 강조 */}
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full px-4 sm:w-auto">
             <Button 
               size="lg"
               onClick={() => navigate('/referral')}
-              className="group relative w-full sm:w-auto px-8 py-6 bg-gradient-to-r from-[#5E8FFF] via-[#8FB9FF] to-[#5E8FFF] hover:from-[#4A7FEF] hover:via-[#7AA8EF] hover:to-[#4A7FEF] text-white text-lg font-bold rounded-2xl shadow-[0_8px_32px_rgba(94,143,255,0.4)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.6)] transition-all duration-300 transform hover:scale-105"
+              className="group relative w-full sm:w-auto px-6 sm:px-8 py-4 sm:py-6 bg-gradient-to-r from-[#5E8FFF] via-[#8FB9FF] to-[#5E8FFF] hover:from-[#4A7FEF] hover:via-[#7AA8EF] hover:to-[#4A7FEF] text-white text-base sm:text-lg font-bold rounded-2xl shadow-[0_8px_32px_rgba(94,143,255,0.4)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.6)] transition-all duration-300 transform hover:scale-105 active:scale-95"
             >
-              <span className="flex items-center gap-2">
-                <Gift className="w-5 h-5 animate-bounce" />
-                🎉 친구 추천하고 토큰 받기!
-                <span className="px-2 py-0.5 bg-white/30 backdrop-blur-sm rounded-full text-xs">매달 10명</span>
+              <span className="flex items-center justify-center gap-2">
+                <Gift className="w-4 h-4 sm:w-5 sm:h-5 animate-bounce" />
+                <span className="text-sm sm:text-lg">🎉 친구 추천하고 토큰 받기!</span>
+                <span className="px-1.5 sm:px-2 py-0.5 bg-white/30 backdrop-blur-sm rounded-full text-xs">매달 10명</span>
               </span>
             </Button>
             
@@ -168,27 +182,27 @@ const HeroSection = () => {
               size="lg"
               variant="outline"
               onClick={() => navigate('/premium-assessment')}
-              className="group relative w-full sm:w-auto px-8 py-6 bg-white/10 hover:bg-white/20 text-white text-lg font-bold rounded-2xl border-2 border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300"
+              className="group relative w-full sm:w-auto px-6 sm:px-8 py-4 sm:py-6 bg-white/10 hover:bg-white/20 text-white text-base sm:text-lg font-bold rounded-2xl border-2 border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300 active:scale-95"
             >
-              <span className="flex items-center gap-2">
-                <Timer className="w-5 h-5" />
-                3분 정밀 검사
+              <span className="flex items-center justify-center gap-2">
+                <Timer className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="text-sm sm:text-lg">3분 정밀 검사</span>
               </span>
             </Button>
           </div>
 
           {/* 서브 CTA */}
-          <div className="flex flex-col sm:flex-row gap-3 text-center">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 text-center px-4">
             <button
               onClick={() => navigate('/subscription')}
-              className="text-white/80 hover:text-white text-sm font-medium underline decoration-[#5E8FFF]/50 hover:decoration-[#5E8FFF] transition-all"
+              className="text-white/80 hover:text-white text-xs sm:text-sm font-medium underline decoration-[#5E8FFF]/50 hover:decoration-[#5E8FFF] transition-all"
             >
               💎 프리미엄 플랜 보기 (무제한 이용)
             </button>
             <span className="hidden sm:inline text-white/40">|</span>
             <button
               onClick={() => navigate('/platform-manual')}
-              className="text-white/80 hover:text-white text-sm font-medium underline decoration-[#5E8FFF]/50 hover:decoration-[#5E8FFF] transition-all"
+              className="text-white/80 hover:text-white text-xs sm:text-sm font-medium underline decoration-[#5E8FFF]/50 hover:decoration-[#5E8FFF] transition-all"
             >
               📖 플랫폼 사용법 보기
             </button>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
@@ -33,7 +34,8 @@ import {
   ChevronDown,
   Crown,
   Mic,
-  Bot
+  Bot,
+  Activity
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -150,8 +152,8 @@ export const UnifiedNavigation = () => {
       <nav className="hidden lg:flex bg-card border-b border-border sticky top-0 z-40 backdrop-blur-xl bg-card/95">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            {/* Clean Logo & Token Balance */}
-            <div className="flex items-center gap-6">
+            {/* Clean Logo & Token Balance & Live Stats */}
+            <div className="flex items-center gap-4">
               <div 
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => navigate('/')}
@@ -163,6 +165,47 @@ export const UnifiedNavigation = () => {
               <div className="flex items-center">
                 <TokenBalance compact showPurchaseButton={false} />
               </div>
+
+              {/* Live Stats with Tooltips */}
+              <TooltipProvider>
+                <div className="flex items-center gap-3 px-4 py-1.5 bg-accent/50 rounded-full">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1.5 cursor-help">
+                        <Users className="w-3.5 h-3.5 text-primary" />
+                        <span className="text-xs font-semibold text-foreground">180</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">180명 방문 중</p>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1.5 cursor-help">
+                        <Activity className="w-3.5 h-3.5 text-green-500" />
+                        <span className="text-xs font-semibold text-foreground">49</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">49명 온라인</p>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1.5 cursor-help">
+                        <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
+                        <span className="text-xs font-semibold text-foreground">85</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">85건 검사 진행 중</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </TooltipProvider>
             </div>
 
             {/* Clean Modern Menu */}
@@ -368,15 +411,15 @@ export const UnifiedNavigation = () => {
                 <BookingNotificationBell />
               )}
 
-              {/* Login Button */}
+              {/* Login Button with Outline */}
               <div className="ml-4 pl-4 border-l border-border">
                 <Button
-                  variant={user ? "ghost" : "default"}
+                  variant={user ? "ghost" : "outline"}
                   size="sm"
                   onClick={handleAuth}
                   className={`h-9 px-4 rounded-lg font-medium transition-all ${
                     !user 
-                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm' 
+                      ? 'border-2 border-primary bg-transparent hover:bg-primary/10 text-primary shadow-sm' 
                       : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                   }`}
                 >

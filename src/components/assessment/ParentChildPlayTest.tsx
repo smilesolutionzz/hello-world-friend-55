@@ -65,6 +65,56 @@ const questionsByAge = {
         { value: "c", text: "함께 몸을 움직이며 놀아줍니다" },
         { value: "d", text: "특별히 신경쓰지 않습니다" }
       ]
+    },
+    {
+      id: 6,
+      question: "아기가 소리나 음악에 반응할 때?",
+      options: [
+        { value: "a", text: "함께 리듬에 맞춰 몸을 흔듭니다" },
+        { value: "b", text: "다양한 소리와 음악을 들려줍니다" },
+        { value: "c", text: "아기의 반응을 즐겁게 지켜봅니다" },
+        { value: "d", text: "특별히 반응하지 않습니다" }
+      ]
+    },
+    {
+      id: 7,
+      question: "아기의 언어 발달을 위해 주로?",
+      options: [
+        { value: "a", text: "옹알이나 소리에 대답하며 대화합니다" },
+        { value: "b", text: "책을 읽어주고 이름을 말해줍니다" },
+        { value: "c", text: "아기가 말할 때까지 기다립니다" },
+        { value: "d", text: "일상에서 자연스럽게 말을 많이 합니다" }
+      ]
+    },
+    {
+      id: 8,
+      question: "아기와 식사 시간에?",
+      options: [
+        { value: "a", text: "먹여주면서 눈을 맞추고 대화합니다" },
+        { value: "b", text: "스스로 먹을 수 있도록 격려합니다" },
+        { value: "c", text: "빠르게 먹이는 것에 집중합니다" },
+        { value: "d", text: "함께 음식을 탐색하며 즐깁니다" }
+      ]
+    },
+    {
+      id: 9,
+      question: "아기와 외출할 때?",
+      options: [
+        { value: "a", text: "새로운 것들을 함께 관찰하며 이야기합니다" },
+        { value: "b", text: "안전하게 목적지까지 이동하는 데 집중합니다" },
+        { value: "c", text: "아기가 관심 있는 것을 충분히 보게 합니다" },
+        { value: "d", text: "유모차에서 주변을 보게 합니다" }
+      ]
+    },
+    {
+      id: 10,
+      question: "아기가 잠들기 전에 주로?",
+      options: [
+        { value: "a", text: "자장가를 부르며 안아줍니다" },
+        { value: "b", text: "책을 읽어주거나 이야기를 들려줍니다" },
+        { value: "c", text: "혼자 잠들 수 있도록 놔둡니다" },
+        { value: "d", text: "부드럽게 토닥이며 함께 있어줍니다" }
+      ]
     }
   ],
   child: [ // 3-6세
@@ -127,6 +177,66 @@ const questionsByAge = {
         { value: "c", text: "아이의 창의성과 상상력 발휘" },
         { value: "d", text: "부모-자녀 간 유대감 형성" }
       ]
+    },
+    {
+      id: 7,
+      question: "아이가 역할놀이를 할 때?",
+      options: [
+        { value: "a", text: "적극적으로 역할을 맡아 함께 놀이합니다" },
+        { value: "b", text: "아이의 놀이를 지켜보며 반응해줍니다" },
+        { value: "c", text: "현실적인 상황으로 유도합니다" },
+        { value: "d", text: "아이 혼자 놀이하도록 합니다" }
+      ]
+    },
+    {
+      id: 8,
+      question: "아이가 규칙을 지키지 않을 때?",
+      options: [
+        { value: "a", text: "단호하게 규칙을 다시 설명합니다" },
+        { value: "b", text: "왜 그런지 이유를 물어봅니다" },
+        { value: "c", text: "함께 규칙의 필요성을 이야기합니다" },
+        { value: "d", text: "유연하게 규칙을 조정합니다" }
+      ]
+    },
+    {
+      id: 9,
+      question: "아이와 미술이나 만들기 활동을 할 때?",
+      options: [
+        { value: "a", text: "자유롭게 표현하도록 놔둡니다" },
+        { value: "b", text: "기법이나 방법을 가르쳐줍니다" },
+        { value: "c", text: "함께 작품을 만들며 협력합니다" },
+        { value: "d", text: "완성된 작품에 집중합니다" }
+      ]
+    },
+    {
+      id: 10,
+      question: "아이가 다른 친구들과 놀 때?",
+      options: [
+        { value: "a", text: "가까이서 지켜보며 필요시 개입합니다" },
+        { value: "b", text: "아이들끼리 자유롭게 놀게 합니다" },
+        { value: "c", text: "함께 놀이를 제안하고 도와줍니다" },
+        { value: "d", text: "문제가 생기면 그때 해결합니다" }
+      ]
+    },
+    {
+      id: 11,
+      question: "아이가 실수나 실패를 했을 때?",
+      options: [
+        { value: "a", text: "괜찮다고 위로하고 다시 시도하도록 격려합니다" },
+        { value: "b", text: "무엇이 잘못되었는지 함께 살펴봅니다" },
+        { value: "c", text: "실수에서 배울 점을 이야기합니다" },
+        { value: "d", text: "빠르게 수정하고 넘어갑니다" }
+      ]
+    },
+    {
+      id: 12,
+      question: "아이의 호기심과 질문에 대해?",
+      options: [
+        { value: "a", text: "정확한 답을 찾아 설명해줍니다" },
+        { value: "b", text: "함께 찾아보고 탐구합니다" },
+        { value: "c", text: "아이가 스스로 생각하도록 질문으로 답합니다" },
+        { value: "d", text: "간단하게 답하고 넘어갑니다" }
+      ]
     }
   ],
   school: [ // 7-12세
@@ -188,6 +298,66 @@ const questionsByAge = {
         { value: "b", text: "격려하고 지원합니다" },
         { value: "c", text: "관심은 있지만 개입하지 않습니다" },
         { value: "d", text: "잘 모르거나 관심이 없습니다" }
+      ]
+    },
+    {
+      id: 7,
+      question: "아이가 새로운 도전을 하려고 할 때?",
+      options: [
+        { value: "a", text: "적극 응원하고 필요한 것을 지원합니다" },
+        { value: "b", text: "위험요소를 먼저 살펴봅니다" },
+        { value: "c", text: "함께 계획을 세우고 준비합니다" },
+        { value: "d", text: "스스로 결정하고 책임지도록 합니다" }
+      ]
+    },
+    {
+      id: 8,
+      question: "아이와 의견이 다를 때?",
+      options: [
+        { value: "a", text: "부모의 경험과 지혜를 설명합니다" },
+        { value: "b", text: "아이의 의견을 존중하고 타협점을 찾습니다" },
+        { value: "c", text: "아이의 생각을 먼저 충분히 듣습니다" },
+        { value: "d", text: "각자의 의견을 유지합니다" }
+      ]
+    },
+    {
+      id: 9,
+      question: "아이의 성취나 성공을 축하할 때?",
+      options: [
+        { value: "a", text: "크게 칭찬하고 보상을 줍니다" },
+        { value: "b", text: "과정과 노력을 인정해줍니다" },
+        { value: "c", text: "함께 기뻐하고 자랑스러워합니다" },
+        { value: "d", text: "다음 목표를 이야기합니다" }
+      ]
+    },
+    {
+      id: 10,
+      question: "아이가 게임이나 스마트폰을 사용할 때?",
+      options: [
+        { value: "a", text: "명확한 규칙을 정하고 지키게 합니다" },
+        { value: "b", text: "아이와 함께 규칙을 만들고 조정합니다" },
+        { value: "c", text: "아이를 신뢰하고 자율에 맡깁니다" },
+        { value: "d", text: "필요할 때만 제한합니다" }
+      ]
+    },
+    {
+      id: 11,
+      question: "아이가 스트레스나 고민이 있을 때?",
+      options: [
+        { value: "a", text: "적극적으로 해결 방법을 찾아줍니다" },
+        { value: "b", text: "충분히 이야기를 들어주고 공감합니다" },
+        { value: "c", text: "함께 고민하고 조언을 구합니다" },
+        { value: "d", text: "시간이 해결해줄 거라 믿습니다" }
+      ]
+    },
+    {
+      id: 12,
+      question: "아이의 장래와 진로에 대해?",
+      options: [
+        { value: "a", text: "부모로서 방향을 제시하고 안내합니다" },
+        { value: "b", text: "다양한 경험을 하도록 지원합니다" },
+        { value: "c", text: "함께 탐색하고 의논합니다" },
+        { value: "d", text: "아이의 선택을 전적으로 믿습니다" }
       ]
     }
   ]

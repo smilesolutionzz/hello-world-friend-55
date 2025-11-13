@@ -97,10 +97,17 @@ export const ReferralSystem = () => {
     try {
       if (!profile) return;
 
+      // 이번 달 첫날과 마지막 날 계산
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
+
       const { data, error } = await supabase
         .from('referral_records')
         .select('*')
         .eq('referrer_code', profile.referral_code)
+        .gte('created_at', startOfMonth)
+        .lte('created_at', endOfMonth)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -119,8 +126,8 @@ export const ReferralSystem = () => {
   const copyReferralLink = async () => {
     if (isLimitReached) {
       toast({
-        title: "추천 제한 도달",
-        description: "최대 10명까지만 추천할 수 있습니다",
+        title: "이번 달 추천 제한 도달",
+        description: "이번 달은 최대 10명까지 추천할 수 있습니다 (다음 달에 리셋)",
         variant: "destructive"
       });
       return;
@@ -131,7 +138,7 @@ export const ReferralSystem = () => {
       await navigator.clipboard.writeText(link);
       toast({
         title: "🎉 링크 복사 완료!",
-        description: `친구에게 공유하면 서로 10토큰씩 받아요! (${remainingReferrals}명 남음)`,
+        description: `친구에게 공유하면 서로 10토큰씩! (이번 달 ${remainingReferrals}명 남음)`,
       });
     } catch (error) {
       toast({
@@ -145,8 +152,8 @@ export const ReferralSystem = () => {
   const shareViaKakao = () => {
     if (isLimitReached) {
       toast({
-        title: "추천 제한 도달",
-        description: "최대 10명까지만 추천할 수 있습니다",
+        title: "이번 달 추천 제한 도달",
+        description: "이번 달은 최대 10명까지 추천할 수 있습니다 (다음 달에 리셋)",
         variant: "destructive"
       });
       return;
@@ -205,6 +212,9 @@ export const ReferralSystem = () => {
   const remainingReferrals = Math.max(0, MAX_REFERRALS - completedReferrals);
   const isLimitReached = completedReferrals >= MAX_REFERRALS;
 
+  // 현재 월 표시
+  const currentMonth = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' });
+
   return (
     <>
       <Card className="p-6 bg-gradient-to-br from-primary/5 via-secondary/5 to-background border-primary/20">
@@ -249,27 +259,30 @@ export const ReferralSystem = () => {
             </h3>
             <p className="text-sm text-muted-foreground">
               친구가 가입하면 <strong className="text-primary">10토큰</strong>을 무료로 받아요! 
-              {!isLimitReached && <span className="text-orange-600 font-semibold"> (최대 {MAX_REFERRALS}명, {remainingReferrals}명 남음)</span>}
-              {isLimitReached && <span className="text-red-600 font-semibold"> ⚠️ 최대 추천 인원 도달</span>}
+              {!isLimitReached && <span className="text-orange-600 font-semibold"> (이번 달 {MAX_REFERRALS}명, {remainingReferrals}명 남음)</span>}
+              {isLimitReached && <span className="text-red-600 font-semibold"> ⚠️ 이번 달 최대 추천 인원 도달</span>}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              📅 {currentMonth} • 매달 1일 자정에 리셋됩니다
             </p>
           </div>
 
           {/* 초대 현황 프로그레스 */}
           <div className="bg-background/50 rounded-lg p-4 space-y-3">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">초대 진행률</span>
+              <span className="text-muted-foreground">이번 달 초대 진행률</span>
               <span className="font-semibold">{completedReferrals}/{MAX_REFERRALS}명</span>
             </div>
             <Progress value={(completedReferrals / MAX_REFERRALS) * 100} className="h-3" />
             <div className="text-xs text-center">
               {!isLimitReached && earnedTokens > 0 && (
-                <span className="text-green-600 font-semibold">💰 {earnedTokens}토큰 획득!</span>
+                <span className="text-green-600 font-semibold">💰 이번 달 {earnedTokens}토큰 획득!</span>
               )}
               {!isLimitReached && remainingReferrals > 0 && (
                 <span className="text-muted-foreground"> • {remainingReferrals}명 더 초대 가능</span>
               )}
               {isLimitReached && (
-                <span className="text-orange-600 font-semibold">🎉 최대 추천 인원 달성! 총 {earnedTokens}토큰 획득</span>
+                <span className="text-orange-600 font-semibold">🎉 이번 달 최대 추천 인원 달성! 다음 달 1일에 리셋</span>
               )}
             </div>
           </div>
@@ -293,7 +306,7 @@ export const ReferralSystem = () => {
             </div>
             {isLimitReached && (
               <p className="text-xs text-orange-600 font-medium">
-                ⚠️ 최대 추천 인원({MAX_REFERRALS}명)에 도달했습니다
+                ⚠️ 이번 달 최대 추천 인원({MAX_REFERRALS}명)에 도달했습니다 • 다음 달 1일에 리셋
               </p>
             )}
           </div>
@@ -337,7 +350,11 @@ export const ReferralSystem = () => {
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-xl">3️⃣</span>
-                <span>최대 <strong className="text-primary">{MAX_REFERRALS}명</strong>까지 초대 가능 (총 {MAX_REFERRALS * 10}토큰)</span>
+                <span><strong className="text-primary">매달 {MAX_REFERRALS}명</strong>까지 초대 가능 (월 최대 {MAX_REFERRALS * 10}토큰)</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-xl">🔄</span>
+                <span className="text-xs text-muted-foreground">매달 1일 자정에 초대 횟수가 리셋됩니다</span>
               </li>
             </ul>
           </div>
@@ -353,7 +370,7 @@ export const ReferralSystem = () => {
               친구 초대 현황
             </DialogTitle>
             <DialogDescription>
-              {completedReferrals}명의 친구가 가입했어요 (최대 {MAX_REFERRALS}명)
+              {completedReferrals}명의 친구가 가입했어요 (이번 달 최대 {MAX_REFERRALS}명)
             </DialogDescription>
           </DialogHeader>
 
@@ -411,10 +428,10 @@ export const ReferralSystem = () => {
             {isLimitReached && (
               <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 text-center">
                 <p className="text-sm font-semibold text-orange-700">
-                  🎉 최대 추천 인원에 도달했습니다!
+                  🎉 이번 달 최대 추천 인원에 도달했습니다!
                 </p>
                 <p className="text-xs text-orange-600 mt-1">
-                  총 {earnedTokens}토큰을 획득하셨어요
+                  이번 달 {earnedTokens}토큰 획득 • 다음 달 1일에 리셋
                 </p>
               </div>
             )}

@@ -171,5 +171,22 @@ export const mockExperts = [
     calendly_url: 'https://calendly.com/example10',
     intro: '성실하고 유능하며 아이디어가 풍부한 감각통합치료사!',
     visible: true
+  },
+  {
+    id: '11',
+    name: '장서원',
+    photo_url: getExpertImage('장서원') || '/placeholder.svg',
+    credential: '특수체육 전문가, 학사, 8년, 남',
+    verified: true,
+    categories: ['특수체육', '운동발달', '체육치료', '발달재활'],
+    region: '전국',
+    online: true,
+    rating: 4.9,
+    price_per_50: 55000,
+    availability_text: '유아~성인 대상 가능',
+    contact_form_url: 'https://forms.gle/example11',
+    calendly_url: 'https://calendly.com/example11',
+    intro: '특수체육을 통한 신체발달과 사회성 향상을 전문으로 하는 에이전트입니다.',
+    visible: true
   }
 ];

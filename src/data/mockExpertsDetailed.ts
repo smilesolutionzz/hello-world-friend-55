@@ -120,5 +120,35 @@ export const mockExpertsDetailed = [
     location: '서울 서초구',
     isOnline: true,
     responseTime: '평균 3시간 이내'
+  },
+  {
+    id: '6',
+    name: '장서원',
+    specialty: ['특수체육', '운동발달'],
+    credentials: ['특수체육 전문가'],
+    rating: 4.9,
+    reviews: 145,
+    experience: '8년',
+    availability: '평일 10-20시',
+    monthlyPrice: 110000,
+    hourlyPrice: 28000,
+    image: getExpertImage('장서원') || '/api/placeholder/150/150',
+    description: '특수체육을 통한 신체발달과 사회성 향상을 전문으로 합니다.',
+    languages: ['한국어'],
+    consultationTypes: ['화상상담', '방문상담'],
+    monthlyServices: [
+      '주 2회 특수체육 프로그램 (월 8회)',
+      '신체발달 평가 및 모니터링',
+      '운동발달 개별 계획',
+      '가정 내 활동 가이드'
+    ],
+    portfolio: {
+      cases: 380,
+      successRate: 90,
+      specializations: ['특수체육', '운동발달', '체육치료', '사회성발달']
+    },
+    location: '전국',
+    isOnline: true,
+    responseTime: '평균 2시간 이내'
   }
 ];

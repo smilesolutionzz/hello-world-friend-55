@@ -83,6 +83,7 @@ export const expertImages: Record<string, string> = {
   '허승연': expertHeoSeungyeon,
   '박주현': expertParkJuhyun,
   '윤은민': expertYoonEunmin,
+  '장서원': expertYangHuijin, // 임시로 양희진 이미지 사용
 };
 
 export const getExpertImage = (name: string): string | null => {

@@ -7,20 +7,11 @@ import newFeaturesBg from '@/assets/new-features-bg.jpg';
 
 const newFeatures = [
   {
-    id: 'parent_child_play',
-    title: '👨‍👩‍👧‍👦 부모아동 놀이성향 체크',
-    description: 'AI가 분석하는 우리 가족 놀이 스타일! 맞춤형 놀이 활동 추천과 일러스트 생성',
-    date: '2025-11-13',
-    badge: 'NEW',
-    color: 'from-green-500 to-emerald-500',
-    path: '/assessment/parent-child-play'
-  },
-  {
     id: 'ai_metaverse',
     title: '🎭 AI 메타버스 상담실',
     description: '실시간 음성 API로 가상공간에서 실제 상담사와 자연스러운 대화하듯 구현',
     date: '2025-11-08',
-    badge: 'HOT',
+    badge: 'NEW',
     color: 'from-cyan-500 to-blue-500',
     path: '/metaverse-voice'
   },

@@ -32,15 +32,6 @@ const newFeatures = [
     badge: 'HOT',
     color: 'from-pink-500 to-purple-500',
     path: '/assessment/attachment-style-test'
-  },
-  {
-    id: 'defense_mechanism',
-    title: '🛡️ 방어기제 분석',
-    description: '무의식적 심리 패턴 발견! 24문항으로 8가지 방어기제 분석',
-    date: '2025-10-16',
-    badge: 'HOT',
-    color: 'from-purple-500 to-pink-500',
-    path: '/assessment/defense-mechanism-test'
   }
 ];
 

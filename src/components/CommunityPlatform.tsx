@@ -172,6 +172,16 @@ const CommunityPlatform = () => {
     featured: true,
     description: '최고 수준의 의료진과 최신 시설을 갖춘 메인 제휴기관'
   }, {
+    name: '힐다임심리발달센터 대구중구점',
+    type: '심리발달센터',
+    location: '대구광역시 중구',
+    rating: 4.9,
+    members: 18,
+    programs: ['심리상담', '발달평가', '언어치료', '인지치료', '사회성발달', '부모상담'],
+    voucher_types: ['언어치료', '인지치료', '심리상담', '교육청서비스'],
+    featured: true,
+    description: '대구 지역 대표 심리발달센터로 전문적인 심리평가와 맞춤형 발달치료 서비스를 제공합니다.'
+  }, {
     name: '엘림아동발달센터',
     type: '발달센터',
     location: '경기도 용인시',

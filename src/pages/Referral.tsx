@@ -34,12 +34,12 @@ const ReferralPage = () => {
             <div className="text-sm text-muted-foreground">토큰 / 친구</div>
           </div>
           <div className="bg-card border rounded-lg p-4 text-center">
-            <div className="text-3xl font-bold text-primary mb-2">∞</div>
-            <div className="text-sm text-muted-foreground">무제한 초대</div>
+            <div className="text-3xl font-bold text-primary mb-2">10</div>
+            <div className="text-sm text-muted-foreground">최대 초대 인원</div>
           </div>
           <div className="bg-card border rounded-lg p-4 text-center">
-            <div className="text-3xl font-bold text-primary mb-2">24h</div>
-            <div className="text-sm text-muted-foreground">즉시 지급</div>
+            <div className="text-3xl font-bold text-primary mb-2">즉시</div>
+            <div className="text-sm text-muted-foreground">토큰 지급</div>
           </div>
         </div>
       </div>

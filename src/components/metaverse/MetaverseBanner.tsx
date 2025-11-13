@@ -27,21 +27,21 @@ export const MetaverseBanner = () => {
 
       <div className="container mx-auto relative z-10">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4 flex-1">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
             {/* 아이콘 */}
-            <div className="hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm animate-pulse">
+            <div className="hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm animate-pulse flex-shrink-0">
               <Mic className="w-6 h-6 text-white" />
             </div>
             
             {/* 메시지 */}
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="inline-flex items-center px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-xs font-bold text-white shadow-lg animate-scale-in">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <span className="inline-flex items-center px-2 py-0.5 bg-white/30 backdrop-blur-sm rounded-full text-xs font-bold text-white shadow-lg animate-scale-in flex-shrink-0">
                   🎭 NEW
                 </span>
-                <h3 className="text-white font-bold text-base sm:text-lg">AI 메타버스 상담실 오픈!</h3>
+                <h3 className="text-white font-bold text-sm sm:text-lg whitespace-nowrap">AI 메타버스 상담실 오픈!</h3>
               </div>
-              <p className="text-white/90 text-xs sm:text-sm">
+              <p className="text-white/90 text-xs hidden sm:block">
                 가상공간에서 AI 상담사와 실시간 음성 대화를 경험해보세요 ✨
               </p>
             </div>

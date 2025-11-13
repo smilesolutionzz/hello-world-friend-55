@@ -123,40 +123,40 @@ const HeroSection = () => {
           <InstantAIAnalysis />
         </div>
         
-        {/* Secondary CTA Buttons - 명확한 행동 유도 */}
-        <div className="flex flex-col gap-4 sm:gap-6 justify-center items-center mb-12 sm:mb-16">
-          {/* 메인 CTA - 메타버스 체험 강조 */}
+        {/* Primary CTA - Enhanced Visual Hierarchy */}
+        <div className="flex flex-col gap-3 justify-center items-center mb-12 sm:mb-16">
+          {/* Main CTA - Maximum Visual Weight */}
           <div className="w-full max-w-2xl px-4">
             <Button 
               size="lg"
               onClick={() => navigate('/metaverse-voice')}
-              className="group relative w-full px-8 sm:px-12 py-6 sm:py-8 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 text-white text-lg sm:text-xl md:text-2xl font-extrabold rounded-2xl shadow-[0_8px_32px_rgba(59,130,246,0.5)] hover:shadow-[0_12px_40px_rgba(59,130,246,0.7)] transition-all duration-300 transform hover:scale-105 active:scale-95 border-2 border-white/20"
+              className="group relative w-full p-4 sm:p-5 bg-gradient-to-r from-primary-strong via-primary to-primary-medium hover:from-primary hover:via-primary-strong hover:to-primary text-white text-h5 sm:text-h4 font-black rounded-2xl shadow-[0_8px_40px_rgba(94,143,255,0.6)] hover:shadow-[0_16px_56px_rgba(94,143,255,0.8)] transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 active:scale-95 border-2 border-white/30 animate-glow"
             >
-              <span className="flex items-center justify-center gap-2 sm:gap-3">
+              <span className="flex items-center justify-center gap-2">
                 <div className="relative">
-                  <Mic className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 animate-pulse" />
-                  <div className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-ping" />
+                  <Mic className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 animate-pulse" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping shadow-lg shadow-green-400/50" />
                 </div>
-                <span className="text-base sm:text-xl md:text-2xl">🎭 AI 메타버스 상담실 체험</span>
-                <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-white/30 backdrop-blur-sm rounded-full text-xs sm:text-sm animate-pulse">NEW</span>
+                <span className="text-body-lg sm:text-h5 md:text-h4 font-black">🎭 AI 메타버스 상담실</span>
+                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-caption sm:text-body-sm font-semibold animate-pulse">NEW</span>
               </span>
             </Button>
-            <p className="text-center text-white/70 text-xs sm:text-sm mt-2 sm:mt-3 px-4">
+            <p className="text-center text-white font-medium text-body-sm sm:text-body mt-2 px-4">
               가상공간에서 음성으로 AI와 실시간 대화 🎙️
             </p>
           </div>
 
-          {/* 서브 CTA - 친구 추천 강조 */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full px-4 sm:w-auto">
+          {/* Secondary CTAs - Clear Hierarchy */}
+          <div className="flex flex-col sm:flex-row gap-2 w-full px-4 sm:w-auto">
             <Button 
               size="lg"
               onClick={() => navigate('/referral')}
-              className="group relative w-full sm:w-auto px-6 sm:px-8 py-4 sm:py-6 bg-gradient-to-r from-[#5E8FFF] via-[#8FB9FF] to-[#5E8FFF] hover:from-[#4A7FEF] hover:via-[#7AA8EF] hover:to-[#4A7FEF] text-white text-base sm:text-lg font-bold rounded-2xl shadow-[0_8px_32px_rgba(94,143,255,0.4)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.6)] transition-all duration-300 transform hover:scale-105 active:scale-95"
+              className="group relative w-full sm:w-auto p-3 bg-gradient-to-r from-success via-success/90 to-success hover:from-success/90 hover:via-success hover:to-success/90 text-white text-body-lg sm:text-h6 font-bold rounded-2xl shadow-[0_8px_32px_rgba(16,185,129,0.5)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.7)] transition-all duration-300 transform hover:scale-105 active:scale-95 border border-white/20"
             >
               <span className="flex items-center justify-center gap-2">
-                <Gift className="w-4 h-4 sm:w-5 sm:h-5 animate-bounce" />
-                <span className="text-sm sm:text-lg">🎉 친구 추천하고 토큰 받기!</span>
-                <span className="px-1.5 sm:px-2 py-0.5 bg-white/30 backdrop-blur-sm rounded-full text-xs">매달 10명</span>
+                <Gift className="w-5 h-5 animate-bounce" />
+                <span className="text-body sm:text-body-lg font-bold">🎉 친구 추천 토큰 받기</span>
+                <span className="px-2 py-0.5 bg-white/30 backdrop-blur-sm rounded-full text-caption font-medium">매달 10명</span>
               </span>
             </Button>
             
@@ -164,11 +164,11 @@ const HeroSection = () => {
               size="lg"
               variant="outline"
               onClick={() => navigate('/premium-assessment')}
-              className="group relative w-full sm:w-auto px-6 sm:px-8 py-4 sm:py-6 bg-white/10 hover:bg-white/20 text-white text-base sm:text-lg font-bold rounded-2xl border-2 border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300 active:scale-95"
+              className="group relative w-full sm:w-auto p-3 bg-white/15 hover:bg-white/25 text-white text-body-lg sm:text-h6 font-bold rounded-2xl border-2 border-white/40 hover:border-white/60 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
             >
               <span className="flex items-center justify-center gap-2">
-                <Timer className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="text-sm sm:text-lg">3분 정밀 검사</span>
+                <Timer className="w-5 h-5" />
+                <span className="text-body sm:text-body-lg font-bold">3분 정밀 검사</span>
               </span>
             </Button>
           </div>

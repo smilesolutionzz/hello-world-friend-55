@@ -11,6 +11,7 @@ import GrandpaMarriageResult from "./GrandpaMarriageResult";
 import MZNaggingResult from "./MZNaggingResult";
 import OtrovertResult from "./OtrovertResult";
 import LifeAchievementResult from "./LifeAchievementResult";
+import ParentChildPlayResult from "./ParentChildPlayResult";
 import { PersonalizedProductRecommendation } from "@/components/product/PersonalizedProductRecommendation";
 
 export default function FunTestResult() {
@@ -922,6 +923,10 @@ export default function FunTestResult() {
 
   if (testType === 'life_achievement') {
     return <LifeAchievementResult result={result} onRestart={handleRetry} />;
+  }
+
+  if (testType === 'parent_child_play') {
+    return <ParentChildPlayResult result={result} />;
   }
 
   return null;

@@ -119,7 +119,8 @@ export const ReferralSystem = () => {
 
   const getReferralLink = () => {
     if (!profile) return '';
-    const baseUrl = window.location.origin;
+    // 커스텀 도메인 사용 (aihpro.com)
+    const baseUrl = 'https://aihpro.com';
     return `${baseUrl}/auth?ref=${profile.referral_code}`;
   };
 

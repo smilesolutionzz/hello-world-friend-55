@@ -5970,6 +5970,57 @@ export type Database = {
         }
         Relationships: []
       }
+      play_assessment_results: {
+        Row: {
+          age_group: string
+          ai_analysis: string | null
+          answers: Json
+          child_age: number
+          cognitive_score: number
+          created_at: string
+          emotional_score: number
+          id: string
+          physical_score: number
+          scores: Json
+          social_score: number
+          style: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          age_group: string
+          ai_analysis?: string | null
+          answers: Json
+          child_age: number
+          cognitive_score?: number
+          created_at?: string
+          emotional_score?: number
+          id?: string
+          physical_score?: number
+          scores: Json
+          social_score?: number
+          style: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          age_group?: string
+          ai_analysis?: string | null
+          answers?: Json
+          child_age?: number
+          cognitive_score?: number
+          created_at?: string
+          emotional_score?: number
+          id?: string
+          physical_score?: number
+          scores?: Json
+          social_score?: number
+          style?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"] | null

@@ -402,6 +402,9 @@ const ParentChildPlayTest = ({ onComplete, onBack }: ParentChildPlayTestProps) =
     try {
       const basicResult = calculateBasicResult(allAnswers);
       
+      // 발달 영역별 점수 계산
+      const developmentalScores = calculateDevelopmentalScores(allAnswers);
+      
       // AI 분석 요청
       const { data: { session } } = await supabase.auth.getSession();
       const response = await fetch(
@@ -428,10 +431,28 @@ const ParentChildPlayTest = ({ onComplete, onBack }: ParentChildPlayTestProps) =
       
       const result = {
         ...basicResult,
+        ...developmentalScores,
         aiAnalysis: analysis,
         ageGroup,
         childAge,
       };
+
+      // 결과를 데이터베이스에 저장
+      if (session?.user) {
+        await supabase.from('play_assessment_results').insert({
+          user_id: session.user.id,
+          age_group: ageGroup,
+          child_age: childAge,
+          answers: allAnswers,
+          style: basicResult.style,
+          scores: basicResult.scores,
+          ai_analysis: analysis,
+          cognitive_score: developmentalScores.cognitiveScore,
+          emotional_score: developmentalScores.emotionalScore,
+          social_score: developmentalScores.socialScore,
+          physical_score: developmentalScores.physicalScore,
+        });
+      }
 
       onComplete(result, 'parent_child_play');
     } catch (error) {
@@ -444,10 +465,56 @@ const ParentChildPlayTest = ({ onComplete, onBack }: ParentChildPlayTestProps) =
       
       // 기본 결과로 진행
       const result = calculateBasicResult(allAnswers);
-      onComplete({ ...result, ageGroup, childAge }, 'parent_child_play');
+      const developmentalScores = calculateDevelopmentalScores(allAnswers);
+      onComplete({ ...result, ...developmentalScores, ageGroup, childAge }, 'parent_child_play');
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const calculateDevelopmentalScores = (allAnswers: Record<number, string>) => {
+    // 발달 영역별 점수 계산 (각 영역 0-100점)
+    let cognitive = 0, emotional = 0, social = 0, physical = 0;
+    const totalQuestions = Object.keys(allAnswers).length;
+
+    Object.entries(allAnswers).forEach(([questionIndex, answer]) => {
+      const qIdx = parseInt(questionIndex);
+      const score = answer === 'a' ? 4 : answer === 'b' ? 3 : answer === 'c' ? 2 : 1;
+      
+      // 문항별로 발달 영역 배분
+      if (ageGroup === 'infant') {
+        // 영아기: 신체/인지 발달 중심
+        if (qIdx < 3) physical += score;
+        else if (qIdx < 6) cognitive += score;
+        else if (qIdx < 8) emotional += score;
+        else social += score;
+      } else if (ageGroup === 'child') {
+        // 유아기: 인지/사회성 균형
+        if (qIdx < 3) cognitive += score;
+        else if (qIdx < 6) social += score;
+        else if (qIdx < 9) emotional += score;
+        else physical += score;
+      } else {
+        // 학령기: 사회/정서 중심
+        if (qIdx < 3) social += score;
+        else if (qIdx < 6) emotional += score;
+        else if (qIdx < 9) cognitive += score;
+        else physical += score;
+      }
+    });
+
+    // 100점 만점으로 정규화
+    const normalize = (score: number, questions: number) => 
+      Math.round((score / (questions * 4)) * 100);
+
+    const questionsPerArea = Math.ceil(totalQuestions / 4);
+
+    return {
+      cognitiveScore: normalize(cognitive, questionsPerArea),
+      emotionalScore: normalize(emotional, questionsPerArea),
+      socialScore: normalize(social, questionsPerArea),
+      physicalScore: normalize(physical, questionsPerArea),
+    };
   };
 
   const calculateBasicResult = (allAnswers: Record<number, string>) => {

@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Baby, Heart, Lightbulb, TrendingUp, Share2, Download } from 'lucide-react';
+import { Baby, Heart, Lightbulb, TrendingUp, Share2, Download, History, BarChart3 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import html2pdf from 'html2pdf.js';
+import {
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend
+} from 'recharts';
 
 interface ParentChildPlayResultProps {
   result: {
@@ -14,16 +32,47 @@ interface ParentChildPlayResultProps {
     aiAnalysis?: string;
     ageGroup: string;
     childAge: number;
+    cognitiveScore?: number;
+    emotionalScore?: number;
+    socialScore?: number;
+    physicalScore?: number;
   };
 }
 
 const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [historyData, setHistoryData] = useState<any[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   const ageGroupLabels = {
     infant: '영아기 (0-2세)',
     child: '유아기 (3-6세)',
     school: '학령기 (7-12세)',
+  };
+
+  // 히스토리 데이터 불러오기
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  const loadHistory = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data, error } = await supabase
+        .from('play_assessment_results')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      setHistoryData(data || []);
+    } catch (error) {
+      console.error('히스토리 로드 실패:', error);
+    }
   };
 
   // AI 분석 결과 파싱
@@ -69,6 +118,39 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
 
   const aiSections = result.aiAnalysis ? parseAIAnalysis(result.aiAnalysis) : null;
 
+  // 발달 영역별 차트 데이터
+  const developmentalData = [
+    {
+      domain: '인지',
+      score: result.cognitiveScore || 0,
+      fullMark: 100,
+    },
+    {
+      domain: '정서',
+      score: result.emotionalScore || 0,
+      fullMark: 100,
+    },
+    {
+      domain: '사회성',
+      score: result.socialScore || 0,
+      fullMark: 100,
+    },
+    {
+      domain: '신체',
+      score: result.physicalScore || 0,
+      fullMark: 100,
+    },
+  ];
+
+  // 히스토리 차트 데이터
+  const historyChartData = historyData.map((item, index) => ({
+    name: `${historyData.length - index}회`,
+    인지: item.cognitive_score,
+    정서: item.emotional_score,
+    사회성: item.social_score,
+    신체: item.physical_score,
+  })).reverse();
+
   const handleShare = () => {
     const text = `부모아동 놀이성향 체크 결과\n\n스타일: ${result.title}\n${result.description}\n\n#부모아동놀이 #놀이성향 #양육`;
     if (navigator.share) {
@@ -79,9 +161,38 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
     }
   };
 
+  const handleDownloadPDF = async () => {
+    try {
+      const element = document.getElementById('result-content');
+      if (!element) return;
+
+      const opt = {
+        margin: 10,
+        filename: `놀이평가결과_${new Date().toLocaleDateString()}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+      };
+
+      await html2pdf().set(opt).from(element).save();
+      
+      toast({
+        title: "다운로드 완료",
+        description: "PDF 파일이 저장되었습니다.",
+      });
+    } catch (error) {
+      console.error('PDF 다운로드 실패:', error);
+      toast({
+        title: "다운로드 실패",
+        description: "PDF 생성에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl" id="result-content">
         {/* 결과 헤더 */}
         <Card className="shadow-xl mb-6">
           <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
@@ -122,6 +233,81 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
             </div>
           </CardContent>
         </Card>
+
+        {/* 발달 영역별 차트 */}
+        {(result.cognitiveScore || result.emotionalScore || result.socialScore || result.physicalScore) && (
+          <Card className="shadow-lg mb-6">
+            <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50">
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="w-6 h-6 text-indigo-500" />
+                발달 영역별 분석
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <ResponsiveContainer width="100%" height={300}>
+                <RadarChart data={developmentalData}>
+                  <PolarGrid />
+                  <PolarAngleAxis dataKey="domain" />
+                  <PolarRadiusAxis angle={90} domain={[0, 100]} />
+                  <Radar
+                    name="점수"
+                    dataKey="score"
+                    stroke="#8b5cf6"
+                    fill="#8b5cf6"
+                    fillOpacity={0.6}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                {developmentalData.map((item) => (
+                  <div key={item.domain} className="text-center p-4 bg-white rounded-lg shadow">
+                    <div className="text-2xl font-bold text-indigo-600">{item.score}점</div>
+                    <div className="text-sm text-muted-foreground">{item.domain} 발달</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 히스토리 차트 */}
+        {historyData.length > 1 && (
+          <Card className="shadow-lg mb-6">
+            <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <History className="w-6 h-6 text-cyan-500" />
+                  평가 변화 추이
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowHistory(!showHistory)}
+                >
+                  {showHistory ? '숨기기' : '자세히'}
+                </Button>
+              </div>
+            </CardHeader>
+            {showHistory && (
+              <CardContent className="p-6">
+                <ResponsiveContainer width="100%" height={250}>
+                  <LineChart data={historyChartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis domain={[0, 100]} />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="인지" stroke="#3b82f6" strokeWidth={2} />
+                    <Line type="monotone" dataKey="정서" stroke="#10b981" strokeWidth={2} />
+                    <Line type="monotone" dataKey="사회성" stroke="#f59e0b" strokeWidth={2} />
+                    <Line type="monotone" dataKey="신체" stroke="#ef4444" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            )}
+          </Card>
+        )}
 
         {/* AI 분석 결과 */}
         {aiSections && (
@@ -242,10 +428,10 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
           </Button>
           <Button
             variant="outline"
-            onClick={() => window.print()}
+            onClick={handleDownloadPDF}
           >
             <Download className="w-4 h-4 mr-2" />
-            결과 저장하기
+            PDF 다운로드
           </Button>
           <Button
             variant="outline"

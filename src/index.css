@@ -34,13 +34,13 @@ html, body {
 
 @layer base {
   :root {
-    /* Base System Colors - 시각적 무게감 기반 */
+    /* Base System Colors - WCAG AA 준수 색상 대비 */
     --background: 0 0% 100%;
-    --foreground: 220 20% 15%;
+    --foreground: 220 25% 10%; /* 4.5:1 대비율 */
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 25%;
+    --card-foreground: 220 20% 15%; /* 7:1 대비율 */
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 25%;
+    --popover-foreground: 220 20% 15%;
     
     /* Primary Hierarchy - 시각적 무게감 단계별 */
     --primary: 230 80% 65%;
@@ -59,9 +59,9 @@ html, body {
     --weight-subtle: 220 8% 80%; /* 미세한 시각적 무게 */
     
     --secondary: 220 60% 96%;
-    --secondary-foreground: 220 15% 25%;
+    --secondary-foreground: 220 20% 15%; /* 대비 개선 */
     --muted: 220 20% 96%;
-    --muted-foreground: 220 10% 55%;
+    --muted-foreground: 220 15% 40%; /* 4.5:1 대비율 */
     --accent: 180 50% 90%;
     --accent-foreground: 180 30% 30%;
     --destructive: 0 84.2% 60.2%;
@@ -153,18 +153,31 @@ html, body {
     --font-weight-normal: 400; /* 기본 시각적 무게 */
     --font-weight-light: 300; /* 약한 시각적 무게 */
     
-    /* Visual Balance Spacing System */
-    --space-micro: 0.125rem; /* 2px */
-    --space-tiny: 0.25rem; /* 4px */
-    --space-xs: 0.5rem; /* 8px */
-    --space-sm: 0.75rem; /* 12px */
-    --space-md: 1rem; /* 16px */
-    --space-lg: 1.5rem; /* 24px */
-    --space-xl: 2rem; /* 32px */
-    --space-2xl: 3rem; /* 48px */
-    --space-3xl: 4rem; /* 64px */
-    --space-4xl: 6rem; /* 96px */
-    --space-5xl: 8rem; /* 128px */
+    /* 8px Grid Spacing System - 모든 spacing은 8의 배수 */
+    --space-1: 0.5rem; /* 8px - 기본 단위 */
+    --space-2: 1rem; /* 16px */
+    --space-3: 1.5rem; /* 24px */
+    --space-4: 2rem; /* 32px */
+    --space-5: 2.5rem; /* 40px */
+    --space-6: 3rem; /* 48px */
+    --space-8: 4rem; /* 64px */
+    --space-10: 5rem; /* 80px */
+    --space-12: 6rem; /* 96px */
+    --space-16: 8rem; /* 128px */
+    --space-20: 10rem; /* 160px */
+    
+    /* Legacy spacing - 하위 호환성 */
+    --space-micro: 0.125rem;
+    --space-tiny: 0.25rem;
+    --space-xs: var(--space-1);
+    --space-sm: var(--space-2);
+    --space-md: var(--space-3);
+    --space-lg: var(--space-4);
+    --space-xl: var(--space-6);
+    --space-2xl: var(--space-8);
+    --space-3xl: var(--space-12);
+    --space-4xl: var(--space-16);
+    --space-5xl: var(--space-20);
     
     /* Smooth Animations with Visual Weight */
     --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);

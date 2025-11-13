@@ -56,6 +56,7 @@
     "@tanstack/react-query": "^5.83.0",
     "@tosspayments/payment-sdk": "^1.9.1",
     "@tosspayments/payment-widget-sdk": "^0.12.0",
+    "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

@@ -14,11 +14,12 @@ import MZNaggingTest from '@/components/assessment/MZNaggingTest';
 import WisdomAdviceTest from '@/components/assessment/WisdomAdviceTest';
 import OtrovertTest from '@/components/assessment/OtrovertTest';
 import LifeAchievementTest from '@/components/assessment/LifeAchievementTest';
+import ParentChildPlayTest from '@/components/assessment/ParentChildPlayTest';
 import { AIFeatureCard } from '@/components/AIFeatureCard';
 
 const FunTests = () => {
   const navigate = useNavigate();
-  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage' | 'mz_nagging' | 'wisdom_advice' | 'otrovert' | 'joseon_name' | 'joseon_job' | 'joseon_status' | 'life_achievement'>('menu');
+  const [currentTest, setCurrentTest] = useState<'menu' | 'past_life_job' | 'animal_face_match' | 'inner_animal' | 'grandma_relationship' | 'grandpa_marriage' | 'mz_nagging' | 'wisdom_advice' | 'otrovert' | 'joseon_name' | 'joseon_job' | 'joseon_status' | 'life_achievement' | 'parent_child_play'>('menu');
 
   const handleTestComplete = (result: any, testType: string) => {
     navigate('/fun-test-result', { 
@@ -64,6 +65,10 @@ const FunTests = () => {
 
   if (currentTest === 'life_achievement') {
     return <LifeAchievementTest onComplete={handleTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentTest === 'parent_child_play') {
+    return <ParentChildPlayTest onComplete={handleTestComplete} onBack={handleBack} />;
   }
 
   if (currentTest === 'joseon_name') {
@@ -214,6 +219,16 @@ const FunTests = () => {
             rank={11}
             onClick={() => setCurrentTest('life_achievement')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 w-full"
+          />
+
+          <AIFeatureCard
+            title="👶 부모아동 놀이성향 체크"
+            description="부모와 아이의 놀이 상호작용 스타일을 분석합니다. 협력적, 지원적, 지시적, 관찰적 중 어떤 스타일인지 확인하고 더 나은 놀이 시간을 만들어보세요!"
+            icon={Users}
+            aiLevel="basic"
+            rank={12}
+            onClick={() => setCurrentTest('parent_child_play')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50 w-full"
           />
         </div>
 

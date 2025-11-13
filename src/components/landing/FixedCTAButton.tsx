@@ -112,7 +112,7 @@ const FixedCTAButton = () => {
   return (
     <>
       {/* Mobile Fixed CTA - 친구 추천 강조 */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-[#5E8FFF] via-[#8FB9FF] to-[#5E8FFF] shadow-2xl safe-area-pb animate-pulse">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-[#5E8FFF] via-[#8FB9FF] to-[#5E8FFF] shadow-2xl safe-area-pb">
         <button
           onClick={handleReferralClick}
           className="w-full p-4 text-white"
@@ -120,7 +120,7 @@ const FixedCTAButton = () => {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                <Gift className="w-6 h-6 animate-bounce" />
+                <Gift className="w-6 h-6" />
               </div>
               <div className="text-left flex-1">
                 <div className="text-sm font-bold flex items-center gap-2">
@@ -144,11 +144,11 @@ const FixedCTAButton = () => {
         <Button 
           size="lg"
           onClick={handleReferralClick}
-          className="group relative px-8 py-8 bg-gradient-to-r from-[#5E8FFF] via-[#8FB9FF] to-[#5E8FFF] hover:from-[#4A7FEF] hover:via-[#7AA8EF] hover:to-[#4A7FEF] text-white text-base font-bold rounded-2xl shadow-[0_8px_30px_rgba(94,143,255,0.5)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.7)] transition-all duration-300 hover:scale-105 animate-pulse"
+          className="group relative px-8 py-8 bg-gradient-to-r from-[#5E8FFF] via-[#8FB9FF] to-[#5E8FFF] hover:from-[#4A7FEF] hover:via-[#7AA8EF] hover:to-[#4A7FEF] text-white text-base font-bold rounded-2xl shadow-[0_8px_30px_rgba(94,143,255,0.5)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.7)] transition-all duration-300 hover:scale-105"
         >
           <div className="flex flex-col items-center gap-2">
             <div className="flex items-center gap-2">
-              <Gift className="w-6 h-6 animate-bounce" />
+              <Gift className="w-6 h-6" />
               <span className="text-lg font-extrabold">친구 추천하고 토큰 받기!</span>
               {!isLoading && remainingReferrals !== null && (
                 <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-sm font-bold">

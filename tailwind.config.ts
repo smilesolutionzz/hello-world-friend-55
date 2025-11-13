@@ -26,25 +26,23 @@ export default {
 				serif: ['Playfair Display', 'serif'], // For elegant headings
 			},
 			fontSize: {
-				// Hierarchical Typography Scale (8px base)
-				'h1': ['3.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '900' }], // 56px
-				'h2': ['3rem', { lineHeight: '1.2', letterSpacing: '-0.015em', fontWeight: '800' }], // 48px
-				'h3': ['2.5rem', { lineHeight: '1.25', letterSpacing: '-0.01em', fontWeight: '700' }], // 40px
-				'h4': ['2rem', { lineHeight: '1.3', fontWeight: '700' }], // 32px
-				'h5': ['1.5rem', { lineHeight: '1.35', fontWeight: '600' }], // 24px
-				'h6': ['1.25rem', { lineHeight: '1.4', fontWeight: '600' }], // 20px
-				'body-lg': ['1.125rem', { lineHeight: '1.6', fontWeight: '400' }], // 18px
-				'body': ['1rem', { lineHeight: '1.6', fontWeight: '400' }], // 16px
-				'body-sm': ['0.875rem', { lineHeight: '1.5', fontWeight: '400' }], // 14px
-				'caption': ['0.75rem', { lineHeight: '1.4', fontWeight: '500' }], // 12px
+				'giant': ['4rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '900' }],
+				'huge': ['3rem', { lineHeight: '1.2', letterSpacing: '-0.015em', fontWeight: '800' }],
+				'large': ['2.25rem', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '700' }],
+				'big': ['1.875rem', { lineHeight: '1.35', fontWeight: '600' }],
+				'medium': ['1.5rem', { lineHeight: '1.4', fontWeight: '500' }],
+				'normal': ['1.125rem', { lineHeight: '1.5', fontWeight: '400' }],
+				'small': ['1rem', { lineHeight: '1.5', fontWeight: '400' }],
+				'tiny': ['0.875rem', { lineHeight: '1.4', fontWeight: '400' }],
+				'micro': ['0.75rem', { lineHeight: '1.3', fontWeight: '300' }],
 			},
 			fontWeight: {
-				'black': '900',
-				'extra-bold': '800',
+				'ultra': '900',
+				'heavy': '800',
 				'bold': '700',
 				'semibold': '600',
 				'medium': '500',
-				'regular': '400',
+				'normal': '400',
 				'light': '300',
 			},
 			colors: {
@@ -122,27 +120,25 @@ export default {
 				'primary-subtle': 'hsl(var(--primary-subtle))',
 			},
 			spacing: {
-				// 8px Grid System
-				'0': '0',
-				'0.5': '0.125rem', // 2px
-				'1': '0.5rem', // 8px - 1x
-				'2': '1rem', // 16px - 2x
-				'3': '1.5rem', // 24px - 3x
-				'4': '2rem', // 32px - 4x
-				'5': '2.5rem', // 40px - 5x
-				'6': '3rem', // 48px - 6x
-				'7': '3.5rem', // 56px - 7x
-				'8': '4rem', // 64px - 8x
-				'10': '5rem', // 80px - 10x
-				'12': '6rem', // 96px - 12x
-				'16': '8rem', // 128px - 16x
-				'20': '10rem', // 160px - 20x
-				'24': '12rem', // 192px - 24x
+				'micro': 'var(--space-micro)',
+				'tiny': 'var(--space-tiny)',
+				'xs': 'var(--space-xs)',
+				'sm': 'var(--space-sm)',
+				'md': 'var(--space-md)',
+				'lg': 'var(--space-lg)',
+				'xl': 'var(--space-xl)',
+				'2xl': 'var(--space-2xl)',
+				'3xl': 'var(--space-3xl)',
+				'4xl': 'var(--space-4xl)',
+				'5xl': 'var(--space-5xl)',
 			},
 			borderRadius: {
-				lg: 'var(--radius)', // 12px
-				md: 'calc(var(--radius) - 4px)', // 8px
-				sm: 'calc(var(--radius) - 8px)', // 4px
+				lg: 'var(--radius)',
+				md: 'calc(var(--radius) - 2px)',
+				sm: 'calc(var(--radius) - 4px)',
+				'visual-primary': 'calc(var(--radius) * 1.5)',
+				'visual-secondary': 'var(--radius)',
+				'visual-tertiary': 'calc(var(--radius) * 0.75)',
 			},
 			keyframes: {
 				'accordion-down': {

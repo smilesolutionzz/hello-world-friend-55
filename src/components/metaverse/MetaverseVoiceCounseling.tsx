@@ -718,7 +718,7 @@ const MetaverseVoiceCounseling = () => {
                     </p>
                   )}
                   {groupMode && (
-                    <p className="text-xs text-primary text-center font-medium">
+                    <p className="text-xs text-black dark:text-white text-center font-medium">
                       👥 그룹 모드: 다른 사용자들과 함께 상담받을 수 있습니다
                     </p>
                   )}

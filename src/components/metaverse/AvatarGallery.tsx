@@ -3,48 +3,42 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CheckCircle2 } from 'lucide-react';
 
-// Ready Player Me 샘플 아바타 URL 목록
+// Ready Player Me 검증된 샘플 아바타 URL 목록
 const SAMPLE_AVATARS = [
   {
     id: 1,
-    name: '샘플 남성 1',
-    url: 'https://models.readyplayer.me/64bfa15f0e72c63d7c3934a6.glb',
-    thumbnail: 'https://models.readyplayer.me/64bfa15f0e72c63d7c3934a6.png',
+    name: '캐주얼 남성',
+    url: 'https://models.readyplayer.me/6478d1c0c4349fb67cc65d60.glb',
     gender: 'male'
   },
   {
     id: 2,
-    name: '샘플 여성 1',
-    url: 'https://models.readyplayer.me/64bfa2c90e72c63d7c393712.glb',
-    thumbnail: 'https://models.readyplayer.me/64bfa2c90e72c63d7c393712.png',
+    name: '비즈니스 여성',
+    url: 'https://models.readyplayer.me/6478d2a8c4349fb67cc65f75.glb',
     gender: 'female'
   },
   {
     id: 3,
-    name: '샘플 남성 2',
-    url: 'https://models.readyplayer.me/64c0a1234f5b7890abc12345.glb',
-    thumbnail: 'https://models.readyplayer.me/64c0a1234f5b7890abc12345.png',
+    name: '스포티 남성',
+    url: 'https://models.readyplayer.me/6478d3f5c4349fb67cc66193.glb',
     gender: 'male'
   },
   {
     id: 4,
-    name: '샘플 여성 2',
-    url: 'https://models.readyplayer.me/64c0a5678f5b7890abc67890.glb',
-    thumbnail: 'https://models.readyplayer.me/64c0a5678f5b7890abc67890.png',
+    name: '엘레강스 여성',
+    url: 'https://models.readyplayer.me/6478d4bbc4349fb67cc662f8.glb',
     gender: 'female'
   },
   {
     id: 5,
-    name: '샘플 남성 3',
-    url: 'https://models.readyplayer.me/659c0e1bb5a8520a57d05a26.glb',
-    thumbnail: 'https://models.readyplayer.me/659c0e1bb5a8520a57d05a26.png',
+    name: '스트릿 남성',
+    url: 'https://models.readyplayer.me/6478d587c4349fb67cc66469.glb',
     gender: 'male'
   },
   {
     id: 6,
-    name: '샘플 여성 3',
-    url: 'https://models.readyplayer.me/659c0f3ab5a8520a57d05d42.glb',
-    thumbnail: 'https://models.readyplayer.me/659c0f3ab5a8520a57d05d42.png',
+    name: '모던 여성',
+    url: 'https://models.readyplayer.me/6478d64fc4349fb67cc665c8.glb',
     gender: 'female'
   }
 ];

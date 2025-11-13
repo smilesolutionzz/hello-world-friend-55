@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ExternalLink, MessageCircle, Users, Brain, Sparkles, Crown, Target, Download } from "lucide-react";
+import { ArrowLeft, ExternalLink, MessageCircle, Users, Brain, Sparkles, Crown, Target, Download, ImageIcon, Loader2 } from "lucide-react";
 import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
@@ -54,6 +54,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const [analysisError, setAnalysisError] = useState<string>("");
   const [tokenError, setTokenError] = useState<{required: number, available: number} | null>(null);
   const [user, setUser] = useState<any>(null);
+  const [generatedImage, setGeneratedImage] = useState<string>("");
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   useEffect(() => {
     // 사용자 정보 확인
@@ -129,6 +131,35 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
       });
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const handleGenerateImage = async () => {
+    setIsGeneratingImage(true);
+    try {
+      const prompt = `ADHD 검사 결과를 표현하는 따뜻하고 희망적인 이미지. ${severity} 수준의 주의집중력 상태를 나타내며, ${ageGroup} 연령대의 특성을 반영. 전문적이면서도 친근하고 긍정적인 분위기의 일러스트. 따뜻한 색감과 부드러운 터치로 표현. Ultra high resolution`;
+      
+      const { data, error } = await supabase.functions.invoke('generate-report-image', {
+        body: { prompt }
+      });
+
+      if (error) throw error;
+      if (data?.imageUrl) {
+        setGeneratedImage(data.imageUrl);
+        toast({
+          title: "이미지 생성 완료",
+          description: "검사 결과 일러스트가 생성되었습니다.",
+        });
+      }
+    } catch (error: any) {
+      console.error('이미지 생성 실패:', error);
+      toast({
+        title: "이미지 생성 실패",
+        description: error.message || '이미지 생성 중 오류가 발생했습니다.',
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingImage(false);
     }
   };
 
@@ -342,6 +373,44 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
             </CardContent>
           </Card>
         )}
+
+        {/* AI 일러스트 생성 */}
+        <div className="bg-white/70 rounded-xl p-6 border border-purple-200">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="font-bold text-lg text-purple-900">🎨 검사 결과 일러스트</h4>
+            {!generatedImage && (
+              <Button 
+                onClick={handleGenerateImage}
+                disabled={isGeneratingImage}
+                size="sm"
+                className="bg-purple-600 hover:bg-purple-700"
+              >
+                {isGeneratingImage ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    생성 중...
+                  </>
+                ) : (
+                  <>
+                    <ImageIcon className="w-4 h-4 mr-2" />
+                    일러스트 생성
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+          {generatedImage ? (
+            <img 
+              src={generatedImage} 
+              alt="ADHD 검사 결과 일러스트" 
+              className="w-full h-auto rounded-lg shadow-lg"
+            />
+          ) : (
+            <div className="text-center py-8 text-purple-600">
+              버튼을 눌러 검사 결과를 표현하는 일러스트를 생성해보세요
+            </div>
+          )}
+        </div>
 
         {aiAnalysis && (
           <div className="space-y-6">

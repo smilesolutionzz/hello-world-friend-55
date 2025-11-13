@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink, MessageCircle, Users, UserCheck, FileDown } from "lucide-react";
+import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink, MessageCircle, Users, UserCheck, FileDown, ImageIcon, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
 import LifeRiskAnalysis from "@/components/insurance/LifeRiskAnalysis";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
+import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface AdultAssessmentResultProps {
   results: {
@@ -25,7 +28,11 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
   const { total, average, ageGroup, categoryScores } = results;
   const navigate = useNavigate();
   const { generatePDFReport, isGeneratingPDF } = useTestResultActions();
+  const { toast } = useToast();
   const today = new Date().toLocaleDateString('ko-KR');
+  
+  const [generatedImage, setGeneratedImage] = useState<string>("");
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   
   const getCategoryName = (category: string) => {
     const names: Record<string, string> = {
@@ -66,6 +73,36 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
     }
     
     return names[category as keyof typeof names] || category;
+  };
+
+  const handleGenerateImage = async () => {
+    setIsGeneratingImage(true);
+    try {
+      const evaluation = getOverallEvaluation(total / Object.keys(categoryScores).length);
+      const prompt = `성인 심리평가 결과를 표현하는 따뜻하고 전문적인 이미지. ${evaluation.level} 상태를 나타내며, ${ageGroup} 연령대의 특성을 반영. 정신건강과 웰빙을 상징하는 희망적이고 긍정적인 분위기의 일러스트. 부드러운 색감과 현대적인 디자인. Ultra high resolution`;
+      
+      const { data, error } = await supabase.functions.invoke('generate-report-image', {
+        body: { prompt }
+      });
+
+      if (error) throw error;
+      if (data?.imageUrl) {
+        setGeneratedImage(data.imageUrl);
+        toast({
+          title: "이미지 생성 완료",
+          description: "검사 결과 일러스트가 생성되었습니다.",
+        });
+      }
+    } catch (error: any) {
+      console.error('이미지 생성 실패:', error);
+      toast({
+        title: "이미지 생성 실패",
+        description: error.message || '이미지 생성 중 오류가 발생했습니다.',
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingImage(false);
+    }
   };
 
   const getOverallEvaluation = (average: number) => {
@@ -178,6 +215,47 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
             </div>
           </div>
         </div>
+      </Card>
+
+      {/* AI 일러스트 생성 */}
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold flex items-center gap-2">
+            <ImageIcon className="w-5 h-5 text-primary" />
+            검사 결과 일러스트
+          </h3>
+          {!generatedImage && (
+            <Button 
+              onClick={handleGenerateImage}
+              disabled={isGeneratingImage}
+              size="sm"
+              className="bg-primary hover:bg-primary/90"
+            >
+              {isGeneratingImage ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  생성 중...
+                </>
+              ) : (
+                <>
+                  <ImageIcon className="w-4 h-4 mr-2" />
+                  일러스트 생성
+                </>
+              )}
+            </Button>
+          )}
+        </div>
+        {generatedImage ? (
+          <img 
+            src={generatedImage} 
+            alt="성인 심리평가 결과 일러스트" 
+            className="w-full h-auto rounded-lg shadow-lg"
+          />
+        ) : (
+          <div className="text-center py-12 text-muted-foreground bg-muted/30 rounded-lg">
+            버튼을 눌러 검사 결과를 표현하는 일러스트를 생성해보세요
+          </div>
+        )}
       </Card>
 
       {/* 전문가 해석 결과 */}

@@ -3,8 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Share2, Crown, Lock, ArrowRight, Star } from 'lucide-react';
+import { Brain, Share2, Crown, Lock, ArrowRight, Star, ImageIcon, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FreeTrialResultProps {
   result: {
@@ -25,6 +27,9 @@ interface FreeTrialResultProps {
 const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  const [generatedImage, setGeneratedImage] = useState<string>("");
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   const handleShare = async () => {
     const shareText = `나의 심리테스트 결과를 확인해보세요!`;
@@ -50,6 +55,37 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
 
   const handleUpgrade = () => {
     navigate('/auth');
+  };
+
+  const handleGenerateImage = async () => {
+    setIsGeneratingImage(true);
+    try {
+      const testTypeName = result.testType === 'personality' ? '성격 테스트' : 
+                           result.testType === 'past_life' ? '전생 테스트' : '심리 테스트';
+      const prompt = `${testTypeName} 결과를 표현하는 창의적이고 매력적인 일러스트. ${result.level || result.personalityType?.type || '테스트 결과'}를 시각화한 따뜻하고 친근한 분위기의 이미지. 현대적이고 밝은 색감. Ultra high resolution`;
+      
+      const { data, error } = await supabase.functions.invoke('generate-report-image', {
+        body: { prompt }
+      });
+
+      if (error) throw error;
+      if (data?.imageUrl) {
+        setGeneratedImage(data.imageUrl);
+        toast({
+          title: "이미지 생성 완료",
+          description: "무료 체험 결과 일러스트가 생성되었습니다.",
+        });
+      }
+    } catch (error: any) {
+      console.error('이미지 생성 실패:', error);
+      toast({
+        title: "이미지 생성 실패",
+        description: error.message || '이미지 생성 중 오류가 발생했습니다.',
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingImage(false);
+    }
   };
 
   return (
@@ -168,6 +204,51 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
                       <p className="text-sm text-amber-700">{result.pastLifeJob.modernConnection}</p>
                     </div>
                   </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* AI 일러스트 생성 */}
+          <Card className="hover-glow transition-all duration-300">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <ImageIcon className="w-5 h-5 text-primary" />
+                  검사 결과 일러스트
+                </CardTitle>
+                {!generatedImage && (
+                  <Button 
+                    onClick={handleGenerateImage}
+                    disabled={isGeneratingImage}
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    {isGeneratingImage ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        생성 중...
+                      </>
+                    ) : (
+                      <>
+                        <ImageIcon className="w-4 h-4 mr-2" />
+                        일러스트 생성
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {generatedImage ? (
+                <img 
+                  src={generatedImage} 
+                  alt="무료 체험 결과 일러스트" 
+                  className="w-full h-auto rounded-lg shadow-lg"
+                />
+              ) : (
+                <div className="text-center py-12 text-muted-foreground bg-gradient-to-br from-purple-50/50 to-blue-50/50 rounded-lg border border-dashed border-gray-300">
+                  버튼을 눌러 검사 결과를 표현하는 일러스트를 생성해보세요
                 </div>
               )}
             </CardContent>

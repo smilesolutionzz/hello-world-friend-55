@@ -40,6 +40,7 @@ import ChallengingBehaviorForm from "@/components/assessment/ChallengingBehavior
 import ChallengingBehaviorResult from "@/components/assessment/ChallengingBehaviorResult";
 import AdaptiveBehaviorForm from "@/components/assessment/AdaptiveBehaviorForm";
 import AdaptiveBehaviorResult from "@/components/assessment/AdaptiveBehaviorResult";
+import ParentChildPlayTest from "@/components/assessment/ParentChildPlayTest";
 import DreamInterpretation from "@/components/assessment/DreamInterpretation";
 import SajuAnalysis from "@/components/assessment/SajuAnalysis";
 import PastLifeJobTest from "@/components/assessment/PastLifeJobTest";
@@ -80,8 +81,8 @@ const Assessment = () => {
   const urlTestType = searchParams.get('type');
   const urlTest = searchParams.get('test');
   
-  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'emotional-development-test' | 'dream-interpretation' | 'saju-analysis' | 'past-life-job' | 'animal-face-match' | 'inner-animal' | 'grandma-relationship' | 'grandpa-marriage' | 'mz-nagging' | 'wisdom-advice' | 'otrovert' | 'life-achievement' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result' | 'challenging-behavior-test' | 'challenging-behavior-result' | 'adaptive-behavior-test' | 'adaptive-behavior-result'>('test-type');
-  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | null>(null);
+  const [currentStep, setCurrentStep] = useState<'test-type' | 'legal-notice' | 'age-select' | 'test-selection' | 'assessment' | 'language-test' | 'panic-test' | 'depression-test' | 'adhd-test' | 'stress-test' | 'bigfive-test' | 'attachment-test' | 'career-test' | 'selfesteem-test' | 'emotional-development-test' | 'dream-interpretation' | 'saju-analysis' | 'past-life-job' | 'animal-face-match' | 'inner-animal' | 'grandma-relationship' | 'grandpa-marriage' | 'mz-nagging' | 'wisdom-advice' | 'otrovert' | 'life-achievement' | 'parent-child-play' | 'analysis' | 'matching' | 'consultation' | 'language-result' | 'panic-result' | 'depression-result' | 'adhd-result' | 'stress-result' | 'bigfive-result' | 'attachment-result' | 'career-result' | 'selfesteem-result' | 'child-result' | 'infant-result' | 'adult-result' | 'ai-chat' | 'realtime-chat' | 'developmental-delay-test' | 'sensory-integration-test' | 'learning-disability-test' | 'social-development-test' | 'developmental-delay-result' | 'sensory-integration-result' | 'learning-disability-result' | 'social-development-result' | 'challenging-behavior-test' | 'challenging-behavior-result' | 'adaptive-behavior-test' | 'adaptive-behavior-result'>('test-type');
+  const [testType, setTestType] = useState<'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | 'parent-child-play' | null>(null);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'infant' | 'child' | 'adult' | null>(null);
   const [selectedAge, setSelectedAge] = useState<number>(0);
   const [assessmentResults, setAssessmentResults] = useState<Record<string, number>>({});
@@ -231,7 +232,7 @@ const Assessment = () => {
     }
   };
 
-  const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior') => {
+  const handleTestTypeSelect = async (type: 'psychological' | 'language' | 'panic' | 'depression' | 'adhd' | 'stress' | 'bigfive' | 'attachment' | 'career' | 'selfesteem' | 'dream' | 'saju' | 'developmental-delay' | 'sensory-integration' | 'learning-disability' | 'social-development' | 'challenging-behavior' | 'adaptive-behavior' | 'parent-child-play') => {
     // 로그인 확인
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -269,6 +270,8 @@ const Assessment = () => {
       setCurrentStep('challenging-behavior-test');
     } else if (type === 'adaptive-behavior') {
       setCurrentStep('adaptive-behavior-test');
+    } else if (type === 'parent-child-play') {
+      setCurrentStep('parent-child-play');
     } else {
       setCurrentStep('legal-notice');
     }
@@ -1122,6 +1125,25 @@ const Assessment = () => {
                       <li>• 심층 AI 분석</li>
                     </ul>
                   </div>
+
+                  {/* 부모아동 놀이평가 */}
+                  <div 
+                    className="bg-white dark:bg-card hover-glow border border-blue-300 dark:border-blue-700 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 relative shadow-md"
+                    onClick={() => handleTestTypeSelect('parent-child-play')}
+                  >
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-blue-500 text-white font-bold text-xs px-2 py-1">
+                        👶 아동
+                      </Badge>
+                    </div>
+                    <h4 className="text-lg font-bold text-brand-gradient mb-3">부모아동 놀이성향</h4>
+                    <p className="text-muted-foreground text-sm mb-3">놀이 상호작용 스타일 체크</p>
+                    <ul className="space-y-1 text-xs">
+                      <li>• 8문항 3분</li>
+                      <li>• 4가지 놀이 스타일</li>
+                      <li>• 맞춤 양육 조언</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1441,6 +1463,10 @@ const Assessment = () => {
 
   if (currentStep === 'life-achievement') {
     return <LifeAchievementTest onComplete={handleFunTestComplete} onBack={handleBack} />;
+  }
+
+  if (currentStep === 'parent-child-play') {
+    return <ParentChildPlayTest onComplete={handleFunTestComplete} onBack={handleBack} />;
   }
 
   if (currentStep === 'legal-notice' && testType && testType !== 'dream') {

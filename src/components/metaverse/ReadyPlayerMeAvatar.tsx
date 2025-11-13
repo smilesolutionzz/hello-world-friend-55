@@ -107,7 +107,50 @@ export const ReadyPlayerMeAvatar = ({
         (error) => {
           console.error('❌ Error loading Ready Player Me avatar:', error);
           console.log('🔄 Using default avatar instead');
-          // 로드 실패시 기본 아바타 사용
+          // 로드 실패시 기본 아바타 생성
+          const defaultAvatar = new THREE.Group();
+          
+          // 머리
+          const headGeo = new THREE.SphereGeometry(0.3, 16, 16);
+          const headMat = new THREE.MeshStandardMaterial({ color: '#FFD7BA' });
+          const head = new THREE.Mesh(headGeo, headMat);
+          head.position.y = 1.5;
+          defaultAvatar.add(head);
+          
+          // 몸
+          const bodyGeo = new THREE.CapsuleGeometry(0.25, 0.8, 8, 8);
+          const bodyMat = new THREE.MeshStandardMaterial({ color: '#6B7280' });
+          const body = new THREE.Mesh(bodyGeo, bodyMat);
+          body.position.y = 0.8;
+          defaultAvatar.add(body);
+          
+          // 팔
+          const armGeo = new THREE.CapsuleGeometry(0.08, 0.5, 6, 6);
+          const armMat = new THREE.MeshStandardMaterial({ color: '#FFD7BA' });
+          
+          const leftArm = new THREE.Mesh(armGeo, armMat);
+          leftArm.position.set(-0.35, 0.8, 0);
+          leftArm.rotation.z = Math.PI / 6;
+          defaultAvatar.add(leftArm);
+          
+          const rightArm = new THREE.Mesh(armGeo, armMat);
+          rightArm.position.set(0.35, 0.8, 0);
+          rightArm.rotation.z = -Math.PI / 6;
+          defaultAvatar.add(rightArm);
+          
+          // 다리
+          const legGeo = new THREE.CapsuleGeometry(0.1, 0.6, 6, 6);
+          const legMat = new THREE.MeshStandardMaterial({ color: '#3B4252' });
+          
+          const leftLeg = new THREE.Mesh(legGeo, legMat);
+          leftLeg.position.set(-0.15, 0.1, 0);
+          defaultAvatar.add(leftLeg);
+          
+          const rightLeg = new THREE.Mesh(legGeo, legMat);
+          rightLeg.position.set(0.15, 0.1, 0);
+          defaultAvatar.add(rightLeg);
+          
+          setModel(defaultAvatar);
           setIsLoading(false);
         }
       );

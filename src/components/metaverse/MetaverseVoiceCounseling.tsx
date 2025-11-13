@@ -651,21 +651,27 @@ const MetaverseVoiceCounseling = () => {
                     아바타 설정
                   </Label>
                   
-                  {/* 샘플 아바타 갤러리 */}
-                  <AvatarGallery 
-                    selectedUrl={avatarUrl}
-                    onSelect={(url) => {
-                      setAvatarUrl(url);
-                      toast({
-                        title: "샘플 아바타 선택됨 ✓",
-                        description: "미리보기에서 확인하세요",
-                      });
-                    }}
-                  />
+                  {/* 안내 메시지 */}
+                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
+                      💡 <strong>아바타 만들기</strong><br/>
+                      아래 버튼을 눌러 Ready Player Me에서 무료로 나만의 아바타를 만들 수 있어요!
+                    </p>
+                  </div>
+                  
+                  <Button
+                    variant="default"
+                    size="lg"
+                    className="w-full gap-2"
+                    onClick={openAvatarCreator}
+                  >
+                    <UserCircle className="w-5 h-5" />
+                    아바타 만들러 가기
+                  </Button>
                   
                   <div className="relative">
                     <Input
-                      placeholder="또는 커스텀 아바타 URL (.glb) 붙여넣기"
+                      placeholder="또는 아바타 URL (.glb) 직접 붙여넣기"
                       value={avatarUrl}
                       onChange={(e) => {
                         const url = e.target.value.trim();
@@ -687,25 +693,17 @@ const MetaverseVoiceCounseling = () => {
                   </div>
 
                   {/* 아바타 미리보기와 커스터마이징 */}
-                  <div className="flex gap-4">
-                    <AvatarPreview avatarUrl={avatarUrl} onUrlChange={setAvatarUrl} />
-                    {isConnected && (
-                      <Button variant="outline" onClick={() => setShowCustomization(!showCustomization)} className="h-auto">
-                        🎨 꾸미기
-                      </Button>
-                    )}
-                  </div>
+                  {avatarUrl && (
+                    <div className="flex gap-4">
+                      <AvatarPreview avatarUrl={avatarUrl} onUrlChange={setAvatarUrl} />
+                      {isConnected && (
+                        <Button variant="outline" onClick={() => setShowCustomization(!showCustomization)} className="h-auto">
+                          🎨 꾸미기
+                        </Button>
+                      )}
+                    </div>
+                  )}
                   {showCustomization && <AvatarCustomization onCustomize={setAvatarCustomization} />}
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full gap-2"
-                    onClick={openAvatarCreator}
-                  >
-                    <UserCircle className="w-4 h-4" />
-                    Ready Player Me에서 새로 만들기
-                  </Button>
                 </div>
 
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">

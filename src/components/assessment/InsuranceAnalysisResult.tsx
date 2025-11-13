@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Share2, Download, Save, AlertTriangle, CheckCircle2, AlertCircle } from "lucide-react";
+import { Share2, Download, Save, AlertTriangle, CheckCircle2, AlertCircle, ImageIcon, Loader2, RefreshCw } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { useToast } from "@/hooks/use-toast";
 import { generatePDF } from "@/utils/pdfGenerator";
+import { supabase } from '@/integrations/supabase/client';
 
 interface Coverage {
   category: string;
@@ -33,6 +35,43 @@ interface InsuranceAnalysisResultProps {
 
 export const InsuranceAnalysisResult = ({ results, onBack }: InsuranceAnalysisResultProps) => {
   const { toast } = useToast();
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+
+  const handleGenerateImage = async () => {
+    setIsGeneratingImage(true);
+    try {
+      const prompt = `가족의 보험 보장 분석을 시각적으로 표현하는 따뜻한 일러스트를 그려주세요.
+부모 보장 점수: ${results.parentScore}점, 자녀 보장 점수: ${results.childScore}점, 가족 종합 점수: ${results.totalScore}점
+행복한 가족이 안전하게 보호받는 느낌을 전달하되, 전문적이고 신뢰감 있는 금융 상품 일러스트 스타일로 표현해주세요.
+파스텔 블루와 그린 톤을 활용하고, 보험과 가족 보호의 개념을 창의적으로 시각화해주세요.
+- 텍스트 없이
+- 고해상도로`;
+
+      const { data, error } = await supabase.functions.invoke('generate-report-image', {
+        body: { prompt }
+      });
+
+      if (error) throw error;
+
+      if (data?.imageUrl) {
+        setGeneratedImage(data.imageUrl);
+        toast({
+          title: "이미지 생성 완료!",
+          description: "AI가 보험 분석 결과를 시각화했습니다.",
+        });
+      }
+    } catch (error) {
+      console.error('이미지 생성 오류:', error);
+      toast({
+        title: "이미지 생성 실패",
+        description: "잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-600';
@@ -140,6 +179,61 @@ export const InsuranceAnalysisResult = ({ results, onBack }: InsuranceAnalysisRe
               </BarChart>
             </ResponsiveContainer>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* AI 일러스트 생성 */}
+      <Card className="border-2 border-primary/20">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <ImageIcon className="w-6 h-6 text-primary" />
+            <CardTitle>AI 일러스트</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            AI가 당신의 가족 보장 분석을 시각적으로 표현한 일러스트를 생성합니다.
+          </p>
+          
+          {!generatedImage && (
+            <Button 
+              onClick={handleGenerateImage}
+              disabled={isGeneratingImage}
+              className="w-full"
+              size="lg"
+            >
+              {isGeneratingImage ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  이미지 생성 중...
+                </>
+              ) : (
+                <>
+                  <ImageIcon className="w-4 h-4 mr-2" />
+                  일러스트 생성하기
+                </>
+              )}
+            </Button>
+          )}
+
+          {generatedImage && (
+            <div className="space-y-3">
+              <img 
+                src={generatedImage} 
+                alt="AI 생성 보험 분석 일러스트"
+                className="w-full rounded-lg shadow-lg"
+              />
+              <Button 
+                onClick={handleGenerateImage}
+                disabled={isGeneratingImage}
+                variant="outline"
+                className="w-full"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                다시 생성하기
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 

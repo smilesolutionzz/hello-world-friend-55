@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Users, TrendingUp, Lightbulb, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Heart, Users, TrendingUp, Lightbulb, ArrowLeft, RefreshCw, ImageIcon, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface AttachmentStyleResultProps {
   result: {
@@ -21,6 +23,44 @@ interface AttachmentStyleResultProps {
 
 const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, onRestart }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+
+  const handleGenerateImage = async () => {
+    setIsGeneratingImage(true);
+    try {
+      const prompt = `따뜻하고 친근한 일러스트로, ${result.style} 애착 유형을 표현하는 이미지를 그려주세요. 
+불안 점수: ${result.anxietyScore.toFixed(1)}/7, 회피 점수: ${result.avoidanceScore.toFixed(1)}/7
+감정적이고 심리적인 면을 시각화하되, 희망적이고 긍정적인 분위기로 표현해주세요.
+파스텔 톤의 부드러운 색상을 사용하고, 전문적인 심리 상담 일러스트 스타일로 그려주세요.
+- 텍스트 없이
+- 고해상도로`;
+
+      const { data, error } = await supabase.functions.invoke('generate-report-image', {
+        body: { prompt }
+      });
+
+      if (error) throw error;
+
+      if (data?.imageUrl) {
+        setGeneratedImage(data.imageUrl);
+        toast({
+          title: "이미지 생성 완료!",
+          description: "AI가 당신의 애착 유형을 시각화했습니다.",
+        });
+      }
+    } catch (error) {
+      console.error('이미지 생성 오류:', error);
+      toast({
+        title: "이미지 생성 실패",
+        description: "잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
 
   const getStyleColor = (style: string) => {
     switch(style) {
@@ -104,6 +144,61 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
                 </p>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* AI 일러스트 생성 */}
+        <Card className="border-2 border-primary/20">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <ImageIcon className="w-6 h-6 text-primary" />
+              <CardTitle>AI 일러스트</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              AI가 당신의 애착 유형을 시각적으로 표현한 일러스트를 생성합니다.
+            </p>
+            
+            {!generatedImage && (
+              <Button 
+                onClick={handleGenerateImage}
+                disabled={isGeneratingImage}
+                className="w-full"
+                size="lg"
+              >
+                {isGeneratingImage ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    이미지 생성 중...
+                  </>
+                ) : (
+                  <>
+                    <ImageIcon className="w-4 h-4 mr-2" />
+                    일러스트 생성하기
+                  </>
+                )}
+              </Button>
+            )}
+
+            {generatedImage && (
+              <div className="space-y-3">
+                <img 
+                  src={generatedImage} 
+                  alt="AI 생성 애착 유형 일러스트"
+                  className="w-full rounded-lg shadow-lg"
+                />
+                <Button 
+                  onClick={handleGenerateImage}
+                  disabled={isGeneratingImage}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  다시 생성하기
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
 

@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { adhdTypes } from "@/data/advancedAdhdTypes";
-import { Home, Download } from "lucide-react";
+import { Home, Download, ImageIcon, Loader2, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from "@/hooks/use-toast";
 
 interface AdvancedAdhdResultProps {
   results: {
@@ -13,7 +16,10 @@ interface AdvancedAdhdResultProps {
 
 const AdvancedAdhdResult = ({ results }: AdvancedAdhdResultProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { typeScores } = results;
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   // 가장 높은 점수의 유형 찾기
   const dominantType = Object.entries(typeScores).reduce((a, b) => 
@@ -39,6 +45,43 @@ const AdvancedAdhdResult = ({ results }: AdvancedAdhdResultProps) => {
     if (score <= 30) return "bg-purple-500";
     if (score <= 40) return "bg-pink-500";
     return "bg-red-500";
+  };
+
+  const handleGenerateImage = async () => {
+    setIsGeneratingImage(true);
+    try {
+      const prompt = `12가지 ADHD 유형 분석 결과를 시각화하는 전문적인 심리 검사 일러스트를 그려주세요.
+주요 ADHD 유형: ${dominantTypeData.name}
+${dominantTypeData.description}
+따뜻하고 희망적인 분위기로 ADHD를 가진 사람들이 자신을 이해하고 성장할 수 있다는 메시지를 전달해주세요.
+전문적인 의료 및 심리 검사 리포트 스타일의 일러스트로 표현해주세요.
+파스텔 톤의 밝고 편안한 색상을 사용하세요.
+- 텍스트 없이
+- 고해상도로`;
+
+      const { data, error } = await supabase.functions.invoke('generate-report-image', {
+        body: { prompt }
+      });
+
+      if (error) throw error;
+
+      if (data?.imageUrl) {
+        setGeneratedImage(data.imageUrl);
+        toast({
+          title: "이미지 생성 완료!",
+          description: "AI가 ADHD 유형 분석을 시각화했습니다.",
+        });
+      }
+    } catch (error) {
+      console.error('이미지 생성 오류:', error);
+      toast({
+        title: "이미지 생성 실패",
+        description: "잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingImage(false);
+    }
   };
 
   const handleDownload = async () => {
@@ -93,6 +136,59 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
           <p className="text-sm md:text-base text-muted-foreground">
             검사 완료: {new Date(results.timestamp).toLocaleString('ko-KR')}
           </p>
+        </Card>
+
+        {/* AI 일러스트 생성 */}
+        <Card className="p-6 md:p-8 border-2 border-primary/20">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <ImageIcon className="w-6 h-6 text-primary" />
+              <h2 className="text-xl font-bold">AI 일러스트</h2>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              AI가 당신의 ADHD 유형 분석을 시각적으로 표현한 일러스트를 생성합니다.
+            </p>
+            
+            {!generatedImage && (
+              <Button 
+                onClick={handleGenerateImage}
+                disabled={isGeneratingImage}
+                className="w-full"
+                size="lg"
+              >
+                {isGeneratingImage ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    이미지 생성 중...
+                  </>
+                ) : (
+                  <>
+                    <ImageIcon className="w-4 h-4 mr-2" />
+                    일러스트 생성하기
+                  </>
+                )}
+              </Button>
+            )}
+
+            {generatedImage && (
+              <div className="space-y-3">
+                <img 
+                  src={generatedImage} 
+                  alt="AI 생성 ADHD 유형 일러스트"
+                  className="w-full rounded-lg shadow-lg"
+                />
+                <Button 
+                  onClick={handleGenerateImage}
+                  disabled={isGeneratingImage}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  다시 생성하기
+                </Button>
+              </div>
+            )}
+          </div>
         </Card>
 
         {/* Dominant Type Card */}

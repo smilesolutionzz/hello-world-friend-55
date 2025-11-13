@@ -27,6 +27,9 @@ export const CharacterController = ({
   const targetCameraPos = useRef(new THREE.Vector3());
   const soundEffects = useRef(getSoundEffects());
   const wasMoving = useRef(false);
+  const isJumping = useRef(false);
+  const jumpVelocity = useRef(0);
+  const groundY = useRef(-1.5);
 
   useEffect(() => {
     if (!enabled) return;
@@ -115,6 +118,25 @@ export const CharacterController = ({
       velocity.add(right.multiplyScalar(speed));
     }
 
+    // 점프 처리 (스페이스바)
+    if (keys.has(' ') && !isJumping.current) {
+      isJumping.current = true;
+      jumpVelocity.current = 0.25; // 점프 초기 속도
+    }
+
+    // 점프 물리 (중력 적용)
+    if (isJumping.current) {
+      groupRef.current.position.y += jumpVelocity.current;
+      jumpVelocity.current -= 0.01; // 중력
+
+      // 착지
+      if (groupRef.current.position.y <= groundY.current) {
+        groupRef.current.position.y = groundY.current;
+        isJumping.current = false;
+        jumpVelocity.current = 0;
+      }
+    }
+
     // 위치 업데이트
     const isCurrentlyMoving = velocity.length() > 0;
     
@@ -178,8 +200,8 @@ export const MovementGuide = ({ visible = true }: { visible?: boolean }) => {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20 animate-fade-in">
-      <div className="text-white text-sm space-y-1">
+    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20 animate-fade-in max-w-md">
+      <div className="text-white text-sm space-y-2">
         <div className="font-semibold text-center mb-2">🎮 조작법</div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div><kbd className="px-2 py-1 bg-white/20 rounded">W</kbd> / <kbd className="px-2 py-1 bg-white/20 rounded">↑</kbd> 앞으로</div>
@@ -187,8 +209,14 @@ export const MovementGuide = ({ visible = true }: { visible?: boolean }) => {
           <div><kbd className="px-2 py-1 bg-white/20 rounded">A</kbd> / <kbd className="px-2 py-1 bg-white/20 rounded">←</kbd> 왼쪽</div>
           <div><kbd className="px-2 py-1 bg-white/20 rounded">D</kbd> / <kbd className="px-2 py-1 bg-white/20 rounded">→</kbd> 오른쪽</div>
         </div>
-        <div className="text-center pt-2 text-xs opacity-80">
+        <div className="text-center pt-1 text-xs border-t border-white/20 mt-2">
+          <div><kbd className="px-2 py-1 bg-white/20 rounded">Space</kbd> 점프</div>
+        </div>
+        <div className="text-center text-xs opacity-80">
           🖱️ 마우스 드래그로 카메라 회전
+        </div>
+        <div className="text-center text-xs opacity-70 border-t border-white/20 pt-2">
+          💃 제스처: <kbd className="px-1 py-0.5 bg-white/20 rounded text-[10px]">1-0</kbd> 키
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 import type { GestureType } from '@/utils/GestureSystem';
-import { getGestureAnimation } from '@/utils/GestureSystem';
+import { getGestureAnimation, GESTURES } from '@/utils/GestureSystem';
 
 interface CounselorNPCProps {
   position: [number, number, number];
@@ -29,6 +29,14 @@ export const CounselorNPC = ({
   const bodyRef = useRef<THREE.Mesh>(null);
   const gestureStartTime = useRef<number>(0);
   const currentGesture = useRef<GestureType | null>(null);
+  
+  // 랜덤 워킹을 위한 상태
+  const walkDirection = useRef(new THREE.Vector3());
+  const walkTimer = useRef(0);
+  const walkDuration = useRef(3);
+  const isWalking = useRef(false);
+  const homePosition = useRef(new THREE.Vector3(...position));
+  const maxWalkDistance = 2; // 초기 위치에서 최대 이동 거리
 
   useEffect(() => {
     if (gesture !== currentGesture.current) {
@@ -38,7 +46,53 @@ export const CounselorNPC = ({
   }, [gesture]);
 
   useFrame((state) => {
-    if (groupRef.current) {
+    if (!groupRef.current) return;
+
+    // 랜덤 워킹 로직
+    walkTimer.current += state.clock.getDelta();
+    
+    if (walkTimer.current >= walkDuration.current) {
+      // 새로운 방향 결정
+      walkTimer.current = 0;
+      walkDuration.current = 3 + Math.random() * 4; // 3-7초 간격
+      
+      // 50% 확률로 걷기 시작 (말하지 않을 때만)
+      if (Math.random() > 0.5 && !isSpeaking) {
+        isWalking.current = true;
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 0.5 + 0.2;
+        walkDirection.current.set(
+          Math.cos(angle) * distance,
+          0,
+          Math.sin(angle) * distance
+        );
+      } else {
+        isWalking.current = false;
+      }
+    }
+    
+    // 워킹 애니메이션
+    if (isWalking.current && !isSpeaking) {
+      groupRef.current.position.add(walkDirection.current.clone().multiplyScalar(0.01));
+      
+      // 초기 위치에서 너무 멀어지지 않도록
+      const distanceFromHome = groupRef.current.position.distanceTo(homePosition.current);
+      if (distanceFromHome > maxWalkDistance) {
+        // 집으로 돌아가는 방향으로
+        walkDirection.current.copy(homePosition.current).sub(groupRef.current.position).normalize().multiplyScalar(0.5);
+      }
+      
+      // 걷는 방향으로 회전
+      const angle = Math.atan2(walkDirection.current.x, walkDirection.current.z);
+      groupRef.current.rotation.y = angle;
+      
+      // 걷기 애니메이션 (팔 흔들기)
+      if (leftArmRef.current && rightArmRef.current) {
+        const walkCycle = Math.sin(state.clock.elapsedTime * 5);
+        leftArmRef.current.rotation.x = walkCycle * 0.5;
+        rightArmRef.current.rotation.x = -walkCycle * 0.5;
+      }
+    } else {
       // 부드러운 호흡 애니메이션
       const breathe = Math.sin(state.clock.elapsedTime * 2) * 0.03;
       groupRef.current.position.y = position[1] + breathe;
@@ -53,7 +107,9 @@ export const CounselorNPC = ({
     // 제스처 애니메이션
     if (currentGesture.current && currentGesture.current !== 'idle') {
       const elapsed = Date.now() - gestureStartTime.current;
-      const progress = Math.min(elapsed / 2000, 1); // 2초 동안 진행
+      const gestureInfo = GESTURES[currentGesture.current];
+      const duration = gestureInfo ? gestureInfo.duration : 2000;
+      const progress = Math.min(elapsed / duration, 1);
       
       const animation = getGestureAnimation(currentGesture.current, progress);
       
@@ -68,13 +124,17 @@ export const CounselorNPC = ({
         bodyRef.current.rotation.x = animation.bodyBend;
       }
       
+      if (animation.spin) {
+        groupRef.current.rotation.y += animation.spin * 0.01;
+      }
+      
       // 제스처 완료 후 초기화
       if (progress >= 1) {
         currentGesture.current = null;
       }
     } else {
       // 기본 자세로 복귀
-      if (leftArmRef.current && rightArmRef.current) {
+      if (leftArmRef.current && rightArmRef.current && !isWalking.current) {
         leftArmRef.current.rotation.z = Math.PI / 6;
         rightArmRef.current.rotation.z = -Math.PI / 6;
         leftArmRef.current.position.y = 0.8;

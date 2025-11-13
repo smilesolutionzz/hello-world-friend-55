@@ -133,6 +133,34 @@ const MetaverseVoiceCounseling = () => {
           gestureManagerRef.current.playGesture('bow');
           toast({ title: `${GESTURES.bow.icon} ${GESTURES.bow.name}` });
           break;
+        case '4':
+          gestureManagerRef.current.playGesture('dance');
+          toast({ title: `${GESTURES.dance.icon} ${GESTURES.dance.name}` });
+          break;
+        case '5':
+          gestureManagerRef.current.playGesture('laugh');
+          toast({ title: `${GESTURES.laugh.icon} ${GESTURES.laugh.name}` });
+          break;
+        case '6':
+          gestureManagerRef.current.playGesture('cry');
+          toast({ title: `${GESTURES.cry.icon} ${GESTURES.cry.name}` });
+          break;
+        case '7':
+          gestureManagerRef.current.playGesture('heart');
+          toast({ title: `${GESTURES.heart.icon} ${GESTURES.heart.name}` });
+          break;
+        case '8':
+          gestureManagerRef.current.playGesture('thumbsup');
+          toast({ title: `${GESTURES.thumbsup.icon} ${GESTURES.thumbsup.name}` });
+          break;
+        case '9':
+          gestureManagerRef.current.playGesture('thinking');
+          toast({ title: `${GESTURES.thinking.icon} ${GESTURES.thinking.name}` });
+          break;
+        case '0':
+          gestureManagerRef.current.playGesture('celebrate');
+          toast({ title: `${GESTURES.celebrate.icon} ${GESTURES.celebrate.name}` });
+          break;
       }
     };
 

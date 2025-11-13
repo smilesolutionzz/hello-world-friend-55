@@ -29,6 +29,7 @@ import { LazyLoad } from '@/components/ui/lazy-load';
 import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
 import CompanyServicesSection from '@/components/landing/CompanyServicesSection';
 import { MetaverseBanner } from '@/components/metaverse/MetaverseBanner';
+import { ScrollReveal } from '@/components/ui/scroll-reveal';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -173,68 +174,68 @@ const Index = () => {
           <HeroSection />
           
           {/* 🎬 회사 소개 영상 */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <CompanyIntroVideoSection />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <ValueComparisonSection />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* 3️⃣ Problem & Vision */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <ProblemVisionSection />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* 4️⃣ Core Service - 단순화된 3가지 핵심 서비스 */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <SimplifiedCoreServices />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* 5️⃣ 데이터 기반 초개인화 리포트 (HowItWorks 통합) */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <DataDrivenReportSection />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* 🎯 New Features Section - 매주 업데이트 */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <NewFeaturesSection />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* 6️⃣ Result / Report */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <ResultReportSection />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* Trust & Partner Section */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <PartnerTrustSection />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* Social Proof */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <TestimonialSection />
-          </LazyLoad>
+          </ScrollReveal>
           
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <ClientLogos />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* 📝 Founder's Letter - 창립자의 손편지 */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <FounderLetterSection />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* 7️⃣ Call to Action */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <CTABannerSection />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* 🏢 회사 서비스 소개 */}
-          <LazyLoad className="animate-fade-in">
+          <ScrollReveal direction="up" delay={0.1}>
             <CompanyServicesSection />
-          </LazyLoad>
+          </ScrollReveal>
           
           {/* 8️⃣ Footer */}
           <Footer />

@@ -370,6 +370,7 @@ const ParentChildPlayTest = ({ onComplete, onBack }: ParentChildPlayTestProps) =
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
   const questions = ageGroup ? questionsByAge[ageGroup] : [];
@@ -380,6 +381,9 @@ const ParentChildPlayTest = ({ onComplete, onBack }: ParentChildPlayTestProps) =
   };
 
   const handleOptionSelect = async (value: string) => {
+    if (isProcessing) return; // 중복 선택 방지
+    
+    setIsProcessing(true);
     setSelectedOption(value);
     const newAnswers = { ...answers, [currentQuestion]: value };
     setAnswers(newAnswers);
@@ -393,6 +397,7 @@ const ParentChildPlayTest = ({ onComplete, onBack }: ParentChildPlayTestProps) =
         // 마지막 문항 완료
         completeTest(newAnswers);
       }
+      setIsProcessing(false);
     }, 300); // 300ms 딜레이로 선택 피드백 제공
   };
 

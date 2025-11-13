@@ -7,6 +7,8 @@ import { Baby, Heart, Lightbulb, TrendingUp, Share2, Download, History, BarChart
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
+import PlayActivityRecommendations from './PlayActivityRecommendations';
+import GrowthReport from './GrowthReport';
 import {
   RadarChart,
   PolarGrid,
@@ -308,6 +310,21 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
             )}
           </Card>
         )}
+
+        {/* 맞춤형 놀이 활동 추천 */}
+        {(result.cognitiveScore && result.emotionalScore && result.socialScore && result.physicalScore) && (
+          <PlayActivityRecommendations
+            cognitiveScore={result.cognitiveScore}
+            emotionalScore={result.emotionalScore}
+            socialScore={result.socialScore}
+            physicalScore={result.physicalScore}
+            ageGroup={result.ageGroup}
+            childAge={result.childAge}
+          />
+        )}
+
+        {/* 성장 리포트 */}
+        <GrowthReport childAge={result.childAge} ageGroup={result.ageGroup} />
 
         {/* AI 분석 결과 */}
         {aiSections && (

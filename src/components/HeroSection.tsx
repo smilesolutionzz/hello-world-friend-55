@@ -113,24 +113,6 @@ const HeroSection = () => {
         </div>
 
 
-        {/* Primary CTA - 3분 무료 분석 시작 */}
-        <div className="mb-6 sm:mb-8">
-          <Button 
-            size="lg"
-            onClick={() => navigate('/premium-assessment')}
-            className="group relative w-full max-w-2xl mx-auto px-8 sm:px-12 py-6 sm:py-8 bg-gradient-to-r from-[#5E8FFF] via-[#7AA8FF] to-[#5E8FFF] hover:from-[#4A7FEF] hover:via-[#6A98EF] hover:to-[#4A7FEF] text-white text-xl sm:text-2xl md:text-3xl font-extrabold rounded-2xl shadow-[0_12px_48px_rgba(94,143,255,0.6)] hover:shadow-[0_16px_56px_rgba(94,143,255,0.8)] transition-all duration-300 transform hover:scale-105 active:scale-95 border-2 border-white/30 animate-pulse"
-          >
-            <span className="flex items-center justify-center gap-2 sm:gap-3">
-              <Zap className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 group-hover:rotate-12 transition-transform" />
-              <span>⚡ 3분 무료 분석 시작</span>
-              <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </Button>
-          <p className="text-center text-white/80 text-xs sm:text-sm md:text-base mt-3 font-medium px-4">
-            회원가입 없이 바로 시작 • 전문가급 AI 분석 무료 체험
-          </p>
-        </div>
-
         {/* 프로모션 배너 */}
         <div className="mb-6 sm:mb-8">
           <PromotionBanner variant="hero" />

@@ -1,11 +1,19 @@
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Mic, Sparkles, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const MetaverseBanner = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   if (!isVisible) return null;
 

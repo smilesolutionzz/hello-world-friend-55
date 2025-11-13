@@ -5,7 +5,7 @@ import { TypingAnimation } from "@/components/ui/typing-animation";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import FloatingKeywords from "./FloatingKeywords";
 import { useState } from "react";
-import { ArrowRight, Sparkles, BookOpen, Zap, Timer } from "lucide-react";
+import { ArrowRight, Sparkles, BookOpen, Zap, Timer, Mic } from "lucide-react";
 import { PromotionBanner } from "@/components/promotion/PromotionBanner";
 import heroBg from "@/assets/hero-family-bg.jpg";
 import QuickOnboarding from "@/components/onboarding/QuickOnboarding";
@@ -111,17 +111,38 @@ const HeroSection = () => {
         
         {/* CTA Buttons - 명확한 행동 유도 */}
         <div className="flex flex-col gap-6 justify-center items-center mb-16">
-          {/* 메인 CTA - 30초 퀵 온보딩 */}
+          {/* 메인 CTA - 메타버스 체험 강조 */}
+          <div className="w-full max-w-2xl">
+            <Button 
+              size="lg"
+              onClick={() => navigate('/metaverse-voice')}
+              className="group relative w-full px-12 py-8 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 text-white text-xl sm:text-2xl font-extrabold rounded-2xl shadow-[0_8px_32px_rgba(59,130,246,0.5)] hover:shadow-[0_12px_40px_rgba(59,130,246,0.7)] transition-all duration-300 transform hover:scale-105 border-2 border-white/20"
+            >
+              <span className="flex items-center justify-center gap-3">
+                <div className="relative">
+                  <Mic className="w-7 h-7 animate-pulse" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping" />
+                </div>
+                <span>🎭 AI 메타버스 상담실 체험</span>
+                <span className="px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-sm animate-pulse">NEW</span>
+              </span>
+            </Button>
+            <p className="text-center text-white/70 text-sm mt-3">
+              가상공간에서 음성으로 AI와 실시간 대화 🎙️
+            </p>
+          </div>
+
+          {/* 서브 CTA */}
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Button 
               size="lg"
               onClick={() => setShowQuickOnboarding(true)}
-              className="group relative w-full sm:w-auto px-12 py-7 bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] hover:from-[#4A7FEF] hover:to-[#7AA8EF] text-white text-xl font-extrabold rounded-2xl shadow-[0_8px_32px_rgba(94,143,255,0.5)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.7)] transition-all duration-300 transform hover:scale-105"
+              className="group relative w-full sm:w-auto px-8 py-6 bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] hover:from-[#4A7FEF] hover:to-[#7AA8EF] text-white text-lg font-bold rounded-2xl shadow-[0_8px_32px_rgba(94,143,255,0.4)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.6)] transition-all duration-300 transform hover:scale-105"
             >
-              <span className="flex items-center gap-3">
-                <Zap className="w-6 h-6 animate-pulse" />
-                30초만에 무료 체험
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+              <span className="flex items-center gap-2">
+                <Zap className="w-5 h-5" />
+                30초 무료 체험
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
               </span>
             </Button>
             
@@ -129,7 +150,7 @@ const HeroSection = () => {
               size="lg"
               variant="outline"
               onClick={() => navigate('/assessment')}
-              className="group relative w-full sm:w-auto px-8 py-7 bg-white/10 hover:bg-white/20 text-white text-lg font-bold rounded-2xl border-2 border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300"
+              className="group relative w-full sm:w-auto px-8 py-6 bg-white/10 hover:bg-white/20 text-white text-lg font-bold rounded-2xl border-2 border-white/30 hover:border-white/50 backdrop-blur-sm transition-all duration-300"
             >
               <span className="flex items-center gap-2">
                 <Timer className="w-5 h-5" />

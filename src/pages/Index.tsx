@@ -28,6 +28,7 @@ import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
 import CompanyServicesSection from '@/components/landing/CompanyServicesSection';
+import { MetaverseBanner } from '@/components/metaverse/MetaverseBanner';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -165,6 +166,7 @@ const Index = () => {
       <div className="min-h-screen max-w-full overflow-x-hidden">
         <ScrollProgressBar />
         <UnifiedNavigation />
+        <MetaverseBanner />
         
         <main id="main-content" className="w-full">
           {/* 1️⃣ Hero Section */}

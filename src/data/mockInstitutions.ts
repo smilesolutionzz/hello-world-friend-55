@@ -176,7 +176,7 @@ export const mockInstitutions = [
     phone: '053-1234-5678',
     email: 'info@healtime-daegu.co.kr',
     website_url: 'https://healtime-daegu.co.kr',
-    description: '대구 지역 대표 심리발달센터로 전문적인 심리평가와 맞춤형 발달치료 서비스를 제공합니다.',
+    description: '대구 중구 심리발달센터로 전문적인 심리평가와 맞춤형 발달치료 서비스를 제공합니다.',
     latitude: 35.8714,
     longitude: 128.6014,
     is_voucher_approved: true,

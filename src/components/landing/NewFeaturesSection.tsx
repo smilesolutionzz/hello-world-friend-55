@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Sparkles, TrendingUp, Zap, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import newFeaturesBg from '@/assets/new-features-bg.jpg';
-import { StaggerContainer, StaggerItem } from '@/components/ui/stagger-container';
 
 const newFeatures = [
   {
@@ -33,6 +32,15 @@ const newFeatures = [
     badge: 'HOT',
     color: 'from-pink-500 to-purple-500',
     path: '/assessment/attachment-style-test'
+  },
+  {
+    id: 'defense_mechanism',
+    title: '🛡️ 방어기제 분석',
+    description: '무의식적 심리 패턴 발견! 24문항으로 8가지 방어기제 분석',
+    date: '2025-10-16',
+    badge: 'HOT',
+    color: 'from-purple-500 to-pink-500',
+    path: '/assessment/defense-mechanism-test'
   }
 ];
 
@@ -66,36 +74,35 @@ export const NewFeaturesSection = () => {
         </div>
 
         {/* 신규 기능 카드들 */}
-        <StaggerContainer staggerDelay={0.2} className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {newFeatures.map((feature, index) => (
-            <StaggerItem key={feature.id} direction="up">
-              <Card 
-                className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 hover:border-purple-300 overflow-hidden h-full"
-                onClick={() => navigate(feature.path)}
-              >
-                <div className={`h-2 bg-gradient-to-r ${feature.color}`} />
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-3">
-                    <Badge className={`bg-gradient-to-r ${feature.color} text-white border-0 shadow-lg`}>
-                      {feature.badge}
-                    </Badge>
-                    <span className="text-sm text-gray-500">{feature.date}</span>
-                  </div>
-                  <CardTitle className="text-2xl group-hover:text-purple-600 transition-colors">
-                    {feature.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">{feature.description}</p>
-                  <div className="flex items-center gap-2 text-purple-600 font-semibold group-hover:gap-3 transition-all">
-                    <span>지금 해보기</span>
-                    <Zap className="w-4 h-4 group-hover:animate-pulse" />
-                  </div>
-                </CardContent>
-              </Card>
-            </StaggerItem>
+            <Card 
+              key={feature.id}
+              className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 hover:border-purple-300 overflow-hidden"
+              onClick={() => navigate(feature.path)}
+            >
+              <div className={`h-2 bg-gradient-to-r ${feature.color}`} />
+              <CardHeader>
+                <div className="flex items-start justify-between mb-3">
+                  <Badge className={`bg-gradient-to-r ${feature.color} text-white border-0 shadow-lg`}>
+                    {feature.badge}
+                  </Badge>
+                  <span className="text-sm text-gray-500">{feature.date}</span>
+                </div>
+                <CardTitle className="text-2xl group-hover:text-purple-600 transition-colors">
+                  {feature.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">{feature.description}</p>
+                <div className="flex items-center gap-2 text-purple-600 font-semibold group-hover:gap-3 transition-all">
+                  <span>지금 해보기</span>
+                  <Zap className="w-4 h-4 group-hover:animate-pulse" />
+                </div>
+              </CardContent>
+            </Card>
           ))}
-        </StaggerContainer>
+        </div>
 
         {/* 통계 및 업데이트 정보 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

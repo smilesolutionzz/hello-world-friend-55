@@ -557,17 +557,19 @@ const CounselingRoom = ({
             />
           )}
           
-          {/* 카메라 컨트롤 */}
-          <OrbitControls 
-            enablePan={false}
-            enableZoom={!enableMovement}
-            enableRotate={!enableMovement}
-            autoRotate={!enableMovement}
-            autoRotateSpeed={0.5}
-            maxPolarAngle={Math.PI / 2.2}
-            minPolarAngle={Math.PI / 3}
-            target={[0, 0, 0]}
-          />
+          {/* 카메라 컨트롤 - 이동 모드가 아닐 때만 활성화 */}
+          {!enableMovement && (
+            <OrbitControls 
+              enablePan={false}
+              enableZoom={true}
+              enableRotate={true}
+              autoRotate={true}
+              autoRotateSpeed={0.5}
+              maxPolarAngle={Math.PI / 2.2}
+              minPolarAngle={Math.PI / 3}
+              target={[0, 0, 0]}
+            />
+          )}
         </Canvas>
       </div>
       {/* 포그라운드 콘텐츠 (클릭 가능) */}

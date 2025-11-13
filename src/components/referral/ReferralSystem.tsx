@@ -10,6 +10,7 @@ import { Progress } from '@/components/ui/progress';
 // 수동 타입 정의 (DB 스키마와 일치)
 interface UserProfile {
   id: string;
+  user_id: string;
   tokens: number;
   referral_code: string;
   display_name: string | null;
@@ -55,15 +56,32 @@ export const ReferralSystem = () => {
         .select('*');
 
       // user_id로 필터링 (클라이언트 사이드)
-      const existingProfile = profiles?.find((p: any) => p.user_id === user.id);
+      let existingProfile = profiles?.find((p: any) => p.user_id === user.id);
 
       if (existingProfile) {
+        // referral_code가 없으면 생성
+        if (!existingProfile.referral_code) {
+          const newReferralCode = generateReferralCode();
+          const { data: updatedProfile, error: updateError } = await supabase
+            .from('user_profiles')
+            .update({ referral_code: newReferralCode })
+            .eq('user_id', user.id)
+            .select()
+            .single();
+
+          if (updateError) {
+            console.error('Error updating referral code:', updateError);
+          } else {
+            existingProfile = updatedProfile as UserProfile;
+          }
+        }
         setProfile(existingProfile as UserProfile);
       } else {
         // 프로필 생성
+        const newReferralCode = generateReferralCode();
         const insertData: any = {
           user_id: user.id,
-          referral_code: '', // 트리거에서 자동 생성
+          referral_code: newReferralCode,
           email: user.email,
           display_name: user.user_metadata?.display_name || user.email?.split('@')[0],
           tokens: 0
@@ -93,6 +111,16 @@ export const ReferralSystem = () => {
     }
   };
 
+  // Referral Code 생성 함수
+  const generateReferralCode = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 8; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  };
+
   const fetchReferrals = async () => {
     try {
       if (!profile) return;
@@ -118,7 +146,7 @@ export const ReferralSystem = () => {
   };
 
   const getReferralLink = () => {
-    if (!profile) return '';
+    if (!profile || !profile.referral_code) return '';
     // 커스텀 도메인 사용 (aihpro.com)
     const baseUrl = 'https://aihpro.com';
     return `${baseUrl}/auth?ref=${profile.referral_code}`;

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Baby, Heart, Lightbulb, TrendingUp, Share2, Download, History, BarChart3 } from 'lucide-react';
+import { Baby, Heart, Lightbulb, TrendingUp, Share2, Download, History, BarChart3, Sparkles, Star, Target, Users, BookOpen, Wand2, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import html2pdf from 'html2pdf.js';
@@ -46,6 +46,8 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
   const { toast } = useToast();
   const [historyData, setHistoryData] = useState<any[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
   const ageGroupLabels = {
     infant: '영아기 (0-2세)',
@@ -213,6 +215,39 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
     }
   };
 
+  const handleGenerateImage = async () => {
+    try {
+      setIsGeneratingImage(true);
+      
+      const { data, error } = await supabase.functions.invoke('generate-play-style-image', {
+        body: {
+          playStyle: result.title,
+          ageGroup: result.ageGroup,
+          childAge: result.childAge,
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.imageUrl) {
+        setGeneratedImage(data.imageUrl);
+        toast({
+          title: "이미지 생성 완료",
+          description: "아이의 놀이 스타일을 표현한 일러스트가 생성되었습니다.",
+        });
+      }
+    } catch (error) {
+      console.error('이미지 생성 실패:', error);
+      toast({
+        title: "이미지 생성 실패",
+        description: "일러스트 생성에 실패했습니다. 잠시 후 다시 시도해주세요.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="container mx-auto px-4 py-8 max-w-4xl" id="result-content">
@@ -230,11 +265,53 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
           <CardContent className="p-8">
             <div className="text-center mb-6">
               <div className="inline-block p-6 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl mb-4">
+                <Sparkles className="w-8 h-8 mx-auto mb-2 text-purple-500" />
                 <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
                   {result.title}
                 </h2>
               </div>
               <p className="text-xl text-muted-foreground">{result.description}</p>
+              
+              {/* 놀이 스타일 일러스트 */}
+              <div className="mt-6">
+                {!generatedImage ? (
+                  <Button
+                    onClick={handleGenerateImage}
+                    disabled={isGeneratingImage}
+                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+                  >
+                    {isGeneratingImage ? (
+                      <>
+                        <Wand2 className="w-4 h-4 mr-2 animate-spin" />
+                        일러스트 생성 중...
+                      </>
+                    ) : (
+                      <>
+                        <ImageIcon className="w-4 h-4 mr-2" />
+                        놀이 스타일 일러스트 생성
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <div className="relative inline-block">
+                    <img 
+                      src={generatedImage} 
+                      alt="놀이 스타일 일러스트"
+                      className="rounded-2xl shadow-2xl max-w-full h-auto mx-auto"
+                      style={{ maxHeight: '400px' }}
+                    />
+                    <Button
+                      onClick={handleGenerateImage}
+                      disabled={isGeneratingImage}
+                      size="sm"
+                      className="absolute top-2 right-2 bg-white/90 hover:bg-white text-purple-600"
+                    >
+                      <Wand2 className="w-4 h-4 mr-1" />
+                      다시 생성
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* 점수 분포 */}
@@ -370,16 +447,16 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
               <Card className="shadow-lg mb-6">
                 <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50">
                   <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="w-6 h-6 text-green-500" />
+                    <Star className="w-6 h-6 text-green-500" />
                     놀이 스타일의 강점
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <ul className="space-y-3">
+                  <ul className="space-y-4">
                     {aiSections.strengths.map((strength, index) => (
-                      <li key={index} className="flex gap-3">
-                        <span className="text-green-500 font-bold">✓</span>
-                        <span className="flex-1">{strength}</span>
+                      <li key={index} className="flex gap-3 items-start p-3 bg-green-50/50 rounded-lg">
+                        <TrendingUp className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span className="flex-1 text-gray-700">{strength}</span>
                       </li>
                     ))}
                   </ul>
@@ -392,16 +469,16 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
               <Card className="shadow-lg mb-6">
                 <CardHeader className="bg-gradient-to-r from-orange-50 to-amber-50">
                   <CardTitle className="flex items-center gap-2">
-                    <Lightbulb className="w-6 h-6 text-orange-500" />
+                    <Target className="w-6 h-6 text-orange-500" />
                     더 나은 놀이를 위한 제안
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <ul className="space-y-3">
+                  <ul className="space-y-4">
                     {aiSections.improvements.map((improvement, index) => (
-                      <li key={index} className="flex gap-3">
-                        <span className="text-orange-500 font-bold">💡</span>
-                        <span className="flex-1">{improvement}</span>
+                      <li key={index} className="flex gap-3 items-start p-3 bg-orange-50/50 rounded-lg">
+                        <Lightbulb className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                        <span className="flex-1 text-gray-700">{improvement}</span>
                       </li>
                     ))}
                   </ul>
@@ -414,16 +491,18 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
               <Card className="shadow-lg mb-6">
                 <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
                   <CardTitle className="flex items-center gap-2">
-                    <Baby className="w-6 h-6 text-purple-500" />
+                    <BookOpen className="w-6 h-6 text-purple-500" />
                     {result.childAge}세를 위한 추천 놀이 활동
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <ul className="space-y-3">
+                  <ul className="space-y-4">
                     {aiSections.activities.map((activity, index) => (
-                      <li key={index} className="flex gap-3">
-                        <span className="text-purple-500 font-bold">{index + 1}.</span>
-                        <span className="flex-1">{activity}</span>
+                      <li key={index} className="flex gap-3 items-start p-3 bg-purple-50/50 rounded-lg">
+                        <div className="flex items-center justify-center w-7 h-7 rounded-full bg-purple-500 text-white font-bold text-sm flex-shrink-0">
+                          {index + 1}
+                        </div>
+                        <span className="flex-1 text-gray-700">{activity}</span>
                       </li>
                     ))}
                   </ul>
@@ -436,16 +515,16 @@ const ParentChildPlayResult = ({ result }: ParentChildPlayResultProps) => {
               <Card className="shadow-lg mb-6">
                 <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50">
                   <CardTitle className="flex items-center gap-2">
-                    <Heart className="w-6 h-6 text-blue-500" />
+                    <Users className="w-6 h-6 text-blue-500" />
                     부모-자녀 관계 개선 지침
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <ul className="space-y-3">
+                  <ul className="space-y-4">
                     {aiSections.guidelines.map((guideline, index) => (
-                      <li key={index} className="flex gap-3">
-                        <span className="text-blue-500 font-bold">→</span>
-                        <span className="flex-1">{guideline}</span>
+                      <li key={index} className="flex gap-3 items-start p-3 bg-blue-50/50 rounded-lg">
+                        <Heart className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                        <span className="flex-1 text-gray-700">{guideline}</span>
                       </li>
                     ))}
                   </ul>

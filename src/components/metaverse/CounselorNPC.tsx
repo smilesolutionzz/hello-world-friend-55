@@ -93,14 +93,15 @@ export const CounselorNPC = ({
         rightArmRef.current.rotation.x = -walkCycle * 0.5;
       }
     } else {
-      // 부드러운 호흡 애니메이션
-      const breathe = Math.sin(state.clock.elapsedTime * 2) * 0.03;
-      groupRef.current.position.y = position[1] + breathe;
+      // 통통 튀는 귀여운 호흡 애니메이션
+      const breathe = Math.sin(state.clock.elapsedTime * 3) * 0.05;
+      const bounce = Math.abs(Math.sin(state.clock.elapsedTime * 2)) * 0.02;
+      groupRef.current.position.y = position[1] + breathe + bounce;
 
-      // 말할 때 더 크게 움직임
+      // 말할 때 더 크게 통통 튀기
       if (isSpeaking) {
-        const speak = Math.sin(state.clock.elapsedTime * 8) * 0.05;
-        groupRef.current.scale.setScalar(1.8 + speak);
+        const speak = Math.sin(state.clock.elapsedTime * 10) * 0.08;
+        groupRef.current.scale.setScalar(0.9 + speak);
       }
     }
 
@@ -153,19 +154,19 @@ export const CounselorNPC = ({
     }
   });
 
-  // 감정에 따른 색상 설정
+  // 감정에 따른 파스텔 색상 설정
   const getEmotionColors = () => {
     switch (emotion) {
       case 'empathy':
-        return { head: '#98D8C8', body: '#6FB3A0', light: '#98D8C8' };
+        return { head: '#B4E7CE', body: '#98D8C8', light: '#B4E7CE' };
       case 'encouragement':
-        return { head: '#FFD93D', body: '#FFC107', light: '#FFD93D' };
+        return { head: '#FFE4A1', body: '#FFD666', light: '#FFE4A1' };
       case 'concern':
-        return { head: '#A8B5E0', body: '#7B89C4', light: '#A8B5E0' };
+        return { head: '#C5D3F0', body: '#A8B5E0', light: '#C5D3F0' };
       case 'joy':
-        return { head: '#FFB6C1', body: '#FF69B4', light: '#FFB6C1' };
+        return { head: '#FFD6E8', body: '#FFB6D9', light: '#FFD6E8' };
       default:
-        return { head: '#87CEEB', body: '#4682B4', light: '#87CEEB' };
+        return { head: '#E6F3FF', body: '#C1E1FF', light: '#E6F3FF' };
     }
   };
 
@@ -189,67 +190,155 @@ export const CounselorNPC = ({
   const face = getFaceExpression();
 
   return (
-    <group ref={groupRef} position={position}>
-      {/* 머리 */}
+    <group ref={groupRef} position={position} scale={0.9}>
+      {/* 머리 (더 크고 둥글게) */}
       <mesh position={[0, 1.5, 0]} castShadow>
-        <sphereGeometry args={[0.3, 16, 16]} />
+        <sphereGeometry args={[0.42, 32, 32]} />
         <meshStandardMaterial 
           color={colors.head}
           emissive={colors.head}
-          emissiveIntensity={emotion !== 'neutral' ? 0.2 : 0}
+          emissiveIntensity={emotion !== 'neutral' ? 0.3 : 0.1}
+          roughness={0.3}
         />
       </mesh>
 
-      {/* 눈 (왼쪽) */}
-      <mesh position={[-0.1, 1.55 + face.eyeY, 0.25]} scale={[1, face.eyeScale, 1]}>
-        <sphereGeometry args={[0.05, 8, 8]} />
-        <meshStandardMaterial color="#000000" />
+      {/* 귀여운 볼 (왼쪽) */}
+      <mesh position={[-0.28, 1.42, 0.25]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshStandardMaterial color="#FFB6C1" transparent opacity={0.6} />
       </mesh>
 
-      {/* 눈 (오른쪽) */}
-      <mesh position={[0.1, 1.55 + face.eyeY, 0.25]} scale={[1, face.eyeScale, 1]}>
-        <sphereGeometry args={[0.05, 8, 8]} />
-        <meshStandardMaterial color="#000000" />
+      {/* 귀여운 볼 (오른쪽) */}
+      <mesh position={[0.28, 1.42, 0.25]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshStandardMaterial color="#FFB6C1" transparent opacity={0.6} />
       </mesh>
 
-      {/* 입 */}
-      <mesh position={[0, 1.4 + face.mouthY, 0.25]} rotation={[0, 0, face.mouthCurve]}>
-        <torusGeometry args={[0.08, 0.02, 8, 16, Math.PI]} />
-        <meshStandardMaterial color="#000000" />
+      {/* 눈 (왼쪽 - 더 크고 반짝임) */}
+      <group position={[-0.12, 1.58 + face.eyeY, 0.3]}>
+        <mesh scale={[1, face.eyeScale, 1]}>
+          <sphereGeometry args={[0.09, 16, 16]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+        {/* 눈 하이라이트 */}
+        <mesh position={[0.03, 0.03, 0.08]}>
+          <sphereGeometry args={[0.03, 8, 8]} />
+          <meshStandardMaterial color="#FFFFFF" emissive="#FFFFFF" emissiveIntensity={0.8} />
+        </mesh>
+      </group>
+
+      {/* 눈 (오른쪽 - 더 크고 반짝임) */}
+      <group position={[0.12, 1.58 + face.eyeY, 0.3]}>
+        <mesh scale={[1, face.eyeScale, 1]}>
+          <sphereGeometry args={[0.09, 16, 16]} />
+          <meshStandardMaterial color="#000000" />
+        </mesh>
+        {/* 눈 하이라이트 */}
+        <mesh position={[0.03, 0.03, 0.08]}>
+          <sphereGeometry args={[0.03, 8, 8]} />
+          <meshStandardMaterial color="#FFFFFF" emissive="#FFFFFF" emissiveIntensity={0.8} />
+        </mesh>
+      </group>
+
+      {/* 입 (더 귀엽게) */}
+      <mesh position={[0, 1.35 + face.mouthY, 0.35]} rotation={[0, 0, face.mouthCurve]}>
+        <torusGeometry args={[0.1, 0.025, 8, 16, Math.PI]} />
+        <meshStandardMaterial color="#FF6B9D" />
       </mesh>
 
-      {/* 몸 */}
-      <mesh ref={bodyRef} position={[0, 0.8, 0]} castShadow>
-        <capsuleGeometry args={[0.25, 0.8, 8, 8]} />
+      {/* 귀여운 귀 (왼쪽) */}
+      <mesh position={[-0.4, 1.7, 0]} rotation={[0, 0, -Math.PI / 6]}>
+        <sphereGeometry args={[0.12, 16, 16]} />
+        <meshStandardMaterial 
+          color={colors.head}
+          emissive={colors.head}
+          emissiveIntensity={0.2}
+        />
+      </mesh>
+
+      {/* 귀여운 귀 (오른쪽) */}
+      <mesh position={[0.4, 1.7, 0]} rotation={[0, 0, Math.PI / 6]}>
+        <sphereGeometry args={[0.12, 16, 16]} />
+        <meshStandardMaterial 
+          color={colors.head}
+          emissive={colors.head}
+          emissiveIntensity={0.2}
+        />
+      </mesh>
+
+      {/* 머리 장식 (리본) */}
+      <group position={[0.25, 1.75, 0.1]}>
+        <mesh>
+          <boxGeometry args={[0.15, 0.08, 0.03]} />
+          <meshStandardMaterial color="#FF69B4" emissive="#FF69B4" emissiveIntensity={0.3} />
+        </mesh>
+        <mesh position={[-0.08, 0, 0]} rotation={[0, 0, Math.PI / 8]}>
+          <boxGeometry args={[0.08, 0.12, 0.03]} />
+          <meshStandardMaterial color="#FF69B4" emissive="#FF69B4" emissiveIntensity={0.3} />
+        </mesh>
+        <mesh position={[0.08, 0, 0]} rotation={[0, 0, -Math.PI / 8]}>
+          <boxGeometry args={[0.08, 0.12, 0.03]} />
+          <meshStandardMaterial color="#FF69B4" emissive="#FF69B4" emissiveIntensity={0.3} />
+        </mesh>
+      </group>
+
+      {/* 몸 (작고 통통하게) */}
+      <mesh ref={bodyRef} position={[0, 0.85, 0]} castShadow>
+        <capsuleGeometry args={[0.28, 0.6, 16, 16]} />
         <meshStandardMaterial 
           color={colors.body}
           emissive={colors.body}
-          emissiveIntensity={emotion !== 'neutral' ? 0.15 : 0}
+          emissiveIntensity={emotion !== 'neutral' ? 0.2 : 0.05}
+          roughness={0.4}
         />
       </mesh>
 
-      {/* 왼팔 */}
-      <mesh ref={leftArmRef} position={[-0.35, 0.8, 0]} rotation={[0, 0, Math.PI / 6]} castShadow>
-        <capsuleGeometry args={[0.08, 0.5, 6, 6]} />
-        <meshStandardMaterial color="#87CEEB" />
+      {/* 왼팔 (더 짧고 통통하게) */}
+      <mesh ref={leftArmRef} position={[-0.35, 0.9, 0]} rotation={[0, 0, Math.PI / 6]} castShadow>
+        <capsuleGeometry args={[0.09, 0.35, 12, 12]} />
+        <meshStandardMaterial color="#FFE4E1" roughness={0.3} />
       </mesh>
 
-      {/* 오른팔 */}
-      <mesh ref={rightArmRef} position={[0.35, 0.8, 0]} rotation={[0, 0, -Math.PI / 6]} castShadow>
-        <capsuleGeometry args={[0.08, 0.5, 6, 6]} />
-        <meshStandardMaterial color="#87CEEB" />
+      {/* 오른팔 (더 짧고 통통하게) */}
+      <mesh ref={rightArmRef} position={[0.35, 0.9, 0]} rotation={[0, 0, -Math.PI / 6]} castShadow>
+        <capsuleGeometry args={[0.09, 0.35, 12, 12]} />
+        <meshStandardMaterial color="#FFE4E1" roughness={0.3} />
       </mesh>
 
-      {/* 왼다리 */}
-      <mesh position={[-0.15, 0.1, 0]} castShadow>
-        <capsuleGeometry args={[0.1, 0.6, 6, 6]} />
-        <meshStandardMaterial color="#2C3E50" />
+      {/* 왼손 (둥근 손) */}
+      <mesh position={[-0.42, 0.55, 0]} castShadow>
+        <sphereGeometry args={[0.08, 12, 12]} />
+        <meshStandardMaterial color="#FFE4E1" roughness={0.3} />
       </mesh>
 
-      {/* 오른다리 */}
-      <mesh position={[0.15, 0.1, 0]} castShadow>
-        <capsuleGeometry args={[0.1, 0.6, 6, 6]} />
-        <meshStandardMaterial color="#2C3E50" />
+      {/* 오른손 (둥근 손) */}
+      <mesh position={[0.42, 0.55, 0]} castShadow>
+        <sphereGeometry args={[0.08, 12, 12]} />
+        <meshStandardMaterial color="#FFE4E1" roughness={0.3} />
+      </mesh>
+
+      {/* 왼다리 (더 짧고 통통하게) */}
+      <mesh position={[-0.15, 0.25, 0]} castShadow>
+        <capsuleGeometry args={[0.11, 0.4, 12, 12]} />
+        <meshStandardMaterial color="#DDA0DD" roughness={0.4} />
+      </mesh>
+
+      {/* 오른다리 (더 짧고 통통하게) */}
+      <mesh position={[0.15, 0.25, 0]} castShadow>
+        <capsuleGeometry args={[0.11, 0.4, 12, 12]} />
+        <meshStandardMaterial color="#DDA0DD" roughness={0.4} />
+      </mesh>
+
+      {/* 왼발 (둥근 발) */}
+      <mesh position={[-0.15, 0.05, 0.08]} castShadow>
+        <sphereGeometry args={[0.1, 12, 12]} />
+        <meshStandardMaterial color="#DDA0DD" roughness={0.4} />
+      </mesh>
+
+      {/* 오른발 (둥근 발) */}
+      <mesh position={[0.15, 0.05, 0.08]} castShadow>
+        <sphereGeometry args={[0.1, 12, 12]} />
+        <meshStandardMaterial color="#DDA0DD" roughness={0.4} />
       </mesh>
 
       {/* 이름 라벨 */}

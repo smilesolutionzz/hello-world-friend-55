@@ -6,16 +6,29 @@ import { useState, useEffect } from 'react';
 export const MetaverseBanner = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(true);
+  const [showBanner, setShowBanner] = useState(false);
 
+  // 스크롤 감지
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-    }, 5000);
+    const handleScroll = () => {
+      setShowBanner(window.scrollY > 100);
+    };
 
-    return () => clearTimeout(timer);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (!isVisible) return null;
+  useEffect(() => {
+    if (!showBanner) return;
+    
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 8000);
+
+    return () => clearTimeout(timer);
+  }, [showBanner]);
+
+  if (!isVisible || !showBanner) return null;
 
   return (
     <div className="relative bg-gradient-to-r from-cyan-500/90 via-blue-500/90 to-indigo-500/90 py-4 px-6 overflow-hidden animate-fade-in">

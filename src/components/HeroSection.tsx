@@ -43,12 +43,12 @@ const HeroSection = () => {
   ];
   return (
     <section className="relative min-h-screen overflow-hidden">
-      {/* Background Image with Overlay */}
+      {/* Background Image with Overlay - 밝기 개선 */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroBg})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/95 via-[#1B2333]/90 to-[#0A0E1A]/95" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/80 via-[#1B2333]/75 to-[#0A0E1A]/80" />
       </div>
 
       {/* Background Blur Effects */}
@@ -74,30 +74,48 @@ const HeroSection = () => {
             </span>
           </h1>
           
-          <div className="bg-gradient-to-r from-[#5E8FFF]/10 to-[#8FB9FF]/10 backdrop-blur-lg rounded-2xl p-6 border border-[#5E8FFF]/30 max-w-3xl mx-auto">
+          <div className="bg-gradient-to-r from-[#5E8FFF]/20 to-[#8FB9FF]/20 backdrop-blur-xl rounded-2xl p-6 border border-[#5E8FFF]/40 max-w-3xl mx-auto shadow-[0_8px_32px_rgba(94,143,255,0.2)]">
             <p className="text-sm sm:text-base text-white font-semibold mb-3">
               ✓ 회원가입 없이 즉시 시작 &nbsp; ✓ 완전 무료 체험<br className="sm:hidden" /> &nbsp; ✓ 24시간 이용 가능
             </p>
-            <p className="text-xs sm:text-sm md:text-base text-white/70">
+            <p className="text-xs sm:text-sm md:text-base text-white/90">
               2,000명이 먼저 경험한 AI+전문가 통합 케어
             </p>
           </div>
           
-          {/* 타이핑 애니메이션 */}
-          <div className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 max-w-4xl mx-auto">
-            <p className="text-sm text-white/60 mb-3">이런 고민이 있으신가요?</p>
-            <div className="text-left text-base text-white/90 leading-relaxed min-h-[4rem] flex items-center">
+          {/* 타이핑 애니메이션 - 가독성 개선 */}
+          <div className="bg-white/15 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-white/30 max-w-4xl mx-auto shadow-[0_8px_32px_rgba(255,255,255,0.1)]">
+            <p className="text-sm sm:text-base text-white/90 mb-3 font-semibold">이런 고민이 있으신가요?</p>
+            <div className="text-left text-base sm:text-lg text-white leading-relaxed min-h-[4rem] flex items-center">
               <TypingAnimation 
                 phrases={typingPhrases}
                 typingSpeed={50}
                 deletingSpeed={30}
                 pauseDuration={2000}
-                className="text-white/90"
+                className="text-white font-medium"
               />
             </div>
           </div>
         </div>
 
+
+        {/* Primary CTA - 3분 무료 분석 시작 */}
+        <div className="mb-8">
+          <Button 
+            size="lg"
+            onClick={() => navigate('/premium-assessment')}
+            className="group relative w-full max-w-2xl mx-auto px-12 py-8 bg-gradient-to-r from-[#5E8FFF] via-[#7AA8FF] to-[#5E8FFF] hover:from-[#4A7FEF] hover:via-[#6A98EF] hover:to-[#4A7FEF] text-white text-2xl sm:text-3xl font-extrabold rounded-2xl shadow-[0_12px_48px_rgba(94,143,255,0.6)] hover:shadow-[0_16px_56px_rgba(94,143,255,0.8)] transition-all duration-300 transform hover:scale-105 border-2 border-white/30 animate-pulse"
+          >
+            <span className="flex items-center justify-center gap-3">
+              <Zap className="w-7 h-7 sm:w-8 sm:h-8" />
+              <span>⚡ 3분 무료 분석 시작</span>
+              <ArrowRight className="w-6 h-6 sm:w-7 sm:h-7 group-hover:translate-x-1 transition-transform" />
+            </span>
+          </Button>
+          <p className="text-center text-white/80 text-sm sm:text-base mt-3 font-medium">
+            회원가입 없이 바로 시작 • 전문가급 AI 분석 무료 체험
+          </p>
+        </div>
 
         {/* 프로모션 배너 */}
         <div className="mb-8">
@@ -109,7 +127,7 @@ const HeroSection = () => {
           <InstantAIAnalysis />
         </div>
         
-        {/* CTA Buttons - 명확한 행동 유도 */}
+        {/* Secondary CTA Buttons - 명확한 행동 유도 */}
         <div className="flex flex-col gap-6 justify-center items-center mb-16">
           {/* 메인 CTA - 메타버스 체험 강조 */}
           <div className="w-full max-w-2xl">

@@ -38,22 +38,21 @@ export const PromotionBanner = ({ variant = 'hero' }: PromotionBannerProps) => {
 
   if (variant === 'hero') {
     return (
-      <div className="bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white py-4 px-6 rounded-2xl shadow-[0_8px_32px_rgba(255,107,0,0.4)] border-2 border-white/20 animate-pulse">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 rounded-full p-2 animate-bounce">
-              <Gift className="w-6 h-6" />
+      <div className="bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white py-3 px-4 sm:py-4 sm:px-6 rounded-2xl shadow-[0_8px_32px_rgba(255,107,0,0.4)] border-2 border-white/20">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="bg-white/20 rounded-full p-1.5 sm:p-2">
+              <Gift className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <div className="text-sm font-bold">🔥 오늘만 특별 할인!</div>
-              <div className="text-xs opacity-90">첫 구매 시 50% 할인 + 추가 토큰 50개 증정</div>
+              <div className="text-xs sm:text-sm font-bold">🔥 오늘만 50% 할인</div>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg">
-              <Clock className="w-4 h-4" />
-              <span className="font-mono font-bold text-lg">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-2 bg-white/20 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg">
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="font-mono font-bold text-sm sm:text-base">
                 {String(timeLeft.hours).padStart(2, '0')}:
                 {String(timeLeft.minutes).padStart(2, '0')}:
                 {String(timeLeft.seconds).padStart(2, '0')}
@@ -61,7 +60,8 @@ export const PromotionBanner = ({ variant = 'hero' }: PromotionBannerProps) => {
             </div>
             <Button 
               onClick={() => navigate('/token-purchase?tokens=400')}
-              className="bg-white text-red-600 hover:bg-white/90 font-bold shadow-lg"
+              size="sm"
+              className="bg-white text-red-600 hover:bg-white/90 font-bold shadow-lg text-xs sm:text-sm px-3 sm:px-4"
             >
               지금 받기
             </Button>

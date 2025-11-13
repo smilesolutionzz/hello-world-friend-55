@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
@@ -24,9 +24,12 @@ const FixedCTAButton = () => {
       {/* Mobile Fixed CTA */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl safe-area-pb">
         <div className="mb-2 text-center">
-          <span className="inline-block px-3 py-1 bg-gradient-to-r from-[#5E8FFF] to-[#9D6CFF] text-white text-xs font-bold rounded-full">
-            🎉 친구 추천 시 친구도 50, 나도 50토큰! (최대 10명)
-          </span>
+          <button
+            onClick={() => navigate('/referral')}
+            className="inline-block px-3 py-1 bg-gradient-to-r from-[#5E8FFF] to-[#9D6CFF] text-white text-xs font-bold rounded-full hover:opacity-90 transition-opacity"
+          >
+            🎉 친구 추천 시 친구도 10, 나도 10토큰! (최대 10명)
+          </button>
         </div>
         <Button 
           size="lg"
@@ -42,11 +45,15 @@ const FixedCTAButton = () => {
 
       {/* Desktop Floating CTA */}
       <div className="hidden md:block fixed bottom-8 right-8 z-50">
-        <div className="mb-3 text-right">
-          <div className="text-sm text-muted-foreground font-medium">
-            친구 추천 시 친구도 50, 나도 50토큰! (최대 10명) 📱
+        <button
+          onClick={() => navigate('/referral')}
+          className="mb-3 text-right block hover:scale-105 transition-transform"
+        >
+          <div className="text-sm text-muted-foreground font-medium hover:text-foreground flex items-center gap-2 justify-end">
+            <Users className="w-4 h-4" />
+            친구 추천 시 친구도 10, 나도 10토큰! (최대 10명) 📱
           </div>
-        </div>
+        </button>
         <Button 
           size="lg"
           onClick={() => navigate('/pmf-onboarding')}

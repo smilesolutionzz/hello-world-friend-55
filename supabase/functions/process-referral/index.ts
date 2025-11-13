@@ -7,8 +7,8 @@ const corsHeaders = {
 };
 
 const REFERRAL_REWARDS = {
-  inviter: 50,  // 추천인에게 50토큰
-  invitee: 50,  // 피추천인에게 50토큰
+  inviter: 10,  // 추천인에게 10토큰
+  invitee: 10,  // 피추천인에게 10토큰
 };
 
 serve(async (req) => {
@@ -156,7 +156,7 @@ serve(async (req) => {
         success: true,
         inviterReward: REFERRAL_REWARDS.inviter,
         inviteeReward: REFERRAL_REWARDS.invitee,
-        message: `🎉 친구도 50토큰, 나도 50토큰을 받았습니다!`,
+        message: `🎉 친구도 10토큰, 나도 10토큰을 받았습니다!`,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );

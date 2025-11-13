@@ -120,20 +120,6 @@ export default {
 				'primary-subtle': 'hsl(var(--primary-subtle))',
 			},
 			spacing: {
-				// 8px Grid System - 모든 spacing은 8의 배수
-				'1': 'var(--space-1)', // 8px
-				'2': 'var(--space-2)', // 16px
-				'3': 'var(--space-3)', // 24px
-				'4': 'var(--space-4)', // 32px
-				'5': 'var(--space-5)', // 40px
-				'6': 'var(--space-6)', // 48px
-				'8': 'var(--space-8)', // 64px
-				'10': 'var(--space-10)', // 80px
-				'12': 'var(--space-12)', // 96px
-				'16': 'var(--space-16)', // 128px
-				'20': 'var(--space-20)', // 160px
-				
-				// Legacy spacing (하위 호환성)
 				'micro': 'var(--space-micro)',
 				'tiny': 'var(--space-tiny)',
 				'xs': 'var(--space-xs)',

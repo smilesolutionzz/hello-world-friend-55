@@ -2171,21 +2171,6 @@ const ExpertHiring = () => {
                             )}
                             <h4 className="font-semibold text-lg text-gray-800 truncate">{institution.name}</h4>
                           </div>
-                          <Badge className={`shrink-0 text-xs ${
-                            institution.partnership_status === 'premium' 
-                              ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-white border-amber-300' 
-                              : 'bg-purple-100 text-purple-800'
-                          }`}>
-                            <div className="flex flex-col items-center gap-0.5 py-0.5">
-                              <div className="flex items-center gap-1">
-                                <Shield className="w-3 h-3" />
-                                {institution.partnership_status === 'premium' ? '⭐ 프리미엄' : 'AIHPRO'}
-                              </div>
-                              <div className="text-[10px]">
-                                {institution.partnership_status === 'premium' ? '제휴기관' : '인증기관'}
-                              </div>
-                            </div>
-                          </Badge>
                         </div>
                         <div className="flex items-center gap-2 mb-3">
                           <div className="flex items-center gap-1">

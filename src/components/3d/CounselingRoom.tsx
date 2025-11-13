@@ -385,6 +385,7 @@ interface CounselingRoomProps {
   userName?: string;
   avatarPosition?: { x: number; y: number; z: number };
   showGame?: boolean;
+  virtualInput?: { x: number; y: number };
 }
 
 const CounselingRoom = ({
@@ -402,7 +403,8 @@ const CounselingRoom = ({
   groupMode = false,
   userName = 'User',
   avatarPosition,
-  showGame = false
+  showGame = false,
+  virtualInput
 }: CounselingRoomProps) => {
   const { toast } = useToast();
   // 공간별 설정
@@ -510,7 +512,7 @@ const CounselingRoom = ({
           
           {/* 아바타와 이동 컨트롤러 */}
           {enableMovement ? (
-            <CharacterController speed={0.15} enabled={enableMovement}>
+            <CharacterController speed={0.15} enabled={enableMovement} virtualInput={virtualInput}>
               <ReadyPlayerMeAvatar 
                 position={[0, 0, 0]} 
                 avatarUrl={avatarUrl}

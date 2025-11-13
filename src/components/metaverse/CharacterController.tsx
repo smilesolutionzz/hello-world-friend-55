@@ -8,13 +8,15 @@ interface CharacterControllerProps {
   onPositionChange?: (position: THREE.Vector3) => void;
   speed?: number;
   enabled?: boolean;
+  virtualInput?: { x: number; y: number };
 }
 
 export const CharacterController = ({ 
   children, 
   onPositionChange,
   speed = 0.1,
-  enabled = true 
+  enabled = true,
+  virtualInput
 }: CharacterControllerProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const velocityRef = useRef(new THREE.Vector3());
@@ -104,18 +106,25 @@ export const CharacterController = ({
     const right = new THREE.Vector3();
     right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
 
-    // WASD 키 입력 처리
-    if (keys.has('w') || keys.has('arrowup')) {
-      velocity.add(forward.multiplyScalar(speed));
-    }
-    if (keys.has('s') || keys.has('arrowdown')) {
-      velocity.add(forward.multiplyScalar(-speed));
-    }
-    if (keys.has('a') || keys.has('arrowleft')) {
-      velocity.add(right.multiplyScalar(-speed));
-    }
-    if (keys.has('d') || keys.has('arrowright')) {
-      velocity.add(right.multiplyScalar(speed));
+    // 가상 조이스틱 입력 처리 (모바일)
+    if (virtualInput && (virtualInput.x !== 0 || virtualInput.y !== 0)) {
+      // 조이스틱 입력: x는 좌우, y는 앞뒤 (-1 ~ 1 범위)
+      velocity.add(forward.clone().multiplyScalar(-virtualInput.y * speed));
+      velocity.add(right.clone().multiplyScalar(virtualInput.x * speed));
+    } else {
+      // WASD 키 입력 처리 (데스크톱)
+      if (keys.has('w') || keys.has('arrowup')) {
+        velocity.add(forward.multiplyScalar(speed));
+      }
+      if (keys.has('s') || keys.has('arrowdown')) {
+        velocity.add(forward.multiplyScalar(-speed));
+      }
+      if (keys.has('a') || keys.has('arrowleft')) {
+        velocity.add(right.multiplyScalar(-speed));
+      }
+      if (keys.has('d') || keys.has('arrowright')) {
+        velocity.add(right.multiplyScalar(speed));
+      }
     }
 
     // 점프 처리 (스페이스바)

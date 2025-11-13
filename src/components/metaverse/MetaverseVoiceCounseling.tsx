@@ -25,6 +25,8 @@ import { AvatarCustomization, type AvatarCustomization as AvatarCustomizationTyp
 import { SessionTimeline } from './SessionTimeline';
 import { EmotionTrendChart } from './EmotionTrendChart';
 import { Slider } from '@/components/ui/slider';
+import { VirtualJoystick } from './VirtualJoystick';
+import { GestureQuickMenu } from './GestureQuickMenu';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -105,6 +107,21 @@ const MetaverseVoiceCounseling = () => {
     intensity: number;
   }>>([]);
   const [showEmotionChart, setShowEmotionChart] = useState(false);
+  
+  // 모바일 감지 및 UI 상태
+  const [isMobile, setIsMobile] = useState(false);
+  const [isUICollapsed, setIsUICollapsed] = useState(false);
+  const joystickInputRef = useRef({ x: 0, y: 0 });
+
+  // 모바일 감지
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
 
   // 초기화
@@ -735,10 +752,39 @@ const MetaverseVoiceCounseling = () => {
         groupMode={groupMode}
         userName={userName}
         avatarPosition={avatarPosition}
+        virtualInput={joystickInputRef.current}
       >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* 이동 가이드 */}
-          {enableMovement && <MovementGuide visible={showMovementGuide} />}
+          {enableMovement && !isMobile && <MovementGuide visible={showMovementGuide} />}
+          
+          {/* 모바일 컨트롤 */}
+          {isMobile && enableMovement && (
+            <>
+              <VirtualJoystick
+                onMove={(x, y) => {
+                  joystickInputRef.current = { x, y };
+                }}
+                onJump={() => {
+                  // 스페이스바 이벤트 디스패치
+                  const event = new KeyboardEvent('keydown', { key: ' ' });
+                  window.dispatchEvent(event);
+                  setTimeout(() => {
+                    window.dispatchEvent(new KeyboardEvent('keyup', { key: ' ' }));
+                  }, 100);
+                }}
+              />
+              <GestureQuickMenu
+                onGesture={(gesture) => {
+                  if (gestureManagerRef.current) {
+                    gestureManagerRef.current.playGesture(gesture);
+                    const gestureInfo = GESTURES[gesture];
+                    toast({ title: `${gestureInfo.icon} ${gestureInfo.name}` });
+                  }
+                }}
+              />
+            </>
+          )}
           
           {/* 인터랙티브 오브젝트 콘텐츠 모달 */}
           {activeObject && (
@@ -756,13 +802,29 @@ const MetaverseVoiceCounseling = () => {
           )}
           {/* Header */}
           <div className="text-center mb-8 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 drop-shadow-lg">
-              안녕하세요, {userName}님 👋
-            </h1>
-            <p className="text-lg text-foreground/90 drop-shadow-md mb-3">
-              {consultTopic ? `${consultTopic}에 대해 편하게 이야기 나눠봐요` : '편하게 이야기 나눠봐요'}
-            </p>
-            <div className="flex flex-wrap gap-2 justify-center items-center">
+            {/* UI 접기/펼치기 버튼 (모바일) */}
+            {isMobile && (
+              <Button
+                onClick={() => setIsUICollapsed(!isUICollapsed)}
+                className="fixed top-4 right-4 z-50 w-12 h-12 rounded-full bg-gradient-to-br from-primary to-purple-600 shadow-xl border-2 border-white/30 p-0"
+              >
+                {isUICollapsed ? '📱' : '✕'}
+              </Button>
+            )}
+            
+            {(!isMobile || !isUICollapsed) && (
+              <>
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 drop-shadow-lg">
+                  안녕하세요, {userName}님 👋
+                </h1>
+                <p className="text-lg text-foreground/90 drop-shadow-md mb-3">
+                  {consultTopic ? `${consultTopic}에 대해 편하게 이야기 나눠봐요` : '편하게 이야기 나눠봐요'}
+                </p>
+              </>
+            )}
+            
+            {(!isMobile || !isUICollapsed) && (
+              <div className="flex flex-wrap gap-2 justify-center items-center">
               <div className="inline-block bg-green-500/20 backdrop-blur-sm border border-green-400/30 rounded-lg px-4 py-2">
                 <p className="text-sm md:text-base text-foreground font-medium">
                   🔒 대화 내용은 저장되지 않습니다
@@ -784,7 +846,7 @@ const MetaverseVoiceCounseling = () => {
                 </div>
               )}
               
-              {enableMovement && (
+              {enableMovement && !isMobile && (
                 <Button
                   variant="ghost"
                   size="sm"
@@ -795,9 +857,11 @@ const MetaverseVoiceCounseling = () => {
                 </Button>
               )}
             </div>
+            )}
           </div>
 
           {/* Status Card */}
+          {(!isMobile || !isUICollapsed) && (
           <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-4 sm:p-8 mb-6 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20 pointer-events-none">
             <div className="pointer-events-auto">
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -989,8 +1053,10 @@ const MetaverseVoiceCounseling = () => {
             )}
 
           </Card>
+          )}
 
           {/* Info */}
+          {(!isMobile || !isUICollapsed) && (
           <div className="bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-xl p-4 max-w-md">
             <p className="text-foreground/90 text-base md:text-lg text-center leading-relaxed">
               💬 마이크 권한을 허용하고 대화를 시작하세요.<br />
@@ -1000,6 +1066,7 @@ const MetaverseVoiceCounseling = () => {
               ✨ 비밀 보장 • 편하게 스트레스 풀어내세요
             </p>
           </div>
+          )}
         </div>
         
         {isRecording && (

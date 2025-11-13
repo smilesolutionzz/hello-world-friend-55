@@ -386,6 +386,8 @@ interface CounselingRoomProps {
   avatarPosition?: { x: number; y: number; z: number };
   showGame?: boolean;
   virtualInput?: { x: number; y: number };
+  currentGesture?: GestureType | null;
+  onPresenceChange?: (users: any[]) => void;
 }
 
 const CounselingRoom = ({
@@ -404,7 +406,9 @@ const CounselingRoom = ({
   userName = 'User',
   avatarPosition,
   showGame = false,
-  virtualInput
+  virtualInput,
+  currentGesture,
+  onPresenceChange
 }: CounselingRoomProps) => {
   const { toast } = useToast();
   // 공간별 설정
@@ -541,7 +545,10 @@ const CounselingRoom = ({
               avatarUrl={avatarUrl}
               position={avatarPosition}
               emotion={emotion}
+              currentGesture={currentGesture}
+              isSpeaking={isSpeaking}
               enabled={groupMode}
+              onPresenceChange={onPresenceChange}
             />
           )}
           

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ChevronUp, ChevronDown } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
@@ -27,6 +27,8 @@ import { EmotionTrendChart } from './EmotionTrendChart';
 import { Slider } from '@/components/ui/slider';
 import { VirtualJoystick } from './VirtualJoystick';
 import { GestureQuickMenu } from './GestureQuickMenu';
+import { GroupUserList } from './GroupPresence';
+import type { UserPresence } from '@/utils/RealtimePresence';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -112,6 +114,9 @@ const MetaverseVoiceCounseling = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isUICollapsed, setIsUICollapsed] = useState(false);
   const joystickInputRef = useRef({ x: 0, y: 0 });
+  
+  // 그룹 모드 상태
+  const [groupUsers, setGroupUsers] = useState<UserPresence[]>([]);
 
   // 모바일 감지
   useEffect(() => {
@@ -753,8 +758,13 @@ const MetaverseVoiceCounseling = () => {
         userName={userName}
         avatarPosition={avatarPosition}
         virtualInput={joystickInputRef.current}
+        currentGesture={currentGesture}
+        onPresenceChange={setGroupUsers}
       >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
+          {/* 그룹 사용자 목록 */}
+          {groupMode && <GroupUserList users={groupUsers} currentUser={userName} />}
+          
           {/* 이동 가이드 */}
           {enableMovement && !isMobile && <MovementGuide visible={showMovementGuide} />}
           

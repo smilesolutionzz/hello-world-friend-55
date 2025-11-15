@@ -16,6 +16,24 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
   const [specificAge, setSpecificAge] = useState<number>(0);
 
   const getAgeGroupContent = (groupKey: 'infant' | 'child' | 'adult') => {
+    if (testType === 'language') {
+      const languageContent = {
+        infant: {
+          description: '언어발달 체크',
+          features: ['언어 이해력', '표현 능력', '의사소통 기술', '발음 발달']
+        },
+        child: {
+          description: '언어발달 체크',
+          features: ['어휘력', '문장 구성', '읽기 쓰기', '대화 능력']
+        },
+        adult: {
+          description: '언어발달 체크',
+          features: ['언어 유창성', '이해력', '표현력', '의사소통']
+        }
+      };
+      return languageContent[groupKey];
+    }
+    
     if (testType === 'adhd') {
       const adhdContent = {
         infant: {
@@ -34,7 +52,7 @@ const AgeSelector = ({ onAgeGroupSelect, testType }: AgeSelectorProps) => {
       return adhdContent[groupKey];
     }
     
-    // 기본 우울검사 내용
+    // 우울검사 내용
     const depressionContent = {
       infant: {
         description: '우울검사',

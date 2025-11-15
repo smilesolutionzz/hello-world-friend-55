@@ -11,12 +11,13 @@ interface LanguageTestResultProps {
     total: number;
     average: number;
     ageGroup: string;
+    age: number;
   };
   onBack: () => void;
 }
 
 const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
-  const { total, average, ageGroup } = results;
+  const { total, average, ageGroup, age } = results;
   const today = new Date().toLocaleDateString('ko-KR');
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
@@ -105,8 +106,8 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               <p className="text-2xl font-bold">{total}점</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">연령대</p>
-              <p className="text-2xl font-bold">{ageGroup}</p>
+              <p className="text-sm text-muted-foreground">개월수</p>
+              <p className="text-2xl font-bold">{age}개월</p>
             </div>
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">평가 결과</p>
@@ -142,9 +143,9 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
               <p className="text-sm text-blue-600 mt-1">점수 범위: {evaluation.range}</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-semibold text-blue-800">연령대</p>
-              <p className="text-2xl font-bold text-blue-900">{ageGroup}</p>
-              <p className="text-sm text-blue-600 mt-1">평가 기준: 연령별 표준</p>
+              <p className="text-lg font-semibold text-blue-800">현재 개월수</p>
+              <p className="text-2xl font-bold text-blue-900">{age}개월</p>
+              <p className="text-sm text-blue-600 mt-1">연령대: {ageGroup}</p>
             </div>
           </div>
           

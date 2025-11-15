@@ -12,7 +12,7 @@ import TokenGate from "@/components/TokenGate";
 interface LanguageTestFormProps {
   ageGroup: 'infant' | 'child';
   age: number;
-  onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string}) => void;
+  onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string, age: number}) => void;
   onBack: () => void;
 }
 
@@ -102,7 +102,8 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
         answers: numericAnswers,
         total,
         average,
-        ageGroup: ageGroupLabel
+        ageGroup: ageGroupLabel,
+        age
       });
     }
   };

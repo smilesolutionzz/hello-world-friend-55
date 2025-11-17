@@ -131,7 +131,7 @@ const TokenSubscription = () => {
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-2 text-2xl font-bold mb-2">
               <Sparkles className="w-8 h-8 animate-bounce" />
-              <span className="text-3xl">🎉 롤칭 기념 특별 프로모션 🎊</span>
+              <span className="text-3xl">🎉 론칭 기념 특별 프로모션 🎊</span>
               <Sparkles className="w-8 h-8 animate-bounce" />
             </div>
             

@@ -1,30 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Crown, Sparkles, Zap, Star } from 'lucide-react';
+import { Check, Crown, Sparkles, Zap, Star, Clock, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const NewPricingPlans = () => {
   const navigate = useNavigate();
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
   const plans = [
     {
       id: 'free',
       name: '무료 체험',
-      price: 0,
-      originalPrice: null,
-      period: '평생',
+      monthlyPrice: 0,
+      yearlyPrice: 0,
+      originalMonthlyPrice: null,
+      originalYearlyPrice: null,
       badge: '무료',
       badgeColor: 'bg-green-100 text-green-800',
       icon: Sparkles,
       iconColor: 'text-green-600',
       features: [
-        '기본 심리테스트 5회',
+        '무료 10토큰 제공',
+        '심리검사 2-3회 체험',
         '기본 관찰일지 5회',
         'AI 기본 분석',
-        '커뮤니티 접근',
-        '기본 리포트'
+        '커뮤니티 접근'
       ],
       limitations: [
         '고급 AI 분석 제한',
@@ -37,14 +39,16 @@ const NewPricingPlans = () => {
     {
       id: 'basic',
       name: '베이직',
-      price: 9900,
-      originalPrice: 19900,
-      period: '월',
+      monthlyPrice: 9900,
+      yearlyPrice: 99000,
+      originalMonthlyPrice: 19900,
+      originalYearlyPrice: 238800,
       badge: '50% 할인',
       badgeColor: 'bg-orange-100 text-orange-800',
       icon: Zap,
       iconColor: 'text-blue-600',
       popular: true,
+      yearlyDiscount: '연 2개월 무료',
       features: [
         '모든 심리테스트 무제한',
         '관찰일지 무제한',
@@ -60,13 +64,15 @@ const NewPricingPlans = () => {
     {
       id: 'premium',
       name: '프리미엄',
-      price: 19900,
-      originalPrice: 39900,
-      period: '월',
+      monthlyPrice: 19900,
+      yearlyPrice: 199000,
+      originalMonthlyPrice: 39900,
+      originalYearlyPrice: 478800,
       badge: '인기',
       badgeColor: 'bg-purple-100 text-purple-800',
       icon: Crown,
       iconColor: 'text-purple-600',
+      yearlyDiscount: '연 2개월 무료',
       features: [
         '베이직 플랜 모든 기능',
         '전문가 1:1 상담 (월 1회)',
@@ -81,6 +87,14 @@ const NewPricingPlans = () => {
     }
   ];
 
+  const getCurrentPrice = (plan: typeof plans[0]) => {
+    return billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice;
+  };
+
+  const getOriginalPrice = (plan: typeof plans[0]) => {
+    return billingCycle === 'monthly' ? plan.originalMonthlyPrice : plan.originalYearlyPrice;
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -89,10 +103,46 @@ const NewPricingPlans = () => {
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           모든 사람이 마음 건강 관리를 받을 수 있도록 <span className="font-semibold text-primary">론칭 특가</span>로 제공합니다
         </p>
-        <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4">
-          <p className="text-sm font-medium">
-            🎉 <span className="text-primary">론칭 기념 한정특가</span> - 첫 3개월 50% 할인! (선착순 1000명)
-          </p>
+        
+        {/* Urgency Banner */}
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950 rounded-lg p-4 border border-orange-200 dark:border-orange-800">
+          <div className="flex items-center justify-center gap-2 text-sm font-medium">
+            <Clock className="w-4 h-4 text-orange-600" />
+            <span className="text-orange-900 dark:text-orange-100">
+              🎉 <span className="text-primary font-bold">론칭 기념 50% 할인</span> - 선착순 <span className="font-bold text-red-600">500명</span> 한정!
+            </span>
+          </div>
+          <div className="flex items-center justify-center gap-1 mt-1 text-xs text-muted-foreground">
+            <Users className="w-3 h-3" />
+            <span>현재 <span className="font-bold text-primary">387명</span>이 신청했습니다</span>
+          </div>
+        </div>
+
+        {/* Billing Cycle Toggle */}
+        <div className="flex items-center justify-center gap-4 pt-2">
+          <button
+            onClick={() => setBillingCycle('monthly')}
+            className={`px-6 py-2 rounded-full font-medium transition-all ${
+              billingCycle === 'monthly'
+                ? 'bg-primary text-primary-foreground shadow-md'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            }`}
+          >
+            월간 결제
+          </button>
+          <button
+            onClick={() => setBillingCycle('yearly')}
+            className={`px-6 py-2 rounded-full font-medium transition-all relative ${
+              billingCycle === 'yearly'
+                ? 'bg-primary text-primary-foreground shadow-md'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            }`}
+          >
+            연간 결제
+            <Badge className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5">
+              2개월 무료
+            </Badge>
+          </button>
         </div>
       </div>
 
@@ -132,12 +182,12 @@ const NewPricingPlans = () => {
                   
                   <div className="space-y-2">
                     <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-3xl font-bold">₩{plan.price.toLocaleString()}</span>
-                      <span className="text-muted-foreground">/{plan.period}</span>
+                      <span className="text-3xl font-bold">₩{getCurrentPrice(plan).toLocaleString()}</span>
+                      <span className="text-muted-foreground">/{billingCycle === 'monthly' ? '월' : '년'}</span>
                     </div>
-                    {plan.originalPrice && (
+                    {getOriginalPrice(plan) && (
                       <div className="text-sm text-muted-foreground">
-                        <span className="line-through">₩{plan.originalPrice.toLocaleString()}</span>
+                        <span className="line-through">₩{getOriginalPrice(plan)?.toLocaleString()}</span>
                         <span className="text-green-600 font-medium ml-2">50% 절약</span>
                       </div>
                     )}

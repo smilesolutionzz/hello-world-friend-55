@@ -90,11 +90,17 @@ const HeroSection = () => {
           
           <div className="bg-gradient-to-r from-[#5E8FFF]/20 to-[#8FB9FF]/20 backdrop-blur-xl rounded-2xl p-6 border border-[#5E8FFF]/40 max-w-3xl mx-auto shadow-[0_8px_32px_rgba(94,143,255,0.2)]">
             <p className="text-sm sm:text-base text-white font-semibold mb-3">
-              ✓ 회원가입 없이 즉시 시작 &nbsp; ✓ 완전 무료 체험<br className="sm:hidden" /> &nbsp; ✓ 24시간 이용 가능
+              ✓ 회원가입 없이 즉시 시작 &nbsp; ✓ 완전 무료 체험 &nbsp; ✓ 24시간 이용 가능
             </p>
-            <p className="text-xs sm:text-sm md:text-base text-white/90">
-              2,000명이 먼저 경험한 AI+전문가 통합 케어
-            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+              <p className="text-xs sm:text-sm md:text-base text-white/90 font-medium">
+                ⭐⭐⭐⭐⭐ 4.8/5.0 (1,247명 평가)
+              </p>
+              <div className="hidden sm:block w-px h-4 bg-white/30"></div>
+              <p className="text-xs sm:text-sm md:text-base text-white/90 font-medium">
+                🔥 <span className="text-[#FFD93D]">오늘 387명</span>이 검사 진행 중
+              </p>
+            </div>
           </div>
           
           {/* 타이핑 애니메이션 - 가독성 개선 */}

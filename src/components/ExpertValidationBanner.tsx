@@ -7,15 +7,11 @@ import {
   CheckCircle, 
   ArrowRight, 
   Clock,
-  Users,
-  Zap,
   Shield
 } from 'lucide-react';
 
 const ExpertValidationBanner = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [validatedCount, setValidatedCount] = useState(878);
-  const [expertsOnline, setExpertsOnline] = useState(5);
 
   // 3초 주기로 애니메이션 반복
   useEffect(() => {
@@ -23,14 +19,6 @@ const ExpertValidationBanner = () => {
       setCurrentStep((prev) => (prev + 1) % 4);
     }, 800);
     return () => clearInterval(interval);
-  }, []);
-
-  // 실시간 카운터 효과
-  useEffect(() => {
-    const countInterval = setInterval(() => {
-      setValidatedCount(prev => prev + Math.floor(Math.random() * 3));
-    }, 5000);
-    return () => clearInterval(countInterval);
   }, []);
 
   const steps = [
@@ -53,7 +41,7 @@ const ExpertValidationBanner = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 items-center max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
           {/* 비교 섹션 */}
           <Card className="p-6 h-full border-2 border-gray-100 hover:border-gray-200 transition-colors">
             <h3 className="font-semibold text-gray-900 mb-4 text-center">일반 AI vs 우리</h3>
@@ -125,39 +113,6 @@ const ExpertValidationBanner = () => {
                 <Clock className="w-3 h-3 mr-1" />
                 평균 검토시간: 2분 30초
               </Badge>
-            </div>
-          </Card>
-
-          {/* 실시간 상태 */}
-          <Card className="p-6 h-full border-2 border-green-100 bg-gradient-to-br from-green-50/30 to-emerald-50/30">
-            <h3 className="font-semibold text-gray-900 mb-4 text-center">실시간 현황</h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm text-gray-600">전문가 온라인</span>
-                </div>
-                <Badge variant="secondary" className="bg-green-100 text-green-700">
-                  <Users className="w-3 h-3 mr-1" />
-                  {expertsOnline}명
-                </Badge>
-              </div>
-              
-              <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-100">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary animate-pulse">
-                    {validatedCount.toLocaleString()}건
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    전문가검토 완료
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 justify-center">
-                <Zap className="w-4 h-4 text-yellow-500" />
-                <span className="text-xs text-gray-600">실시간 검증 진행중</span>
-              </div>
             </div>
           </Card>
         </div>

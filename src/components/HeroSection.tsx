@@ -103,19 +103,8 @@ const HeroSection = () => {
             </div>
           </div>
           
-          {/* 타이핑 애니메이션 - 가독성 개선 */}
-          <div className="bg-white/15 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-white/30 max-w-4xl mx-auto shadow-[0_8px_32px_rgba(255,255,255,0.1)]">
-            <p className="text-sm sm:text-base text-white/90 mb-3 font-semibold">이런 고민이 있으신가요?</p>
-            <div className="text-left text-base sm:text-lg text-white leading-relaxed min-h-[4rem] flex items-center">
-              <TypingAnimation 
-                phrases={typingPhrases}
-                typingSpeed={50}
-                deletingSpeed={30}
-                pauseDuration={2000}
-                className="text-white font-medium"
-              />
-            </div>
-          </div>
+          {/* 즉시 AI 분석 입력창 */}
+          <InstantAIAnalysis />
         </div>
 
         {/* CTA Buttons - 무료 분석 시작 */}

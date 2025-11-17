@@ -77,7 +77,6 @@ const aihSubmenuItems: NavigationItem[] = [
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false },
   { icon: Mic, label: 'AI 메타버스', path: '/metaverse-voice', requiresAuth: false, badge: 'NEW' },
   { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
-  { icon: Heart, label: '라이프 허브', path: '/wellness-lifestyle', requiresAuth: false },
 ];
 
 // 3분테스트 하위 메뉴
@@ -264,7 +263,7 @@ export const UnifiedNavigation = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant={isActive('/ai-assistant') || isActive('/observation') || isActive('/wellness-lifestyle') || isActive('/voice-emotion-analysis') || isActive('/metaverse-voice') ? "default" : "ghost"}
+                    variant={isActive('/ai-assistant') || isActive('/observation') || isActive('/voice-emotion-analysis') || isActive('/metaverse-voice') ? "default" : "ghost"}
                     size="sm"
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >

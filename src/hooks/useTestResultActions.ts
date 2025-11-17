@@ -56,44 +56,69 @@ export const useTestResultActions = () => {
         // 엣지 함수 미배포 등으로 실패할 수 있음 - 로컬 템플릿로 폴백
       }
       
+      // Markdown을 HTML로 변환하는 함수
+      const convertMarkdownToHTML = (text: string): string => {
+        if (!text) return '';
+        
+        return text
+          // 헤더 변환 (## 헤더)
+          .replace(/\*\*(\d+\.\s+[^\*]+)\*\*/g, '<h3 style="color: #1e40af; margin-top: 20px; margin-bottom: 10px; font-size: 16px;">$1</h3>')
+          // 굵은 글씨
+          .replace(/\*\*([^\*]+)\*\*/g, '<strong style="color: #1e40af;">$1</strong>')
+          // 번호 목록 (숫자.)
+          .replace(/^(\d+)\.\s+(.+)$/gm, '<div style="margin: 8px 0; padding-left: 20px; line-height: 1.6;"><strong>$1.</strong> $2</div>')
+          // 하이픈 목록
+          .replace(/^-\s+(.+)$/gm, '<div style="margin: 5px 0; padding-left: 20px; line-height: 1.6;">• $1</div>')
+          // 이모지가 있는 섹션 헤더
+          .replace(/^(#+)?\s*([🔥📋⚠️💪✨🎯]+)\s*(.+)$/gm, '<h3 style="color: #1e40af; margin-top: 20px; margin-bottom: 10px; font-size: 16px;">$2 $3</h3>')
+          // 새 줄을 br 태그로
+          .replace(/\n\n/g, '</p><p style="margin: 10px 0; line-height: 1.6;">')
+          .replace(/\n/g, '<br>');
+      };
+      
       if (!reportHtml) {
         console.log('📝 로컬 템플릿 사용');
         // 간단한 로컬 템플릿 - 결과 데이터를 더 보기 좋게 표시
         const resultsTable = Object.entries(testData.results)
           .map(([key, value]) => `
             <tr>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">${key}</td>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${typeof value === 'number' ? value.toFixed(1) : value}</td>
+              <td style="padding: 12px 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #374151;">${key}</td>
+              <td style="padding: 12px 8px; border-bottom: 1px solid #e2e8f0; color: #3b82f6; font-weight: 600;">${typeof value === 'number' ? value.toFixed(1) : value}</td>
             </tr>
           `).join('');
         
+        const formattedAnalysis = convertMarkdownToHTML(testData.analysis || '');
+        
         reportHtml = `
-          <div id="pdf-content" style="font-family: system-ui, -apple-system, Segoe UI, Roboto; padding: 24px; max-width: 800px; margin: 0 auto;">
-            <div style="text-align: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #3b82f6;">
-              <div style="font-size: 24px; font-weight: bold; color: #3b82f6; letter-spacing: 1px;">AIHPRO.COM</div>
-              <div style="font-size: 12px; color: #666; margin-top: 5px;">AIH 기반 심리검사 전문 플랫폼</div>
+          <div id="pdf-content" style="font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; padding: 30px; max-width: 800px; margin: 0 auto; background: white;">
+            <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #3b82f6;">
+              <div style="font-size: 28px; font-weight: bold; color: #3b82f6; letter-spacing: 2px;">AIHPRO.COM</div>
+              <div style="font-size: 13px; color: #6b7280; margin-top: 8px;">AIH 기반 심리검사 전문 플랫폼</div>
             </div>
-            <h1 style="margin:0 0 8px 0; color: #3b82f6; text-align: center;">${testData.testType} 결과 보고서</h1>
-            <p style="color:#555; margin:0 0 24px 0; text-align: center;">${new Date().toLocaleString('ko-KR')}</p>
+            <h1 style="margin:0 0 10px 0; color: #1e40af; text-align: center; font-size: 24px;">${testData.testType} 결과 보고서</h1>
+            <p style="color:#6b7280; margin:0 0 30px 0; text-align: center; font-size: 14px;">${new Date().toLocaleString('ko-KR')}</p>
             
-            <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-              <h3 style="color: #1e40af; margin-top: 0;">검사 결과 요약</h3>
+            <div style="background: #f8fafc; padding: 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+              <h3 style="color: #1e40af; margin-top: 0; margin-bottom: 16px; font-size: 18px;">검사 결과 요약</h3>
               <table style="width: 100%; border-collapse: collapse;">
                 ${resultsTable}
               </table>
             </div>
             
             ${testData.analysis ? `
-              <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 20px;">
-                <h3 style="color: #1e40af; margin-top: 0;">전문가 분석</h3>
-                <p style="white-space:pre-wrap; line-height: 1.8; color: #374151;">${testData.analysis}</p>
+              <div style="background: white; padding: 24px; border-radius: 12px; border: 2px solid #e2e8f0; margin-top: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <h3 style="color: #1e40af; margin-top: 0; margin-bottom: 16px; font-size: 18px;">전문가 분석</h3>
+                <div style="line-height: 1.8; color: #374151;">
+                  <p style="margin: 10px 0; line-height: 1.6;">${formattedAnalysis}</p>
+                </div>
               </div>
             ` : ''}
             
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #666;">
-              <p><strong>중요 안내사항</strong></p>
-              <p>본 리포트는 참고용이며 의학적 진단이 아닙니다.</p>
-              <p>정확한 진단과 치료를 위해서는 전문의와 상담하시기 바랍니다.</p>
+            <div style="margin-top: 40px; padding: 20px; border-top: 2px solid #e2e8f0; text-align: center; font-size: 12px; color: #6b7280; background: #f9fafb; border-radius: 8px;">
+              <p style="margin: 5px 0;"><strong style="color: #374151;">중요 안내사항</strong></p>
+              <p style="margin: 5px 0;">본 리포트는 참고용이며 의학적 진단이 아닙니다.</p>
+              <p style="margin: 5px 0;">정확한 진단과 치료를 위해서는 전문의와 상담하시기 바랍니다.</p>
+              <p style="margin-top: 15px; color: #9ca3af; font-size: 11px;">© 2024 AIHPRO.COM. All rights reserved.</p>
             </div>
           </div>`;
       }
@@ -103,6 +128,7 @@ export const useTestResultActions = () => {
       container.style.position = 'fixed';
       container.style.left = '-99999px';
       container.style.top = '0';
+      container.style.width = '210mm'; // A4 width
       container.innerHTML = reportHtml;
       document.body.appendChild(container);
 
@@ -111,11 +137,23 @@ export const useTestResultActions = () => {
       const filename = `${testData.testType}_결과_${new Date().toLocaleDateString('ko-KR').replace(/\./g,'').replace(/\s/g,'')}.pdf`;
 
       await html2pdf().set({
-        margin: [10,10,10,10],
+        margin: [15, 15, 15, 15],
         filename,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        html2canvas: { 
+          scale: 3, 
+          useCORS: true, 
+          letterRendering: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          windowWidth: 794, // A4 width in pixels at 96 DPI
+          windowHeight: 1123 // A4 height in pixels at 96 DPI
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait'
+        }
       }).from(container.firstElementChild as HTMLElement).save();
 
       document.body.removeChild(container);

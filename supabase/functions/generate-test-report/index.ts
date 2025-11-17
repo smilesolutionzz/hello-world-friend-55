@@ -94,8 +94,28 @@ function generatePDFContent(testType: string, results: any, analysis: string, te
   };
 }
 
+function convertMarkdownToHTML(text: string): string {
+  if (!text) return '';
+  
+  return text
+    // 헤더 변환
+    .replace(/\*\*(\d+\.\s+[^\*]+)\*\*/g, '<h3 style="color: #1e40af; margin-top: 20px; margin-bottom: 10px;">$1</h3>')
+    // 굵은 글씨
+    .replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>')
+    // 번호 목록 (숫자.)
+    .replace(/^(\d+)\.\s+(.+)$/gm, '<div style="margin: 8px 0; padding-left: 20px;"><strong>$1.</strong> $2</div>')
+    // 하이픈 목록
+    .replace(/^-\s+(.+)$/gm, '<div style="margin: 5px 0; padding-left: 20px;">• $1</div>')
+    // 이모지가 있는 섹션 헤더
+    .replace(/^(#+)\s*([🔥📋⚠️💪✨🎯]+)\s*(.+)$/gm, '<h3 style="color: #1e40af; margin-top: 20px; margin-bottom: 10px;">$2 $3</h3>')
+    // 새 줄을 br 태그로
+    .replace(/\n\n/g, '</p><p style="margin: 10px 0;">')
+    .replace(/\n/g, '<br>');
+}
+
 function generateHTMLReport(testType: string, results: any, analysis: string, testInfo: any, chartData?: any) {
   const currentDate = new Date().toLocaleDateString('ko-KR');
+  const formattedAnalysis = convertMarkdownToHTML(analysis);
   
   return `
 <!DOCTYPE html>
@@ -431,7 +451,7 @@ function generateHTMLReport(testType: string, results: any, analysis: string, te
     <div class="section page-break">
         <h2>전문가 분석</h2>
         <div class="analysis-content">
-            ${analysis || '분석 내용이 없습니다.'}
+            <p style="margin: 10px 0;">${formattedAnalysis || '분석 내용이 없습니다.'}</p>
         </div>
     </div>
 

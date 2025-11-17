@@ -115,26 +115,26 @@ const FixedCTAButton = () => {
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-[#5E8FFF] via-[#8FB9FF] to-[#5E8FFF] shadow-2xl safe-area-pb">
         <button
           onClick={handleReferralClick}
-          className="w-full p-4 text-white"
+          className="w-full p-3 text-white"
         >
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                <Gift className="w-6 h-6" />
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+              <Gift className="w-5 h-5" />
+            </div>
+            <div className="text-left flex-1 min-w-0">
+              <div className="font-bold text-base mb-0.5">
+                🎉 친구 추천하고 토큰 받기!
               </div>
-              <div className="text-left flex-1">
-                <div className="text-sm font-bold flex items-center gap-2">
-                  🎉 친구 추천하고 토큰 받기!
-                  {!isLoading && remainingReferrals !== null && (
-                    <span className="px-2 py-0.5 bg-white/30 rounded-full text-xs font-bold">
-                      {remainingReferrals}명 남음
-                    </span>
-                  )}
-                </div>
-                <div className="text-xs opacity-90">친구도 10토큰, 나도 10토큰 (매달 10명)</div>
+              <div className="text-xs opacity-90 leading-tight">
+                친구도 10토큰, 나도 10토큰
+                {!isLoading && remainingReferrals !== null && (
+                  <span className="ml-1 text-yellow-300 font-bold">
+                    ({remainingReferrals}명 남음)
+                  </span>
+                )}
               </div>
             </div>
-            <div className="text-2xl">→</div>
+            <div className="text-xl flex-shrink-0">→</div>
           </div>
         </button>
       </div>

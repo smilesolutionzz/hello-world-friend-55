@@ -167,7 +167,6 @@ const Index = () => {
       <div className="min-h-screen max-w-full overflow-x-hidden">
         <ScrollProgressBar />
         <UnifiedNavigation />
-        <MetaverseBanner />
         
         <main id="main-content" className="w-full">
           {/* 1️⃣ Hero Section */}
@@ -240,9 +239,6 @@ const Index = () => {
           {/* 8️⃣ Footer */}
           <Footer />
         </main>
-        
-        {/* Fixed CTA Button (Mobile + Desktop) */}
-        <FixedCTAButton />
         
         <BackToTop />
         

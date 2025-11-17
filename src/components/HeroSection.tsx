@@ -118,9 +118,51 @@ const HeroSection = () => {
           </div>
         </div>
 
+        {/* CTA Buttons - 무료 분석 시작 */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12 px-4">
+          <Button
+            size="lg"
+            onClick={() => handleStartAssessment('/pmf-onboarding')}
+            disabled={isLoading}
+            className="group relative w-full sm:w-auto px-8 sm:px-12 py-6 sm:py-7 bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] hover:from-[#4A7FEF] hover:to-[#7FA9EF] text-white text-base sm:text-lg font-bold rounded-xl shadow-[0_8px_30px_rgba(94,143,255,0.5)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.6)] transition-all duration-300 overflow-hidden border-2 border-white/20"
+          >
+            {isLoading ? (
+              <LoadingSpinner className="w-5 h-5" />
+            ) : (
+              <>
+                <span className="absolute inset-0 bg-white/20 animate-pulse"></span>
+                <span className="relative flex items-center justify-center gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  🎁 3분 만에 무료 분석 시작
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </>
+            )}
+          </Button>
 
+          <Button
+            size="lg"
+            onClick={() => navigate('/expert-hiring')}
+            className="w-full sm:w-auto px-8 sm:px-12 py-6 sm:py-7 bg-white/10 backdrop-blur-md border-2 border-white/40 text-white text-base sm:text-lg font-semibold rounded-xl hover:bg-white/20 transition-all duration-300"
+          >
+            <Gift className="w-5 h-5 mr-2" />
+            전문가 1:1 상담
+          </Button>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="mt-8 text-center">
+          <p className="text-white/70 text-xs sm:text-sm">
+            ✓ 회원가입 없이 즉시 시작 &nbsp;·&nbsp; ✓ 신용카드 불필요 &nbsp;·&nbsp; ✓ 24시간 언제든 무료
+          </p>
+        </div>
 
         {/* Scroll Indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center pt-2">
+            <div className="w-1.5 h-3 bg-white/50 rounded-full" />
+          </div>
+        </div>
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
           <div className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center pt-2">
             <div className="w-1.5 h-3 bg-white/50 rounded-full" />

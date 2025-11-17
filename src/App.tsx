@@ -144,6 +144,8 @@ import DevelopmentCenterLanding from "./pages/DevelopmentCenterLanding";
 import DaycareLanding from "./pages/DaycareLanding";
 import DashboardRouter from "./pages/DashboardRouter";
 import Referral from "./pages/Referral";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
@@ -310,6 +312,8 @@ const App = () => {
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/education-feed" element={<EducationFeed />} />
           <Route path="/referral" element={<Referral />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
           
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />

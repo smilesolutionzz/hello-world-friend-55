@@ -122,35 +122,26 @@ export default function InstitutionAdmin() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
+        toast({
+          title: "로그인 필요",
+          description: "체험판을 이용하려면 로그인이 필요합니다.",
+        });
         navigate('/auth');
         return;
       }
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      const isInstitution = profile?.subscription_tier === 'institution';
-
-      if (!isInstitution) {
-        toast({
-          title: "접근 권한 없음",
-          description: "제휴기관 관리자만 접근할 수 있습니다.",
-          variant: "destructive",
-        });
-        navigate('/');
-        return;
-      }
-
+      // 체험판 모드: 모든 로그인 사용자가 접근 가능
       setIsInstitutionAdmin(true);
       await fetchInstitutionInfo(user.id);
       await loadInstitutionData(user.id);
 
     } catch (error) {
       console.error('Institution access check failed:', error);
-      navigate('/');
+      toast({
+        title: "오류 발생",
+        description: "페이지를 불러오는 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -178,6 +169,7 @@ export default function InstitutionAdmin() {
           description: data.description || ''
         });
       } else {
+        // 체험판 기관 자동 생성
         const { data: profile } = await supabase
           .from('profiles')
           .select('display_name')
@@ -186,8 +178,9 @@ export default function InstitutionAdmin() {
 
         const defaultInstitution = {
           admin_id: adminId,
-          institution_name: profile?.display_name || '신규 기관',
-          institution_type: 'clinic'
+          institution_name: profile?.display_name ? `${profile.display_name}의 체험 기관` : '체험판 기관',
+          institution_type: '체험판',
+          description: '체험판으로 생성된 임시 기관입니다. 설정에서 정보를 수정하실 수 있습니다.'
         };
 
         const { data: newInstitution, error: createError } = await supabase
@@ -206,11 +199,21 @@ export default function InstitutionAdmin() {
           phone: '',
           email: '',
           director_name: '',
-          description: ''
+          description: newInstitution.description || ''
+        });
+        
+        toast({
+          title: "체험판 기관이 생성되었습니다",
+          description: "모든 기능을 자유롭게 체험해보세요!",
         });
       }
     } catch (error: any) {
       console.error('Error fetching institution info:', error);
+      toast({
+        title: "오류 발생",
+        description: "기관 정보를 불러오는 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -461,13 +464,23 @@ export default function InstitutionAdmin() {
       <div className="border-b border-slate-800 bg-[#0F1419]">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white">
-                기관 대시보드
-              </h1>
-              <p className="text-sm text-slate-300 mt-1">
-                {institutionInfo?.institution_name || '제휴기관'}
-              </p>
+            <div className="flex items-center gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-bold text-white">
+                    기관 대시보드
+                  </h1>
+                  <Badge className="bg-primary/20 text-primary border-primary/30">
+                    체험판
+                  </Badge>
+                </div>
+                <p className="text-sm text-slate-300 mt-1">
+                  {institutionInfo?.institution_name || '제휴기관'}
+                </p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  임시 기관을 등록하고 모든 기능을 체험해보세요
+                </p>
+              </div>
             </div>
             
             <div className="flex items-center gap-3">
@@ -494,9 +507,12 @@ export default function InstitutionAdmin() {
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl bg-[#0F1419] border-slate-700">
                   <DialogHeader>
-                    <DialogTitle className="text-white">기관 정보 설정</DialogTitle>
+                    <div className="flex items-center gap-2">
+                      <DialogTitle className="text-white">기관 정보 설정</DialogTitle>
+                      <Badge className="bg-primary/20 text-primary border-primary/30">체험판</Badge>
+                    </div>
                     <DialogDescription className="text-slate-300">
-                      기관의 기본 정보를 수정하세요
+                      체험판 기관의 정보를 자유롭게 수정하고 기능을 체험해보세요
                     </DialogDescription>
                   </DialogHeader>
                   

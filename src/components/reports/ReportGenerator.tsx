@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
-import { FileText, Download, Share2, Eye, AlertTriangle, CheckCircle, User, Calendar, TrendingUp } from 'lucide-react';
+import { FileText, Download, Share2, Eye, AlertTriangle, CheckCircle, User, Calendar, TrendingUp, ArrowLeft, Home } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface ReportData {
   aiAnalysis: any;
@@ -24,6 +25,7 @@ interface ReportGeneratorProps {
 
 export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ data, onReportGenerated }) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [generatedReportUrl, setGeneratedReportUrl] = useState<string | null>(null);
@@ -164,6 +166,26 @@ export const ReportGenerator: React.FC<ReportGeneratorProps> = ({ data, onReport
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-2 mb-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate(-1)}
+          className="gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          뒤로
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/')}
+          className="gap-2"
+        >
+          <Home className="h-4 w-4" />
+          홈
+        </Button>
+      </div>
       <Card className="p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-primary/10 rounded-lg">

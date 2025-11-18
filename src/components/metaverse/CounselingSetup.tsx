@@ -149,6 +149,7 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
                     {character.type === 'bear' && '🐻'}
                     {character.type === 'rabbit' && '🐰'}
                     {character.type === 'fox' && '🦊'}
+                    {character.type === 'owl' && '🦉'}
                   </div>
                   <div className="space-y-2 flex-1">
                     <div className="font-semibold">{character.name}</div>

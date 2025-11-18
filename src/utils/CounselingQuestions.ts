@@ -1,7 +1,7 @@
 // 구조화된 상담 질문 시스템
 
 export type AgeGroup = 'child' | 'teen' | 'adult' | 'parent';
-export type CharacterType = 'elephant' | 'bear' | 'rabbit' | 'fox';
+export type CharacterType = 'elephant' | 'bear' | 'rabbit' | 'fox' | 'owl';
 
 export interface CounselingQuestion {
   id: string;
@@ -84,6 +84,21 @@ export const CHARACTERS: Record<CharacterType, CharacterConfig> = {
     ],
     ageGroups: ['teen', 'adult', 'parent'],
     color: '#FF6347'
+  },
+  owl: {
+    type: 'owl',
+    name: '올빼미 선생님',
+    voice: 'calm',
+    personality: '차분하고 통찰력 있는 올빼미 선생님',
+    greeting: '안녕하세요. 올빼미 선생님입니다. 오늘 당신의 내면을 함께 들여다보는 시간을 가져볼까요? 이 공간에서는 편안하게 자신을 마주할 수 있습니다.',
+    reassurance: [
+      '당신의 모든 이야기는 존중받을 가치가 있습니다',
+      '깊이 있는 대화를 나눌 수 있어 감사합니다',
+      '스스로를 돌아보는 용기가 대단합니다',
+      '천천히, 당신의 속도로 진행해도 괜찮습니다'
+    ],
+    ageGroups: ['adult', 'parent'],
+    color: '#6B4423'
   }
 };
 

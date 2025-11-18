@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
@@ -59,6 +60,7 @@ const roomOptions = [
 
 const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: MetaverseVoiceCounselingProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [hasEntered, setHasEntered] = useState(false);
   const [userName, setUserName] = useState('');
   const [consultTopic, setConsultTopic] = useState('');
@@ -784,6 +786,42 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
   // 입장 후 상담 화면
   return (
     <div className="relative min-h-screen">
+      {/* 네비게이션 버튼 */}
+      <div className="fixed top-4 left-4 z-50 flex gap-2">
+        <Button
+          onClick={() => navigate(-1)}
+          variant="outline"
+          size="sm"
+          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          뒤로
+        </Button>
+        <Button
+          onClick={() => navigate('/')}
+          variant="outline"
+          size="sm"
+          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
+        >
+          <Home className="w-4 h-4" />
+          홈
+        </Button>
+        <Button
+          onClick={() => {
+            if (isConnected) {
+              chatRef.current?.disconnect();
+            }
+            navigate('/');
+          }}
+          variant="destructive"
+          size="sm"
+          className="gap-2 shadow-lg"
+        >
+          <LogOut className="w-4 h-4" />
+          나가기
+        </Button>
+      </div>
+
       <CounselingRoom 
         roomType={selectedRoom} 
         enableMovement={enableMovement} 

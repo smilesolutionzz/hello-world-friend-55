@@ -97,7 +97,7 @@ export const CHARACTERS: Record<CharacterType, CharacterConfig> = {
       '스스로를 돌아보는 용기가 대단합니다',
       '천천히, 당신의 속도로 진행해도 괜찮습니다'
     ],
-    ageGroups: ['adult', 'parent'],
+    ageGroups: ['child', 'teen', 'adult', 'parent'],
     color: '#6B4423'
   }
 };

@@ -283,16 +283,9 @@ export const COUNSELING_QUESTIONS: CounselingQuestion[] = [
 
 // 부모 전용 질문
 export const PARENT_QUESTIONS: CounselingQuestion[] = [
+  // 감정 카테고리
   {
     id: 'parent_1',
-    question: '아이와의 관계는 어떠신가요?',
-    category: 'family',
-    ageGroups: ['parent'],
-    followUpPrompts: ['아이가 마음을 잘 표현하나요?', '어려운 점이 있으신가요?'],
-    depressionWeight: 0.7
-  },
-  {
-    id: 'parent_2',
     question: '육아 스트레스는 어떠신가요?',
     category: 'emotion',
     ageGroups: ['parent'],
@@ -300,7 +293,41 @@ export const PARENT_QUESTIONS: CounselingQuestion[] = [
     depressionWeight: 0.8
   },
   {
+    id: 'parent_2',
+    question: '요즘 기분은 어떠신가요?',
+    category: 'emotion',
+    ageGroups: ['parent'],
+    followUpPrompts: ['마음이 무거울 때가 있으신가요?', '감정을 표현할 곳이 있으신가요?'],
+    depressionWeight: 0.8
+  },
+  {
     id: 'parent_3',
+    question: '밤에 잠은 잘 주무시나요?',
+    category: 'emotion',
+    ageGroups: ['parent'],
+    followUpPrompts: ['아이 때문에 자주 깨시나요?', '충분히 쉬고 계신가요?'],
+    depressionWeight: 0.7
+  },
+  {
+    id: 'parent_4',
+    question: '육아 번아웃을 느끼신 적이 있으신가요?',
+    category: 'emotion',
+    ageGroups: ['parent'],
+    followUpPrompts: ['언제 그렇게 느끼셨나요?', '어떻게 대처하셨나요?'],
+    depressionWeight: 0.9
+  },
+
+  // 가족 카테고리
+  {
+    id: 'parent_5',
+    question: '아이와의 관계는 어떠신가요?',
+    category: 'family',
+    ageGroups: ['parent'],
+    followUpPrompts: ['아이가 마음을 잘 표현하나요?', '어려운 점이 있으신가요?'],
+    depressionWeight: 0.7
+  },
+  {
+    id: 'parent_6',
     question: '배우자와의 육아 분담은 어떠신가요?',
     category: 'family',
     ageGroups: ['parent'],
@@ -308,12 +335,122 @@ export const PARENT_QUESTIONS: CounselingQuestion[] = [
     depressionWeight: 0.6
   },
   {
-    id: 'parent_4',
+    id: 'parent_7',
+    question: '아이의 행동이나 성격에 대해 고민하시나요?',
+    category: 'family',
+    ageGroups: ['parent'],
+    followUpPrompts: ['어떤 점이 걱정되시나요?', '전문가와 상담해보셨나요?'],
+    depressionWeight: 0.7
+  },
+  {
+    id: 'parent_8',
+    question: '부모님이나 시부모님과의 관계는 어떠신가요?',
+    category: 'family',
+    ageGroups: ['parent'],
+    followUpPrompts: ['육아 방식에 대한 의견 차이가 있으신가요?', '스트레스를 받으시나요?'],
+    depressionWeight: 0.6
+  },
+
+  // 사회 카테고리
+  {
+    id: 'parent_9',
+    question: '다른 부모님들과 비교하시나요?',
+    category: 'social',
+    ageGroups: ['parent'],
+    followUpPrompts: ['어떤 부분에서 그러신가요?', '그것이 부담스러우신가요?'],
+    depressionWeight: 0.7
+  },
+  {
+    id: 'parent_10',
+    question: '직장과 육아를 병행하시나요?',
+    category: 'social',
+    ageGroups: ['parent'],
+    followUpPrompts: ['가장 힘든 점은 무엇인가요?', '주변의 도움을 받고 계신가요?'],
+    depressionWeight: 0.8
+  },
+  {
+    id: 'parent_11',
+    question: '육아에 대한 사회적 시선이 부담스러우신가요?',
+    category: 'social',
+    ageGroups: ['parent'],
+    followUpPrompts: ['어떤 상황에서 그러신가요?', '누구의 시선이 가장 신경 쓰이시나요?'],
+    depressionWeight: 0.7
+  },
+  {
+    id: 'parent_12',
+    question: '다른 부모님들과 교류하시나요?',
+    category: 'social',
+    ageGroups: ['parent'],
+    followUpPrompts: ['편하게 이야기 나눌 수 있는 분이 계신가요?', '고립감을 느끼실 때가 있으신가요?'],
+    depressionWeight: 0.8
+  },
+
+  // 자아 카테고리
+  {
+    id: 'parent_13',
     question: '자신만의 시간을 가지고 계신가요?',
     category: 'self',
     ageGroups: ['parent'],
     followUpPrompts: ['그 시간에 무엇을 하시나요?', '충분하다고 느끼시나요?'],
     depressionWeight: 0.7
+  },
+  {
+    id: 'parent_14',
+    question: '부모가 되기 전의 자신과 비교하시나요?',
+    category: 'self',
+    ageGroups: ['parent'],
+    followUpPrompts: ['어떤 점이 변했나요?', '그 변화를 받아들이기 어려우신가요?'],
+    depressionWeight: 0.8
+  },
+  {
+    id: 'parent_15',
+    question: '자신을 위한 취미나 활동이 있으신가요?',
+    category: 'self',
+    ageGroups: ['parent'],
+    followUpPrompts: ['그것을 할 시간이 있으신가요?', '더 하고 싶은 것이 있으신가요?'],
+    depressionWeight: 0.6
+  },
+  {
+    id: 'parent_16',
+    question: '좋은 부모가 되고 있다고 느끼시나요?',
+    category: 'self',
+    ageGroups: ['parent'],
+    followUpPrompts: ['어떤 점에서 그렇게 느끼시나요?', '자책하실 때가 있으신가요?'],
+    depressionWeight: 0.9
+  },
+
+  // 일상 카테고리
+  {
+    id: 'parent_17',
+    question: '하루 일과 중 가장 힘든 시간은 언제인가요?',
+    category: 'daily',
+    ageGroups: ['parent'],
+    followUpPrompts: ['그 시간을 어떻게 견디시나요?', '개선할 방법을 찾으셨나요?'],
+    depressionWeight: 0.7
+  },
+  {
+    id: 'parent_18',
+    question: '아이와 함께하는 시간이 즐거우신가요?',
+    category: 'daily',
+    ageGroups: ['parent'],
+    followUpPrompts: ['어떤 순간이 가장 좋으신가요?', '힘들 때도 많으신가요?'],
+    depressionWeight: 0.6
+  },
+  {
+    id: 'parent_19',
+    question: '식사나 운동 등 자기 관리를 하고 계신가요?',
+    category: 'daily',
+    ageGroups: ['parent'],
+    followUpPrompts: ['시간이 부족하신가요?', '건강에 문제는 없으신가요?'],
+    depressionWeight: 0.7
+  },
+  {
+    id: 'parent_20',
+    question: '도움이 필요할 때 요청할 수 있으신가요?',
+    category: 'daily',
+    ageGroups: ['parent'],
+    followUpPrompts: ['누구에게 도움을 요청하시나요?', '혼자 해결하려고 하시나요?'],
+    depressionWeight: 0.8
   }
 ];
 

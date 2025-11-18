@@ -548,7 +548,11 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
   if (!hasEntered) {
     return (
       <div className="relative min-h-screen">
-        <CounselingRoom roomType={selectedRoom} enableMovement={false}>
+        <CounselingRoom 
+          roomType={selectedRoom} 
+          enableMovement={false}
+          character={mode === 'structured' && structuredConfig ? structuredConfig.character : undefined}
+        >
           <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
             <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-8 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20">
               <div className="text-center mb-8">
@@ -790,6 +794,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
         userName={userName}
         avatarPosition={avatarPosition}
         virtualInput={joystickInputRef.current}
+        character={mode === 'structured' && structuredConfig ? structuredConfig.character : undefined}
       >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* 이동 가이드 */}
@@ -895,20 +900,29 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
             )}
           </div>
 
-          {/* Status Card */}
+          {/* 구조화된 상담 캐릭터 정보 */}
           {!isUICollapsed && mode === 'structured' && structuredConfig && (
-            <div className="w-full max-w-2xl">
-              <StructuredCounseling
-                ageGroup={structuredConfig.ageGroup}
-                character={structuredConfig.character}
-                onComplete={handleStructuredComplete}
-                onMessage={handleStructuredMessage}
-              />
+            <div className="w-full max-w-2xl mb-6">
+              <Card className="bg-primary/10 backdrop-blur-sm border border-primary/20 p-6 text-center">
+                <div className="text-4xl mb-3">
+                  {structuredConfig.character === 'elephant' && '🐘'}
+                  {structuredConfig.character === 'bear' && '🐻'}
+                  {structuredConfig.character === 'rabbit' && '🐰'}
+                  {structuredConfig.character === 'fox' && '🦊'}
+                  {structuredConfig.character === 'owl' && '🦉'}
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-2">
+                  {CHARACTERS[structuredConfig.character].name}
+                </h3>
+                <p className="text-foreground/70">
+                  {CHARACTERS[structuredConfig.character].personality}
+                </p>
+              </Card>
             </div>
           )}
 
-          {/* Voice Chat Interface */}
-          {!isUICollapsed && mode === 'free' && (
+          {/* Voice Chat Interface - 자유 대화와 구조화 상담 모두 표시 */}
+          {!isUICollapsed && (
           <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-4 sm:p-8 mb-6 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20 pointer-events-none">
             <div className="pointer-events-auto">
             <div className="flex items-center justify-center gap-4 mb-6">

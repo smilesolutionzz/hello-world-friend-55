@@ -27,12 +27,22 @@ import { EmotionTrendChart } from './EmotionTrendChart';
 import { Slider } from '@/components/ui/slider';
 import { VirtualJoystick } from './VirtualJoystick';
 import { GestureQuickMenu } from './GestureQuickMenu';
+import { StructuredCounseling } from './StructuredCounseling';
+import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
   responseId?: string;
+}
+
+interface MetaverseVoiceCounselingProps {
+  mode?: 'free' | 'structured';
+  structuredConfig?: {
+    ageGroup: AgeGroup;
+    character: CharacterType;
+  };
 }
 
 const roomOptions = [
@@ -46,7 +56,7 @@ const roomOptions = [
   { id: 'outdoor' as RoomType, name: '야외 잔디구장', icon: Trees, description: '자연 속에서' },
 ];
 
-const MetaverseVoiceCounseling = () => {
+const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: MetaverseVoiceCounselingProps) => {
   const { toast } = useToast();
   const [hasEntered, setHasEntered] = useState(false);
   const [userName, setUserName] = useState('');
@@ -476,6 +486,21 @@ const MetaverseVoiceCounseling = () => {
         title: "카카오톡으로 이동",
         description: "대화 내용이 복사되었습니다. 카카오톡에서 붙여넣기 하세요",
       });
+    });
+  };
+
+  const handleStructuredMessage = (message: string, isUser: boolean) => {
+    setMessages(prev => [...prev, {
+      role: isUser ? 'user' : 'assistant',
+      content: message,
+      timestamp: new Date()
+    }]);
+  };
+
+  const handleStructuredComplete = (result: any) => {
+    toast({
+      title: "상담 완료",
+      description: "구조화된 상담이 완료되었습니다",
     });
   };
 
@@ -1005,9 +1030,13 @@ const MetaverseVoiceCounseling = () => {
                 </div>
               )}
             </div>
+            </>
+            )}
             </div>
+          </Card>
+          )}
 
-            {/* 타임라인 패널 */}
+          {/* 타임라인 패널 */}
             {showTimeline && messages.length > 0 && (
               <div className="fixed right-4 top-20 z-[100]">
                 <SessionTimeline 

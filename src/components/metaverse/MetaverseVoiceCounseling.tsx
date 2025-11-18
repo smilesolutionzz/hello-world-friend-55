@@ -618,6 +618,8 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
                   />
                 </div>
 
+                {/* 자유 대화 모드 전용 설정 */}
+                {mode === 'free' && (
                 <div className="space-y-3">
                   {/* 캐릭터 이동 */}
                   <div className="flex items-center justify-between p-3 bg-background/50 rounded-lg">
@@ -679,8 +681,10 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
                     )}
                   </div>
                 </div>
+                )}
 
                 {/* 아바타 설정 */}
+                {mode === 'free' && (
                 <div className="space-y-3">
                   <Label className="flex items-center gap-2">
                     <Link2 className="w-4 h-4" />
@@ -743,6 +747,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
                     Ready Player Me에서 새로 만들기
                   </Button>
                 </div>
+                )}
 
                 <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">
                   <p className="text-sm text-foreground text-center">

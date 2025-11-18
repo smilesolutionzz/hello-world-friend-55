@@ -13,6 +13,8 @@ import type { GestureType } from '@/utils/GestureSystem';
 import type { CounselorEmotion } from '@/utils/CounselorEmotionDetector';
 import { CatchBallGame } from '../metaverse/CatchBallGame';
 import { useToast } from '@/hooks/use-toast';
+import { CounselingCharacter } from './CounselingCharacter';
+import type { CharacterType } from '@/utils/CounselingQuestions';
 
 // Room components with different layouts
 const Room = ({ type = 'counseling' }: { type?: RoomType }) => {
@@ -386,6 +388,7 @@ interface CounselingRoomProps {
   avatarPosition?: { x: number; y: number; z: number };
   showGame?: boolean;
   virtualInput?: { x: number; y: number };
+  character?: CharacterType; // 상담 캐릭터
 }
 
 const CounselingRoom = ({
@@ -404,7 +407,8 @@ const CounselingRoom = ({
   userName = 'User',
   avatarPosition,
   showGame = false,
-  virtualInput
+  virtualInput,
+  character
 }: CounselingRoomProps) => {
   const { toast } = useToast();
   // 공간별 설정
@@ -501,14 +505,22 @@ const CounselingRoom = ({
             </>
           )}
 
-          {/* AI 상담사 NPC - 항상 공간의 왼쪽에 배치 */}
-          <CounselorNPC 
-            position={[-4, -1.5, 2]} 
-            isSpeaking={isSpeaking}
-            name="메타상담사"
-            gesture={counselorGesture}
-            emotion={counselorEmotion}
-          />
+          {/* AI 상담사 - 캐릭터가 지정된 경우 해당 캐릭터 표시, 아니면 기본 NPC */}
+          {character ? (
+            <CounselingCharacter 
+              character={character}
+              position={[-4, 0, 2]}
+              scale={1.5}
+            />
+          ) : (
+            <CounselorNPC 
+              position={[-4, -1.5, 2]} 
+              isSpeaking={isSpeaking}
+              name="메타상담사"
+              gesture={counselorGesture}
+              emotion={counselorEmotion}
+            />
+          )}
           
           {/* 아바타와 이동 컨트롤러 */}
           {enableMovement ? (

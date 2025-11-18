@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -169,14 +170,17 @@ export const HighlightNavigation = () => {
             </NavigationMenu>
           </div>
 
-          <Button
-            onClick={() => navigate('/')}
-            variant="ghost"
-            size="sm"
-          >
-            <Home className="h-4 w-4 mr-2" />
-            홈
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button
+              onClick={() => navigate('/')}
+              variant="ghost"
+              size="sm"
+            >
+              <Home className="h-4 w-4 mr-2" />
+              홈
+            </Button>
+          </div>
         </div>
       </div>
     </nav>

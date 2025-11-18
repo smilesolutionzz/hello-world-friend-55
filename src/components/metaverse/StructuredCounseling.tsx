@@ -246,7 +246,7 @@ export const StructuredCounseling = ({
             {character === 'fox' && '🦊'}
           </div>
           <div>
-            <h3 className="font-semibold text-foreground">{characterConfig.name}</h3>
+            <h3 className="font-semibold">{characterConfig.name}</h3>
             <p className="text-sm text-muted-foreground">구조화된 상담</p>
           </div>
         </div>
@@ -258,7 +258,7 @@ export const StructuredCounseling = ({
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">진행 상황</span>
-          <span className="font-medium text-foreground">
+          <span className="font-medium">
             {currentQuestionIndex + 1} / {questions.length}
           </span>
         </div>
@@ -296,7 +296,7 @@ export const StructuredCounseling = ({
             }
           }}
           placeholder="편안하게 네 마음을 얘기해줘..."
-          className="w-full p-3 rounded-lg border bg-card text-foreground placeholder:text-muted-foreground min-h-[100px] resize-none focus:ring-2 focus:ring-primary focus:border-primary"
+          className="w-full p-3 rounded-lg border bg-background min-h-[100px] resize-none focus:ring-2 focus:ring-primary"
           disabled={isAnalyzing}
         />
         

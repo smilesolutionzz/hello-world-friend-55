@@ -40,16 +40,16 @@ const MetaverseVoicePage = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-background">
+    <div className="relative min-h-screen">
       <ThreeBackground />
       <div className="relative z-10 container mx-auto py-8">
         <Tabs value={mode} onValueChange={(v) => setMode(v as 'structured' | 'free')} className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8 bg-card">
-            <TabsTrigger value="structured" className="gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+            <TabsTrigger value="structured" className="gap-2">
               <Sparkles className="w-4 h-4" />
               금쪽 상담
             </TabsTrigger>
-            <TabsTrigger value="free" className="gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="free" className="gap-2">
               <MessageSquare className="w-4 h-4" />
               자유 대화
             </TabsTrigger>

@@ -53,8 +53,8 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
   return (
     <div className="space-y-6 max-w-4xl mx-auto p-6">
       <div className="text-center space-y-2 mb-8">
-        <h2 className="text-3xl font-bold">금쪽같은 대화</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-3xl font-bold text-foreground">금쪽같은 대화</h2>
+        <p className="text-muted-foreground text-base">
           오은영 박사님의 상담 방식처럼, 구조화된 질문으로 마음을 들어봅니다
         </p>
         <div className="flex items-center justify-center gap-4 mt-4">
@@ -69,9 +69,9 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
         </div>
       </div>
 
-      <Card className="p-6 space-y-6">
+      <Card className="p-6 space-y-6 bg-card">
         <div className="space-y-4">
-          <Label className="text-lg font-semibold">1. 연령대를 선택해주세요</Label>
+          <Label className="text-lg font-semibold text-foreground">1. 연령대를 선택해주세요</Label>
           <RadioGroup 
             value={selectedAgeGroup} 
             onValueChange={(value) => {
@@ -99,17 +99,17 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
                     htmlFor={option.value}
                     className={`
                       flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer
-                      transition-all hover:shadow-md
-                      peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5
-                      ${option.color}
+                      transition-all hover:shadow-md bg-card
+                      peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10
+                      hover:bg-accent/50
                     `}
                   >
                     <div className="mt-1">
-                      <Icon className="w-6 h-6" />
+                      <Icon className="w-6 h-6 text-primary" />
                     </div>
                     <div className="space-y-1 flex-1">
-                      <div className="font-semibold">{option.label}</div>
-                      <div className="text-sm opacity-80">{option.description}</div>
+                      <div className="font-semibold text-foreground">{option.label}</div>
+                      <div className="text-sm text-muted-foreground">{option.description}</div>
                     </div>
                   </Label>
                 </div>
@@ -119,7 +119,7 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
         </div>
 
         <div className="space-y-4">
-          <Label className="text-lg font-semibold">2. 대화할 캐릭터를 선택해주세요</Label>
+          <Label className="text-lg font-semibold text-foreground">2. 대화할 캐릭터를 선택해주세요</Label>
           <p className="text-sm text-muted-foreground">
             각 캐릭터는 고유한 성격과 목소리를 가지고 있어요
           </p>
@@ -139,13 +139,10 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
                   htmlFor={character.type}
                   className={`
                     flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer
-                    transition-all hover:shadow-md
-                    peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5
+                    transition-all hover:shadow-md bg-card
+                    peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10
+                    hover:bg-accent/50
                   `}
-                  style={{
-                    backgroundColor: `${character.color}10`,
-                    borderColor: selectedCharacter === character.type ? character.color : undefined
-                  }}
                 >
                   <div className="text-4xl">
                     {character.type === 'elephant' && '🐘'}
@@ -154,8 +151,8 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
                     {character.type === 'fox' && '🦊'}
                   </div>
                   <div className="space-y-2 flex-1">
-                    <div className="font-semibold">{character.name}</div>
-                    <div className="text-sm opacity-80">{character.personality}</div>
+                    <div className="font-semibold text-foreground">{character.name}</div>
+                    <div className="text-sm text-muted-foreground">{character.personality}</div>
                     <Badge variant="secondary" className="text-xs">
                       {character.voice} 목소리
                     </Badge>

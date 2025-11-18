@@ -27,8 +27,7 @@ import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
-import CompanyServicesSection from '@/components/landing/CompanyServicesSection';
-import { MetaverseBanner } from '@/components/metaverse/MetaverseBanner';
+import { MetaverseDeepAnalysisSection } from '@/components/landing/MetaverseDeepAnalysisSection';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 
 const structuredData = {
@@ -172,11 +171,6 @@ const Index = () => {
           {/* 1️⃣ Hero Section */}
           <HeroSection />
           
-          {/* 🎬 회사 소개 영상 */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <CompanyIntroVideoSection />
-          </ScrollReveal>
-          
           {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
           <ScrollReveal direction="up" delay={0.1}>
             <ValueComparisonSection />
@@ -192,7 +186,12 @@ const Index = () => {
             <SimplifiedCoreServices />
           </ScrollReveal>
           
-          {/* 5️⃣ 데이터 기반 초개인화 리포트 (HowItWorks 통합) */}
+          {/* 🧠 메타버스 심층 분석 - 대상관계이론 × 애착이론 */}
+          <ScrollReveal direction="up" delay={0.1}>
+            <MetaverseDeepAnalysisSection />
+          </ScrollReveal>
+          
+          {/* 5️⃣ 데이터 기반 AI 분석 리포트 */}
           <ScrollReveal direction="up" delay={0.1}>
             <DataDrivenReportSection />
           </ScrollReveal>
@@ -200,16 +199,6 @@ const Index = () => {
           {/* 🎯 New Features Section - 매주 업데이트 */}
           <ScrollReveal direction="up" delay={0.1}>
             <NewFeaturesSection />
-          </ScrollReveal>
-          
-          {/* 6️⃣ Result / Report */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <ResultReportSection />
-          </ScrollReveal>
-          
-          {/* Trust & Partner Section */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <PartnerTrustSection />
           </ScrollReveal>
           
           {/* Social Proof */}
@@ -221,6 +210,16 @@ const Index = () => {
             <ClientLogos />
           </ScrollReveal>
           
+          {/* Trust & Partner Section */}
+          <ScrollReveal direction="up" delay={0.1}>
+            <PartnerTrustSection />
+          </ScrollReveal>
+          
+          {/* 🎬 회사 소개 */}
+          <ScrollReveal direction="up" delay={0.1}>
+            <CompanyIntroVideoSection />
+          </ScrollReveal>
+          
           {/* 📝 Founder's Letter - 창립자의 손편지 */}
           <ScrollReveal direction="up" delay={0.1}>
             <FounderLetterSection />
@@ -229,11 +228,6 @@ const Index = () => {
           {/* 7️⃣ Call to Action */}
           <ScrollReveal direction="up" delay={0.1}>
             <CTABannerSection />
-          </ScrollReveal>
-          
-          {/* 🏢 회사 서비스 소개 */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <CompanyServicesSection />
           </ScrollReveal>
           
           {/* 8️⃣ Footer */}

@@ -17,7 +17,7 @@ import { CounselingCharacter } from './CounselingCharacter';
 import type { CharacterType } from '@/utils/CounselingQuestions';
 
 // Room components with different layouts
-const Room = ({ type = 'counseling' }: { type?: RoomType }) => {
+const Room = ({ type = 'counseling', isChildMode = false }: { type?: RoomType; isChildMode?: boolean }) => {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -25,6 +25,11 @@ const Room = ({ type = 'counseling' }: { type?: RoomType }) => {
       groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.02;
     }
   });
+
+  // 아이 친화적 모드 (금쪽 상담)
+  if (isChildMode) {
+    return <ChildFriendlyRoom groupRef={groupRef} />;
+  }
 
   // 공간별 렌더링
   switch (type) {
@@ -45,6 +50,123 @@ const Room = ({ type = 'counseling' }: { type?: RoomType }) => {
     default:
       return <CounselingRoomDefault groupRef={groupRef} />;
   }
+};
+
+// 아이 친화적 상담실 (금쪽 상담)
+const ChildFriendlyRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) => {
+  return (
+    <group ref={groupRef}>
+      {/* 밝은 파스텔 바닥 */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
+        <planeGeometry args={[20, 20]} />
+        <meshLambertMaterial color="#FFE4E1" />
+      </mesh>
+      
+      {/* 하늘색 벽 */}
+      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#E0F4FF" /></mesh>
+      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#E0F4FF" /></mesh>
+      
+      {/* 천장 (연한 노란색) */}
+      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 8, 0]}>
+        <planeGeometry args={[20, 16]} />
+        <meshLambertMaterial color="#FFFACD" />
+      </mesh>
+      
+      {/* 구름 장식 */}
+      <group position={[-5, 6, -5]}>
+        <mesh position={[0, 0, 0]}><sphereGeometry args={[0.5, 16, 16]} /><meshLambertMaterial color="#FFFFFF" /></mesh>
+        <mesh position={[0.6, 0, 0]}><sphereGeometry args={[0.4, 16, 16]} /><meshLambertMaterial color="#FFFFFF" /></mesh>
+        <mesh position={[-0.6, 0, 0]}><sphereGeometry args={[0.4, 16, 16]} /><meshLambertMaterial color="#FFFFFF" /></mesh>
+      </group>
+      <group position={[5, 6.5, -6]}>
+        <mesh position={[0, 0, 0]}><sphereGeometry args={[0.6, 16, 16]} /><meshLambertMaterial color="#FFFFFF" /></mesh>
+        <mesh position={[0.7, 0, 0]}><sphereGeometry args={[0.5, 16, 16]} /><meshLambertMaterial color="#FFFFFF" /></mesh>
+        <mesh position={[-0.7, 0, 0]}><sphereGeometry args={[0.5, 16, 16]} /><meshLambertMaterial color="#FFFFFF" /></mesh>
+      </group>
+      
+      {/* 별 장식 */}
+      <mesh position={[-6, 5, -4]}>
+        <sphereGeometry args={[0.15, 5, 5]} />
+        <meshLambertMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.5} />
+      </mesh>
+      <mesh position={[6, 6, -5]}>
+        <sphereGeometry args={[0.2, 5, 5]} />
+        <meshLambertMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.5} />
+      </mesh>
+      <mesh position={[3, 5.5, -6]}>
+        <sphereGeometry args={[0.12, 5, 5]} />
+        <meshLambertMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.5} />
+      </mesh>
+      
+      {/* 둥근 테이블 (파스텔 핑크) */}
+      <group position={[0, -1.3, 2]}>
+        <mesh position={[0, 0.7, 0]}>
+          <cylinderGeometry args={[1.5, 1.5, 0.15, 32]} />
+          <meshLambertMaterial color="#FFB6C1" />
+        </mesh>
+        <mesh position={[0, 0, 0]}>
+          <cylinderGeometry args={[0.1, 0.1, 1.4, 16]} />
+          <meshLambertMaterial color="#FFC0CB" />
+        </mesh>
+      </group>
+      
+      {/* 귀여운 쿠션 의자들 */}
+      <group position={[-1.5, -1.5, 1]}>
+        <mesh position={[0, 0.3, 0]}>
+          <boxGeometry args={[0.8, 0.6, 0.8]} />
+          <meshLambertMaterial color="#87CEEB" />
+        </mesh>
+        <mesh position={[0, 0.9, -0.3]}>
+          <boxGeometry args={[0.8, 0.8, 0.2]} />
+          <meshLambertMaterial color="#87CEEB" />
+        </mesh>
+      </group>
+      <group position={[1.5, -1.5, 1]}>
+        <mesh position={[0, 0.3, 0]}>
+          <boxGeometry args={[0.8, 0.6, 0.8]} />
+          <meshLambertMaterial color="#FFE4B5" />
+        </mesh>
+        <mesh position={[0, 0.9, -0.3]}>
+          <boxGeometry args={[0.8, 0.8, 0.2]} />
+          <meshLambertMaterial color="#FFE4B5" />
+        </mesh>
+      </group>
+      
+      {/* 장난감 상자 */}
+      <group position={[-5, -1.5, 3]}>
+        <mesh>
+          <boxGeometry args={[1.5, 1, 1.2]} />
+          <meshLambertMaterial color="#FF69B4" />
+        </mesh>
+        <mesh position={[0, 0.6, 0]}>
+          <boxGeometry args={[0.3, 0.3, 0.3]} />
+          <meshLambertMaterial color="#FFD700" />
+        </mesh>
+        <mesh position={[0.4, 0.6, 0]}>
+          <sphereGeometry args={[0.15, 16, 16]} />
+          <meshLambertMaterial color="#87CEEB" />
+        </mesh>
+      </group>
+      
+      {/* 책꽂이 (파스텔 색상) */}
+      <group position={[6, -0.5, -2]}>
+        <mesh>
+          <boxGeometry args={[1.5, 2.5, 0.4]} />
+          <meshLambertMaterial color="#B0E0E6" />
+        </mesh>
+        {/* 책들 */}
+        <mesh position={[-0.3, 0.5, 0.25]}><boxGeometry args={[0.15, 0.8, 0.3]} /><meshLambertMaterial color="#FF6B9D" /></mesh>
+        <mesh position={[-0.1, 0.5, 0.25]}><boxGeometry args={[0.15, 0.8, 0.3]} /><meshLambertMaterial color="#C3B1E1" /></mesh>
+        <mesh position={[0.1, 0.5, 0.25]}><boxGeometry args={[0.15, 0.8, 0.3]} /><meshLambertMaterial color="#FFE66D" /></mesh>
+        <mesh position={[0.3, 0.5, 0.25]}><boxGeometry args={[0.15, 0.8, 0.3]} /><meshLambertMaterial color="#95E1D3" /></mesh>
+      </group>
+      
+      {/* 따뜻한 조명 */}
+      <pointLight position={[0, 6, 0]} intensity={1.2} color="#FFF8DC" />
+      <pointLight position={[-4, 4, 2]} intensity={0.6} color="#FFE4E1" />
+      <pointLight position={[4, 4, 2]} intensity={0.6} color="#E0F4FF" />
+    </group>
+  );
 };
 
 // 상담실 (기본)
@@ -454,7 +576,7 @@ const CounselingRoom = ({
           <Environment preset={settings.preset} />
           
           {/* 3D 상담실 */}
-          <Room type={roomType} />
+          <Room type={roomType} isChildMode={!!character} />
           
           {/* 떠다니는 파티클 */}
           <FloatingParticles />

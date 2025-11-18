@@ -5,14 +5,20 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
 import { CHARACTERS, type AgeGroup, type CharacterType } from '@/utils/CounselingQuestions';
-import { Users, Baby, GraduationCap, UserCircle, ArrowRight, Shield, Heart } from 'lucide-react';
+import { type SCTAgeGroup } from '@/utils/SCTQuestions';
+import { Users, Baby, GraduationCap, UserCircle, ArrowRight, Shield, Heart, FileText } from 'lucide-react';
 
 interface CounselingSetupProps {
-  onStart: (ageGroup: AgeGroup, character: CharacterType) => void;
+  onStart: (config: { 
+    mode: 'structured' | 'sct';
+    ageGroup: AgeGroup | SCTAgeGroup; 
+    character?: CharacterType;
+  }) => void;
 }
 
 export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<AgeGroup>('child');
+  const [selectedMode, setSelectedMode] = useState<'structured' | 'sct'>('sct');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<AgeGroup | SCTAgeGroup>('child');
   const [selectedCharacter, setSelectedCharacter] = useState<CharacterType>('elephant');
 
   const ageGroupOptions = [

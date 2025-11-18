@@ -884,7 +884,19 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
           </div>
 
           {/* Status Card */}
-          {!isUICollapsed && (
+          {!isUICollapsed && mode === 'structured' && structuredConfig && (
+            <div className="w-full max-w-2xl">
+              <StructuredCounseling
+                ageGroup={structuredConfig.ageGroup}
+                character={structuredConfig.character}
+                onComplete={handleStructuredComplete}
+                onMessage={handleStructuredMessage}
+              />
+            </div>
+          )}
+
+          {/* Voice Chat Interface */}
+          {!isUICollapsed && mode === 'free' && (
           <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-4 sm:p-8 mb-6 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20 pointer-events-none">
             <div className="pointer-events-auto">
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -1030,8 +1042,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
                 </div>
               )}
             </div>
-            </>
-            )}
             </div>
           </Card>
           )}
@@ -1078,9 +1088,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
                 </div>
               </div>
             )}
-
-          </Card>
-          )}
 
           {/* Info */}
           {!isUICollapsed && (

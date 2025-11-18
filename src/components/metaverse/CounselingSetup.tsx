@@ -55,7 +55,7 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
       <div className="text-center space-y-2 mb-8">
         <h2 className="text-3xl font-bold text-white drop-shadow-lg">금쪽같은 대화</h2>
         <p className="text-white/90 drop-shadow-md">
-          오은영 박사님의 상담 방식처럼, 구조화된 질문으로 마음을 들어봅니다
+          금쪽같은 내새끼의 코끼리와 나누는 상담 방식 처럼 , 가상의 구조화된 전문가의 질문으로 마음을 들어봅니다
         </p>
         <div className="flex items-center justify-center gap-4 mt-4">
           <Badge variant="outline" className="gap-2 bg-white/10 text-white border-white/30">

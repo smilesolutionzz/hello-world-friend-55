@@ -53,25 +53,25 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
   return (
     <div className="space-y-6 max-w-4xl mx-auto p-6">
       <div className="text-center space-y-2 mb-8">
-        <h2 className="text-3xl font-bold">금쪽같은 대화</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-3xl font-bold text-white drop-shadow-lg">금쪽같은 대화</h2>
+        <p className="text-white/90 drop-shadow-md">
           오은영 박사님의 상담 방식처럼, 구조화된 질문으로 마음을 들어봅니다
         </p>
         <div className="flex items-center justify-center gap-4 mt-4">
-          <Badge variant="outline" className="gap-2">
+          <Badge variant="outline" className="gap-2 bg-white/10 text-white border-white/30">
             <Shield className="w-3 h-3" />
             100% 비밀 보장
           </Badge>
-          <Badge variant="outline" className="gap-2">
+          <Badge variant="outline" className="gap-2 bg-white/10 text-white border-white/30">
             <Heart className="w-3 h-3" />
             AI 심리 분석
           </Badge>
         </div>
       </div>
 
-      <Card className="p-6 space-y-6">
+      <Card className="p-6 space-y-6 bg-black/40 backdrop-blur-sm border-white/20">
         <div className="space-y-4">
-          <Label className="text-lg font-semibold">1. 연령대를 선택해주세요</Label>
+          <Label className="text-lg font-semibold text-white">1. 연령대를 선택해주세요</Label>
           <RadioGroup 
             value={selectedAgeGroup} 
             onValueChange={(value) => {
@@ -99,9 +99,9 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
                     htmlFor={option.value}
                     className={`
                       flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer
-                      transition-all hover:shadow-md
-                      peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5
-                      ${option.color}
+                      transition-all hover:shadow-md bg-white/10 backdrop-blur-sm
+                      peer-data-[state=checked]:border-white peer-data-[state=checked]:bg-white/20
+                      border-white/30 text-white
                     `}
                   >
                     <div className="mt-1">
@@ -109,7 +109,7 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
                     </div>
                     <div className="space-y-1 flex-1">
                       <div className="font-semibold">{option.label}</div>
-                      <div className="text-sm opacity-80">{option.description}</div>
+                      <div className="text-sm text-white/80">{option.description}</div>
                     </div>
                   </Label>
                 </div>
@@ -119,8 +119,8 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
         </div>
 
         <div className="space-y-4">
-          <Label className="text-lg font-semibold">2. 대화할 캐릭터를 선택해주세요</Label>
-          <p className="text-sm text-muted-foreground">
+          <Label className="text-lg font-semibold text-white">2. 대화할 캐릭터를 선택해주세요</Label>
+          <p className="text-sm text-white/80">
             각 캐릭터는 고유한 성격과 목소리를 가지고 있어요
           </p>
           <RadioGroup 
@@ -139,13 +139,10 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
                   htmlFor={character.type}
                   className={`
                     flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer
-                    transition-all hover:shadow-md
-                    peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5
+                    transition-all hover:shadow-md bg-white/10 backdrop-blur-sm
+                    peer-data-[state=checked]:border-white peer-data-[state=checked]:bg-white/20
+                    border-white/30 text-white
                   `}
-                  style={{
-                    backgroundColor: `${character.color}10`,
-                    borderColor: selectedCharacter === character.type ? character.color : undefined
-                  }}
                 >
                   <div className="text-4xl">
                     {character.type === 'elephant' && '🐘'}
@@ -155,8 +152,8 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
                   </div>
                   <div className="space-y-2 flex-1">
                     <div className="font-semibold">{character.name}</div>
-                    <div className="text-sm opacity-80">{character.personality}</div>
-                    <Badge variant="secondary" className="text-xs">
+                    <div className="text-sm text-white/80">{character.personality}</div>
+                    <Badge variant="secondary" className="text-xs bg-white/20 text-white border-white/30">
                       {character.voice} 목소리
                     </Badge>
                   </div>
@@ -166,13 +163,13 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
           </RadioGroup>
         </div>
 
-        <Card className="p-4 bg-primary/5 border-primary/20">
+        <Card className="p-4 bg-white/10 backdrop-blur-sm border-white/20">
           <div className="space-y-2">
-            <h4 className="font-semibold text-primary flex items-center gap-2">
+            <h4 className="font-semibold text-white flex items-center gap-2">
               <Shield className="w-4 h-4" />
               안심하고 이야기해주세요
             </h4>
-            <ul className="text-sm space-y-1 text-muted-foreground ml-6">
+            <ul className="text-sm space-y-1 text-white/80 ml-6">
               <li>• 모든 대화는 비밀이 보장됩니다</li>
               <li>• 편안하게 솔직한 마음을 나눠주세요</li>
               <li>• 10개의 질문으로 마음 상태를 체크합니다</li>
@@ -183,7 +180,7 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
 
         <Button
           onClick={() => onStart(selectedAgeGroup, selectedCharacter)}
-          className="w-full"
+          className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30"
           size="lg"
         >
           대화 시작하기

@@ -204,7 +204,7 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
     return (
       <div className="w-full max-w-4xl mx-auto space-y-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+          <h2 className="text-2xl font-bold text-white drop-shadow-lg">
             SCT 심층 분석 결과
           </h2>
           <div className="flex gap-2">
@@ -212,7 +212,7 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
               onClick={handleSaveToDatabase}
               disabled={isSaving}
               size="sm"
-              className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+              className="bg-white/20 hover:bg-white/30 text-white border border-white/30"
             >
               <Save className="w-4 h-4 mr-2" />
               {isSaving ? '저장 중...' : '저장'}
@@ -221,6 +221,7 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
               onClick={handleDownloadText}
               size="sm"
               variant="outline"
+              className="bg-white/10 hover:bg-white/20 text-white border-white/30"
             >
               <Download className="w-4 h-4 mr-2" />
               다운로드
@@ -232,7 +233,7 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
         
         {onComplete && (
           <div className="flex justify-center mt-6">
-            <Button onClick={onComplete} variant="outline">
+            <Button onClick={onComplete} variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/30">
               완료
             </Button>
           </div>
@@ -243,11 +244,11 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
 
   if (isAnalyzing) {
     return (
-      <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-8 max-w-2xl w-full">
+      <Card className="bg-black/40 backdrop-blur-sm border-white/20 p-8 max-w-2xl w-full">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent mx-auto" />
-          <p className="text-lg text-foreground">심층 분석 중입니다...</p>
-          <p className="text-sm text-muted-foreground">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mx-auto" />
+          <p className="text-lg text-white">심층 분석 중입니다...</p>
+          <p className="text-sm text-white/80">
             대상관계이론과 애착이론을 기반으로 당신의 내면을 분석하고 있습니다
           </p>
         </div>
@@ -259,7 +260,7 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
     <div className="w-full max-w-2xl mx-auto space-y-4">
       {/* Progress */}
       <div className="space-y-2">
-        <div className="flex justify-between text-sm text-muted-foreground">
+        <div className="flex justify-between text-sm text-white/80">
           <span>질문 {currentQuestionIndex + 1} / {questions.length}</span>
           <span>{Math.round(progress)}%</span>
         </div>
@@ -267,10 +268,10 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
       </div>
 
       {/* Question Card */}
-      <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-8">
+      <Card className="bg-black/40 backdrop-blur-sm border-white/20 p-8">
         <div className="space-y-6">
           <div>
-            <p className="text-xs text-purple-400 mb-2">
+            <p className="text-xs text-white/70 mb-2">
               {currentQuestion.category === 'self' && '자기 이해'}
               {currentQuestion.category === 'mother' && '어머니'}
               {currentQuestion.category === 'father' && '아버지'}
@@ -282,7 +283,7 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
               {currentQuestion.category === 'past' && '과거'}
               {currentQuestion.category === 'future' && '미래'}
             </p>
-            <h3 className="text-2xl font-bold text-foreground">
+            <h3 className="text-2xl font-bold text-white">
               {currentQuestion.stem}
             </h3>
           </div>
@@ -291,7 +292,7 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
             value={currentResponse}
             onChange={(e) => handleResponseChange(e.target.value)}
             placeholder="이어지는 내용을 자유롭게 작성해주세요..."
-            className="min-h-[150px] bg-slate-800/50 border-purple-500/30 text-foreground resize-none"
+            className="min-h-[150px] bg-white/10 border-white/20 text-white placeholder:text-white/50 resize-none"
             autoFocus
           />
 
@@ -300,7 +301,7 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
               onClick={handlePrevious}
               disabled={currentQuestionIndex === 0}
               variant="outline"
-              className="w-32"
+              className="w-32 bg-white/10 hover:bg-white/20 text-white border-white/30"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               이전
@@ -309,7 +310,7 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
             <Button
               onClick={handleNext}
               disabled={!currentResponse.trim()}
-              className="w-32 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              className="w-32 bg-white/20 hover:bg-white/30 text-white"
             >
               {currentQuestionIndex === questions.length - 1 ? '완료' : '다음'}
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -319,8 +320,8 @@ ${analysisResult.responses.map((r, idx) => `${idx + 1}. ${r.stem}\n   → ${r.re
       </Card>
 
       {/* Info */}
-      <Card className="bg-slate-900/50 backdrop-blur-xl border border-purple-500/20 p-4">
-        <p className="text-xs text-muted-foreground text-center">
+      <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-4">
+        <p className="text-xs text-white/80 text-center">
           💡 떠오르는 대로 솔직하게 답변해주세요. 정답이 없으며, 모든 답변은 안전하게 보호됩니다.
         </p>
       </Card>

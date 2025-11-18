@@ -47,6 +47,16 @@ const Room = ({ type = 'counseling', isChildMode = false }: { type?: RoomType; i
       return <LivingRoom groupRef={groupRef} />;
     case 'outdoor':
       return <OutdoorRoom groupRef={groupRef} />;
+    case 'playground':
+      return <PlaygroundRoom groupRef={groupRef} />;
+    case 'toyroom':
+      return <ToyroomRoom groupRef={groupRef} />;
+    case 'artroom':
+      return <ArtroomRoom groupRef={groupRef} />;
+    case 'library':
+      return <LibraryRoom groupRef={groupRef} />;
+    case 'garden':
+      return <GardenRoom groupRef={groupRef} />;
     default:
       return <CounselingRoomDefault groupRef={groupRef} />;
   }
@@ -444,6 +454,283 @@ const OutdoorRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) =
   );
 };
 
+// 놀이터
+const PlaygroundRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) => {
+  return (
+    <group ref={groupRef}>
+      {/* 모래 바닥 */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
+        <planeGeometry args={[30, 30]} />
+        <meshLambertMaterial color="#F4D03F" />
+      </mesh>
+      
+      {/* 하늘 배경 */}
+      <mesh position={[0, 8, -12]}>
+        <planeGeometry args={[30, 20]} />
+        <meshLambertMaterial color="#87CEEB" />
+      </mesh>
+      
+      {/* 미끄럼틀 */}
+      <group position={[-5, -0.5, 2]}>
+        {/* 계단 */}
+        <mesh position={[0, 0, 0]}><boxGeometry args={[1, 0.3, 1]} /><meshLambertMaterial color="#FF6B9D" /></mesh>
+        <mesh position={[0, 0.3, 0]}><boxGeometry args={[1, 0.3, 0.8]} /><meshLambertMaterial color="#FF6B9D" /></mesh>
+        <mesh position={[0, 0.6, 0]}><boxGeometry args={[1, 0.3, 0.6]} /><meshLambertMaterial color="#FF6B9D" /></mesh>
+        {/* 미끄럼 부분 */}
+        <mesh position={[0, 0.7, 2]} rotation={[-Math.PI / 6, 0, 0]}>
+          <boxGeometry args={[1, 0.1, 3]} />
+          <meshLambertMaterial color="#FFD93D" />
+        </mesh>
+      </group>
+      
+      {/* 그네 */}
+      <group position={[5, 1, 2]}>
+        {/* 지지대 */}
+        <mesh position={[-1.5, 1, 0]}><boxGeometry args={[0.2, 4, 0.2]} /><meshLambertMaterial color="#8B4513" /></mesh>
+        <mesh position={[1.5, 1, 0]}><boxGeometry args={[0.2, 4, 0.2]} /><meshLambertMaterial color="#8B4513" /></mesh>
+        <mesh position={[0, 3, 0]}><boxGeometry args={[3.5, 0.2, 0.2]} /><meshLambertMaterial color="#8B4513" /></mesh>
+        {/* 그네 좌석 */}
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[0.8, 0.1, 0.5]} />
+          <meshLambertMaterial color="#6BCB77" />
+        </mesh>
+      </group>
+      
+      {/* 시소 */}
+      <group position={[0, -1.5, -3]}>
+        <mesh position={[0, 0.5, 0]}><cylinderGeometry args={[0.3, 0.3, 1, 16]} /><meshLambertMaterial color="#C44569" /></mesh>
+        <mesh position={[0, 1, 0]} rotation={[0, 0, Math.PI / 12]}>
+          <boxGeometry args={[4, 0.2, 0.5]} />
+          <meshLambertMaterial color="#4ECDC4" />
+        </mesh>
+      </group>
+      
+      <pointLight position={[0, 10, 0]} intensity={1.5} color="#FFFFCC" />
+    </group>
+  );
+};
+
+// 장난감방
+const ToyroomRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) => {
+  return (
+    <group ref={groupRef}>
+      {/* 부드러운 카펫 바닥 */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
+        <planeGeometry args={[20, 20]} />
+        <meshLambertMaterial color="#FFC0CB" />
+      </mesh>
+      
+      {/* 파스텔 벽 */}
+      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#E0BBE4" /></mesh>
+      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#FFDFD3" /></mesh>
+      
+      {/* 레고 블록들 */}
+      <group position={[-3, -1.5, 2]}>
+        <mesh position={[0, 0.2, 0]}><boxGeometry args={[0.6, 0.4, 0.6]} /><meshLambertMaterial color="#FF0000" /></mesh>
+        <mesh position={[0.7, 0.2, 0]}><boxGeometry args={[0.6, 0.4, 0.6]} /><meshLambertMaterial color="#00FF00" /></mesh>
+        <mesh position={[0, 0.6, 0]}><boxGeometry args={[0.6, 0.4, 0.6]} /><meshLambertMaterial color="#0000FF" /></mesh>
+        <mesh position={[-0.7, 0.2, 0]}><boxGeometry args={[0.6, 0.4, 0.6]} /><meshLambertMaterial color="#FFFF00" /></mesh>
+      </group>
+      
+      {/* 인형의 집 */}
+      <group position={[4, -0.5, -2]}>
+        <mesh><boxGeometry args={[2, 2.5, 1.5]} /><meshLambertMaterial color="#FFB6C1" /></mesh>
+        <mesh position={[0, 1.3, 0]} rotation={[0, 0, Math.PI / 4]}>
+          <coneGeometry args={[1.5, 0.8, 4]} />
+          <meshLambertMaterial color="#FF69B4" />
+        </mesh>
+      </group>
+      
+      {/* 테디베어 */}
+      <group position={[-5, -1, 0]}>
+        <mesh position={[0, 0.5, 0]}><sphereGeometry args={[0.5, 16, 16]} /><meshLambertMaterial color="#D2691E" /></mesh>
+        <mesh position={[0, 1.2, 0]}><sphereGeometry args={[0.4, 16, 16]} /><meshLambertMaterial color="#8B4513" /></mesh>
+      </group>
+      
+      {/* 공 놀이 풀 */}
+      <group position={[5, -1, 3]}>
+        <mesh><cylinderGeometry args={[1.2, 1.2, 0.8, 16]} /><meshLambertMaterial color="#87CEEB" transparent opacity={0.3} /></mesh>
+        <mesh position={[0.3, 0.5, 0.2]}><sphereGeometry args={[0.15, 12, 12]} /><meshLambertMaterial color="#FF1493" /></mesh>
+        <mesh position={[-0.2, 0.5, -0.3]}><sphereGeometry args={[0.15, 12, 12]} /><meshLambertMaterial color="#00FF7F" /></mesh>
+        <mesh position={[0.1, 0.5, 0]}><sphereGeometry args={[0.15, 12, 12]} /><meshLambertMaterial color="#FFD700" /></mesh>
+      </group>
+      
+      <pointLight position={[0, 6, 0]} intensity={1.3} color="#FFF8DC" />
+    </group>
+  );
+};
+
+// 미술실
+const ArtroomRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) => {
+  return (
+    <group ref={groupRef}>
+      {/* 나무 바닥 */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
+        <planeGeometry args={[20, 20]} />
+        <meshLambertMaterial color="#DEB887" />
+      </mesh>
+      
+      {/* 밝은 벽 */}
+      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#FFFAF0" /></mesh>
+      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#F0F8FF" /></mesh>
+      
+      {/* 이젤 */}
+      <group position={[-3, -0.5, 1]}>
+        <mesh position={[0, 0, 0]}><boxGeometry args={[0.1, 2, 0.1]} /><meshLambertMaterial color="#8B4513" /></mesh>
+        <mesh position={[0, 1.5, 0.5]} rotation={[-Math.PI / 6, 0, 0]}>
+          <boxGeometry args={[1.2, 1.5, 0.05]} />
+          <meshLambertMaterial color="#FFFFFF" />
+        </mesh>
+      </group>
+      
+      {/* 물감 팔레트 */}
+      <group position={[3, -0.8, 2]}>
+        <mesh><cylinderGeometry args={[0.6, 0.6, 0.05, 32]} /><meshLambertMaterial color="#F5F5DC" /></mesh>
+        <mesh position={[0.2, 0.05, 0.2]}><sphereGeometry args={[0.1, 12, 12]} /><meshLambertMaterial color="#FF0000" /></mesh>
+        <mesh position={[-0.2, 0.05, 0.2]}><sphereGeometry args={[0.1, 12, 12]} /><meshLambertMaterial color="#0000FF" /></mesh>
+        <mesh position={[0, 0.05, -0.2]}><sphereGeometry args={[0.1, 12, 12]} /><meshLambertMaterial color="#FFFF00" /></mesh>
+      </group>
+      
+      {/* 크레용 상자 */}
+      <group position={[-5, -1, 3]}>
+        <mesh><boxGeometry args={[1, 0.3, 0.5]} /><meshLambertMaterial color="#FF6347" /></mesh>
+        <mesh position={[-0.3, 0.2, 0]}><cylinderGeometry args={[0.05, 0.05, 0.3, 8]} /><meshLambertMaterial color="#FF1493" /></mesh>
+        <mesh position={[0, 0.2, 0]}><cylinderGeometry args={[0.05, 0.05, 0.3, 8]} /><meshLambertMaterial color="#00CED1" /></mesh>
+        <mesh position={[0.3, 0.2, 0]}><cylinderGeometry args={[0.05, 0.05, 0.3, 8]} /><meshLambertMaterial color="#32CD32" /></mesh>
+      </group>
+      
+      {/* 작품 전시 */}
+      <group position={[5, 1, -5]}>
+        <mesh><boxGeometry args={[1.5, 1.2, 0.05]} /><meshLambertMaterial color="#FFD700" /></mesh>
+        <mesh position={[2, 0, 0]}><boxGeometry args={[1.2, 1.5, 0.05]} /><meshLambertMaterial color="#FF69B4" /></mesh>
+      </group>
+      
+      <pointLight position={[0, 7, 0]} intensity={1.5} color="#FFFFFF" />
+      <pointLight position={[-4, 3, 2]} intensity={0.7} color="#FFF8DC" />
+    </group>
+  );
+};
+
+// 도서관
+const LibraryRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) => {
+  return (
+    <group ref={groupRef}>
+      {/* 나무 바닥 */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
+        <planeGeometry args={[20, 20]} />
+        <meshLambertMaterial color="#8B7355" />
+      </mesh>
+      
+      {/* 벽 */}
+      <mesh position={[0, 3, -8]}><planeGeometry args={[20, 10]} /><meshLambertMaterial color="#F5DEB3" /></mesh>
+      <mesh position={[-8, 3, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[16, 10]} /><meshLambertMaterial color="#FAEBD7" /></mesh>
+      
+      {/* 책장 1 */}
+      <group position={[-6, 0, -5]}>
+        <mesh><boxGeometry args={[2, 4, 0.5]} /><meshLambertMaterial color="#654321" /></mesh>
+        <mesh position={[-0.7, 1, 0.3]}><boxGeometry args={[0.15, 1, 0.35]} /><meshLambertMaterial color="#FF6B6B" /></mesh>
+        <mesh position={[-0.5, 1, 0.3]}><boxGeometry args={[0.15, 1, 0.35]} /><meshLambertMaterial color="#4ECDC4" /></mesh>
+        <mesh position={[-0.3, 1, 0.3]}><boxGeometry args={[0.15, 1, 0.35]} /><meshLambertMaterial color="#FFE66D" /></mesh>
+        <mesh position={[0.3, 0, 0.3]}><boxGeometry args={[0.15, 0.8, 0.35]} /><meshLambertMaterial color="#95E1D3" /></mesh>
+        <mesh position={[0.5, 0, 0.3]}><boxGeometry args={[0.15, 0.8, 0.35]} /><meshLambertMaterial color="#C7CEEA" /></mesh>
+      </group>
+      
+      {/* 책장 2 */}
+      <group position={[6, 0, -5]}>
+        <mesh><boxGeometry args={[2, 4, 0.5]} /><meshLambertMaterial color="#8B4513" /></mesh>
+        <mesh position={[-0.6, -1, 0.3]}><boxGeometry args={[0.15, 0.9, 0.35]} /><meshLambertMaterial color="#FF69B4" /></mesh>
+        <mesh position={[0.6, 1.5, 0.3]}><boxGeometry args={[0.15, 1.2, 0.35]} /><meshLambertMaterial color="#87CEEB" /></mesh>
+      </group>
+      
+      {/* 독서 테이블 */}
+      <group position={[0, -1, 2]}>
+        <mesh><boxGeometry args={[3, 0.1, 2]} /><meshLambertMaterial color="#A0522D" /></mesh>
+        <mesh position={[-1.2, -0.5, -0.8]}><cylinderGeometry args={[0.1, 0.1, 1, 16]} /><meshLambertMaterial color="#654321" /></mesh>
+        <mesh position={[1.2, -0.5, -0.8]}><cylinderGeometry args={[0.1, 0.1, 1, 16]} /><meshLambertMaterial color="#654321" /></mesh>
+      </group>
+      
+      {/* 쿠션 의자 */}
+      <group position={[-2, -1.3, 3]}>
+        <mesh><boxGeometry args={[0.8, 0.3, 0.8]} /><meshLambertMaterial color="#DDA0DD" /></mesh>
+        <mesh position={[0, 0.5, -0.3]}><boxGeometry args={[0.8, 0.6, 0.2]} /><meshLambertMaterial color="#DDA0DD" /></mesh>
+      </group>
+      
+      {/* 읽기 램프 */}
+      <group position={[0, 0, 2]}>
+        <mesh position={[0, 0.5, 0]}><cylinderGeometry args={[0.05, 0.05, 1, 16]} /><meshLambertMaterial color="#696969" /></mesh>
+        <mesh position={[0, 1, 0]}><coneGeometry args={[0.3, 0.5, 16]} /><meshLambertMaterial color="#FFD700" /></mesh>
+      </group>
+      
+      <pointLight position={[0, 6, 0]} intensity={1} color="#FFFACD" />
+      <pointLight position={[0, 1.2, 2]} intensity={0.8} color="#FFF8DC" />
+    </group>
+  );
+};
+
+// 정원
+const GardenRoom = ({ groupRef }: { groupRef: React.RefObject<THREE.Group> }) => {
+  return (
+    <group ref={groupRef}>
+      {/* 잔디 바닥 */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
+        <planeGeometry args={[30, 30]} />
+        <meshLambertMaterial color="#98FB98" />
+      </mesh>
+      
+      {/* 하늘 */}
+      <mesh position={[0, 8, -12]}>
+        <planeGeometry args={[30, 20]} />
+        <meshLambertMaterial color="#B0E0E6" />
+      </mesh>
+      
+      {/* 꽃밭 1 */}
+      <group position={[-5, -1.8, 2]}>
+        <mesh position={[0, 0.3, 0]}><sphereGeometry args={[0.15, 12, 12]} /><meshLambertMaterial color="#FF1493" emissive="#FF1493" emissiveIntensity={0.3} /></mesh>
+        <mesh position={[0, 0, 0]}><cylinderGeometry args={[0.03, 0.03, 0.6, 8]} /><meshLambertMaterial color="#228B22" /></mesh>
+        <mesh position={[0.4, 0.3, 0.2]}><sphereGeometry args={[0.15, 12, 12]} /><meshLambertMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.3} /></mesh>
+        <mesh position={[0.4, 0, 0.2]}><cylinderGeometry args={[0.03, 0.03, 0.6, 8]} /><meshLambertMaterial color="#228B22" /></mesh>
+        <mesh position={[-0.4, 0.3, -0.2]}><sphereGeometry args={[0.15, 12, 12]} /><meshLambertMaterial color="#FF69B4" emissive="#FF69B4" emissiveIntensity={0.3} /></mesh>
+        <mesh position={[-0.4, 0, -0.2]}><cylinderGeometry args={[0.03, 0.03, 0.6, 8]} /><meshLambertMaterial color="#228B22" /></mesh>
+      </group>
+      
+      {/* 꽃밭 2 */}
+      <group position={[5, -1.8, 3]}>
+        <mesh position={[0, 0.3, 0]}><sphereGeometry args={[0.15, 12, 12]} /><meshLambertMaterial color="#9370DB" emissive="#9370DB" emissiveIntensity={0.3} /></mesh>
+        <mesh position={[0, 0, 0]}><cylinderGeometry args={[0.03, 0.03, 0.6, 8]} /><meshLambertMaterial color="#228B22" /></mesh>
+        <mesh position={[0.3, 0.3, 0.3]}><sphereGeometry args={[0.15, 12, 12]} /><meshLambertMaterial color="#FF4500" emissive="#FF4500" emissiveIntensity={0.3} /></mesh>
+        <mesh position={[0.3, 0, 0.3]}><cylinderGeometry args={[0.03, 0.03, 0.6, 8]} /><meshLambertMaterial color="#228B22" /></mesh>
+      </group>
+      
+      {/* 나비 */}
+      <group position={[-3, 1, 0]}>
+        <mesh position={[-0.1, 0, 0]} rotation={[0, 0, Math.PI / 6]}>
+          <sphereGeometry args={[0.2, 12, 12]} />
+          <meshLambertMaterial color="#FF69B4" emissive="#FF69B4" emissiveIntensity={0.5} />
+        </mesh>
+        <mesh position={[0.1, 0, 0]} rotation={[0, 0, -Math.PI / 6]}>
+          <sphereGeometry args={[0.2, 12, 12]} />
+          <meshLambertMaterial color="#FFB6C1" emissive="#FFB6C1" emissiveIntensity={0.5} />
+        </mesh>
+      </group>
+      
+      {/* 작은 나무 */}
+      <group position={[0, -1, -5]}>
+        <mesh><cylinderGeometry args={[0.2, 0.25, 2, 12]} /><meshLambertMaterial color="#8B4513" /></mesh>
+        <mesh position={[0, 1.5, 0]}><sphereGeometry args={[1, 12, 12]} /><meshLambertMaterial color="#32CD32" /></mesh>
+      </group>
+      
+      {/* 정원 벤치 */}
+      <group position={[-3, -1.5, -2]}>
+        <mesh position={[0, 0.3, 0]}><boxGeometry args={[1.5, 0.1, 0.6]} /><meshLambertMaterial color="#D2691E" /></mesh>
+        <mesh position={[0, 0.5, -0.25]}><boxGeometry args={[1.5, 0.5, 0.1]} /><meshLambertMaterial color="#CD853F" /></mesh>
+      </group>
+      
+      <pointLight position={[0, 10, 0]} intensity={1.5} color="#FFFACD" />
+      <pointLight position={[-3, 2, 0]} intensity={0.5} color="#FF69B4" />
+    </group>
+  );
+};
+
 // 떠다니는 파티클 효과
 const FloatingParticles = () => {
   const particlesRef = useRef<THREE.Points>(null);
@@ -491,7 +778,7 @@ const FloatingParticles = () => {
   );
 };
 
-export type RoomType = 'counseling' | 'office' | 'home' | 'bedroom' | 'school' | 'club' | 'living' | 'outdoor';
+export type RoomType = 'counseling' | 'office' | 'home' | 'bedroom' | 'school' | 'club' | 'living' | 'outdoor' | 'playground' | 'toyroom' | 'artroom' | 'library' | 'garden';
 
 interface CounselingRoomProps {
   children?: React.ReactNode;

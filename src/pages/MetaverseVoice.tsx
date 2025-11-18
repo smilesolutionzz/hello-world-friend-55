@@ -14,8 +14,9 @@ const MetaverseVoicePage = () => {
   const { toast } = useToast();
   const [mode, setMode] = useState<'structured' | 'free'>('structured');
   const [structuredConfig, setStructuredConfig] = useState<{
-    ageGroup: AgeGroup;
-    character: CharacterType;
+    mode: 'structured' | 'sct';
+    ageGroup: any;
+    character?: any;
   } | null>(null);
 
   useEffect(() => {
@@ -35,8 +36,12 @@ const MetaverseVoicePage = () => {
     checkAuth();
   }, [navigate, toast]);
 
-  const handleStructuredStart = (ageGroup: AgeGroup, character: CharacterType) => {
-    setStructuredConfig({ ageGroup, character });
+  const handleStructuredStart = (config: { 
+    mode: 'structured' | 'sct';
+    ageGroup: any; 
+    character?: any;
+  }) => {
+    setStructuredConfig(config);
   };
 
   return (
@@ -58,10 +63,20 @@ const MetaverseVoicePage = () => {
           <TabsContent value="structured" className="mt-0">
             {!structuredConfig ? (
               <CounselingSetup onStart={handleStructuredStart} />
+            ) : structuredConfig.mode === 'sct' ? (
+              <div className="relative">
+                <MetaverseVoiceCounseling 
+                  mode="sct"
+                  sctAgeGroup={structuredConfig.ageGroup}
+                />
+              </div>
             ) : (
               <MetaverseVoiceCounseling 
                 mode="structured"
-                structuredConfig={structuredConfig}
+                structuredConfig={{
+                  ageGroup: structuredConfig.ageGroup,
+                  character: structuredConfig.character
+                }}
               />
             )}
           </TabsContent>

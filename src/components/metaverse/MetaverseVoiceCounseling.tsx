@@ -28,6 +28,7 @@ import { Slider } from '@/components/ui/slider';
 import { VirtualJoystick } from './VirtualJoystick';
 import { GestureQuickMenu } from './GestureQuickMenu';
 import { StructuredCounseling } from './StructuredCounseling';
+import { SCTAnalysis } from './SCTAnalysis';
 import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 
 interface Message {
@@ -38,11 +39,12 @@ interface Message {
 }
 
 interface MetaverseVoiceCounselingProps {
-  mode?: 'free' | 'structured';
+  mode?: 'free' | 'structured' | 'sct';
   structuredConfig?: {
     ageGroup: AgeGroup;
     character: CharacterType;
   };
+  sctAgeGroup?: any;
 }
 
 const roomOptions = [
@@ -56,7 +58,7 @@ const roomOptions = [
   { id: 'outdoor' as RoomType, name: '야외 잔디구장', icon: Trees, description: '자연 속에서' },
 ];
 
-const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: MetaverseVoiceCounselingProps) => {
+const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, sctAgeGroup }: MetaverseVoiceCounselingProps) => {
   const { toast } = useToast();
   const [hasEntered, setHasEntered] = useState(false);
   const [userName, setUserName] = useState('');
@@ -884,6 +886,16 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
           </div>
 
           {/* Status Card */}
+          {!isUICollapsed && mode === 'sct' && sctAgeGroup && (
+            <div className="w-full max-w-2xl">
+              <SCTAnalysis
+                ageGroup={sctAgeGroup}
+                onComplete={handleStructuredComplete}
+                onMessage={handleStructuredMessage}
+              />
+            </div>
+          )}
+
           {!isUICollapsed && mode === 'structured' && structuredConfig && (
             <div className="w-full max-w-2xl">
               <StructuredCounseling

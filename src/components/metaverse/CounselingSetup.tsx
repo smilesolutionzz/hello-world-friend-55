@@ -23,37 +23,49 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
 
   const ageGroupOptions = [
     { 
-      value: 'child' as AgeGroup, 
+      value: 'child', 
       label: '아동 (5-12세)', 
       icon: Baby,
       description: '초등학생 아이들을 위한 상담',
-      color: 'bg-blue-500/10 text-blue-600 border-blue-200'
+      color: 'bg-blue-500/10 text-blue-600 border-blue-200',
+      sctValue: 'infant' as SCTAgeGroup
     },
     { 
-      value: 'teen' as AgeGroup, 
+      value: 'teen', 
       label: '사춘기 (13-18세)', 
       icon: GraduationCap,
       description: '청소년을 위한 상담',
-      color: 'bg-purple-500/10 text-purple-600 border-purple-200'
+      color: 'bg-purple-500/10 text-purple-600 border-purple-200',
+      sctValue: 'teen' as SCTAgeGroup
     },
     { 
-      value: 'adult' as AgeGroup, 
+      value: 'adult', 
       label: '성인', 
       icon: UserCircle,
       description: '성인을 위한 상담',
-      color: 'bg-green-500/10 text-green-600 border-green-200'
+      color: 'bg-green-500/10 text-green-600 border-green-200',
+      sctValue: 'adult' as SCTAgeGroup
     },
     { 
-      value: 'parent' as AgeGroup, 
+      value: 'parent', 
       label: '부모', 
       icon: Users,
       description: '부모 심리상태 점검',
-      color: 'bg-orange-500/10 text-orange-600 border-orange-200'
+      color: 'bg-orange-500/10 text-orange-600 border-orange-200',
+      sctValue: 'parent' as SCTAgeGroup
+    },
+    { 
+      value: 'senior', 
+      label: '노인', 
+      icon: Users,
+      description: '노인 심리 검사',
+      color: 'bg-gray-500/10 text-gray-600 border-gray-200',
+      sctValue: 'senior' as SCTAgeGroup
     }
   ];
 
   const availableCharacters = Object.values(CHARACTERS).filter(
-    c => c.ageGroups.includes(selectedAgeGroup)
+    c => c.ageGroups.includes(selectedAgeGroup as AgeGroup)
   );
 
   return (
@@ -77,11 +89,47 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
 
       <Card className="p-6 space-y-6">
         <div className="space-y-4">
-          <Label className="text-lg font-semibold">1. 연령대를 선택해주세요</Label>
+          <Label className="text-lg font-semibold">1. 검사 방식을 선택해주세요</Label>
+          <RadioGroup 
+            value={selectedMode} 
+            onValueChange={(value) => setSelectedMode(value as 'structured' | 'sct')}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
+            <div className="relative">
+              <RadioGroupItem value="sct" id="sct" className="peer sr-only" />
+              <Label
+                htmlFor="sct"
+                className="flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5"
+              >
+                <FileText className="w-6 h-6 text-primary" />
+                <div className="space-y-1 flex-1">
+                  <div className="font-semibold">SCT 문장완성검사</div>
+                  <div className="text-sm opacity-80">과학적 심리 분석 (권장)</div>
+                </div>
+              </Label>
+            </div>
+            <div className="relative">
+              <RadioGroupItem value="structured" id="structured" className="peer sr-only" />
+              <Label
+                htmlFor="structured"
+                className="flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-md peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5"
+              >
+                <Heart className="w-6 h-6 text-primary" />
+                <div className="space-y-1 flex-1">
+                  <div className="font-semibold">대화형 상담</div>
+                  <div className="text-sm opacity-80">캐릭터와 대화</div>
+                </div>
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        <div className="space-y-4">
+          <Label className="text-lg font-semibold">2. 연령대를 선택해주세요</Label>
           <RadioGroup 
             value={selectedAgeGroup} 
             onValueChange={(value) => {
-              setSelectedAgeGroup(value as AgeGroup);
+              setSelectedAgeGroup(value);
               // 연령대 변경 시 해당 연령대에 맞는 첫 번째 캐릭터 자동 선택
               const firstAvailable = Object.values(CHARACTERS).find(
                 c => c.ageGroups.includes(value as AgeGroup)
@@ -123,9 +171,11 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
             })}
           </RadioGroup>
         </div>
+        )}
 
+        {selectedMode === 'structured' && (
         <div className="space-y-4">
-          <Label className="text-lg font-semibold">2. 대화할 캐릭터를 선택해주세요</Label>
+          <Label className="text-lg font-semibold">3. 대화할 캐릭터를 선택해주세요</Label>
           <p className="text-sm text-muted-foreground">
             각 캐릭터는 고유한 성격과 목소리를 가지고 있어요
           </p>
@@ -188,11 +238,18 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
         </Card>
 
         <Button
-          onClick={() => onStart(selectedAgeGroup, selectedCharacter)}
+          onClick={() => {
+            const selectedOption = ageGroupOptions.find(opt => opt.value === selectedAgeGroup);
+            onStart({
+              mode: selectedMode,
+              ageGroup: selectedMode === 'sct' ? (selectedOption?.sctValue || 'adult') : selectedAgeGroup as AgeGroup,
+              character: selectedMode === 'structured' ? selectedCharacter : undefined
+            });
+          }}
           className="w-full"
           size="lg"
         >
-          대화 시작하기
+          {selectedMode === 'sct' ? 'SCT 검사 시작' : '대화 시작하기'}
           <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </Card>

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut, Gamepad2, Package, Palette, BookOpen, Flower2 } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
 import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
@@ -56,6 +56,11 @@ const roomOptions = [
   { id: 'club' as RoomType, name: '대학 동아리실', icon: Users, description: '동아리 공간' },
   { id: 'living' as RoomType, name: '거실', icon: Sofa, description: '편안한 거실' },
   { id: 'outdoor' as RoomType, name: '야외 잔디구장', icon: Trees, description: '자연 속에서' },
+  { id: 'playground' as RoomType, name: '놀이터', icon: Gamepad2, description: '신나는 놀이터' },
+  { id: 'toyroom' as RoomType, name: '장난감방', icon: Package, description: '재미있는 장난감방' },
+  { id: 'artroom' as RoomType, name: '미술실', icon: Palette, description: '창의적인 미술실' },
+  { id: 'library' as RoomType, name: '도서관', icon: BookOpen, description: '조용한 도서관' },
+  { id: 'garden' as RoomType, name: '정원', icon: Flower2, description: '예쁜 꽃 정원' },
 ];
 
 const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: MetaverseVoiceCounselingProps) => {

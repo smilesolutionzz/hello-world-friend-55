@@ -64,10 +64,18 @@ export class RealtimeChat {
   private pc: RTCPeerConnection | null = null;
   private dc: RTCDataChannel | null = null;
   private audioEl: HTMLAudioElement;
+  private voice: string;
+  private instructions: string;
 
-  constructor(private onMessage: (message: any) => void) {
+  constructor(
+    private onMessage: (message: any) => void,
+    options?: { voice?: string; instructions?: string }
+  ) {
     this.audioEl = document.createElement("audio");
     this.audioEl.autoplay = true;
+    this.voice = options?.voice || "alloy";
+    this.instructions = options?.instructions || 
+      "너는 한국어 상담사야. 모든 답변과 자막은 100% 한국어로만 말해. 영어 입력이 오더라도 한국어로 공손하고 간결하게 답해.";
   }
 
   async init() {
@@ -116,9 +124,8 @@ export class RealtimeChat {
             JSON.stringify({
               type: "session.update",
               session: {
-                // Always respond in Korean
-                instructions:
-                  "너는 한국어 상담사야. 모든 답변과 자막은 100% 한국어로만 말해. 영어 입력이 오더라도 한국어로 공손하고 간결하게 답해.",
+                // Always respond in Korean with character persona
+                instructions: this.instructions,
                 // Prefer Korean STT
                 input_audio_transcription: {
                   model: "gpt-4o-transcribe",
@@ -126,8 +133,8 @@ export class RealtimeChat {
                 },
                 // Ensure both audio and text are returned
                 modalities: ["text", "audio"],
-                // Set a default voice (optional)
-                voice: "alloy",
+                // Set character-specific voice
+                voice: this.voice,
               },
             })
           );

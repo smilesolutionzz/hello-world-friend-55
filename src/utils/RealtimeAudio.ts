@@ -64,110 +64,82 @@ export class RealtimeChat {
   private pc: RTCPeerConnection | null = null;
   private dc: RTCDataChannel | null = null;
   private audioEl: HTMLAudioElement;
-  private voice: string;
-  private instructions: string;
+  private mode: 'free' | 'structured';
+  private ageGroup: string;
+  private character: string;
 
   constructor(
     private onMessage: (message: any) => void,
-    options?: { voice?: string; instructions?: string }
+    options?: {
+      mode?: 'free' | 'structured';
+      ageGroup?: string;
+      character?: string;
+    }
   ) {
     this.audioEl = document.createElement("audio");
     this.audioEl.autoplay = true;
-    this.voice = options?.voice || "alloy";
-    this.instructions = options?.instructions || 
-      "너는 한국어 상담사야. 모든 답변과 자막은 100% 한국어로만 말해. 영어 입력이 오더라도 한국어로 공손하고 간결하게 답해.";
+    this.mode = options?.mode || 'free';
+    this.ageGroup = options?.ageGroup || 'adult';
+    this.character = options?.character || 'bear';
   }
 
   async init() {
     try {
-      console.log("🎬 Initializing Realtime Chat with WebRTC...");
+      console.log(`🎬 mode: ${this.mode}, age: ${this.ageGroup}, char: ${this.character}`);
 
-      // Get ephemeral token from Supabase Edge Function
       const { data, error } = await supabase.functions.invoke("get-realtime-token");
-
       if (error) throw error;
-      
-      if (!data.client_secret?.value) {
-        throw new Error("Failed to get ephemeral token");
-      }
+      if (!data.client_secret?.value) throw new Error("No token");
 
       const EPHEMERAL_KEY = data.client_secret.value;
-      console.log("✅ Got ephemeral token");
-
-      // Create peer connection
       this.pc = new RTCPeerConnection();
+      this.pc.ontrack = e => this.audioEl.srcObject = e.streams[0];
 
-      // Set up remote audio
-      this.pc.ontrack = e => {
-        console.log("🔊 Receiving audio track");
-        this.audioEl.srcObject = e.streams[0];
-      };
-
-      // Add local audio track
       const ms = await navigator.mediaDevices.getUserMedia({ audio: true });
       this.pc.addTrack(ms.getTracks()[0]);
-      console.log("🎤 Added local audio track");
 
-      // Set up data channel
       this.dc = this.pc.createDataChannel("oai-events");
       this.dc.addEventListener("message", (e) => {
         const event = JSON.parse(e.data);
-        console.log("📨 Received:", event.type);
         this.onMessage(event);
       });
 
       this.dc.onopen = () => {
-        console.log("✅ Data channel open - configuring Korean session and starting conversation");
-        // Force Korean responses and transcription
-        try {
-          this.dc?.send(
-            JSON.stringify({
-              type: "session.update",
-              session: {
-                // Always respond in Korean with character persona
-                instructions: this.instructions,
-                // Prefer Korean STT
-                input_audio_transcription: {
-                  model: "gpt-4o-transcribe",
-                  language: "ko",
-                },
-                // Ensure both audio and text are returned
-                modalities: ["text", "audio"],
-                // Set character-specific voice
-                voice: this.voice,
-              },
-            })
-          );
-        } catch (e) {
-          console.warn("Failed to send session.update:", e);
-        }
-        // Trigger AI to start the conversation
-        if (this.dc) {
-          this.dc.send(JSON.stringify({ type: "response.create" }));
-        }
+        const sessionUpdate = {
+          type: "session.update",
+          session: {
+            modalities: ["text", "audio"],
+            voice: "alloy",
+            input_audio_format: "pcm16",
+            output_audio_format: "pcm16",
+            input_audio_transcription: { model: "whisper-1" },
+            turn_detection: {
+              type: "server_vad",
+              threshold: 0.5,
+              prefix_padding_ms: 300,
+              silence_duration_ms: 500
+            },
+            temperature: 0.8
+          }
+        };
+        
+        this.dc?.send(JSON.stringify(sessionUpdate));
+        this.dc?.send(JSON.stringify({ type: "response.create" }));
       };
 
-      // Create and set local description
       const offer = await this.pc.createOffer();
       await this.pc.setLocalDescription(offer);
 
-      // Connect to OpenAI's Realtime API
-      const baseUrl = "https://api.openai.com/v1/realtime";
-      const model = "gpt-4o-realtime-preview-2024-12-17";
-      
-      console.log("🔗 Connecting to OpenAI Realtime API...");
-      const sdpResponse = await fetch(`${baseUrl}?model=${model}`, {
+      const sdpResponse = await fetch(`https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17`, {
         method: "POST",
         body: offer.sdp,
         headers: {
-          Authorization: `Bearer ${EPHEMERAL_KEY}`,
+          "Authorization": `Bearer ${EPHEMERAL_KEY}`,
           "Content-Type": "application/sdp"
         },
       });
 
-      if (!sdpResponse.ok) {
-        throw new Error(`OpenAI API error: ${sdpResponse.status}`);
-      }
+      if (!sdpResponse.ok) throw new Error(`API error: ${sdpResponse.status}`);
 
       const answer = {
         type: "answer" as RTCSdpType,
@@ -175,10 +147,8 @@ export class RealtimeChat {
       };
       
       await this.pc.setRemoteDescription(answer);
-      console.log("✅ WebRTC connection established");
-
     } catch (error) {
-      console.error("❌ Error initializing chat:", error);
+      console.error("Error:", error);
       throw error;
     }
   }
@@ -193,12 +163,7 @@ export class RealtimeChat {
       item: {
         type: 'message',
         role: 'user',
-        content: [
-          {
-            type: 'input_text',
-            text
-          }
-        ]
+        content: [{ type: 'input_text', text }]
       }
     };
 
@@ -207,7 +172,6 @@ export class RealtimeChat {
   }
 
   disconnect() {
-    console.log("🔌 Disconnecting...");
     this.dc?.close();
     this.pc?.close();
     this.audioEl.srcObject = null;

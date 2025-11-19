@@ -78,6 +78,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
   const [messages, setMessages] = useState<Message[]>([]);
   const [showSubtitles, setShowSubtitles] = useState(true);
   const [currentResponseId, setCurrentResponseId] = useState<string | null>(null);
+  const [textInput, setTextInput] = useState('');
   const [enableMovement, setEnableMovement] = useState(true);
   const [showMovementGuide, setShowMovementGuide] = useState(true);
   const [currentEmotion, setCurrentEmotion] = useState<EmotionType>('neutral');
@@ -495,6 +496,40 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
         title: "상담 종료",
         description: "대화가 종료되었습니다",
       });
+    }
+  };
+
+  const sendTextMessage = async () => {
+    if (!textInput.trim() || !isConnected) return;
+
+    try {
+      // 사용자 메시지 추가
+      const userMessage: Message = {
+        role: 'user',
+        content: textInput.trim(),
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, userMessage]);
+
+      // AI에게 메시지 전송
+      await chatRef.current?.sendMessage(textInput.trim());
+      
+      // 입력창 초기화
+      setTextInput('');
+    } catch (error) {
+      console.error('Error sending text message:', error);
+      toast({
+        title: "전송 실패",
+        description: "메시지를 전송할 수 없습니다",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendTextMessage();
     }
   };
 
@@ -1141,12 +1176,34 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
                   )}
                 </Button>
               ) : (
-                <div className="flex gap-4">
+                <div className="flex flex-col gap-3">
+                  {/* 텍스트 입력창 */}
+                  <div className="flex gap-2">
+                    <Input
+                      value={textInput}
+                      onChange={(e) => setTextInput(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder="텍스트로 메시지 보내기..."
+                      className="flex-1"
+                      disabled={isSpeaking}
+                    />
+                    <Button
+                      onClick={sendTextMessage}
+                      disabled={!textInput.trim() || isSpeaking}
+                      size="lg"
+                      className="gap-2"
+                    >
+                      <MessageSquare className="w-5 h-5" />
+                      전송
+                    </Button>
+                  </div>
+
+                  {/* 종료 버튼 */}
                   <Button
                     onClick={endConversation}
                     variant="destructive"
                     size="lg"
-                    className="flex-1 gap-2"
+                    className="w-full gap-2"
                   >
                     <Phone className="w-5 h-5" />
                     종료

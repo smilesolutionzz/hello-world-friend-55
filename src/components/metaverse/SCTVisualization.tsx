@@ -27,6 +27,11 @@ export const SCTVisualization: React.FC<SCTVisualizationProps> = ({ result }) =>
     return typeof value === 'number' && !isNaN(value) ? value : 0;
   };
 
+  // 안전한 배열 함수
+  const safeArray = <T,>(arr: T[] | undefined | null): T[] => {
+    return Array.isArray(arr) ? arr : [];
+  };
+
   // 대상관계이론 데이터
   const objectRelationsData = [
     { subject: '자기표상', value: safeValue(result.objectRelations?.selfRepresentation?.score) },
@@ -44,13 +49,13 @@ export const SCTVisualization: React.FC<SCTVisualizationProps> = ({ result }) =>
   ];
 
   // 미충족 욕구 데이터
-  const needsData = (result.needsAnalysis?.unmetNeeds || []).map(need => ({
+  const needsData = safeArray(result.needsAnalysis?.unmetNeeds).map(need => ({
     name: need.need || '미상',
     severity: safeValue(need.severity),
   }));
 
   // 방어기제 데이터
-  const defensesData = (result.objectRelations?.defenseMechanisms || []).map(defense => ({
+  const defensesData = safeArray(result.objectRelations?.defenseMechanisms).map(defense => ({
     name: defense.type || '미상',
     strength: safeValue(defense.strength),
   }));
@@ -97,9 +102,9 @@ export const SCTVisualization: React.FC<SCTVisualizationProps> = ({ result }) =>
           <div>
             <p className="text-sm font-semibold text-purple-400">자기 표상:</p>
             <p className="text-sm text-muted-foreground">{result.objectRelations.selfRepresentation.description}</p>
-            {result.objectRelations.selfRepresentation.patterns.length > 0 && (
+            {safeArray(result.objectRelations.selfRepresentation.patterns).length > 0 && (
               <p className="text-xs text-muted-foreground mt-1">
-                패턴: {result.objectRelations.selfRepresentation.patterns.join(', ')}
+                패턴: {safeArray(result.objectRelations.selfRepresentation.patterns).join(', ')}
               </p>
             )}
           </div>
@@ -123,7 +128,7 @@ export const SCTVisualization: React.FC<SCTVisualizationProps> = ({ result }) =>
             <p className="text-sm font-semibold text-purple-400">분리-개별화:</p>
             <p className="text-sm text-muted-foreground">{result.objectRelations.separationIndividuation.stage}</p>
             <p className="text-xs text-muted-foreground mt-1">
-              과제: {result.objectRelations.separationIndividuation.challenges.join(', ')}
+              과제: {safeArray(result.objectRelations.separationIndividuation.challenges).join(', ')}
             </p>
           </div>
         </div>
@@ -172,10 +177,10 @@ export const SCTVisualization: React.FC<SCTVisualizationProps> = ({ result }) =>
           <div>
             <p className="text-sm font-semibold text-purple-400">정서 조절:</p>
             <p className="text-sm text-muted-foreground">
-              강점: {result.attachment.emotionalRegulation.strengths.join(', ')}
+              강점: {safeArray(result.attachment.emotionalRegulation.strengths).join(', ')}
             </p>
             <p className="text-sm text-muted-foreground">
-              과제: {result.attachment.emotionalRegulation.challenges.join(', ')}
+              과제: {safeArray(result.attachment.emotionalRegulation.challenges).join(', ')}
             </p>
           </div>
         </div>
@@ -227,14 +232,14 @@ export const SCTVisualization: React.FC<SCTVisualizationProps> = ({ result }) =>
             </ResponsiveContainer>
             
             <div className="mt-4 space-y-3">
-              {result.needsAnalysis.unmetNeeds.map((need, idx) => (
+              {safeArray(result.needsAnalysis.unmetNeeds).map((need, idx) => (
                 <div key={idx} className="p-3 bg-pink-500/10 rounded-lg border border-pink-500/20">
                   <div className="flex justify-between items-center mb-1">
                     <p className="text-sm font-semibold text-pink-400">{need.need}</p>
-                    <span className="text-xs text-muted-foreground">심각도: {need.severity}/10</span>
+                    <span className="text-xs text-muted-foreground">심각도: {safeValue(need.severity)}/10</span>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    나타나는 양상: {need.manifestations.join(', ')}
+                    나타나는 양상: {safeArray(need.manifestations).join(', ')}
                   </p>
                 </div>
               ))}
@@ -242,22 +247,22 @@ export const SCTVisualization: React.FC<SCTVisualizationProps> = ({ result }) =>
           </>
         )}
         
-        {result.needsAnalysis.compensatoryBehaviors.length > 0 && (
+        {safeArray(result.needsAnalysis.compensatoryBehaviors).length > 0 && (
           <div className="mt-4">
             <p className="text-sm font-semibold text-pink-400 mb-2">보상적 행동 패턴:</p>
             <ul className="space-y-1">
-              {result.needsAnalysis.compensatoryBehaviors.map((behavior, idx) => (
+              {safeArray(result.needsAnalysis.compensatoryBehaviors).map((behavior, idx) => (
                 <li key={idx} className="text-xs text-muted-foreground ml-4">• {behavior}</li>
               ))}
             </ul>
           </div>
         )}
         
-        {result.needsAnalysis.coreBeliefs.length > 0 && (
+        {safeArray(result.needsAnalysis.coreBeliefs).length > 0 && (
           <div className="mt-4">
             <p className="text-sm font-semibold text-pink-400 mb-2">핵심 신념:</p>
             <ul className="space-y-1">
-              {result.needsAnalysis.coreBeliefs.map((belief, idx) => (
+              {safeArray(result.needsAnalysis.coreBeliefs).map((belief, idx) => (
                 <li key={idx} className="text-xs text-muted-foreground ml-4">• {belief}</li>
               ))}
             </ul>

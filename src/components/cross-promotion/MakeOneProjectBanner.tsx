@@ -14,7 +14,7 @@ export const MakeOneProjectBanner = () => {
               <h3 className="text-xl font-bold">이런 서비스가 필요하신가요?</h3>
             </div>
             <p className="text-white/90 mb-4">
-              심리 분석 서비스처럼, 당신만의 AI 서비스를 7일 만에 만들어보세요
+              AI권리금산정 및 자동화마케팅 플랫폼으로 비즈니스를 성장시키세요
             </p>
             
             <div className="flex flex-wrap gap-2 mb-4">
@@ -35,9 +35,9 @@ export const MakeOneProjectBanner = () => {
             <Button
               variant="secondary"
               className="bg-white text-blue-600 hover:bg-white/90"
-              onClick={() => window.open('https://makeoneproject.com?ref=highlight', '_blank')}
+              onClick={() => window.open('https://youchancemvp.com?ref=highlight', '_blank')}
             >
-              무료 아이디어 분석 받기
+              무료 분석 받기
               <ExternalLink className="w-4 h-4 ml-2" />
             </Button>
           </div>

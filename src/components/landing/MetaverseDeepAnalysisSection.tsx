@@ -143,14 +143,14 @@ export const MetaverseDeepAnalysisSection = () => {
         <Card className="p-8 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20 mb-12">
           <h3 className="text-2xl font-bold mb-8 text-center flex items-center justify-center gap-2">
             <Target className="w-6 h-6 text-primary" />
-            심층 분석 프로세스
+            코끼리 상담처럼 자연스럽게
           </h3>
           <div className="grid md:grid-cols-4 gap-6">
             {[
-              { step: "1", title: "SCT 검사", desc: "문장완성을 통한 무의식 탐색" },
-              { step: "2", title: "AI 분석", desc: "대상관계 & 애착 패턴 파악" },
-              { step: "3", title: "욕구 식별", desc: "충족되지 않은 핵심 욕구 발견" },
-              { step: "4", title: "개입 전략", desc: "맞춤형 치료적 개입 제시" }
+              { step: "1", title: "편안한 대화", desc: "코끼리와 이야기하듯 자연스러운 문장완성" },
+              { step: "2", title: "마음 읽기", desc: "대화 속 숨겨진 감정과 관계 패턴 발견" },
+              { step: "3", title: "진짜 욕구", desc: "표현하지 못한 진짜 마음 찾기" },
+              { step: "4", title: "따뜻한 조언", desc: "아이에게 꼭 맞는 케어 방법 제시" }
             ].map((item, index) => (
               <div key={index} className="text-center space-y-3">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto border-2 border-primary/30">

@@ -11,10 +11,10 @@ export const MakeOneProjectBanner = () => {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <Rocket className="w-6 h-6" />
-              <h3 className="text-xl font-bold">이런 서비스가 필요하신가요?</h3>
+              <h3 className="text-xl font-bold">당신의 아이디어를 AI가 실현합니다</h3>
             </div>
             <p className="text-white/90 mb-4">
-              AI권리금산정 및 자동화마케팅 플랫폼으로 비즈니스를 성장시키세요
+              권리금 산정부터 마케팅 자동화까지, 7일이면 충분합니다
             </p>
             
             <div className="flex flex-wrap gap-2 mb-4">

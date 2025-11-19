@@ -168,7 +168,7 @@ export const MetaverseDeepAnalysisSection = () => {
           <Card className="p-8 bg-gradient-to-br from-rose-500/10 to-pink-500/10 border-rose-500/20">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Heart className="w-5 h-5 text-rose-500" />
-              대상관계이론 분석 항목
+              코끼리가 발견한 마음 속 관계 패턴
             </h3>
             <ul className="space-y-3">
               {[
@@ -189,7 +189,7 @@ export const MetaverseDeepAnalysisSection = () => {
           <Card className="p-8 bg-gradient-to-br from-purple-500/10 to-indigo-500/10 border-purple-500/20">
             <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Users className="w-5 h-5 text-purple-500" />
-              애착이론 분석 항목
+              코끼리와 함께 알아보는 애착 관계
             </h3>
             <ul className="space-y-3">
               {[

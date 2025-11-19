@@ -31,6 +31,8 @@ import { GestureQuickMenu } from './GestureQuickMenu';
 import { StructuredCounseling } from './StructuredCounseling';
 import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 import { CHARACTERS } from '@/utils/CounselingQuestions';
+import { SCTVisualization } from './SCTVisualization';
+import { analyzeSCTResponses, type SCTAgeGroup, SCT_QUESTIONS } from '@/utils/SCTQuestions';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -109,6 +111,8 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
   const [showRecordingConsent, setShowRecordingConsent] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [showCustomization, setShowCustomization] = useState(false);
+  const [sctAnalysisResult, setSctAnalysisResult] = useState<any>(null);
+  const [showAnalysisResult, setShowAnalysisResult] = useState(false);
   const [avatarCustomization, setAvatarCustomization] = useState<AvatarCustomizationType>({
     skinTone: 30,
     hairColor: 30,
@@ -409,6 +413,52 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
   const endConversation = async () => {
     console.log('Ending conversation...');
     
+    // 구조화된 상담이었다면 분석 수행
+    if (mode === 'structured' && structuredConfig && messages.length > 5) {
+      try {
+        // 대화에서 사용자 응답 추출
+        const userMessages = messages.filter(m => m.role === 'user');
+        
+        // SCT 질문과 매칭하여 응답 생성
+        const ageGroupMap: Record<AgeGroup, SCTAgeGroup> = {
+          'child': 'infant',
+          'teen': 'teen',
+          'adult': 'adult',
+          'parent': 'parent'
+        };
+        
+        const sctAgeGroup = ageGroupMap[structuredConfig.ageGroup];
+        const questions = SCT_QUESTIONS[sctAgeGroup];
+        
+        // 사용자 메시지를 SCT 응답으로 변환 (최대 질문 수만큼)
+        const responses = userMessages.slice(0, questions.length).map((msg, index) => ({
+          questionId: questions[index].id,
+          response: msg.content
+        }));
+        
+        if (responses.length > 0) {
+          const analysis = analyzeSCTResponses(sctAgeGroup, responses);
+          
+          if (analysis) {
+            setSctAnalysisResult(analysis);
+            setShowAnalysisResult(true);
+            
+            toast({
+              title: "분석 완료",
+              description: "상담 내용 분석이 완료되었습니다.",
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error analyzing conversation:', error);
+        toast({
+          title: "분석 오류",
+          description: "상담 내용 분석 중 오류가 발생했습니다.",
+          variant: "destructive",
+        });
+      }
+    }
+    
     // 녹음 중지 및 저장
     if (isRecording && sessionRecorderRef.current) {
       const session = await sessionRecorderRef.current.stopRecording();
@@ -440,10 +490,12 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
     setIsSpeaking(false);
     setCurrentEmotion('neutral');
     
-    toast({
-      title: "상담 종료",
-      description: "대화가 종료되었습니다",
-    });
+    if (!showAnalysisResult) {
+      toast({
+        title: "상담 종료",
+        description: "대화가 종료되었습니다",
+      });
+    }
   };
 
   // 대화 내용 텍스트로 변환
@@ -1188,6 +1240,46 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
       </CounselingRoom>
       
       <RecordingConsent open={showRecordingConsent} onConsent={handleRecordingConsent} />
+      
+      {/* SCT 분석 결과 모달 */}
+      {showAnalysisResult && sctAnalysisResult && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <Card className="bg-background p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-foreground">SCT 상담 분석 결과</h2>
+                <Button
+                  onClick={() => {
+                    setShowAnalysisResult(false);
+                    setSctAnalysisResult(null);
+                  }}
+                  variant="ghost"
+                  size="icon"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+              <SCTVisualization result={sctAnalysisResult} />
+              <div className="mt-6 flex justify-end gap-3">
+                <Button
+                  onClick={() => navigate('/')}
+                  variant="outline"
+                >
+                  홈으로
+                </Button>
+                <Button
+                  onClick={() => {
+                    setShowAnalysisResult(false);
+                    setSctAnalysisResult(null);
+                  }}
+                >
+                  확인
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

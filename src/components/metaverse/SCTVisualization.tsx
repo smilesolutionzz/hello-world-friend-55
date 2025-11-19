@@ -22,32 +22,37 @@ interface SCTVisualizationProps {
 }
 
 export const SCTVisualization: React.FC<SCTVisualizationProps> = ({ result }) => {
+  // 안전한 값 추출 함수
+  const safeValue = (value: number | undefined | null): number => {
+    return typeof value === 'number' && !isNaN(value) ? value : 0;
+  };
+
   // 대상관계이론 데이터
   const objectRelationsData = [
-    { subject: '자기표상', value: result.objectRelations.selfRepresentation.score },
-    { subject: '대상표상', value: result.objectRelations.objectRepresentation.score },
-    { subject: '분리개별화', value: result.objectRelations.separationIndividuation.score },
-    { subject: '정서조절', value: result.attachment.emotionalRegulation.score },
+    { subject: '자기표상', value: safeValue(result.objectRelations?.selfRepresentation?.score) },
+    { subject: '대상표상', value: safeValue(result.objectRelations?.objectRepresentation?.score) },
+    { subject: '분리개별화', value: safeValue(result.objectRelations?.separationIndividuation?.score) },
+    { subject: '정서조절', value: safeValue(result.attachment?.emotionalRegulation?.score) },
   ];
 
   // 애착 유형 데이터
   const attachmentData = [
-    { name: '안정', value: result.attachment.styleScores.secure, color: '#10b981' },
-    { name: '불안', value: result.attachment.styleScores.anxious, color: '#f59e0b' },
-    { name: '회피', value: result.attachment.styleScores.avoidant, color: '#3b82f6' },
-    { name: '혼란', value: result.attachment.styleScores.disorganized, color: '#ef4444' },
+    { name: '안정', value: safeValue(result.attachment?.styleScores?.secure), color: '#10b981' },
+    { name: '불안', value: safeValue(result.attachment?.styleScores?.anxious), color: '#f59e0b' },
+    { name: '회피', value: safeValue(result.attachment?.styleScores?.avoidant), color: '#3b82f6' },
+    { name: '혼란', value: safeValue(result.attachment?.styleScores?.disorganized), color: '#ef4444' },
   ];
 
   // 미충족 욕구 데이터
-  const needsData = result.needsAnalysis.unmetNeeds.map(need => ({
-    name: need.need,
-    severity: need.severity,
+  const needsData = (result.needsAnalysis?.unmetNeeds || []).map(need => ({
+    name: need.need || '미상',
+    severity: safeValue(need.severity),
   }));
 
   // 방어기제 데이터
-  const defensesData = result.objectRelations.defenseMechanisms.map(defense => ({
-    name: defense.type,
-    strength: defense.strength,
+  const defensesData = (result.objectRelations?.defenseMechanisms || []).map(defense => ({
+    name: defense.type || '미상',
+    strength: safeValue(defense.strength),
   }));
 
   const attachmentStyleKorean: Record<string, string> = {
@@ -64,10 +69,10 @@ export const SCTVisualization: React.FC<SCTVisualizationProps> = ({ result }) =>
         <div className="text-center">
           <h3 className="text-xl font-bold text-foreground mb-2">심리적 안녕감 종합 점수</h3>
           <div className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-2">
-            {result.overallScore}
+            {safeValue(result.overallScore)}
           </div>
           <p className="text-muted-foreground">
-            {result.overallScore >= 70 ? '우수' : result.overallScore >= 50 ? '양호' : result.overallScore >= 30 ? '주의' : '개선 필요'}
+            {safeValue(result.overallScore) >= 70 ? '우수' : safeValue(result.overallScore) >= 50 ? '양호' : safeValue(result.overallScore) >= 30 ? '주의' : '개선 필요'}
           </p>
         </div>
       </Card>

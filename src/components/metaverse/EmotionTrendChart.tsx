@@ -42,14 +42,14 @@ export const EmotionTrendChart = ({ emotionHistory }: EmotionTrendChartProps) =>
   const chartData = emotionHistory.map((point, index) => ({
     time: point.timestamp.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
     score: emotionToScore(point.emotion),
-    intensity: point.intensity * 100,
+    intensity: typeof point.intensity === 'number' && !isNaN(point.intensity) ? point.intensity * 100 : 0,
     emotion: point.emotion,
     index
   }));
 
   // 평균 감정 점수 계산
   const avgScore = chartData.length > 0
-    ? (chartData.reduce((sum, d) => sum + d.score, 0) / chartData.length).toFixed(1)
+    ? (chartData.reduce((sum, d) => sum + (typeof d.score === 'number' && !isNaN(d.score) ? d.score : 0), 0) / chartData.length).toFixed(1)
     : '0.0';
 
   // 감정 분포 계산

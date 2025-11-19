@@ -357,18 +357,20 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
       });
       await emotionDetectorRef.current.init(stream);
 
-      // 캐릭터 설정 가져오기
-      let voice = 'alloy';
-      let instructions = "너는 한국어 상담사야. 모든 답변과 자막은 100% 한국어로만 말해. 영어 입력이 오더라도 한국어로 공손하고 간결하게 답해.";
-      
-      if (mode === 'structured' && structuredConfig) {
-        const characterConfig = CHARACTERS[structuredConfig.character];
-        voice = characterConfig.voice;
-        instructions = characterConfig.persona;
-        console.log(`Starting conversation with ${characterConfig.name} (voice: ${voice})`);
-      }
+      // RealtimeChat 초기화
+      const chatOptions = mode === 'structured' && structuredConfig
+        ? {
+            mode: 'structured' as const,
+            ageGroup: structuredConfig.ageGroup,
+            character: structuredConfig.character
+          }
+        : { 
+            mode: 'free' as const
+          };
 
-      chatRef.current = new RealtimeChat(handleMessage, { voice, instructions });
+      console.log('Starting conversation with options:', chatOptions);
+      
+      chatRef.current = new RealtimeChat(handleMessage, chatOptions);
       await chatRef.current.init();
       
       setIsConnected(true);

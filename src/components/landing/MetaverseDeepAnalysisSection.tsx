@@ -81,15 +81,15 @@ export const MetaverseDeepAnalysisSection = () => {
           </div>
           
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-tight">
-            대상관계이론 × 애착이론
+            금쪽같은 내새끼의 코끼리 상담
             <br />
-            <span className="text-primary">AI가 당신의 내면을 읽습니다</span>
+            <span className="text-primary">이제 AI 메타버스로 만나보세요</span>
           </h2>
           
           <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-            단순한 심리검사를 넘어, <span className="font-semibold text-foreground">SCT 문장완성검사</span>를 통해
+            아이들이 코끼리와 편안하게 대화하듯, AI가 자연스러운 대화로 마음을 열어줍니다
             <br className="hidden sm:block" />
-            <span className="font-semibold text-primary">대상관계이론과 애착이론</span>에 기반한 과학적 심층 분석을 제공합니다
+            대화 속에 숨겨진 <span className="font-semibold text-primary">관계 패턴과 애착 유형</span>을 전문가 수준으로 분석해드립니다
           </p>
         </div>
 

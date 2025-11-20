@@ -81,7 +81,7 @@ const HeroSection = () => {
           
           <h1 className="text-3xl leading-tight sm:text-5xl md:text-6xl lg:text-7xl font-extrabold">
             <span className="block text-white mb-2 sm:mb-3 text-2xl sm:text-5xl md:text-6xl">
-              심리 고민, ADHD,<br className="sm:hidden" /> 발달 평가
+              심리 건강, ADHD,<br className="sm:hidden" /> 발달 체크
             </span>
             <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent mb-4 text-2xl sm:text-5xl md:text-6xl">
               3분이면<br className="sm:hidden" /> 전문가급 분석 완료

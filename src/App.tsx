@@ -11,6 +11,7 @@ import ErrorBoundary from "@/components/ui/error-boundary";
 import NetworkStatus from "@/components/common/NetworkStatus";
 import { PerformanceMonitor } from "@/components/ui/performance-monitor";
 import Analytics from "@/components/common/Analytics";
+import { ConversionTracker } from "@/components/analytics/ConversionTracker";
 import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
 import ConcernStorage from "./pages/ConcernStorage";
@@ -174,6 +175,7 @@ const App = () => {
             <ErrorBoundary>
               <PerformanceMonitor enableConsoleLogging={process.env.NODE_ENV === 'development'} />
               <Analytics />
+              <ConversionTracker />
               <NetworkStatus />
               <SessionManager />
               <UpdatePrompt />

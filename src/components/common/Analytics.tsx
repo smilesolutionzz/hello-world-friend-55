@@ -1,19 +1,23 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-// Simple analytics utility for tracking page views and events
+// Enhanced analytics with GA4, Hotjar, and Clarity support
 export const trackPageView = (page: string) => {
   if (typeof window !== 'undefined') {
     // Google Analytics 4
     if (window.gtag) {
-      window.gtag('config', 'GA_MEASUREMENT_ID', {
+      window.gtag('config', 'G-XXXXXXXXXX', {
         page_title: document.title,
         page_location: window.location.href,
         page_path: page
       });
     }
     
-    // Custom analytics can be added here
+    // Hotjar
+    if (window.hj) {
+      window.hj('stateChange', page);
+    }
+    
     console.log(`📊 Page View: ${page}`);
   }
 };
@@ -25,7 +29,16 @@ export const trackEvent = (eventName: string, parameters?: Record<string, any>) 
       window.gtag('event', eventName, parameters);
     }
     
-    // Custom analytics
+    // Hotjar event
+    if (window.hj) {
+      window.hj('event', eventName);
+    }
+    
+    // Microsoft Clarity custom tag
+    if (window.clarity) {
+      window.clarity('set', eventName, parameters);
+    }
+    
     console.log(`📊 Event: ${eventName}`, parameters);
   }
 };
@@ -41,10 +54,12 @@ const Analytics = () => {
   return null;
 };
 
-// Extend window type for gtag
+// Extend window type for analytics tools
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
+    hj?: (...args: any[]) => void;
+    clarity?: (...args: any[]) => void;
   }
 }
 

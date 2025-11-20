@@ -81,13 +81,13 @@ export const MetaverseDeepAnalysisSection = () => {
           </div>
           
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-tight">
-            금쪽같은 내새끼의 코끼리 상담
+            금쪽같은 내새끼의 심층 상담
             <br />
             <span className="text-primary">이제 AI 메타버스로 만나보세요</span>
           </h2>
           
           <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-            아이들이 코끼리와 편안하게 대화하듯, AI가 자연스러운 대화로 마음을 열어줍니다
+            아이들이 편안하게 대화하듯, AI가 자연스러운 대화로 마음을 열어줍니다
             <br className="hidden sm:block" />
             대화 속에 숨겨진 <span className="font-semibold text-primary">관계 패턴과 애착 유형</span>을 전문가 수준으로 분석해드립니다
           </p>
@@ -143,11 +143,11 @@ export const MetaverseDeepAnalysisSection = () => {
         <Card className="p-8 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20 mb-12">
           <h3 className="text-2xl font-bold mb-8 text-center flex items-center justify-center gap-2">
             <Target className="w-6 h-6 text-primary" />
-            코끼리 상담처럼 자연스럽게
+            자연스러운 대화로 마음 읽기
           </h3>
           <div className="grid md:grid-cols-4 gap-6">
             {[
-              { step: "1", title: "편안한 대화", desc: "코끼리와 이야기하듯 자연스러운 문장완성" },
+              { step: "1", title: "편안한 대화", desc: "친구와 이야기하듯 자연스러운 문장완성" },
               { step: "2", title: "마음 읽기", desc: "대화 속 숨겨진 감정과 관계 패턴 발견" },
               { step: "3", title: "진짜 욕구", desc: "표현하지 못한 진짜 마음 찾기" },
               { step: "4", title: "따뜻한 조언", desc: "아이에게 꼭 맞는 케어 방법 제시" }

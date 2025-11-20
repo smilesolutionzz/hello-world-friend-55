@@ -35,16 +35,16 @@ export const SisterServicesCard = () => {
           </Button>
         </div>
 
-        {/* Make One Project */}
+        {/* AIHealthgrow */}
         <div className="bg-white/80 dark:bg-gray-900/50 rounded-lg p-4 hover:shadow-lg transition-all">
           <div className="flex items-start gap-3 mb-3">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
               <Rocket className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-sm mb-1">MAKE ONE PROJECT</h4>
+              <h4 className="font-semibold text-sm mb-1">AIHEALTHGROW</h4>
               <p className="text-xs text-muted-foreground mb-2">
-                나만의 AI 서비스를<br />7일 만에 만들어보세요
+                AI권리금산정<br />자동화마케팅
               </p>
             </div>
           </div>
@@ -52,7 +52,7 @@ export const SisterServicesCard = () => {
             variant="outline" 
             size="sm" 
             className="w-full text-xs"
-            onClick={() => window.open('https://makeoneproject.com', '_blank')}
+            onClick={() => window.open('https://youchancemvp.com', '_blank')}
           >
             자세히 보기
             <ExternalLink className="w-3 h-3 ml-1" />

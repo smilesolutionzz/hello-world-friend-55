@@ -52,15 +52,15 @@ const Footer = () => {
               </li>
               <li>
                 <a 
-                  href="https://makeoneproject.com?ref=highlight" 
+                  href="https://youchancemvp.com?ref=highlight" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-blue-600 transition-colors group"
                 >
                   <Rocket className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   <div>
-                    <div className="font-medium text-foreground">Make One Project</div>
-                    <div className="text-xs">7일 만에 MVP</div>
+                    <div className="font-medium text-foreground">AIHealthgrow</div>
+                    <div className="text-xs">AI권리금산정 자동화마케팅</div>
                   </div>
                 </a>
               </li>

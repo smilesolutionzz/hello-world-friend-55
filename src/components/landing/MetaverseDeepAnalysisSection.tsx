@@ -20,7 +20,7 @@ export const MetaverseDeepAnalysisSection = () => {
   const features = [
     {
       icon: MessageCircle,
-      title: "SCT 문장완성검사",
+      title: "대화형 SCT 문장완성검사",
       description: "연령별 맞춤 문장완성을 통해 무의식적 내면을 탐색합니다",
       gradient: "from-blue-500/20 to-cyan-500/20"
     },

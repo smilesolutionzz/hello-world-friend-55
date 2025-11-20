@@ -3,6 +3,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Check, X, Sparkles, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import bgImage from '@/assets/value-comparison-bg.jpg';
 
 const ValueComparisonSection = () => {
@@ -68,7 +74,7 @@ const ValueComparisonSection = () => {
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="text-sm font-semibold text-primary">똑똑한 선택</span>
           </div>
-          <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 leading-tight">
+          <h2 className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 leading-tight">
             왜 AiHumanPro를 선택해야 할까요?
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -76,9 +82,73 @@ const ValueComparisonSection = () => {
           </p>
         </div>
 
-        {/* Comparison Table */}
+        {/* Comparison Table - Desktop */}
         <div className="max-w-5xl mx-auto">
-          <Card className="overflow-hidden border-2 border-primary/20 shadow-2xl">
+          {/* Mobile: Accordion */}
+          <div className="md:hidden">
+            <Accordion type="single" collapsible className="space-y-3">
+              {comparison.map((item, index) => (
+                <AccordionItem 
+                  key={index} 
+                  value={`item-${index}`}
+                  className={`border rounded-lg overflow-hidden ${
+                    item.highlighted ? 'border-primary/30 bg-primary/5' : 'border-border'
+                  }`}
+                >
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                    <div className="flex items-center gap-2 w-full">
+                      <span className="text-sm font-bold text-foreground flex-1 text-left">
+                        {item.feature}
+                      </span>
+                      {item.highlighted && <Sparkles className="w-4 h-4 text-primary flex-shrink-0" />}
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 pb-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg">
+                        <X className="w-4 h-4 text-destructive flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium mb-1">전통적 상담</p>
+                          <p className="text-sm text-foreground">{item.traditional}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2 p-3 bg-primary/10 rounded-lg">
+                        <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs text-primary font-medium mb-1">AiHumanPro</p>
+                          <p className="text-sm font-semibold text-foreground">{item.aiHighlight}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+            
+            {/* Mobile CTA */}
+            <div className="mt-6 p-6 bg-gradient-to-r from-primary/10 to-primary/20 rounded-lg text-center">
+              <p className="text-sm font-semibold mb-4">
+                지금 시작하면 <span className="text-primary">첫 테스트 무료</span> + 
+                <span className="text-primary"> 10개 토큰 증정</span>
+              </p>
+              <Button 
+                size="lg"
+                onClick={() => navigate('/assessment')}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-6 text-base font-bold shadow-lg"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  무료로 시작하기
+                  <ArrowRight className="w-5 h-5" />
+                </span>
+              </Button>
+              <p className="text-xs text-muted-foreground mt-3">
+                신용카드 등록 불필요 · 언제든 해지 가능
+              </p>
+            </div>
+          </div>
+
+          {/* Desktop: Table */}
+          <Card className="hidden md:block overflow-hidden border-2 border-primary/20 shadow-2xl">
             <CardContent className="p-0">
               {/* Header Row */}
               <div className="grid grid-cols-3 bg-gradient-to-r from-primary/5 to-primary/10 border-b-2 border-primary/20">

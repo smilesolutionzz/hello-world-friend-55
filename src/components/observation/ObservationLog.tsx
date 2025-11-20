@@ -11,7 +11,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { VoiceInputButton } from '@/components/ui/VoiceInputButton';
 import ShareObservationButton from '@/components/observation/ShareObservationButton';
-import { MemoryLegacyRecommendation } from '@/components/cross-promotion/MemoryLegacyRecommendation';
 
 interface ObservationLogProps {
   profileId: string;

@@ -1,0 +1,51 @@
+Lines to remove from App.tsx routes:
+
+Remove landing pages:
+- <Route path="/parent" element={<ParentLanding />} />
+- <Route path="/academy" element={<AcademyLanding />} />
+- <Route path="/development-center" element={<DevelopmentCenterLanding />} />
+- <Route path="/daycare" element={<DaycareLanding />} />
+
+Remove Highlight routes:
+- <Route path="/auth" element={<HighlightAuth />} /> (replace with <Route path="/auth" element={<Auth />} />)
+- <Route path="/assessment/:id" element={<TestResults />} /> (replace with <Route path="/assessment/:id" element={<AssessmentDetail />} />)
+
+Remove life achievement routes:
+- <Route path="/life-achievement-history" element={<LifeAchievementHistory />} />
+- <Route path="/life-achievement-stats" element={<LifeAchievementStats />} />
+- <Route path="/life-achievement-leaderboard" element={<LifeAchievementLeaderboard />} />
+- <Route path="/life-achievement-badges" element={<LifeAchievementBadges />} />
+- <Route path="/life-achievement-community" element={<LifeAchievementCommunity />} />
+- <Route path="/life-achievement-goals" element={<LifeAchievementGoals />} />
+
+Remove institution routes:
+- <Route path="/institution-onboarding" element={<InstitutionOnboarding />} />
+- <Route path="/institution-admin" element={<InstitutionAdmin />} />
+- <Route path="/institutions" element={<Institutions />} />
+- <Route path="/institution-marketing" element={<InstitutionMarketingPresentation />} />
+
+Remove marketing/social routes:
+- <Route path="/instagram-content" element={<InstagramContentGenerator />} />
+- <Route path="/cross-promotion-reward" element={<CrossPromotionReward />} />
+- <Route path="/marketing-ai-assistant" element={<MarketingAIAssistant />} />
+- <Route path="/education-feed" element={<EducationFeed />} />
+- <Route path="/referral" element={<Referral />} />
+
+Remove wellness routes:
+- <Route path="/wellness-hub" element={<WellnessHub />} />
+- <Route path="/wellness-lifestyle" element={<WellnessLifestyle />} />
+- <Route path="/challenges" element={<ChallengesPage />} />
+- <Route path="/growth-tracker" element={<GrowthTracker />} />
+- <Route path="/meditation" element={<MeditationPage />} />
+- <Route path="/realtime-meditation" element={<RealtimeMeditation />} />
+
+Remove voice/therapy routes:
+- <Route path="/ai-therapy-studio" element={<AITherapyStudio />} />
+- <Route path="/voice-diary" element={<VoiceDiary />} />
+
+Remove corporate/community routes:
+- <Route path="/corporate" element={<Corporate />} />
+- <Route path="/community" element={<Community />} />
+- <Route path="/growth-community" element={<GrowthCommunity />} />
+- <Route path="/growth-stories" element={<GrowthStories />} />
+- <Route path="/home-service" element={<HomeService />} />

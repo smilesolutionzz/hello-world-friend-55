@@ -27,7 +27,7 @@ import {
 const mainItems = [
   { title: "홈", url: "/", icon: Home },
   { title: "AI 분석", url: "/observation", icon: Brain },
-  { title: "AI 라이프허브", url: "/voice-emotion-diary", icon: Heart },
+  { title: "AI 음성일기", url: "/voice-emotion-diary", icon: Heart },
   { title: "관찰일지", url: "/observation", icon: FileText },
   { title: "나만의 맞춤리포팅 신청", url: "/comprehensive-reporting", icon: ClipboardCheck },
 ]

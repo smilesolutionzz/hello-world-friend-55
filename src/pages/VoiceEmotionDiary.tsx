@@ -295,18 +295,22 @@ export default function VoiceEmotionDiary() {
                   <p className="text-sm">{transcription}</p>
                 </div>
 
-                <div className="space-y-2">
-                  <h3 className="font-semibold">감정 분석 결과</h3>
-                  <div className="flex items-center gap-3">
-                    <Badge className={`${getEmotionColor(emotionAnalysis.primary_emotion)} text-white`}>
+                <div className="p-4 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg border border-primary/30">
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-primary" />
+                    오늘의 기분 분석
+                  </h3>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Badge className={`${getEmotionColor(emotionAnalysis.primary_emotion)} text-white text-base px-4 py-2`}>
                       {getEmotionLabel(emotionAnalysis.primary_emotion)}
                     </Badge>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm font-medium">
                       강도: {(emotionAnalysis.emotion_score * 100).toFixed(0)}%
                     </span>
-                    <span className="text-sm text-muted-foreground">
-                      기분: {emotionAnalysis.mood_rating}/10
-                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-background/50 rounded-md">
+                    <span className="text-sm text-muted-foreground">기분 점수:</span>
+                    <span className="text-2xl font-bold text-primary">{emotionAnalysis.mood_rating}/10</span>
                   </div>
                 </div>
 

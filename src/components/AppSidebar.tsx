@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/sidebar"
 
 const mainItems = [
-  { title: "홈", url: "/dashboard", icon: Home },
+  { title: "홈", url: "/", icon: Home },
   { title: "AI 분석", url: "/observation-new", icon: Brain },
   { title: "AI 라이프허브", url: "/voice-emotion-diary", icon: Heart },
   { title: "관찰일지", url: "/observation", icon: FileText },

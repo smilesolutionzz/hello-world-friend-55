@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Share2, Copy, MessageCircle, Camera, Download } from 'lucide-react';
-import { KakaoShareButton } from '@/components/social/KakaoShareButton';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 

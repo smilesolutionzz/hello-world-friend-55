@@ -5,7 +5,6 @@ import { CheckCircle, AlertTriangle, Brain, ArrowLeft, ExternalLink, MessageCirc
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
-import LifeRiskAnalysis from "@/components/insurance/LifeRiskAnalysis";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';

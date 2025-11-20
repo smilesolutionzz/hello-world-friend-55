@@ -4,6 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Sparkles, TrendingUp, Zap, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import newFeaturesBg from '@/assets/new-features-bg.jpg';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const newFeatures = [
   {
@@ -64,8 +70,49 @@ export const NewFeaturesSection = () => {
           </p>
         </div>
 
-        {/* 신규 기능 카드들 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* 신규 기능 카드들 - Mobile: Accordion */}
+        <div className="md:hidden mb-8">
+          <Accordion type="single" collapsible className="space-y-3">
+            {newFeatures.map((feature, index) => (
+              <AccordionItem 
+                key={feature.id}
+                value={`feature-${index}`}
+                className="border-2 rounded-lg overflow-hidden bg-white"
+              >
+                <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-3">
+                      <Badge className={`bg-gradient-to-r ${feature.color} text-white border-0 shadow-lg text-xs`}>
+                        {feature.badge}
+                      </Badge>
+                      <span className="text-sm font-bold text-left">{feature.title}</span>
+                    </div>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4">
+                  <div className={`h-1 bg-gradient-to-r ${feature.color} mb-3`} />
+                  <p className="text-sm text-gray-600 mb-3">{feature.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">{feature.date}</span>
+                    <Button
+                      size="sm"
+                      onClick={() => navigate(feature.path)}
+                      className={`bg-gradient-to-r ${feature.color} text-white`}
+                    >
+                      <span className="flex items-center gap-1">
+                        지금 해보기
+                        <Zap className="w-3 h-3" />
+                      </span>
+                    </Button>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+
+        {/* 신규 기능 카드들 - Desktop: Grid */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {newFeatures.map((feature, index) => (
             <Card 
               key={feature.id}
@@ -95,8 +142,58 @@ export const NewFeaturesSection = () => {
           ))}
         </div>
 
-        {/* 통계 및 업데이트 정보 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* 통계 및 업데이트 정보 - Mobile: Accordion */}
+        <div className="md:hidden mb-8">
+          <Accordion type="single" collapsible className="space-y-3">
+            <AccordionItem value="stats-1" className="border-2 border-purple-200 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="w-5 h-5 text-purple-600" />
+                  <span className="text-sm font-bold text-purple-800">AI 기능 개발</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-800 mb-2">35+</div>
+                  <p className="text-sm text-purple-700">다양한 AI 심리 검사 및 분석 기능</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="stats-2" className="border-2 border-pink-200 rounded-lg bg-gradient-to-br from-pink-50 to-pink-100">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <div className="flex items-center gap-3">
+                  <Sparkles className="w-5 h-5 text-pink-600" />
+                  <span className="text-sm font-bold text-pink-800">새로운 업데이트</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-pink-800 mb-2">매주</div>
+                  <p className="text-sm text-pink-700">계속 추가되는 새로운 기능</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="stats-3" className="border-2 border-orange-200 rounded-lg bg-gradient-to-br from-orange-50 to-orange-100">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                <div className="flex items-center gap-3">
+                  <Trophy className="w-5 h-5 text-orange-600" />
+                  <span className="text-sm font-bold text-orange-800">AI 기반 분석</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-orange-800 mb-2">100%</div>
+                  <p className="text-sm text-orange-700">최신 AI 기술로 정확한 분석</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+
+        {/* 통계 및 업데이트 정보 - Desktop: Grid */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
             <CardContent className="p-6 text-center">
               <TrendingUp className="w-12 h-12 text-purple-600 mx-auto mb-3" />

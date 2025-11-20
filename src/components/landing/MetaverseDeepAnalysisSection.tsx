@@ -179,8 +179,8 @@ export const MetaverseDeepAnalysisSection = () => {
 
         {/* Analysis Process - Mobile Accordion, Desktop Grid */}
         <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20 mb-12">
-          <h3 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 text-center flex items-center justify-center gap-2">
-            <Target className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+          <h3 className="text-base md:text-2xl font-bold mb-6 md:mb-8 text-center flex items-center justify-center gap-2">
+            <Target className="w-4 h-4 md:w-6 md:h-6 text-primary" />
             자연스러운 대화로 마음 읽기
           </h3>
           

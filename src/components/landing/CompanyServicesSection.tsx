@@ -26,12 +26,12 @@ const CompanyServicesSection = () => {
       buttonColor: 'bg-blue-500 hover:bg-blue-600'
     },
     {
-      name: 'Make One Project',
-      description: '비개발자를 위한 1주일 MVP 제작',
+      name: 'AIHealthgrow',
+      description: 'AI권리금산정 자동화마케팅',
       icon: Sparkles,
       iconBg: 'bg-slate-800',
       iconColor: 'text-pink-500',
-      url: 'https://makeoneproject.com',
+      url: 'https://youchancemvp.com',
       buttonText: '서비스 바로가기 →',
       buttonColor: 'bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600'
     }

@@ -80,11 +80,14 @@ export const MetaverseDeepAnalysisSection = () => {
             <span className="text-xs md:text-sm font-semibold text-primary">세계 최초 AI 메타버스 심층 심리 분석</span>
           </div>
           
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-tight">
-            금쪽같은 내새끼의 심층 상담
+          <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-tight">
+            금쪽같은 내새끼의
             <br />
-            <span className="text-primary">이제 AI 메타버스로 만나보세요</span>
+            <span className="text-primary">심층 상담</span>
           </h2>
+          <p className="text-base sm:text-lg md:text-xl text-primary font-semibold mt-2">
+            이제 AI 메타버스로 만나보세요
+          </p>
           
           <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
             아이들이 편안하게 대화하듯, AI가 자연스러운 대화로 마음을 열어줍니다

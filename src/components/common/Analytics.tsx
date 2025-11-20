@@ -6,7 +6,7 @@ export const trackPageView = (page: string) => {
   if (typeof window !== 'undefined') {
     // Google Analytics 4
     if (window.gtag) {
-      window.gtag('config', 'G-XXXXXXXXXX', {
+      window.gtag('config', 'G-TLTDC7TNZL', {
         page_title: document.title,
         page_location: window.location.href,
         page_path: page

@@ -170,7 +170,7 @@ function DashboardContent() {
         .from('profiles')
         .select('display_name, subscription_tier')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setProfile(data);

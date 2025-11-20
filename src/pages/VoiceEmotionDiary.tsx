@@ -172,7 +172,8 @@ export default function VoiceEmotionDiary() {
           emotion_score: emotionAnalysis.emotion_score,
           mood_rating: emotionAnalysis.mood_rating,
           tags: emotionAnalysis.suggested_tags || [],
-          notes: notes
+          notes: notes,
+          recorded_at: new Date().toISOString()
         });
 
       if (error) throw error;

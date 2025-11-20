@@ -27,7 +27,7 @@ const DashboardRouter = () => {
         .from('profiles')
         .select('account_type')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (profile?.account_type) {
         setAccountType(profile.account_type as AccountType);

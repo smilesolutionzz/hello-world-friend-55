@@ -49,7 +49,7 @@ export function AppSidebar() {
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
       ? "flex items-center gap-2 bg-accent text-white font-semibold" 
-      : "flex items-center gap-2 text-white/90 hover:bg-accent/50 hover:text-white"
+      : "flex items-center gap-2 text-white hover:bg-accent/50"
 
   return (
     <Sidebar

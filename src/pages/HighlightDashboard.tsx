@@ -309,47 +309,120 @@ function DashboardContent() {
         <AppSidebar />
         
         <div className="flex-1 flex flex-col relative">
-          {/* Header */}
-          <div className="border-b border-purple-500/20 bg-gradient-to-r from-slate-950/95 via-purple-950/95 to-slate-950/95 backdrop-blur-xl shadow-lg shadow-purple-500/10">
-            <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <SidebarTrigger className="mr-2" />
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent animate-pulse">
-                  개인 대시보드
-                </h1>
-                {profile && (
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-purple-400" />
-                    <span className="text-sm font-medium text-purple-200">{profile.display_name || '사용자'}</span>
-                    <Badge variant={profile.subscription_tier === 'premium' ? 'default' : 'secondary'}>
-                      {profile.subscription_tier === 'premium' ? (
-                        <>
-                          <Crown className="w-3 h-3 mr-1" />
-                          프리미엄
-                        </>
-                      ) : (
-                        '무료'
-                      )}
-                    </Badge>
-                  </div>
-                )}
-              </div>
-              
-              <div className="flex items-center gap-2">
+          {/* Header - 모바일 최적화 */}
+          <div className="border-b border-purple-500/20 bg-gradient-to-r from-slate-950/95 via-purple-950/95 to-slate-950/95 backdrop-blur-xl shadow-lg shadow-purple-500/10 sticky top-0 z-40">
+            <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4">
+              {/* 첫 번째 줄: 메인 네비게이션 */}
+              <div className="flex items-center justify-between gap-2 mb-2 sm:mb-0">
+                <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+                  <SidebarTrigger className="shrink-0" />
+                  <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent truncate">
+                    개인 대시보드
+                  </h1>
+                  {profile && (
+                    <div className="hidden lg:flex items-center gap-2">
+                      <User className="w-4 h-4 text-purple-400" />
+                      <span className="text-sm font-medium text-purple-200">{profile.display_name || '사용자'}</span>
+                      <Badge variant={profile.subscription_tier === 'premium' ? 'default' : 'secondary'} className="text-xs">
+                        {profile.subscription_tier === 'premium' ? (
+                          <>
+                            <Crown className="w-3 h-3 mr-1" />
+                            프리미엄
+                          </>
+                        ) : (
+                          '무료'
+                        )}
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+                
+                {/* 데스크탑 버튼들 */}
+                <div className="hidden md:flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="border-purple-500/30 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/50 backdrop-blur-sm"
+                      >
+                        <Settings className="w-4 h-4 md:mr-2" />
+                        <span className="hidden md:inline">대시보드 설정</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-slate-900/95 border-purple-500/30">
+                      <DropdownMenuLabel className="text-purple-200">위젯 관리</DropdownMenuLabel>
+                      <DropdownMenuSeparator className="bg-purple-500/20" />
+                      <DropdownMenuItem 
+                        onClick={() => setIsCustomizing(!isCustomizing)}
+                        className="text-purple-300 focus:bg-purple-500/20 focus:text-purple-200"
+                      >
+                        <GripVertical className="w-4 h-4 mr-2" />
+                        {isCustomizing ? '편집 완료' : '위젯 재배치'}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={resetWidgets}
+                        className="text-purple-300 focus:bg-purple-500/20 focus:text-purple-200"
+                      >
+                        <RotateCcw className="w-4 h-4 mr-2" />
+                        초기화
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => navigate('/subscription')}
+                    className="border-purple-500/30 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/50 backdrop-blur-sm"
+                  >
+                    <span className="hidden lg:inline">구독 관리</span>
+                    <Crown className="w-4 h-4 lg:hidden" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={handleSignOut}
+                    className="text-purple-300 hover:bg-purple-500/20"
+                  >
+                    <LogOut className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">로그아웃</span>
+                  </Button>
+                </div>
+
+                {/* 모바일 메뉴 버튼 */}
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+                  <DropdownMenuTrigger asChild className="md:hidden">
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="border-purple-500/30 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/50 backdrop-blur-sm"
+                      className="border-purple-500/30 text-purple-300 hover:bg-purple-500/20 shrink-0"
                     >
-                      <Settings className="w-4 h-4 mr-2" />
-                      대시보드 설정
+                      <Settings className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-slate-900/95 border-purple-500/30">
-                    <DropdownMenuLabel className="text-purple-200">위젯 관리</DropdownMenuLabel>
-                    <DropdownMenuSeparator className="bg-purple-500/20" />
+                  <DropdownMenuContent align="end" className="bg-slate-900/95 border-purple-500/30 w-48">
+                    {profile && (
+                      <>
+                        <DropdownMenuLabel className="text-purple-200">
+                          <div className="flex items-center gap-2">
+                            <User className="w-4 h-4" />
+                            <span className="truncate">{profile.display_name || '사용자'}</span>
+                          </div>
+                          <Badge variant={profile.subscription_tier === 'premium' ? 'default' : 'secondary'} className="mt-1">
+                            {profile.subscription_tier === 'premium' ? (
+                              <>
+                                <Crown className="w-3 h-3 mr-1" />
+                                프리미엄
+                              </>
+                            ) : (
+                              '무료'
+                            )}
+                          </Badge>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator className="bg-purple-500/20" />
+                      </>
+                    )}
                     <DropdownMenuItem 
                       onClick={() => setIsCustomizing(!isCustomizing)}
                       className="text-purple-300 focus:bg-purple-500/20 focus:text-purple-200"
@@ -364,26 +437,23 @@ function DashboardContent() {
                       <RotateCcw className="w-4 h-4 mr-2" />
                       초기화
                     </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-purple-500/20" />
+                    <DropdownMenuItem 
+                      onClick={() => navigate('/subscription')}
+                      className="text-purple-300 focus:bg-purple-500/20 focus:text-purple-200"
+                    >
+                      <Crown className="w-4 h-4 mr-2" />
+                      구독 관리
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={handleSignOut}
+                      className="text-red-400 focus:bg-red-500/20 focus:text-red-300"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      로그아웃
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => navigate('/subscription')}
-                  className="border-purple-500/30 text-purple-300 hover:bg-purple-500/20 hover:border-purple-400/50 backdrop-blur-sm"
-                >
-                  구독 관리
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={handleSignOut}
-                  className="text-purple-300 hover:bg-purple-500/20"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  로그아웃
-                </Button>
               </div>
             </div>
           </div>
@@ -401,21 +471,21 @@ function DashboardContent() {
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="tests" className="space-y-6">
+                <TabsContent value="tests" className="space-y-4 sm:space-y-6">
                   {/* 빠른 시작 CTA 섹션 - 고정 */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                     <Card 
                       className="bg-gradient-to-br from-blue-900/40 to-blue-950/40 backdrop-blur-xl border border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 cursor-pointer group"
                       onClick={() => navigate('/assessment')}
                     >
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                          <div className="p-3 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors">
-                            <Brain className="w-8 h-8 text-blue-400" />
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className="p-2 sm:p-3 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors shrink-0">
+                            <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
                           </div>
-                          <div>
-                            <h3 className="font-semibold text-lg bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">종합 검사</h3>
-                            <p className="text-sm text-blue-300/70">전문 심리검사 시작하기</p>
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-base sm:text-lg bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent truncate">종합 검사</h3>
+                            <p className="text-xs sm:text-sm text-blue-300/70 truncate">전문 심리검사 시작하기</p>
                           </div>
                         </div>
                       </CardContent>
@@ -425,31 +495,31 @@ function DashboardContent() {
                       className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/30 cursor-pointer group"
                       onClick={() => navigate('/simple-observation')}
                     >
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                          <div className="p-3 bg-emerald-500/20 rounded-xl group-hover:bg-emerald-500/30 transition-colors">
-                            <Activity className="w-8 h-8 text-emerald-400" />
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className="p-2 sm:p-3 bg-emerald-500/20 rounded-xl group-hover:bg-emerald-500/30 transition-colors shrink-0">
+                            <Activity className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-400" />
                           </div>
-                          <div>
-                            <h3 className="font-semibold text-lg bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">바로 검사</h3>
-                            <p className="text-sm text-emerald-300/70">1분 빠른 체크</p>
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-base sm:text-lg bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent truncate">바로 검사</h3>
+                            <p className="text-xs sm:text-sm text-emerald-300/70 truncate">1분 빠른 체크</p>
                           </div>
                         </div>
                       </CardContent>
                     </Card>
 
                     <Card 
-                      className="bg-gradient-to-br from-purple-900/40 to-purple-950/40 backdrop-blur-xl border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/30 cursor-pointer group"
+                      className="bg-gradient-to-br from-purple-900/40 to-purple-950/40 backdrop-blur-xl border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/30 cursor-pointer group sm:col-span-2 lg:col-span-1"
                       onClick={() => navigate('/premium-assessment')}
                     >
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                          <div className="p-3 bg-purple-500/20 rounded-xl group-hover:bg-purple-500/30 transition-colors">
-                            <Crown className="w-8 h-8 text-purple-400" />
+                      <CardContent className="p-4 sm:p-6">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className="p-2 sm:p-3 bg-purple-500/20 rounded-xl group-hover:bg-purple-500/30 transition-colors shrink-0">
+                            <Crown className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
                           </div>
-                          <div>
-                            <h3 className="font-semibold text-lg bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">프리미엄 검사</h3>
-                            <p className="text-sm text-purple-300/70">AI 심층 분석</p>
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-base sm:text-lg bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent truncate">프리미엄 검사</h3>
+                            <p className="text-xs sm:text-sm text-purple-300/70 truncate">AI 심층 분석</p>
                           </div>
                         </div>
                       </CardContent>

@@ -186,11 +186,6 @@ const Index = () => {
             <SimplifiedCoreServices />
           </ScrollReveal>
           
-          {/* 🧠 메타버스 심층 분석 - 대상관계이론 × 애착이론 */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <MetaverseDeepAnalysisSection />
-          </ScrollReveal>
-          
           {/* 5️⃣ 데이터 기반 AI 분석 리포트 */}
           <ScrollReveal direction="up" delay={0.1}>
             <DataDrivenReportSection />

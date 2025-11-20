@@ -15,6 +15,7 @@ import { ConversionTracker } from "@/components/analytics/ConversionTracker";
 import Index from "./pages/Index";
 import IEPGenerator from "./pages/IEPGenerator";
 import ConcernStorage from "./pages/ConcernStorage";
+import DailyParentingTip from "./pages/DailyParentingTip";
 
 import Payment from "./pages/Payment";
 
@@ -317,6 +318,7 @@ const App = () => {
           <Route path="/referral" element={<Referral />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/daily-tip" element={<DailyParentingTip />} />
           
           {/* Stripe subscription routes removed
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />

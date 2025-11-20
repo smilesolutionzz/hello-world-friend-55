@@ -6,6 +6,7 @@ import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import ProductRecommendation from "@/components/ProductRecommendation";
+import SocialShareButtons from '@/components/social/SocialShareButtons';
 import VoiceFeature from '@/components/voice/VoiceFeature';
 import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';

@@ -58,6 +58,7 @@ import LegalSafetyNotice from "@/components/LegalSafetyNotice";
 import AnalysisScreen from "@/components/analysis/AnalysisScreen";
 import ExpertMatching from "@/components/analysis/ExpertMatching";
 import ConsultationRoom from "@/components/consultation/ConsultationRoom";
+import { AIHighlightDashboard } from "@/components/highlight/AIHighlightDashboard";
 import { ExpertProfile } from "@/types/assessment";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";

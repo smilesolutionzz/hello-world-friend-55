@@ -30,6 +30,7 @@ import AssessmentHistory from "@/components/history/AssessmentHistory";
 import AIInsights from "@/components/dashboard/AIInsights";
 import { PersonalityAnalysis } from "@/components/dashboard/PersonalityAnalysis";
 import WellnessAnalysis from "@/components/dashboard/WellnessAnalysis";
+import { SisterServicesCard } from "@/components/cross-promotion/SisterServicesCard";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, CartesianGrid, Tooltip, Legend, XAxis, YAxis, LineChart, Line } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";

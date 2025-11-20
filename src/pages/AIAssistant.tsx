@@ -13,6 +13,7 @@ import { TypingAnimation } from "@/components/ui/typing-animation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import ProactiveAgentDashboard from "@/components/agents/ProactiveAgentDashboard";
+import { WelfareGuideWidget } from "@/components/welfare/WelfareGuideWidget";
 
 interface Message {
   id: string;

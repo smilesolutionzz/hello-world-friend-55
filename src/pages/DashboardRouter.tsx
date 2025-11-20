@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import Dashboard from './Dashboard';
+import HighlightDashboard from './HighlightDashboard';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 type AccountType = 'parent' | 'teacher' | 'therapist' | 'admin';
@@ -55,7 +55,7 @@ const DashboardRouter = () => {
     return <Navigate to="/login" replace />;
   }
 
-  return <Dashboard />;
+  return <HighlightDashboard />;
 };
 
 export default DashboardRouter;

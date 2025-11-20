@@ -28,6 +28,7 @@ import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
 import { MetaverseDeepAnalysisSection } from '@/components/landing/MetaverseDeepAnalysisSection';
+import { MetaverseBanner } from '@/components/metaverse/MetaverseBanner';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 
 const structuredData = {
@@ -189,6 +190,14 @@ const Index = () => {
           {/* 5️⃣ 데이터 기반 AI 분석 리포트 */}
           <ScrollReveal direction="up" delay={0.1}>
             <DataDrivenReportSection />
+          </ScrollReveal>
+          
+          {/* 🎭 메타버스 배너 */}
+          <MetaverseBanner />
+          
+          {/* 🌐 메타버스 심층 분석 */}
+          <ScrollReveal direction="up" delay={0.1}>
+            <MetaverseDeepAnalysisSection />
           </ScrollReveal>
           
           {/* 🎯 New Features Section - 매주 업데이트 */}

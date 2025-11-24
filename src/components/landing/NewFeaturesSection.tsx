@@ -65,7 +65,7 @@ export const NewFeaturesSection = () => {
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
             이번 주 NEW 기능
           </h2>
-          <p className="text-sm sm:text-xl text-gray-600">
+          <p className="text-sm sm:text-xl text-muted-foreground">
             매주 새로운 AI 기능이 업데이트됩니다 ✨
           </p>
         </div>
@@ -91,9 +91,9 @@ export const NewFeaturesSection = () => {
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
                   <div className={`h-1 bg-gradient-to-r ${feature.color} mb-3`} />
-                  <p className="text-sm text-gray-600 mb-3">{feature.description}</p>
+                  <p className="text-sm text-foreground mb-3">{feature.description}</p>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500">{feature.date}</span>
+                    <span className="text-xs text-muted-foreground">{feature.date}</span>
                     <Button
                       size="sm"
                       onClick={() => navigate(feature.path)}
@@ -125,15 +125,15 @@ export const NewFeaturesSection = () => {
                   <Badge className={`bg-gradient-to-r ${feature.color} text-white border-0 shadow-lg`}>
                     {feature.badge}
                   </Badge>
-                  <span className="text-sm text-gray-500">{feature.date}</span>
+                  <span className="text-sm text-muted-foreground">{feature.date}</span>
                 </div>
                 <CardTitle className="text-2xl group-hover:text-purple-600 transition-colors">
                   {feature.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 mb-4">{feature.description}</p>
-                <div className="flex items-center gap-2 text-purple-600 font-semibold group-hover:gap-3 transition-all">
+                <p className="text-foreground mb-4">{feature.description}</p>
+                <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-semibold group-hover:gap-3 transition-all">
                   <span>지금 해보기</span>
                   <Zap className="w-4 h-4 group-hover:animate-pulse" />
                 </div>
@@ -154,8 +154,8 @@ export const NewFeaturesSection = () => {
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-800 mb-2">35+</div>
-                  <p className="text-sm text-purple-700">다양한 AI 심리 검사 및 분석 기능</p>
+                  <div className="text-3xl font-bold text-purple-800 dark:text-purple-300 mb-2">35+</div>
+                  <p className="text-sm text-purple-700 dark:text-purple-300">다양한 AI 심리 검사 및 분석 기능</p>
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -169,8 +169,8 @@ export const NewFeaturesSection = () => {
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-pink-800 mb-2">매주</div>
-                  <p className="text-sm text-pink-700">계속 추가되는 새로운 기능</p>
+                  <div className="text-3xl font-bold text-pink-800 dark:text-pink-300 mb-2">매주</div>
+                  <p className="text-sm text-pink-700 dark:text-pink-300">계속 추가되는 새로운 기능</p>
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -184,8 +184,8 @@ export const NewFeaturesSection = () => {
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-orange-800 mb-2">100%</div>
-                  <p className="text-sm text-orange-700">최신 AI 기술로 정확한 분석</p>
+                  <div className="text-3xl font-bold text-orange-800 dark:text-orange-300 mb-2">100%</div>
+                  <p className="text-sm text-orange-700 dark:text-orange-300">최신 AI 기술로 정확한 분석</p>
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -194,27 +194,27 @@ export const NewFeaturesSection = () => {
 
         {/* 통계 및 업데이트 정보 - Desktop: Grid */}
         <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-700">
             <CardContent className="p-6 text-center">
-              <TrendingUp className="w-12 h-12 text-purple-600 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-purple-800 mb-2">35+</div>
-              <p className="text-purple-700">AI 기능 개발</p>
+              <TrendingUp className="w-12 h-12 text-purple-600 dark:text-purple-400 mx-auto mb-3" />
+              <div className="text-3xl font-bold text-purple-800 dark:text-purple-300 mb-2">35+</div>
+              <p className="text-purple-700 dark:text-purple-300">AI 기능 개발</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-pink-50 to-pink-100 border-pink-200">
+          <Card className="bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-800/20 border-pink-200 dark:border-pink-700">
             <CardContent className="p-6 text-center">
-              <Sparkles className="w-12 h-12 text-pink-600 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-pink-800 mb-2">매주</div>
-              <p className="text-pink-700">새로운 업데이트</p>
+              <Sparkles className="w-12 h-12 text-pink-600 dark:text-pink-400 mx-auto mb-3" />
+              <div className="text-3xl font-bold text-pink-800 dark:text-pink-300 mb-2">매주</div>
+              <p className="text-pink-700 dark:text-pink-300">새로운 업데이트</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border-orange-200 dark:border-orange-700">
             <CardContent className="p-6 text-center">
-              <Trophy className="w-12 h-12 text-orange-600 mx-auto mb-3" />
-              <div className="text-3xl font-bold text-orange-800 mb-2">100%</div>
-              <p className="text-orange-700">AI 기반 분석</p>
+              <Trophy className="w-12 h-12 text-orange-600 dark:text-orange-400 mx-auto mb-3" />
+              <div className="text-3xl font-bold text-orange-800 dark:text-orange-300 mb-2">100%</div>
+              <p className="text-orange-700 dark:text-orange-300">AI 기반 분석</p>
             </CardContent>
           </Card>
         </div>

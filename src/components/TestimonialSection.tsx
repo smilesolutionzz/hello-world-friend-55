@@ -369,12 +369,12 @@ const TestimonialSection = () => {
       {/* 통계 */}
       <div className="grid grid-cols-3 gap-4">
         {stats.map((stat, index) => (
-          <div key={index} className={`card-glass-${index === 0 ? 'blue' : index === 1 ? 'green' : 'purple'} p-4 text-center hover-lift animate-float`}>
-            <div className="flex items-center justify-center mb-2 text-current">
+          <div key={index} className={`card-glass-${index === 0 ? 'blue' : index === 1 ? 'green' : 'purple'} p-4 text-center hover-lift animate-float rounded-2xl`}>
+            <div className="flex items-center justify-center mb-2">
               {stat.icon}
             </div>
-            <div className="text-2xl font-bold text-current">{stat.value}</div>
-            <div className="text-sm opacity-80">{stat.label}</div>
+            <div className="text-2xl font-bold">{stat.value}</div>
+            <div className="text-sm opacity-70">{stat.label}</div>
           </div>
         ))}
       </div>

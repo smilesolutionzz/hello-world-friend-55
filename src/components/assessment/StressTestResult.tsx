@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Share2, RotateCcw, AlertTriangle, CheckCircle, Info, Heart, FileDown, Loader2, BarChart3 } from 'lucide-react';
+import { Brain, Share2, RotateCcw, AlertTriangle, CheckCircle, Info, Heart, FileDown, Loader2, BarChart3, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { supabase } from '@/integrations/supabase/client';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import { PersonalizedProductRecommendation } from '@/components/product/PersonalizedProductRecommendation';
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { PDFHeader } from '@/components/common/PDFHeader';
 
 interface StressTestResultProps {
   result: {
@@ -25,11 +26,11 @@ interface StressTestResultProps {
 const StressTestResult = ({ result, onRestart }: StressTestResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { generatePDFReport, isGeneratingPDF } = useTestResultActions();
   
   const [analysis, setAnalysis] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [riskLevel, setRiskLevel] = useState<'low' | 'medium' | 'high'>('low');
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
   useEffect(() => {
     const analyzeStressResults = async () => {
@@ -170,6 +171,31 @@ ${professionalHelp}
     }
   };
 
+  const handlePDFDownload = async () => {
+    try {
+      setIsDownloadingPDF(true);
+      await downloadResultAsPDF(
+        'stress-result-content',
+        '스트레스_검사_결과',
+        () => {
+          toast({
+            title: "PDF 다운로드 완료",
+            description: "스트레스 검사 결과가 저장되었습니다.",
+          });
+        },
+        (error) => {
+          toast({
+            title: "다운로드 실패",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      );
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  };
+
   const getStressLevel = () => {
     if (result.total <= 16) {
       return {
@@ -239,8 +265,9 @@ ${professionalHelp}
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">
+    <div id="stress-result-content" className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">
       <div className="container mx-auto px-4 max-w-6xl">
+        <PDFHeader testName="스트레스 전문가 분석 결과" />
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="p-3 rounded-full bg-blue-500/10">
@@ -374,28 +401,12 @@ ${professionalHelp}
           <CardContent className="pt-6">
             <div className="flex flex-col gap-3">
               <Button 
-                onClick={() => {
-                  const testData = {
-                    testType: 'stress',
-                    testName: '스트레스 지수 측정',
-                    results: {
-                      total: result.total,
-                      average: result.average,
-                      severity: result.severity,
-                      answers: result.answers,
-                      ageGroup: '성인'
-                    },
-                    analysis: analysis || '스트레스 분석 결과',
-                    date: new Date().toLocaleDateString('ko-KR')
-                  };
-                  console.log('📄 PDF 생성 데이터:', testData);
-                  generatePDFReport(testData);
-                }}
-                disabled={isGeneratingPDF}
+                onClick={handlePDFDownload}
+                disabled={isDownloadingPDF}
                 className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700"
               >
                 <FileDown className="w-4 h-4 mr-2" />
-                {isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 다운로드'}
+                {isDownloadingPDF ? 'PDF 생성 중...' : 'PDF 다운로드'}
               </Button>
               <Button 
                 onClick={handleShare}

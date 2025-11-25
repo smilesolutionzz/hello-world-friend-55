@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useTokens } from '@/hooks/useTokens';
+import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 import html2pdf from 'html2pdf.js';
 import {
   FileText,
@@ -1099,7 +1100,7 @@ const ReportGenerator = () => {
                       index % 3 === 1 ? 'bg-purple-50 border-purple-200' : 'bg-emerald-50 border-emerald-200'
                     }`}>
                       <div className="prose prose-lg max-w-none">
-                        <div dangerouslySetInnerHTML={{ __html: section.content }} />
+                        <div dangerouslySetInnerHTML={{ __html: sanitizeAIContent(section.content) }} />
                       </div>
                     </div>
                   </div>
@@ -1115,7 +1116,7 @@ const ReportGenerator = () => {
                   </h2>
                   <div className="bg-gradient-to-br from-slate-50 to-blue-50 p-8 rounded-xl border-2 border-slate-200">
                     <div className="prose prose-lg max-w-none text-slate-700 leading-relaxed">
-                      <div dangerouslySetInnerHTML={{ __html: reportData.summary }} />
+                      <div dangerouslySetInnerHTML={{ __html: sanitizeAIContent(reportData.summary) }} />
                     </div>
                   </div>
                 </div>

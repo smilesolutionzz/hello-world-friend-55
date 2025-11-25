@@ -6,6 +6,10 @@ verify_jwt = false
 [functions.voice-emotion-diary]
 verify_jwt = false
 
+# 🔒 결제 보안 강화
+[functions.toss-payments-confirm]
+verify_jwt = true
+
 [api]
 enabled = true
 port = 54321
@@ -59,31 +63,31 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.ai-coach]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 코칭 세션은 인증 필요
 
 [functions.ai-comprehensive-analysis]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 종합분석은 고비용 - 인증 필수
 
 [functions.ai-consultation-summarizer]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 상담 요약 인증 필수
 
 [functions.ai-counselor]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 상담 AI 인증 필수
 
 [functions.ai-counselor-chat]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 상담 채팅 인증 필수
 
 [functions.ai-counselor-stream]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 스트리밍 상담 인증 필수
 
 [functions.ai-health-insights]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 건강 인사이트 인증 필수
 
 [functions.ai-mindfulness-coach]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 명상 코치 인증 필수
 
 [functions.ai-patient-analyzer]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 환자 분석 인증 필수
 
 [functions.analyze-test-results]
 verify_jwt = false
@@ -101,7 +105,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.content-recommender]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 콘텐츠 추천 인증 필요
 
 [functions.otrovert-analyzer]
 verify_jwt = false
@@ -113,7 +117,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.enhanced-assessment-analyzer]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 향상된 분석 인증 필수
 
 [functions.expand-prompt]
 verify_jwt = false
@@ -125,10 +129,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.generate-comprehensive-report]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 리포트 생성은 고비용 - 인증 필수
 
 [functions.generate-premium-pdf]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: PDF 생성 인증 필수
 
 [functions.generate-recommendations]
 verify_jwt = false
@@ -140,7 +144,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.huggingface-image-generator]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 이미지 생성 API 남용 방지
 
 [functions.inner-animal-analyzer]
 verify_jwt = false
@@ -149,13 +153,13 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.instagram-content-generator]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 콘텐츠 생성 인증 필수
 
 [functions.ai-diary-generator]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 일지 생성 인증 필수
 
 [functions.social-content-generator]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 소셜 콘텐츠 생성 인증 필수
 
 [functions.instant-report]
 verify_jwt = false
@@ -164,7 +168,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.openai-image-generator]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: OpenAI 이미지 생성은 고비용 - 인증 필수
 
 [functions.parenting-style-analyzer]
 verify_jwt = false
@@ -176,19 +180,19 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.platform-ai-consultant]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 플랫폼 AI 컨설턴트 인증 필수
 
 [functions.premium-adhd-analyzer]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 프리미엄 ADHD 분석 인증 필수
 
 [functions.premium-assessment-analyzer]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 프리미엄 검사 분석 인증 필수
 
 [functions.referral-system]
 verify_jwt = false
 
 [functions.replicate-image-generator]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: Replicate 이미지 생성 API 남용 방지
 
 [functions.saju-analyzer]
 verify_jwt = false
@@ -203,7 +207,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.generate-weekly-report]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 주간 리포트 생성 인증 필수
 
 [functions.create-achievement-share]
 verify_jwt = false
@@ -225,16 +229,16 @@ verify_jwt = true
 verify_jwt = false
 
 [functions.wellness-ai-meditation]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 명상 AI 인증 필수
 
 [functions.wellness-ai-workout]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 운동 AI 인증 필수
 
 [functions.wellness-ai-nutrition]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 영양 AI 인증 필수
 
 [functions.wellness-ai-sleep]
-verify_jwt = false
+verify_jwt = true  # 🔒 보안: 수면 AI 인증 필수
 
 [functions.send-concern-report]
 verify_jwt = true

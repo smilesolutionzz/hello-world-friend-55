@@ -197,32 +197,134 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
 
   const handleGeneratePDF = async () => {
     try {
-    const domains = [
-      { name: '대근육운동', score: Math.random() * 100, description: '큰 근육 움직임과 균형' },
-      { name: '소근육운동', score: Math.random() * 100, description: '손가락과 손목 조작 능력' },
-      { name: '언어발달', score: Math.random() * 100, description: '말하기와 이해 능력' },
-      { name: '사회성발달', score: Math.random() * 100, description: '타인과의 상호작용' },
-      { name: '인지발달', score: Math.random() * 100, description: '사고와 학습 능력' },
-      { name: '자조기술', score: Math.random() * 100, description: '일상생활 수행 능력' }
-    ];
-
-    const chartData = {
-      domains,
-      radar: domains.map(d => ({ name: d.name, score: d.score }))
-    };
-
-    await generatePDFReport({
-      testType: '발달지연 검사',
-      results,
-      analysis,
-      chartData,
-      testInfo: {
-        totalQuestions: results.answers.length,
-        averageScore: results.average.toFixed(1),
-        riskLevel: results.severity
-      }
-    });
+      // 임시 PDF 컨텐츠 생성
+      const tempDiv = document.createElement('div');
+      tempDiv.id = 'developmental-delay-pdf-temp';
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      
+      const delayedAreasHTML = detailedAnalysis?.delayedAreas.length > 0 
+        ? detailedAnalysis.delayedAreas.map((area: any) => `
+            <li><strong>${area.domain}:</strong> ${area.percentage}% - ${area.level}</li>
+          `).join('')
+        : '<li>발달 지연 영역이 없습니다.</li>';
+      
+      tempDiv.innerHTML = `
+        <div style="font-family: 'Arial', sans-serif; padding: 40px; line-height: 1.6;">
+          <div style="text-align: center; margin-bottom: 10px;">
+            <div style="font-size: 20px; font-weight: bold; color: #6366f1; letter-spacing: 1px;">aihpro.com</div>
+          </div>
+          
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1>AIH 발달지연 검사 결과</h1>
+            <p>검사일: ${new Date().toLocaleDateString('ko-KR')}</p>
+          </div>
+          
+          <div class="no-break" style="margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+            <h2>발달지연 전문 분석 결과</h2>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px;">
+              <div style="text-align: center; padding: 15px; background: #e3f2fd; border-radius: 8px;">
+                <div style="font-size: 28px; font-weight: bold; color: #1976d2;">${results.total}</div>
+                <div style="font-size: 12px; color: #666; margin-top: 5px;">총점</div>
+              </div>
+              <div style="text-align: center; padding: 15px; background: #e8f5e9; border-radius: 8px;">
+                <div style="font-size: 28px; font-weight: bold; color: #388e3c;">${results.average.toFixed(1)}</div>
+                <div style="font-size: 12px; color: #666; margin-top: 5px;">평균점수</div>
+              </div>
+              <div style="text-align: center; padding: 15px; background: #fff3e0; border-radius: 8px;">
+                <div style="font-size: 18px; font-weight: bold; color: #f57c00; padding: 5px 10px; background: #ffcc80; border-radius: 4px; display: inline-block;">${results.severity}</div>
+                <div style="font-size: 12px; color: #666; margin-top: 5px;">평가등급</div>
+              </div>
+              <div style="text-align: center; padding: 15px; background: #f3e5f5; border-radius: 8px;">
+                <div style="font-size: 18px; font-weight: bold; color: #7b1fa2;">${results.ageGroup}</div>
+                <div style="font-size: 12px; color: #666; margin-top: 5px;">연령대</div>
+              </div>
+            </div>
+            ${detailedAnalysis ? `
+              <div style="margin-top: 20px; padding: 15px; background: linear-gradient(to right, #e3f2fd, #e8eaf6); border-radius: 8px; border: 1px solid #bbdefb;">
+                <h3 style="color: #1976d2; margin-bottom: 10px;">종합 발달 지연도</h3>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="flex: 1; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden;">
+                    <div style="height: 100%; background: linear-gradient(to right, #42a5f5, #1976d2); width: ${detailedAnalysis.overallDelay}%; border-radius: 10px;"></div>
+                  </div>
+                  <div style="font-size: 24px; font-weight: bold; color: #1976d2; min-width: 60px;">${Math.round(detailedAnalysis.overallDelay)}%</div>
+                </div>
+                <p style="font-size: 12px; color: #666; margin-top: 8px;">전체 발달 영역의 평균 지연도를 나타냅니다</p>
+              </div>
+            ` : ''}
+          </div>
+          
+          <div class="page-break"></div>
+          
+          <div class="no-break" style="margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+            <h3>발달 영역별 상세 분석</h3>
+            ${developmentalDomains.map((domain) => `
+              <div style="margin: 15px 0; padding: 15px; background: #f5f5f5; border-left: 4px solid ${domain.color}; border-radius: 4px;">
+                <div style="display: flex; justify-between; align-items: center; margin-bottom: 10px;">
+                  <strong style="font-size: 16px;">${domain.domain}</strong>
+                  <span style="font-size: 18px; font-weight: bold; color: ${domain.color};">${domain.percentage}%</span>
+                </div>
+                <div style="margin: 8px 0;">
+                  <div style="height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
+                    <div style="height: 100%; background: ${domain.color}; width: ${domain.percentage}%; border-radius: 4px;"></div>
+                  </div>
+                </div>
+                <div style="display: flex; justify-between; align-items: center; font-size: 14px; color: #666;">
+                  <span>점수: ${domain.score}/${domain.maxScore}</span>
+                  <span style="padding: 3px 8px; background: ${domain.color}; color: white; border-radius: 3px; font-weight: bold;">${domain.level}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          
+          ${detailedAnalysis && detailedAnalysis.delayedAreas.length > 0 ? `
+            <div class="page-break"></div>
+            <div class="no-break" style="margin: 20px 0; padding: 20px; border: 2px solid #ffcdd2; background: #ffebee; border-radius: 8px;">
+              <h3 style="color: #c62828; margin-bottom: 15px;">🚨 주의가 필요한 지연 영역 (${detailedAnalysis.delayedAreas.length}개)</h3>
+              <ul style="list-style-position: inside; padding-left: 20px;">
+                ${delayedAreasHTML}
+              </ul>
+            </div>
+          ` : ''}
+          
+          <div class="no-break" style="margin: 20px 0; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+            <h3 style="margin-bottom: 15px;">AI 전문가 분석</h3>
+            <p style="white-space: pre-wrap; line-height: 1.8;">${analysis || '전문가 상담을 통해 정확한 평가를 받으시기 바랍니다.'}</p>
+          </div>
+          
+          <div style="margin-top: 30px; padding: 15px; background: #e3f2fd; border-radius: 5px; font-size: 12px; text-align: center;">
+            ※ 본 검사는 참고용 자가체크이며, 전문적인 진단을 대체하지 않습니다.<br/>
+            발달 지연이 의심되는 경우 반드시 전문가와 상담하시기 바랍니다.
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(tempDiv);
+      
+      // PDF 다운로드 유틸리티 사용
+      const { downloadResultAsPDF } = await import('@/utils/pdfDownload');
+      await downloadResultAsPDF(
+        'developmental-delay-pdf-temp',
+        'AIH_발달지연_검사결과',
+        () => {
+          toast({
+            title: "PDF 다운로드 완료",
+            description: "발달지연 검사 결과가 저장되었습니다.",
+          });
+        },
+        (error) => {
+          toast({
+            title: "PDF 생성 실패",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      );
+      
+      // 임시 요소 제거
+      document.body.removeChild(tempDiv);
     } catch (error) {
+      console.error('PDF 생성 오류:', error);
       toast({
         title: "PDF 생성 실패",
         description: "PDF 생성 중 오류가 발생했습니다.",

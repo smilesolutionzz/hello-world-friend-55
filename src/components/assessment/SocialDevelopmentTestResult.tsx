@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Heart, TrendingUp, AlertCircle, CheckCircle, Loader2, MessageCircle, Users, HandHeart, Target, Smile, Crown, Shield } from "lucide-react";
+import { ArrowLeft, Heart, TrendingUp, AlertCircle, CheckCircle, Loader2, MessageCircle, Users, HandHeart, Target, Smile, Crown, Shield, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, LineChart, Line, AreaChart, Area } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { PDFHeader } from '@/components/common/PDFHeader';
 
 interface SocialDevelopmentTestResultProps {
   results: {
@@ -30,7 +31,6 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
   const [socialDomains, setSocialDomains] = useState<any[]>([]);
   const [detailedAnalysis, setDetailedAnalysis] = useState<any>(null);
   const { toast } = useToast();
-  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
 
   // 사회성 영역별 분석 함수
   const analyzeSocialDomains = () => {
@@ -171,76 +171,45 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
     }
   };
 
-  const handleSaveReport = async () => {
-    try {
-      await saveTestResult({
-        testType: '사회성 발달 검사',
-        results,
-        analysis,
-        ageGroup: results.ageGroup
-      });
-      
-      toast({
-        title: "저장 완료",
-        description: "검사 결과가 저장되었습니다.",
-      });
-    } catch (error) {
-      toast({
-        title: "저장 실패",
-        description: "결과 저장 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleGeneratePDF = async () => {
-    try {
-    const domains = [
-      { name: '사회적 의사소통', score: Math.random() * 100, description: '타인과의 소통 능력' },
-      { name: '사회적 상호작용', score: Math.random() * 100, description: '관계 형성과 유지' },
-      { name: '사회적 인지', score: Math.random() * 100, description: '사회적 상황 이해' },
-      { name: '정서 조절', score: Math.random() * 100, description: '감정 인식과 조절' },
-      { name: '공감 능력', score: Math.random() * 100, description: '타인 감정 이해' },
-      { name: '협력 능력', score: Math.random() * 100, description: '함께 일하기' }
-    ];
-
-    const chartData = {
-      domains,
-      radar: domains.map(d => ({ name: d.name, score: d.score }))
-    };
-
-    await generatePDFReport({
-      testType: '사회성 발달 검사',
-      results,
-      analysis,
-      chartData,
-      testInfo: {
-        totalQuestions: results.answers.length,
-        averageScore: results.average.toFixed(1),
-        riskLevel: results.severity
+  const handlePDFDownload = async () => {
+    await downloadResultAsPDF(
+      'social-development-result-content',
+      '사회성발달검사_결과',
+      () => {
+        toast({
+          title: "PDF 다운로드 완료",
+          description: "사회성 발달 검사 결과가 저장되었습니다.",
+        });
+      },
+      (error) => {
+        toast({
+          title: "다운로드 실패",
+          description: error.message,
+          variant: "destructive",
+        });
       }
-    });
-    } catch (error) {
-      toast({
-        title: "PDF 생성 실패",
-        description: "PDF 생성 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    }
+    );
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div id="social-development-result-content" className="max-w-4xl mx-auto space-y-6">
+      {/* PDF Header */}
+      <PDFHeader testName="사회성 발달 검사 결과" />
+      
       <div className="flex items-center gap-4 mb-6">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="w-4 h-4 mr-2" />
           뒤로가기
         </Button>
         <h1 className="text-2xl font-bold text-foreground">사회성 발달 검사 결과</h1>
+        <Button variant="outline" onClick={handlePDFDownload} className="flex items-center gap-2 ml-auto">
+          <Download className="w-4 h-4" />
+          PDF 다운로드
+        </Button>
       </div>
 
       {/* 결과 요약 카드 */}
-      <Card>
+      <Card className="no-break">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Heart className="w-6 h-6 text-pink-600" />
@@ -281,9 +250,9 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
 
       {/* 사회성 영역별 상세 분석 */}
       {socialDomains.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 page-break">
           {/* 레이더 차트 */}
-          <Card>
+          <Card className="no-break">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="w-5 h-5 text-blue-600" />
@@ -312,7 +281,7 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
           </Card>
 
           {/* 막대 차트 */}
-          <Card>
+          <Card className="no-break">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-green-600" />
@@ -345,7 +314,7 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
 
       {/* 영역별 상세 정보 */}
       {socialDomains.length > 0 && (
-        <Card>
+        <Card className="no-break page-break">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="w-5 h-5 text-purple-600" />
@@ -389,7 +358,7 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
 
       {/* 상세 분석 인사이트 */}
       {detailedAnalysis && (
-        <Card>
+        <Card className="no-break page-break">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-indigo-600" />
@@ -447,7 +416,7 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
       )}
 
       {/* AI 분석 결과 */}
-      <Card>
+      <Card className="no-break page-break">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             {getSeverityIcon(results.severity)}
@@ -475,36 +444,6 @@ const SocialDevelopmentTestResult = ({ results, onBack, onRestart }: SocialDevel
 
       {/* 액션 버튼들 */}
       <div className="flex flex-wrap gap-3">
-        <Button 
-          onClick={handleSaveReport}
-          disabled={isSaving}
-          className="bg-pink-600 hover:bg-pink-700"
-        >
-          {isSaving ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              저장 중...
-            </>
-          ) : (
-            "결과 저장"
-          )}
-        </Button>
-        
-        <Button 
-          onClick={handleGeneratePDF}
-          disabled={isGeneratingPDF}
-          variant="outline"
-        >
-          {isGeneratingPDF ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              생성 중...
-            </>
-          ) : (
-            "PDF 다운로드"
-          )}
-        </Button>
-        
         <Button onClick={onRestart} variant="outline">
           다시 검사하기
         </Button>

@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 import { 
   FileText,
   Download,
@@ -580,7 +581,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                     {/* 일지 내용 미리보기 */}
                     <div 
                       className="prose prose-sm max-w-none text-slate-200 bg-slate-800/50 p-4 rounded-lg max-h-64 overflow-y-auto"
-                      dangerouslySetInnerHTML={{ __html: diary.content.substring(0, 500) + '...' }}
+                      dangerouslySetInnerHTML={{ __html: sanitizeAIContent(diary.content.substring(0, 500) + '...') }}
                     />
 
                     {/* 액션 버튼 */}
@@ -607,7 +608,7 @@ export function AIDiaryGenerator({ institutionId }: AIDiaryGeneratorProps) {
                             </div>
                             <div 
                               className="prose prose-sm prose-invert max-w-none text-slate-100"
-                              dangerouslySetInnerHTML={{ __html: diary.content }}
+                              dangerouslySetInnerHTML={{ __html: sanitizeAIContent(diary.content) }}
                             />
                           </div>
                         </DialogContent>

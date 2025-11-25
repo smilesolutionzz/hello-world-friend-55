@@ -17,10 +17,11 @@ import {
   Activity,
   MessageCircle,
   CheckCircle,
-  ArrowRight
+  ArrowRight,
+  Mic
 } from "lucide-react";
 
-export const MetaverseDeepAnalysisSection = () => {
+export const MetaverseUnifiedSection = () => {
   const navigate = useNavigate();
 
   const features = [
@@ -79,6 +80,49 @@ export const MetaverseDeepAnalysisSection = () => {
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
+        {/* 🎭 NEW Banner - 상단 강조 배너 */}
+        <div className="mb-12 relative bg-gradient-to-r from-cyan-500/90 via-blue-500/90 to-indigo-500/90 rounded-2xl p-6 md:p-8 overflow-hidden shadow-2xl">
+          {/* 배경 애니메이션 효과 */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-20" />
+          
+          {/* 떠다니는 별 효과 */}
+          <Sparkles className="absolute top-4 left-10 w-5 h-5 text-white/60 animate-pulse" />
+          <Sparkles className="absolute top-6 right-20 w-4 h-4 text-white/40 animate-pulse" style={{ animationDelay: '0.5s' }} />
+          <Sparkles className="absolute bottom-4 left-1/4 w-4 h-4 text-white/50 animate-pulse" style={{ animationDelay: '1s' }} />
+
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4 flex-1">
+              {/* 아이콘 */}
+              <div className="flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/20 backdrop-blur-sm animate-pulse flex-shrink-0">
+                <Mic className="w-7 h-7 md:w-8 md:h-8 text-white" />
+              </div>
+              
+              {/* 메시지 */}
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <span className="inline-flex items-center px-3 py-1 bg-white/30 backdrop-blur-sm rounded-full text-xs font-bold text-white shadow-lg">
+                    🎭 NEW
+                  </span>
+                  <h3 className="text-white font-bold text-lg md:text-2xl">AI 메타버스 상담실 오픈!</h3>
+                </div>
+                <p className="text-white/90 text-sm md:text-base">
+                  가상공간에서 AI 상담사와 실시간 음성 대화를 경험해보세요 ✨
+                </p>
+              </div>
+            </div>
+
+            {/* 버튼 */}
+            <Button
+              onClick={() => navigate('/metaverse-voice')}
+              size="lg"
+              className="bg-white hover:bg-white/90 text-blue-600 font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 whitespace-nowrap"
+            >
+              <Mic className="w-5 h-5 mr-2" />
+              지금 체험하기
+            </Button>
+          </div>
+        </div>
+
         {/* Section Header */}
         <div className="text-center mb-16 space-y-4 md:space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-primary/10 border border-primary/20 rounded-full">

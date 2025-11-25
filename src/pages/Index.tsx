@@ -27,8 +27,7 @@ import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
 import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
-import { MetaverseDeepAnalysisSection } from '@/components/landing/MetaverseDeepAnalysisSection';
-import { MetaverseBanner } from '@/components/metaverse/MetaverseBanner';
+import { MetaverseUnifiedSection } from '@/components/landing/MetaverseUnifiedSection';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 
 const structuredData = {
@@ -192,12 +191,9 @@ const Index = () => {
             <DataDrivenReportSection />
           </ScrollReveal>
           
-          {/* 🎭 메타버스 배너 */}
-          <MetaverseBanner />
-          
-          {/* 🌐 메타버스 심층 분석 */}
+          {/* 🎭 메타버스 통합 섹션 (배너 + 심층 분석) */}
           <ScrollReveal direction="up" delay={0.1}>
-            <MetaverseDeepAnalysisSection />
+            <MetaverseUnifiedSection />
           </ScrollReveal>
           
           {/* 🎯 New Features Section - 매주 업데이트 */}

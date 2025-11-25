@@ -228,7 +228,7 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
       </Card>
 
       {/* 점수 범위 안내 */}
-      <Card className="p-8">
+      <Card className="p-8 no-break page-break">
         <h3 className="text-xl font-semibold mb-4">📊 우울감 점수 분류 기준</h3>
         <div className="grid md:grid-cols-4 gap-4 mb-6">
           <div className="p-4 bg-green-50 rounded-lg border border-green-200">
@@ -251,7 +251,7 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
       </Card>
 
       {/* 전문가 해석 결과 - 대폭 확장 */}
-      <Card className="p-8">
+      <Card className="p-8 no-break page-break">
         <h3 className="text-2xl font-bold text-foreground mb-6">✨ 상세 분석 결과</h3>
         
         <div className="space-y-8">
@@ -361,7 +361,7 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
       </Card>
 
       {/* Recommendation Card */}
-      <Card className="p-8">
+      <Card className="p-8 no-break">
         <div className="flex items-start gap-4">
           {recommendation.icon}
           <div className="flex-1 space-y-4">

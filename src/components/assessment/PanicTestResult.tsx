@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Save, Share2 } from "lucide-react";
+import { AlertTriangle, CheckCircle, Heart, ArrowLeft, ExternalLink, Save, Share2, Download } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useTestResultActions } from "@/hooks/useTestResultActions";
 import { useShareText } from "@/utils/shareUtils";
 import { NextStepSuggestion } from '@/components/onboarding/NextStepSuggestion';
 import { ExpertConsultationNotice } from './ExpertConsultationNotice';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { useToast } from '@/hooks/use-toast';
+import { PDFHeader } from '@/components/common/PDFHeader';
 
 interface PanicTestResultProps {
   results: {
@@ -79,8 +81,8 @@ const getRecommendation = (severity: string) => {
 const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) => {
   const { total, average } = results;
   const severity = getSeverityLevel(total);
-  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { shareAsText } = useShareText();
+  const { toast } = useToast();
   
   const chartData = [
     {
@@ -92,26 +94,31 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
 
   const recommendation = getRecommendation(severity);
 
-  const handleShare = () => {
-    const shareContent = `공황장애 자가체크 결과\n\n총점: ${total}점\n심각도: ${severity}\n\n이 결과는 참고용이며, 정확한 진단은 전문의와 상담하세요.`;
-    shareAsText(shareContent, "공황장애 자가체크 결과");
-  };
-
-  const handleSaveResult = () => {
-    saveTestResult({
-      testType: '공황장애 자가체크',
-      results: {
-        total,
-        average,
-        severity,
-        answers: results.answers
+  const handlePDFDownload = async () => {
+    await downloadResultAsPDF(
+      'panic-result-content',
+      '불안감_체크_결과',
+      () => {
+        toast({
+          title: "PDF 다운로드 완료",
+          description: "불안감 체크 결과가 저장되었습니다.",
+        });
       },
-      ageGroup: 'adult'
-    });
+      (error) => {
+        toast({
+          title: "다운로드 실패",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    );
   };
 
   return (
-    <div className="space-y-8">
+    <div id="panic-result-content" className="space-y-8">
+      {/* PDF Header */}
+      <PDFHeader testName="불안감 체크 결과" />
+      
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
@@ -119,7 +126,10 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
           뒤로가기
         </Button>
         <h1 className="text-3xl font-bold text-brand-gradient">불안감 체크 결과 (참고용)</h1>
-        <div></div>
+        <Button variant="outline" onClick={handlePDFDownload} className="flex items-center gap-2">
+          <Download className="w-4 h-4" />
+          PDF 다운로드
+        </Button>
       </div>
 
       {/* 법적 안전 공지 */}
@@ -131,7 +141,7 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
       </div>
 
       {/* Summary Card */}
-      <Card className="p-8">
+      <Card className="p-8 no-break">
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-foreground">검사 결과 요약</h2>
@@ -179,7 +189,7 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
       </Card>
 
       {/* 점수 범위 안내 */}
-      <Card className="p-8">
+      <Card className="p-8 no-break page-break">
         <h3 className="text-xl font-semibold mb-4">📊 공황장애 점수 분류 기준</h3>
         <div className="grid md:grid-cols-4 gap-4 mb-6">
           <div className="p-4 bg-green-50 rounded-lg border border-green-200">
@@ -202,7 +212,7 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
       </Card>
 
       {/* 전문가 해석 결과 - 대폭 확장 */}
-      <Card className="p-8">
+      <Card className="p-8 no-break page-break">
         <h3 className="text-2xl font-bold text-foreground mb-6">✨ 상세 분석 결과</h3>
         
         <div className="space-y-8">
@@ -305,7 +315,7 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
       </Card>
 
       {/* Recommendation Card */}
-      <Card className="p-8">
+      <Card className="p-8 no-break">
         <div className="flex items-start gap-4">
           {recommendation.icon}
           <div className="flex-1 space-y-4">
@@ -318,7 +328,7 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
       </Card>
 
       {/* Action Buttons */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-2 gap-4">
         <Button 
           className="btn-brand h-16"
           onClick={() => window.open('/expert-hiring', '_self')}
@@ -331,39 +341,13 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
         </Button>
 
         <Button 
-          onClick={() => generatePDFReport({
-            testType: 'panic',
-            results: {
-              ...results,
-              ageGroup: '성인'
-            },
-            analysis: `불안감 수준: ${severity}`,
-            testInfo: {
-              testName: '불안감 수준 확인',
-              date: new Date().toLocaleDateString('ko-KR')
-            }
-          })}
-          disabled={isGeneratingPDF}
-          variant="outline" 
-          className="h-16"
-          aria-label="PDF 리포트 다운로드"
-        >
-          <div className="text-left">
-            <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
-            <div className="text-sm text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
-          </div>
-        </Button>
-
-        <Button 
-          onClick={handleSaveResult}
-          disabled={isSaving}
+          onClick={onRestart}
           variant="outline" 
           className="h-16"
         >
-          <Save className="w-5 h-5 mr-2" />
           <div className="text-left">
-            <div className="font-semibold">{isSaving ? '저장 중...' : '결과 저장'}</div>
-            <div className="text-sm text-muted-foreground">대시보드에서 확인</div>
+            <div className="font-semibold">다시 검사하기</div>
+            <div className="text-sm text-muted-foreground">새로운 검사 시작</div>
           </div>
         </Button>
       </div>

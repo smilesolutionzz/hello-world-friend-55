@@ -172,14 +172,14 @@ export const PersonalizedProductRecommendation = ({
             id: inst.id,
             name: inst.name,
             type: "institution",
-            category: "특수체육",
+            category: "심리상담",
             description: inst.description || "우수 제휴기관",
-            benefit: "종합 발달 지원 프로그램",
+            benefit: "종합 심리·정서 지원 프로그램",
             sessionCount: "맞춤형 프로그램 운영",
             ctaText: "기관 알아보기",
-            tags: ["제휴기관", "종합지원"],
+            tags: ["제휴기관", "심리지원"],
             matchScore: 80,
-            matchReason: "종합적인 발달 지원이 필요한 경우"
+            matchReason: "종합적인 심리·정서 지원이 필요한 경우"
           });
         }
       });
@@ -224,7 +224,7 @@ export const PersonalizedProductRecommendation = ({
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
               검사 결과를 바탕으로 {filteredRecommendations.length}개의 전문가·제휴기관을 추천합니다.
-              심리상담, 미술치료, 특수체육 등 전문 서비스를 받아보세요.
+              심리상담, 미술치료 등 전문 서비스를 받아보세요.
             </p>
             <div className="flex gap-2 flex-wrap">
               {categories.map(category => (

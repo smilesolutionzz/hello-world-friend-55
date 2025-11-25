@@ -139,55 +139,44 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
     try {
-      const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>AIH 영유아 언어발달 검사 결과</title>
-          <style>
-            body { font-family: 'Arial', sans-serif; margin: 40px; line-height: 1.6; }
-            .source-header { text-align: center; margin-bottom: 10px; }
-            .source-url { font-size: 20px; font-weight: bold; color: #6366f1; letter-spacing: 1px; }
-            .header { text-align: center; margin-bottom: 30px; }
-            .score-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
-            .score-large { font-size: 24px; font-weight: bold; color: #333; }
-            .interpretation { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
-            .recommendations { margin-top: 20px; }
-            .recommendations ul { padding-left: 20px; }
-            .disclaimer { margin-top: 30px; padding: 15px; background: #e3f2fd; border-radius: 5px; font-size: 12px; text-align: center; }
-          </style>
-        </head>
-        <body>
-          <div class="source-header">
-            <div class="source-url">aihpro.com</div>
+      // 임시 PDF 컨텐츠 생성
+      const tempDiv = document.createElement('div');
+      tempDiv.id = 'language-development-pdf-temp';
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.innerHTML = `
+        <div style="font-family: 'Arial', sans-serif; padding: 40px; line-height: 1.6;">
+          <div style="text-align: center; margin-bottom: 10px;">
+            <div style="font-size: 20px; font-weight: bold; color: #6366f1; letter-spacing: 1px;">aihpro.com</div>
           </div>
           
-          <div class="header">
+          <div style="text-align: center; margin-bottom: 30px;">
             <h1>AIH 영유아 언어발달 검사 결과</h1>
             <p>검사일: ${new Date().toLocaleDateString('ko-KR')}</p>
           </div>
           
-          <div class="score-section">
+          <div class="no-break" style="margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
             <h2>전체 언어발달 수준</h2>
-            <div class="score-large">${results.total}점 / 45점 (${results.total_percentage}%)</div>
+            <div style="font-size: 24px; font-weight: bold; color: #333;">${results.total}점 / 45점 (${results.total_percentage}%)</div>
             <p><strong>해석:</strong> ${totalInterpretation.description}</p>
           </div>
           
-          <div class="score-section">
+          <div class="no-break" style="margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
             <h3>영역별 상세 결과</h3>
             <p><strong>수용언어:</strong> ${results.receptive.toFixed(1)}점 / 23점 (${results.receptive_percentage}%) - ${receptiveInterpretation.description}</p>
             <p><strong>표현언어:</strong> ${results.expressive.toFixed(1)}점 / 22점 (${results.expressive_percentage}%) - ${expressiveInterpretation.description}</p>
           </div>
           
-          <div class="interpretation">
+          <div class="page-break"></div>
+          
+          <div class="no-break" style="background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px;">
             <h3>AI 전문가 해석</h3>
-            <p>${aiAnalysis || generateFallbackInterpretation()}</p>
+            <p style="white-space: pre-wrap;">${aiAnalysis || generateFallbackInterpretation()}</p>
           </div>
           
-          <div class="recommendations">
+          <div class="no-break" style="margin-top: 20px;">
             <h3>발달 촉진 권장사항</h3>
-            <div style="display: flex; gap: 20px;">
+            <div style="display: flex; gap: 20px; margin-top: 15px;">
               <div style="flex: 1;">
                 <h4>수용언어 발달을 위해</h4>
                 <ul>
@@ -209,31 +198,36 @@ const LanguageDevelopmentResult = ({ results, answers, onBack }: LanguageDevelop
             </div>
           </div>
           
-          <div class="disclaimer">
+          <div style="margin-top: 30px; padding: 15px; background: #e3f2fd; border-radius: 5px; font-size: 12px; text-align: center;">
             ※ 본 검사는 참고용 자가체크이며, 전문적인 진단을 대체하지 않습니다.
           </div>
-        </body>
-        </html>
+        </div>
       `;
-
-      const { data, error } = await supabase.functions.invoke('generate-premium-pdf', {
-        body: { htmlContent }
-      });
-
-      if (error) throw error;
-
-      // 새 창에서 PDF 열기
-      const newWindow = window.open('', '_blank');
-      if (newWindow) {
-        newWindow.document.write(htmlContent);
-        newWindow.document.close();
-        newWindow.print();
-      }
-
-      toast({
-        title: "PDF 생성 완료",
-        description: "언어발달 검사 결과 PDF가 생성되었습니다.",
-      });
+      
+      document.body.appendChild(tempDiv);
+      
+      // PDF 다운로드 유틸리티 사용
+      const { downloadResultAsPDF } = await import('@/utils/pdfDownload');
+      await downloadResultAsPDF(
+        'language-development-pdf-temp',
+        'AIH_언어발달_검사결과',
+        () => {
+          toast({
+            title: "PDF 다운로드 완료",
+            description: "언어발달 검사 결과가 저장되었습니다.",
+          });
+        },
+        (error) => {
+          toast({
+            title: "PDF 생성 실패",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      );
+      
+      // 임시 요소 제거
+      document.body.removeChild(tempDiv);
     } catch (error) {
       console.error('PDF 생성 오류:', error);
       toast({

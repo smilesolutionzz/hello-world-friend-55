@@ -723,41 +723,41 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
       {/* Action Buttons */}
       <div className="grid md:grid-cols-5 gap-4">
         <Button 
-          className="btn-brand h-16"
+          className="btn-brand h-20"
           onClick={() => navigate('/expert-hiring')}
         >
-          <ExternalLink className="w-5 h-5 mr-2" />
+          <ExternalLink className="w-5 h-5 mr-2 flex-shrink-0" />
           <div className="text-left">
-            <div className="font-semibold">ADHD전문가연결</div>
-            <div className="text-sm opacity-90">맞춤 추천 상담</div>
+            <div className="font-semibold text-base">ADHD전문가연결</div>
+            <div className="text-xs opacity-90">맞춤 추천 상담</div>
           </div>
         </Button>
 
         <Button 
-          className="btn-brand h-16"
+          className="btn-brand h-20"
           onClick={() => navigate('/counseling', { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
         >
-          <MessageCircle className="w-5 h-5 mr-2" />
+          <MessageCircle className="w-5 h-5 mr-2 flex-shrink-0" />
           <div className="text-left">
-            <div className="font-semibold">단계별 상담 시작</div>
-            <div className="text-sm opacity-90">AI → 전문가</div>
+            <div className="font-semibold text-base">단계별 상담 시작</div>
+            <div className="text-xs opacity-90">AI → 전문가</div>
           </div>
         </Button>
 
         <Button 
-          className="bg-blue-600 hover:bg-blue-700 text-white h-16"
+          className="bg-blue-600 hover:bg-blue-700 text-white h-20"
           onClick={() => navigate('/ai-counselor', { state: { assessmentResults: { ...results, testType: 'adhd' } } })}
         >
-          <Brain className="w-5 h-5 mr-2" />
+          <Brain className="w-5 h-5 mr-2 flex-shrink-0" />
           <div className="text-left">
-            <div className="font-semibold">AI 상담만</div>
-            <div className="text-sm opacity-90">빠른 상담</div>
+            <div className="font-semibold text-base">AI 상담만</div>
+            <div className="text-xs opacity-90">빠른 상담</div>
           </div>
         </Button>
 
         <Button 
           variant="outline" 
-          className="h-16"
+          className="h-20"
           onClick={() => generatePDFReport({
             testType: 'ADHD 검사',
             results: {
@@ -776,14 +776,14 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           disabled={isGeneratingPDF}
         >
           <div className="text-left">
-            <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
-            <div className="text-sm text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
+            <div className="font-semibold text-base">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
+            <div className="text-xs text-muted-foreground">{isGeneratingPDF ? '잠시만 기다려주세요' : '결과를 PDF로 저장'}</div>
           </div>
         </Button>
 
         <Button 
           variant="outline" 
-          className="h-16"
+          className="h-20"
           onClick={() => saveTestResult({
             testType: 'ADHD 검사',
             results: {
@@ -802,8 +802,8 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
           disabled={isSaving}
         >
           <div className="text-left">
-            <div className="font-semibold">{isSaving ? '저장 중...' : '결과 저장'}</div>
-            <div className="text-sm text-muted-foreground">{isSaving ? '잠시만 기다려주세요' : '검사기록에 저장'}</div>
+            <div className="font-semibold text-base">{isSaving ? '저장 중...' : '결과 저장'}</div>
+            <div className="text-xs text-muted-foreground">{isSaving ? '잠시만 기다려주세요' : '검사기록에 저장'}</div>
           </div>
         </Button>
       </div>

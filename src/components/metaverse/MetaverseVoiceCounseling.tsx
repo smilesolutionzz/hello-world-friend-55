@@ -33,6 +33,7 @@ import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 import { CHARACTERS } from '@/utils/CounselingQuestions';
 import { SCTVisualization } from './SCTVisualization';
 import { analyzeSCTResponses, type SCTAgeGroup, SCT_QUESTIONS } from '@/utils/SCTQuestions';
+import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -42,11 +43,12 @@ interface Message {
 }
 
 interface MetaverseVoiceCounselingProps {
-  mode?: 'free' | 'structured';
+  mode?: 'free' | 'structured' | 'roleplay';
   structuredConfig?: {
     ageGroup: AgeGroup;
     character: CharacterType;
   };
+  roleplayScenario?: RolePlayScenario;
 }
 
 const roomOptions = [
@@ -65,7 +67,7 @@ const roomOptions = [
   { id: 'garden' as RoomType, name: '정원', icon: Flower2, description: '예쁜 꽃 정원' },
 ];
 
-const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: MetaverseVoiceCounselingProps) => {
+const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplayScenario }: MetaverseVoiceCounselingProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [hasEntered, setHasEntered] = useState(false);
@@ -363,15 +365,22 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig }: Metaverse
       await emotionDetectorRef.current.init(stream);
 
       // RealtimeChat 초기화
-      const chatOptions = mode === 'structured' && structuredConfig
-        ? {
-            mode: 'structured' as const,
-            ageGroup: structuredConfig.ageGroup,
-            character: structuredConfig.character
-          }
-        : { 
-            mode: 'free' as const
-          };
+      let chatOptions: any;
+      if (mode === 'structured' && structuredConfig) {
+        chatOptions = {
+          mode: 'structured' as const,
+          ageGroup: structuredConfig.ageGroup,
+          character: structuredConfig.character
+        };
+      } else if (mode === 'roleplay' && roleplayScenario) {
+        chatOptions = {
+          mode: 'roleplay' as const,
+          roleplayPersona: roleplayScenario.aiPersona,
+          roleplayVoice: roleplayScenario.voice
+        };
+      } else {
+        chatOptions = { mode: 'free' as const };
+      }
 
       console.log('Starting conversation with options:', chatOptions);
       

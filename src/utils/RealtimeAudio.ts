@@ -64,16 +64,20 @@ export class RealtimeChat {
   private pc: RTCPeerConnection | null = null;
   private dc: RTCDataChannel | null = null;
   private audioEl: HTMLAudioElement;
-  private mode: 'free' | 'structured';
+  private mode: 'free' | 'structured' | 'roleplay';
   private ageGroup: string;
   private character: string;
+  private roleplayPersona?: string;
+  private roleplayVoice?: string;
 
   constructor(
     private onMessage: (message: any) => void,
     options?: {
-      mode?: 'free' | 'structured';
+      mode?: 'free' | 'structured' | 'roleplay';
       ageGroup?: string;
       character?: string;
+      roleplayPersona?: string;
+      roleplayVoice?: string;
     }
   ) {
     this.audioEl = document.createElement("audio");
@@ -81,13 +85,20 @@ export class RealtimeChat {
     this.mode = options?.mode || 'free';
     this.ageGroup = options?.ageGroup || 'adult';
     this.character = options?.character || 'bear';
+    this.roleplayPersona = options?.roleplayPersona;
+    this.roleplayVoice = options?.roleplayVoice;
   }
 
   async init() {
     try {
       console.log(`🎬 mode: ${this.mode}, age: ${this.ageGroup}, char: ${this.character}`);
 
-      const { data, error } = await supabase.functions.invoke("get-realtime-token");
+      const { data, error } = await supabase.functions.invoke("get-realtime-token", {
+        body: {
+          roleplayPersona: this.roleplayPersona,
+          roleplayVoice: this.roleplayVoice
+        }
+      });
       if (error) throw error;
       if (!data.client_secret?.value) throw new Error("No token");
 

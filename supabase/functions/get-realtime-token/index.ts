@@ -17,7 +17,12 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY is not set');
     }
 
+    const { roleplayPersona, roleplayVoice } = await req.json().catch(() => ({}));
+
     console.log("Creating ephemeral token for Realtime API...");
+
+    const voice = roleplayVoice || "shimmer";
+    const instructions = roleplayPersona || "당신은 친절하고 공감적인 한국어 심리 상담사입니다. 대화가 시작되면 먼저 따뜻하게 인사하고 '오늘 기분이 어떠세요?'라고 물어보세요. 사용자의 감정을 이해하고 따뜻하게 대화하세요.";
 
     const response = await fetch("https://api.openai.com/v1/realtime/sessions", {
       method: "POST",
@@ -27,8 +32,8 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: "gpt-4o-realtime-preview-2024-12-17",
-        voice: "shimmer",
-        instructions: "당신은 친절하고 공감적인 한국어 심리 상담사입니다. 대화가 시작되면 먼저 따뜻하게 인사하고 '오늘 기분이 어떠세요?'라고 물어보세요. 사용자의 감정을 이해하고 따뜻하게 대화하세요.",
+        voice,
+        instructions,
         modalities: ["text", "audio"],
         input_audio_format: "pcm16",
         output_audio_format: "pcm16",

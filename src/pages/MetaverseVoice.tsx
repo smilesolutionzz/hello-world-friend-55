@@ -6,17 +6,20 @@ import { CounselingSetup } from '@/components/metaverse/CounselingSetup';
 import { ThreeBackground } from '@/components/dashboard/ThreeBackground';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageSquare, Sparkles } from 'lucide-react';
+import { MessageSquare, Sparkles, Users } from 'lucide-react';
 import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
+import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
+import { RolePlaySetup } from '@/components/metaverse/RolePlaySetup';
 
 const MetaverseVoicePage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [mode, setMode] = useState<'structured' | 'free'>('structured');
+  const [mode, setMode] = useState<'structured' | 'free' | 'roleplay'>('structured');
   const [structuredConfig, setStructuredConfig] = useState<{
     ageGroup: AgeGroup;
     character: CharacterType;
   } | null>(null);
+  const [roleplayScenario, setRoleplayScenario] = useState<RolePlayScenario | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -39,15 +42,23 @@ const MetaverseVoicePage = () => {
     setStructuredConfig({ ageGroup, character });
   };
 
+  const handleRoleplayStart = (scenario: RolePlayScenario) => {
+    setRoleplayScenario(scenario);
+  };
+
   return (
     <div className="relative min-h-screen">
       <ThreeBackground />
       <div className="relative z-10 container mx-auto py-8">
-        <Tabs value={mode} onValueChange={(v) => setMode(v as 'structured' | 'free')} className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8 bg-black/40 backdrop-blur-sm border border-white/20">
+        <Tabs value={mode} onValueChange={(v) => setMode(v as 'structured' | 'free' | 'roleplay')} className="w-full">
+          <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-3 mb-8 bg-black/40 backdrop-blur-sm border border-white/20">
             <TabsTrigger value="structured" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
               <Sparkles className="w-4 h-4" />
               금쪽 상담
+            </TabsTrigger>
+            <TabsTrigger value="roleplay" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
+              <Users className="w-4 h-4" />
+              롤플레이 연습
             </TabsTrigger>
             <TabsTrigger value="free" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
               <MessageSquare className="w-4 h-4" />
@@ -62,6 +73,17 @@ const MetaverseVoicePage = () => {
               <MetaverseVoiceCounseling 
                 mode="structured"
                 structuredConfig={structuredConfig}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="roleplay" className="mt-0">
+            {!roleplayScenario ? (
+              <RolePlaySetup onStart={handleRoleplayStart} />
+            ) : (
+              <MetaverseVoiceCounseling 
+                mode="roleplay"
+                roleplayScenario={roleplayScenario}
               />
             )}
           </TabsContent>

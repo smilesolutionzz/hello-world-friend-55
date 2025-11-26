@@ -157,7 +157,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       keywords: ['오해', '진심', '이해'],
       emotional: ['진심', '배려']
     },
-    voice: 'fable'
+    voice: 'sage'
   },
 
   // ========== 감사 표현 ==========
@@ -305,7 +305,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       keywords: ['선생님', '질문', '감사합니다'],
       emotional: ['정중함', '호기심']
     },
-    voice: 'fable'
+    voice: 'sage'
   },
 
   // ========== 감정 표현 ==========
@@ -365,7 +365,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       keywords: ['자기소개', '지원 동기', '경험'],
       emotional: ['자신감', '진심']
     },
-    voice: 'onyx'
+    voice: 'echo'
   },
 
   // ========== 발표 연습 ==========

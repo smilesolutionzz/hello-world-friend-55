@@ -21,7 +21,9 @@ serve(async (req) => {
 
     console.log("Creating ephemeral token for Realtime API...");
 
-    const voice = roleplayVoice || "shimmer";
+    // Valid OpenAI Realtime API voices
+    const validVoices = ['alloy', 'ash', 'ballad', 'coral', 'echo', 'sage', 'shimmer', 'verse', 'marin', 'cedar'];
+    const voice = validVoices.includes(roleplayVoice) ? roleplayVoice : "shimmer";
     const instructions = roleplayPersona || "당신은 친절하고 공감적인 한국어 심리 상담사입니다. 대화가 시작되면 먼저 따뜻하게 인사하고 '오늘 기분이 어떠세요?'라고 물어보세요. 사용자의 감정을 이해하고 따뜻하게 대화하세요.";
 
     const response = await fetch("https://api.openai.com/v1/realtime/sessions", {

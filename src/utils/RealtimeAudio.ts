@@ -116,29 +116,7 @@ export class RealtimeChat {
       });
 
       this.dc.onopen = () => {
-        const sessionUpdate = {
-          type: "session.update",
-          session: {
-            modalities: ["text", "audio"],
-            voice: "alloy",
-            input_audio_format: "pcm16",
-            output_audio_format: "pcm16",
-            input_audio_transcription: { 
-              model: "whisper-1",
-              language: "ko"
-            },
-            turn_detection: {
-              type: "server_vad",
-              threshold: 0.6,
-              prefix_padding_ms: 500,
-              silence_duration_ms: 1500
-            },
-            temperature: 0.8
-          }
-        };
-        
-        this.dc?.send(JSON.stringify(sessionUpdate));
-        this.dc?.send(JSON.stringify({ type: "response.create" }));
+        console.log("Data channel opened, waiting for user input...");
       };
 
       const offer = await this.pc.createOffer();

@@ -43,9 +43,9 @@ export const RolePlaySetup = ({ onStart }: RolePlaySetupProps) => {
 
   const getDifficultyBadge = (difficulty: string) => {
     const badges = {
-      easy: { label: '쉬움', color: 'bg-green-500/20 text-green-600' },
-      medium: { label: '보통', color: 'bg-yellow-500/20 text-yellow-600' },
-      hard: { label: '어려움', color: 'bg-red-500/20 text-red-600' }
+      easy: { label: '쉬움', color: 'bg-green-500 text-white font-semibold border border-green-400/50 shadow-lg' },
+      medium: { label: '보통', color: 'bg-yellow-500 text-white font-semibold border border-yellow-400/50 shadow-lg' },
+      hard: { label: '어려움', color: 'bg-red-500 text-white font-semibold border border-red-400/50 shadow-lg' }
     };
     return badges[difficulty as keyof typeof badges] || badges.easy;
   };

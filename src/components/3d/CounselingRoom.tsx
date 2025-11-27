@@ -798,6 +798,7 @@ interface CounselingRoomProps {
   showGame?: boolean;
   virtualInput?: { x: number; y: number };
   character?: CharacterType; // 상담 캐릭터
+  onGroupUsersChange?: (users: any[]) => void;
 }
 
 const CounselingRoom = ({
@@ -817,7 +818,8 @@ const CounselingRoom = ({
   avatarPosition,
   showGame = false,
   virtualInput,
-  character
+  character,
+  onGroupUsersChange
 }: CounselingRoomProps) => {
   const { toast } = useToast();
   // 공간별 설정
@@ -963,6 +965,7 @@ const CounselingRoom = ({
               position={avatarPosition}
               emotion={emotion}
               enabled={groupMode}
+              onUsersChange={onGroupUsersChange}
             />
           )}
           

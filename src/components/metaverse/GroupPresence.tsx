@@ -20,6 +20,7 @@ interface GroupPresenceProps {
   position?: { x: number; y: number; z: number };
   emotion?: string;
   enabled?: boolean;
+  onUsersChange?: (users: UserPresence[]) => void;
 }
 
 export const GroupPresence = ({ 
@@ -28,18 +29,21 @@ export const GroupPresence = ({
   avatarUrl, 
   position,
   emotion,
-  enabled = false 
+  enabled = false,
+  onUsersChange
 }: GroupPresenceProps) => {
   const [users, setUsers] = useState<UserPresence[]>([]);
   const [channel, setChannel] = useState<any>(null);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !userName) return;
+
+    const userId = crypto.randomUUID(); // 세션별 고유 ID
 
     const presenceChannel = supabase.channel(`room:${roomId}`, {
       config: {
         presence: {
-          key: userName,
+          key: userId, // 고유 ID를 키로 사용
         },
       },
     });
@@ -63,6 +67,7 @@ export const GroupPresence = ({
         
         console.log('👥 Users in room:', presenceUsers);
         setUsers(presenceUsers);
+        onUsersChange?.(presenceUsers);
       })
       .on('presence', { event: 'join' }, ({ key, newPresences }) => {
         console.log('👤 User joined:', key, newPresences);
@@ -74,7 +79,7 @@ export const GroupPresence = ({
         if (status === 'SUBSCRIBED') {
           // 자신의 상태 전송
           await presenceChannel.track({
-            user_id: crypto.randomUUID(),
+            user_id: userId,
             user_name: userName,
             avatar_url: avatarUrl,
             position: position || { x: 0, y: 0, z: 0 },
@@ -93,9 +98,8 @@ export const GroupPresence = ({
 
   // 위치나 감정이 변경되면 업데이트
   useEffect(() => {
-    if (channel && enabled) {
+    if (channel && enabled && userName) {
       channel.track({
-        user_id: crypto.randomUUID(),
         user_name: userName,
         avatar_url: avatarUrl,
         position: position || { x: 0, y: 0, z: 0 },
@@ -103,7 +107,7 @@ export const GroupPresence = ({
         online_at: new Date().toISOString(),
       });
     }
-  }, [position, emotion, channel, enabled]);
+  }, [position, emotion, channel, enabled, userName, avatarUrl]);
 
   if (!enabled) return null;
 

@@ -10,6 +10,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import bgImage from '@/assets/value-comparison-bg.jpg';
+import { AnimatedBackground } from '@/components/3d/AnimatedBackground';
+import { motion } from 'framer-motion';
 
 const ValueComparisonSection = () => {
   const navigate = useNavigate();
@@ -57,30 +59,75 @@ const ValueComparisonSection = () => {
   ];
 
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-16 md:py-24 overflow-hidden">
+      {/* 3D Animated Background */}
+      <div className="absolute inset-0 z-0 opacity-20 md:opacity-30">
+        <AnimatedBackground 
+          particleColor="#10B981" 
+          shapeColors={["#059669", "#10B981", "#34D399"]}
+          particleCount={2000}
+        />
+      </div>
+
       {/* Background Image with Overlay */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
         style={{ backgroundImage: `url(${bgImage})` }}
       >
-        <div className="absolute inset-0 bg-background/80" />
+        <div className="absolute inset-0 bg-background/85" />
       </div>
+
+      {/* Animated Gradient Orbs */}
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.2, 1],
+          opacity: [0.15, 0.25, 0.15]
+        }}
+        transition={{ 
+          duration: 12, 
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-20 left-10 w-[400px] h-[400px] bg-gradient-to-r from-green-500/30 to-emerald-500/30 rounded-full blur-[100px] z-0" 
+      />
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.3, 1],
+          opacity: [0.15, 0.3, 0.15]
+        }}
+        transition={{ 
+          duration: 15, 
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2
+        }}
+        className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-gradient-to-r from-teal-500/25 to-cyan-500/25 rounded-full blur-[120px] z-0" 
+      />
       
       {/* Content */}
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-semibold text-primary">똑똑한 선택</span>
-          </div>
-          <h2 className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 leading-tight">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12 md:mb-16"
+        >
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 backdrop-blur-md rounded-full mb-4 md:mb-6"
+          >
+            <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-primary" />
+            <span className="text-xs md:text-sm font-semibold text-primary">똑똑한 선택</span>
+          </motion.div>
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 leading-tight px-4">
             왜 AiHumanPro를 선택해야 할까요?
           </h2>
-          <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
             기존 심리 상담과 비교해보세요
           </p>
-        </div>
+        </motion.div>
 
         {/* Comparison Table - Desktop */}
         <div className="max-w-5xl mx-auto">

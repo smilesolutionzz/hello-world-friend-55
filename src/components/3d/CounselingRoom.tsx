@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Environment, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
@@ -16,8 +16,55 @@ import { useToast } from '@/hooks/use-toast';
 import { CounselingCharacter } from './CounselingCharacter';
 import type { CharacterType } from '@/utils/CounselingQuestions';
 
+// 문 컴포넌트
+const Door = ({ position, onInteract }: { position: [number, number, number]; onInteract: () => void }) => {
+  const [hovered, setHovered] = useState(false);
+  
+  return (
+    <group position={position}>
+      {/* 문틀 */}
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[2.2, 4, 0.3]} />
+        <meshLambertMaterial color="#8B4513" />
+      </mesh>
+      
+      {/* 문짝 */}
+      <mesh 
+        position={[0, 0, 0.15]}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onInteract();
+        }}
+      >
+        <boxGeometry args={[2, 3.8, 0.1]} />
+        <meshLambertMaterial 
+          color={hovered ? "#D2691E" : "#A0522D"} 
+          emissive={hovered ? "#FF8C00" : "#000000"}
+          emissiveIntensity={hovered ? 0.3 : 0}
+        />
+      </mesh>
+      
+      {/* 손잡이 */}
+      <mesh position={[-0.7, 0, 0.25]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshLambertMaterial color="#FFD700" />
+      </mesh>
+      
+      {/* 문 위 표시 */}
+      {hovered && (
+        <mesh position={[0, 2.5, 0.3]}>
+          <planeGeometry args={[1.5, 0.5]} />
+          <meshBasicMaterial color="#FFD700" transparent opacity={0.8} />
+        </mesh>
+      )}
+    </group>
+  );
+};
+
 // Room components with different layouts
-const Room = ({ type = 'counseling', isChildMode = false }: { type?: RoomType; isChildMode?: boolean }) => {
+const Room = ({ type = 'counseling', isChildMode = false, onDoorClick }: { type?: RoomType; isChildMode?: boolean; onDoorClick?: () => void }) => {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -28,37 +75,107 @@ const Room = ({ type = 'counseling', isChildMode = false }: { type?: RoomType; i
 
   // 아이 친화적 모드 (금쪽 상담)
   if (isChildMode) {
-    return <ChildFriendlyRoom groupRef={groupRef} />;
+    return (
+      <group>
+        <ChildFriendlyRoom groupRef={groupRef} />
+        {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+      </group>
+    );
   }
 
   // 공간별 렌더링
   switch (type) {
     case 'office':
-      return <OfficeRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <OfficeRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'home':
-      return <HomeRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <HomeRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'bedroom':
-      return <BedroomRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <BedroomRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'school':
-      return <SchoolRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <SchoolRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'club':
-      return <ClubRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <ClubRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'living':
-      return <LivingRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <LivingRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'outdoor':
-      return <OutdoorRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <OutdoorRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 5]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'playground':
-      return <PlaygroundRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <PlaygroundRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'toyroom':
-      return <ToyroomRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <ToyroomRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'artroom':
-      return <ArtroomRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <ArtroomRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'library':
-      return <LibraryRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <LibraryRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
     case 'garden':
-      return <GardenRoom groupRef={groupRef} />;
+      return (
+        <group>
+          <GardenRoom groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 5]} onInteract={onDoorClick} />}
+        </group>
+      );
     default:
-      return <CounselingRoomDefault groupRef={groupRef} />;
+      return (
+        <group>
+          <CounselingRoomDefault groupRef={groupRef} />
+          {onDoorClick && <Door position={[-7, 0, 0]} onInteract={onDoorClick} />}
+        </group>
+      );
   }
 };
 
@@ -788,6 +905,7 @@ interface CounselingRoomProps {
   emotion?: EmotionType;
   emotionIntensity?: number;
   onObjectInteract?: (id: string, content: string) => void;
+  onDoorClick?: () => void;
   isSpeaking?: boolean;
   counselorGesture?: GestureType | null;
   counselorEmotion?: CounselorEmotion;
@@ -810,6 +928,7 @@ const CounselingRoom = ({
   emotion = 'neutral',
   emotionIntensity = 0.5,
   onObjectInteract,
+  onDoorClick,
   isSpeaking = false,
   counselorGesture,
   counselorEmotion = 'neutral',
@@ -867,7 +986,7 @@ const CounselingRoom = ({
           <Environment preset={settings.preset} />
           
           {/* 3D 상담실 */}
-          <Room type={roomType} isChildMode={!!character} />
+          <Room type={roomType} isChildMode={!!character} onDoorClick={onDoorClick} />
           
           {/* 떠다니는 파티클 */}
           <FloatingParticles />

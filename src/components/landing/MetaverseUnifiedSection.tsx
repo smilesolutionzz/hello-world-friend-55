@@ -158,21 +158,21 @@ export const MetaverseUnifiedSection = () => {
 
         {/* CTA Section */}
         <div className="relative rounded-2xl overflow-hidden border border-border bg-card">
-          <div className="relative p-8 md:p-12 text-center space-y-6">
-            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">
+          <div className="relative p-6 md:p-12 text-center space-y-4 md:space-y-6">
+            <h3 className="text-xl md:text-3xl lg:text-4xl font-bold text-foreground">
               지금 바로 시작하세요
             </h3>
-            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
               3D 가상공간에서 AI와 대화하며 새로운 상담 경험을 만나보세요
             </p>
             <Button
               onClick={() => navigate('/metaverse-voice')}
               size="lg"
-              className="font-semibold text-base md:text-lg px-8 py-6 md:px-10 md:py-7 rounded-lg transition-all duration-300 group"
+              className="font-semibold text-sm md:text-lg px-6 py-5 md:px-10 md:py-7 rounded-lg transition-all duration-300 group w-full md:w-auto"
             >
-              <Mic className="w-5 h-5 md:w-6 md:h-6 mr-2" />
-              메타버스 상담실 입장
-              <ArrowRight className="w-5 h-5 md:w-6 md:h-6 ml-2 group-hover:translate-x-1 transition-transform" />
+              <Mic className="w-4 h-4 md:w-6 md:h-6 mr-2" />
+              <span className="truncate">메타버스 상담실 입장</span>
+              <ArrowRight className="w-4 h-4 md:w-6 md:h-6 ml-2 group-hover:translate-x-1 transition-transform flex-shrink-0" />
             </Button>
           </div>
         </div>

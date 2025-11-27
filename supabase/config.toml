@@ -294,5 +294,8 @@ verify_jwt = false
 [functions.personality-analysis]
 verify_jwt = false
 
+[functions.analyze-emotion]
+verify_jwt = true  # 🔒 보안: 감정 분석 인증 필수
+
 [functions.process-pending-referrals]
 verify_jwt = false

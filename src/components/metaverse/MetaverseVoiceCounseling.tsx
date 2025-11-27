@@ -90,16 +90,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [currentEmotion, setCurrentEmotion] = useState<EmotionType>('neutral');
   const [emotionIntensity, setEmotionIntensity] = useState(0.5);
   
-  // 감정 변화 추적
-  useEffect(() => {
-    if (isConnected && currentEmotion) {
-      setEmotionHistory(prev => [...prev, {
-        timestamp: new Date(),
-        emotion: currentEmotion,
-        intensity: emotionIntensity
-      }]);
-    }
-  }, [currentEmotion, emotionIntensity, isConnected]);
   const chatRef = useRef<RealtimeChat | null>(null);
   const emotionDetectorRef = useRef<EmotionDetector | null>(null);
   const { avatarUrl, setAvatarUrl, openAvatarCreator } = useReadyPlayerMe();
@@ -139,10 +129,77 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   }>>([]);
   const [showEmotionChart, setShowEmotionChart] = useState(false);
   
+  // 텍스트 기반 감정 분석
+  const [transcriptBuffer, setTranscriptBuffer] = useState('');
+  const lastEmotionAnalysisRef = useRef<Date>(new Date());
+  
   // 모바일 감지 및 UI 상태
   const [isMobile, setIsMobile] = useState(false);
   const [isUICollapsed, setIsUICollapsed] = useState(false);
   const joystickInputRef = useRef({ x: 0, y: 0 });
+  
+  // 텍스트 기반 감정 분석 함수
+  const analyzeEmotionFromText = async (text: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-emotion', {
+        body: { text }
+      });
+
+      if (error) throw error;
+
+      console.log('감정 분석 결과:', data);
+
+      // EmotionType으로 매핑
+      const emotionMap: Record<string, EmotionType> = {
+        'neutral': 'neutral',
+        'happy': 'happy',
+        'sad': 'sad',
+        'angry': 'angry',
+        'surprised': 'surprised',
+        'fearful': 'fearful',
+        'thinking': 'thinking'
+      };
+
+      const mappedEmotion = emotionMap[data.emotion] || 'neutral';
+      const intensity = data.intensity || 0.5;
+
+      // 감정 상태 업데이트
+      setCurrentEmotion(mappedEmotion);
+      setEmotionIntensity(intensity);
+
+      // 감정 히스토리에 추가
+      setEmotionHistory(prev => [...prev, {
+        timestamp: new Date(),
+        emotion: mappedEmotion,
+        intensity: intensity
+      }]);
+
+      lastEmotionAnalysisRef.current = new Date();
+      
+      toast({
+        title: "감정 분석",
+        description: `${data.emotion} (${Math.round(intensity * 100)}%): ${data.reason}`,
+      });
+    } catch (error) {
+      console.error('감정 분석 오류:', error);
+    }
+  };
+
+  // 대화 텍스트가 쌓이면 감정 분석 실행
+  useEffect(() => {
+    const analyzeIfNeeded = async () => {
+      // 최소 50자 이상, 마지막 분석으로부터 10초 이상 경과
+      if (transcriptBuffer.length >= 50 && isConnected) {
+        const timeSinceLastAnalysis = Date.now() - lastEmotionAnalysisRef.current.getTime();
+        if (timeSinceLastAnalysis > 10000) {
+          await analyzeEmotionFromText(transcriptBuffer);
+          setTranscriptBuffer(''); // 버퍼 초기화
+        }
+      }
+    };
+
+    analyzeIfNeeded();
+  }, [transcriptBuffer, isConnected]);
 
   // 모바일 감지
   useEffect(() => {
@@ -301,6 +358,9 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         if (m.role === 'assistant' && (m.responseId === responseId || (i === arr.length - 1 && !m.responseId))) {
           const fullMessage = { ...m, content: finalText, responseId };
           
+          // 텍스트 버퍼에 추가 (감정 분석용)
+          setTranscriptBuffer(prev => prev + ' ' + finalText);
+          
           // 녹음 중이면 메시지 추가
           if (sessionRecorderRef.current?.getIsRecording()) {
             sessionRecorderRef.current.addMessage('assistant', fullMessage.content);
@@ -332,6 +392,9 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         content: userText,
         timestamp: new Date()
       }]);
+      
+      // 텍스트 버퍼에 추가 (감정 분석용)
+      setTranscriptBuffer(prev => prev + ' ' + userText);
       
       // 녹음 중이면 사용자 메시지 추가
       if (sessionRecorderRef.current?.getIsRecording()) {

@@ -78,43 +78,43 @@ export const MetaverseUnifiedSection = () => {
   ];
 
   return (
-    <section className="relative py-16 md:py-24 overflow-hidden">
-      {/* 3D Animated Background */}
-      <div className="absolute inset-0 opacity-40">
+    <section className="relative py-12 md:py-16 lg:py-24 overflow-hidden">
+      {/* 3D Animated Background - Hidden on mobile for performance */}
+      <div className="hidden md:block absolute inset-0 opacity-40">
         <MetaverseBackground />
       </div>
       
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/90 to-background pointer-events-none" />
       
-      {/* Animated Gradient Orbs */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-accent/20 to-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-violet-500/10 to-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s', animationDelay: '2s' }} />
+      {/* Animated Gradient Orbs - Responsive sizes */}
+      <div className="absolute top-10 md:top-20 left-5 md:left-10 w-48 h-48 md:w-72 md:h-72 bg-gradient-to-r from-primary/20 to-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
+      <div className="absolute bottom-10 md:bottom-20 right-5 md:right-10 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-r from-accent/20 to-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
+      <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-gradient-to-r from-violet-500/10 to-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s', animationDelay: '2s' }} />
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
         {/* Hero Banner */}
-        <div className="text-center mb-12 md:mb-16 space-y-4 md:space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 border border-border rounded-full">
-            <Mic className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">
+        <div className="text-center mb-8 md:mb-12 lg:mb-16 space-y-3 md:space-y-4 lg:space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-primary/5 border border-border rounded-full">
+            <Mic className="w-3 h-3 md:w-4 md:h-4 text-primary" />
+            <span className="text-xs md:text-sm font-medium text-foreground">
               실시간 음성 AI 메타버스
             </span>
           </div>
           
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-foreground px-4">
             가상공간에서
             <br />
             <span className="text-primary">AI와 실시간 대화</span>
           </h2>
           
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed px-4">
             3D 메타버스 환경에서 음성으로 AI 상담사와 자연스럽게 소통하세요
           </p>
         </div>
 
         {/* Mode Cards - Modern Glass Morphism Style */}
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 mb-16">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12 lg:mb-16">
           {modes.map((mode, index) => {
             const Icon = mode.icon;
             const isOpen = openCards[index];
@@ -135,53 +135,53 @@ export const MetaverseUnifiedSection = () => {
                     <div className={`absolute inset-0 bg-gradient-to-br ${mode.bgGradient}`} />
                   </div>
                   
-                  <div className="relative p-8 space-y-6">
+                  <div className="relative p-4 md:p-6 lg:p-8 space-y-4 md:space-y-6">
                     {/* Header */}
-                    <div className="space-y-4">
+                    <div className="space-y-3 md:space-y-4">
                       {/* Icon with animated background */}
                       <div className="relative">
-                        <div className={`absolute inset-0 bg-gradient-to-br ${mode.bgGradient} rounded-2xl blur-md opacity-50 group-hover:opacity-100 transition-opacity`} />
-                        <div className={`relative w-16 h-16 rounded-2xl bg-gradient-to-br ${mode.bgGradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                          <Icon className={`w-8 h-8 ${mode.iconColor}`} />
+                        <div className={`absolute inset-0 bg-gradient-to-br ${mode.bgGradient} rounded-xl md:rounded-2xl blur-md opacity-50 group-hover:opacity-100 transition-opacity`} />
+                        <div className={`relative w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br ${mode.bgGradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                          <Icon className={`w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 ${mode.iconColor}`} />
                         </div>
                       </div>
                       
                       {/* Title & Subtitle */}
                       <div>
-                        <h3 className="text-2xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
+                        <h3 className="text-xl md:text-2xl font-bold mb-1 md:mb-2 text-foreground group-hover:text-primary transition-colors">
                           {mode.title}
                         </h3>
-                        <p className="text-sm font-semibold text-primary/80 mb-3">
+                        <p className="text-xs md:text-sm font-semibold text-primary/80 mb-2 md:mb-3">
                           {mode.subtitle}
                         </p>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
+                        <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                           {mode.description}
                         </p>
                       </div>
                     </div>
                     
                     {/* Stats */}
-                    <div className="flex gap-4 py-4 border-y border-border/30">
+                    <div className="flex gap-3 md:gap-4 py-3 md:py-4 border-y border-border/30">
                       {Object.entries(mode.stats).map(([key, value]) => (
                         <div key={key} className="flex-1 text-center">
-                          <div className="text-xl font-bold text-primary mb-1">{value}</div>
-                          <div className="text-xs text-muted-foreground capitalize">{key}</div>
+                          <div className="text-lg md:text-xl font-bold text-primary mb-0.5 md:mb-1">{value}</div>
+                          <div className="text-[10px] md:text-xs text-muted-foreground capitalize">{key}</div>
                         </div>
                       ))}
                     </div>
                     
                     {/* Features */}
-                    <div className="space-y-3">
+                    <div className="space-y-2 md:space-y-3">
                       {mode.features.map((feature, idx) => (
                         <div 
                           key={idx} 
-                          className={`flex items-center gap-3 text-sm p-3 rounded-xl transition-all duration-200 ${
+                          className={`flex items-center gap-2 md:gap-3 text-xs md:text-sm p-2 md:p-3 rounded-lg md:rounded-xl transition-all duration-200 ${
                             feature.highlight 
                               ? 'bg-primary/10 border border-primary/20 font-semibold' 
                               : 'hover:bg-muted/30'
                           }`}
                         >
-                          <span className="text-2xl">{feature.icon}</span>
+                          <span className="text-xl md:text-2xl flex-shrink-0">{feature.icon}</span>
                           <span className={feature.highlight ? 'text-foreground' : 'text-muted-foreground'}>
                             {feature.text}
                           </span>
@@ -215,24 +215,24 @@ export const MetaverseUnifiedSection = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="relative rounded-2xl overflow-hidden border border-primary/20 bg-card/60 backdrop-blur-md shadow-xl">
+        <div className="relative rounded-xl md:rounded-2xl overflow-hidden border border-primary/20 bg-card/60 backdrop-blur-md shadow-xl mx-2 md:mx-0">
           {/* CTA Background Pattern */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb)/0.1),transparent_50%)]" />
-          <div className="relative p-6 md:p-12 text-center space-y-4 md:space-y-6">
-            <h3 className="text-xl md:text-3xl lg:text-4xl font-bold text-foreground">
+          <div className="relative p-4 md:p-8 lg:p-12 text-center space-y-3 md:space-y-4 lg:space-y-6">
+            <h3 className="text-lg md:text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground px-2">
               지금 바로 시작하세요
             </h3>
-            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xs md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
               3D 가상공간에서 AI와 대화하며 새로운 상담 경험을 만나보세요
             </p>
             <Button
               onClick={() => navigate('/metaverse-voice')}
               size="lg"
-              className="font-semibold text-sm md:text-lg px-6 py-5 md:px-10 md:py-7 rounded-lg transition-all duration-300 group w-full md:w-auto"
+              className="font-semibold text-sm md:text-base lg:text-lg px-4 py-4 md:px-8 md:py-5 lg:px-10 lg:py-7 rounded-lg transition-all duration-300 group w-full sm:w-auto"
             >
-              <Mic className="w-4 h-4 md:w-6 md:h-6 mr-2" />
+              <Mic className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 mr-2 flex-shrink-0" />
               <span className="truncate">메타버스 상담실 입장</span>
-              <ArrowRight className="w-4 h-4 md:w-6 md:h-6 ml-2 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 ml-2 group-hover:translate-x-1 transition-transform flex-shrink-0" />
             </Button>
           </div>
         </div>

@@ -38,48 +38,132 @@ export const ReadyPlayerMeAvatar = ({
 
   useEffect(() => {
     if (!avatarUrl) {
-      // 기본 아바타 (간단한 형태)
+      // 귀여운 치비 스타일 아바타
       const defaultAvatar = new THREE.Group();
       
-      // 머리
-      const headGeo = new THREE.SphereGeometry(0.3, 16, 16);
-      const headMat = new THREE.MeshStandardMaterial({ color: '#FFD7BA' });
+      // 머리 (더 크고 둥글게)
+      const headGeo = new THREE.SphereGeometry(0.45, 32, 32);
+      const headMat = new THREE.MeshStandardMaterial({ 
+        color: '#FFE4D6', 
+        roughness: 0.7,
+        metalness: 0.1
+      });
       const head = new THREE.Mesh(headGeo, headMat);
       head.position.y = 1.5;
+      head.scale.set(1, 0.95, 1); // 약간 납작하게
       defaultAvatar.add(head);
       
-      // 몸
-      const bodyGeo = new THREE.CapsuleGeometry(0.25, 0.8, 8, 8);
-      const bodyMat = new THREE.MeshStandardMaterial({ color: '#6B7280' });
+      // 귀여운 눈 (왼쪽)
+      const eyeGeo = new THREE.SphereGeometry(0.08, 16, 16);
+      const eyeMat = new THREE.MeshStandardMaterial({ color: '#2C3E50' });
+      const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+      leftEye.position.set(-0.15, 1.6, 0.38);
+      defaultAvatar.add(leftEye);
+      
+      // 눈 하이라이트 (왼쪽)
+      const highlightGeo = new THREE.SphereGeometry(0.03, 8, 8);
+      const highlightMat = new THREE.MeshBasicMaterial({ color: '#FFFFFF' });
+      const leftHighlight = new THREE.Mesh(highlightGeo, highlightMat);
+      leftHighlight.position.set(-0.13, 1.63, 0.43);
+      defaultAvatar.add(leftHighlight);
+      
+      // 눈 (오른쪽)
+      const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
+      rightEye.position.set(0.15, 1.6, 0.38);
+      defaultAvatar.add(rightEye);
+      
+      // 눈 하이라이트 (오른쪽)
+      const rightHighlight = new THREE.Mesh(highlightGeo, highlightMat);
+      rightHighlight.position.set(0.17, 1.63, 0.43);
+      defaultAvatar.add(rightHighlight);
+      
+      // 귀여운 입
+      const mouthShape = new THREE.Shape();
+      mouthShape.absarc(0, 0, 0.12, 0, Math.PI, false);
+      const mouthGeo = new THREE.ShapeGeometry(mouthShape);
+      const mouthMat = new THREE.MeshBasicMaterial({ color: '#E57373' });
+      const mouth = new THREE.Mesh(mouthGeo, mouthMat);
+      mouth.position.set(0, 1.35, 0.42);
+      mouth.rotation.x = Math.PI;
+      defaultAvatar.add(mouth);
+      
+      // 볼 블러시 (왼쪽)
+      const blushGeo = new THREE.CircleGeometry(0.1, 16);
+      const blushMat = new THREE.MeshBasicMaterial({ 
+        color: '#FFB4B4', 
+        transparent: true, 
+        opacity: 0.6 
+      });
+      const leftBlush = new THREE.Mesh(blushGeo, blushMat);
+      leftBlush.position.set(-0.32, 1.45, 0.35);
+      defaultAvatar.add(leftBlush);
+      
+      // 볼 블러시 (오른쪽)
+      const rightBlush = new THREE.Mesh(blushGeo, blushMat);
+      rightBlush.position.set(0.32, 1.45, 0.35);
+      defaultAvatar.add(rightBlush);
+      
+      // 작고 귀여운 몸
+      const bodyGeo = new THREE.SphereGeometry(0.35, 32, 32);
+      const bodyMat = new THREE.MeshStandardMaterial({ 
+        color: '#A8D8EA',
+        roughness: 0.6,
+        metalness: 0.1
+      });
       const body = new THREE.Mesh(bodyGeo, bodyMat);
-      body.position.y = 0.8;
+      body.position.y = 0.75;
+      body.scale.set(1, 1.2, 0.9);
       defaultAvatar.add(body);
       
-      // 팔
-      const armGeo = new THREE.CapsuleGeometry(0.08, 0.5, 6, 6);
-      const armMat = new THREE.MeshStandardMaterial({ color: '#FFD7BA' });
+      // 귀여운 팔 (더 둥글게)
+      const armGeo = new THREE.SphereGeometry(0.12, 16, 16);
+      const armMat = new THREE.MeshStandardMaterial({ color: '#FFE4D6' });
       
       const leftArm = new THREE.Mesh(armGeo, armMat);
-      leftArm.position.set(-0.35, 0.8, 0);
-      leftArm.rotation.z = Math.PI / 6;
+      leftArm.position.set(-0.45, 0.9, 0);
+      leftArm.scale.set(1, 1.8, 1);
       defaultAvatar.add(leftArm);
       
       const rightArm = new THREE.Mesh(armGeo, armMat);
-      rightArm.position.set(0.35, 0.8, 0);
-      rightArm.rotation.z = -Math.PI / 6;
+      rightArm.position.set(0.45, 0.9, 0);
+      rightArm.scale.set(1, 1.8, 1);
       defaultAvatar.add(rightArm);
       
-      // 다리
-      const legGeo = new THREE.CapsuleGeometry(0.1, 0.6, 6, 6);
-      const legMat = new THREE.MeshStandardMaterial({ color: '#3B4252' });
+      // 작은 손
+      const handGeo = new THREE.SphereGeometry(0.1, 16, 16);
+      const leftHand = new THREE.Mesh(handGeo, armMat);
+      leftHand.position.set(-0.45, 0.6, 0);
+      defaultAvatar.add(leftHand);
+      
+      const rightHand = new THREE.Mesh(handGeo, armMat);
+      rightHand.position.set(0.45, 0.6, 0);
+      defaultAvatar.add(rightHand);
+      
+      // 짧고 귀여운 다리
+      const legGeo = new THREE.CapsuleGeometry(0.12, 0.35, 16, 16);
+      const legMat = new THREE.MeshStandardMaterial({ color: '#FFE4D6' });
       
       const leftLeg = new THREE.Mesh(legGeo, legMat);
-      leftLeg.position.set(-0.15, 0.1, 0);
+      leftLeg.position.set(-0.15, 0.25, 0);
       defaultAvatar.add(leftLeg);
       
       const rightLeg = new THREE.Mesh(legGeo, legMat);
-      rightLeg.position.set(0.15, 0.1, 0);
+      rightLeg.position.set(0.15, 0.25, 0);
       defaultAvatar.add(rightLeg);
+      
+      // 귀여운 신발
+      const shoeGeo = new THREE.SphereGeometry(0.14, 16, 16);
+      const shoeMat = new THREE.MeshStandardMaterial({ color: '#FF6B9D' });
+      
+      const leftShoe = new THREE.Mesh(shoeGeo, shoeMat);
+      leftShoe.position.set(-0.15, 0.08, 0.08);
+      leftShoe.scale.set(1, 0.7, 1.3);
+      defaultAvatar.add(leftShoe);
+      
+      const rightShoe = new THREE.Mesh(shoeGeo, shoeMat);
+      rightShoe.position.set(0.15, 0.08, 0.08);
+      rightShoe.scale.set(1, 0.7, 1.3);
+      defaultAvatar.add(rightShoe);
       
       setModel(defaultAvatar);
       setIsLoading(false);

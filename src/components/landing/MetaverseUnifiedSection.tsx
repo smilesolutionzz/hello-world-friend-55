@@ -40,12 +40,12 @@ export const MetaverseUnifiedSection = () => {
     {
       icon: Users,
       title: "롤플레이 연습",
-      subtitle: "실전 시나리오 훈련",
-      description: "실제 상황을 가상공간에서 연습하고 피드백 받기",
+      subtitle: "아동 사회성 발달 훈련",
+      description: "아동의 사회적 기술과 정서 발달을 위한 맞춤형 역할 놀이",
       gradient: "from-cyan-500 via-blue-500 to-purple-500",
       bgGradient: "from-cyan-500/10 via-blue-500/10 to-purple-500/10",
-      features: ["👨‍👩‍👧 가족 대화", "🏢 업무 상황", "💬 갈등 해결"],
-      details: "어려운 대화 상황을 미리 연습해보세요. 가족과의 대화, 직장 상사와의 면담, 갈등 상황 등 다양한 시나리오에서 실전처럼 연습하고 즉각적인 피드백을 받을 수 있습니다."
+      features: ["👶 또래관계 연습", "😊 감정표현 훈련", "🤝 협력하기 배우기"],
+      details: "아동 발달 전문가가 설계한 시나리오로 사회성과 정서 조절 능력을 키웁니다. 친구와 놀기, 감정 표현하기, 양보하기, 갈등 해결하기 등 실생활에서 필요한 사회적 기술을 안전한 가상공간에서 연습할 수 있습니다."
     },
     {
       icon: MessageSquare,

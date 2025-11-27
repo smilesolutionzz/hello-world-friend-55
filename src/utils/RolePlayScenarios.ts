@@ -40,302 +40,640 @@ export interface RolePlayScenario {
 
 // 롤플레이 시나리오 데이터
 export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
-  // ========== 친구 사귀기 ==========
+  // ========== 회사 생활 - 갈등 해결 ==========
   {
-    id: 'friendship_playground',
-    category: 'friendship',
-    title: '놀이터에서 친구 만들기',
-    description: '놀이터에서 처음 보는 친구에게 다가가 함께 놀자고 말해봐요',
-    ageGroups: ['child'],
-    difficulty: 'easy',
-    aiRole: '놀이터에서 그네를 타고 있는 친구',
-    userRole: '놀고 싶은 아이',
-    situation: '놀이터에 왔는데 혼자 그네를 타고 있는 친구가 보여요. 함께 놀고 싶어요.',
-    goals: [
-      '먼저 인사하기',
-      '이름 소개하기',
-      '함께 놀자고 제안하기'
-    ],
-    tips: [
-      '밝게 웃으며 인사해보세요',
-      '"같이 놀까?" 하고 물어보세요',
-      '상대방이 좋아하는 놀이를 물어보세요'
-    ],
-    aiPersona: '너는 놀이터에서 그네를 타고 있는 7살 어린이야. 처음 보는 친구가 다가오면 조금 낯을 가리지만, 친절하게 대하면 금방 친해져. 친구가 되고 싶어하고 함께 놀고 싶어해. 밝고 천진난만하게 대답해줘. 모든 답변은 한국어로만 해줘.',
-    successCriteria: {
-      turnCount: 5,
-      keywords: ['이름', '놀다', '함께'],
-      emotional: ['호기심', '친근함']
-    },
-    voice: 'shimmer',
-    exampleDialogue: [
-      { user: '안녕! 나는 민수야', ai: '안녕? 나는 지우야!' },
-      { user: '같이 놀까?', ai: '좋아! 뭐 하고 놀까?' }
-    ]
-  },
-  {
-    id: 'friendship_school',
-    category: 'friendship',
-    title: '전학 온 친구에게 말 걸기',
-    description: '우리 반에 전학 온 친구에게 먼저 다가가 친해져보세요',
-    ageGroups: ['child', 'teen'],
-    difficulty: 'medium',
-    aiRole: '오늘 전학 온 새 친구',
-    userRole: '반 친구',
-    situation: '오늘 우리 반에 새로운 친구가 전학 왔어요. 혼자 있는 것 같아 보여서 말을 걸고 싶어요.',
-    goals: [
-      '환영하는 마음 전하기',
-      '학교 소개하기',
-      '점심 같이 먹자고 제안하기'
-    ],
-    tips: [
-      '긴장하고 있을 수 있으니 천천히 말해보세요',
-      '학교에 대해 궁금한 게 있는지 물어보세요',
-      '같이 점심 먹자고 제안해보세요'
-    ],
-    aiPersona: '너는 오늘 새 학교에 전학 온 학생이야. 조금 긴장되고 낯선 환경이 어색하지만, 친구를 사귀고 싶어해. 누군가 친절하게 다가오면 고마워하고 조심스럽게 마음을 열어. 모든 답변은 한국어로만 해줘.',
-    successCriteria: {
-      turnCount: 7,
-      keywords: ['환영', '학교', '점심'],
-      emotional: ['친절', '배려']
-    },
-    voice: 'alloy'
-  },
-
-  // ========== 갈등 해결 ==========
-  {
-    id: 'conflict_toy',
+    id: 'workplace_salary_negotiation',
     category: 'conflict',
-    title: '장난감을 두고 다툰 친구와 화해하기',
-    description: '친구와 장난감 때문에 싸웠어요. 먼저 화해를 청해보세요',
-    ageGroups: ['child'],
-    difficulty: 'medium',
-    aiRole: '장난감 때문에 화가 난 친구',
-    userRole: '화해하고 싶은 친구',
-    situation: '아까 장난감을 두고 친구와 다퉜어요. 미안하고 다시 친하게 지내고 싶어요.',
+    title: '연봉 협상하기',
+    description: '연봉 협상 시즌이 다가왔습니다. 상사와 연봉 인상을 논의해보세요',
+    ageGroups: ['adult'],
+    difficulty: 'hard',
+    aiRole: '팀장',
+    userRole: '직원',
+    situation: '1년간 성과를 냈지만 연봉이 기대에 못 미칩니다. 팀장님과 연봉 인상을 논의하고 싶습니다.',
     goals: [
-      '미안한 마음 전하기',
-      '친구 감정 이해하기',
-      '앞으로 어떻게 할지 약속하기'
+      '자신의 성과 구체적으로 어필하기',
+      '희망 연봉 근거 있게 제시하기',
+      '협상 타결하기'
     ],
     tips: [
-      '"미안해"라고 먼저 말해보세요',
-      '친구가 왜 화났는지 물어보세요',
-      '다음부터는 어떻게 할지 말해보세요'
+      '감정적이지 않고 논리적으로 접근하세요',
+      '구체적인 성과와 수치를 제시하세요',
+      '시장 평균 연봉을 조사해가세요'
     ],
-    aiPersona: '너는 장난감을 빼앗겨서 화가 난 어린이야. 하지만 친구가 진심으로 사과하고 이해해주면 마음이 풀려. 처음에는 화가 나 있지만, 대화를 통해 점차 마음을 열어. 모든 답변은 한국어로만 해줘.',
+    aiPersona: '너는 회사 팀장이야. 예산 제약이 있지만 좋은 직원은 붙잡고 싶어해. 직원이 구체적인 성과와 근거를 제시하면 경청하고, 합리적인 범위에서 협상해. 모든 답변은 한국어로만 해줘.',
     successCriteria: {
-      turnCount: 6,
-      keywords: ['미안', '이해', '약속'],
-      emotional: ['미안함', '이해']
+      turnCount: 8,
+      keywords: ['성과', '연봉', '기여'],
+      emotional: ['자신감', '논리성']
     },
     voice: 'echo'
   },
   {
-    id: 'conflict_misunderstanding',
+    id: 'workplace_colleague_conflict',
     category: 'conflict',
-    title: '오해를 풀고 사과하기',
-    description: '친구와 오해가 생겼어요. 진심을 전하고 오해를 풀어보세요',
-    ageGroups: ['teen', 'adult'],
-    difficulty: 'hard',
-    aiRole: '오해로 상처받은 친구',
-    userRole: '오해를 풀고 싶은 사람',
-    situation: '친구가 내 말을 오해해서 상처를 받았어요. 진짜 의도를 설명하고 화해하고 싶어요.',
+    title: '동료와 업무 갈등 해결하기',
+    description: '업무 스타일이 다른 동료와 갈등이 생겼습니다. 대화로 풀어보세요',
+    ageGroups: ['adult'],
+    difficulty: 'medium',
+    aiRole: '업무 방식이 다른 동료',
+    userRole: '갈등을 겪는 직장인',
+    situation: '같은 프로젝트를 하는 동료가 마감을 자주 어기고 커뮤니케이션이 부족합니다. 이야기를 나누고 싶습니다.',
     goals: [
-      '상황 정확히 설명하기',
-      '진심 전달하기',
-      '관계 회복하기'
+      '비난하지 않고 상황 전달하기',
+      '서로의 업무 스타일 이해하기',
+      '협업 방법 합의하기'
     ],
     tips: [
-      '상대방의 감정을 먼저 인정해주세요',
-      '내 의도를 차근차근 설명하세요',
-      '앞으로 더 조심하겠다고 말하세요'
+      '감정을 배제하고 사실만 이야기하세요',
+      '상대방의 입장도 들어보세요',
+      '구체적인 협업 규칙을 정하세요'
     ],
-    aiPersona: '너는 친구의 말에 오해가 생겨 상처받은 사람이야. 처음에는 방어적이지만, 친구가 진심으로 설명하고 사과하면 이해하려고 노력해. 감정적으로 대응하되, 대화가 진행되면서 점차 이성적으로 상황을 파악해. 모든 답변은 한국어로만 해줘.',
+    aiPersona: '너는 업무 스타일이 느긋한 동료야. 급한 것을 싫어하지만 일은 잘해. 처음에는 방어적이지만, 동료가 존중하며 이야기하면 협력적으로 변해. 모든 답변은 한국어로만 해줘.',
     successCriteria: {
-      turnCount: 8,
-      keywords: ['오해', '진심', '이해'],
-      emotional: ['진심', '배려']
+      turnCount: 7,
+      keywords: ['협업', '스타일', '마감'],
+      emotional: ['존중', '이해']
+    },
+    voice: 'alloy'
+  },
+  {
+    id: 'workplace_resignation',
+    category: 'emotion',
+    title: '퇴사 의사 전달하기',
+    description: '다른 회사로 이직하기로 결정했습니다. 상사에게 말씀드려야 합니다',
+    ageGroups: ['adult'],
+    difficulty: 'hard',
+    aiRole: '직속 상사',
+    userRole: '퇴사하려는 직원',
+    situation: '더 나은 기회를 위해 이직하기로 결정했습니다. 감사했지만 퇴사 의사를 전달해야 합니다.',
+    goals: [
+      '감사한 마음 전달하기',
+      '퇴사 이유 솔직하게 말하기',
+      '원만하게 마무리하기'
+    ],
+    tips: [
+      '먼저 감사 인사부터 하세요',
+      '부정적인 이야기는 최소화하세요',
+      '인수인계 계획을 제시하세요'
+    ],
+    aiPersona: '너는 직원을 아끼는 상사야. 퇴사 소식에 아쉽지만, 직원의 성장을 응원해주고 싶어해. 처음엔 만류하지만 결국 축하해줘. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 7,
+      keywords: ['감사', '기회', '인수인계'],
+      emotional: ['감사', '당당함']
     },
     voice: 'sage'
   },
-
-  // ========== 감사 표현 ==========
   {
-    id: 'gratitude_help',
-    category: 'gratitude',
-    title: '도움 받은 친구에게 감사 표현하기',
-    description: '친구가 도와줘서 고마워요. 마음을 표현해보세요',
-    ageGroups: ['child', 'teen'],
-    difficulty: 'easy',
-    aiRole: '도움을 준 친구',
-    userRole: '감사를 표현하고 싶은 사람',
-    situation: '숙제가 어려웠는데 친구가 설명해줘서 이해할 수 있었어요. 고마움을 전하고 싶어요.',
+    id: 'workplace_overtime_refusal',
+    category: 'refusal',
+    title: '야근 요청 거절하기',
+    description: '오늘 중요한 약속이 있는데 야근 요청이 들어왔습니다',
+    ageGroups: ['adult'],
+    difficulty: 'medium',
+    aiRole: '업무를 요청하는 상사',
+    userRole: '야근을 거절해야 하는 직원',
+    situation: '오늘 가족 행사가 있어 야근이 어려운 상황입니다. 상사가 급한 업무를 부탁합니다.',
     goals: [
-      '구체적으로 무엇이 도움됐는지 말하기',
-      '진심으로 감사 표현하기',
-      '나도 도와주고 싶다는 마음 전하기'
+      '개인 사정 설명하기',
+      '대안 제시하기',
+      '단호하게 거절하기'
     ],
     tips: [
-      '구체적으로 무엇이 좋았는지 말해보세요',
-      '"정말 고마워" 하고 진심을 담아 말하세요',
-      '"나도 네가 필요하면 도와줄게" 하고 말해보세요'
+      '죄송하다는 말만 반복하지 마세요',
+      '내일 아침 일찍 출근 등 대안을 제시하세요',
+      '개인 시간도 중요하다는 것을 명확히 하세요'
     ],
-    aiPersona: '너는 친구를 도와준 사람이야. 친구가 고마워하면 기쁘고 뿌듯해하며, 자연스럽게 "별거 아니야" 하며 겸손하게 대답해. 친구의 감사 표현을 기쁘게 받아들여. 모든 답변은 한국어로만 해줘.',
+    aiPersona: '너는 급한 업무가 생긴 상사야. 처음엔 이해하기 어렵지만, 직원이 합리적으로 설명하고 대안을 제시하면 받아들여. 모든 답변은 한국어로만 해줘.',
     successCriteria: {
-      turnCount: 4,
-      keywords: ['고마워', '도움', '덕분에'],
-      emotional: ['감사', '기쁨']
+      turnCount: 6,
+      keywords: ['개인 일정', '대안', '내일'],
+      emotional: ['단호함', '합리성']
+    },
+    voice: 'echo'
+  },
+
+  // ========== 대학 생활 ==========
+  {
+    id: 'university_grade_appeal',
+    category: 'request',
+    title: '교수님께 학점 이의 제기하기',
+    description: '학점에 의문이 있어 교수님께 여쭤보고 싶습니다',
+    ageGroups: ['adult'],
+    difficulty: 'hard',
+    aiRole: '교수님',
+    userRole: '학생',
+    situation: '과제와 시험을 열심히 했는데 예상보다 낮은 학점을 받았습니다. 교수님께 문의하고 싶습니다.',
+    goals: [
+      '정중하게 문의하기',
+      '구체적으로 질문하기',
+      '결과 수용하기'
+    ],
+    tips: [
+      '감정적이지 않게 사실만 이야기하세요',
+      '구체적인 과제/시험 내용을 언급하세요',
+      '학점 재검토를 정중히 요청하세요'
+    ],
+    aiPersona: '너는 바쁘지만 공정한 교수야. 학생이 정중하고 구체적으로 질문하면 채점 기준을 설명해주고, 오류가 있으면 인정해. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 6,
+      keywords: ['학점', '채점', '확인'],
+      emotional: ['정중함', '논리성']
+    },
+    voice: 'sage'
+  },
+  {
+    id: 'university_group_freeloader',
+    category: 'conflict',
+    title: '조별과제 무임승차 문제 해결하기',
+    description: '조별과제에서 한 팀원이 일을 안 합니다. 이야기를 해야겠습니다',
+    ageGroups: ['adult'],
+    difficulty: 'medium',
+    aiRole: '조별과제를 안 하는 팀원',
+    userRole: '조장',
+    situation: '조별과제 마감이 다가오는데 한 팀원이 연락도 안 되고 역할을 안 합니다.',
+    goals: [
+      '문제 상황 전달하기',
+      '참여 촉구하기',
+      '역할 분담 재조정하기'
+    ],
+    tips: [
+      '비난보다는 사실을 이야기하세요',
+      '팀 전체를 위해 참여가 필요하다고 설득하세요',
+      '구체적인 역할을 다시 배정하세요'
+    ],
+    aiPersona: '너는 조별과제에 소극적인 학생이야. 사실 다른 과목이 바빠서 신경을 못 썼어. 팀원이 직접적으로 이야기하면 미안해하고 할 수 있는 부분을 찾아봐. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 6,
+      keywords: ['역할', '마감', '참여'],
+      emotional: ['단호함', '협력']
     },
     voice: 'alloy'
   },
 
-  // ========== 거절하기 ==========
+  // ========== 연애 ==========
   {
-    id: 'refusal_invitation',
-    category: 'refusal',
-    title: '친구의 제안을 정중하게 거절하기',
-    description: '친구가 놀자고 했지만 오늘은 못 가요. 상처주지 않고 거절해보세요',
-    ageGroups: ['child', 'teen'],
+    id: 'dating_confession',
+    category: 'emotion',
+    title: '호감 있는 사람에게 데이트 신청하기',
+    description: '좋아하는 사람에게 용기내어 데이트를 신청해보세요',
+    ageGroups: ['adult'],
     difficulty: 'medium',
-    aiRole: '놀자고 제안하는 친구',
-    userRole: '거절해야 하는 사람',
-    situation: '친구가 오늘 같이 놀자고 했는데, 학원 가야 해서 못 가요. 친구 기분 상하지 않게 거절하고 싶어요.',
+    aiRole: '관심 있는 상대',
+    userRole: '고백하려는 사람',
+    situation: '몇 번 같이 밥도 먹고 친해진 사람이 있습니다. 정식으로 데이트를 신청하고 싶습니다.',
     goals: [
-      '정중하게 거절하기',
-      '이유 설명하기',
-      '다음 기회 약속하기'
+      '자연스럽게 말 꺼내기',
+      '솔직하게 마음 전하기',
+      '부담 없이 제안하기'
     ],
     tips: [
-      '"미안한데"로 시작하세요',
-      '못 가는 이유를 설명하세요',
-      '"다음에 꼭 놀자"고 말하세요'
+      '너무 무겁지 않게 시작하세요',
+      '구체적인 데이트 계획을 제시하세요',
+      '거절해도 괜찮다는 여유를 보이세요'
     ],
-    aiPersona: '너는 친구에게 같이 놀자고 제안하는 사람이야. 친구가 거절하면 조금 아쉽지만, 이유를 이해하고 다음 기회를 기대해. 친구가 정중하게 거절하고 다음을 약속하면 기분 좋게 받아들여. 모든 답변은 한국어로만 해줘.',
+    aiPersona: '너는 상대방에게 호감이 있지만 확신은 없는 사람이야. 데이트 신청을 받으면 조금 놀라지만 긍정적으로 반응해. 자연스럽고 밝게 대답해줘. 모든 답변은 한국어로만 해줘.',
     successCriteria: {
       turnCount: 5,
-      keywords: ['미안', '이유', '다음에'],
-      emotional: ['정중함', '배려']
+      keywords: ['데이트', '만남', '시간'],
+      emotional: ['설렘', '용기']
     },
     voice: 'shimmer'
   },
   {
-    id: 'refusal_pressure',
-    category: 'refusal',
-    title: '또래 압력에 단호하게 거절하기',
-    description: '친구들이 하기 싫은 일을 하자고 해요. 단호하게 거절해보세요',
-    ageGroups: ['teen'],
+    id: 'dating_define_relationship',
+    category: 'emotion',
+    title: '관계 정의하기 - 썸에서 연인으로',
+    description: '썸 타는 관계가 애매합니다. 공식적인 연인 관계를 정의하고 싶습니다',
+    ageGroups: ['adult'],
     difficulty: 'hard',
-    aiRole: '같이 하자고 설득하는 친구',
-    userRole: '거절하고 싶은 사람',
-    situation: '친구들이 PC방에 가자고 하는데, 시험 공부를 해야 해요. 단호하게 거절하고 싶어요.',
+    aiRole: '썸 타는 상대',
+    userRole: '관계를 정의하고 싶은 사람',
+    situation: '한 달 넘게 데이트하고 있지만 공식적으로 사귀자는 말은 안 했습니다. 이제 관계를 정의하고 싶습니다.',
     goals: [
-      '명확하게 의사 전달하기',
-      '이유 설명하기',
-      '자신의 선택 지키기'
+      '현재 감정 솔직하게 전달하기',
+      '상대방 마음 확인하기',
+      '공식적인 관계 제안하기'
     ],
     tips: [
-      '"안 돼" 하고 명확하게 말하세요',
-      '왜 안 되는지 설명하세요',
-      '계속 설득하면 "정말 안 돼" 하고 반복하세요'
+      '지금까지의 시간이 좋았다고 말하세요',
+      '상대방 마음을 먼저 물어보세요',
+      '공식적으로 사귀자고 제안하세요'
     ],
-    aiPersona: '너는 친구를 계속 설득하려는 또래야. 처음에는 "괜찮아, 잠깐만"이라며 설득하지만, 친구가 단호하게 거절하면 결국 이해하고 물러나. 약간의 또래 압력을 주되, 친구의 단호한 태도에는 결국 존중해줘. 모든 답변은 한국어로만 해줘.',
+    aiPersona: '너는 상대방과 좋은 시간을 보내고 있지만 조심스러운 사람이야. 상대방이 먼저 마음을 표현하면 기쁘게 받아들이고 자신의 감정도 솔직하게 이야기해. 모든 답변은 한국어로만 해줘.',
     successCriteria: {
-      turnCount: 6,
-      keywords: ['안 돼', '공부', '나중에'],
-      emotional: ['단호함', '자신감']
+      turnCount: 7,
+      keywords: ['좋아해', '사귀다', '연인'],
+      emotional: ['진심', '설렘']
+    },
+    voice: 'alloy'
+  },
+  {
+    id: 'dating_breakup',
+    category: 'conflict',
+    title: '헤어짐 이야기하기',
+    description: '더 이상 관계를 지속하기 어렵습니다. 헤어지자는 이야기를 해야 합니다',
+    ageGroups: ['adult'],
+    difficulty: 'hard',
+    aiRole: '연인',
+    userRole: '헤어지고 싶은 사람',
+    situation: '가치관 차이와 미래 계획 차이로 더 이상 관계를 이어가기 어렵습니다.',
+    goals: [
+      '솔직하게 이유 설명하기',
+      '상대방 마음 배려하기',
+      '좋은 기억은 감사하며 마무리하기'
+    ],
+    tips: [
+      '감정적이지 않게 차분히 이야기하세요',
+      '상대방 탓만 하지 마세요',
+      '함께한 시간에 감사 표현하세요'
+    ],
+    aiPersona: '너는 헤어지고 싶지 않은 연인이야. 처음엔 감정적으로 반응하고 만류하지만, 상대방이 확고하면 결국 받아들여. 아픔을 표현하되 존중하는 태도를 보여줘. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 8,
+      keywords: ['헤어지다', '이유', '감사'],
+      emotional: ['단호함', '배려']
+    },
+    voice: 'echo'
+  },
+  {
+    id: 'dating_parents_introduction',
+    category: 'emotion',
+    title: '부모님께 연인 소개하기',
+    description: '연인과의 관계가 진지해졌습니다. 부모님께 소개하고 싶습니다',
+    ageGroups: ['adult'],
+    difficulty: 'medium',
+    aiRole: '부모님',
+    userRole: '자녀',
+    situation: '연인과 결혼을 고려하는 단계입니다. 부모님께 처음 소개하려 합니다.',
+    goals: [
+      '연인에 대해 긍정적으로 소개하기',
+      '관계의 진지함 전달하기',
+      '부모님 의견 경청하기'
+    ],
+    tips: [
+      '연인의 좋은 점을 구체적으로 말하세요',
+      '앞으로의 계획을 언급하세요',
+      '부모님 걱정을 이해한다고 표현하세요'
+    ],
+    aiPersona: '너는 자녀를 걱정하는 부모야. 연인에 대해 궁금한 것도 많고 걱정도 되지만, 자녀가 행복하길 바라. 직업, 가족, 미래 계획 등을 물어보며 신중하게 대화해. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 7,
+      keywords: ['연인', '소개', '미래'],
+      emotional: ['진심', '존중']
+    },
+    voice: 'sage'
+  },
+
+  // ========== 가족 생활 ==========
+  {
+    id: 'family_independence',
+    category: 'emotion',
+    title: '부모님께 독립 의사 전달하기',
+    description: '독립해서 나가 살고 싶습니다. 부모님께 말씀드려야 합니다',
+    ageGroups: ['adult'],
+    difficulty: 'medium',
+    aiRole: '부모님',
+    userRole: '독립하려는 자녀',
+    situation: '직장도 안정되고 독립할 준비가 되었습니다. 부모님께 이사 계획을 말씀드리고 싶습니다.',
+    goals: [
+      '독립 이유 설명하기',
+      '부모님 걱정 덜어드리기',
+      '자주 찾아뵙겠다고 약속하기'
+    ],
+    tips: [
+      '독립이 성장의 과정임을 설명하세요',
+      '구체적인 계획을 보여드리세요',
+      '자주 연락하고 찾아뵙겠다고 하세요'
+    ],
+    aiPersona: '너는 자녀가 집을 떠나는 게 걱정되는 부모야. 아직 어리다고 생각하고 혼자 잘 살 수 있을지 걱정돼. 하지만 자녀가 준비가 되어 있다면 응원해주고 싶어해. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 7,
+      keywords: ['독립', '준비', '자주'],
+      emotional: ['자신감', '효심']
+    },
+    voice: 'alloy'
+  },
+  {
+    id: 'family_holiday_pressure',
+    category: 'refusal',
+    title: '명절 부담 표현하기',
+    description: '명절마다 과도한 집안일이 부담됩니다. 가족들과 이야기하고 싶습니다',
+    ageGroups: ['adult'],
+    difficulty: 'hard',
+    aiRole: '시부모님 또는 배우자',
+    userRole: '명절 준비에 지친 사람',
+    situation: '매번 명절에 혼자 모든 준비를 하게 됩니다. 역할 분담을 제안하고 싶습니다.',
+    goals: [
+      '솔직하게 힘든 점 말하기',
+      '역할 분담 제안하기',
+      '서로 존중하는 문화 만들기'
+    ],
+    tips: [
+      '비난하지 않고 본인 감정을 이야기하세요',
+      '구체적인 역할 분담을 제시하세요',
+      '함께하는 명절이 되자고 제안하세요'
+    ],
+    aiPersona: '너는 전통적인 명절 문화에 익숙한 가족이야. 처음엔 당황하고 방어적이지만, 상대방의 진심을 이해하면 변화할 의지를 보여. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 8,
+      keywords: ['힘들다', '분담', '함께'],
+      emotional: ['진솔함', '단호함']
+    },
+    voice: 'sage'
+  },
+  {
+    id: 'family_conflict_sibling',
+    category: 'conflict',
+    title: '형제자매와 갈등 해결하기',
+    description: '오래된 형제자매 갈등을 풀고 싶습니다',
+    ageGroups: ['adult'],
+    difficulty: 'medium',
+    aiRole: '형제/자매',
+    userRole: '화해하고 싶은 사람',
+    situation: '어릴 때부터 쌓인 오해와 갈등이 있습니다. 이제는 풀고 가까워지고 싶습니다.',
+    goals: [
+      '과거 오해 풀기',
+      '미안한 마음 전하기',
+      '새로운 관계 시작하기'
+    ],
+    tips: [
+      '과거 일을 솔직하게 이야기하세요',
+      '서로의 입장을 이해하려 노력하세요',
+      '앞으로 더 자주 만나자고 제안하세요'
+    ],
+    aiPersona: '너는 오랫동안 거리를 둔 형제자매야. 상처가 있지만 사실 화해하고 싶어해. 상대방이 진심으로 다가오면 마음을 열고 과거를 이야기해. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 8,
+      keywords: ['미안', '이해', '자주'],
+      emotional: ['진심', '화해']
+    },
+    voice: 'echo'
+  },
+
+  // ========== 갈등 해결 (기타) ==========
+  {
+    id: 'conflict_friend_money',
+    category: 'conflict',
+    title: '친구와 금전 문제 해결하기',
+    description: '친구에게 빌려준 돈을 받지 못하고 있습니다. 이야기해야 할 것 같습니다',
+    ageGroups: ['adult'],
+    difficulty: 'hard',
+    aiRole: '돈을 빌린 친구',
+    userRole: '돈을 빌려준 사람',
+    situation: '몇 달 전 친구에게 급하다고 해서 큰 돈을 빌려줬는데 연락이 뜸해졌습니다.',
+    goals: [
+      '부담 없이 상황 확인하기',
+      '상환 계획 논의하기',
+      '관계 유지하며 해결하기'
+    ],
+    tips: [
+      '감정적이지 않게 사실만 이야기하세요',
+      '상대방 사정도 물어보세요',
+      '분할 상환 등 유연한 방법을 제시하세요'
+    ],
+    aiPersona: '너는 돈을 빌렸지만 갚기 어려운 상황인 친구야. 미안하고 부끄러워서 연락을 피했어. 친구가 이해심 있게 대하면 솔직하게 상황을 이야기하고 해결 방법을 찾으려 해. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 7,
+      keywords: ['돈', '상환', '계획'],
+      emotional: ['이해', '단호함']
+    },
+    voice: 'alloy'
+  },
+
+  // ========== 감사 표현 ==========
+  {
+    id: 'gratitude_mentor',
+    category: 'gratitude',
+    title: '멘토에게 감사 표현하기',
+    description: '커리어 성장에 큰 도움을 준 멘토님께 감사를 전하고 싶습니다',
+    ageGroups: ['adult'],
+    difficulty: 'medium',
+    aiRole: '멘토',
+    userRole: '멘티',
+    situation: '승진에 성공했습니다. 그동안 조언과 격려를 아끼지 않으셨던 멘토님께 감사를 전하고 싶습니다.',
+    goals: [
+      '구체적으로 어떤 도움이 됐는지 말하기',
+      '진심 어린 감사 표현하기',
+      '앞으로도 관계 이어가기'
+    ],
+    tips: [
+      '구체적인 조언이나 순간을 언급하세요',
+      '그 조언이 어떤 변화를 가져왔는지 말하세요',
+      '식사나 커피를 대접하고 싶다고 제안하세요'
+    ],
+    aiPersona: '너는 후배의 성장을 지켜본 멘토야. 후배가 성장한 모습에 뿌듯하고, 감사 인사를 받으면 겸손하게 받아들이며 앞으로도 응원한다고 말해줘. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 5,
+      keywords: ['감사', '덕분에', '승진'],
+      emotional: ['감사', '존경']
+    },
+    voice: 'sage'
+  },
+
+  // ========== 거절하기 ==========
+  {
+    id: 'refusal_mlm',
+    category: 'refusal',
+    title: '지인의 다단계/보험 권유 거절하기',
+    description: '오랜만에 연락한 지인이 사업이나 보험을 권유합니다. 거절해야 합니다',
+    ageGroups: ['adult'],
+    difficulty: 'hard',
+    aiRole: '사업을 권유하는 지인',
+    userRole: '거절하려는 사람',
+    situation: '오랜만에 연락한 선후배가 커피 한잔 하자더니 사업 제안을 합니다.',
+    goals: [
+      '단호하게 거절하기',
+      '관계는 유지하기',
+      '추가 연락 차단하기'
+    ],
+    tips: [
+      '"관심 없어"라고 명확히 말하세요',
+      '이유를 길게 설명하지 마세요',
+      '계속 설득하면 대화를 종료하세요'
+    ],
+    aiPersona: '너는 사업을 시작한 지인이야. 처음엔 계속 설득하려 하지만, 상대방이 단호하게 거절하면 "알겠어, 혹시 생각 바뀌면 연락해"라며 물러나. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 5,
+      keywords: ['관심 없다', '거절', '미안'],
+      emotional: ['단호함', '명확함']
+    },
+    voice: 'alloy'
+  },
+  {
+    id: 'refusal_drinking',
+    category: 'refusal',
+    title: '회식에서 술 권유 거절하기',
+    description: '회식 자리에서 상사가 술을 계속 권유합니다. 거절하고 싶습니다',
+    ageGroups: ['adult'],
+    difficulty: 'medium',
+    aiRole: '술을 권하는 상사',
+    userRole: '거절하려는 직원',
+    situation: '건강상 이유로 술을 마실 수 없는데, 상사가 분위기를 이유로 술을 권합니다.',
+    goals: [
+      '정중하지만 확고하게 거절하기',
+      '이유 간단히 설명하기',
+      '대안 제시하기'
+    ],
+    tips: [
+      '"죄송하지만 정말 못 마셔요"라고 명확히 하세요',
+      '건강 문제를 언급하세요',
+      '다른 음료로 건배하겠다고 하세요'
+    ],
+    aiPersona: '너는 회식 문화가 익숙한 상사야. 처음엔 "한 잔만"이라며 권하지만, 직원이 건강 이유를 들면 이해하고 물러나. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 4,
+      keywords: ['건강', '못 마신다', '다른 음료'],
+      emotional: ['정중함', '단호함']
     },
     voice: 'echo'
   },
 
   // ========== 사과하기 ==========
   {
-    id: 'apology_mistake',
+    id: 'apology_work_mistake',
     category: 'apology',
-    title: '실수한 일에 대해 사과하기',
-    description: '친구의 물건을 망가뜨렸어요. 진심으로 사과해보세요',
-    ageGroups: ['child', 'teen'],
-    difficulty: 'medium',
-    aiRole: '물건이 망가진 친구',
-    userRole: '사과해야 하는 사람',
-    situation: '친구의 연필을 빌렸다가 실수로 부러뜨렸어요. 정말 미안하고 사과하고 싶어요.',
+    title: '업무 실수에 대해 사과하기',
+    description: '중요한 업무에서 실수를 했습니다. 팀과 상사에게 사과해야 합니다',
+    ageGroups: ['adult'],
+    difficulty: 'hard',
+    aiRole: '상사',
+    userRole: '실수한 직원',
+    situation: '중요한 프로젝트에서 큰 실수를 했고, 팀에 피해가 갔습니다. 책임지고 사과해야 합니다.',
     goals: [
-      '솔직하게 인정하기',
-      '진심으로 사과하기',
-      '해결 방법 제시하기'
+      '실수 인정하고 사과하기',
+      '원인 분석하고 설명하기',
+      '재발 방지 대책 제시하기'
     ],
     tips: [
-      '변명하지 말고 솔직하게 인정하세요',
-      '"정말 미안해" 하고 진심을 담아 말하세요',
-      '새 것으로 사주겠다고 제안하세요'
+      '변명하지 말고 책임을 인정하세요',
+      '어떻게 복구할 것인지 제시하세요',
+      '다시는 반복하지 않겠다는 다짐을 하세요'
     ],
-    aiPersona: '너는 소중한 물건이 망가져서 속상한 친구야. 처음에는 화가 나지만, 친구가 진심으로 사과하고 책임지려는 모습을 보이면 이해하고 용서해줘. 모든 답변은 한국어로만 해줘.',
+    aiPersona: '너는 실수로 피해를 본 상사야. 화가 나 있지만, 직원이 진심으로 사과하고 해결책을 제시하면 기회를 줘. 모든 답변은 한국어로만 해줘.',
     successCriteria: {
-      turnCount: 6,
-      keywords: ['미안', '실수', '보상'],
-      emotional: ['미안함', '책임감']
+      turnCount: 7,
+      keywords: ['죄송', '책임', '재발 방지'],
+      emotional: ['진심', '책임감']
     },
-    voice: 'alloy'
+    voice: 'echo'
   },
 
   // ========== 부탁하기 ==========
   {
-    id: 'request_favor',
+    id: 'request_leave',
     category: 'request',
-    title: '선생님께 질문 여쭤보기',
-    description: '수업 시간에 이해가 안 되는 부분이 있어요. 선생님께 물어보세요',
-    ageGroups: ['child', 'teen'],
-    difficulty: 'easy',
-    aiRole: '선생님',
-    userRole: '질문하고 싶은 학생',
-    situation: '수업 시간에 배운 내용 중 이해가 안 되는 부분이 있어요. 선생님께 여쭤보고 싶어요.',
+    title: '상사에게 휴가 요청하기',
+    description: '바쁜 시기지만 개인 사정으로 휴가가 필요합니다',
+    ageGroups: ['adult'],
+    difficulty: 'medium',
+    aiRole: '팀장',
+    userRole: '직원',
+    situation: '가족 행사로 며칠 휴가가 필요한데, 팀이 바쁜 상황입니다.',
     goals: [
-      '정중하게 말 걸기',
-      '구체적으로 질문하기',
-      '감사 인사하기'
+      '정중하게 요청하기',
+      '업무 공백 최소화 방안 제시하기',
+      '승인 받기'
     ],
     tips: [
-      '"선생님, 질문 있어요" 하고 손을 들어보세요',
-      '어떤 부분이 어려운지 구체적으로 말하세요',
-      '설명을 들은 후 "감사합니다" 하고 인사하세요'
+      '미리 여유있게 요청하세요',
+      '인수인계 계획을 함께 제시하세요',
+      '팀 상황을 이해한다는 것을 표현하세요'
     ],
-    aiPersona: '너는 친절한 선생님이야. 학생이 질문하면 기쁘게 받아들이고, 이해하기 쉽게 설명해줘. 학생이 이해했는지 확인하고, 격려의 말을 해줘. 모든 답변은 한국어로만 해줘.',
+    aiPersona: '너는 바쁜 시기의 팀장이야. 휴가 요청이 부담스럽지만, 직원이 준비를 잘 해오고 개인 사정을 설명하면 이해하고 허락해줘. 모든 답변은 한국어로만 해줘.',
     successCriteria: {
-      turnCount: 5,
-      keywords: ['선생님', '질문', '감사합니다'],
-      emotional: ['정중함', '호기심']
+      turnCount: 6,
+      keywords: ['휴가', '인수인계', '준비'],
+      emotional: ['정중함', '책임감']
+    },
+    voice: 'sage'
+  },
+  {
+    id: 'request_recommendation',
+    category: 'request',
+    title: '교수님께 추천서 부탁드리기',
+    description: '대학원/취업을 위해 교수님께 추천서를 부탁드리고 싶습니다',
+    ageGroups: ['adult'],
+    difficulty: 'medium',
+    aiRole: '교수님',
+    userRole: '학생',
+    situation: '대학원 지원을 위해 존경하는 교수님께 추천서를 부탁드리고 싶습니다.',
+    goals: [
+      '정중하게 부탁드리기',
+      '왜 교수님께 부탁드리는지 설명하기',
+      '필요한 정보 제공하기'
+    ],
+    tips: [
+      '미리 충분한 시간을 두고 부탁하세요',
+      '본인의 계획과 목표를 설명하세요',
+      '필요한 자료를 준비해가세요'
+    ],
+    aiPersona: '너는 학생을 지도해온 교수야. 추천서 부탁을 받으면 학생의 진로를 물어보고, 충분히 준비되었다고 판단되면 기꺼이 써주겠다고 해. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 6,
+      keywords: ['추천서', '대학원', '감사'],
+      emotional: ['정중함', '열정']
     },
     voice: 'sage'
   },
 
   // ========== 감정 표현 ==========
   {
-    id: 'emotion_sad',
+    id: 'emotion_burnout',
     category: 'emotion',
-    title: '속상한 마음 표현하기',
-    description: '속상한 일이 있었어요. 친구에게 마음을 털어놓아보세요',
-    ageGroups: ['child', 'teen'],
+    title: '번아웃 증상 털어놓기',
+    description: '일에 지쳐서 번아웃이 왔습니다. 친구에게 털어놓고 싶습니다',
+    ageGroups: ['adult'],
     difficulty: 'medium',
-    aiRole: '걱정하는 친구',
-    userRole: '속상한 사람',
-    situation: '오늘 속상한 일이 있었는데 아무에게도 말하지 못했어요. 친한 친구에게 말하고 싶어요.',
+    aiRole: '친한 친구',
+    userRole: '번아웃을 겪는 사람',
+    situation: '과도한 업무로 몸도 마음도 지쳐있습니다. 친구에게 이야기하고 위로받고 싶습니다.',
     goals: [
-      '감정을 솔직하게 표현하기',
-      '무슨 일이 있었는지 설명하기',
-      '위로 받기'
+      '솔직하게 상태 표현하기',
+      '힘든 감정 나누기',
+      '위로와 조언 받기'
     ],
     tips: [
-      '"오늘 속상한 일이 있어"라고 시작하세요',
-      '무슨 일이 있었는지 천천히 말해보세요',
-      '친구의 위로를 받아들이세요'
+      '감정을 솔직하게 표현하세요',
+      '구체적으로 무엇이 힘든지 말하세요',
+      '친구의 공감을 받아들이세요'
     ],
-    aiPersona: '너는 친구가 속상해하는 걸 보고 걱정하는 친한 친구야. 친구의 이야기를 경청하고, 공감하며 위로해줘. "괜찮아, 네 곁에 있을게" 같은 따뜻한 말을 해줘. 모든 답변은 한국어로만 해줘.',
+    aiPersona: '너는 친구를 걱정하는 사람이야. 친구가 힘들어하면 진심으로 공감하고, 위로해주며, 필요하다면 휴식이나 도움을 받으라고 조언해줘. 모든 답변은 한국어로만 해줘.',
     successCriteria: {
       turnCount: 6,
-      keywords: ['속상', '힘들어', '위로'],
-      emotional: ['슬픔', '안도']
+      keywords: ['지치다', '힘들다', '번아웃'],
+      emotional: ['솔직함', '안도']
     },
     voice: 'alloy'
+  },
+  {
+    id: 'emotion_achievement',
+    category: 'emotion',
+    title: '성취감과 기쁨 나누기',
+    description: '큰 목표를 달성했습니다. 기쁨을 함께 나누고 싶습니다',
+    ageGroups: ['adult'],
+    difficulty: 'easy',
+    aiRole: '친한 동료',
+    userRole: '성취한 사람',
+    situation: '오랜 노력 끝에 프로젝트가 성공했습니다. 동료들과 기쁨을 나누고 싶습니다.',
+    goals: [
+      '기쁜 소식 전하기',
+      '함께 한 사람들께 감사하기',
+      '축하 받기'
+    ],
+    tips: [
+      '흥분된 마음을 표현하세요',
+      '함께 한 동료들의 도움을 언급하세요',
+      '축하를 기쁘게 받으세요'
+    ],
+    aiPersona: '너는 동료의 성공을 진심으로 축하하는 사람이야. 같이 기뻐하고 축하해주며, 그동안의 노력을 인정해줘. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 4,
+      keywords: ['성공', '감사', '축하'],
+      emotional: ['기쁨', '감사']
+    },
+    voice: 'shimmer'
   },
 
   // ========== 면접 연습 ==========
@@ -367,41 +705,11 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
     },
     voice: 'echo'
   },
-
-  // ========== 발표 연습 ==========
-  {
-    id: 'presentation_class',
-    category: 'presentation',
-    title: '수업 발표 연습하기',
-    description: '반 친구들 앞에서 발표를 해야 해요. 연습해보세요',
-    ageGroups: ['child', 'teen'],
-    difficulty: 'medium',
-    aiRole: '발표를 듣는 친구',
-    userRole: '발표하는 사람',
-    situation: '다음 시간에 독후감 발표를 해야 해요. 친구 앞에서 연습하고 싶어요.',
-    goals: [
-      '명확하게 말하기',
-      '자신감 있게 발표하기',
-      '질문에 답변하기'
-    ],
-    tips: [
-      '크고 또박또박하게 말하세요',
-      '친구들을 보며 말하세요',
-      '중요한 부분은 천천히 강조하세요'
-    ],
-    aiPersona: '너는 친구의 발표를 듣는 학생이야. 집중해서 듣고, 발표가 끝나면 궁금한 점을 질문해. 친구를 격려하고 칭찬해줘. 모든 답변은 한국어로만 해줘.',
-    successCriteria: {
-      turnCount: 5,
-      keywords: ['발표', '설명', '질문'],
-      emotional: ['자신감', '명확함']
-    },
-    voice: 'shimmer'
-  },
   {
     id: 'presentation_business',
     category: 'presentation',
     title: '사업 제안 프레젠테이션',
-    description: '중요한 비즈니스 프레젠테이션을 준비하고 있어요',
+    description: '중요한 비즈니스 프레젠테이션을 준비하고 있습니다',
     ageGroups: ['adult'],
     difficulty: 'hard',
     aiRole: '경영진',
@@ -425,124 +733,38 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
     },
     voice: 'onyx'
   },
-
-  // ========== 성인 직장 상황 ==========
   {
-    id: 'workplace_salary',
-    category: 'request',
-    title: '상사에게 연봉 협상하기',
-    description: '1년간의 성과를 바탕으로 연봉 인상을 요청해보세요',
-    ageGroups: ['adult'],
-    difficulty: 'hard',
-    aiRole: '상사/팀장',
-    userRole: '직원',
-    situation: '1년 동안 좋은 성과를 냈고, 연봉 인상을 협상하고 싶습니다.',
-    goals: [
-      '성과를 구체적으로 설명하기',
-      '시장 가치 제시하기',
-      '협상 마무리하기'
-    ],
-    tips: [
-      '구체적인 성과 수치를 준비하세요',
-      '업계 평균 연봉을 조사하세요',
-      '회사 상황도 고려하며 말하세요'
-    ],
-    aiPersona: '너는 팀을 이끄는 상사야. 직원의 요청을 경청하되, 회사 예산과 형평성을 고려해. 성과가 명확하면 긍정적으로 검토하지만, 근거가 부족하면 구체적인 자료를 요청해. 모든 답변은 한국어로만 해줘.',
-    successCriteria: {
-      turnCount: 10,
-      keywords: ['성과', '기여', '협상'],
-      emotional: ['자신감', '전문성']
-    },
-    voice: 'onyx'
-  },
-  {
-    id: 'workplace_conflict_colleague',
-    category: 'conflict',
-    title: '업무 갈등 해결하기',
-    description: '동료와 업무 방식 차이로 갈등이 생겼어요',
-    ageGroups: ['adult'],
-    difficulty: 'hard',
-    aiRole: '갈등 중인 동료',
-    userRole: '문제를 해결하고 싶은 직원',
-    situation: '프로젝트 진행 방식을 두고 동료와 의견이 달라 갈등이 생겼습니다.',
-    goals: [
-      '서로의 입장 이해하기',
-      '절충안 찾기',
-      '협력 관계 회복하기'
-    ],
-    tips: [
-      '먼저 상대방의 의견을 들어보세요',
-      '업무 목표를 우선순위에 두세요',
-      '감정이 아닌 사실에 집중하세요'
-    ],
-    aiPersona: '너는 자신의 방식을 고집하는 동료야. 처음에는 방어적이지만, 상대방이 진지하게 대화하고 절충안을 제시하면 협력적으로 변해. 모든 답변은 한국어로만 해줘.',
-    successCriteria: {
-      turnCount: 9,
-      keywords: ['이해', '협력', '절충'],
-      emotional: ['이성적', '협력적']
-    },
-    voice: 'echo'
-  },
-  {
-    id: 'workplace_feedback',
-    category: 'request',
-    title: '상사에게 건설적 피드백 전달하기',
-    description: '팀의 문제점을 상사에게 조심스럽게 말씀드려야 해요',
-    ageGroups: ['adult'],
-    difficulty: 'hard',
-    aiRole: '팀장/상사',
-    userRole: '직원',
-    situation: '팀 운영에 개선이 필요한 부분을 발견했고, 상사에게 건설적으로 제안하고 싶습니다.',
-    goals: [
-      '문제를 객관적으로 제시하기',
-      '해결책 제안하기',
-      '상사의 입장 이해하기'
-    ],
-    tips: [
-      '비난이 아닌 제안의 형태로 말하세요',
-      '구체적인 개선 방안을 준비하세요',
-      '"팀을 위해"라는 프레임을 사용하세요'
-    ],
-    aiPersona: '너는 팀을 이끄는 상사야. 처음에는 비판에 방어적일 수 있지만, 직원이 건설적이고 팀을 위한 제안을 하면 경청하고 긍정적으로 받아들여. 모든 답변은 한국어로만 해줘.',
-    successCriteria: {
-      turnCount: 8,
-      keywords: ['개선', '제안', '팀'],
-      emotional: ['존중', '건설적']
-    },
-    voice: 'sage'
-  },
-  {
-    id: 'workplace_delegation',
-    category: 'request',
-    title: '팀원에게 업무 위임하기',
-    description: '새로운 프로젝트를 팀원에게 효과적으로 배분하세요',
+    id: 'presentation_team_meeting',
+    category: 'presentation',
+    title: '팀 회의에서 아이디어 발표하기',
+    description: '팀 회의에서 새로운 아이디어를 설득력 있게 발표하세요',
     ageGroups: ['adult'],
     difficulty: 'medium',
     aiRole: '팀원',
-    userRole: '팀장/매니저',
-    situation: '중요한 프로젝트를 팀원에게 맡겨야 하는 상황입니다.',
+    userRole: '발표자',
+    situation: '업무 개선을 위한 새로운 아이디어를 팀 회의에서 제안하고 싶습니다.',
     goals: [
-      '명확한 목표 전달하기',
-      '동기부여하기',
-      '지원 약속하기'
+      '명확하게 아이디어 설명하기',
+      '팀원들의 질문에 답변하기',
+      '공감과 동의 얻기'
     ],
     tips: [
-      '업무의 중요성을 강조하세요',
-      '팀원의 강점을 언급하세요',
-      '필요한 지원을 약속하세요'
+      '구체적인 문제점을 먼저 제시하세요',
+      '해결책의 실행 가능성을 보여주세요',
+      '팀원들의 의견을 물어보세요'
     ],
-    aiPersona: '너는 팀원이야. 새로운 업무에 약간 부담스러워하지만, 상사가 명확히 설명하고 지원을 약속하면 의욕적으로 받아들여. 필요한 자원이나 도움을 요청해. 모든 답변은 한국어로만 해줘.',
+    aiPersona: '너는 팀 회의에 참석한 동료야. 새로운 아이디어에 관심은 있지만 실행 가능성을 따져봐. 설명이 명확하고 실용적이면 긍정적으로 반응해. 모든 답변은 한국어로만 해줘.',
     successCriteria: {
       turnCount: 7,
-      keywords: ['프로젝트', '지원', '목표'],
-      emotional: ['리더십', '신뢰']
+      keywords: ['아이디어', '개선', '실행'],
+      emotional: ['설득력', '자신감']
     },
     voice: 'alloy'
   },
 
-  // ========== 성인 대인관계 ==========
+  // ========== 성인 사회생활 ==========
   {
-    id: 'relationship_boundary',
+    id: 'social_networking',
     category: 'refusal',
     title: '과도한 요구에 경계 설정하기',
     description: '지인이 계속 무리한 부탁을 해요. 단호하게 경계를 정하세요',
@@ -872,57 +1094,57 @@ export const CATEGORY_META: Record<RolePlayCategory, {
   color: string;
 }> = {
   friendship: {
-    name: '친구 사귀기',
-    icon: '👋',
-    description: '새로운 친구를 만나고 관계를 시작하는 연습',
+    name: '인간관계',
+    icon: '👥',
+    description: '네트워킹과 새로운 인맥 만들기',
     color: 'bg-blue-500/10 text-blue-600 border-blue-200'
   },
   conflict: {
     name: '갈등 해결',
     icon: '🤝',
-    description: '친구와의 오해나 갈등을 슬기롭게 해결하는 연습',
+    description: '직장, 가족, 친구와의 갈등을 해결하는 대화법',
     color: 'bg-purple-500/10 text-purple-600 border-purple-200'
   },
   gratitude: {
     name: '감사 표현',
     icon: '💝',
-    description: '고마운 마음을 진심으로 표현하는 연습',
+    description: '멘토나 동료에게 진심을 전하는 법',
     color: 'bg-pink-500/10 text-pink-600 border-pink-200'
   },
   refusal: {
     name: '거절하기',
     icon: '🙅',
-    description: '싫은 것을 정중하게 거절하는 연습',
+    description: '과도한 요구나 부탁을 정중하게 거절하는 법',
     color: 'bg-red-500/10 text-red-600 border-red-200'
   },
   apology: {
     name: '사과하기',
     icon: '🙇',
-    description: '실수를 인정하고 진심으로 사과하는 연습',
+    description: '업무 실수나 관계 회복을 위한 진심 어린 사과',
     color: 'bg-orange-500/10 text-orange-600 border-orange-200'
   },
   request: {
-    name: '부탁하기',
+    name: '요청하기',
     icon: '🙏',
-    description: '도움이 필요할 때 정중하게 부탁하는 연습',
+    description: '연봉 협상, 휴가 요청 등 필요한 것을 요청하는 법',
     color: 'bg-yellow-500/10 text-yellow-600 border-yellow-200'
   },
   emotion: {
     name: '감정 표현',
     icon: '😊',
-    description: '내 감정을 솔직하게 표현하는 연습',
+    description: '번아웃, 기쁨, 걱정 등 솔직한 감정 나누기',
     color: 'bg-green-500/10 text-green-600 border-green-200'
   },
   interview: {
     name: '면접 연습',
     icon: '💼',
-    description: '취업 면접이나 입학 면접을 준비하는 연습',
+    description: '취업, 경력 전환, 대학원 면접 준비',
     color: 'bg-indigo-500/10 text-indigo-600 border-indigo-200'
   },
   presentation: {
     name: '발표 연습',
     icon: '🎤',
-    description: '사람들 앞에서 자신감 있게 발표하는 연습',
+    description: '비즈니스 프레젠테이션과 회의 발표 연습',
     color: 'bg-teal-500/10 text-teal-600 border-teal-200'
   }
 };

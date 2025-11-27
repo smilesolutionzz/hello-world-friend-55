@@ -6,7 +6,8 @@ import { CounselingSetup } from '@/components/metaverse/CounselingSetup';
 import { ThreeBackground } from '@/components/dashboard/ThreeBackground';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageSquare, Sparkles, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MessageSquare, Sparkles, Users, ArrowLeft, Home } from 'lucide-react';
 import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
 import { RolePlaySetup } from '@/components/metaverse/RolePlaySetup';
@@ -49,6 +50,28 @@ const MetaverseVoicePage = () => {
   return (
     <div className="relative min-h-screen">
       <ThreeBackground />
+      {/* 네비게이션 버튼 */}
+      <div className="fixed top-4 left-4 z-50 flex gap-2">
+        <Button
+          onClick={() => navigate(-1)}
+          variant="outline"
+          size="sm"
+          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          뒤로
+        </Button>
+        <Button
+          onClick={() => navigate('/')}
+          variant="outline"
+          size="sm"
+          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
+        >
+          <Home className="w-4 h-4" />
+          홈
+        </Button>
+      </div>
+
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
         <Tabs value={mode} onValueChange={(v) => setMode(v as 'structured' | 'free' | 'roleplay')} className="w-full">
           <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-3 mb-8 bg-black/40 backdrop-blur-sm border border-white/20">

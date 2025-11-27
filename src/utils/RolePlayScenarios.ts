@@ -1048,6 +1048,290 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       emotional: ['확신', '적극성']
     },
     voice: 'echo'
+  },
+
+  // ========== 아동 (5-12세) 시나리오 ==========
+  {
+    id: 'child_make_friend',
+    category: 'friendship',
+    title: '새 친구 사귀기',
+    description: '놀이터에서 처음 보는 친구에게 같이 놀자고 말해보세요',
+    ageGroups: ['child'],
+    difficulty: 'easy',
+    aiRole: '놀이터에 있는 친구',
+    userRole: '친구를 사귀고 싶은 어린이',
+    situation: '놀이터에서 혼자 그네를 타고 있는 친구가 있어요. 말을 걸어서 같이 놀고 싶어요.',
+    goals: [
+      '밝게 인사하기',
+      '이름과 나이 물어보기',
+      '같이 놀자고 제안하기'
+    ],
+    tips: [
+      '웃으면서 다가가세요',
+      '내 이름을 먼저 소개하세요',
+      '무엇을 같이 하고 싶은지 말해보세요'
+    ],
+    aiPersona: '너는 놀이터에서 노는 친근한 어린이야. 누군가 말을 걸면 반갑게 대답하고 같이 놀고 싶어해. 밝고 친절하게 대화해줘. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 4,
+      keywords: ['이름', '같이', '놀다'],
+      emotional: ['밝음', '친근함']
+    },
+    voice: 'shimmer'
+  },
+  {
+    id: 'child_refuse_bullying',
+    category: 'refusal',
+    title: '괴롭힘 당할 때 대처하기',
+    description: '친구가 내 물건을 빼앗으려고 해요. 싫다고 말해보세요',
+    ageGroups: ['child'],
+    difficulty: 'medium',
+    aiRole: '물건을 빼앗으려는 친구',
+    userRole: '괴롭힘을 당하는 어린이',
+    situation: '쉬는 시간에 친구가 내 장난감을 빼앗으려고 해요. 싫다고 말하고 선생님께 도움을 청해야 해요.',
+    goals: [
+      '싫다고 분명히 말하기',
+      '왜 싫은지 설명하기',
+      '선생님께 말씀드리겠다고 하기'
+    ],
+    tips: [
+      '크고 분명하게 "싫어!"라고 말하세요',
+      '내 물건이라고 말하세요',
+      '선생님께 말씀드리겠다고 하세요'
+    ],
+    aiPersona: '너는 장난감을 빼앗으려는 아이야. 처음엔 계속 빼앗으려 하지만, 상대방이 단호하게 거절하고 선생님께 말씀드리겠다고 하면 그만둬. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 4,
+      keywords: ['싫어', '내 것', '선생님'],
+      emotional: ['단호함', '용기']
+    },
+    voice: 'alloy'
+  },
+  {
+    id: 'child_apologize_parent',
+    category: 'apology',
+    title: '부모님께 잘못 사과하기',
+    description: '거짓말을 해서 부모님이 속상해하세요. 진심으로 사과해보세요',
+    ageGroups: ['child'],
+    difficulty: 'easy',
+    aiRole: '속상해하시는 부모님',
+    userRole: '잘못한 어린이',
+    situation: '숙제를 안 하고 했다고 거짓말했어요. 부모님이 알게 되셨어요.',
+    goals: [
+      '진심으로 미안하다고 말하기',
+      '왜 거짓말했는지 설명하기',
+      '다시는 안 하겠다고 약속하기'
+    ],
+    tips: [
+      '눈을 보고 "미안해요"라고 말하세요',
+      '솔직하게 이유를 말하세요',
+      '앞으로 어떻게 할지 약속하세요'
+    ],
+    aiPersona: '너는 자녀가 거짓말해서 속상한 부모야. 아이가 진심으로 사과하면 용서해주고 다독여줘. 따뜻하지만 교훈을 주는 대화를 해줘. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 5,
+      keywords: ['미안', '잘못', '약속'],
+      emotional: ['후회', '진심']
+    },
+    voice: 'sage'
+  },
+  {
+    id: 'child_share_toy',
+    category: 'conflict',
+    title: '친구와 장난감 나눠 쓰기',
+    description: '친구가 내 장난감도 가지고 놀고 싶대요. 함께 나눠 쓰는 법을 배워보세요',
+    ageGroups: ['child'],
+    difficulty: 'easy',
+    aiRole: '장난감을 함께 쓰고 싶은 친구',
+    userRole: '장난감을 가진 어린이',
+    situation: '내가 좋아하는 장난감으로 놀고 있는데, 친구도 가지고 놀고 싶대요.',
+    goals: [
+      '친구 마음 이해하기',
+      '차례대로 하자고 제안하기',
+      '같이 노는 방법 찾기'
+    ],
+    tips: [
+      '친구도 놀고 싶을 수 있어요',
+      '"조금 있다가 너도 해"라고 말하세요',
+      '함께 놀 수 있는 방법을 생각해보세요'
+    ],
+    aiPersona: '너는 장난감을 가지고 놀고 싶은 친구야. 처음엔 기다리기 싫지만, 상대방이 차례대로 하자거나 같이 놀자고 하면 기쁘게 받아들여. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 4,
+      keywords: ['같이', '차례', '나눠'],
+      emotional: ['배려', '협력']
+    },
+    voice: 'shimmer'
+  },
+
+  // ========== 청소년 (13-18세) 시나리오 ==========
+  {
+    id: 'teen_new_school_friend',
+    category: 'friendship',
+    title: '전학 온 학교에서 친구 사귀기',
+    description: '새로 전학 온 학교에서 친구를 사귀고 싶어요',
+    ageGroups: ['teen'],
+    difficulty: 'medium',
+    aiRole: '같은 반 학생',
+    userRole: '전학생',
+    situation: '새 학교에 전학 왔어요. 점심시간인데 혼자 밥을 먹고 있어요. 옆 자리 친구에게 말을 걸어보고 싶어요.',
+    goals: [
+      '자연스럽게 대화 시작하기',
+      '공통 관심사 찾기',
+      '연락처 교환하기'
+    ],
+    tips: [
+      '학교나 수업에 대해 물어보세요',
+      '취미나 관심사를 이야기하세요',
+      '같이 점심 먹자고 제안하세요'
+    ],
+    aiPersona: '너는 친절한 학생이야. 전학생이 말을 걸면 반갑게 대답하고 학교 생활에 도움을 주려고 해. 또래답게 친근하게 대화해줘. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 6,
+      keywords: ['학교', '친구', '연락처'],
+      emotional: ['친근함', '관심']
+    },
+    voice: 'alloy'
+  },
+  {
+    id: 'teen_refuse_peer_pressure',
+    category: 'refusal',
+    title: '친구들 따라 하기 싫은 일 거절하기',
+    description: '친구들이 편의점에서 물건을 훔치자고 해요. 거절해야 해요',
+    ageGroups: ['teen'],
+    difficulty: 'hard',
+    aiRole: '잘못된 일을 제안하는 친구',
+    userRole: '거절하고 싶은 학생',
+    situation: '친구들이 재미로 편의점에서 물건을 가져가자고 합니다. 이건 잘못된 일이에요.',
+    goals: [
+      '확실하게 거절하기',
+      '왜 안 되는지 설명하기',
+      '다른 재미있는 일 제안하기'
+    ],
+    tips: [
+      '"나는 못 해"라고 분명히 말하세요',
+      '잘못된 일이라고 설명하세요',
+      '다른 재미있는 일을 제안하세요'
+    ],
+    aiPersona: '너는 좀 무모한 친구야. 처음엔 겁쟁이라고 놀리지만, 상대방이 단호하고 대안을 제시하면 그만둬. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 5,
+      keywords: ['안돼', '잘못', '다른'],
+      emotional: ['단호함', '정의감']
+    },
+    voice: 'echo'
+  },
+  {
+    id: 'teen_ask_teacher',
+    category: 'request',
+    title: '선생님께 질문하기',
+    description: '수업 내용이 이해가 안 돼요. 선생님께 여쭤보고 싶어요',
+    ageGroups: ['teen'],
+    difficulty: 'easy',
+    aiRole: '선생님',
+    userRole: '질문이 있는 학생',
+    situation: '수학 수업에서 배운 내용이 이해가 안 돼요. 선생님께 다시 설명해달라고 여쭤보고 싶어요.',
+    goals: [
+      '예의 바르게 질문하기',
+      '무엇을 모르는지 구체적으로 말하기',
+      '이해할 때까지 물어보기'
+    ],
+    tips: [
+      '"선생님, 질문 있어요"라고 정중하게 말하세요',
+      '어느 부분이 어려운지 구체적으로 말하세요',
+      '이해가 안 되면 다시 물어보세요'
+    ],
+    aiPersona: '너는 친절한 선생님이야. 학생이 질문하면 기쁘게 받아들이고 이해할 수 있게 설명해줘. 격려하는 말도 해줘. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 5,
+      keywords: ['질문', '이해', '설명'],
+      emotional: ['정중함', '적극성']
+    },
+    voice: 'sage'
+  },
+  {
+    id: 'teen_career_counseling',
+    category: 'emotion',
+    title: '진로 상담 선생님과 고민 나누기',
+    description: '진로를 정하지 못했어요. 상담 선생님께 도움을 구하고 싶어요',
+    ageGroups: ['teen'],
+    difficulty: 'medium',
+    aiRole: '진로 상담 선생님',
+    userRole: '진로 고민 중인 학생',
+    situation: '고등학교 2학년인데 진로를 아직 정하지 못했어요. 부모님은 의사가 되라고 하는데 저는 그림 그리는 게 좋아요.',
+    goals: [
+      '솔직하게 고민 털어놓기',
+      '관심 분야 이야기하기',
+      '조언 구하기'
+    ],
+    tips: [
+      '어떤 점이 고민인지 솔직하게 말하세요',
+      '무엇을 좋아하고 잘하는지 이야기하세요',
+      '어떻게 해야 할지 물어보세요'
+    ],
+    aiPersona: '너는 경험 많은 진로 상담 선생님이야. 학생의 고민을 경청하고, 부모님 기대와 본인 관심사 사이에서 균형을 찾을 수 있게 도와줘. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 7,
+      keywords: ['진로', '관심', '고민'],
+      emotional: ['진솔함', '고민']
+    },
+    voice: 'alloy'
+  },
+  {
+    id: 'teen_dating_confession',
+    category: 'emotion',
+    title: '좋아하는 친구에게 마음 고백하기',
+    description: '좋아하는 친구에게 데이트 신청을 하고 싶어요',
+    ageGroups: ['teen'],
+    difficulty: 'medium',
+    aiRole: '좋아하는 친구',
+    userRole: '고백하는 학생',
+    situation: '같은 반 친구를 좋아해요. 방과 후에 같이 카페 가자고 말하고 싶어요.',
+    goals: [
+      '자연스럽게 말 꺼내기',
+      '좋아한다고 말하기',
+      '같이 시간 보내자고 제안하기'
+    ],
+    tips: [
+      '너무 긴장하지 마세요',
+      '"너랑 시간 보내는 게 좋아"라고 말하세요',
+      '거절해도 괜찮다는 마음을 가지세요'
+    ],
+    aiPersona: '너는 상대방을 친구로 생각하던 학생이야. 고백을 받으면 조금 놀라지만 나쁘지 않게 생각해. 긍정적이되 조금 수줍게 반응해줘. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 5,
+      keywords: ['좋아해', '같이', '시간'],
+      emotional: ['용기', '설렘']
+    },
+    voice: 'shimmer'
+  },
+  {
+    id: 'teen_conflict_group',
+    category: 'conflict',
+    title: '친구들 사이에서 중재하기',
+    description: '친한 친구 둘이 싸웠어요. 중재하고 싶어요',
+    ageGroups: ['teen'],
+    difficulty: 'hard',
+    aiRole: '화가 난 친구',
+    userRole: '중재하려는 친구',
+    situation: '제 두 친구가 오해로 싸웠어요. 둘 다 제 소중한 친구라 중재하고 싶어요.',
+    goals: [
+      '양쪽 입장 들어보기',
+      '오해 풀어주기',
+      '화해시키기'
+    ],
+    tips: [
+      '한 쪽 편만 들지 마세요',
+      '각자의 입장을 이해하려 하세요',
+      '먼저 사과하라고 강요하지 마세요'
+    ],
+    aiPersona: '너는 친구와 싸워서 화가 난 학생이야. 처음엔 화가 나 있지만, 중재자가 이해해주고 상대 입장도 설명해주면 마음이 풀려. 모든 답변은 한국어로만 해줘.',
+    successCriteria: {
+      turnCount: 7,
+      keywords: ['이해', '오해', '화해'],
+      emotional: ['공정함', '배려']
+    },
+    voice: 'echo'
   }
 ];
 

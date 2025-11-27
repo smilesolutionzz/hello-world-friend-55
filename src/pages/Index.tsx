@@ -155,9 +155,9 @@ const Index = () => {
   return (
     <>
       <SEOHead 
-        title="AIHUMANPRO - AI 심리검사 및 전문가 상담 플랫폼"
+        title="AIHPRO - AI 심리검사 및 전문가 상담 플랫폼"
         description="3분 만에 완성하는 AI 심리검사. ADHD, 우울증, 스트레스 검사부터 전문가 상담까지. 검증된 전문가와 함께하는 전생애 통합 케어 서비스."
-        keywords="AI심리검사,ADHD검사,우울증테스트,스트레스검사,심리상담,발달평가,온라인상담,정신건강,아동발달,심리분석"
+        keywords="AIHPRO,AI심리검사,ADHD검사,우울증테스트,스트레스검사,심리상담,발달평가,온라인상담,정신건강,아동발달,심리분석"
         canonicalUrl="https://aihpro.com"
         structuredData={structuredData}
       />

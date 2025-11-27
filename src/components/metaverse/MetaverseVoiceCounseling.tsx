@@ -322,10 +322,20 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         Math.pow(playerPos.z - doorPos.z, 2)
       );
       
+      console.log('🚪 Door proximity check:', {
+        playerPos,
+        doorPos,
+        distance,
+        threshold: 3,
+        shouldShow: distance <= 3
+      });
+      
       // 거리가 3 이하일 때 UI 표시
       if (distance <= 3 && !showRoomTransition) {
+        console.log('✅ Showing room transition UI');
         setShowRoomTransition(true);
       } else if (distance > 3 && showRoomTransition) {
+        console.log('❌ Hiding room transition UI');
         setShowRoomTransition(false);
       }
     };
@@ -1115,6 +1125,9 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         character={mode === 'structured' && structuredConfig ? structuredConfig.character : undefined}
         onGroupUsersChange={setGroupUsers}
         userGesture={currentGesture}
+        onPositionChange={(pos) => {
+          setAvatarPosition(pos);
+        }}
       >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* 이동 가이드 */}

@@ -923,6 +923,7 @@ interface CounselingRoomProps {
   character?: CharacterType; // 상담 캐릭터
   onGroupUsersChange?: (users: any[]) => void;
   userGesture?: GestureType | null; // 사용자 제스처 추가
+  onPositionChange?: (position: { x: number; y: number; z: number }) => void; // 위치 변경 콜백
 }
 
 const CounselingRoom = ({
@@ -945,7 +946,8 @@ const CounselingRoom = ({
   virtualInput,
   character,
   onGroupUsersChange,
-  userGesture = null
+  userGesture = null,
+  onPositionChange
 }: CounselingRoomProps) => {
   const { toast } = useToast();
   // 공간별 설정
@@ -1061,7 +1063,16 @@ const CounselingRoom = ({
           
           {/* 아바타와 이동 컨트롤러 */}
           {enableMovement ? (
-            <CharacterController speed={0.15} enabled={enableMovement} virtualInput={virtualInput}>
+            <CharacterController 
+              speed={0.15} 
+              enabled={enableMovement} 
+              virtualInput={virtualInput}
+              onPositionChange={(pos) => {
+                if (onPositionChange) {
+                  onPositionChange({ x: pos.x, y: pos.y, z: pos.z });
+                }
+              }}
+            >
               <ReadyPlayerMeAvatar 
                 position={[0, 0, 0]} 
                 avatarUrl={avatarUrl}

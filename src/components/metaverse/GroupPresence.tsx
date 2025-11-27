@@ -121,7 +121,7 @@ export const GroupPresence = ({
                 (user.position?.z || 0) - 2
               ]}
               avatarUrl={user.avatar_url}
-              scale={2}
+              scale={1.5}
               emotion={(user.emotion as any) || 'neutral'}
               emotionIntensity={0.5}
             />

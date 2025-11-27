@@ -31,8 +31,9 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
   const [isLoading, setIsLoading] = useState(true);
   const [developmentalDomains, setDevelopmentalDomains] = useState<any[]>([]);
   const [detailedAnalysis, setDetailedAnalysis] = useState<any>(null);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const { toast } = useToast();
-  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
+  const { saveTestResult, isSaving } = useTestResultActions();
 
   // 발달 영역별 분석 함수
   const analyzeDevelopmentalDomains = () => {
@@ -197,114 +198,10 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
 
   const handleGeneratePDF = async () => {
     try {
-      // 임시 PDF 컨텐츠 생성
-      const tempDiv = document.createElement('div');
-      tempDiv.id = 'developmental-delay-pdf-temp';
-      tempDiv.style.position = 'absolute';
-      tempDiv.style.left = '-9999px';
-      
-      const delayedAreasHTML = detailedAnalysis?.delayedAreas.length > 0 
-        ? detailedAnalysis.delayedAreas.map((area: any) => `
-            <li><strong>${area.domain}:</strong> ${area.percentage}% - ${area.level}</li>
-          `).join('')
-        : '<li>발달 지연 영역이 없습니다.</li>';
-      
-      tempDiv.innerHTML = `
-        <div style="font-family: 'Arial', sans-serif; padding: 40px; line-height: 1.6;">
-          <div style="text-align: center; margin-bottom: 10px;">
-            <div style="font-size: 20px; font-weight: bold; color: #6366f1; letter-spacing: 1px;">aihpro.com</div>
-          </div>
-          
-          <div style="text-align: center; margin-bottom: 30px;">
-            <h1>AIH 발달지연 검사 결과</h1>
-            <p>검사일: ${new Date().toLocaleDateString('ko-KR')}</p>
-          </div>
-          
-          <div class="no-break" style="margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-            <h2>발달지연 전문 분석 결과</h2>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px;">
-              <div style="text-align: center; padding: 15px; background: #e3f2fd; border-radius: 8px;">
-                <div style="font-size: 28px; font-weight: bold; color: #1976d2;">${results.total}</div>
-                <div style="font-size: 12px; color: #666; margin-top: 5px;">총점</div>
-              </div>
-              <div style="text-align: center; padding: 15px; background: #e8f5e9; border-radius: 8px;">
-                <div style="font-size: 28px; font-weight: bold; color: #388e3c;">${results.average.toFixed(1)}</div>
-                <div style="font-size: 12px; color: #666; margin-top: 5px;">평균점수</div>
-              </div>
-              <div style="text-align: center; padding: 15px; background: #fff3e0; border-radius: 8px;">
-                <div style="font-size: 18px; font-weight: bold; color: #f57c00; padding: 5px 10px; background: #ffcc80; border-radius: 4px; display: inline-block;">${results.severity}</div>
-                <div style="font-size: 12px; color: #666; margin-top: 5px;">평가등급</div>
-              </div>
-              <div style="text-align: center; padding: 15px; background: #f3e5f5; border-radius: 8px;">
-                <div style="font-size: 18px; font-weight: bold; color: #7b1fa2;">${results.ageGroup}</div>
-                <div style="font-size: 12px; color: #666; margin-top: 5px;">연령대</div>
-              </div>
-            </div>
-            ${detailedAnalysis ? `
-              <div style="margin-top: 20px; padding: 15px; background: linear-gradient(to right, #e3f2fd, #e8eaf6); border-radius: 8px; border: 1px solid #bbdefb;">
-                <h3 style="color: #1976d2; margin-bottom: 10px;">종합 발달 지연도</h3>
-                <div style="display: flex; align-items: center; gap: 15px;">
-                  <div style="flex: 1; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden;">
-                    <div style="height: 100%; background: linear-gradient(to right, #42a5f5, #1976d2); width: ${detailedAnalysis.overallDelay}%; border-radius: 10px;"></div>
-                  </div>
-                  <div style="font-size: 24px; font-weight: bold; color: #1976d2; min-width: 60px;">${Math.round(detailedAnalysis.overallDelay)}%</div>
-                </div>
-                <p style="font-size: 12px; color: #666; margin-top: 8px;">전체 발달 영역의 평균 지연도를 나타냅니다</p>
-              </div>
-            ` : ''}
-          </div>
-          
-          <div class="page-break"></div>
-          
-          <div class="no-break" style="margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-            <h3>발달 영역별 상세 분석</h3>
-            ${developmentalDomains.map((domain) => `
-              <div style="margin: 15px 0; padding: 15px; background: #f5f5f5; border-left: 4px solid ${domain.color}; border-radius: 4px;">
-                <div style="display: flex; justify-between; align-items: center; margin-bottom: 10px;">
-                  <strong style="font-size: 16px;">${domain.domain}</strong>
-                  <span style="font-size: 18px; font-weight: bold; color: ${domain.color};">${domain.percentage}%</span>
-                </div>
-                <div style="margin: 8px 0;">
-                  <div style="height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
-                    <div style="height: 100%; background: ${domain.color}; width: ${domain.percentage}%; border-radius: 4px;"></div>
-                  </div>
-                </div>
-                <div style="display: flex; justify-between; align-items: center; font-size: 14px; color: #666;">
-                  <span>점수: ${domain.score}/${domain.maxScore}</span>
-                  <span style="padding: 3px 8px; background: ${domain.color}; color: white; border-radius: 3px; font-weight: bold;">${domain.level}</span>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-          
-          ${detailedAnalysis && detailedAnalysis.delayedAreas.length > 0 ? `
-            <div class="page-break"></div>
-            <div class="no-break" style="margin: 20px 0; padding: 20px; border: 2px solid #ffcdd2; background: #ffebee; border-radius: 8px;">
-              <h3 style="color: #c62828; margin-bottom: 15px;">🚨 주의가 필요한 지연 영역 (${detailedAnalysis.delayedAreas.length}개)</h3>
-              <ul style="list-style-position: inside; padding-left: 20px;">
-                ${delayedAreasHTML}
-              </ul>
-            </div>
-          ` : ''}
-          
-          <div class="no-break" style="margin: 20px 0; padding: 20px; background: #f5f5f5; border-radius: 8px;">
-            <h3 style="margin-bottom: 15px;">AI 전문가 분석</h3>
-            <p style="white-space: pre-wrap; line-height: 1.8;">${analysis || '전문가 상담을 통해 정확한 평가를 받으시기 바랍니다.'}</p>
-          </div>
-          
-          <div style="margin-top: 30px; padding: 15px; background: #e3f2fd; border-radius: 5px; font-size: 12px; text-align: center;">
-            ※ 본 검사는 참고용 자가체크이며, 전문적인 진단을 대체하지 않습니다.<br/>
-            발달 지연이 의심되는 경우 반드시 전문가와 상담하시기 바랍니다.
-          </div>
-        </div>
-      `;
-      
-      document.body.appendChild(tempDiv);
-      
-      // PDF 다운로드 유틸리티 사용
+      setIsGeneratingPDF(true);
       const { downloadResultAsPDF } = await import('@/utils/pdfDownload');
       await downloadResultAsPDF(
-        'developmental-delay-pdf-temp',
+        'developmental-delay-pdf-content',
         'AIH_발달지연_검사결과',
         () => {
           toast({
@@ -320,9 +217,6 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
           });
         }
       );
-      
-      // 임시 요소 제거
-      document.body.removeChild(tempDiv);
     } catch (error) {
       console.error('PDF 생성 오류:', error);
       toast({
@@ -330,11 +224,94 @@ const DevelopmentalDelayTestResult = ({ results, onBack, onRestart }: Developmen
         description: "PDF 생성 중 오류가 발생했습니다.",
         variant: "destructive",
       });
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      {/* PDF 생성용 숨겨진 컨텐츠 */}
+      <div id="developmental-delay-pdf-content" className="hidden print:block">
+        <div className="p-8 bg-white">
+          <div className="text-center mb-6">
+            <div className="text-xl font-bold text-indigo-600 mb-2">aihpro.com</div>
+            <h1 className="text-3xl font-bold mb-2">AIH 발달지연 검사 결과</h1>
+            <p className="text-gray-600">검사일: {new Date().toLocaleDateString('ko-KR')}</p>
+          </div>
+          
+          <div className="mb-8 p-6 border-2 border-gray-200 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">발달지연 전문 분석 결과</h2>
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-3xl font-bold text-blue-600">{results.total}</div>
+                <div className="text-sm text-gray-600">총점</div>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-3xl font-bold text-green-600">{results.average.toFixed(1)}</div>
+                <div className="text-sm text-gray-600">평균점수</div>
+              </div>
+              <div className="text-center p-4 bg-orange-50 rounded-lg">
+                <div className="text-lg font-bold text-orange-600 px-4 py-2 bg-orange-200 rounded inline-block">{results.severity}</div>
+                <div className="text-sm text-gray-600 mt-2">평가등급</div>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <div className="text-xl font-bold text-purple-600">{results.ageGroup}</div>
+                <div className="text-sm text-gray-600">연령대</div>
+              </div>
+            </div>
+            {detailedAnalysis && (
+              <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                <h3 className="text-lg font-semibold mb-2 text-blue-700">종합 발달 지연도</h3>
+                <div className="text-3xl font-bold text-blue-600">{Math.round(detailedAnalysis.overallDelay)}%</div>
+                <p className="text-sm text-gray-600 mt-1">전체 발달 영역의 평균 지연도</p>
+              </div>
+            )}
+          </div>
+          
+          <div className="mb-8">
+            <h3 className="text-xl font-bold mb-4">발달 영역별 상세 분석</h3>
+            <div className="space-y-3">
+              {developmentalDomains.map((domain, index) => (
+                <div key={index} className="p-4 border-l-4 rounded" style={{ borderColor: domain.color }}>
+                  <div className="flex justify-between items-center mb-2">
+                    <strong className="text-lg">{domain.domain}</strong>
+                    <span className="text-xl font-bold" style={{ color: domain.color }}>{domain.percentage}%</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm text-gray-600">
+                    <span>점수: {domain.score}/{domain.maxScore}</span>
+                    <span className="px-3 py-1 rounded text-white font-semibold" style={{ backgroundColor: domain.color }}>{domain.level}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {detailedAnalysis && detailedAnalysis.delayedAreas.length > 0 && (
+            <div className="mb-8 p-6 bg-red-50 border-2 border-red-200 rounded-lg">
+              <h3 className="text-xl font-bold text-red-700 mb-3">🚨 주의가 필요한 지연 영역 ({detailedAnalysis.delayedAreas.length}개)</h3>
+              <div className="space-y-2">
+                {detailedAnalysis.delayedAreas.map((area: any, index: number) => (
+                  <div key={index} className="flex justify-between items-center p-3 bg-white rounded">
+                    <span className="font-medium">{area.domain}</span>
+                    <span className="font-bold text-red-600">{area.percentage}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div className="mb-8 p-6 bg-gray-50 rounded-lg">
+            <h3 className="text-xl font-bold mb-3">AI 전문가 분석</h3>
+            <p className="whitespace-pre-wrap leading-relaxed">{analysis || '전문가 상담을 통해 정확한 평가를 받으시기 바랍니다.'}</p>
+          </div>
+          
+          <div className="mt-8 p-4 bg-blue-50 rounded text-center text-sm text-gray-600">
+            ※ 본 검사는 참고용 자가체크이며, 전문적인 진단을 대체하지 않습니다.<br/>
+            발달 지연이 의심되는 경우 반드시 전문가와 상담하시기 바랍니다.
+          </div>
+        </div>
+      </div>
       <div className="flex items-center gap-4 mb-6">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="w-4 h-4 mr-2" />

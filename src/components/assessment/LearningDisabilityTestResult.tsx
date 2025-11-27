@@ -29,8 +29,9 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
   const [isLoading, setIsLoading] = useState(true);
   const [learningDomains, setLearningDomains] = useState<any[]>([]);
   const [detailedAnalysis, setDetailedAnalysis] = useState<any>(null);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const { toast } = useToast();
-  const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
+  const { saveTestResult, isSaving } = useTestResultActions();
 
   // 학습 영역별 분석 함수
   const analyzeLearningDomains = () => {
@@ -196,42 +197,120 @@ const LearningDisabilityTestResult = ({ results, onBack, onRestart }: LearningDi
 
   const handleGeneratePDF = async () => {
     try {
-    const domains = [
-      { name: '읽기능력', score: Math.random() * 100, description: '글자 인식과 독해 능력' },
-      { name: '쓰기능력', score: Math.random() * 100, description: '글쓰기와 표현 능력' },
-      { name: '수학능력', score: Math.random() * 100, description: '수리적 사고와 계산' },
-      { name: '주의집중', score: Math.random() * 100, description: '집중력과 주의 지속' },
-      { name: '기억능력', score: Math.random() * 100, description: '정보 저장과 회상' },
-      { name: '처리속도', score: Math.random() * 100, description: '정보 처리 속도' }
-    ];
-
-    const chartData = {
-      domains,
-      radar: domains.map(d => ({ name: d.name, score: d.score }))
-    };
-
-    await generatePDFReport({
-      testType: '학습장애 검사',
-      results,
-      analysis,
-      chartData,
-      testInfo: {
-        totalQuestions: results.answers.length,
-        averageScore: results.average.toFixed(1),
-        riskLevel: results.severity
-      }
-    });
+      setIsGeneratingPDF(true);
+      const { downloadResultAsPDF } = await import('@/utils/pdfDownload');
+      await downloadResultAsPDF(
+        'learning-disability-pdf-content',
+        'AIH_학습장애_검사결과',
+        () => {
+          toast({
+            title: "PDF 다운로드 완료",
+            description: "학습장애 검사 결과가 저장되었습니다.",
+          });
+        },
+        (error) => {
+          toast({
+            title: "PDF 생성 실패",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      );
     } catch (error) {
+      console.error('PDF 생성 오류:', error);
       toast({
         title: "PDF 생성 실패",
         description: "PDF 생성 중 오류가 발생했습니다.",
         variant: "destructive",
       });
+    } finally {
+      setIsGeneratingPDF(false);
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      {/* PDF 생성용 숨겨진 컨텐츠 */}
+      <div id="learning-disability-pdf-content" className="hidden print:block">
+        <div className="p-8 bg-white">
+          <div className="text-center mb-6">
+            <div className="text-xl font-bold text-indigo-600 mb-2">aihpro.com</div>
+            <h1 className="text-3xl font-bold mb-2">AIH 학습장애 검사 결과</h1>
+            <p className="text-gray-600">검사일: {new Date().toLocaleDateString('ko-KR')}</p>
+          </div>
+          
+          <div className="mb-8 p-6 border-2 border-gray-200 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">학습장애 전문 분석 결과</h2>
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <div className="text-center p-4 bg-orange-50 rounded-lg">
+                <div className="text-3xl font-bold text-orange-600">{results.total}</div>
+                <div className="text-sm text-gray-600">총점</div>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-3xl font-bold text-green-600">{results.average.toFixed(1)}</div>
+                <div className="text-sm text-gray-600">평균점수</div>
+              </div>
+              <div className="text-center p-4 bg-red-50 rounded-lg">
+                <div className="text-lg font-bold text-red-600 px-4 py-2 bg-red-200 rounded inline-block">{results.severity}</div>
+                <div className="text-sm text-gray-600 mt-2">평가등급</div>
+              </div>
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-xl font-bold text-blue-600">{results.ageGroup}</div>
+                <div className="text-sm text-gray-600">연령대</div>
+              </div>
+            </div>
+            {detailedAnalysis && (
+              <div className="p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border border-orange-200">
+                <h3 className="text-lg font-semibold mb-2 text-orange-700">종합 학습 어려움 지수</h3>
+                <div className="text-3xl font-bold text-orange-600">{Math.round(detailedAnalysis.overallDifficulty)}%</div>
+                <p className="text-sm text-gray-600 mt-1">전체 학습 영역의 평균 어려움 정도</p>
+              </div>
+            )}
+          </div>
+          
+          <div className="mb-8">
+            <h3 className="text-xl font-bold mb-4">학습 영역별 상세 분석</h3>
+            <div className="space-y-3">
+              {learningDomains.map((domain, index) => (
+                <div key={index} className="p-4 border-l-4 rounded" style={{ borderColor: domain.color }}>
+                  <div className="flex justify-between items-center mb-2">
+                    <strong className="text-lg">{domain.domain}</strong>
+                    <span className="text-xl font-bold" style={{ color: domain.color }}>{domain.percentage}%</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm text-gray-600">
+                    <span>점수: {domain.score}/{domain.maxScore}</span>
+                    <span className="px-3 py-1 rounded text-white font-semibold" style={{ backgroundColor: domain.color }}>{domain.level}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {detailedAnalysis && detailedAnalysis.difficultAreas.length > 0 && (
+            <div className="mb-8 p-6 bg-red-50 border-2 border-red-200 rounded-lg">
+              <h3 className="text-xl font-bold text-red-700 mb-3">🚨 어려움 영역 ({detailedAnalysis.difficultAreas.length}개)</h3>
+              <div className="space-y-2">
+                {detailedAnalysis.difficultAreas.map((area: any, index: number) => (
+                  <div key={index} className="flex justify-between items-center p-3 bg-white rounded">
+                    <span className="font-medium">{area.domain}</span>
+                    <span className="font-bold text-red-600">{area.percentage}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          <div className="mb-8 p-6 bg-gray-50 rounded-lg">
+            <h3 className="text-xl font-bold mb-3">AI 전문가 분석</h3>
+            <p className="whitespace-pre-wrap leading-relaxed">{analysis || '전문가 상담을 통해 정확한 평가를 받으시기 바랍니다.'}</p>
+          </div>
+          
+          <div className="mt-8 p-4 bg-blue-50 rounded text-center text-sm text-gray-600">
+            ※ 본 검사는 참고용 자가체크이며, 전문적인 진단을 대체하지 않습니다.<br/>
+            학습 어려움이 지속되는 경우 반드시 전문가와 상담하시기 바랍니다.
+          </div>
+        </div>
+      </div>
       <div className="flex items-center gap-4 mb-6">
         <Button variant="ghost" onClick={onBack}>
           <ArrowLeft className="w-4 h-4 mr-2" />

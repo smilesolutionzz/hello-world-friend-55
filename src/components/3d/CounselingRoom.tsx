@@ -919,7 +919,7 @@ const CounselingRoom = ({
             <CounselingCharacter 
               character={character}
               position={[-4, 0, 2]}
-              scale={1.5}
+              scale={0.9}
             />
           ) : (
             <CounselorNPC 
@@ -937,7 +937,7 @@ const CounselingRoom = ({
               <ReadyPlayerMeAvatar 
                 position={[0, 0, 0]} 
                 avatarUrl={avatarUrl}
-                scale={1.5}
+                scale={0.9}
                 emotion={emotion}
                 emotionIntensity={emotionIntensity}
                 customization={avatarCustomization}
@@ -947,7 +947,7 @@ const CounselingRoom = ({
             <ReadyPlayerMeAvatar 
               position={[2, -1.5, 3]} 
               avatarUrl={avatarUrl}
-              scale={1.5}
+              scale={0.9}
               emotion={emotion}
               emotionIntensity={emotionIntensity}
               customization={avatarCustomization}

@@ -689,6 +689,28 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   if (!hasEntered) {
     return (
       <div className="relative min-h-screen">
+        {/* 네비게이션 버튼 */}
+        <div className="fixed top-4 left-4 z-50 flex gap-2">
+          <Button
+            onClick={() => navigate(-1)}
+            variant="outline"
+            size="sm"
+            className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            뒤로
+          </Button>
+          <Button
+            onClick={() => navigate('/')}
+            variant="outline"
+            size="sm"
+            className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
+          >
+            <Home className="w-4 h-4" />
+            홈
+          </Button>
+        </div>
+
         <CounselingRoom 
           roomType={selectedRoom} 
           enableMovement={false}

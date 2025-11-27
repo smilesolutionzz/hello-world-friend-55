@@ -179,7 +179,7 @@ const CommunityPlatform = () => {
     members: 18,
     programs: ['심리상담', '발달평가', '언어치료', '인지치료', '사회성발달', '부모상담'],
     voucher_types: ['언어치료', '인지치료', '심리상담', '교육청서비스'],
-    featured: true,
+    featured: false,
     description: '대구 지역 대표 심리발달센터로 전문적인 심리평가와 맞춤형 발달치료 서비스를 제공합니다.'
   }, {
     name: '엘림아동발달센터',

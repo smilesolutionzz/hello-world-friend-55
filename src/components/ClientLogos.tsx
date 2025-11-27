@@ -175,7 +175,7 @@ const ClientLogos = () => {
     },
     { 
       name: "힐다임심리발달센터 대구중구점", 
-      count: "메인 제휴기관", 
+      count: "신규 제휴기관",
       icon: Brain,
       type: "심리발달센터",
       location: "대구광역시 중구",

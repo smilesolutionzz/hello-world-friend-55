@@ -201,7 +201,7 @@ export const mockInstitutions = [
     facilities: ['심리평가실', '언어치료실', '인지치료실', '상담실', '놀이치료실', '부모대기실'],
     parking_available: true,
     accessibility_features: ['휠체어접근가능', '엘리베이터', '장애인화장실'],
-    partnership_status: 'premium',
+    partnership_status: 'standard',
     partnership_start_date: '2025-01-25',
     commission_rate: 15.0
   },

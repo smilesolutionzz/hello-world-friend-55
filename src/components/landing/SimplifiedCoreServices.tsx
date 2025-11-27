@@ -164,37 +164,6 @@ const SimplifiedCoreServices = () => {
           ))}
         </div>
 
-        {/* 사용자 여정 플로우 */}
-        <div className="relative mt-24 p-10 bg-gradient-to-br from-primary/10 via-purple-500/10 to-primary/5 backdrop-blur-xl rounded-3xl border border-primary/20 max-w-5xl mx-auto shadow-2xl overflow-hidden">
-          {/* 장식 요소 */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-purple-500/20 to-transparent rounded-full blur-3xl" />
-          
-          <div className="relative">
-            <h3 className="text-center text-2xl md:text-3xl font-bold mb-10 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              📍 추천 사용 여정
-            </h3>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-8 text-center">
-              <div className="flex-1 space-y-4 group hover:scale-105 transition-transform duration-300">
-                <div className="text-5xl mb-3 animate-bounce">1️⃣</div>
-                <p className="text-base md:text-lg font-bold text-foreground">무료 관찰일지로</p>
-                <p className="text-base md:text-lg font-bold text-primary">AI 체험</p>
-              </div>
-              <ArrowRight className="w-8 h-8 text-primary/60 rotate-90 md:rotate-0 flex-shrink-0 animate-pulse" />
-              <div className="flex-1 space-y-4 group hover:scale-105 transition-transform duration-300">
-                <div className="text-5xl mb-3 animate-bounce" style={{ animationDelay: '100ms' }}>2️⃣</div>
-                <p className="text-base md:text-lg font-bold text-foreground">정밀 검사로</p>
-                <p className="text-base md:text-lg font-bold text-primary">정확한 분석</p>
-              </div>
-              <ArrowRight className="w-8 h-8 text-primary/60 rotate-90 md:rotate-0 flex-shrink-0 animate-pulse" style={{ animationDelay: '200ms' }} />
-              <div className="flex-1 space-y-4 group hover:scale-105 transition-transform duration-300">
-                <div className="text-5xl mb-3 animate-bounce" style={{ animationDelay: '200ms' }}>3️⃣</div>
-                <p className="text-base md:text-lg font-bold text-foreground">전문가 상담으로</p>
-                <p className="text-base md:text-lg font-bold text-primary">지속 케어</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

@@ -26,6 +26,7 @@ export interface RolePlayScenario {
   goals: string[];          // 연습 목표
   tips: string[];           // 팁
   aiPersona: string;        // AI 페르소나
+  firstMessage?: string;    // AI가 먼저 하는 인사말 (선택적)
   successCriteria: {
     turnCount: number;      // 최소 대화 턴 수
     keywords: string[];     // 포함되어야 할 키워드
@@ -1072,6 +1073,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       '무엇을 같이 하고 싶은지 말해보세요'
     ],
     aiPersona: '너는 놀이터에서 노는 친근한 어린이야. 누군가 말을 걸면 반갑게 대답하고 같이 놀고 싶어해. 밝고 친절하게 대화해줘. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(그네를 타고 있다가 너를 본다) 안녕! 나도 여기 왔어. 너는 뭐하고 놀고 싶어?',
     successCriteria: {
       turnCount: 4,
       keywords: ['이름', '같이', '놀다'],
@@ -1100,6 +1102,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       '선생님께 말씀드리겠다고 하세요'
     ],
     aiPersona: '너는 장난감을 빼앗으려는 아이야. 처음엔 계속 빼앗으려 하지만, 상대방이 단호하게 거절하고 선생님께 말씀드리겠다고 하면 그만둬. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '야, 그거 재밌어 보이는데? 나도 가지고 놀고 싶은데, 좀 줘봐.',
     successCriteria: {
       turnCount: 4,
       keywords: ['싫어', '내 것', '선생님'],
@@ -1128,6 +1131,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       '앞으로 어떻게 할지 약속하세요'
     ],
     aiPersona: '너는 자녀가 거짓말해서 속상한 부모야. 아이가 진심으로 사과하면 용서해주고 다독여줘. 따뜻하지만 교훈을 주는 대화를 해줘. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(조용히 앉아있다가) 우리 이야기 좀 해야 할 것 같은데... 숙제 안 하고 했다고 한 거, 엄마가 알게 됐어.',
     successCriteria: {
       turnCount: 5,
       keywords: ['미안', '잘못', '약속'],
@@ -1156,12 +1160,100 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       '함께 놀 수 있는 방법을 생각해보세요'
     ],
     aiPersona: '너는 장난감을 가지고 놀고 싶은 친구야. 처음엔 기다리기 싫지만, 상대방이 차례대로 하자거나 같이 놀자고 하면 기쁘게 받아들여. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(다가온다) 야, 그거 엄청 재밌어 보이는데! 나도 좀 가지고 놀면 안 돼?',
     successCriteria: {
       turnCount: 4,
       keywords: ['같이', '차례', '나눠'],
       emotional: ['배려', '협력']
     },
     voice: 'shimmer'
+  },
+  {
+    id: 'child_thank_teacher',
+    category: 'gratitude',
+    title: '선생님께 감사 인사하기',
+    description: '선생님이 많이 도와주셨어요. 고마운 마음을 전해보세요',
+    ageGroups: ['child'],
+    difficulty: 'easy',
+    aiRole: '선생님',
+    userRole: '감사한 학생',
+    situation: '숙제를 못 해서 속상했는데, 선생님이 친절하게 도와주셨어요.',
+    goals: [
+      '감사하다고 말하기',
+      '무엇이 도움이 됐는지 말하기',
+      '앞으로 열심히 하겠다고 하기'
+    ],
+    tips: [
+      '"감사합니다"라고 분명하게 말하세요',
+      '선생님이 어떻게 도와주셨는지 이야기하세요',
+      '다음엔 혼자서도 할 수 있다고 말하세요'
+    ],
+    aiPersona: '너는 학생을 도와준 선생님이야. 학생이 감사 인사를 하면 기쁘게 받아들이고, 앞으로도 열심히 하라고 격려해줘. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(웃으면서) 오늘 숙제 잘 해왔구나! 어제 내가 설명해준 거 이해됐어?',
+    successCriteria: {
+      turnCount: 4,
+      keywords: ['감사', '도움', '열심히'],
+      emotional: ['감사', '기쁨']
+    },
+    voice: 'sage'
+  },
+  {
+    id: 'child_ask_play',
+    category: 'request',
+    title: '친구에게 놀자고 제안하기',
+    description: '수업 끝나고 친구랑 같이 놀고 싶어요. 용기내서 물어보세요',
+    ageGroups: ['child'],
+    difficulty: 'easy',
+    aiRole: '같은 반 친구',
+    userRole: '같이 놀고 싶은 어린이',
+    situation: '쉬는 시간마다 재미있게 노는 친구가 있어요. 같이 놀고 싶은데 어떻게 말할지 모르겠어요.',
+    goals: [
+      '용기내서 말 걸기',
+      '같이 놀자고 제안하기',
+      '무엇을 하고 싶은지 말하기'
+    ],
+    tips: [
+      '먼저 다가가서 인사하세요',
+      '"같이 놀래?"라고 물어보세요',
+      '무엇을 하고 싶은지 이야기하세요'
+    ],
+    aiPersona: '너는 친구가 말을 걸어주길 기다리던 어린이야. 누군가 같이 놀자고 하면 반갑게 받아들여. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(그림을 그리고 있다가 널 본다) 어? 안녕!',
+    successCriteria: {
+      turnCount: 4,
+      keywords: ['같이', '놀다', '친구'],
+      emotional: ['용기', '기쁨']
+    },
+    voice: 'shimmer'
+  },
+  {
+    id: 'child_express_sad',
+    category: 'emotion',
+    title: '슬픈 마음 표현하기',
+    description: '친구가 놀아주지 않아서 속상해요. 부모님께 이야기해보세요',
+    ageGroups: ['child'],
+    difficulty: 'easy',
+    aiRole: '부모님',
+    userRole: '슬픈 어린이',
+    situation: '오늘 학교에서 친구들이 나랑 안 놀아줘서 속상했어요.',
+    goals: [
+      '솔직하게 기분 말하기',
+      '무슨 일이 있었는지 설명하기',
+      '위로 받기'
+    ],
+    tips: [
+      '"속상해요"라고 솔직하게 말하세요',
+      '무슨 일이 있었는지 이야기하세요',
+      '부모님의 조언을 들어보세요'
+    ],
+    aiPersona: '너는 자녀를 걱정하는 부모야. 아이가 속상한 일을 이야기하면 위로해주고, 어떻게 하면 좋을지 함께 생각해줘. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '어머, 우리 아기가 왜 이렇게 풀이 죽어있어? 오늘 학교에서 무슨 일 있었어?',
+    successCriteria: {
+      turnCount: 5,
+      keywords: ['속상', '친구', '슬프다'],
+      emotional: ['슬픔', '위로']
+    },
+    voice: 'sage'
   },
 
   // ========== 청소년 (13-18세) 시나리오 ==========
@@ -1186,6 +1278,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       '같이 점심 먹자고 제안하세요'
     ],
     aiPersona: '너는 친절한 학생이야. 전학생이 말을 걸면 반갑게 대답하고 학교 생활에 도움을 주려고 해. 또래답게 친근하게 대화해줘. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(옆에 앉으면서) 어, 너 새로 전학 온 애지? 오늘 첫 날이야?',
     successCriteria: {
       turnCount: 6,
       keywords: ['학교', '친구', '연락처'],
@@ -1214,6 +1307,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       '다른 재미있는 일을 제안하세요'
     ],
     aiPersona: '너는 좀 무모한 친구야. 처음엔 겁쟁이라고 놀리지만, 상대방이 단호하고 대안을 제시하면 그만둬. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '야, 우리 저기 편의점 가서 과자 좀 가져오자. 주인 아저씨 안 볼 때 슬쩍 하면 돼. 재밌을 거 같은데?',
     successCriteria: {
       turnCount: 5,
       keywords: ['안돼', '잘못', '다른'],
@@ -1242,6 +1336,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       '이해가 안 되면 다시 물어보세요'
     ],
     aiPersona: '너는 친절한 선생님이야. 학생이 질문하면 기쁘게 받아들이고 이해할 수 있게 설명해줘. 격려하는 말도 해줘. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(칠판을 닦다가) 네, 무슨 질문이 있나요? 오늘 수업 내용 중에 어려운 부분 있었나요?',
     successCriteria: {
       turnCount: 5,
       keywords: ['질문', '이해', '설명'],
@@ -1270,6 +1365,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       '어떻게 해야 할지 물어보세요'
     ],
     aiPersona: '너는 경험 많은 진로 상담 선생님이야. 학생의 고민을 경청하고, 부모님 기대와 본인 관심사 사이에서 균형을 찾을 수 있게 도와줘. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '어서 오세요. 편하게 앉아요. 오늘은 어떤 이야기를 하러 왔나요?',
     successCriteria: {
       turnCount: 7,
       keywords: ['진로', '관심', '고민'],
@@ -1298,6 +1394,7 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       '거절해도 괜찮다는 마음을 가지세요'
     ],
     aiPersona: '너는 상대방을 친구로 생각하던 학생이야. 고백을 받으면 조금 놀라지만 나쁘지 않게 생각해. 긍정적이되 조금 수줍게 반응해줘. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(교실에서 책을 정리하다가) 어? 무슨 일이야? 뭔가 할 말 있는 것 같은데?',
     successCriteria: {
       turnCount: 5,
       keywords: ['좋아해', '같이', '시간'],
@@ -1326,12 +1423,100 @@ export const ROLEPLAY_SCENARIOS: RolePlayScenario[] = [
       '먼저 사과하라고 강요하지 마세요'
     ],
     aiPersona: '너는 친구와 싸워서 화가 난 학생이야. 처음엔 화가 나 있지만, 중재자가 이해해주고 상대 입장도 설명해주면 마음이 풀려. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(화가 나서) 야, 너도 들었지? 걔가 나한테 그렇게 말한 거. 진짜 너무한 거 아니야?',
     successCriteria: {
       turnCount: 7,
       keywords: ['이해', '오해', '화해'],
       emotional: ['공정함', '배려']
     },
     voice: 'echo'
+  },
+  {
+    id: 'teen_study_group',
+    category: 'request',
+    title: '스터디 그룹 만들자고 제안하기',
+    description: '시험 기간이 다가와요. 친구들에게 같이 공부하자고 제안하고 싶어요',
+    ageGroups: ['teen'],
+    difficulty: 'medium',
+    aiRole: '같은 반 친구',
+    userRole: '스터디 제안하는 학생',
+    situation: '다음 주가 시험인데, 혼자 공부하기 어려워요. 친구들과 스터디 그룹을 만들고 싶어요.',
+    goals: [
+      '스터디 그룹 아이디어 제안하기',
+      '언제, 어디서 할지 계획 세우기',
+      '친구들 참여 유도하기'
+    ],
+    tips: [
+      '같이 공부하면 좋은 점을 말하세요',
+      '구체적인 계획을 제시하세요',
+      '부담 없이 참여하라고 하세요'
+    ],
+    aiPersona: '너는 시험을 앞둔 학생이야. 스터디 제안을 받으면 관심을 보이고, 구체적인 계획이 있으면 참여하고 싶어해. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(한숨을 쉬며) 아, 다음 주 시험인데 진짜 걱정이다. 너는 공부 어떻게 하고 있어?',
+    successCriteria: {
+      turnCount: 6,
+      keywords: ['스터디', '같이', '시험'],
+      emotional: ['적극성', '협력']
+    },
+    voice: 'alloy'
+  },
+  {
+    id: 'teen_apologize_friend',
+    category: 'apology',
+    title: '친구에게 사과하기',
+    description: '실수로 친구 기분을 상하게 했어요. 사과하고 싶어요',
+    ageGroups: ['teen'],
+    difficulty: 'medium',
+    aiRole: '상처받은 친구',
+    userRole: '사과하려는 학생',
+    situation: '어제 농담한 것이 친구 마음을 상하게 했어요. 진심으로 사과하고 싶어요.',
+    goals: [
+      '진심으로 사과하기',
+      '어떤 점이 잘못됐는지 인정하기',
+      '관계 회복하기'
+    ],
+    tips: [
+      '"미안해"라고 분명히 말하세요',
+      '왜 잘못인지 설명하세요',
+      '다시는 그러지 않겠다고 약속하세요'
+    ],
+    aiPersona: '너는 상처를 받은 친구야. 처음엔 쌀쌀하지만, 상대방이 진심으로 사과하면 마음이 풀려. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(고개를 돌리고) ...뭐.',
+    successCriteria: {
+      turnCount: 5,
+      keywords: ['미안', '잘못', '친구'],
+      emotional: ['진심', '후회']
+    },
+    voice: 'alloy'
+  },
+  {
+    id: 'teen_part_time_interview',
+    category: 'interview',
+    title: '아르바이트 면접 보기',
+    description: '처음으로 아르바이트 면접을 봐요. 잘 대답하고 싶어요',
+    ageGroups: ['teen'],
+    difficulty: 'medium',
+    aiRole: '가게 사장님',
+    userRole: '면접 보는 학생',
+    situation: '동네 카페에서 아르바이트생을 뽑는다고 해요. 처음 해보는 면접이라 긴장돼요.',
+    goals: [
+      '자기소개 하기',
+      '일할 수 있는 시간 말하기',
+      '열심히 하겠다는 의지 보여주기'
+    ],
+    tips: [
+      '밝게 인사하고 자기소개하세요',
+      '언제 일할 수 있는지 정확히 말하세요',
+      '배우고 싶다는 의지를 보여주세요'
+    ],
+    aiPersona: '너는 카페 사장님이야. 첫 아르바이트를 하려는 학생에게 친절하게 질문하고, 성실해 보이면 채용하고 싶어해. 모든 답변은 한국어로만 해줘.',
+    firstMessage: '(웃으며) 어서 오세요. 앉으세요. 오늘 면접 보러 온 학생이죠? 먼저 자기소개 좀 해볼래요?',
+    successCriteria: {
+      turnCount: 6,
+      keywords: ['일', '시간', '배우다'],
+      emotional: ['적극성', '성실함']
+    },
+    voice: 'sage'
   }
 ];
 

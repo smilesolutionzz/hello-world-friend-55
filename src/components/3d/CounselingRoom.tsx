@@ -33,6 +33,11 @@ const Door = ({ position, onInteract }: { position: [number, number, number]; on
         position={[0, 0, 0.15]}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          setHovered(true);
+          onInteract();
+        }}
         onClick={(e) => {
           e.stopPropagation();
           onInteract();

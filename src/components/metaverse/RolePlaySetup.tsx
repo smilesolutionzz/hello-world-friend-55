@@ -20,7 +20,7 @@ interface RolePlaySetupProps {
 }
 
 export const RolePlaySetup = ({ onStart }: RolePlaySetupProps) => {
-  const [selectedAge, setSelectedAge] = useState<'child' | 'teen' | 'adult'>('child');
+  const [selectedAge, setSelectedAge] = useState<'child' | 'teen' | 'adult'>('adult');
   const [selectedCategory, setSelectedCategory] = useState<RolePlayCategory | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<RolePlayScenario | null>(null);
 

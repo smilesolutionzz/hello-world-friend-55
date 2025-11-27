@@ -69,6 +69,7 @@ export class RealtimeChat {
   private character: string;
   private roleplayPersona?: string;
   private roleplayVoice?: string;
+  private firstMessage?: string;
 
   constructor(
     private onMessage: (message: any) => void,
@@ -78,6 +79,7 @@ export class RealtimeChat {
       character?: string;
       roleplayPersona?: string;
       roleplayVoice?: string;
+      firstMessage?: string;
     }
   ) {
     this.audioEl = document.createElement("audio");
@@ -87,6 +89,7 @@ export class RealtimeChat {
     this.character = options?.character || 'bear';
     this.roleplayPersona = options?.roleplayPersona;
     this.roleplayVoice = options?.roleplayVoice;
+    this.firstMessage = options?.firstMessage;
   }
 
   async init() {
@@ -99,7 +102,8 @@ export class RealtimeChat {
           ageGroup: this.ageGroup,
           character: this.character,
           roleplayPersona: this.roleplayPersona,
-          roleplayVoice: this.roleplayVoice
+          roleplayVoice: this.roleplayVoice,
+          firstMessage: this.firstMessage
         }
       });
       if (error) throw error;
@@ -119,7 +123,13 @@ export class RealtimeChat {
       });
 
       this.dc.onopen = () => {
-        console.log("Data channel opened, waiting for user input...");
+        console.log("Data channel opened");
+        
+        // 롤플레이 모드에서 firstMessage가 있으면 즉시 AI가 말하도록 트리거
+        if (this.mode === 'roleplay' && this.firstMessage) {
+          console.log("Triggering AI first message for roleplay...");
+          this.dc?.send(JSON.stringify({ type: 'response.create' }));
+        }
       };
 
       const offer = await this.pc.createOffer();

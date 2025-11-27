@@ -7,6 +7,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import problemVisionBg from '@/assets/problem-vision-bg.jpg';
+import { AnimatedBackground } from '@/components/3d/AnimatedBackground';
+import { motion } from 'framer-motion';
 
 const ProblemVisionSection = () => {
   const problems = [
@@ -33,22 +35,66 @@ const ProblemVisionSection = () => {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="relative py-20 md:py-32 overflow-hidden">
+      {/* 3D Animated Background */}
+      <div className="absolute inset-0 z-0 opacity-20 md:opacity-30">
+        <AnimatedBackground 
+          particleColor="#F59E0B" 
+          shapeColors={["#D97706", "#F59E0B", "#FBBF24"]}
+          particleCount={2200}
+        />
+      </div>
+
       {/* Background Image with Overlay */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
         style={{ backgroundImage: `url(${problemVisionBg})` }}
       >
         <div className="absolute inset-0 bg-background/90" />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <p className="text-sm font-semibold text-primary mb-4 tracking-wide uppercase">Why AI Highlight Pro?</p>
-          <h2 className="text-base sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-6">
+      {/* Animated Gradient Orbs */}
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.25, 1],
+          x: [0, 30, 0],
+          opacity: [0.1, 0.2, 0.1]
+        }}
+        transition={{ 
+          duration: 14, 
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-20 right-10 w-[450px] h-[450px] bg-gradient-to-r from-amber-500/25 to-orange-500/25 rounded-full blur-[110px] z-0" 
+      />
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.15, 1],
+          x: [0, -30, 0],
+          opacity: [0.1, 0.25, 0.1]
+        }}
+        transition={{ 
+          duration: 16, 
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1.5
+        }}
+        className="absolute bottom-20 left-10 w-[500px] h-[500px] bg-gradient-to-r from-yellow-500/20 to-amber-500/20 rounded-full blur-[120px] z-0" 
+      />
+
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12 md:mb-16"
+        >
+          <p className="text-xs md:text-sm font-semibold text-primary mb-4 tracking-wide uppercase">Why AI Highlight Pro?</p>
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-6 px-4">
             왜 AIHumanPro가 필요한가요?
           </h2>
-        </div>
+        </motion.div>
 
         {/* Problems - Mobile Accordion, Desktop Grid */}
         <div className="mb-16">
@@ -89,16 +135,23 @@ const ProblemVisionSection = () => {
             {problems.map((problem, index) => {
               const Icon = problem.icon;
               return (
-                <Card 
+                <motion.div
                   key={index}
-                  className="p-8 bg-card border border-border rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.15, duration: 0.6 }}
                 >
+                  <Card 
+                    className="p-8 bg-card/80 backdrop-blur-md border border-border rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 h-full"
+                  >
                   <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
                     <Icon className="w-7 h-7 text-primary" />
                   </div>
-                  <h3 className="text-base sm:text-xl font-bold text-foreground mb-3 whitespace-nowrap">{problem.title}</h3>
-                  <p className="text-foreground drop-shadow-md leading-relaxed">{problem.description}</p>
-                </Card>
+                    <h3 className="text-base sm:text-xl font-bold text-foreground mb-3 whitespace-nowrap">{problem.title}</h3>
+                    <p className="text-foreground drop-shadow-md leading-relaxed">{problem.description}</p>
+                  </Card>
+                </motion.div>
               );
             })}
           </div>

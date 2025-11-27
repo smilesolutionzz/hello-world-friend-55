@@ -84,8 +84,8 @@ export const MetaverseUnifiedSection = () => {
           </p>
         </div>
 
-        {/* Mode Cards with Collapsible Content */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
+        {/* Mode Cards - Sandwich Style */}
+        <div className="max-w-3xl mx-auto space-y-4 mb-12">
           {modes.map((mode, index) => {
             const Icon = mode.icon;
             const isOpen = openCards[index];
@@ -97,35 +97,45 @@ export const MetaverseUnifiedSection = () => {
                 onOpenChange={() => toggleCard(index)}
               >
                 <Card 
-                  className="group relative overflow-hidden border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg bg-card"
+                  className="group relative overflow-hidden border border-border hover:border-primary/30 transition-all duration-300 bg-card"
                 >
-                  {/* Content */}
-                  <div className="relative p-6 md:p-8 space-y-4">
-                    {/* Icon */}
-                    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-xl ${mode.bgColor} flex items-center justify-center transition-transform duration-300 group-hover:scale-105`}>
-                      <Icon className={`w-7 h-7 md:w-8 md:h-8 ${mode.iconColor}`} />
+                  <div className="relative p-6 md:p-8">
+                    {/* Header Row */}
+                    <div className="flex items-start gap-4 mb-4">
+                      {/* Icon */}
+                      <div className={`w-12 h-12 md:w-14 md:h-14 rounded-lg ${mode.bgColor} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className={`w-6 h-6 md:w-7 md:h-7 ${mode.iconColor}`} />
+                      </div>
+                      
+                      {/* Title & Description */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg md:text-xl font-bold mb-1 text-foreground">
+                          {mode.title}
+                        </h3>
+                        <p className="text-xs md:text-sm text-muted-foreground font-medium mb-2">
+                          {mode.subtitle}
+                        </p>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {mode.description}
+                        </p>
+                      </div>
+                      
+                      {/* Toggle Button */}
+                      <CollapsibleTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="flex-shrink-0 hover:bg-primary/10"
+                        >
+                          <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                        </Button>
+                      </CollapsibleTrigger>
                     </div>
-                    
-                    {/* Title */}
-                    <div>
-                      <h3 className="text-xl md:text-2xl font-bold mb-1 text-foreground">
-                        {mode.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground font-medium">
-                        {mode.subtitle}
-                      </p>
-                    </div>
-                    
-                    {/* Description */}
-                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-                      {mode.description}
-                    </p>
                     
                     {/* Features - Always Visible */}
-                    <div className="space-y-2 pt-2">
+                    <div className="flex flex-wrap gap-3 mb-2">
                       {mode.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center gap-2 text-sm">
-                          <Star className="w-3 h-3 text-primary flex-shrink-0" />
+                        <div key={idx} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 rounded-full text-xs">
                           <span className="text-muted-foreground">{feature}</span>
                         </div>
                       ))}
@@ -133,26 +143,12 @@ export const MetaverseUnifiedSection = () => {
 
                     {/* Collapsible Details */}
                     <CollapsibleContent className="animate-accordion-down">
-                      <div className="pt-4 mt-4 border-t border-border">
+                      <div className="pt-4 mt-2 border-t border-border">
                         <p className="text-sm text-muted-foreground leading-relaxed">
                           {mode.details}
                         </p>
                       </div>
                     </CollapsibleContent>
-
-                    {/* Toggle Button */}
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full mt-2 group/btn hover:bg-primary/10"
-                      >
-                        <span className="text-sm font-medium text-primary">
-                          {isOpen ? '접기' : '자세히 보기'}
-                        </span>
-                        <ChevronDown className={`w-4 h-4 ml-2 text-primary transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
-                      </Button>
-                    </CollapsibleTrigger>
                   </div>
                 </Card>
               </Collapsible>

@@ -177,11 +177,28 @@ const HeroSection = () => {
             </div>
           </motion.div>
           
+          {/* 타이핑 애니메이션 */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="min-h-[60px] flex items-center justify-center mb-6"
+          >
+            <div className="text-base sm:text-lg md:text-xl text-white/80 font-medium px-4 text-center">
+              <TypingAnimation 
+                phrases={typingPhrases}
+                typingSpeed={50}
+                deletingSpeed={30}
+                pauseDuration={2000}
+              />
+            </div>
+          </motion.div>
+
           {/* 즉시 AI 분석 입력창 */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
           >
             <InstantAIAnalysis />
           </motion.div>

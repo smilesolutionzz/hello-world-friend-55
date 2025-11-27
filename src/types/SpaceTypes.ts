@@ -8,7 +8,8 @@ export type SpaceType =
   | 'outdoor'          // 야외 공간
   | 'meditation'       // 명상실
   | 'exercise'         // 운동실
-  | 'game';            // 게임룸
+  | 'game'             // 게임룸
+  | 'interview';       // 면접실
 
 export interface SpaceDefinition {
   id: SpaceType;
@@ -137,6 +138,14 @@ export const SPACES: Record<SpaceType, SpaceDefinition> = {
         color: '#F59E0B' 
       },
       { 
+        id: 'to-interview', 
+        position: [0, 0, -8], 
+        rotation: [0, 0, 0],
+        targetSpace: 'interview', 
+        label: '면접실', 
+        color: '#6366F1' 
+      },
+      { 
         id: 'to-exercise', 
         position: [8, 0, 0], 
         rotation: [0, -Math.PI/2, 0],
@@ -203,6 +212,23 @@ export const SPACES: Record<SpaceType, SpaceDefinition> = {
     description: '즐거운 게임으로 기분 전환',
     icon: '🎮',
     color: '#F59E0B',
+    portals: [
+      { 
+        id: 'to-lounge', 
+        position: [0, 0, -8], 
+        rotation: [0, 0, 0],
+        targetSpace: 'lounge', 
+        label: '휴게실', 
+        color: '#10B981' 
+      }
+    ]
+  },
+  interview: {
+    id: 'interview',
+    name: '면접실',
+    description: '전문적인 면접 연습 공간',
+    icon: '💼',
+    color: '#6366F1',
     portals: [
       { 
         id: 'to-lounge', 

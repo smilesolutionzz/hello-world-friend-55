@@ -396,7 +396,8 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         chatOptions = {
           mode: 'roleplay' as const,
           roleplayPersona: roleplayScenario.aiPersona,
-          roleplayVoice: roleplayScenario.voice
+          roleplayVoice: roleplayScenario.voice,
+          firstMessage: roleplayScenario.firstMessage
         };
       } else {
         chatOptions = { mode: 'free' as const };
@@ -424,16 +425,8 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         }
       }
       
-      // 롤플레이 모드일 때 AI의 첫 메시지 표시
+      // 롤플레이 모드일 때는 AI가 먼저 말하므로 화면 표시만 제거
       if (mode === 'roleplay' && roleplayScenario?.firstMessage) {
-        setTimeout(() => {
-          setMessages([{
-            role: 'assistant',
-            content: roleplayScenario.firstMessage!,
-            timestamp: new Date()
-          }]);
-        }, 1000);
-        
         toast({
           title: "연결 완료",
           description: "AI가 상황에 맞게 먼저 말을 걸어요!",

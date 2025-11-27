@@ -17,7 +17,7 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY is not set');
     }
 
-    const { mode, ageGroup, character, roleplayPersona, roleplayVoice } = await req.json().catch(() => ({}));
+    const { mode, ageGroup, character, roleplayPersona, roleplayVoice, firstMessage } = await req.json().catch(() => ({}));
 
     console.log(`Creating ephemeral token - mode: ${mode}, ageGroup: ${ageGroup}, character: ${character}`);
 
@@ -144,7 +144,12 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
     // 롤플레이 모드
     else if (mode === 'roleplay' && roleplayPersona) {
       voice = validVoices.includes(roleplayVoice) ? roleplayVoice : "shimmer";
-      instructions = roleplayPersona;
+      instructions = `${roleplayPersona}
+
+**중요: 대화가 시작되면 반드시 다음 메시지로 먼저 인사하세요:**
+"${firstMessage || '안녕하세요! 만나서 반갑습니다.'}"
+
+사용자가 아무 말도 하지 않았어도, 세션이 시작되면 위 메시지로 먼저 대화를 시작해야 합니다.`;
     }
     // 일반 대화 모드에서도 캐릭터 적용
     else if (character) {

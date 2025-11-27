@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut, Gamepad2, Package, Palette, BookOpen, Flower2 } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
@@ -34,6 +35,7 @@ import { CHARACTERS } from '@/utils/CounselingQuestions';
 import { SCTVisualization } from './SCTVisualization';
 import { analyzeSCTResponses, type SCTAgeGroup, SCT_QUESTIONS } from '@/utils/SCTQuestions';
 import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
+import { GroupUserList, type UserPresence } from './GroupPresence';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -109,6 +111,8 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [counselorEmotion, setCounselorEmotion] = useState<CounselorEmotion>('neutral');
   const [groupMode, setGroupMode] = useState(false);
   const [avatarPosition, setAvatarPosition] = useState({ x: 0, y: -1.5, z: 3 });
+  const [currentUserId, setCurrentUserId] = useState<string>('');
+  const [groupUsers, setGroupUsers] = useState<UserPresence[]>([]);
   const gestureManagerRef = useRef<GestureManager | null>(null);
   const sessionRecorderRef = useRef<SessionRecorder | null>(null);
   const [showRecordingConsent, setShowRecordingConsent] = useState(false);
@@ -148,6 +152,21 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // 현재 사용자 ID 가져오기
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUserId(user.id);
+      } else {
+        // 익명 사용자의 경우 세션 기반 ID 생성
+        const sessionId = sessionStorage.getItem('anonymous_user_id') || crypto.randomUUID();
+        sessionStorage.setItem('anonymous_user_id', sessionId);
+        setCurrentUserId(sessionId);
+      }
+    };
+    getUser();
+  }, []);
 
   // 초기화
   useEffect(() => {
@@ -941,6 +960,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         avatarPosition={avatarPosition}
         virtualInput={joystickInputRef.current}
         character={mode === 'structured' && structuredConfig ? structuredConfig.character : undefined}
+        onGroupUsersChange={setGroupUsers}
       >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* 이동 가이드 */}
@@ -1296,6 +1316,11 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           </div>
           )}
         </div>
+        
+        {/* 그룹 참여자 목록 */}
+        {groupMode && groupUsers.length > 0 && (
+          <GroupUserList users={groupUsers} currentUser={userName} />
+        )}
         
         {isRecording && (
           <div className="fixed top-4 right-4 bg-destructive/90 text-destructive-foreground px-4 py-2 rounded-lg flex items-center gap-2 animate-pulse">

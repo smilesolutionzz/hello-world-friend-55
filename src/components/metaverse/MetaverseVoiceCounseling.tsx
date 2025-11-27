@@ -37,6 +37,7 @@ import { SCTVisualization } from './SCTVisualization';
 import { analyzeSCTResponses, type SCTAgeGroup, SCT_QUESTIONS } from '@/utils/SCTQuestions';
 import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
 import { GroupUserList, type UserPresence } from './GroupPresence';
+import { RoomTransitionUI } from './RoomTransitionUI';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -137,6 +138,10 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [isMobile, setIsMobile] = useState(false);
   const [isUICollapsed, setIsUICollapsed] = useState(false);
   const joystickInputRef = useRef({ x: 0, y: 0 });
+  
+  // 문 근처 감지 및 방 이동 UI
+  const [showRoomTransition, setShowRoomTransition] = useState(false);
+  const doorPositionRef = useRef({ x: -7, y: 0, z: 0 }); // 문의 기본 위치
   
   // 텍스트 기반 감정 분석 함수
   const analyzeEmotionFromText = async (text: string) => {
@@ -302,6 +307,33 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     const musicPlayer = getMusicPlayer();
     musicPlayer.setVolume(musicVolume);
   }, [musicVolume]);
+
+  // 플레이어와 문 사이의 거리 체크
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const checkDoorProximity = () => {
+      const doorPos = doorPositionRef.current;
+      const playerPos = avatarPosition;
+      
+      // 거리 계산 (x, z 평면)
+      const distance = Math.sqrt(
+        Math.pow(playerPos.x - doorPos.x, 2) + 
+        Math.pow(playerPos.z - doorPos.z, 2)
+      );
+      
+      // 거리가 3 이하일 때 UI 표시
+      if (distance <= 3 && !showRoomTransition) {
+        setShowRoomTransition(true);
+      } else if (distance > 3 && showRoomTransition) {
+        setShowRoomTransition(false);
+      }
+    };
+    
+    const intervalId = setInterval(checkDoorProximity, 200); // 200ms마다 체크
+    
+    return () => clearInterval(intervalId);
+  }, [avatarPosition, isConnected, showRoomTransition]);
 
   // 스트리밍 자막에서 발생하는 말더듬/중복어 제거
   const cleanTranscript = (input: string) => {
@@ -1543,6 +1575,21 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             </Card>
           </div>
         </div>
+      )}
+      
+      {/* 방 이동 UI */}
+      {showRoomTransition && (
+        <RoomTransitionUI
+          currentRoom={selectedRoom}
+          onSelectRoom={(room) => {
+            setSelectedRoom(room);
+            toast({
+              title: "방 이동",
+              description: `${roomOptions.find(r => r.id === room)?.name}(으)로 이동합니다.`,
+            });
+          }}
+          onClose={() => setShowRoomTransition(false)}
+        />
       )}
     </div>
   );

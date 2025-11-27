@@ -146,10 +146,13 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
       voice = validVoices.includes(roleplayVoice) ? roleplayVoice : "shimmer";
       instructions = `${roleplayPersona}
 
-**중요: 대화가 시작되면 반드시 다음 메시지로 먼저 인사하세요:**
-"${firstMessage || '안녕하세요! 만나서 반갑습니다.'}"
+**중요 규칙:**
+1. 모든 대화는 반드시 100% 한국어로만 하세요. 영어나 다른 언어는 절대 사용하지 마세요.
+2. 대화가 시작되면, 사용자가 말을 시작할 때까지 기다리세요.
+3. 사용자가 침묵하거나 말이 없으면, 기다리세요. 혼자 계속 말하지 마세요.
+4. 사용자의 말에 역할에 맞게 자연스럽게 응답하세요.
 
-사용자가 아무 말도 하지 않았어도, 세션이 시작되면 위 메시지로 먼저 대화를 시작해야 합니다.`;
+첫 번째 사용자의 말을 들은 후에 다음과 같이 응답하세요: "${firstMessage || '안녕하세요! 만나서 반갑습니다.'}"`;
     }
     // 일반 대화 모드에서도 캐릭터 적용
     else if (character) {
@@ -174,9 +177,10 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
         input_audio_transcription: { model: "whisper-1" },
         turn_detection: {
           type: "server_vad",
-          threshold: 0.6,
-          prefix_padding_ms: 500,
-          silence_duration_ms: 1500
+          threshold: 0.7, // 더 높은 임계값으로 확실한 음성만 감지
+          prefix_padding_ms: 300,
+          silence_duration_ms: 2500, // 침묵 감지 시간을 늘려서 AI가 너무 빨리 반응하지 않도록
+          idle_timeout_ms: 10000 // 10초 이상 아무 소리 없으면 타임아웃
         },
         temperature: 0.8,
         max_response_output_tokens: "inf"

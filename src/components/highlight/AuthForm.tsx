@@ -170,12 +170,19 @@ export const AuthForm = () => {
       
       console.error('📱 회원가입 에러:', error);
       
-      if (error.message?.includes('User already registered')) {
+      // 에러 메시지 파싱
+      const errorMsg = error.message || '';
+      
+      if (errorMsg.includes('User already registered')) {
         errorMessage = '이미 등록된 이메일입니다.';
-      } else if (error.message?.includes('Invalid email')) {
+      } else if (errorMsg.includes('PHONE_ALREADY_EXISTS') || errorMsg.includes('이미 사용 중인 전화번호')) {
+        errorMessage = '이미 사용 중인 전화번호입니다. 다른 번호를 사용해주세요.';
+      } else if (errorMsg.includes('Invalid email')) {
         errorMessage = '유효하지 않은 이메일 형식입니다.';
-      } else if (error.message?.includes('Password should be')) {
+      } else if (errorMsg.includes('Password should be')) {
         errorMessage = '비밀번호는 6자 이상이어야 합니다.';
+      } else if (errorMsg.includes('Database error')) {
+        errorMessage = '데이터베이스 오류가 발생했습니다. 입력하신 정보를 확인해주세요.';
       }
       
       setError(errorMessage);

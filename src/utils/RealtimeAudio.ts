@@ -121,10 +121,20 @@ export class RealtimeChat {
       this.dc.addEventListener("message", (e) => {
         const event = JSON.parse(e.data);
         
-        // session.created 이벤트 처리 (롤플레이 자동 시작 제거)
+        // session.created 이벤트 처리 (롤플레이 모드일 때 AI가 먼저 인사)
         if (event.type === 'session.created') {
-          console.log("✅ Session created - waiting for user to speak");
+          console.log("✅ Session created");
           this.sessionCreated = true;
+          
+          if (this.mode === 'roleplay') {
+            console.log("🎭 Triggering AI first message for roleplay...");
+            // 세션 시작 직후 역할극 첫 멘트 생성 트리거
+            setTimeout(() => {
+              if (this.dc?.readyState === 'open') {
+                this.dc.send(JSON.stringify({ type: 'response.create' }));
+              }
+            }, 500);
+          }
         }
         
         this.onMessage(event);

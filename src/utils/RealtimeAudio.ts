@@ -70,6 +70,7 @@ export class RealtimeChat {
   private roleplayPersona?: string;
   private roleplayVoice?: string;
   private firstMessage?: string;
+  private sessionCreated: boolean = false;
 
   constructor(
     private onMessage: (message: any) => void,
@@ -119,17 +120,28 @@ export class RealtimeChat {
       this.dc = this.pc.createDataChannel("oai-events");
       this.dc.addEventListener("message", (e) => {
         const event = JSON.parse(e.data);
+        
+        // session.created 이벤트를 감지하고 롤플레이 모드면 AI가 먼저 말하도록 트리거
+        if (event.type === 'session.created') {
+          console.log("✅ Session created");
+          this.sessionCreated = true;
+          
+          if (this.mode === 'roleplay' && this.firstMessage) {
+            console.log("🎭 Triggering AI first message for roleplay...");
+            // 약간의 딜레이 후 AI가 말하도록 트리거
+            setTimeout(() => {
+              if (this.dc?.readyState === 'open') {
+                this.dc.send(JSON.stringify({ type: 'response.create' }));
+              }
+            }, 500);
+          }
+        }
+        
         this.onMessage(event);
       });
 
       this.dc.onopen = () => {
-        console.log("Data channel opened");
-        
-        // 롤플레이 모드에서 firstMessage가 있으면 즉시 AI가 말하도록 트리거
-        if (this.mode === 'roleplay' && this.firstMessage) {
-          console.log("Triggering AI first message for roleplay...");
-          this.dc?.send(JSON.stringify({ type: 'response.create' }));
-        }
+        console.log("📡 Data channel opened");
       };
 
       const offer = await this.pc.createOffer();

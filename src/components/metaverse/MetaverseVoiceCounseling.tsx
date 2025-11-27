@@ -77,6 +77,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [userName, setUserName] = useState('');
   const [consultTopic, setConsultTopic] = useState('');
   const [selectedRoom, setSelectedRoom] = useState<RoomType>('counseling');
+  const [showRoomSelector, setShowRoomSelector] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -666,6 +667,30 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     });
   };
 
+  const handleDoorClick = () => {
+    setShowRoomSelector(true);
+    toast({
+      title: "🚪 다른 방으로 이동",
+      description: "이동할 공간을 선택하세요",
+    });
+  };
+
+  const handleRoomChange = (newRoom: RoomType) => {
+    setSelectedRoom(newRoom);
+    setShowRoomSelector(false);
+    
+    const roomInfo = roomOptions.find(r => r.id === newRoom);
+    toast({
+      title: `${roomInfo?.icon.name} ${roomInfo?.name}`,
+      description: `${roomInfo?.description}으로 이동했습니다`,
+    });
+    
+    // 환경음 변경
+    const soundEffects = getSoundEffects();
+    const ambientType = newRoom === 'outdoor' || newRoom === 'garden' ? 'outdoor' : 'indoor';
+    soundEffects.startAmbient(ambientType);
+  };
+
   useEffect(() => {
     return () => {
       chatRef.current?.disconnect();
@@ -983,6 +1008,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         emotion={currentEmotion}
         emotionIntensity={emotionIntensity}
         onObjectInteract={handleObjectInteraction}
+        onDoorClick={handleDoorClick}
         isSpeaking={isSpeaking}
         counselorGesture={counselorGesture}
         counselorEmotion={counselorEmotion}
@@ -1037,6 +1063,57 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                   <Button onClick={closeInteraction} className="w-full">
                     닫기
                   </Button>
+                </div>
+              </Card>
+            </div>
+          )}
+          
+          {/* 방 선택 다이얼로그 */}
+          {showRoomSelector && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <Card className="bg-slate-900/95 border border-purple-500/30 p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-2xl font-bold text-white">🚪 방 선택</h3>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => setShowRoomSelector(false)}
+                      className="text-white hover:bg-white/10"
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                  <p className="text-purple-200/80 mb-6">
+                    이동할 공간을 선택하세요
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {roomOptions.map((room) => {
+                      const Icon = room.icon;
+                      const isCurrentRoom = selectedRoom === room.id;
+                      
+                      return (
+                        <Button
+                          key={room.id}
+                          variant={isCurrentRoom ? "default" : "outline"}
+                          className={`h-auto py-4 flex flex-col gap-2 ${
+                            isCurrentRoom ? 'border-2 border-primary' : ''
+                          }`}
+                          onClick={() => handleRoomChange(room.id)}
+                          disabled={isCurrentRoom}
+                        >
+                          <Icon className="w-6 h-6" />
+                          <div className="text-center">
+                            <div className="font-medium">{room.name}</div>
+                            <div className="text-xs opacity-70">{room.description}</div>
+                          </div>
+                          {isCurrentRoom && (
+                            <span className="text-xs text-primary">현재 위치</span>
+                          )}
+                        </Button>
+                      );
+                    })}
+                  </div>
                 </div>
               </Card>
             </div>

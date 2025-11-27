@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import metaverseBg from "@/assets/metaverse-bg.jpg";
 import { 
   Sparkles, 
   MessageSquare,
@@ -59,9 +60,20 @@ export const MetaverseUnifiedSection = () => {
   ];
 
   return (
-    <section className="relative py-16 md:py-24 bg-background">
-      {/* Simple Grid Pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBzdHJva2Utb3BhY2l0eT0iMC4wMyIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-40" />
+    <section className="relative py-16 md:py-24 overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0">
+        <img 
+          src={metaverseBg} 
+          alt="Metaverse Background" 
+          className="w-full h-full object-cover opacity-20"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+      </div>
+      
+      {/* Decorative Elements */}
+      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         {/* Hero Banner */}
@@ -97,8 +109,10 @@ export const MetaverseUnifiedSection = () => {
                 onOpenChange={() => toggleCard(index)}
               >
                 <Card 
-                  className="group relative overflow-hidden border border-border hover:border-primary/30 transition-all duration-300 bg-card"
+                  className="group relative overflow-hidden border border-border hover:border-primary/30 transition-all duration-300 bg-card/80 backdrop-blur-sm hover:shadow-lg"
                 >
+                  {/* Card Accent Line */}
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/50 via-primary to-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="relative p-6 md:p-8">
                     {/* Header Row */}
                     <div className="flex items-start gap-4 mb-4">
@@ -157,7 +171,9 @@ export const MetaverseUnifiedSection = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="relative rounded-2xl overflow-hidden border border-border bg-card">
+        <div className="relative rounded-2xl overflow-hidden border border-primary/20 bg-card/60 backdrop-blur-md shadow-xl">
+          {/* CTA Background Pattern */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb)/0.1),transparent_50%)]" />
           <div className="relative p-6 md:p-12 text-center space-y-4 md:space-y-6">
             <h3 className="text-xl md:text-3xl lg:text-4xl font-bold text-foreground">
               지금 바로 시작하세요

@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { EmotionType, getEmotionEffect } from '@/utils/EmotionDetector';
+import { GestureType, getGestureAnimation } from '@/utils/GestureSystem';
 
 export interface ReadyPlayerMeAvatarProps {
   position: [number, number, number];
@@ -11,6 +12,7 @@ export interface ReadyPlayerMeAvatarProps {
   scale?: number;
   emotion?: EmotionType;
   emotionIntensity?: number;
+  gesture?: GestureType | null;
   customization?: {
     skinTone: number;
     hairColor: number;
@@ -27,7 +29,8 @@ export const ReadyPlayerMeAvatar = ({
   avatarUrl,
   scale = 1,
   emotion = 'neutral',
-  emotionIntensity = 0.5
+  emotionIntensity = 0.5,
+  gesture = null
 }: ReadyPlayerMeAvatarProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const lightRef = useRef<THREE.PointLight>(null);
@@ -35,6 +38,15 @@ export const ReadyPlayerMeAvatar = ({
   const [model, setModel] = useState<THREE.Group | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [targetScale, setTargetScale] = useState(scale);
+  const gestureStartTime = useRef<number>(0);
+  const bodyPartsRef = useRef<{
+    head?: THREE.Mesh;
+    body?: THREE.Mesh;
+    leftArm?: THREE.Mesh;
+    rightArm?: THREE.Mesh;
+    leftLeg?: THREE.Mesh;
+    rightLeg?: THREE.Mesh;
+  }>({});
 
   useEffect(() => {
     if (!avatarUrl) {
@@ -165,6 +177,16 @@ export const ReadyPlayerMeAvatar = ({
       rightShoe.scale.set(1, 0.7, 1.3);
       defaultAvatar.add(rightShoe);
       
+      // 애니메이션을 위한 body parts 참조 저장
+      bodyPartsRef.current = {
+        head,
+        body,
+        leftArm,
+        rightArm,
+        leftLeg,
+        rightLeg
+      };
+      
       setModel(defaultAvatar);
       setIsLoading(false);
     } else {
@@ -210,6 +232,13 @@ export const ReadyPlayerMeAvatar = ({
     }
   }, [emotion, emotionIntensity, scale]);
 
+  // 제스처 시작 시간 추적
+  useEffect(() => {
+    if (gesture) {
+      gestureStartTime.current = Date.now();
+    }
+  }, [gesture]);
+
   useFrame((state) => {
     if (groupRef.current && !isLoading) {
       // 부드러운 호흡 애니메이션
@@ -220,6 +249,67 @@ export const ReadyPlayerMeAvatar = ({
       const currentScale = groupRef.current.scale.x;
       groupRef.current.scale.x = THREE.MathUtils.lerp(currentScale, targetScale, 0.1);
       groupRef.current.scale.z = THREE.MathUtils.lerp(currentScale, targetScale, 0.1);
+      
+      // 제스처 애니메이션 적용
+      if (gesture && gesture !== 'idle') {
+        const elapsed = Date.now() - gestureStartTime.current;
+        const duration = 2000; // 기본 제스처 지속시간
+        const progress = Math.min(elapsed / duration, 1);
+        
+        const animation = getGestureAnimation(gesture, progress);
+        const bodyParts = bodyPartsRef.current;
+        
+        // 팔 애니메이션
+        if (bodyParts.leftArm) {
+          bodyParts.leftArm.rotation.z = animation.armRotation;
+          bodyParts.leftArm.position.y = 0.9 + animation.armRaise * 0.3;
+        }
+        if (bodyParts.rightArm) {
+          bodyParts.rightArm.rotation.z = -animation.armRotation;
+          bodyParts.rightArm.position.y = 0.9 + animation.armRaise * 0.3;
+        }
+        
+        // 몸통 애니메이션
+        if (bodyParts.body) {
+          bodyParts.body.rotation.x = animation.bodyBend;
+        }
+        
+        // 다리 애니메이션
+        if (bodyParts.leftLeg) {
+          bodyParts.leftLeg.rotation.x = animation.legKick;
+        }
+        if (bodyParts.rightLeg) {
+          bodyParts.rightLeg.rotation.x = -animation.legKick;
+        }
+        
+        // 전체 회전 (춤, 축하 등)
+        if (animation.spin !== 0) {
+          groupRef.current.rotation.y = animation.spin;
+        }
+      } else {
+        // 제스처가 없을 때는 원래 위치로 복귀
+        const bodyParts = bodyPartsRef.current;
+        if (bodyParts.leftArm) {
+          bodyParts.leftArm.rotation.z = THREE.MathUtils.lerp(bodyParts.leftArm.rotation.z, 0, 0.1);
+          bodyParts.leftArm.position.y = THREE.MathUtils.lerp(bodyParts.leftArm.position.y, 0.9, 0.1);
+        }
+        if (bodyParts.rightArm) {
+          bodyParts.rightArm.rotation.z = THREE.MathUtils.lerp(bodyParts.rightArm.rotation.z, 0, 0.1);
+          bodyParts.rightArm.position.y = THREE.MathUtils.lerp(bodyParts.rightArm.position.y, 0.9, 0.1);
+        }
+        if (bodyParts.body) {
+          bodyParts.body.rotation.x = THREE.MathUtils.lerp(bodyParts.body.rotation.x, 0, 0.1);
+        }
+        if (bodyParts.leftLeg) {
+          bodyParts.leftLeg.rotation.x = THREE.MathUtils.lerp(bodyParts.leftLeg.rotation.x, 0, 0.1);
+        }
+        if (bodyParts.rightLeg) {
+          bodyParts.rightLeg.rotation.x = THREE.MathUtils.lerp(bodyParts.rightLeg.rotation.x, 0, 0.1);
+        }
+        if (groupRef.current.rotation.y !== 0) {
+          groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, 0, 0.05);
+        }
+      }
     }
 
     // 파티클 회전

@@ -961,6 +961,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         virtualInput={joystickInputRef.current}
         character={mode === 'structured' && structuredConfig ? structuredConfig.character : undefined}
         onGroupUsersChange={setGroupUsers}
+        userGesture={currentGesture}
       >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">
           {/* 이동 가이드 */}

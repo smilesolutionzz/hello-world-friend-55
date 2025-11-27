@@ -95,6 +95,9 @@ export class RealtimeChat {
 
       const { data, error } = await supabase.functions.invoke("get-realtime-token", {
         body: {
+          mode: this.mode,
+          ageGroup: this.ageGroup,
+          character: this.character,
           roleplayPersona: this.roleplayPersona,
           roleplayVoice: this.roleplayVoice
         }

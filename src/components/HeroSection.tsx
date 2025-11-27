@@ -145,13 +145,13 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.2]"
           >
-            <span className="block text-white mb-2 sm:mb-3 text-2xl sm:text-5xl md:text-6xl">
-              심리 건강, ADHD,<br className="sm:hidden" /> 발달 체크
+            <span className="block text-white mb-3 sm:mb-4">
+              심리 건강, ADHD, 발달 체크
             </span>
-            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent mb-4 text-2xl sm:text-5xl md:text-6xl">
-              3분이면<br className="sm:hidden" /> 전문가급 분석 완료
+            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent">
+              3분이면 전문가급 분석 완료
             </span>
           </motion.h1>
           
@@ -188,22 +188,22 @@ const HeroSection = () => {
         </motion.div>
 
         {/* CTA Buttons - 무료 분석 시작 */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12 px-4">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12 px-4 max-w-3xl mx-auto">
           <Button
             size="lg"
             onClick={() => handleStartAssessment('/pmf-onboarding')}
             disabled={isLoading}
-            className="group relative w-full sm:w-auto px-8 sm:px-12 py-6 sm:py-7 bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] hover:from-[#4A7FEF] hover:to-[#7FA9EF] text-white text-base sm:text-lg font-bold rounded-xl shadow-[0_8px_30px_rgba(94,143,255,0.5)] hover:shadow-[0_12px_40px_rgba(94,143,255,0.6)] transition-all duration-300 overflow-hidden border-2 border-white/20"
+            className="group relative w-full sm:w-auto px-10 sm:px-14 py-7 sm:py-8 bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] hover:from-[#4A7FEF] hover:to-[#7FA9EF] text-white text-lg sm:text-xl font-bold rounded-2xl shadow-[0_10px_40px_rgba(94,143,255,0.6)] hover:shadow-[0_15px_50px_rgba(94,143,255,0.8)] transition-all duration-300 overflow-hidden border-2 border-white/30 hover:scale-105"
           >
             {isLoading ? (
-              <LoadingSpinner className="w-5 h-5" />
+              <LoadingSpinner className="w-6 h-6" />
             ) : (
               <>
                 <span className="absolute inset-0 bg-white/20 animate-pulse"></span>
                 <span className="relative flex items-center justify-center gap-2">
-                  <Sparkles className="w-5 h-5" />
-                  🎁 3분 만에 무료 분석 시작
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <Sparkles className="w-6 h-6" />
+                  3분 만에 무료 분석 시작
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </span>
               </>
             )}
@@ -212,16 +212,17 @@ const HeroSection = () => {
           <Button
             size="lg"
             onClick={() => navigate('/expert-hiring')}
-            className="w-full sm:w-auto px-8 sm:px-12 py-6 sm:py-7 bg-white/10 backdrop-blur-md border-2 border-white/40 text-white text-base sm:text-lg font-semibold rounded-xl hover:bg-white/20 transition-all duration-300"
+            variant="outline"
+            className="w-full sm:w-auto px-8 py-6 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-base font-medium rounded-xl transition-all duration-300"
           >
-            <Gift className="w-5 h-5 mr-2" />
-            전문가 1:1 상담
+            <Gift className="w-4 h-4 mr-2" />
+            전문가 상담
           </Button>
         </div>
 
         {/* Trust Indicators */}
-        <div className="mt-8 text-center">
-          <p className="text-white/70 text-xs sm:text-sm">
+        <div className="mt-8 text-center px-4">
+          <p className="text-white/80 text-sm sm:text-base font-medium">
             ✓ 회원가입 없이 즉시 시작 &nbsp;·&nbsp; ✓ 신용카드 불필요 &nbsp;·&nbsp; ✓ 24시간 언제든 무료
           </p>
         </div>

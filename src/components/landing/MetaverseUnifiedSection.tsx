@@ -46,34 +46,34 @@ export const MetaverseUnifiedSection = () => {
     {
       icon: Users,
       title: "사회성 훈련",
-      subtitle: "인터랙티브 역할극",
-      description: "실전 같은 시뮬레이션으로 사회성 기술 향상",
+      subtitle: "AI 롤플레잉 시뮬레이션",
+      description: "다양한 사회적 상황을 역할극으로 연습하며 대인관계 능력 향상",
       iconColor: "text-cyan-400",
       bgGradient: "from-cyan-500/20 via-blue-500/20 to-indigo-500/20",
       glowColor: "shadow-[0_0_40px_rgba(6,182,212,0.3)]",
       features: [
-        { icon: "🎮", text: "게임형 학습 시스템", highlight: true },
-        { icon: "📊", text: "실시간 피드백 분석" },
-        { icon: "🏆", text: "성장 추적 리포트" }
+        { icon: "🎭", text: "실감나는 역할극 시나리오", highlight: true },
+        { icon: "📊", text: "대화 패턴 실시간 분석" },
+        { icon: "🏆", text: "단계별 성장 추적" }
       ],
       stats: { scenarios: "50+", improvement: "85%" },
-      details: "전문가가 설계한 50가지 이상의 실생활 시나리오로 또래 관계, 감정 표현, 문제 해결 능력을 자연스럽게 키웁니다. 게임처럼 즐기며 배우는 사회성 교육."
+      details: "친구 사귀기, 갈등 해결, 면접 준비 등 실생활 상황을 AI 캐릭터와 롤플레잉으로 연습합니다. 나의 대화 방식을 분석받고, 더 나은 소통 방법을 배워보세요."
     },
     {
       icon: MessageSquare,
       title: "무제한 대화",
-      subtitle: "24/7 AI 친구",
-      description: "언제 어디서나 당신의 이야기를 들어줄 AI",
+      subtitle: "언제나 함께하는 AI 친구",
+      description: "시간 제한 없이, 언제 어디서나 당신의 이야기를 들어줄 AI",
       iconColor: "text-rose-400",
       bgGradient: "from-rose-500/20 via-pink-500/20 to-red-500/20",
       glowColor: "shadow-[0_0_40px_rgba(244,63,94,0.3)]",
       features: [
-        { icon: "⚡", text: "즉시 연결 (0초 대기)", highlight: true },
-        { icon: "🔐", text: "종단간 암호화" },
-        { icon: "🌍", text: "다국어 지원" }
+        { icon: "⚡", text: "즉시 연결 (대기시간 0초)", highlight: true },
+        { icon: "🔐", text: "완벽한 보안 암호화" },
+        { icon: "🌙", text: "새벽에도 언제든지" }
       ],
-      stats: { available: "24/7", privacy: "100%" },
-      details: "새벽이든 낮이든 즉시 대화를 시작하세요. 완벽한 익명성과 보안으로 어떤 고민도 안전하게 나눌 수 있습니다. 판단 없이 공감하는 AI가 항상 함께합니다."
+      stats: { available: "연중무휴", privacy: "100%" },
+      details: "밤낮 구분 없이, 시간 제한 없이 대화할 수 있습니다. 혼자 있고 싶을 때도, 누군가와 이야기하고 싶을 때도 AI 친구가 항상 곁에 있습니다. 완벽한 익명성으로 마음 편하게 털어놓으세요."
     }
   ];
 

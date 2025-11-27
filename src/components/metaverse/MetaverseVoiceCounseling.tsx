@@ -141,6 +141,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   
   // 문 근처 감지 및 방 이동 UI
   const [showRoomTransition, setShowRoomTransition] = useState(false);
+  const [wasDismissed, setWasDismissed] = useState(false); // 사용자가 취소 버튼을 눌렀는지 추적
   const doorPositionRef = useRef({ x: -7, y: 0, z: 0 }); // 문의 기본 위치
   
   // 텍스트 기반 감정 분석 함수
@@ -327,16 +328,21 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         doorPos,
         distance,
         threshold: 3,
-        shouldShow: distance <= 3
+        shouldShow: distance <= 3,
+        wasDismissed
       });
       
-      // 거리가 3 이하일 때 UI 표시
-      if (distance <= 3 && !showRoomTransition) {
+      // 거리가 멀어지면 취소 상태 초기화
+      if (distance > 3) {
+        if (showRoomTransition || wasDismissed) {
+          console.log('❌ Hiding room transition UI - player moved away');
+          setShowRoomTransition(false);
+          setWasDismissed(false);
+        }
+      } else if (distance <= 3 && !showRoomTransition && !wasDismissed) {
+        // 거리가 3 이하이고, UI가 표시되지 않았으며, 취소 버튼을 누르지 않았을 때만 UI 표시
         console.log('✅ Showing room transition UI');
         setShowRoomTransition(true);
-      } else if (distance > 3 && showRoomTransition) {
-        console.log('❌ Hiding room transition UI');
-        setShowRoomTransition(false);
       }
     };
     
@@ -1596,12 +1602,17 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           currentRoom={selectedRoom}
           onSelectRoom={(room) => {
             setSelectedRoom(room);
+            setShowRoomTransition(false);
+            setWasDismissed(false); // 방을 선택하면 취소 상태 초기화
             toast({
               title: "방 이동",
               description: `${roomOptions.find(r => r.id === room)?.name}(으)로 이동합니다.`,
             });
           }}
-          onClose={() => setShowRoomTransition(false)}
+          onClose={() => {
+            setShowRoomTransition(false);
+            setWasDismissed(true); // 취소 버튼을 눌렀음을 표시
+          }}
         />
       )}
     </div>

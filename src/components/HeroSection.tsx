@@ -9,6 +9,8 @@ import { PromotionBanner } from "@/components/promotion/PromotionBanner";
 import heroBg from "@/assets/hero-family-bg.jpg";
 import QuickOnboarding from "@/components/onboarding/QuickOnboarding";
 import InstantAIAnalysis from "./InstantAIAnalysis";
+import { AnimatedBackground } from "@/components/3d/AnimatedBackground";
+import { motion } from "framer-motion";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -54,41 +56,111 @@ const HeroSection = () => {
   ];
   return (
     <section ref={sectionRef} className="relative min-h-screen overflow-hidden animate-fade-in">
+      {/* 3D Animated Background */}
+      <div className="absolute inset-0 z-0 opacity-30 md:opacity-40">
+        <AnimatedBackground 
+          particleColor="#8FB9FF" 
+          shapeColors={["#5E8FFF", "#8FB9FF", "#B4C7FF"]}
+          particleCount={3000}
+        />
+      </div>
+
       {/* Background Image with Overlay - 밝기 개선 + Parallax */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-100"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-100 z-0"
         style={{ 
           backgroundImage: `url(${heroBg})`,
           transform: `translateY(${scrollY * 0.5}px)` // Parallax 효과
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/80 via-[#1B2333]/75 to-[#0A0E1A]/80" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0E1A]/85 via-[#1B2333]/80 to-[#0A0E1A]/85" />
       </div>
 
-      {/* Background Blur Effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 -left-40 w-96 h-96 bg-[#5E8FFF]/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-20 -right-40 w-96 h-96 bg-[#5E8FFF]/15 rounded-full blur-[120px]" />
+      {/* Animated Gradient Orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3]
+          }}
+          transition={{ 
+            duration: 8, 
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-20 -left-40 w-[500px] h-[500px] bg-[#5E8FFF]/30 rounded-full blur-[150px]" 
+        />
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.2, 0.4, 0.2]
+          }}
+          transition={{ 
+            duration: 10, 
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1
+          }}
+          className="absolute bottom-20 -right-40 w-[600px] h-[600px] bg-[#8FB9FF]/25 rounded-full blur-[150px]" 
+        />
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.1, 1],
+            opacity: [0.15, 0.3, 0.15]
+          }}
+          transition={{ 
+            duration: 12, 
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-full blur-[200px]" 
+        />
       </div>
 
-      <div className="relative z-10 container mx-auto px-6 pt-20 pb-28 min-h-screen flex flex-col justify-center">
+      <div className="relative z-10 container mx-auto px-4 md:px-6 pt-16 md:pt-20 pb-24 md:pb-28 min-h-screen flex flex-col justify-center">
         {/* Main Headline - 명확하고 즉시 이해되는 메시지 */}
-        <div className="text-center mb-16 space-y-8">
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#5E8FFF]/20 to-[#8FB9FF]/20 backdrop-blur-md border border-[#5E8FFF]/40 rounded-full shadow-lg animate-pulse">
-            <Sparkles className="w-4 h-4 text-[#8FB9FF]" />
-            <span className="text-xs sm:text-sm font-bold text-white whitespace-nowrap">혁신력 1위 AI 심리·발달 케어 플랫폼</span>
-          </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12 md:mb-16 space-y-6 md:space-y-8"
+        >
+          <motion.div 
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-[#5E8FFF]/20 to-[#8FB9FF]/20 backdrop-blur-md border border-[#5E8FFF]/40 rounded-full shadow-lg"
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            >
+              <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-[#8FB9FF]" />
+            </motion.div>
+            <span className="text-xs md:text-sm font-bold text-white whitespace-nowrap">혁신력 1위 AI 심리·발달 케어 플랫폼</span>
+          </motion.div>
           
-          <h1 className="text-3xl leading-tight sm:text-5xl md:text-6xl lg:text-7xl font-extrabold">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight"
+          >
             <span className="block text-white mb-2 sm:mb-3 text-2xl sm:text-5xl md:text-6xl">
               심리 건강, ADHD,<br className="sm:hidden" /> 발달 체크
             </span>
             <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent mb-4 text-2xl sm:text-5xl md:text-6xl">
               3분이면<br className="sm:hidden" /> 전문가급 분석 완료
             </span>
-          </h1>
+          </motion.h1>
           
-          <div className="bg-gradient-to-r from-[#5E8FFF]/20 to-[#8FB9FF]/20 backdrop-blur-xl rounded-2xl p-6 border border-[#5E8FFF]/40 max-w-3xl mx-auto shadow-[0_8px_32px_rgba(94,143,255,0.2)]">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="bg-gradient-to-r from-[#5E8FFF]/25 to-[#8FB9FF]/25 backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-[#5E8FFF]/40 max-w-3xl mx-auto shadow-[0_8px_32px_rgba(94,143,255,0.3)]"
+          >
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-3">
               <p className="text-sm sm:text-base text-white font-semibold">✓ 회원가입 없이 즉시 시작</p>
               <p className="text-sm sm:text-base text-white font-semibold">✓ 완전 무료 체험</p>
@@ -103,11 +175,17 @@ const HeroSection = () => {
                 🔥 <span className="text-[#FFD93D]">오늘 387명</span>이 검사 진행 중
               </p>
             </div>
-          </div>
+          </motion.div>
           
           {/* 즉시 AI 분석 입력창 */}
-          <InstantAIAnalysis />
-        </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
+            <InstantAIAnalysis />
+          </motion.div>
+        </motion.div>
 
         {/* CTA Buttons - 무료 분석 시작 */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12 px-4">

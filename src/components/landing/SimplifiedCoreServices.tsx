@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Brain, Sparkles, Heart, ArrowRight, CheckCircle, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatedBackground } from '@/components/3d/AnimatedBackground';
+import { motion } from 'framer-motion';
 
 const SimplifiedCoreServices = () => {
   const navigate = useNavigate();
@@ -65,17 +67,57 @@ const SimplifiedCoreServices = () => {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden">
-      {/* 배경 그라데이션 */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background" />
-      
-      {/* 배경 장식 요소 */}
-      <div className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+    <section className="relative py-20 md:py-32 overflow-hidden">
+      {/* 3D Animated Background */}
+      <div className="absolute inset-0 z-0 opacity-20 md:opacity-30">
+        <AnimatedBackground 
+          particleColor="#A78BFA" 
+          shapeColors={["#8B5CF6", "#A78BFA", "#C4B5FD"]}
+          particleCount={2500}
+        />
+      </div>
 
-      <div className="container relative mx-auto px-6">
+      {/* 배경 그라데이션 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background z-0" />
+      
+      {/* Animated Gradient Orbs */}
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.2, 1],
+          x: [0, 50, 0],
+          opacity: [0.1, 0.2, 0.1]
+        }}
+        transition={{ 
+          duration: 15, 
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-20 right-10 w-[500px] h-[500px] bg-gradient-to-r from-violet-500/20 to-purple-500/20 rounded-full blur-[120px] z-0" 
+      />
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.3, 1],
+          x: [0, -50, 0],
+          opacity: [0.1, 0.2, 0.1]
+        }}
+        transition={{ 
+          duration: 18, 
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2
+        }}
+        className="absolute bottom-20 left-10 w-[600px] h-[600px] bg-gradient-to-r from-fuchsia-500/20 to-pink-500/20 rounded-full blur-[120px] z-0" 
+      />
+
+      <div className="container relative mx-auto px-4 md:px-6 z-10">
         {/* 섹션 헤더 */}
-        <div className="text-center mb-20 space-y-6 animate-fade-in">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12 md:mb-20 space-y-4 md:space-y-6 animate-fade-in"
+        >
           <Badge className="text-base px-6 py-2 bg-primary/10 hover:bg-primary/20 transition-colors">
             <Clock className="w-5 h-5 mr-2" />
             3분이면 충분합니다
@@ -90,21 +132,31 @@ const SimplifiedCoreServices = () => {
           <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             무료 체험부터 전문가 상담까지 단계별 맞춤 케어
           </p>
-        </div>
+        </motion.div>
 
         {/* 서비스 카드 */}
-        <div className="grid md:grid-cols-3 gap-8 lg:gap-10 max-w-7xl mx-auto mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10 max-w-7xl mx-auto mb-16 md:mb-20">
           {services.map((service, index) => (
-            <div
+            <motion.div
               key={service.id}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.2, duration: 0.6 }}
               className="group relative"
-              style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* 글로우 효과 */}
-              <div className={`absolute -inset-1 bg-gradient-to-r ${service.gradient} rounded-3xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500 ${service.glowColor}`} />
+              <motion.div 
+                whileHover={{ scale: 1.05, opacity: 1 }}
+                className={`absolute -inset-1 bg-gradient-to-r ${service.gradient} rounded-3xl opacity-0 blur-xl transition-all duration-500 ${service.glowColor}`} 
+              />
               
               {/* 카드 본체 */}
-              <div className="relative h-full backdrop-blur-xl bg-card/50 border border-border/50 rounded-3xl p-8 transition-all duration-500 hover:border-primary/50 hover:shadow-2xl hover:-translate-y-2">
+              <motion.div 
+                whileHover={{ y: -8 }}
+                transition={{ duration: 0.3 }}
+                className="relative h-full backdrop-blur-xl bg-card/60 border border-border/50 rounded-3xl p-6 md:p-8 transition-all duration-500 hover:border-primary/50 hover:shadow-2xl hover:bg-card/70"
+              >
                 {/* 스텝 번호 배지 */}
                 <div className="absolute -top-4 -right-4 w-16 h-16 rounded-2xl bg-gradient-to-br from-background to-muted border-2 border-primary/20 flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
                   <span className="text-2xl font-black bg-gradient-to-br from-primary to-purple-600 bg-clip-text text-transparent">
@@ -159,8 +211,8 @@ const SimplifiedCoreServices = () => {
                   <span>{service.cta}</span>
                   <ArrowRight className="w-5 h-5 ml-2 group-hover/btn:translate-x-2 transition-transform duration-300" />
                 </Button>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ))}
         </div>
 

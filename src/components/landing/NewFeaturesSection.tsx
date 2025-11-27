@@ -10,6 +10,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { AnimatedBackground } from '@/components/3d/AnimatedBackground';
+import { motion } from 'framer-motion';
 
 const newFeatures = [
   {
@@ -45,30 +47,83 @@ export const NewFeaturesSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative py-16 overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${newFeaturesBg})` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-background/85 via-background/80 to-background/85" />
+    <section className="relative py-12 md:py-16 overflow-hidden">
+      {/* 3D Animated Background */}
+      <div className="absolute inset-0 z-0 opacity-25 md:opacity-35">
+        <AnimatedBackground 
+          particleColor="#EC4899" 
+          shapeColors={["#F472B6", "#EC4899", "#DB2777"]}
+          particleCount={2000}
+        />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+        style={{ backgroundImage: `url(${newFeaturesBg})` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/85 to-background/90" />
+      </div>
+
+      {/* Animated Gradient Orbs */}
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.15, 1],
+          rotate: [0, 180, 360],
+          opacity: [0.15, 0.25, 0.15]
+        }}
+        transition={{ 
+          duration: 20, 
+          repeat: Infinity,
+          ease: "linear"
+        }}
+        className="absolute top-20 left-10 w-[400px] h-[400px] bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full blur-[100px] z-0" 
+      />
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.2, 1],
+          rotate: [360, 180, 0],
+          opacity: [0.15, 0.3, 0.15]
+        }}
+        transition={{ 
+          duration: 25, 
+          repeat: Infinity,
+          ease: "linear"
+        }}
+        className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-gradient-to-r from-orange-500/25 to-pink-500/25 rounded-full blur-[120px] z-0" 
+      />
+
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
         {/* 헤더 */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full mb-4 animate-pulse">
-            <Sparkles className="w-5 h-5" />
-            <span className="font-bold">매주 업데이트</span>
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-8 md:mb-12"
+        >
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.05, 1],
+            }}
+            transition={{ 
+              duration: 2, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 md:px-6 py-2 rounded-full mb-4"
+          >
+            <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
+            <span className="font-bold text-sm md:text-base">매주 업데이트</span>
+            <Sparkles className="w-4 h-4 md:w-5 md:h-5" />
+          </motion.div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
             이번 주 NEW 기능
           </h2>
-          <p className="text-sm sm:text-xl text-muted-foreground">
+          <p className="text-sm md:text-xl text-muted-foreground">
             매주 새로운 AI 기능이 업데이트됩니다 ✨
           </p>
-        </div>
+        </motion.div>
 
         {/* 신규 기능 카드들 - Mobile: Accordion */}
         <div className="md:hidden mb-8">
@@ -114,11 +169,17 @@ export const NewFeaturesSection = () => {
         {/* 신규 기능 카드들 - Desktop: Grid */}
         <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {newFeatures.map((feature, index) => (
-            <Card 
+            <motion.div
               key={feature.id}
-              className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 hover:border-purple-300 overflow-hidden"
-              onClick={() => navigate(feature.path)}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.15, duration: 0.6 }}
             >
+              <Card 
+                className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 hover:border-purple-300 overflow-hidden bg-card/80 backdrop-blur-md h-full"
+                onClick={() => navigate(feature.path)}
+              >
               <div className={`h-2 bg-gradient-to-r ${feature.color}`} />
               <CardHeader>
                 <div className="flex items-start justify-between mb-3">
@@ -138,7 +199,8 @@ export const NewFeaturesSection = () => {
                   <Zap className="w-4 h-4 group-hover:animate-pulse" />
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            </motion.div>
           ))}
         </div>
 

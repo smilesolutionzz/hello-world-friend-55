@@ -15,21 +15,21 @@ import { motion } from 'framer-motion';
 
 const newFeatures = [
   {
+    id: 'drawing_test',
+    title: '✏️ 창작형 그림 심리 분석',
+    description: '감정, 꿈, 추상 표현 등 자유로운 그림으로 심리 분석 받기',
+    date: '2025-11-29',
+    badge: '1위',
+    color: 'from-violet-500 to-purple-500',
+    path: '/premium-assessment'
+  },
+  {
     id: 'drawing_3d_conversion',
     title: '🎨 그림 3D 변환',
     description: '직접 그린 그림을 AI가 멋진 3D 이미지로 실시간 변환!',
     date: '2025-11-29',
     badge: 'NEW',
     color: 'from-purple-500 to-pink-500',
-    path: '/premium-assessment'
-  },
-  {
-    id: 'drawing_test',
-    title: '✏️ 창작형 그림 심리 분석',
-    description: '감정, 꿈, 추상 표현 등 자유로운 그림으로 심리 분석 받기',
-    date: '2025-11-29',
-    badge: 'NEW',
-    color: 'from-violet-500 to-purple-500',
     path: '/premium-assessment'
   },
   {

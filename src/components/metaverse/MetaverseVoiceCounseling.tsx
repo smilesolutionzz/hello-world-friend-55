@@ -1145,12 +1145,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         </div>
       )}
       
-      {/* 이모지 아이콘 - 우측 하단 */}
-      <div className="fixed bottom-6 right-6 z-[100] pointer-events-auto">
-        <div className="text-6xl animate-bounce cursor-pointer hover:scale-110 transition-transform" title="그림 그리기">
-          🎨
-        </div>
-      </div>
+      {/* 그림 그리기 이모지 제거 - 모바일 호환성 이슈 */}
 
       <CounselingRoom 
         roomType={selectedRoom} 

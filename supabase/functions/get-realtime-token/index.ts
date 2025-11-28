@@ -17,7 +17,7 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY is not set');
     }
 
-    const { mode, ageGroup, character, roleplayPersona, roleplayVoice, firstMessage } = await req.json().catch(() => ({}));
+    const { mode, ageGroup, character, roleplayPersona, roleplayVoice, firstMessage, therapistType, therapistVoice, therapistPrompt } = await req.json().catch(() => ({}));
 
     console.log(`Creating ephemeral token - mode: ${mode}, ageGroup: ${ageGroup}, character: ${character}`);
 
@@ -154,6 +154,19 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
 4. 첫 멘트는 2~3문장 이내로, 마지막에는 반드시 사용자에게 한 가지 질문을 던지고 멈추세요.
 5. 첫 멘트 이후에는 사용자가 말할 때까지 기다리세요. 사용자가 침묵하면 혼자 계속 말하지 마세요.
 6. 이후에는 사용자의 말에 맞춰 역할에 맞게 자연스럽게 응답하세요.`;
+    }
+    // 치료사 모드
+    else if (mode === 'therapy' && therapistType && therapistPrompt) {
+      voice = validVoices.includes(therapistVoice) ? therapistVoice : "shimmer";
+      instructions = `${therapistPrompt}
+
+**중요 규칙:**
+1. 모든 대화는 반드시 100% 한국어로만 하세요.
+2. 실제 전문 치료사처럼 행동하세요.
+3. 세션 구조를 따라 체계적으로 진행하세요.
+4. 치료적 관계를 형성하고 유지하세요.`;
+      
+      console.log('Therapy mode configured:', therapistType);
     }
     // 일반 대화 모드에서도 캐릭터 적용
     else if (character) {

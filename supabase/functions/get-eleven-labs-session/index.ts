@@ -11,18 +11,27 @@ serve(async (req) => {
   }
 
   try {
-    const { stressLevel, focusLevel, currentMood, userGoals, agentId } = await req.json();
+    const { stressLevel, focusLevel, currentMood, userGoals, agentId, therapistType, therapistPrompt, userConcern } = await req.json();
     
     const ELEVEN_LABS_API_KEY = Deno.env.get('ELEVEN_LABS_API_KEY');
     if (!ELEVEN_LABS_API_KEY) {
       throw new Error('ELEVEN_LABS_API_KEY is not configured');
     }
 
-    console.log('Requesting ElevenLabs session for meditation guide');
-    console.log('User state:', { stressLevel, focusLevel, currentMood, userGoals });
+    console.log('Requesting ElevenLabs session');
+    console.log('Therapist type:', therapistType || 'meditation');
+    console.log('User state:', { stressLevel, focusLevel, currentMood, userGoals, userConcern });
 
-    // Create a personalized system prompt based on user state
-    const systemPrompt = `당신은 전문 명상 가이드 AI입니다. 
+    // Create a personalized system prompt
+    let systemPrompt = '';
+    
+    if (therapistType && therapistPrompt) {
+      // 전문 치료사 모드
+      systemPrompt = therapistPrompt;
+      console.log('Using therapist prompt for:', therapistType);
+    } else {
+      // 기존 명상 가이드 모드
+      systemPrompt = `당신은 전문 명상 가이드 AI입니다. 
 사용자의 현재 상태:
 - 스트레스 레벨: ${stressLevel}%
 - 집중력: ${focusLevel}%
@@ -32,6 +41,7 @@ serve(async (req) => {
 이 정보를 바탕으로 부드럽고 차분한 목소리로 개인화된 명상 가이드를 제공하세요.
 호흡법, 마음챙김, 신체 이완 기법을 적절히 활용하세요.
 사용자가 말을 걸면 공감하며 응답하고, 필요시 명상 기법을 조정하세요.`;
+    }
 
     // Request signed URL from ElevenLabs
     const response = await fetch(

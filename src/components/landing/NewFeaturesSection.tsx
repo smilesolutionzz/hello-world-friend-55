@@ -15,6 +15,15 @@ import { motion } from 'framer-motion';
 
 const newFeatures = [
   {
+    id: 'drawing_3d_conversion',
+    title: '🎨 그림 3D 변환',
+    description: '직접 그린 그림을 AI가 멋진 3D 이미지로 실시간 변환!',
+    date: '2025-11-29',
+    badge: 'NEW',
+    color: 'from-purple-500 to-pink-500',
+    path: '/premium-assessment'
+  },
+  {
     id: 'drawing_test',
     title: '✏️ 그림 심리 검사',
     description: 'HTP, KFD 등 전문 그림 검사를 직접 그리고 AI 분석을 받으세요',
@@ -49,15 +58,6 @@ const newFeatures = [
     badge: 'HOT',
     color: 'from-pink-500 to-purple-500',
     path: '/assessment/attachment-style-test'
-  },
-  {
-    id: 'defense_mechanism',
-    title: '🛡️ 방어기제 분석',
-    description: '무의식적 심리 패턴 발견! 24문항으로 8가지 방어기제 분석',
-    date: '2025-10-16',
-    badge: 'HOT',
-    color: 'from-purple-500 to-pink-500',
-    path: '/assessment/defense-mechanism-test'
   }
 ];
 

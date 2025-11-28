@@ -4,9 +4,7 @@ import { HealingImageGenerator } from '@/components/ai-therapy/HealingImageGener
 import { PsychologyArtGenerator } from '@/components/ai-therapy/PsychologyArtGenerator';
 import { MeditationImageGenerator } from '@/components/ai-therapy/MeditationImageGenerator';
 import { EmotionDiaryVisualizer } from '@/components/ai-therapy/EmotionDiaryVisualizer';
-import { DrawingAnalyzer } from '@/components/ai-analysis/DrawingAnalyzer';
-import { VisualCounselingUpload } from '@/components/ai-analysis/VisualCounselingUpload';
-import { Sparkles, Heart, Palette, Waves, BookOpen, ImageIcon, Brush } from 'lucide-react';
+import { Sparkles, Heart, Palette, Waves, BookOpen } from 'lucide-react';
 
 const AITherapyStudio = () => {
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
@@ -39,7 +37,7 @@ const AITherapyStudio = () => {
 
         {/* 메인 탭 컨텐츠 */}
         <Tabs defaultValue="healing" className="max-w-4xl mx-auto">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="healing" className="flex items-center gap-2">
               <Heart className="h-4 w-4" />
               <span className="hidden sm:inline">힐링 이미지</span>
@@ -55,14 +53,6 @@ const AITherapyStudio = () => {
             <TabsTrigger value="diary" className="flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               <span className="hidden sm:inline">감정 일기</span>
-            </TabsTrigger>
-            <TabsTrigger value="drawing" className="flex items-center gap-2">
-              <Brush className="h-4 w-4" />
-              <span className="hidden sm:inline">그림 검사</span>
-            </TabsTrigger>
-            <TabsTrigger value="visual" className="flex items-center gap-2">
-              <ImageIcon className="h-4 w-4" />
-              <span className="hidden sm:inline">시각 자료</span>
             </TabsTrigger>
           </TabsList>
 
@@ -122,32 +112,6 @@ const AITherapyStudio = () => {
               </p>
             </div>
             <EmotionDiaryVisualizer className="max-w-2xl mx-auto" />
-          </TabsContent>
-
-          <TabsContent value="drawing" className="space-y-6">
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full text-sm text-primary font-medium mb-2">
-                <Brush className="h-4 w-4" />
-                그림 심리 검사 AI 분석
-              </div>
-              <p className="text-muted-foreground">
-                HTP, KFD 등 그림 검사를 AI가 자동으로 분석하여 심리 상태를 파악합니다
-              </p>
-            </div>
-            <DrawingAnalyzer />
-          </TabsContent>
-
-          <TabsContent value="visual" className="space-y-6">
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full text-sm text-primary font-medium mb-2">
-                <ImageIcon className="h-4 w-4" />
-                시각 자료 AI 상담 분석
-              </div>
-              <p className="text-muted-foreground">
-                사진, 일러스트 등 시각 자료를 AI가 상담 관점에서 분석합니다
-              </p>
-            </div>
-            <VisualCounselingUpload />
           </TabsContent>
         </Tabs>
 

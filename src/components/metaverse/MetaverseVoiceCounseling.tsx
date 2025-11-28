@@ -38,7 +38,7 @@ import { analyzeSCTResponses, type SCTAgeGroup, SCT_QUESTIONS } from '@/utils/SC
 import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
 import { GroupUserList, type UserPresence } from './GroupPresence';
 import { RoomTransitionUI } from './RoomTransitionUI';
-import { Drawing3DPanel } from './Drawing3DPanel';
+// Drawing3DPanel 제거 - 이모지로 대체
 
 interface Message {
   role: 'user' | 'assistant';
@@ -99,8 +99,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   
   // 새로운 기능 상태
   const [backgroundMusic, setBackgroundMusic] = useState<MusicType>('none');
-  const [showDrawingPanel, setShowDrawingPanel] = useState(false);
-  const [floatingCubes, setFloatingCubes] = useState<Array<{ id: string; imageUrl: string }>>([]);
   const [musicVolume, setMusicVolume] = useState(0.3);
   const [currentGesture, setCurrentGesture] = useState<GestureType | null>(null);
   const [counselorGesture, setCounselorGesture] = useState<GestureType | null>(null);
@@ -1113,19 +1111,13 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           <LogOut className="w-4 h-4" />
           나가기
         </Button>
-        
-        <Button
-          onClick={() => {
-            console.log('🎨 그림 그리기 버튼 클릭!', { showDrawingPanel });
-            setShowDrawingPanel(!showDrawingPanel);
-          }}
-          variant="outline"
-          size="sm"
-          className="gap-2 shadow-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600 pointer-events-auto cursor-pointer"
-        >
-          <Paintbrush className="w-4 h-4" />
-          그림 그리기
-        </Button>
+      </div>
+      
+      {/* 이모지 아이콘 - 우측 하단 */}
+      <div className="fixed bottom-6 right-6 z-[100] pointer-events-auto">
+        <div className="text-6xl animate-bounce cursor-pointer hover:scale-110 transition-transform" title="그림 그리기">
+          🎨
+        </div>
       </div>
 
       <CounselingRoom 
@@ -1567,20 +1559,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             <div className="w-3 h-3 bg-destructive-foreground rounded-full" />
             녹음 중
           </div>
-        )}
-        
-        {/* 그림 그리기 패널 */}
-        {showDrawingPanel && (
-          <Drawing3DPanel
-            onClose={() => setShowDrawingPanel(false)}
-            onImageConverted={(imageUrl) => {
-              const newCube = {
-                id: `cube-${Date.now()}`,
-                imageUrl: imageUrl
-              };
-              setFloatingCubes(prev => [...prev, newCube]);
-            }}
-          />
         )}
       </CounselingRoom>
       

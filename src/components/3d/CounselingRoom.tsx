@@ -15,7 +15,7 @@ import { CatchBallGame } from '../metaverse/CatchBallGame';
 import { useToast } from '@/hooks/use-toast';
 import { CounselingCharacter } from './CounselingCharacter';
 import type { CharacterType } from '@/utils/CounselingQuestions';
-import { FloatingCube } from '../metaverse/FloatingCube';
+// FloatingCube 제거 - 더 이상 사용하지 않음
 
 // 문 컴포넌트
 const Door = ({ position, onInteract }: { position: [number, number, number]; onInteract: () => void }) => {
@@ -925,7 +925,6 @@ interface CounselingRoomProps {
   onGroupUsersChange?: (users: any[]) => void;
   userGesture?: GestureType | null;
   onPositionChange?: (position: { x: number; y: number; z: number }) => void;
-  floatingCubes?: Array<{ id: string; imageUrl: string }>;
 }
 
 const CounselingRoom = ({
@@ -949,8 +948,7 @@ const CounselingRoom = ({
   character,
   onGroupUsersChange,
   userGesture = null,
-  onPositionChange,
-  floatingCubes = []
+  onPositionChange
 }: CounselingRoomProps) => {
   const { toast } = useToast();
   // 공간별 설정
@@ -1125,20 +1123,6 @@ const CounselingRoom = ({
               }}
             />
           )}
-          
-          {/* 떠다니는 3D 큐브들 */}
-          {floatingCubes.map((cube, index) => (
-            <FloatingCube
-              key={cube.id}
-              id={cube.id}
-              imageUrl={cube.imageUrl}
-              position={[
-                (index % 3 - 1) * 4,
-                2 + Math.floor(index / 3) * 2,
-                -3 + (index % 2) * 6
-              ]}
-            />
-          ))}
           
           {/* 카메라 컨트롤 - 이동 모드가 아닐 때만 활성화 */}
           {!enableMovement && (

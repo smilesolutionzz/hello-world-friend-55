@@ -392,7 +392,7 @@ ${!currentPerformance.academic && !currentPerformance.social && !currentPerforma
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-image-preview',
+            model: 'google/gemini-3-pro-image-preview',
             messages: [{
               role: 'user',
               content: generateImagePrompt('progress')
@@ -407,7 +407,7 @@ ${!currentPerformance.academic && !currentPerformance.social && !currentPerforma
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-image-preview',
+            model: 'google/gemini-3-pro-image-preview',
             messages: [{
               role: 'user',
               content: generateImagePrompt('goals')
@@ -422,7 +422,7 @@ ${!currentPerformance.academic && !currentPerformance.social && !currentPerforma
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-image-preview',
+            model: 'google/gemini-3-pro-image-preview',
             messages: [{
               role: 'user',
               content: generateImagePrompt('skills')

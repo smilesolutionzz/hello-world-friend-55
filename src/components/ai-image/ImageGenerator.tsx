@@ -31,7 +31,6 @@ export function ImageGenerator({
 
     setIsGenerating(true);
     try {
-      // Try Replicate first (faster and higher quality)
       const { data, error } = await supabase.functions.invoke('replicate-image-generator', {
         body: {
           prompt: prompt.trim(),
@@ -41,26 +40,7 @@ export function ImageGenerator({
         }
       });
 
-      if (error) {
-        console.warn('Replicate failed, trying OpenAI:', error);
-        // Fallback to OpenAI
-        const fallbackData = await supabase.functions.invoke('openai-image-generator', {
-          body: {
-            prompt: prompt.trim(),
-            context,
-            type
-          }
-        });
-        
-        if (fallbackData.error) throw fallbackData.error;
-        
-        if (fallbackData.data?.image) {
-          setGeneratedImage(fallbackData.data.image);
-          onImageGenerated?.(fallbackData.data.image);
-          toast.success("이미지가 성공적으로 생성되었습니다!");
-        }
-        return;
-      }
+      if (error) throw error;
 
       if (data?.image) {
         setGeneratedImage(data.image);

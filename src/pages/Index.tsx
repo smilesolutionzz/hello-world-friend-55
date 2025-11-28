@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
@@ -29,6 +29,7 @@ import { LazyLoad } from '@/components/ui/lazy-load';
 import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
 import { MetaverseUnifiedSection } from '@/components/landing/MetaverseUnifiedSection';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
+import ErrorBoundary from '@/components/ui/error-boundary';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -85,6 +86,8 @@ const Index = () => {
   }, []); // 빈 dependency array로 한 번만 실행
 
   useEffect(() => {
+    let isMounted = true;
+    
     const checkReferralCode = async () => {
       const refCode = searchParams.get('ref');
       if (refCode) {
@@ -103,11 +106,15 @@ const Index = () => {
             return;
           }
           
+          if (!isMounted) return; // 컴포넌트가 unmount되면 중단
+          
           if (user && !error) {
             console.log('🔄 User logged in, processing referral reward...');
             // 사용자가 로그인된 상태에서만 추천 보상 처리
             const success = await processReferralReward(refCode);
             console.log('✅ Referral reward processed:', success);
+            
+            if (!isMounted) return; // 컴포넌트가 unmount되면 중단
             
             if (success !== undefined) {
               localStorage.removeItem('referralCode');
@@ -119,6 +126,7 @@ const Index = () => {
               }
             }
           } else {
+            if (!isMounted) return;
             console.log('👋 No user, showing welcome toast');
             toast({
               title: "🎉 추천 링크로 접속했습니다!",
@@ -126,6 +134,7 @@ const Index = () => {
             });
           }
         } catch (error) {
+          if (!isMounted) return;
           console.error('Referral check error:', error);
           // 에러가 발생해도 토스트는 표시
           toast({
@@ -137,20 +146,24 @@ const Index = () => {
     };
 
     checkReferralCode();
-  }, [searchParams]); // searchParams만 의존성으로 추가
+    
+    return () => {
+      isMounted = false; // cleanup: 컴포넌트 unmount 시 플래그 설정
+    };
+  }, [searchParams, processReferralReward, toast]);
 
-  const handleGuideComplete = () => {
+  const handleGuideComplete = useCallback(() => {
     setShowGuideComplete(true);
     toast({
       title: "가이드 완료! 🎉",
       description: "이제 HIGHLIGHT PRO와 함께 심리건강 여정을 시작해보세요!",
     });
-  };
+  }, [toast]);
 
-  const handleOnboardingClose = () => {
+  const handleOnboardingClose = useCallback(() => {
     setShowOnboarding(false);
     localStorage.setItem('onboarding_completed', 'true');
-  };
+  }, []);
 
   return (
     <>
@@ -163,11 +176,12 @@ const Index = () => {
       />
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
       
-      <div className="min-h-screen max-w-full overflow-x-hidden">
-        <ScrollProgressBar />
-        <UnifiedNavigation />
-        
-        <main id="main-content" className="w-full">
+      <ErrorBoundary>
+        <div className="min-h-screen max-w-full overflow-x-hidden">
+          <ScrollProgressBar />
+          <UnifiedNavigation />
+          
+          <main id="main-content" className="w-full">
           {/* 1️⃣ Hero Section */}
           <HeroSection />
           
@@ -234,14 +248,15 @@ const Index = () => {
           <Footer />
         </main>
         
-        <BackToTop />
-        
-        {/* 온보딩 모달 */}
-        <WelcomeOnboarding 
-          isOpen={showOnboarding} 
-          onClose={handleOnboardingClose} 
-        />
-      </div>
+          <BackToTop />
+          
+          {/* 온보딩 모달 */}
+          <WelcomeOnboarding 
+            isOpen={showOnboarding} 
+            onClose={handleOnboardingClose} 
+          />
+        </div>
+      </ErrorBoundary>
     </>
   );
 };

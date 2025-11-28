@@ -127,7 +127,7 @@ export const Drawing3DPanel = ({ onClose, onImageConverted }: Drawing3DPanelProp
   };
 
   return (
-    <Card className="fixed right-4 top-20 z-50 w-96 p-4 bg-card/95 backdrop-blur-md border-2 shadow-2xl">
+    <Card className="fixed right-4 top-20 z-[110] w-96 p-4 bg-card/95 backdrop-blur-md border-2 shadow-2xl pointer-events-auto">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-lg flex items-center gap-2">
           <Paintbrush className="w-5 h-5" />

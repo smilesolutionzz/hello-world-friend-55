@@ -4,21 +4,32 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, Upload, FileImage, AlertCircle, CheckCircle2, Palette, Brush, Eraser, Undo, Trash2, Save, Sparkles } from 'lucide-react';
+import { Loader2, Upload, FileImage, AlertCircle, CheckCircle2, Palette, Brush, Eraser, Undo, Trash2, Save, Sparkles, Heart, Cloud } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface DrawingAnalysis {
   overall_impression?: string;
-  house_analysis?: string;
-  tree_analysis?: string;
-  person_analysis?: string;
-  family_structure?: string;
-  interaction_patterns?: string;
-  emotional_tone?: string;
-  color_analysis?: string;
-  composition_analysis?: string;
-  line_analysis?: string;
-  content_analysis?: string;
+  // EMOTION 타입
+  color_emotion?: string;
+  shape_analysis?: string;
+  emotional_flow?: string;
+  positive_aspects?: string;
+  // DREAM 타입
+  dream_symbols?: string;
+  goal_direction?: string;
+  positive_energy?: string;
+  feasibility?: string;
+  // ABSTRACT 타입
+  line_flow?: string;
+  color_harmony?: string;
+  space_usage?: string;
+  inner_expression?: string;
+  // WEATHER 타입
+  weather_symbol?: string;
+  nature_elements?: string;
+  mood_change?: string;
+  season_time?: string;
+  // 공통
   psychological_state: string;
   recommendations: string[];
   risk_level: 'low' | 'medium' | 'high';
@@ -27,7 +38,7 @@ interface DrawingAnalysis {
 
 export const DrawingAnalyzer: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [testType, setTestType] = useState<'HTP' | 'KFD' | 'FREE'>('HTP');
+  const [testType, setTestType] = useState<'EMOTION' | 'DREAM' | 'ABSTRACT' | 'WEATHER'>('EMOTION');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<DrawingAnalysis | null>(null);
   const [mode, setMode] = useState<'draw' | 'upload'>('draw');
@@ -42,31 +53,40 @@ export const DrawingAnalyzer: React.FC = () => {
   const { toast } = useToast();
 
   const testGuides = {
-    HTP: {
-      title: 'HTP (집-나무-사람) 검사',
+    EMOTION: {
+      title: '감정 표현 그림',
       instructions: [
-        '1. 먼저 집을 그려주세요',
-        '2. 그 다음 나무를 그려주세요',
-        '3. 마지막으로 사람을 그려주세요',
-        '※ 시간 제한 없이 편안하게 그려주시면 됩니다'
+        '1. 현재 느끼는 감정을 색과 형태로 표현해주세요',
+        '2. 추상적이어도 괜찮습니다',
+        '3. 편안한 마음으로 자유롭게 그려주세요',
+        '※ 정답은 없습니다. 마음 가는 대로 표현하세요'
       ]
     },
-    KFD: {
-      title: 'KFD (동적 가족화) 검사',
+    DREAM: {
+      title: '꿈과 희망 그림',
       instructions: [
-        '1. 가족이 함께 무언가를 하고 있는 모습을 그려주세요',
-        '2. 본인을 포함한 가족 구성원을 모두 그려주세요',
-        '3. 각자 무엇을 하고 있는지 표현해주세요',
-        '※ 막대 인간이 아닌 전신 인물로 그려주세요'
+        '1. 미래의 꿈이나 희망을 그림으로 표현해주세요',
+        '2. 이루고 싶은 모습이나 상황을 그려주세요',
+        '3. 긍정적인 에너지를 담아주세요',
+        '※ 상상력을 마음껏 펼쳐보세요'
       ]
     },
-    FREE: {
-      title: '자유 그림 검사',
+    ABSTRACT: {
+      title: '추상 표현 그림',
       instructions: [
-        '1. 원하는 주제를 자유롭게 그려주세요',
-        '2. 색상과 표현 방식도 자유롭게 선택하세요',
-        '3. 편안한 마음으로 그려주시면 됩니다',
-        '※ 떠오르는 대로 자유롭게 표현하세요'
+        '1. 선과 색으로 내면을 추상적으로 표현해주세요',
+        '2. 구체적인 형태가 아니어도 됩니다',
+        '3. 직관에 따라 자유롭게 그려주세요',
+        '※ 무의식적인 표현을 존중합니다'
+      ]
+    },
+    WEATHER: {
+      title: '날씨 감정 그림',
+      instructions: [
+        '1. 지금 마음을 날씨나 자연으로 표현해주세요',
+        '2. 계절, 시간, 날씨를 자유롭게 선택하세요',
+        '3. 자연의 요소들을 활용해주세요',
+        '※ 맑음, 흐림, 비, 눈 등 모든 날씨가 좋습니다'
       ]
     }
   };
@@ -319,30 +339,32 @@ export const DrawingAnalyzer: React.FC = () => {
           그림 심리 검사 AI 분석
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          HTP, KFD 등 그림 검사를 AI가 자동으로 분석합니다
+          창작형 그림 표현을 AI가 심리학적 관점으로 분석합니다
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* 검사 유형 선택 */}
         <div>
           <label className="text-sm font-medium mb-2 block">검사 유형 선택</label>
-          <div className="flex gap-2 flex-wrap">
+          <div className="grid grid-cols-2 gap-2">
             {[
-              { value: 'HTP', label: 'HTP (집-나무-사람)' },
-              { value: 'KFD', label: 'KFD (동적 가족화)' },
-              { value: 'FREE', label: '자유 그림' }
+              { value: 'EMOTION', label: '💗 감정 표현', icon: Heart },
+              { value: 'DREAM', label: '✨ 꿈과 희망', icon: Sparkles },
+              { value: 'ABSTRACT', label: '🎨 추상 표현', icon: Palette },
+              { value: 'WEATHER', label: '☁️ 날씨 감정', icon: Cloud }
             ].map((type) => (
-              <Badge
+              <Button
                 key={type.value}
                 variant={testType === type.value ? 'default' : 'outline'}
-                className="cursor-pointer"
+                className="h-auto py-3 flex-col gap-1"
                 onClick={() => {
                   setTestType(type.value as any);
                   setAnalysis(null);
                 }}
               >
-                {type.label}
-              </Badge>
+                <span className="text-lg">{type.label.split(' ')[0]}</span>
+                <span className="text-xs">{type.label.split(' ').slice(1).join(' ')}</span>
+              </Button>
             ))}
           </div>
         </div>
@@ -585,72 +607,120 @@ export const DrawingAnalyzer: React.FC = () => {
               </Card>
             )}
 
-            {/* HTP 세부 분석 */}
-            {analysis.house_analysis && (
+            {/* 감정 표현 그림 분석 */}
+            {analysis.color_emotion && (
               <Card>
                 <CardContent className="pt-4 space-y-3">
                   <div>
-                    <h4 className="font-medium mb-1">집 분석</h4>
-                    <p className="text-sm text-muted-foreground">{analysis.house_analysis}</p>
+                    <h4 className="font-medium mb-1">색상 감정 분석</h4>
+                    <p className="text-sm text-muted-foreground">{analysis.color_emotion}</p>
                   </div>
-                  {analysis.tree_analysis && (
+                  {analysis.shape_analysis && (
                     <div>
-                      <h4 className="font-medium mb-1">나무 분석</h4>
-                      <p className="text-sm text-muted-foreground">{analysis.tree_analysis}</p>
+                      <h4 className="font-medium mb-1">형태 분석</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.shape_analysis}</p>
                     </div>
                   )}
-                  {analysis.person_analysis && (
+                  {analysis.emotional_flow && (
                     <div>
-                      <h4 className="font-medium mb-1">사람 분석</h4>
-                      <p className="text-sm text-muted-foreground">{analysis.person_analysis}</p>
+                      <h4 className="font-medium mb-1">감정의 흐름</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.emotional_flow}</p>
+                    </div>
+                  )}
+                  {analysis.positive_aspects && (
+                    <div>
+                      <h4 className="font-medium mb-1">긍정적 요소</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.positive_aspects}</p>
                     </div>
                   )}
                 </CardContent>
               </Card>
             )}
 
-            {/* KFD 세부 분석 */}
-            {analysis.family_structure && (
+            {/* 꿈과 희망 그림 분석 */}
+            {analysis.dream_symbols && (
               <Card>
                 <CardContent className="pt-4 space-y-3">
                   <div>
-                    <h4 className="font-medium mb-1">가족 구조</h4>
-                    <p className="text-sm text-muted-foreground">{analysis.family_structure}</p>
+                    <h4 className="font-medium mb-1">꿈의 상징 분석</h4>
+                    <p className="text-sm text-muted-foreground">{analysis.dream_symbols}</p>
                   </div>
-                  {analysis.interaction_patterns && (
+                  {analysis.goal_direction && (
                     <div>
-                      <h4 className="font-medium mb-1">상호작용 패턴</h4>
-                      <p className="text-sm text-muted-foreground">{analysis.interaction_patterns}</p>
+                      <h4 className="font-medium mb-1">목표 방향성</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.goal_direction}</p>
                     </div>
                   )}
-                  {analysis.emotional_tone && (
+                  {analysis.positive_energy && (
                     <div>
-                      <h4 className="font-medium mb-1">정서적 분위기</h4>
-                      <p className="text-sm text-muted-foreground">{analysis.emotional_tone}</p>
+                      <h4 className="font-medium mb-1">긍정 에너지</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.positive_energy}</p>
+                    </div>
+                  )}
+                  {analysis.feasibility && (
+                    <div>
+                      <h4 className="font-medium mb-1">실현 가능성</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.feasibility}</p>
                     </div>
                   )}
                 </CardContent>
               </Card>
             )}
 
-            {/* 자유 그림 분석 */}
-            {analysis.color_analysis && (
+            {/* 추상 표현 그림 분석 */}
+            {analysis.line_flow && (
               <Card>
                 <CardContent className="pt-4 space-y-3">
                   <div>
-                    <h4 className="font-medium mb-1">색상 분석</h4>
-                    <p className="text-sm text-muted-foreground">{analysis.color_analysis}</p>
+                    <h4 className="font-medium mb-1">선의 흐름</h4>
+                    <p className="text-sm text-muted-foreground">{analysis.line_flow}</p>
                   </div>
-                  {analysis.composition_analysis && (
+                  {analysis.color_harmony && (
                     <div>
-                      <h4 className="font-medium mb-1">구도 분석</h4>
-                      <p className="text-sm text-muted-foreground">{analysis.composition_analysis}</p>
+                      <h4 className="font-medium mb-1">색상의 조화</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.color_harmony}</p>
                     </div>
                   )}
-                  {analysis.line_analysis && (
+                  {analysis.space_usage && (
                     <div>
-                      <h4 className="font-medium mb-1">선 분석</h4>
-                      <p className="text-sm text-muted-foreground">{analysis.line_analysis}</p>
+                      <h4 className="font-medium mb-1">공간 활용</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.space_usage}</p>
+                    </div>
+                  )}
+                  {analysis.inner_expression && (
+                    <div>
+                      <h4 className="font-medium mb-1">내면의 표현</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.inner_expression}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* 날씨 감정 그림 분석 */}
+            {analysis.weather_symbol && (
+              <Card>
+                <CardContent className="pt-4 space-y-3">
+                  <div>
+                    <h4 className="font-medium mb-1">날씨 상징 분석</h4>
+                    <p className="text-sm text-muted-foreground">{analysis.weather_symbol}</p>
+                  </div>
+                  {analysis.nature_elements && (
+                    <div>
+                      <h4 className="font-medium mb-1">자연 요소</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.nature_elements}</p>
+                    </div>
+                  )}
+                  {analysis.mood_change && (
+                    <div>
+                      <h4 className="font-medium mb-1">분위기 변화</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.mood_change}</p>
+                    </div>
+                  )}
+                  {analysis.season_time && (
+                    <div>
+                      <h4 className="font-medium mb-1">계절과 시간</h4>
+                      <p className="text-sm text-muted-foreground">{analysis.season_time}</p>
                     </div>
                   )}
                 </CardContent>

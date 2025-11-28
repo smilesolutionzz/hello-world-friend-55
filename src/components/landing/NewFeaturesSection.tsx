@@ -25,8 +25,8 @@ const newFeatures = [
   },
   {
     id: 'drawing_test',
-    title: '✏️ 그림 심리 검사',
-    description: 'HTP, KFD 등 전문 그림 검사를 직접 그리고 AI 분석을 받으세요',
+    title: '✏️ 창작형 그림 심리 분석',
+    description: '감정, 꿈, 추상 표현 등 자유로운 그림으로 심리 분석 받기',
     date: '2025-11-29',
     badge: 'NEW',
     color: 'from-violet-500 to-purple-500',

@@ -55,27 +55,40 @@ interface AvatarGalleryProps {
 }
 
 export const AvatarGallery = ({ selectedUrl, onSelect }: AvatarGalleryProps) => {
+  // 디버깅: 아바타 목록 확인
+  console.log('🎭 AvatarGallery - Total avatars:', SAMPLE_AVATARS.length);
+  console.log('🎭 AvatarGallery - Avatars by gender:', {
+    male: SAMPLE_AVATARS.filter(a => a.gender === 'male').length,
+    female: SAMPLE_AVATARS.filter(a => a.gender === 'female').length,
+    avatars: SAMPLE_AVATARS.map(a => ({ id: a.id, name: a.name, gender: a.gender }))
+  });
+
   return (
     <Card className="p-4 bg-muted/50">
       <h3 className="text-sm font-semibold mb-3">📸 샘플 아바타 갤러리</h3>
       <ScrollArea className="h-48">
         <div className="grid grid-cols-3 gap-3">
-          {SAMPLE_AVATARS.map((avatar) => (
-            <button
-              key={avatar.id}
-              onClick={() => onSelect(avatar.url)}
-              className={`relative group rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
-                selectedUrl === avatar.url
-                  ? 'border-primary shadow-lg shadow-primary/20'
-                  : 'border-transparent hover:border-primary/50'
-              }`}
-            >
-              {/* 썸네일 대신 기본 아이콘 표시 */}
-              <div className="aspect-square bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                <div className="text-3xl">
-                  {avatar.gender === 'male' ? '👨' : '👩'}
+          {SAMPLE_AVATARS.map((avatar) => {
+            console.log('🎭 Rendering avatar:', avatar.id, avatar.name, avatar.gender);
+            return (
+              <button
+                key={avatar.id}
+                onClick={() => {
+                  console.log('🎭 Avatar selected:', avatar.id, avatar.name, avatar.gender);
+                  onSelect(avatar.url);
+                }}
+                className={`relative group rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
+                  selectedUrl === avatar.url
+                    ? 'border-primary shadow-lg shadow-primary/20'
+                    : 'border-transparent hover:border-primary/50'
+                }`}
+              >
+                {/* 썸네일 대신 기본 아이콘 표시 */}
+                <div className="aspect-square bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                  <div className="text-3xl">
+                    {avatar.gender === 'male' ? '👨' : '👩'}
+                  </div>
                 </div>
-              </div>
               
               {/* 선택됨 표시 */}
               {selectedUrl === avatar.url && (
@@ -84,12 +97,13 @@ export const AvatarGallery = ({ selectedUrl, onSelect }: AvatarGalleryProps) => 
                 </div>
               )}
               
-              {/* 이름 */}
-              <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm text-white text-xs py-1 px-2 text-center">
-                {avatar.name}
-              </div>
-            </button>
-          ))}
+                {/* 이름 */}
+                <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm text-white text-xs py-1 px-2 text-center">
+                  {avatar.name}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </ScrollArea>
       <p className="text-xs text-muted-foreground mt-2">

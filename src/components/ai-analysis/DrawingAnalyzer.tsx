@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, Upload, FileImage, AlertCircle, CheckCircle2, Palette } from 'lucide-react';
+import { Loader2, Upload, FileImage, AlertCircle, CheckCircle2, Palette, Brush, Eraser, Undo, Trash2, Save } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface DrawingAnalysis {
@@ -29,7 +30,44 @@ export const DrawingAnalyzer: React.FC = () => {
   const [testType, setTestType] = useState<'HTP' | 'KFD' | 'FREE'>('HTP');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<DrawingAnalysis | null>(null);
+  const [mode, setMode] = useState<'draw' | 'upload'>('draw');
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [drawingColor, setDrawingColor] = useState('#000000');
+  const [brushSize, setBrushSize] = useState(3);
+  const [tool, setTool] = useState<'pen' | 'eraser'>('pen');
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [drawingHistory, setDrawingHistory] = useState<ImageData[]>([]);
   const { toast } = useToast();
+
+  const testGuides = {
+    HTP: {
+      title: 'HTP (집-나무-사람) 검사',
+      instructions: [
+        '1. 먼저 집을 그려주세요',
+        '2. 그 다음 나무를 그려주세요',
+        '3. 마지막으로 사람을 그려주세요',
+        '※ 시간 제한 없이 편안하게 그려주시면 됩니다'
+      ]
+    },
+    KFD: {
+      title: 'KFD (동적 가족화) 검사',
+      instructions: [
+        '1. 가족이 함께 무언가를 하고 있는 모습을 그려주세요',
+        '2. 본인을 포함한 가족 구성원을 모두 그려주세요',
+        '3. 각자 무엇을 하고 있는지 표현해주세요',
+        '※ 막대 인간이 아닌 전신 인물로 그려주세요'
+      ]
+    },
+    FREE: {
+      title: '자유 그림 검사',
+      instructions: [
+        '1. 원하는 주제를 자유롭게 그려주세요',
+        '2. 색상과 표현 방식도 자유롭게 선택하세요',
+        '3. 편안한 마음으로 그려주시면 됩니다',
+        '※ 떠오르는 대로 자유롭게 표현하세요'
+      ]
+    }
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,10 +89,124 @@ export const DrawingAnalyzer: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // 캔버스 초기화
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }, []);
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // 현재 상태 저장 (실행취소용)
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    setDrawingHistory(prev => [...prev, imageData]);
+
+    setIsDrawing(true);
+    const { clientX, clientY } = 'touches' in e ? e.touches[0] : e;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const { clientX, clientY } = 'touches' in e ? e.touches[0] : e;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    ctx.strokeStyle = tool === 'eraser' ? 'white' : drawingColor;
+    ctx.lineWidth = tool === 'eraser' ? brushSize * 3 : brushSize;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    setDrawingHistory([]);
+    setAnalysis(null);
+  };
+
+  const undoDrawing = () => {
+    const canvas = canvasRef.current;
+    if (!canvas || drawingHistory.length === 0) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const lastState = drawingHistory[drawingHistory.length - 1];
+    ctx.putImageData(lastState, 0, 0);
+    setDrawingHistory(prev => prev.slice(0, -1));
+  };
+
+  const saveDrawing = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const imageData = canvas.toDataURL('image/png');
+    setSelectedImage(imageData);
+    
+    toast({
+      title: '그림 저장 완료',
+      description: '이제 분석 버튼을 눌러주세요'
+    });
+  };
+
   const handleAnalyze = async () => {
-    if (!selectedImage) {
+    let imageToAnalyze = selectedImage;
+
+    // 직접 그리기 모드인 경우 캔버스에서 이미지 가져오기
+    if (mode === 'draw' && !selectedImage) {
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        toast({
+          title: '그림을 먼저 그려주세요',
+          variant: 'destructive'
+        });
+        return;
+      }
+      imageToAnalyze = canvas.toDataURL('image/png');
+      setSelectedImage(imageToAnalyze);
+    }
+
+    if (!imageToAnalyze) {
       toast({
-        title: '이미지를 먼저 업로드해주세요',
+        title: mode === 'draw' ? '그림을 먼저 그려주세요' : '이미지를 먼저 업로드해주세요',
         variant: 'destructive'
       });
       return;
@@ -63,7 +215,7 @@ export const DrawingAnalyzer: React.FC = () => {
     setIsAnalyzing(true);
     try {
       const { data, error } = await supabase.functions.invoke('analyze-drawing', {
-        body: { imageData: selectedImage, testType }
+        body: { imageData: imageToAnalyze, testType }
       });
 
       if (error) throw error;
@@ -118,7 +270,7 @@ export const DrawingAnalyzer: React.FC = () => {
         {/* 검사 유형 선택 */}
         <div>
           <label className="text-sm font-medium mb-2 block">검사 유형 선택</label>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {[
               { value: 'HTP', label: 'HTP (집-나무-사람)' },
               { value: 'KFD', label: 'KFD (동적 가족화)' },
@@ -128,7 +280,10 @@ export const DrawingAnalyzer: React.FC = () => {
                 key={type.value}
                 variant={testType === type.value ? 'default' : 'outline'}
                 className="cursor-pointer"
-                onClick={() => setTestType(type.value as any)}
+                onClick={() => {
+                  setTestType(type.value as any);
+                  setAnalysis(null);
+                }}
               >
                 {type.label}
               </Badge>
@@ -136,44 +291,144 @@ export const DrawingAnalyzer: React.FC = () => {
           </div>
         </div>
 
-        {/* 이미지 업로드 */}
-        <div>
-          <label className="text-sm font-medium mb-2 block">그림 업로드</label>
-          <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="hidden"
-              id="drawing-upload"
-            />
-            <label htmlFor="drawing-upload" className="cursor-pointer">
-              {selectedImage ? (
-                <div className="space-y-2">
-                  <img 
-                    src={selectedImage} 
-                    alt="업로드된 그림" 
-                    className="max-h-64 mx-auto rounded-lg"
-                  />
-                  <p className="text-sm text-muted-foreground">클릭하여 다른 이미지 선택</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <FileImage className="h-12 w-12 mx-auto text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">
-                    클릭하여 그림 이미지 업로드
-                  </p>
-                </div>
-              )}
-            </label>
-          </div>
-        </div>
+        {/* 검사 가이드 */}
+        <Card className="bg-muted/50">
+          <CardContent className="pt-4">
+            <h4 className="font-medium mb-2 text-sm">{testGuides[testType].title}</h4>
+            <ul className="space-y-1">
+              {testGuides[testType].instructions.map((instruction, idx) => (
+                <li key={idx} className="text-xs text-muted-foreground">
+                  {instruction}
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+
+        {/* 그리기 모드 선택 */}
+        <Tabs value={mode} onValueChange={(v) => setMode(v as any)}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="draw" className="flex items-center gap-2">
+              <Brush className="h-4 w-4" />
+              직접 그리기
+            </TabsTrigger>
+            <TabsTrigger value="upload" className="flex items-center gap-2">
+              <Upload className="h-4 w-4" />
+              이미지 업로드
+            </TabsTrigger>
+          </TabsList>
+
+          {/* 직접 그리기 탭 */}
+          <TabsContent value="draw" className="space-y-4">
+            {/* 그리기 도구 */}
+            <div className="flex gap-2 flex-wrap items-center">
+              <Button
+                variant={tool === 'pen' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setTool('pen')}
+              >
+                <Brush className="h-4 w-4 mr-1" />
+                펜
+              </Button>
+              <Button
+                variant={tool === 'eraser' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setTool('eraser')}
+              >
+                <Eraser className="h-4 w-4 mr-1" />
+                지우개
+              </Button>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={drawingColor}
+                  onChange={(e) => setDrawingColor(e.target.value)}
+                  className="h-8 w-12 rounded cursor-pointer"
+                />
+                <input
+                  type="range"
+                  min="1"
+                  max="20"
+                  value={brushSize}
+                  onChange={(e) => setBrushSize(Number(e.target.value))}
+                  className="w-20"
+                />
+                <span className="text-xs text-muted-foreground">{brushSize}px</span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={undoDrawing}
+                disabled={drawingHistory.length === 0}
+              >
+                <Undo className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearCanvas}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* 캔버스 */}
+            <div className="border-2 rounded-lg overflow-hidden bg-white">
+              <canvas
+                ref={canvasRef}
+                width={600}
+                height={400}
+                className="w-full touch-none"
+                onMouseDown={startDrawing}
+                onMouseMove={draw}
+                onMouseUp={stopDrawing}
+                onMouseLeave={stopDrawing}
+                onTouchStart={startDrawing}
+                onTouchMove={draw}
+                onTouchEnd={stopDrawing}
+              />
+            </div>
+          </TabsContent>
+
+          {/* 이미지 업로드 탭 */}
+          <TabsContent value="upload">
+            <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="drawing-upload"
+              />
+              <label htmlFor="drawing-upload" className="cursor-pointer">
+                {selectedImage ? (
+                  <div className="space-y-2">
+                    <img 
+                      src={selectedImage} 
+                      alt="업로드된 그림" 
+                      className="max-h-64 mx-auto rounded-lg"
+                    />
+                    <p className="text-sm text-muted-foreground">클릭하여 다른 이미지 선택</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <FileImage className="h-12 w-12 mx-auto text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground">
+                      클릭하여 그림 이미지 업로드
+                    </p>
+                  </div>
+                )}
+              </label>
+            </div>
+          </TabsContent>
+        </Tabs>
 
         {/* 분석 버튼 */}
         <Button 
           onClick={handleAnalyze} 
-          disabled={isAnalyzing || !selectedImage}
+          disabled={isAnalyzing}
           className="w-full"
+          size="lg"
         >
           {isAnalyzing ? (
             <>
@@ -182,7 +437,7 @@ export const DrawingAnalyzer: React.FC = () => {
             </>
           ) : (
             <>
-              <Upload className="mr-2 h-4 w-4" />
+              <Palette className="mr-2 h-4 w-4" />
               그림 분석 시작
             </>
           )}

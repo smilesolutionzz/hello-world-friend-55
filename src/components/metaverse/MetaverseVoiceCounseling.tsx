@@ -1080,12 +1080,12 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   return (
     <div className="relative min-h-screen">
       {/* 네비게이션 버튼 */}
-      <div className="fixed top-4 left-4 z-50 flex gap-2">
+      <div className="fixed top-4 left-4 z-[100] flex gap-2 pointer-events-auto">
         <Button
           onClick={() => navigate(-1)}
           variant="outline"
           size="sm"
-          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
+          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg pointer-events-auto"
         >
           <ArrowLeft className="w-4 h-4" />
           뒤로
@@ -1094,7 +1094,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           onClick={() => navigate('/')}
           variant="outline"
           size="sm"
-          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
+          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg pointer-events-auto"
         >
           <Home className="w-4 h-4" />
           홈
@@ -1108,17 +1108,20 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           }}
           variant="destructive"
           size="sm"
-          className="gap-2 shadow-lg"
+          className="gap-2 shadow-lg pointer-events-auto"
         >
           <LogOut className="w-4 h-4" />
           나가기
         </Button>
         
         <Button
-          onClick={() => setShowDrawingPanel(!showDrawingPanel)}
+          onClick={() => {
+            console.log('🎨 그림 그리기 버튼 클릭!', { showDrawingPanel });
+            setShowDrawingPanel(!showDrawingPanel);
+          }}
           variant="outline"
           size="sm"
-          className="gap-2 shadow-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600"
+          className="gap-2 shadow-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600 pointer-events-auto cursor-pointer"
         >
           <Paintbrush className="w-4 h-4" />
           그림 그리기

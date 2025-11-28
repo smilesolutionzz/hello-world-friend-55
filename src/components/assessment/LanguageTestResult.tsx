@@ -12,6 +12,8 @@ interface LanguageTestResultProps {
     average: number;
     ageGroup: string;
     age: number;
+    detailedAgeGroup?: string;
+    ageInMonths?: number;
   };
   onBack: () => void;
 }
@@ -22,53 +24,99 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
 
-  const getEvaluation = (score: number) => {
-    if (score <= 24) {
+  const getEvaluation = (score: number, age: number) => {
+    const detailedAge = results.detailedAgeGroup || `${age}개월`;
+    
+    // 연령별 기준점 설정 (개월수에 따라)
+    let lowThreshold = 24;
+    let midThreshold = 36;
+    
+    if (age <= 12) {
+      lowThreshold = 15; midThreshold = 25;
+    } else if (age <= 24) {
+      lowThreshold = 20; midThreshold = 32;
+    } else if (age <= 36) {
+      lowThreshold = 24; midThreshold = 36;
+    } else if (age <= 48) {
+      lowThreshold = 28; midThreshold = 40;
+    } else if (age <= 60) {
+      lowThreshold = 32; midThreshold = 44;
+    }
+    
+    if (score <= lowThreshold) {
       return {
         level: "Attention Needed (주의 필요)",
         description: "전문가 상담을 권장합니다.",
         color: "text-red-600",
-        range: "0-24점",
-        detailedAnalysis: `현재 점수 ${score}점은 언어발달 지연이 우려되는 범위입니다. 이 단계에서는 즉각적인 전문가 개입이 필요하며, 언어치료사와의 상담을 통해 개별화된 언어발달 프로그램을 시작하시기를 강력히 권장합니다. 일상에서 아이와의 언어적 상호작용을 늘리고, 그림책 읽기, 노래 부르기, 단순한 언어 모델링을 통해 언어 자극을 제공해주세요. 발달지연의 원인을 파악하기 위한 전문적인 평가도 고려해보시기 바랍니다.`
+        range: `0-${lowThreshold}점`,
+        detailedAnalysis: `**${detailedAge} 아동의 언어발달 분석**\n\n현재 점수 ${score}점은 ${detailedAge} 연령대에서 언어발달 지연이 우려되는 범위입니다.\n\n**연령별 발달 이정표:**\n${getAgeMilestones(age)}\n\n**즉각 권장사항:**\n• 즉각적인 전문가 개입이 필요합니다\n• 언어치료사와의 상담을 통해 개별화된 언어발달 프로그램 시작\n• 소아청소년과 또는 발달전문의 진료 권장\n• 일상에서 아이와의 언어적 상호작용 최대화\n• 그림책 읽기, 노래 부르기, 단순 언어 모델링 활용\n• 발달지연의 원인 파악을 위한 전문적 평가 고려\n\n**${detailedAge} 연령 특화 지원:**\n${getAgeSpecificSupport(age, 'delayed')}`
       };
-    } else if (score <= 36) {
+    } else if (score <= midThreshold) {
       return {
         level: "Borderline (경계선)",
         description: "경계선 소견, 추가 평가 추천.",
         color: "text-yellow-600",
-        range: "25-36점",
-        detailedAnalysis: `현재 점수 ${score}점은 언어발달 경계선 범위에 해당합니다. 이는 정상 발달과 지연 사이의 중간 단계로, 적절한 언어 자극과 환경 개선을 통해 충분히 향상될 수 있는 상태입니다. 
-
-**구체적 개선 방법:**
-• **일상 대화 늘리기**: 아이의 모든 행동에 언어로 설명해주기 ("지금 우유를 마시고 있구나", "빨간 공을 던지는구나")
-• **반복적 언어 노출**: 같은 단어나 문장을 여러 상황에서 반복 사용
-• **책 읽기 활동**: 하루 15-20분씩 그림책을 함께 보며 내용에 대해 이야기하기
-• **노래와 리듬**: 동요나 손유희를 통한 언어 리듬감 발달
-• **놀이를 통한 언어학습**: 역할놀이, 블록놀이 등에서 자연스러운 언어 사용
-
-3-6개월 후 재평가를 통해 발달 상황을 점검하시고, 개선이 미흡할 경우 언어치료 전문가와의 상담을 고려해보시기 바랍니다.`
+        range: `${lowThreshold + 1}-${midThreshold}점`,
+        detailedAnalysis: `**${detailedAge} 아동의 언어발달 분석**\n\n현재 점수 ${score}점은 ${detailedAge} 연령대에서 언어발달 경계선 범위에 해당합니다.\n\n**연령별 발달 이정표:**\n${getAgeMilestones(age)}\n\n**구체적 개선 방법:**\n• **일상 대화 늘리기**: 아이의 모든 행동에 언어로 설명하기\n• **반복적 언어 노출**: 같은 단어/문장을 다양한 상황에서 사용\n• **책 읽기 활동**: 하루 15-20분씩 연령에 맞는 그림책\n• **노래와 리듬**: 동요나 손유희를 통한 언어 리듬감 발달\n• **놀이를 통한 언어학습**: 역할놀이, 블록놀이 등 활용\n\n**${detailedAge} 연령 특화 활동:**\n${getAgeSpecificSupport(age, 'borderline')}\n\n**추후 관리:**\n3-6개월 후 재평가를 통해 발달 상황을 점검하시고, 개선이 미흡할 경우 언어치료 전문가와 상담을 고려하세요.`
       };
     } else {
       return {
         level: "Good (양호)",
         description: "양호. 경과 관찰 권장.",
         color: "text-green-600",
-        range: "37-60점",
-        detailedAnalysis: `축하합니다! 현재 점수 ${score}점은 연령대 대비 양호한 언어발달 수준을 보여줍니다. 아이의 언어능력이 정상 범위 내에서 잘 발달하고 있으며, 현재의 언어적 환경과 상호작용 방식을 지속적으로 유지하시면 됩니다.
-
-**지속적 발달을 위한 권장사항:**
-• **다양한 어휘 노출**: 일상에서 풍부한 어휘를 사용하여 대화하기
-• **복문 사용 늘리기**: 단순한 문장보다는 "~하니까", "~해서" 등의 연결어를 사용한 복문으로 대화
-• **창의적 언어 활동**: 이야기 만들기, 상상놀이를 통한 언어 창의성 발달
-• **또래와의 상호작용**: 다른 아이들과의 놀이를 통한 사회적 언어 발달
-• **정기적 모니터링**: 6개월마다 언어발달 상황을 점검하여 지속적인 발달 확인
-
-현재 수준을 유지하면서 더욱 풍부한 언어 환경을 제공해주시면, 아이의 언어능력이 더욱 향상될 것입니다.`
+        range: `${midThreshold + 1}-60점`,
+        detailedAnalysis: `**${detailedAge} 아동의 언어발달 분석**\n\n축하합니다! 현재 점수 ${score}점은 ${detailedAge} 연령대 대비 양호한 언어발달 수준입니다.\n\n**연령별 발달 이정표:**\n${getAgeMilestones(age)}\n\n**지속적 발달을 위한 권장사항:**\n• **다양한 어휘 노출**: 일상에서 풍부한 어휘 사용\n• **복문 사용**: 연결어를 사용한 복잡한 문장 대화\n• **창의적 언어 활동**: 이야기 만들기, 상상놀이\n• **또래 상호작용**: 다른 아이들과의 놀이 활동\n• **정기적 모니터링**: 6개월마다 언어발달 점검\n\n**${detailedAge} 연령 특화 발달 촉진:**\n${getAgeSpecificSupport(age, 'good')}\n\n현재의 우수한 언어 환경을 유지하면서, 더욱 풍부한 언어 자극을 제공하시면 아이의 언어능력이 더욱 향상될 것입니다.`
       };
     }
   };
 
-  const evaluation = getEvaluation(total);
+  // 연령별 발달 이정표
+  const getAgeMilestones = (age: number): string => {
+    if (age <= 12) {
+      return `• 옹알이와 소리 모방 시작\n• 간단한 단어 이해 (엄마, 아빠)\n• 손짓으로 의사표현\n• 익숙한 소리에 반응`;
+    } else if (age <= 24) {
+      return `• 50-100개 단어 이해 및 사용\n• 두 단어 조합 시작 (엄마 물)\n• 간단한 지시 따르기\n• 신체 부위 가리키기`;
+    } else if (age <= 36) {
+      return `• 200-300개 단어 사용\n• 3-4 단어 문장 구성\n• "뭐", "왜" 등 질문 시작\n• 간단한 이야기 이해`;
+    } else if (age <= 48) {
+      return `• 1000개 이상 단어 이해\n• 완전한 문장 구사\n• 과거/미래 시제 사용\n• 복잡한 지시 따르기`;
+    } else if (age <= 60) {
+      return `• 2000개 이상 단어 사용\n• 복문 구성 능력\n• 이야기 순서대로 말하기\n• 논리적 추론 표현`;
+    } else {
+      return `• 5000개 이상 어휘력\n• 추상적 개념 이해\n• 긴 이야기 이해 및 구성\n• 문법적으로 정확한 문장`;
+    }
+  };
+
+  // 연령별 특화 지원
+  const getAgeSpecificSupport = (age: number, level: string): string => {
+    if (age <= 12) {
+      if (level === 'delayed') return '• 얼굴 마주보며 반응적 상호작용\n• 과장된 표정과 소리로 주의 끌기\n• 단순한 소리 모방 놀이\n• 노래와 리듬 놀이';
+      if (level === 'borderline') return '• 소리에 대한 반응 관찰 및 격려\n• 다양한 소리 자극 제공\n• 옹알이 모방 및 격려\n• 감각 놀이를 통한 언어 자극';
+      return '• 다양한 음운 자극 제공\n• 언어적 풍부함 유지\n• 책 읽기 습관 형성\n• 사회적 상호작용 격려';
+    } else if (age <= 24) {
+      if (level === 'delayed') return '• 일상 루틴에 언어 연결\n• 단순 동작과 말 결합\n• 그림카드 활용 어휘 학습\n• 모방 놀이 강화';
+      if (level === 'borderline') return '• 두 단어 조합 모델링\n• 선택형 질문으로 반응 유도\n• 일상 사물 명칭 학습\n• 동작과 언어 연결';
+      return '• 새로운 어휘 지속 확장\n• 간단한 질문하기\n• 또래 놀이 시작\n• 상황별 언어 사용';
+    } else if (age <= 36) {
+      if (level === 'delayed') return '• 문장 확장 모델링\n• 역할놀이로 상황 언어 학습\n• 그림책 반복 읽기\n• 질문-답변 연습';
+      if (level === 'borderline') return '• 3단어 이상 문장 격려\n• "뭐", "어디" 질문 연습\n• 순서 개념 도입\n• 감정 표현 언어 학습';
+      return '• 이야기 만들기 활동\n• 복잡한 질문 던지기\n• 추론 능력 발달 유도\n• 협동 놀이 참여';
+    } else if (age <= 48) {
+      if (level === 'delayed') return '• 시제 개념 반복 학습\n• 이야기 순서 맞추기\n• 전치사 사용 연습\n• 문제해결 대화';
+      if (level === 'borderline') return '• 복잡한 지시 따르기\n• 원인-결과 설명\n• 감정 이유 표현하기\n• 협상 언어 연습';
+      return '• 상상놀이 확장\n• 긴 이야기 말하기\n• 비유 언어 소개\n• 독서 습관 강화';
+    } else if (age <= 60) {
+      if (level === 'delayed') return '• 추상 개념 구체화\n• 논리적 사고 유도\n• 긴 문장 연습\n• 읽기 준비 활동';
+      if (level === 'borderline') return '• 복문 구성 연습\n• 이야기 재구성하기\n• 의견 표현 격려\n• 설명 능력 향상';
+      return '• 비판적 사고 발달\n• 복잡한 이야기 구성\n• 학습 언어 발달\n• 읽기 쓰기 연계';
+    } else {
+      if (level === 'delayed') return '• 학습 언어 집중 지원\n• 읽기 쓰기 통합\n• 발표 연습\n• 논리적 글쓰기';
+      if (level === 'borderline') return '• 어휘력 확장 프로그램\n• 토론 활동 참여\n• 창의적 글쓰기\n• 독서 습관 강화';
+      return '• 고급 언어 능력 발달\n• 문학적 표현 학습\n• 다양한 장르 읽기\n• 프레젠테이션 능력';
+    }
+  };
+
+  const evaluation = getEvaluation(total, age);
 
   // 차트 데이터
   const chartData = [

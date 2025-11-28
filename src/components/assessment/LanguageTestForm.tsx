@@ -12,9 +12,20 @@ import TokenGate from "@/components/TokenGate";
 interface LanguageTestFormProps {
   ageGroup: 'infant' | 'child';
   age: number;
-  onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string, age: number}) => void;
+  onComplete: (results: {answers: number[], total: number, average: number, ageGroup: string, age: number, detailedAgeGroup: string, ageInMonths: number}) => void;
   onBack: () => void;
 }
+
+// 연령별 세밀한 발달 단계 정의
+const getDetailedAgeGroup = (age: number): string => {
+  if (age <= 12) return '0-12개월';
+  if (age <= 24) return '13-24개월';
+  if (age <= 36) return '25-36개월';
+  if (age <= 48) return '37-48개월';
+  if (age <= 60) return '49-60개월';
+  if (age <= 72) return '61-72개월';
+  return '73개월 이상';
+};
 
 const languageQuestions = {
   'infant': [
@@ -97,13 +108,16 @@ const LanguageTestForm = ({ ageGroup, age, onComplete, onBack }: LanguageTestFor
       const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
       const average = Math.round((total / numericAnswers.length) * 10) / 10;
       const ageGroupLabel = ageGroup === 'infant' ? '영유아' : '아동청소년';
+      const detailedAgeGroup = getDetailedAgeGroup(age);
       
       onComplete({
         answers: numericAnswers,
         total,
         average,
         ageGroup: ageGroupLabel,
-        age
+        age,
+        detailedAgeGroup,
+        ageInMonths: age
       });
     }
   };

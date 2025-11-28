@@ -1058,6 +1058,7 @@ const CounselingRoom = ({
               name="메타상담사"
               gesture={counselorGesture}
               emotion={counselorEmotion}
+              targetPosition={avatarPosition}
             />
           )}
           

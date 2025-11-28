@@ -12,6 +12,7 @@ interface CounselorNPCProps {
   gesture?: GestureType | null;
   message?: string;
   emotion?: 'empathy' | 'encouragement' | 'concern' | 'joy' | 'neutral';
+  targetPosition?: { x: number; y: number; z: number };
 }
 
 export const CounselorNPC = ({ 
@@ -20,7 +21,8 @@ export const CounselorNPC = ({
   name = "AI 상담사",
   gesture = null,
   message = "",
-  emotion = 'neutral'
+  emotion = 'neutral',
+  targetPosition
 }: CounselorNPCProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const lightRef = useRef<THREE.PointLight>(null);
@@ -48,52 +50,78 @@ export const CounselorNPC = ({
   useFrame((state) => {
     if (!groupRef.current) return;
 
-    // 랜덤 워킹 로직
-    walkTimer.current += state.clock.getDelta();
-    
-    if (walkTimer.current >= walkDuration.current) {
-      // 새로운 방향 결정
-      walkTimer.current = 0;
-      walkDuration.current = 3 + Math.random() * 4; // 3-7초 간격
+    // targetPosition이 있으면 사용자를 따라가고, 없으면 랜덤 워킹
+    if (targetPosition) {
+      // 사용자 위치를 향한 방향 계산
+      const target = new THREE.Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
+      const currentPos = groupRef.current.position;
+      const direction = target.clone().sub(currentPos);
+      const distance = direction.length();
       
-      // 50% 확률로 걷기 시작 (말하지 않을 때만)
-      if (Math.random() > 0.5 && !isSpeaking) {
+      // 거리가 3 이상일 때만 따라가기 (너무 가까우면 멈춤)
+      if (distance > 3 && !isSpeaking) {
         isWalking.current = true;
-        const angle = Math.random() * Math.PI * 2;
-        const distance = Math.random() * 0.5 + 0.2;
-        walkDirection.current.set(
-          Math.cos(angle) * distance,
-          0,
-          Math.sin(angle) * distance
-        );
+        // 방향 정규화 및 이동
+        direction.normalize();
+        const moveSpeed = 0.03; // 이동 속도
+        groupRef.current.position.add(direction.multiplyScalar(moveSpeed));
+        
+        // 사용자를 바라보도록 회전
+        const angle = Math.atan2(direction.x, direction.z);
+        groupRef.current.rotation.y = angle;
+        
+        // 걷기 애니메이션 (팔 흔들기)
+        if (leftArmRef.current && rightArmRef.current) {
+          const walkCycle = Math.sin(state.clock.elapsedTime * 5);
+          leftArmRef.current.rotation.x = walkCycle * 0.5;
+          rightArmRef.current.rotation.x = -walkCycle * 0.5;
+        }
       } else {
         isWalking.current = false;
       }
+    } else {
+      // 기존 랜덤 워킹 로직
+      walkTimer.current += state.clock.getDelta();
+      
+      if (walkTimer.current >= walkDuration.current) {
+        walkTimer.current = 0;
+        walkDuration.current = 3 + Math.random() * 4;
+        
+        if (Math.random() > 0.5 && !isSpeaking) {
+          isWalking.current = true;
+          const angle = Math.random() * Math.PI * 2;
+          const distance = Math.random() * 0.5 + 0.2;
+          walkDirection.current.set(
+            Math.cos(angle) * distance,
+            0,
+            Math.sin(angle) * distance
+          );
+        } else {
+          isWalking.current = false;
+        }
+      }
+      
+      if (isWalking.current && !isSpeaking) {
+        groupRef.current.position.add(walkDirection.current.clone().multiplyScalar(0.01));
+        
+        const distanceFromHome = groupRef.current.position.distanceTo(homePosition.current);
+        if (distanceFromHome > maxWalkDistance) {
+          walkDirection.current.copy(homePosition.current).sub(groupRef.current.position).normalize().multiplyScalar(0.5);
+        }
+        
+        const angle = Math.atan2(walkDirection.current.x, walkDirection.current.z);
+        groupRef.current.rotation.y = angle;
+        
+        if (leftArmRef.current && rightArmRef.current) {
+          const walkCycle = Math.sin(state.clock.elapsedTime * 5);
+          leftArmRef.current.rotation.x = walkCycle * 0.5;
+          rightArmRef.current.rotation.x = -walkCycle * 0.5;
+        }
+      }
     }
     
-    // 워킹 애니메이션
-    if (isWalking.current && !isSpeaking) {
-      groupRef.current.position.add(walkDirection.current.clone().multiplyScalar(0.01));
-      
-      // 초기 위치에서 너무 멀어지지 않도록
-      const distanceFromHome = groupRef.current.position.distanceTo(homePosition.current);
-      if (distanceFromHome > maxWalkDistance) {
-        // 집으로 돌아가는 방향으로
-        walkDirection.current.copy(homePosition.current).sub(groupRef.current.position).normalize().multiplyScalar(0.5);
-      }
-      
-      // 걷는 방향으로 회전
-      const angle = Math.atan2(walkDirection.current.x, walkDirection.current.z);
-      groupRef.current.rotation.y = angle;
-      
-      // 걷기 애니메이션 (팔 흔들기)
-      if (leftArmRef.current && rightArmRef.current) {
-        const walkCycle = Math.sin(state.clock.elapsedTime * 5);
-        leftArmRef.current.rotation.x = walkCycle * 0.5;
-        rightArmRef.current.rotation.x = -walkCycle * 0.5;
-      }
-    } else {
-      // 통통 튀는 귀여운 호흡 애니메이션
+    // 호흡 및 바운스 애니메이션 (걷지 않을 때)
+    if (!isWalking.current) {
       const breathe = Math.sin(state.clock.elapsedTime * 3) * 0.05;
       const bounce = Math.abs(Math.sin(state.clock.elapsedTime * 2)) * 0.02;
       groupRef.current.position.y = position[1] + breathe + bounce;

@@ -260,19 +260,7 @@ export const SpaceManager = ({ aiGesture, userGesture, playerPosition }: SpaceMa
       <group>
         {spaceEnvironment}
         
-        {/* 포탈들 */}
-        {spaceConfig.portals.map((portal) => (
-          <Portal
-            key={portal.id}
-            position={portal.position}
-            rotation={portal.rotation}
-            targetSpace={portal.targetSpace}
-            label={portal.label}
-            color={portal.color}
-            onEnter={() => handlePortalEnter(portal.targetSpace)}
-            playerPosition={playerPosition}
-          />
-        ))}
+        {/* 포탈 제거 - UI 버튼으로 공간 이동 */}
       </group>
     );
   };

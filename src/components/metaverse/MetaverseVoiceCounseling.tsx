@@ -841,15 +841,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         {/* 네비게이션 버튼 */}
         <div className="fixed top-4 left-4 z-50 flex gap-2">
           <Button
-            onClick={() => navigate(-1)}
-            variant="outline"
-            size="sm"
-            className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            뒤로
-          </Button>
-          <Button
             onClick={() => navigate('/')}
             variant="outline"
             size="sm"
@@ -1111,15 +1102,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
       {/* 네비게이션 버튼 */}
       <div className="fixed top-4 left-4 z-[100] flex gap-2 pointer-events-auto">
         <Button
-          onClick={() => navigate(-1)}
-          variant="outline"
-          size="sm"
-          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg pointer-events-auto"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          뒤로
-        </Button>
-        <Button
           onClick={() => navigate('/')}
           variant="outline"
           size="sm"
@@ -1141,6 +1123,17 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         >
           <LogOut className="w-4 h-4" />
           나가기
+        </Button>
+      </div>
+      
+      {/* 공간 이동 버튼 - 항상 표시 */}
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] pointer-events-auto">
+        <Button
+          onClick={() => setShowRoomSelector(true)}
+          className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg pointer-events-auto"
+        >
+          <Sofa className="w-4 h-4" />
+          공간 이동
         </Button>
       </div>
       

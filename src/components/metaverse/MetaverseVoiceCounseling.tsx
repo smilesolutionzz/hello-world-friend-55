@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut, Gamepad2, Package, Palette, BookOpen, Flower2 } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut, Gamepad2, Package, Palette, BookOpen, Flower2, Paintbrush } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { SpaceManager } from './SpaceManager';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
@@ -38,6 +38,7 @@ import { analyzeSCTResponses, type SCTAgeGroup, SCT_QUESTIONS } from '@/utils/SC
 import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
 import { GroupUserList, type UserPresence } from './GroupPresence';
 import { RoomTransitionUI } from './RoomTransitionUI';
+import { Drawing3DPanel } from './Drawing3DPanel';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -98,6 +99,8 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   
   // 새로운 기능 상태
   const [backgroundMusic, setBackgroundMusic] = useState<MusicType>('none');
+  const [showDrawingPanel, setShowDrawingPanel] = useState(false);
+  const [floatingCubes, setFloatingCubes] = useState<Array<{ id: string; imageUrl: string }>>([]);
   const [musicVolume, setMusicVolume] = useState(0.3);
   const [currentGesture, setCurrentGesture] = useState<GestureType | null>(null);
   const [counselorGesture, setCounselorGesture] = useState<GestureType | null>(null);
@@ -1110,6 +1113,16 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           <LogOut className="w-4 h-4" />
           나가기
         </Button>
+        
+        <Button
+          onClick={() => setShowDrawingPanel(!showDrawingPanel)}
+          variant="outline"
+          size="sm"
+          className="gap-2 shadow-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600"
+        >
+          <Paintbrush className="w-4 h-4" />
+          그림 그리기
+        </Button>
       </div>
 
       <CounselingRoom 
@@ -1551,6 +1564,20 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             <div className="w-3 h-3 bg-destructive-foreground rounded-full" />
             녹음 중
           </div>
+        )}
+        
+        {/* 그림 그리기 패널 */}
+        {showDrawingPanel && (
+          <Drawing3DPanel
+            onClose={() => setShowDrawingPanel(false)}
+            onImageConverted={(imageUrl) => {
+              const newCube = {
+                id: `cube-${Date.now()}`,
+                imageUrl: imageUrl
+              };
+              setFloatingCubes(prev => [...prev, newCube]);
+            }}
+          />
         )}
       </CounselingRoom>
       

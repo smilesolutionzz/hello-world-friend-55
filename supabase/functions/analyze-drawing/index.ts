@@ -27,65 +27,89 @@ serve(async (req) => {
 
     // 검사 유형별 프롬프트 설정
     const prompts: Record<string, string> = {
-      HTP: `당신은 전문 심리 상담사입니다. House-Tree-Person(HTP) 그림 검사를 분석해주세요.
+      EMOTION: `당신은 따뜻한 심리 상담사입니다. 감정 표현 그림을 분석해주세요.
 
 분석 항목:
-1. **집(House) 분석**: 가정환경, 안정감, 가족관계
-2. **나무(Tree) 분석**: 성장과정, 자아상, 생명력
-3. **사람(Person) 분석**: 자기상, 대인관계, 정서상태
+1. **색상 감정**: 사용된 색상이 전달하는 감정
+2. **형태와 구도**: 그림의 형태가 나타내는 심리 상태
+3. **전체적인 분위기**: 그림에서 느껴지는 감정의 흐름
+4. **긍정적 요소**: 희망이나 긍정적 에너지
 
 다음 형식으로 응답해주세요:
 {
-  "overall_impression": "전반적인 인상 (2-3문장)",
-  "house_analysis": "집 분석 내용",
-  "tree_analysis": "나무 분석 내용",
-  "person_analysis": "사람 분석 내용",
-  "psychological_state": "추정되는 심리 상태",
-  "recommendations": ["권장사항1", "권장사항2", "권장사항3"],
+  "overall_impression": "그림에서 느껴지는 전반적인 감정",
+  "color_emotion": "색상이 전달하는 감정 분석",
+  "shape_analysis": "형태와 구도 분석",
+  "emotional_flow": "감정의 흐름과 변화",
+  "positive_aspects": "긍정적이고 희망적인 요소",
+  "psychological_state": "현재 심리 상태",
+  "recommendations": ["감정 조절 조언1", "감정 표현 조언2"],
   "risk_level": "low|medium|high",
   "confidence": 0.85
 }`,
-      KFD: `당신은 전문 심리 상담사입니다. Kinetic Family Drawing(KFD) 동적 가족화를 분석해주세요.
+      DREAM: `당신은 따뜻한 심리 상담사입니다. 꿈과 희망 그림을 분석해주세요.
 
 분석 항목:
-1. **가족 구성**: 그려진 가족 구성원과 배치
-2. **상호작용**: 가족 간 거리와 활동
-3. **감정 표현**: 표정, 자세, 크기
+1. **희망의 상징**: 그림 속 꿈과 희망의 표현
+2. **목표 방향성**: 나타난 목표와 방향
+3. **긍정 에너지**: 미래에 대한 긍정적 태도
+4. **실현 가능성**: 꿈의 구체성과 실현 방향
 
 다음 형식으로 응답해주세요:
 {
-  "overall_impression": "전반적인 인상",
-  "family_structure": "가족 구조 분석",
-  "interaction_patterns": "상호작용 패턴",
-  "emotional_tone": "정서적 분위기",
-  "psychological_state": "추정되는 심리 상태",
-  "recommendations": ["권장사항1", "권장사항2"],
-  "risk_level": "low|medium|high",
-  "confidence": 0.85
-}`,
-      FREE: `당신은 전문 심리 상담사입니다. 자유 그림을 심리학적 관점에서 분석해주세요.
-
-분석 항목:
-1. **색상 사용**: 색상 선택과 의미
-2. **구도와 공간**: 그림의 배치와 공간 활용
-3. **선의 특징**: 필압, 선의 굵기와 형태
-4. **내용 분석**: 그려진 대상과 상징
-
-다음 형식으로 응답해주세요:
-{
-  "overall_impression": "전반적인 인상",
-  "color_analysis": "색상 분석",
-  "composition_analysis": "구도 분석",
-  "line_analysis": "선 분석",
-  "content_analysis": "내용 분석",
-  "psychological_state": "추정되는 심리 상태",
-  "recommendations": ["권장사항1", "권장사항2"],
-  "risk_level": "low|medium|high",
+  "overall_impression": "그림에서 느껴지는 꿈과 희망",
+  "dream_symbols": "꿈과 희망의 상징 분석",
+  "goal_direction": "나타난 목표와 방향성",
+  "positive_energy": "긍정적 에너지와 태도",
+  "feasibility": "실현 가능성과 구체성",
+  "psychological_state": "현재 동기 부여 상태",
+  "recommendations": ["목표 달성 조언1", "동기 부여 조언2"],
+  "risk_level": "low",
   "confidence": 0.80
+}`,
+      ABSTRACT: `당신은 따뜻한 심리 상담사입니다. 추상 표현 그림을 분석해주세요.
+
+분석 항목:
+1. **선의 흐름**: 선이 나타내는 내면의 흐름
+2. **색상의 조화**: 색상 조합이 전달하는 심리 상태
+3. **공간 활용**: 여백과 밀도가 나타내는 의미
+4. **내면의 표현**: 추상적 형태가 담은 무의식
+
+다음 형식으로 응답해주세요:
+{
+  "overall_impression": "추상 표현의 전반적 인상",
+  "line_flow": "선의 흐름과 내면 분석",
+  "color_harmony": "색상 조화와 심리 상태",
+  "space_usage": "공간 활용과 의미",
+  "inner_expression": "내면의 무의식적 표현",
+  "psychological_state": "현재 심리적 균형 상태",
+  "recommendations": ["내면 이해 조언1", "표현 발전 조언2"],
+  "risk_level": "low|medium|high",
+  "confidence": 0.75
+}`,
+      WEATHER: `당신은 따뜻한 심리 상담사입니다. 날씨 감정 그림을 분석해주세요.
+
+분석 항목:
+1. **날씨 상징**: 선택한 날씨가 나타내는 감정
+2. **자연 요소**: 그려진 자연 요소의 심리적 의미
+3. **분위기 변화**: 날씨의 변화나 움직임
+4. **계절과 시간**: 암시된 계절이나 시간대의 의미
+
+다음 형식으로 응답해주세요:
+{
+  "overall_impression": "날씨로 표현된 전반적 감정",
+  "weather_symbol": "날씨 상징 분석",
+  "nature_elements": "자연 요소의 심리적 의미",
+  "mood_change": "분위기 변화와 움직임",
+  "season_time": "계절과 시간의 의미",
+  "psychological_state": "현재 정서 상태",
+  "recommendations": ["정서 조절 조언1", "감정 표현 조언2"],
+  "risk_level": "low|medium|high",
+  "confidence": 0.85
 }`,
     };
 
-    const systemPrompt = prompts[testType || 'FREE'] || prompts.FREE;
+    const systemPrompt = prompts[testType || 'EMOTION'] || prompts.EMOTION;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',

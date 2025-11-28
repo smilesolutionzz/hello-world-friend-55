@@ -21,7 +21,8 @@ import {
   Save,
   Mail,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Download
 } from 'lucide-react';
 import instantAnalysisBg from '@/assets/instant-analysis-bg.jpg';
 
@@ -253,6 +254,220 @@ const InstantAIAnalysis = () => {
       });
     } finally {
       setIsSendingEmail(false);
+    }
+  };
+
+  const generateReportText = () => {
+    if (!analysisResult) return '';
+
+    const header = `AI 고민 분석 리포트
+====================================
+분석 일시: ${new Date().toLocaleString('ko-KR')}
+신뢰도: ${analysisResult.confidence}%
+
+고민 내용:
+${inputText}
+
+====================================
+
+📊 분석 결과
+====================================
+유형: ${analysisResult.type}
+심각도: ${analysisResult.severity}
+
+💡 AI 상세 조언
+${analysisResult.detailedAdvice}
+
+✅ 추천 사항
+${analysisResult.recommendations?.map((rec: string, i: number) => `${i + 1}. ${rec}`).join('\n') || ''}
+
+🎯 다음 단계
+${analysisResult.nextSteps?.map((step: string, i: number) => `${i + 1}. ${step}`).join('\n') || ''}
+`;
+
+    if (analysisResult.comprehensiveReports) {
+      const reports = analysisResult.comprehensiveReports;
+      let reportText = header + '\n\n====================================\n9가지 전문 리포트\n====================================\n\n';
+
+      if (reports.developmentAssessment) {
+        reportText += `1. 발달 종합 평가
+- 인지: ${reports.developmentAssessment.cognitive}점
+- 언어: ${reports.developmentAssessment.language}점
+- 운동: ${reports.developmentAssessment.motor}점
+- 사회성: ${reports.developmentAssessment.social}점
+- 종합: ${reports.developmentAssessment.overall}점
+${reports.developmentAssessment.summary}
+
+`;
+      }
+
+      if (reports.psychologicalAnalysis) {
+        reportText += `2. 심리 상태 분석
+- 정서 안정성: ${reports.psychologicalAnalysis.emotionalStability}점
+- 스트레스: ${reports.psychologicalAnalysis.stressLevel}점
+- 심리 건강: ${reports.psychologicalAnalysis.mentalHealth}점
+${reports.psychologicalAnalysis.summary}
+
+`;
+      }
+
+      if (reports.strengthsWeaknesses) {
+        reportText += `3. 강점/약점 분석
+강점:
+${reports.strengthsWeaknesses.strengths?.map((s: string, i: number) => `- ${s}`).join('\n')}
+
+개선 영역:
+${reports.strengthsWeaknesses.weaknesses?.map((w: string, i: number) => `- ${w}`).join('\n')}
+
+성장 방향: ${reports.strengthsWeaknesses.growthDirection}
+
+`;
+      }
+
+      if (reports.customActivities) {
+        reportText += `4. AI 기반 맞춤형 활동 제안
+${reports.customActivities?.map((a: string, i: number) => `${i + 1}. ${a}`).join('\n')}
+
+`;
+      }
+
+      if (reports.developmentRoadmap) {
+        reportText += `5. 단계별 발달 로드맵
+단기 목표 (1-3개월):
+${reports.developmentRoadmap.shortTerm?.map((g: string) => `- ${g}`).join('\n')}
+
+중기 목표 (3-6개월):
+${reports.developmentRoadmap.mediumTerm?.map((g: string) => `- ${g}`).join('\n')}
+
+장기 목표 (6-12개월):
+${reports.developmentRoadmap.longTerm?.map((g: string) => `- ${g}`).join('\n')}
+
+`;
+      }
+
+      if (reports.peerComparison) {
+        reportText += `6. 또래 비교 분석
+연령대: ${reports.peerComparison.ageGroup}
+백분위: ${reports.peerComparison.percentile}%
+${reports.peerComparison.comparison}
+
+`;
+      }
+
+      if (reports.expertOpinion) {
+        reportText += `7. 전문가 소견서
+전문 개입 필요성: ${reports.expertOpinion.interventionNeeded}
+시급성: ${reports.expertOpinion.urgency}
+${reports.expertOpinion.recommendations?.map((r: string, i: number) => `- ${r}`).join('\n')}
+
+`;
+      }
+
+      if (reports.familySupport) {
+        reportText += `8. 가족 지원 가이드
+양육 팁:
+${reports.familySupport.parentingTips?.map((t: string, i: number) => `${i + 1}. ${t}`).join('\n')}
+
+소통 가이드: ${reports.familySupport.communicationGuide}
+
+`;
+      }
+
+      if (reports.longTermPrediction) {
+        reportText += `9. AI 기반 장기 발달 예측
+발달 추세: ${reports.longTermPrediction.developmentTrend}
+잠재력: ${reports.longTermPrediction.potential}점
+${reports.longTermPrediction.forecast}
+`;
+      }
+
+      return reportText;
+    }
+
+    return header;
+  };
+
+  const handleDownloadTXT = () => {
+    const text = generateReportText();
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `AI_분석리포트_${new Date().toISOString().slice(0, 10)}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "TXT 다운로드 완료",
+      description: "분석 리포트가 저장되었습니다",
+    });
+  };
+
+  const handleDownloadPDF = async () => {
+    toast({
+      title: "PDF 생성 중...",
+      description: "잠시만 기다려주세요",
+    });
+
+    try {
+      const { default: html2pdf } = await import('html2pdf.js');
+      
+      const element = document.createElement('div');
+      element.style.padding = '40px';
+      element.style.fontFamily = 'Arial, sans-serif';
+      element.style.lineHeight = '1.6';
+      element.innerHTML = `
+        <h1 style="color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 10px;">AI 고민 분석 리포트</h1>
+        <p><strong>분석 일시:</strong> ${new Date().toLocaleString('ko-KR')}</p>
+        <p><strong>신뢰도:</strong> ${analysisResult?.confidence}%</p>
+        
+        <h2 style="color: #764ba2; margin-top: 30px;">고민 내용</h2>
+        <p style="white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 8px;">${inputText}</p>
+        
+        <h2 style="color: #764ba2; margin-top: 30px;">📊 분석 결과</h2>
+        <p><strong>유형:</strong> ${analysisResult?.type}</p>
+        <p><strong>심각도:</strong> <span style="color: ${analysisResult?.severity === '높음' ? '#dc2626' : analysisResult?.severity === '중간' ? '#ea580c' : '#059669'}; font-weight: bold;">${analysisResult?.severity}</span></p>
+        
+        <h2 style="color: #764ba2; margin-top: 30px;">💡 AI 상세 조언</h2>
+        <p style="white-space: pre-wrap;">${analysisResult?.detailedAdvice}</p>
+        
+        <h2 style="color: #764ba2; margin-top: 30px;">✅ 추천 사항</h2>
+        <ol style="padding-left: 20px;">
+          ${analysisResult?.recommendations?.map((rec: string) => `<li style="margin: 10px 0;">${rec}</li>`).join('') || ''}
+        </ol>
+        
+        <h2 style="color: #764ba2; margin-top: 30px;">🎯 다음 단계</h2>
+        <ol style="padding-left: 20px;">
+          ${analysisResult?.nextSteps?.map((step: string) => `<li style="margin: 10px 0;">${step}</li>`).join('') || ''}
+        </ol>
+        
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 12px;">
+          <p>본 분석 결과는 AI 기반으로 제공되며, 전문가의 진단을 대체할 수 없습니다.</p>
+          <p>심각한 심리적 어려움이 있다면 전문가의 상담을 권장합니다.</p>
+        </div>
+      `;
+
+      const opt = {
+        margin: 15,
+        filename: `AI_분석리포트_${new Date().toISOString().slice(0, 10)}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+      };
+
+      await html2pdf().set(opt).from(element).save();
+      
+      toast({
+        title: "PDF 다운로드 완료",
+        description: "분석 리포트가 저장되었습니다",
+      });
+    } catch (error) {
+      console.error('PDF 생성 오류:', error);
+      toast({
+        title: "PDF 생성 실패",
+        description: "다시 시도해주세요",
+        variant: "destructive"
+      });
     }
   };
 
@@ -1244,6 +1459,41 @@ const InstantAIAnalysis = () => {
 
               {/* CTA 버튼들 */}
               <div className="space-y-3">
+                {/* 리포트 저장 버튼들 */}
+                <div className="grid grid-cols-3 gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={handleDownloadTXT}
+                    className="gap-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    TXT
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleDownloadPDF}
+                    className="gap-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    PDF
+                  </Button>
+                  {user && (
+                    <Button
+                      variant="outline"
+                      onClick={handleSendEmail}
+                      disabled={isSendingEmail}
+                      className="gap-2"
+                    >
+                      {isSendingEmail ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Mail className="w-4 h-4" />
+                      )}
+                      이메일
+                    </Button>
+                  )}
+                </div>
+
                 <Button
                   onClick={() => navigate('/observation')}
                   size="lg"

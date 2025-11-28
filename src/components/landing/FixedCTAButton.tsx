@@ -7,19 +7,9 @@ import confetti from 'canvas-confetti';
 
 const FixedCTAButton = () => {
   const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true); // 즉시 표시
   const [remainingReferrals, setRemainingReferrals] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Show button after scrolling 300px
-      setIsVisible(window.scrollY > 300);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     fetchReferralData();

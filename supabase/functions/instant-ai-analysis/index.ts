@@ -259,44 +259,126 @@ ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
       try {
         logStep("Starting multiple report images generation");
         
-        // 3가지 다른 테마의 이미지 생성
+        // 3가지 다른 테마의 고품질 이미지 생성
         const imagePrompts = [
           {
             name: 'cover',
-            prompt: `Professional psychological analysis report cover image in Korean style. 
-Main theme: ${analysisResult.type} - ${concernLabel}. 
-Visual mood: ${analysisResult.severity === '높음' ? 'warm, caring, supportive' : analysisResult.severity === '중간' ? 'balanced, hopeful, gentle' : 'positive, encouraging, bright'}.
-Style: Modern Korean healthcare design, minimalist, professional yet warm and approachable.
-Colors: Soft ${analysisResult.severity === '높음' ? 'coral and peach tones' : analysisResult.severity === '중간' ? 'teal and mint tones' : 'sky blue and lavender tones'}.
-Elements: Abstract Korean-inspired patterns, gentle gradients, subtle symbols of ${concernLabel}, healing journey concept.
-Text-free clean design. Ultra high resolution. Evokes trust and hope.`
+            prompt: `Create a premium, ultra-detailed professional psychological analysis report cover image in modern Korean healthcare design style.
+
+PRIMARY THEME: ${analysisResult.type} - ${concernLabel}
+EMOTIONAL TONE: ${analysisResult.severity === '높음' ? 'Warm, deeply caring, supportive and comforting' : analysisResult.severity === '중간' ? 'Balanced, hopeful, gentle and reassuring' : 'Positive, encouraging, bright and uplifting'}
+
+VISUAL STYLE:
+- Ultra-modern Korean healthcare aesthetic
+- Sophisticated minimalist design with depth
+- Premium professional quality with warmth
+- Clean, elegant, approachable
+- Maximum detail and clarity
+
+COLOR PALETTE:
+- Primary: Sophisticated ${analysisResult.severity === '높음' ? 'coral (#FF6B6B), warm peach (#FFD93D), soft rose gold' : analysisResult.severity === '중간' ? 'teal (#06BCC1), mint (#00D9FF), seafoam green' : 'sky blue (#5E8FFF), lavender (#B794F6), light periwinkle'}
+- Accents: Subtle metallic highlights, smooth gradients
+- Background: Clean white with subtle textured overlay
+
+DESIGN ELEMENTS:
+- Elegant Korean-inspired geometric patterns
+- Sophisticated gradient overlays with depth
+- Abstract symbolic representation of ${concernLabel}
+- Visual metaphor for healing journey and growth
+- Premium typography space (text-free)
+- Professional report aesthetic
+
+QUALITY REQUIREMENTS:
+- 4K ultra high resolution
+- Perfect composition and balance
+- Sharp, crisp details throughout
+- Professional print-ready quality
+- Evokes immediate trust, hope, and competence`
           },
           {
             name: 'emotion',
-            prompt: `Emotional wellness illustration showing ${concernLabel} concept. 
-Context: ${inputText.substring(0, 150)}
-Style: Gentle watercolor effect, Korean emotional design aesthetic, therapeutic art.
-Mood: Empathetic, understanding, healing-focused.
-Elements: Abstract representation of emotions, journey from struggle to healing, supportive atmosphere.
-Colors: Harmonious ${analysisResult.severity === '높음' ? 'warm sunset palette' : analysisResult.severity === '중간' ? 'ocean breeze palette' : 'spring garden palette'}.
-Ultra high resolution. Professional psychological report quality.`
+            prompt: `Design a premium emotional wellness illustration representing ${concernLabel} in sophisticated therapeutic art style.
+
+CONTEXT: ${inputText.substring(0, 150)}
+
+ARTISTIC STYLE:
+- Premium digital watercolor with crisp details
+- Korean emotional design aesthetic elevated
+- Therapeutic art meets contemporary illustration
+- Ultra-detailed, museum-quality finish
+
+EMOTIONAL MOOD:
+- Deeply empathetic and understanding
+- Healing-focused with professional warmth
+- Gentle strength and resilience
+- Hope and transformation
+
+VISUAL COMPOSITION:
+- Abstract yet meaningful representation of emotions
+- Journey from struggle to healing depicted visually
+- Supportive, nurturing atmosphere
+- Layered symbolic elements with depth
+- Sophisticated use of negative space
+
+COLOR SCHEME:
+- Rich ${analysisResult.severity === '높음' ? 'warm sunset palette: coral, gold, warm amber, soft pink' : analysisResult.severity === '중간' ? 'ocean breeze palette: teal, turquoise, seafoam, soft blue' : 'spring garden palette: lavender, mint, soft yellow, light pink'}
+- Harmonious gradients with depth
+- Subtle texture overlays
+- Professional color harmony
+
+QUALITY & DETAIL:
+- Ultra high resolution 4K
+- Every element sharply defined
+- Professional psychological report standard
+- Print-ready premium quality
+- Captures subtle emotional nuances`
           },
           {
             name: 'growth',
-            prompt: `Personal growth and development visualization for ${targetLabel}.
-Theme: ${concernLabel} - path to improvement and wellness.
-Style: Infographic-inspired, modern Korean design, inspirational yet professional.
-Visual concept: Growth trajectory, upward movement, transformation symbolism.
-Colors: Gradient from ${analysisResult.severity === '높음' ? 'deep coral to bright gold' : analysisResult.severity === '중간' ? 'teal to emerald' : 'lavender to bright yellow'}.
-Elements: Abstract shapes suggesting progress, Korean minimalist aesthetic, hopeful atmosphere.
-Clean, text-free design. Ultra high resolution.`
+            prompt: `Create a premium personal growth and development visualization for ${targetLabel} with sophisticated infographic-inspired design.
+
+THEME: ${concernLabel} - Clear path to improvement and wellness
+
+DESIGN APPROACH:
+- Modern Korean infographic aesthetic
+- Inspirational yet deeply professional
+- Data visualization meets emotional design
+- Ultra-detailed, premium finish
+
+VISUAL CONCEPT:
+- Clear growth trajectory with symbolic elements
+- Upward movement and positive transformation
+- Progress milestones elegantly visualized
+- Before/after journey subtly implied
+- Empowering visual narrative
+
+COLOR DYNAMICS:
+- Premium gradient: ${analysisResult.severity === '높음' ? 'Deep coral (#FF5E5E) flowing to bright gold (#FFD700)' : analysisResult.severity === '중간' ? 'Rich teal (#00B8B8) transitioning to emerald (#00D084)' : 'Soft lavender (#B794F6) evolving to bright yellow (#FFE66D)'}
+- Smooth, sophisticated color transitions
+- Metallic accent highlights
+- Clean, modern palette
+
+DESIGN ELEMENTS:
+- Abstract geometric shapes suggesting progress
+- Korean minimalist aesthetic with precision
+- Hopeful, forward-moving composition
+- Symbolic imagery of growth and change
+- Professional chart/graph inspired elements
+- Clean, text-free design
+
+PREMIUM QUALITY:
+- Ultra high resolution 4K
+- Crisp, sharp vector-quality details
+- Professional report cover standard
+- Print-ready premium finish
+- Inspirational yet scientifically credible`
           }
         ];
         
-        // 병렬로 고품질 이미지 생성 (Nano banana 모델 사용)
+        // 병렬로 고품질 이미지 생성 (최신 Gemini 3 Pro Image 모델 사용)
         const imagePromises = imagePrompts.map(async ({ prompt }) => {
           try {
-            logStep("Generating image with Nano banana", { promptLength: prompt.length });
+            logStep("Generating high-quality image with Gemini 3 Pro Image", { promptLength: prompt.length });
             const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
               method: 'POST',
               headers: {
@@ -304,7 +386,7 @@ Clean, text-free design. Ultra high resolution.`
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                model: 'google/gemini-2.5-flash-image-preview',
+                model: 'google/gemini-3-pro-image-preview',
                 messages: [{ 
                   role: 'user', 
                   content: prompt

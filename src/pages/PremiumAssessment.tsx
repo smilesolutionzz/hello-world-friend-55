@@ -26,6 +26,7 @@ import { HexacoTest } from "@/components/assessment/HexacoTest";
 import { HexacoResult } from "@/components/assessment/HexacoResult";
 import { InsuranceAnalysisForm } from "@/components/assessment/InsuranceAnalysisForm";
 import { InsuranceAnalysisResult } from "@/components/assessment/InsuranceAnalysisResult";
+import { DrawingAnalyzer } from "@/components/ai-analysis/DrawingAnalyzer";
 import { 
   premiumAssessmentInfo,
   autismSpectrumScreeningQuestions,
@@ -160,6 +161,26 @@ const PremiumAssessment = () => {
         <UnifiedNavigation />
         <div className="pt-4">
           <InsuranceAnalysisForm onComplete={handleInsuranceComplete} />
+        </div>
+      </div>
+    );
+  }
+
+  // 그림 심리 검사
+  if (currentTest === 'drawing-analysis') {
+    return (
+      <div>
+        <UnifiedNavigation />
+        <div className="pt-4 container mx-auto px-4 max-w-4xl">
+          <Button 
+            variant="ghost" 
+            onClick={handleBack}
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            뒤로가기
+          </Button>
+          <DrawingAnalyzer />
         </div>
       </div>
     );
@@ -554,6 +575,72 @@ const PremiumAssessment = () => {
                     className="w-full bg-gradient-to-r from-blue-700 to-cyan-600"
                   >
                     분석 시작
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 그림 심리 검사 카드 - AI 분석 */}
+            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]"
+              onClick={() => setCurrentTest('drawing-analysis')}
+            >
+              <div className="absolute top-2 right-2 z-10">
+                <Badge className="bg-green-500 text-white border-0 text-xs px-2 py-1">
+                  AI 분석
+                </Badge>
+              </div>
+
+              <div className="bg-gradient-to-r from-green-700 to-emerald-600 p-6 pr-24 text-white relative">
+                <div className="absolute inset-0 bg-black/10" />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <Sparkles className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg font-bold">🎨 그림 심리 검사</CardTitle>
+                      <p className="text-sm opacity-90">HTP / KFD AI Analysis</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <CardContent className="p-6 space-y-4">
+                <p className="text-muted-foreground leading-relaxed">
+                  HTP, KFD 등 그림 검사를 AI가 자동으로 분석하여 심리 상태를 파악합니다.
+                </p>
+
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Clock className="w-4 h-4" />
+                    약 3-5분
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-sm">AI 분석 내용</h4>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">집-나무-사람(HTP) 분석</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">동적 가족화(KFD) 분석</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">심리 상태 및 위험도 평가</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <Button 
+                    onClick={() => setCurrentTest('drawing-analysis')}
+                    className="w-full bg-gradient-to-r from-green-700 to-emerald-600"
+                  >
+                    그림 분석 시작
                   </Button>
                 </div>
               </CardContent>

@@ -3,11 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Clock, Brain, Heart, Target, Gift, Crown, Lock } from 'lucide-react';
+import { Clock, Brain, Heart, Target, Gift, Crown, Lock, ImageIcon, ArrowLeft } from 'lucide-react';
+import { VisualCounselingUpload } from '@/components/ai-analysis/VisualCounselingUpload';
 
 const FreeTrialAssessment = () => {
   const navigate = useNavigate();
   const [selectedTest, setSelectedTest] = useState<string | null>(null);
+  const [showVisualAnalysis, setShowVisualAnalysis] = useState(false);
 
   // 무료 체험 테스트들
   const freeTests = [
@@ -83,6 +85,25 @@ const FreeTrialAssessment = () => {
   const handleSignUp = () => {
     navigate('/auth');
   };
+
+  // 시각 자료 분석 화면
+  if (showVisualAnalysis) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-100 to-pink-100">
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          <Button 
+            variant="ghost" 
+            onClick={() => setShowVisualAnalysis(false)}
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            뒤로가기
+          </Button>
+          <VisualCounselingUpload />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-100 to-pink-100 relative overflow-hidden">
@@ -261,6 +282,63 @@ const FreeTrialAssessment = () => {
                 </Card>
               );
             })}
+            
+            {/* 시각 자료 AI 분석 카드 */}
+            <Card 
+              className="relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl border-2 border-purple-200 bg-white cursor-pointer"
+              onClick={() => setShowVisualAnalysis(true)}
+            >
+              <div className="absolute top-3 right-3 z-10">
+                <Badge className="bg-purple-500 text-white font-bold px-3 py-1.5">
+                  AI 분석
+                </Badge>
+              </div>
+
+              <div className="bg-gradient-to-r from-purple-500 to-indigo-600 p-6 pr-16 text-white relative">
+                <div className="absolute inset-0 bg-black/10" />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <ImageIcon className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg font-bold">시각 자료 AI 분석</CardTitle>
+                      <p className="text-sm opacity-90">Visual Material Analysis</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <CardContent className="p-6 space-y-4">
+                <p className="text-muted-foreground leading-relaxed">
+                  사진, 일러스트 등 시각 자료를 AI가 상담 관점에서 분석합니다
+                </p>
+
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Clock className="w-4 h-4" />
+                    3-5분
+                  </div>
+                  <div className="text-muted-foreground">
+                    이미지 업로드
+                  </div>
+                </div>
+
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                  <div className="text-xs text-purple-600">
+                    <p className="font-medium mb-1">🤖 AI 분석 내용</p>
+                    <p>감정적 지표, 심리학적 인사이트, 상담 포인트 제공</p>
+                  </div>
+                </div>
+
+                <Button 
+                  onClick={() => setShowVisualAnalysis(true)}
+                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:opacity-90"
+                >
+                  AI 분석 시작
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </section>
 

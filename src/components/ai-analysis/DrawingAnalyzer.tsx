@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
-import { Loader2, Upload, FileImage, AlertCircle, CheckCircle2, Palette, Brush, Eraser, Undo, Trash2, Save } from 'lucide-react';
+import { Loader2, Upload, FileImage, AlertCircle, CheckCircle2, Palette, Brush, Eraser, Undo, Trash2, Save, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface DrawingAnalysis {
@@ -37,6 +37,8 @@ export const DrawingAnalyzer: React.FC = () => {
   const [tool, setTool] = useState<'pen' | 'eraser'>('pen');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [drawingHistory, setDrawingHistory] = useState<ImageData[]>([]);
+  const [isConverting, setIsConverting] = useState(false);
+  const [image3D, setImage3D] = useState<string | null>(null);
   const { toast } = useToast();
 
   const testGuides = {
@@ -255,6 +257,60 @@ export const DrawingAnalyzer: React.FC = () => {
     }
   };
 
+  const handleConvertTo3D = async () => {
+    let imageToConvert = selectedImage;
+
+    if (mode === 'draw') {
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        toast({
+          title: '캔버스를 찾을 수 없습니다',
+          variant: 'destructive'
+        });
+        return;
+      }
+      imageToConvert = canvas.toDataURL('image/png');
+    }
+
+    if (!imageToConvert) {
+      toast({
+        title: mode === 'draw' ? '그림을 먼저 그려주세요' : '이미지를 먼저 업로드해주세요',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setIsConverting(true);
+    setImage3D(null);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('convert-to-3d', {
+        body: { imageData: imageToConvert }
+      });
+
+      if (error) throw error;
+
+      if (data.success && data.image3D) {
+        setImage3D(data.image3D);
+        toast({
+          title: '3D 변환 완료! ✨',
+          description: '그림이 멋진 3D 이미지로 변환되었습니다.'
+        });
+      } else {
+        throw new Error(data.error || '3D 변환에 실패했습니다');
+      }
+    } catch (error) {
+      console.error('3D 변환 오류:', error);
+      toast({
+        title: '3D 변환 실패',
+        description: error instanceof Error ? error.message : '변환 중 오류가 발생했습니다.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -442,6 +498,67 @@ export const DrawingAnalyzer: React.FC = () => {
             </>
           )}
         </Button>
+
+        {/* 3D 변환 버튼 */}
+        <Button 
+          onClick={handleConvertTo3D} 
+          disabled={isConverting || (!selectedImage && mode === 'upload')}
+          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+          size="lg"
+          variant="default"
+        >
+          {isConverting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              3D 변환 중...
+            </>
+          ) : (
+            <>
+              <Sparkles className="mr-2 h-4 w-4" />
+              그림을 3D로 변환하기 ✨
+            </>
+          )}
+        </Button>
+
+        {/* 3D 변환 결과 */}
+        {image3D && (
+          <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-2 border-purple-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                <Sparkles className="h-5 w-5" />
+                3D 변환 결과
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                당신의 그림이 멋진 3D 이미지로 변환되었습니다!
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="relative group">
+                <img 
+                  src={image3D} 
+                  alt="3D 변환 결과" 
+                  className="w-full rounded-lg shadow-xl hover:shadow-2xl transition-shadow"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-purple-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
+              </div>
+              <div className="mt-4 flex gap-2">
+                <Button
+                  onClick={() => {
+                    const link = document.createElement('a');
+                    link.href = image3D;
+                    link.download = '3d-converted-drawing.png';
+                    link.click();
+                  }}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  3D 이미지 다운로드
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* 분석 결과 */}
         {analysis && (

@@ -64,23 +64,29 @@ export class RealtimeChat {
   private pc: RTCPeerConnection | null = null;
   private dc: RTCDataChannel | null = null;
   private audioEl: HTMLAudioElement;
-  private mode: 'free' | 'structured' | 'roleplay';
+  private mode: 'free' | 'structured' | 'roleplay' | 'therapy';
   private ageGroup: string;
   private character: string;
   private roleplayPersona?: string;
   private roleplayVoice?: string;
   private firstMessage?: string;
   private sessionCreated: boolean = false;
+  private therapistType?: string;
+  private therapistVoice?: string;
+  private therapistPrompt?: string;
 
   constructor(
     private onMessage: (message: any) => void,
     options?: {
-      mode?: 'free' | 'structured' | 'roleplay';
+      mode?: 'free' | 'structured' | 'roleplay' | 'therapy';
       ageGroup?: string;
       character?: string;
       roleplayPersona?: string;
       roleplayVoice?: string;
       firstMessage?: string;
+      therapistType?: string;
+      therapistVoice?: string;
+      therapistPrompt?: string;
     }
   ) {
     this.audioEl = document.createElement("audio");
@@ -91,11 +97,14 @@ export class RealtimeChat {
     this.roleplayPersona = options?.roleplayPersona;
     this.roleplayVoice = options?.roleplayVoice;
     this.firstMessage = options?.firstMessage;
+    this.therapistType = options?.therapistType;
+    this.therapistVoice = options?.therapistVoice;
+    this.therapistPrompt = options?.therapistPrompt;
   }
 
   async init() {
     try {
-      console.log(`🎬 mode: ${this.mode}, age: ${this.ageGroup}, char: ${this.character}`);
+      console.log(`🎬 mode: ${this.mode}, age: ${this.ageGroup}, char: ${this.character}, therapist: ${this.therapistType}`);
 
       const { data, error } = await supabase.functions.invoke("get-realtime-token", {
         body: {
@@ -104,7 +113,10 @@ export class RealtimeChat {
           character: this.character,
           roleplayPersona: this.roleplayPersona,
           roleplayVoice: this.roleplayVoice,
-          firstMessage: this.firstMessage
+          firstMessage: this.firstMessage,
+          therapistType: this.therapistType,
+          therapistVoice: this.therapistVoice,
+          therapistPrompt: this.therapistPrompt
         }
       });
       if (error) throw error;

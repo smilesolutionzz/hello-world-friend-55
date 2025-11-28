@@ -41,7 +41,7 @@ export const VirtualJoystick = ({ onMove, onJump }: VirtualJoystickProps) => {
     const deltaX = clientX - centerRef.current.x;
     const deltaY = clientY - centerRef.current.y;
     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-    const maxDistance = 40;
+    const maxDistance = 50; // 더 큰 범위로 증가
 
     let x = deltaX;
     let y = deltaY;
@@ -53,9 +53,9 @@ export const VirtualJoystick = ({ onMove, onJump }: VirtualJoystickProps) => {
 
     stickRef.current.style.transform = `translate(${x}px, ${y}px)`;
 
-    // 정규화된 값 (-1 ~ 1)
-    const normalizedX = x / maxDistance;
-    const normalizedY = y / maxDistance;
+    // 정규화된 값 (-1 ~ 1), 민감도 증가
+    const normalizedX = Math.min(Math.max(x / maxDistance * 1.5, -1), 1);
+    const normalizedY = Math.min(Math.max(y / maxDistance * 1.5, -1), 1);
 
     onMove(normalizedX, normalizedY);
   };
@@ -81,6 +81,7 @@ export const VirtualJoystick = ({ onMove, onJump }: VirtualJoystickProps) => {
       
       if (touch) {
         e.preventDefault();
+        e.stopPropagation();
         handleStart(touch.clientX, touch.clientY, touch.identifier);
       }
     };
@@ -91,6 +92,7 @@ export const VirtualJoystick = ({ onMove, onJump }: VirtualJoystickProps) => {
       const touch = Array.from(e.touches).find(t => t.identifier === touchId.current);
       if (touch) {
         e.preventDefault();
+        e.stopPropagation();
         handleMove(touch.clientX, touch.clientY);
       }
     };
@@ -100,52 +102,59 @@ export const VirtualJoystick = ({ onMove, onJump }: VirtualJoystickProps) => {
         const touch = Array.from(e.changedTouches).find(t => t.identifier === touchId.current);
         if (touch) {
           e.preventDefault();
+          e.stopPropagation();
           handleEnd();
         }
       }
     };
 
+    // passive: false로 설정하여 preventDefault 가능하게
     document.addEventListener('touchstart', handleTouchStart, { passive: false });
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('touchend', handleTouchEnd, { passive: false });
+    document.addEventListener('touchcancel', handleTouchEnd, { passive: false });
 
     return () => {
       document.removeEventListener('touchstart', handleTouchStart);
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('touchcancel', handleTouchEnd);
     };
   }, [isDragging]);
 
   return (
-    <div className="fixed bottom-8 left-0 right-0 flex justify-between items-end px-8 pointer-events-none z-50">
-      {/* 조이스틱 */}
+    <div className="fixed bottom-6 left-0 right-0 flex justify-between items-end px-6 pointer-events-none z-50">
+      {/* 조이스틱 - 크기 증가 및 터치 영역 확대 */}
       <div className="pointer-events-auto">
         <div
           ref={joystickRef}
-          className="relative w-32 h-32 bg-black/30 backdrop-blur-sm rounded-full border-4 border-white/20 flex items-center justify-center"
+          className="relative w-36 h-36 bg-black/40 backdrop-blur-md rounded-full border-4 border-white/30 flex items-center justify-center shadow-2xl active:scale-95 transition-all"
+          style={{ touchAction: 'none' }}
         >
-          <div className="absolute w-20 h-20 bg-white/10 rounded-full" />
+          <div className="absolute w-24 h-24 bg-white/10 rounded-full" />
           <div
             ref={stickRef}
-            className="absolute w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-full shadow-lg transition-transform"
+            className="absolute w-20 h-20 bg-gradient-to-br from-primary via-primary to-primary/90 rounded-full shadow-2xl transition-transform"
             style={{ willChange: 'transform' }}
           />
-          <div className="absolute text-white/60 text-xs font-bold">이동</div>
+          <div className="absolute text-white/70 text-sm font-bold pointer-events-none">이동</div>
         </div>
       </div>
 
-      {/* 버튼들 */}
-      <div className="flex flex-col gap-3 pointer-events-auto">
+      {/* 버튼들 - 크기 증가 */}
+      <div className="flex flex-col gap-4 pointer-events-auto">
         {/* 점프 버튼 */}
         <button
           onTouchStart={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             onJump();
           }}
-          className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full shadow-xl border-4 border-white/30 flex flex-col items-center justify-center text-white font-bold active:scale-95 transition-transform"
+          className="w-24 h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-full shadow-2xl border-4 border-white/40 flex flex-col items-center justify-center text-white font-bold active:scale-90 transition-transform"
+          style={{ touchAction: 'none' }}
         >
-          <span className="text-2xl">⬆️</span>
-          <span className="text-xs">점프</span>
+          <span className="text-3xl">⬆️</span>
+          <span className="text-xs mt-1">점프</span>
         </button>
       </div>
     </div>

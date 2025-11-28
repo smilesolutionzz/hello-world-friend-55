@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import Replicate from "https://esm.sh/replicate@0.25.2"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,14 +12,10 @@ serve(async (req) => {
   }
 
   try {
-    const REPLICATE_API_KEY = Deno.env.get('REPLICATE_API_KEY')
-    if (!REPLICATE_API_KEY) {
-      throw new Error('REPLICATE_API_KEY is not configured')
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
+    if (!lovableApiKey) {
+      throw new Error('LOVABLE_API_KEY is not configured')
     }
-
-    const replicate = new Replicate({
-      auth: REPLICATE_API_KEY,
-    })
 
     const { prompt, context = "", type = "therapy", aspectRatio = "1:1", style = "professional" } = await req.json()
 
@@ -69,27 +64,40 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', enhancedPrompt)
 
-    const output = await replicate.run(
-      "black-forest-labs/flux-schnell",
-      {
-        input: {
-          prompt: enhancedPrompt,
-          go_fast: true,
-          megapixels: "1",
-          num_outputs: 1,
-          aspect_ratio: aspectRatio,
-          output_format: "webp",
-          output_quality: 85,
-          num_inference_steps: 4
-        }
-      }
-    )
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${lovableApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-3-pro-image-preview',
+        messages: [{
+          role: 'user',
+          content: enhancedPrompt
+        }],
+        modalities: ['image', 'text']
+      })
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Lovable AI error:', response.status, errorText)
+      throw new Error(`Image generation failed: ${response.status}`)
+    }
+
+    const data = await response.json()
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url
+
+    if (!imageUrl) {
+      throw new Error('No image generated')
+    }
 
     console.log('Image generated successfully')
 
     return new Response(
       JSON.stringify({ 
-        image: output[0],
+        image: imageUrl,
         enhancedPrompt,
         originalPrompt: prompt,
         type,

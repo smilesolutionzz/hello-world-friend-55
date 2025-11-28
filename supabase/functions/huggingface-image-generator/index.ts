@@ -1,6 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
-import { HfInference } from 'https://esm.sh/@huggingface/inference@2.3.2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,12 +14,10 @@ serve(async (req) => {
   try {
     const { prompt, context, type } = await req.json()
 
-    const hfToken = Deno.env.get('HUGGING_FACE_ACCESS_TOKEN')
-    if (!hfToken) {
-      throw new Error('HUGGING_FACE_ACCESS_TOKEN is not configured')
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
+    if (!lovableApiKey) {
+      throw new Error('LOVABLE_API_KEY is not configured')
     }
-
-    const hf = new HfInference(hfToken)
 
     // 컨텍스트에 따라 프롬프트 개선
     let enhancedPrompt = prompt
@@ -38,18 +34,38 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', enhancedPrompt)
 
-    const image = await hf.textToImage({
-      inputs: enhancedPrompt,
-      model: 'black-forest-labs/FLUX.1-schnell',
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${lovableApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-3-pro-image-preview',
+        messages: [{
+          role: 'user',
+          content: enhancedPrompt
+        }],
+        modalities: ['image', 'text']
+      })
     })
 
-    // Convert the blob to a base64 string
-    const arrayBuffer = await image.arrayBuffer()
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)))
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Lovable AI error:', response.status, errorText)
+      throw new Error(`Image generation failed: ${response.status}`)
+    }
+
+    const data = await response.json()
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url
+
+    if (!imageUrl) {
+      throw new Error('No image generated')
+    }
 
     return new Response(
       JSON.stringify({ 
-        image: `data:image/png;base64,${base64}`,
+        image: imageUrl,
         prompt: enhancedPrompt,
         original_prompt: prompt
       }),

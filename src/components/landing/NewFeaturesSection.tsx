@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sparkles, TrendingUp, Zap, Trophy } from 'lucide-react';
+import { Sparkles, TrendingUp, Zap, Trophy, Brush, ImageIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import newFeaturesBg from '@/assets/new-features-bg.jpg';
 import {
@@ -15,11 +15,29 @@ import { motion } from 'framer-motion';
 
 const newFeatures = [
   {
+    id: 'drawing_test',
+    title: '✏️ 그림 심리 검사',
+    description: 'HTP, KFD 등 전문 그림 검사를 직접 그리고 AI 분석을 받으세요',
+    date: '2025-11-29',
+    badge: 'NEW',
+    color: 'from-violet-500 to-purple-500',
+    path: '/premium-assessment'
+  },
+  {
+    id: 'visual_analysis',
+    title: '📸 시각 자료 AI 분석',
+    description: '사진이나 영상으로 빠르게 AI 심리 분석을 받아보세요',
+    date: '2025-11-29',
+    badge: 'NEW',
+    color: 'from-cyan-500 to-blue-500',
+    path: '/free-trial'
+  },
+  {
     id: 'ai_metaverse',
     title: '🎭 AI 메타버스 상담실',
     description: '실시간 음성 API로 가상공간에서 실제 상담사와 자연스러운 대화하듯 구현',
     date: '2025-11-08',
-    badge: 'NEW',
+    badge: 'HOT',
     color: 'from-cyan-500 to-blue-500',
     path: '/metaverse-voice'
   },

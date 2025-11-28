@@ -459,42 +459,12 @@ export const useReadyPlayerMe = () => {
     closeBtn.onclick = () => {
       document.body.removeChild(frame);
       document.body.removeChild(closeBtn);
-      document.body.removeChild(helpText);
       setIsCreating(false);
       window.removeEventListener('message', handleMessage);
     };
     
-    // 도움말 텍스트 추가
-    const helpText = document.createElement('div');
-    helpText.innerHTML = `
-      <div style="text-align: center;">
-        <p style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
-          🎨 캐릭터를 생성하고 <strong>NEXT</strong> 버튼을 눌러주세요
-        </p>
-        <p style="font-size: 14px; opacity: 0.9;">
-          완료하면 자동으로 메타버스 상담실로 돌아옵니다
-        </p>
-      </div>
-    `;
-    helpText.style.cssText = `
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10000;
-      padding: 20px 40px;
-      background: rgba(0, 0, 0, 0.9);
-      color: white;
-      border-radius: 16px;
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      max-width: 90%;
-    `;
-    
     document.body.appendChild(frame);
     document.body.appendChild(closeBtn);
-    document.body.appendChild(helpText);
 
     const handleMessage = (event: MessageEvent) => {
       const json = parse(event);
@@ -503,7 +473,6 @@ export const useReadyPlayerMe = () => {
           setAvatarUrl(json.data.url);
           document.body.removeChild(frame);
           document.body.removeChild(closeBtn);
-          document.body.removeChild(helpText);
           setIsCreating(false);
           window.removeEventListener('message', handleMessage);
           

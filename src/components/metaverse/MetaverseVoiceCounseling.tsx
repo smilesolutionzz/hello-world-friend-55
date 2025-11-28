@@ -1017,22 +1017,34 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                   
                   <div className="relative">
                     <Input
-                      placeholder="또는 커스텀 아바타 URL (.glb) 붙여넣기"
+                      placeholder="Ready Player Me URL (.glb) 붙여넣기"
                       value={avatarUrl}
                       onChange={(e) => {
                         const url = e.target.value.trim();
                         setAvatarUrl(url);
                         if (url && url.includes('readyplayer.me') && url.endsWith('.glb')) {
                           toast({
-                            title: "아바타 URL 인식됨 ✓",
-                            description: "미리보기에서 확인하세요",
+                            title: "✓ 아바타 로드 중",
+                            description: "아래 미리보기에서 곧 표시됩니다",
                           });
                         }
+                      }}
+                      onPaste={(e) => {
+                        // 붙여넣기 시 즉시 처리
+                        setTimeout(() => {
+                          const url = e.currentTarget.value.trim();
+                          if (url && url.includes('readyplayer.me') && url.endsWith('.glb')) {
+                            toast({
+                              title: "✓ 아바타 적용됨",
+                              description: "미리보기에서 확인하세요",
+                            });
+                          }
+                        }, 100);
                       }}
                       className="pr-10"
                     />
                     {avatarUrl && avatarUrl.includes('readyplayer.me') && avatarUrl.endsWith('.glb') && (
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-xl">
                         ✓
                       </div>
                     )}

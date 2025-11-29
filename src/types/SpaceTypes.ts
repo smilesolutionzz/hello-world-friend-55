@@ -9,7 +9,8 @@ export type SpaceType =
   | 'meditation'       // 명상실
   | 'exercise'         // 운동실
   | 'game'             // 게임룸
-  | 'interview';       // 면접실
+  | 'interview'        // 면접실
+  | 'therapy';         // 치료실
 
 export interface SpaceDefinition {
   id: SpaceType;
@@ -234,6 +235,23 @@ export const SPACES: Record<SpaceType, SpaceDefinition> = {
         id: 'to-lounge', 
         position: [0, 0, -8], 
         rotation: [0, 0, 0],
+        targetSpace: 'lounge', 
+        label: '휴게실', 
+        color: '#10B981' 
+      }
+    ]
+  },
+  therapy: {
+    id: 'therapy',
+    name: '치료실',
+    description: '안전하고 편안한 전문 치료 공간',
+    icon: '🩺',
+    color: '#14B8A6',
+    portals: [
+      { 
+        id: 'to-lounge', 
+        position: [0, 0, 8], 
+        rotation: [0, Math.PI, 0],
         targetSpace: 'lounge', 
         label: '휴게실', 
         color: '#10B981' 

@@ -5539,6 +5539,71 @@ export type Database = {
         }
         Relationships: []
       }
+      observations: {
+        Row: {
+          ai_suggestions: string[] | null
+          behaviors: string[] | null
+          concerns: string[] | null
+          content: string
+          created_at: string
+          emotions: string[] | null
+          id: string
+          is_voice_generated: boolean | null
+          observation_date: string
+          profile_id: string | null
+          recommended_tests: Json | null
+          severity: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          voice_transcription: string | null
+        }
+        Insert: {
+          ai_suggestions?: string[] | null
+          behaviors?: string[] | null
+          concerns?: string[] | null
+          content: string
+          created_at?: string
+          emotions?: string[] | null
+          id?: string
+          is_voice_generated?: boolean | null
+          observation_date?: string
+          profile_id?: string | null
+          recommended_tests?: Json | null
+          severity?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          voice_transcription?: string | null
+        }
+        Update: {
+          ai_suggestions?: string[] | null
+          behaviors?: string[] | null
+          concerns?: string[] | null
+          content?: string
+          created_at?: string
+          emotions?: string[] | null
+          id?: string
+          is_voice_generated?: boolean | null
+          observation_date?: string
+          profile_id?: string | null
+          recommended_tests?: Json | null
+          severity?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          voice_transcription?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "observations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_members: {
         Row: {
           added_at: string

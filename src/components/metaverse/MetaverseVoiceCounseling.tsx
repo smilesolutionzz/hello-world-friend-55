@@ -145,6 +145,8 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [showDecorationUI, setShowDecorationUI] = useState(false);
   const [groupSessionId, setGroupSessionId] = useState<string | null>(null);
   const [decorationItems, setDecorationItems] = useState<Array<{id: string; type: string; position: [number, number, number]}>>([]);
+  const [currentSpeaker, setCurrentSpeaker] = useState<string | null>(null);
+  const [speakerName, setSpeakerName] = useState<string>('');
   
   // 텍스트 기반 감정 분석
   const [transcriptBuffer, setTranscriptBuffer] = useState('');
@@ -326,6 +328,23 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
       }
     };
   }, [groupSessionId, currentUserId, avatarPosition, isSpeaking]);
+
+  // 그룹 세션에서 발언권 관리
+  useEffect(() => {
+    if (!groupSessionId) return;
+
+    const channel = supabase.channel(`group_speaker:${groupSessionId}`)
+      .on('broadcast', { event: 'speaker_change' }, ({ payload }) => {
+        console.log('Speaker change:', payload);
+        setCurrentSpeaker(payload.speakerId);
+        setSpeakerName(payload.speakerName || '');
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [groupSessionId]);
   
   const loadGroupParticipants = async () => {
     if (!groupSessionId) return;
@@ -892,6 +911,49 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     toast({
       title: "상담 완료",
       description: "구조화된 상담이 완료되었습니다",
+    });
+  };
+
+  // 발언권 요청
+  const requestSpeakingTurn = async () => {
+    if (!groupSessionId || !currentUserId) return;
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    const userName = user?.user_metadata?.full_name || user?.email || '사용자';
+    
+    const channel = supabase.channel(`group_speaker:${groupSessionId}`);
+    await channel.send({
+      type: 'broadcast',
+      event: 'speaker_change',
+      payload: {
+        speakerId: currentUserId,
+        speakerName: userName
+      }
+    });
+    
+    toast({
+      title: "발언권 획득",
+      description: "이제 발언할 수 있습니다",
+    });
+  };
+
+  // 발언권 반납
+  const releaseSpeakingTurn = async () => {
+    if (!groupSessionId) return;
+    
+    const channel = supabase.channel(`group_speaker:${groupSessionId}`);
+    await channel.send({
+      type: 'broadcast',
+      event: 'speaker_change',
+      payload: {
+        speakerId: null,
+        speakerName: ''
+      }
+    });
+    
+    toast({
+      title: "발언권 반납",
+      description: "다른 참가자가 발언할 수 있습니다",
     });
   };
 
@@ -1600,6 +1662,48 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
               </div>
             )}
 
+
+            {/* 그룹 세션 발언권 표시 */}
+            {groupSessionId && isConnected && (
+              <div className="mb-3 px-4 py-3 bg-background/80 backdrop-blur-sm rounded-lg border border-border/50">
+                {currentSpeaker === currentUserId ? (
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                      <span className="text-sm font-medium text-foreground">발언 중</span>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={releaseSpeakingTurn}
+                      className="h-8 px-3"
+                    >
+                      발언권 반납
+                    </Button>
+                  </div>
+                ) : currentSpeaker ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full" />
+                    <span className="text-sm text-muted-foreground">{speakerName}님이 발언 중입니다</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full" />
+                      <span className="text-sm text-muted-foreground">발언자 없음</span>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="default"
+                      onClick={requestSpeakingTurn}
+                      className="h-8 px-3"
+                    >
+                      발언 요청
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Controls */}
             <div className="flex flex-col gap-4">

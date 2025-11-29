@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import MetaverseVoiceCounseling from '@/components/metaverse/MetaverseVoiceCounseling';
 import { CounselingSetup } from '@/components/metaverse/CounselingSetup';
 import { ThreeBackground } from '@/components/dashboard/ThreeBackground';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Sparkles, Users, ArrowLeft, Home, Stethoscope } from 'lucide-react';
+import { MessageSquare, Sparkles, Users, ArrowLeft, Stethoscope } from 'lucide-react';
 import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
 import { RolePlaySetup } from '@/components/metaverse/RolePlaySetup';
 import { TherapistSelector } from '@/components/metaverse/TherapistSelector';
 import type { TherapistType } from '@/types/therapist';
+import { FreeCounseling } from '@/components/metaverse/modes/FreeCounseling';
+import { StructuredCounselingMode } from '@/components/metaverse/modes/StructuredCounselingMode';
+import { RolePlayMode } from '@/components/metaverse/modes/RolePlayMode';
+import { TherapyMode } from '@/components/metaverse/modes/TherapyMode';
 
 const MetaverseVoicePage = () => {
   const navigate = useNavigate();
@@ -85,9 +88,9 @@ const MetaverseVoicePage = () => {
             {!structuredConfig ? (
               <CounselingSetup onStart={handleStructuredStart} />
             ) : (
-              <MetaverseVoiceCounseling 
-                mode="structured"
-                structuredConfig={structuredConfig}
+              <StructuredCounselingMode
+                ageGroup={structuredConfig.ageGroup}
+                character={structuredConfig.character}
               />
             )}
           </TabsContent>
@@ -96,10 +99,9 @@ const MetaverseVoicePage = () => {
             {!therapistType ? (
               <TherapistSelector onSelect={handleTherapistSelect} />
             ) : (
-              <MetaverseVoiceCounseling 
-                mode="therapy"
+              <TherapyMode
                 therapistType={therapistType}
-                therapyUserConcern={therapyUserConcern}
+                userConcern={therapyUserConcern}
               />
             )}
           </TabsContent>
@@ -108,15 +110,12 @@ const MetaverseVoicePage = () => {
             {!roleplayScenario ? (
               <RolePlaySetup onStart={handleRoleplayStart} />
             ) : (
-              <MetaverseVoiceCounseling 
-                mode="roleplay"
-                roleplayScenario={roleplayScenario}
-              />
+              <RolePlayMode scenario={roleplayScenario} />
             )}
           </TabsContent>
 
           <TabsContent value="free" className="mt-0">
-            <MetaverseVoiceCounseling mode="free" />
+            <FreeCounseling />
           </TabsContent>
         </Tabs>
       </div>

@@ -79,6 +79,21 @@ const CTABannerSection = () => {
             </Badge>
           </div>
 
+          {/* Company Logo */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="flex justify-center mb-6"
+          >
+            <img 
+              src="/company-logo.png" 
+              alt="AIHumanPro Logo" 
+              className="h-24 md:h-32 lg:h-40 w-auto object-contain"
+            />
+          </motion.div>
+
           <motion.h2 
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}

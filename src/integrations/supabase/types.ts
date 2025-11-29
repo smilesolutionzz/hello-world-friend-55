@@ -2126,11 +2126,13 @@ export type Database = {
           created_at: string
           created_by: string
           generated_content: string
+          generated_images: string[] | null
           id: string
           main_activity: string | null
           metadata: Json | null
           report_style: string
           session_number: number | null
+          uploaded_images: string[] | null
           voucher_type: string
         }
         Insert: {
@@ -2139,11 +2141,13 @@ export type Database = {
           created_at?: string
           created_by: string
           generated_content: string
+          generated_images?: string[] | null
           id?: string
           main_activity?: string | null
           metadata?: Json | null
           report_style: string
           session_number?: number | null
+          uploaded_images?: string[] | null
           voucher_type: string
         }
         Update: {
@@ -2152,11 +2156,13 @@ export type Database = {
           created_at?: string
           created_by?: string
           generated_content?: string
+          generated_images?: string[] | null
           id?: string
           main_activity?: string | null
           metadata?: Json | null
           report_style?: string
           session_number?: number | null
+          uploaded_images?: string[] | null
           voucher_type?: string
         }
         Relationships: []

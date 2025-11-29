@@ -5491,6 +5491,44 @@ export type Database = {
           },
         ]
       }
+      observation_shares: {
+        Row: {
+          created_at: string | null
+          id: string
+          observation_id: string
+          share_message: string | null
+          shared_by: string
+          shared_with_email: string
+          shared_with_user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          observation_id: string
+          share_message?: string | null
+          shared_by: string
+          shared_with_email: string
+          shared_with_user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          observation_id?: string
+          share_message?: string | null
+          shared_by?: string
+          shared_with_email?: string
+          shared_with_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "observation_shares_observation_id_fkey"
+            columns: ["observation_id"]
+            isOneToOne: false
+            referencedRelation: "observations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       observation_templates: {
         Row: {
           cost: string
@@ -5551,6 +5589,7 @@ export type Database = {
           expert_advice: string | null
           id: string
           is_voice_generated: boolean | null
+          media_urls: Json | null
           observation_date: string
           profile_id: string | null
           recommended_tests: Json | null
@@ -5571,6 +5610,7 @@ export type Database = {
           expert_advice?: string | null
           id?: string
           is_voice_generated?: boolean | null
+          media_urls?: Json | null
           observation_date?: string
           profile_id?: string | null
           recommended_tests?: Json | null
@@ -5591,6 +5631,7 @@ export type Database = {
           expert_advice?: string | null
           id?: string
           is_voice_generated?: boolean | null
+          media_urls?: Json | null
           observation_date?: string
           profile_id?: string | null
           recommended_tests?: Json | null

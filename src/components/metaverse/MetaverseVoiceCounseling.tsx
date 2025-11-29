@@ -196,11 +196,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
       }]);
 
       lastEmotionAnalysisRef.current = new Date();
-      
-      toast({
-        title: "감정 분석",
-        description: `${data.emotion} (${Math.round(intensity * 100)}%): ${data.reason}`,
-      });
     } catch (error) {
       console.error('감정 분석 오류:', error);
     }
@@ -1692,37 +1687,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
               </div>
             )}
 
-            {/* 감정 분석 버튼 - 채팅창 바깥쪽 좌측 하단 */}
-            {isConnected && (
-              <div className="fixed left-4 bottom-4 flex flex-col gap-2 z-40">
-                <Button
-                  onClick={() => setShowEmotionChart(!showEmotionChart)}
-                  variant={showEmotionChart ? "default" : "outline"}
-                  size="sm"
-                  className="gap-2 shadow-lg bg-background/90 backdrop-blur-sm"
-                >
-                  <TrendingUp className="w-4 h-4" />
-                  <span>감정 분석</span>
-                </Button>
-              </div>
-            )}
-
-            {/* 감정 트렌드 차트 */}
-            {showEmotionChart && emotionHistory.length > 0 && (
-              <div className="fixed left-4 top-20 z-[100]">
-                <div className="relative">
-                  <Button
-                    onClick={() => setShowEmotionChart(false)}
-                    variant="ghost"
-                    size="icon"
-                    className="absolute -top-2 -right-2 z-10 bg-background shadow-md rounded-full w-8 h-8"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                  <EmotionTrendChart emotionHistory={emotionHistory} />
-                </div>
-              </div>
-            )}
 
           {/* Info */}
           {!isUICollapsed && (

@@ -58,10 +58,10 @@ export const TherapistSelector: React.FC<TherapistSelectorProps> = ({ onSelect }
                         <div className="flex items-start gap-3">
                           <div className="text-4xl">{therapist.icon}</div>
                           <div className="flex-1">
-                            <h4 className="font-bold text-lg mb-1">
+                             <h4 className="font-bold text-lg mb-1 text-foreground">
                               {therapist.nameKo}
                             </h4>
-                            <p className="text-sm text-muted-foreground mb-2">
+                            <p className="text-sm text-foreground/80 mb-2">
                               {therapist.description}
                             </p>
                             <div className="flex flex-wrap gap-1">
@@ -101,10 +101,10 @@ export const TherapistSelector: React.FC<TherapistSelectorProps> = ({ onSelect }
                   </Card>
 
                   <div>
-                    <h4 className="font-semibold mb-2">전문 분야</h4>
+                    <h4 className="font-semibold mb-2 text-foreground">전문 분야</h4>
                     <div className="flex flex-wrap gap-2">
                       {selectedProfile.specialty.map((spec, i) => (
-                        <Badge key={i} variant="outline">
+                        <Badge key={i} variant="outline" className="text-foreground">
                           {spec}
                         </Badge>
                       ))}
@@ -112,9 +112,9 @@ export const TherapistSelector: React.FC<TherapistSelectorProps> = ({ onSelect }
                   </div>
 
                   <div>
-                    <h4 className="font-semibold mb-2">치료 접근법</h4>
+                    <h4 className="font-semibold mb-2 text-foreground">치료 접근법</h4>
                     <ScrollArea className="h-32">
-                      <ul className="text-sm space-y-1 text-muted-foreground">
+                      <ul className="text-sm space-y-1 text-foreground/80">
                         {selectedProfile.therapeuticApproach.map((approach, i) => (
                           <li key={i}>• {approach}</li>
                         ))}
@@ -123,7 +123,7 @@ export const TherapistSelector: React.FC<TherapistSelectorProps> = ({ onSelect }
                   </div>
 
                   <div>
-                    <h4 className="font-semibold mb-2">상담받고 싶은 내용 (선택사항)</h4>
+                    <h4 className="font-semibold mb-2 text-foreground">상담받고 싶은 내용 (선택사항)</h4>
                     <Textarea
                       placeholder="어떤 어려움이나 목표가 있으신가요? 구체적으로 작성해주시면 더 맞춤형 치료를 받으실 수 있습니다."
                       value={userConcern}

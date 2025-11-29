@@ -3432,6 +3432,86 @@ export type Database = {
         }
         Relationships: []
       }
+      group_participants: {
+        Row: {
+          avatar_url: string | null
+          id: string
+          is_speaking: boolean | null
+          joined_at: string
+          last_seen_at: string
+          position_x: number | null
+          position_y: number | null
+          position_z: number | null
+          session_id: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          id?: string
+          is_speaking?: boolean | null
+          joined_at?: string
+          last_seen_at?: string
+          position_x?: number | null
+          position_y?: number | null
+          position_z?: number | null
+          session_id: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          avatar_url?: string | null
+          id?: string
+          is_speaking?: boolean | null
+          joined_at?: string
+          last_seen_at?: string
+          position_x?: number | null
+          position_y?: number | null
+          position_z?: number | null
+          session_id?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_participants_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "group_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_sessions: {
+        Row: {
+          created_at: string
+          host_user_id: string
+          id: string
+          is_active: boolean | null
+          max_participants: number | null
+          room_type: string
+          session_name: string
+        }
+        Insert: {
+          created_at?: string
+          host_user_id: string
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          room_type: string
+          session_name: string
+        }
+        Update: {
+          created_at?: string
+          host_user_id?: string
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          room_type?: string
+          session_name?: string
+        }
+        Relationships: []
+      }
       growth_stories: {
         Row: {
           after_story: string
@@ -5223,6 +5303,39 @@ export type Database = {
         }
         Relationships: []
       }
+      metaverse_journals: {
+        Row: {
+          ai_feedback: string | null
+          content: string
+          created_at: string
+          id: string
+          mood_after: number | null
+          mood_before: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          mood_after?: number | null
+          mood_before?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          mood_after?: number | null
+          mood_before?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       observation_domains: {
         Row: {
           color_class: string
@@ -6350,6 +6463,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      room_decorations: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          item_type: string
+          position_x: number
+          position_y: number
+          position_z: number
+          room_type: string
+          rotation_y: number | null
+          scale: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          item_type: string
+          position_x: number
+          position_y: number
+          position_z: number
+          room_type: string
+          rotation_y?: number | null
+          scale?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_type?: string
+          position_x?: number
+          position_y?: number
+          position_z?: number
+          room_type?: string
+          rotation_y?: number | null
+          scale?: number | null
+          user_id?: string
+        }
+        Relationships: []
       }
       service_reviews: {
         Row: {

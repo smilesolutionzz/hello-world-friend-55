@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut, Gamepad2, Package, Palette, BookOpen, Flower2, Paintbrush, Stethoscope, Volume2 } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut, Gamepad2, Package, Palette, BookOpen, Flower2, Paintbrush, Stethoscope, Volume2, BookText, UsersRound, PaintBucket } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { SpaceManager } from './SpaceManager';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
@@ -40,6 +40,9 @@ import { GroupUserList, type UserPresence } from './GroupPresence';
 import { RoomTransitionUI } from './RoomTransitionUI';
 import { getTherapistProfile, createTherapySystemPrompt } from '@/utils/TherapistProfiles';
 import type { TherapistType } from '@/types/therapist';
+import { JournalModal } from './JournalModal';
+import { GroupSessionLobby } from './GroupSessionLobby';
+import { RoomDecorationUI } from './RoomDecorationUI';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -135,6 +138,12 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   }>>([]);
   const [showEmotionChart, setShowEmotionChart] = useState(false);
   const [showConversationUI, setShowConversationUI] = useState(false);
+  
+  // 새 기능 모달 상태
+  const [showJournalModal, setShowJournalModal] = useState(false);
+  const [showGroupLobby, setShowGroupLobby] = useState(false);
+  const [showDecorationUI, setShowDecorationUI] = useState(false);
+  const [groupSessionId, setGroupSessionId] = useState<string | null>(null);
   
   // 텍스트 기반 감정 분석
   const [transcriptBuffer, setTranscriptBuffer] = useState('');
@@ -238,6 +247,116 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     };
     getUser();
   }, []);
+  
+  // 그룹 세션 Realtime 동기화
+  useEffect(() => {
+    if (!groupSessionId || !currentUserId) return;
+    
+    const joinSession = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        // 세션에 참가자로 등록
+        const { error } = await supabase
+          .from('group_participants')
+          .upsert({
+            session_id: groupSessionId,
+            user_id: currentUserId,
+            user_name: userName || '익명',
+            avatar_url: avatarUrl,
+            position_x: avatarPosition.x,
+            position_y: avatarPosition.y,
+            position_z: avatarPosition.z,
+            last_seen_at: new Date().toISOString()
+          });
+        
+        if (error) throw error;
+      } catch (error) {
+        console.error('Error joining session:', error);
+      }
+    };
+    
+    joinSession();
+    
+    // Realtime 리스너 설정
+    const channel = supabase
+      .channel(`group-session-${groupSessionId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'group_participants',
+          filter: `session_id=eq.${groupSessionId}`
+        },
+        (payload) => {
+          console.log('Group participant change:', payload);
+          // 참가자 목록 새로고침
+          loadGroupParticipants();
+        }
+      )
+      .subscribe();
+    
+    // 위치 업데이트 주기적 전송
+    const positionInterval = setInterval(() => {
+      if (currentUserId && groupSessionId) {
+        supabase
+          .from('group_participants')
+          .update({
+            position_x: avatarPosition.x,
+            position_y: avatarPosition.y,
+            position_z: avatarPosition.z,
+            is_speaking: isSpeaking,
+            last_seen_at: new Date().toISOString()
+          })
+          .eq('session_id', groupSessionId)
+          .eq('user_id', currentUserId)
+          .then();
+      }
+    }, 2000);
+    
+    return () => {
+      clearInterval(positionInterval);
+      supabase.removeChannel(channel);
+      
+      // 세션 퇴장
+      if (currentUserId && groupSessionId) {
+        supabase
+          .from('group_participants')
+          .delete()
+          .eq('session_id', groupSessionId)
+          .eq('user_id', currentUserId)
+          .then();
+      }
+    };
+  }, [groupSessionId, currentUserId, avatarPosition, isSpeaking]);
+  
+  const loadGroupParticipants = async () => {
+    if (!groupSessionId) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('group_participants')
+        .select('*')
+        .eq('session_id', groupSessionId)
+        .gt('last_seen_at', new Date(Date.now() - 30000).toISOString()); // 30초 이내 활동
+      
+      if (error) throw error;
+      
+      const participants: UserPresence[] = data?.map(p => ({
+        user_id: p.user_id,
+        user_name: p.user_name,
+        avatar_url: p.avatar_url || undefined,
+        position: { x: p.position_x, y: p.position_y, z: p.position_z },
+        emotion: 'neutral',
+        online_at: p.last_seen_at
+      })) || [];
+      
+      setGroupUsers(participants);
+    } catch (error) {
+      console.error('Error loading participants:', error);
+    }
+  };
 
   // 초기화
   useEffect(() => {
@@ -1125,13 +1244,37 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
       </div>
       
       {/* 공간 이동 버튼 - 항상 표시 */}
-      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] pointer-events-auto">
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex gap-2 pointer-events-auto">
         <Button
           onClick={() => setShowRoomSelector(true)}
           className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg pointer-events-auto"
         >
           <Sofa className="w-4 h-4" />
           공간 이동
+        </Button>
+        
+        <Button
+          onClick={() => setShowJournalModal(true)}
+          className="gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg pointer-events-auto"
+        >
+          <BookText className="w-4 h-4" />
+          일기 쓰기
+        </Button>
+        
+        <Button
+          onClick={() => setShowGroupLobby(true)}
+          className="gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg pointer-events-auto"
+        >
+          <UsersRound className="w-4 h-4" />
+          그룹 상담
+        </Button>
+        
+        <Button
+          onClick={() => setShowDecorationUI(true)}
+          className="gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 shadow-lg pointer-events-auto"
+        >
+          <PaintBucket className="w-4 h-4" />
+          공간 꾸미기
         </Button>
       </div>
       
@@ -1645,6 +1788,41 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           onClose={() => {
             setShowRoomTransition(false);
             setWasDismissed(true); // 취소 버튼을 눌렀음을 표시
+          }}
+        />
+      )}
+      
+      {/* 일기 작성 모달 */}
+      {showJournalModal && (
+        <JournalModal onClose={() => setShowJournalModal(false)} />
+      )}
+      
+      {/* 그룹 상담 로비 */}
+      {showGroupLobby && (
+        <GroupSessionLobby
+          onClose={() => setShowGroupLobby(false)}
+          onJoinSession={(sessionId, sessionName) => {
+            setGroupSessionId(sessionId);
+            setGroupMode(true);
+            setShowGroupLobby(false);
+            toast({
+              title: `${sessionName} 세션에 참여했습니다`,
+              description: "다른 참가자들과 함께 대화를 나눠보세요",
+            });
+          }}
+        />
+      )}
+      
+      {/* 공간 꾸미기 UI */}
+      {showDecorationUI && (
+        <RoomDecorationUI
+          onClose={() => setShowDecorationUI(false)}
+          onPlaceItem={(itemType, itemId) => {
+            toast({
+              title: "아이템 배치됨",
+              description: "공간에 아이템이 추가되었습니다",
+            });
+            // TODO: 3D 공간에 실제 아이템 렌더링 로직
           }}
         />
       )}

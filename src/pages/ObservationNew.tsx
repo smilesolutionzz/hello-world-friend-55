@@ -6,6 +6,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Calendar } from '@/components/ui/calendar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -15,7 +18,7 @@ import {
   FileText, 
   Sparkles,
   TrendingUp,
-  Calendar,
+  Calendar as CalendarIcon,
   Brain,
   Heart,
   AlertCircle,
@@ -39,6 +42,10 @@ const ObservationNew = () => {
   const [observations, setObservations] = useState<any[]>([]);
   const [activeMode, setActiveMode] = useState<'voice' | 'text'>('voice');
   const [structuredData, setStructuredData] = useState<any>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [observationsForDate, setObservationsForDate] = useState<any[]>([]);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [datesWithObservations, setDatesWithObservations] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     checkAuth();
@@ -70,8 +77,39 @@ const ObservationNew = () => {
 
       if (error) throw error;
       setObservations(data || []);
+      
+      // Load all observation dates for calendar highlighting
+      const { data: allObs } = await supabase
+        .from('observations')
+        .select('observation_date')
+        .eq('user_id', user?.id);
+      
+      if (allObs) {
+        const dates = new Set(
+          allObs.map(obs => new Date(obs.observation_date).toDateString())
+        );
+        setDatesWithObservations(dates);
+      }
     } catch (error) {
       console.error('Error loading observations:', error);
+    }
+  };
+
+  const loadObservationsForDate = async (date: Date) => {
+    try {
+      const dateStr = date.toISOString().split('T')[0];
+      const { data, error } = await supabase
+        .from('observations')
+        .select('*')
+        .gte('observation_date', `${dateStr}T00:00:00`)
+        .lt('observation_date', `${dateStr}T23:59:59`)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setObservationsForDate(data || []);
+    } catch (error) {
+      console.error('Error loading observations for date:', error);
+      setObservationsForDate([]);
     }
   };
 
@@ -132,7 +170,10 @@ const ObservationNew = () => {
       setTitle('');
       setContent('');
       setStructuredData(null);
-      loadObservations();
+      await loadObservations();
+      if (selectedDate) {
+        await loadObservationsForDate(selectedDate);
+      }
     } catch (error) {
       console.error('Error saving observation:', error);
       toast({
@@ -354,12 +395,50 @@ const ObservationNew = () => {
             </Card>
           </div>
 
-          {/* Sidebar - Recent Observations */}
+          {/* Sidebar - Calendar & Recent Observations */}
           <div className="space-y-6">
+            {/* Calendar View */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
+                  <CalendarIcon className="w-5 h-5" />
+                  달력으로 보기
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => {
+                    if (date) {
+                      setSelectedDate(date);
+                      loadObservationsForDate(date);
+                      setShowCalendar(true);
+                    }
+                  }}
+                  className="rounded-md border"
+                  modifiers={{
+                    hasObservation: (date) => 
+                      datesWithObservations.has(date.toDateString())
+                  }}
+                  modifiersStyles={{
+                    hasObservation: {
+                      fontWeight: 'bold',
+                      textDecoration: 'underline',
+                      color: 'hsl(var(--primary))'
+                    }
+                  }}
+                />
+                <p className="text-xs text-muted-foreground mt-2 text-center">
+                  밑줄 표시된 날짜는 기록이 있습니다
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CalendarIcon className="w-5 h-5" />
                   최근 관찰 기록
                 </CardTitle>
               </CardHeader>
@@ -485,6 +564,111 @@ const ObservationNew = () => {
           </div>
         </div>
       </div>
+
+      {/* Date Observations Dialog */}
+      <Dialog open={showCalendar} onOpenChange={setShowCalendar}>
+        <DialogContent className="max-w-2xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CalendarIcon className="w-5 h-5" />
+              {selectedDate?.toLocaleDateString('ko-KR', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })} 관찰 기록
+            </DialogTitle>
+          </DialogHeader>
+          
+          <ScrollArea className="h-[60vh] pr-4">
+            {observationsForDate.length === 0 ? (
+              <div className="text-center py-12">
+                <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-30" />
+                <p className="text-muted-foreground">
+                  이 날짜에 기록된 관찰일지가 없습니다
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {observationsForDate.map((obs) => (
+                  <Card key={obs.id} className="p-4">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-4">
+                        <h3 className="font-semibold text-lg">{obs.title}</h3>
+                        {obs.severity && (
+                          <Badge 
+                            variant={
+                              obs.severity === 'high' ? 'destructive' : 
+                              obs.severity === 'medium' ? 'default' : 
+                              'secondary'
+                            }
+                          >
+                            {obs.severity === 'high' && '주의 필요'}
+                            {obs.severity === 'medium' && '관찰 중'}
+                            {obs.severity === 'low' && '안정'}
+                          </Badge>
+                        )}
+                      </div>
+
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                        {obs.content}
+                      </p>
+
+                      {obs.behaviors && obs.behaviors.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium mb-1.5">감지된 행동</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {obs.behaviors.map((behavior: string, idx: number) => (
+                              <Badge key={idx} variant="secondary" className="text-xs">
+                                {behavior}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {obs.emotions && obs.emotions.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium mb-1.5">감정 상태</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {obs.emotions.map((emotion: string, idx: number) => (
+                              <Badge key={idx} className="bg-blue-100 text-blue-700 text-xs">
+                                {emotion}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {obs.recommended_tests && obs.recommended_tests.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium mb-1.5 flex items-center gap-1">
+                            <Lightbulb className="w-3 h-3" />
+                            추천 심리검사
+                          </p>
+                          <div className="space-y-1">
+                            {obs.recommended_tests.map((test: string, idx: number) => (
+                              <p key={idx} className="text-xs text-muted-foreground">
+                                • {test}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="text-xs text-muted-foreground pt-2 border-t">
+                        {new Date(obs.created_at).toLocaleTimeString('ko-KR', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })} 기록
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut, Gamepad2, Package, Palette, BookOpen, Flower2, Paintbrush, Stethoscope, Volume2, BookText, UsersRound, PaintBucket } from 'lucide-react';
+import { Mic, MicOff, Phone, Loader2, ArrowRight, User, MessageSquare, Building2, Home, Bed, GraduationCap, Users, Sofa, Trees, Download, Copy, Share2, UserCircle, Smile, Link2, Music, Hand, Clock, TrendingUp, X, ArrowLeft, LogOut, Gamepad2, Package, Palette, BookOpen, Flower2, Paintbrush, Stethoscope, Volume2, UsersRound, PaintBucket } from 'lucide-react';
 import CounselingRoom, { RoomType } from '@/components/3d/CounselingRoom';
 import { SpaceManager } from './SpaceManager';
 import { RealtimeChat } from '@/utils/RealtimeAudio';
@@ -40,7 +40,6 @@ import { GroupUserList, type UserPresence } from './GroupPresence';
 import { RoomTransitionUI } from './RoomTransitionUI';
 import { getTherapistProfile, createTherapySystemPrompt } from '@/utils/TherapistProfiles';
 import type { TherapistType } from '@/types/therapist';
-import { JournalModal } from './JournalModal';
 import { GroupSessionLobby } from './GroupSessionLobby';
 import { RoomDecorationUI } from './RoomDecorationUI';
 
@@ -140,7 +139,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [showConversationUI, setShowConversationUI] = useState(false);
   
   // 새 기능 모달 상태
-  const [showJournalModal, setShowJournalModal] = useState(false);
   const [showGroupLobby, setShowGroupLobby] = useState(false);
   const [showDecorationUI, setShowDecorationUI] = useState(false);
   const [groupSessionId, setGroupSessionId] = useState<string | null>(null);
@@ -1331,15 +1329,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         </Button>
         
         <Button
-          onClick={() => setShowJournalModal(true)}
-          size="sm"
-          className="gap-1 sm:gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg pointer-events-auto text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-9"
-        >
-          <BookText className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span className="hidden sm:inline">일기</span>
-        </Button>
-        
-        <Button
           onClick={() => setShowGroupLobby(true)}
           size="sm"
           className="gap-1 sm:gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg pointer-events-auto text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-9"
@@ -1882,11 +1871,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             setWasDismissed(true); // 취소 버튼을 눌렀음을 표시
           }}
         />
-      )}
-      
-      {/* 일기 작성 모달 */}
-      {showJournalModal && (
-        <JournalModal onClose={() => setShowJournalModal(false)} />
       )}
       
       {/* 그룹 상담 로비 */}

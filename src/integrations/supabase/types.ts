@@ -5546,7 +5546,9 @@ export type Database = {
           concerns: string[] | null
           content: string
           created_at: string
+          detailed_advice: string | null
           emotions: string[] | null
+          expert_advice: string | null
           id: string
           is_voice_generated: boolean | null
           observation_date: string
@@ -5564,7 +5566,9 @@ export type Database = {
           concerns?: string[] | null
           content: string
           created_at?: string
+          detailed_advice?: string | null
           emotions?: string[] | null
+          expert_advice?: string | null
           id?: string
           is_voice_generated?: boolean | null
           observation_date?: string
@@ -5582,7 +5586,9 @@ export type Database = {
           concerns?: string[] | null
           content?: string
           created_at?: string
+          detailed_advice?: string | null
           emotions?: string[] | null
+          expert_advice?: string | null
           id?: string
           is_voice_generated?: boolean | null
           observation_date?: string

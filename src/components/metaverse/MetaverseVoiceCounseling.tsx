@@ -38,6 +38,8 @@ import { analyzeSCTResponses, type SCTAgeGroup, SCT_QUESTIONS } from '@/utils/SC
 import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
 import { GroupUserList, type UserPresence } from './GroupPresence';
 import { RoomTransitionUI } from './RoomTransitionUI';
+import { getTherapistProfile, createTherapySystemPrompt } from '@/utils/TherapistProfiles';
+import type { TherapistType } from '@/types/therapist';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -47,12 +49,14 @@ interface Message {
 }
 
 interface MetaverseVoiceCounselingProps {
-  mode?: 'free' | 'structured' | 'roleplay';
+  mode?: 'free' | 'structured' | 'roleplay' | 'therapy';
   structuredConfig?: {
     ageGroup: AgeGroup;
     character: CharacterType;
   };
   roleplayScenario?: RolePlayScenario;
+  therapistType?: TherapistType;
+  therapyUserConcern?: string;
 }
 
 const roomOptions = [
@@ -71,7 +75,7 @@ const roomOptions = [
   { id: 'garden' as RoomType, name: '정원', icon: Flower2, description: '예쁜 꽃 정원' },
 ];
 
-const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplayScenario }: MetaverseVoiceCounselingProps) => {
+const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplayScenario, therapistType, therapyUserConcern }: MetaverseVoiceCounselingProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [hasEntered, setHasEntered] = useState(false);
@@ -499,7 +503,19 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
 
       // RealtimeChat 초기화
       let chatOptions: any;
-      if (mode === 'structured' && structuredConfig) {
+      if (mode === 'therapy' && therapistType) {
+        const therapistProfile = getTherapistProfile(therapistType);
+        const therapistPrompt = createTherapySystemPrompt(therapistProfile, therapyUserConcern);
+        
+        chatOptions = {
+          mode: 'therapy' as const,
+          therapistType: therapistType,
+          therapistVoice: therapistProfile.voiceId,
+          therapistPrompt: therapistPrompt
+        };
+        
+        console.log('🏥 Starting therapy mode:', therapistProfile.nameKo);
+      } else if (mode === 'structured' && structuredConfig) {
         chatOptions = {
           mode: 'structured' as const,
           ageGroup: structuredConfig.ageGroup,

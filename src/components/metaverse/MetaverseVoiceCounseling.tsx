@@ -38,9 +38,6 @@ import { analyzeSCTResponses, type SCTAgeGroup, SCT_QUESTIONS } from '@/utils/SC
 import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
 import { GroupUserList, type UserPresence } from './GroupPresence';
 import { RoomTransitionUI } from './RoomTransitionUI';
-import { TherapistSelector } from './TherapistSelector';
-import { getTherapistProfile, createTherapySystemPrompt } from '@/utils/TherapistProfiles';
-import type { TherapistType } from '@/types/therapist';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -50,7 +47,7 @@ interface Message {
 }
 
 interface MetaverseVoiceCounselingProps {
-  mode?: 'free' | 'structured' | 'roleplay' | 'therapy';
+  mode?: 'free' | 'structured' | 'roleplay';
   structuredConfig?: {
     ageGroup: AgeGroup;
     character: CharacterType;
@@ -105,10 +102,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [currentGesture, setCurrentGesture] = useState<GestureType | null>(null);
   const [counselorGesture, setCounselorGesture] = useState<GestureType | null>(null);
   
-  // 치료사 선택 상태
-  const [showTherapistSelector, setShowTherapistSelector] = useState(false);
-  const [selectedTherapist, setSelectedTherapist] = useState<TherapistType | null>(null);
-  const [therapyUserConcern, setTherapyUserConcern] = useState<string>('');
   const [counselorEmotion, setCounselorEmotion] = useState<CounselorEmotion>('neutral');
   const [groupMode, setGroupMode] = useState(false);
   const [avatarPosition, setAvatarPosition] = useState({ x: 0, y: -1.5, z: 3 });
@@ -506,19 +499,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
 
       // RealtimeChat 초기화
       let chatOptions: any;
-      if (mode === 'therapy' && selectedTherapist) {
-        const therapistProfile = getTherapistProfile(selectedTherapist);
-        const therapistPrompt = createTherapySystemPrompt(therapistProfile, therapyUserConcern);
-        
-        chatOptions = {
-          mode: 'therapy' as const,
-          therapistType: selectedTherapist,
-          therapistVoice: therapistProfile.voiceId,
-          therapistPrompt: therapistPrompt
-        };
-        
-        console.log('🏥 Starting therapy mode:', therapistProfile.nameKo);
-      } else if (mode === 'structured' && structuredConfig) {
+      if (mode === 'structured' && structuredConfig) {
         chatOptions = {
           mode: 'structured' as const,
           ageGroup: structuredConfig.ageGroup,
@@ -1137,18 +1118,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         </Button>
       </div>
       
-      {/* 치료 모드 전환 버튼 */}
-      {!isConnected && mode !== 'therapy' && (
-        <div className="fixed top-4 right-4 z-[100] pointer-events-auto">
-          <Button
-            onClick={() => setShowTherapistSelector(true)}
-            className="gap-2 shadow-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-          >
-            <Stethoscope className="w-4 h-4" />
-            전문 치료사 선택
-          </Button>
-        </div>
-      )}
       
       {/* 그림 그리기 이모지 제거 - 모바일 호환성 이슈 */}
 
@@ -1594,24 +1563,6 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         )}
       </CounselingRoom>
       
-      {/* 치료사 선택 모달 */}
-      {showTherapistSelector && (
-        <TherapistSelector
-          onSelect={(therapistType, userConcern) => {
-            setSelectedTherapist(therapistType);
-            setTherapyUserConcern(userConcern);
-            setShowTherapistSelector(false);
-            
-            toast({
-              title: "치료사 선택 완료",
-              description: `${getTherapistProfile(therapistType).nameKo}와의 세션을 시작합니다.`,
-            });
-          }}
-          onCancel={() => {
-            setShowTherapistSelector(false);
-          }}
-        />
-      )}
       
       <RecordingConsent open={showRecordingConsent} onConsent={handleRecordingConsent} />
       

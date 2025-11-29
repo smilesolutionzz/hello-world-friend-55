@@ -6,6 +6,21 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// 재시도 로직을 포함한 fetch 함수
+async function fetchWithRetry(url: string, options: RequestInit, retries = 3, delay = 1000): Promise<Response> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      return response;
+    } catch (error) {
+      console.error(`Attempt ${i + 1} failed:`, error);
+      if (i === retries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+    }
+  }
+  throw new Error('All retry attempts failed');
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -25,7 +40,7 @@ serve(async (req) => {
 
     console.log('감정 분석 요청:', text.substring(0, 100));
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetchWithRetry('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
@@ -60,13 +75,22 @@ JSON 형식으로만 답변하세요:
             content: `다음 텍스트의 감정을 분석해주세요:\n\n"${text}"`
           }
         ],
-        temperature: 0.3,
+        // Gemini 모델은 temperature를 지원하지 않으므로 제거
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI API 오류:', errorText);
+      console.error('AI API 오류:', response.status, errorText);
+      
+      // 429 또는 402 에러 처리
+      if (response.status === 429) {
+        throw new Error('요청 한도 초과. 잠시 후 다시 시도해주세요.');
+      }
+      if (response.status === 402) {
+        throw new Error('크레딧이 부족합니다. Lovable AI 크레딧을 충전해주세요.');
+      }
+      
       throw new Error(`AI API 오류: ${response.status}`);
     }
 

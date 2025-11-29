@@ -961,7 +961,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             onClick={() => navigate(-1)}
             variant="outline"
             size="sm"
-            className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg text-xs sm:text-sm px-3 sm:px-4"
+            className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg text-xs sm:text-sm px-2 py-1 sm:px-4 sm:py-2 h-7 sm:h-9"
           >
             <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">뒤로</span>
@@ -970,9 +970,9 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             onClick={() => navigate('/')}
             variant="outline"
             size="sm"
-            className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg text-xs sm:text-sm px-3 sm:px-4"
+            className="hidden sm:flex gap-2 bg-background/90 backdrop-blur-sm shadow-lg"
           >
-            <Home className="w-3 h-3 sm:w-4 sm:h-4" />
+            <Home className="w-4 h-4" />
             홈
           </Button>
         </div>
@@ -1231,7 +1231,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           onClick={() => navigate(-1)}
           variant="outline"
           size="sm"
-          className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg pointer-events-auto text-xs sm:text-sm px-3 sm:px-4"
+          className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg pointer-events-auto text-xs sm:text-sm px-2 py-1 sm:px-4 sm:py-2 h-7 sm:h-9"
         >
           <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="hidden sm:inline">뒤로</span>
@@ -1240,9 +1240,9 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           onClick={() => navigate('/')}
           variant="outline"
           size="sm"
-          className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg pointer-events-auto text-xs sm:text-sm px-3 sm:px-4"
+          className="hidden sm:flex gap-2 bg-background/90 backdrop-blur-sm shadow-lg pointer-events-auto"
         >
-          <Home className="w-3 h-3 sm:w-4 sm:h-4" />
+          <Home className="w-4 h-4" />
           홈
         </Button>
         <Button
@@ -1254,10 +1254,10 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           }}
           variant="destructive"
           size="sm"
-          className="gap-1 sm:gap-2 shadow-lg pointer-events-auto text-xs sm:text-sm px-3 sm:px-4"
+          className="hidden sm:flex gap-2 shadow-lg pointer-events-auto"
         >
-          <LogOut className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span className="hidden sm:inline">나가기</span>
+          <LogOut className="w-4 h-4" />
+          나가기
         </Button>
       </div>
       

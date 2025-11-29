@@ -393,21 +393,30 @@ export default function ObservationDetail() {
 
       {/* Media Preview Dialog */}
       <Dialog open={!!selectedMedia} onOpenChange={() => setSelectedMedia(null)}>
-        <DialogContent className="max-w-4xl p-0">
+        <DialogContent className="max-w-[95vw] md:max-w-4xl p-0 bg-black/95 border-none">
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-2 top-2 z-50"
+            className="absolute right-2 top-2 z-50 bg-black/50 hover:bg-black/70 text-white"
             onClick={() => setSelectedMedia(null)}
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </Button>
           {selectedMedia && (
-            <div className="relative w-full">
+            <div className="relative w-full min-h-[50vh] max-h-[85vh] flex items-center justify-center p-4 md:p-6">
               {selectedMedia.includes('.mp4') || selectedMedia.includes('.mov') ? (
-                <video src={selectedMedia} controls className="w-full" />
+                <video 
+                  src={selectedMedia} 
+                  controls 
+                  autoPlay
+                  className="max-w-full max-h-[80vh] rounded-lg"
+                />
               ) : (
-                <img src={selectedMedia} alt="미디어" className="w-full" />
+                <img 
+                  src={selectedMedia} 
+                  alt="미디어 미리보기" 
+                  className="max-w-full max-h-[80vh] object-contain rounded-lg"
+                />
               )}
             </div>
           )}

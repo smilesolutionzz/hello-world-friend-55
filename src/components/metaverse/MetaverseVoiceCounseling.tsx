@@ -955,15 +955,24 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   if (!hasEntered) {
     return (
       <div className="relative min-h-screen">
-        {/* 네비게이션 버튼 */}
-        <div className="fixed top-4 left-4 z-50 flex gap-2">
+        {/* 네비게이션 버튼 - 하단 중앙 */}
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex gap-2">
+          <Button
+            onClick={() => navigate(-1)}
+            variant="outline"
+            size="sm"
+            className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg text-xs sm:text-sm px-3 sm:px-4"
+          >
+            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">뒤로</span>
+          </Button>
           <Button
             onClick={() => navigate('/')}
             variant="outline"
             size="sm"
-            className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
+            className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg text-xs sm:text-sm px-3 sm:px-4"
           >
-            <Home className="w-4 h-4" />
+            <Home className="w-3 h-3 sm:w-4 sm:h-4" />
             홈
           </Button>
         </div>
@@ -1216,15 +1225,24 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   // 입장 후 상담 화면
   return (
     <div className="relative min-h-screen">
-      {/* 네비게이션 버튼 */}
-      <div className="fixed top-4 left-4 z-[100] flex gap-2 pointer-events-auto">
+      {/* 네비게이션 버튼 - 하단 중앙 */}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] flex gap-2 pointer-events-auto">
+        <Button
+          onClick={() => navigate(-1)}
+          variant="outline"
+          size="sm"
+          className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg pointer-events-auto text-xs sm:text-sm px-3 sm:px-4"
+        >
+          <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">뒤로</span>
+        </Button>
         <Button
           onClick={() => navigate('/')}
           variant="outline"
           size="sm"
-          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg pointer-events-auto"
+          className="gap-1 sm:gap-2 bg-background/90 backdrop-blur-sm shadow-lg pointer-events-auto text-xs sm:text-sm px-3 sm:px-4"
         >
-          <Home className="w-4 h-4" />
+          <Home className="w-3 h-3 sm:w-4 sm:h-4" />
           홈
         </Button>
         <Button
@@ -1236,45 +1254,49 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           }}
           variant="destructive"
           size="sm"
-          className="gap-2 shadow-lg pointer-events-auto"
+          className="gap-1 sm:gap-2 shadow-lg pointer-events-auto text-xs sm:text-sm px-3 sm:px-4"
         >
-          <LogOut className="w-4 h-4" />
-          나가기
+          <LogOut className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">나가기</span>
         </Button>
       </div>
       
-      {/* 공간 이동 버튼 - 항상 표시 */}
-      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex gap-2 pointer-events-auto">
+      {/* 공간 이동 버튼 - 항상 표시, 모바일 반응형 */}
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-wrap justify-center gap-1.5 sm:gap-2 max-w-[95vw] sm:max-w-none pointer-events-auto px-2">
         <Button
           onClick={() => setShowRoomSelector(true)}
-          className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg pointer-events-auto"
+          size="sm"
+          className="gap-1 sm:gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg pointer-events-auto text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-9"
         >
-          <Sofa className="w-4 h-4" />
-          공간 이동
+          <Sofa className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">공간 이동</span>
         </Button>
         
         <Button
           onClick={() => setShowJournalModal(true)}
-          className="gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg pointer-events-auto"
+          size="sm"
+          className="gap-1 sm:gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg pointer-events-auto text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-9"
         >
-          <BookText className="w-4 h-4" />
-          일기 쓰기
+          <BookText className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">일기</span>
         </Button>
         
         <Button
           onClick={() => setShowGroupLobby(true)}
-          className="gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg pointer-events-auto"
+          size="sm"
+          className="gap-1 sm:gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg pointer-events-auto text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-9"
         >
-          <UsersRound className="w-4 h-4" />
-          그룹 상담
+          <UsersRound className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">그룹</span>
         </Button>
         
         <Button
           onClick={() => setShowDecorationUI(true)}
-          className="gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 shadow-lg pointer-events-auto"
+          size="sm"
+          className="gap-1 sm:gap-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 shadow-lg pointer-events-auto text-xs sm:text-sm px-2 sm:px-4 h-8 sm:h-9"
         >
-          <PaintBucket className="w-4 h-4" />
-          공간 꾸미기
+          <PaintBucket className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">꾸미기</span>
         </Button>
       </div>
       

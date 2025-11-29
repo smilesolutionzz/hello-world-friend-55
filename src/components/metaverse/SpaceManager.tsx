@@ -10,6 +10,7 @@ import { MeditationRoom } from '../3d/spaces/MeditationRoom';
 import { ExerciseRoom } from '../3d/spaces/ExerciseRoom';
 import { GameRoom } from '../3d/spaces/GameRoom';
 import { InterviewRoom } from '../3d/spaces/InterviewRoom';
+import { TherapyRoom } from '../3d/spaces/TherapyRoom';
 
 interface SpaceManagerProps {
   aiGesture?: string;
@@ -237,6 +238,9 @@ export const SpaceManager = ({ aiGesture, userGesture, playerPosition }: SpaceMa
         break;
       case 'interview':
         spaceEnvironment = <InterviewRoom spaceType={currentSpace} />;
+        break;
+      case 'therapy':
+        spaceEnvironment = <TherapyRoom spaceType={currentSpace} />;
         break;
       default:
         spaceEnvironment = (

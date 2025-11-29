@@ -83,7 +83,24 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const analysis = JSON.parse(data.choices[0].message.content);
+    console.log('Raw AI response:', data.choices[0].message.content);
+    
+    let messageContent = data.choices[0].message.content;
+    
+    // Remove markdown code blocks if present
+    if (messageContent.includes('```')) {
+      messageContent = messageContent.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+    }
+    
+    // Try to parse JSON
+    let analysis;
+    try {
+      analysis = JSON.parse(messageContent.trim());
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      console.error('Content that failed to parse:', messageContent);
+      throw new Error('Failed to parse AI response as JSON');
+    }
 
     console.log('Analysis result:', analysis);
 

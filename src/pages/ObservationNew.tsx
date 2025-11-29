@@ -1,557 +1,491 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { ClipboardList, Plus, Eye, ChevronLeft, Clock, Sparkles, Video, Brain, Zap } from "lucide-react";
-import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
-import ObservationDetailView from "@/components/observation/ObservationDetailView";
-import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
-import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { 
+  ArrowLeft, 
+  Plus, 
+  Mic, 
+  FileText, 
+  Sparkles,
+  TrendingUp,
+  Calendar,
+  Brain,
+  Heart,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Lightbulb
+} from 'lucide-react';
+import VoiceObservationRecorder from '@/components/observation/VoiceObservationRecorder';
+import RealtimeAIFeedback from '@/components/observation/RealtimeAIFeedback';
 
 const ObservationNew = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [selectedSession, setSelectedSession] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("new-observation");
+  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
-  // 단일 관찰 템플릿 정의
-  const observationTemplate = {
-    id: 'main-observation',
-    name: '관찰 템플릿',
-    description: '심도있는 행동 관찰 및 AI 분석',
-    domain: 'comprehensive',
-    duration: '5-15분',
-      features: [
-        '체계적 행동 관찰 기록',
-        '🎥 AI 비디오 행동 분석 (NEW)',
-        '전문가급 AI 분석 및 해석',
-        '맞춤형 개선 권고사항',
-        '상세한 PDF 리포트 제공',
-        '발달 영역별 점수 분석',
-        '장기적 추적 관리'
-      ],
-    template_type: 'comprehensive'
-  };
+  const [saving, setSaving] = useState(false);
+  
+  // Form state
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [observations, setObservations] = useState<any[]>([]);
+  const [activeMode, setActiveMode] = useState<'voice' | 'text'>('voice');
+  const [structuredData, setStructuredData] = useState<any>(null);
 
   useEffect(() => {
-    loadData();
+    checkAuth();
+    loadObservations();
   }, []);
 
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      
-      // Load user sessions
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: sessionsData, error: sessionsError } = await supabase
-          .from('observation_sessions')
-          .select(`
-            *,
-            family_member:family_members(name)
-          `)
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(20);
-
-        if (sessionsError) throw sessionsError;
-        setSessions(sessionsData || []);
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
+  const checkAuth = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       toast({
-        title: "데이터 로딩 오류",
-        description: "데이터를 불러오는 중 오류가 발생했습니다.",
+        title: "로그인 필요",
+        description: "관찰일지를 사용하려면 로그인이 필요합니다",
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
+      navigate('/auth');
+      return;
+    }
+    setUser(user);
+    setLoading(false);
+  };
+
+  const loadObservations = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('observations')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setObservations(data || []);
+    } catch (error) {
+      console.error('Error loading observations:', error);
     }
   };
 
-  const getDomainDisplayName = (domain: string) => {
-    const names = {
-      child_development: '아동발달',
-      psychology: '심리상담',
-      elderly_care: '노인케어',
-      workplace: '직장적응',
-      learning: '학습능력',
-      family: '가족상담',
-      medical: '의료재활',
-      general: '일반관찰'
-    };
-    return names[domain as keyof typeof names] || domain;
-  };
+  const handleVoiceObservationCreated = (data: any) => {
+    setTitle(data.structured.title || '');
+    setContent(data.transcription || '');
+    setStructuredData(data.structured);
+    setActiveMode('text');
 
-  const getDomainColor = (domain: string) => {
-    const colors = {
-      child_development: 'bg-blue-100 text-blue-800',
-      psychology: 'bg-purple-100 text-purple-800',
-      elderly_care: 'bg-green-100 text-green-800',
-      workplace: 'bg-orange-100 text-orange-800',
-      learning: 'bg-indigo-100 text-indigo-800',
-      family: 'bg-pink-100 text-pink-800',
-      medical: 'bg-red-100 text-red-800',
-      general: 'bg-gray-100 text-gray-800'
-    };
-    return colors[domain as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusColor = (status: string) => {
-    const colors = {
-      in_progress: 'bg-yellow-100 text-yellow-800',
-      completed: 'bg-blue-100 text-blue-800',
-      analyzed: 'bg-green-100 text-green-800'
-    };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusText = (status: string) => {
-    const texts = {
-      in_progress: '진행중',
-      completed: '완료',
-      analyzed: '분석완료'
-    };
-    return texts[status as keyof typeof texts] || status;
-  };
-
-  const startNewSession = () => {
-    setActiveTab("start-session");
-  };
-
-  const viewSession = (session: any) => {
-    setSelectedSession(session);
-    setActiveTab("view-results");
-  };
-
-  const handleSessionCreated = () => {
-    setActiveTab("my-observations");
-    loadData();
     toast({
-      title: "관찰일지 작성 완료",
-      description: "새로운 관찰일지가 생성되었습니다.",
+      title: "✨ AI 분석 완료",
+      description: "내용을 확인하고 수정하신 후 저장해주세요",
     });
   };
 
-  const handleBack = () => {
-    if (activeTab === "start-session") {
-      setActiveTab("new-observation");
-    } else if (activeTab === "view-results") {
-      setActiveTab("my-observations");
-      setSelectedSession(null);
+  const handleSaveObservation = async () => {
+    if (!content.trim()) {
+      toast({
+        title: "입력 오류",
+        description: "관찰 내용을 입력해주세요",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      const observationData: any = {
+        user_id: user.id,
+        title: title || '관찰 기록',
+        content: content,
+        observation_date: new Date().toISOString(),
+      };
+
+      // Add structured data if available
+      if (structuredData) {
+        observationData.behaviors = structuredData.behaviors;
+        observationData.emotions = structuredData.emotions;
+        observationData.concerns = structuredData.concerns;
+        observationData.severity = structuredData.severity;
+        observationData.ai_suggestions = structuredData.suggestedQuestions;
+        observationData.recommended_tests = structuredData.recommendedTests;
+      }
+
+      const { error } = await supabase
+        .from('observations')
+        .insert([observationData]);
+
+      if (error) throw error;
+
+      toast({
+        title: "✅ 저장 완료",
+        description: "관찰일지가 성공적으로 저장되었습니다",
+      });
+
+      // Reset form
+      setTitle('');
+      setContent('');
+      setStructuredData(null);
+      loadObservations();
+    } catch (error) {
+      console.error('Error saving observation:', error);
+      toast({
+        title: "저장 실패",
+        description: "관찰일지 저장 중 오류가 발생했습니다",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return '오늘';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return '어제';
+    } else {
+      return date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
     }
   };
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">데이터 로딩 중...</div>
-      </div>
-    );
-  }
-
-  // 세션 시작 화면
-  if (activeTab === "start-session") {
-    return (
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-        <ObservationFormMobile 
-          template={observationTemplate}
-          onSessionCreated={handleSessionCreated}
-          onBack={handleBack}
-        />
-      </div>
-    );
-  }
-
-  // 결과 상세보기 화면
-  if (activeTab === "view-results" && selectedSession) {
-    return (
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-        <ObservationDetailView 
-          session={selectedSession}
-          onBack={handleBack}
-        />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">로딩 중...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <AuthenticationGuard fallbackMessage="차세대 AI 관찰일지 시스템을 사용하려면 로그인이 필요합니다.">
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-100 to-pink-100 relative overflow-hidden">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Floating Gradient Orbs */}
-          <div className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-blue-400/40 to-purple-500/40 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute top-1/3 -right-32 w-[500px] h-[500px] bg-gradient-to-bl from-purple-400/40 to-pink-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s', animationDuration: '3s' }}></div>
-          <div className="absolute -bottom-32 left-1/4 w-[450px] h-[450px] bg-gradient-to-tr from-pink-400/40 to-orange-400/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s', animationDuration: '4s' }}></div>
-          
-          {/* Moving Light Rays */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
-          
-          {/* Decorative Circles */}
-          <div className="absolute top-40 left-1/2 w-64 h-64 border-2 border-purple-300/30 rounded-full"></div>
-          <div className="absolute bottom-40 right-1/3 w-80 h-80 border-2 border-blue-300/30 rounded-full"></div>
-        </div>
-        
-        <UnifiedNavigation />
-        
-        {/* Hero Section */}
-        <section className="pt-24 pb-12 px-4 relative z-10">
-          <div className="container mx-auto max-w-5xl">
-            <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-                AI 관찰일지 작성
-              </h1>
-              
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-                간단한 관찰 기록으로 전문가 수준의 분석 리포트를 받아보세요
-              </p>
-
-              {/* Simple 3-Step Guide */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
-                <div className="bg-white rounded-xl p-4 border border-gray-200">
-                  <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
-                    1
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">관찰 시작</h3>
-                  <p className="text-sm text-gray-600">템플릿을 선택하세요</p>
-                </div>
-                
-                <div className="bg-white rounded-xl p-4 border border-gray-200">
-                  <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
-                    2
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">관찰 기록</h3>
-                  <p className="text-sm text-gray-600">간단히 입력하세요</p>
-                </div>
-                
-                <div className="bg-white rounded-xl p-4 border border-gray-200">
-                  <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
-                    3
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">AI 분석</h3>
-                  <p className="text-sm text-gray-600">즉시 결과를 받아보세요</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 relative z-10">
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 h-12 bg-white rounded-lg p-1 shadow mb-8 max-w-md mx-auto">
-            <TabsTrigger 
-              value="new-observation" 
-              className="text-sm data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-md"
-            >
-              <Plus className="h-4 w-4 mr-1.5" />
-              새 관찰
-            </TabsTrigger>
-            <TabsTrigger 
-              value="my-observations" 
-              className="text-sm data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-md"
-            >
-              <ClipboardList className="h-4 w-4 mr-1.5" />
-              내 기록 ({sessions.length})
-            </TabsTrigger>
-          </TabsList>
-
-          {/* 새 관찰 시작 */}
-          <TabsContent value="new-observation" className="space-y-8">
-            {/* Value Proposition */}
-            <div className="text-center space-y-4 mb-8 px-2">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-sm font-medium text-blue-800">
-                <Sparkles className="h-4 w-4" />
-                AI 전문가 분석
-              </div>
-              <h2 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight break-keep">
-                전문가급 관찰 분석을 경험하세요
-              </h2>
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto break-keep">
-                간단한 관찰 기록으로 <span className="font-semibold text-primary">즉시 AI 분석</span>과 
-                <span className="font-semibold text-primary"> 전문 PDF 리포트</span>를 받아보세요
-              </p>
-            </div>
-
-            {/* AI 비디오 분석 기능 강조 */}
-            <div className="max-w-4xl mx-auto px-2 mb-8">
-              <Card className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-2 border-purple-200">
-                <CardHeader className="text-center pb-4">
-                  <div className="inline-flex items-center gap-2 mx-auto mb-4 px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full text-sm font-medium">
-                    <Video className="h-4 w-4" />
-                    NEW FEATURE
-                  </div>
-                  <CardTitle className="text-xl sm:text-2xl text-purple-800 mb-2">
-                    🎥 AI 비디오 행동 분석
-                  </CardTitle>
-                  <CardDescription className="text-base text-purple-700 max-w-2xl mx-auto">
-                    비디오를 업로드하면 AI가 자동으로 발달 관련 이슈를 분석해드립니다
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-                    <div className="text-center p-4">
-                      <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <Brain className="h-6 w-6 text-purple-600" />
-                      </div>
-                      <h4 className="font-semibold text-purple-800 mb-2">말더듬/조음 분석</h4>
-                      <p className="text-sm text-purple-600">언어 발달 상태와 조음 문제를 자동 감지</p>
-                    </div>
-                    <div className="text-center p-4">
-                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <Zap className="h-6 w-6 text-blue-600" />
-                      </div>
-                      <h4 className="font-semibold text-blue-800 mb-2">틱/운동 분석</h4>
-                      <p className="text-sm text-blue-600">비자발적 운동이나 틱 증상을 정밀 분석</p>
-                    </div>
-                    <div className="text-center p-4">
-                      <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <Eye className="h-6 w-6 text-indigo-600" />
-                      </div>
-                      <h4 className="font-semibold text-indigo-800 mb-2">자폐 스펙트럼 선별</h4>
-                      <p className="text-sm text-indigo-600">사회적 상호작용과 의사소통 패턴 분석</p>
-                    </div>
-                    <div className="text-center p-4">
-                      <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <Brain className="h-6 w-6 text-rose-600" />
-                      </div>
-                      <h4 className="font-semibold text-rose-800 mb-2">정서/행동 분석</h4>
-                      <p className="text-sm text-rose-600">감정 표현과 행동 패턴의 종합 분석</p>
-                    </div>
-                    <div className="text-center p-4">
-                      <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <Zap className="h-6 w-6 text-emerald-600" />
-                      </div>
-                      <h4 className="font-semibold text-emerald-800 mb-2">ADHD/노인인지</h4>
-                      <p className="text-sm text-emerald-600">주의력과 인지 기능 저하 패턴 감지</p>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-white rounded-lg p-4 border border-purple-200">
-                      <h5 className="font-semibold text-purple-800 mb-3 flex items-center gap-2">
-                        📋 상세 분석 결과 제공
-                      </h5>
-                      <ul className="text-sm text-purple-700 space-y-2">
-                        <li className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></span>
-                          위험도 평가 (낮음/보통/높음)
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></span>
-                          특정 패턴 감지 및 빈도 분석
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></span>
-                          전문가 권고사항 및 개선 방안
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></span>
-                          추가 검사 필요성 여부 판단
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
-                      <h5 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
-                        🎯 지원 분야
-                      </h5>
-                      <ul className="text-sm text-blue-700 space-y-2">
-                        <li className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></span>
-                          언어 발달 및 의사소통 장애
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></span>
-                          자폐 스펙트럼 및 발달 지연
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></span>
-                          ADHD 및 주의력 결핍
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></span>
-                          정서 행동 및 노인 인지 기능
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            
-            {/* 템플릿 */}
-            <div className="max-w-2xl mx-auto px-2">
-              {(() => {
-                const template = observationTemplate;
-                return (
-                <Card className="hover:shadow-xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border-2 hover:border-primary/50 relative overflow-hidden group">
-                  {/* Premium Badge */}
-                  <div className="absolute top-4 right-4 z-10">
-                    <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
-                      전문가급
-                    </Badge>
-                  </div>
-                  
-                  <CardHeader className="text-center pb-4">
-                    <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                      <ClipboardList className="h-10 w-10 text-white" />
-                    </div>
-                    <CardTitle className="text-2xl mb-2">{template.name}</CardTitle>
-                    <CardDescription className="text-base mb-3">
-                      {template.description}
-                    </CardDescription>
-                    <div className="flex items-center justify-center gap-2 mb-3 flex-wrap">
-                      <Badge className="bg-purple-100 text-purple-800" variant="secondary">
-                        종합분석
-                      </Badge>
-                      <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-                        <Clock className="h-3 w-3 mr-1" />
-                        {template.duration}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent className="space-y-4">
-                    {/* 특징 */}
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">포함 기능</h4>
-                      <div className="space-y-2">
-                        {template.features.map((feature: string, index: number) => (
-                          <div key={index} className="flex items-center gap-2 text-sm">
-                            <div className="w-2 h-2 rounded-full bg-purple-500" />
-                            <span>{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* 비용 정보 */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-lg font-bold text-primary">{template.duration}</div>
-                        <div className="text-xs text-muted-foreground">분석 시간</div>
-                      </div>
-                      <div className="text-center p-3 bg-muted rounded-lg">
-                        <div className="text-lg font-bold text-purple-600">
-                          5 토큰
-                        </div>
-                        <div className="text-xs text-muted-foreground">이용 비용</div>
-                      </div>
-                    </div>
-
-                    {/* CTA Button */}
-                    <Button 
-                      className="w-full h-11 text-white font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                      onClick={() => startNewSession()}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      관찰 분석 시작하기
-                    </Button>
-
-                    {/* 보장 */}
-                    <div className="text-center">
-                      <div className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 px-3 py-1 rounded-full">
-                        ✅ 전문가급 심도깊은 분석 보장
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                );
-              })()}
-            </div>
-          </TabsContent>
-
-          {/* 내 관찰 기록 */}
-          <TabsContent value="my-observations" className="space-y-6">
-            <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      {/* Header */}
+      <div className="bg-white border-b sticky top-0 z-10">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate('/dashboard')}
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
               <div>
-                <h3 className="text-lg font-semibold">내 관찰 기록</h3>
+                <h1 className="text-2xl font-bold flex items-center gap-2">
+                  <Sparkles className="w-6 h-6 text-primary" />
+                  AI 스마트 관찰일지
+                </h1>
                 <p className="text-sm text-muted-foreground">
-                  총 {sessions.length}개의 관찰 기록이 있습니다
+                  음성과 AI로 더 쉽고 정확하게 기록하세요
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            {sessions.length === 0 ? (
-              <Card>
-                <CardContent className="py-12 text-center">
-                  <ClipboardList className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h4 className="text-lg font-medium mb-2">아직 관찰 기록이 없습니다</h4>
-                  <p className="text-muted-foreground mb-4">
-                    첫 번째 관찰일지를 작성해보세요
-                  </p>
-                  <Button onClick={() => setActiveTab("new-observation")}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    새 관찰 시작하기
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {sessions.map((session) => (
-                  <Card key={session.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <CardTitle className="text-base mb-1">
-                            {session.observations?.session_name || 
-                             `${getDomainDisplayName(session.observations?.domain || 'general')} 관찰`}
-                          </CardTitle>
-                          <CardDescription className="text-sm">
-                            {session.observations?.observer_name || '관찰자'}
-                          </CardDescription>
-                        </div>
-                        <Badge className={getStatusColor(session.status)} variant="secondary">
-                          {getStatusText(session.status)}
-                        </Badge>
-                      </div>
-                    </CardHeader>
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Recording Mode Toggle */}
+            <Card>
+              <CardContent className="p-6">
+                <Tabs value={activeMode} onValueChange={(v) => setActiveMode(v as 'voice' | 'text')}>
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="voice" className="flex items-center gap-2">
+                      <Mic className="w-4 h-4" />
+                      음성 녹음
+                    </TabsTrigger>
+                    <TabsTrigger value="text" className="flex items-center gap-2">
+                      <FileText className="w-4 h-4" />
+                      직접 작성
+                    </TabsTrigger>
+                  </TabsList>
+
+                  {/* Voice Recording Mode */}
+                  <TabsContent value="voice" className="space-y-4 mt-6">
+                    <VoiceObservationRecorder 
+                      onObservationCreated={handleVoiceObservationCreated}
+                    />
                     
-                    <CardContent className="space-y-3">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Badge className={getDomainColor(session.observations?.domain || 'general')} variant="outline">
-                          {getDomainDisplayName(session.observations?.domain || 'general')}
+                    <div className="grid grid-cols-3 gap-4 mt-6">
+                      <Card className="p-4 text-center">
+                        <Clock className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                        <p className="text-xs text-muted-foreground">평균 30초</p>
+                        <p className="font-semibold">빠른 기록</p>
+                      </Card>
+                      <Card className="p-4 text-center">
+                        <Brain className="w-8 h-8 text-purple-500 mx-auto mb-2" />
+                        <p className="text-xs text-muted-foreground">AI 자동 분석</p>
+                        <p className="font-semibold">즉시 인사이트</p>
+                      </Card>
+                      <Card className="p-4 text-center">
+                        <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                        <p className="text-xs text-muted-foreground">구조화된 데이터</p>
+                        <p className="font-semibold">정확한 추적</p>
+                      </Card>
+                    </div>
+                  </TabsContent>
+
+                  {/* Text Writing Mode */}
+                  <TabsContent value="text" className="space-y-4 mt-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">
+                          제목
+                        </label>
+                        <Input
+                          placeholder="예: 오늘 아이의 행동 관찰"
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">
+                          관찰 내용
+                        </label>
+                        <Textarea
+                          placeholder="관찰한 내용을 자유롭게 작성해주세요. AI가 실시간으로 분석하고 추가 질문을 제안합니다."
+                          value={content}
+                          onChange={(e) => setContent(e.target.value)}
+                          rows={8}
+                          className="resize-none"
+                        />
+                      </div>
+
+                      {/* Real-time AI Feedback */}
+                      {content.trim().length > 20 && (
+                        <RealtimeAIFeedback 
+                          observationText={content}
+                          context={title}
+                        />
+                      )}
+
+                      {/* Structured Data Display */}
+                      {structuredData && (
+                        <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
+                          <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-lg">
+                              <Sparkles className="w-5 h-5 text-purple-600" />
+                              AI 분석 결과
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            {structuredData.behaviors && structuredData.behaviors.length > 0 && (
+                              <div>
+                                <p className="text-sm font-medium mb-2">감지된 행동</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {structuredData.behaviors.map((behavior: string, idx: number) => (
+                                    <Badge key={idx} variant="secondary">
+                                      {behavior}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {structuredData.emotions && structuredData.emotions.length > 0 && (
+                              <div>
+                                <p className="text-sm font-medium mb-2">감정 상태</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {structuredData.emotions.map((emotion: string, idx: number) => (
+                                    <Badge key={idx} className="bg-blue-100 text-blue-700">
+                                      {emotion}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {structuredData.recommendedTests && structuredData.recommendedTests.length > 0 && (
+                              <div>
+                                <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                                  <Lightbulb className="w-4 h-4" />
+                                  추천 심리검사
+                                </p>
+                                <div className="space-y-2">
+                                  {structuredData.recommendedTests.map((test: string, idx: number) => (
+                                    <Button
+                                      key={idx}
+                                      variant="outline"
+                                      size="sm"
+                                      className="w-full justify-start"
+                                      onClick={() => navigate('/assessment')}
+                                    >
+                                      {test}
+                                    </Button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      <Button
+                        onClick={handleSaveObservation}
+                        disabled={saving || !content.trim()}
+                        className="w-full"
+                        size="lg"
+                      >
+                        {saving ? '저장 중...' : '관찰일지 저장하기'}
+                      </Button>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar - Recent Observations */}
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  최근 관찰 기록
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {observations.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <FileText className="w-12 h-12 mx-auto mb-2 opacity-30" />
+                    <p className="text-sm">아직 관찰 기록이 없습니다</p>
+                  </div>
+                ) : (
+                  observations.map((obs) => (
+                    <Card 
+                      key={obs.id} 
+                      className="p-3 hover:shadow-md transition-shadow cursor-pointer"
+                      onClick={() => {
+                        setTitle(obs.title);
+                        setContent(obs.content);
+                        setActiveMode('text');
+                      }}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">
+                            {obs.title}
+                          </p>
+                          <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                            {obs.content}
+                          </p>
+                        </div>
+                        <Badge variant="outline" className="shrink-0">
+                          {formatDate(obs.created_at)}
                         </Badge>
-                        <span>•</span>
-                        <span>{new Date(session.created_at).toLocaleDateString('ko-KR')}</span>
                       </div>
                       
-                      {/* 점수 정보 */}
-                      {session.observations?.analysis_data?.score?.overall && (
-                        <div className="flex items-center gap-2">
-                          <div className="text-sm text-muted-foreground">전체 점수:</div>
-                          <div className="text-sm font-medium">
-                            {session.observations.analysis_data.score.overall}/100
-                          </div>
+                      {obs.severity && (
+                        <div className="mt-2">
+                          <Badge 
+                            variant={
+                              obs.severity === 'high' ? 'destructive' : 
+                              obs.severity === 'medium' ? 'default' : 
+                              'secondary'
+                            }
+                            className="text-xs"
+                          >
+                            {obs.severity === 'high' && '주의 필요'}
+                            {obs.severity === 'medium' && '관찰 중'}
+                            {obs.severity === 'low' && '안정'}
+                          </Badge>
                         </div>
                       )}
-                      
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full"
-                        onClick={() => viewSession(session)}
-                      >
-                        <Eye className="h-4 w-4 mr-2" />
-                        상세보기
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+                    </Card>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Quick Stats */}
+            <Card className="bg-gradient-to-br from-primary/10 to-purple-100">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5" />
+                  이번 주 통계
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">총 기록</span>
+                  <span className="text-2xl font-bold text-primary">
+                    {observations.length}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">연속 기록</span>
+                  <span className="text-lg font-semibold">3일</span>
+                </div>
+                <div className="h-2 bg-white rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-primary to-purple-600"
+                    style={{ width: '60%' }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  목표까지 40%
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* AI Tips */}
+            <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Lightbulb className="w-5 h-5 text-blue-600" />
+                  AI 활용 팁
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-blue-600">1</span>
+                  </div>
+                  <p className="text-sm text-gray-700">
+                    구체적인 상황과 행동을 설명하면 더 정확한 분석을 받을 수 있습니다
+                  </p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-purple-600">2</span>
+                  </div>
+                  <p className="text-sm text-gray-700">
+                    음성 녹음은 30초 이상 말씀하시면 더 풍부한 분석 결과를 제공합니다
+                  </p>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-green-600">3</span>
+                  </div>
+                  <p className="text-sm text-gray-700">
+                    매일 꾸준히 기록하면 패턴 분석으로 더 나은 인사이트를 얻을 수 있습니다
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
-      </div>
-    </AuthenticationGuard>
+    </div>
   );
 };
 

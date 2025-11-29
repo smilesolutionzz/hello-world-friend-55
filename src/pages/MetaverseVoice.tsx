@@ -59,46 +59,25 @@ const MetaverseVoicePage = () => {
   return (
     <div className="relative min-h-screen">
       <ThreeBackground />
-      {/* 네비게이션 버튼 */}
-      <div className="fixed top-4 left-4 z-50 flex gap-2">
-        <Button
-          onClick={() => navigate(-1)}
-          variant="outline"
-          size="sm"
-          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          뒤로
-        </Button>
-        <Button
-          onClick={() => navigate('/')}
-          variant="outline"
-          size="sm"
-          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
-        >
-          <Home className="w-4 h-4" />
-          홈
-        </Button>
-      </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 pt-4 pb-8">
         <Tabs value={mode} onValueChange={(v) => setMode(v as 'structured' | 'free' | 'roleplay' | 'therapy')} className="w-full">
           <TabsList className="grid w-full max-w-4xl mx-auto grid-cols-4 mb-8 bg-black/40 backdrop-blur-sm border border-white/20">
             <TabsTrigger value="structured" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
               <Sparkles className="w-4 h-4" />
-              금쪽 상담
+              <span className="hidden sm:inline">금쪽 상담</span>
             </TabsTrigger>
             <TabsTrigger value="therapy" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
               <Stethoscope className="w-4 h-4" />
-              전문 치료사
+              <span className="hidden sm:inline">전문 치료사</span>
             </TabsTrigger>
             <TabsTrigger value="roleplay" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
               <Users className="w-4 h-4" />
-              롤플레이 연습
+              <span className="hidden sm:inline">롤플레이 연습</span>
             </TabsTrigger>
             <TabsTrigger value="free" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
               <MessageSquare className="w-4 h-4" />
-              자유 대화
+              <span className="hidden sm:inline">자유 대화</span>
             </TabsTrigger>
           </TabsList>
 

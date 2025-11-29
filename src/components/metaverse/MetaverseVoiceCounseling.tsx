@@ -1261,8 +1261,8 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         </Button>
       </div>
       
-      {/* 공간 이동 버튼 - 항상 표시, 모바일 반응형 */}
-      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-wrap justify-center gap-1.5 sm:gap-2 max-w-[95vw] sm:max-w-none pointer-events-auto px-2">
+      {/* 공간 이동 버튼 - 탭 아래에 배치, 모바일 반응형 */}
+      <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[90] flex flex-wrap justify-center gap-1.5 sm:gap-2 max-w-[95vw] sm:max-w-none pointer-events-auto px-2">
         <Button
           onClick={() => setShowRoomSelector(true)}
           size="sm"

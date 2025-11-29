@@ -1101,44 +1101,77 @@ const CounselingRoom = ({
 
           {/* 사용자가 추가한 데코레이션 아이템들 */}
           {decorationItems.map((item) => {
-            const getItemGeometry = (type: string) => {
+            const renderItem = (type: string) => {
               switch(type) {
                 case 'furniture':
-                  return <boxGeometry args={[1, 1, 1]} />;
+                  return (
+                    <group>
+                      <mesh position={[0, 0, 0]}>
+                        <boxGeometry args={[1, 0.5, 1]} />
+                        <meshLambertMaterial color="#8B4513" />
+                      </mesh>
+                      <mesh position={[0, 0.4, 0]}>
+                        <boxGeometry args={[0.9, 0.1, 0.9]} />
+                        <meshLambertMaterial color="#A0522D" />
+                      </mesh>
+                    </group>
+                  );
                 case 'plant':
                   return (
                     <group>
-                      <cylinderGeometry args={[0.3, 0.4, 0.5, 8]} />
+                      {/* 화분 */}
+                      <mesh position={[0, 0, 0]}>
+                        <cylinderGeometry args={[0.3, 0.4, 0.5, 8]} />
+                        <meshLambertMaterial color="#8B4513" />
+                      </mesh>
+                      {/* 식물 */}
+                      <mesh position={[0, 0.5, 0]}>
+                        <sphereGeometry args={[0.4, 16, 16]} />
+                        <meshLambertMaterial color="#228B22" />
+                      </mesh>
                     </group>
                   );
                 case 'picture':
-                  return <boxGeometry args={[0.8, 0.6, 0.1]} />;
+                  return (
+                    <group>
+                      <mesh>
+                        <boxGeometry args={[0.8, 0.6, 0.1]} />
+                        <meshLambertMaterial color="#FFD700" />
+                      </mesh>
+                      <mesh position={[0, 0, 0.06]}>
+                        <planeGeometry args={[0.7, 0.5]} />
+                        <meshLambertMaterial color="#87CEEB" />
+                      </mesh>
+                    </group>
+                  );
                 case 'light':
-                  return <sphereGeometry args={[0.3, 16, 16]} />;
+                  return (
+                    <group>
+                      <mesh>
+                        <sphereGeometry args={[0.3, 16, 16]} />
+                        <meshLambertMaterial 
+                          color="#FFF8DC" 
+                          emissive="#FFE4B5"
+                          emissiveIntensity={0.8}
+                        />
+                      </mesh>
+                      <pointLight intensity={1} distance={5} color="#FFF8DC" />
+                    </group>
+                  );
                 default:
-                  return <boxGeometry args={[0.5, 0.5, 0.5]} />;
-              }
-            };
-
-            const getItemColor = (type: string) => {
-              switch(type) {
-                case 'furniture': return '#8B4513';
-                case 'plant': return '#228B22';
-                case 'picture': return '#FFD700';
-                case 'light': return '#FFF8DC';
-                default: return '#CCCCCC';
+                  return (
+                    <mesh>
+                      <boxGeometry args={[0.5, 0.5, 0.5]} />
+                      <meshLambertMaterial color="#CCCCCC" />
+                    </mesh>
+                  );
               }
             };
 
             return (
-              <mesh key={item.id} position={item.position}>
-                {getItemGeometry(item.type)}
-                <meshLambertMaterial 
-                  color={getItemColor(item.type)} 
-                  emissive={item.type === 'light' ? '#FFE4B5' : undefined}
-                  emissiveIntensity={item.type === 'light' ? 0.5 : 0}
-                />
-              </mesh>
+              <group key={item.id} position={item.position}>
+                {renderItem(item.type)}
+              </group>
             );
           })}
           

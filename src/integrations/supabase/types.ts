@@ -5342,6 +5342,45 @@ export type Database = {
         }
         Relationships: []
       }
+      monthly_program_plans: {
+        Row: {
+          activities: Json | null
+          categories: Json | null
+          created_at: string | null
+          facility_name: string | null
+          generated_plan: string
+          id: string
+          is_finalized: boolean | null
+          month: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          activities?: Json | null
+          categories?: Json | null
+          created_at?: string | null
+          facility_name?: string | null
+          generated_plan: string
+          id?: string
+          is_finalized?: boolean | null
+          month: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          activities?: Json | null
+          categories?: Json | null
+          created_at?: string | null
+          facility_name?: string | null
+          generated_plan?: string
+          id?: string
+          is_finalized?: boolean | null
+          month?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       observation_domains: {
         Row: {
           color_class: string

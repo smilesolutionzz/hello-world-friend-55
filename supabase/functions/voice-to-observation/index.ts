@@ -93,6 +93,8 @@ serve(async (req) => {
       }),
     });
 
+    console.log('Structure response status:', structureResponse.status);
+    
     if (!structureResponse.ok) {
       const errorText = await structureResponse.text();
       console.error('Structure API error:', structureResponse.status, errorText);
@@ -108,7 +110,9 @@ serve(async (req) => {
     }
 
     const structureData = await structureResponse.json();
-    console.log('Structure response:', JSON.stringify(structureData));
+    console.log('Structure response data:', JSON.stringify(structureData));
+    console.log('Message content type:', typeof structureData.choices?.[0]?.message?.content);
+    console.log('Message content preview:', structureData.choices?.[0]?.message?.content?.substring(0, 200));
     
     const messageContent = structureData.choices[0].message.content;
     

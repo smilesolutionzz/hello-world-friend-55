@@ -46,6 +46,18 @@ const ObservationNew = () => {
   const [observationsForDate, setObservationsForDate] = useState<any[]>([]);
   const [showCalendar, setShowCalendar] = useState(false);
   const [datesWithObservations, setDatesWithObservations] = useState<Set<string>>(new Set());
+  
+  // Q&A Flow state
+  const [showQuestions, setShowQuestions] = useState(false);
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<any[]>([]);
+  const [currentAnswer, setCurrentAnswer] = useState('');
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [expertAdviceSummary, setExpertAdviceSummary] = useState('');
+  const [showDetailedAdvice, setShowDetailedAdvice] = useState(false);
+  const [detailedAdvice, setDetailedAdvice] = useState('');
+  const [loadingAdvice, setLoadingAdvice] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -125,24 +137,113 @@ const ObservationNew = () => {
     });
   };
 
-  const handleSaveObservation = async () => {
-    if (!content.trim()) {
+  const generateQuestions = async () => {
+    setLoadingQuestions(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-observation-questions', {
+        body: { 
+          observationContent: content,
+          previousAnswers: answers
+        }
+      });
+
+      if (error) throw error;
+
+      setQuestions(data.questions || []);
+      setCurrentQuestionIndex(0);
+      setShowQuestions(true);
+
+      // Generate summary advice
+      const adviceResponse = await supabase.functions.invoke('generate-expert-advice', {
+        body: { 
+          observationContent: content,
+          answers: answers,
+          adviceType: 'summary'
+        }
+      });
+
+      if (!adviceResponse.error && adviceResponse.data) {
+        setExpertAdviceSummary(adviceResponse.data.advice);
+      }
+
+    } catch (error) {
+      console.error('Error generating questions:', error);
       toast({
-        title: "입력 오류",
-        description: "관찰 내용을 입력해주세요",
+        title: "질문 생성 실패",
+        description: "질문을 생성하는 중 오류가 발생했습니다",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingQuestions(false);
+    }
+  };
+
+  const handleAnswerSubmit = () => {
+    if (!currentAnswer.trim()) {
+      toast({
+        title: "답변 입력",
+        description: "답변을 입력해주세요",
         variant: "destructive",
       });
       return;
     }
 
+    const newAnswers = [...answers, {
+      question: questions[currentQuestionIndex].question,
+      answer: currentAnswer,
+      category: questions[currentQuestionIndex].category
+    }];
+    setAnswers(newAnswers);
+
+    // Update content with answer
+    const updatedContent = `${content}\n\nQ: ${questions[currentQuestionIndex].question}\nA: ${currentAnswer}`;
+    setContent(updatedContent);
+    setCurrentAnswer('');
+
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      setShowQuestions(false);
+      toast({
+        title: "질문 완료",
+        description: "모든 질문에 답변하셨습니다. 이제 일지를 확정하세요",
+      });
+    }
+  };
+
+  const handleSkipQuestion = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      setShowQuestions(false);
+    }
+  };
+
+  const handleFinalizeObservation = async () => {
     setSaving(true);
+    setLoadingAdvice(true);
 
     try {
+      // Generate detailed advice
+      const adviceResponse = await supabase.functions.invoke('generate-expert-advice', {
+        body: { 
+          observationContent: content,
+          answers: answers,
+          adviceType: 'detailed'
+        }
+      });
+
+      if (!adviceResponse.error && adviceResponse.data) {
+        setDetailedAdvice(adviceResponse.data.advice);
+      }
+
       const observationData: any = {
         user_id: user.id,
         title: title || '관찰 기록',
         content: content,
         observation_date: new Date().toISOString(),
+        expert_advice: expertAdviceSummary,
+        detailed_advice: adviceResponse.data?.advice
       };
 
       // Add structured data if available
@@ -166,10 +267,14 @@ const ObservationNew = () => {
         description: "관찰일지가 성공적으로 저장되었습니다",
       });
 
+      setShowDetailedAdvice(true);
+
       // Reset form
       setTitle('');
       setContent('');
       setStructuredData(null);
+      setAnswers([]);
+      setExpertAdviceSummary('');
       await loadObservations();
       if (selectedDate) {
         await loadObservationsForDate(selectedDate);
@@ -183,6 +288,7 @@ const ObservationNew = () => {
       });
     } finally {
       setSaving(false);
+      setLoadingAdvice(false);
     }
   };
 
@@ -312,15 +418,94 @@ const ObservationNew = () => {
                       </div>
 
                       {/* Real-time AI Feedback */}
-                      {content.trim().length > 20 && (
+                      {content.trim().length > 20 && !showQuestions && (
                         <RealtimeAIFeedback 
                           observationText={content}
                           context={title}
                         />
                       )}
 
+                      {/* Expert Advice Summary */}
+                      {expertAdviceSummary && !showQuestions && (
+                        <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200">
+                          <CardContent className="p-4">
+                            <div className="flex items-start gap-3">
+                              <Lightbulb className="w-5 h-5 text-emerald-600 mt-0.5" />
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-emerald-900 mb-1">
+                                  전문가 한줄 조언
+                                </p>
+                                <p className="text-sm text-emerald-800">
+                                  {expertAdviceSummary}
+                                </p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Q&A Flow */}
+                      {showQuestions && questions.length > 0 && (
+                        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+                          <CardHeader>
+                            <CardTitle className="flex items-center justify-between text-lg">
+                              <span className="flex items-center gap-2">
+                                <Brain className="w-5 h-5 text-blue-600" />
+                                추가 질문 ({currentQuestionIndex + 1}/{questions.length})
+                              </span>
+                              <Badge variant="secondary">
+                                {questions[currentQuestionIndex].category}
+                              </Badge>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="bg-white p-4 rounded-lg border border-blue-200">
+                              <p className="text-sm font-medium text-blue-900">
+                                {questions[currentQuestionIndex].question}
+                              </p>
+                            </div>
+
+                            <Textarea
+                              placeholder="답변을 입력하세요..."
+                              value={currentAnswer}
+                              onChange={(e) => setCurrentAnswer(e.target.value)}
+                              rows={3}
+                              className="resize-none"
+                            />
+
+                            <div className="flex gap-2">
+                              <Button
+                                onClick={handleAnswerSubmit}
+                                className="flex-1"
+                              >
+                                답변 추가
+                              </Button>
+                              <Button
+                                onClick={handleSkipQuestion}
+                                variant="outline"
+                              >
+                                건너뛰기
+                              </Button>
+                            </div>
+
+                            {answers.length > 0 && (
+                              <div className="pt-4 border-t">
+                                <p className="text-xs text-muted-foreground mb-2">
+                                  답변한 질문: {answers.length}개
+                                </p>
+                                <div className="flex flex-wrap gap-1">
+                                  {answers.map((_, idx) => (
+                                    <div key={idx} className="w-2 h-2 bg-blue-500 rounded-full" />
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )}
+
                       {/* Structured Data Display */}
-                      {structuredData && (
+                      {structuredData && !showQuestions && (
                         <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
                           <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg">
@@ -380,14 +565,50 @@ const ObservationNew = () => {
                         </Card>
                       )}
 
-                      <Button
-                        onClick={handleSaveObservation}
-                        disabled={saving || !content.trim()}
-                        className="w-full"
-                        size="lg"
-                      >
-                        {saving ? '저장 중...' : '관찰일지 저장하기'}
-                      </Button>
+                      {/* Action Buttons */}
+                      <div className="space-y-2">
+                        {!showQuestions && !expertAdviceSummary && content.trim().length > 50 && (
+                          <Button
+                            onClick={generateQuestions}
+                            disabled={loadingQuestions}
+                            variant="outline"
+                            className="w-full"
+                            size="lg"
+                          >
+                            {loadingQuestions ? (
+                              <>
+                                <Brain className="w-4 h-4 mr-2 animate-pulse" />
+                                AI 질문 생성 중...
+                              </>
+                            ) : (
+                              <>
+                                <Sparkles className="w-4 h-4 mr-2" />
+                                AI 추가 질문 받기
+                              </>
+                            )}
+                          </Button>
+                        )}
+
+                        {expertAdviceSummary && !showQuestions && (
+                          <Button
+                            onClick={handleFinalizeObservation}
+                            disabled={saving || loadingAdvice}
+                            className="w-full"
+                            size="lg"
+                          >
+                            {saving ? (
+                              <>저장 중...</>
+                            ) : loadingAdvice ? (
+                              <>전문가 조언 생성 중...</>
+                            ) : (
+                              <>
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                최종 일지 확정 및 상세 조언 받기
+                              </>
+                            )}
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </TabsContent>
                 </Tabs>
@@ -666,6 +887,53 @@ const ObservationNew = () => {
                 ))}
               </div>
             )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      {/* Detailed Expert Advice Dialog */}
+      <Dialog open={showDetailedAdvice} onOpenChange={setShowDetailedAdvice}>
+        <DialogContent className="max-w-3xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Lightbulb className="w-6 h-6 text-amber-500" />
+              전문가 상세 조언
+            </DialogTitle>
+          </DialogHeader>
+          
+          <ScrollArea className="h-[60vh] pr-4">
+            <div className="space-y-4">
+              <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+                <CardContent className="p-6">
+                  <div className="prose prose-sm max-w-none">
+                    {detailedAdvice.split('\n').map((paragraph, idx) => (
+                      <p key={idx} className="mb-3 text-sm text-gray-800 whitespace-pre-wrap">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => setShowDetailedAdvice(false)}
+                  variant="outline"
+                  className="flex-1"
+                >
+                  닫기
+                </Button>
+                <Button
+                  onClick={() => {
+                    setShowDetailedAdvice(false);
+                    setActiveMode('voice');
+                  }}
+                  className="flex-1"
+                >
+                  새 관찰일지 작성하기
+                </Button>
+              </div>
+            </div>
           </ScrollArea>
         </DialogContent>
       </Dialog>

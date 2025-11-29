@@ -308,3 +308,12 @@ verify_jwt = false
 
 [functions.convert-to-3d]
 verify_jwt = false
+
+[functions.voice-to-observation]
+verify_jwt = true
+
+[functions.generate-observation-questions]
+verify_jwt = true
+
+[functions.generate-expert-advice]
+verify_jwt = true

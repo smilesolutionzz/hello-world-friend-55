@@ -90,15 +90,15 @@ export const JournalModal = ({ onClose }: JournalModalProps) => {
 
         {!aiFeedback ? (
           <div className="space-y-6">
-            <div>
-              <label className="text-white text-sm mb-2 block">오늘 하루는 어땠나요?</label>
-              <Textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="자유롭게 작성해보세요..."
-                className="min-h-[200px] bg-black/30 border-purple-500/30 text-white resize-none"
-              />
-            </div>
+          <div>
+            <label className="text-white text-sm mb-2 block">오늘 하루는 어땠나요?</label>
+            <Textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="자유롭게 작성해보세요..."
+              className="min-h-[200px] bg-black/30 border-purple-500/30 text-white placeholder:text-white/40 resize-none"
+            />
+          </div>
 
             <div>
               <label className="text-white text-sm mb-2 block">일기 쓰기 전 기분: {moodBefore}%</label>

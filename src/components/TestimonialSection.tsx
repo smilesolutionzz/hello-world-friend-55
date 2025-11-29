@@ -4,11 +4,13 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star, Quote, ChevronLeft, ChevronRight, Heart, Users, Award } from 'lucide-react';
+import { useDynamicStats } from '@/hooks/useDynamicStats';
 
 const TestimonialSection = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
+  const dynamicStats = useDynamicStats();
 
   const testimonials = [
     // 유아 (1-3세)
@@ -321,9 +323,21 @@ const TestimonialSection = () => {
   ];
 
   const stats = [
-    { icon: <Users className="w-5 h-5" />, label: '누적 사용자', value: '5,234명' },
-    { icon: <Heart className="w-5 h-5" />, label: '만족도', value: '95.8%' },
-    { icon: <Award className="w-5 h-5" />, label: '전문가 연결', value: '356건' }
+    { 
+      icon: <Users className="w-5 h-5" />, 
+      label: '누적 사용자', 
+      value: `${dynamicStats.totalUsers.toLocaleString()}명` 
+    },
+    { 
+      icon: <Heart className="w-5 h-5" />, 
+      label: '만족도', 
+      value: `${(dynamicStats.averageRating * 20).toFixed(1)}%` 
+    },
+    { 
+      icon: <Award className="w-5 h-5" />, 
+      label: '오늘 활동', 
+      value: `${dynamicStats.todayActive.toLocaleString()}명` 
+    }
   ];
 
   const handlePrevious = () => {

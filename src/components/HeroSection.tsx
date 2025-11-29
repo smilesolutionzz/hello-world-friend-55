@@ -11,6 +11,7 @@ import QuickOnboarding from "@/components/onboarding/QuickOnboarding";
 import InstantAIAnalysis from "./InstantAIAnalysis";
 import { AnimatedBackground } from "@/components/3d/AnimatedBackground";
 import { motion } from "framer-motion";
+import { useDynamicStats } from "@/hooks/useDynamicStats";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const HeroSection = () => {
   const [showQuickOnboarding, setShowQuickOnboarding] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
+  const stats = useDynamicStats();
 
   // Parallax 스크롤 효과
   useEffect(() => {
@@ -168,11 +170,11 @@ const HeroSection = () => {
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
               <p className="text-xs sm:text-sm md:text-base text-white/90 font-medium">
-                ⭐⭐⭐⭐⭐ 4.8/5.0 (1,247명 평가)
+                ⭐⭐⭐⭐⭐ {stats.averageRating.toFixed(1)}/5.0 ({stats.totalReviews.toLocaleString()}명 평가)
               </p>
               <div className="hidden sm:block w-px h-4 bg-white/30"></div>
               <p className="text-xs sm:text-sm md:text-base text-white/90 font-medium">
-                🔥 <span className="text-[#FFD93D]">오늘 387명</span>이 검사 진행 중
+                🔥 <span className="text-[#FFD93D]">오늘 {stats.todayActive.toLocaleString()}명</span>이 검사 진행 중
               </p>
             </div>
           </motion.div>

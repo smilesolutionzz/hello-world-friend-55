@@ -925,6 +925,7 @@ interface CounselingRoomProps {
   onGroupUsersChange?: (users: any[]) => void;
   userGesture?: GestureType | null;
   onPositionChange?: (position: { x: number; y: number; z: number }) => void;
+  decorationItems?: Array<{id: string; type: string; position: [number, number, number]}>;
 }
 
 const CounselingRoom = ({
@@ -948,7 +949,8 @@ const CounselingRoom = ({
   character,
   onGroupUsersChange,
   userGesture = null,
-  onPositionChange
+  onPositionChange,
+  decorationItems = []
 }: CounselingRoomProps) => {
   const { toast } = useToast();
   // 공간별 설정
@@ -1096,6 +1098,49 @@ const CounselingRoom = ({
               gesture={userGesture}
             />
           )}
+
+          {/* 사용자가 추가한 데코레이션 아이템들 */}
+          {decorationItems.map((item) => {
+            const getItemGeometry = (type: string) => {
+              switch(type) {
+                case 'furniture':
+                  return <boxGeometry args={[1, 1, 1]} />;
+                case 'plant':
+                  return (
+                    <group>
+                      <cylinderGeometry args={[0.3, 0.4, 0.5, 8]} />
+                    </group>
+                  );
+                case 'picture':
+                  return <boxGeometry args={[0.8, 0.6, 0.1]} />;
+                case 'light':
+                  return <sphereGeometry args={[0.3, 16, 16]} />;
+                default:
+                  return <boxGeometry args={[0.5, 0.5, 0.5]} />;
+              }
+            };
+
+            const getItemColor = (type: string) => {
+              switch(type) {
+                case 'furniture': return '#8B4513';
+                case 'plant': return '#228B22';
+                case 'picture': return '#FFD700';
+                case 'light': return '#FFF8DC';
+                default: return '#CCCCCC';
+              }
+            };
+
+            return (
+              <mesh key={item.id} position={item.position}>
+                {getItemGeometry(item.type)}
+                <meshLambertMaterial 
+                  color={getItemColor(item.type)} 
+                  emissive={item.type === 'light' ? '#FFE4B5' : undefined}
+                  emissiveIntensity={item.type === 'light' ? 0.5 : 0}
+                />
+              </mesh>
+            );
+          })}
           
           {/* 그룹 Presence - 다른 사용자들 */}
           {groupMode && (

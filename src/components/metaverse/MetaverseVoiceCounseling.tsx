@@ -144,6 +144,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [showGroupLobby, setShowGroupLobby] = useState(false);
   const [showDecorationUI, setShowDecorationUI] = useState(false);
   const [groupSessionId, setGroupSessionId] = useState<string | null>(null);
+  const [decorationItems, setDecorationItems] = useState<Array<{id: string; type: string; position: [number, number, number]}>>([]);
   
   // 텍스트 기반 감정 분석
   const [transcriptBuffer, setTranscriptBuffer] = useState('');
@@ -1305,6 +1306,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         emotion={currentEmotion}
         emotionIntensity={emotionIntensity}
         onObjectInteract={handleObjectInteraction}
+        decorationItems={decorationItems}
         onDoorClick={handleDoorClick}
         isSpeaking={isSpeaking}
         counselorGesture={counselorGesture}
@@ -1804,11 +1806,19 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
         <RoomDecorationUI
           onClose={() => setShowDecorationUI(false)}
           onPlaceItem={(itemType, itemId) => {
+            // 랜덤한 위치에 아이템 배치
+            const randomX = (Math.random() - 0.5) * 6;
+            const randomZ = (Math.random() - 0.5) * 6;
+            const newItem = {
+              id: `${itemId}_${Date.now()}`,
+              type: itemType,
+              position: [randomX, -1, randomZ] as [number, number, number]
+            };
+            setDecorationItems(prev => [...prev, newItem]);
             toast({
-              title: "아이템 배치됨",
-              description: "공간에 아이템이 추가되었습니다",
+              title: "아이템 배치됨 ✓",
+              description: `${itemType} 아이템이 공간에 추가되었습니다`,
             });
-            // TODO: 3D 공간에 실제 아이템 렌더링 로직
           }}
         />
       )}

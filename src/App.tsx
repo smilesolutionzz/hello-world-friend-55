@@ -62,7 +62,6 @@ import SubscriptionCancel from "./pages/SubscriptionCancel";
 import Pricing from "./pages/Pricing";
 import Observation from "./pages/Observation";
 import ObservationNew from "./pages/ObservationNew";
-import SmartObservation from "./pages/SmartObservation";
 import Expert from "./pages/Expert";
 import Experts from "./pages/Experts";
 import ExpertConsultation from "./pages/ExpertConsultation";
@@ -283,7 +282,6 @@ const App = () => {
           <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<ObservationNew />} />
           <Route path="/observation-old" element={<Observation />} />
-          <Route path="/smart-observation" element={<SmartObservation />} />
           <Route path="/comprehensive-reporting" element={<ComprehensiveReporting />} />
           <Route path="/report-generator" element={<ReportGenerator />} />
           <Route path="/sample-report" element={<SampleReport />} />

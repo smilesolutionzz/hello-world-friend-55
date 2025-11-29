@@ -19,8 +19,6 @@ import {
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import dataReportBg from '@/assets/data-report-bg.jpg';
-import { AnimatedBackground } from '@/components/3d/AnimatedBackground';
 import { motion } from 'framer-motion';
 
 const DataDrivenReportSection = () => {
@@ -123,51 +121,40 @@ const DataDrivenReportSection = () => {
   ];
 
   return (
-    <section className="relative py-20 md:py-32 overflow-hidden">
-      {/* 3D Animated Background */}
-      <div className="absolute inset-0 z-0 opacity-20 md:opacity-30">
-        <AnimatedBackground 
-          particleColor="#3B82F6" 
-          shapeColors={["#2563EB", "#3B82F6", "#60A5FA"]}
-          particleCount={2800}
-        />
+    <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-b from-background via-primary/5 to-background">
+      {/* Grid Pattern Background */}
+      <div className="absolute inset-0 z-0 opacity-[0.03]">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary)) 1px, transparent 0)`,
+          backgroundSize: '40px 40px'
+        }} />
       </div>
 
-      {/* Background Image with Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-        style={{ backgroundImage: `url(${dataReportBg})` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-primary/20" />
-      </div>
-
-      {/* Animated Gradient Orbs */}
+      {/* Subtle Animated Gradient Orbs */}
       <motion.div 
         animate={{ 
-          scale: [1, 1.2, 1],
-          rotate: [0, 90, 0],
-          opacity: [0.15, 0.25, 0.15]
+          scale: [1, 1.15, 1],
+          opacity: [0.05, 0.08, 0.05]
         }}
         transition={{ 
-          duration: 18, 
+          duration: 20, 
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute top-20 left-10 w-[450px] h-[450px] bg-gradient-to-r from-blue-500/30 to-indigo-500/30 rounded-full blur-[110px] z-0" 
+        className="absolute top-10 -left-20 w-[600px] h-[600px] bg-gradient-to-br from-primary/30 to-secondary/20 rounded-full blur-[120px] z-0" 
       />
       <motion.div 
         animate={{ 
-          scale: [1, 1.3, 1],
-          rotate: [0, -90, 0],
-          opacity: [0.15, 0.3, 0.15]
+          scale: [1, 1.2, 1],
+          opacity: [0.05, 0.1, 0.05]
         }}
         transition={{ 
-          duration: 22, 
+          duration: 25, 
           repeat: Infinity,
           ease: "easeInOut",
-          delay: 2
+          delay: 3
         }}
-        className="absolute bottom-20 right-10 w-[550px] h-[550px] bg-gradient-to-r from-purple-500/25 to-pink-500/25 rounded-full blur-[130px] z-0" 
+        className="absolute -bottom-20 -right-20 w-[700px] h-[700px] bg-gradient-to-tl from-secondary/30 to-primary/20 rounded-full blur-[140px] z-0" 
       />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">

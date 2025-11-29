@@ -58,11 +58,14 @@ export function useDynamicStats(): DynamicStats {
     const dayOfWeek = today.getDay();
     const weekendMultiplier = (dayOfWeek === 0 || dayOfWeek === 6) ? 1.3 : 1.0;
     
-    // 기본 활동 사용자 수에 시간대/요일 보정 적용
-    const baseTodayActive = 350;
-    const calculatedTodayActive = Math.floor(
-      baseTodayActive * hourlyMultiplier * weekendMultiplier + 
-      Math.random() * 50 // 랜덤 변동 ±25명
+    // 기본 활동 사용자 수에 시간대/요일 보정 적용 (최소 360명 보장)
+    const baseTodayActive = 380;
+    const calculatedTodayActive = Math.max(
+      360,
+      Math.floor(
+        baseTodayActive * hourlyMultiplier * weekendMultiplier + 
+        Math.random() * 50 // 랜덤 변동 ±25명
+      )
     );
     
     // 평균 평점 (4.7 ~ 4.9 사이에서 약간 변동)
@@ -76,13 +79,16 @@ export function useDynamicStats(): DynamicStats {
       todayActive: calculatedTodayActive
     });
     
-    // 1분마다 todayActive 업데이트 (실시간 느낌)
+    // 1분마다 todayActive 업데이트 (실시간 느낌, 최소 360명 보장)
     const interval = setInterval(() => {
       setStats(prev => ({
         ...prev,
-        todayActive: Math.floor(
-          baseTodayActive * hourlyMultiplier * weekendMultiplier + 
-          Math.random() * 50
+        todayActive: Math.max(
+          360,
+          Math.floor(
+            baseTodayActive * hourlyMultiplier * weekendMultiplier + 
+            Math.random() * 50
+          )
         )
       }));
     }, 60000); // 1분마다

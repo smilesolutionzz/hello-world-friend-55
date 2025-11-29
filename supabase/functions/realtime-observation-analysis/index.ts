@@ -35,6 +35,8 @@ serve(async (req) => {
 
     const systemPrompt = `당신은 아동 발달 전문가입니다. 부모가 작성 중인 관찰일지를 실시간으로 분석하고, 더 정확한 분석을 위해 필요한 추가 질문을 제안하세요.
 
+CRITICAL: 반드시 순수 JSON만 반환하세요. 마크다운 코드 블록(```)이나 다른 텍스트를 포함하지 마세요.
+
 응답 형식:
 {
   "questions": ["질문1", "질문2", "질문3"],
@@ -48,7 +50,8 @@ serve(async (req) => {
 - 질문은 3-5개, 구체적이고 답변 가능하게
 - severity는 내용의 심각도
 - needsMoreInfo는 추가 정보가 필요한지 여부
-- insight는 현재까지 입력된 내용에 대한 간단한 피드백`;
+- insight는 현재까지 입력된 내용에 대한 간단한 피드백
+- 응답은 반드시 위 JSON 형식만 반환 (코드 블록 없이)`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -87,18 +90,25 @@ serve(async (req) => {
     
     let messageContent = data.choices[0].message.content;
     
-    // Remove markdown code blocks if present
-    if (messageContent.includes('```')) {
-      messageContent = messageContent.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+    // Extract JSON from response - handle markdown code blocks and find actual JSON
+    const firstBrace = messageContent.indexOf('{');
+    const lastBrace = messageContent.lastIndexOf('}');
+    
+    if (firstBrace === -1 || lastBrace === -1) {
+      console.error('No JSON found in response:', messageContent);
+      throw new Error('AI response does not contain valid JSON structure');
     }
+    
+    const jsonContent = messageContent.substring(firstBrace, lastBrace + 1);
+    console.log('Extracted JSON content:', jsonContent);
     
     // Try to parse JSON
     let analysis;
     try {
-      analysis = JSON.parse(messageContent.trim());
+      analysis = JSON.parse(jsonContent);
     } catch (parseError) {
       console.error('JSON parse error:', parseError);
-      console.error('Content that failed to parse:', messageContent);
+      console.error('Content that failed to parse:', jsonContent);
       throw new Error('Failed to parse AI response as JSON');
     }
 

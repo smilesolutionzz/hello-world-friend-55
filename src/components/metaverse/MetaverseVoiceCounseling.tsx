@@ -134,6 +134,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     intensity: number;
   }>>([]);
   const [showEmotionChart, setShowEmotionChart] = useState(false);
+  const [showConversationUI, setShowConversationUI] = useState(false);
   
   // 텍스트 기반 감정 분석
   const [transcriptBuffer, setTranscriptBuffer] = useState('');
@@ -1360,10 +1361,13 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             )}
 
             {/* Subtitles Toggle + Messages */}
-            {messages.length > 0 && (
+            {messages.length > 0 && showConversationUI && (
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
-                  <Button variant="ghost" size="sm" onClick={() => setShowSubtitles((v) => !v)}>
+                  <Button variant="ghost" size="sm" onClick={() => {
+                    setShowConversationUI(true);
+                    setShowSubtitles((v) => !v);
+                  }}>
                     {showSubtitles ? '자막 숨기기' : '자막 표시'}
                   </Button>
                   
@@ -1372,7 +1376,10 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setShowTimeline(!showTimeline)}
+                      onClick={() => {
+                        setShowConversationUI(true);
+                        setShowTimeline(!showTimeline);
+                      }}
                       className="gap-2"
                     >
                       <Clock className="w-4 h-4" />

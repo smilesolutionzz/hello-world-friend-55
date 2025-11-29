@@ -7,20 +7,24 @@ import { ThreeBackground } from '@/components/dashboard/ThreeBackground';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Sparkles, Users, ArrowLeft, Home } from 'lucide-react';
+import { MessageSquare, Sparkles, Users, ArrowLeft, Home, Stethoscope } from 'lucide-react';
 import type { AgeGroup, CharacterType } from '@/utils/CounselingQuestions';
 import type { RolePlayScenario } from '@/utils/RolePlayScenarios';
 import { RolePlaySetup } from '@/components/metaverse/RolePlaySetup';
+import { TherapistSelector } from '@/components/metaverse/TherapistSelector';
+import type { TherapistType } from '@/types/therapist';
 
 const MetaverseVoicePage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [mode, setMode] = useState<'structured' | 'free' | 'roleplay'>('structured');
+  const [mode, setMode] = useState<'structured' | 'free' | 'roleplay' | 'therapy'>('structured');
   const [structuredConfig, setStructuredConfig] = useState<{
     ageGroup: AgeGroup;
     character: CharacterType;
   } | null>(null);
   const [roleplayScenario, setRoleplayScenario] = useState<RolePlayScenario | null>(null);
+  const [therapistType, setTherapistType] = useState<TherapistType | null>(null);
+  const [therapyUserConcern, setTherapyUserConcern] = useState<string>('');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -45,6 +49,11 @@ const MetaverseVoicePage = () => {
 
   const handleRoleplayStart = (scenario: RolePlayScenario) => {
     setRoleplayScenario(scenario);
+  };
+
+  const handleTherapistSelect = (type: TherapistType, concern: string) => {
+    setTherapistType(type);
+    setTherapyUserConcern(concern);
   };
 
   return (
@@ -73,11 +82,15 @@ const MetaverseVoicePage = () => {
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
-        <Tabs value={mode} onValueChange={(v) => setMode(v as 'structured' | 'free' | 'roleplay')} className="w-full">
-          <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-3 mb-8 bg-black/40 backdrop-blur-sm border border-white/20">
+        <Tabs value={mode} onValueChange={(v) => setMode(v as 'structured' | 'free' | 'roleplay' | 'therapy')} className="w-full">
+          <TabsList className="grid w-full max-w-4xl mx-auto grid-cols-4 mb-8 bg-black/40 backdrop-blur-sm border border-white/20">
             <TabsTrigger value="structured" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
               <Sparkles className="w-4 h-4" />
               금쪽 상담
+            </TabsTrigger>
+            <TabsTrigger value="therapy" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
+              <Stethoscope className="w-4 h-4" />
+              전문 치료사
             </TabsTrigger>
             <TabsTrigger value="roleplay" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
               <Users className="w-4 h-4" />
@@ -96,6 +109,18 @@ const MetaverseVoicePage = () => {
               <MetaverseVoiceCounseling 
                 mode="structured"
                 structuredConfig={structuredConfig}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="therapy" className="mt-0">
+            {!therapistType ? (
+              <TherapistSelector onSelect={handleTherapistSelect} />
+            ) : (
+              <MetaverseVoiceCounseling 
+                mode="therapy"
+                therapistType={therapistType}
+                therapyUserConcern={therapyUserConcern}
               />
             )}
           </TabsContent>

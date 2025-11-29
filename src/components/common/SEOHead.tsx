@@ -16,7 +16,7 @@ const SEOHead = ({
   title = "AIHPRO | AI 심리검사 정신건강 전문가 상담",
   description = "ADHD, 우울증, 스트레스 검사와 AI 분석. 전문가 매칭부터 심리상담까지 원스톱 케어 서비스",
   keywords = "AIHPRO,AI심리검사,정신건강,ADHD검사,우울증테스트,스트레스검사,전문가상담,심리상담,AI분석",
-  ogImage = "/lovable-uploads/ec886850-04ce-4489-b96e-d4ac8f73d95e.png",
+  ogImage = "/company-logo.png",
   canonicalUrl,
   noIndex = false,
   structuredData,

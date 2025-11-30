@@ -306,6 +306,9 @@ verify_jwt = false
 [functions.analyze-visual-material]
 verify_jwt = false
 
+[functions.generate-mbti-image]
+verify_jwt = false
+
 [functions.convert-to-3d]
 verify_jwt = false
 

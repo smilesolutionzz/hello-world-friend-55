@@ -2,11 +2,12 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Share2, Download, RefreshCw, Sparkles, Heart, Zap, Target, TrendingUp, BarChart3 } from "lucide-react";
+import { Share2, Download, RefreshCw, Sparkles, Heart, Zap, Target, TrendingUp, BarChart3, ImageIcon } from "lucide-react";
 import { getMBTIDescription, MBTIPercentages } from "./mbtiCalculator";
 import { toast } from "sonner";
 import html2canvas from "html2canvas";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MBTIResultProps {
   mbtiType: string;
@@ -18,6 +19,8 @@ interface MBTIResultProps {
 export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBTIResultProps) => {
   const resultRef = useRef<HTMLDivElement>(null);
   const description = getMBTIDescription(mbtiType);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const [isGeneratingImages, setIsGeneratingImages] = useState(false);
 
   const dimensions = [
     { left: 'E', right: 'I', leftPercent: percentages.E, rightPercent: percentages.I, leftLabel: '외향', rightLabel: '내향' },
@@ -93,6 +96,29 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
     } catch (error) {
       console.error('다운로드 실패:', error);
       toast.error("다운로드에 실패했습니다.");
+    }
+  };
+
+  const handleGenerateImages = async () => {
+    setIsGeneratingImages(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-mbti-image', {
+        body: { mbtiType, description }
+      });
+
+      if (error) throw error;
+      
+      if (data?.images && Array.isArray(data.images)) {
+        setGeneratedImages(data.images);
+        toast.success("이미지가 생성되었습니다!");
+      } else {
+        throw new Error('이미지 생성 실패');
+      }
+    } catch (error) {
+      console.error('이미지 생성 실패:', error);
+      toast.error("이미지 생성에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsGeneratingImages(false);
     }
   };
 
@@ -185,6 +211,63 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
                 <p className="text-lg leading-relaxed">
                   {description.description}
                 </p>
+              </div>
+
+              {/* AI 이미지 생성 */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <ImageIcon className="w-5 h-5 text-primary" />
+                    <h3 className="text-xl font-bold">AI가 그린 나의 성격</h3>
+                  </div>
+                  {!generatedImages.length && (
+                    <Button
+                      onClick={handleGenerateImages}
+                      disabled={isGeneratingImages}
+                      size="sm"
+                      className="bg-gradient-to-r from-primary to-accent"
+                    >
+                      {isGeneratingImages ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                          생성중...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          이미지 생성
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
+                {generatedImages.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {generatedImages.map((image, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.2 }}
+                        className="rounded-xl overflow-hidden border-2 border-primary/20"
+                      >
+                        <img 
+                          src={image} 
+                          alt={`${mbtiType} 특성 이미지 ${index + 1}`}
+                          className="w-full h-auto"
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+                {!generatedImages.length && !isGeneratingImages && (
+                  <div className="p-8 rounded-xl bg-muted/50 border border-border text-center">
+                    <ImageIcon className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+                    <p className="text-muted-foreground">
+                      AI가 당신의 MBTI 특성을 시각적으로 표현합니다
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* 강점 */}

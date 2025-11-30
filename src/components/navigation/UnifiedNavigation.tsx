@@ -152,9 +152,9 @@ export const UnifiedNavigation = () => {
       {/* Desktop Navigation */}
       <nav className="hidden lg:flex bg-card border-b border-border sticky top-0 z-40 backdrop-blur-xl bg-card/95">
         <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-start justify-between py-2">
             {/* Clean Logo & Token Balance & Live Stats */}
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2 xl:gap-4">
               <div 
                 className="flex items-center gap-2 cursor-pointer group flex-shrink-0"
                 onClick={() => navigate('/')}

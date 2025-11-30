@@ -40,6 +40,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useTokens } from '@/hooks/useTokens';
+import { useLiveStats } from '@/hooks/useLiveStats';
 import { supabase } from '@/integrations/supabase/client';
 import TokenBalance from '@/components/TokenBalance';
 import AIPlatformChat from '@/components/AIPlatformChat';
@@ -93,6 +94,7 @@ export const UnifiedNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthGuard();
+  const liveStats = useLiveStats();
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -177,11 +179,11 @@ export const UnifiedNavigation = () => {
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5 cursor-help">
                         <Users className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-xs font-semibold text-foreground">180</span>
+                        <span className="text-xs font-semibold text-foreground">{liveStats.visitors.toLocaleString()}</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-xs">180명 방문 중</p>
+                      <p className="text-xs">{liveStats.visitors.toLocaleString()}명 누적 방문</p>
                     </TooltipContent>
                   </Tooltip>
 
@@ -189,11 +191,11 @@ export const UnifiedNavigation = () => {
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5 cursor-help">
                         <Activity className="w-3.5 h-3.5 text-green-500" />
-                        <span className="text-xs font-semibold text-foreground">49</span>
+                        <span className="text-xs font-semibold text-foreground">{liveStats.online}</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-xs">49명 온라인</p>
+                      <p className="text-xs">{liveStats.online}명 온라인</p>
                     </TooltipContent>
                   </Tooltip>
 
@@ -201,11 +203,11 @@ export const UnifiedNavigation = () => {
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5 cursor-help">
                         <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
-                        <span className="text-xs font-semibold text-foreground">85</span>
+                        <span className="text-xs font-semibold text-foreground">{liveStats.testsInProgress}</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-xs">85건 검사 진행 중</p>
+                      <p className="text-xs">오늘 {liveStats.testsInProgress}건 검사 진행 중</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>

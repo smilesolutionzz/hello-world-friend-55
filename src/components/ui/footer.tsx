@@ -1,5 +1,6 @@
 import { Card } from "./card";
 import { BookOpen, Rocket } from "lucide-react";
+import logo from '@/assets/logo.png';
 
 const Footer = () => {
   return (
@@ -7,7 +8,10 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">하이라이트 AI</h3>
+            <div className="flex items-center gap-2 mb-4">
+              <img src={logo} alt="하이라이트 AI" className="h-8 w-8" />
+              <h3 className="text-lg font-semibold">하이라이트 AI</h3>
+            </div>
             <p className="text-sm text-muted-foreground">
               AI 기반 심리 분석 및 상담 연결 서비스
             </p>

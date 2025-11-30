@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Brain, FileText, BarChart3, Download, Home, ChevronDown, ClipboardCheck, User, Settings, GraduationCap, Building2, Baby, CreditCard } from 'lucide-react';
+import logo from '@/assets/logo.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import {
@@ -97,7 +98,7 @@ export const HighlightNavigation = () => {
               onClick={() => navigate('/')}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <Brain className="h-8 w-8 text-primary" />
+              <img src={logo} alt="AI Highlight" className="h-10 w-10" />
               <span className="text-xl font-bold">AI Highlight</span>
             </button>
             

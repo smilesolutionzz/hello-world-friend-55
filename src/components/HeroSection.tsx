@@ -191,9 +191,15 @@ const HeroSection = () => {
             className="bg-gradient-to-r from-[#5E8FFF]/25 to-[#8FB9FF]/25 backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-[#5E8FFF]/40 max-w-3xl mx-auto shadow-[0_8px_32px_rgba(94,143,255,0.3)]"
           >
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-3">
-              <p className="text-sm sm:text-base text-white font-semibold">✓ 회원가입 없이 즉시 시작</p>
-              <p className="text-sm sm:text-base text-white font-semibold">✓ 완전 무료 체험</p>
-              <p className="text-sm sm:text-base text-white font-semibold">✓ 24시간 이용 가능</p>
+              <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold px-4 py-2 rounded-full text-sm sm:text-base">
+                ✓ 회원가입 없이 즉시 시작
+              </div>
+              <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold px-4 py-2 rounded-full text-sm sm:text-base">
+                ✓ 완전 무료 체험
+              </div>
+              <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold px-4 py-2 rounded-full text-sm sm:text-base">
+                ✓ 24시간 이용 가능
+              </div>
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
               <p className="text-xs sm:text-sm md:text-base text-white/90 font-medium">

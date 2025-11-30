@@ -30,6 +30,13 @@ export const TestSelector = () => {
       // Mock data with Korean translations
       const mockTestTypes = [
         {
+          id: 'mbti-test',
+          name: 'MBTI 성격유형 검사',
+          description: 'AI 분석 기반 창작 성격유형 검사',
+          typebot_url: '',
+          duration_minutes: 5
+        },
+        {
           id: 'adhd-test',
           name: 'ADHD 검사',
           description: '주의력결핍 과잉행동장애 종합 평가',
@@ -121,6 +128,7 @@ export const TestSelector = () => {
   };
 
   const getTestIcon = (testName: string) => {
+    if (testName.includes('MBTI')) return Brain;
     if (testName.includes('언어')) return MessageSquare;
     if (testName.includes('회복력')) return Activity;
     if (testName.includes('ADHD')) return Brain;
@@ -133,6 +141,9 @@ export const TestSelector = () => {
     
     // Navigate to different pages based on test type
     switch (testType.id) {
+      case 'mbti-test':
+        navigate('/assessment/mbti-test');
+        break;
       case 'adhd-test':
         navigate('/assessment', { state: { testType: 'adhd' } });
         break;

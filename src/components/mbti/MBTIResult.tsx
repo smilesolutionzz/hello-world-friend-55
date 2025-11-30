@@ -27,19 +27,51 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
   ];
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
+    if (!resultRef.current) return;
+
+    try {
+      // 스크린샷 생성
+      const canvas = await html2canvas(resultRef.current, {
+        backgroundColor: '#1a1f2e',
+        scale: 2,
+        logging: false
+      });
+      
+      // Canvas를 Blob으로 변환
+      const blob = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+        }, 'image/png');
+      });
+
+      const file = new File([blob], `mbti-${mbtiType}.png`, { type: 'image/png' });
+
+      // Web Share API로 이미지 공유 (모바일에서 인스타그램 스토리 등으로 공유 가능)
+      if (navigator.share && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: `나는 ${mbtiType} - ${description.title}`,
           text: `${description.subtitle}\n당신도 테스트해보세요!`,
-          url: window.location.origin + '/premium-assessment'
+          files: [file]
         });
-      } catch (error) {
-        console.error('공유 실패:', error);
+        toast.success("공유가 완료되었습니다!");
+      } else if (navigator.share) {
+        // 파일 공유를 지원하지 않는 경우 링크만 공유
+        await navigator.share({
+          title: `나는 ${mbtiType} - ${description.title}`,
+          text: `${description.subtitle}\n당신도 테스트해보세요!`,
+          url: window.location.href
+        });
+      } else {
+        // Web Share API를 지원하지 않는 경우 다운로드
+        const link = document.createElement('a');
+        link.download = `mbti-${mbtiType}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+        toast.success("이미지가 다운로드되었습니다!");
       }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast.success("링크가 클립보드에 복사되었습니다!");
+    } catch (error) {
+      console.error('공유 실패:', error);
+      toast.error("공유에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -316,7 +348,7 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
             className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
           >
             <Share2 className="w-4 h-4 mr-2" />
-            공유하기
+            인스타 스토리 공유
           </Button>
           
           <Button

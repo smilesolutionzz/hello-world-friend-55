@@ -11,8 +11,6 @@ import QuickOnboarding from "@/components/onboarding/QuickOnboarding";
 import InstantAIAnalysis from "./InstantAIAnalysis";
 import { AnimatedBackground } from "@/components/3d/AnimatedBackground";
 import { motion } from "framer-motion";
-import { useDynamicStats } from "@/hooks/useDynamicStats";
-import { useCountUp } from "@/hooks/useCountUp";
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -20,12 +18,6 @@ const HeroSection = () => {
   const [showQuickOnboarding, setShowQuickOnboarding] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
-  const stats = useDynamicStats();
-  
-  // 카운팅 애니메이션
-  const ratingCount = useCountUp({ end: stats.averageRating, duration: 2000, decimals: 1 });
-  const reviewsCount = useCountUp({ end: stats.totalReviews, duration: 2500 });
-  const activeCount = useCountUp({ end: stats.todayActive, duration: 2000 });
 
   // Parallax 스크롤 효과
   useEffect(() => {
@@ -176,11 +168,11 @@ const HeroSection = () => {
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
               <p className="text-xs sm:text-sm md:text-base text-white/90 font-medium">
-                ⭐⭐⭐⭐⭐ {ratingCount.count.toFixed(1)}/5.0 ({reviewsCount.count.toLocaleString()}명 평가)
+                ⭐⭐⭐⭐⭐ 4.8/5.0 (2,148명 평가)
               </p>
               <div className="hidden sm:block w-px h-4 bg-white/30"></div>
               <p className="text-xs sm:text-sm md:text-base text-white/90 font-medium">
-                🔥 <span className="text-[#FFD93D]">오늘 {activeCount.count.toLocaleString()}명</span>이 검사 진행 중
+                🔥 <span className="text-[#FFD93D]">오늘 210명</span>이 검사 진행 중
               </p>
             </div>
           </motion.div>

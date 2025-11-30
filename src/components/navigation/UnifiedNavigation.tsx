@@ -152,27 +152,27 @@ export const UnifiedNavigation = () => {
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Clean Logo & Token Balance & Live Stats */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <div 
-                className="flex items-center gap-3 cursor-pointer group"
+                className="flex items-center gap-2 cursor-pointer group"
                 onClick={() => navigate('/')}
               >
                 <img 
                   src="/company-logo.png" 
                   alt="AIHumanPro Logo" 
-                  className="h-8 w-auto"
+                  className="h-7 w-auto"
                 />
-                <span className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">AIHPRO</span>
+                <span className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">AIHPRO</span>
               </div>
               
-              {/* Token Balance */}
-              <div className="flex items-center">
+              {/* Token Balance - 더 컴팩트하게 */}
+              <div className="flex items-center scale-90">
                 <TokenBalance compact showPurchaseButton={false} />
               </div>
 
               {/* Live Stats with Tooltips */}
               <TooltipProvider>
-                <div className="flex items-center gap-3 px-4 py-1.5 bg-accent/50 rounded-full">
+                <div className="flex items-center gap-2 px-3 py-1 bg-accent/50 rounded-full">
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5 cursor-help">

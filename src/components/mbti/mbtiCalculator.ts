@@ -99,14 +99,29 @@ export const calculateMBTIPercentages = (answers: Record<number, number>): MBTIP
 };
 
 export const getMBTIDescription = (type: string) => {
-  const descriptions: Record<string, { title: string; subtitle: string; description: string; strengths: string[]; weaknesses: string[]; careers: string[]; }> = {
+  const descriptions: Record<string, { 
+    title: string; 
+    subtitle: string; 
+    description: string; 
+    strengths: string[]; 
+    weaknesses: string[]; 
+    careers: string[];
+    loveStyle: string;
+    compatibility: string[];
+    celebrities: string[];
+    whenStressed: string;
+  }> = {
     'INTJ': {
       title: '전략가',
       subtitle: '상상력이 풍부한 전략가',
       description: '모든 일에 전략이 있고, 독립적이며 목표 지향적입니다. 복잡한 문제를 해결하는 것을 즐깁니다.',
       strengths: ['전략적 사고', '독립적', '결단력', '장기 계획'],
       weaknesses: ['감정 표현 서툼', '지나친 비판', '완벽주의'],
-      careers: ['전략 컨설턴트', '과학자', '프로그래머', 'CEO']
+      careers: ['전략 컨설턴트', '과학자', '프로그래머', 'CEO'],
+      loveStyle: '지적인 대화를 중요시하며 깊고 의미있는 관계를 추구합니다. 감정 표현은 서툴지만 헌신적입니다.',
+      compatibility: ['ENFP', 'ENTP', 'INFP'],
+      celebrities: ['일론 머스크', '마크 저커버그', '크리스토퍼 놀란'],
+      whenStressed: '혼자만의 시간을 가지며 전략을 재정비하고, 장기적인 계획을 세웁니다.'
     },
     'INTP': {
       title: '논리술사',
@@ -114,7 +129,11 @@ export const getMBTIDescription = (type: string) => {
       description: '지적 호기심이 많고 창의적입니다. 이론과 논리를 좋아하며 새로운 아이디어를 탐구합니다.',
       strengths: ['논리적 분석', '객관적', '창의적 문제해결', '지적 호기심'],
       weaknesses: ['실행력 부족', '감정 소홀', '산만함'],
-      careers: ['연구원', '철학자', '수학자', '엔지니어']
+      careers: ['연구원', '철학자', '수학자', '엔지니어'],
+      loveStyle: '논리적이고 이성적인 관계를 선호하며, 상대의 독립성을 존중합니다. 감정 표현보다는 행동으로 사랑을 보여줍니다.',
+      compatibility: ['ENTJ', 'ENFJ', 'INFJ'],
+      celebrities: ['알버트 아인슈타인', '빌 게이츠', '아이작 뉴턴'],
+      whenStressed: '이론적 분석에 몰두하며 혼자 생각을 정리하는 시간을 가집니다.'
     },
     'ENTJ': {
       title: '통솔자',
@@ -122,7 +141,11 @@ export const getMBTIDescription = (type: string) => {
       description: '타고난 리더십과 결단력을 가졌습니다. 목표를 향해 팀을 이끌고 효율성을 추구합니다.',
       strengths: ['리더십', '결단력', '전략적', '효율성'],
       weaknesses: ['고집', '무뚝뚝함', '인내심 부족'],
-      careers: ['경영자', '변호사', '정치인', '기업가']
+      careers: ['경영자', '변호사', '정치인', '기업가'],
+      loveStyle: '주도적이고 계획적인 연애를 선호합니다. 목표 지향적이며 파트너의 성장을 중요하게 생각합니다.',
+      compatibility: ['INTP', 'INFP', 'ENFP'],
+      celebrities: ['스티브 잡스', '나폴레옹', '마거릿 대처'],
+      whenStressed: '더 열심히 일하며 목표 달성에 집중합니다. 운동으로 스트레스를 해소합니다.'
     },
     'ENTP': {
       title: '변론가',
@@ -130,7 +153,11 @@ export const getMBTIDescription = (type: string) => {
       description: '재치있고 똑똑하며 논쟁을 즐깁니다. 새로운 가능성을 탐구하고 도전하는 것을 좋아합니다.',
       strengths: ['창의성', '논리력', '적응력', '설득력'],
       weaknesses: ['논쟁적', '산만함', '규칙 무시'],
-      careers: ['마케터', '변호사', '발명가', '컨설턴트']
+      careers: ['마케터', '변호사', '발명가', '컨설턴트'],
+      loveStyle: '지적인 토론을 즐기며 자유롭고 모험적인 관계를 추구합니다. 루틴보다는 새로운 경험을 선호합니다.',
+      compatibility: ['INTJ', 'INFJ', 'ENFJ'],
+      celebrities: ['토마스 에디슨', '레오나르도 다 빈치', '사라 실버만'],
+      whenStressed: '새로운 프로젝트를 시작하거나 토론에 참여하여 에너지를 발산합니다.'
     },
     'INFJ': {
       title: '옹호자',
@@ -138,7 +165,11 @@ export const getMBTIDescription = (type: string) => {
       description: '이상주의적이고 원칙이 뚜렷합니다. 깊은 통찰력으로 사람을 이해하고 도우려 합니다.',
       strengths: ['통찰력', '공감 능력', '헌신적', '창의적'],
       weaknesses: ['완벽주의', '번아웃', '감정 과몰입'],
-      careers: ['상담사', '작가', 'NGO 활동가', '교육자']
+      careers: ['상담사', '작가', 'NGO 활동가', '교육자'],
+      loveStyle: '깊고 의미있는 영혼의 교감을 추구합니다. 이상적인 사랑을 꿈꾸며 헌신적으로 사랑합니다.',
+      compatibility: ['ENTP', 'ENFP', 'INTP'],
+      celebrities: ['마틴 루터 킹', '마더 테레사', '넬슨 만델라'],
+      whenStressed: '혼자만의 시간으로 에너지를 재충전하며, 글쓰기나 명상을 합니다.'
     },
     'INFP': {
       title: '중재자',
@@ -146,7 +177,11 @@ export const getMBTIDescription = (type: string) => {
       description: '감수성이 풍부하고 이상주의적입니다. 자신만의 가치관을 중시하며 창의적입니다.',
       strengths: ['공감 능력', '창의성', '이상주의', '진정성'],
       weaknesses: ['현실감 부족', '우유부단', '비현실적'],
-      careers: ['예술가', '작가', '심리상담사', '사회복지사']
+      careers: ['예술가', '작가', '심리상담사', '사회복지사'],
+      loveStyle: '로맨틱하고 감성적인 연애를 추구합니다. 진실되고 순수한 사랑을 꿈꾸며 상대를 이상화합니다.',
+      compatibility: ['ENFJ', 'ENTJ', 'INTJ'],
+      celebrities: ['윌리엄 셰익스피어', 'J.R.R. 톨킨', '오드리 헵번'],
+      whenStressed: '예술적 활동이나 상상의 세계로 도피하며, 혼자만의 시간을 가집니다.'
     },
     'ENFJ': {
       title: '선도자',
@@ -154,7 +189,11 @@ export const getMBTIDescription = (type: string) => {
       description: '타인을 이끌고 영감을 주는 리더입니다. 사람들의 잠재력을 끌어내는 것을 좋아합니다.',
       strengths: ['카리스마', '공감 능력', '소통 능력', '열정'],
       weaknesses: ['지나친 이타심', '비판에 민감', '과도한 걱정'],
-      careers: ['교사', '코치', 'HR 매니저', '상담사']
+      careers: ['교사', '코치', 'HR 매니저', '상담사'],
+      loveStyle: '파트너의 성장을 적극적으로 돕고 지지합니다. 따뜻하고 헌신적이며 관계에 많은 에너지를 투자합니다.',
+      compatibility: ['INFP', 'ISFP', 'INTP'],
+      celebrities: ['오프라 윈프리', '버락 오바마', '벤 애플렉'],
+      whenStressed: '주변 사람들과 대화하며 감정을 나누고, 누군가를 도우며 에너지를 얻습니다.'
     },
     'ENFP': {
       title: '활동가',
@@ -162,7 +201,11 @@ export const getMBTIDescription = (type: string) => {
       description: '열정적이고 창의적이며 사교적입니다. 새로운 가능성과 아이디어를 탐구하는 것을 즐깁니다.',
       strengths: ['열정', '창의성', '사교성', '낙관적'],
       weaknesses: ['산만함', '스트레스 관리', '완성도'],
-      careers: ['배우', '마케터', '상담사', '이벤트 기획자']
+      careers: ['배우', '마케터', '상담사', '이벤트 기획자'],
+      loveStyle: '열정적이고 로맨틱합니다. 새로운 경험을 함께 하며, 깊은 감정적 유대를 형성합니다.',
+      compatibility: ['INTJ', 'INFJ', 'ENTJ'],
+      celebrities: ['로빈 윌리엄스', '엘렌 드제너러스', '윌 스미스'],
+      whenStressed: '친구들과 어울리거나 새로운 활동을 시작하며 긍정적 에너지를 찾습니다.'
     },
     'ISTJ': {
       title: '현실주의자',
@@ -170,7 +213,11 @@ export const getMBTIDescription = (type: string) => {
       description: '책임감이 강하고 신뢰할 수 있습니다. 사실과 세부사항을 중시하며 체계적입니다.',
       strengths: ['책임감', '체계적', '신뢰성', '꼼꼼함'],
       weaknesses: ['경직됨', '변화 거부', '감정 표현 어려움'],
-      careers: ['회계사', '공무원', '의사', '엔지니어']
+      careers: ['회계사', '공무원', '의사', '엔지니어'],
+      loveStyle: '진지하고 헌신적입니다. 실용적이고 안정적인 관계를 추구하며, 책임감 있게 행동합니다.',
+      compatibility: ['ESFP', 'ESTP', 'ISFP'],
+      celebrities: ['조지 워싱턴', '워렌 버핏', '안젤라 메르켈'],
+      whenStressed: '계획을 재점검하고 할 일 목록을 만들며, 규칙적인 루틴을 따릅니다.'
     },
     'ISFJ': {
       title: '수호자',
@@ -178,7 +225,11 @@ export const getMBTIDescription = (type: string) => {
       description: '따뜻하고 헌신적이며 책임감이 강합니다. 다른 사람을 돕고 보호하는 것을 중요하게 여깁니다.',
       strengths: ['헌신적', '세심함', '책임감', '인내심'],
       weaknesses: ['자기주장 약함', '변화 어려움', '과도한 희생'],
-      careers: ['간호사', '교사', '사회복지사', '행정직']
+      careers: ['간호사', '교사', '사회복지사', '행정직'],
+      loveStyle: '세심하고 배려심이 깊습니다. 파트너의 필요를 채워주고 안정적인 관계를 만들어갑니다.',
+      compatibility: ['ESFP', 'ESTP', 'ENFP'],
+      celebrities: ['퀸 엘리자베스 2세', '케이트 미들턴', '비욘세'],
+      whenStressed: '집안일이나 정리정돈을 하며 마음을 안정시키고, 친한 사람과 시간을 보냅니다.'
     },
     'ESTJ': {
       title: '경영자',
@@ -186,7 +237,11 @@ export const getMBTIDescription = (type: string) => {
       description: '조직적이고 실용적이며 결단력이 있습니다. 전통과 질서를 중시하고 효율적으로 일을 처리합니다.',
       strengths: ['조직력', '결단력', '책임감', '실용성'],
       weaknesses: ['경직됨', '고집', '감정 소홀'],
-      careers: ['경영자', '군인', '판사', '프로젝트 매니저']
+      careers: ['경영자', '군인', '판사', '프로젝트 매니저'],
+      loveStyle: '전통적이고 안정적인 관계를 선호합니다. 가족 중심적이며 책임감 있게 관계를 이끌어갑니다.',
+      compatibility: ['ISFP', 'ISTP', 'INTP'],
+      celebrities: ['미셸 오바마', '존 록펠러', '헨리 포드'],
+      whenStressed: '더 열심히 일하며 통제력을 회복하려 하고, 규칙과 절차를 강화합니다.'
     },
     'ESFJ': {
       title: '집정관',
@@ -194,7 +249,11 @@ export const getMBTIDescription = (type: string) => {
       description: '친절하고 협조적이며 책임감이 강합니다. 다른 사람의 필요를 잘 알아차리고 도와줍니다.',
       strengths: ['친절함', '협조적', '사교성', '세심함'],
       weaknesses: ['비판에 민감', '변화 어려움', '과도한 헌신'],
-      careers: ['호텔리어', '영업', '이벤트 기획', '교사']
+      careers: ['호텔리어', '영업', '이벤트 기획', '교사'],
+      loveStyle: '따뜻하고 애정표현이 풍부합니다. 파트너를 돌보고 함께하는 시간을 소중히 여깁니다.',
+      compatibility: ['ISFP', 'ISTP', 'INFP'],
+      celebrities: ['테일러 스위프트', '제니퍼 가너', '스티브 하비'],
+      whenStressed: '친구들과 대화하며 공감받고, 다른 사람을 도우며 가치를 느낍니다.'
     },
     'ISTP': {
       title: '장인',
@@ -202,7 +261,11 @@ export const getMBTIDescription = (type: string) => {
       description: '조용하지만 호기심이 많고 실용적입니다. 손으로 무언가를 만들고 문제를 해결하는 것을 즐깁니다.',
       strengths: ['실용적', '문제해결', '독립적', '침착함'],
       weaknesses: ['감정 표현 어려움', '계획성 부족', '무뚝뚝함'],
-      careers: ['엔지니어', '정비사', '운동선수', '소방관']
+      careers: ['엔지니어', '정비사', '운동선수', '소방관'],
+      loveStyle: '자유로운 관계를 선호하며 행동으로 사랑을 표현합니다. 독립적이지만 신뢰할 수 있는 파트너입니다.',
+      compatibility: ['ESFJ', 'ESTJ', 'ENFJ'],
+      celebrities: ['클린트 이스트우드', '톰 크루즈', '마이클 조던'],
+      whenStressed: '혼자 작업하거나 운동, 모험적인 활동으로 스트레스를 해소합니다.'
     },
     'ISFP': {
       title: '모험가',
@@ -210,7 +273,11 @@ export const getMBTIDescription = (type: string) => {
       description: '온화하고 친절하며 예술적 감각이 뛰어납니다. 현재를 즐기고 자유를 중시합니다.',
       strengths: ['예술적', '유연함', '친절함', '개방적'],
       weaknesses: ['계획성 부족', '스트레스 취약', '우유부단'],
-      careers: ['디자이너', '예술가', '음악가', '요리사']
+      careers: ['디자이너', '예술가', '음악가', '요리사'],
+      loveStyle: '감성적이고 로맨틱합니다. 현재의 순간을 즐기며 조용하지만 깊은 애정을 표현합니다.',
+      compatibility: ['ESFJ', 'ESTJ', 'ENFJ'],
+      celebrities: ['마이클 잭슨', '브리트니 스피어스', '밥 딜런'],
+      whenStressed: '예술 활동이나 자연에서 시간을 보내며 감성적으로 회복합니다.'
     },
     'ESTP': {
       title: '사업가',
@@ -218,7 +285,11 @@ export const getMBTIDescription = (type: string) => {
       description: '활동적이고 현실적이며 융통성이 있습니다. 위험을 감수하고 즉각적인 결과를 추구합니다.',
       strengths: ['행동력', '현실적', '사교적', '위기대응'],
       weaknesses: ['장기계획 부족', '충동적', '규칙 무시'],
-      careers: ['영업', '사업가', '운동선수', '경찰']
+      careers: ['영업', '사업가', '운동선수', '경찰'],
+      loveStyle: '열정적이고 즉흥적입니다. 재미있고 활동적인 데이트를 선호하며 스릴을 즐깁니다.',
+      compatibility: ['ISFJ', 'ISTJ', 'INFJ'],
+      celebrities: ['도널드 트럼프', '어니스트 헤밍웨이', '마돈나'],
+      whenStressed: '즉각적인 행동으로 문제를 해결하고, 스포츠나 활동적인 취미로 전환합니다.'
     },
     'ESFP': {
       title: '연예인',
@@ -226,7 +297,11 @@ export const getMBTIDescription = (type: string) => {
       description: '사교적이고 즐거움을 추구하며 현재를 즐깁니다. 사람들과 함께 있는 것을 좋아합니다.',
       strengths: ['사교성', '낙관적', '융통성', '열정'],
       weaknesses: ['장기계획 부족', '집중력', '비판에 민감'],
-      careers: ['연예인', '이벤트 기획자', '영업', '교육자']
+      careers: ['연예인', '이벤트 기획자', '영업', '교육자'],
+      loveStyle: '애정표현이 풍부하고 재미있는 파트너입니다. 즉흥적이고 사교적인 활동을 함께 즐깁니다.',
+      compatibility: ['ISFJ', 'ISTJ', 'INFJ'],
+      celebrities: ['마릴린 먼로', '제이미 폭스', '아담 레빈'],
+      whenStressed: '사람들과 어울리고 즐거운 활동에 참여하며 긍정적인 에너지를 얻습니다.'
     }
   };
 

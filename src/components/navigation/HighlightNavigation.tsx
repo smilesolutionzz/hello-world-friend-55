@@ -99,7 +99,6 @@ export const HighlightNavigation = () => {
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <img src={logo} alt="AI Highlight" className="h-10 w-10" />
-              <span className="text-xl font-bold">AI Highlight</span>
             </button>
             
             <NavigationMenu>

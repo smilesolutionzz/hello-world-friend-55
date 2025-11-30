@@ -764,10 +764,10 @@ const PremiumAssessment = () => {
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-1 text-muted-foreground">
                     <Clock className="w-4 h-4" />
-                    약 3분
+                    약 5분
                   </div>
                   <div className="text-muted-foreground">
-                    16개 문항
+                    25개 문항
                   </div>
                 </div>
 

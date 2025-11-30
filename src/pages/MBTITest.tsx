@@ -171,7 +171,7 @@ const MBTITest = () => {
 
             <div className="bg-primary/10 rounded-lg p-4 mb-8">
               <p className="text-sm">
-                <strong>총 {questions.length}개 질문</strong> · 약 3분 소요
+                <strong>총 {questions.length}개 질문</strong> · 약 5분 소요
               </p>
             </div>
 

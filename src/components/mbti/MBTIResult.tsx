@@ -222,6 +222,74 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
                 </div>
               </div>
 
+              {/* 연애 스타일 */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Heart className="w-5 h-5 text-pink-500" />
+                  <h3 className="text-xl font-bold">연애 스타일</h3>
+                </div>
+                <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20">
+                  <p className="text-pink-600 dark:text-pink-400 leading-relaxed">
+                    {description.loveStyle}
+                  </p>
+                </div>
+              </div>
+
+              {/* 궁합 */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-5 h-5 text-purple-500" />
+                  <h3 className="text-xl font-bold">이상적인 궁합</h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {description.compatibility.map((type, index) => (
+                    <motion.span
+                      key={index}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 font-bold text-lg"
+                    >
+                      {type}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 유명인 */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Target className="w-5 h-5 text-yellow-500" />
+                  <h3 className="text-xl font-bold">같은 유형의 유명인</h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {description.celebrities.map((celebrity, index) => (
+                    <motion.span
+                      key={index}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="px-4 py-2 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-600 dark:text-yellow-400 font-medium"
+                    >
+                      {celebrity}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 스트레스 대처 */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Heart className="w-5 h-5 text-red-500" />
+                  <h3 className="text-xl font-bold">스트레스 받을 때</h3>
+                </div>
+                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                  <p className="text-red-600 dark:text-red-400 leading-relaxed">
+                    {description.whenStressed}
+                  </p>
+                </div>
+              </div>
+
               {/* AI 분석 */}
               {aiAnalysis && (
                 <div>

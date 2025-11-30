@@ -68,10 +68,10 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
   if (loading) {
     return compact ? (
       <Badge variant="secondary" className={`
-        flex items-center gap-1.5 px-3 py-1.5 text-sm
+        flex items-center gap-1 px-2 py-1 text-xs
         animate-pulse bg-muted/50 border border-muted
       `}>
-        <Coins className="w-4 h-4 animate-spin" />
+        <Coins className="w-3 h-3 animate-spin" />
         <span>로딩중...</span>
       </Badge>
     ) : (
@@ -105,20 +105,20 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
             <Badge 
               variant={isLowBalance ? "destructive" : "default"}
               className={`
-                flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium
+                flex items-center gap-1 px-2 py-1 text-xs font-medium
                 transition-all duration-200 ease-in-out
-                hover:scale-105 hover:shadow-lg
+                hover:scale-105 hover:shadow-md
                 group-hover:shadow-glow
                 ${isLowBalance 
                   ? 'bg-gradient-to-r from-destructive to-destructive/80 hover:from-destructive/90 hover:to-destructive/70 shadow-destructive/20' 
-                  : 'bg-gradient-to-r from-primary to-primary-glow hover:from-primary/90 hover:to-primary-glow/90 shadow-primary/20'
+                  : 'bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:from-[#6366f1]/90 hover:to-[#8b5cf6]/90 shadow-[#6366f1]/20'
                 }
-                border-0 shadow-md
+                border-0 shadow-sm
               `}
             >
-              <Coins className="w-4 h-4 animate-pulse" />
+              <Coins className="w-3 h-3 animate-pulse" />
               <span className="font-bold">{currentTokens}</span>
-              <span className="text-xs opacity-90">토큰</span>
+              <span className="text-[10px] opacity-90">토큰</span>
             </Badge>
           </div>
         </PopoverTrigger>

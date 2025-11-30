@@ -190,18 +190,6 @@ export const UnifiedNavigation = () => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5 cursor-help">
-                        <Activity className="w-3.5 h-3.5 text-green-500" />
-                        <span className="text-xs font-semibold text-foreground">{liveStats.online}</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-xs">{liveStats.online}명 온라인</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1.5 cursor-help">
                         <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
                         <span className="text-xs font-semibold text-foreground">{liveStats.testsInProgress}</span>
                       </div>

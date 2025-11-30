@@ -12,6 +12,8 @@ import InstantAIAnalysis from "./InstantAIAnalysis";
 import { AnimatedBackground } from "@/components/3d/AnimatedBackground";
 import { motion } from "framer-motion";
 
+import logo from "@/assets/logo-large.png";
+
 const HeroSection = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -127,18 +129,37 @@ const HeroSection = () => {
           className="text-center mb-12 md:mb-16 space-y-6 md:space-y-8"
         >
           <motion.div 
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-[#5E8FFF]/20 to-[#8FB9FF]/20 backdrop-blur-md border border-[#5E8FFF]/40 rounded-full shadow-lg"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="flex flex-col items-center gap-4 mb-4"
           >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            {/* 로고 */}
+            <motion.img 
+              src={logo} 
+              alt="AIHumanPro" 
+              className="w-24 h-24 md:w-32 md:h-32 object-contain"
+              animate={{ 
+                y: [0, -10, 0],
+              }}
+              transition={{ 
+                duration: 3, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            
+            {/* 배지 */}
+            <div className="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-[#5E8FFF]/20 to-[#8FB9FF]/20 backdrop-blur-md border border-[#5E8FFF]/40 rounded-full shadow-lg"
             >
-              <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-[#8FB9FF]" />
-            </motion.div>
-            <span className="text-xs md:text-sm font-bold text-white whitespace-nowrap">혁신력 1위 AI 심리·발달 케어 플랫폼</span>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-[#8FB9FF]" />
+              </motion.div>
+              <span className="text-xs md:text-sm font-bold text-white whitespace-nowrap">혁신력 1위 AI 심리·발달 케어 플랫폼</span>
+            </div>
           </motion.div>
           
           <motion.h1 

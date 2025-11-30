@@ -7,7 +7,7 @@ import { ArrowLeft, ArrowRight, Sparkles, Share2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { MBTIQuestions } from "@/components/mbti/MBTIQuestions";
 import { MBTIResult } from "@/components/mbti/MBTIResult";
-import { calculateMBTI } from "@/components/mbti/mbtiCalculator";
+import { calculateMBTI, calculateMBTIPercentages, MBTIPercentages } from "@/components/mbti/mbtiCalculator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -20,6 +20,7 @@ const MBTITest = () => {
   const [mbtiType, setMbtiType] = useState<string>("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
+  const [percentages, setPercentages] = useState<MBTIPercentages | null>(null);
 
   const questions = MBTIQuestions;
   const progress = (Object.keys(answers).length / questions.length) * 100;
@@ -38,7 +39,9 @@ const MBTITest = () => {
   const analyzeResults = async () => {
     setIsAnalyzing(true);
     const type = calculateMBTI(answers);
+    const pcts = calculateMBTIPercentages(answers);
     setMbtiType(type);
+    setPercentages(pcts);
 
     try {
       // AI 분석 요청
@@ -74,13 +77,15 @@ const MBTITest = () => {
     setShowResult(false);
     setMbtiType("");
     setAiAnalysis("");
+    setPercentages(null);
   };
 
-  if (showResult) {
+  if (showResult && percentages) {
     return (
       <MBTIResult 
         mbtiType={mbtiType} 
         aiAnalysis={aiAnalysis}
+        percentages={percentages}
         onRestart={handleRestart}
       />
     );

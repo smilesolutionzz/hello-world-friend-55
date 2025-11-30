@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Share2, Download, RefreshCw, Sparkles, Heart, Zap, Target, TrendingUp } from "lucide-react";
-import { getMBTIDescription } from "./mbtiCalculator";
+import { Progress } from "@/components/ui/progress";
+import { Share2, Download, RefreshCw, Sparkles, Heart, Zap, Target, TrendingUp, BarChart3 } from "lucide-react";
+import { getMBTIDescription, MBTIPercentages } from "./mbtiCalculator";
 import { toast } from "sonner";
 import html2canvas from "html2canvas";
 import { useRef } from "react";
@@ -10,12 +11,20 @@ import { useRef } from "react";
 interface MBTIResultProps {
   mbtiType: string;
   aiAnalysis: string;
+  percentages: MBTIPercentages;
   onRestart: () => void;
 }
 
-export const MBTIResult = ({ mbtiType, aiAnalysis, onRestart }: MBTIResultProps) => {
+export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBTIResultProps) => {
   const resultRef = useRef<HTMLDivElement>(null);
   const description = getMBTIDescription(mbtiType);
+
+  const dimensions = [
+    { left: 'E', right: 'I', leftPercent: percentages.E, rightPercent: percentages.I, leftLabel: '외향', rightLabel: '내향' },
+    { left: 'S', right: 'N', leftPercent: percentages.S, rightPercent: percentages.N, leftLabel: '감각', rightLabel: '직관' },
+    { left: 'T', right: 'F', leftPercent: percentages.T, rightPercent: percentages.F, leftLabel: '사고', rightLabel: '감정' },
+    { left: 'J', right: 'P', leftPercent: percentages.J, rightPercent: percentages.P, leftLabel: '판단', rightLabel: '인식' }
+  ];
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -93,6 +102,52 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, onRestart }: MBTIResultProps)
             </motion.div>
 
             <div className="space-y-6">
+              {/* 기질 분석 그래프 */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <BarChart3 className="w-5 h-5 text-primary" />
+                  <h3 className="text-xl font-bold">기질 분석</h3>
+                </div>
+                <div className="space-y-4">
+                  {dimensions.map((dim, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="space-y-2"
+                    >
+                      <div className="flex justify-between items-center text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-primary">{dim.left}</span>
+                          <span className="text-muted-foreground">{dim.leftLabel}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">{dim.rightLabel}</span>
+                          <span className="font-bold text-primary">{dim.right}</span>
+                        </div>
+                      </div>
+                      <div className="relative">
+                        <div className="flex h-8 rounded-full overflow-hidden bg-muted">
+                          <div 
+                            className="bg-gradient-to-r from-primary to-primary/80 flex items-center justify-start pl-3 text-white font-bold text-sm"
+                            style={{ width: `${dim.leftPercent}%` }}
+                          >
+                            {dim.leftPercent > 15 && `${dim.leftPercent}%`}
+                          </div>
+                          <div 
+                            className="bg-gradient-to-l from-accent to-accent/80 flex items-center justify-end pr-3 text-white font-bold text-sm"
+                            style={{ width: `${dim.rightPercent}%` }}
+                          >
+                            {dim.rightPercent > 15 && `${dim.rightPercent}%`}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
               {/* 기본 설명 */}
               <div className="p-6 rounded-xl bg-primary/10 border border-primary/20">
                 <p className="text-lg leading-relaxed">

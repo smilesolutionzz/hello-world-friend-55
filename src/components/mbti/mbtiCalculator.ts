@@ -1,3 +1,14 @@
+export interface MBTIPercentages {
+  E: number;
+  I: number;
+  S: number;
+  N: number;
+  T: number;
+  F: number;
+  J: number;
+  P: number;
+}
+
 export const calculateMBTI = (answers: Record<number, number>): string => {
   const scores = {
     EI: 0, // E(+) vs I(-)
@@ -33,6 +44,58 @@ export const calculateMBTI = (answers: Record<number, number>): string => {
     (scores.JP > 0 ? 'J' : 'P');
 
   return type;
+};
+
+export const calculateMBTIPercentages = (answers: Record<number, number>): MBTIPercentages => {
+  const counts = {
+    EI: { total: 0, positive: 0 },
+    SN: { total: 0, positive: 0 },
+    TF: { total: 0, positive: 0 },
+    JP: { total: 0, positive: 0 }
+  };
+
+  // 각 차원별 점수 누적
+  Object.entries(answers).forEach(([questionIndex, score]) => {
+    const qIndex = parseInt(questionIndex);
+    
+    if (qIndex <= 6) {
+      counts.EI.total++;
+      if (score > 0) counts.EI.positive++;
+    } else if (qIndex <= 13) {
+      counts.SN.total++;
+      if (score > 0) counts.SN.positive++;
+    } else if (qIndex <= 19) {
+      counts.TF.total++;
+      if (score > 0) counts.TF.positive++;
+    } else {
+      counts.JP.total++;
+      if (score > 0) counts.JP.positive++;
+    }
+  });
+
+  // 퍼센트 계산
+  const ePercent = counts.EI.total > 0 ? (counts.EI.positive / counts.EI.total) * 100 : 50;
+  const iPercent = 100 - ePercent;
+  
+  const nPercent = counts.SN.total > 0 ? (counts.SN.positive / counts.SN.total) * 100 : 50;
+  const sPercent = 100 - nPercent;
+  
+  const fPercent = counts.TF.total > 0 ? (counts.TF.positive / counts.TF.total) * 100 : 50;
+  const tPercent = 100 - fPercent;
+  
+  const jPercent = counts.JP.total > 0 ? (counts.JP.positive / counts.JP.total) * 100 : 50;
+  const pPercent = 100 - jPercent;
+
+  return {
+    E: Math.round(ePercent),
+    I: Math.round(iPercent),
+    S: Math.round(sPercent),
+    N: Math.round(nPercent),
+    T: Math.round(tPercent),
+    F: Math.round(fPercent),
+    J: Math.round(jPercent),
+    P: Math.round(pPercent)
+  };
 };
 
 export const getMBTIDescription = (type: string) => {

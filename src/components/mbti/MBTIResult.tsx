@@ -130,13 +130,13 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
                       <div className="relative">
                         <div className="flex h-8 rounded-full overflow-hidden bg-muted">
                           <div 
-                            className="bg-gradient-to-r from-primary to-primary/80 flex items-center justify-start pl-3 text-white font-bold text-sm"
+                            className="bg-gradient-to-r from-primary to-primary/80 flex items-center justify-start pl-3 text-white font-extrabold text-lg"
                             style={{ width: `${dim.leftPercent}%` }}
                           >
                             {dim.leftPercent > 15 && `${dim.leftPercent}%`}
                           </div>
                           <div 
-                            className="bg-gradient-to-l from-accent to-accent/80 flex items-center justify-end pr-3 text-white font-bold text-sm"
+                            className="bg-gradient-to-l from-accent to-accent/80 flex items-center justify-end pr-3 text-white font-extrabold text-lg"
                             style={{ width: `${dim.rightPercent}%` }}
                           >
                             {dim.rightPercent > 15 && `${dim.rightPercent}%`}

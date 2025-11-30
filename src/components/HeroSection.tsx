@@ -121,24 +121,13 @@ const HeroSection = () => {
       </div>
 
       <div className="relative z-10 container mx-auto px-4 md:px-6 pt-16 md:pt-20 pb-24 md:pb-28 min-h-screen flex flex-col justify-center">
-        {/* 프로모션 배너 + 로고 섹션 */}
+        {/* 로고 섹션 */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center gap-6 mb-8"
         >
-          {/* 프로모션 배너들 */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-4xl">
-            <div className="bg-gradient-to-r from-orange-900/80 via-orange-800/80 to-orange-700/80 backdrop-blur-md text-white py-2 px-4 sm:px-6 rounded-full shadow-lg border border-orange-500/30 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-orange-300" />
-              <span className="text-sm font-bold">🔥 론칭 특가 50% 할인 - 선착순 500명!</span>
-            </div>
-            <div className="bg-gradient-to-r from-green-900/80 via-green-800/80 to-green-700/80 backdrop-blur-md text-white py-2 px-4 rounded-full shadow-lg border border-green-500/30 flex items-center gap-2">
-              <span className="text-sm font-bold">👥 현재 387명 진행</span>
-            </div>
-          </div>
-
           {/* 큰 로고 */}
           <motion.img 
             src={logo} 

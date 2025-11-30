@@ -1,0 +1,235 @@
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Share2, Download, RefreshCw, Sparkles, Heart, Zap, Target, TrendingUp } from "lucide-react";
+import { getMBTIDescription } from "./mbtiCalculator";
+import { toast } from "sonner";
+import html2canvas from "html2canvas";
+import { useRef } from "react";
+
+interface MBTIResultProps {
+  mbtiType: string;
+  aiAnalysis: string;
+  onRestart: () => void;
+}
+
+export const MBTIResult = ({ mbtiType, aiAnalysis, onRestart }: MBTIResultProps) => {
+  const resultRef = useRef<HTMLDivElement>(null);
+  const description = getMBTIDescription(mbtiType);
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `나는 ${mbtiType} - ${description.title}`,
+          text: `${description.subtitle}\n당신도 테스트해보세요!`,
+          url: window.location.origin + '/premium-assessment'
+        });
+      } catch (error) {
+        console.error('공유 실패:', error);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("링크가 클립보드에 복사되었습니다!");
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!resultRef.current) return;
+
+    try {
+      const canvas = await html2canvas(resultRef.current, {
+        backgroundColor: '#1a1f2e',
+        scale: 2
+      });
+      
+      const link = document.createElement('a');
+      link.download = `mbti-result-${mbtiType}.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+      
+      toast.success("결과가 저장되었습니다!");
+    } catch (error) {
+      console.error('다운로드 실패:', error);
+      toast.error("다운로드에 실패했습니다.");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-primary/20 via-background to-accent/20 p-4 py-8">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* 결과 카드 */}
+        <motion.div
+          ref={resultRef}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="p-8 md:p-12 backdrop-blur-xl bg-card/50 border-2">
+            <motion.div
+              initial={{ y: -20 }}
+              animate={{ y: 0 }}
+              className="text-center mb-8"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="inline-block mb-4"
+              >
+                <Sparkles className="w-16 h-16 text-primary" />
+              </motion.div>
+              
+              <h1 className="text-5xl md:text-6xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                {mbtiType}
+              </h1>
+              
+              <h2 className="text-2xl md:text-3xl font-bold mb-2">
+                {description.title}
+              </h2>
+              
+              <p className="text-lg text-muted-foreground">
+                {description.subtitle}
+              </p>
+            </motion.div>
+
+            <div className="space-y-6">
+              {/* 기본 설명 */}
+              <div className="p-6 rounded-xl bg-primary/10 border border-primary/20">
+                <p className="text-lg leading-relaxed">
+                  {description.description}
+                </p>
+              </div>
+
+              {/* 강점 */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-5 h-5 text-green-500" />
+                  <h3 className="text-xl font-bold">강점</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {description.strengths.map((strength, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="p-3 rounded-lg bg-green-500/10 border border-green-500/20"
+                    >
+                      <p className="font-medium text-green-600 dark:text-green-400">
+                        {strength}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 약점 */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Heart className="w-5 h-5 text-orange-500" />
+                  <h3 className="text-xl font-bold">개선 포인트</h3>
+                </div>
+                <div className="grid grid-cols-1 gap-2">
+                  {description.weaknesses.map((weakness, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20"
+                    >
+                      <p className="font-medium text-orange-600 dark:text-orange-400">
+                        {weakness}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 추천 직업 */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Target className="w-5 h-5 text-blue-500" />
+                  <h3 className="text-xl font-bold">추천 직업</h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {description.careers.map((career, index) => (
+                    <motion.span
+                      key={index}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-medium"
+                    >
+                      {career}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+
+              {/* AI 분석 */}
+              {aiAnalysis && (
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingUp className="w-5 h-5 text-purple-500" />
+                    <h3 className="text-xl font-bold">AI 심층 분석</h3>
+                  </div>
+                  <div className="p-6 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                    <p className="leading-relaxed whitespace-pre-line">
+                      {aiAnalysis}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* 액션 버튼 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <Button
+            size="lg"
+            onClick={handleShare}
+            className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
+          >
+            <Share2 className="w-4 h-4 mr-2" />
+            공유하기
+          </Button>
+          
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={handleDownload}
+          >
+            <Download className="w-4 h-4 mr-2" />
+            이미지 저장
+          </Button>
+          
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={onRestart}
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            다시 하기
+          </Button>
+        </div>
+
+        {/* 추가 테스트 유도 */}
+        <Card className="p-6 text-center backdrop-blur-xl bg-card/50">
+          <h3 className="text-xl font-bold mb-2">더 자세한 성격 분석이 궁금하다면?</h3>
+          <p className="text-muted-foreground mb-4">
+            프리미엄 검사로 더욱 정확한 심리 분석을 받아보세요
+          </p>
+          <Button
+            onClick={() => window.location.href = '/premium-assessment'}
+            className="bg-gradient-to-r from-primary to-accent"
+          >
+            <Sparkles className="w-4 h-4 mr-2" />
+            프리미엄 검사 하러가기
+          </Button>
+        </Card>
+      </div>
+    </div>
+  );
+};

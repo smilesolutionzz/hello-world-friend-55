@@ -157,6 +157,11 @@ export const UnifiedNavigation = () => {
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => navigate('/')}
               >
+                <img 
+                  src="/company-logo.png" 
+                  alt="AIHumanPro Logo" 
+                  className="h-8 w-auto"
+                />
                 <span className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">AIHPRO</span>
               </div>
               
@@ -461,6 +466,11 @@ export const UnifiedNavigation = () => {
                   {/* Clean Header */}
                   <div className="border-b border-border pb-4 mb-4">
                     <div className="flex items-center gap-3">
+                      <img 
+                        src="/company-logo.png" 
+                        alt="AIHumanPro Logo" 
+                        className="h-8 w-auto"
+                      />
                       <span className="text-xl font-semibold text-foreground">AIHPRO</span>
                     </div>
                   </div>

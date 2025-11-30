@@ -10,13 +10,17 @@ export const calculateMBTI = (answers: Record<number, number>): string => {
   Object.entries(answers).forEach(([questionIndex, score]) => {
     const qIndex = parseInt(questionIndex);
     // 질문 인덱스에 따라 차원 결정 (MBTIQuestions 순서와 일치)
-    if (qIndex <= 3) {
+    if (qIndex <= 6) {
+      // E-I: 0-6번 (7개)
       scores.EI += score;
-    } else if (qIndex <= 6) {
+    } else if (qIndex <= 13) {
+      // S-N: 7-13번 (7개)
       scores.SN += score;
-    } else if (qIndex <= 9) {
+    } else if (qIndex <= 19) {
+      // T-F: 14-19번 (6개)
       scores.TF += score;
     } else {
+      // J-P: 20-24번 (5개)
       scores.JP += score;
     }
   });

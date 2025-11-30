@@ -45,6 +45,7 @@ import TokenBalance from '@/components/TokenBalance';
 import AIPlatformChat from '@/components/AIPlatformChat';
 import { BookingNotificationBell } from '@/components/booking/BookingNotificationBell';
 import secretTalkCharacter from '@/assets/secret-talk-character.png';
+import logo from '@/assets/logo.png';
 
 interface NavigationItem {
   icon: React.ElementType;
@@ -154,9 +155,10 @@ export const UnifiedNavigation = () => {
             {/* Clean Logo & Token Balance & Live Stats */}
             <div className="flex items-center gap-4">
               <div 
-                className="flex items-center gap-3 cursor-pointer group"
+                className="flex items-center gap-2 cursor-pointer group"
                 onClick={() => navigate('/')}
               >
+                <img src={logo} alt="AIHPRO" className="h-8 w-8" />
                 <span className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">AIHPRO</span>
               </div>
               

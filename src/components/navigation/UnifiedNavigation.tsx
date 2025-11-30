@@ -152,7 +152,7 @@ export const UnifiedNavigation = () => {
       <nav className="hidden lg:flex bg-card border-b border-border sticky top-0 z-40 backdrop-blur-xl bg-card/95">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            {/* Clean Logo & Token Balance & Live Stats */}
+            {/* Clean Logo & Token Balance */}
             <div className="flex items-center gap-4">
               <div 
                 className="flex items-center gap-2 cursor-pointer group"
@@ -166,47 +166,6 @@ export const UnifiedNavigation = () => {
               <div className="flex items-center">
                 <TokenBalance compact showPurchaseButton={false} />
               </div>
-
-              {/* Live Stats with Tooltips */}
-              <TooltipProvider>
-                <div className="flex items-center gap-3 px-4 py-1.5 bg-accent/50 rounded-full">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1.5 cursor-help">
-                        <Users className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-xs font-semibold text-foreground">180</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-xs">180명 방문 중</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1.5 cursor-help">
-                        <Activity className="w-3.5 h-3.5 text-green-500" />
-                        <span className="text-xs font-semibold text-foreground">49</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-xs">49명 온라인</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1.5 cursor-help">
-                        <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
-                        <span className="text-xs font-semibold text-foreground">85</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-xs">85건 검사 진행 중</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-              </TooltipProvider>
             </div>
 
             {/* Clean Modern Menu */}

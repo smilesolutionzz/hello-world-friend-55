@@ -35,7 +35,7 @@ const FounderLetterSection = () => {
               />
             </div>
             <p className="text-lg text-muted-foreground">
-              2024년 12월, 한 해를 마무리하며
+              2025년 12월, 한 해를 마무리하며
             </p>
           </div>
 
@@ -45,13 +45,13 @@ const FounderLetterSection = () => {
               <div className="prose prose-lg max-w-none">
                 <div className="space-y-6 text-foreground/90 leading-relaxed">
                   <p className="text-xl font-medium text-primary">
-                    2024년이 저물어갑니다.<br />
+                    2025년이 저물어갑니다.<br />
                     함께 걸어온 이 길을 돌아보며
                   </p>
 
                   <p className="text-base">
                     12월의 찬 공기가 느껴지는 요즘, 문득 올 한 해를 돌아봅니다. 
-                    2024년은 AIHumanPro에게, 그리고 저에게 특별한 해였습니다. 
+                    2025년은 AIHumanPro에게, 그리고 저에게 특별한 해였습니다. 
                     <span className="font-semibold text-primary">여러분과 함께 걸어온 이 여정이 
                     단순한 서비스 이상의 의미</span>를 갖게 되었기 때문입니다.
                   </p>
@@ -85,7 +85,7 @@ const FounderLetterSection = () => {
                   </p>
 
                   <p className="text-base">
-                    다가오는 2025년에는 더 많은 분들께 실질적인 도움을 드리고 싶습니다. 
+                    다가오는 2026년에는 더 많은 분들께 실질적인 도움을 드리고 싶습니다.
                     AI 분석은 더욱 정교해지고, 전문가 네트워크는 더욱 확대될 것입니다. 
                     하지만 변하지 않을 것이 하나 있습니다. <span className="font-semibold text-primary">
                     한 분 한 분의 이야기에 귀 기울이고, 진심으로 돕고자 하는 우리의 마음</span>입니다.
@@ -94,7 +94,7 @@ const FounderLetterSection = () => {
                   <p className="text-base">
                     올 한 해 함께해주셔서 진심으로 감사합니다. 
                     추운 겨울, 따뜻한 마음으로 새해를 맞이하시길 바랍니다. 
-                    2025년에도 여러분의 성장과 회복의 여정에 함께하겠습니다.
+                    2026년에도 여러분의 성장과 회복의 여정에 함께하겠습니다.
                   </p>
 
                   <p className="text-base">
@@ -103,7 +103,7 @@ const FounderLetterSection = () => {
 
                   <div className="mt-12 pt-8 border-t border-border">
                     <p className="text-right text-foreground/70">
-                      2024년 12월<br />
+                      2025년 12월<br />
                       감사하는 마음을 담아,<br />
                       <span className="font-semibold text-primary text-lg">AIHumanPro 창립자 이수석</span>
                     </p>

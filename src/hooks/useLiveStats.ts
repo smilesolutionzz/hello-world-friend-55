@@ -6,58 +6,106 @@ interface LiveStats {
   testsInProgress: number;
 }
 
-export function useLiveStats() {
+/**
+ * 실시간으로 증가하는 라이브 통계를 제공합니다
+ * 오늘 검사는 170명 이상부터 시작하며, 시간이 지날수록 증가합니다
+ * 누적 방문자는 3000명 이상으로 설정됩니다
+ */
+export function useLiveStats(): LiveStats {
   const [stats, setStats] = useState<LiveStats>({
-    visitors: 3000,
+    visitors: 0,
     online: 0,
-    testsInProgress: 170
+    testsInProgress: 0
   });
 
   useEffect(() => {
-    // 오늘 날짜의 시작 시간 (00:00:00)
+    // 서비스 시작 날짜 (2024년 1월 1일)
+    const launchDate = new Date('2024-01-01');
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
     
-    // 현재 시간과의 차이 (분 단위)
-    const now = new Date();
-    const minutesPassedToday = Math.floor((now.getTime() - today.getTime()) / (1000 * 60));
+    // 경과 일수 계산
+    const daysSinceLaunch = Math.floor(
+      (today.getTime() - launchDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
     
-    // 시간에 따라 증가하는 검사 진행 수 계산
-    // 170부터 시작해서 시간당 평균 10-15명씩 증가
-    const baseTests = 170;
-    const hoursPassed = minutesPassedToday / 60;
-    const increment = Math.floor(hoursPassed * (12 + Math.random() * 3));
+    // 누적 방문자 수 (3200+ 시작)
+    const baseVisitors = 3200;
+    const dailyVisitorGrowth = 8;
+    const calculatedVisitors = baseVisitors + (daysSinceLaunch * dailyVisitorGrowth);
     
-    // 방문자 수는 3000부터 시작해서 시간당 평균 50-100명씩 증가
-    const baseVisitors = 3000;
-    const visitorIncrement = Math.floor(hoursPassed * (75 + Math.random() * 25));
+    // 오늘 검사 진행 중 (170+ 시작, 시간대별로 변동)
+    const currentHour = today.getHours();
+    let hourlyMultiplier = 1.0;
     
-    // 온라인 사용자는 검사 진행 중의 60-80%
-    const onlinePercentage = 0.6 + Math.random() * 0.2;
+    // 활동이 많은 시간대
+    if ((currentHour >= 9 && currentHour <= 12) || (currentHour >= 20 && currentHour <= 23)) {
+      hourlyMultiplier = 1.5;
+    } else if (currentHour >= 13 && currentHour <= 19) {
+      hourlyMultiplier = 1.2;
+    } else if (currentHour >= 0 && currentHour <= 6) {
+      hourlyMultiplier = 0.7;
+    }
+    
+    // 요일별 보정
+    const dayOfWeek = today.getDay();
+    const weekendMultiplier = (dayOfWeek === 0 || dayOfWeek === 6) ? 1.3 : 1.0;
+    
+    // 오늘 검사 진행 중 (최소 170명 보장)
+    const baseTestsInProgress = 180;
+    const calculatedTestsInProgress = Math.max(
+      170,
+      Math.floor(
+        baseTestsInProgress * hourlyMultiplier * weekendMultiplier + 
+        Math.random() * 30
+      )
+    );
+    
+    // 온라인 사용자 (검사 진행 중의 60-80%)
+    const calculatedOnline = Math.floor(
+      calculatedTestsInProgress * (0.6 + Math.random() * 0.2)
+    );
     
     setStats({
-      visitors: baseVisitors + visitorIncrement,
-      online: Math.floor((baseTests + increment) * onlinePercentage),
-      testsInProgress: baseTests + increment
+      visitors: calculatedVisitors,
+      online: calculatedOnline,
+      testsInProgress: calculatedTestsInProgress
     });
-
+    
     // 5분마다 업데이트
     const interval = setInterval(() => {
-      const currentTime = new Date();
-      const currentMinutes = Math.floor((currentTime.getTime() - today.getTime()) / (1000 * 60));
-      const currentHours = currentMinutes / 60;
+      const currentHour = new Date().getHours();
+      let hourlyMultiplier = 1.0;
       
-      const currentIncrement = Math.floor(currentHours * (12 + Math.random() * 3));
-      const currentVisitorIncrement = Math.floor(currentHours * (75 + Math.random() * 25));
-      const currentOnlinePercentage = 0.6 + Math.random() * 0.2;
+      if ((currentHour >= 9 && currentHour <= 12) || (currentHour >= 20 && currentHour <= 23)) {
+        hourlyMultiplier = 1.5;
+      } else if (currentHour >= 13 && currentHour <= 19) {
+        hourlyMultiplier = 1.2;
+      } else if (currentHour >= 0 && currentHour <= 6) {
+        hourlyMultiplier = 0.7;
+      }
       
-      setStats({
-        visitors: baseVisitors + currentVisitorIncrement,
-        online: Math.floor((baseTests + currentIncrement) * currentOnlinePercentage),
-        testsInProgress: baseTests + currentIncrement
-      });
-    }, 5 * 60 * 1000); // 5분마다 업데이트
-
+      const dayOfWeek = new Date().getDay();
+      const weekendMultiplier = (dayOfWeek === 0 || dayOfWeek === 6) ? 1.3 : 1.0;
+      
+      const updatedTestsInProgress = Math.max(
+        170,
+        Math.floor(
+          baseTestsInProgress * hourlyMultiplier * weekendMultiplier + 
+          Math.random() * 30
+        )
+      );
+      
+      const updatedOnline = Math.floor(
+        updatedTestsInProgress * (0.6 + Math.random() * 0.2)
+      );
+      
+      setStats(prev => ({
+        ...prev,
+        online: updatedOnline,
+        testsInProgress: updatedTestsInProgress
+      }));
+    }, 300000); // 5분마다
+    
     return () => clearInterval(interval);
   }, []);
 

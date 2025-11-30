@@ -40,7 +40,6 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useTokens } from '@/hooks/useTokens';
-import { useLiveStats } from '@/hooks/useLiveStats';
 import { supabase } from '@/integrations/supabase/client';
 import TokenBalance from '@/components/TokenBalance';
 import AIPlatformChat from '@/components/AIPlatformChat';
@@ -94,7 +93,6 @@ export const UnifiedNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthGuard();
-  const liveStats = useLiveStats();
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -152,62 +150,57 @@ export const UnifiedNavigation = () => {
       {/* Desktop Navigation */}
       <nav className="hidden lg:flex bg-card border-b border-border sticky top-0 z-40 backdrop-blur-xl bg-card/95">
         <div className="container mx-auto px-6">
-          <div className="flex items-start justify-between py-2">
+          <div className="flex items-center justify-between h-16">
             {/* Clean Logo & Token Balance & Live Stats */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center gap-2 xl:gap-4">
+            <div className="flex items-center gap-4">
               <div 
-                className="flex items-center gap-2 cursor-pointer group flex-shrink-0"
+                className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => navigate('/')}
               >
-                <img 
-                  src="/company-logo.png" 
-                  alt="AIHumanPro Logo" 
-                  className="h-6 w-auto"
-                />
-                <span className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">AIHPRO</span>
+                <span className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">AIHPRO</span>
               </div>
               
-              {/* Token Balance - 더 컴팩트하게 */}
-              <div className="flex items-center flex-shrink-0">
+              {/* Token Balance */}
+              <div className="flex items-center">
                 <TokenBalance compact showPurchaseButton={false} />
               </div>
 
               {/* Live Stats with Tooltips */}
               <TooltipProvider>
-                <div className="flex items-center gap-2 px-2.5 py-1 bg-accent/50 rounded-full">
+                <div className="flex items-center gap-3 px-4 py-1.5 bg-accent/50 rounded-full">
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1 cursor-help">
+                      <div className="flex items-center gap-1.5 cursor-help">
                         <Users className="w-3.5 h-3.5 text-primary" />
-                        <span className="text-xs font-semibold text-foreground">{liveStats.visitors.toLocaleString()}</span>
+                        <span className="text-xs font-semibold text-foreground">180</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-xs">{liveStats.visitors.toLocaleString()}명 누적 방문</p>
+                      <p className="text-xs">180명 방문 중</p>
                     </TooltipContent>
                   </Tooltip>
 
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1 cursor-help">
+                      <div className="flex items-center gap-1.5 cursor-help">
                         <Activity className="w-3.5 h-3.5 text-green-500" />
-                        <span className="text-xs font-semibold text-foreground">{liveStats.online}</span>
+                        <span className="text-xs font-semibold text-foreground">49</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-xs">{liveStats.online}명 온라인</p>
+                      <p className="text-xs">49명 온라인</p>
                     </TooltipContent>
                   </Tooltip>
 
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1 cursor-help">
+                      <div className="flex items-center gap-1.5 cursor-help">
                         <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
-                        <span className="text-xs font-semibold text-foreground">{liveStats.testsInProgress}</span>
+                        <span className="text-xs font-semibold text-foreground">85</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-xs">오늘 {liveStats.testsInProgress}건 검사 진행 중</p>
+                      <p className="text-xs">85건 검사 진행 중</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -468,11 +461,6 @@ export const UnifiedNavigation = () => {
                   {/* Clean Header */}
                   <div className="border-b border-border pb-4 mb-4">
                     <div className="flex items-center gap-3">
-                      <img 
-                        src="/company-logo.png" 
-                        alt="AIHumanPro Logo" 
-                        className="h-8 w-auto"
-                      />
                       <span className="text-xl font-semibold text-foreground">AIHPRO</span>
                     </div>
                   </div>

@@ -49,32 +49,45 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
 
       const file = new File([blob], `mbti-${mbtiType}.png`, { type: 'image/png' });
 
-      // Web Share API로 이미지 공유 (모바일에서 인스타그램 스토리 등으로 공유 가능)
-      if (navigator.share && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          title: `나는 ${mbtiType} - ${description.title}`,
-          text: `${description.subtitle}\n당신도 테스트해보세요!`,
-          files: [file]
-        });
-        toast.success("공유가 완료되었습니다!");
-      } else if (navigator.share) {
-        // 파일 공유를 지원하지 않는 경우 링크만 공유
-        await navigator.share({
-          title: `나는 ${mbtiType} - ${description.title}`,
-          text: `${description.subtitle}\n당신도 테스트해보세요!`,
-          url: window.location.href
-        });
-      } else {
-        // Web Share API를 지원하지 않는 경우 다운로드
-        const link = document.createElement('a');
-        link.download = `mbti-${mbtiType}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-        toast.success("이미지가 다운로드되었습니다!");
+      // 모바일에서 Web Share API 시도
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            title: `나는 ${mbtiType} - ${description.title}`,
+            text: `${description.subtitle}\n당신도 테스트해보세요!`,
+            files: [file]
+          });
+          toast.success("공유가 완료되었습니다!");
+          return;
+        } catch (shareError) {
+          console.log('Share API failed, trying clipboard:', shareError);
+        }
       }
+
+      // Clipboard API로 이미지 복사 시도
+      if (navigator.clipboard && window.ClipboardItem) {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              'image/png': blob
+            })
+          ]);
+          toast.success("이미지가 클립보드에 복사되었습니다!\n인스타그램에서 붙여넣기 하세요 📋");
+          return;
+        } catch (clipError) {
+          console.log('Clipboard failed, downloading:', clipError);
+        }
+      }
+
+      // 마지막 수단: 다운로드
+      const link = document.createElement('a');
+      link.download = `mbti-${mbtiType}.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+      toast.success("이미지가 다운로드되었습니다!\n갤러리에서 인스타그램 스토리에 올려주세요 📸");
     } catch (error) {
       console.error('공유 실패:', error);
-      toast.error("공유에 실패했습니다. 다시 시도해주세요.");
+      toast.error("공유에 실패했습니다. 스크린샷을 찍어서 공유해주세요!");
     }
   };
 
@@ -428,7 +441,7 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
           <Button
             size="lg"
             onClick={handleShare}
-            className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
+            className="bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90"
           >
             <Share2 className="w-4 h-4 mr-2" />
             인스타 스토리 공유

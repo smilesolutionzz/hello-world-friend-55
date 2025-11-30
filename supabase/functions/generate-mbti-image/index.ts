@@ -25,8 +25,8 @@ serve(async (req) => {
 
     // Generate two images representing the MBTI type
     const prompts = [
-      `A cinematic and artistic representation of ${mbtiType} personality type - ${description.title}. Show ${description.subtitle} through visual metaphors. High quality, professional photography style, warm and inviting atmosphere. Ultra high resolution.`,
-      `An elegant and symbolic illustration capturing the essence of ${mbtiType} personality. Visualize their key strength: ${description.strengths[0]}. Modern, colorful, and inspiring composition. Ultra high resolution.`
+      `A realistic photo of someone displaying ${mbtiType} personality traits in everyday life. Show them ${description.strengths[0].toLowerCase()} in a natural setting. Modern Korean aesthetic, candid moment, natural lighting, high quality photography. Ultra high resolution.`,
+      `A natural scene capturing the essence of ${mbtiType} personality. Focus on ${description.loveStyle.split('.')[0].toLowerCase()}. Real life situation, authentic moment, contemporary Korean style, professional photography. Ultra high resolution.`
     ];
 
     const imagePromises = prompts.map(async (prompt) => {

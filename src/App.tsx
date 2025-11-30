@@ -126,6 +126,7 @@ import LifeAchievementGoals from "./pages/LifeAchievementGoals";
 import DefenseMechanismTest from "./pages/DefenseMechanismTest";
 import AttachmentStyleTest from "./pages/AttachmentStyleTest";
 import EducationFeed from "./pages/EducationFeed";
+import MBTITest from "./pages/MBTITest";
 
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
@@ -214,6 +215,7 @@ const App = () => {
           <Route path="/assessment/communication-style-test" element={<CommunicationStyleTest />} />
           <Route path="/assessment/defense-mechanism-test" element={<DefenseMechanismTest />} />
           <Route path="/assessment/attachment-style-test" element={<AttachmentStyleTest />} />
+          <Route path="/assessment/mbti-test" element={<MBTITest />} />
           <Route path="/assessment/:id" element={<TestResults />} />
           <Route path="/assessment-detail/:id" element={<AssessmentDetail />} />
           <Route path="/fun-tests" element={<FunTests />} />

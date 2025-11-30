@@ -13,10 +13,10 @@ interface DynamicStats {
  */
 export function useDynamicStats(): DynamicStats {
   const [stats, setStats] = useState<DynamicStats>({
-    totalUsers: 0,
-    totalReviews: 0,
+    totalUsers: 5800,
+    totalReviews: 3300,
     averageRating: 4.8,
-    todayActive: 0
+    todayActive: 450
   });
 
   useEffect(() => {

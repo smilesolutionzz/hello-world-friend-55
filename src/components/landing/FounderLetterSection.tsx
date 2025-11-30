@@ -35,7 +35,7 @@ const FounderLetterSection = () => {
               />
             </div>
             <p className="text-lg text-muted-foreground">
-              2025년 11월, 여러분께 전하는 진심
+              2024년 12월, 한 해를 마무리하며
             </p>
           </div>
 
@@ -45,53 +45,66 @@ const FounderLetterSection = () => {
               <div className="prose prose-lg max-w-none">
                 <div className="space-y-6 text-foreground/90 leading-relaxed">
                   <p className="text-xl font-medium text-primary">
-                    피할 수 없는 AI 시대,<br />
-                    하지만 결국 사람이 포함되고 터치되어야 합니다.
+                    2024년이 저물어갑니다.<br />
+                    함께 걸어온 이 길을 돌아보며
                   </p>
 
                   <p className="text-base">
-                    우리는 지금 거대한 변화의 한가운데 서 있습니다. AI가 모든 것을 대체할 것만 같은 이 시대에, 
-                    저는 오히려 더 큰 확신을 갖게 되었습니다. <span className="font-semibold text-primary">기술은 도구일 뿐, 
-                    진정한 치유와 성장은 '사람'에게서 시작된다는 것을요.</span>
+                    12월의 찬 공기가 느껴지는 요즘, 문득 올 한 해를 돌아봅니다. 
+                    2024년은 AIHumanPro에게, 그리고 저에게 특별한 해였습니다. 
+                    <span className="font-semibold text-primary">여러분과 함께 걸어온 이 여정이 
+                    단순한 서비스 이상의 의미</span>를 갖게 되었기 때문입니다.
                   </p>
 
                   <p className="text-base">
-                    AIHumanPro는 단순한 AI 플랫폼이 아닙니다. 여러분의 일상 속 작은 순간들을 기록하고, 
-                    그 데이터가 쌓여 <span className="font-semibold text-primary">초개인화된 종합 리포트</span>로 탄생합니다. 
-                    하지만 여기서 멈추지 않습니다. 그 리포트는 반드시 <span className="font-semibold text-primary">전문가의 검토</span>를 거쳐, 
-                    정확한 회복과 예방의 길로 안내됩니다.
+                    처음 이 플랫폼을 구상할 때, 저는 한 가지 확신이 있었습니다. 
+                    <span className="font-semibold text-primary">기술이 아무리 발전해도, 
+                    사람의 마음을 이해하고 치유하는 것은 결국 사람의 손길이 필요하다</span>는 것이었습니다. 
+                    그래서 우리는 AI와 전문가가 함께하는 길을 선택했습니다.
+                  </p>
+
+                  <p className="text-base">
+                    올 한 해 동안 많은 분들이 자신의 이야기를 저희와 나누어주셨습니다. 
+                    밤늦게까지 고민하던 부모님들, 자녀의 발달을 세심하게 관찰하시는 선생님들, 
+                    자신의 마음 건강을 돌보려는 분들. <span className="font-semibold text-primary">
+                    그 하나하나의 이야기가 모여 우리 플랫폼을 더욱 단단하게 만들었습니다.</span>
                   </p>
 
                   <div className="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg my-8">
                     <p className="text-base font-medium italic">
-                      "AI는 여러분의 패턴을 발견하고,<br />
-                      전문가는 여러분의 마음을 이해합니다.<br />
-                      함께할 때, 비로소 진정한 변화가 시작됩니다."
+                      "기술은 빠르게 변하지만,<br />
+                      사람을 대하는 진심은 변하지 않습니다.<br />
+                      이것이 AIHumanPro가 지켜갈 약속입니다."
                     </p>
                   </div>
 
                   <p className="text-base">
-                    매일 수많은 분들이 이 플랫폼에서 자신의 이야기를 기록하고 있습니다. 
-                    그 하나하나가 모여 의미 있는 변화를 만들어냅니다. 
-                    <span className="font-semibold text-primary"> 여러분의 데이터는 단순한 숫자가 아닌, 
-                    여러분만의 성장 스토리</span>가 됩니다.
+                    때로는 부족했고, 때로는 서툴렀습니다. 하지만 여러분의 피드백과 격려 덕분에 
+                    한 걸음씩 앞으로 나아갈 수 있었습니다. <span className="font-semibold text-primary">
+                    여러분이 보내주신 신뢰가 저희에게는 가장 큰 동력</span>이었습니다.
                   </p>
 
                   <p className="text-base">
-                    우리는 AI 시대를 피할 수 없습니다. 하지만 우리는 선택할 수 있습니다. 
-                    <span className="font-semibold text-primary"> 기술이 사람을 대체하는 것이 아닌, 
-                    사람을 더 깊이 이해하고 돕는 도구</span>로 만들어가는 것을요.
+                    다가오는 2025년에는 더 많은 분들께 실질적인 도움을 드리고 싶습니다. 
+                    AI 분석은 더욱 정교해지고, 전문가 네트워크는 더욱 확대될 것입니다. 
+                    하지만 변하지 않을 것이 하나 있습니다. <span className="font-semibold text-primary">
+                    한 분 한 분의 이야기에 귀 기울이고, 진심으로 돕고자 하는 우리의 마음</span>입니다.
                   </p>
 
                   <p className="text-base">
-                    여러분의 여정에 함께할 수 있어 진심으로 감사합니다. 
-                    우리는 멈추지 않고 계속 발전하겠습니다. 여러분의 목소리에 귀 기울이며, 
-                    더 나은 내일을 함께 만들어가겠습니다.
+                    올 한 해 함께해주셔서 진심으로 감사합니다. 
+                    추운 겨울, 따뜻한 마음으로 새해를 맞이하시길 바랍니다. 
+                    2025년에도 여러분의 성장과 회복의 여정에 함께하겠습니다.
+                  </p>
+
+                  <p className="text-base">
+                    언제나 여러분 곁에서, 함께 걷겠습니다.
                   </p>
 
                   <div className="mt-12 pt-8 border-t border-border">
                     <p className="text-right text-foreground/70">
-                      진심을 담아,<br />
+                      2024년 12월<br />
+                      감사하는 마음을 담아,<br />
                       <span className="font-semibold text-primary text-lg">AIHumanPro 창립자 이수석</span>
                     </p>
                   </div>

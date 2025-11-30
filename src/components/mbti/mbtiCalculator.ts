@@ -120,7 +120,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['전략 컨설턴트', '과학자', '프로그래머', 'CEO'],
       loveStyle: '지적인 대화를 중요시하며 깊고 의미있는 관계를 추구합니다. 감정 표현은 서툴지만 헌신적입니다.',
       compatibility: ['ENFP', 'ENTP', 'INFP'],
-      celebrities: ['일론 머스크', '마크 저커버그', '크리스토퍼 놀란'],
+      celebrities: ['방탄소년단 RM', '이병헌', '공유'],
       whenStressed: '혼자만의 시간을 가지며 전략을 재정비하고, 장기적인 계획을 세웁니다.'
     },
     'INTP': {
@@ -132,7 +132,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['연구원', '철학자', '수학자', '엔지니어'],
       loveStyle: '논리적이고 이성적인 관계를 선호하며, 상대의 독립성을 존중합니다. 감정 표현보다는 행동으로 사랑을 보여줍니다.',
       compatibility: ['ENTJ', 'ENFJ', 'INFJ'],
-      celebrities: ['알버트 아인슈타인', '빌 게이츠', '아이작 뉴턴'],
+      celebrities: ['박보검', '정재형', '김태희'],
       whenStressed: '이론적 분석에 몰두하며 혼자 생각을 정리하는 시간을 가집니다.'
     },
     'ENTJ': {
@@ -144,7 +144,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['경영자', '변호사', '정치인', '기업가'],
       loveStyle: '주도적이고 계획적인 연애를 선호합니다. 목표 지향적이며 파트너의 성장을 중요하게 생각합니다.',
       compatibility: ['INTP', 'INFP', 'ENFP'],
-      celebrities: ['스티브 잡스', '나폴레옹', '마거릿 대처'],
+      celebrities: ['현빈', '손흥민', '전지현'],
       whenStressed: '더 열심히 일하며 목표 달성에 집중합니다. 운동으로 스트레스를 해소합니다.'
     },
     'ENTP': {
@@ -156,7 +156,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['마케터', '변호사', '발명가', '컨설턴트'],
       loveStyle: '지적인 토론을 즐기며 자유롭고 모험적인 관계를 추구합니다. 루틴보다는 새로운 경험을 선호합니다.',
       compatibility: ['INTJ', 'INFJ', 'ENFJ'],
-      celebrities: ['토마스 에디슨', '레오나르도 다 빈치', '사라 실버만'],
+      celebrities: ['유재석', '김구라', '송민호'],
       whenStressed: '새로운 프로젝트를 시작하거나 토론에 참여하여 에너지를 발산합니다.'
     },
     'INFJ': {
@@ -168,7 +168,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['상담사', '작가', 'NGO 활동가', '교육자'],
       loveStyle: '깊고 의미있는 영혼의 교감을 추구합니다. 이상적인 사랑을 꿈꾸며 헌신적으로 사랑합니다.',
       compatibility: ['ENTP', 'ENFP', 'INTP'],
-      celebrities: ['마틴 루터 킹', '마더 테레사', '넬슨 만델라'],
+      celebrities: ['뷔(방탄소년단)', '수지', '손예진'],
       whenStressed: '혼자만의 시간으로 에너지를 재충전하며, 글쓰기나 명상을 합니다.'
     },
     'INFP': {
@@ -180,7 +180,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['예술가', '작가', '심리상담사', '사회복지사'],
       loveStyle: '로맨틱하고 감성적인 연애를 추구합니다. 진실되고 순수한 사랑을 꿈꾸며 상대를 이상화합니다.',
       compatibility: ['ENFJ', 'ENTJ', 'INTJ'],
-      celebrities: ['윌리엄 셰익스피어', 'J.R.R. 톨킨', '오드리 헵번'],
+      celebrities: ['지민(방탄소년단)', '태연', '박보영'],
       whenStressed: '예술적 활동이나 상상의 세계로 도피하며, 혼자만의 시간을 가집니다.'
     },
     'ENFJ': {
@@ -192,7 +192,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['교사', '코치', 'HR 매니저', '상담사'],
       loveStyle: '파트너의 성장을 적극적으로 돕고 지지합니다. 따뜻하고 헌신적이며 관계에 많은 에너지를 투자합니다.',
       compatibility: ['INFP', 'ISFP', 'INTP'],
-      celebrities: ['오프라 윈프리', '버락 오바마', '벤 애플렉'],
+      celebrities: ['지드래곤', '아이유', '강호동'],
       whenStressed: '주변 사람들과 대화하며 감정을 나누고, 누군가를 도우며 에너지를 얻습니다.'
     },
     'ENFP': {
@@ -204,7 +204,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['배우', '마케터', '상담사', '이벤트 기획자'],
       loveStyle: '열정적이고 로맨틱합니다. 새로운 경험을 함께 하며, 깊은 감정적 유대를 형성합니다.',
       compatibility: ['INTJ', 'INFJ', 'ENTJ'],
-      celebrities: ['로빈 윌리엄스', '엘렌 드제너러스', '윌 스미스'],
+      celebrities: ['제시', '화사', '규현'],
       whenStressed: '친구들과 어울리거나 새로운 활동을 시작하며 긍정적 에너지를 찾습니다.'
     },
     'ISTJ': {
@@ -216,7 +216,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['회계사', '공무원', '의사', '엔지니어'],
       loveStyle: '진지하고 헌신적입니다. 실용적이고 안정적인 관계를 추구하며, 책임감 있게 행동합니다.',
       compatibility: ['ESFP', 'ESTP', 'ISFP'],
-      celebrities: ['조지 워싱턴', '워렌 버핏', '안젤라 메르켈'],
+      celebrities: ['김연아', '박항서', '송강호'],
       whenStressed: '계획을 재점검하고 할 일 목록을 만들며, 규칙적인 루틴을 따릅니다.'
     },
     'ISFJ': {
@@ -228,7 +228,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['간호사', '교사', '사회복지사', '행정직'],
       loveStyle: '세심하고 배려심이 깊습니다. 파트너의 필요를 채워주고 안정적인 관계를 만들어갑니다.',
       compatibility: ['ESFP', 'ESTP', 'ENFP'],
-      celebrities: ['퀸 엘리자베스 2세', '케이트 미들턴', '비욘세'],
+      celebrities: ['윤아', '이준기', '박서준'],
       whenStressed: '집안일이나 정리정돈을 하며 마음을 안정시키고, 친한 사람과 시간을 보냅니다.'
     },
     'ESTJ': {
@@ -240,7 +240,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['경영자', '군인', '판사', '프로젝트 매니저'],
       loveStyle: '전통적이고 안정적인 관계를 선호합니다. 가족 중심적이며 책임감 있게 관계를 이끌어갑니다.',
       compatibility: ['ISFP', 'ISTP', 'INTP'],
-      celebrities: ['미셸 오바마', '존 록펠러', '헨리 포드'],
+      celebrities: ['김수현', '송중기', '정해인'],
       whenStressed: '더 열심히 일하며 통제력을 회복하려 하고, 규칙과 절차를 강화합니다.'
     },
     'ESFJ': {
@@ -252,7 +252,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['호텔리어', '영업', '이벤트 기획', '교사'],
       loveStyle: '따뜻하고 애정표현이 풍부합니다. 파트너를 돌보고 함께하는 시간을 소중히 여깁니다.',
       compatibility: ['ISFP', 'ISTP', 'INFP'],
-      celebrities: ['테일러 스위프트', '제니퍼 가너', '스티브 하비'],
+      celebrities: ['트와이스 나연', '박형식', '김희철'],
       whenStressed: '친구들과 대화하며 공감받고, 다른 사람을 도우며 가치를 느낍니다.'
     },
     'ISTP': {
@@ -264,7 +264,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['엔지니어', '정비사', '운동선수', '소방관'],
       loveStyle: '자유로운 관계를 선호하며 행동으로 사랑을 표현합니다. 독립적이지만 신뢰할 수 있는 파트너입니다.',
       compatibility: ['ESFJ', 'ESTJ', 'ENFJ'],
-      celebrities: ['클린트 이스트우드', '톰 크루즈', '마이클 조던'],
+      celebrities: ['장동건', '정우성', '이민호'],
       whenStressed: '혼자 작업하거나 운동, 모험적인 활동으로 스트레스를 해소합니다.'
     },
     'ISFP': {
@@ -276,7 +276,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['디자이너', '예술가', '음악가', '요리사'],
       loveStyle: '감성적이고 로맨틱합니다. 현재의 순간을 즐기며 조용하지만 깊은 애정을 표현합니다.',
       compatibility: ['ESFJ', 'ESTJ', 'ENFJ'],
-      celebrities: ['마이클 잭슨', '브리트니 스피어스', '밥 딜런'],
+      celebrities: ['지수(블랙핑크)', '차은우', '로제'],
       whenStressed: '예술 활동이나 자연에서 시간을 보내며 감성적으로 회복합니다.'
     },
     'ESTP': {
@@ -288,7 +288,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['영업', '사업가', '운동선수', '경찰'],
       loveStyle: '열정적이고 즉흥적입니다. 재미있고 활동적인 데이트를 선호하며 스릴을 즐깁니다.',
       compatibility: ['ISFJ', 'ISTJ', 'INFJ'],
-      celebrities: ['도널드 트럼프', '어니스트 헤밍웨이', '마돈나'],
+      celebrities: ['강동원', '마동석', '이광수'],
       whenStressed: '즉각적인 행동으로 문제를 해결하고, 스포츠나 활동적인 취미로 전환합니다.'
     },
     'ESFP': {
@@ -300,7 +300,7 @@ export const getMBTIDescription = (type: string) => {
       careers: ['연예인', '이벤트 기획자', '영업', '교육자'],
       loveStyle: '애정표현이 풍부하고 재미있는 파트너입니다. 즉흥적이고 사교적인 활동을 함께 즐깁니다.',
       compatibility: ['ISFJ', 'ISTJ', 'INFJ'],
-      celebrities: ['마릴린 먼로', '제이미 폭스', '아담 레빈'],
+      celebrities: ['싸이', '신동엽', '장나라'],
       whenStressed: '사람들과 어울리고 즐거운 활동에 참여하며 긍정적인 에너지를 얻습니다.'
     }
   };

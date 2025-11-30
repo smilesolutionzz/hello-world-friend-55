@@ -522,6 +522,90 @@ const PremiumAssessment = () => {
               </CardContent>
             </Card>
             
+            {/* 신박한 MBTI 테스트 - 2위 NEW */}
+            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]">
+              {/* 인기 순위 배지 */}
+              <div className="absolute top-2 right-2 z-10 flex gap-1">
+                <Badge className="bg-pink-500 text-white border-0 text-xs px-2 py-1">
+                  NEW
+                </Badge>
+                <Badge className="bg-blue-500 text-white border-0 text-xs px-2 py-1">
+                  <Star className="w-2.5 h-2.5 mr-1" />
+                  2위
+                </Badge>
+              </div>
+
+              {/* Header with Dark Gradient - AIH 스타일 */}
+              <div className="bg-gradient-to-r from-indigo-700 to-blue-600 p-6 pr-24 text-white relative">
+                <div className="absolute inset-0 bg-black/10" />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <Sparkles className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg font-bold">🧠 신박한 MBTI 검사</CardTitle>
+                      <p className="text-sm opacity-90">AI 분석 기반 창작 성격유형 검사</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <CardContent className="p-6 space-y-4">
+                {/* Description */}
+                <p className="text-muted-foreground leading-relaxed">
+                  AI가 분석하는 진짜 MBTI! 25문항으로 당신의 성격을 정확하게 파악하고, 기질별 퍼센트 그래프로 시각화합니다 🎯
+                </p>
+
+                <p className="text-sm text-muted-foreground">
+                  E-I, S-N, T-F, J-P 각 기질별 비율을 그래프로 확인
+                </p>
+
+                {/* Test Info */}
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Clock className="w-4 h-4" />
+                    약 5분
+                  </div>
+                  <div className="text-muted-foreground">
+                    25개 문항
+                  </div>
+                </div>
+
+                {/* Premium Features */}
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-sm">프리미엄 분석 내용</h4>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">4가지 기질별 퍼센트 분석</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">AI 심층 성격 분석</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                      <span className="text-muted-foreground">추천 직업 및 강점/약점 분석</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground ml-5">
+                      외 5가지...
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <div className="pt-4">
+                  <Button 
+                    onClick={() => navigate('/assessment/mbti-test')}
+                    className="w-full bg-gradient-to-r from-indigo-700 to-blue-600 hover:opacity-90"
+                  >
+                    검사 시작하기
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            
             {Object.entries(premiumAssessmentInfo).map(([key, info]) => (
               <PremiumAssessmentCard
                 key={key}

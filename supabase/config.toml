@@ -320,3 +320,6 @@ verify_jwt = true
 
 [functions.generate-expert-advice]
 verify_jwt = true
+
+[functions.analyze-therapy-session]
+verify_jwt = true

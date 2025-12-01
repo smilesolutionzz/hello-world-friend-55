@@ -42,6 +42,8 @@ import { getTherapistProfile, createTherapySystemPrompt } from '@/utils/Therapis
 import type { TherapistType } from '@/types/therapist';
 import { GroupSessionLobby } from './GroupSessionLobby';
 import { RoomDecorationUI } from './RoomDecorationUI';
+import { useTherapyAnalysis } from '@/hooks/useTherapyAnalysis';
+import { TherapySessionTracker } from '@/components/therapy/TherapySessionTracker';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -145,6 +147,13 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
   const [decorationItems, setDecorationItems] = useState<Array<{id: string; type: string; position: [number, number, number]}>>([]);
   const [currentSpeaker, setCurrentSpeaker] = useState<string | null>(null);
   const [speakerName, setSpeakerName] = useState<string>('');
+  
+  // Therapy mode 심층 추적
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [moodBefore, setMoodBefore] = useState<number>(5);
+  const [moodAfter, setMoodAfter] = useState<number>(5);
+  const [showSessionTracker, setShowSessionTracker] = useState(false);
+  const { analyzeSession, createNewSession } = useTherapyAnalysis();
   
   // 텍스트 기반 감정 분석
   const [transcriptBuffer, setTranscriptBuffer] = useState('');
@@ -606,6 +615,15 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     try {
       setIsLoading(true);
       
+      // Therapy 모드: 세션 생성 및 기분 체크
+      if (mode === 'therapy' && therapistType) {
+        const session = await createNewSession(therapistType, therapyUserConcern || '', moodBefore);
+        if (session) {
+          setCurrentSessionId(session.id);
+          console.log('🏥 Therapy session created:', session.id);
+        }
+      }
+      
       // 녹음 동의 요청
       setShowRecordingConsent(true);
     } catch (error) {
@@ -777,6 +795,19 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
           }
         }, 1000);
       }
+    }
+    
+    // Therapy 모드: 세션 분석
+    if (mode === 'therapy' && currentSessionId && messages.length > 0) {
+      await analyzeSession({
+        sessionId: currentSessionId,
+        therapistType: therapistType!,
+        conversationHistory: messages,
+        userConcern: therapyUserConcern || '',
+        moodBefore,
+        moodAfter
+      });
+      console.log('🏥 Therapy session analyzed');
     }
     
     chatRef.current?.disconnect();

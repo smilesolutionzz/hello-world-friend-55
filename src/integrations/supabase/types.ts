@@ -7145,6 +7145,92 @@ export type Database = {
           },
         ]
       }
+      therapy_goals: {
+        Row: {
+          created_at: string | null
+          goal_description: string | null
+          goal_title: string
+          id: string
+          milestones: Json | null
+          priority: string | null
+          progress_percentage: number | null
+          status: string | null
+          target_date: string | null
+          therapist_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          goal_description?: string | null
+          goal_title: string
+          id?: string
+          milestones?: Json | null
+          priority?: string | null
+          progress_percentage?: number | null
+          status?: string | null
+          target_date?: string | null
+          therapist_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          goal_description?: string | null
+          goal_title?: string
+          id?: string
+          milestones?: Json | null
+          priority?: string | null
+          progress_percentage?: number | null
+          status?: string | null
+          target_date?: string | null
+          therapist_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      therapy_insights: {
+        Row: {
+          ai_generated: boolean | null
+          confidence_score: number | null
+          created_at: string | null
+          id: string
+          insight_content: string
+          insight_type: string | null
+          session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          confidence_score?: number | null
+          created_at?: string | null
+          id?: string
+          insight_content: string
+          insight_type?: string | null
+          session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_generated?: boolean | null
+          confidence_score?: number | null
+          created_at?: string | null
+          id?: string
+          insight_content?: string
+          insight_type?: string | null
+          session_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapy_insights_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "therapy_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       therapy_institutions: {
         Row: {
           address: string | null
@@ -7210,6 +7296,107 @@ export type Database = {
           website_url?: string | null
         }
         Relationships: []
+      }
+      therapy_sessions: {
+        Row: {
+          created_at: string | null
+          duration_minutes: number | null
+          homework_assigned: string[] | null
+          id: string
+          key_insights: string[] | null
+          mood_after: number | null
+          mood_before: number | null
+          next_session_goals: string[] | null
+          progress_rating: number | null
+          session_date: string
+          session_notes: string | null
+          session_number: number
+          therapist_observations: string | null
+          therapist_type: string
+          updated_at: string | null
+          user_concern: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          duration_minutes?: number | null
+          homework_assigned?: string[] | null
+          id?: string
+          key_insights?: string[] | null
+          mood_after?: number | null
+          mood_before?: number | null
+          next_session_goals?: string[] | null
+          progress_rating?: number | null
+          session_date?: string
+          session_notes?: string | null
+          session_number?: number
+          therapist_observations?: string | null
+          therapist_type: string
+          updated_at?: string | null
+          user_concern?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          duration_minutes?: number | null
+          homework_assigned?: string[] | null
+          id?: string
+          key_insights?: string[] | null
+          mood_after?: number | null
+          mood_before?: number | null
+          next_session_goals?: string[] | null
+          progress_rating?: number | null
+          session_date?: string
+          session_notes?: string | null
+          session_number?: number
+          therapist_observations?: string | null
+          therapist_type?: string
+          updated_at?: string | null
+          user_concern?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      therapy_techniques_log: {
+        Row: {
+          client_response: string | null
+          created_at: string | null
+          effectiveness_rating: number | null
+          id: string
+          session_id: string | null
+          technique_category: string | null
+          technique_name: string
+          therapist_notes: string | null
+        }
+        Insert: {
+          client_response?: string | null
+          created_at?: string | null
+          effectiveness_rating?: number | null
+          id?: string
+          session_id?: string | null
+          technique_category?: string | null
+          technique_name: string
+          therapist_notes?: string | null
+        }
+        Update: {
+          client_response?: string | null
+          created_at?: string | null
+          effectiveness_rating?: number | null
+          id?: string
+          session_id?: string | null
+          technique_category?: string | null
+          technique_name?: string
+          therapist_notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapy_techniques_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "therapy_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       timeline_activities: {
         Row: {

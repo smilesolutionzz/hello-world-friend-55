@@ -14,8 +14,11 @@ import {
   Heart,
   ChevronRight,
   ChevronLeft,
-  Pill
+  Pill,
+  Phone,
+  MapPin
 } from 'lucide-react';
+import logo from '@/assets/gakkai-logo.png';
 
 interface DietAnalysisTestProps {
   onComplete: (result: any) => void;
@@ -246,17 +249,28 @@ const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 py-8 px-4">
       <div className="max-w-2xl mx-auto">
         {/* 헤더 */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Weight className="h-8 w-8 text-green-600 mr-2" />
-            <h1 className="text-3xl font-bold text-foreground">한방다이어트 체질분석</h1>
+          <div className="flex justify-center mb-6">
+            <img src={logo} alt="가까이한의원" className="h-24 object-contain" />
           </div>
-          <p className="text-muted-foreground">
-            체질별 맞춤 다이어트 프로그램을 위한 분석을 진행합니다
+          <h1 className="text-3xl font-bold text-foreground mb-2">가까이한의원</h1>
+          <h2 className="text-2xl font-semibold text-purple-700 mb-4">한방 체질 다이어트 분석</h2>
+          <p className="text-muted-foreground mb-4">
+            체질별 맞춤 다이어트 프로그램을 위한 정밀 분석
           </p>
+          <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Phone className="h-4 w-4 text-purple-600" />
+              <span className="font-medium">상담문의: 1234-5678</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-purple-600" />
+              <span>서울시 강남구 테헤란로</span>
+            </div>
+          </div>
         </div>
 
         {/* 진행률 */}
@@ -265,7 +279,7 @@ const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
             <span className="text-sm font-medium text-muted-foreground">
               진행률
             </span>
-            <span className="text-sm font-medium text-green-600">
+            <span className="text-sm font-medium text-purple-600">
               {currentQuestion + 1} / {questions.length}
             </span>
           </div>
@@ -273,10 +287,10 @@ const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
         </div>
 
         {/* 질문 카드 */}
-        <Card className="border-2 border-green-200 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50">
+        <Card className="border-2 border-purple-200 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50">
             <CardTitle className="text-xl flex items-center">
-              <Target className="h-6 w-6 mr-2 text-green-600" />
+              <Target className="h-6 w-6 mr-2 text-purple-600" />
               질문 {currentQuestion + 1}
             </CardTitle>
             <CardDescription className="text-lg font-medium text-foreground">
@@ -289,12 +303,12 @@ const DietAnalysisTest: React.FC<DietAnalysisTestProps> = ({ onComplete }) => {
                 <Button
                   key={index}
                   variant="outline"
-                  className="w-full p-4 h-auto text-left justify-start hover:bg-green-50 hover:border-green-300 transition-colors"
+                  className="w-full p-4 h-auto text-left justify-start hover:bg-purple-50 hover:border-purple-300 transition-colors"
                   onClick={() => handleAnswer(option)}
                 >
                   <div className="flex items-center w-full">
-                    <div className="w-6 h-6 rounded-full border-2 border-green-300 mr-3 flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="w-6 h-6 rounded-full border-2 border-purple-300 mr-3 flex items-center justify-center">
+                      <div className="w-2 h-2 rounded-full bg-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <span className="flex-1">{option}</span>
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />

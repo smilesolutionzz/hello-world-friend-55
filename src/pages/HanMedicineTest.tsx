@@ -156,37 +156,57 @@ const HanMedicineTest = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative bg-gradient-to-br from-[hsl(var(--herbal-bg))] via-[hsl(var(--herbal-bg-warm))] to-[hsl(var(--herbal-bg))]">
       <HerbalClinic3DBackground />
       <UnifiedNavigation />
-      <div className="min-h-screen py-4 sm:py-8 px-4 pt-4">
+      <div className="min-h-screen py-8 sm:py-12 px-4 pt-4">
         <div className="max-w-6xl mx-auto">
-          {/* 헤더 - 가운데 정렬 */}
-          <div className="text-center mb-8 sm:mb-12 flex flex-col items-center px-2">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              한방솔루션 - AIH 체질분석 센터
+          {/* 헤더 - 한의원 스타일 */}
+          <div className="text-center mb-12 sm:mb-16 flex flex-col items-center px-2">
+            <div className="inline-block mb-6 px-8 py-3 bg-gradient-to-r from-[hsl(var(--herbal-primary))] to-[hsl(var(--herbal-primary-light))] rounded-full shadow-lg">
+              <span className="text-white font-bold text-sm tracking-wider">千年의 智慧 × AI 技術</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', 'Gowun Batang', serif", color: "hsl(var(--herbal-text-dark))" }}>
+              한방솔루션 체질분석 센터
             </h1>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
-              전문 AI가 당신의 체질과 대사를 정확히 분석하여 맞춤형 한방솔루션을 제공합니다
+            <p className="text-lg sm:text-xl mb-6" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-secondary))" }}>
+              전통 한의학과 최첨단 AI가 만나 당신만의 맞춤형 건강 솔루션을 제공합니다
             </p>
+            <div className="flex items-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[hsl(var(--herbal-primary))]"></div>
+                <span className="text-[hsl(var(--herbal-text-dark))]">한의학 기반 분석</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[hsl(var(--herbal-accent))]"></div>
+                <span className="text-[hsl(var(--herbal-text-dark))]">AI 정밀 진단</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[hsl(var(--herbal-secondary))]"></div>
+                <span className="text-[hsl(var(--herbal-text-dark))]">맞춤형 처방</span>
+              </div>
+            </div>
           </div>
 
-          {/* 나만의 체질 찾기 섹션 - 완전 가운데 정렬 */}
+          {/* 나만의 체질 찾기 섹션 - 한의원 스타일 */}
           <div className="mb-12 sm:mb-16 flex flex-col items-center text-center px-2">
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">
-              나만의 <span className="text-primary">체질을 찾아</span> 건강해지세요
-            </h2>
-            <p className="text-base sm:text-lg text-muted-foreground mb-8 sm:mb-12 max-w-2xl">
-              천 년의 한의학 지혜와 현대 AI가 만나 <strong>당신만의 맞춤 솔루션</strong>을 제공합니다
+            <div className="mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+                나만의 <span style={{ color: "hsl(var(--herbal-primary))" }}>體質</span>을 찾아 건강해지세요
+              </h2>
+              <div className="w-24 h-1 mx-auto bg-gradient-to-r from-transparent via-[hsl(var(--herbal-accent))] to-transparent rounded-full"></div>
+            </div>
+            <p className="text-lg sm:text-xl mb-12 max-w-2xl" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-secondary))" }}>
+              千年의 한의학 지혜와 현대 AI가 만나 <strong style={{ color: "hsl(var(--herbal-primary))" }}>당신만의 맞춤 솔루션</strong>을 제공합니다
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8 mb-8 sm:mb-12 w-full max-w-5xl">
-              <Card className="text-center border-2 hover:border-primary/30 transition-colors">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12 w-full max-w-5xl">
+              <Card className="text-center border-2 transition-all hover:shadow-xl bg-white/80 backdrop-blur-sm" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                 <CardContent className="pt-8 pb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Heart className="h-8 w-8 text-red-500" />
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary-light)), hsl(var(--herbal-primary)))" }}>
+                    <Heart className="h-10 w-10 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-4">내 몸에 딱 맞는 처방</h3>
+                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>內 몸에 딱 맞는 處方</h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
@@ -204,12 +224,12 @@ const HanMedicineTest = () => {
                 </CardContent>
               </Card>
 
-              <Card className="text-center border-2 hover:border-primary/30 transition-colors">
+              <Card className="text-center border-2 transition-all hover:shadow-xl bg-white/80 backdrop-blur-sm" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                 <CardContent className="pt-8 pb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Brain className="h-8 w-8 text-blue-500" />
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-accent)), hsl(var(--herbal-secondary)))" }}>
+                    <Brain className="h-10 w-10 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-4">AI 정밀 체질체크</h3>
+                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>AI 精密 體質 檢査</h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
@@ -227,12 +247,12 @@ const HanMedicineTest = () => {
                 </CardContent>
               </Card>
 
-              <Card className="text-center border-2 hover:border-primary/30 transition-colors">
+              <Card className="text-center border-2 transition-all hover:shadow-xl bg-white/80 backdrop-blur-sm" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                 <CardContent className="pt-8 pb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Target className="h-8 w-8 text-green-500" />
+                  <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-secondary)), hsl(var(--herbal-text-dark)))" }}>
+                    <Target className="h-10 w-10 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-4">확실한 결과</h3>
+                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>確實한 結果</h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
@@ -254,26 +274,30 @@ const HanMedicineTest = () => {
             <ExpertValidationBanner />
           </div>
 
-          {/* 체크 프로그램 메뉴 */}
+          {/* 체크 프로그램 메뉴 - 한의원 스타일 */}
           <div className="mb-12 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl font-bold text-center text-foreground mb-8 sm:mb-12">
-              한방체크 프로그램 선택
-            </h2>
+            <div className="text-center mb-10">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+                韓方體크 프로그램 選擇
+              </h2>
+              <div className="w-24 h-1 mx-auto bg-gradient-to-r from-transparent via-[hsl(var(--herbal-primary))] to-transparent rounded-full"></div>
+            </div>
             
-            <div className="flex justify-center mb-8 sm:mb-12">
+            <div className="flex justify-center mb-12">
               {/* 3분 빠른 체질 체크 */}
-              <Card className="relative overflow-hidden border-2 border-blue-200 hover:border-blue-300 transition-all group w-full max-w-lg">
-                <div className="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  추천
+              <Card className="relative overflow-hidden border-3 transition-all group w-full max-w-lg shadow-xl bg-white/90 backdrop-blur-sm" style={{ borderColor: "hsl(var(--herbal-primary))" }}>
+                <div className="absolute top-4 right-4 px-4 py-2 rounded-full text-sm font-bold text-white shadow-lg" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-accent)), hsl(var(--herbal-primary-light)))" }}>
+                  推薦
                 </div>
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center">
-                      <Clock className="h-6 w-6 text-blue-600" />
+                <div className="absolute top-0 left-0 w-full h-2" style={{ background: "linear-gradient(90deg, hsl(var(--herbal-primary)), hsl(var(--herbal-accent)), hsl(var(--herbal-primary)))" }}></div>
+                <CardHeader className="pb-4 pt-6">
+                  <div className="flex items-center gap-4 mb-2">
+                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary-light)), hsl(var(--herbal-primary)))" }}>
+                      <Clock className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <CardTitle className="text-xl text-foreground">3분 빠른 체질체크</CardTitle>
-                      <p className="text-sm text-muted-foreground">간편하고 빠른 기본 분석</p>
+                      <CardTitle className="text-2xl" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>3分 빠른 體質 檢査</CardTitle>
+                      <p className="text-base" style={{ color: "hsl(var(--herbal-secondary))" }}>간편하고 빠른 기본 분석</p>
                     </div>
                   </div>
                 </CardHeader>
@@ -293,10 +317,14 @@ const HanMedicineTest = () => {
                     </div>
                   </div>
                   <Button 
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    className="w-full text-white text-lg font-bold py-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                    style={{ 
+                      background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))",
+                      fontFamily: "'Noto Serif KR', serif"
+                    }}
                     onClick={() => handleTestSelection('quick')}
                   >
-                    3분만에 시작하기
+                    3分만에 시작하기 →
                   </Button>
                 </CardContent>
               </Card>
@@ -304,27 +332,38 @@ const HanMedicineTest = () => {
               {/* 프리미엄 정밀 체질 분석 - 기능 비활성화로 임시 제거 */}
             </div>
 
-            {/* 추가 특화 체크 프로그램 */}
-            <div className="space-y-6">
-              <h3 className="text-xl font-semibold text-center text-foreground mb-6">
-                특화 체질체크 프로그램
-              </h3>
+            {/* 추가 특화 체크 프로그램 - 한의원 스타일 */}
+            <div className="space-y-8">
+              <div className="text-center">
+                <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+                  特化 體質 檢査 프로그램
+                </h3>
+                <p className="text-base" style={{ color: "hsl(var(--herbal-secondary))" }}>증상별 맞춤형 한방 솔루션</p>
+              </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* 다이어트 체질 분석 */}
-                <Card className="border hover:border-primary/30 transition-colors">
+                <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                   <CardHeader className="pb-3">
-                    <div className="flex items-center gap-2">
-                      <Weight className="h-5 w-5 text-orange-600" />
-                      <CardTitle className="text-lg">다이어트 체질 분석</CardTitle>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-accent)), hsl(var(--herbal-secondary)))" }}>
+                        <Weight className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>다이어트 體質 分析</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">효과적인 다이어트 방법 찾기</p>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>효과적인 다이어트 방법 찾기</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="w-full"
+                      className="w-full font-bold border-2 transition-all group-hover:text-white"
+                      style={{ 
+                        borderColor: "hsl(var(--herbal-accent))",
+                        color: "hsl(var(--herbal-text-dark))"
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, hsl(var(--herbal-accent)), hsl(var(--herbal-secondary)))"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
                       onClick={() => handleTestSelection('diet')}
                     >
                       시작하기
@@ -333,19 +372,27 @@ const HanMedicineTest = () => {
                 </Card>
 
                 {/* 스트레스 체크 */}
-                <Card className="border hover:border-primary/30 transition-colors">
+                <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                   <CardHeader className="pb-3">
-                    <div className="flex items-center gap-2">
-                      <Shield className="h-5 w-5 text-red-600" />
-                      <CardTitle className="text-lg">스트레스 체크</CardTitle>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))" }}>
+                        <Shield className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>스트레스 檢査</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">스트레스 수준과 관리법</p>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>스트레스 수준과 관리법</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="w-full"
+                      className="w-full font-bold border-2 transition-all group-hover:text-white"
+                      style={{ 
+                        borderColor: "hsl(var(--herbal-primary))",
+                        color: "hsl(var(--herbal-text-dark))"
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
                       onClick={() => handleTestSelection('stress')}
                     >
                       시작하기
@@ -354,19 +401,27 @@ const HanMedicineTest = () => {
                 </Card>
 
                 {/* 여성 건강 체크 */}
-                <Card className="border hover:border-primary/30 transition-colors">
+                <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                   <CardHeader className="pb-3">
-                    <div className="flex items-center gap-2">
-                      <Heart className="h-5 w-5 text-pink-600" />
-                      <CardTitle className="text-lg">여성 건강 체크</CardTitle>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #ec4899, #f472b6)" }}>
+                        <Heart className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>女性 健康 檢査</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">여성 특화 건강 관리</p>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>여성 특화 건강 관리</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="w-full"
+                      className="w-full font-bold border-2 transition-all group-hover:text-white"
+                      style={{ 
+                        borderColor: "#ec4899",
+                        color: "hsl(var(--herbal-text-dark))"
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, #ec4899, #f472b6)"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
                       onClick={() => handleTestSelection('women')}
                     >
                       시작하기
@@ -375,19 +430,27 @@ const HanMedicineTest = () => {
                 </Card>
 
                 {/* 자폐 스펙트럼 체크 */}
-                <Card className="border hover:border-primary/30 transition-colors">
+                <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                   <CardHeader className="pb-3">
-                    <div className="flex items-center gap-2">
-                      <Smile className="h-5 w-5 text-blue-600" />
-                      <CardTitle className="text-lg">자폐 스펙트럼 체크</CardTitle>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #3b82f6, #60a5fa)" }}>
+                        <Smile className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>발달 檢査</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">아동 발달 상태 확인</p>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>아동 발달 상태 확인</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="w-full"
+                      className="w-full font-bold border-2 transition-all group-hover:text-white"
+                      style={{ 
+                        borderColor: "#3b82f6",
+                        color: "hsl(var(--herbal-text-dark))"
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, #3b82f6, #60a5fa)"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
                       onClick={() => handleTestSelection('autism')}
                     >
                       시작하기
@@ -396,19 +459,28 @@ const HanMedicineTest = () => {
                 </Card>
 
                 {/* ADHD 체크 */}
-                <Card className="border hover:border-primary/30 transition-colors">
+                <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                   <CardHeader className="pb-3">
-                    <div className="flex items-center gap-2">
-                      <Zap className="h-5 w-5 text-yellow-600" />
-                      <CardTitle className="text-lg">ADHD 체크</CardTitle>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #eab308, #facc15)" }}>
+                        <Zap className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>ADHD 檢査</CardTitle>
                     </div>
                   </CardHeader>
+                  </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">주의력 결핍 과잉행동 확인</p>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>주의력 결핍 과잉행동 확인</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="w-full"
+                      className="w-full font-bold border-2 transition-all group-hover:text-white"
+                      style={{ 
+                        borderColor: "#eab308",
+                        color: "hsl(var(--herbal-text-dark))"
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, #eab308, #facc15)"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
                       onClick={() => handleTestSelection('adhd')}
                     >
                       시작하기
@@ -417,19 +489,27 @@ const HanMedicineTest = () => {
                 </Card>
 
                 {/* 지적발달 체크 */}
-                <Card className="border hover:border-primary/30 transition-colors">
+                <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                   <CardHeader className="pb-3">
-                    <div className="flex items-center gap-2">
-                      <Brain className="h-5 w-5 text-indigo-600" />
-                      <CardTitle className="text-lg">지적발달 체크</CardTitle>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #6366f1, #818cf8)" }}>
+                        <Brain className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>지적발달 檢査</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">인지 능력 확인</p>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>인지 능력 확인</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="w-full"
+                      className="w-full font-bold border-2 transition-all group-hover:text-white"
+                      style={{ 
+                        borderColor: "#6366f1",
+                        color: "hsl(var(--herbal-text-dark))"
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, #6366f1, #818cf8)"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
                       onClick={() => handleTestSelection('intellectual')}
                     >
                       시작하기
@@ -440,24 +520,27 @@ const HanMedicineTest = () => {
             </div>
           </div>
 
-          {/* 성과 및 신뢰성 섹션 */}
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-8 sm:mb-12">
-              검증된 결과
-            </h2>
+          {/* 성과 및 신뢰성 섹션 - 한의원 스타일 */}
+          <div className="text-center mb-12 px-4 py-12 rounded-3xl" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-bg)), hsl(var(--herbal-bg-warm)))" }}>
+            <div className="mb-8">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+                檢證된 韓方 솔루션
+              </h2>
+              <div className="w-24 h-1 mx-auto bg-gradient-to-r from-transparent via-[hsl(var(--herbal-accent))] to-transparent rounded-full"></div>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">97%</div>
-                <p className="text-muted-foreground">사용자 만족도</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              <div className="text-center p-6 rounded-2xl bg-white/60 backdrop-blur-sm shadow-lg">
+                <div className="text-4xl sm:text-5xl font-bold mb-3" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-accent)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>97%</div>
+                <p className="text-base font-medium" style={{ color: "hsl(var(--herbal-text-dark))" }}>사용자 만족도</p>
               </div>
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">50,000+</div>
-                <p className="text-muted-foreground">누적 체크 건수</p>
+              <div className="text-center p-6 rounded-2xl bg-white/60 backdrop-blur-sm shadow-lg">
+                <div className="text-4xl sm:text-5xl font-bold mb-3" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-accent)), hsl(var(--herbal-secondary)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>50,000+</div>
+                <p className="text-base font-medium" style={{ color: "hsl(var(--herbal-text-dark))" }}>누적 체크 건수</p>
               </div>
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">100+</div>
-                <p className="text-muted-foreground">협력 한의원</p>
+              <div className="text-center p-6 rounded-2xl bg-white/60 backdrop-blur-sm shadow-lg">
+                <div className="text-4xl sm:text-5xl font-bold mb-3" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-secondary)), hsl(var(--herbal-primary)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>100+</div>
+                <p className="text-base font-medium" style={{ color: "hsl(var(--herbal-text-dark))" }}>협력 한의원</p>
               </div>
             </div>
           </div>

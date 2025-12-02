@@ -176,6 +176,16 @@ html, body {
     --sidebar-border: 220 30% 92%;
     --sidebar-ring: 230 80% 65%;
     
+    /* 한의원 테마 색상 */
+    --herbal-primary: 142 76% 36%; /* 약초 녹색 */
+    --herbal-primary-light: 142 60% 50%;
+    --herbal-secondary: 30 40% 50%; /* 한약 갈색 */
+    --herbal-accent: 45 93% 47%; /* 금색 강조 */
+    --herbal-bg: 45 33% 95%; /* 크림 배경 */
+    --herbal-bg-warm: 35 44% 92%; /* 따뜻한 베이지 */
+    --herbal-text-dark: 25 25% 25%; /* 진한 갈색 텍스트 */
+    --herbal-border: 35 20% 80%; /* 부드러운 갈색 테두리 */
+    
     /* Smooth Animations with Visual Weight */
     --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-spring: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);

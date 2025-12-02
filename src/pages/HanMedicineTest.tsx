@@ -544,7 +544,7 @@ const HanMedicineTest = () => {
                 <p className="text-base font-medium" style={{ color: "hsl(var(--herbal-text-dark))" }}>누적 체크 건수</p>
               </div>
               <div className="text-center p-6 rounded-2xl bg-white/60 backdrop-blur-sm shadow-lg">
-                <div className="text-4xl sm:text-5xl font-bold mb-3" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-secondary)), hsl(var(--herbal-primary)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>100+</div>
+                <div className="text-4xl sm:text-5xl font-bold mb-3" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-secondary)), hsl(var(--herbal-primary)))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>5+</div>
                 <p className="text-base font-medium" style={{ color: "hsl(var(--herbal-text-dark))" }}>협력 한의원</p>
               </div>
             </div>
@@ -596,7 +596,7 @@ const HanMedicineTest = () => {
             <div className="inline-flex items-center gap-3 px-8 py-4 rounded-full shadow-lg" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-bg)), hsl(var(--herbal-bg-warm)))" }}>
               <span className="text-2xl">✨</span>
               <span className="font-bold text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
-                <span style={{ color: "hsl(var(--herbal-accent))" }}>100+</span> 한의원에서 신뢰하는 AI 한방 시스템
+                <span style={{ color: "hsl(var(--herbal-accent))" }}>5+</span> 한의원에서 신뢰하는 AI 한방 시스템
               </span>
             </div>
           </div>

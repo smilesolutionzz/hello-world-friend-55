@@ -206,7 +206,9 @@ const HanMedicineTest = () => {
                   <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary-light)), hsl(var(--herbal-primary)))" }}>
                     <Heart className="h-10 w-10 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>內 몸에 딱 맞는 處方</h3>
+                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+                    내 몸에 딱 맞는 처방
+                  </h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
@@ -229,7 +231,9 @@ const HanMedicineTest = () => {
                   <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-accent)), hsl(var(--herbal-secondary)))" }}>
                     <Brain className="h-10 w-10 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>AI 精密 體質 檢査</h3>
+                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+                    AI 정밀 체질검사
+                  </h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
@@ -252,7 +256,9 @@ const HanMedicineTest = () => {
                   <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-secondary)), hsl(var(--herbal-text-dark)))" }}>
                     <Target className="h-10 w-10 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>確實한 結果</h3>
+                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+                    확실한 결과
+                  </h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-start space-x-2">
                       <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
@@ -278,7 +284,7 @@ const HanMedicineTest = () => {
           <div className="mb-12 sm:mb-16">
             <div className="text-center mb-10">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
-                韓方體크 프로그램 選擇
+                한방체크 프로그램 선택
               </h2>
               <div className="w-24 h-1 mx-auto bg-gradient-to-r from-transparent via-[hsl(var(--herbal-primary))] to-transparent rounded-full"></div>
             </div>
@@ -296,7 +302,7 @@ const HanMedicineTest = () => {
                       <Clock className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                      <CardTitle className="text-2xl" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>3分 빠른 體質 檢査</CardTitle>
+                      <CardTitle className="text-2xl" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>3분 빠른 체질검사</CardTitle>
                       <p className="text-base" style={{ color: "hsl(var(--herbal-secondary))" }}>간편하고 빠른 기본 분석</p>
                     </div>
                   </div>
@@ -324,7 +330,7 @@ const HanMedicineTest = () => {
                     }}
                     onClick={() => handleTestSelection('quick')}
                   >
-                    3分만에 시작하기 →
+                    3분만에 시작하기 →
                   </Button>
                 </CardContent>
               </Card>
@@ -336,7 +342,7 @@ const HanMedicineTest = () => {
             <div className="space-y-8">
               <div className="text-center">
                 <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
-                  特化 體質 檢査 프로그램
+                  특화 체질검사 프로그램
                 </h3>
                 <p className="text-base" style={{ color: "hsl(var(--herbal-secondary))" }}>증상별 맞춤형 한방 솔루션</p>
               </div>
@@ -349,7 +355,7 @@ const HanMedicineTest = () => {
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-accent)), hsl(var(--herbal-secondary)))" }}>
                         <Weight className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>다이어트 體質 分析</CardTitle>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>다이어트 체질 분석</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -378,7 +384,7 @@ const HanMedicineTest = () => {
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))" }}>
                         <Shield className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>스트레스 檢査</CardTitle>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>스트레스 검사</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -407,7 +413,7 @@ const HanMedicineTest = () => {
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #ec4899, #f472b6)" }}>
                         <Heart className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>女性 健康 檢査</CardTitle>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>여성 건강검사</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -436,7 +442,7 @@ const HanMedicineTest = () => {
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #3b82f6, #60a5fa)" }}>
                         <Smile className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>발달 檢査</CardTitle>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>발달검사</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -465,7 +471,7 @@ const HanMedicineTest = () => {
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #eab308, #facc15)" }}>
                         <Zap className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>ADHD 檢査</CardTitle>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>ADHD 검사</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -494,7 +500,7 @@ const HanMedicineTest = () => {
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #6366f1, #818cf8)" }}>
                         <Brain className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>지적발달 檢査</CardTitle>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>지적발달 검사</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -523,7 +529,7 @@ const HanMedicineTest = () => {
           <div className="text-center mb-12 px-4 py-12 rounded-3xl" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-bg)), hsl(var(--herbal-bg-warm)))" }}>
             <div className="mb-8">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
-                檢證된 韓方 솔루션
+                검증된 한방 솔루션
               </h2>
               <div className="w-24 h-1 mx-auto bg-gradient-to-r from-transparent via-[hsl(var(--herbal-accent))] to-transparent rounded-full"></div>
             </div>
@@ -544,31 +550,38 @@ const HanMedicineTest = () => {
             </div>
           </div>
 
-          {/* 연락처 및 상담 안내 */}
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 sm:p-8 text-center">
-            <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-4">
-              전문가 상담이 필요하신가요?
+          {/* 전문가 상담 CTA - 한의원 스타일 */}
+          <div className="text-center mb-12 p-8 rounded-3xl shadow-xl" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary-light)), hsl(var(--herbal-primary)))" }}>
+            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4" style={{ fontFamily: "'Noto Serif KR', serif" }}>
+              한의 전문가 상담이 필요하신가요?
             </h3>
-            <p className="text-muted-foreground mb-6">
-              한방 전문의와 1:1 맞춤 상담을 받아보세요
+            <p className="text-white/90 mb-8 text-lg">
+              천년 한의학 전통의 전문의와 1:1 맞춤 상담을 받아보세요
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-primary" />
-                <span className="text-sm text-muted-foreground">상담 문의: 1588-1234</span>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
+                <Phone className="h-5 w-5 text-white" />
+                <span className="text-white font-medium">상담 문의: 1588-1234</span>
               </div>
-              <Button variant="outline" size="sm">
-                전문가 상담 예약
+              <Button 
+                className="px-8 py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                style={{ 
+                  background: "white",
+                  color: "hsl(var(--herbal-primary))",
+                  fontFamily: "'Noto Serif KR', serif"
+                }}
+              >
+                전문가 상담 예약 →
               </Button>
             </div>
           </div>
 
-          {/* 인증 및 신뢰성 배지 */}
-          <div className="text-center mt-8 sm:mt-12">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full px-6 py-3">
-              <span className="text-lg">✨</span>
-              <span className="font-medium text-foreground">
-                <span className="text-brand-gradient font-bold">100+</span> 한의원에서 신뢰하는 AI 한방치료 시스템
+          {/* 인증 및 신뢰성 배지 - 한의원 스타일 */}
+          <div className="text-center mt-12">
+            <div className="inline-flex items-center gap-3 px-8 py-4 rounded-full shadow-lg" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-bg)), hsl(var(--herbal-bg-warm)))" }}>
+              <span className="text-2xl">✨</span>
+              <span className="font-bold text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+                <span style={{ color: "hsl(var(--herbal-accent))" }}>100+</span> 한의원에서 신뢰하는 AI 한방 시스템
               </span>
             </div>
           </div>

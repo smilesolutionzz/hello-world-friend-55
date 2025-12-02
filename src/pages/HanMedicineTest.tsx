@@ -260,9 +260,9 @@ const HanMedicineTest = () => {
               한방체크 프로그램 선택
             </h2>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
+            <div className="flex justify-center mb-8 sm:mb-12">
               {/* 3분 빠른 체질 체크 */}
-              <Card className="relative overflow-hidden border-2 border-blue-200 hover:border-blue-300 transition-all group">
+              <Card className="relative overflow-hidden border-2 border-blue-200 hover:border-blue-300 transition-all group w-full max-w-lg">
                 <div className="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                   추천
                 </div>

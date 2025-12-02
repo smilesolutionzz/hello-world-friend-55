@@ -468,8 +468,13 @@ export const useReadyPlayerMe = () => {
 
     const handleMessage = (event: MessageEvent) => {
       const json = parse(event);
+      console.log('🎭 Ready Player Me Event:', json); // 디버깅용
+      
       if (json?.source === 'readyplayerme') {
+        console.log('✅ Event Name:', json.eventName); // 디버깅용
+        
         if (json.eventName === 'v1.avatar.exported') {
+          console.log('🎉 Avatar URL:', json.data.url); // 디버깅용
           setAvatarUrl(json.data.url);
           document.body.removeChild(frame);
           document.body.removeChild(closeBtn);

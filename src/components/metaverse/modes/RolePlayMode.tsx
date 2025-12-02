@@ -16,7 +16,7 @@ interface RolePlayModeProps {
 export const RolePlayMode = ({ scenario }: RolePlayModeProps) => {
   const navigate = useNavigate();
   const { hasEntered, handleEnter: onEnter, handleExit } = useMetaverseSession();
-  const { openAvatarCreator } = useReadyPlayerMe();
+  const { avatarUrl, setAvatarUrl, openAvatarCreator } = useReadyPlayerMe();
   
   const [sessionConfig, setSessionConfig] = useState<{
     userName: string;
@@ -51,6 +51,8 @@ export const RolePlayMode = ({ scenario }: RolePlayModeProps) => {
           showConsultTopic={false}
           showMovementToggle={true}
           onAvatarCreatorOpen={openAvatarCreator}
+          initialAvatarUrl={avatarUrl}
+          onAvatarUrlChange={setAvatarUrl}
         />
       </div>
     );

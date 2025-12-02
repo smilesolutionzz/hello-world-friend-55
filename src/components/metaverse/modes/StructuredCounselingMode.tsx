@@ -19,7 +19,7 @@ interface StructuredCounselingModeProps {
 export const StructuredCounselingMode = ({ ageGroup, character }: StructuredCounselingModeProps) => {
   const navigate = useNavigate();
   const { hasEntered, handleEnter: onEnter, handleExit } = useMetaverseSession();
-  const { openAvatarCreator } = useReadyPlayerMe();
+  const { avatarUrl, setAvatarUrl, openAvatarCreator } = useReadyPlayerMe();
   
   const [sessionConfig, setSessionConfig] = useState<{
     userName: string;
@@ -56,6 +56,8 @@ export const StructuredCounselingMode = ({ ageGroup, character }: StructuredCoun
           showConsultTopic={false}
           showMovementToggle={false}
           onAvatarCreatorOpen={openAvatarCreator}
+          initialAvatarUrl={avatarUrl}
+          onAvatarUrlChange={setAvatarUrl}
         />
       </div>
     );

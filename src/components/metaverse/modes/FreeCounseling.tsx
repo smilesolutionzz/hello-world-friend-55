@@ -11,7 +11,7 @@ import { useMetaverseSession } from '@/hooks/useMetaverseSession';
 export const FreeCounseling = () => {
   const navigate = useNavigate();
   const { hasEntered, handleEnter: onEnter, handleExit } = useMetaverseSession();
-  const { openAvatarCreator } = useReadyPlayerMe();
+  const { avatarUrl, setAvatarUrl, openAvatarCreator } = useReadyPlayerMe();
   
   const [sessionConfig, setSessionConfig] = useState<{
     userName: string;
@@ -48,6 +48,8 @@ export const FreeCounseling = () => {
           showConsultTopic={true}
           showMovementToggle={true}
           onAvatarCreatorOpen={openAvatarCreator}
+          initialAvatarUrl={avatarUrl}
+          onAvatarUrlChange={setAvatarUrl}
         />
       </div>
     );

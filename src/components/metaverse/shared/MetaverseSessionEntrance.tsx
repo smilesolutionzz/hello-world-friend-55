@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -38,21 +38,37 @@ interface MetaverseSessionEntranceProps {
   showConsultTopic?: boolean;
   showMovementToggle?: boolean;
   onAvatarCreatorOpen?: () => void;
+  initialAvatarUrl?: string;
+  onAvatarUrlChange?: (url: string) => void;
 }
 
 export const MetaverseSessionEntrance = ({ 
   onEnter, 
   showConsultTopic = true,
   showMovementToggle = true,
-  onAvatarCreatorOpen
+  onAvatarCreatorOpen,
+  initialAvatarUrl = '',
+  onAvatarUrlChange
 }: MetaverseSessionEntranceProps) => {
   const [userName, setUserName] = useState('');
   const [consultTopic, setConsultTopic] = useState('');
   const [selectedRoom, setSelectedRoom] = useState<RoomType>('counseling');
-  const [avatarUrl, setAvatarUrl] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);
   const [showGallery, setShowGallery] = useState(false);
   const [enableMovement, setEnableMovement] = useState(true);
   const [showSubtitles, setShowSubtitles] = useState(true);
+  
+  // initialAvatarUrl이 변경되면 로컬 state도 업데이트
+  useEffect(() => {
+    if (initialAvatarUrl) {
+      setAvatarUrl(initialAvatarUrl);
+    }
+  }, [initialAvatarUrl]);
+
+  const handleAvatarUrlChange = (url: string) => {
+    setAvatarUrl(url);
+    onAvatarUrlChange?.(url);
+  };
 
   const handleEnter = () => {
     if (!userName.trim()) return;
@@ -137,6 +153,14 @@ export const MetaverseSessionEntrance = ({
             
             {avatarUrl && <AvatarPreview avatarUrl={avatarUrl} onUrlChange={setAvatarUrl} />}
             
+            <Input
+              type="text"
+              value={avatarUrl}
+              onChange={(e) => handleAvatarUrlChange(e.target.value)}
+              placeholder="Ready Player Me URL (.glb) 붙여넣기"
+              className="bg-background/50 border-purple-500/30 text-white placeholder:text-white/40"
+            />
+            
             <div className="flex gap-2">
               <Button
                 type="button"
@@ -211,7 +235,7 @@ export const MetaverseSessionEntrance = ({
             <AvatarGallery
               selectedUrl={avatarUrl}
               onSelect={(url) => {
-                setAvatarUrl(url);
+                handleAvatarUrlChange(url);
                 setShowGallery(false);
               }}
             />

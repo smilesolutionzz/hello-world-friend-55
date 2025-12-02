@@ -15,7 +15,8 @@ import {
   ExternalLink,
   Loader2,
   Star,
-  Sparkles
+  Sparkles,
+  Clock
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -609,15 +610,16 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
 
         {/* 프리미엄 정밀 체질체크 CTA - 요청으로 제거 */}
 
-        {/* 가까이한의원 연계 섹션 */}
+        {/* 가까이한의원 비대면 진료 CTA */}
         <Card className="border-2 border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
           <CardHeader>
+            <Badge className="w-fit mb-2 bg-green-600">대표 제휴기관</Badge>
             <CardTitle className="flex items-center text-green-800">
               <Phone className="h-5 w-5 mr-2" />
-              전문 한의원 1:1 맞춤 상담
+              가까이한의원 비대면진료
             </CardTitle>
             <CardDescription>
-              검사 결과를 바탕으로 전문 한의사의 맞춤 상담을 받아보세요
+              검사 결과 기반 맞춤 한약 처방 및 전문 상담
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -648,25 +650,25 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
               </div>
               <div className="space-y-2">
                 <h4 className="font-semibold text-green-800 flex items-center gap-2">
-                  <Star className="h-4 w-4" />
-                  상담 혜택
+                  <Clock className="h-4 w-4" />
+                  진료 시간
                 </h4>
                 <ul className="text-sm space-y-2 bg-white/60 rounded-lg p-3">
                   <li className="flex items-center gap-2">
                     <span className="text-green-600">•</span>
-                    검사 결과 무료 해석
+                    평일: 09:00-18:00
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-green-600">•</span>
-                    초회 상담료 할인
+                    토요일: 09:00-15:00
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-green-600">•</span>
-                    맞춤 치료 계획 제공
+                    일요일/공휴일: 휴진
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="text-green-600">•</span>
-                    24시간 상담 가능
+                    비대면 진료 가능
                   </li>
                 </ul>
               </div>
@@ -676,11 +678,11 @@ export const HanMedicineResult: React.FC<HanMedicineResultProps> = ({ result, on
             
             <div className="flex flex-col sm:flex-row gap-3">
               <Button 
-                onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}
+                onClick={() => window.open('tel:010-6624-9990', '_self')}
                 className="flex-1 h-12 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-md"
               >
                 <Phone className="h-4 w-4 mr-2" />
-                전문 한의원 상담받기
+                전화 상담: 010-6624-9990
               </Button>
               <Button 
                 variant="outline" 

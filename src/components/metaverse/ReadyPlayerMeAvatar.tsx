@@ -476,27 +476,150 @@ export const useReadyPlayerMe = () => {
           setIsCreating(false);
           window.removeEventListener('message', handleMessage);
           
-          // 성공 알림
-          const successMsg = document.createElement('div');
-          successMsg.innerHTML = '✅ 캐릭터가 성공적으로 생성되었습니다!';
-          successMsg.style.cssText = `
+          // 성공 알림 및 URL 복사 UI
+          const overlay = document.createElement('div');
+          overlay.style.cssText = `
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
             z-index: 10000;
-            padding: 24px 48px;
-            background: rgba(34, 197, 94, 0.95);
-            color: white;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
           `;
-          document.body.appendChild(successMsg);
-          setTimeout(() => {
-            document.body.removeChild(successMsg);
-          }, 3000);
+          
+          const successMsg = document.createElement('div');
+          successMsg.style.cssText = `
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(22, 163, 74, 0.95));
+            color: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease-out;
+          `;
+          
+          successMsg.innerHTML = `
+            <style>
+              @keyframes slideIn {
+                from { transform: scale(0.9); opacity: 0; }
+                to { transform: scale(1); opacity: 1; }
+              }
+            </style>
+            <div style="text-align: center; margin-bottom: 24px;">
+              <div style="font-size: 48px; margin-bottom: 12px;">✅</div>
+              <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">캐릭터 생성 완료!</h3>
+              <p style="font-size: 14px; opacity: 0.9;">아래 URL을 복사하여 사용하세요</p>
+            </div>
+            
+            <div style="background: rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 16px; margin-bottom: 20px; backdrop-filter: blur(10px);">
+              <input 
+                id="avatar-url-input" 
+                type="text" 
+                readonly 
+                value="${json.data.url}"
+                style="
+                  width: 100%;
+                  background: transparent;
+                  border: none;
+                  color: white;
+                  font-size: 12px;
+                  font-family: monospace;
+                  outline: none;
+                  cursor: text;
+                  padding: 8px;
+                  word-break: break-all;
+                "
+              />
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+              <button 
+                id="copy-url-btn"
+                style="
+                  flex: 1;
+                  padding: 14px 24px;
+                  background: white;
+                  color: #15803d;
+                  border: none;
+                  border-radius: 10px;
+                  font-size: 16px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 8px;
+                "
+                onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)';"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';"
+              >
+                📋 URL 복사
+              </button>
+              <button 
+                id="close-success-btn"
+                style="
+                  padding: 14px 24px;
+                  background: rgba(255, 255, 255, 0.2);
+                  color: white;
+                  border: 2px solid white;
+                  border-radius: 10px;
+                  font-size: 16px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                "
+                onmouseover="this.style.background='rgba(255, 255, 255, 0.3)';"
+                onmouseout="this.style.background='rgba(255, 255, 255, 0.2)';"
+              >
+                닫기
+              </button>
+            </div>
+          `;
+          
+          overlay.appendChild(successMsg);
+          document.body.appendChild(overlay);
+          
+          // URL 복사 버튼 이벤트
+          const copyBtn = document.getElementById('copy-url-btn');
+          const urlInput = document.getElementById('avatar-url-input') as HTMLInputElement;
+          
+          copyBtn?.addEventListener('click', async () => {
+            try {
+              await navigator.clipboard.writeText(json.data.url);
+              copyBtn.innerHTML = '✅ 복사 완료!';
+              copyBtn.style.background = '#15803d';
+              copyBtn.style.color = 'white';
+              setTimeout(() => {
+                copyBtn.innerHTML = '📋 URL 복사';
+                copyBtn.style.background = 'white';
+                copyBtn.style.color = '#15803d';
+              }, 2000);
+            } catch (err) {
+              // 클립보드 API가 실패하면 input select 사용
+              urlInput.select();
+              document.execCommand('copy');
+              copyBtn.innerHTML = '✅ 복사 완료!';
+              setTimeout(() => {
+                copyBtn.innerHTML = '📋 URL 복사';
+              }, 2000);
+            }
+          });
+          
+          // 닫기 버튼 이벤트
+          const closeBtnModal = document.getElementById('close-success-btn');
+          closeBtnModal?.addEventListener('click', () => {
+            document.body.removeChild(overlay);
+          });
+          
+          // URL 입력창 클릭 시 전체 선택
+          urlInput?.addEventListener('click', () => {
+            urlInput.select();
+          });
         }
       }
     };

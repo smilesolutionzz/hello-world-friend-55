@@ -468,7 +468,6 @@ const HanMedicineTest = () => {
                       <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>ADHD 檢査</CardTitle>
                     </div>
                   </CardHeader>
-                  </CardHeader>
                   <CardContent>
                     <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>주의력 결핍 과잉행동 확인</p>
                     <Button 

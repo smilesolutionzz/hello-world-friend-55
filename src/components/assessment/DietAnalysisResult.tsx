@@ -232,24 +232,24 @@ ${result.dietPlan.herbs.join(', ')}
 
           {/* 사이드바 - 액션 */}
           <div className="space-y-6">
-            {/* 빠른 액션 */}
-            <Card>
+            {/* 가까이한의원 비대면 진료 */}
+            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200">
               <CardHeader>
-                <CardTitle className="text-lg">다음 단계</CardTitle>
+                <Badge className="w-fit mb-2 bg-green-600">대표 제휴기관</Badge>
+                <CardTitle className="text-lg text-green-900">가까이한의원 비대면진료</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
-                  onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}>
+                <p className="text-sm text-green-700 mb-3">검사 결과 기반 맞춤 한약 처방</p>
+                <div className="flex items-center gap-2 text-xs text-green-600 mb-3">
+                  <Clock className="h-3 w-3" />
+                  <span>평일 09:00-18:00 | 토요일 09:00-15:00</span>
+                </div>
+                <Button 
+                  className="w-full bg-green-600 hover:bg-green-700"
+                  onClick={() => window.open('tel:010-6624-9990', '_self')}
+                >
                   <Phone className="h-4 w-4 mr-2" />
-                  가까이한의원 전화상담
-                </Button>
-                <Button variant="outline" className="w-full border-purple-300 hover:bg-purple-50" onClick={handleDietPlan}>
-                  <Calendar className="h-4 w-4 mr-2" />
-                  맞춤 다이어트 플랜
-                </Button>
-                <Button variant="outline" className="w-full border-purple-300 hover:bg-purple-50" onClick={handleHerbalConsult}>
-                  <Pill className="h-4 w-4 mr-2" />
-                  한약 처방 문의
+                  전화 상담: 010-6624-9990
                 </Button>
               </CardContent>
             </Card>

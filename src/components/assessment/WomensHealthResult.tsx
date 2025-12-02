@@ -509,6 +509,29 @@ export const WomensHealthResult: React.FC<WomensHealthResultProps> = ({ result, 
 
         {selectedTab === 'clinics' && (
           <div className="space-y-6">
+            {/* 가까이한의원 비대면 진료 CTA */}
+            <Card className="mb-8 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200">
+              <CardHeader>
+                <Badge className="w-fit mb-2 bg-green-600">대표 제휴기관</Badge>
+                <CardTitle className="text-xl text-green-900">가까이한의원 비대면진료</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-green-700">검사 결과 기반 맞춤 한약 처방 및 전문 상담</p>
+                <div className="flex items-center gap-2 text-sm text-green-600">
+                  <Clock className="h-4 w-4" />
+                  <span>평일 09:00-18:00 | 토요일 09:00-15:00</span>
+                </div>
+                <Button 
+                  size="lg"
+                  className="w-full bg-green-600 hover:bg-green-700"
+                  onClick={() => window.open('tel:010-6624-9990', '_self')}
+                >
+                  <Phone className="h-5 w-5 mr-2" />
+                  전화 상담: 010-6624-9990
+                </Button>
+              </CardContent>
+            </Card>
+
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-2">가까운 여성 전문 한의원</h2>
               <p className="text-muted-foreground">비대면 처방이 가능한 한의원을 찾아보세요</p>

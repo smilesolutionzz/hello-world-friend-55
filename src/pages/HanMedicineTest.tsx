@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, CheckCircle, Users, Zap, Shield, Activity, Smile, Phone } from 'lucide-react';
+import { Crown, Heart, Clock, Star, Brain, Sparkles, Weight, Pill, Target, CheckCircle, Users, Zap, Shield, Activity, Smile, Phone, Moon, UtensilsCrossed } from 'lucide-react';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import ExpertValidationBanner from '@/components/ExpertValidationBanner';
 import HerbalClinic3DBackground from '@/components/HerbalClinic3DBackground';
@@ -344,7 +344,7 @@ const HanMedicineTest = () => {
                 <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
                   특화 체질검사 프로그램
                 </h3>
-                <p className="text-base" style={{ color: "hsl(var(--herbal-secondary))" }}>증상별 맞춤형 한방 솔루션</p>
+                <p className="text-base" style={{ color: "hsl(var(--herbal-secondary))" }}>비대면 한약 처방 맞춤 검사</p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -359,7 +359,7 @@ const HanMedicineTest = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>효과적인 다이어트 방법 찾기</p>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>체질별 맞춤 다이어트 한약 처방</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
@@ -377,27 +377,27 @@ const HanMedicineTest = () => {
                   </CardContent>
                 </Card>
 
-                {/* 스트레스 체크 */}
+                {/* 피로 회복 체질 검사 */}
                 <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))" }}>
-                        <Shield className="h-6 w-6 text-white" />
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #f97316, #fb923c)" }}>
+                        <Activity className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>스트레스 검사</CardTitle>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>피로 회복 체질 검사</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>스트레스 수준과 관리법</p>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>만성피로 개선 한약 처방</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
                       className="w-full font-bold border-2 transition-all group-hover:text-white"
                       style={{ 
-                        borderColor: "hsl(var(--herbal-primary))",
+                        borderColor: "#f97316",
                         color: "hsl(var(--herbal-text-dark))"
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))"}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, #f97316, #fb923c)"}
                       onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
                       onClick={() => handleTestSelection('stress')}
                     >
@@ -406,18 +406,76 @@ const HanMedicineTest = () => {
                   </CardContent>
                 </Card>
 
-                {/* 여성 건강 체크 */}
+                {/* 불면증 체질 검사 */}
+                <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #6366f1, #818cf8)" }}>
+                        <Moon className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>불면증 체질 검사</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>수면 개선 한약 처방</p>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full font-bold border-2 transition-all group-hover:text-white"
+                      style={{ 
+                        borderColor: "#6366f1",
+                        color: "hsl(var(--herbal-text-dark))"
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, #6366f1, #818cf8)"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                      onClick={() => handleTestSelection('stress')}
+                    >
+                      시작하기
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* 소화기 건강 검사 */}
+                <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #10b981, #34d399)" }}>
+                        <UtensilsCrossed className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>소화기 건강 검사</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>위장 기능 개선 한약 처방</p>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full font-bold border-2 transition-all group-hover:text-white"
+                      style={{ 
+                        borderColor: "#10b981",
+                        color: "hsl(var(--herbal-text-dark))"
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, #10b981, #34d399)"}
+                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                      onClick={() => handleTestSelection('stress')}
+                    >
+                      시작하기
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* 여성 건강 검사 */}
                 <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #ec4899, #f472b6)" }}>
                         <Heart className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>여성 건강검사</CardTitle>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>여성 건강 검사</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>여성 특화 건강 관리</p>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>생리불순·갱년기 한약 처방</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
@@ -435,87 +493,29 @@ const HanMedicineTest = () => {
                   </CardContent>
                 </Card>
 
-                {/* 자폐 스펙트럼 체크 */}
+                {/* 면역력 강화 검사 */}
                 <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #3b82f6, #60a5fa)" }}>
-                        <Smile className="h-6 w-6 text-white" />
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))" }}>
+                        <Shield className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>발달검사</CardTitle>
+                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>면역력 강화 검사</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>아동 발달 상태 확인</p>
+                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>면역력 증진 한약 처방</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
                       className="w-full font-bold border-2 transition-all group-hover:text-white"
                       style={{ 
-                        borderColor: "#3b82f6",
+                        borderColor: "hsl(var(--herbal-primary))",
                         color: "hsl(var(--herbal-text-dark))"
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, #3b82f6, #60a5fa)"}
+                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))"}
                       onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                      onClick={() => handleTestSelection('autism')}
-                    >
-                      시작하기
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                {/* ADHD 체크 */}
-                <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #eab308, #facc15)" }}>
-                        <Zap className="h-6 w-6 text-white" />
-                      </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>ADHD 검사</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>주의력 결핍 과잉행동 확인</p>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full font-bold border-2 transition-all group-hover:text-white"
-                      style={{ 
-                        borderColor: "#eab308",
-                        color: "hsl(var(--herbal-text-dark))"
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, #eab308, #facc15)"}
-                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                      onClick={() => handleTestSelection('adhd')}
-                    >
-                      시작하기
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                {/* 지적발달 체크 */}
-                <Card className="border-2 transition-all hover:shadow-lg bg-white/80 backdrop-blur-sm group" style={{ borderColor: "hsl(var(--herbal-border))" }}>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #6366f1, #818cf8)" }}>
-                        <Brain className="h-6 w-6 text-white" />
-                      </div>
-                      <CardTitle className="text-lg" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>지적발달 검사</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm mb-4" style={{ color: "hsl(var(--herbal-secondary))" }}>인지 능력 확인</p>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full font-bold border-2 transition-all group-hover:text-white"
-                      style={{ 
-                        borderColor: "#6366f1",
-                        color: "hsl(var(--herbal-text-dark))"
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = "linear-gradient(135deg, #6366f1, #818cf8)"}
-                      onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
-                      onClick={() => handleTestSelection('intellectual')}
+                      onClick={() => handleTestSelection('stress')}
                     >
                       시작하기
                     </Button>

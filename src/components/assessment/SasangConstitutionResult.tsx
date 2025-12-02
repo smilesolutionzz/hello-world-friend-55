@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, Heart, Utensils, Dumbbell, Leaf, AlertCircle, Copy, Target, FileText } from 'lucide-react';
+import { Loader2, Heart, Utensils, Dumbbell, Leaf, AlertCircle, Copy, Target, FileText, Phone, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -363,18 +363,54 @@ export const SasangConstitutionResult: React.FC<SasangConstitutionResultProps> =
 
       {/* 액션 버튼 */}
       <div className="flex flex-col gap-3">
+        {/* 가까이한의원 비대면 진료 CTA - 최우선 배치 */}
+        <Card className="overflow-hidden border-2" style={{ borderColor: "hsl(var(--herbal-primary))", background: "linear-gradient(135deg, hsl(var(--herbal-bg)), hsl(var(--herbal-bg-warm)))" }}>
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex-1 text-center md:text-left">
+                <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))" }}>
+                    <Phone className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+                    가까이한의원 비대면 진료
+                  </h3>
+                </div>
+                <p className="text-base mb-2" style={{ color: "hsl(var(--herbal-secondary))" }}>
+                  체질 분석 결과를 바탕으로 전문 한의사와 1:1 맞춤 상담을 받아보세요
+                </p>
+                <div className="flex items-center justify-center md:justify-start gap-2 text-sm" style={{ color: "hsl(var(--herbal-text-dark))" }}>
+                  <Clock className="h-4 w-4" />
+                  <span>평일 09:00-18:00 | 토요일 09:00-15:00</span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3 w-full md:w-auto">
+                <Button 
+                  onClick={() => window.open('tel:01066249990')}
+                  size="lg"
+                  className="text-white text-lg font-bold py-6 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all w-full md:w-auto"
+                  style={{ 
+                    background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))",
+                    fontFamily: "'Noto Serif KR', serif"
+                  }}
+                >
+                  <Phone className="h-5 w-5 mr-2" />
+                  전화 상담 신청 (010-6624-9990)
+                </Button>
+                <p className="text-xs text-center" style={{ color: "hsl(var(--herbal-secondary))" }}>
+                  ✓ 체질 맞춤 처방 | ✓ 건강보험 적용 | ✓ 비대면 진료 가능
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="flex flex-wrap justify-center gap-3">
           <Button variant="outline" onClick={onRestart}>
             다시 검사하기
           </Button>
           <Button onClick={() => window.print()}>
             결과 저장하기
-          </Button>
-          <Button 
-            onClick={() => window.open('https://naver.me/xk1XPBhl', '_blank')}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            맞춤한방 전화상담받기
           </Button>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full">

@@ -461,6 +461,48 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
 
         {/* 액션 버튼 */}
         <div className="text-center mt-8 space-y-4">
+          {/* 가까이한의원 비대면 진료 CTA */}
+          <Card className="overflow-hidden border-2 mb-6" style={{ borderColor: "hsl(var(--herbal-primary))", background: "linear-gradient(135deg, hsl(var(--herbal-bg)), hsl(var(--herbal-bg-warm)))" }}>
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex-1 text-center md:text-left">
+                  <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))" }}>
+                      <Phone className="h-5 w-5 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+                      가까이한의원 비대면 진료
+                    </h3>
+                  </div>
+                  <p className="text-base mb-2" style={{ color: "hsl(var(--herbal-secondary))" }}>
+                    체질 분석 결과를 바탕으로 전문 한의사와 1:1 맞춤 상담을 받아보세요
+                  </p>
+                  <div className="flex items-center justify-center md:justify-start gap-2 text-sm" style={{ color: "hsl(var(--herbal-text-dark))" }}>
+                    <Clock className="h-4 w-4" />
+                    <span>평일 09:00-18:00 | 토요일 09:00-15:00</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-3 w-full md:w-auto">
+                  <Button 
+                    onClick={() => window.open('tel:01066249990')}
+                    size="lg"
+                    className="text-white text-lg font-bold py-6 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all w-full md:w-auto"
+                    style={{ 
+                      background: "linear-gradient(135deg, hsl(var(--herbal-primary)), hsl(var(--herbal-primary-light)))",
+                      fontFamily: "'Noto Serif KR', serif"
+                    }}
+                  >
+                    <Phone className="h-5 w-5 mr-2" />
+                    전화 상담 신청 (010-6624-9990)
+                  </Button>
+                  <p className="text-xs text-center" style={{ color: "hsl(var(--herbal-secondary))" }}>
+                    ✓ 체질 맞춤 처방 | ✓ 건강보험 적용 | ✓ 비대면 진료 가능
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Button onClick={onRestart} variant="outline" size="lg">
               다시 검사하기
@@ -468,15 +510,6 @@ export const EnhancedConstitutionResult: React.FC<EnhancedConstitutionResultProp
             <Button size="lg" className="bg-green-600 hover:bg-green-700">
               <Heart className="h-5 w-5 mr-2" />
               결과 저장하기
-            </Button>
-            <Button 
-              size="lg" 
-              className="bg-blue-600 hover:bg-blue-700"
-              onClick={() => navigate('/expert-hiring')}
-              aria-label="전문가 상담 예약하기"
-            >
-              <Phone className="h-5 w-5 mr-2" />
-              전문가 상담 예약
             </Button>
           </div>
         </div>

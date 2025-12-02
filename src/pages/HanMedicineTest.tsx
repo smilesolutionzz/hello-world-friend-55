@@ -561,7 +561,7 @@ const HanMedicineTest = () => {
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
                 <Phone className="h-5 w-5 text-white" />
-                <span className="text-white font-medium">상담 문의: 1588-1234</span>
+                <span className="text-white font-medium">상담 문의: 010-6624-9990</span>
               </div>
               <Button 
                 className="px-8 py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"

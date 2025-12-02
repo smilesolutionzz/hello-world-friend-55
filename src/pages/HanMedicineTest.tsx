@@ -552,22 +552,37 @@ const HanMedicineTest = () => {
 
           {/* 전문가 상담 CTA - 한의원 스타일 */}
           <div className="text-center mb-12 p-8 rounded-3xl shadow-xl" style={{ background: "linear-gradient(135deg, hsl(var(--herbal-primary-light)), hsl(var(--herbal-primary)))" }}>
-            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4" style={{ fontFamily: "'Noto Serif KR', serif" }}>
-              한의 전문가 상담이 필요하신가요?
+            <div className="mb-4">
+              <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-semibold mb-4">
+                대표 제휴기관
+              </span>
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2" style={{ fontFamily: "'Noto Serif KR', serif" }}>
+              가까이한의원 비대면진료
             </h3>
             <p className="text-white/90 mb-8 text-lg">
               천년 한의학 전통의 전문의와 1:1 맞춤 상담을 받아보세요
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <div className="flex items-center gap-3 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-                <Phone className="h-5 w-5 text-white" />
-                <span className="text-white font-medium">상담 문의: 010-6624-9990</span>
-              </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button 
-                className="px-8 py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                onClick={() => window.open('tel:010-6624-9990', '_self')}
+                className="px-8 py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                 style={{ 
                   background: "white",
                   color: "hsl(var(--herbal-primary))",
+                  fontFamily: "'Noto Serif KR', serif"
+                }}
+              >
+                <Phone className="h-5 w-5" />
+                상담 문의: 010-6624-9990
+              </Button>
+              <Button 
+                onClick={() => window.open('tel:010-6624-9990', '_self')}
+                className="px-8 py-6 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                style={{ 
+                  background: "rgba(255, 255, 255, 0.2)",
+                  color: "white",
+                  border: "2px solid white",
                   fontFamily: "'Noto Serif KR', serif"
                 }}
               >

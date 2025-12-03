@@ -63,7 +63,7 @@ const HeroSection = () => {
         <AnimatedBackground 
           particleColor="#8FB9FF" 
           shapeColors={["#5E8FFF", "#8FB9FF", "#B4C7FF"]}
-          particleCount={3000}
+          particleCount={800}
         />
       </div>
 

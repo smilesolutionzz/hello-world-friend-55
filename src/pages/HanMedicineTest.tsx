@@ -51,7 +51,7 @@ const HanMedicineTest = () => {
         <div className="relative">
           <HerbalClinic3DBackground />
           <UnifiedNavigation />
-          <SasangConstitutionTest onComplete={handleTestComplete} />
+          <SasangConstitutionTest onComplete={handleTestComplete} onBack={handleRestart} />
         </div>
       );
     } else if (currentTest === 'premium') {

@@ -279,17 +279,21 @@ const HeroSection = () => {
           </p>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center pt-2">
-            <div className="w-1.5 h-3 bg-white/50 rounded-full" />
+        {/* Scroll Indicator - 더 눈에 띄게 */}
+        <motion.div 
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <span className="text-white/60 text-xs font-medium">스크롤</span>
+          <div className="w-6 h-10 rounded-full border-2 border-white/40 flex justify-center pt-2">
+            <motion.div 
+              className="w-1.5 h-3 bg-white/70 rounded-full"
+              animate={{ y: [0, 4, 0], opacity: [1, 0.5, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            />
           </div>
-        </div>
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center pt-2">
-            <div className="w-1.5 h-3 bg-white/50 rounded-full" />
-          </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* 퀵 온보딩 다이얼로그 */}

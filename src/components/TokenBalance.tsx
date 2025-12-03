@@ -72,7 +72,7 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({
         animate-pulse bg-muted/50 border border-muted
       `}>
         <Coins className="w-3 h-3 animate-spin" />
-        <span>로딩중...</span>
+        <div className="w-6 h-3 bg-muted/60 rounded" />
       </Badge>
     ) : (
       <Card className="w-full max-w-sm">

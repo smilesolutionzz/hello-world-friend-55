@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, X, Sparkles, ArrowRight } from 'lucide-react';
+import { Check, X, Sparkles, ArrowRight, Heart, Shield, Users, Building2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
   Accordion,
@@ -15,6 +15,29 @@ import { motion } from 'framer-motion';
 
 const ValueComparisonSection = () => {
   const navigate = useNavigate();
+
+  const problems = [
+    {
+      icon: Building2,
+      title: "병원·센터 방문이 부담스럽다",
+      description: "두려움과 낙인 때문에 전문기관 방문을 망설이게 돼요"
+    },
+    {
+      icon: Shield,
+      title: "예방적 관리가 필요하다",
+      description: "심각해지기 전에 조기 발견하고 관리하는 것이 중요해요"
+    },
+    {
+      icon: Heart,
+      title: "발달·심리 케어가 복잡하다",
+      description: "어디서부터 시작해야 할지, 누구에게 도움을 받아야 할지 막막해요"
+    },
+    {
+      icon: Users,
+      title: "전문가 연결이 어렵다",
+      description: "내게 맞는 전문가를 찾기 어렵고 비용 부담도 커요"
+    }
+  ];
 
   const comparison = [
     {
@@ -119,17 +142,57 @@ const ValueComparisonSection = () => {
             className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 backdrop-blur-md rounded-full mb-4 md:mb-6"
           >
             <Sparkles className="w-3 h-3 md:w-4 md:h-4 text-primary" />
-            <span className="text-xs md:text-sm font-semibold text-primary">똑똑한 선택</span>
+            <span className="text-xs md:text-sm font-semibold text-primary">왜 AIHumanPro인가요?</span>
           </motion.div>
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 leading-tight px-4">
             왜 AiHumanPro를 선택해야 할까요?
           </h2>
           <p className="text-sm md:text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-            기존 심리 상담과 비교해보세요
+            이런 고민이 있으셨다면, 저희가 해결해 드릴게요
           </p>
         </motion.div>
 
-        {/* Comparison Table - Desktop */}
+        {/* Problems Grid - 4개 카드 */}
+        <div className="mb-12 md:mb-16">
+          {/* Mobile: 2x2 Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+            {problems.map((problem, index) => {
+              const Icon = problem.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                >
+                  <Card className="p-4 md:p-6 bg-card/80 backdrop-blur-md border border-border rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 h-full">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                      <Icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                    </div>
+                    <h3 className="text-sm md:text-base font-bold text-foreground mb-2">{problem.title}</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">{problem.description}</p>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Solution Statement */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12 md:mb-16"
+        >
+          <p className="text-base md:text-lg font-semibold text-foreground max-w-3xl mx-auto leading-relaxed">
+            AIHumanPro는 <span className="text-primary">AI 기술과 전문가의 협업</span>으로 예방부터 회복까지 함께 돕습니다
+          </p>
+        </motion.div>
+
+        {/* Comparison Table */}
         <div className="max-w-5xl mx-auto">
           {/* Mobile: Accordion */}
           <div className="md:hidden">

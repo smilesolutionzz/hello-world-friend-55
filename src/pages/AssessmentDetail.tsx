@@ -40,7 +40,22 @@ export default function AssessmentDetail() {
 
   useEffect(() => {
     if (id) {
-      loadAssessmentDetail();
+      // 페이지 visibility 변경 시 세션 복원 대기
+      const loadWithSessionCheck = async () => {
+        // 세션 복원을 위한 짧은 대기
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          // 세션이 없으면 잠시 대기 후 다시 확인 (모바일 앱 전환 후 복귀 시)
+          await new Promise(resolve => setTimeout(resolve, 500));
+          const { data: { session: retrySession } } = await supabase.auth.getSession();
+          if (!retrySession) {
+            navigate('/auth');
+            return;
+          }
+        }
+        loadAssessmentDetail();
+      };
+      loadWithSessionCheck();
     }
   }, [id]);
 

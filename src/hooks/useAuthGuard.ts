@@ -100,10 +100,13 @@ export const useAuthGuard = (): AuthGuardReturn => {
       }
     };
 
-    // 페이지 포커스 시 세션 확인 및 복구
+    // 페이지 포커스 시 세션 확인 및 복구 - 리다이렉트 없이 상태만 업데이트
     const handleVisibilityChange = async () => {
       if (!document.hidden && mounted) {
-        console.log('📱 페이지 포커스 - 세션 상태 확인');
+        console.log('📱 페이지 포커스 - 세션 상태 확인 (리다이렉트 없음)');
+        // 세션 복원을 위한 짧은 대기
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
@@ -116,6 +119,7 @@ export const useAuthGuard = (): AuthGuardReturn => {
             setUser(refreshedSession.user);
             setAuthenticated(true);
           }
+          // 복구 실패해도 리다이렉트하지 않음 - 현재 페이지 유지
         } else {
           console.log('✅ 포커스 시 세션 유지됨');
           setUser(session.user);

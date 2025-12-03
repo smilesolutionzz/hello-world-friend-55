@@ -9,18 +9,30 @@ export function useMetaverseSession() {
   const [hasEntered, setHasEntered] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string>('');
 
-  // 인증 확인
+  // 인증 확인 - visibility 변경 시 리다이렉트 방지
   useEffect(() => {
+    let isRedirecting = false;
+    
     const checkAuth = async () => {
+      // 이미 리다이렉트 중이면 무시
+      if (isRedirecting) return;
+      
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
-        toast({
-          title: "로그인이 필요합니다",
-          description: "메타버스 상담실은 로그인 후 이용 가능합니다",
-          variant: "destructive",
-        });
-        navigate('/auth');
+        // 세션 복원 대기 후 재확인
+        await new Promise(resolve => setTimeout(resolve, 500));
+        const { data: { session: retrySession } } = await supabase.auth.getSession();
+        
+        if (!retrySession) {
+          isRedirecting = true;
+          toast({
+            title: "로그인이 필요합니다",
+            description: "메타버스 상담실은 로그인 후 이용 가능합니다",
+            variant: "destructive",
+          });
+          navigate('/auth');
+        }
       }
     };
 

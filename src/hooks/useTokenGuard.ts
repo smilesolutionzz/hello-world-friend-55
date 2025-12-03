@@ -14,15 +14,36 @@ interface TokenGuardReturn {
 export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
   const [allowed, setAllowed] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isVisibilityChanging, setIsVisibilityChanging] = useState(false);
   const { balance, checkTokenAvailability } = useTokens();
   const { subscription, loading: subLoading, isPremiumUser } = useSubscription();
   const navigate = useNavigate();
+
+  // Visibility change detection to prevent redirect during app switch
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsVisibilityChanging(true);
+      } else {
+        // 페이지 복귀 시 잠시 대기 후 플래그 해제
+        setTimeout(() => setIsVisibilityChanging(false), 1000);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
 
   useEffect(() => {
     const checkAccess = async () => {
       try {
         if (subLoading || !balance) {
           setLoading(true);
+          return;
+        }
+
+        // Visibility 변경 중에는 리다이렉트하지 않음
+        if (isVisibilityChanging) {
+          console.log('⏳ Visibility changing - skipping token redirect');
           return;
         }
 
@@ -49,7 +70,9 @@ export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
         }
       } catch (error) {
         console.error('Access check error:', error);
-        navigate('/subscription');
+        if (!isVisibilityChanging) {
+          navigate('/subscription');
+        }
         setAllowed(false);
       } finally {
         setLoading(false);
@@ -57,7 +80,7 @@ export const useTokenGuard = (requiredTokens: number = 1): TokenGuardReturn => {
     };
 
     checkAccess();
-  }, [balance, subscription, subLoading, requiredTokens, navigate, checkTokenAvailability, isPremiumUser]);
+  }, [balance, subscription, subLoading, requiredTokens, navigate, checkTokenAvailability, isPremiumUser, isVisibilityChanging]);
 
   return { 
     allowed, 

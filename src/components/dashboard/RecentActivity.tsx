@@ -26,22 +26,26 @@ interface RecentActivityProps {
 export function RecentActivity({ activities }: RecentActivityProps) {
   const navigate = useNavigate();
   
-  const handleActivityClick = (activity: any) => {
-    // 검사 결과를 다시 볼 수 있도록 세션 스토리지에 저장
-    const testData = {
-      testType: activity.type,
-      results: activity.meta || {},
-      timestamp: activity.date
-    };
-    
-    sessionStorage.setItem('viewTestResult', JSON.stringify(testData));
-    
-    // 검사 유형에 따라 적절한 페이지로 이동
-    if (activity.type === 'depression' || activity.type === 'panic' || activity.type === 'adhd') {
-      navigate('/assessment');
-      toast.success("이전 검사 결과를 불러왔습니다.");
-    } else {
-      toast.info("해당 검사 결과는 검사 페이지에서 확인할 수 있습니다.");
+  const handleActivityClick = (activity: Activity) => {
+    // 활동 유형에 따라 적절한 상세 페이지로 이동
+    switch (activity.type) {
+      case 'assessment':
+        // 검사 결과 상세 페이지로 이동
+        navigate(`/assessment-detail/${activity.id}`);
+        toast.success("검사 결과 상세 페이지로 이동합니다.");
+        break;
+      case 'observation':
+        // 관찰일지 상세 페이지로 이동
+        navigate(`/observation/${activity.id}`);
+        toast.success("관찰일지 상세 페이지로 이동합니다.");
+        break;
+      case 'consultation':
+        // AI 상담 페이지로 이동 (상담 내역)
+        navigate('/ai-counselor');
+        toast.info("AI 상담 페이지로 이동합니다.");
+        break;
+      default:
+        toast.info("상세 보기가 지원되지 않는 활동입니다.");
     }
   };
   

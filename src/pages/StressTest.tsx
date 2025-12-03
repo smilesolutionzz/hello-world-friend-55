@@ -1,23 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StressTestForm from '@/components/assessment/StressTestForm';
 import StressTestResult from '@/components/assessment/StressTestResult';
+
+const STORAGE_KEY = 'stressTestResult';
 
 const StressTest = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState<any>(null);
   const [showForm, setShowForm] = useState(true);
 
+  useEffect(() => {
+    const savedResult = sessionStorage.getItem(STORAGE_KEY);
+    if (savedResult) {
+      try {
+        const parsed = JSON.parse(savedResult);
+        setResult(parsed);
+        setShowForm(false);
+      } catch (e) {
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+    }
+  }, []);
+
   const handleComplete = (testResult: any) => {
     setResult(testResult);
     setShowForm(false);
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(testResult));
   };
 
   const handleBack = () => {
-    // 결과 화면에서는 폼으로, 폼에서는 assessment 페이지로
     if (result) {
       setResult(null);
       setShowForm(true);
+      sessionStorage.removeItem(STORAGE_KEY);
     } else {
       navigate('/assessment');
     }
@@ -26,6 +42,7 @@ const StressTest = () => {
   const handleRestart = () => {
     setResult(null);
     setShowForm(true);
+    sessionStorage.removeItem(STORAGE_KEY);
   };
 
   if (result && !showForm) {

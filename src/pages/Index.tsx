@@ -186,59 +186,80 @@ const Index = () => {
           <HeroSection />
           
           {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <ValueComparisonSection />
-          </ScrollReveal>
-          
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <ValueComparisonSection />
+            </ScrollReveal>
+          </LazyLoad>
           
           {/* 4️⃣ Core Service - 단순화된 3가지 핵심 서비스 */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <SimplifiedCoreServices />
-          </ScrollReveal>
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <SimplifiedCoreServices />
+            </ScrollReveal>
+          </LazyLoad>
           
           {/* 5️⃣ 데이터 기반 AI 분석 리포트 */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <DataDrivenReportSection />
-          </ScrollReveal>
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <DataDrivenReportSection />
+            </ScrollReveal>
+          </LazyLoad>
           
           {/* 🎭 메타버스 통합 섹션 (배너 + 심층 분석) */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <MetaverseUnifiedSection />
-          </ScrollReveal>
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <MetaverseUnifiedSection />
+            </ScrollReveal>
+          </LazyLoad>
           
           {/* 🎯 New Features Section - 매주 업데이트 */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <NewFeaturesSection />
-          </ScrollReveal>
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <NewFeaturesSection />
+            </ScrollReveal>
+          </LazyLoad>
           
           {/* Social Proof */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <TestimonialSection />
-          </ScrollReveal>
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <TestimonialSection />
+            </ScrollReveal>
+          </LazyLoad>
           
-          <ScrollReveal direction="up" delay={0.1}>
-            <ClientLogos />
-          </ScrollReveal>
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <ClientLogos />
+            </ScrollReveal>
+          </LazyLoad>
           
           {/* Trust & Partner Section */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <PartnerTrustSection />
-          </ScrollReveal>
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <PartnerTrustSection />
+            </ScrollReveal>
+          </LazyLoad>
           
           {/* 🎬 회사 소개 */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <CompanyIntroVideoSection />
-          </ScrollReveal>
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <CompanyIntroVideoSection />
+            </ScrollReveal>
+          </LazyLoad>
           
           {/* 📝 Founder's Letter - 창립자의 손편지 */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <FounderLetterSection />
-          </ScrollReveal>
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <FounderLetterSection />
+            </ScrollReveal>
+          </LazyLoad>
           
           {/* 7️⃣ Call to Action */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <CTABannerSection />
-          </ScrollReveal>
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <CTABannerSection />
+            </ScrollReveal>
+          </LazyLoad>
           
           {/* 8️⃣ Footer */}
           <Footer />

@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AdvancedAdhdForm from "@/components/assessment/AdvancedAdhdForm";
 import AdvancedAdhdResult from "@/components/assessment/AdvancedAdhdResult";
 import { supabase } from "@/integrations/supabase/client";
 
 const AdvancedAdhdTest = () => {
+  const navigate = useNavigate();
   const [results, setResults] = useState<any>(null);
 
   // 컴포넌트 마운트 시 저장된 결과 확인
@@ -46,9 +48,13 @@ const AdvancedAdhdTest = () => {
   };
 
   const handleBack = () => {
-    // 결과 초기화
-    sessionStorage.removeItem('adhdTestResults');
-    setResults(null);
+    // 결과 화면에서는 폼으로, 폼에서는 assessment 페이지로
+    if (results) {
+      sessionStorage.removeItem('adhdTestResults');
+      setResults(null);
+    } else {
+      navigate('/assessment');
+    }
   };
 
   const handleResetTest = () => {
@@ -58,10 +64,10 @@ const AdvancedAdhdTest = () => {
   };
 
   if (results) {
-    return <AdvancedAdhdResult results={results} />;
+    return <AdvancedAdhdResult results={results} onBack={handleBack} onRestart={handleResetTest} />;
   }
 
-  return <AdvancedAdhdForm onComplete={handleComplete} onBack={handleBack} />;
+  return <AdvancedAdhdForm onComplete={handleComplete} onBack={handleBack} />
 };
 
 export default AdvancedAdhdTest;

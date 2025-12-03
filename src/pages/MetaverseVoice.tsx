@@ -72,7 +72,7 @@ const MetaverseVoicePage = () => {
             </TabsTrigger>
             <TabsTrigger value="therapy" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
               <Stethoscope className="w-4 h-4" />
-              <span className="hidden sm:inline">전문 치료사</span>
+              <span className="hidden sm:inline">AI 치료사</span>
             </TabsTrigger>
             <TabsTrigger value="roleplay" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
               <Users className="w-4 h-4" />

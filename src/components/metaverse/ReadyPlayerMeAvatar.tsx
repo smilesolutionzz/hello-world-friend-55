@@ -411,14 +411,12 @@ export const useReadyPlayerMe = () => {
 
   const openAvatarCreator = () => {
     setIsCreating(true);
-    
-    // 현재 페이지 URL을 returnUrl로 설정
-    const currentUrl = window.location.origin + window.location.pathname;
+    console.log('🎭 Opening Ready Player Me avatar creator...');
     
     // Ready Player Me iframe을 열기
     const frame = document.createElement('iframe');
     frame.src = `https://demo.readyplayer.me/avatar?frameApi&clearCache`;
-    frame.allow = 'camera *; microphone *';
+    frame.allow = 'camera *; microphone *; clipboard-write';
     frame.style.cssText = `
       position: fixed;
       top: 0;
@@ -468,14 +466,25 @@ export const useReadyPlayerMe = () => {
 
     const handleMessage = (event: MessageEvent) => {
       const json = parse(event);
-      console.log('🎭 Ready Player Me Event:', json); // 디버깅용
+      
+      if (!json) return;
+      
+      console.log('🎭 Ready Player Me Event received:', json);
       
       if (json?.source === 'readyplayerme') {
-        console.log('✅ Event Name:', json.eventName); // 디버깅용
+        console.log('✅ RPM Event Name:', json.eventName);
         
-        if (json.eventName === 'v1.avatar.exported') {
-          console.log('🎉 Avatar URL:', json.data.url); // 디버깅용
-          setAvatarUrl(json.data.url);
+        // v1.avatar.exported 또는 v1.user.set 이벤트 처리
+        if (json.eventName === 'v1.avatar.exported' || json.eventName === 'v1.user.set') {
+          const avatarUrlFromEvent = json.data?.url || json.data?.avatarId;
+          console.log('🎉 Avatar URL from event:', avatarUrlFromEvent);
+          
+          if (!avatarUrlFromEvent) {
+            console.error('❌ No avatar URL in event data:', json.data);
+            return;
+          }
+          
+          setAvatarUrl(avatarUrlFromEvent);
           document.body.removeChild(frame);
           document.body.removeChild(closeBtn);
           setIsCreating(false);
@@ -517,7 +526,7 @@ export const useReadyPlayerMe = () => {
             <div style="text-align: center; margin-bottom: 24px;">
               <div style="font-size: 48px; margin-bottom: 12px;">✅</div>
               <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">캐릭터 생성 완료!</h3>
-              <p style="font-size: 14px; opacity: 0.9;">아래 URL을 복사하여 사용하세요</p>
+              <p style="font-size: 14px; opacity: 0.9;">URL이 자동으로 입력되었습니다. 아래에서 복사할 수도 있습니다.</p>
             </div>
             
             <div style="background: rgba(255, 255, 255, 0.15); border-radius: 12px; padding: 16px; margin-bottom: 20px; backdrop-filter: blur(10px);">
@@ -525,7 +534,7 @@ export const useReadyPlayerMe = () => {
                 id="avatar-url-input" 
                 type="text" 
                 readonly 
-                value="${json.data.url}"
+                value="${avatarUrlFromEvent}"
                 style="
                   width: 100%;
                   background: transparent;
@@ -595,7 +604,7 @@ export const useReadyPlayerMe = () => {
           
           copyBtn?.addEventListener('click', async () => {
             try {
-              await navigator.clipboard.writeText(json.data.url);
+              await navigator.clipboard.writeText(avatarUrlFromEvent);
               copyBtn.innerHTML = '✅ 복사 완료!';
               copyBtn.style.background = '#15803d';
               copyBtn.style.color = 'white';

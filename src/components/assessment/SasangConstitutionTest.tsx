@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { TOKEN_COSTS } from '@/constants/tokenCosts';
@@ -165,9 +165,10 @@ const questions = [
 
 interface SasangConstitutionTestProps {
   onComplete: (result: any) => void;
+  onBack?: () => void;
 }
 
-export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ onComplete }) => {
+export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ onComplete, onBack }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -301,9 +302,20 @@ export const SasangConstitutionTest: React.FC<SasangConstitutionTestProps> = ({ 
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto relative">
       <CardHeader className="text-center">
-        <div className="flex items-center justify-center gap-2 mb-4">
+        {onBack && (
+          <Button
+            onClick={onBack}
+            variant="ghost"
+            size="sm"
+            className="absolute top-4 left-4 text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            뒤로
+          </Button>
+        )}
+        <div className="flex items-center justify-center gap-2 mb-4 pt-8">
           <div className="w-8 h-8 text-primary flex items-center justify-center">
             ⚊⚊
           </div>

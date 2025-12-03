@@ -12,9 +12,11 @@ interface AdvancedAdhdResultProps {
     typeScores: Record<string, number>;
     timestamp: string;
   };
+  onBack?: () => void;
+  onRestart?: () => void;
 }
 
-const AdvancedAdhdResult = ({ results }: AdvancedAdhdResultProps) => {
+const AdvancedAdhdResult = ({ results, onBack, onRestart }: AdvancedAdhdResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { typeScores } = results;
@@ -293,6 +295,17 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-3xl mx-auto">
+          {onRestart && (
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={onRestart}
+              className="flex items-center gap-2 flex-1"
+            >
+              <RefreshCw className="w-4 h-4" />
+              다시 검사하기
+            </Button>
+          )}
           <Button
             size="lg"
             variant="outline"
@@ -312,11 +325,11 @@ ${Object.entries(typeScores).map(([typeId, score]) => {
           <Button
             size="lg"
             variant="outline"
-            onClick={() => navigate('/')}
+            onClick={onBack || (() => navigate('/'))}
             className="flex items-center gap-2 flex-1"
           >
             <Home className="w-4 h-4" />
-            홈으로
+            {onBack ? '뒤로가기' : '홈으로'}
           </Button>
         </div>
       </div>

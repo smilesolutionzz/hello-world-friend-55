@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Share2, RotateCcw, AlertTriangle, CheckCircle, Info, Heart, FileDown, Loader2, BarChart3, Download } from 'lucide-react';
+import { Brain, Share2, RotateCcw, AlertTriangle, CheckCircle, Info, Heart, FileDown, Loader2, BarChart3, Download, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
@@ -21,9 +21,10 @@ interface StressTestResultProps {
     severity: string;
   };
   onRestart?: () => void;
+  onBack?: () => void;
 }
 
-const StressTestResult = ({ result, onRestart }: StressTestResultProps) => {
+const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -415,6 +416,16 @@ ${professionalHelp}
                 <Share2 className="w-4 h-4 mr-2" />
                 결과 공유하기
               </Button>
+              {onBack && (
+                <Button 
+                  variant="outline" 
+                  onClick={onBack}
+                  className="w-full"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  뒤로가기
+                </Button>
+              )}
               <Button 
                 variant="outline" 
                 onClick={onRestart || (() => navigate('/assessment'))}

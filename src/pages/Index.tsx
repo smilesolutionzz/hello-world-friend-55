@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import HeroSection from "@/components/HeroSection";
-import ProblemVisionSection from "@/components/landing/ProblemVisionSection";
+
 import SimplifiedCoreServices from "@/components/landing/SimplifiedCoreServices";
 import DataDrivenReportSection from "@/components/landing/DataDrivenReportSection";
 import ResultReportSection from "@/components/landing/ResultReportSection";
@@ -190,10 +190,6 @@ const Index = () => {
             <ValueComparisonSection />
           </ScrollReveal>
           
-          {/* 3️⃣ Problem & Vision */}
-          <ScrollReveal direction="up" delay={0.1}>
-            <ProblemVisionSection />
-          </ScrollReveal>
           
           {/* 4️⃣ Core Service - 단순화된 3가지 핵심 서비스 */}
           <ScrollReveal direction="up" delay={0.1}>

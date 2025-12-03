@@ -23,16 +23,35 @@ export const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
   useEffect(() => {
     checkAuthentication();
 
-    // Listen for auth changes
+    // Listen for auth changes - only respond to explicit events
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('AuthGuard: Auth state change', event);
       if (event === 'SIGNED_IN' && session) {
         setAuthState('authenticated');
-      } else if (event === 'SIGNED_OUT' || !session) {
+      } else if (event === 'SIGNED_OUT') {
+        // 명시적 로그아웃만 처리 (세션 null은 무시 - visibility change로 인한 일시적 상태일 수 있음)
         setAuthState('unauthenticated');
+      } else if (event === 'TOKEN_REFRESHED' && session) {
+        setAuthState('authenticated');
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Visibility change handler - 앱 전환 후 복귀 시 세션 복원 대기
+    const handleVisibilityChange = async () => {
+      if (!document.hidden) {
+        console.log('AuthGuard: Page visible, checking session');
+        // 세션 복원을 위한 짧은 대기
+        await new Promise(resolve => setTimeout(resolve, 300));
+        checkAuthentication();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      subscription.unsubscribe();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const checkAuthentication = async () => {
@@ -40,7 +59,19 @@ export const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
       const { data: { user }, error } = await supabase.auth.getUser();
       
       if (error || !user) {
-        setAuthState('unauthenticated');
+        // 첫 번째 시도 실패 시 재시도 (앱 전환 후 세션 복원 대기)
+        await new Promise(resolve => setTimeout(resolve, 500));
+        const { data: { user: retryUser } } = await supabase.auth.getUser();
+        if (!retryUser) {
+          setAuthState('unauthenticated');
+          return;
+        }
+        const { data: { session: retrySession } } = await supabase.auth.getSession();
+        if (retrySession) {
+          setAuthState('authenticated');
+        } else {
+          setAuthState('unauthenticated');
+        }
       } else {
         // Additional check: verify the session is valid
         const { data: { session } } = await supabase.auth.getSession();

@@ -13,6 +13,7 @@ interface SubscriptionGuardReturn {
 export const useSubscriptionGuard = (requiredFeature: string = 'basic_test'): SubscriptionGuardReturn => {
   const [allowed, setAllowed] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isVisibilityChanging, setIsVisibilityChanging] = useState(false);
   const { 
     subscription, 
     loading: subLoading, 
@@ -21,11 +22,31 @@ export const useSubscriptionGuard = (requiredFeature: string = 'basic_test'): Su
   } = useSubscription();
   const navigate = useNavigate();
 
+  // Visibility change detection to prevent redirect during app switch
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsVisibilityChanging(true);
+      } else {
+        // 페이지 복귀 시 잠시 대기 후 플래그 해제
+        setTimeout(() => setIsVisibilityChanging(false), 1000);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
+
   useEffect(() => {
     const checkAccess = async () => {
       try {
         if (subLoading) {
           setLoading(true);
+          return;
+        }
+
+        // Visibility 변경 중에는 리다이렉트하지 않음
+        if (isVisibilityChanging) {
+          console.log('⏳ Visibility changing - skipping subscription redirect');
           return;
         }
 
@@ -50,7 +71,9 @@ export const useSubscriptionGuard = (requiredFeature: string = 'basic_test'): Su
         }
       } catch (error) {
         console.error('Subscription check error:', error);
-        navigate('/subscription');
+        if (!isVisibilityChanging) {
+          navigate('/subscription');
+        }
         setAllowed(false);
       } finally {
         setLoading(false);
@@ -58,7 +81,7 @@ export const useSubscriptionGuard = (requiredFeature: string = 'basic_test'): Su
     };
 
     checkAccess();
-  }, [subscription, subLoading, requiredFeature, navigate, hasFeatureAccess]);
+  }, [subscription, subLoading, requiredFeature, navigate, hasFeatureAccess, isVisibilityChanging]);
 
   return { 
     allowed, 

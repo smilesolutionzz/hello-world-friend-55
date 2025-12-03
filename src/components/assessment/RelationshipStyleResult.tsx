@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Share2, Download, CheckCircle, Users, MessageCircle, ShieldCheck } from 'lucide-react';
+import { Heart, Share2, Download, CheckCircle, Users, MessageCircle, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface RelationshipStyleResultProps {
@@ -464,7 +464,8 @@ const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProp
               variant="outline"
               onClick={onBack}
             >
-              3분 테스트
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              다시 테스트하기
             </Button>
           ) : (
             <Button 

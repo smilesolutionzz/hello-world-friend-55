@@ -257,7 +257,7 @@ export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ 
               size="lg"
             >
               <ArrowLeft className="w-5 h-5" />
-              3분 테스트
+              다시 테스트하기
             </Button>
           ) : (
             <Button

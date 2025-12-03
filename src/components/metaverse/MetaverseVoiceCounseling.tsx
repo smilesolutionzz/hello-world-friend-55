@@ -138,7 +138,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
     intensity: number;
   }>>([]);
   const [showEmotionChart, setShowEmotionChart] = useState(false);
-  const [showConversationUI, setShowConversationUI] = useState(false);
+  const [showConversationUI, setShowConversationUI] = useState(true);
   
   // 새 기능 모달 상태
   const [showGroupLobby, setShowGroupLobby] = useState(false);

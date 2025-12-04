@@ -50,43 +50,59 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
+    
+    // 자동으로 다음 문항으로 이동
+    if (currentQuestion < depressionQuestions.length - 1) {
+      setTimeout(() => {
+        setCurrentQuestion(currentQuestion + 1);
+      }, 300);
+    } else {
+      // 마지막 문항인 경우 결과 계산
+      setTimeout(() => {
+        calculateResults(newAnswers);
+      }, 300);
+    }
+  };
+
+  const calculateResults = (finalAnswers: string[]) => {
+    // 모든 답변을 숫자로 변환하고 역전시킴 (질문이 부정형이므로)
+    const numericAnswers = finalAnswers.map(a => {
+      const parsed = parseInt(a);
+      if (isNaN(parsed)) return 0;
+      // 3점(그렇다) -> 0점(정상), 2점(보통) -> 1점, 1점(그렇지 않다) -> 2점(우울함)으로 역전
+      return 3 - parsed;
+    });
+    
+    // 총점 계산 (0-42점 범위)
+    const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
+    const average = total > 0 
+      ? Math.round((total / 21) * 10) / 10 
+      : 0;
+    
+    let severity = "";
+    if (total <= 13) {
+      severity = "정상";
+    } else if (total <= 19) {
+      severity = "가벼운 우울";
+    } else if (total <= 28) {
+      severity = "중등도 우울";
+    } else {
+      severity = "심한 우울";
+    }
+    
+    onComplete({
+      answers: numericAnswers,
+      total,
+      average,
+      severity
+    });
   };
 
   const handleNext = () => {
     if (currentQuestion < depressionQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // 테스트 완료 - 모든 답변을 숫자로 변환하고 역전시킴 (질문이 부정형이므로)
-      const numericAnswers = answers.map(a => {
-        const parsed = parseInt(a);
-        if (isNaN(parsed)) return 0;
-        // 3점(그렇다) -> 0점(정상), 2점(보통) -> 1점, 1점(그렇지 않다) -> 2점(우울함)으로 역전
-        return 3 - parsed;
-      });
-      
-      // 총점 계산 (0-42점 범위)
-      const total = numericAnswers.reduce((sum, answer) => sum + answer, 0);
-      const average = total > 0 
-        ? Math.round((total / 21) * 10) / 10 
-        : 0;
-      
-      let severity = "";
-      if (total <= 13) {
-        severity = "정상";
-      } else if (total <= 19) {
-        severity = "가벼운 우울";
-      } else if (total <= 28) {
-        severity = "중등도 우울";
-      } else {
-        severity = "심한 우울";
-      }
-      
-      onComplete({
-        answers: numericAnswers,
-        total,
-        average,
-        severity
-      });
+      calculateResults(answers);
     }
   };
 
@@ -173,7 +189,7 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between pt-6">
+        <div className="flex justify-between items-center pt-6">
           <Button 
             variant="outline" 
             onClick={handlePrevious}
@@ -181,12 +197,9 @@ const DepressionTestForm = ({ onComplete, onBack }: DepressionTestFormProps) => 
           >
             이전
           </Button>
-          <Button 
-            onClick={handleNext}
-            disabled={!canProceed}
-          >
-            {currentQuestion === depressionQuestions.length - 1 ? '결과 보기' : '다음'}
-          </Button>
+          <span className="text-sm text-muted-foreground">
+            답변 선택 시 자동으로 넘어갑니다
+          </span>
         </div>
       </div>
     </Card>

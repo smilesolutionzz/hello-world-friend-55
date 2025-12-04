@@ -66,11 +66,12 @@ const expertSubmenuItems = [
 const mainNavigationItems: NavigationItem[] = [];
 
 // 나의DATA 하위 메뉴
-const dataSubmenuItems = [
-  { icon: BarChart3, label: '개인DATA', path: '/dashboard', requiresAuth: false },
-  { icon: Users, label: '기관DATA', path: '/institution-admin', requiresAuth: false },
+const dataSubmenuItems: { icon: any; label: string; path: string; requiresAuth: boolean; badge?: string }[] = [
+  // TODO: 개선 후 다시 활성화
+  // { icon: BarChart3, label: '개인DATA', path: '/dashboard', requiresAuth: false },
+  // { icon: Users, label: '기관DATA', path: '/institution-admin', requiresAuth: false },
   { icon: Heart, label: '고민 저장소', path: '/concern-storage', requiresAuth: true },
-  { icon: FileText, label: '종합 리포트', path: '/report-generator', requiresAuth: false, badge: 'NEW' },
+  // { icon: FileText, label: '종합 리포트', path: '/report-generator', requiresAuth: false, badge: 'NEW' },
 ];
 
 // AIH 에이전트 하위 메뉴

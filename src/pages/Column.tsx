@@ -870,9 +870,34 @@ const Column = () => {
   return (
     <>
       <SEOHead 
-        title="창립자 칼럼 - AIHumanPro"
-        description="AI와 사람이 함께하는 미래, 데이터 기반 개인화 케어에 대한 창립자의 생각과 비전을 공유합니다."
-        keywords="AI심리상담,데이터기반케어,개인화리포트,심리분석,전문가상담,정신건강,AI비전"
+        title="이수석칼럼 | 정신건강·AI심리상담 전문가 | AIHumanPro"
+        description="이수석 대표의 정신건강, AI심리상담, 발달심리 전문 칼럼. ADHD, 우울증, 스트레스 관리와 데이터 기반 개인화 케어에 대한 전문가 인사이트를 제공합니다."
+        keywords="이수석,이수석칼럼,정신건강전문가,AI심리상담,발달심리,ADHD,우울증,스트레스,심리분석,전문가상담,AIHumanPro,AIHPRO"
+        ogType="article"
+        author="이수석"
+        canonicalUrl="https://aihpro.com/column"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Blog",
+          "name": "이수석칼럼",
+          "description": "이수석 대표의 정신건강, AI심리상담, 발달심리 전문 칼럼",
+          "url": "https://aihpro.com/column",
+          "author": {
+            "@type": "Person",
+            "name": "이수석",
+            "jobTitle": "AIHumanPro 대표",
+            "url": "https://aihpro.com/column"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "AIHumanPro",
+            "url": "https://aihpro.com"
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://aihpro.com/column"
+          }
+        }}
       />
       
       <div 
@@ -896,7 +921,7 @@ const Column = () => {
               <span className="text-sm font-semibold text-primary">매달 업데이트</span>
             </div>
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent whitespace-nowrap leading-tight">
-              창립자 이수석의 칼럼
+              이수석칼럼
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-snug">
               AI와 사람이 함께 만드는 더 나은 내일,<br className="block sm:hidden" />

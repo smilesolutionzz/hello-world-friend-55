@@ -97,5 +97,13 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+  
+  <!-- 이수석칼럼 -->
+  <url>
+    <loc>https://aihpro.com/column</loc>
+    <lastmod>2025-12-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
 </urlset>

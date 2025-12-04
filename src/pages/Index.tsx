@@ -5,6 +5,7 @@ import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import HeroSection from "@/components/HeroSection";
 
 import SimplifiedCoreServices from "@/components/landing/SimplifiedCoreServices";
+import { CoffeeChatReviews } from "@/components/reviews/CoffeeChatReviews";
 import DataDrivenReportSection from "@/components/landing/DataDrivenReportSection";
 import ResultReportSection from "@/components/landing/ResultReportSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
@@ -224,6 +225,13 @@ const Index = () => {
           <LazyLoad rootMargin="200px">
             <ScrollReveal direction="up" delay={0.1}>
               <TestimonialSection />
+            </ScrollReveal>
+          </LazyLoad>
+          
+          {/* 커피챗 스타일 리뷰 */}
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <CoffeeChatReviews />
             </ScrollReveal>
           </LazyLoad>
           

@@ -131,25 +131,43 @@ const ProblemVisionSection = () => {
           </div>
 
           {/* Desktop: Grid */}
-          <div className="hidden lg:grid lg:grid-cols-4 gap-6">
+          <div className="hidden lg:grid lg:grid-cols-4 gap-5">
             {problems.map((problem, index) => {
               const Icon = problem.icon;
+              const gradients = [
+                'from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30',
+                'from-sky-50 to-cyan-50 dark:from-sky-950/30 dark:to-cyan-950/30',
+                'from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30',
+                'from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-950/30',
+              ];
+              const iconBgs = [
+                'bg-blue-100 dark:bg-blue-900/50',
+                'bg-sky-100 dark:bg-sky-900/50',
+                'bg-violet-100 dark:bg-violet-900/50',
+                'bg-indigo-100 dark:bg-indigo-900/50',
+              ];
+              const iconColors = [
+                'text-blue-600 dark:text-blue-400',
+                'text-sky-600 dark:text-sky-400',
+                'text-violet-600 dark:text-violet-400',
+                'text-indigo-600 dark:text-indigo-400',
+              ];
               return (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: index * 0.15, duration: 0.6 }}
+                  transition={{ delay: index * 0.12, duration: 0.5 }}
                 >
                   <Card 
-                    className="p-8 bg-card/80 backdrop-blur-md border border-border rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 h-full"
+                    className={`p-6 bg-gradient-to-br ${gradients[index]} border-0 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 h-full`}
                   >
-                  <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
-                    <Icon className="w-7 h-7 text-primary" />
-                  </div>
-                    <h3 className="text-base sm:text-xl font-bold text-foreground mb-3 whitespace-nowrap">{problem.title}</h3>
-                    <p className="text-foreground drop-shadow-md leading-relaxed">{problem.description}</p>
+                    <div className={`w-12 h-12 ${iconBgs[index]} rounded-xl flex items-center justify-center mb-5`}>
+                      <Icon className={`w-6 h-6 ${iconColors[index]}`} />
+                    </div>
+                    <h3 className="text-lg font-bold text-foreground mb-2">{problem.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{problem.description}</p>
                   </Card>
                 </motion.div>
               );

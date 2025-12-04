@@ -586,58 +586,74 @@ const ClientLogos = () => {
   return (
     <section className="py-12 sm:py-16 bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-4 sm:px-6">
-        {/* 감동적인 후기 섹션 */}
-        <div className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
-            <span className="text-brand-gradient">진짜 부모들의 진심 후기</span>
-          </h2>
-          <p className="text-muted-foreground text-sm sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            AIH와 함께 아이의 숨겨진 가능성을<br className="sm:hidden" /> 발견한 가족들의 소중한 이야기
-          </p>
-        </div>
+        {/* 감동적인 후기 섹션 - 샌드위치 스타일 */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-border/50">
+            {/* 상단 헤더 - 파란색 그라데이션 */}
+            <div className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-600 px-6 py-8 text-center">
+              <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-black mb-2 break-keep">
+                진짜 부모들의 진심 후기
+              </h2>
+              <p className="text-white/90 text-sm sm:text-base max-w-xl mx-auto leading-relaxed break-keep">
+                AIH와 함께 아이의 숨겨진 가능성을 발견한 가족들의 소중한 이야기
+              </p>
+            </div>
 
-        {/* 후기 카드들 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {testimonials.slice(0, 9).map((testimonial, index) => {
-            const IconComponent = testimonial.icon;
-            return (
-              <div
-                key={index}
-                className={`${testimonial.bgColor} border border-gray-200/60 rounded-2xl p-6 hover:shadow-xl hover:border-primary/40 transition-all duration-300 hover:scale-[1.02] relative overflow-hidden group`}
-              >
-                {/* 배경 그라데이션 */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
-                <div className="relative z-10">
-                  {/* 별점 */}
-                  <div className="flex items-center gap-1 mb-3">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
+            {/* 후기 카드들 */}
+            <div className="p-6 bg-slate-50 dark:bg-slate-900">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {testimonials.slice(0, 9).map((testimonial, index) => {
+                  const IconComponent = testimonial.icon;
+                  return (
+                    <div
+                      key={index}
+                      className={`${testimonial.bgColor} border border-gray-200/60 rounded-xl p-4 hover:shadow-lg hover:border-primary/40 transition-all duration-300 hover:scale-[1.02] relative overflow-hidden group`}
+                    >
+                      {/* 배경 그라데이션 */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      <div className="relative z-10">
+                        {/* 별점 */}
+                        <div className="flex items-center gap-1 mb-2">
+                          {[...Array(testimonial.rating)].map((_, i) => (
+                            <Star key={i} className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                          ))}
+                        </div>
 
-                  {/* 따옴표 아이콘 */}
-                  <Quote className={`w-8 h-8 ${testimonial.color} mb-4 opacity-60`} />
+                        {/* 따옴표 아이콘 */}
+                        <Quote className={`w-6 h-6 ${testimonial.color} mb-3 opacity-60`} />
 
-                  {/* 후기 내용 */}
-                  <p className="text-sm text-foreground/90 leading-relaxed mb-4 font-medium">
-                    "{testimonial.content}"
-                  </p>
+                        {/* 후기 내용 */}
+                        <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed mb-3 font-medium line-clamp-3">
+                          "{testimonial.content}"
+                        </p>
 
-                  {/* 작성자 정보 */}
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 ${testimonial.bgColor} rounded-full flex items-center justify-center ring-2 ring-white shadow-sm`}>
-                      <IconComponent className={`w-5 h-5 ${testimonial.color}`} />
+                        {/* 작성자 정보 */}
+                        <div className="flex items-center gap-2">
+                          <div className={`w-8 h-8 ${testimonial.bgColor} rounded-full flex items-center justify-center ring-2 ring-white shadow-sm`}>
+                            <IconComponent className={`w-4 h-4 ${testimonial.color}`} />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-foreground text-xs">{testimonial.name}</p>
+                            <p className="text-[10px] text-muted-foreground">{testimonial.age}</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-foreground text-sm">{testimonial.name}</p>
-                      <p className="text-xs text-muted-foreground">{testimonial.age}</p>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
-            );
-          })}
+            </div>
+
+            {/* 하단 CTA - 파란색 그라데이션 */}
+            <div className="bg-gradient-to-r from-sky-400 via-blue-500 to-blue-600 px-6 py-6 text-center">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-5 py-2.5 border border-white/30">
+                <span className="text-white text-sm font-medium">
+                  <span className="font-bold">15,000+</span> 가족이 신뢰하는 AIH
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* 파트너 기관 섹션 */}

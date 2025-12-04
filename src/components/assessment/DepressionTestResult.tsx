@@ -24,6 +24,7 @@ interface DepressionTestResultProps {
     total: number;
     average: number;
     severity: string;
+    ageGroup?: string;
   };
   onBack: () => void;
   onRestart?: () => void;

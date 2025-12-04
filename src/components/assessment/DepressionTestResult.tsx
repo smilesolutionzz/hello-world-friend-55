@@ -17,6 +17,7 @@ import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
 import { useToast } from '@/hooks/use-toast';
+import { ExpertMatchRecommendation } from './ExpertMatchRecommendation';
 
 interface DepressionTestResultProps {
   results: {
@@ -460,6 +461,14 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
           </Button>
         </div>
       </div>
+
+      {/* 맞춤 전문가 추천 */}
+      <ExpertMatchRecommendation
+        testType="depression"
+        severity={severity}
+        ageGroup={results.ageGroup}
+        scores={{ total: results.total, average: results.average }}
+      />
 
       {/* 다음 단계 제안 */}
       <NextStepSuggestion className="mb-6" />

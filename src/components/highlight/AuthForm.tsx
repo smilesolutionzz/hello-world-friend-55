@@ -16,6 +16,8 @@ export const AuthForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
+  const [checkingPhone, setCheckingPhone] = useState(false);
   
   // 로그인 폼 데이터
   const [signInData, setSignInData] = useState({
@@ -90,10 +92,46 @@ export const AuthForm = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  // 전화번호 중복 체크 (실시간)
+  const checkPhoneAvailability = async (phone: string) => {
+    if (!phone.trim() || phone.trim().length < 10) {
+      setPhoneError('');
+      return;
+    }
+
+    setCheckingPhone(true);
+    const cleanPhone = phone.trim().replace(/-/g, '');
+    
+    try {
+      const { data: existingPhoneUser } = await supabase
+        .from('profiles')
+        .select('id')
+        .or(`phone.eq.${cleanPhone},phone.eq.${phone.trim()}`)
+        .maybeSingle();
+
+      if (existingPhoneUser) {
+        setPhoneError('이미 사용 중인 전화번호입니다. 기존 계정으로 로그인해주세요.');
+      } else {
+        setPhoneError('');
+      }
+    } catch (err) {
+      console.error('Phone check error:', err);
+    } finally {
+      setCheckingPhone(false);
+    }
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // 전화번호 중복 에러가 있으면 진행 중단
+    if (phoneError) {
+      setError(phoneError);
+      setLoading(false);
+      return;
+    }
 
     // 기본 유효성 검사
     if (!signUpData.name.trim()) {
@@ -417,13 +455,23 @@ export const AuthForm = () => {
                           type="tel"
                           placeholder="010-1234-5678"
                           value={signUpData.phone}
-                          onChange={(e) => setSignUpData(prev => ({ ...prev, phone: e.target.value }))}
+                          onChange={(e) => {
+                            setSignUpData(prev => ({ ...prev, phone: e.target.value }));
+                            if (phoneError) setPhoneError('');
+                          }}
+                          onBlur={(e) => checkPhoneAvailability(e.target.value)}
                           onFocus={(e) => scrollToInput(e.currentTarget)}
-                          className="pl-10"
+                          className={`pl-10 ${phoneError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                           required
                           autoComplete="tel"
                         />
+                        {checkingPhone && (
+                          <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin text-muted-foreground" />
+                        )}
                       </div>
+                      {phoneError && (
+                        <p className="text-sm text-destructive">{phoneError}</p>
+                      )}
                     </div>
                     
                     <div className="space-y-2">
@@ -513,7 +561,7 @@ export const AuthForm = () => {
                     <Button 
                       type="submit" 
                       className="w-full" 
-                      disabled={loading}
+                      disabled={loading || !!phoneError || checkingPhone}
                     >
                       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       회원가입

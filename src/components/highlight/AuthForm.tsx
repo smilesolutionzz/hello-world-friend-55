@@ -126,6 +126,25 @@ export const AuthForm = () => {
       return;
     }
 
+    // 전화번호 중복 체크 (가입 전에 미리 확인)
+    const cleanPhone = signUpData.phone.trim().replace(/-/g, '');
+    const { data: existingPhoneUser } = await supabase
+      .from('profiles')
+      .select('id')
+      .or(`phone.eq.${cleanPhone},phone.eq.${signUpData.phone.trim()}`)
+      .maybeSingle();
+
+    if (existingPhoneUser) {
+      setError('이미 사용 중인 전화번호입니다. 다른 번호를 사용하거나, 기존 계정으로 로그인해주세요.');
+      setLoading(false);
+      toast({
+        title: "전화번호 중복",
+        description: "이미 사용 중인 전화번호입니다.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const redirectUrl = `${window.location.origin}/`;
       
@@ -136,7 +155,7 @@ export const AuthForm = () => {
           emailRedirectTo: redirectUrl,
           data: {
             display_name: signUpData.name.trim(),
-            phone: signUpData.phone.trim(),
+            phone: cleanPhone,  // 하이픈 제거된 전화번호 사용
             referral_code: signUpData.referralCode.trim()
           }
         }

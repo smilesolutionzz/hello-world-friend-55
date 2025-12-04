@@ -52,7 +52,7 @@ const DashboardRouter = () => {
   }
 
   if (!accountType) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   return <HighlightDashboard />;

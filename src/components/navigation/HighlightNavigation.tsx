@@ -44,9 +44,9 @@ export const HighlightNavigation = () => {
     },
     { 
       icon: ClipboardCheck, 
-      label: '맞춤 리포팅', 
-      path: '/comprehensive-reporting',
-      description: '전문가 맞춤 종합 리포트'
+      label: '고민/검사 저장소', 
+      path: '/concern-storage',
+      description: '고민 분석 및 검사 결과 저장'
     },
     { 
       icon: GraduationCap, 

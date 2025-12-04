@@ -1,14 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Coins, CreditCard, Building2, Smartphone, Receipt } from 'lucide-react';
+import { Coins, CreditCard, Building2, Smartphone, Receipt, RefreshCw, Loader2 } from 'lucide-react';
 import { loadPaymentWidget, PaymentWidgetInstance } from '@tosspayments/payment-widget-sdk';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { nanoid } from 'nanoid';
 
-const CUSTOMER_KEY = 'ai-highlight-customer-' + nanoid();
+// 세션 기반 고객 키 (페이지 새로고침해도 유지)
+const getCustomerKey = () => {
+  let key = sessionStorage.getItem('toss_customer_key');
+  if (!key) {
+    key = 'ai-highlight-customer-' + crypto.randomUUID().replace(/-/g, '').slice(0, 16);
+    sessionStorage.setItem('toss_customer_key', key);
+  }
+  return key;
+};
 
 interface TokenPackage {
   id: string;
@@ -25,6 +32,7 @@ const TokenPurchase = () => {
   const [searchParams] = useSearchParams();
   const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
   const paymentMethodsWidgetRef = useRef<ReturnType<PaymentWidgetInstance['renderPaymentMethods']> | null>(null);
+  const customerKeyRef = useRef<string>(getCustomerKey());
   const [tokenPackages, setTokenPackages] = useState<TokenPackage[]>([]);
   const [selectedPack, setSelectedPack] = useState<TokenPackage | null>(null);
   const [isPaymentReady, setIsPaymentReady] = useState(false);
@@ -33,6 +41,8 @@ const TokenPurchase = () => {
   const [widgetReady, setWidgetReady] = useState(false);
   const [inIframe, setInIframe] = useState(false);
   const [widgetVisible, setWidgetVisible] = useState(false);
+  const [widgetLoading, setWidgetLoading] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   // 실제 DB에서 토큰 패키지 조회
   useEffect(() => {
@@ -136,7 +146,7 @@ const TokenPurchase = () => {
       try {
         console.log('🔧 결제 위젯 초기화 시작');
         setWidgetReady(false);
-        const paymentWidget = await loadPaymentWidget(tossClientKey, CUSTOMER_KEY);
+        const paymentWidget = await loadPaymentWidget(tossClientKey, customerKeyRef.current);
         paymentWidgetRef.current = paymentWidget;
         setWidgetReady(true);
         console.log('✅ 결제 위젯 초기화 완료');
@@ -145,7 +155,7 @@ const TokenPurchase = () => {
         setWidgetReady(false);
         toast({
           title: '결제 시스템 오류',
-          description: '결제 위젯을 불러오는데 실패했습니다.',
+          description: '결제 위젯을 불러오는데 실패했습니다. 페이지를 새로고침 해주세요.',
           variant: 'destructive'
         });
       }
@@ -153,6 +163,86 @@ const TokenPurchase = () => {
 
     initializePaymentWidget();
   }, [tossClientKey, toast]);
+
+  // 위젯 렌더링 함수
+  const renderWidget = useCallback(async () => {
+    if (!selectedPack || !widgetReady || !paymentWidgetRef.current) {
+      return false;
+    }
+
+    try {
+      setWidgetLoading(true);
+      console.log('🎨 결제 수단 렌더링 시작:', {
+        pack: selectedPack.name,
+        price: selectedPack.price,
+        widgetReady,
+        hasWidget: !!paymentWidgetRef.current
+      });
+      
+      setIsPaymentReady(false);
+      setWidgetVisible(false);
+      
+      // 기존 위젯이 있다면 제거
+      const widgetContainer = document.getElementById('payment-widget');
+      if (widgetContainer) {
+        console.log('🧹 기존 위젯 컨테이너 초기화');
+        widgetContainer.innerHTML = '';
+      } else {
+        console.error('❌ payment-widget 컨테이너를 찾을 수 없음');
+        setWidgetLoading(false);
+        return false;
+      }
+
+      console.log('💳 renderPaymentMethods 호출 시작');
+      const paymentMethodsWidget = paymentWidgetRef.current.renderPaymentMethods(
+        '#payment-widget',
+        { value: selectedPack.price },
+        { variantKey: 'DEFAULT' }
+      );
+      
+      paymentMethodsWidgetRef.current = paymentMethodsWidget;
+      console.log('✅ 결제 수단 렌더링 완료');
+      
+      // 여러 번 체크하여 iframe 로딩 확인 (최대 5초)
+      let attempts = 0;
+      const maxAttempts = 10;
+      const checkInterval = 500;
+      
+      return new Promise<boolean>((resolve) => {
+        const checkIframe = () => {
+          const mounted = !!document.querySelector('#payment-widget iframe');
+          attempts++;
+          
+          if (mounted) {
+            setWidgetVisible(true);
+            setIsPaymentReady(true);
+            setWidgetLoading(false);
+            console.log('👀 위젯 표시됨 (시도:', attempts, ')');
+            resolve(true);
+          } else if (attempts >= maxAttempts) {
+            setWidgetVisible(false);
+            setIsPaymentReady(false);
+            setWidgetLoading(false);
+            console.log('⚠️ 위젯이 표시되지 않음 (도메인/iFrame 차단 가능)');
+            resolve(false);
+          } else {
+            setTimeout(checkIframe, checkInterval);
+          }
+        };
+        
+        setTimeout(checkIframe, checkInterval);
+      });
+    } catch (error) {
+      console.error('❌ 결제 수단 렌더링 실패:', error);
+      setWidgetLoading(false);
+      toast({
+        title: '결제 수단 로드 실패',
+        description: '결제 위젯을 불러오지 못했습니다. 재시도 버튼을 눌러주세요.',
+        variant: 'destructive'
+      });
+      return false;
+    }
+  }, [selectedPack, widgetReady, toast]);
 
   useEffect(() => {
     const renderPaymentMethods = async () => {
@@ -171,57 +261,11 @@ const TokenPurchase = () => {
         return;
       }
 
-      try {
-        console.log('🎨 결제 수단 렌더링 시작:', {
-          pack: selectedPack.name,
-          price: selectedPack.price,
-          widgetReady,
-          hasWidget: !!paymentWidgetRef.current
-        });
-        
-        setIsPaymentReady(false);
-        setWidgetVisible(false);
-        
-        // 기존 위젯이 있다면 제거
-        const widgetContainer = document.getElementById('payment-widget');
-        if (widgetContainer) {
-          console.log('🧹 기존 위젯 컨테이너 초기화');
-          widgetContainer.innerHTML = '';
-        } else {
-          console.error('❌ payment-widget 컨테이너를 찾을 수 없음');
-          setWidgetVisible(false);
-          return;
-        }
-
-        console.log('💳 renderPaymentMethods 호출 시작');
-        const paymentMethodsWidget = paymentWidgetRef.current.renderPaymentMethods(
-          '#payment-widget',
-          { value: selectedPack.price },
-          { variantKey: 'DEFAULT' }
-        );
-        
-        paymentMethodsWidgetRef.current = paymentMethodsWidget;
-        console.log('✅ 결제 수단 렌더링 완료');
-        
-        // 렌더 후 실제 iframe이 들어왔는지 확인 (iFrame/도메인 이슈 감지)
-        setTimeout(() => {
-          const mounted = !!document.querySelector('#payment-widget iframe');
-          setWidgetVisible(mounted);
-          setIsPaymentReady(mounted);
-          console.log(mounted ? '👀 위젯 표시됨' : '⚠️ 위젯이 표시되지 않음 (도메인/iFrame 차단 가능)');
-        }, 800);
-      } catch (error) {
-        console.error('❌ 결제 수단 렌더링 실패:', error);
-        toast({
-          title: '결제 수단 로드 실패',
-          description: '도메인 미등록 또는 브라우저 차단으로 위젯이 표시되지 않을 수 있어요.',
-          variant: 'destructive'
-        });
-      }
+      await renderWidget();
     };
     
     renderPaymentMethods();
-  }, [selectedPack, widgetReady, toast]);
+  }, [selectedPack, widgetReady, renderWidget]);
 
   const handlePackSelect = (pack: TokenPackage) => {
     console.log('📦 선택된 패키지:', pack);
@@ -419,13 +463,34 @@ const TokenPurchase = () => {
                   ))}
                 </div>
 
-                <div id="payment-widget" className="w-full" style={{ minHeight: '400px' }} />
+                {widgetLoading && (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary mr-3" />
+                    <span className="text-muted-foreground">결제 수단을 불러오는 중...</span>
+                  </div>
+                )}
 
-                {!widgetVisible && (
-                  <div className="mt-3 text-sm text-muted-foreground">
-                    결제 위젯이 보이지 않으면 도메인 미등록 또는 브라우저 차단 때문일 수 있어요.
-                    {inIframe && (
-                      <div className="mt-2">
+                <div id="payment-widget" className="w-full" style={{ minHeight: widgetLoading ? '0' : '400px' }} />
+
+                {!widgetVisible && !widgetLoading && selectedPack && (
+                  <div className="mt-3 p-4 bg-muted/50 rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-3">
+                      결제 위젯이 보이지 않나요? 아래 방법을 시도해보세요:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={async () => {
+                          setRetryCount(prev => prev + 1);
+                          await renderWidget();
+                        }}
+                        className="gap-2"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                        다시 시도 ({retryCount})
+                      </Button>
+                      {inIframe && (
                         <Button
                           size="sm"
                           variant="outline"
@@ -433,8 +498,18 @@ const TokenPurchase = () => {
                         >
                           새 창에서 열기
                         </Button>
-                      </div>
-                    )}
+                      )}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => window.location.reload()}
+                      >
+                        페이지 새로고침
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      * 팝업 차단이나 광고 차단 앱이 활성화되어 있다면 비활성화 후 다시 시도해주세요.
+                    </p>
                   </div>
                 )}
 

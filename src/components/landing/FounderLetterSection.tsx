@@ -120,7 +120,7 @@ const FounderLetterSection = () => {
               onClick={() => navigate('/column')}
               className="border-primary/30 hover:bg-primary/5"
             >
-              창립자 이수석의 칼럼 더보기
+              이수석칼럼 더보기
               <ChevronDown className="w-4 h-4 ml-2 -rotate-90" />
             </Button>
           </div>

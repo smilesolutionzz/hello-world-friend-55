@@ -18,6 +18,8 @@ export const AuthForm = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [phoneError, setPhoneError] = useState('');
   const [checkingPhone, setCheckingPhone] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [checkingEmail, setCheckingEmail] = useState(false);
   
   // 로그인 폼 데이터
   const [signInData, setSignInData] = useState({
@@ -123,14 +125,51 @@ export const AuthForm = () => {
     }
   };
 
+  // 이메일 중복 체크 (실시간) - RPC 함수 사용
+  const checkEmailAvailability = async (email: string) => {
+    if (!email.trim() || !email.includes('@')) {
+      setEmailError('');
+      return;
+    }
+
+    setCheckingEmail(true);
+    
+    try {
+      const { data: isAvailable, error } = await supabase
+        .rpc('check_email_availability', { check_email: email.trim() });
+
+      if (error) {
+        console.error('Email check error:', error);
+        setEmailError('');
+        return;
+      }
+
+      if (isAvailable === false) {
+        setEmailError('이미 등록된 이메일입니다. 기존 계정으로 로그인해주세요.');
+      } else {
+        setEmailError('');
+      }
+    } catch (err) {
+      console.error('Email check error:', err);
+    } finally {
+      setCheckingEmail(false);
+    }
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    // 전화번호 중복 에러가 있으면 진행 중단
+    // 전화번호 또는 이메일 중복 에러가 있으면 진행 중단
     if (phoneError) {
       setError(phoneError);
+      setLoading(false);
+      return;
+    }
+
+    if (emailError) {
+      setError(emailError);
       setLoading(false);
       return;
     }
@@ -168,16 +207,32 @@ export const AuthForm = () => {
 
     // 전화번호 중복 체크 (가입 전에 미리 확인) - RPC 함수 사용
     const cleanPhone = signUpData.phone.trim().replace(/-/g, '');
-    const { data: isAvailable } = await supabase
+    const { data: isPhoneAvailable } = await supabase
       .rpc('check_phone_availability', { phone_number: signUpData.phone.trim() });
 
-    if (isAvailable === false) {
+    if (isPhoneAvailable === false) {
       setError('이미 사용 중인 전화번호입니다. 다른 번호를 사용하거나, 기존 계정으로 로그인해주세요.');
       setPhoneError('이미 사용 중인 전화번호입니다.');
       setLoading(false);
       toast({
         title: "전화번호 중복",
         description: "이미 사용 중인 전화번호입니다.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // 이메일 중복 체크 (가입 전에 미리 확인) - RPC 함수 사용
+    const { data: isEmailAvailable } = await supabase
+      .rpc('check_email_availability', { check_email: signUpData.email.trim() });
+
+    if (isEmailAvailable === false) {
+      setError('이미 등록된 이메일입니다. 기존 계정으로 로그인해주세요.');
+      setEmailError('이미 등록된 이메일입니다.');
+      setLoading(false);
+      toast({
+        title: "이메일 중복",
+        description: "이미 등록된 이메일입니다.",
         variant: "destructive",
       });
       return;
@@ -484,13 +539,23 @@ export const AuthForm = () => {
                           type="email"
                           placeholder="your@email.com"
                           value={signUpData.email}
-                          onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
+                          onChange={(e) => {
+                            setSignUpData(prev => ({ ...prev, email: e.target.value }));
+                            if (emailError) setEmailError('');
+                          }}
+                          onBlur={(e) => checkEmailAvailability(e.target.value)}
                           onFocus={(e) => scrollToInput(e.currentTarget)}
-                          className="pl-10"
+                          className={`pl-10 ${emailError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                           required
                           autoComplete="email"
                         />
+                        {checkingEmail && (
+                          <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin text-muted-foreground" />
+                        )}
                       </div>
+                      {emailError && (
+                        <p className="text-sm text-destructive">{emailError}</p>
+                      )}
                     </div>
                     
                     <div className="space-y-2">

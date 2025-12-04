@@ -9126,6 +9126,10 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: boolean
       }
+      check_email_availability: {
+        Args: { check_email: string }
+        Returns: boolean
+      }
       check_phone_availability: {
         Args: { phone_number: string }
         Returns: boolean

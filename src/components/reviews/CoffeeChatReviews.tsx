@@ -137,7 +137,7 @@ export const CoffeeChatReviews = () => {
               <p className="text-white/90 text-sm mb-2">
                 전문 검사 전, 먼저 체크해보세요
               </p>
-              <h3 className="text-white text-2xl md:text-3xl font-black mb-4">
+              <h3 className="text-white text-xl md:text-3xl font-black mb-4 break-keep">
                 간편한 자가점검으로 시작하기
               </h3>
               <div className="flex flex-wrap justify-center gap-2">

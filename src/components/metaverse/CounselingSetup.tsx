@@ -1,19 +1,17 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
 import { CHARACTERS, type AgeGroup, type CharacterType } from '@/utils/CounselingQuestions';
-import { Users, Baby, GraduationCap, UserCircle, ArrowRight, Shield, Heart, ArrowLeft, Home } from 'lucide-react';
+import { Users, Baby, GraduationCap, UserCircle, ArrowRight, Shield, Heart } from 'lucide-react';
 
 interface CounselingSetupProps {
   onStart: (ageGroup: AgeGroup, character: CharacterType) => void;
 }
 
 export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
-  const navigate = useNavigate();
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<AgeGroup>('child');
   const [selectedCharacter, setSelectedCharacter] = useState<CharacterType>('elephant');
 
@@ -54,28 +52,6 @@ export const CounselingSetup = ({ onStart }: CounselingSetupProps) => {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto p-6">
-      {/* 네비게이션 버튼 */}
-      <div className="fixed top-4 left-4 z-50 flex gap-2">
-        <Button
-          onClick={() => navigate(-1)}
-          variant="outline"
-          size="sm"
-          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          뒤로
-        </Button>
-        <Button
-          onClick={() => navigate('/')}
-          variant="outline"
-          size="sm"
-          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
-        >
-          <Home className="w-4 h-4" />
-          홈
-        </Button>
-      </div>
-
       <div className="text-center space-y-2 mb-8">
         <h2 className="text-3xl font-bold text-white drop-shadow-lg">금쪽같은 대화</h2>
         <p className="text-white/90 drop-shadow-md">

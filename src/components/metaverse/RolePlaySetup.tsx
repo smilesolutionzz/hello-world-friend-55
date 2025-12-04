@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -13,7 +12,7 @@ import {
   type RolePlayScenario,
   type RolePlayCategory 
 } from '@/utils/RolePlayScenarios';
-import { ArrowRight, Shield, Target, Lightbulb, Baby, GraduationCap, UserCircle, Star, ArrowLeft, Home } from 'lucide-react';
+import { ArrowRight, Shield, Target, Lightbulb, Baby, GraduationCap, UserCircle, Star } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface RolePlaySetupProps {
@@ -21,7 +20,6 @@ interface RolePlaySetupProps {
 }
 
 export const RolePlaySetup = ({ onStart }: RolePlaySetupProps) => {
-  const navigate = useNavigate();
   const [selectedAge, setSelectedAge] = useState<'child' | 'teen' | 'adult'>('adult');
   const [selectedCategory, setSelectedCategory] = useState<RolePlayCategory | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<RolePlayScenario | null>(null);
@@ -54,28 +52,6 @@ export const RolePlaySetup = ({ onStart }: RolePlaySetupProps) => {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto p-6">
-      {/* 네비게이션 버튼 */}
-      <div className="fixed top-4 left-4 z-50 flex gap-2">
-        <Button
-          onClick={() => navigate(-1)}
-          variant="outline"
-          size="sm"
-          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          뒤로
-        </Button>
-        <Button
-          onClick={() => navigate('/')}
-          variant="outline"
-          size="sm"
-          className="gap-2 bg-background/80 backdrop-blur-sm shadow-lg"
-        >
-          <Home className="w-4 h-4" />
-          홈
-        </Button>
-      </div>
-
       <div className="text-center space-y-2 mb-8">
         <h2 className="text-3xl font-bold text-white drop-shadow-lg">AI 롤플레이 연습</h2>
         <p className="text-white/90 drop-shadow-md">

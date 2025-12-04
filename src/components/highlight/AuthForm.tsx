@@ -92,7 +92,7 @@ export const AuthForm = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  // 전화번호 중복 체크 (실시간)
+  // 전화번호 중복 체크 (실시간) - RPC 함수 사용
   const checkPhoneAvailability = async (phone: string) => {
     if (!phone.trim() || phone.trim().length < 10) {
       setPhoneError('');
@@ -100,16 +100,18 @@ export const AuthForm = () => {
     }
 
     setCheckingPhone(true);
-    const cleanPhone = phone.trim().replace(/-/g, '');
     
     try {
-      const { data: existingPhoneUser } = await supabase
-        .from('profiles')
-        .select('id')
-        .or(`phone.eq.${cleanPhone},phone.eq.${phone.trim()}`)
-        .maybeSingle();
+      const { data: isAvailable, error } = await supabase
+        .rpc('check_phone_availability', { phone_number: phone.trim() });
 
-      if (existingPhoneUser) {
+      if (error) {
+        console.error('Phone check error:', error);
+        setPhoneError('');
+        return;
+      }
+
+      if (isAvailable === false) {
         setPhoneError('이미 사용 중인 전화번호입니다. 기존 계정으로 로그인해주세요.');
       } else {
         setPhoneError('');
@@ -164,16 +166,14 @@ export const AuthForm = () => {
       return;
     }
 
-    // 전화번호 중복 체크 (가입 전에 미리 확인)
+    // 전화번호 중복 체크 (가입 전에 미리 확인) - RPC 함수 사용
     const cleanPhone = signUpData.phone.trim().replace(/-/g, '');
-    const { data: existingPhoneUser } = await supabase
-      .from('profiles')
-      .select('id')
-      .or(`phone.eq.${cleanPhone},phone.eq.${signUpData.phone.trim()}`)
-      .maybeSingle();
+    const { data: isAvailable } = await supabase
+      .rpc('check_phone_availability', { phone_number: signUpData.phone.trim() });
 
-    if (existingPhoneUser) {
+    if (isAvailable === false) {
       setError('이미 사용 중인 전화번호입니다. 다른 번호를 사용하거나, 기존 계정으로 로그인해주세요.');
+      setPhoneError('이미 사용 중인 전화번호입니다.');
       setLoading(false);
       toast({
         title: "전화번호 중복",

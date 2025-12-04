@@ -20,9 +20,9 @@ const chatMessages: ChatMessage[] = [
     organization: '서울 A발달센터',
     userType: 'institution',
     message: {
-      prefix: '발달검사 분석 시간이 ',
-      highlight: '2시간에서 10분으로',
-      suffix: ' 줄었어요!',
+      prefix: '전문 검사 의뢰 전에 ',
+      highlight: '사전 스크리닝용',
+      suffix: '으로 딱 좋아요!',
     },
     time: '오전 9:30',
   },
@@ -32,9 +32,9 @@ const chatMessages: ChatMessage[] = [
     organization: '부산 초등학생 자녀',
     userType: 'parent',
     message: {
-      prefix: '아이 발달 상태를 ',
-      highlight: '전문적으로 파악',
-      suffix: '할 수 있어서 좋아요',
+      prefix: '병원 가기 전에 ',
+      highlight: '미리 체크해볼 수 있어서',
+      suffix: ' 마음이 편해요',
     },
     time: '오전 10:15',
   },
@@ -44,21 +44,21 @@ const chatMessages: ChatMessage[] = [
     organization: '대전 B어린이집',
     userType: 'institution',
     message: {
-      prefix: '학부모 상담이 ',
-      highlight: '훨씬 수월해졌어요',
-      suffix: '',
+      prefix: '학부모님께 전문기관 방문 전 ',
+      highlight: '자가점검 도구로 추천',
+      suffix: '드리고 있어요',
     },
     time: '오전 11:02',
   },
   {
     id: '4',
-    userName: '최영수 대표',
-    organization: '경기 C복지센터',
+    userName: '최영수',
+    organization: '직장인 30대',
     userType: 'adult',
     message: {
-      prefix: 'AI 분석 리포트로 이용자들의 만족도가 ',
-      highlight: '확 높아졌어요',
-      suffix: '',
+      prefix: '상담 받기 전에 ',
+      highlight: '내 상태를 먼저 파악',
+      suffix: '할 수 있어서 좋았어요',
     },
     time: '오후 2:45',
   },
@@ -68,15 +68,15 @@ const chatMessages: ChatMessage[] = [
     organization: '서울',
     userType: 'child',
     message: {
-      prefix: '게임처럼 재미있어서 ',
-      highlight: '또 하고 싶어요',
+      prefix: '퀴즈처럼 ',
+      highlight: '재미있게 할 수 있어요',
       suffix: '!',
     },
     time: '오후 3:20',
   },
 ];
 
-const hashtags = ['#AI발달분석', '#시간단축', '#전문가상담', '#무료체험'];
+const hashtags = ['#자가점검', '#사전체크', '#전문검사전필수', '#무료체험'];
 
 export const CoffeeChatReviews = () => {
   return (
@@ -135,10 +135,10 @@ export const CoffeeChatReviews = () => {
             {/* CTA Section */}
             <div className="bg-gradient-to-r from-amber-400 via-orange-400 to-orange-500 px-6 py-8 text-center">
               <p className="text-white/90 text-sm mb-2">
-                전국 200개+ 기관이 선택한
+                전문 검사 전, 먼저 체크해보세요
               </p>
               <h3 className="text-white text-2xl md:text-3xl font-black mb-4">
-                AIHUMANPRO와 함께하세요
+                간편한 자가점검으로 시작하기
               </h3>
               <div className="flex flex-wrap justify-center gap-2">
                 {hashtags.map((tag, index) => (

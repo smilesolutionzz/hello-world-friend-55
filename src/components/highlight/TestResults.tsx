@@ -138,13 +138,19 @@ export const TestResults = () => {
     }
   };
 
-  const generateChartData = (scores: Record<string, number>) => {
-    return Object.entries(scores)
-      .filter(([key]) => !['total_score', 'predicted_score', 'score', 'ageGroup', 'severity', 'answers', 'testType', 'analysis', 'testInfo', 'savedAt'].includes(key))
+  const generateChartData = (scores: any) => {
+    // scores 안에 results가 중첩되어 있는 경우 처리
+    const actualScores = scores?.results || scores;
+    
+    // scores 객체가 없거나 빈 경우 처리
+    if (!actualScores || typeof actualScores !== 'object') return [];
+    
+    return Object.entries(actualScores)
+      .filter(([key]) => !['total', 'total_score', 'predicted_score', 'score', 'ageGroup', 'severity', 'answers', 'testType', 'analysis', 'testInfo', 'savedAt', 'chartData', 'riskLevel', 'scoreSummary', 'average'].includes(key))
       .filter(([_, value]) => typeof value === 'number')
       .map(([key, value]) => ({
         name: getKoreanLabel(key),
-        score: value,
+        score: value as number,
         fullMark: 100
       }));
   };
@@ -277,9 +283,11 @@ export const TestResults = () => {
   }
 
   const chartData = generateChartData(result.scores);
-  const totalScore = result.scores.predicted_score || result.scores.total_score || result.scores.score || 0;
-  const { level, color } = getScoreLevel(totalScore);
-  const aiAnalysis = result.ai_analysis || generateAIAnalysis(result.scores, result.test_types.name);
+  // Handle nested scores format from auto-save
+  const scoresData = result.scores?.results || result.scores;
+  const totalScore = scoresData?.total || result.scores?.scoreSummary?.total || result.scores.predicted_score || result.scores.total_score || result.scores.score || 0;
+  const { level, color } = getScoreLevel(typeof totalScore === 'number' ? totalScore : 0);
+  const aiAnalysis = result.ai_analysis || result.scores?.analysis || generateAIAnalysis(result.scores, result.test_types.name);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">

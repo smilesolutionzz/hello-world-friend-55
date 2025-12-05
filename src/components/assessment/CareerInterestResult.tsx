@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { RefreshCw, Download, Share2, Briefcase, Wrench, Microscope, Palette, Users, TrendingUp, FileText, FileDown } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface CareerInterestResultProps {
   result: {
@@ -74,6 +75,17 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
   const TopIcon = topConfig.icon;
   const { shareAsText } = useShareText();
   const { generatePDFReport, isGeneratingPDF } = useTestResultActions();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '직업 성향 검사',
+    results: { 
+      total: result.total, 
+      average: result.average, 
+      scores: result.scores,
+      topTypes: result.topTypes
+    }
+  });
 
   const handleShare = () => {
     const topThreeTypes = result.topTypes

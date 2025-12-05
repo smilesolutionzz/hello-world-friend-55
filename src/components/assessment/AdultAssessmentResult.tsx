@@ -10,6 +10,7 @@ import { useTestResultActions } from '@/hooks/useTestResultActions';
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface AdultAssessmentResultProps {
   results: {
@@ -33,6 +34,13 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
   
   const [generatedImage, setGeneratedImage] = useState<string>("");
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '성인 심리검사',
+    results: { total, average, categoryScores },
+    ageGroup
+  });
   
   const getCategoryName = (category: string) => {
     const names: Record<string, string> = {

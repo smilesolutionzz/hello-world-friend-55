@@ -7,6 +7,7 @@ import { Heart, Users, TrendingUp, Lightbulb, ArrowLeft, RefreshCw, ImageIcon, L
 import ReactMarkdown from 'react-markdown';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface AttachmentStyleResultProps {
   result: {
@@ -26,6 +27,18 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
   const { toast } = useToast();
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '애착 유형 검사',
+    results: { 
+      total: result.total, 
+      average: result.average, 
+      anxietyScore: result.anxietyScore,
+      avoidanceScore: result.avoidanceScore,
+      style: result.style
+    }
+  });
 
   const handleGenerateImage = async () => {
     setIsGeneratingImage(true);

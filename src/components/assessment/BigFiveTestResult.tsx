@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { RefreshCw, Download, Share2, User, Heart, Target, Brain, Lightbulb, Save, FileDown } from "lucide-react";
 import { useShareText } from "@/utils/shareUtils";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface BigFiveTestResultProps {
   result: {
@@ -69,6 +70,16 @@ const getLevelVariant = (score: number) => {
 export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResultProps) {
   const { shareAsText } = useShareText();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '빅파이브 성격검사',
+    results: { 
+      total: result.total, 
+      average: result.average, 
+      scores: result.scores
+    }
+  });
 
   const handleShare = () => {
     const scoreTexts = Object.entries(result.scores)

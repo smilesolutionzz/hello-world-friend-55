@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface SelfEsteemTestResultProps {
   result: {
@@ -97,6 +98,16 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
   const { balance } = useTokens();
   const { toast } = useToast();
   const isSubscribed = false;
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '자존감 검사',
+    results: { 
+      total: result.total, 
+      average: result.average, 
+      level: result.level
+    }
+  });
 
   // 영역별 점수 데이터 (답변을 기반으로 계산)
   const areaScores = [

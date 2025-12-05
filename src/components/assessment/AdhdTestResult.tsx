@@ -22,6 +22,7 @@ import { FileText } from 'lucide-react';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface AdhdTestResultProps {
   results: {
@@ -46,6 +47,14 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { toast } = useToast();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: 'ADHD 검사',
+    results: { total: safeTotal, average: safeAverage, answers: safeAnswers },
+    severity,
+    ageGroup
+  });
   
   // AI 분석 상태
   const [aiAnalysis, setAiAnalysis] = useState<string>("");

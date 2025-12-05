@@ -415,6 +415,7 @@ export const useReadyPlayerMe = () => {
     
     // Ready Player Me iframe을 열기
     const frame = document.createElement('iframe');
+    frame.id = 'rpm-frame';
     frame.src = `https://demo.readyplayer.me/avatar?frameApi&clearCache`;
     frame.allow = 'camera *; microphone *; clipboard-write';
     frame.style.cssText = `
@@ -463,6 +464,19 @@ export const useReadyPlayerMe = () => {
     
     document.body.appendChild(frame);
     document.body.appendChild(closeBtn);
+    
+    // iframe 로드 후 이벤트 구독
+    frame.onload = () => {
+      console.log('🎭 RPM iframe loaded, subscribing to events...');
+      frame.contentWindow?.postMessage(
+        JSON.stringify({
+          target: 'readyplayerme',
+          type: 'subscribe',
+          eventName: 'v1.**'
+        }),
+        '*'
+      );
+    };
 
     const handleMessage = (event: MessageEvent) => {
       const json = parse(event);
@@ -470,13 +484,49 @@ export const useReadyPlayerMe = () => {
       if (!json) return;
       
       console.log('🎭 Ready Player Me Event received:', json);
+      console.log('🎭 Event data:', JSON.stringify(json, null, 2));
       
       if (json?.source === 'readyplayerme') {
         console.log('✅ RPM Event Name:', json.eventName);
+        console.log('✅ RPM Event Data:', json.data);
         
-        // v1.avatar.exported 또는 v1.user.set 이벤트 처리
-        if (json.eventName === 'v1.avatar.exported' || json.eventName === 'v1.user.set') {
-          const avatarUrlFromEvent = json.data?.url || json.data?.avatarId;
+        // frame ready 이벤트 처리 - 이벤트 구독
+        if (json.eventName === 'v1.frame.ready') {
+          console.log('🎭 Frame ready, subscribing to events...');
+          frame.contentWindow?.postMessage(
+            JSON.stringify({
+              target: 'readyplayerme',
+              type: 'subscribe',
+              eventName: 'v1.**'
+            }),
+            '*'
+          );
+          return;
+        }
+        
+        // 다양한 이벤트 이름 처리 (RPM API 버전에 따라 다름)
+        const exportEvents = [
+          'v1.avatar.exported',
+          'v1.user.set', 
+          'v2.avatar.exported',
+          'avatar.exported',
+          'avatar_exported'
+        ];
+        
+        if (exportEvents.includes(json.eventName)) {
+          // URL 추출 - 여러 가능한 경로 시도
+          let avatarUrlFromEvent = 
+            json.data?.url || 
+            json.data?.avatarUrl ||
+            json.data?.avatarId ||
+            json.data?.avatar?.url ||
+            json.data;
+          
+          // avatarId만 있는 경우 전체 URL 구성
+          if (avatarUrlFromEvent && !avatarUrlFromEvent.includes('http') && !avatarUrlFromEvent.includes('.glb')) {
+            avatarUrlFromEvent = `https://models.readyplayer.me/${avatarUrlFromEvent}.glb`;
+          }
+          
           console.log('🎉 Avatar URL from event:', avatarUrlFromEvent);
           
           if (!avatarUrlFromEvent) {

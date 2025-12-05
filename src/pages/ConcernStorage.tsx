@@ -35,12 +35,12 @@ const ConcernStorage = () => {
               </div>
               <div>
                 <CardTitle className="text-2xl">
-                  {activeTab === 'concerns' ? '고민 저장소' : '검사 저장소'}
+                  내 기록 저장소
                 </CardTitle>
                 <CardDescription>
                   {activeTab === 'concerns' 
                     ? '내가 입력했던 모든 고민과 AI 분석 결과를 확인하세요'
-                    : '모든 검사 결과를 한눈에 확인하세요'
+                    : '완료한 심리검사 결과를 한눈에 확인하세요'
                   }
                 </CardDescription>
               </div>

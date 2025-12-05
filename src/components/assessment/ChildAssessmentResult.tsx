@@ -9,6 +9,7 @@ import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
 import { PremiumAnalysisOffer } from "@/components/premium/PremiumAnalysisOffer";
 // import { generatePDFReport } from '@/utils/pdfGenerator';
 import { supabase } from '@/integrations/supabase/client';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface ChildAssessmentResultProps {
   results: {
@@ -27,6 +28,13 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const today = new Date().toLocaleDateString('ko-KR');
   const [userId, setUserId] = useState<string | undefined>();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '아동 심리검사',
+    results: { total, average, gameScores },
+    ageGroup
+  });
   
   useState(() => {
     const getUser = async () => {

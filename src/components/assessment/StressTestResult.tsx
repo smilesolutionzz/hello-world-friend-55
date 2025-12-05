@@ -12,6 +12,7 @@ import { PersonalizedProductRecommendation } from '@/components/product/Personal
 import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface StressTestResultProps {
   result: {
@@ -32,6 +33,13 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [riskLevel, setRiskLevel] = useState<'low' | 'medium' | 'high'>('low');
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '스트레스 검사',
+    results: { total: result.total, average: result.average, answers: result.answers },
+    severity: result.severity
+  });
 
   useEffect(() => {
     const analyzeStressResults = async () => {

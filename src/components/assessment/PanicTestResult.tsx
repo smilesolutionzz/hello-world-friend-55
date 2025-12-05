@@ -9,6 +9,7 @@ import { ExpertConsultationNotice } from './ExpertConsultationNotice';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useToast } from '@/hooks/use-toast';
 import { PDFHeader } from '@/components/common/PDFHeader';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface PanicTestResultProps {
   results: {
@@ -83,6 +84,13 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
   const severity = getSeverityLevel(total);
   const { shareAsText } = useShareText();
   const { toast } = useToast();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '불안감 검사',
+    results: { total, average, answers: results.answers },
+    severity
+  });
   
   const chartData = [
     {

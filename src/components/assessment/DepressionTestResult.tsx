@@ -18,6 +18,7 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
 import { useToast } from '@/hooks/use-toast';
 import { ExpertMatchRecommendation } from './ExpertMatchRecommendation';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface DepressionTestResultProps {
   results: {
@@ -38,6 +39,14 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
   const [isLoading, setIsLoading] = useState(true);
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { shareAsText } = useShareText();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '우울증 검사',
+    results: { total, average, answers },
+    severity,
+    ageGroup: results.ageGroup
+  });
   
   const chartData = [
     {

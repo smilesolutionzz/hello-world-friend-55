@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink, Download, Mail, UserCheck } from "lucide-react
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useTestResultActions } from '@/hooks/useTestResultActions';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface LanguageTestResultProps {
   results: {
@@ -23,6 +24,13 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const today = new Date().toLocaleDateString('ko-KR');
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '언어발달 검사',
+    results: { total, average, answers: results.answers },
+    ageGroup,
+  });
 
   const getEvaluation = (score: number, age: number) => {
     const detailedAge = results.detailedAgeGroup || `${age}개월`;

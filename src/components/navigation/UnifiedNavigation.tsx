@@ -78,7 +78,7 @@ const dataSubmenuItems: { icon: any; label: string; path: string; requiresAuth: 
 const aihSubmenuItems: NavigationItem[] = [
   { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false },
   { icon: Mic, label: 'AI 메타버스', path: '/metaverse-voice', requiresAuth: false, badge: 'NEW' },
-  { icon: FileText, label: '관찰일지', path: '/observation', requiresAuth: false },
+  { icon: FileText, label: 'AI 관찰일지', path: '/observation', requiresAuth: false },
 ];
 
 // 3분테스트 하위 메뉴

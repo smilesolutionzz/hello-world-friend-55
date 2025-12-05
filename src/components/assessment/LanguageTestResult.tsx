@@ -25,10 +25,11 @@ const LanguageTestResult = ({ results, onBack }: LanguageTestResultProps) => {
   const navigate = useNavigate();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
 
-  // 자동 저장
+  // 자동 저장 - 분석 포함
   useAutoSaveTestResult({
     testType: '언어발달 검사',
     results: { total, average, answers: results.answers },
+    analysis: `언어발달 검사 결과 - 총점: ${total}점, 평균: ${average.toFixed(1)}점`,
     ageGroup,
   });
 

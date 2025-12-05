@@ -35,10 +35,11 @@ const AdultAssessmentResult = ({ results, onBack, onStartAIChat, onStartRealTime
   const [generatedImage, setGeneratedImage] = useState<string>("");
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
-  // 자동 저장
+  // 자동 저장 - 분석 포함
   useAutoSaveTestResult({
     testType: '성인 심리검사',
     results: { total, average, categoryScores },
+    analysis: `총점: ${total}점, 평균: ${average.toFixed(1)}점`,
     ageGroup
   });
   

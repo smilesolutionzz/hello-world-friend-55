@@ -85,10 +85,13 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
   const { shareAsText } = useShareText();
   const { toast } = useToast();
 
-  // 자동 저장
+  const recommendation = getRecommendation(severity);
+  
+  // 자동 저장 - 분석 포함
   useAutoSaveTestResult({
     testType: '불안감 검사',
     results: { total, average, answers: results.answers },
+    analysis: recommendation.description,
     severity
   });
   
@@ -99,8 +102,6 @@ const PanicTestResult = ({ results, onBack, onRestart }: PanicTestResultProps) =
       fullMark: 63,
     }
   ];
-
-  const recommendation = getRecommendation(severity);
 
   const handlePDFDownload = async () => {
     await downloadResultAsPDF(

@@ -105,12 +105,18 @@ const AssessmentHistory = () => {
       // Transform test_results data
       if (testResultsData) {
         testResultsData.forEach(result => {
+          const scores = result.scores as any;
           combinedData.push({
             id: result.id,
             source: 'test_results',
             test_name: result.test_types?.name || '심리검사',
             test_description: result.test_types?.description,
-            results: result.scores,
+            results: scores,
+            analysis: scores?.analysis || undefined,
+            risk_level: scores?.severity === '심각' || scores?.severity === '심한 우울' || scores?.severity === '높음' ? 'high' as const :
+                       scores?.severity === '중등도' || scores?.severity === '중등도 우울' || scores?.severity === '보통' ? 'medium' as const :
+                       scores?.severity ? 'low' as const : undefined,
+            age_group: scores?.ageGroup,
             completed_at: result.completed_at || result.created_at
           });
         });

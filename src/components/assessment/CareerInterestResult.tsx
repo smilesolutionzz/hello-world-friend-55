@@ -76,7 +76,7 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
   const { shareAsText } = useShareText();
   const { generatePDFReport, isGeneratingPDF } = useTestResultActions();
 
-  // 자동 저장
+  // 자동 저장 - 분석 포함
   useAutoSaveTestResult({
     testType: '직업 성향 검사',
     results: { 
@@ -84,7 +84,8 @@ export default function CareerInterestResult({ result, onRestart }: CareerIntere
       average: result.average, 
       scores: result.scores,
       topTypes: result.topTypes
-    }
+    },
+    analysis: `1순위 직업 성향: ${topConfig.name}\n${topConfig.description}`
   });
 
   const handleShare = () => {

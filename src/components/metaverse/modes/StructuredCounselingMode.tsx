@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 import { MetaverseSessionEntrance, type RoomType } from '../shared/MetaverseSessionEntrance';
 import { useReadyPlayerMe } from '@/components/metaverse/ReadyPlayerMeAvatar';
 import CounselingRoom from '@/components/3d/CounselingRoom';
@@ -54,7 +54,7 @@ export const StructuredCounselingMode = ({ ageGroup, character }: StructuredCoun
         <MetaverseSessionEntrance
           onEnter={handleEnterSession}
           showConsultTopic={false}
-          showMovementToggle={false}
+          showMovementToggle={true}
           onAvatarCreatorOpen={openAvatarCreator}
           initialAvatarUrl={avatarUrl}
           onAvatarUrlChange={setAvatarUrl}
@@ -65,9 +65,19 @@ export const StructuredCounselingMode = ({ ageGroup, character }: StructuredCoun
 
   return (
     <div className="relative w-full h-screen">
+      {/* X 버튼 (닫기) */}
+      <Button
+        onClick={handleExit}
+        variant="ghost"
+        size="icon"
+        className="absolute top-4 right-4 z-50 bg-black/40 hover:bg-black/60 text-white rounded-full"
+      >
+        <X className="w-5 h-5" />
+      </Button>
+
       <CounselingRoom 
         roomType={sessionConfig.selectedRoom}
-        enableMovement={false}
+        enableMovement={sessionConfig.enableMovement}
         character={character}
       >
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4">

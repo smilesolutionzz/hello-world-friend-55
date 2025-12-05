@@ -182,7 +182,7 @@ export const UnifiedNavigation = () => {
                 홈
               </Button>
 
-              {/* 종합테스트 */}
+              {/* 심리검사 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -191,7 +191,7 @@ export const UnifiedNavigation = () => {
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
                     <TrendingUp className="w-4 h-4 mr-2" />
-                    종합테스트
+                    심리검사
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -269,7 +269,7 @@ export const UnifiedNavigation = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* 데이터 */}
+              {/* 내 기록 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -277,13 +277,13 @@ export const UnifiedNavigation = () => {
                     size="sm"
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
-                    <BarChart3 className="w-4 h-4 mr-2" />
-                    데이터
+                    <History className="w-4 h-4 mr-2" />
+                    내 기록
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-[400px] bg-background shadow-xl border rounded-xl p-5 z-50">
-                  <h3 className="text-sm font-bold mb-3 px-1">데이터 관리</h3>
+                  <h3 className="text-sm font-bold mb-3 px-1">내 기록 관리</h3>
                   <div className="space-y-1">
                     {dataSubmenuItems.map((item) => (
                       <button
@@ -444,9 +444,9 @@ export const UnifiedNavigation = () => {
                         홈
                       </Button>
                       
-                      {/* 테스트 그룹 */}
+                      {/* 심리검사 그룹 */}
                       <div className="pl-2 space-y-1">
-                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">테스트</p>
+                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">심리검사</p>
                         {assessmentSubmenuItems.map((item) => (
                           <Button
                             key={item.path}
@@ -464,9 +464,9 @@ export const UnifiedNavigation = () => {
                         ))}
                       </div>
                       
-                      {/* AIH 에이전트 그룹 */}
+                      {/* AI 서비스 그룹 */}
                       <div className="pl-2 space-y-1">
-                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">AIH 에이전트</p>
+                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">AI 서비스</p>
                          {aihSubmenuItems.map((item) => (
                            <Button
                              key={item.path}
@@ -490,9 +490,9 @@ export const UnifiedNavigation = () => {
                          ))}
                       </div>
                       
-                      {/* 데이터 그룹 */}
+                      {/* 내 기록 그룹 */}
                       <div className="pl-2 space-y-1">
-                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">데이터</p>
+                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">내 기록</p>
                         {dataSubmenuItems.map((item) => (
                           <Button
                             key={item.path}

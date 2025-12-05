@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -13,7 +13,7 @@ import {
   type CharacterType,
   type CounselingQuestion 
 } from '@/utils/CounselingQuestions';
-import { ArrowRight, CheckCircle, AlertCircle, Sparkles, Download, Loader2 } from 'lucide-react';
+import { ArrowRight, CheckCircle, AlertCircle, Sparkles, Download, Loader2, Volume2, VolumeX } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface StructuredCounselingProps {
@@ -45,8 +45,63 @@ export const StructuredCounseling = ({
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showReassurance, setShowReassurance] = useState(true);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const characterConfig = CHARACTERS[character];
+
+  // TTS 함수
+  const speakText = async (text: string) => {
+    if (!voiceEnabled) return;
+    
+    try {
+      setIsSpeaking(true);
+      
+      const { data, error } = await supabase.functions.invoke('text-to-speech', {
+        body: { text }
+      });
+
+      if (error) throw error;
+
+      if (!data?.audioContent) {
+        throw new Error('No audio content received');
+      }
+
+      const binaryString = atob(data.audioContent);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const blob = new Blob([bytes], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(blob);
+
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+      
+      audio.onended = () => {
+        setIsSpeaking(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+      audio.onerror = () => {
+        setIsSpeaking(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      await audio.play();
+    } catch (error) {
+      console.error('TTS error:', error);
+      setIsSpeaking(false);
+    }
+  };
+
+  const stopSpeaking = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsSpeaking(false);
+    }
+  };
 
   useEffect(() => {
     // 초기 질문 선택
@@ -55,21 +110,29 @@ export const StructuredCounseling = ({
     
     // 인사말 및 비밀 보장 메시지
     setTimeout(() => {
-      onMessage(characterConfig.greeting, false);
+      const greeting = characterConfig.greeting;
+      onMessage(greeting, false);
+      speakText(greeting);
     }, 500);
     
     setTimeout(() => {
       const reassurance = characterConfig.reassurance[Math.floor(Math.random() * characterConfig.reassurance.length)];
       onMessage(reassurance, false);
       setShowReassurance(false);
-    }, 2000);
+    }, 4000);
     
     // 첫 질문
     setTimeout(() => {
       if (initialQuestions.length > 0) {
-        onMessage(initialQuestions[0].question, false);
+        const firstQuestion = initialQuestions[0].question;
+        onMessage(firstQuestion, false);
+        speakText(firstQuestion);
       }
-    }, 3500);
+    }, 6000);
+
+    return () => {
+      stopSpeaking();
+    };
   }, [ageGroup, character]);
 
   const handleAnswerSubmit = async () => {
@@ -113,11 +176,13 @@ export const StructuredCounseling = ({
       ];
       const empathy = empathyMessages[Math.floor(Math.random() * empathyMessages.length)];
       onMessage(empathy, false);
+      speakText(empathy);
       
       // 우려되는 답변일 경우
       if (analysis.concern) {
         setTimeout(() => {
-          onMessage('네가 힘든 시간을 보내고 있는 것 같아서 마음이 쓰여. 언제든 이야기하고 싶으면 말해줘.', false);
+          const concernMessage = '네가 힘든 시간을 보내고 있는 것 같아서 마음이 쓰여. 언제든 이야기하고 싶으면 말해줘.';
+          onMessage(concernMessage, false);
         }, 1500);
       }
     }, 1000);
@@ -135,14 +200,18 @@ export const StructuredCounseling = ({
         }, 2500);
         
         setTimeout(() => {
+          const nextQuestion = questions[currentQuestionIndex + 1].question;
           setCurrentQuestionIndex(currentQuestionIndex + 1);
-          onMessage(questions[currentQuestionIndex + 1].question, false);
+          onMessage(nextQuestion, false);
+          speakText(nextQuestion);
         }, 4000);
       } else {
         setTimeout(() => {
+          const nextQuestion = questions[currentQuestionIndex + 1].question;
           setCurrentQuestionIndex(currentQuestionIndex + 1);
-          onMessage(questions[currentQuestionIndex + 1].question, false);
-        }, 2000);
+          onMessage(nextQuestion, false);
+          speakText(nextQuestion);
+        }, 3000);
       }
     } else {
       // 모든 질문 완료
@@ -250,9 +319,28 @@ export const StructuredCounseling = ({
             <p className="text-sm text-muted-foreground">구조화된 상담</p>
           </div>
         </div>
-        <Badge variant={showReassurance ? "default" : "secondary"}>
-          🔒 비밀 보장
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              if (isSpeaking) {
+                stopSpeaking();
+              }
+              setVoiceEnabled(!voiceEnabled);
+            }}
+            className="h-8 w-8"
+          >
+            {voiceEnabled ? (
+              <Volume2 className="w-4 h-4 text-primary" />
+            ) : (
+              <VolumeX className="w-4 h-4 text-muted-foreground" />
+            )}
+          </Button>
+          <Badge variant={showReassurance ? "default" : "secondary"}>
+            🔒 비밀 보장
+          </Badge>
+        </div>
       </div>
 
       <div className="space-y-2">

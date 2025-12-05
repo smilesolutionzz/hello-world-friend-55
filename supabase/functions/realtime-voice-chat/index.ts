@@ -200,16 +200,17 @@ ${questions.map((q, i) => `   ${i + 1}. ${q}`).join('\n')}
               type: "session.update",
               session: {
                 modalities: ["text", "audio"],
-                instructions,
+                instructions: instructions + "\n\n[CRITICAL] You MUST respond ONLY in Korean (한국어). Do NOT use any other language or script including Bengali, Hindi, Chinese, Japanese, or English. Every single word must be in Korean Hangul script (한글).",
                 voice: characterConfig.voice,
                 input_audio_format: "pcm16",
                 output_audio_format: "pcm16",
                 input_audio_transcription: {
-                  model: "whisper-1"
+                  model: "whisper-1",
+                  language: "ko"
                 },
                 turn_detection: null,
-                temperature: 0.8,
-                max_response_output_tokens: "inf"
+                temperature: 0.7,
+                max_response_output_tokens: 500
               }
             };
             

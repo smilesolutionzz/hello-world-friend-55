@@ -20,7 +20,7 @@ import { TherapyMode } from '@/components/metaverse/modes/TherapyMode';
 const MetaverseVoicePage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [mode, setMode] = useState<'structured' | 'free' | 'roleplay' | 'therapy'>('structured');
+  const [mode, setMode] = useState<'structured' | 'free' | 'roleplay' | 'therapy'>('roleplay');
   const [structuredConfig, setStructuredConfig] = useState<{
     ageGroup: AgeGroup;
     character: CharacterType;

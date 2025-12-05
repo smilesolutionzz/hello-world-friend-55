@@ -10,6 +10,7 @@ import { MBTIResult } from "@/components/mbti/MBTIResult";
 import { calculateMBTI, calculateMBTIPercentages, MBTIPercentages } from "@/components/mbti/mbtiCalculator";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAutoSaveTestResult } from "@/hooks/useAutoSaveTestResult";
 
 const MBTITest = () => {
   const navigate = useNavigate();
@@ -21,6 +22,18 @@ const MBTITest = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [percentages, setPercentages] = useState<MBTIPercentages | null>(null);
+
+  // 결과가 표시될 때 자동 저장
+  useAutoSaveTestResult({
+    testType: 'MBTI 검사',
+    results: showResult ? {
+      mbtiType,
+      percentages,
+      answers,
+      totalQuestions: MBTIQuestions.length
+    } : null,
+    analysis: aiAnalysis || undefined
+  });
 
   const questions = MBTIQuestions;
   const progress = (Object.keys(answers).length / questions.length) * 100;

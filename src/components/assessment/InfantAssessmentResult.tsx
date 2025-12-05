@@ -29,10 +29,12 @@ const InfantAssessmentResult = ({ results, onBack }: InfantAssessmentResultProps
   const today = new Date().toLocaleDateString('ko-KR');
   const [userId, setUserId] = useState<string | undefined>();
 
-  // 자동 저장
+  // 자동 저장 - 분석 포함
+  const evalLevel = average >= 2.5 ? '우수' : average >= 2.0 ? '양호' : average >= 1.5 ? '보통' : '관찰 필요';
   useAutoSaveTestResult({
     testType: '영유아 발달검사',
     results: { total, average, categoryScores },
+    analysis: `발달 수준: ${evalLevel}, 평균 점수: ${average.toFixed(1)}점`,
     ageGroup
   });
   

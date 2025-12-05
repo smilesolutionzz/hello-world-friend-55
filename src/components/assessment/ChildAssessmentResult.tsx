@@ -29,10 +29,12 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
   const today = new Date().toLocaleDateString('ko-KR');
   const [userId, setUserId] = useState<string | undefined>();
 
-  // 자동 저장
+  // 자동 저장 - 분석 포함
+  const evalLevel = average >= 80 ? '우수' : average >= 60 ? '양호' : average >= 40 ? '보통' : '관찰 필요';
   useAutoSaveTestResult({
     testType: '아동 심리검사',
     results: { total, average, gameScores },
+    analysis: `인지능력 수준: ${evalLevel}, 평균 점수: ${average.toFixed(1)}점`,
     ageGroup
   });
   

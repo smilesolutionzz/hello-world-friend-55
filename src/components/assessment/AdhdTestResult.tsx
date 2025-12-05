@@ -48,14 +48,6 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { toast } = useToast();
 
-  // 자동 저장
-  useAutoSaveTestResult({
-    testType: 'ADHD 검사',
-    results: { total: safeTotal, average: safeAverage, answers: safeAnswers },
-    severity,
-    ageGroup
-  });
-  
   // AI 분석 상태
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [domainScores, setDomainScores] = useState<any[]>([]);
@@ -65,6 +57,15 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
   const [user, setUser] = useState<any>(null);
   const [generatedImage, setGeneratedImage] = useState<string>("");
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  
+  // 자동 저장 - AI 분석 포함
+  useAutoSaveTestResult({
+    testType: 'ADHD 검사',
+    results: { total: safeTotal, average: safeAverage, answers: safeAnswers },
+    analysis: aiAnalysis,
+    severity,
+    ageGroup
+  });
 
   useEffect(() => {
     // 사용자 정보 확인

@@ -99,14 +99,19 @@ export default function SelfEsteemTestResult({ result, onRestart }: SelfEsteemTe
   const { toast } = useToast();
   const isSubscribed = false;
 
-  // 자동 저장
+  // 발달 수준 정보
+  const levelInfo = developmentLevels[result.level as keyof typeof developmentLevels] || developmentLevels["정상발달"];
+
+  // 자동 저장 - 분석 포함
   useAutoSaveTestResult({
     testType: '자존감 검사',
     results: { 
       total: result.total, 
       average: result.average, 
       level: result.level
-    }
+    },
+    analysis: `${result.level}: ${levelInfo.description}\n권장사항: ${levelInfo.recommendation}`,
+    severity: result.level
   });
 
   // 영역별 점수 데이터 (답변을 기반으로 계산)

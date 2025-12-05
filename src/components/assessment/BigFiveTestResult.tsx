@@ -71,14 +71,24 @@ export default function BigFiveTestResult({ result, onRestart }: BigFiveTestResu
   const { shareAsText } = useShareText();
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
 
-  // 자동 저장
+  // 분석 텍스트 생성
+  const analysisText = Object.entries(result.scores)
+    .map(([factor, score]) => {
+      const config = factorConfig[factor as keyof typeof factorConfig];
+      const level = getLevel(score);
+      return `${config.name}(${score.toFixed(1)}점/${level}): ${score >= 3 ? config.high : config.low}`;
+    })
+    .join('\n');
+
+  // 자동 저장 - 분석 포함
   useAutoSaveTestResult({
     testType: '빅파이브 성격검사',
     results: { 
       total: result.total, 
       average: result.average, 
       scores: result.scores
-    }
+    },
+    analysis: analysisText
   });
 
   const handleShare = () => {

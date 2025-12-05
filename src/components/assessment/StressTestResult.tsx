@@ -34,10 +34,11 @@ const StressTestResult = ({ result, onRestart, onBack }: StressTestResultProps) 
   const [riskLevel, setRiskLevel] = useState<'low' | 'medium' | 'high'>('low');
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
-  // 자동 저장
+  // 자동 저장 - AI 분석 포함
   useAutoSaveTestResult({
     testType: '스트레스 검사',
     results: { total: result.total, average: result.average, answers: result.answers },
+    analysis: analysis,
     severity: result.severity
   });
 

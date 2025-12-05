@@ -28,7 +28,7 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
-  // 자동 저장
+  // 자동 저장 - 분석 포함
   useAutoSaveTestResult({
     testType: '애착 유형 검사',
     results: { 
@@ -37,7 +37,8 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
       anxietyScore: result.anxietyScore,
       avoidanceScore: result.avoidanceScore,
       style: result.style
-    }
+    },
+    analysis: result.analysis || `애착 유형: ${result.style}, 불안 점수: ${result.anxietyScore.toFixed(1)}/7, 회피 점수: ${result.avoidanceScore.toFixed(1)}/7`
   });
 
   const handleGenerateImage = async () => {

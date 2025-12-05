@@ -40,10 +40,11 @@ const DepressionTestResult = ({ results, onBack, onRestart }: DepressionTestResu
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
   const { shareAsText } = useShareText();
 
-  // 자동 저장
+  // 자동 저장 - AI 분석 포함
   useAutoSaveTestResult({
     testType: '우울증 검사',
     results: { total, average, answers },
+    analysis: aiAnalysis,
     severity,
     ageGroup: results.ageGroup
   });

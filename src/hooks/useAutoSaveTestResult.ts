@@ -13,9 +13,18 @@ interface TestResultData {
 export const useAutoSaveTestResult = (testData: TestResultData) => {
   const { toast } = useToast();
   const hasSaved = useRef(false);
+  const savedResultId = useRef<string | null>(null);
+  const lastAnalysis = useRef<string | undefined>(undefined);
 
   useEffect(() => {
-    // 이미 저장했으면 다시 저장하지 않음
+    // analysis가 업데이트 되었고 이미 저장된 결과가 있으면 업데이트
+    if (hasSaved.current && savedResultId.current && testData.analysis && testData.analysis !== lastAnalysis.current) {
+      lastAnalysis.current = testData.analysis;
+      updateSavedResult();
+      return;
+    }
+    
+    // 이미 저장했으면 스킵
     if (hasSaved.current) return;
     
     const autoSaveResult = async () => {
@@ -67,27 +76,36 @@ export const useAutoSaveTestResult = (testData: TestResultData) => {
         if (recentResult && recentResult.length > 0) {
           console.log('Recent test result exists, skipping auto-save');
           hasSaved.current = true;
+          savedResultId.current = recentResult[0].id;
           return;
         }
 
-        // 검사 결과 저장
+        // 검사 결과 저장 - 상세 데이터 포함
         const testResultData = {
           test_type_id: testTypeId,
           user_id: user.id,
           scores: {
+            // 원본 결과 데이터
             results: testData.results,
-            analysis: testData.analysis,
-            severity: testData.severity,
-            ageGroup: testData.ageGroup,
-            total: testData.results?.total,
-            average: testData.results?.average,
+            // AI 분석 결과
+            analysis: testData.analysis || null,
+            // 심각도
+            severity: testData.severity || null,
+            // 연령대
+            ageGroup: testData.ageGroup || null,
+            // 요약 점수
+            total_score: testData.results?.total || testData.results?.totalScore || null,
+            average: testData.results?.average || null,
+            // 저장 시간
             savedAt: new Date().toISOString()
           }
         };
 
-        const { error } = await supabase
+        const { data: insertedResult, error } = await supabase
           .from('test_results')
-          .insert(testResultData);
+          .insert(testResultData)
+          .select('id')
+          .single();
 
         if (error) {
           console.error('Auto-save error:', error);
@@ -95,7 +113,9 @@ export const useAutoSaveTestResult = (testData: TestResultData) => {
         }
 
         hasSaved.current = true;
-        console.log('✅ Test result auto-saved:', testData.testType);
+        savedResultId.current = insertedResult.id;
+        lastAnalysis.current = testData.analysis;
+        console.log('✅ Test result auto-saved:', testData.testType, 'with analysis:', !!testData.analysis);
         
         toast({
           title: "검사 결과 자동 저장됨",
@@ -109,5 +129,35 @@ export const useAutoSaveTestResult = (testData: TestResultData) => {
     // 약간의 딜레이 후 저장 (결과 로딩 완료 대기)
     const timer = setTimeout(autoSaveResult, 1000);
     return () => clearTimeout(timer);
-  }, [testData.testType, testData.results, toast]);
+  }, [testData.testType, testData.results, testData.analysis, toast]);
+
+  // 이미 저장된 결과가 있으면 분석 데이터 업데이트
+  const updateSavedResult = async () => {
+    if (!savedResultId.current || !testData.analysis) return;
+    
+    try {
+      const { error } = await supabase
+        .from('test_results')
+        .update({
+          scores: {
+            results: testData.results,
+            analysis: testData.analysis,
+            severity: testData.severity,
+            ageGroup: testData.ageGroup,
+            total_score: testData.results?.total || testData.results?.totalScore || null,
+            average: testData.results?.average || null,
+            savedAt: new Date().toISOString()
+          }
+        })
+        .eq('id', savedResultId.current);
+
+      if (error) {
+        console.error('Update error:', error);
+      } else {
+        console.log('✅ Test result updated with analysis');
+      }
+    } catch (error) {
+      console.error('Update failed:', error);
+    }
+  };
 };

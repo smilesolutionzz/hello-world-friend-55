@@ -36,12 +36,9 @@ export const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
       }
     });
 
-    // Visibility change handler - 앱 전환 후 복귀 시 세션 복원 대기
-    const handleVisibilityChange = async () => {
+    // Visibility change handler - 앱 전환 후 복귀 시 세션 확인
+    const handleVisibilityChange = () => {
       if (!document.hidden) {
-        console.log('AuthGuard: Page visible, checking session');
-        // 세션 복원을 위한 짧은 대기
-        await new Promise(resolve => setTimeout(resolve, 300));
         checkAuthentication();
       }
     };
@@ -56,30 +53,13 @@ export const AuthenticationGuard: React.FC<AuthenticationGuardProps> = ({
 
   const checkAuthentication = async () => {
     try {
-      const { data: { user }, error } = await supabase.auth.getUser();
+      // getSession만 사용 - 더 빠르고 캐시된 세션 정보 사용
+      const { data: { session }, error } = await supabase.auth.getSession();
       
-      if (error || !user) {
-        // 첫 번째 시도 실패 시 재시도 (앱 전환 후 세션 복원 대기)
-        await new Promise(resolve => setTimeout(resolve, 500));
-        const { data: { user: retryUser } } = await supabase.auth.getUser();
-        if (!retryUser) {
-          setAuthState('unauthenticated');
-          return;
-        }
-        const { data: { session: retrySession } } = await supabase.auth.getSession();
-        if (retrySession) {
-          setAuthState('authenticated');
-        } else {
-          setAuthState('unauthenticated');
-        }
+      if (error || !session) {
+        setAuthState('unauthenticated');
       } else {
-        // Additional check: verify the session is valid
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          setAuthState('authenticated');
-        } else {
-          setAuthState('unauthenticated');
-        }
+        setAuthState('authenticated');
       }
     } catch (error) {
       console.error('Authentication check failed:', error);

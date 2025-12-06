@@ -2096,24 +2096,6 @@ const ExpertHiring = () => {
                 </div>
               </div>
               
-              {/* 추가 필터 옵션 */}
-              <div className="mt-4">
-                <div className="flex items-center gap-2 bg-green-50 rounded-lg px-3 py-2 w-fit">
-                  <Badge className="bg-green-100 text-green-800 shrink-0">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    방문서비스
-                  </Badge>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={homeServiceFilter}
-                      onChange={(e) => setHomeServiceFilter(e.target.checked)}
-                      className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
-                    />
-                    <span className="text-sm font-medium text-green-800">방문서비스가능기관</span>
-                  </label>
-                </div>
-              </div>
               
               {/* 필터 결과 표시 */}
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">

@@ -35,7 +35,7 @@ const ConcernStorage = () => {
               </div>
               <div>
                 <CardTitle className="text-2xl">
-                  내 기록 저장소
+                  고민/검사 저장소
                 </CardTitle>
                 <CardDescription>
                   {activeTab === 'concerns' 

@@ -35,7 +35,7 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
     try {
       // 스크린샷 생성
       const canvas = await html2canvas(resultRef.current, {
-        backgroundColor: '#1a1f2e',
+        backgroundColor: '#ffffff',
         scale: 2,
         logging: false
       });
@@ -96,7 +96,7 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
 
     try {
       const canvas = await html2canvas(resultRef.current, {
-        backgroundColor: '#1a1f2e',
+        backgroundColor: '#ffffff',
         scale: 2
       });
       
@@ -145,7 +145,7 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <Card className="p-8 md:p-12 backdrop-blur-xl bg-card/50 border-2">
+          <Card className="p-8 md:p-12 backdrop-blur-xl bg-card border-2">
             <motion.div
               initial={{ y: -20 }}
               animate={{ y: 0 }}

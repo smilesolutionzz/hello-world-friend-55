@@ -20,10 +20,10 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Get OpenAI API key
-    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openaiApiKey) {
-      throw new Error('OpenAI API key not found');
+    // Lovable AI 사용 (Gemini 2.5 Flash - 비용 효율적)
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not found');
     }
 
     // 체질별 기본 정보
@@ -114,40 +114,49 @@ serve(async (req) => {
     특히 사용자의 응답 패턴을 분석하여 개인별 특성을 반영한 맞춤형 조언을 포함해주세요.
     `;
 
-    // OpenAI API 호출 - JSON 모드 사용
-    console.log('Calling OpenAI API for constitution analysis...');
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Lovable AI Gateway 호출 (Gemini 2.5 Flash)
+    console.log('Calling Lovable AI for constitution analysis...');
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        max_tokens: 3000,
-        temperature: 0.7,
-        response_format: { type: "json_object" }
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error('Lovable AI error:', response.status, errorText);
+      if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again later.');
+      }
+      if (response.status === 402) {
+        throw new Error('Payment required. Please add credits.');
+      }
+      throw new Error(`Lovable AI error: ${response.status}`);
     }
 
     const aiResponse = await response.json();
-    console.log('OpenAI response received');
+    console.log('Lovable AI response received');
     
     let analysisResult;
 
     try {
-      const content = aiResponse.choices[0].message.content;
+      let content = aiResponse.choices[0].message.content;
       console.log('Parsing AI response...');
+      
+      // Markdown 코드 블록 제거
+      if (content.includes('```json')) {
+        content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+      }
+      
       analysisResult = JSON.parse(content);
       console.log('Successfully parsed AI response');
     } catch (e) {

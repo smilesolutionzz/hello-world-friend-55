@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
 // 베타 테스트 기간 체크 (2025년 10월 30일까지 모든 기능 무료)
 const BETA_END_DATE = new Date('2025-10-30T23:59:59+09:00');
@@ -30,41 +30,58 @@ serve(async (req) => {
   try {
     const { testType, score, maxScore, percentage, answers, severity }: AnalysisRequest = await req.json();
 
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured');
     }
 
     // 검사 유형별 상세 프롬프트 생성
     const systemPrompt = generateSystemPrompt(testType);
     const userPrompt = generateUserPrompt(testType, score, maxScore, percentage, answers, severity);
 
-    console.log('Calling OpenAI with prompts for test type:', testType);
+    console.log('Calling Gemini 3 Pro Preview for test type:', testType);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // 최신 Gemini 3 Pro Preview 모델 사용 (더 강력한 추론 능력)
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'google/gemini-3-pro-preview',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        max_completion_tokens: 4000,
-        response_format: { type: "json_object" }
       }),
     });
 
     const data = await response.json();
     
     if (!response.ok) {
-      console.error('OpenAI API error:', data);
-      throw new Error(`OpenAI API error: ${data.error?.message || 'Unknown error'}`);
+      console.error('Gemini API error:', data);
+      if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again later.');
+      }
+      if (response.status === 402) {
+        throw new Error('Payment required. Please add credits.');
+      }
+      throw new Error(`Gemini API error: ${data.error?.message || 'Unknown error'}`);
     }
 
-    const analysis = data.choices[0].message.content;
+    // Gemini 응답에서 JSON 파싱
+    let analysis = data.choices[0].message.content;
+    
+    // JSON 형식으로 파싱 시도
+    try {
+      // Markdown 코드 블록 제거
+      if (analysis.includes('```json')) {
+        analysis = analysis.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+      }
+      JSON.parse(analysis); // 유효성 검사
+    } catch (e) {
+      console.log('Response is not pure JSON, wrapping...');
+    }
 
     // 연계 한의원 정보 생성
     const clinicInfo = generateClinicInfo(testType, severity);

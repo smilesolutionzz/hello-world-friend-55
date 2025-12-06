@@ -331,7 +331,7 @@ export const AuthForm = () => {
       console.log('📱 로그인 성공:', data.user?.email);
       toast({
         title: "로그인 성공",
-        description: "HIGHLIGHT에 오신 것을 환영합니다!",
+        description: "AIHPRO에 오신 것을 환영합니다!",
       });
       
     } catch (error: any) {
@@ -362,10 +362,10 @@ export const AuthForm = () => {
         <Card className="w-full max-w-lg mx-auto">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-              HIGHLIGHT
+              AIHPRO
             </CardTitle>
             <CardDescription className="space-y-2">
-              <span className="block">3분 만에 완성하는 심리 검사 플랫폼</span>
+              <span className="block">3분 만에 완성하는 심리발달검사플랫폼</span>
               <div className="bg-primary/10 rounded-lg p-3 text-sm">
                 <span className="font-semibold text-primary">💡 알고계셨나요?</span>
                 <br />

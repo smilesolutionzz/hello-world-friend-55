@@ -101,7 +101,7 @@ export const CoffeeChatReviews = () => {
             </div>
 
             {/* Chat Messages */}
-            <div className="p-6 space-y-6 bg-slate-50 dark:bg-slate-900">
+            <div className="p-6 space-y-6 bg-slate-100 dark:bg-slate-800">
               {chatMessages.map((chat) => (
                 <div key={chat.id} className="flex items-start gap-3">
                   {/* Avatar */}
@@ -114,19 +114,19 @@ export const CoffeeChatReviews = () => {
                   {/* Message Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold text-foreground text-sm">{chat.userName}</span>
-                      <span className="text-xs text-muted-foreground">{chat.organization}</span>
+                      <span className="font-semibold text-slate-900 dark:text-white text-sm">{chat.userName}</span>
+                      <span className="text-xs text-slate-600 dark:text-slate-300">{chat.organization}</span>
                     </div>
-                    <div className="bg-white dark:bg-slate-800 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm inline-block max-w-full border border-border/30">
-                      <p className="text-sm text-foreground leading-relaxed">
+                    <div className="bg-white dark:bg-slate-700 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm inline-block max-w-full border border-slate-200 dark:border-slate-600">
+                      <p className="text-sm text-slate-800 dark:text-slate-100 leading-relaxed">
                         {chat.message.prefix}
-                        <span className="font-bold text-amber-500 bg-amber-100 dark:bg-amber-900/30 px-1 rounded">
+                        <span className="font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50 px-1 rounded">
                           {chat.message.highlight}
                         </span>
                         {chat.message.suffix}
                       </p>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1.5 ml-1">{chat.time}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 ml-1">{chat.time}</p>
                   </div>
                 </div>
               ))}

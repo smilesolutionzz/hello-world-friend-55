@@ -174,12 +174,12 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.2]"
+            className="text-[1.6rem] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.2]"
           >
-            <span className="block text-white mb-3 sm:mb-4">
+            <span className="block text-white mb-3 sm:mb-4 whitespace-nowrap">
               심리 건강, ADHD, 발달 체크
             </span>
-            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent whitespace-nowrap">
               3분이면 전문가급 분석 완료
             </span>
           </motion.h1>

@@ -11,6 +11,8 @@ interface TestResult {
   ageGroup?: string;
   answers?: any;
   scores?: any;
+  analysis?: string;
+  recommendations?: string[];
 }
 
 export const useTestActions = () => {
@@ -111,7 +113,7 @@ export const useTestActions = () => {
         return;
       }
 
-      // 결과 저장
+      // 결과 저장 (analysis 포함)
       const { data, error } = await supabase
         .from('assessments')
         .insert({
@@ -119,8 +121,8 @@ export const useTestActions = () => {
           age_group: testResult.ageGroup || 'adult',
           age_at_assessment: 25, // 기본값
           results: testResult as any, // JSON 타입으로 변환
-          analysis: null,
-          recommendations: null,
+          analysis: testResult.analysis || null,
+          recommendations: testResult.recommendations || null,
           risk_level: testResult.severity || testResult.level || 'medium'
         })
         .select()

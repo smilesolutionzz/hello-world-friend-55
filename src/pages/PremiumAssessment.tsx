@@ -514,7 +514,7 @@ const PremiumAssessment = () => {
                 <div className="pt-4">
                   <Button 
                     onClick={() => setCurrentTest('otrovert')}
-                    className="w-full bg-gradient-to-r from-slate-700 to-slate-600 hover:opacity-90"
+                    className="w-full bg-gradient-to-r from-slate-700 to-slate-600 hover:opacity-90 text-white"
                   >
                     검사 시작하기
                   </Button>
@@ -598,7 +598,7 @@ const PremiumAssessment = () => {
                 <div className="pt-4">
                   <Button 
                     onClick={() => navigate('/assessment/mbti-test')}
-                    className="w-full bg-gradient-to-r from-indigo-700 to-blue-600 hover:opacity-90"
+                    className="w-full bg-gradient-to-r from-indigo-700 to-blue-600 hover:opacity-90 text-white"
                   >
                     검사 시작하기
                   </Button>

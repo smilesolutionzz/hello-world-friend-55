@@ -191,7 +191,7 @@ const HanMedicineTest = () => {
           {/* 나만의 체질 찾기 섹션 - 한의원 스타일 */}
           <div className="mb-12 sm:mb-16 flex flex-col items-center text-center px-2">
             <div className="mb-6">
-            <h2 className="text-2xl sm:text-4xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+            <h2 className="text-[1.25rem] sm:text-4xl font-bold mb-4 whitespace-nowrap" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
                 나만의 <span style={{ color: "hsl(var(--herbal-primary))" }}>體質</span>을 찾아 건강해지세요
               </h2>
               <div className="w-24 h-1 mx-auto bg-gradient-to-r from-transparent via-[hsl(var(--herbal-accent))] to-transparent rounded-full"></div>

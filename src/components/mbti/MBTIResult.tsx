@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Share2, Download, RefreshCw, Sparkles, Heart, Zap, Target, TrendingUp, BarChart3, ImageIcon } from "lucide-react";
+import { Share2, Download, RefreshCw, Sparkles, Heart, Zap, Target, TrendingUp, BarChart3, ImageIcon, MessageCircle, Copy, Instagram } from "lucide-react";
 import { getMBTIDescription, MBTIPercentages } from "./mbtiCalculator";
 import { toast } from "sonner";
 import html2canvas from "html2canvas";
@@ -436,38 +436,116 @@ export const MBTIResult = ({ mbtiType, aiAnalysis, percentages, onRestart }: MBT
           </Card>
         </motion.div>
 
-        {/* 액션 버튼 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {/* 바이럴 공유 섹션 */}
+        <Card className="p-6 bg-gradient-to-r from-pink-50 to-purple-50 border-pink-200">
+          <div className="text-center mb-4">
+            <h3 className="text-xl font-bold flex items-center justify-center gap-2">
+              <Sparkles className="w-5 h-5 text-pink-500" />
+              친구들에게 공유하기
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              "이거 어디서 했어?" 친구들이 물어볼 거예요! 🔥
+            </p>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2 mb-4">
+            {/* 이미지 저장 */}
+            <Button
+              onClick={handleDownload}
+              className="flex-col h-auto py-3 bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+            >
+              <Download className="w-5 h-5 mb-1" />
+              <span className="text-[10px]">이미지 저장</span>
+            </Button>
+
+            {/* 카카오톡 */}
+            <Button
+              onClick={() => {
+                const message = `🎯 나의 MBTI는 ${mbtiType}!\n\n${description.title}\n${description.subtitle}\n\n🔗 너도 해봐: ${window.location.origin}/assessment/mbti-test\n\n#MBTI #성격테스트 #AIHPRO`;
+                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                  window.location.href = `kakaotalk://send?text=${encodeURIComponent(message)}`;
+                } else {
+                  navigator.clipboard.writeText(message);
+                  toast.success("카카오톡에 붙여넣기 하세요! 💬");
+                }
+              }}
+              className="flex-col h-auto py-3 bg-yellow-400 hover:bg-yellow-500 text-black"
+            >
+              <MessageCircle className="w-5 h-5 mb-1" />
+              <span className="text-[10px]">카카오톡</span>
+            </Button>
+
+            {/* 인스타그램 */}
+            <Button
+              onClick={handleShare}
+              className="flex-col h-auto py-3 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 hover:opacity-90"
+            >
+              <Instagram className="w-5 h-5 mb-1" />
+              <span className="text-[10px]">인스타</span>
+            </Button>
+
+            {/* 공유하기 */}
+            <Button
+              onClick={async () => {
+                if (navigator.share) {
+                  try {
+                    await navigator.share({
+                      title: `나는 ${mbtiType} - ${description.title}`,
+                      text: `${description.subtitle}\n\n나도 테스트해보기!`,
+                      url: `${window.location.origin}/assessment/mbti-test`,
+                    });
+                  } catch (error) {
+                    console.log('공유 취소됨');
+                  }
+                } else {
+                  navigator.clipboard.writeText(`${window.location.origin}/assessment/mbti-test`);
+                  toast.success("링크가 복사되었습니다!");
+                }
+              }}
+              variant="outline"
+              className="flex-col h-auto py-3"
+            >
+              <Share2 className="w-5 h-5 mb-1" />
+              <span className="text-[10px]">더보기</span>
+            </Button>
+          </div>
+
+          {/* 링크 복사 */}
           <Button
-            size="lg"
-            onClick={handleShare}
-            className="bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90"
-          >
-            <Share2 className="w-4 h-4 mr-2" />
-            인스타 스토리 공유
-          </Button>
-          
-          <Button
-            size="lg"
+            onClick={() => {
+              const message = `🎯 ${mbtiType} - ${description.title}\n${description.subtitle}\n\n테스트 해보기 👉 ${window.location.origin}/assessment/mbti-test`;
+              navigator.clipboard.writeText(message);
+              toast.success("결과가 복사되었습니다! 친구에게 공유하세요 💌");
+            }}
             variant="outline"
-            onClick={handleDownload}
+            className="w-full mb-3"
+            size="sm"
           >
-            <Download className="w-4 h-4 mr-2" />
-            이미지 저장
+            <Copy className="w-4 h-4 mr-2" />
+            결과 링크 복사하기
           </Button>
-          
+
+          {/* 다시하기 버튼 */}
           <Button
-            size="lg"
-            variant="outline"
+            variant="ghost"
             onClick={onRestart}
+            className="w-full"
+            size="sm"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
-            다시 하기
+            다시 테스트하기
           </Button>
+        </Card>
+
+        {/* 바이럴 유도 메시지 */}
+        <div className="text-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+          <p className="text-sm">
+            💡 <strong>친구도 테스트하면</strong> 서로 결과 비교할 수 있어요!
+          </p>
         </div>
 
         {/* 추가 테스트 유도 */}
-        <Card className="p-6 text-center backdrop-blur-xl bg-card/50">
+        <Card className="p-6 text-center backdrop-blur-xl bg-card">
           <h3 className="text-xl font-bold mb-2">더 자세한 성격 분석이 궁금하다면?</h3>
           <p className="text-muted-foreground mb-4">
             프리미엄 검사로 더욱 정확한 심리 분석을 받아보세요

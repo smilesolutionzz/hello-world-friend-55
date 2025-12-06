@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Share2, RotateCcw, AlertTriangle, CheckCircle, Info, Heart, FileDown, Loader2, BarChart3, Download, ArrowLeft } from 'lucide-react';
+import { Brain, Share2, RotateCcw, AlertTriangle, CheckCircle, Info, Heart, FileDown, Loader2, BarChart3, Download, ArrowLeft, MessageCircle, Copy, Instagram, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
@@ -407,45 +407,114 @@ ${professionalHelp}
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-col gap-3">
+        {/* 바이럴 공유 섹션 */}
+        <Card className="p-6 bg-gradient-to-r from-pink-50 to-purple-50 border-pink-200">
+          <div className="text-center mb-4">
+            <h3 className="text-xl font-bold flex items-center justify-center gap-2">
+              <Sparkles className="w-5 h-5 text-pink-500" />
+              친구들에게 공유하기
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              "이거 어디서 했어?" 친구들이 물어볼 거예요! 🔥
+            </p>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2 mb-4">
+            {/* 이미지 저장 */}
+            <Button
+              onClick={handlePDFDownload}
+              disabled={isDownloadingPDF}
+              className="flex-col h-auto py-3 bg-gradient-to-br from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
+            >
+              <Download className="w-5 h-5 mb-1" />
+              <span className="text-[10px]">PDF 저장</span>
+            </Button>
+
+            {/* 카카오톡 */}
+            <Button
+              onClick={() => {
+                const message = `📊 스트레스 자가진단 결과\n\n총점: ${result.total}점\n상태: ${result.severity}\n\n🔗 나도 해보기: ${window.location.origin}/assessment/stress-test\n\n#스트레스테스트 #자가진단 #AIHPRO`;
+                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                  window.location.href = `kakaotalk://send?text=${encodeURIComponent(message)}`;
+                } else {
+                  navigator.clipboard.writeText(message);
+                  toast({ title: "카카오톡에 붙여넣기 하세요! 💬" });
+                }
+              }}
+              className="flex-col h-auto py-3 bg-yellow-400 hover:bg-yellow-500 text-black"
+            >
+              <MessageCircle className="w-5 h-5 mb-1" />
+              <span className="text-[10px]">카카오톡</span>
+            </Button>
+
+            {/* 인스타그램 */}
+            <Button
+              onClick={() => {
+                handlePDFDownload();
+                toast({ title: "PDF를 저장했어요!", description: "인스타 스토리에 업로드하세요 📸" });
+              }}
+              className="flex-col h-auto py-3 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 hover:opacity-90"
+            >
+              <Instagram className="w-5 h-5 mb-1" />
+              <span className="text-[10px]">인스타</span>
+            </Button>
+
+            {/* 공유하기 */}
+            <Button
+              onClick={handleShare}
+              variant="outline"
+              className="flex-col h-auto py-3"
+            >
+              <Share2 className="w-5 h-5 mb-1" />
+              <span className="text-[10px]">더보기</span>
+            </Button>
+          </div>
+
+          {/* 링크 복사 */}
+          <Button
+            onClick={() => {
+              const message = `📊 스트레스 자가진단: ${result.severity}\n\n테스트 해보기 👉 ${window.location.origin}/assessment/stress-test`;
+              navigator.clipboard.writeText(message);
+              toast({ title: "복사 완료!", description: "친구에게 공유하세요 💌" });
+            }}
+            variant="outline"
+            className="w-full mb-3"
+            size="sm"
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            결과 링크 복사하기
+          </Button>
+
+          <div className="flex gap-2">
+            {onBack && (
               <Button 
-                onClick={handlePDFDownload}
-                disabled={isDownloadingPDF}
-                className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700"
+                variant="ghost" 
+                onClick={onBack}
+                className="flex-1"
+                size="sm"
               >
-                <FileDown className="w-4 h-4 mr-2" />
-                {isDownloadingPDF ? 'PDF 생성 중...' : 'PDF 다운로드'}
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                뒤로
               </Button>
-              <Button 
-                onClick={handleShare}
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                결과 공유하기
-              </Button>
-              {onBack && (
-                <Button 
-                  variant="outline" 
-                  onClick={onBack}
-                  className="w-full"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  뒤로가기
-                </Button>
-              )}
-              <Button 
-                variant="outline" 
-                onClick={onRestart || (() => navigate('/assessment'))}
-                className="w-full"
-              >
-                <RotateCcw className="w-4 h-4 mr-2" />
-                다른 테스트 하기
-              </Button>
-            </div>
-          </CardContent>
+            )}
+            <Button 
+              variant="ghost" 
+              onClick={onRestart || (() => navigate('/assessment'))}
+              className="flex-1"
+              size="sm"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              다시하기
+            </Button>
+          </div>
         </Card>
+
+        {/* 바이럴 유도 메시지 */}
+        <div className="text-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+          <p className="text-sm">
+            💡 <strong>친구도 테스트하면</strong> 서로 결과 비교할 수 있어요!
+          </p>
+        </div>
         
         {/* 맞춤 추천 및 B2B 제안 */}
         <PersonalizedProductRecommendation 

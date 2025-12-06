@@ -8,6 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Brain, TrendingUp, Calendar, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateTestResultPDF } from '@/utils/pdfGenerator';
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 
 interface AssessmentDetail {
   id: string;
@@ -267,50 +268,52 @@ export default function AssessmentDetail() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-purple-50/30 to-blue-50/30">
-      <div className="container mx-auto px-6 pt-8 pb-16">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+      <UnifiedNavigation />
+      <div className="container mx-auto px-4 sm:px-6 pt-4 sm:pt-8 pb-16">
+        {/* Header - 모바일 최적화 */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 sm:mb-8">
           <Button 
             variant="ghost" 
-            onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2"
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 w-fit"
+            size="sm"
           >
             <ArrowLeft className="w-4 h-4" />
-            대시보드로 돌아가기
+            뒤로가기
           </Button>
           
-          <div className="text-center">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          <div className="flex-1 text-center">
+            <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               검사 상세 결과
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-sm sm:text-lg text-muted-foreground">
               프리미엄 심리검사 • AI 심층 분석
             </p>
           </div>
           
-          <Button onClick={handleDownloadPDF} size="sm">
+          <Button onClick={handleDownloadPDF} size="sm" className="w-fit self-center sm:self-auto">
             <Download className="w-4 h-4 mr-2" />
-            PDF 다운로드
+            PDF
           </Button>
         </div>
 
         <div id="pdf-content">
         {/* Overall Score Card */}
-        <div className="max-w-6xl mx-auto mb-8">
+        <div className="max-w-6xl mx-auto mb-6 sm:mb-8">
           <Card className="overflow-hidden hover-glow border-purple-200">
-            <CardHeader className="bg-gradient-to-r from-purple-500 to-blue-600 text-white">
-              <div className="flex items-center justify-between">
+            <CardHeader className="bg-gradient-to-r from-purple-500 to-blue-600 text-white p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <CardTitle className="text-2xl">프리미엄 심리검사</CardTitle>
-                  <p className="text-purple-100 mt-1">AI 기반 심층 분석 결과</p>
+                  <CardTitle className="text-lg sm:text-2xl">프리미엄 심리검사</CardTitle>
+                  <p className="text-purple-100 mt-1 text-sm sm:text-base">AI 기반 심층 분석 결과</p>
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold">{results.predicted_score?.toFixed(1) || averageScore.toFixed(1)}</div>
-                  <div className="text-sm text-purple-100">AI 예측 점수</div>
+                <div className="text-left sm:text-right">
+                  <div className="text-2xl sm:text-3xl font-bold">{results.predicted_score?.toFixed(1) || averageScore.toFixed(1)}</div>
+                  <div className="text-xs sm:text-sm text-purple-100">AI 예측 점수</div>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-semibold mb-3 flex items-center gap-2">
@@ -439,12 +442,12 @@ export default function AssessmentDetail() {
 
               {/* AI 분석 내용 */}
               <div className="border-t pt-6">
-                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                  <span className="text-2xl">🤖</span>
+                <h3 className="font-semibold text-base sm:text-lg mb-4 flex items-center gap-2">
+                  <span className="text-xl sm:text-2xl">🤖</span>
                   상세 분석
                 </h3>
                 <div className="prose max-w-none">
-                  <div className="whitespace-pre-wrap text-gray-700 dark:text-gray-300 leading-relaxed bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800">
+                  <div className="whitespace-pre-wrap text-gray-800 dark:text-gray-200 leading-relaxed bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 shadow-sm text-sm sm:text-base">
                     {displayAnalysis}
                   </div>
                 </div>

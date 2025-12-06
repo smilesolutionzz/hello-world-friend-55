@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 const ClientLogos = () => {
   const [selectedInstitution, setSelectedInstitution] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTestimonial, setSelectedTestimonial] = useState<any>(null);
+  const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false);
   // 실제 사용자들의 감동적인 후기들
   const testimonials = [
     {
@@ -607,7 +609,11 @@ const ClientLogos = () => {
                   return (
                     <div
                       key={index}
-                      className={`${testimonial.bgColor} border border-gray-200/60 rounded-xl p-4 hover:shadow-lg hover:border-primary/40 transition-all duration-300 hover:scale-[1.02] relative overflow-hidden group`}
+                      className={`${testimonial.bgColor} border border-gray-200/60 rounded-xl p-4 hover:shadow-lg hover:border-primary/40 transition-all duration-300 hover:scale-[1.02] relative overflow-hidden group cursor-pointer`}
+                      onClick={() => {
+                        setSelectedTestimonial(testimonial);
+                        setIsTestimonialModalOpen(true);
+                      }}
                     >
                       {/* 배경 그라데이션 */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -626,6 +632,11 @@ const ClientLogos = () => {
                         {/* 후기 내용 */}
                         <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed mb-3 font-medium line-clamp-3">
                           "{testimonial.content}"
+                        </p>
+
+                        {/* 더보기 힌트 */}
+                        <p className="text-[10px] text-primary font-medium mb-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          클릭해서 전체 보기 →
                         </p>
 
                         {/* 작성자 정보 */}
@@ -808,6 +819,60 @@ const ClientLogos = () => {
                   </Button>
                   <Button variant="outline" className="flex-1">
                     더 자세한 정보
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* 후기 상세 모달 */}
+        <Dialog open={isTestimonialModalOpen} onOpenChange={setIsTestimonialModalOpen}>
+          <DialogContent className="sm:max-w-md">
+            {selectedTestimonial && (
+              <div className="space-y-4">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <Quote className={`w-5 h-5 ${selectedTestimonial.color}`} />
+                    고객 후기
+                  </DialogTitle>
+                </DialogHeader>
+
+                {/* 별점 */}
+                <div className="flex items-center gap-1">
+                  {[...Array(selectedTestimonial.rating)].map((_: any, i: number) => (
+                    <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+
+                {/* 후기 전체 내용 */}
+                <div className={`${selectedTestimonial.bgColor} rounded-xl p-4 border`}>
+                  <p className="text-foreground leading-relaxed">
+                    "{selectedTestimonial.content}"
+                  </p>
+                </div>
+
+                {/* 작성자 정보 */}
+                <div className="flex items-center gap-3 pt-2">
+                  <div className={`w-12 h-12 ${selectedTestimonial.bgColor} rounded-full flex items-center justify-center ring-2 ring-white shadow-md`}>
+                    {React.createElement(selectedTestimonial.icon, { className: `w-6 h-6 ${selectedTestimonial.color}` })}
+                  </div>
+                  <div>
+                    <p className="font-bold text-foreground">{selectedTestimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{selectedTestimonial.age}</p>
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <div className="pt-4 border-t">
+                  <Button 
+                    className="w-full"
+                    onClick={() => {
+                      setIsTestimonialModalOpen(false);
+                      window.location.href = '/assessment';
+                    }}
+                  >
+                    나도 검사 시작하기 →
                   </Button>
                 </div>
               </div>

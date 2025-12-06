@@ -70,7 +70,7 @@ const dataSubmenuItems: { icon: any; label: string; path: string; requiresAuth: 
   // TODO: 개선 후 다시 활성화
   // { icon: BarChart3, label: '개인DATA', path: '/dashboard', requiresAuth: false },
   // { icon: Users, label: '기관DATA', path: '/institution-admin', requiresAuth: false },
-  { icon: Heart, label: '고민 저장소', path: '/concern-storage', requiresAuth: true },
+  { icon: Heart, label: '고민/검사 저장소', path: '/concern-storage', requiresAuth: true },
   // { icon: FileText, label: '종합 리포트', path: '/report-generator', requiresAuth: false, badge: 'NEW' },
 ];
 
@@ -307,7 +307,7 @@ export const UnifiedNavigation = () => {
                           <div className="text-xs text-muted-foreground">
                             {item.label === '개인DATA' && '내 검사 기록 및 통계 분석'}
                             {item.label === '기관DATA' && '기관 회원 종합 데이터 관리'}
-                            {item.label === '고민 저장소' && '일상 고민 기록 및 관리'}
+                            {item.label === '고민/검사 저장소' && '고민 기록 및 심리검사 결과 관리'}
                             {item.label === '종합 리포트' && 'AI 기반 종합 분석 리포트 생성'}
                           </div>
                         </div>

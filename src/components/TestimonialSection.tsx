@@ -379,109 +379,145 @@ const TestimonialSection = () => {
   const currentItem = testimonials[currentTestimonial];
 
   return (
-    <div className="space-y-6">
-      {/* 통계 */}
-      <div className="grid grid-cols-3 gap-4">
-        {stats.map((stat, index) => (
-          <div key={index} className={`card-glass-${index === 0 ? 'blue' : index === 1 ? 'green' : 'purple'} p-4 text-center hover-lift animate-float rounded-2xl`}>
-            <div className="flex items-center justify-center mb-2">
-              {stat.icon}
-            </div>
-            <div className="text-2xl font-bold">{stat.value}</div>
-            <div className="text-sm opacity-70">{stat.label}</div>
+    <section className="py-16 md:py-24 relative overflow-hidden">
+      {/* 배경 */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900" />
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.03%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-30" />
+      <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
+      
+      <div className="container mx-auto px-4 relative z-10">
+        {/* 섹션 헤더 */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-amber-500/20 text-amber-300 px-4 py-2 rounded-full text-sm font-medium mb-4">
+            <Award className="w-4 h-4" />
+            진짜 부모들의 진심 후기
           </div>
-        ))}
-      </div>
-
-      {/* 메인 후기 */}
-      <div 
-        className="card-glass relative overflow-hidden hover-lift p-6"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div className="flex items-center justify-between mb-4">
-          <Button variant="ghost" size="icon" onClick={handlePrevious} className="bg-white/20 hover:bg-white/30 text-current border-white/30">
-            <ChevronLeft className="w-4 h-4" />
-          </Button>
-          <div className="flex gap-2">
-            {testimonials.map((_, index) => (
-              <div
-                key={index}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentTestimonial ? 'bg-current' : 'bg-current/30'
-                }`}
-              />
-            ))}
-          </div>
-          <Button variant="ghost" size="icon" onClick={handleNext} className="bg-white/20 hover:bg-white/30 text-current border-white/30">
-            <ChevronRight className="w-4 h-4" />
-          </Button>
+          <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+            AI와 함께 아이의 숨겨진 가능성을 발견한 가족들의 소중한 이야기
+          </h2>
+          <p className="text-white/70 text-lg max-w-2xl mx-auto">
+            24,000+ 가족이 경험한 변화, 당신의 가족도 함께하세요
+          </p>
         </div>
-
-        <div className="space-y-4">
-          {/* 사용자 정보 */}
-          <div className="flex items-center gap-3">
-            <Avatar className="h-12 w-12 border-2 border-white/20">
-              <AvatarImage src={currentItem.avatar} alt={currentItem.name} />
-              <AvatarFallback className="bg-white/20 text-current">
-                {currentItem.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <div className="font-semibold text-current">{currentItem.name}</div>
-              <div className="text-sm opacity-80">{currentItem.role}</div>
-            </div>
-          </div>
-
-          {/* 평점 */}
-          <div className="flex items-center gap-1">
-            {[...Array(currentItem.rating)].map((_, i) => (
-              <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+        
+        <div className="max-w-4xl mx-auto space-y-6 text-white">
+          {/* 통계 */}
+          <div className="grid grid-cols-3 gap-4">
+            {stats.map((stat, index) => (
+              <div key={index} className={`bg-white/10 backdrop-blur-sm border border-white/20 p-4 text-center rounded-2xl hover:bg-white/15 transition-colors`}>
+                <div className="flex items-center justify-center mb-2 text-amber-400">
+                  {stat.icon}
+                </div>
+                <div className="text-2xl font-bold text-white">{stat.value}</div>
+                <div className="text-sm text-white/70">{stat.label}</div>
+              </div>
             ))}
           </div>
 
-          {/* 제목 */}
-          <h3 className="font-bold text-lg text-current mb-2">{currentItem.title}</h3>
-
-          {/* 내용 */}
-          <p className="text-current/90 leading-relaxed">{currentItem.content}</p>
-
-          {/* 전후 비교 (있는 경우) */}
-          {currentItem.beforeAfter && (
-            <div className="bg-white/10 rounded-lg p-3 border border-white/20">
-              <div className="text-xs font-medium text-current/80 mb-1">개선 결과</div>
-              <div className="text-sm text-current/90">{currentItem.beforeAfter}</div>
+          {/* 메인 후기 */}
+          <div 
+            className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl relative overflow-hidden p-6"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <Button variant="ghost" size="icon" onClick={handlePrevious} className="bg-white/10 hover:bg-white/20 text-white">
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <div className="flex gap-2">
+                {testimonials.slice(0, 10).map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-2 h-2 rounded-full transition-colors cursor-pointer ${
+                      index === currentTestimonial % 10 ? 'bg-amber-400' : 'bg-white/30'
+                    }`}
+                    onClick={() => setCurrentTestimonial(index)}
+                  />
+                ))}
+              </div>
+              <Button variant="ghost" size="icon" onClick={handleNext} className="bg-white/10 hover:bg-white/20 text-white">
+                <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
-          )}
 
-          {/* 전문성 정보 (전문가인 경우) */}
-          {currentItem.expertise && (
-            <div className="bg-white/10 rounded-lg p-3 border border-white/20">
-              <div className="text-xs font-medium text-current/80 mb-1">전문 분야</div>
-              <div className="text-sm text-current/90">{currentItem.expertise}</div>
+            <div className="space-y-4">
+              {/* 사용자 정보 */}
+              <div className="flex items-center gap-3">
+                <Avatar className="h-12 w-12 border-2 border-amber-400/50">
+                  <AvatarImage src={currentItem.avatar} alt={currentItem.name} />
+                  <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white font-bold">
+                    {currentItem.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <div className="font-semibold text-white">{currentItem.name}</div>
+                  <div className="text-sm text-white/70">{currentItem.role}</div>
+                </div>
+              </div>
+
+              {/* 평점 */}
+              <div className="flex items-center gap-1">
+                {[...Array(currentItem.rating)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+
+              {/* 제목 */}
+              <h3 className="font-bold text-lg text-white mb-2">{currentItem.title}</h3>
+
+              {/* 내용 */}
+              <p className="text-white/90 leading-relaxed">{currentItem.content}</p>
+
+              {/* 전후 비교 (있는 경우) */}
+              {currentItem.beforeAfter && (
+                <div className="bg-green-500/20 rounded-lg p-3 border border-green-400/30">
+                  <div className="text-xs font-medium text-green-300 mb-1">✨ 개선 결과</div>
+                  <div className="text-sm text-white/90">{currentItem.beforeAfter}</div>
+                </div>
+              )}
+
+              {/* 전문성 정보 (전문가인 경우) */}
+              {currentItem.expertise && (
+                <div className="bg-blue-500/20 rounded-lg p-3 border border-blue-400/30">
+                  <div className="text-xs font-medium text-blue-300 mb-1">🎓 전문 분야</div>
+                  <div className="text-sm text-white/90">{currentItem.expertise}</div>
+                </div>
+              )}
+
+              {/* 통계 (기관인 경우) */}
+              {currentItem.stats && (
+                <div className="bg-purple-500/20 rounded-lg p-3 border border-purple-400/30">
+                  <div className="text-xs font-medium text-purple-300 mb-1">📊 성과 지표</div>
+                  <div className="text-sm text-white/90">{currentItem.stats}</div>
+                </div>
+              )}
+
+              {/* 태그 */}
+              <div className="flex flex-wrap gap-2">
+                {currentItem.tags.map((tag, index) => (
+                  <Badge key={index} variant="secondary" className="text-xs bg-white/10 text-white/80 border-white/20">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
             </div>
-          )}
-
-          {/* 통계 (기관인 경우) */}
-          {currentItem.stats && (
-            <div className="bg-white/10 rounded-lg p-3 border border-white/20">
-              <div className="text-xs font-medium text-current/80 mb-1">성과 지표</div>
-              <div className="text-sm text-current/90">{currentItem.stats}</div>
-            </div>
-          )}
-
-          {/* 태그 */}
-          <div className="flex flex-wrap gap-2">
-            {currentItem.tags.map((tag, index) => (
-              <Badge key={index} variant="secondary" className="text-xs bg-white/20 text-current border-white/30">
-                {tag}
-              </Badge>
-            ))}
+          </div>
+          
+          {/* CTA 버튼 */}
+          <div className="text-center pt-4">
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
+              onClick={() => window.location.href = '/assessment'}
+            >
+              무료로 검사 시작하기 →
+            </Button>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

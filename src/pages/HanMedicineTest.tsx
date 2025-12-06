@@ -172,16 +172,16 @@ const HanMedicineTest = () => {
             <p className="text-base sm:text-xl mb-6" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-secondary))" }}>
               전통 한의학과 최첨단 AI가 만나 당신만의 맞춤형 건강 솔루션을 제공합니다
             </p>
-            <div className="flex items-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm">
+              <div className="flex items-center gap-1 sm:gap-2 whitespace-nowrap">
                 <div className="w-2 h-2 rounded-full bg-[hsl(var(--herbal-primary))]"></div>
                 <span className="text-[hsl(var(--herbal-text-dark))]">한의학 기반 분석</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2 whitespace-nowrap">
                 <div className="w-2 h-2 rounded-full bg-[hsl(var(--herbal-accent))]"></div>
                 <span className="text-[hsl(var(--herbal-text-dark))]">AI 정밀 진단</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2 whitespace-nowrap">
                 <div className="w-2 h-2 rounded-full bg-[hsl(var(--herbal-secondary))]"></div>
                 <span className="text-[hsl(var(--herbal-text-dark))]">맞춤형 처방</span>
               </div>

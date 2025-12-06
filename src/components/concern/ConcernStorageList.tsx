@@ -68,37 +68,21 @@ export const ConcernStorageList = () => {
   const fetchConcerns = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
+      if (!user) return;
 
-      // 필요한 컬럼만 선택하고 최근 50개만 가져옴 (성능 최적화)
       const { data, error } = await supabase
         .from('concern_storage')
-        .select('id, concern_text, analysis_type, analysis_severity, analysis_advice, recommended_tests, report_images, full_analysis, created_at')
+        .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(50);
+        .order('created_at', { ascending: false });
 
-      if (error) {
-        // 타임아웃 에러 처리
-        if (error.code === '57014') {
-          toast({
-            title: "로딩 시간 초과",
-            description: "데이터가 많아 일부만 표시됩니다. 잠시 후 다시 시도해주세요.",
-            variant: "destructive",
-          });
-        } else {
-          throw error;
-        }
-      }
+      if (error) throw error;
       setConcerns((data || []) as ConcernData[]);
-    } catch (error: any) {
+    } catch (error) {
       console.error('고민 불러오기 오류:', error);
       toast({
         title: "오류 발생",
-        description: "고민을 불러오는 중 오류가 발생했습니다. 새로고침해주세요.",
+        description: "고민을 불러오는 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     } finally {

@@ -122,7 +122,7 @@ const PremiumAssessment = () => {
     } else if (currentStep === 'assessment') {
       setCurrentStep('list');
     } else {
-      navigate('/assessment');
+      navigate('/dashboard');
     }
   };
 
@@ -811,82 +811,6 @@ const PremiumAssessment = () => {
               </CardContent>
             </Card>
 
-            {/* 신박한 MBTI 테스트 - 바이럴 */}
-            <Card className="relative overflow-hidden hover-glow transition-all duration-300 hover:scale-[1.02]"
-              onClick={() => navigate('/assessment/mbti-test')}
-            >
-              <div className="absolute top-2 right-2 z-10 flex gap-1">
-                <Badge className="bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 text-xs px-2 py-1 animate-pulse">
-                  🔥 VIRAL
-                </Badge>
-                <Badge className="bg-purple-500 text-white border-0 text-xs px-2 py-1">
-                  <Sparkles className="w-2.5 h-2.5 mr-1" />
-                  AI 분석
-                </Badge>
-              </div>
-
-              <div className="bg-gradient-to-r from-pink-700 to-rose-600 p-6 pr-24 text-white relative">
-                <div className="absolute inset-0 bg-black/10" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-white/20 rounded-lg">
-                      <Sparkles className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg font-bold">🎯 신박한 MBTI 테스트</CardTitle>
-                      <p className="text-sm opacity-90">AI가 분석하는 진짜 당신</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <CardContent className="p-6 space-y-4">
-                <p className="text-muted-foreground leading-relaxed">
-                  일상 속 진짜 선택으로 찾아내는 당신의 성격! AI가 심층 분석한 MBTI 결과와 공유 가능한 결과 이미지를 받아보세요.
-                </p>
-
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    약 5분
-                  </div>
-                  <div className="text-muted-foreground">
-                    25개 문항
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-sm">🎁 이런 분들께 추천!</h4>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-pink-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">일상적 상황에서의 진짜 나 발견</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-pink-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">AI 심층 성격 분석 리포트</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-pink-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">SNS 공유용 결과 이미지 다운로드</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="w-3 h-3 text-pink-500 flex-shrink-0" />
-                      <span className="text-muted-foreground">친구들과 결과 비교하기</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4">
-                  <Button 
-                    onClick={() => navigate('/assessment/mbti-test')}
-                    className="w-full bg-gradient-to-r from-pink-700 to-rose-600"
-                  >
-                    테스트 시작하기
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
 

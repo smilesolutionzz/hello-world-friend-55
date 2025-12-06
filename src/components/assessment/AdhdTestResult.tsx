@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ExternalLink, MessageCircle, Users, Brain, Sparkles, Crown, Target, Download, ImageIcon, Loader2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, MessageCircle, Users, Brain, Sparkles, Crown, Target, Download, ImageIcon, Loader2, Share2, Copy, Instagram } from "lucide-react";
 import { ImageGenerator } from "@/components/ai-image/ImageGenerator";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
@@ -858,11 +858,105 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
         type="result"
       />
 
-      {/* 소셜 공유 */}
-      <SocialShareButtons 
-        title={`ADHD 검사 결과: ${evaluation.level} (${results.average.toFixed(1)}점)`}
-        description={`${evaluation.description} 더 자세한 분석을 받아보세요!`}
-      />
+      {/* 바이럴 공유 섹션 */}
+      <Card className="p-6 bg-gradient-to-r from-pink-50 to-purple-50 border-pink-200">
+        <div className="text-center mb-4">
+          <h3 className="text-xl font-bold flex items-center justify-center gap-2">
+            <Sparkles className="w-5 h-5 text-pink-500" />
+            친구들에게 공유하기
+          </h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            "이거 어디서 했어?" 친구들이 물어볼 거예요! 🔥
+          </p>
+        </div>
+
+        <div className="grid grid-cols-4 gap-2 mb-4">
+          {/* PDF 저장 */}
+          <Button
+            onClick={handlePDFDownload}
+            className="flex-col h-auto py-3 bg-gradient-to-br from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600"
+          >
+            <Download className="w-5 h-5 mb-1" />
+            <span className="text-[10px]">PDF 저장</span>
+          </Button>
+
+          {/* 카카오톡 */}
+          <Button
+            onClick={() => {
+              const message = `🧠 ADHD 자가체크 결과\n\n총점: ${safeTotal}점\n상태: ${severity}\n\n🔗 나도 해보기: ${window.location.origin}/assessment\n\n#ADHD테스트 #자가진단 #AIHPRO`;
+              if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                window.location.href = `kakaotalk://send?text=${encodeURIComponent(message)}`;
+              } else {
+                navigator.clipboard.writeText(message);
+                toast({ title: "카카오톡에 붙여넣기 하세요! 💬" });
+              }
+            }}
+            className="flex-col h-auto py-3 bg-yellow-400 hover:bg-yellow-500 text-black"
+          >
+            <MessageCircle className="w-5 h-5 mb-1" />
+            <span className="text-[10px]">카카오톡</span>
+          </Button>
+
+          {/* 인스타그램 */}
+          <Button
+            onClick={() => {
+              handlePDFDownload();
+              toast({ title: "PDF를 저장했어요!", description: "인스타 스토리에 업로드하세요 📸" });
+            }}
+            className="flex-col h-auto py-3 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 hover:opacity-90"
+          >
+            <Instagram className="w-5 h-5 mb-1" />
+            <span className="text-[10px]">인스타</span>
+          </Button>
+
+          {/* 공유하기 */}
+          <Button
+            onClick={async () => {
+              if (navigator.share) {
+                try {
+                  await navigator.share({
+                    title: `ADHD 자가체크 결과: ${severity}`,
+                    text: `총점 ${safeTotal}점으로 ${severity} 수준입니다.\n\n나도 테스트해보기!`,
+                    url: `${window.location.origin}/assessment`,
+                  });
+                } catch (error) {
+                  console.log('공유 취소됨');
+                }
+              } else {
+                navigator.clipboard.writeText(`${window.location.origin}/assessment`);
+                toast({ title: "링크가 복사되었습니다!" });
+              }
+            }}
+            variant="outline"
+            className="flex-col h-auto py-3"
+          >
+            <Share2 className="w-5 h-5 mb-1" />
+            <span className="text-[10px]">더보기</span>
+          </Button>
+        </div>
+
+        {/* 링크 복사 */}
+        <Button
+          onClick={() => {
+            const message = `🧠 ADHD 자가체크: ${severity}\n\n테스트 해보기 👉 ${window.location.origin}/assessment`;
+            navigator.clipboard.writeText(message);
+            toast({ title: "복사 완료!", description: "친구에게 공유하세요 💌" });
+          }}
+          variant="outline"
+          className="w-full"
+          size="sm"
+        >
+          <Copy className="w-4 h-4 mr-2" />
+          결과 링크 복사하기
+        </Button>
+      </Card>
+
+      {/* 바이럴 유도 메시지 */}
+      <div className="text-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+        <p className="text-sm">
+          💡 <strong>친구도 테스트하면</strong> 서로 결과 비교할 수 있어요!
+        </p>
+      </div>
 
       {/* IEP 생성 버튼 (구독자 전용) */}
       <Card className="p-6 bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">

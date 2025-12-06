@@ -18,7 +18,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Heart,
       color: "text-pink-500",
-      bgColor: "bg-pink-50"
+      bgColor: "bg-pink-50",
+      assessmentType: "언어발달 검사",
+      assessmentLink: "/assessment/child"
     },
     {
       name: "박정민 아빠",
@@ -27,7 +29,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Brain,
       color: "text-indigo-600",
-      bgColor: "bg-indigo-50"
+      bgColor: "bg-indigo-50",
+      assessmentType: "ADHD 검사",
+      assessmentLink: "/assessment/adhd"
     },
     {
       name: "이현주 엄마",
@@ -36,7 +40,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Users,
       color: "text-emerald-500",
-      bgColor: "bg-emerald-50"
+      bgColor: "bg-emerald-50",
+      assessmentType: "영유아 발달검사",
+      assessmentLink: "/assessment/infant"
     },
     {
       name: "정수현 엄마",
@@ -45,7 +51,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: BookOpen,
       color: "text-blue-600",
-      bgColor: "bg-blue-50"
+      bgColor: "bg-blue-50",
+      assessmentType: "아동 발달검사",
+      assessmentLink: "/assessment/child"
     },
     {
       name: "최민경 엄마",
@@ -54,7 +62,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Heart,
       color: "text-rose-500",
-      bgColor: "bg-rose-50"
+      bgColor: "bg-rose-50",
+      assessmentType: "사회성 검사",
+      assessmentLink: "/assessment/social"
     },
     {
       name: "김태우 아빠",
@@ -63,7 +73,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Trophy,
       color: "text-orange-500",
-      bgColor: "bg-orange-50"
+      bgColor: "bg-orange-50",
+      assessmentType: "학습능력 검사",
+      assessmentLink: "/assessment/learning"
     },
     {
       name: "김미나님",
@@ -72,7 +84,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Heart,
       color: "text-rose-500",
-      bgColor: "bg-rose-50"
+      bgColor: "bg-rose-50",
+      assessmentType: "성인 심리검사",
+      assessmentLink: "/assessment/adult"
     },
     {
       name: "이정수 팀장",
@@ -81,7 +95,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Target,
       color: "text-indigo-600",
-      bgColor: "bg-indigo-50"
+      bgColor: "bg-indigo-50",
+      assessmentType: "성인 심리검사",
+      assessmentLink: "/assessment/adult"
     },
     {
       name: "이성민",
@@ -90,7 +106,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Target,
       color: "text-cyan-600",
-      bgColor: "bg-cyan-50"
+      bgColor: "bg-cyan-50",
+      assessmentType: "성격유형 검사",
+      assessmentLink: "/assessment/personality"
     },
     {
       name: "김영희",
@@ -99,7 +117,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Brain,
       color: "text-indigo-500",
-      bgColor: "bg-indigo-50"
+      bgColor: "bg-indigo-50",
+      assessmentType: "성인 ADHD 검사",
+      assessmentLink: "/assessment/adult-adhd"
     },
     {
       name: "박종철 어르신",
@@ -108,7 +128,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Heart,
       color: "text-orange-600",
-      bgColor: "bg-orange-50"
+      bgColor: "bg-orange-50",
+      assessmentType: "시니어 검사",
+      assessmentLink: "/assessment/senior"
     },
     {
       name: "최순자 어르신",
@@ -117,7 +139,9 @@ const ClientLogos = () => {
       rating: 5,
       icon: Activity,
       color: "text-green-600",
-      bgColor: "bg-green-50"
+      bgColor: "bg-green-50",
+      assessmentType: "인지능력 검사",
+      assessmentLink: "/assessment/cognitive"
     }
   ];
 
@@ -864,15 +888,18 @@ const ClientLogos = () => {
                 </div>
 
                 {/* CTA */}
-                <div className="pt-4 border-t">
+                <div className="pt-4 border-t space-y-2">
+                  <p className="text-sm text-muted-foreground text-center">
+                    이 분이 받으신 검사: <span className="font-semibold text-primary">{selectedTestimonial.assessmentType}</span>
+                  </p>
                   <Button 
                     className="w-full"
                     onClick={() => {
                       setIsTestimonialModalOpen(false);
-                      window.location.href = '/assessment';
+                      window.location.href = selectedTestimonial.assessmentLink;
                     }}
                   >
-                    나도 검사 시작하기 →
+                    나도 {selectedTestimonial.assessmentType} 받기 →
                   </Button>
                 </div>
               </div>

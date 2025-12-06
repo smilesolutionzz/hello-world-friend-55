@@ -33,7 +33,7 @@ const ExpertValidationBanner = () => {
       <div className="container mx-auto px-6 max-w-7xl">
         {/* 메인 헤딩 */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl md:text-3xl font-bold text-gray-900 mb-2 whitespace-nowrap">
             일반 AI와 <span className="text-primary">완전히 다른</span> 차별점
           </h2>
           <p className="text-gray-600 text-lg">

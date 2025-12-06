@@ -182,7 +182,7 @@ export const UnifiedNavigation = () => {
                 홈
               </Button>
 
-              {/* 심리검사 */}
+              {/* 검사도구 */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -191,7 +191,7 @@ export const UnifiedNavigation = () => {
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
                     <TrendingUp className="w-4 h-4 mr-2" />
-                    심리검사
+                    검사도구
                     <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -444,9 +444,9 @@ export const UnifiedNavigation = () => {
                         홈
                       </Button>
                       
-                      {/* 심리검사 그룹 */}
+                      {/* 검사도구 그룹 */}
                       <div className="pl-2 space-y-1">
-                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">심리검사</p>
+                        <p className="text-xs text-muted-foreground mb-1 px-2 font-medium">검사도구</p>
                         {assessmentSubmenuItems.map((item) => (
                           <Button
                             key={item.path}

@@ -166,10 +166,10 @@ const HanMedicineTest = () => {
             <div className="inline-block mb-6 px-8 py-3 bg-gradient-to-r from-[hsl(var(--herbal-primary))] to-[hsl(var(--herbal-primary-light))] rounded-full shadow-lg">
               <span className="text-white font-bold text-sm tracking-wider">千年의 智慧 × AI 技術</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', 'Gowun Batang', serif", color: "hsl(var(--herbal-text-dark))" }}>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', 'Gowun Batang', serif", color: "hsl(var(--herbal-text-dark))" }}>
               한방솔루션 체질분석 센터
             </h1>
-            <p className="text-lg sm:text-xl mb-6" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-secondary))" }}>
+            <p className="text-base sm:text-xl mb-6" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-secondary))" }}>
               전통 한의학과 최첨단 AI가 만나 당신만의 맞춤형 건강 솔루션을 제공합니다
             </p>
             <div className="flex items-center gap-6 text-sm">
@@ -191,12 +191,12 @@ const HanMedicineTest = () => {
           {/* 나만의 체질 찾기 섹션 - 한의원 스타일 */}
           <div className="mb-12 sm:mb-16 flex flex-col items-center text-center px-2">
             <div className="mb-6">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
+            <h2 className="text-2xl sm:text-4xl font-bold mb-4" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-text-dark))" }}>
                 나만의 <span style={{ color: "hsl(var(--herbal-primary))" }}>體質</span>을 찾아 건강해지세요
               </h2>
               <div className="w-24 h-1 mx-auto bg-gradient-to-r from-transparent via-[hsl(var(--herbal-accent))] to-transparent rounded-full"></div>
             </div>
-            <p className="text-lg sm:text-xl mb-12 max-w-2xl" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-secondary))" }}>
+            <p className="text-base sm:text-xl mb-12 max-w-2xl" style={{ fontFamily: "'Noto Serif KR', serif", color: "hsl(var(--herbal-secondary))" }}>
               千年의 한의학 지혜와 현대 AI가 만나 <strong style={{ color: "hsl(var(--herbal-primary))" }}>당신만의 맞춤 솔루션</strong>을 제공합니다
             </p>
             
@@ -557,7 +557,7 @@ const HanMedicineTest = () => {
                 대표 제휴기관
               </span>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2" style={{ fontFamily: "'Noto Serif KR', serif" }}>
+            <h3 className="text-xl sm:text-3xl font-bold text-white mb-2" style={{ fontFamily: "'Noto Serif KR', serif" }}>
               가까이한의원 비대면진료
             </h3>
             <p className="text-white/90 mb-8 text-lg">

@@ -447,7 +447,7 @@ export default function AssessmentDetail() {
                   상세 분석
                 </h3>
                 <div className="prose max-w-none">
-                  <div className="whitespace-pre-wrap text-gray-800 dark:text-gray-200 leading-relaxed bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 shadow-sm text-sm sm:text-base">
+                  <div className="whitespace-pre-wrap text-foreground leading-relaxed bg-card rounded-xl p-4 sm:p-6 border border-border shadow-sm text-sm sm:text-base">
                     {displayAnalysis}
                   </div>
                 </div>

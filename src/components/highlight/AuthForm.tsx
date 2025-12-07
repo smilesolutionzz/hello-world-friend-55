@@ -16,6 +16,9 @@ export const AuthForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotSuccess, setForgotSuccess] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [checkingPhone, setCheckingPhone] = useState(false);
   const [emailError, setEmailError] = useState('');
@@ -356,6 +359,40 @@ export const AuthForm = () => {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setForgotSuccess('');
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(forgotEmail)) {
+      setError('올바른 이메일 형식이 아닙니다.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        setForgotSuccess('비밀번호 재설정 링크가 이메일로 전송되었습니다.');
+        toast({
+          title: "이메일 전송 완료",
+          description: "비밀번호 재설정 링크가 발송되었습니다.",
+        });
+      }
+    } catch (err) {
+      setError('비밀번호 재설정 요청 중 오류가 발생했습니다.');
+    }
+
+    setLoading(false);
+  };
+
   return (
     <>
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4 safe-area-pb">
@@ -457,6 +494,17 @@ export const AuthForm = () => {
                       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       로그인
                     </Button>
+                    
+                    <div className="text-center">
+                      <Button 
+                        type="button" 
+                        variant="link" 
+                        className="text-sm text-muted-foreground hover:text-primary"
+                        onClick={() => setShowForgotPassword(true)}
+                      >
+                        비밀번호를 잊으셨나요?
+                      </Button>
+                    </div>
                   </form>
                 </div>
               </TabsContent>
@@ -638,6 +686,85 @@ export const AuthForm = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* 비밀번호 찾기 모달 */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">비밀번호 찾기</CardTitle>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => {
+                    setShowForgotPassword(false);
+                    setForgotEmail('');
+                    setError('');
+                    setForgotSuccess('');
+                  }}
+                >
+                  ✕
+                </Button>
+              </div>
+              <CardDescription>
+                가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="forgot-email">이메일</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="forgot-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                {error && (
+                  <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+                    {error}
+                  </div>
+                )}
+                
+                {forgotSuccess && (
+                  <div className="p-3 text-sm text-green-700 bg-green-100 rounded-md">
+                    {forgotSuccess}
+                  </div>
+                )}
+                
+                <div className="flex gap-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => {
+                      setShowForgotPassword(false);
+                      setForgotEmail('');
+                      setError('');
+                      setForgotSuccess('');
+                    }}
+                  >
+                    취소
+                  </Button>
+                  <Button type="submit" className="flex-1" disabled={loading}>
+                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    재설정 링크 전송
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
       
       {/* 온보딩 오버레이 */}
       <OnboardingOverlay

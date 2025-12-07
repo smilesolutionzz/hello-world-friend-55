@@ -7,6 +7,7 @@ import { Brain, Share2, Crown, Lock, ArrowRight, Star, ImageIcon, Loader2 } from
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface FreeTrialResultProps {
   result: {
@@ -21,6 +22,9 @@ interface FreeTrialResultProps {
     pastLifeJob?: any;
     counts?: any;
     testType?: string;
+    totalScore?: number;
+    averageScore?: number;
+    answers?: any;
   };
 }
 
@@ -30,6 +34,32 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   
   const [generatedImage, setGeneratedImage] = useState<string>("");
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+
+  // 3분 테스트 결과 자동 저장
+  const getTestTypeName = () => {
+    if (result.testType === 'mental_health_quick') return '심리상태 3분 체크';
+    if (result.testType === 'anxiety_quick_check') return '불안감 3분 체크';
+    if (result.testType === 'personality_love') return '연애 성격 분석';
+    if (result.testType === 'past_life_job_free') return '전생 직업 테스트';
+    if (result.testType === 'communication_style') return '소통 스타일 진단';
+    return result.testType || '3분 무료 테스트';
+  };
+
+  useAutoSaveTestResult({
+    testType: getTestTypeName(),
+    results: result && Object.keys(result).length > 0 ? {
+      level: result.level,
+      description: result.description,
+      personalityType: result.personalityType,
+      pastLifeJob: result.pastLifeJob,
+      totalScore: result.totalScore,
+      averageScore: result.averageScore,
+      traits: result.traits,
+      counts: result.counts,
+      answers: result.answers
+    } : null,
+    severity: result.level || result.personalityType?.type || result.pastLifeJob?.job
+  });
 
   const handleShare = async () => {
     const shareText = `나의 심리테스트 결과를 확인해보세요!`;

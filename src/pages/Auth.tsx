@@ -31,6 +31,8 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
   
   // Login form
   const [loginData, setLoginData] = useState({
@@ -213,6 +215,40 @@ const Auth = () => {
     setLoading(false);
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(forgotEmail)) {
+      setError("올바른 이메일 형식이 아닙니다.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        setSuccess("비밀번호 재설정 링크가 이메일로 전송되었습니다. 이메일을 확인해주세요.");
+        toast({
+          title: "이메일 전송 완료",
+          description: "비밀번호 재설정 링크가 발송되었습니다.",
+        });
+      }
+    } catch (err) {
+      setError("비밀번호 재설정 요청 중 오류가 발생했습니다.");
+    }
+
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/10 to-soft-mint/20 flex items-center justify-center p-6">
       <div className="w-full max-w-md">
@@ -269,6 +305,17 @@ const Auth = () => {
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "로그인 중..." : "로그인"}
                 </Button>
+                
+                <div className="text-center mt-4">
+                  <Button 
+                    type="button" 
+                    variant="link" 
+                    className="text-sm text-muted-foreground hover:text-primary"
+                    onClick={() => setShowForgotPassword(true)}
+                  >
+                    비밀번호를 잊으셨나요?
+                  </Button>
+                </div>
               </form>
             </TabsContent>
             
@@ -460,6 +507,82 @@ const Auth = () => {
             </Alert>
           )}
         </Card>
+
+        {/* Forgot Password Dialog */}
+        {showForgotPassword && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-md p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">비밀번호 찾기</h3>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => {
+                    setShowForgotPassword(false);
+                    setForgotEmail("");
+                    setError("");
+                    setSuccess("");
+                  }}
+                >
+                  ✕
+                </Button>
+              </div>
+              
+              <p className="text-sm text-muted-foreground mb-4">
+                가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.
+              </p>
+              
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="forgot-email">이메일</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="forgot-email"
+                      type="email"
+                      placeholder="이메일을 입력하세요"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                {error && (
+                  <Alert className="border-destructive/50 text-destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+                
+                {success && (
+                  <Alert className="border-green-500/50 text-green-700">
+                    <AlertDescription>{success}</AlertDescription>
+                  </Alert>
+                )}
+                
+                <div className="flex gap-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => {
+                      setShowForgotPassword(false);
+                      setForgotEmail("");
+                      setError("");
+                      setSuccess("");
+                    }}
+                  >
+                    취소
+                  </Button>
+                  <Button type="submit" className="flex-1" disabled={loading}>
+                    {loading ? "전송 중..." : "재설정 링크 전송"}
+                  </Button>
+                </div>
+              </form>
+            </Card>
+          </div>
+        )}
         
         {/* Features */}
         <div className="mt-8 grid grid-cols-1 gap-4 text-center">

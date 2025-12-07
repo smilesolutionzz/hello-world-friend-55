@@ -151,6 +151,7 @@ import DashboardRouter from "./pages/DashboardRouter";
 import Referral from "./pages/Referral";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import ResetPassword from "./pages/ResetPassword";
 
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
@@ -195,6 +196,7 @@ const App = () => {
           <Route path="/pmf-onboarding" element={<PMFOnboarding />} />
           <Route path="/design-showcase" element={<EnhancedDesignShowcase />} />
           <Route path="/auth" element={<HighlightAuth />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<DashboardRouter />} />
           <Route path="/dashboard-old" element={<Dashboard />} />
           <Route path="/progress-tracking" element={<ProgressTracking />} />

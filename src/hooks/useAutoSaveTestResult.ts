@@ -17,6 +17,13 @@ export const useAutoSaveTestResult = (testData: TestResultData) => {
   const lastAnalysis = useRef<string | undefined>(undefined);
 
   useEffect(() => {
+    // results가 없거나 비어있으면 저장하지 않음 (조건부 렌더링 대응)
+    if (!testData.results || 
+        (typeof testData.results === 'object' && Object.keys(testData.results).length === 0)) {
+      console.log('Results is empty, waiting for data...');
+      return;
+    }
+    
     // analysis가 업데이트 되었고 이미 저장된 결과가 있으면 업데이트
     if (hasSaved.current && savedResultId.current && testData.analysis && testData.analysis !== lastAnalysis.current) {
       lastAnalysis.current = testData.analysis;

@@ -174,12 +174,12 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-[1.6rem] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.2]"
+            className="text-[1.5rem] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.15]"
           >
-            <span className="block text-white mb-3 sm:mb-4 whitespace-nowrap">
+            <span className="block text-white mb-2 sm:mb-4">
               심리 건강, ADHD, 발달 체크
             </span>
-            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent whitespace-nowrap">
+            <span className="block bg-gradient-to-r from-[#5E8FFF] to-[#8FB9FF] bg-clip-text text-transparent">
               3분이면 전문가급 분석 완료
             </span>
           </motion.h1>
@@ -190,14 +190,14 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="bg-gradient-to-r from-[#5E8FFF]/25 to-[#8FB9FF]/25 backdrop-blur-xl rounded-xl md:rounded-2xl p-4 md:p-6 border border-[#5E8FFF]/40 max-w-3xl mx-auto shadow-[0_8px_32px_rgba(94,143,255,0.3)]"
           >
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-3">
-              <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold px-4 py-2 rounded-full text-sm sm:text-base">
+            <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-3 mb-3">
+              <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold px-3 py-1.5 rounded-full text-xs sm:text-sm">
                 ✓ 회원가입 없이 즉시 시작
               </div>
-              <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold px-4 py-2 rounded-full text-sm sm:text-base">
+              <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold px-3 py-1.5 rounded-full text-xs sm:text-sm">
                 ✓ 완전 무료 체험
               </div>
-              <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold px-4 py-2 rounded-full text-sm sm:text-base">
+              <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold px-3 py-1.5 rounded-full text-xs sm:text-sm">
                 ✓ 24시간 이용 가능
               </div>
             </div>
@@ -274,8 +274,12 @@ const HeroSection = () => {
 
         {/* Trust Indicators */}
         <div className="mt-8 text-center px-4">
-          <p className="text-white/80 text-sm sm:text-base font-medium">
-            ✓ 회원가입 없이 즉시 시작 &nbsp;·&nbsp; ✓ 신용카드 불필요 &nbsp;·&nbsp; ✓ 24시간 언제든 무료
+          <p className="text-white/80 text-xs sm:text-sm md:text-base font-medium leading-relaxed">
+            <span className="block sm:inline">✓ 회원가입 없이 즉시 시작</span>
+            <span className="hidden sm:inline"> · </span>
+            <span className="block sm:inline">✓ 신용카드 불필요</span>
+            <span className="hidden sm:inline"> · </span>
+            <span className="block sm:inline">✓ 24시간 언제든 무료</span>
           </p>
         </div>
 

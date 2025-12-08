@@ -20,7 +20,7 @@ const ClientLogos = () => {
       color: "text-pink-500",
       bgColor: "bg-pink-50",
       assessmentType: "언어발달 검사",
-      assessmentLink: "/assessment/child"
+      assessmentLink: "/free-trial"
     },
     {
       name: "박정민 아빠",
@@ -31,7 +31,7 @@ const ClientLogos = () => {
       color: "text-indigo-600",
       bgColor: "bg-indigo-50",
       assessmentType: "ADHD 검사",
-      assessmentLink: "/assessment/adhd"
+      assessmentLink: "/premium-assessment"
     },
     {
       name: "이현주 엄마",
@@ -42,7 +42,7 @@ const ClientLogos = () => {
       color: "text-emerald-500",
       bgColor: "bg-emerald-50",
       assessmentType: "영유아 발달검사",
-      assessmentLink: "/assessment/infant"
+      assessmentLink: "/free-trial"
     },
     {
       name: "정수현 엄마",
@@ -53,7 +53,7 @@ const ClientLogos = () => {
       color: "text-blue-600",
       bgColor: "bg-blue-50",
       assessmentType: "아동 발달검사",
-      assessmentLink: "/assessment/child"
+      assessmentLink: "/free-trial"
     },
     {
       name: "최민경 엄마",
@@ -64,7 +64,7 @@ const ClientLogos = () => {
       color: "text-rose-500",
       bgColor: "bg-rose-50",
       assessmentType: "사회성 검사",
-      assessmentLink: "/assessment/social"
+      assessmentLink: "/free-trial"
     },
     {
       name: "김태우 아빠",
@@ -75,7 +75,7 @@ const ClientLogos = () => {
       color: "text-orange-500",
       bgColor: "bg-orange-50",
       assessmentType: "학습능력 검사",
-      assessmentLink: "/assessment/learning"
+      assessmentLink: "/premium-assessment"
     },
     {
       name: "김미나님",
@@ -86,7 +86,7 @@ const ClientLogos = () => {
       color: "text-rose-500",
       bgColor: "bg-rose-50",
       assessmentType: "성인 심리검사",
-      assessmentLink: "/assessment/adult"
+      assessmentLink: "/premium-assessment"
     },
     {
       name: "이정수 팀장",
@@ -97,7 +97,7 @@ const ClientLogos = () => {
       color: "text-indigo-600",
       bgColor: "bg-indigo-50",
       assessmentType: "성인 심리검사",
-      assessmentLink: "/assessment/adult"
+      assessmentLink: "/premium-assessment"
     },
     {
       name: "이성민",
@@ -108,7 +108,7 @@ const ClientLogos = () => {
       color: "text-cyan-600",
       bgColor: "bg-cyan-50",
       assessmentType: "성격유형 검사",
-      assessmentLink: "/assessment/personality"
+      assessmentLink: "/free-trial"
     },
     {
       name: "김영희",
@@ -119,7 +119,7 @@ const ClientLogos = () => {
       color: "text-indigo-500",
       bgColor: "bg-indigo-50",
       assessmentType: "성인 ADHD 검사",
-      assessmentLink: "/assessment/adult-adhd"
+      assessmentLink: "/premium-assessment"
     },
     {
       name: "박종철 어르신",
@@ -130,7 +130,7 @@ const ClientLogos = () => {
       color: "text-orange-600",
       bgColor: "bg-orange-50",
       assessmentType: "시니어 검사",
-      assessmentLink: "/assessment/senior"
+      assessmentLink: "/free-trial"
     },
     {
       name: "최순자 어르신",
@@ -141,7 +141,7 @@ const ClientLogos = () => {
       color: "text-green-600",
       bgColor: "bg-green-50",
       assessmentType: "인지능력 검사",
-      assessmentLink: "/assessment/cognitive"
+      assessmentLink: "/free-trial"
     }
   ];
 

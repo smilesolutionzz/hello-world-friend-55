@@ -19,6 +19,7 @@ import {
 
 interface ExpertApplication {
   id: string;
+  user_id: string;
   full_name: string;
   email: string;
   phone: string;
@@ -80,12 +81,28 @@ export const ExpertApplicationManagement = () => {
 
   const updateApplicationStatus = async (applicationId: string, status: string, notes?: string) => {
     try {
+      // Get the application to find user_id
+      const application = applications.find(app => app.id === applicationId);
+      if (!application) {
+        toast({
+          title: "오류",
+          description: "신청서를 찾을 수 없습니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Get current admin user
+      const { data: { user: adminUser } } = await supabase.auth.getUser();
+
+      // Update application status
       const { error } = await supabase
         .from('expert_applications')
         .update({ 
           application_status: status,
           admin_notes: notes,
           reviewed_at: new Date().toISOString(),
+          reviewed_by: adminUser?.id,
         })
         .eq('id', applicationId);
 
@@ -99,9 +116,55 @@ export const ExpertApplicationManagement = () => {
         return;
       }
 
+      // If approved, add expert role to user_roles table
+      if (status === 'approved' && application.user_id) {
+        // Add expert role
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .upsert({
+            user_id: application.user_id,
+            role: 'expert'
+          }, { onConflict: 'user_id,role' });
+
+        if (roleError) {
+          console.error('Error adding expert role:', roleError);
+          toast({
+            title: "경고",
+            description: "신청서는 승인되었으나, 전문가 권한 부여 중 오류가 발생했습니다.",
+            variant: "destructive",
+          });
+        }
+
+        // Also create expert profile in experts table
+        const { error: expertError } = await supabase
+          .from('experts')
+          .insert({
+            user_id: application.user_id,
+            full_name: application.full_name,
+            professional_title: application.specializations[0] || '전문가',
+            specializations: application.specializations,
+            consultation_methods: application.consultation_methods,
+            bio: application.bio || '',
+            is_available: true,
+            is_verified: true,
+            years_experience: application.years_experience,
+            hourly_rate: application.hourly_rate || 50000,
+            certifications: application.certifications,
+            education_background: application.education_background,
+            license_number: application.license_number,
+          });
+
+        if (expertError) {
+          console.error('Error creating expert profile:', expertError);
+          // Don't show error toast, as this might be a duplicate
+        }
+      }
+
       toast({
         title: "완료",
-        description: `신청서가 ${status === 'approved' ? '승인' : '거절'}되었습니다.`,
+        description: status === 'approved' 
+          ? "신청서가 승인되었습니다. 전문가 권한이 부여되었습니다."
+          : "신청서가 거절되었습니다.",
       });
 
       fetchApplications();

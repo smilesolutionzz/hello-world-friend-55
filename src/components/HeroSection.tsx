@@ -203,7 +203,7 @@ const HeroSection = () => {
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
               <p className="text-xs sm:text-sm md:text-base text-white/90 font-medium">
-                ⭐⭐⭐⭐⭐ 4.8/5.0 (2,148명 평가)
+                ⭐⭐⭐⭐⭐ 4.8/5.0 (4,248명 평가)
               </p>
               <div className="hidden sm:block w-px h-4 bg-white/30"></div>
               <p className="text-xs sm:text-sm md:text-base text-white/90 font-medium">

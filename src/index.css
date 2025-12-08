@@ -37,6 +37,54 @@ html, body {
     /* Base System Colors - 시각적 무게감 기반 */
     --background: 0 0% 100%;
     --foreground: 220 20% 15%;
+  }
+
+  .dark {
+    /* Dark Mode - 어두운 배경에 밝은 텍스트 */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 13%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 13%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    --primary-glow: 213 94% 68%;
+    --primary-strong: 217 91% 65%;
+    --primary-medium: 213 94% 72%;
+    --primary-light: 210 90% 80%;
+    --primary-subtle: 210 60% 25%;
+    --weight-heavy: 210 40% 98%;
+    --weight-bold: 210 35% 90%;
+    --weight-medium: 210 25% 75%;
+    --weight-light: 210 20% 55%;
+    --weight-subtle: 210 15% 35%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 210 40% 98%;
+    --success: 142 76% 36%;
+    --success-foreground: 210 40% 98%;
+    --warning: 48 96% 53%;
+    --warning-foreground: 26 83% 14%;
+    --border: 217 33% 22%;
+    --input: 217 33% 22%;
+    --ring: 217 91% 60%;
+    --sidebar-background: 222 47% 13%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 22%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  :root {
     --card: 0 0% 100%;
     --card-foreground: 220 15% 25%;
     --popover: 0 0% 100%;

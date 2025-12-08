@@ -669,7 +669,8 @@ ${reports.longTermPrediction.forecast}
           
           <h1 className="text-xl sm:text-3xl md:text-5xl font-black leading-tight">
             <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent drop-shadow-lg">
-              내 고민으로<br />어떤 솔루션을<br className="sm:hidden" /> 받을 수 있을까?
+              <span className="block sm:inline">내 고민으로 어떤 솔루션을</span>
+              <span className="block sm:inline"> 받을 수 있을까?</span>
             </span>
           </h1>
           
@@ -725,7 +726,7 @@ ${reports.longTermPrediction.forecast}
               </div>
             )}
             
-            <p className="text-base md:text-lg font-bold text-white drop-shadow-[0_2px_4px_rgba(245,158,11,0.5)] leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg font-bold text-white drop-shadow-[0_2px_4px_rgba(245,158,11,0.5)] leading-relaxed text-center sm:text-left">
               지금 가장 걱정되는 고민이나 문제를 간단히 적어주세요
             </p>
             

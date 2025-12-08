@@ -1,16 +1,13 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
-import { MessageCircle, X, Loader2, User, UserCheck, LogIn } from 'lucide-react';
+import { MessageCircle, X, Loader2, User, UserCheck } from 'lucide-react';
 import { useRealtimeChat } from '@/hooks/useRealtimeChat';
 import { MessageBubble } from './MessageBubble';
 import { ChatInput } from './ChatInput';
 import { TypingIndicator } from './TypingIndicator';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 
 interface RealtimeChatWidgetProps {
   onClose: () => void;
@@ -18,9 +15,7 @@ interface RealtimeChatWidgetProps {
 
 export const RealtimeChatWidget: React.FC<RealtimeChatWidgetProps> = ({ onClose }) => {
   const [sessionId, setSessionId] = React.useState<string | null>(null);
-  const [needsLogin, setNeedsLogin] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
   const {
     messages,
@@ -47,17 +42,7 @@ export const RealtimeChatWidget: React.FC<RealtimeChatWidgetProps> = ({ onClose 
     const newSession = await createSession();
     if (newSession) {
       setSessionId(newSession.id);
-      setNeedsLogin(false);
-    } else {
-      // Session creation failed, likely not authenticated
-      setNeedsLogin(true);
-      toast.error('로그인이 필요한 서비스입니다');
     }
-  };
-
-  const handleGoToLogin = () => {
-    onClose();
-    navigate('/login');
   };
 
   const handleEndSession = async () => {
@@ -131,48 +116,28 @@ export const RealtimeChatWidget: React.FC<RealtimeChatWidgetProps> = ({ onClose 
         {!sessionId ? (
           <div className="flex-1 flex flex-col items-center justify-center p-6 gap-4">
             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
-              {needsLogin ? (
-                <LogIn className="w-10 h-10 text-primary" />
-              ) : (
-                <MessageCircle className="w-10 h-10 text-primary" />
-              )}
+              <MessageCircle className="w-10 h-10 text-primary" />
             </div>
             <div className="text-center">
               <h4 className="font-semibold text-lg mb-2">
-                {needsLogin ? '로그인이 필요합니다' : '실시간 전문가 상담'}
+                실시간 전문가 상담
               </h4>
               <p className="text-sm text-muted-foreground mb-1">
-                {needsLogin 
-                  ? '상담 서비스 이용을 위해 로그인해주세요'
-                  : '온라인 전문가와 바로 연결됩니다'
-                }
+                온라인 전문가와 바로 연결됩니다
               </p>
-              {!needsLogin && (
-                <p className="text-xs text-muted-foreground">
-                  텍스트, 이미지, 파일 전송 가능
-                </p>
-              )}
+              <p className="text-xs text-muted-foreground">
+                텍스트, 이미지, 파일 전송 가능
+              </p>
             </div>
-            {needsLogin ? (
-              <Button 
-                onClick={handleGoToLogin}
-                className="w-full max-w-[200px]"
-                size="lg"
-              >
-                <LogIn className="w-4 h-4 mr-2" />
-                로그인하기
-              </Button>
-            ) : (
-              <Button 
-                onClick={handleStartSession} 
-                disabled={isLoading} 
-                className="w-full max-w-[200px]"
-                size="lg"
-              >
-                {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                상담 시작하기
-              </Button>
-            )}
+            <Button 
+              onClick={handleStartSession} 
+              disabled={isLoading} 
+              className="w-full max-w-[200px]"
+              size="lg"
+            >
+              {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              상담 시작하기
+            </Button>
           </div>
         ) : (
           <>
@@ -237,7 +202,7 @@ export const RealtimeChatWidget: React.FC<RealtimeChatWidgetProps> = ({ onClose 
                 onSendFile={sendFileMessage}
                 onTyping={handleTyping}
                 isSending={isSending}
-                disabled={session?.status === 'waiting'}
+                disabled={false}
               />
             )}
           </>

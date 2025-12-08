@@ -40,25 +40,38 @@ export const useRealtimeChat = (sessionId?: string) => {
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const { toast } = useToast();
 
-  // Get current user
+  // Get current user or generate anonymous ID
   useEffect(() => {
-    const getUser = async () => {
+    const getOrCreateUserId = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setCurrentUserId(user?.id || null);
+      if (user) {
+        setCurrentUserId(user.id);
+      } else {
+        // Generate anonymous user ID for demo purposes
+        const storedId = localStorage.getItem('anonymous_chat_user_id');
+        if (storedId) {
+          setCurrentUserId(storedId);
+        } else {
+          const newId = crypto.randomUUID();
+          localStorage.setItem('anonymous_chat_user_id', newId);
+          setCurrentUserId(newId);
+        }
+      }
     };
-    getUser();
+    getOrCreateUserId();
   }, []);
 
   // Create new session
   const createSession = useCallback(async () => {
     setIsLoading(true);
     try {
+      // Use authenticated user ID or anonymous ID
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
+      const userId = user?.id || currentUserId || crypto.randomUUID();
 
       const { data, error } = await supabase
         .from('realtime_consultation_sessions')
-        .insert([{ user_id: user.id, status: 'waiting' }])
+        .insert([{ user_id: userId, status: 'waiting' }])
         .select()
         .single();
 
@@ -76,7 +89,7 @@ export const useRealtimeChat = (sessionId?: string) => {
     } finally {
       setIsLoading(false);
     }
-  }, [toast]);
+  }, [toast, currentUserId]);
 
   // Load messages
   const loadMessages = useCallback(async (sid: string) => {
@@ -159,7 +172,10 @@ export const useRealtimeChat = (sessionId?: string) => {
     messageType: 'text' | 'image' | 'file' = 'text', 
     fileUrl?: string
   ) => {
-    if (!sessionId || !currentUserId) return;
+    if (!sessionId) return;
+    
+    // Get sender ID from state or generate one
+    const senderId = currentUserId || localStorage.getItem('anonymous_chat_user_id') || crypto.randomUUID();
     
     setIsSending(true);
     setIsTyping(false);
@@ -170,7 +186,7 @@ export const useRealtimeChat = (sessionId?: string) => {
         .from('realtime_consultation_messages')
         .insert([{
           session_id: sessionId,
-          sender_id: currentUserId,
+          sender_id: senderId,
           message_type: messageType,
           content,
           file_url: fileUrl
@@ -191,11 +207,11 @@ export const useRealtimeChat = (sessionId?: string) => {
 
   // Upload file
   const uploadFile = useCallback(async (file: File): Promise<string | null> => {
-    if (!currentUserId) return null;
+    const userId = currentUserId || localStorage.getItem('anonymous_chat_user_id') || 'anonymous';
 
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${currentUserId}/${Date.now()}.${fileExt}`;
+      const fileName = `${userId}/${Date.now()}.${fileExt}`;
       
       const { error: uploadError } = await supabase.storage
         .from('chat-files')
@@ -244,7 +260,9 @@ export const useRealtimeChat = (sessionId?: string) => {
 
   // Subscribe to realtime updates
   useEffect(() => {
-    if (!sessionId || !currentUserId) return;
+    if (!sessionId) return;
+    
+    const userId = currentUserId || localStorage.getItem('anonymous_chat_user_id');
 
     loadMessages(sessionId);
     loadSession(sessionId);
@@ -266,7 +284,7 @@ export const useRealtimeChat = (sessionId?: string) => {
           setMessages(prev => [...prev, newMessage]);
           
           // Auto mark as read if from other user
-          if (newMessage.sender_id !== currentUserId) {
+          if (newMessage.sender_id !== userId) {
             markAsRead([newMessage.id]);
           }
         }
@@ -303,16 +321,16 @@ export const useRealtimeChat = (sessionId?: string) => {
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState<PresenceState>();
         const others = Object.values(state).flat().filter(
-          (p) => p.userId !== currentUserId
+          (p) => p.userId !== userId
         );
         setRemoteTyping(others.some(p => p.isTyping));
       })
       .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
+        if (status === 'SUBSCRIBED' && userId) {
           await channel.track({
             isTyping: false,
             lastSeen: new Date().toISOString(),
-            userId: currentUserId
+            userId: userId
           });
         }
       });

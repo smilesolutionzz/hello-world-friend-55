@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Download, Save, Brain, Users, Repeat, Volume2, MessageCircle, Target, AlertTriangle, CheckCircle, Info } from "lucide-react";
 import { useTestResultActions } from "@/hooks/useTestResultActions";
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface AutismSpectrumResultProps {
   results: any;
@@ -14,6 +15,19 @@ interface AutismSpectrumResultProps {
 
 const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, answers, onBack }) => {
   const { generatePDFReport, saveTestResult, isGeneratingPDF, isSaving } = useTestResultActions();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '자폐스펙트럼 선별검사',
+    results: {
+      categoryScores: results.categoryScores,
+      totalScore: results.totalScore,
+      riskLevel: results.riskLevel,
+    },
+    analysis: results.overallInterpretation,
+    severity: results.riskLevel === 'high' ? '높음' : results.riskLevel === 'moderate' ? '보통' : '양호',
+    ageGroup: 'child',
+  });
 
   const categoryIcons = {
     social_communication: Users,

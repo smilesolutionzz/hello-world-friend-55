@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ExpertAnalysisSection } from './ExpertAnalysisSection';
 import { PremiumTestCTA } from './PremiumTestCTA';
 import { ExpertMatchRecommendation } from './ExpertMatchRecommendation';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { 
   RadarChart, 
   PolarGrid, 
@@ -125,6 +126,19 @@ export const MentalHealthQuickResult: React.FC<MentalHealthQuickResultProps> = (
   const [expertAnalysis, setExpertAnalysis] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const { toast } = useToast();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '정신건강 간편검사',
+    results: {
+      totalScore: result.totalScore,
+      averageScore: result.averageScore,
+      level: result.level,
+      levelText: result.levelText,
+    },
+    severity: result.level === 'poor' ? '높음' : result.level === 'fair' ? '보통' : '양호',
+    ageGroup: 'adult',
+  });
 
   // 영역별 점수 계산
   const calculateDomainScores = () => {

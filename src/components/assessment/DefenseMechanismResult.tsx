@@ -8,6 +8,7 @@ import { TextToSpeechButton } from '@/components/audio/TextToSpeechButton';
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface DefenseMechanismResultProps {
   result: {
@@ -73,6 +74,19 @@ const mechanismInfo: Record<string, { name: string; emoji: string; description: 
 export const DefenseMechanismResult: React.FC<DefenseMechanismResultProps> = ({ result, onBack }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '방어기제 검사',
+    results: {
+      categoryScores: result.categoryScores,
+      primaryMechanisms: result.primaryMechanisms,
+      totalScore: result.totalScore,
+    },
+    analysis: result.analysis,
+    severity: result.totalScore > 70 ? '높음' : result.totalScore > 40 ? '보통' : '양호',
+    ageGroup: 'adult',
+  });
 
   const handleDownloadPDF = async () => {
     await downloadResultAsPDF(

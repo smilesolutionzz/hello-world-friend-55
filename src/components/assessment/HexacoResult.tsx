@@ -9,6 +9,7 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useToast } from '@/hooks/use-toast';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface HexacoResultProps {
   result: {
@@ -88,6 +89,18 @@ export const HexacoResult: React.FC<HexacoResultProps> = ({ result, onBack }) =>
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: 'HEXACO 성격검사',
+    results: {
+      categoryScores: result.categoryScores,
+      totalScore: result.totalScore,
+    },
+    analysis: result.analysis,
+    severity: '보통',
+    ageGroup: 'adult',
+  });
 
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);

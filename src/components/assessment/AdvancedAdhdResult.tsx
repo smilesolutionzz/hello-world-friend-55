@@ -6,6 +6,7 @@ import { Home, Download, ImageIcon, Loader2, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from "@/hooks/use-toast";
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface AdvancedAdhdResultProps {
   results: {
@@ -27,6 +28,18 @@ const AdvancedAdhdResult = ({ results, onBack, onRestart }: AdvancedAdhdResultPr
   const dominantType = Object.entries(typeScores).reduce((a, b) => 
     typeScores[a[0]] > typeScores[b[0]] ? a : b
   )[0];
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '고급 ADHD 유형 검사',
+    results: {
+      typeScores: results.typeScores,
+      dominantType,
+      timestamp: results.timestamp,
+    },
+    severity: typeScores[dominantType] > 30 ? '높음' : typeScores[dominantType] > 15 ? '보통' : '양호',
+    ageGroup: 'adult',
+  });
 
   const dominantTypeData = adhdTypes[dominantType];
 

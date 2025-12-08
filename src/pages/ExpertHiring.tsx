@@ -1545,13 +1545,13 @@ const ExpertHiring = () => {
         </div>
 
         {/* 탭 네비게이션 - 커뮤니티 스타일 */}
-        <Tabs defaultValue="institutions" className="space-y-6">
+        <Tabs defaultValue="experts" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 bg-white shadow-sm">
-            <TabsTrigger value="institutions" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-              제휴 기관
-            </TabsTrigger>
             <TabsTrigger value="experts" className="data-[state=active]:bg-primary data-[state=active]:text-white">
               개인 전문가
+            </TabsTrigger>
+            <TabsTrigger value="institutions" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+              제휴 기관
             </TabsTrigger>
             <TabsTrigger value="community" className="data-[state=active]:bg-primary data-[state=active]:text-white">
               커뮤니티

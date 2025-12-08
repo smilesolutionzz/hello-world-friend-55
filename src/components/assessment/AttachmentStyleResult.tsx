@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Users, TrendingUp, Lightbulb, ArrowLeft, RefreshCw, ImageIcon, Loader2 } from 'lucide-react';
+import { Heart, Users, TrendingUp, Lightbulb, ArrowLeft, RefreshCw, ImageIcon, Loader2, FileDown } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
 
 interface AttachmentStyleResultProps {
   result: {
@@ -26,6 +27,32 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
   const navigate = useNavigate();
   const { toast } = useToast();
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    setIsDownloadingPDF(true);
+    try {
+      await downloadResultAsPDF(
+        'attachment-style-result',
+        `애착유형검사_${new Date().toISOString().split('T')[0]}`,
+        () => {
+          toast({
+            title: "PDF 다운로드 완료",
+            description: "검사 결과가 PDF로 저장되었습니다.",
+          });
+        },
+        (error) => {
+          toast({
+            title: "PDF 다운로드 실패",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      );
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  };
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   // 자동 저장 - 분석 포함
@@ -98,17 +125,32 @@ const AttachmentStyleResult: React.FC<AttachmentStyleResultProps> = ({ result, o
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-4 py-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div id="attachment-style-result" className="max-w-4xl mx-auto space-y-6">
         {/* 헤더 */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <Button variant="ghost" onClick={() => navigate('/assessment')} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             검사 목록
           </Button>
-          <Button variant="outline" onClick={onRestart} className="flex items-center gap-2">
-            <RefreshCw className="w-4 h-4" />
-            다시 검사
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={handleDownloadPDF}
+              disabled={isDownloadingPDF}
+              className="flex items-center gap-2"
+            >
+              {isDownloadingPDF ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <FileDown className="w-4 h-4" />
+              )}
+              PDF 저장
+            </Button>
+            <Button variant="outline" onClick={onRestart} className="flex items-center gap-2">
+              <RefreshCw className="w-4 h-4" />
+              다시 검사
+            </Button>
+          </div>
         </div>
 
         {/* 결과 요약 카드 */}

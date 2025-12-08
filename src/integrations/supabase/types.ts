@@ -2806,6 +2806,42 @@ export type Database = {
         }
         Relationships: []
       }
+      expert_queue: {
+        Row: {
+          created_at: string | null
+          current_sessions: number | null
+          expert_id: string
+          id: string
+          is_available: boolean | null
+          last_assigned_at: string | null
+          max_sessions: number | null
+          specialties: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_sessions?: number | null
+          expert_id: string
+          id?: string
+          is_available?: boolean | null
+          last_assigned_at?: string | null
+          max_sessions?: number | null
+          specialties?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_sessions?: number | null
+          expert_id?: string
+          id?: string
+          is_available?: boolean | null
+          last_assigned_at?: string | null
+          max_sessions?: number | null
+          specialties?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       expert_reviews: {
         Row: {
           consultation_id: string | null

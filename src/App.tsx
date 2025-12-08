@@ -155,7 +155,6 @@ import ResetPassword from "./pages/ResetPassword";
 
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
-import { ChatLauncher } from "./components/chat/ChatLauncher";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -184,7 +183,6 @@ const App = () => {
               <NetworkStatus />
               <SessionManager />
               <UpdatePrompt />
-              <ChatLauncher />
               <Routes>
           {/* Main Routes - Simplified User Journey */}
           <Route path="/" element={<Index />} />

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { PersonalizedProductRecommendation } from "@/components/product/PersonalizedProductRecommendation";
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import {
   RadarChart,
   PolarGrid,
@@ -36,6 +37,19 @@ export default function OtrovertResult({ result, onShare, onRetry, onShareText }
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '오트로버트 성격검사',
+    results: {
+      personalityType: result.personalityType,
+      score: result.score,
+      characteristics: result.characteristics,
+      strengths: result.strengths,
+    },
+    severity: '보통',
+    ageGroup: 'adult',
+  });
 
   useEffect(() => {
     analyzeWithAI();

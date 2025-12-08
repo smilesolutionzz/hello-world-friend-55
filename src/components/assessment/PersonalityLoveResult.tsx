@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { useToast } from '@/hooks/use-toast';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 const typeColors = {
   '열정적인 로맨티스트': 'from-red-500 to-pink-500',
@@ -73,6 +74,19 @@ export const PersonalityLoveResult: React.FC<PersonalityLoveResultProps> = ({
   const compatibility = compatibilityAdvice[personalityType.type as keyof typeof compatibilityAdvice];
   const { toast } = useToast();
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '연애 성격 검사',
+    results: {
+      personalityType: personalityType.type,
+      characteristics: personalityType.characteristics,
+      loveStyle: personalityType.loveStyle,
+    },
+    analysis: aiAnalysis,
+    severity: '보통',
+    ageGroup: 'adult',
+  });
 
   const handleDownloadPDF = async () => {
     setIsDownloadingPDF(true);

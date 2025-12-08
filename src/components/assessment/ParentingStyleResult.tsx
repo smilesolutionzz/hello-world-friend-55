@@ -10,6 +10,7 @@ import ProductRecommendation from "../ProductRecommendation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface ParentingStyleResultProps {
   results: any;
@@ -28,6 +29,18 @@ const ParentingStyleResult = ({
   const { toast } = useToast();
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const { generatePDFReport, saveTestResult } = useTestResultActions();
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '양육 스타일 검사',
+    results: {
+      scores: results.scores,
+      dominantStyle: results.dominantStyle,
+      childAge: results.childAge,
+    },
+    severity: '보통',
+    ageGroup: 'adult',
+  });
 
   useEffect(() => {
     generateAnalysis();

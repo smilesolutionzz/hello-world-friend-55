@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, Share2, Download, CheckCircle, Users, MessageCircle, ShieldCheck, ArrowLeft, FileDown, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 
 interface RelationshipStyleResultProps {
   result: {
@@ -29,6 +30,19 @@ const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProp
   const { toast } = useToast();
   const IconComponent = result.result.icon;
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  // 자동 저장
+  useAutoSaveTestResult({
+    testType: '관계 스타일 검사',
+    results: {
+      type: result.type,
+      scores: result.scores,
+      title: result.result.title,
+      characteristics: result.result.characteristics,
+    },
+    severity: result.type === 'secure' || result.type === 'assertive' ? '양호' : '보통',
+    ageGroup: 'adult',
+  });
 
   const handleDownloadPDF = async () => {
     setIsDownloadingPDF(true);

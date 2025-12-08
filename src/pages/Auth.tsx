@@ -511,9 +511,9 @@ const Auth = () => {
         {/* Forgot Password Dialog */}
         {showForgotPassword && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-md p-6">
+            <Card className="w-full max-w-md p-6 bg-white dark:bg-card">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">비밀번호 찾기</h3>
+                <h3 className="text-lg font-semibold text-foreground">비밀번호 찾기</h3>
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -528,7 +528,7 @@ const Auth = () => {
                 </Button>
               </div>
               
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-sm text-gray-600 dark:text-muted-foreground mb-4">
                 가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.
               </p>
               

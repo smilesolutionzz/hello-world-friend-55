@@ -16,27 +16,27 @@ export const ChatLauncher: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Launcher Button */}
+      {/* Launcher Tab Button */}
       {!isOpen && (
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0 }}
-          className="fixed bottom-6 right-6 z-50"
+          initial={{ x: 100 }}
+          animate={{ x: 0 }}
+          exit={{ x: 100 }}
+          className="fixed right-0 top-1/2 -translate-y-1/2 z-50"
         >
           <Button
             onClick={() => setIsOpen(true)}
-            size="lg"
-            className="rounded-full w-14 h-14 shadow-lg hover:shadow-xl transition-shadow bg-primary hover:bg-primary/90"
+            className="rounded-l-xl rounded-r-none px-3 py-6 h-auto flex flex-col gap-2 shadow-lg hover:shadow-xl transition-all bg-primary hover:bg-primary/90 hover:pr-5"
           >
-            <MessageCircle className="w-6 h-6" />
+            <MessageCircle className="w-5 h-5" />
+            <span className="text-xs font-medium writing-mode-vertical">상담</span>
+            
+            {/* Online indicator */}
+            <span className="absolute top-2 left-2 flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
           </Button>
-          
-          {/* Pulse animation */}
-          <span className="absolute -top-1 -right-1 flex h-4 w-4">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500"></span>
-          </span>
         </motion.div>
       )}
     </>

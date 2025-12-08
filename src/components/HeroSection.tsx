@@ -207,7 +207,7 @@ const HeroSection = () => {
               </p>
               <div className="hidden sm:block w-px h-4 bg-white/30"></div>
               <p className="text-xs sm:text-sm md:text-base text-white/90 font-medium">
-                🔥 <span className="text-[#FFD93D]">오늘 210명</span>이 검사 진행 중
+                🔥 <span className="text-[#FFD93D]">오늘 320명</span>이 검사 진행 중
               </p>
             </div>
           </motion.div>

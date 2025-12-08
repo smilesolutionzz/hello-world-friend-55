@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { ExpertDashboard } from '@/components/expert/ExpertDashboard';
 import { ExpertImageGenerator } from '@/components/expert/ExpertImageGenerator';
 import { ExpertAnalyticsDashboard } from '@/components/booking/ExpertAnalyticsDashboard';
+import { ExpertRealtimeConsultations } from '@/components/consultation/ExpertRealtimeConsultations';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import AuthenticationGuard from '@/components/observation/AuthenticationGuard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from '@/integrations/supabase/client';
 
 const ExpertDashboardPage = () => {
@@ -39,12 +41,24 @@ const ExpertDashboardPage = () => {
       <UnifiedNavigation />
       <AuthenticationGuard fallbackMessage="전문가 대시보드를 사용하려면 로그인이 필요합니다.">
         <div className="container mx-auto px-4 py-6">
-          <Tabs defaultValue="dashboard" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+          <Tabs defaultValue="realtime" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="realtime" className="relative">
+                실시간 상담
+                <Badge variant="secondary" className="ml-1 bg-green-100 text-green-700 text-xs">NEW</Badge>
+              </TabsTrigger>
               <TabsTrigger value="dashboard">대시보드</TabsTrigger>
               <TabsTrigger value="analytics">통계</TabsTrigger>
               <TabsTrigger value="images">이미지 생성</TabsTrigger>
             </TabsList>
+            
+            <TabsContent value="realtime">
+              {expertId ? (
+                <ExpertRealtimeConsultations expertId={expertId} />
+              ) : (
+                <div className="text-center py-8">전문가 인증이 필요합니다.</div>
+              )}
+            </TabsContent>
             
             <TabsContent value="dashboard">
               <ExpertDashboard />

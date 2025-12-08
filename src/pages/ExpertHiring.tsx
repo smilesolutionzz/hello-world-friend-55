@@ -56,6 +56,7 @@ import GrowthStoryShare from '@/components/growth/GrowthStoryShare';
 import { getExpertImage } from '@/components/expert/ExpertImages';
 import { QuickConsultationRequest } from '@/components/booking/QuickConsultationRequest';
 import { KakaoStyleReviews } from '@/components/reviews/KakaoStyleReviews';
+import { InstantChatDialog } from '@/components/consultation/InstantChatDialog';
 
 interface Expert {
   id: string;
@@ -601,6 +602,10 @@ const ExpertHiring = () => {
   // 즉시 상담 모달 상태
   const [quickConsultModalOpen, setQuickConsultModalOpen] = useState(false);
   const [selectedQuickExpert, setSelectedQuickExpert] = useState<any>(null);
+  
+  // 즉시 채팅 상태
+  const [instantChatOpen, setInstantChatOpen] = useState(false);
+  const [selectedChatExpert, setSelectedChatExpert] = useState<any>(null);
 
   // 실제 전문가 데이터 로드
   const loadExperts = async () => {
@@ -1319,6 +1324,12 @@ const ExpertHiring = () => {
     navigate(`/expert-contract/${expertId}`);
   };
 
+  // 즉시 채팅 시작 (온라인 전문가용)
+  const handleInstantChat = (expert: Expert | any) => {
+    setSelectedChatExpert(expert);
+    setInstantChatOpen(true);
+  };
+
   const handleConsultExpert = async (expertIdParam: string) => {
     try {
       // 로그인 확인
@@ -1978,15 +1989,22 @@ const ExpertHiring = () => {
             {/* 전문가 목록 */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredExperts.map((expert) => (
-                <Card key={expert.id} className="hover:shadow-lg transition-all duration-300 border-none shadow-md">
+                <Card key={expert.id} className={`hover:shadow-lg transition-all duration-300 border-none shadow-md ${expert.isOnline ? 'ring-2 ring-green-400/50' : ''}`}>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4 mb-4">
-                      <Avatar className="w-16 h-16">
-                        <AvatarImage src={expert.image} />
-                        <AvatarFallback className="bg-gradient-to-br from-blue-400 to-purple-400 text-white text-lg font-bold">
-                          {expert.name[0]}
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="relative">
+                        <Avatar className="w-16 h-16">
+                          <AvatarImage src={expert.image} />
+                          <AvatarFallback className="bg-gradient-to-br from-blue-400 to-purple-400 text-white text-lg font-bold">
+                            {expert.name[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        {expert.isOnline && (
+                          <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                            <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                          </span>
+                        )}
+                      </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <h4 className="font-bold text-lg text-gray-800">{expert.name} 에이전트</h4>
@@ -1999,10 +2017,13 @@ const ExpertHiring = () => {
                           <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                           <span className="font-medium">{expert.rating}</span>
                           <span className="text-sm text-muted-foreground">({expert.reviews})</span>
-                          {expert.isOnline && (
-                            <div className="w-2 h-2 bg-green-500 rounded-full" />
-                          )}
                         </div>
+                        {expert.isOnline && (
+                          <Badge className="mt-1 bg-green-100 text-green-700 text-xs">
+                            <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1 animate-pulse" />
+                            온라인
+                          </Badge>
+                        )}
                       </div>
                     </div>
                     
@@ -2022,12 +2043,22 @@ const ExpertHiring = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Button 
-                        onClick={() => handleConsultExpert(expert.id)}
-                        className="w-full bg-primary hover:bg-primary/90"
-                      >
-                        즉시 상담하기
-                      </Button>
+                      {expert.isOnline ? (
+                        <Button 
+                          onClick={() => handleInstantChat(expert)}
+                          className="w-full bg-green-600 hover:bg-green-700"
+                        >
+                          <MessageCircle className="w-4 h-4 mr-2" />
+                          즉시 채팅하기
+                        </Button>
+                      ) : (
+                        <Button 
+                          onClick={() => handleConsultExpert(expert.id)}
+                          className="w-full bg-primary hover:bg-primary/90"
+                        >
+                          상담 신청하기
+                        </Button>
+                      )}
                       <Button 
                         onClick={() => handleHireExpert(expert.id)}
                         variant="outline" 
@@ -2635,6 +2666,18 @@ const ExpertHiring = () => {
           setSelectedQuickExpert(null);
         }}
         expert={selectedQuickExpert}
+      />
+    )}
+
+    {/* 즉시 채팅 다이얼로그 */}
+    {selectedChatExpert && (
+      <InstantChatDialog
+        open={instantChatOpen}
+        onClose={() => {
+          setInstantChatOpen(false);
+          setSelectedChatExpert(null);
+        }}
+        expert={selectedChatExpert}
       />
     )}
     </>

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Share2, Download, CheckCircle, Users, MessageCircle, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { Heart, Share2, Download, CheckCircle, Users, MessageCircle, ShieldCheck, ArrowLeft, FileDown, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
 
 interface RelationshipStyleResultProps {
   result: {
@@ -27,6 +28,32 @@ const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProp
   const navigate = useNavigate();
   const { toast } = useToast();
   const IconComponent = result.result.icon;
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    setIsDownloadingPDF(true);
+    try {
+      await downloadResultAsPDF(
+        'relationship-style-result',
+        `관계스타일진단_${new Date().toISOString().split('T')[0]}`,
+        () => {
+          toast({
+            title: "PDF 다운로드 완료",
+            description: "검사 결과가 PDF로 저장되었습니다.",
+          });
+        },
+        (error) => {
+          toast({
+            title: "PDF 다운로드 실패",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      );
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -221,7 +248,7 @@ const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProp
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-8">
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div id="relationship-style-result" className="container mx-auto px-4 max-w-4xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="p-3 rounded-full bg-pink-500/10">
@@ -458,7 +485,19 @@ const RelationshipStyleResult = ({ result, onBack }: RelationshipStyleResultProp
           </div>
         </div>
 
-        <div className="mt-8 text-center space-x-4">
+        <div className="mt-8 text-center space-x-4 flex flex-wrap justify-center gap-2">
+          <Button 
+            variant="outline"
+            onClick={handleDownloadPDF}
+            disabled={isDownloadingPDF}
+          >
+            {isDownloadingPDF ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <FileDown className="w-4 h-4 mr-2" />
+            )}
+            PDF 저장
+          </Button>
           {onBack ? (
             <Button 
               variant="outline"

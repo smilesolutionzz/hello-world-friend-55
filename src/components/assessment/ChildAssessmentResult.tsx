@@ -94,7 +94,7 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
   const evaluation = getOverallEvaluation(total / Object.keys(gameScores).length);
 
   return (
-    <div className="space-y-8">
+    <div id="child-assessment-result" className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
@@ -216,17 +216,24 @@ const ChildAssessmentResult = ({ results, onBack }: ChildAssessmentResultProps) 
         </Button>
 
         <Button 
-          onClick={() => {
-            // PDF 생성 기능은 구독 서비스에서 제공됩니다
-            window.open('https://drive.google.com/file/d/17WD3mhW2T4TdkfxTzLpfH5bzFARxz_Vh/view?usp=drive_link', '_blank');
+          onClick={async () => {
+            const { downloadResultAsPDF } = await import('@/utils/pdfDownload');
+            setIsGeneratingPDF(true);
+            await downloadResultAsPDF(
+              'child-assessment-result',
+              `아동심리검사_${new Date().toISOString().split('T')[0]}`,
+              () => setIsGeneratingPDF(false),
+              () => setIsGeneratingPDF(false)
+            );
           }}
+          disabled={isGeneratingPDF}
           variant="outline" 
           className="h-16"
           aria-label="PDF 리포트 다운로드"
         >
           <FileDown className="w-5 h-5 mr-2" />
           <div className="text-left">
-            <div className="font-semibold">PDF 리포트</div>
+            <div className="font-semibold">{isGeneratingPDF ? 'PDF 생성 중...' : 'PDF 리포트'}</div>
             <div className="text-sm text-muted-foreground">결과를 PDF로 저장</div>
           </div>
         </Button>

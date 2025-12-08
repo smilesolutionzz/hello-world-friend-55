@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Share2, Crown, Lock, ArrowRight, Star, ImageIcon, Loader2 } from 'lucide-react';
+import { Brain, Share2, Crown, Lock, ArrowRight, Star, ImageIcon, Loader2, FileDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
 
 interface FreeTrialResultProps {
   result: {
@@ -34,6 +34,32 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   
   const [generatedImage, setGeneratedImage] = useState<string>("");
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    setIsDownloadingPDF(true);
+    try {
+      await downloadResultAsPDF(
+        'free-trial-result',
+        `무료체험결과_${new Date().toISOString().split('T')[0]}`,
+        () => {
+          toast({
+            title: "PDF 다운로드 완료",
+            description: "검사 결과가 PDF로 저장되었습니다.",
+          });
+        },
+        (error) => {
+          toast({
+            title: "PDF 다운로드 실패",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      );
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  };
 
   // 3분 테스트 결과 자동 저장
   const getTestTypeName = () => {
@@ -120,7 +146,7 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-purple-500/10 to-blue-500/20 py-8">
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div id="free-trial-result" className="container mx-auto px-4 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -130,6 +156,19 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
           <p className="text-muted-foreground">
             기본 분석 결과입니다. 회원가입하면 AI 초정밀 분석을 받으실 수 있어요!
           </p>
+          <Button 
+            onClick={handleDownloadPDF}
+            disabled={isDownloadingPDF}
+            variant="outline"
+            className="mt-4"
+          >
+            {isDownloadingPDF ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <FileDown className="w-4 h-4 mr-2" />
+            )}
+            PDF 저장
+          </Button>
         </div>
 
         <div className="grid gap-6">

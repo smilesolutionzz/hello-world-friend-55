@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,8 +10,12 @@ import {
   Star,
   Gift,
   MessageCircle,
-  Zap
+  Zap,
+  FileDown,
+  Loader2
 } from 'lucide-react';
+import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { useToast } from '@/hooks/use-toast';
 
 const typeColors = {
   '열정적인 로맨티스트': 'from-red-500 to-pink-500',
@@ -67,9 +71,36 @@ export const PersonalityLoveResult: React.FC<PersonalityLoveResultProps> = ({
   const { personalityType, aiAnalysis } = result;
   const typeColor = typeColors[personalityType.type as keyof typeof typeColors] || 'from-gray-500 to-gray-600';
   const compatibility = compatibilityAdvice[personalityType.type as keyof typeof compatibilityAdvice];
+  const { toast } = useToast();
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    setIsDownloadingPDF(true);
+    try {
+      await downloadResultAsPDF(
+        'personality-love-result',
+        `연애성격분석_${new Date().toISOString().split('T')[0]}`,
+        () => {
+          toast({
+            title: "PDF 다운로드 완료",
+            description: "검사 결과가 PDF로 저장되었습니다.",
+          });
+        },
+        (error) => {
+          toast({
+            title: "PDF 다운로드 실패",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      );
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
+    <div id="personality-love-result" className="w-full max-w-4xl mx-auto space-y-6">
       {/* 주요 결과 */}
       <Card className="relative overflow-hidden">
         <div className={`absolute inset-0 bg-gradient-to-br ${typeColor} opacity-10`}></div>
@@ -260,12 +291,24 @@ export const PersonalityLoveResult: React.FC<PersonalityLoveResultProps> = ({
       </Card>
 
       {/* 액션 버튼 */}
-      <div className="flex justify-center space-x-4">
+      <div className="flex justify-center space-x-4 flex-wrap gap-2">
+        <Button 
+          variant="outline" 
+          onClick={handleDownloadPDF}
+          disabled={isDownloadingPDF}
+        >
+          {isDownloadingPDF ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            <FileDown className="w-4 h-4 mr-2" />
+          )}
+          PDF 저장
+        </Button>
         <Button variant="outline" onClick={onRestart}>
           다시 검사하기
         </Button>
         <Button onClick={() => window.print()}>
-          결과 저장하기
+          결과 인쇄
         </Button>
       </div>
     </div>

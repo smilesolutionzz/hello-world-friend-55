@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Coins, Check, Sparkles, Brain, Zap, Trophy, Clock } from 'lucide-react';
+import { Coins, Check, Sparkles, Brain, Zap, Trophy, Clock, Crown, Infinity, Gift } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
@@ -147,6 +147,112 @@ const Subscription = () => {
       </div>
       
       <div className="container mx-auto px-4 py-16">
+        {/* 평생이용권 섹션 */}
+        <div className="mb-16 max-w-4xl mx-auto">
+          <Card className="relative overflow-hidden border-2 border-yellow-400 shadow-2xl bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 dark:from-yellow-900/20 dark:via-amber-900/20 dark:to-orange-900/20">
+            {/* 배경 효과 */}
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/10 via-amber-400/10 to-orange-400/10 animate-pulse"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-300/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-40 h-40 bg-orange-300/20 rounded-full blur-3xl"></div>
+            
+            {/* 특가 배지 */}
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
+              <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 text-lg font-bold shadow-lg animate-bounce">
+                🔥 특별 한정 할인 🔥
+              </Badge>
+            </div>
+            
+            <CardContent className="relative z-10 p-8 pt-12">
+              <div className="flex flex-col lg:flex-row items-center gap-8">
+                {/* 왼쪽: 아이콘 & 타이틀 */}
+                <div className="text-center lg:text-left flex-1">
+                  <div className="flex items-center justify-center lg:justify-start gap-3 mb-4">
+                    <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-4 rounded-2xl shadow-lg">
+                      <Crown className="w-10 h-10 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-600 via-amber-600 to-orange-600 bg-clip-text text-transparent">
+                        평생이용권
+                      </h2>
+                      <p className="text-muted-foreground flex items-center gap-1">
+                        <Infinity className="w-4 h-4" /> 한 번 구매로 평생 이용
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3 mt-6">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-green-100 dark:bg-green-900/30 rounded-full p-1">
+                        <Check className="w-5 h-5 text-green-600" />
+                      </div>
+                      <span className="font-medium">모든 심리검사 무제한 이용</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="bg-green-100 dark:bg-green-900/30 rounded-full p-1">
+                        <Check className="w-5 h-5 text-green-600" />
+                      </div>
+                      <span className="font-medium">AI 상담 무제한 이용</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="bg-green-100 dark:bg-green-900/30 rounded-full p-1">
+                        <Check className="w-5 h-5 text-green-600" />
+                      </div>
+                      <span className="font-medium">프리미엄 기능 전체 해금</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="bg-green-100 dark:bg-green-900/30 rounded-full p-1">
+                        <Check className="w-5 h-5 text-green-600" />
+                      </div>
+                      <span className="font-medium">향후 업데이트 무료 제공</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="bg-purple-100 dark:bg-purple-900/30 rounded-full p-1">
+                        <Gift className="w-5 h-5 text-purple-600" />
+                      </div>
+                      <span className="font-medium text-purple-600">초기 구매자 특별 혜택</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* 오른쪽: 가격 & 구매 버튼 */}
+                <div className="text-center lg:text-right">
+                  <div className="mb-4">
+                    <div className="text-lg text-muted-foreground line-through">정가 ₩199,000</div>
+                    <div className="text-5xl font-bold text-orange-600 mt-2">
+                      ₩92,000
+                    </div>
+                    <div className="text-lg text-green-600 font-semibold mt-1">
+                      53% 할인 중!
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    size="lg"
+                    className="w-full lg:w-auto px-12 py-6 text-xl font-bold bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 hover:from-yellow-600 hover:via-amber-600 hover:to-orange-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                    onClick={() => navigate('/pricing')}
+                  >
+                    <Crown className="w-6 h-6 mr-2" />
+                    평생이용권 구매하기
+                  </Button>
+                  
+                  <p className="text-sm text-muted-foreground mt-4">
+                    ✅ 100% 만족 보장 | 7일 환불 정책
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* 구분선 */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <div className="flex items-center gap-4">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
+            <span className="text-muted-foreground font-medium">또는 토큰으로 이용하기</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
+          </div>
+        </div>
+
         {/* 프로모션 배너 */}
         <div className="mb-12 max-w-4xl mx-auto">
           <PromotionBanner variant="subscription" />

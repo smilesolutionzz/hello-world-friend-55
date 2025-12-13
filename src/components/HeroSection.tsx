@@ -100,7 +100,9 @@ const HeroSection = () => {
           </h1>
           
           <p className="text-white/70 text-xs md:text-base max-w-xl mx-auto">
-            고민을 적으면 AI가 즉시 분석해드려요
+            고민을 적으면 AI가 즉시 분석해드려요.
+            <br className="hidden md:block" />
+            <span className="font-semibold text-white/85">9가지 전문 리포트 + AI 발달 예측을 무료로 제공합니다.</span>
           </p>
         </motion.div>
 

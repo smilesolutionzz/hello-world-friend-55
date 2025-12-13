@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
 import ModernNavigation from "@/components/navigation/ModernNavigation";
 import ModernHeroSection from "@/components/landing/ModernHeroSection";
+import InstantAIAnalysis from "@/components/InstantAIAnalysis";
 import SimplifiedCoreServices from "@/components/landing/SimplifiedCoreServices";
 import DataDrivenReportSection from "@/components/landing/DataDrivenReportSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
@@ -175,6 +176,9 @@ const Index = () => {
           <main id="main-content" className="w-full">
           {/* Hero - 첫인상 */}
           <ModernHeroSection />
+          
+          {/* 핵심 기능: 한마디 입력 → AI 분석 리포트 */}
+          <InstantAIAnalysis />
           
           {/* 가치 제안 - 왜 선택해야 하는가 */}
           <LazyLoad rootMargin="200px">

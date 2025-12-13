@@ -31,6 +31,7 @@ import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSect
 import { MetaverseUnifiedSection } from '@/components/landing/MetaverseUnifiedSection';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import ErrorBoundary from '@/components/ui/error-boundary';
+import { PlatformGuideFAQButton } from '@/components/faq/PlatformGuideFAQ';
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -274,6 +275,7 @@ const Index = () => {
         </main>
         
           <BackToTop />
+          <PlatformGuideFAQButton />
           
           {/* 온보딩 모달 */}
           <WelcomeOnboarding 

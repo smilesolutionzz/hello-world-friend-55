@@ -337,6 +337,203 @@ export type Database = {
           },
         ]
       }
+      b2b_ad_analytics: {
+        Row: {
+          ad_id: string | null
+          ad_type: string
+          created_at: string
+          event_type: string
+          id: string
+          institution_id: string
+          metadata: Json | null
+          page_location: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ad_id?: string | null
+          ad_type: string
+          created_at?: string
+          event_type: string
+          id?: string
+          institution_id: string
+          metadata?: Json | null
+          page_location?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ad_id?: string | null
+          ad_type?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          institution_id?: string
+          metadata?: Json | null
+          page_location?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_ad_analytics_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      b2b_ad_inquiries: {
+        Row: {
+          admin_notes: string | null
+          budget_range: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at: string
+          id: string
+          institution_name: string
+          institution_type: string
+          interested_plans: string[] | null
+          message: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          budget_range?: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at?: string
+          id?: string
+          institution_name: string
+          institution_type: string
+          interested_plans?: string[] | null
+          message?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          budget_range?: string | null
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string
+          created_at?: string
+          id?: string
+          institution_name?: string
+          institution_type?: string
+          interested_plans?: string[] | null
+          message?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      b2b_ad_plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_priority: number | null
+          features: Json | null
+          id: string
+          is_active: boolean | null
+          plan_name: string
+          plan_type: string
+          price_monthly: number
+          price_yearly: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_priority?: number | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          plan_name: string
+          plan_type: string
+          price_monthly?: number
+          price_yearly?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_priority?: number | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          plan_name?: string
+          plan_type?: string
+          price_monthly?: number
+          price_yearly?: number | null
+        }
+        Relationships: []
+      }
+      b2b_banner_ads: {
+        Row: {
+          banner_image_url: string
+          clicks: number | null
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          impressions: number | null
+          institution_id: string
+          is_active: boolean | null
+          link_url: string | null
+          position: string
+          start_date: string | null
+          subscription_id: string | null
+          title: string | null
+        }
+        Insert: {
+          banner_image_url: string
+          clicks?: number | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          impressions?: number | null
+          institution_id: string
+          is_active?: boolean | null
+          link_url?: string | null
+          position: string
+          start_date?: string | null
+          subscription_id?: string | null
+          title?: string | null
+        }
+        Update: {
+          banner_image_url?: string
+          clicks?: number | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          impressions?: number | null
+          institution_id?: string
+          is_active?: boolean | null
+          link_url?: string | null
+          position?: string
+          start_date?: string | null
+          subscription_id?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_banner_ads_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "b2b_banner_ads_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       b2b_inquiries: {
         Row: {
           contact_person: string
@@ -384,6 +581,120 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      b2b_partner_institutions: {
+        Row: {
+          address: string | null
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          institution_name: string
+          institution_type: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          logo_url: string | null
+          operating_hours: Json | null
+          phone: string | null
+          specializations: string[] | null
+          updated_at: string
+          user_id: string | null
+          website_url: string | null
+        }
+        Insert: {
+          address?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          institution_name: string
+          institution_type: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          operating_hours?: Json | null
+          phone?: string | null
+          specializations?: string[] | null
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          address?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          institution_name?: string
+          institution_type?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          operating_hours?: Json | null
+          phone?: string | null
+          specializations?: string[] | null
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      b2b_subscriptions: {
+        Row: {
+          auto_renew: boolean | null
+          created_at: string
+          end_date: string | null
+          id: string
+          institution_id: string
+          payment_amount: number | null
+          plan_id: string
+          start_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          auto_renew?: boolean | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          institution_id: string
+          payment_amount?: number | null
+          plan_id: string
+          start_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          auto_renew?: boolean | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          institution_id?: string
+          payment_amount?: number | null
+          plan_id?: string
+          start_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "b2b_subscriptions_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_partner_institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "b2b_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "b2b_ad_plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       bank_transfer_requests: {
         Row: {

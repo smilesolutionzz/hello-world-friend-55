@@ -1,5 +1,5 @@
 import React from "react";
-import { ThemeProvider } from "next-themes";
+
 import { InstitutionMarketingPresentation } from "@/components/institutions/InstitutionMarketingPresentation";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -154,6 +154,7 @@ import Referral from "./pages/Referral";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import ResetPassword from "./pages/ResetPassword";
+import B2BAdvertising from "./pages/B2BAdvertising";
 
 import { SessionManager } from "./components/SessionManager";
 import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
@@ -172,9 +173,8 @@ const App = () => {
   
   return (
     <React.StrictMode>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <HelmetProvider>
-          <QueryClientProvider client={queryClient}>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
             <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -336,6 +336,8 @@ const App = () => {
           <Route path="/subscription-cancel" element={<SubscriptionCancel />} />
           */}
           
+          {/* B2B Advertising */}
+          <Route path="/b2b-advertising" element={<B2BAdvertising />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
@@ -345,7 +347,6 @@ const App = () => {
           </TooltipProvider>
         </QueryClientProvider>
       </HelmetProvider>
-      </ThemeProvider>
     </React.StrictMode>
   );
 };

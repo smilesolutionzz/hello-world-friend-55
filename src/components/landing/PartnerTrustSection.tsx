@@ -84,9 +84,17 @@ const PartnerTrustSection = () => {
               {[...row1, ...row1].map((partner, index) => (
                 <div 
                   key={index}
-                  className="flex-shrink-0 px-4 py-2.5 bg-slate-800/80 border border-white/10 rounded-lg hover:border-primary/30 hover:bg-slate-800 transition-colors"
+                  className={`flex-shrink-0 px-4 py-2.5 rounded-lg transition-colors ${
+                    partner === "삼성웰니스의원" 
+                      ? "bg-gradient-to-r from-primary/20 to-blue-500/20 border-2 border-primary/50 shadow-lg shadow-primary/10" 
+                      : "bg-slate-800/80 border border-white/10 hover:border-primary/30 hover:bg-slate-800"
+                  }`}
                 >
-                  <p className="text-sm text-white/70 whitespace-nowrap font-medium">{partner}</p>
+                  <p className={`text-sm whitespace-nowrap font-medium ${
+                    partner === "삼성웰니스의원" 
+                      ? "text-primary font-bold" 
+                      : "text-white/70"
+                  }`}>{partner}</p>
                 </div>
               ))}
             </div>

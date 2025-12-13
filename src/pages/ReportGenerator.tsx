@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTokens } from '@/hooks/useTokens';
 import { sanitizeAIContent } from '@/utils/sanitizeHtml';
 import html2pdf from 'html2pdf.js';
+import PerplexityDeepReport from '@/components/report/PerplexityDeepReport';
 import {
   FileText,
   Download,
@@ -536,6 +537,12 @@ const ReportGenerator = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* 무료 Perplexity AI 심층 분석 섹션 */}
+            <PerplexityDeepReport 
+              assessments={userData?.assessments || []}
+              userInput={userInput}
+            />
 
             {/* 데이터 현황 카드 */}
             <Card className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 border-2 border-purple-500/30 shadow-2xl shadow-purple-500/20">

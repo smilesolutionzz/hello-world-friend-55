@@ -1,4 +1,5 @@
 import React from "react";
+import { ThemeProvider } from "next-themes";
 import { InstitutionMarketingPresentation } from "@/components/institutions/InstitutionMarketingPresentation";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -171,6 +172,7 @@ const App = () => {
   
   return (
     <React.StrictMode>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
         <HelmetProvider>
           <QueryClientProvider client={queryClient}>
             <TooltipProvider>
@@ -343,6 +345,7 @@ const App = () => {
           </TooltipProvider>
         </QueryClientProvider>
       </HelmetProvider>
+      </ThemeProvider>
     </React.StrictMode>
   );
 };

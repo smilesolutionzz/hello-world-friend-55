@@ -45,10 +45,8 @@ const AdultAssessment = ({ age, onComplete, onBack }: AdultAssessmentProps) => {
     if (isLastQuestion) {
       onComplete(newAnswers);
     } else {
-      setTimeout(() => {
-        setCurrentQuestionIndex(prev => prev + 1);
-        setShowClinicalInfo(false);
-      }, 300);
+      setCurrentQuestionIndex(prev => prev + 1);
+      setShowClinicalInfo(false);
     }
   };
 

@@ -389,17 +389,15 @@ const ParentChildPlayTest = ({ onComplete, onBack }: ParentChildPlayTestProps) =
     const newAnswers = { ...answers, [currentQuestion]: value };
     setAnswers(newAnswers);
     
-    // 자동으로 다음 문항으로 이동
-    setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(prev => prev + 1);
-        setSelectedOption(newAnswers[currentQuestion + 1] || '');
-      } else {
-        // 마지막 문항 완료
-        completeTest(newAnswers);
-      }
-      setIsProcessing(false);
-    }, 300); // 300ms 딜레이로 선택 피드백 제공
+    // 즉시 다음 문항으로 이동
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(prev => prev + 1);
+      setSelectedOption(newAnswers[currentQuestion + 1] || '');
+    } else {
+      // 마지막 문항 완료
+      completeTest(newAnswers);
+    }
+    setIsProcessing(false);
   };
 
   const completeTest = async (allAnswers: Record<number, string>) => {

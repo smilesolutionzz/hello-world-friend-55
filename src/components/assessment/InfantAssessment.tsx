@@ -40,10 +40,8 @@ const InfantAssessment = ({ age, onComplete, onBack }: InfantAssessmentProps) =>
     if (isLastQuestion) {
       onComplete(newAnswers);
     } else {
-      setTimeout(() => {
-        setCurrentQuestionIndex(prev => prev + 1);
-        setShowObservationGuide(false);
-      }, 500);
+      setCurrentQuestionIndex(prev => prev + 1);
+      setShowObservationGuide(false);
     }
   };
 

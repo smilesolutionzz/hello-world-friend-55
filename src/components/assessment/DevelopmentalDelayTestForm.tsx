@@ -57,13 +57,12 @@ const DevelopmentalDelayTestForm = ({ onComplete, onBack }: DevelopmentalDelayTe
       duration: 1000,
     });
     
-    setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-      } else {
-        handleComplete(newAnswers);
-      }
-    }, 500);
+    // 즉시 다음 문항으로 이동
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      handleComplete(newAnswers);
+    }
   };
 
   const handleNext = () => {

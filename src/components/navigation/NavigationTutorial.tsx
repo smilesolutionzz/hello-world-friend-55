@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { 
   MessageCircle, 
   Mic, 
@@ -21,42 +22,37 @@ interface TutorialStep {
   title: string;
   description: string;
   icon: React.ElementType;
-  menuName: string;
-  color: string;
+  menuSelector: string; // CSS selector for the menu button
 }
 
 const tutorialSteps: TutorialStep[] = [
   {
-    id: 'aih-agent',
-    title: 'AIH 에이전트',
-    description: 'AI 기반 상담, 메타버스 음성 대화, 관찰일지 자동 생성 등 다양한 AI 서비스를 이용할 수 있습니다.',
-    icon: MessageCircle,
-    menuName: 'AIH 에이전트',
-    color: 'bg-primary/10 text-primary'
+    id: 'assessment',
+    title: '검사도구',
+    description: '간단한 3분테스트로 발달, 심리, 체질 등을 빠르게 분석받을 수 있습니다. 프리미엄 심층 테스트도 제공됩니다.',
+    icon: TrendingUp,
+    menuSelector: '[data-tutorial="assessment"]'
   },
   {
-    id: 'assessment',
-    title: '3분테스트',
-    description: '간단한 테스트로 발달, 심리, 체질 등을 빠르게 분석받을 수 있습니다. 프리미엄 테스트도 제공됩니다.',
-    icon: TrendingUp,
-    menuName: '3분테스트',
-    color: 'bg-orange-500/10 text-orange-600'
+    id: 'aih-agent',
+    title: 'AIH 에이전트',
+    description: 'AI 기반 24시간 상담, 메타버스 음성 대화, 발달바우처 관찰일지 자동 생성 등 다양한 AI 서비스를 이용할 수 있습니다.',
+    icon: MessageCircle,
+    menuSelector: '[data-tutorial="aih-agent"]'
   },
   {
     id: 'expert-service',
     title: '전문가 서비스',
-    description: '검증된 발달/심리 전문가를 직접 고용하고, 토큰을 충전하여 서비스를 이용할 수 있습니다.',
+    description: '검증된 발달/심리 전문가를 직접 고용하고, 토큰을 충전하여 프리미엄 서비스를 이용할 수 있습니다.',
     icon: UserCheck,
-    menuName: '전문가 서비스',
-    color: 'bg-blue-500/10 text-blue-600'
+    menuSelector: '[data-tutorial="expert-service"]'
   },
   {
     id: 'my-data',
     title: '나의 DATA',
     description: '고민 저장소와 검사 결과를 한 곳에서 확인하고 관리할 수 있습니다.',
     icon: Heart,
-    menuName: '나의 DATA',
-    color: 'bg-pink-500/10 text-pink-600'
+    menuSelector: '[data-tutorial="my-data"]'
   }
 ];
 
@@ -72,9 +68,38 @@ export const NavigationTutorial: React.FC<NavigationTutorialProps> = ({
   onComplete
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
   const totalSteps = tutorialSteps.length;
   const step = tutorialSteps[currentStep];
   const Icon = step.icon;
+
+  // Find and highlight the target element
+  const updateTargetPosition = useCallback(() => {
+    const targetElement = document.querySelector(step.menuSelector);
+    if (targetElement) {
+      const rect = targetElement.getBoundingClientRect();
+      setTargetRect(rect);
+    }
+  }, [step.menuSelector]);
+
+  useEffect(() => {
+    if (isOpen) {
+      updateTargetPosition();
+      window.addEventListener('resize', updateTargetPosition);
+      window.addEventListener('scroll', updateTargetPosition);
+      return () => {
+        window.removeEventListener('resize', updateTargetPosition);
+        window.removeEventListener('scroll', updateTargetPosition);
+      };
+    }
+  }, [isOpen, updateTargetPosition]);
+
+  // Reset step when opened
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentStep(0);
+    }
+  }, [isOpen]);
 
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
@@ -101,25 +126,78 @@ export const NavigationTutorial: React.FC<NavigationTutorialProps> = ({
     onClose();
   };
 
-  // Reset step when opened
-  useEffect(() => {
-    if (isOpen) {
-      setCurrentStep(0);
-    }
-  }, [isOpen]);
+  if (!isOpen) return null;
 
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
+  // Calculate popup position
+  const getPopupPosition = () => {
+    if (!targetRect) return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
+    
+    const popupWidth = 400;
+    const popupHeight = 320;
+    const arrowHeight = 12;
+    
+    // Position below the target element
+    let top = targetRect.bottom + arrowHeight + 8;
+    let left = targetRect.left + (targetRect.width / 2) - (popupWidth / 2);
+    
+    // Keep within viewport
+    if (left < 16) left = 16;
+    if (left + popupWidth > window.innerWidth - 16) {
+      left = window.innerWidth - popupWidth - 16;
+    }
+    
+    return { top: `${top}px`, left: `${left}px` };
+  };
+
+  const popupPosition = getPopupPosition();
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999]">
+      {/* Dark overlay with cutout */}
+      <div className="absolute inset-0 bg-black/60" onClick={handleSkip} />
+      
+      {/* Highlight box around target */}
+      {targetRect && (
+        <>
+          {/* Highlight border */}
+          <div
+            className="absolute border-[3px] border-primary rounded-lg pointer-events-none z-[10000] transition-all duration-300"
+            style={{
+              top: targetRect.top - 4,
+              left: targetRect.left - 4,
+              width: targetRect.width + 8,
+              height: targetRect.height + 8,
+              boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)'
+            }}
+          />
+          
+          {/* Arrow pointing to target */}
+          <div
+            className="absolute z-[10001] pointer-events-none"
+            style={{
+              top: targetRect.bottom + 4,
+              left: targetRect.left + targetRect.width / 2 - 8,
+            }}
+          >
+            <div className="w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-white" />
+          </div>
+        </>
+      )}
+      
+      {/* Tutorial popup card */}
+      <Card
+        className="absolute z-[10001] w-[400px] bg-background shadow-2xl border-0 overflow-hidden"
+        style={popupPosition}
+      >
         {/* Header with step counter */}
-        <div className="flex items-center justify-between px-6 pt-6">
+        <div className="flex items-center justify-between px-6 pt-5">
           <span className="text-sm text-muted-foreground font-medium">
             {currentStep + 1} / {totalSteps}
           </span>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full"
+            className="h-8 w-8 rounded-full hover:bg-muted"
             onClick={handleSkip}
           >
             <X className="h-4 w-4" />
@@ -127,10 +205,10 @@ export const NavigationTutorial: React.FC<NavigationTutorialProps> = ({
         </div>
 
         {/* Content */}
-        <div className="px-6 py-8 text-center">
+        <div className="px-6 py-6 text-center">
           {/* Icon */}
-          <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl ${step.color} mb-6`}>
-            <Icon className="h-8 w-8" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 text-primary mb-5">
+            <Icon className="h-7 w-7" />
           </div>
 
           {/* Title */}
@@ -140,14 +218,6 @@ export const NavigationTutorial: React.FC<NavigationTutorialProps> = ({
           <p className="text-muted-foreground text-sm leading-relaxed">
             {step.description}
           </p>
-
-          {/* Menu highlight indicator */}
-          <div className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full">
-            <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-            <span className="text-xs text-muted-foreground">
-              상단 메뉴에서 "{step.menuName}"을 찾아보세요
-            </span>
-          </div>
         </div>
 
         {/* Progress dots */}
@@ -159,7 +229,9 @@ export const NavigationTutorial: React.FC<NavigationTutorialProps> = ({
               className={`transition-all duration-300 rounded-full ${
                 index === currentStep 
                   ? 'w-6 h-2 bg-primary' 
-                  : 'w-2 h-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                  : index < currentStep
+                    ? 'w-2 h-2 bg-primary/50'
+                    : 'w-2 h-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
               }`}
             />
           ))}
@@ -193,8 +265,9 @@ export const NavigationTutorial: React.FC<NavigationTutorialProps> = ({
             {currentStep < totalSteps - 1 && <ChevronRight className="h-4 w-4" />}
           </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </Card>
+    </div>,
+    document.body
   );
 };
 

@@ -36,7 +36,9 @@ import {
   Mic,
   Bot,
   Activity,
-  CircleHelp
+  CircleHelp,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { NavigationTutorial, useNavigationTutorial } from './NavigationTutorial';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -48,6 +50,7 @@ import AIPlatformChat from '@/components/AIPlatformChat';
 import { BookingNotificationBell } from '@/components/booking/BookingNotificationBell';
 import secretTalkCharacter from '@/assets/secret-talk-character.png';
 import logo from '@/assets/logo.png';
+import { useTheme } from 'next-themes';
 
 interface NavigationItem {
   icon: React.ElementType;
@@ -101,6 +104,12 @@ export const UnifiedNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const { isOpen: isTutorialOpen, showTutorial, hideTutorial } = useNavigationTutorial();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleNavigation = (path: string, item?: NavigationItem) => {
     if (item?.requiresAuth && !user) {
@@ -393,6 +402,28 @@ export const UnifiedNavigation = () => {
                 </Tooltip>
               </TooltipProvider>
 
+              {/* Theme Toggle */}
+              {mounted && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                        className="h-9 w-9 p-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                      >
+                        <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                        <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{theme === "light" ? "다크 모드" : "라이트 모드"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+
               {/* Notification Bell */}
               {user && (
                 <BookingNotificationBell />
@@ -624,6 +655,26 @@ export const UnifiedNavigation = () => {
                           <Mail className="w-4 h-4" />
                           문의하기
                         </Button>
+                        {/* Theme Toggle - Mobile */}
+                        {mounted && (
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+                            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                          >
+                            {theme === "light" ? (
+                              <>
+                                <Moon className="w-4 h-4" />
+                                다크 모드
+                              </>
+                            ) : (
+                              <>
+                                <Sun className="w-4 h-4" />
+                                라이트 모드
+                              </>
+                            )}
+                          </Button>
+                        )}
                       </div>
                     </div>
                     </div>

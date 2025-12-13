@@ -53,6 +53,7 @@ interface NavigationItem {
   path: string;
   badge?: string;
   requiresAuth?: boolean;
+  description?: string;
 }
 
 // 전문가 서비스 하위 메뉴
@@ -76,9 +77,9 @@ const dataSubmenuItems: { icon: any; label: string; path: string; requiresAuth: 
 
 // AIH 에이전트 하위 메뉴
 const aihSubmenuItems: NavigationItem[] = [
-  { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false },
-  { icon: Mic, label: 'AI 메타버스', path: '/metaverse-voice', requiresAuth: false, badge: 'NEW' },
-  { icon: FileText, label: 'AI 관찰일지', path: '/observation', requiresAuth: false },
+  { icon: MessageCircle, label: 'AI 상담', path: '/ai-assistant', requiresAuth: false, description: '24시간 AI 심리 상담 및 코칭' },
+  { icon: Mic, label: 'AI 메타버스', path: '/metaverse-voice', requiresAuth: false, badge: 'NEW', description: '가상공간에서 음성으로 AI와 실시간 대화' },
+  { icon: FileText, label: 'AI 관찰일지', path: '/observation', requiresAuth: false, description: '발달바우처 전문가용 회기일지 자동 생성' },
 ];
 
 // 3분테스트 하위 메뉴
@@ -256,12 +257,11 @@ export const UnifiedNavigation = () => {
                               </Badge>
                             )}
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            {item.label === 'AI 메타버스' && '가상공간에서 음성으로 AI와 실시간 대화'}
-                            {item.label === 'AI 상담' && '24시간 AI 심리 상담 및 코칭'}
-                            {item.label === '관찰일지' && '아이 행동 기록 및 패턴 분석'}
-                            {item.label === '라이프 허브' && '일상 건강 및 웰니스 관리 + 음성 감정 분석'}
-                          </div>
+                          {item.description && (
+                            <div className="text-xs text-muted-foreground">
+                              {item.description}
+                            </div>
+                          )}
                         </div>
                       </button>
                     ))}

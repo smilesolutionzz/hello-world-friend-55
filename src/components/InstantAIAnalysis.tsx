@@ -39,6 +39,8 @@ const InstantAIAnalysis = () => {
   const [user, setUser] = useState<any>(null);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isAdviceExpanded, setIsAdviceExpanded] = useState(false);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [remainingTime, setRemainingTime] = useState(30);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -178,9 +180,33 @@ const InstantAIAnalysis = () => {
     }
 
     setIsAnalyzing(true);
+    setAnalysisProgress(0);
+    setRemainingTime(30);
+    
+    // 타이머 및 프로그레스 시작
+    const totalTime = 30;
+    const startTime = Date.now();
+    
+    const progressInterval = setInterval(() => {
+      const elapsed = (Date.now() - startTime) / 1000;
+      const progress = Math.min((elapsed / totalTime) * 100, 95);
+      const remaining = Math.max(Math.ceil(totalTime - elapsed), 0);
+      
+      setAnalysisProgress(progress);
+      setRemainingTime(remaining);
+      
+      if (elapsed >= totalTime) {
+        clearInterval(progressInterval);
+      }
+    }, 100);
     
     try {
       const { analysis, reportImages, tableOfContents } = await callAIAnalysis(inputText);
+      
+      clearInterval(progressInterval);
+      setAnalysisProgress(100);
+      setRemainingTime(0);
+      
       setAnalysisResult(analysis);
       setReportImages(reportImages || []);
       setTableOfContents(tableOfContents);
@@ -536,28 +562,83 @@ const InstantAIAnalysis = () => {
             </div>
           </div>
 
-          {/* 분석 시작 버튼 */}
-          <Button
-            onClick={handleAnalyze}
-            disabled={isAnalyzing || inputText.length < 10}
-            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-6 rounded-2xl shadow-lg shadow-amber-500/25 transition-all duration-300 disabled:opacity-50"
-          >
-            {isAnalyzing ? (
-              <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                AI가 분석 중이에요...
-              </>
-            ) : (
-              <>
+          {/* 분석 시작 버튼 또는 진행 상태 */}
+          {isAnalyzing ? (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-4"
+            >
+              {/* 분석 중 프로그레스 UI */}
+              <div className="bg-gradient-to-br from-purple-900/60 to-indigo-900/60 rounded-2xl p-6 border border-purple-500/30">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <Loader2 className="w-6 h-6 text-purple-300 animate-spin" />
+                  <span className="text-lg font-bold text-white">AI가 종합 분석 중...</span>
+                </div>
+                
+                {/* 프로그레스 바 */}
+                <div className="relative w-full h-3 bg-slate-700/50 rounded-full overflow-hidden mb-3">
+                  <motion.div 
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full"
+                    style={{ width: `${analysisProgress}%` }}
+                    transition={{ duration: 0.1 }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 animate-pulse" />
+                </div>
+                
+                {/* 남은 시간 표시 */}
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2 text-purple-200">
+                    <Clock className="w-4 h-4" />
+                    <span>예상 남은 시간</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-bold text-white">{remainingTime}</span>
+                    <span className="text-purple-300">초</span>
+                  </div>
+                </div>
+                
+                {/* 분석 단계 표시 */}
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-center gap-2 text-xs">
+                    <div className={`w-2 h-2 rounded-full ${analysisProgress >= 20 ? 'bg-green-400' : 'bg-slate-500'}`} />
+                    <span className={analysisProgress >= 20 ? 'text-green-300' : 'text-slate-400'}>고민 유형 분석</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <div className={`w-2 h-2 rounded-full ${analysisProgress >= 45 ? 'bg-green-400' : 'bg-slate-500'}`} />
+                    <span className={analysisProgress >= 45 ? 'text-green-300' : 'text-slate-400'}>심층 원인 분석</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <div className={`w-2 h-2 rounded-full ${analysisProgress >= 70 ? 'bg-green-400' : 'bg-slate-500'}`} />
+                    <span className={analysisProgress >= 70 ? 'text-green-300' : 'text-slate-400'}>맞춤 솔루션 생성</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <div className={`w-2 h-2 rounded-full ${analysisProgress >= 90 ? 'bg-green-400' : 'bg-slate-500'}`} />
+                    <span className={analysisProgress >= 90 ? 'text-green-300' : 'text-slate-400'}>9가지 리포트 생성</span>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-center text-xs text-white/50">
+                잠시만 기다려주세요. 곧 분석이 완료됩니다!
+              </p>
+            </motion.div>
+          ) : (
+            <>
+              <Button
+                onClick={handleAnalyze}
+                disabled={inputText.length < 10}
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-6 rounded-2xl shadow-lg shadow-amber-500/25 transition-all duration-300 disabled:opacity-50"
+              >
                 <Sparkles className="w-5 h-5 mr-2" />
                 무료로 분석하기
-              </>
-            )}
-          </Button>
+              </Button>
 
-          <p className="text-center text-xs text-white/40">
-            무료, 30초 완료
-          </p>
+              <p className="text-center text-xs text-white/40">
+                무료, 30초 완료
+              </p>
+            </>
+          )}
         </div>
       </motion.div>
     </div>

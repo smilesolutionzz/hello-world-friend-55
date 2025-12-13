@@ -3073,6 +3073,101 @@ export type Database = {
         }
         Relationships: []
       }
+      facilities: {
+        Row: {
+          address: string | null
+          capacity: number | null
+          created_at: string | null
+          email: string | null
+          facility_type: string
+          id: string
+          is_active: boolean | null
+          name: string
+          phone: string | null
+          registration_number: string | null
+          settings: Json | null
+          subscription_end: string | null
+          subscription_start: string | null
+          subscription_tier: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          capacity?: number | null
+          created_at?: string | null
+          email?: string | null
+          facility_type?: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          phone?: string | null
+          registration_number?: string | null
+          settings?: Json | null
+          subscription_end?: string | null
+          subscription_start?: string | null
+          subscription_tier?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          capacity?: number | null
+          created_at?: string | null
+          email?: string | null
+          facility_type?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          phone?: string | null
+          registration_number?: string | null
+          settings?: Json | null
+          subscription_end?: string | null
+          subscription_start?: string | null
+          subscription_tier?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      facility_staff: {
+        Row: {
+          facility_id: string
+          id: string
+          is_active: boolean | null
+          joined_at: string | null
+          position: string | null
+          role: Database["public"]["Enums"]["facility_role"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          facility_id: string
+          id?: string
+          is_active?: boolean | null
+          joined_at?: string | null
+          position?: string | null
+          role?: Database["public"]["Enums"]["facility_role"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          facility_id?: string
+          id?: string
+          is_active?: boolean | null
+          joined_at?: string | null
+          position?: string | null
+          role?: Database["public"]["Enums"]["facility_role"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facility_staff_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fact_check_results: {
         Row: {
           check_status: string
@@ -6571,6 +6666,181 @@ export type Database = {
         }
         Relationships: []
       }
+      resident_activities: {
+        Row: {
+          activity_data: Json | null
+          activity_type: string
+          created_at: string | null
+          duration_minutes: number | null
+          facility_id: string
+          id: string
+          notes: string | null
+          resident_id: string
+          score: number | null
+          staff_id: string | null
+        }
+        Insert: {
+          activity_data?: Json | null
+          activity_type: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          facility_id: string
+          id?: string
+          notes?: string | null
+          resident_id: string
+          score?: number | null
+          staff_id?: string | null
+        }
+        Update: {
+          activity_data?: Json | null
+          activity_type?: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          facility_id?: string
+          id?: string
+          notes?: string | null
+          resident_id?: string
+          score?: number | null
+          staff_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resident_activities_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resident_activities_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resident_families: {
+        Row: {
+          can_receive_notifications: boolean | null
+          can_view_activities: boolean | null
+          created_at: string | null
+          email: string | null
+          id: string
+          invitation_code: string | null
+          invitation_status: string | null
+          name: string
+          phone: string | null
+          relationship: string | null
+          resident_id: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          can_receive_notifications?: boolean | null
+          can_view_activities?: boolean | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          invitation_code?: string | null
+          invitation_status?: string | null
+          name: string
+          phone?: string | null
+          relationship?: string | null
+          resident_id: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          can_receive_notifications?: boolean | null
+          can_view_activities?: boolean | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          invitation_code?: string | null
+          invitation_status?: string | null
+          name?: string
+          phone?: string | null
+          relationship?: string | null
+          resident_id?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resident_families_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      residents: {
+        Row: {
+          admission_date: string | null
+          birth_date: string | null
+          care_level: string | null
+          created_at: string | null
+          emergency_contact: string | null
+          emergency_phone: string | null
+          facility_id: string
+          gender: string | null
+          id: string
+          is_active: boolean | null
+          medical_notes: string | null
+          name: string
+          photo_url: string | null
+          room_number: string | null
+          settings: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          admission_date?: string | null
+          birth_date?: string | null
+          care_level?: string | null
+          created_at?: string | null
+          emergency_contact?: string | null
+          emergency_phone?: string | null
+          facility_id: string
+          gender?: string | null
+          id?: string
+          is_active?: boolean | null
+          medical_notes?: string | null
+          name: string
+          photo_url?: string | null
+          room_number?: string | null
+          settings?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          admission_date?: string | null
+          birth_date?: string | null
+          care_level?: string | null
+          created_at?: string | null
+          emergency_contact?: string | null
+          emergency_phone?: string | null
+          facility_id?: string
+          gender?: string | null
+          id?: string
+          is_active?: boolean | null
+          medical_notes?: string | null
+          name?: string
+          photo_url?: string | null
+          room_number?: string | null
+          settings?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "residents_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reversal_stories: {
         Row: {
           created_at: string
@@ -9150,6 +9420,7 @@ export type Database = {
         Args: { p_user_id: string; p_week_start: string }
         Returns: undefined
       }
+      can_access_facility: { Args: { facility_uuid: string }; Returns: boolean }
       can_access_family_observation: {
         Args: { observation_user_id: string }
         Returns: boolean
@@ -9376,6 +9647,11 @@ export type Database = {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined
       }
+      is_facility_admin: { Args: { facility_uuid: string }; Returns: boolean }
+      is_session_participant: {
+        Args: { session_uuid: string }
+        Returns: boolean
+      }
       make_user_admin: { Args: { target_email: string }; Returns: boolean }
       process_referral_reward: {
         Args: { p_referee_id: string; p_referral_code: string }
@@ -9398,6 +9674,10 @@ export type Database = {
         Returns: undefined
       }
       user_can_access_community: { Args: never; Returns: boolean }
+      user_facility_role: {
+        Args: { facility_uuid: string }
+        Returns: Database["public"]["Enums"]["facility_role"]
+      }
       user_has_liked_comment: { Args: { comment_id: string }; Returns: boolean }
       user_has_liked_post: { Args: { post_id: string }; Returns: boolean }
       validate_payment_session: {
@@ -9413,6 +9693,7 @@ export type Database = {
       account_type: "parent" | "teacher" | "therapist" | "admin"
       app_role: "admin" | "expert" | "user"
       consultation_session_status: "waiting" | "active" | "ended"
+      facility_role: "owner" | "admin" | "staff" | "viewer"
       message_type: "text" | "image" | "file"
       organization_type:
         | "academy"
@@ -9551,6 +9832,7 @@ export const Constants = {
       account_type: ["parent", "teacher", "therapist", "admin"],
       app_role: ["admin", "expert", "user"],
       consultation_session_status: ["waiting", "active", "ended"],
+      facility_role: ["owner", "admin", "staff", "viewer"],
       message_type: ["text", "image", "file"],
       organization_type: [
         "academy",

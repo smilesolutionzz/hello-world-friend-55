@@ -1,26 +1,35 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
-import ModernNavigation from "@/components/navigation/ModernNavigation";
-import ModernHeroSection from "@/components/landing/ModernHeroSection";
-import ModernInstantAnalysis from "@/components/landing/ModernInstantAnalysis";
+import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
+import HeroSection from "@/components/HeroSection";
+
 import SimplifiedCoreServices from "@/components/landing/SimplifiedCoreServices";
+import { CoffeeChatReviews } from "@/components/reviews/CoffeeChatReviews";
 import DataDrivenReportSection from "@/components/landing/DataDrivenReportSection";
+import ResultReportSection from "@/components/landing/ResultReportSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
+import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
+
 import ValueComparisonSection from "@/components/landing/ValueComparisonSection";
+import FixedCTAButton from "@/components/landing/FixedCTAButton";
 import TestimonialSection from "@/components/TestimonialSection";
 import ClientLogos from "@/components/ClientLogos";
 import { NewFeaturesSection } from "@/components/landing/NewFeaturesSection";
+import FounderLetterSection from "@/components/landing/FounderLetterSection";
 import BackToTop from "@/components/common/BackToTop";
 import SEOHead from "@/components/common/SEOHead";
 import { SkipLink } from "@/components/ui/skip-link";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
 import { useReferrals } from '@/hooks/useReferrals';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
+import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
 import { MetaverseUnifiedSection } from '@/components/landing/MetaverseUnifiedSection';
+import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import ErrorBoundary from '@/components/ui/error-boundary';
 import { PlatformGuideFAQButton } from '@/components/faq/PlatformGuideFAQ';
 
@@ -171,56 +180,97 @@ const Index = () => {
       
       <ErrorBoundary>
         <div className="min-h-screen max-w-full overflow-x-hidden">
-          <ModernNavigation />
+          <ScrollProgressBar />
+          <UnifiedNavigation />
           
           <main id="main-content" className="w-full">
-          {/* Hero - 첫인상 */}
-          <ModernHeroSection />
+          {/* 1️⃣ Hero Section */}
+          <HeroSection />
           
-          {/* 핵심 기능: 한마디 입력 → AI 분석 리포트 */}
-          <ModernInstantAnalysis />
-          
-          {/* 가치 제안 - 왜 선택해야 하는가 */}
+          {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
           <LazyLoad rootMargin="200px">
-            <ValueComparisonSection />
+            <ScrollReveal direction="up" delay={0.1}>
+              <ValueComparisonSection />
+            </ScrollReveal>
           </LazyLoad>
           
-          {/* 핵심 서비스 3가지 */}
+          {/* 4️⃣ Core Service - 단순화된 3가지 핵심 서비스 */}
           <LazyLoad rootMargin="200px">
-            <SimplifiedCoreServices />
+            <ScrollReveal direction="up" delay={0.1}>
+              <SimplifiedCoreServices />
+            </ScrollReveal>
           </LazyLoad>
           
-          {/* AI 분석 리포트 데모 */}
+          {/* 5️⃣ 데이터 기반 AI 분석 리포트 */}
           <LazyLoad rootMargin="200px">
-            <DataDrivenReportSection />
+            <ScrollReveal direction="up" delay={0.1}>
+              <DataDrivenReportSection />
+            </ScrollReveal>
           </LazyLoad>
           
-          {/* 메타버스 AI 섹션 */}
+          {/* 🎭 메타버스 통합 섹션 (배너 + 심층 분석) */}
           <LazyLoad rootMargin="200px">
-            <MetaverseUnifiedSection />
+            <ScrollReveal direction="up" delay={0.1}>
+              <MetaverseUnifiedSection />
+            </ScrollReveal>
           </LazyLoad>
           
-          {/* 새 기능 소개 */}
+          {/* 🎯 New Features Section - 매주 업데이트 */}
           <LazyLoad rootMargin="200px">
-            <NewFeaturesSection />
+            <ScrollReveal direction="up" delay={0.1}>
+              <NewFeaturesSection />
+            </ScrollReveal>
           </LazyLoad>
           
-          {/* 사회적 증거 - 리뷰 */}
+          {/* Social Proof */}
           <LazyLoad rootMargin="200px">
-            <TestimonialSection />
+            <ScrollReveal direction="up" delay={0.1}>
+              <TestimonialSection />
+            </ScrollReveal>
           </LazyLoad>
           
-          {/* 파트너 & 신뢰 */}
+          {/* 커피챗 스타일 리뷰 */}
           <LazyLoad rootMargin="200px">
-            <ClientLogos />
+            <ScrollReveal direction="up" delay={0.1}>
+              <CoffeeChatReviews />
+            </ScrollReveal>
           </LazyLoad>
           
-          {/* CTA - 최종 전환 */}
           <LazyLoad rootMargin="200px">
-            <CTABannerSection />
+            <ScrollReveal direction="up" delay={0.1}>
+              <ClientLogos />
+            </ScrollReveal>
           </LazyLoad>
           
-          {/* Footer */}
+          {/* Trust & Partner Section */}
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <PartnerTrustSection />
+            </ScrollReveal>
+          </LazyLoad>
+          
+          {/* 🎬 회사 소개 */}
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <CompanyIntroVideoSection />
+            </ScrollReveal>
+          </LazyLoad>
+          
+          {/* 📝 Founder's Letter - 창립자의 손편지 */}
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <FounderLetterSection />
+            </ScrollReveal>
+          </LazyLoad>
+          
+          {/* 7️⃣ Call to Action */}
+          <LazyLoad rootMargin="200px">
+            <ScrollReveal direction="up" delay={0.1}>
+              <CTABannerSection />
+            </ScrollReveal>
+          </LazyLoad>
+          
+          {/* 8️⃣ Footer */}
           <Footer />
         </main>
         

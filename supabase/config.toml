@@ -326,6 +326,3 @@ verify_jwt = true
 
 [functions.send-daily-newsletter]
 verify_jwt = false  # cron job에서 호출되므로 JWT 불필요
-
-[functions.analyze-concern]
-verify_jwt = false  # 핵심 기능: 즉시 분석

@@ -3,20 +3,12 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import type { User } from '@supabase/supabase-js';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 import HeroSection from "@/components/HeroSection";
-
 import SimplifiedCoreServices from "@/components/landing/SimplifiedCoreServices";
-import { CoffeeChatReviews } from "@/components/reviews/CoffeeChatReviews";
 import DataDrivenReportSection from "@/components/landing/DataDrivenReportSection";
-import ResultReportSection from "@/components/landing/ResultReportSection";
 import CTABannerSection from "@/components/landing/CTABannerSection";
 import PartnerTrustSection from "@/components/landing/PartnerTrustSection";
-
 import ValueComparisonSection from "@/components/landing/ValueComparisonSection";
-import FixedCTAButton from "@/components/landing/FixedCTAButton";
 import TestimonialSection from "@/components/TestimonialSection";
-import ClientLogos from "@/components/ClientLogos";
-import { NewFeaturesSection } from "@/components/landing/NewFeaturesSection";
-import FounderLetterSection from "@/components/landing/FounderLetterSection";
 import BackToTop from "@/components/common/BackToTop";
 import SEOHead from "@/components/common/SEOHead";
 import { SkipLink } from "@/components/ui/skip-link";
@@ -27,9 +19,6 @@ import { useToast } from '@/hooks/use-toast';
 import { WelcomeOnboarding } from '@/components/onboarding/WelcomeOnboarding';
 import Footer from '@/components/ui/footer';
 import { LazyLoad } from '@/components/ui/lazy-load';
-import CompanyIntroVideoSection from '@/components/landing/CompanyIntroVideoSection';
-import { MetaverseUnifiedSection } from '@/components/landing/MetaverseUnifiedSection';
-import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import ErrorBoundary from '@/components/ui/error-boundary';
 import { PlatformGuideFAQButton } from '@/components/faq/PlatformGuideFAQ';
 
@@ -54,24 +43,18 @@ const structuredData = {
 };
 
 const Index = () => {
-  console.log('🏠 Index.tsx: Index page component rendering...');
-  
   const [searchParams] = useSearchParams();
   const { processReferralReward } = useReferrals();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
-  const [showGuideComplete, setShowGuideComplete] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showQuickOnboarding, setShowQuickOnboarding] = useState(false);
 
   useEffect(() => {
-    // Check for current user
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       
-      // 신규 사용자 또는 첫 방문자에게 온보딩 표시
       if (user && !localStorage.getItem('onboarding_completed')) {
         setShowOnboarding(true);
       }
@@ -79,13 +62,12 @@ const Index = () => {
     
     checkUser();
     
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
     });
 
     return () => subscription.unsubscribe();
-  }, []); // 빈 dependency array로 한 번만 실행
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -93,30 +75,20 @@ const Index = () => {
     const checkReferralCode = async () => {
       const refCode = searchParams.get('ref');
       if (refCode) {
-        console.log('📍 Referral code detected:', refCode);
-        
-        // Store referral code in localStorage for later use during signup
         localStorage.setItem('referralCode', refCode);
         
         try {
-          // 안전하게 유저 정보 확인
           const { data: { user }, error } = await supabase.auth.getUser();
           
-          // JWT 토큰 관련 에러는 무시하고 진행
           if (error && !error.message.includes('invalid claim') && !error.message.includes('bad_jwt')) {
-            console.error('Auth error:', error);
             return;
           }
           
-          if (!isMounted) return; // 컴포넌트가 unmount되면 중단
+          if (!isMounted) return;
           
           if (user && !error) {
-            console.log('🔄 User logged in, processing referral reward...');
-            // 사용자가 로그인된 상태에서만 추천 보상 처리
             const success = await processReferralReward(refCode);
-            console.log('✅ Referral reward processed:', success);
-            
-            if (!isMounted) return; // 컴포넌트가 unmount되면 중단
+            if (!isMounted) return;
             
             if (success !== undefined) {
               localStorage.removeItem('referralCode');
@@ -129,7 +101,6 @@ const Index = () => {
             }
           } else {
             if (!isMounted) return;
-            console.log('👋 No user, showing welcome toast');
             toast({
               title: "🎉 추천 링크로 접속했습니다!",
               description: "회원가입하시면 본인은 5토큰, 추천인은 10토큰을 받아요!",
@@ -137,8 +108,6 @@ const Index = () => {
           }
         } catch (error) {
           if (!isMounted) return;
-          console.error('Referral check error:', error);
-          // 에러가 발생해도 토스트는 표시
           toast({
             title: "🎉 추천 링크로 접속했습니다!",
             description: "회원가입하시면 본인은 5토큰, 추천인은 10토큰을 받아요!",
@@ -149,18 +118,8 @@ const Index = () => {
 
     checkReferralCode();
     
-    return () => {
-      isMounted = false; // cleanup: 컴포넌트 unmount 시 플래그 설정
-    };
+    return () => { isMounted = false; };
   }, [searchParams, processReferralReward, toast]);
-
-  const handleGuideComplete = useCallback(() => {
-    setShowGuideComplete(true);
-    toast({
-      title: "가이드 완료! 🎉",
-      description: "이제 HIGHLIGHT PRO와 함께 심리건강 여정을 시작해보세요!",
-    });
-  }, [toast]);
 
   const handleOnboardingClose = useCallback(() => {
     setShowOnboarding(false);
@@ -179,105 +138,51 @@ const Index = () => {
       <SkipLink href="#main-content">메인 콘텐츠로 바로가기</SkipLink>
       
       <ErrorBoundary>
-        <div className="min-h-screen max-w-full overflow-x-hidden">
+        <div className="min-h-screen max-w-full overflow-x-hidden bg-slate-900">
           <ScrollProgressBar />
           <UnifiedNavigation />
           
           <main id="main-content" className="w-full">
-          {/* 1️⃣ Hero Section */}
-          <HeroSection />
-          
-          {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
+            {/* 1️⃣ Hero Section - AI 분석 입력창 포함 */}
+            <HeroSection />
+            
+            {/* 2️⃣ 가치 비교 - 왜 우리를 선택해야 하는가 */}
+            <LazyLoad rootMargin="200px">
               <ValueComparisonSection />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          {/* 4️⃣ Core Service - 단순화된 3가지 핵심 서비스 */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
+            </LazyLoad>
+            
+            {/* 3️⃣ 3단계 핵심 서비스 */}
+            <LazyLoad rootMargin="200px">
               <SimplifiedCoreServices />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          {/* 5️⃣ 데이터 기반 AI 분석 리포트 */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
+            </LazyLoad>
+            
+            {/* 4️⃣ 데이터 기반 9가지 리포트 */}
+            <LazyLoad rootMargin="200px">
               <DataDrivenReportSection />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          {/* 🎭 메타버스 통합 섹션 (배너 + 심층 분석) */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
-              <MetaverseUnifiedSection />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          {/* 🎯 New Features Section - 매주 업데이트 */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
-              <NewFeaturesSection />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          {/* Social Proof */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
+            </LazyLoad>
+            
+            {/* 5️⃣ 실제 후기 */}
+            <LazyLoad rootMargin="200px">
               <TestimonialSection />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          {/* 커피챗 스타일 리뷰 */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
-              <CoffeeChatReviews />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
-              <ClientLogos />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          {/* Trust & Partner Section */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
+            </LazyLoad>
+            
+            {/* 6️⃣ 파트너 & 신뢰 */}
+            <LazyLoad rootMargin="200px">
               <PartnerTrustSection />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          {/* 🎬 회사 소개 */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
-              <CompanyIntroVideoSection />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          {/* 📝 Founder's Letter - 창립자의 손편지 */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
-              <FounderLetterSection />
-            </ScrollReveal>
-          </LazyLoad>
-          
-          {/* 7️⃣ Call to Action */}
-          <LazyLoad rootMargin="200px">
-            <ScrollReveal direction="up" delay={0.1}>
+            </LazyLoad>
+            
+            {/* 7️⃣ CTA 배너 */}
+            <LazyLoad rootMargin="200px">
               <CTABannerSection />
-            </ScrollReveal>
-          </LazyLoad>
+            </LazyLoad>
+            
+            {/* 8️⃣ Footer */}
+            <Footer />
+          </main>
           
-          {/* 8️⃣ Footer */}
-          <Footer />
-        </main>
-        
           <BackToTop />
           <PlatformGuideFAQButton />
           
-          {/* 온보딩 모달 */}
           <WelcomeOnboarding 
             isOpen={showOnboarding} 
             onClose={handleOnboardingClose} 

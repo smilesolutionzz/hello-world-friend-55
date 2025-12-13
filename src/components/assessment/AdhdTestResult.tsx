@@ -23,6 +23,7 @@ import { downloadResultAsPDF } from '@/utils/pdfDownload';
 import { PDFHeader } from '@/components/common/PDFHeader';
 import { RelatedTestRecommendations } from './RelatedTestRecommendations';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
+import AnalysisLoadingOverlay from '@/components/analysis/AnalysisLoadingOverlay';
 
 interface AdhdTestResultProps {
   results: {
@@ -348,20 +349,12 @@ const AdhdTestResult = ({ results, onBack, onStartAIChat, onStartRealTimeChat }:
         )}
 
         {isAnalyzing && (
-          <div className="space-y-4">
-            <div className="text-center py-4">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-full">
-                <Sparkles className="w-4 h-4 text-purple-600 animate-spin" />
-                <span className="text-purple-800 font-medium">AI가 ADHD 전문 분석을 진행중입니다...</span>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
-              <Skeleton className="h-4 w-4/5" />
-              <Skeleton className="h-20 w-full" />
-            </div>
-          </div>
+          <AnalysisLoadingOverlay 
+            isLoading={isAnalyzing}
+            estimatedTime={35}
+            title="ADHD 전문 분석 중"
+            description="DSM-5 기준으로 정밀 분석하고 있습니다..."
+          />
         )}
 
         {analysisError && (

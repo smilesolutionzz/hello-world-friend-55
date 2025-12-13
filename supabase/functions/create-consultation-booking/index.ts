@@ -223,6 +223,34 @@ serve(async (req) => {
         count: 1
       });
 
+    // Send email notification to expert
+    try {
+      console.log('[Booking] Sending email notification to expert...');
+      const notificationResponse = await fetch(
+        `${supabaseUrl}/functions/v1/send-booking-notification`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseKey}`
+          },
+          body: JSON.stringify({
+            bookingId: booking.id,
+            notificationType: 'confirmation'
+          })
+        }
+      );
+      
+      if (notificationResponse.ok) {
+        console.log('[Booking] Email notification sent successfully');
+      } else {
+        console.error('[Booking] Email notification failed:', await notificationResponse.text());
+      }
+    } catch (notificationError) {
+      console.error('[Booking] Failed to send notification:', notificationError);
+      // Don't fail the booking if notification fails
+    }
+
     console.log('[Booking] Success');
 
     return new Response(

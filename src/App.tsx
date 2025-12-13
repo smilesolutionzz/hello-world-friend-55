@@ -60,6 +60,7 @@ import TokenPaymentFail from "./pages/TokenPaymentFail";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCancel from "./pages/SubscriptionCancel";
 import Pricing from "./pages/Pricing";
+import LifetimePayment from "./pages/LifetimePayment";
 import Observation from "./pages/Observation";
 import ObservationNew from "./pages/ObservationNew";
 import ObservationList from "./pages/ObservationList";
@@ -285,6 +286,7 @@ const App = () => {
           <Route path="/kpi-dashboard" element={<KPIDashboard />} />
           <Route path="/institution-admin" element={<InstitutionAdmin />} />
         <Route path="/pricing" element={<Pricing />} />
+          <Route path="/lifetime-payment" element={<LifetimePayment />} />
           <Route path="/share/:shareId" element={<ShareView />} />
           <Route path="/observation" element={<ObservationNew />} />
           <Route path="/observation-old" element={<Observation />} />

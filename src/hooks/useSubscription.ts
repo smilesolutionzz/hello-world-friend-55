@@ -5,7 +5,7 @@ import { useAuthGuard } from './useAuthGuard';
 export interface SubscriptionPlan {
   id: string;
   name: string;
-  type: 'free' | 'premium' | 'paid';
+  type: 'free' | 'premium' | 'paid' | 'lifetime';
   price: number;
   yearly_price?: number;
   description: string;
@@ -16,12 +16,13 @@ export interface SubscriptionPlan {
 export interface UserSubscription {
   id: string;
   user_id: string;
-  subscription_type: 'free' | 'premium' | 'paid';
+  subscription_type: 'free' | 'premium' | 'paid' | 'lifetime';
   plan_id: string;
   status: 'active' | 'cancelled' | 'expired';
   current_period_start?: string;
   current_period_end?: string;
   payment_method?: string;
+  is_lifetime?: boolean;
   created_at: string;
   updated_at: string;
   plan?: SubscriptionPlan;
@@ -101,8 +102,8 @@ export function useSubscription() {
       return freeFeatures.includes(featureType);
     }
 
-    // 프리미엄 플랜은 모든 기능 사용 가능
-    if (subscription.subscription_type === 'premium') {
+    // 프리미엄/평생이용권은 모든 기능 사용 가능
+    if (subscription.subscription_type === 'premium' || subscription.subscription_type === 'lifetime' || subscription.is_lifetime) {
       return true;
     }
 
@@ -126,7 +127,12 @@ export function useSubscription() {
   };
 
   const isPremiumUser = (): boolean => {
-    return subscription?.subscription_type === 'premium' && isSubscriptionActive();
+    // 평생이용권 또는 프리미엄 구독자
+    return (subscription?.is_lifetime || subscription?.subscription_type === 'premium' || subscription?.subscription_type === 'lifetime') && isSubscriptionActive();
+  };
+
+  const isLifetimeUser = (): boolean => {
+    return subscription?.is_lifetime === true && isSubscriptionActive();
   };
 
   const isFreeUser = (): boolean => {
@@ -135,6 +141,10 @@ export function useSubscription() {
 
   const getSubscriptionLabel = (): string => {
     if (!subscription) return '구독 없음';
+    
+    if (subscription.is_lifetime || subscription.subscription_type === 'lifetime') {
+      return '평생이용권';
+    }
     
     switch (subscription.subscription_type) {
       case 'free':
@@ -158,6 +168,7 @@ export function useSubscription() {
     checkSubscriptionRequired,
     isSubscriptionActive,
     isPremiumUser,
+    isLifetimeUser,
     isFreeUser,
     getSubscriptionLabel,
     refreshSubscription,

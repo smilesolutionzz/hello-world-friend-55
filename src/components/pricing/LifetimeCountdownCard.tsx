@@ -133,10 +133,10 @@ export const LifetimeCountdownCard: React.FC<LifetimeCountdownCardProps> = ({ on
             <div className="mb-4">
               <div className="text-lg text-muted-foreground line-through">정가 ₩199,000</div>
               <div className="text-5xl font-bold text-orange-600 mt-2">
-                ₩92,000
+                ₩99,000
               </div>
               <div className="text-lg text-green-600 font-semibold mt-1">
-                53% 할인 중!
+                50% 할인 중!
               </div>
             </div>
             

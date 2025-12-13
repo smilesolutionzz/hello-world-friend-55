@@ -6,7 +6,7 @@ import { isBetaTestPeriod } from '@/utils/betaTest';
 interface SubscriptionGuardReturn {
   allowed: boolean;
   loading: boolean;
-  subscriptionType: 'free' | 'premium' | 'paid' | null;
+  subscriptionType: 'free' | 'premium' | 'paid' | 'lifetime' | null;
   planName?: string;
 }
 

@@ -150,7 +150,7 @@ const Subscription = () => {
       <div className="container mx-auto px-4 py-16">
         {/* 평생이용권 섹션 */}
         <div className="mb-16 max-w-4xl mx-auto">
-          <LifetimeCountdownCard onNavigate={() => navigate('/pricing')} />
+          <LifetimeCountdownCard onNavigate={() => navigate('/lifetime-payment')} />
         </div>
 
         {/* 구분선 */}

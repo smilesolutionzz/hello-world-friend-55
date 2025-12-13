@@ -326,3 +326,10 @@ verify_jwt = true
 
 [functions.send-daily-newsletter]
 verify_jwt = false  # cron job에서 호출되므로 JWT 불필요
+
+# 평생이용권 결제
+[functions.create-lifetime-payment]
+verify_jwt = true
+
+[functions.confirm-lifetime-payment]
+verify_jwt = true

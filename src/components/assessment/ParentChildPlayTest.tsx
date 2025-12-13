@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import AnalysisLoadingOverlay from '@/components/analysis/AnalysisLoadingOverlay';
 
 interface ParentChildPlayTestProps {
   onComplete: (result: any, testType: string) => void;
@@ -666,17 +667,12 @@ const ParentChildPlayTest = ({ onComplete, onBack }: ParentChildPlayTestProps) =
   // 분석 중 화면
   if (isAnalyzing) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
-        <Card className="max-w-md w-full">
-          <CardContent className="p-8 text-center">
-            <Loader2 className="w-16 h-16 animate-spin text-blue-500 mx-auto mb-4" />
-            <h3 className="text-xl font-bold mb-2">AI 분석 중...</h3>
-            <p className="text-muted-foreground">
-              답변을 바탕으로 맞춤형 피드백을 생성하고 있습니다
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      <AnalysisLoadingOverlay 
+        isLoading={isAnalyzing}
+        estimatedTime={30}
+        title="부모-자녀 놀이 분석 중"
+        description="맞춤형 놀이 피드백을 생성하고 있습니다..."
+      />
     );
   }
 

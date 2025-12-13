@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Brain, Users, Repeat, Volume2, MessageCircle, Ta
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { autismSpectrumScreeningQuestions } from "@/data/premiumAssessmentQuestions";
+import AnalysisLoadingOverlay from "@/components/analysis/AnalysisLoadingOverlay";
 
 interface AutismSpectrumFormProps {
   onComplete: (results: any, answers: Record<string, string>) => void;
@@ -127,18 +128,12 @@ const AutismSpectrumForm: React.FC<AutismSpectrumFormProps> = ({ onComplete, onB
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-blue-50/20 to-purple-50/20 flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4">
-          <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <Brain className="w-16 h-16 text-blue-500 mx-auto animate-pulse" />
-              <h3 className="text-lg font-semibold">AI 분석 중</h3>
-              <p className="text-muted-foreground">검사 결과를 전문적으로 분석하고 있습니다...</p>
-              <Progress value={75} className="w-full" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <AnalysisLoadingOverlay 
+        isLoading={isLoading}
+        estimatedTime={25}
+        title="자폐 스펙트럼 분석 중"
+        description="전문적인 AI가 검사 결과를 심층 분석하고 있습니다..."
+      />
     );
   }
 

@@ -1408,21 +1408,28 @@ const ExpertHiring = () => {
         </script>
       </Helmet>
       
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-background">
         <UnifiedNavigation />
       
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* 커뮤니티 스타일 헤더 */}
-        <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-none shadow-lg mb-8">
-          <CardContent className="p-8">
+      <div className="container mx-auto px-4 py-6 md:py-10 max-w-7xl">
+        {/* 모던 헤더 섹션 */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 mb-8">
+          {/* 배경 효과 */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-500/20 via-transparent to-transparent" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
+          
+          <div className="relative px-6 py-8 md:px-10 md:py-12">
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="bg-primary/10 p-4 rounded-full">
-                  <Users className="w-8 h-8 text-primary" />
+              <div className="flex items-start gap-4">
+                <div className="hidden md:flex bg-white/10 backdrop-blur-sm p-3 rounded-2xl border border-white/10">
+                  <Users className="w-7 h-7 text-purple-300" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900">AIHPRO 전문가 & 제휴기관</h1>
-                  <p className="text-lg text-muted-foreground mt-2">
+                  <h1 className="text-xl md:text-3xl lg:text-4xl font-bold text-white tracking-tight">
+                    <span className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent">AIHPRO</span> 전문가 & 제휴기관
+                  </h1>
+                  <p className="text-sm md:text-base text-white/60 mt-2 max-w-lg">
                     개인전문가부터 제휴기관까지, 당신에게 최적의 매칭을 제공합니다
                   </p>
                 </div>
@@ -1430,137 +1437,157 @@ const ExpertHiring = () => {
               <Button
                 onClick={() => window.open('https://naver.me/GPl0x4ry', '_blank')}
                 size="lg"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-4 rounded-lg shadow-lg"
+                className="bg-white text-slate-900 hover:bg-white/90 font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
               >
-                <Plus className="w-5 h-5 mr-2" />
-                전문가로 지원하기
+                <Plus className="w-4 h-4 mr-2" />
+                전문가 지원
               </Button>
             </div>
             
             {/* 통계 */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
+            <div className="grid grid-cols-4 gap-4 md:gap-8 mt-8 pt-8 border-t border-white/10">
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">129</div>
-                <div className="text-sm text-muted-foreground">인증 전문가</div>
+                <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-purple-300 to-purple-100 bg-clip-text text-transparent">129</div>
+                <div className="text-xs md:text-sm text-white/50 mt-1">인증 전문가</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">40+</div>
-                <div className="text-sm text-muted-foreground">제휴 기관</div>
+                <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-blue-300 to-blue-100 bg-clip-text text-transparent">40+</div>
+                <div className="text-xs md:text-sm text-white/50 mt-1">제휴 기관</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600">95.8%</div>
-                <div className="text-sm text-muted-foreground">만족도</div>
+                <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-pink-300 to-pink-100 bg-clip-text text-transparent">95.8%</div>
+                <div className="text-xs md:text-sm text-white/50 mt-1">만족도</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">247</div>
-                <div className="text-sm text-muted-foreground">성공 매칭</div>
+                <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-green-300 to-green-100 bg-clip-text text-transparent">247</div>
+                <div className="text-xs md:text-sm text-white/50 mt-1">성공 매칭</div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        {/* CTA 배너 섹션 */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        {/* CTA 카드 섹션 */}
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-8">
           {/* 제휴기관 CTA */}
-          <Card className="bg-gradient-to-br from-purple-500 via-purple-600 to-pink-600 border-none shadow-2xl hover:shadow-3xl transition-all duration-500 cursor-pointer group overflow-hidden relative">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
-            <CardContent className="p-8 relative">
-              <div className="flex items-start justify-between mb-6">
-                <div className="bg-white/25 backdrop-blur-md p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
-                  <Building className="w-10 h-10 text-white drop-shadow-lg" />
+          <div 
+            className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 p-6 md:p-8 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
+            onClick={() => {
+              const tabsList = document.querySelector('[value="institutions"]') as HTMLElement;
+              if (tabsList) tabsList.click();
+              window.scrollTo({ top: 500, behavior: 'smooth' });
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
+            
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                  <Building className="w-6 h-6 text-white" />
                 </div>
-                <Badge className="bg-white/25 backdrop-blur-md text-gray-900 border-white/40 px-4 py-1.5 font-pretendard font-semibold shadow-lg">
-                  <Shield className="w-3.5 h-3.5 mr-1.5 text-gray-900" />
+                <Badge className="bg-white/20 backdrop-blur-sm text-white border-0 text-xs">
                   40+ 인증기관
                 </Badge>
               </div>
-              <h3 className="text-3xl font-pretendard font-bold text-gray-900 mb-4 leading-tight drop-shadow-lg">
-                제휴기관에서<br />상담예약하기
+              
+              <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                제휴기관 상담예약
               </h3>
-              <p className="text-gray-800 mb-7 text-base leading-relaxed font-pretendard font-medium drop-shadow">
-                AIHPRO 인증을 받은 40개 이상의 전문 제휴기관에서<br />
-                바우처 지원과 함께 전문적인 상담 서비스를 받아보세요
+              <p className="text-white/70 text-sm mb-4 line-clamp-2">
+                바우처 지원과 함께 전문적인 상담 서비스
               </p>
-              <div className="flex items-center gap-2.5 mb-7">
-                <div className="w-2 h-2 bg-gray-900 rounded-full animate-pulse"></div>
-                <span className="text-gray-800 text-sm font-pretendard font-medium">바우처 지원 가능</span>
+              
+              <div className="flex items-center gap-2 text-white/80 text-sm">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                바우처 지원 가능
               </div>
+              
               <Button 
-                size="lg"
-                className="w-full bg-white text-purple-600 hover:bg-white/95 font-pretendard font-bold text-base shadow-xl hover:shadow-2xl group-hover:scale-105 transition-all duration-300"
-                onClick={() => {
-                  const tabsList = document.querySelector('[value="institutions"]') as HTMLElement;
-                  if (tabsList) tabsList.click();
-                  window.scrollTo({ top: 500, behavior: 'smooth' });
-                }}
+                size="sm"
+                className="w-full mt-5 bg-white text-purple-600 hover:bg-white/90 font-semibold rounded-xl"
               >
-                <Calendar className="w-5 h-5 mr-2" />
-                예약 시작하기
-                <ChevronRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
+                <Calendar className="w-4 h-4 mr-2" />
+                예약하기
+                <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* 개인전문가 CTA */}
-          <Card className="bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-600 border-none shadow-2xl hover:shadow-3xl transition-all duration-500 cursor-pointer group overflow-hidden relative">
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
-            <CardContent className="p-8 relative">
-              <div className="flex items-start justify-between mb-6">
-                <div className="bg-white/25 backdrop-blur-md p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg">
-                  <UserCheck className="w-10 h-10 text-white drop-shadow-lg" />
+          <div 
+            className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 p-6 md:p-8 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
+            onClick={() => {
+              const tabsList = document.querySelector('[value="experts"]') as HTMLElement;
+              if (tabsList) tabsList.click();
+              window.scrollTo({ top: 500, behavior: 'smooth' });
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
+            
+            <div className="relative">
+              <div className="flex items-center justify-between mb-4">
+                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                  <UserCheck className="w-6 h-6 text-white" />
                 </div>
-                <Badge className="bg-white/25 backdrop-blur-md text-gray-900 border-white/40 px-4 py-1.5 font-pretendard font-semibold shadow-lg">
-                  <Zap className="w-3.5 h-3.5 mr-1.5 text-gray-900" />
+                <Badge className="bg-white/20 backdrop-blur-sm text-white border-0 text-xs">
                   129명 전문가
                 </Badge>
               </div>
-              <h3 className="text-3xl font-pretendard font-bold text-gray-900 mb-4 leading-tight drop-shadow-lg">
-                개인전문가<br />즉시상담하기
+              
+              <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                개인전문가 즉시상담
               </h3>
-              <p className="text-gray-800 mb-7 text-base leading-relaxed font-pretendard font-medium drop-shadow">
-                검증된 129명의 개인 전문가와 바로 연결되어<br />
-                맞춤형 1:1 상담을 즉시 시작할 수 있습니다
+              <p className="text-white/70 text-sm mb-4 line-clamp-2">
+                검증된 전문가와 맞춤형 1:1 상담
               </p>
-              <div className="flex items-center gap-2.5 mb-7">
-                <div className="w-2 h-2 bg-gray-900 rounded-full animate-pulse"></div>
-                <span className="text-gray-800 text-sm font-pretendard font-medium">평균 응답시간 2시간</span>
+              
+              <div className="flex items-center gap-2 text-white/80 text-sm">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                평균 응답시간 2시간
               </div>
+              
               <Button 
-                size="lg"
-                className="w-full bg-white text-blue-600 hover:bg-white/95 font-pretendard font-bold text-base shadow-xl hover:shadow-2xl group-hover:scale-105 transition-all duration-300"
-                onClick={() => {
-                  const tabsList = document.querySelector('[value="experts"]') as HTMLElement;
-                  if (tabsList) tabsList.click();
-                  window.scrollTo({ top: 500, behavior: 'smooth' });
-                }}
+                size="sm"
+                className="w-full mt-5 bg-white text-blue-600 hover:bg-white/90 font-semibold rounded-xl"
               >
-                <MessageCircle className="w-5 h-5 mr-2" />
-                즉시 상담하기
-                <ChevronRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
+                <MessageCircle className="w-4 h-4 mr-2" />
+                즉시 상담
+                <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
-        {/* 탭 네비게이션 - 커뮤니티 스타일 */}
+        {/* 탭 네비게이션 */}
         <Tabs defaultValue="experts" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-white shadow-sm">
-            <TabsTrigger value="experts" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-              개인 전문가
+          <TabsList className="w-full h-auto p-1 bg-muted/50 rounded-2xl grid grid-cols-4 gap-1">
+            <TabsTrigger 
+              value="experts" 
+              className="rounded-xl py-2.5 text-xs md:text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all"
+            >
+              전문가
             </TabsTrigger>
-            <TabsTrigger value="institutions" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-              제휴 기관
+            <TabsTrigger 
+              value="institutions" 
+              className="rounded-xl py-2.5 text-xs md:text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all"
+            >
+              제휴기관
             </TabsTrigger>
-            <TabsTrigger value="community" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+            <TabsTrigger 
+              value="community" 
+              className="rounded-xl py-2.5 text-xs md:text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all"
+            >
               커뮤니티
             </TabsTrigger>
-            <TabsTrigger value="ai-matching" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-              <div className="flex items-center gap-2">
-                AI 매칭
-                <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs">미션</Badge>
-              </div>
+            <TabsTrigger 
+              value="ai-matching" 
+              className="rounded-xl py-2.5 text-xs md:text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all"
+            >
+              <span className="flex items-center gap-1">
+                AI매칭
+                <span className="hidden md:inline-block bg-purple-500/10 text-purple-600 text-[10px] px-1.5 py-0.5 rounded-full">New</span>
+              </span>
             </TabsTrigger>
           </TabsList>
 

@@ -246,72 +246,202 @@ const InstantAIAnalysis = () => {
   };
 
   if (showResult && analysisResult) {
+    const reports = analysisResult.comprehensiveReports;
+    
     return (
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-2xl mx-auto"
+        className="w-full max-w-4xl mx-auto space-y-6"
       >
-        <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl rounded-3xl border border-white/10 p-6 md:p-8 shadow-2xl">
-          {/* 결과 헤더 */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
-              <Brain className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white">AI 분석 완료</h3>
-              <p className="text-sm text-white/60">신뢰도 {analysisResult.confidence}%</p>
-            </div>
-          </div>
-
-          {/* 분석 결과 */}
-          <div className="space-y-4 mb-6">
+        {/* 결과 헤더 */}
+        <div className="bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl rounded-3xl border border-white/10 p-6 shadow-2xl">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 px-3 py-1">
-                {analysisResult.type}
-              </Badge>
-              <Badge className={`${analysisResult.severity === '높음' ? 'bg-red-500/20 text-red-300 border-red-500/30' : analysisResult.severity === '중간' ? 'bg-orange-500/20 text-orange-300 border-orange-500/30' : 'bg-green-500/20 text-green-300 border-green-500/30'} px-3 py-1`}>
-                심각도: {analysisResult.severity}
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">AI 분석 완료!</h3>
+                <p className="text-sm text-white/60">신뢰도 {analysisResult.confidence}%의 분석 결과입니다</p>
+              </div>
+            </div>
+            <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 px-3 py-1.5 text-sm font-medium">
+              {analysisResult.type}
+            </Badge>
+          </div>
+        </div>
+
+        {/* 추천 리포트 목차 */}
+        {tableOfContents && tableOfContents.length > 0 && (
+          <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 backdrop-blur-xl rounded-2xl border border-blue-500/20 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <FileText className="w-5 h-5 text-blue-400" />
+              <h4 className="text-base font-bold text-white">추천 리포트 목차</h4>
+            </div>
+            <ul className="space-y-1.5 text-sm">
+              {tableOfContents.map((item, i) => (
+                <li key={i} className="flex items-center gap-2 text-white/70">
+                  <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-300 text-xs flex items-center justify-center font-medium">{item.index}</span>
+                  {item.title}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* AI 전문가 조언 - 접기/펼치기 */}
+        <div className="bg-gradient-to-br from-amber-900/30 to-orange-900/30 backdrop-blur-xl rounded-2xl border border-amber-500/20 p-5">
+          <button 
+            onClick={() => setIsAdviceExpanded(!isAdviceExpanded)}
+            className="w-full flex items-center justify-between mb-3"
+          >
+            <div className="flex items-center gap-2">
+              <Heart className="w-5 h-5 text-amber-400" />
+              <h4 className="text-base font-bold text-white">AI 전문가의 조언</h4>
+              <Badge className={`${analysisResult.severity === '높음' ? 'bg-red-500/20 text-red-300' : analysisResult.severity === '중간' ? 'bg-orange-500/20 text-orange-300' : 'bg-green-500/20 text-green-300'} text-xs`}>
+                {analysisResult.severity}
               </Badge>
             </div>
+            {isAdviceExpanded ? <ChevronUp className="w-4 h-4 text-white/50" /> : <ChevronDown className="w-4 h-4 text-white/50" />}
+          </button>
+          
+          <AnimatePresence>
+            {isAdviceExpanded && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <p className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">
+                  {analysisResult.detailedAdvice}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          {!isAdviceExpanded && (
+            <p className="text-white/60 text-sm line-clamp-2">{analysisResult.detailedAdvice}</p>
+          )}
+        </div>
 
-            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
-              <p className="text-white/80 text-sm leading-relaxed">
-                {analysisResult.detailedAdvice}
-              </p>
+        {/* 맞춤 솔루션 */}
+        {analysisResult.recommendations && (
+          <div className="bg-gradient-to-br from-cyan-900/30 to-blue-900/30 backdrop-blur-xl rounded-2xl border border-cyan-500/20 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Target className="w-5 h-5 text-cyan-400" />
+              <h4 className="text-base font-bold text-white">맞춤 솔루션</h4>
             </div>
-
             <div className="space-y-2">
-              <p className="text-xs font-medium text-white/50 uppercase tracking-wide">추천 사항</p>
-              {analysisResult.recommendations?.slice(0, 3).map((rec: string, i: number) => (
-                <div key={i} className="flex items-center gap-2 text-sm text-white/70">
-                  <CheckCircle className="w-4 h-4 text-green-400 shrink-0" />
-                  <span>{rec}</span>
+              {analysisResult.recommendations.map((rec: string, i: number) => (
+                <div key={i} className="flex items-start gap-2 bg-white/5 rounded-xl p-3 border border-white/5">
+                  <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">{i + 1}</span>
+                  <span className="text-white/80 text-sm">{rec}</span>
                 </div>
               ))}
             </div>
           </div>
+        )}
 
-          {/* CTA 버튼들 */}
-          <div className="flex flex-col sm:flex-row gap-3">
+        {/* 단계별 발달 로드맵 */}
+        {reports?.developmentRoadmap && (
+          <div className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl rounded-2xl border border-purple-500/20 p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <Zap className="w-5 h-5 text-purple-400" />
+              <h4 className="text-base font-bold text-white">단계별 발달 로드맵</h4>
+            </div>
+            <div className="space-y-4">
+              {/* 단기 목표 */}
+              <div className="bg-blue-500/10 rounded-xl p-4 border border-blue-500/20">
+                <p className="text-blue-300 text-xs font-bold mb-2 flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> 단기 목표 (1-3개월)
+                </p>
+                <ul className="space-y-1">
+                  {reports.developmentRoadmap.shortTerm?.map((item: string, i: number) => (
+                    <li key={i} className="text-white/70 text-sm flex items-start gap-2">
+                      <span className="text-blue-400">•</span> {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {/* 중기 목표 */}
+              <div className="bg-purple-500/10 rounded-xl p-4 border border-purple-500/20">
+                <p className="text-purple-300 text-xs font-bold mb-2 flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> 중기 목표 (3-6개월)
+                </p>
+                <ul className="space-y-1">
+                  {reports.developmentRoadmap.mediumTerm?.map((item: string, i: number) => (
+                    <li key={i} className="text-white/70 text-sm flex items-start gap-2">
+                      <span className="text-purple-400">•</span> {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {/* 장기 목표 */}
+              <div className="bg-pink-500/10 rounded-xl p-4 border border-pink-500/20">
+                <p className="text-pink-300 text-xs font-bold mb-2 flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> 장기 목표 (6-12개월)
+                </p>
+                <ul className="space-y-1">
+                  {reports.developmentRoadmap.longTerm?.map((item: string, i: number) => (
+                    <li key={i} className="text-white/70 text-sm flex items-start gap-2">
+                      <span className="text-pink-400">•</span> {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 9가지 종합 전문 리포트 버튼 */}
+        <div className="bg-gradient-to-br from-indigo-900/40 to-violet-900/40 backdrop-blur-xl rounded-2xl border border-indigo-500/20 p-5">
+          <Button
+            onClick={() => {
+              localStorage.setItem('instant_analysis_result', JSON.stringify(analysisResult));
+              localStorage.setItem('instant_analysis_input', inputText);
+              navigate('/report-generator');
+            }}
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-4 rounded-xl"
+          >
+            <FileText className="w-5 h-5 mr-2" />
+            9가지 종합 전문 리포트
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
+          <p className="text-center text-white/40 text-xs mt-2">AI가 분석한 상세한 전문 리포트를 확인하세요</p>
+        </div>
+
+        {/* 이 정확한 분석을 원하신다면? CTA */}
+        <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-xl rounded-2xl border border-amber-500/30 p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/30 flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-amber-300" />
+            </div>
+            <div>
+              <p className="text-white font-bold text-sm">이 정확한 분석을 원하신다면?</p>
+              <p className="text-white/60 text-xs">3분 온보딩으로 맞춤형 솔루션을 받아보세요!</p>
+            </div>
+          </div>
+          <div className="flex gap-3">
             <Button
               onClick={handleStartFullAnalysis}
-              className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-6 rounded-xl"
+              className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-5 rounded-xl"
             >
-              <Sparkles className="w-5 h-5 mr-2" />
-              정밀 분석 받기
-              <ArrowRight className="w-5 h-5 ml-2" />
+              <Sparkles className="w-4 h-4 mr-2" />
+              3분 정밀 분석 시작
             </Button>
             <Button
               onClick={() => {
                 setShowResult(false);
                 setInputText('');
                 setAnalysisResult(null);
+                setTableOfContents(null);
+                setReportImages([]);
               }}
               variant="outline"
-              className="bg-white/5 border-white/20 text-white/80 hover:bg-white/10 py-6 rounded-xl"
+              className="bg-white/5 border-white/20 text-white/80 hover:bg-white/10 py-5 rounded-xl"
             >
-              다시 분석하기
+              다시 분석
             </Button>
           </div>
         </div>

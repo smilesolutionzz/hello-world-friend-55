@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
@@ -22,9 +21,12 @@ import {
   Mail,
   ChevronDown,
   ChevronUp,
-  Download
+  Download,
+  FileText,
+  Lightbulb,
+  Mic
 } from 'lucide-react';
-import instantAnalysisBg from '@/assets/instant-analysis-bg.jpg';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const InstantAIAnalysis = () => {
   const [inputText, setInputText] = useState('');
@@ -82,7 +84,6 @@ const InstantAIAnalysis = () => {
   };
 
   const mockAnalysis = (text: string) => {
-    // 심각도 키워드 (우선순위 높음)
     const highSeverityKeywords = [
       '죽고싶', '자살', '자해', '극심', '심각', '위급', '위험', '견딜 수 없',
       '못 견디', '한계', '폭력', '학대'
@@ -94,7 +95,6 @@ const InstantAIAnalysis = () => {
       '싸움', '갈등', '문제', '어려움'
     ];
 
-    // 유형 키워드
     const typeKeywords = {
       '우울감': ['우울', '무기력', '의욕 없', '슬프', '외로'],
       '불안감': ['불안', '걱정', '초조', '공황', '두려', '무서'],
@@ -106,7 +106,6 @@ const InstantAIAnalysis = () => {
       '분노조절': ['화', '분노', '짜증', '폭발', '참을 수 없'],
     };
 
-    // 심각도 판단
     let severity = '낮음';
     let color = 'bg-green-500';
     
@@ -128,14 +127,12 @@ const InstantAIAnalysis = () => {
       }
     }
 
-    // 상세 조언 생성
     const detailedAdvice = severity === '높음' 
-      ? `현재 겪고 계신 어려움이 상당히 힘드실 것 같습니다. 이런 상황에서는 혼자 해결하려 하기보다 전문가의 도움을 받는 것이 중요합니다. 우선 신뢰할 수 있는 가족이나 친구에게 마음을 터놓고 이야기해보세요. 그리고 정신건강 전문의나 상담사와의 상담을 고려해보시길 권합니다. 작은 변화부터 시작하되, 자신을 너무 몰아붙이지 마세요. 하루하루 버티는 것만으로도 충분히 대단한 일입니다. 지금의 고통은 영원하지 않습니다.`
+      ? `현재 겪고 계신 어려움이 상당히 힘드실 것 같습니다. 이런 상황에서는 혼자 해결하려 하기보다 전문가의 도움을 받는 것이 중요합니다.`
       : severity === '중간'
-      ? `지금 느끼시는 어려움에 대해 충분히 공감합니다. 이러한 상황은 누구에게나 찾아올 수 있으며, 도움을 구하는 것은 용기 있는 행동입니다. 일상에서 작은 루틴을 만들어보세요 - 규칙적인 수면, 가벼운 운동, 취미 활동 등이 도움이 될 수 있습니다. 또한 관찰일지를 작성하며 패턴을 파악하고, 필요하다면 전문가 상담도 고려해보세요. 변화는 천천히 일어나지만, 꾸준히 노력한다면 분명 좋아질 것입니다.`
-      : `공유해주신 내용을 보니 현재 관리 가능한 수준의 고민으로 보입니다. 이런 고민을 인식하고 해결하려는 노력 자체가 큰 발전입니다. 관찰일지를 통해 패턴을 파악하고, 작은 목표를 세워 실천해보세요. 스트레스 관리를 위해 명상이나 산책 같은 활동도 도움이 됩니다. 예방적 차원에서 꾸준히 관심을 가지고 관리한다면 더 큰 문제로 발전하지 않을 것입니다. 자신을 돌보는 시간을 꼭 가지세요.`;
+      ? `지금 느끼시는 어려움에 대해 충분히 공감합니다. 이러한 상황은 누구에게나 찾아올 수 있으며, 도움을 구하는 것은 용기 있는 행동입니다.`
+      : `공유해주신 내용을 보니 현재 관리 가능한 수준의 고민으로 보입니다. 이런 고민을 인식하고 해결하려는 노력 자체가 큰 발전입니다.`;
 
-    // 유형 판단
     let detectedType = '일반 상담';
     for (const [type, keywords] of Object.entries(typeKeywords)) {
       if (keywords.some(keyword => text.includes(keyword))) {
@@ -144,24 +141,11 @@ const InstantAIAnalysis = () => {
       }
     }
 
-    // 심각도별 추천사항
     const recommendations = severity === '높음' 
-      ? [
-          '즉시 전문가 상담 (1577-0199 정신건강위기상담)',
-          '가까운 정신건강복지센터 방문',
-          '24시간 위기상담 서비스 이용'
-        ]
+      ? ['즉시 전문가 상담 권장', '가까운 정신건강복지센터 방문', '24시간 위기상담 서비스 이용']
       : severity === '중간'
-      ? [
-          '전문가 상담을 통한 맞춤 솔루션',
-          '체계적인 관찰일지 작성',
-          '단계별 개선 가이드 제공'
-        ]
-      : [
-          '예방적 상담 및 관찰',
-          '정기적인 자가 체크',
-          '건강한 생활 습관 유지'
-        ];
+      ? ['전문가 상담을 통한 맞춤 솔루션', '체계적인 관찰일지 작성', '단계별 개선 가이드 제공']
+      : ['예방적 상담 및 관찰', '정기적인 자가 체크', '건강한 생활 습관 유지'];
 
     return {
       type: detectedType,
@@ -169,306 +153,9 @@ const InstantAIAnalysis = () => {
       color,
       detailedAdvice,
       recommendations,
-      confidence: Math.floor(Math.random() * 15) + 80, // 80-94%
-      nextSteps: [
-        '3분 온보딩으로 정확한 분석 받기',
-        '전문가 매칭 및 상담 예약',
-        '맞춤형 솔루션 추천 받기'
-      ]
+      confidence: Math.floor(Math.random() * 15) + 80,
+      nextSteps: ['3분 온보딩으로 정확한 분석 받기', '전문가 매칭 및 상담 예약', '맞춤형 솔루션 추천 받기']
     };
-  };
-
-  const handleSendEmail = async () => {
-    if (!user) {
-      toast({
-        title: "로그인이 필요합니다",
-        description: "이메일 발송 기능은 로그인 후 사용 가능합니다.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!analysisResult) {
-      toast({
-        title: "분석 결과가 없습니다",
-        description: "먼저 고민 분석을 진행해주세요.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // 이메일 주소 입력 받기
-    const email = prompt("리포트를 받을 이메일 주소를 입력해주세요:");
-    
-    if (!email) {
-      return;
-    }
-
-    // 간단한 이메일 유효성 검사
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast({
-        title: "유효하지 않은 이메일",
-        description: "올바른 이메일 주소를 입력해주세요.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsSendingEmail(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('send-concern-report', {
-        body: {
-          email,
-          concernText: inputText,
-          analysis: {
-            type: analysisResult.type,
-            severity: analysisResult.severity,
-            detailedAdvice: analysisResult.detailedAdvice || analysisResult.advice,
-            recommendations: analysisResult.recommendations || [],
-            nextSteps: analysisResult.nextSteps || [],
-            confidence: analysisResult.confidence
-          }
-        }
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data?.success) {
-        toast({
-          title: "이메일 발송 완료!",
-          description: `${email}로 리포트가 발송되었습니다. (5토큰 차감)`,
-        });
-      } else {
-        throw new Error(data?.error || '이메일 발송에 실패했습니다.');
-      }
-    } catch (error: any) {
-      console.error('이메일 발송 오류:', error);
-      toast({
-        title: "이메일 발송 실패",
-        description: error.message || "다시 시도해주세요.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSendingEmail(false);
-    }
-  };
-
-  const generateReportText = () => {
-    if (!analysisResult) return '';
-
-    const header = `AI 고민 분석 리포트
-====================================
-분석 일시: ${new Date().toLocaleString('ko-KR')}
-신뢰도: ${analysisResult.confidence}%
-
-고민 내용:
-${inputText}
-
-====================================
-
-📊 분석 결과
-====================================
-유형: ${analysisResult.type}
-심각도: ${analysisResult.severity}
-
-💡 AI 상세 조언
-${analysisResult.detailedAdvice}
-
-✅ 추천 사항
-${analysisResult.recommendations?.map((rec: string, i: number) => `${i + 1}. ${rec}`).join('\n') || ''}
-
-🎯 다음 단계
-${analysisResult.nextSteps?.map((step: string, i: number) => `${i + 1}. ${step}`).join('\n') || ''}
-`;
-
-    if (analysisResult.comprehensiveReports) {
-      const reports = analysisResult.comprehensiveReports;
-      let reportText = header + '\n\n====================================\n9가지 전문 리포트\n====================================\n\n';
-
-      if (reports.developmentAssessment) {
-        reportText += `1. 발달 종합 평가
-- 인지: ${reports.developmentAssessment.cognitive}점
-- 언어: ${reports.developmentAssessment.language}점
-- 운동: ${reports.developmentAssessment.motor}점
-- 사회성: ${reports.developmentAssessment.social}점
-- 종합: ${reports.developmentAssessment.overall}점
-${reports.developmentAssessment.summary}
-
-`;
-      }
-
-      if (reports.psychologicalAnalysis) {
-        reportText += `2. 심리 상태 분석
-- 정서 안정성: ${reports.psychologicalAnalysis.emotionalStability}점
-- 스트레스: ${reports.psychologicalAnalysis.stressLevel}점
-- 심리 건강: ${reports.psychologicalAnalysis.mentalHealth}점
-${reports.psychologicalAnalysis.summary}
-
-`;
-      }
-
-      if (reports.strengthsWeaknesses) {
-        reportText += `3. 강점/약점 분석
-강점:
-${reports.strengthsWeaknesses.strengths?.map((s: string, i: number) => `- ${s}`).join('\n')}
-
-개선 영역:
-${reports.strengthsWeaknesses.weaknesses?.map((w: string, i: number) => `- ${w}`).join('\n')}
-
-성장 방향: ${reports.strengthsWeaknesses.growthDirection}
-
-`;
-      }
-
-      if (reports.customActivities) {
-        reportText += `4. AI 기반 맞춤형 활동 제안
-${reports.customActivities?.map((a: string, i: number) => `${i + 1}. ${a}`).join('\n')}
-
-`;
-      }
-
-      if (reports.developmentRoadmap) {
-        reportText += `5. 단계별 발달 로드맵
-단기 목표 (1-3개월):
-${reports.developmentRoadmap.shortTerm?.map((g: string) => `- ${g}`).join('\n')}
-
-중기 목표 (3-6개월):
-${reports.developmentRoadmap.mediumTerm?.map((g: string) => `- ${g}`).join('\n')}
-
-장기 목표 (6-12개월):
-${reports.developmentRoadmap.longTerm?.map((g: string) => `- ${g}`).join('\n')}
-
-`;
-      }
-
-      if (reports.peerComparison) {
-        reportText += `6. 또래 비교 분석
-연령대: ${reports.peerComparison.ageGroup}
-백분위: ${reports.peerComparison.percentile}%
-${reports.peerComparison.comparison}
-
-`;
-      }
-
-      if (reports.expertOpinion) {
-        reportText += `7. 전문가 소견서
-전문 개입 필요성: ${reports.expertOpinion.interventionNeeded}
-시급성: ${reports.expertOpinion.urgency}
-${reports.expertOpinion.recommendations?.map((r: string, i: number) => `- ${r}`).join('\n')}
-
-`;
-      }
-
-      if (reports.familySupport) {
-        reportText += `8. 가족 지원 가이드
-양육 팁:
-${reports.familySupport.parentingTips?.map((t: string, i: number) => `${i + 1}. ${t}`).join('\n')}
-
-소통 가이드: ${reports.familySupport.communicationGuide}
-
-`;
-      }
-
-      if (reports.longTermPrediction) {
-        reportText += `9. AI 기반 장기 발달 예측
-발달 추세: ${reports.longTermPrediction.developmentTrend}
-잠재력: ${reports.longTermPrediction.potential}점
-${reports.longTermPrediction.forecast}
-`;
-      }
-
-      return reportText;
-    }
-
-    return header;
-  };
-
-  const handleDownloadTXT = () => {
-    const text = generateReportText();
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `AI_분석리포트_${new Date().toISOString().slice(0, 10)}.txt`;
-    link.click();
-    URL.revokeObjectURL(url);
-    
-    toast({
-      title: "TXT 다운로드 완료",
-      description: "분석 리포트가 저장되었습니다",
-    });
-  };
-
-  const handleDownloadPDF = async () => {
-    toast({
-      title: "PDF 생성 중...",
-      description: "잠시만 기다려주세요",
-    });
-
-    try {
-      const { default: html2pdf } = await import('html2pdf.js');
-      
-      const element = document.createElement('div');
-      element.style.padding = '40px';
-      element.style.fontFamily = 'Arial, sans-serif';
-      element.style.lineHeight = '1.6';
-      element.innerHTML = `
-        <h1 style="color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 10px;">AI 고민 분석 리포트</h1>
-        <p><strong>분석 일시:</strong> ${new Date().toLocaleString('ko-KR')}</p>
-        <p><strong>신뢰도:</strong> ${analysisResult?.confidence}%</p>
-        
-        <h2 style="color: #764ba2; margin-top: 30px;">고민 내용</h2>
-        <p style="white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 8px;">${inputText}</p>
-        
-        <h2 style="color: #764ba2; margin-top: 30px;">📊 분석 결과</h2>
-        <p><strong>유형:</strong> ${analysisResult?.type}</p>
-        <p><strong>심각도:</strong> <span style="color: ${analysisResult?.severity === '높음' ? '#dc2626' : analysisResult?.severity === '중간' ? '#ea580c' : '#059669'}; font-weight: bold;">${analysisResult?.severity}</span></p>
-        
-        <h2 style="color: #764ba2; margin-top: 30px;">💡 AI 상세 조언</h2>
-        <p style="white-space: pre-wrap;">${analysisResult?.detailedAdvice}</p>
-        
-        <h2 style="color: #764ba2; margin-top: 30px;">✅ 추천 사항</h2>
-        <ol style="padding-left: 20px;">
-          ${analysisResult?.recommendations?.map((rec: string) => `<li style="margin: 10px 0;">${rec}</li>`).join('') || ''}
-        </ol>
-        
-        <h2 style="color: #764ba2; margin-top: 30px;">🎯 다음 단계</h2>
-        <ol style="padding-left: 20px;">
-          ${analysisResult?.nextSteps?.map((step: string) => `<li style="margin: 10px 0;">${step}</li>`).join('') || ''}
-        </ol>
-        
-        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 12px;">
-          <p>본 분석 결과는 AI 기반으로 제공되며, 전문가의 진단을 대체할 수 없습니다.</p>
-          <p>심각한 심리적 어려움이 있다면 전문가의 상담을 권장합니다.</p>
-        </div>
-      `;
-
-      const opt = {
-        margin: 15,
-        filename: `AI_분석리포트_${new Date().toISOString().slice(0, 10)}.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
-      };
-
-      await html2pdf().set(opt).from(element).save();
-      
-      toast({
-        title: "PDF 다운로드 완료",
-        description: "분석 리포트가 저장되었습니다",
-      });
-    } catch (error) {
-      console.error('PDF 생성 오류:', error);
-      toast({
-        title: "PDF 생성 실패",
-        description: "다시 시도해주세요",
-        variant: "destructive"
-      });
-    }
   };
 
   const handleAnalyze = async () => {
@@ -484,7 +171,7 @@ ${reports.longTermPrediction.forecast}
     if (inputText.trim().length < 10) {
       toast({
         title: "조금만 더 적어주세요",
-        description: "최소 10자 이상 입력해주세요 (예: 아이가 말을 안해요)",
+        description: "최소 10자 이상 입력해주세요",
         variant: "destructive"
       });
       return;
@@ -493,7 +180,6 @@ ${reports.longTermPrediction.forecast}
     setIsAnalyzing(true);
     
     try {
-      // 실제 AI 분석 호출 (fallback 포함)
       const { analysis, reportImages, tableOfContents } = await callAIAnalysis(inputText);
       setAnalysisResult(analysis);
       setReportImages(reportImages || []);
@@ -501,64 +187,23 @@ ${reports.longTermPrediction.forecast}
       setIsAnalyzing(false);
       setShowResult(true);
 
-      // 고민을 데이터베이스에 자동 저장 (로그인한 사용자)
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { error: saveError } = await supabase
-          .from('concern_storage')
-          .insert({
-            user_id: user.id,
-            concern_text: inputText,
-            analysis_type: analysis.type || '기타',
-            analysis_severity: analysis.severity || '낮음',
-            analysis_advice: analysis.detailedAdvice || analysis.advice || '',
-            recommended_tests: analysis.recommendedTests || [],
-            report_images: reportImages || [],
-            full_analysis: {
-              type: analysis.type || '기타',
-              severity: analysis.severity || '낮음',
-              color: analysis.color || 'bg-green-500',
-              detailedAdvice: analysis.detailedAdvice || analysis.advice || '',
-              recommendations: analysis.recommendations || [],
-              confidence: analysis.confidence || 80,
-              nextSteps: analysis.nextSteps || [],
-              recommendedTests: analysis.recommendedTests || []
-            }
-          });
-
-        if (saveError) {
-          console.error('고민 자동 저장 오류:', saveError);
-        } else {
-          toast({
-            title: "자동 저장 완료",
-            description: "분석 결과가 고민 저장소에 저장되었습니다.",
-          });
-        }
-      }
-      
-      // 분석 완료 후 자동으로 PMF 온보딩 제안
-      setTimeout(() => {
-        toast({
-          title: "🎯 더 정확한 분석을 원하신다면?",
-          description: "3분 온보딩으로 맞춤형 솔루션을 받아보세요!",
+        await supabase.from('concern_storage').insert({
+          user_id: user.id,
+          concern_text: inputText,
+          analysis_type: analysis.type || '기타',
+          analysis_severity: analysis.severity || '낮음',
+          analysis_advice: analysis.detailedAdvice || '',
+          full_analysis: analysis
         });
-      }, 3000);
+      }
     } catch (error) {
-      // 이 경우는 거의 발생하지 않음 (callAIAnalysis가 항상 결과를 반환)
-      console.error('Unexpected error:', error);
+      console.error('Analysis error:', error);
       setIsAnalyzing(false);
-      
-      // 마지막 fallback으로 mockAnalysis 사용
       const fallbackResult = mockAnalysis(inputText);
       setAnalysisResult(fallbackResult);
-      setReportImages([]);
-      setTableOfContents(null);
       setShowResult(true);
-      
-      toast({
-        title: "AI 분석이 완료되었습니다",
-        description: "기본 분석 결과를 확인해보세요",
-      });
     }
   };
 
@@ -590,953 +235,201 @@ ${reports.longTermPrediction.forecast}
       }
     } catch (error: any) {
       console.error('프롬프트 확장 오류:', error);
-      toast({
-        title: "확장 실패",
-        description: "프롬프트 확장 중 오류가 발생했습니다.",
-        variant: "destructive"
-      });
     } finally {
       setIsExpanding(false);
     }
   };
 
   const handleStartFullAnalysis = () => {
-    // 입력한 텍스트를 localStorage에 저장하여 온보딩에서 활용
     localStorage.setItem('instant_analysis_input', inputText);
     navigate('/pmf-onboarding');
   };
 
-  const getRecommendedTests = (concernType: string) => {
-    const testRecommendations: { [key: string]: Array<{ name: string; route: string; description: string; isPremium: boolean }> } = {
-      '우울감': [
-        { name: '우울증 테스트', route: '/test/depression', description: '우울증 정도를 체계적으로 평가합니다', isPremium: false },
-        { name: '스트레스 측정', route: '/test/stress', description: '스트레스 수준과 원인을 파악합니다', isPremium: false },
-        { name: '종합 심리 평가', route: '/assessment', description: '전문가 수준의 심층 평가', isPremium: true }
-      ],
-      '불안감': [
-        { name: '불안 테스트', route: '/test/anxiety', description: '불안 증상과 유형을 분석합니다', isPremium: false },
-        { name: '스트레스 측정', route: '/test/stress', description: '스트레스 수준과 원인을 파악합니다', isPremium: false },
-        { name: '종합 심리 평가', route: '/assessment', description: '전문가 수준의 심층 평가', isPremium: true }
-      ],
-      '발달지연': [
-        { name: '영유아 발달 평가', route: '/assessment', description: '아이의 발달 단계를 전문적으로 평가합니다', isPremium: true }
-      ],
-      '육아스트레스': [
-        { name: '스트레스 측정', route: '/test/stress', description: '육아 스트레스 정도를 측정합니다', isPremium: false },
-        { name: '번아웃 테스트', route: '/test/burnout', description: '육아 번아웃 위험을 확인합니다', isPremium: false },
-        { name: '종합 심리 평가', route: '/assessment', description: '전문가 수준의 심층 평가', isPremium: true }
-      ],
-      '학업스트레스': [
-        { name: 'ADHD 테스트', route: '/test/adhd', description: '주의력 및 집중력 문제를 파악합니다', isPremium: false },
-        { name: '스트레스 측정', route: '/test/stress', description: '학업 스트레스 수준을 측정합니다', isPremium: false }
-      ],
-      '대인관계': [
-        { name: '방어기제 분석', route: '/assessment/defense-mechanism-test', description: '관계 패턴과 방어기제를 이해합니다', isPremium: false },
-        { name: '종합 심리 평가', route: '/assessment', description: '사회성 및 정서 발달 평가', isPremium: true }
-      ],
-      '수면문제': [
-        { name: '스트레스 측정', route: '/test/stress', description: '수면 방해 요인을 분석합니다', isPremium: false }
-      ],
-      '분노조절': [
-        { name: '스트레스 측정', route: '/test/stress', description: '분노와 스트레스 관계를 파악합니다', isPremium: false },
-        { name: '방어기제 분석', route: '/assessment/defense-mechanism-test', description: '감정 조절 패턴을 이해합니다', isPremium: false }
-      ]
-    };
-
-    return testRecommendations[concernType] || [
-      { name: '종합 심리 평가', route: '/assessment', description: '전문가 수준의 심층 평가', isPremium: true }
-    ];
-  };
-
-  return (
-    <div className="w-full max-w-6xl mx-auto px-4">
-      {/* 헤더 섹션 with Background */}
-      <div className="relative -mx-4 mb-12 py-12 overflow-hidden rounded-3xl">
-        {/* Background Image with Overlay */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${instantAnalysisBg})` }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0A0E1A]/90 via-[#0A0E1A]/85 to-[#0A0E1A]/90" />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 text-center space-y-4 px-4">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-md rounded-full border border-amber-500/30">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-semibold text-amber-300">AI 즉시 분석</span>
-          </div>
-          
-          <h1 className="text-xl sm:text-3xl md:text-5xl font-black leading-tight">
-            <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent drop-shadow-lg">
-              <span className="block sm:inline">내 고민으로 어떤 솔루션을</span>
-              <span className="block sm:inline"> 받을 수 있을까?</span>
-            </span>
-          </h1>
-          
-          <p className="text-white/90 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-            고민 입력하면 AI가 즉시 분석하고 맞춤 솔루션을 제안합니다
-          </p>
-        </div>
-      </div>
-
-      {/* 메인 콘텐츠 - 모바일은 세로, 데스크톱은 2열 레이아웃 */}
-      <div className="flex flex-col md:grid md:grid-cols-2 gap-6 mb-8">
-        {/* 왼쪽: 입력 영역 */}
-        <div className="space-y-4">
-          <div className="bg-transparent rounded-2xl border border-border/50 p-6 space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-amber-500" />
-              <h2 className="text-lg font-bold text-white drop-shadow-[0_2px_4px_rgba(245,158,11,0.5)]">내 고민 입력</h2>
+  if (showResult && analysisResult) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-2xl mx-auto"
+      >
+        <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl rounded-3xl border border-white/10 p-6 md:p-8 shadow-2xl">
+          {/* 결과 헤더 */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+              <Brain className="w-6 h-6 text-white" />
             </div>
-            
-            {/* 로그인 안내 */}
-            {!user ? (
-              <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-xl p-2.5 sm:p-4 mb-4 overflow-hidden">
-                <div className="flex items-start gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
-                    <Save className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-blue-100 mb-1 text-sm sm:text-base">분석 결과 자동 저장</h3>
-                    <p className="text-[11px] sm:text-sm text-blue-200/80 leading-snug sm:leading-relaxed mb-2.5 sm:mb-3">
-                      로그인하고 분석하면 결과가 자동으로 고민 저장소에 저장됩니다. 언제든 다시 확인할 수 있어요!
-                    </p>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => navigate('/auth')}
-                      className="gap-1.5 sm:gap-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/30 text-blue-100 text-xs sm:text-sm h-8 sm:h-9 px-3 sm:px-4"
-                    >
-                      로그인하고 시작하기
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl p-3 mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                    <Save className="w-4 h-4 text-green-400" />
-                  </div>
-                  <p className="text-sm text-green-100 font-medium">
-                    분석 결과가 자동으로 고민 저장소에 저장됩니다
-                  </p>
-                </div>
-              </div>
-            )}
-            
-            <p className="text-sm sm:text-base md:text-lg font-bold text-white drop-shadow-[0_2px_4px_rgba(245,158,11,0.5)] leading-relaxed text-center sm:text-left">
-              지금 가장 걱정되는 고민이나 문제를 간단히 적어주세요
-            </p>
-            
-            {!showResult ? (
-              <>
-                <div className="relative">
-                  <Textarea
-                    placeholder="지금 가장 걱정되는 한 문장을 적어주세요..."
-                    value={inputText}
-                    onChange={(e) => {
-                      const text = e.target.value;
-                      if (text.length <= 500) {
-                        setInputText(text);
-                      }
-                    }}
-                    className="min-h-[280px] resize-none border-border/50 focus:border-primary/50 rounded-xl focus:ring-2 focus:ring-primary/20 transition-all text-base bg-background/80 backdrop-blur-sm pr-3 pt-3"
-                    maxLength={500}
-                  />
-                  
-                  {/* 음성 입력 버튼 */}
-                  <div className="absolute bottom-3 right-3">
-                    <VoiceInputButton
-                      onTranscription={(text) => {
-                        const newText = inputText + (inputText ? ' ' : '') + text;
-                        if (newText.length <= 500) {
-                          setInputText(newText);
-                        }
-                      }}
-                      className="shadow-lg hover:shadow-xl transition-shadow"
-                    />
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    <span className="font-semibold text-foreground">{inputText.length}</span>/500 <span className="text-xs">(최소 10자)</span>
-                  </span>
-                  
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 bg-amber-500/10 rounded-lg border border-amber-500/20">
-                      <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-500" />
-                      <span className="text-xs font-semibold text-amber-700 dark:text-amber-600">완전무료</span>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="default"
-                      onClick={handleExpandPrompt}
-                      disabled={isExpanding || isAnalyzing || inputText.length < 10}
-                      className="gap-2 text-sm font-bold h-10 px-5 border-2 border-purple-500 hover:bg-purple-500/20 text-purple-50 dark:text-purple-50 hover:text-white dark:hover:text-white animate-glow hover:animate-pulse shadow-[0_0_20px_rgba(168,85,247,0.6)] hover:shadow-[0_0_30px_rgba(168,85,247,0.8)] transition-all bg-gradient-to-r from-purple-500/30 to-pink-500/30"
-                    >
-                      {isExpanding ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-100 border-t-transparent" />
-                          <span className="text-base">다듬는 중...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Wand2 className="w-4 h-4 animate-pulse" />
-                          <span className="text-base">AI다듬기</span>
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="min-h-[280px] p-4 bg-muted/30 rounded-xl border border-border/50">
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{inputText}</p>
-              </div>
-            )}
-          </div>
-          
-          {/* 고민 작성 팁 */}
-          {!showResult && (
-            <div className="bg-gradient-to-br from-amber-50/50 to-orange-50/50 dark:from-amber-950/20 dark:to-orange-950/20 backdrop-blur-sm rounded-xl border border-amber-200/30 dark:border-amber-800/30 p-4">
-              <div className="flex items-start gap-2.5">
-                <div className="flex-shrink-0 w-7 h-7 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
-                  <span className="text-sm">💡</span>
-                </div>
-                <div className="flex-1 space-y-2">
-                  <p className="text-sm font-bold text-amber-900 dark:text-amber-100">
-                    고민 작성 팁
-                  </p>
-                  <ul className="text-xs text-amber-800 dark:text-amber-200 space-y-0.5">
-                    <li>• <span className="font-semibold">💬 "AI 다듬기"</span>로 고민 확장</li>
-                    <li>• 최소 10자 이상, 핵심 고민만 간단히 적어주세요</li>
-                    <li>• 예: "5살 아이 말 늦어요", "아이가 친구 없어요"</li>
-                  </ul>
-                  
-                  <div className="mt-2 pt-2 border-t border-amber-200/50 dark:border-amber-800/50">
-                    <p className="text-xs text-amber-800 dark:text-amber-200">
-                      <span className="font-bold">📊 9가지 전문 리포트</span> + AI 발달 예측 무료 제공
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 분석 버튼 */}
-          {!showResult && (
             <div>
-              <Button
-                onClick={handleAnalyze}
-                disabled={isAnalyzing || inputText.length < 10}
-                size="lg"
-                className="w-full h-16 text-lg font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 border-0 shadow-xl"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <Loader2 className="w-6 h-6 mr-2 animate-spin" />
-                    AI가 분석 중입니다...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-6 h-6 mr-2" />
-                    무료로 분석하기
-                  </>
-                )}
-              </Button>
-              <p className="text-center text-xs sm:text-sm text-muted-foreground mt-3">
-                무료, 30초 완료
+              <h3 className="text-lg font-bold text-white">AI 분석 완료</h3>
+              <p className="text-sm text-white/60">신뢰도 {analysisResult.confidence}%</p>
+            </div>
+          </div>
+
+          {/* 분석 결과 */}
+          <div className="space-y-4 mb-6">
+            <div className="flex items-center gap-3">
+              <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 px-3 py-1">
+                {analysisResult.type}
+              </Badge>
+              <Badge className={`${analysisResult.severity === '높음' ? 'bg-red-500/20 text-red-300 border-red-500/30' : analysisResult.severity === '중간' ? 'bg-orange-500/20 text-orange-300 border-orange-500/30' : 'bg-green-500/20 text-green-300 border-green-500/30'} px-3 py-1`}>
+                심각도: {analysisResult.severity}
+              </Badge>
+            </div>
+
+            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+              <p className="text-white/80 text-sm leading-relaxed">
+                {analysisResult.detailedAdvice}
               </p>
             </div>
-          )}
+
+            <div className="space-y-2">
+              <p className="text-xs font-medium text-white/50 uppercase tracking-wide">추천 사항</p>
+              {analysisResult.recommendations?.slice(0, 3).map((rec: string, i: number) => (
+                <div key={i} className="flex items-center gap-2 text-sm text-white/70">
+                  <CheckCircle className="w-4 h-4 text-green-400 shrink-0" />
+                  <span>{rec}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA 버튼들 */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              onClick={handleStartFullAnalysis}
+              className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-6 rounded-xl"
+            >
+              <Sparkles className="w-5 h-5 mr-2" />
+              정밀 분석 받기
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <Button
+              onClick={() => {
+                setShowResult(false);
+                setInputText('');
+                setAnalysisResult(null);
+              }}
+              variant="outline"
+              className="bg-white/5 border-white/20 text-white/80 hover:bg-white/10 py-6 rounded-xl"
+            >
+              다시 분석하기
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  return (
+    <div className="w-full max-w-2xl mx-auto">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+        className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl"
+      >
+        {/* 헤더 */}
+        <div className="px-5 py-4 border-b border-white/10 bg-gradient-to-r from-amber-500/10 to-orange-500/10">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-white">내 고민 입력</h2>
+              <p className="text-xs text-white/50">분석 결과가 자동으로 고민 저장소에 저장됩니다</p>
+            </div>
+          </div>
         </div>
 
-        {/* 오른쪽: 결과 영역 */}
-        <div className="bg-transparent rounded-2xl border border-border/50 p-6">
-          {!showResult ? (
-            <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-12">
-              <div className="w-16 h-16 bg-muted/50 rounded-2xl flex items-center justify-center">
-                <span className="text-3xl">📖</span>
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-base sm:text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">분석 결과가 여기 표시됩니다</h3>
-                <p className="text-xs sm:text-sm bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent max-w-xs mx-auto leading-relaxed">
-                  왼쪽에 내용을 입력하고<br />
-                  "무료로 분석하기" 버튼을 눌러주세요
-                </p>
-              </div>
+        {/* 입력 영역 */}
+        <div className="p-5 space-y-4">
+          <div className="relative">
+            <Textarea
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="지금 가장 걱정되는 한 문장을 적어주세요..."
+              className="min-h-[140px] bg-slate-800/50 border-white/10 text-white placeholder:text-white/40 rounded-2xl resize-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 text-sm leading-relaxed p-4"
+              maxLength={500}
+            />
+            
+            {/* 음성 입력 버튼 */}
+            <div className="absolute bottom-3 right-3">
+              <VoiceInputButton
+                onTranscription={(text) => setInputText(prev => prev ? `${prev} ${text}` : text)}
+                className="bg-white/10 hover:bg-white/20 border-white/20 text-white/80"
+              />
             </div>
-          ) : (
-            <div className="space-y-6">
-              {/* 결과 헤더 */}
-              <div className="text-center space-y-3">
-                <div className="flex items-center justify-center gap-3">
-                  <CheckCircle className="w-8 h-8 text-amber-600 dark:text-amber-500" />
-                  <h3 className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">AI 분석 완료!</h3>
-                </div>
-                <p className="text-base font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                  신뢰도 <span className="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">{analysisResult?.confidence}%</span>의 분석 결과입니다
-                </p>
-              </div>
+          </div>
 
-              {/* 추천 리포팅 제안 목차 섹션 */}
-              <Card className="border-amber-500/30 bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <span className="text-2xl">📋</span>
-                    <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-                      추천 리포팅 제안 목차
-                    </span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2.5">
-                    <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-foreground flex-shrink-0">1.</span>
-                      <span className="text-foreground font-semibold">발달 종합 평가: 인지, 언어, 운동, 사회성 분석</span>
-                    </div>
-                    <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-foreground flex-shrink-0">2.</span>
-                      <span className="text-foreground font-semibold">심리 상태 분석: 정서적 안정성, 스트레스 수준</span>
-                    </div>
-                    <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-foreground flex-shrink-0">3.</span>
-                      <span className="text-foreground font-semibold">강점/약점 분석: 맞춤형 성장 방향 제시</span>
-                    </div>
-                    <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-foreground flex-shrink-0">4.</span>
-                      <span className="text-foreground font-semibold">맞춤형 활동 제안: AI 기반 발달 촉진 활동</span>
-                    </div>
-                    <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-foreground flex-shrink-0">5.</span>
-                      <span className="text-foreground font-semibold">발달 로드맵: 단계별 성장 계획</span>
-                    </div>
-                    <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-foreground flex-shrink-0">6.</span>
-                      <span className="text-foreground font-semibold">또래 비교 분석: 연령대별 발달 기준</span>
-                    </div>
-                    <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-foreground flex-shrink-0">7.</span>
-                      <span className="text-foreground font-semibold">전문가 소견서: 전문 개입 필요성 평가</span>
-                    </div>
-                    <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-foreground flex-shrink-0">8.</span>
-                      <span className="text-foreground font-semibold">가족 지원 가이드: 부모/보호자 양육 팁</span>
-                    </div>
-                    <div className="flex items-start gap-3 text-sm">
-                      <span className="font-bold text-foreground flex-shrink-0">9.</span>
-                      <span className="text-foreground font-semibold">장기 발달 예측: AI 기반 향후 경향성 분석</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          {/* 글자 수 & 버튼들 */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-white/40">{inputText.length}/500</span>
+              <span className="text-xs text-white/30">(최소 10자)</span>
+            </div>
 
-              {/* AI 생성 미리보기 섹션 */}
-              <Card className="border-amber-500/30 bg-gradient-to-br from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/20">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Sparkles className="w-5 h-5 text-amber-500" />
-                    <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
-                      AI 생성 미리보기
-                    </span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* AI 생성 이미지 갤러리 */}
-                    {reportImages.length > 0 && (
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-semibold text-amber-900 dark:text-amber-100 flex items-center gap-2">
-                            <Wand2 className="w-4 h-4" />
-                            AI 생성 리포트 이미지 ({reportImages.length}개)
-                          </p>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          {reportImages.map((img, idx) => (
-                            <div key={idx} className="space-y-2">
-                              <p className="text-xs text-muted-foreground font-medium">
-                                {idx === 0 ? '커버 이미지' : idx === 1 ? '정서 분석' : '성장 로드맵'}
-                              </p>
-                              <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl overflow-hidden shadow-xl border border-amber-200 dark:border-amber-800">
-                                <img 
-                                  src={img} 
-                                  alt={`AI 생성 이미지 ${idx + 1}`}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                        <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-2">
-                          <Sparkles className="w-3 h-3 text-amber-500" />
-                          <span className="font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                            Gemini AI가 당신의 고민에 맞춰 자동 생성한 전문 리포트 이미지
-                          </span>
-                        </p>
-                      </div>
-                    )}
-
-                    {/* 책 형태 미리보기 */}
-                    <div>
-                      <p className="text-sm font-semibold text-foreground mb-3">📖 리포트 미리보기</p>
-                      <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800">
-                        <div className="space-y-2.5 text-sm">
-                          {(tableOfContents || [
-                            { index: 1, title: '발달 종합 평가' },
-                            { index: 2, title: '심리 상태 분석' },
-                            { index: 3, title: '강점/약점 분석' },
-                            { index: 4, title: '맞춤형 활동 제안' },
-                            { index: 5, title: '발달 로드맵' },
-                            { index: 6, title: '또래 비교 분석' },
-                            { index: 7, title: '전문가 소견서' },
-                            { index: 8, title: '가족 지원 가이드' },
-                            { index: 9, title: '장기 발달 예측' }
-                          ]).map((item) => (
-                            <div key={item.index} className="flex items-start gap-2">
-                              <span className="font-semibold text-amber-700 dark:text-amber-300">{item.index}.</span>
-                              <span className="text-foreground">{item.title}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 분석 결과 카드 */}
-              <Card className="border-border/50 shadow-lg">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className={`w-5 h-5 rounded-full ${analysisResult?.color}`}></div>
-                    <CardTitle className="text-xl font-bold text-foreground">{analysisResult?.type}</CardTitle>
-                    <Badge variant={analysisResult?.severity === '높음' ? 'destructive' : 'secondary'} className="font-semibold">
-                      {analysisResult?.severity} 단계
-                    </Badge>
-                  </div>
-                </CardHeader>
-                
-                <CardContent className="space-y-5">
-                  {analysisResult?.detailedAdvice && (
-                    <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 rounded-xl p-5 border-2 border-amber-200 dark:border-amber-800">
-                      <h4 className="font-bold mb-3 flex items-center gap-2 text-amber-900 dark:text-amber-100 text-base">
-                        <Heart className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                        AI 전문가의 조언
-                      </h4>
-                      <div className={`text-sm leading-relaxed text-amber-950 dark:text-amber-50 font-medium ${!isAdviceExpanded && analysisResult.detailedAdvice.length > 200 ? 'line-clamp-3' : ''}`}>
-                        {analysisResult.detailedAdvice}
-                      </div>
-                      {analysisResult.detailedAdvice.length > 200 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setIsAdviceExpanded(!isAdviceExpanded)}
-                          className="mt-2 text-amber-700 dark:text-amber-300 hover:text-amber-900 dark:hover:text-amber-100 p-0 h-auto font-semibold"
-                        >
-                          {isAdviceExpanded ? (
-                            <>
-                              <ChevronUp className="w-4 h-4 mr-1" />
-                              접기
-                            </>
-                          ) : (
-                            <>
-                              <ChevronDown className="w-4 h-4 mr-1" />
-                              더보기
-                            </>
-                          )}
-                        </Button>
-                      )}
-                    </div>
-                  )}
-
-                  <div>
-                    <h4 className="font-bold mb-3 flex items-center gap-2 text-foreground text-base">
-                      <Target className="w-5 h-5 text-amber-600 dark:text-amber-500" />
-                      추천 솔루션
-                    </h4>
-                    <ul className="space-y-3">
-                      {analysisResult?.recommendations?.map((rec: string, index: number) => (
-                        <li key={index} className="flex items-start gap-3 p-4 bg-muted/80 dark:bg-muted/40 rounded-lg border border-border">
-                          <span className="flex-shrink-0 w-7 h-7 bg-amber-500/20 dark:bg-amber-500/30 rounded-full flex items-center justify-center text-amber-700 dark:text-amber-300 font-bold text-sm">
-                            {index + 1}
-                          </span>
-                          <span className="text-sm text-foreground font-medium pt-0.5">{rec}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 9가지 종합 전문 리포트 */}
-              {analysisResult?.comprehensiveReports && (
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent mb-2">
-                      📊 9가지 종합 전문 리포트
-                    </h3>
-                    <p className="text-sm text-muted-foreground">AI가 분석한 상세한 전문 리포트를 확인하세요</p>
-                  </div>
-
-                  {/* 1. 발달 종합 평가 */}
-                  {analysisResult.comprehensiveReports.developmentAssessment && (
-                    <Card className="border-blue-500/30 bg-gradient-to-br from-blue-50/30 to-indigo-50/30 dark:from-blue-950/20 dark:to-indigo-950/20">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <span className="text-2xl">🧠</span>
-                          <span className="text-blue-900 dark:text-blue-100">1. 발달 종합 평가</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 bg-background/60 rounded-lg">
-                            <p className="text-xs text-muted-foreground mb-1">인지 발달</p>
-                            <p className="text-2xl font-bold text-foreground">{analysisResult.comprehensiveReports.developmentAssessment.cognitive}점</p>
-                          </div>
-                          <div className="p-3 bg-background/60 rounded-lg">
-                            <p className="text-xs text-muted-foreground mb-1">언어 발달</p>
-                            <p className="text-2xl font-bold text-foreground">{analysisResult.comprehensiveReports.developmentAssessment.language}점</p>
-                          </div>
-                          <div className="p-3 bg-background/60 rounded-lg">
-                            <p className="text-xs text-muted-foreground mb-1">운동 발달</p>
-                            <p className="text-2xl font-bold text-foreground">{analysisResult.comprehensiveReports.developmentAssessment.motor}점</p>
-                          </div>
-                          <div className="p-3 bg-background/60 rounded-lg">
-                            <p className="text-xs text-muted-foreground mb-1">사회성 발달</p>
-                            <p className="text-2xl font-bold text-foreground">{analysisResult.comprehensiveReports.developmentAssessment.social}점</p>
-                          </div>
-                        </div>
-                        <div className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-lg border border-blue-200 dark:border-blue-800">
-                          <p className="font-bold text-blue-900 dark:text-blue-100 mb-2">종합 발달 점수: {analysisResult.comprehensiveReports.developmentAssessment.overall}점</p>
-                          <p className="text-sm text-blue-800 dark:text-blue-200">{analysisResult.comprehensiveReports.developmentAssessment.summary}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 2. 심리 상태 분석 */}
-                  {analysisResult.comprehensiveReports.psychologicalAnalysis && (
-                    <Card className="border-purple-500/30 bg-gradient-to-br from-purple-50/30 to-pink-50/30 dark:from-purple-950/20 dark:to-pink-950/20">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <span className="text-2xl">💜</span>
-                          <span className="text-purple-900 dark:text-purple-100">2. 심리 상태 분석</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="grid grid-cols-3 gap-3">
-                          <div className="p-3 bg-background/60 rounded-lg text-center">
-                            <p className="text-xs text-muted-foreground mb-1">정서 안정성</p>
-                            <p className="text-xl font-bold text-foreground">{analysisResult.comprehensiveReports.psychologicalAnalysis.emotionalStability}점</p>
-                          </div>
-                          <div className="p-3 bg-background/60 rounded-lg text-center">
-                            <p className="text-xs text-muted-foreground mb-1">스트레스</p>
-                            <p className="text-xl font-bold text-foreground">{analysisResult.comprehensiveReports.psychologicalAnalysis.stressLevel}점</p>
-                          </div>
-                          <div className="p-3 bg-background/60 rounded-lg text-center">
-                            <p className="text-xs text-muted-foreground mb-1">심리 건강</p>
-                            <p className="text-xl font-bold text-foreground">{analysisResult.comprehensiveReports.psychologicalAnalysis.mentalHealth}점</p>
-                          </div>
-                        </div>
-                        <div className="p-4 bg-purple-50 dark:bg-purple-950/40 rounded-lg border border-purple-200 dark:border-purple-800">
-                          <p className="text-sm text-purple-800 dark:text-purple-200">{analysisResult.comprehensiveReports.psychologicalAnalysis.summary}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 3. 강점/약점 분석 */}
-                  {analysisResult.comprehensiveReports.strengthsWeaknesses && (
-                    <Card className="border-green-500/30 bg-gradient-to-br from-green-50/30 to-emerald-50/30 dark:from-green-950/20 dark:to-emerald-950/20">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <span className="text-2xl">💪</span>
-                          <span className="text-green-900 dark:text-green-100">3. 강점/약점 분석</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <div className="p-4 bg-green-50 dark:bg-green-950/40 rounded-lg border border-green-200 dark:border-green-800">
-                            <h4 className="font-bold text-green-800 dark:text-green-200 mb-3">✨ 강점</h4>
-                            <ul className="space-y-2">
-                              {analysisResult.comprehensiveReports.strengthsWeaknesses.strengths.map((strength: string, idx: number) => (
-                                <li key={idx} className="text-sm text-foreground flex items-start gap-2">
-                                  <span className="text-green-600 dark:text-green-400">•</span>
-                                  <span>{strength}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div className="p-4 bg-orange-50 dark:bg-orange-950/40 rounded-lg border border-orange-200 dark:border-orange-800">
-                            <h4 className="font-bold text-orange-800 dark:text-orange-200 mb-3">📈 개선 영역</h4>
-                            <ul className="space-y-2">
-                              {analysisResult.comprehensiveReports.strengthsWeaknesses.weaknesses.map((weakness: string, idx: number) => (
-                                <li key={idx} className="text-sm text-foreground flex items-start gap-2">
-                                  <span className="text-orange-600 dark:text-orange-400">•</span>
-                                  <span>{weakness}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="p-4 bg-green-50 dark:bg-green-950/40 rounded-lg border border-green-200 dark:border-green-800">
-                          <p className="font-bold text-green-900 dark:text-green-100 mb-1">맞춤형 성장 방향</p>
-                          <p className="text-sm text-green-800 dark:text-green-200">{analysisResult.comprehensiveReports.strengthsWeaknesses.growthDirection}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 4. 맞춤형 활동 제안 */}
-                  {analysisResult.comprehensiveReports.customActivities && (
-                    <Card className="border-yellow-500/30 bg-gradient-to-br from-yellow-50/30 to-amber-50/30 dark:from-yellow-950/20 dark:to-amber-950/20">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <span className="text-2xl">🎯</span>
-                          <span className="text-yellow-900 dark:text-yellow-100">4. AI 기반 맞춤형 활동 제안</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="space-y-3">
-                          {analysisResult.comprehensiveReports.customActivities.map((activity: string, idx: number) => (
-                            <li key={idx} className="p-3 bg-background/60 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                              <div className="flex items-start gap-3">
-                                <span className="flex-shrink-0 w-6 h-6 bg-yellow-500/20 rounded-full flex items-center justify-center text-yellow-700 dark:text-yellow-300 font-bold text-sm">
-                                  {idx + 1}
-                                </span>
-                                <span className="text-sm text-foreground flex-1">{activity}</span>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 5. 발달 로드맵 */}
-                  {analysisResult.comprehensiveReports.developmentRoadmap && (
-                    <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-50/30 to-blue-50/30 dark:from-indigo-950/20 dark:to-blue-950/20">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <span className="text-2xl">🗺️</span>
-                          <span className="text-foreground">5. 단계별 발달 로드맵</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="p-4 bg-indigo-50 dark:bg-indigo-950/40 rounded-lg border border-indigo-200 dark:border-indigo-800">
-                          <h4 className="font-bold text-foreground mb-3">📅 단기 목표 (1-3개월)</h4>
-                          <ul className="space-y-2">
-                            {analysisResult.comprehensiveReports.developmentRoadmap.shortTerm.map((goal: string, idx: number) => (
-                              <li key={idx} className="text-sm text-foreground flex items-start gap-2">
-                                <span className="text-indigo-500">•</span>
-                                <span>{goal}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-lg border border-blue-200 dark:border-blue-800">
-                          <h4 className="font-bold text-foreground mb-3">📅 중기 목표 (3-6개월)</h4>
-                          <ul className="space-y-2">
-                            {analysisResult.comprehensiveReports.developmentRoadmap.mediumTerm.map((goal: string, idx: number) => (
-                              <li key={idx} className="text-sm text-foreground flex items-start gap-2">
-                                <span className="text-blue-500">•</span>
-                                <span>{goal}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className="p-4 bg-purple-50 dark:bg-purple-950/40 rounded-lg border border-purple-200 dark:border-purple-800">
-                          <h4 className="font-bold text-foreground mb-3">📅 장기 목표 (6-12개월)</h4>
-                          <ul className="space-y-2">
-                            {analysisResult.comprehensiveReports.developmentRoadmap.longTerm.map((goal: string, idx: number) => (
-                              <li key={idx} className="text-sm text-foreground flex items-start gap-2">
-                                <span className="text-purple-500">•</span>
-                                <span>{goal}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 6. 또래 비교 분석 */}
-                  {analysisResult.comprehensiveReports.peerComparison && (
-                    <Card className="border-teal-500/30 bg-gradient-to-br from-teal-50/30 to-cyan-50/30 dark:from-teal-950/20 dark:to-cyan-950/20">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <span className="text-2xl">👥</span>
-                          <span className="text-foreground">6. 또래 비교 분석</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 bg-background/60 rounded-lg">
-                            <p className="text-xs text-muted-foreground mb-1">연령대</p>
-                            <p className="text-lg font-bold text-foreground">{analysisResult.comprehensiveReports.peerComparison.ageGroup}</p>
-                          </div>
-                          <div className="p-3 bg-background/60 rounded-lg">
-                            <p className="text-xs text-muted-foreground mb-1">백분위</p>
-                            <p className="text-lg font-bold text-foreground">{analysisResult.comprehensiveReports.peerComparison.percentile}%</p>
-                          </div>
-                        </div>
-                          <div className="p-4 bg-teal-50 dark:bg-teal-950/40 rounded-lg border border-teal-200 dark:border-teal-800">
-                            <p className="text-sm text-foreground">{analysisResult.comprehensiveReports.peerComparison.comparison}</p>
-                          </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 7. 전문가 소견서 */}
-                  {analysisResult.comprehensiveReports.expertOpinion && (
-                    <Card className="border-red-500/30 bg-gradient-to-br from-red-50/30 to-orange-50/30 dark:from-red-950/20 dark:to-orange-950/20">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <span className="text-2xl">👨‍⚕️</span>
-                          <span className="text-red-900 dark:text-red-100">7. 전문가 소견서</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 bg-background/60 rounded-lg">
-                            <p className="text-xs text-muted-foreground mb-1">전문 개입 필요성</p>
-                            <Badge variant={analysisResult.comprehensiveReports.expertOpinion.interventionNeeded === '높음' ? 'destructive' : 'secondary'}>
-                              {analysisResult.comprehensiveReports.expertOpinion.interventionNeeded}
-                            </Badge>
-                          </div>
-                          <div className="p-3 bg-background/60 rounded-lg">
-                            <p className="text-xs text-muted-foreground mb-1">시급성</p>
-                            <Badge variant={analysisResult.comprehensiveReports.expertOpinion.urgency === '높음' ? 'destructive' : 'secondary'}>
-                              {analysisResult.comprehensiveReports.expertOpinion.urgency}
-                            </Badge>
-                          </div>
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">전문가 권장사항</h4>
-                          <ul className="space-y-2">
-                            {analysisResult.comprehensiveReports.expertOpinion.recommendations.map((rec: string, idx: number) => (
-                              <li key={idx} className="text-sm text-foreground flex items-start gap-2 p-2 bg-background/60 rounded">
-                                <span className="text-red-500">•</span>
-                                <span>{rec}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 8. 가족 지원 가이드 */}
-                  {analysisResult.comprehensiveReports.familySupport && (
-                    <Card className="border-pink-500/30 bg-gradient-to-br from-pink-50/30 to-rose-50/30 dark:from-pink-950/20 dark:to-rose-950/20">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <span className="text-2xl">❤️</span>
-                          <span className="text-pink-900 dark:text-pink-100">8. 가족 지원 가이드</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div>
-                          <h4 className="font-bold text-pink-700 dark:text-pink-300 mb-2">부모/보호자 실천 팁</h4>
-                          <ul className="space-y-2">
-                            {analysisResult.comprehensiveReports.familySupport.parentingTips.map((tip: string, idx: number) => (
-                              <li key={idx} className="text-sm text-foreground flex items-start gap-2 p-2 bg-background/60 rounded">
-                                <span className="text-pink-500">•</span>
-                                <span>{tip}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className="p-4 bg-pink-50 dark:bg-pink-950/40 rounded-lg border border-pink-200 dark:border-pink-800">
-                          <p className="font-bold text-pink-900 dark:text-pink-100 mb-1">효과적인 소통 방법</p>
-                          <p className="text-sm text-pink-800 dark:text-pink-200">{analysisResult.comprehensiveReports.familySupport.communicationGuide}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {/* 9. 장기 발달 예측 */}
-                  {analysisResult.comprehensiveReports.longTermPrediction && (
-                    <Card className="border-violet-500/30 bg-gradient-to-br from-violet-50/30 to-purple-50/30 dark:from-violet-950/20 dark:to-purple-950/20">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <span className="text-2xl">🔮</span>
-                          <span className="text-violet-900 dark:text-violet-100">9. AI 기반 장기 발달 예측</span>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 bg-background/60 rounded-lg">
-                            <p className="text-xs text-muted-foreground mb-1">발달 경향성</p>
-                            <Badge variant={analysisResult.comprehensiveReports.longTermPrediction.developmentTrend === '긍정적' ? 'default' : 'secondary'}>
-                              {analysisResult.comprehensiveReports.longTermPrediction.developmentTrend}
-                            </Badge>
-                          </div>
-                          <div className="p-3 bg-background/60 rounded-lg">
-                            <p className="text-xs text-muted-foreground mb-1">잠재력</p>
-                            <p className="text-xl font-bold text-foreground">{analysisResult.comprehensiveReports.longTermPrediction.potential}점</p>
-                          </div>
-                        </div>
-                        <div className="p-4 bg-violet-50 dark:bg-violet-950/40 rounded-lg border border-violet-200 dark:border-violet-800">
-                          <p className="font-bold text-violet-900 dark:text-violet-100 mb-2">장기 전망</p>
-                          <p className="text-sm text-violet-800 dark:text-violet-200">{analysisResult.comprehensiveReports.longTermPrediction.forecast}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-              )}
-
-              {/* AI 맞춤 테스트 추천 */}
-              {analysisResult?.recommendedTests && analysisResult.recommendedTests.length > 0 && (
-                <Card className="border-primary/30 shadow-lg bg-gradient-to-br from-primary/5 to-primary/10">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Target className="w-5 h-5 text-primary" />
-                      <span className="text-foreground">우리 플랫폼 추천 검사</span>
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      AI가 분석한 결과를 바탕으로 추천하는 정밀 검사입니다
-                    </p>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-4">
-                      {analysisResult.recommendedTests.map((test: any, index: number) => (
-                        <div
-                          key={index}
-                          className="p-4 bg-background/60 backdrop-blur-sm rounded-lg border border-border hover:border-primary/50 transition-all"
-                        >
-                          <div className="space-y-3">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex items-center gap-2">
-                                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                                  {index + 1}
-                                </Badge>
-                                <h5 className="font-bold text-foreground text-lg">{test.name}</h5>
-                              </div>
-                            </div>
-                            
-                            <div className="space-y-2 pl-8">
-                              <div>
-                                <p className="text-xs text-muted-foreground font-semibold mb-1">추천 이유</p>
-                                <p className="text-sm text-foreground">{test.reason}</p>
-                              </div>
-                              
-                              {test.expectedFindings && (
-                                <div>
-                                  <p className="text-xs text-muted-foreground font-semibold mb-1">예상 결과</p>
-                                  <p className="text-sm text-muted-foreground/80">{test.expectedFindings}</p>
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="flex justify-end pt-2">
-                              <Button
-                                size="sm"
-                                className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                                onClick={() => {
-                                  if (test.testId) {
-                                    navigate(`/assessment?type=${test.testId}`);
-                                  }
-                                }}
-                              >
-                                <Sparkles className="w-4 h-4 mr-2" />
-                                검사 시작하기
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-
-              {/* CTA 버튼들 */}
-              <div className="space-y-3">
-                {/* 리포트 저장 버튼들 */}
-                <div className="grid grid-cols-3 gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={handleDownloadTXT}
-                    className="gap-2"
-                  >
-                    <Save className="w-4 h-4" />
-                    TXT
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={handleDownloadPDF}
-                    className="gap-2"
-                  >
-                    <Save className="w-4 h-4" />
-                    PDF
-                  </Button>
-                  {user && (
-                    <Button
-                      variant="outline"
-                      onClick={handleSendEmail}
-                      disabled={isSendingEmail}
-                      className="gap-2"
-                    >
-                      {isSendingEmail ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Mail className="w-4 h-4" />
-                      )}
-                      이메일
-                    </Button>
-                  )}
-                </div>
-
-                <Button
-                  onClick={() => navigate('/observation')}
-                  size="lg"
-                  className="w-full font-bold"
-                >
-                  <ArrowRight className="w-5 h-5 mr-2" />
-                  관찰일지 작성하기
-                </Button>
-                
-                <div className="grid grid-cols-2 gap-3">
-                  <Button variant="outline" onClick={handleStartFullAnalysis}>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    3분 온보딩
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setShowResult(false);
-                      setInputText('');
-                    }}
-                  >
-                    다시 분석
-                  </Button>
-                </div>
-
-                {user && (
-                  <>
-                <Button
-                  onClick={() => navigate('/concern-storage')}
-                  size="lg"
-                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-semibold"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  고민 저장소 보기
-                </Button>
-                  </>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleExpandPrompt}
+                disabled={isExpanding || inputText.length < 10}
+                size="sm"
+                variant="ghost"
+                className="text-xs text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 gap-1.5 h-8 px-3"
+              >
+                {isExpanding ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Wand2 className="w-3.5 h-3.5" />
                 )}
+                AI 다듬기
+              </Button>
+            </div>
+          </div>
+
+          {/* 팁 카드 */}
+          <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-2xl p-4 border border-amber-500/20">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center shrink-0">
+                <Lightbulb className="w-4 h-4 text-amber-400" />
+              </div>
+              <div className="space-y-1.5">
+                <p className="text-sm font-medium text-amber-200">고민 작성 팁</p>
+                <ul className="text-xs text-white/60 space-y-1">
+                  <li>• "AI 다듬기"로 고민을 확장할 수 있어요</li>
+                  <li>• 최소 10자 이상, 핵심 고민만 간단히 적어주세요</li>
+                  <li>• 예: "5살 아이 말 늦어요", "아이가 친구 없어요"</li>
+                </ul>
+                <div className="pt-2 flex items-center gap-1.5 text-xs text-amber-300/80">
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>9가지 전문 리포트 + AI 발달 예측 무료 제공</span>
+                </div>
               </div>
             </div>
-          )}
+          </div>
+
+          {/* 분석 시작 버튼 */}
+          <Button
+            onClick={handleAnalyze}
+            disabled={isAnalyzing || inputText.length < 10}
+            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-6 rounded-2xl shadow-lg shadow-amber-500/25 transition-all duration-300 disabled:opacity-50"
+          >
+            {isAnalyzing ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                AI가 분석 중이에요...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 mr-2" />
+                무료로 분석하기
+              </>
+            )}
+          </Button>
+
+          <p className="text-center text-xs text-white/40">
+            무료, 30초 완료
+          </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

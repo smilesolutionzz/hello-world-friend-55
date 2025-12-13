@@ -99,8 +99,8 @@ const HeroSection = () => {
             </span>
           </h1>
           
-          <p className="text-white/70 text-sm md:text-base max-w-xl mx-auto">
-            지금 가장 걱정되는 고민이나 문제를 간단히 적어주세요
+          <p className="text-white/70 text-xs md:text-base max-w-xl mx-auto">
+            고민을 적으면 AI가 즉시 분석해드려요
           </p>
         </motion.div>
 

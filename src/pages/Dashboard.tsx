@@ -309,18 +309,18 @@ const DashboardNew = () => {
     : 0;
 
   return (
-    <div className="min-h-screen bg-[#0A0E1A]">
+    <div className="min-h-screen bg-background">
       <UnifiedNavigation />
       {/* Header */}
         <Tabs defaultValue="overview">
-          <div className="border-b border-slate-800 bg-[#0F1419]">
+          <div className="border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-white">
+              <h1 className="text-2xl font-bold text-foreground">
                 개인 대시보드
               </h1>
-              <p className="text-sm text-slate-400 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {profile?.display_name}님의 검사 데이터
               </p>
             </div>
@@ -330,7 +330,6 @@ const DashboardNew = () => {
                 onClick={loadDashboardData} 
                 variant="outline" 
                 size="sm"
-                className="bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 새로고침
@@ -340,16 +339,16 @@ const DashboardNew = () => {
 
           {/* Tab Navigation */}
           
-            <TabsList className="bg-transparent border-b border-slate-800 rounded-none h-auto p-0 w-full justify-start">
+            <TabsList className="bg-transparent border-b border-border rounded-none h-auto p-0 w-full justify-start">
               <TabsTrigger 
                 value="overview" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-muted-foreground data-[state=active]:text-foreground"
               >
                 개요
               </TabsTrigger>
               <TabsTrigger 
                 value="assessments" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-muted-foreground data-[state=active]:text-foreground"
               >
                 검사 이력 ({filteredObservations.length})
               </TabsTrigger>
@@ -364,72 +363,72 @@ const DashboardNew = () => {
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               {/* 총 검사 */}
-              <Card className="bg-[#0F1823] border-slate-800">
+              <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-400">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
                     총 검사
                   </CardTitle>
                   <Users className="h-4 w-4 text-amber-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-white">{filteredObservations.length}</div>
-                  <p className="text-xs text-slate-500 mt-1">전체 누적 검사</p>
+                  <div className="text-3xl font-bold text-foreground">{filteredObservations.length}</div>
+                  <p className="text-xs text-muted-foreground mt-1">전체 누적 검사</p>
                 </CardContent>
               </Card>
 
               {/* 이번 달 검사 */}
-              <Card className="bg-[#0F1823] border-slate-800">
+              <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-400">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
                     이번 달
                   </CardTitle>
                   <Target className="h-4 w-4 text-orange-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-white">{recent30DaysObservations}</div>
-                  <p className="text-xs text-slate-500 mt-1">최근 30일 검사</p>
+                  <div className="text-3xl font-bold text-foreground">{recent30DaysObservations}</div>
+                  <p className="text-xs text-muted-foreground mt-1">최근 30일 검사</p>
                 </CardContent>
               </Card>
 
               {/* 평균 점수 */}
-              <Card className="bg-[#0F1823] border-slate-800">
+              <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-400">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
                     평균 점수
                   </CardTitle>
                   <Activity className="h-4 w-4 text-amber-400" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-white">{averageScore}점</div>
-                  <p className="text-xs text-slate-500 mt-1">전체 평균</p>
+                  <div className="text-3xl font-bold text-foreground">{averageScore}점</div>
+                  <p className="text-xs text-muted-foreground mt-1">전체 평균</p>
                 </CardContent>
               </Card>
 
               {/* 개선율 */}
-              <Card className="bg-[#0F1823] border-slate-800">
+              <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-400">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
                     개선율
                   </CardTitle>
                   <TrendingUp className="h-4 w-4 text-blue-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-white">{improvementRate.toFixed(1)}%</div>
-                  <p className="text-xs text-slate-500 mt-1">최초 대비 개선</p>
+                  <div className="text-3xl font-bold text-foreground">{improvementRate.toFixed(1)}%</div>
+                  <p className="text-xs text-muted-foreground mt-1">최초 대비 개선</p>
                 </CardContent>
               </Card>
 
               {/* 활동 점수 */}
-              <Card className="bg-[#0F1823] border-slate-800">
+              <Card className="bg-card border-border">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-400">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
                     활동 점수
                   </CardTitle>
                   <BarChart3 className="h-4 w-4 text-green-500" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-white">0.0</div>
-                  <p className="text-xs text-slate-500 mt-1">종합 활동 지수</p>
+                  <div className="text-3xl font-bold text-foreground">0.0</div>
+                  <p className="text-xs text-muted-foreground mt-1">종합 활동 지수</p>
                 </CardContent>
               </Card>
             </div>
@@ -437,9 +436,9 @@ const DashboardNew = () => {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* 월별 검사 추이 - 최근 3개월 */}
-              <Card className="bg-[#0F1823] border-slate-800">
+              <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-white">월별 검사 추이 (최근 3개월)</CardTitle>
+                  <CardTitle className="text-lg font-medium text-foreground">월별 검사 추이 (최근 3개월)</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -464,9 +463,9 @@ const DashboardNew = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-[#0F1823] border-slate-800">
+              <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-white">영역별 평균 점수</CardTitle>
+                  <CardTitle className="text-lg font-medium text-foreground">영역별 평균 점수</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {distributionData.length > 0 ? (
@@ -514,9 +513,9 @@ const DashboardNew = () => {
 
             {/* 영역별 점수 타임라인 */}
             {categoryTimelineData.length > 0 && (
-              <Card className="bg-[#0F1823] border-slate-800">
+              <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle className="text-lg font-medium text-white">영역별 점수 추이 (최근 10회)</CardTitle>
+                  <CardTitle className="text-lg font-medium text-foreground">영역별 점수 추이 (최근 10회)</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={350}>
@@ -572,20 +571,20 @@ const DashboardNew = () => {
             </div>
 
             {/* Assessment Results Table */}
-            <Card className="bg-[#0F1823] border-slate-800">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-lg font-medium text-white">최근 검사 결과</CardTitle>
+                <CardTitle className="text-lg font-medium text-foreground">최근 검사 결과</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-slate-800">
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">검사일</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">연령대</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">종합 점수</th>
-                        <th className="text-left py-3 px-4 text-sm font-medium text-slate-400">상태</th>
-                        <th className="text-right py-3 px-4 text-sm font-medium text-slate-400">작업</th>
+                      <tr className="border-b border-border">
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">검사일</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">연령대</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">종합 점수</th>
+                        <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">상태</th>
+                        <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">작업</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -603,12 +602,12 @@ const DashboardNew = () => {
                           : 'bg-slate-900/30 text-slate-400 border-slate-800';
                         
                         return (
-                          <tr key={obs.id} className="border-b border-slate-800 hover:bg-slate-900/50 transition-colors">
-                            <td className="py-3 px-4 text-sm text-white">
+                          <tr key={obs.id} className="border-b border-border hover:bg-muted/50 transition-colors">
+                            <td className="py-3 px-4 text-sm text-foreground">
                               {format(new Date(obs.created_at), 'yyyy. MM. dd', { locale: ko })}
                             </td>
-                            <td className="py-3 px-4 text-sm text-slate-300">{obs.age_group}</td>
-                            <td className="py-3 px-4 text-sm text-white">
+                            <td className="py-3 px-4 text-sm text-muted-foreground">{obs.age_group}</td>
+                            <td className="py-3 px-4 text-sm text-foreground">
                               {hasScore ? `${obs.score_overall}점` : '-'}
                             </td>
                             <td className="py-3 px-4">
@@ -628,7 +627,7 @@ const DashboardNew = () => {
                                     });
                                     navigate(`/assessment-detail/${obs.id}`);
                                   }}
-                                  className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
+                                  className="h-8 w-8 p-0"
                                 >
                                   <Eye className="h-4 w-4" />
                                 </Button>
@@ -641,7 +640,7 @@ const DashboardNew = () => {
                                       description: "검사 결과를 PDF로 다운로드합니다." 
                                     });
                                   }}
-                                  className="h-8 w-8 p-0 text-slate-400 hover:text-white hover:bg-slate-800"
+                                  className="h-8 w-8 p-0"
                                 >
                                   <Download className="h-4 w-4" />
                                 </Button>
@@ -652,7 +651,7 @@ const DashboardNew = () => {
                       })}
                       {filteredObservations.length === 0 && (
                         <tr>
-                          <td colSpan={5} className="py-8 text-center text-slate-500">
+                          <td colSpan={5} className="py-8 text-center text-muted-foreground">
                             아직 검사 기록이 없습니다.
                           </td>
                         </tr>
@@ -666,7 +665,7 @@ const DashboardNew = () => {
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Card 
-                className="bg-[#0F1823] border-slate-800 cursor-pointer hover:bg-slate-900/50 transition-all"
+                className="bg-card border-border cursor-pointer hover:bg-muted/50 transition-all"
                 onClick={() => navigate('/assessment')}
               >
                 <CardContent className="pt-6">
@@ -675,15 +674,15 @@ const DashboardNew = () => {
                       <FileText className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-white mb-1">새로운 검사</h3>
-                      <p className="text-sm text-slate-400">AI 발달·심리 검사</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">새로운 검사</h3>
+                      <p className="text-sm text-muted-foreground">AI 발달·심리 검사</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               <Card 
-                className="bg-[#0F1823] border-slate-800 cursor-pointer hover:bg-slate-900/50 transition-all"
+                className="bg-card border-border cursor-pointer hover:bg-muted/50 transition-all"
                 onClick={() => navigate('/iep-generator')}
               >
                 <CardContent className="pt-6">
@@ -692,15 +691,15 @@ const DashboardNew = () => {
                       <Brain className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-white mb-1">맞춤형 IEP</h3>
-                      <p className="text-sm text-slate-400">개별교육계획 생성</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">맞춤형 IEP</h3>
+                      <p className="text-sm text-muted-foreground">개별교육계획 생성</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               <Card 
-                className="bg-[#0F1823] border-slate-800 cursor-pointer hover:bg-slate-900/50 transition-all"
+                className="bg-card border-border cursor-pointer hover:bg-muted/50 transition-all"
                 onClick={() => navigate('/concern-storage')}
               >
                 <CardContent className="pt-6">
@@ -709,15 +708,15 @@ const DashboardNew = () => {
                       <Heart className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-white mb-1">고민 저장소</h3>
-                      <p className="text-sm text-slate-400">AI 분석 결과 확인</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">고민 저장소</h3>
+                      <p className="text-sm text-muted-foreground">AI 분석 결과 확인</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               <Card 
-                className="bg-[#0F1823] border-slate-800 cursor-pointer hover:bg-slate-900/50 transition-all"
+                className="bg-card border-border cursor-pointer hover:bg-muted/50 transition-all"
                 onClick={() => navigate('/experts')}
               >
                 <CardContent className="pt-6">
@@ -726,8 +725,8 @@ const DashboardNew = () => {
                       <UserCheck className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base text-white mb-1">전문가 상담</h3>
-                      <p className="text-sm text-slate-400">1:1 전문가 상담</p>
+                      <h3 className="font-semibold text-base text-foreground mb-1">전문가 상담</h3>
+                      <p className="text-sm text-muted-foreground">1:1 전문가 상담</p>
                     </div>
                   </div>
                 </CardContent>

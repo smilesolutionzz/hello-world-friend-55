@@ -212,10 +212,10 @@ export const NavigationTutorial: React.FC<NavigationTutorialProps> = ({
           </div>
 
           {/* Title */}
-          <h3 className="text-xl font-bold mb-3">{step.title}</h3>
+          <h3 className="text-xl font-bold mb-3 text-primary">{step.title}</h3>
 
           {/* Description */}
-          <p className="text-muted-foreground text-sm leading-relaxed">
+          <p className="text-foreground text-sm leading-relaxed">
             {step.description}
           </p>
         </div>

@@ -419,9 +419,6 @@ export const ModernNavigation = () => {
           </div>
         </div>
       </motion.nav>
-
-      {/* Spacer for fixed nav */}
-      <div className="h-16 lg:h-16" />
     </>
   );
 };

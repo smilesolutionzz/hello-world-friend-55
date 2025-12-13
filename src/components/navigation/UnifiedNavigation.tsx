@@ -192,6 +192,7 @@ export const UnifiedNavigation = () => {
                   <Button
                     variant={isActive('/assessment') || isActive('/premium-assessment') || isActive('/han-medicine-test') ? "default" : "ghost"}
                     size="sm"
+                    data-tutorial="assessment"
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
                     <TrendingUp className="w-4 h-4 mr-2" />
@@ -231,6 +232,7 @@ export const UnifiedNavigation = () => {
                   <Button
                     variant={isActive('/ai-assistant') || isActive('/observation') || isActive('/voice-emotion-analysis') || isActive('/metaverse-voice') ? "default" : "ghost"}
                     size="sm"
+                    data-tutorial="aih-agent"
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
                     <Bot className="w-4 h-4 mr-2" />
@@ -278,6 +280,7 @@ export const UnifiedNavigation = () => {
                   <Button
                     variant={isActive('/dashboard') || isActive('/institution-admin') || isActive('/concern-storage') || isActive('/report-generator') ? "default" : "ghost"}
                     size="sm"
+                    data-tutorial="my-data"
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
                     <History className="w-4 h-4 mr-2" />
@@ -326,6 +329,7 @@ export const UnifiedNavigation = () => {
                   <Button
                     variant={isActive('/expert-hiring') || isActive('/token-subscription') ? "default" : "ghost"}
                     size="sm"
+                    data-tutorial="expert-service"
                     className="h-9 px-4 rounded-lg font-medium text-muted-foreground hover:text-foreground hover:bg-accent data-[state=open]:bg-accent transition-colors"
                   >
                     <UserCheck className="w-4 h-4 mr-2" />

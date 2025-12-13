@@ -183,18 +183,13 @@ const AssessmentHistory = () => {
   };
 
   const handleViewDetail = (assessment: CombinedAssessment) => {
-    if (assessment.source === 'test_results') {
-      // test_results는 /assessment/:id로 이동
-      navigate(`/assessment/${assessment.id}`);
-    } else {
-      // assessments는 /assessment-detail/:id로 이동
-      navigate(`/assessment-detail/${assessment.id}`, { 
-        state: { 
-          assessment: assessment,
-          showResults: true 
-        } 
-      });
-    }
+    // 모든 결과를 동일한 상세 페이지로 이동하고 state로 데이터 전달
+    navigate(`/assessment/${assessment.id}`, { 
+      state: { 
+        assessment: assessment,
+        showResults: true 
+      } 
+    });
   };
 
   const getScoreDisplay = (results: any) => {

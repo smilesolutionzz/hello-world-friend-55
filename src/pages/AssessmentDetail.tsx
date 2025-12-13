@@ -78,13 +78,38 @@ export default function AssessmentDetail() {
 
       if (assessmentError) throw assessmentError;
       
+      // assessments 테이블에서 못 찾으면 test_results 테이블에서 검색
       if (!assessmentData) {
+        const { data: testResultData, error: testResultError } = await supabase
+          .from('test_results')
+          .select(`*, test_types(name, description)`)
+          .eq('id', id)
+          .eq('user_id', user.id)
+          .maybeSingle();
+          
+        if (testResultError) throw testResultError;
+        
+        if (testResultData) {
+          const scores = testResultData.scores as any;
+          setAssessment({
+            id: testResultData.id,
+            user_id: testResultData.user_id,
+            results: scores,
+            analysis: scores?.analysis || '',
+            created_at: testResultData.completed_at || testResultData.created_at,
+            age_group: scores?.ageGroup,
+            test_type: testResultData.test_types?.name
+          });
+          setLoading(false);
+          return;
+        }
+        
         toast({
           title: "검사 결과를 찾을 수 없습니다",
           description: "삭제되었거나 접근 권한이 없습니다.",
           variant: "destructive",
         });
-        navigate('/dashboard');
+        navigate(-1);
         return;
       }
       
@@ -109,7 +134,7 @@ export default function AssessmentDetail() {
         description: error.message,
         variant: "destructive",
       });
-      navigate('/dashboard');
+      navigate(-1);
     } finally {
       setLoading(false);
     }
@@ -230,8 +255,8 @@ export default function AssessmentDetail() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">검사 결과를 찾을 수 없습니다</h2>
-          <Button onClick={() => navigate('/dashboard')}>
-            대시보드로 돌아가기
+          <Button onClick={() => navigate(-1)}>
+            뒤로가기
           </Button>
         </div>
       </div>

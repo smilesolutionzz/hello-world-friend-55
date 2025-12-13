@@ -348,28 +348,10 @@ const DashboardNew = () => {
                 개요
               </TabsTrigger>
               <TabsTrigger 
-                value="wellness" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
-              >
-                웰니스 분석
-              </TabsTrigger>
-              <TabsTrigger 
-                value="ai-insights" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
-              >
-                AI 인사이트
-              </TabsTrigger>
-              <TabsTrigger 
                 value="assessments" 
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
               >
                 검사 이력 ({filteredObservations.length})
-              </TabsTrigger>
-              <TabsTrigger 
-                value="family" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent bg-transparent text-slate-400 data-[state=active]:text-white"
-              >
-                가족 관리
               </TabsTrigger>
             </TabsList>
         </div>
@@ -753,27 +735,9 @@ const DashboardNew = () => {
             </div>
           </TabsContent>
 
-          {/* Wellness Analysis Tab */}
-          <TabsContent value="wellness" className="mt-0">
-            <WellnessAnalysis observations={filteredObservations} />
-          </TabsContent>
-
-          {/* AI Insights Tab */}
-          <TabsContent value="ai-insights" className="mt-0">
-            <div className="space-y-6">
-              <PersonalityAnalysis testData={[]} observations={filteredObservations} />
-              <AIInsights observations={filteredObservations} />
-            </div>
-          </TabsContent>
-
           {/* Assessments Tab */}
           <TabsContent value="assessments" className="mt-0">
             <AssessmentHistory />
-          </TabsContent>
-
-          {/* Family Tab */}
-          <TabsContent value="family" className="mt-0">
-            <FamilyManagement onUpdate={loadDashboardData} />
           </TabsContent>
       </div>
         </Tabs>

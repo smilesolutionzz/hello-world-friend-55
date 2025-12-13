@@ -234,14 +234,12 @@ export default function OtrovertTest({ onComplete, onBack }: OtrovertTestProps) 
       [currentQuestionData.id]: { value, score }
     });
     
-    // 자동으로 다음 질문으로 넘어가기
-    setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-      } else {
-        calculateResult();
-      }
-    }, 300);
+    // 즉시 다음 질문으로 이동
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      calculateResult();
+    }
   };
 
   const handleNext = () => {

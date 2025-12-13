@@ -128,7 +128,10 @@ export const useTestResultActions = () => {
       container.style.position = 'fixed';
       container.style.left = '-99999px';
       container.style.top = '0';
-      container.style.width = '210mm'; // A4 width
+      container.style.width = '794px'; // A4 width in pixels (210mm at 96 DPI)
+      container.style.backgroundColor = '#ffffff';
+      container.style.padding = '0';
+      container.style.margin = '0';
       container.innerHTML = reportHtml;
       document.body.appendChild(container);
 

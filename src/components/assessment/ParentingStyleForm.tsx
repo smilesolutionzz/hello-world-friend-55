@@ -32,10 +32,8 @@ const ParentingStyleForm = ({ onComplete, onBack }: ParentingStyleFormProps) => 
       [questionId]: parseInt(value)
     }));
     
-    // 자동으로 다음 문항으로 이동 (1.2초 지연)
-    setTimeout(() => {
-      handleNext();
-    }, 1200);
+    // 즉시 다음 문항으로 이동
+    handleNext();
   };
 
   const handleStartTest = async () => {

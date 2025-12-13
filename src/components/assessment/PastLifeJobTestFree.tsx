@@ -86,13 +86,12 @@ const PastLifeJobTestFree = ({ onComplete, onBack }: PastLifeJobTestFreeProps) =
   const handleAnswer = (value: string) => {
     setAnswers({ ...answers, [currentQuestion]: value });
     
-    setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-      } else {
-        analyzeResult();
-      }
-    }, 500);
+    // 즉시 다음 문항으로 이동
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      analyzeResult();
+    }
   };
 
   const handlePrevious = () => {

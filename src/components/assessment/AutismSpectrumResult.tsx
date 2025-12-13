@@ -89,37 +89,39 @@ const AutismSpectrumResult: React.FC<AutismSpectrumResultProps> = ({ results, an
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-blue-50/20 to-purple-50/20">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        {/* Header - 모바일 최적화 */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <Button variant="ghost" onClick={onBack} className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             뒤로가기
           </Button>
-          <div className="text-center">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <div className="text-center w-full sm:w-auto">
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               검사 결과
             </h1>
-            <p className="text-sm text-muted-foreground">AIH 신경발달 조기선별검사</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">AIH 신경발달 조기선별검사</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-end">
             <Button 
               onClick={handleSaveResult}
               disabled={isSaving}
               variant="outline"
               size="sm"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 flex-1 sm:flex-initial"
             >
               <Save className="w-4 h-4" />
-              {isSaving ? "저장 중..." : "결과 저장"}
+              <span className="hidden sm:inline">{isSaving ? "저장 중..." : "결과 저장"}</span>
+              <span className="sm:hidden">{isSaving ? "저장..." : "저장"}</span>
             </Button>
             <Button 
               onClick={handleGeneratePDF}
               disabled={isGeneratingPDF}
               size="sm"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 flex-1 sm:flex-initial"
             >
               <Download className="w-4 h-4" />
-              {isGeneratingPDF ? "생성 중..." : "PDF 다운로드"}
+              <span className="hidden sm:inline">{isGeneratingPDF ? "생성 중..." : "PDF 다운로드"}</span>
+              <span className="sm:hidden">{isGeneratingPDF ? "생성..." : "PDF"}</span>
             </Button>
           </div>
         </div>

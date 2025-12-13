@@ -101,10 +101,8 @@ const RelationshipStyleForm = ({ onComplete, onBack }: RelationshipStyleFormProp
   const handleAnswerChange = (value: string) => {
     setAnswers({ ...answers, [currentQuestion]: value });
     
-    // 자동으로 다음 질문으로 이동
-    setTimeout(() => {
-      handleNext();
-    }, 500);
+    // 즉시 다음 질문으로 이동
+    handleNext();
   };
 
   const handleNext = () => {

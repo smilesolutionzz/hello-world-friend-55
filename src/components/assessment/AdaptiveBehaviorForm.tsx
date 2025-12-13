@@ -142,9 +142,7 @@ const AdaptiveBehaviorForm = ({ onComplete, onBack }: AdaptiveBehaviorFormProps)
     setAnswers(newAnswers);
 
     if (currentIndex < questions.length - 1) {
-      setTimeout(() => {
-        setCurrentIndex(currentIndex + 1);
-      }, 300);
+      setCurrentIndex(currentIndex + 1);
     } else {
       const total = newAnswers.reduce((sum, val) => sum + val, 0);
       const average = total / questions.length;

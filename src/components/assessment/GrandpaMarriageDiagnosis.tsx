@@ -174,14 +174,12 @@ export default function GrandpaMarriageDiagnosis({ onComplete, onBack }: Grandpa
       [questions[currentQuestion].id]: value
     }));
     
-    // 자동으로 다음 문항으로 이동
-    setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(prev => prev + 1);
-      } else {
-        handleSubmit();
-      }
-    }, 300);
+    // 즉시 다음 문항으로 이동
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(prev => prev + 1);
+    } else {
+      handleSubmit();
+    }
   };
 
   const handlePrevious = () => {

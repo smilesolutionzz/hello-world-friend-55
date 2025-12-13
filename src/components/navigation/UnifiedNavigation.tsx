@@ -35,8 +35,10 @@ import {
   Crown,
   Mic,
   Bot,
-  Activity
+  Activity,
+  CircleHelp
 } from 'lucide-react';
+import { NavigationTutorial, useNavigationTutorial } from './NavigationTutorial';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useTokens } from '@/hooks/useTokens';
@@ -98,6 +100,7 @@ export const UnifiedNavigation = () => {
   const { user } = useAuthGuard();
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const { isOpen: isTutorialOpen, showTutorial, hideTutorial } = useNavigationTutorial();
 
   const handleNavigation = (path: string, item?: NavigationItem) => {
     if (item?.requiresAuth && !user) {
@@ -367,6 +370,25 @@ export const UnifiedNavigation = () => {
                 이수석칼럼
               </Button>
 
+              {/* Tutorial Guide Button */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={showTutorial}
+                      className="h-9 w-9 p-0 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    >
+                      <CircleHelp className="w-5 h-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>가이드 보기</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
               {/* Notification Bell */}
               {user && (
                 <BookingNotificationBell />
@@ -625,6 +647,12 @@ export const UnifiedNavigation = () => {
           </div>
         </div>
       )}
+
+      {/* Navigation Tutorial */}
+      <NavigationTutorial 
+        isOpen={isTutorialOpen} 
+        onClose={hideTutorial} 
+      />
     </>
   );
 };

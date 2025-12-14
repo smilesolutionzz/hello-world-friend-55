@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import LoginRequiredOverlay from '@/components/auth/LoginRequiredOverlay';
 import SEOHead from '@/components/common/SEOHead';
 
+
 type DrawingPhase = 'house' | 'tree' | 'person' | 'analyzing' | 'result';
 
 interface AnalysisResult {
@@ -176,14 +177,14 @@ export default function DrawingDiaryHTP() {
   return (
     <>
       <SEOHead 
-        title="HTP 그림심리검사 - AIHPRO | 아동 감정 분석"
-        description="집, 나무, 사람 그림을 통해 아동의 정서상태와 심리를 AI가 분석합니다. HTP 심리검사로 자녀의 마음을 이해하세요."
-        keywords="HTP검사,그림심리검사,아동심리,정서분석,심리테스트,AI분석,AIHPRO"
+        title="그림 마음일기 - AIHPRO | 아동 감정 분석"
+        description="집, 나무, 사람 그림을 통해 아동의 정서상태와 심리를 AI가 분석합니다. 그림으로 자녀의 마음을 이해하세요."
+        keywords="그림일기,마음일기,아동심리,정서분석,심리테스트,AI분석,AIHPRO"
         canonicalUrl="https://aihpro.com/drawing-diary-htp"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "WebApplication",
-          "name": "HTP 그림심리검사",
+          "name": "그림 마음일기",
           "description": "AI 기반 아동 그림심리분석 서비스",
           "url": "https://aihpro.com/drawing-diary-htp",
           "applicationCategory": "HealthApplication"
@@ -199,11 +200,12 @@ export default function DrawingDiaryHTP() {
                 홈으로
               </Button>
               <h1 className="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                HTP 그림일기
+                그림 마음일기
               </h1>
               <div className="w-20" />
             </div>
           </header>
+
 
           <main className="container mx-auto px-4 py-8 max-w-4xl">
             <AnimatePresence mode="wait">

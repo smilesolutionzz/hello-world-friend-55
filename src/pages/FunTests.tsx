@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Camera, Brain, Heart, Crown, Star, Zap, MessageCircle, Lightbulb, Users, Trophy } from 'lucide-react';
+import { Sparkles, Camera, Brain, Heart, Crown, Star, Zap, MessageCircle, Lightbulb, Users, Trophy, Fingerprint } from 'lucide-react';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 import PastLifeJobTest from '@/components/assessment/PastLifeJobTest';
 import AnimalFaceTest from '@/components/assessment/AnimalFaceTest';
@@ -229,6 +229,16 @@ const FunTests = () => {
             rank={12}
             onClick={() => setCurrentTest('parent_child_play')}
             className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50 w-full"
+          />
+
+          <AIFeatureCard
+            title="🖐️ 지문 인지기질검사"
+            description="지문 스캔으로 알아보는 나의 두뇌 유형! 알파, 베타, 감마, 델타, 오메가, 시그마 6가지 패턴 중 나의 유형은?"
+            icon={Fingerprint}
+            aiLevel="basic"
+            rank={13}
+            onClick={() => navigate('/fingerprint-temperament')}
+            className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 w-full"
           />
         </div>
 

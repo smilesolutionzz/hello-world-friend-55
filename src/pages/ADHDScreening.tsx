@@ -12,34 +12,35 @@ import { useNavigate } from 'react-router-dom';
 import LoginRequiredOverlay from '@/components/auth/LoginRequiredOverlay';
 import SEOHead from '@/components/common/SEOHead';
 
+
 interface Question {
   id: number;
-  category: 'attention' | 'hyperactivity' | 'impulsivity';
+  category: 'attention' | 'activity' | 'selfcontrol';
   text: string;
 }
 
 const questions: Question[] = [
-  // 주의력 결핍 (Attention)
+  // 주의력 영역 (Attention)
   { id: 1, category: 'attention', text: '세부 사항에 주의를 기울이지 못하거나 학교 과제에서 부주의한 실수를 합니다.' },
   { id: 2, category: 'attention', text: '과제나 놀이 활동에서 지속적으로 주의를 유지하기 어렵습니다.' },
   { id: 3, category: 'attention', text: '다른 사람이 직접 말할 때 경청하지 않는 것처럼 보입니다.' },
   { id: 4, category: 'attention', text: '지시를 따르지 않고 과제를 완수하지 못합니다.' },
   { id: 5, category: 'attention', text: '과제와 활동을 체계적으로 조직하는 데 어려움이 있습니다.' },
   { id: 6, category: 'attention', text: '지속적인 정신적 노력이 필요한 과제를 피하거나 싫어합니다.' },
-  // 과잉행동 (Hyperactivity)
-  { id: 7, category: 'hyperactivity', text: '손발을 가만히 두지 못하거나 의자에서 몸을 꿈틀거립니다.' },
-  { id: 8, category: 'hyperactivity', text: '앉아 있어야 할 상황에서 자리를 떠납니다.' },
-  { id: 9, category: 'hyperactivity', text: '부적절한 상황에서 과도하게 뛰어다니거나 기어오릅니다.' },
-  { id: 10, category: 'hyperactivity', text: '조용히 여가 활동에 참여하기 어렵습니다.' },
-  { id: 11, category: 'hyperactivity', text: '"끊임없이 움직이는" 것처럼 행동하거나 "모터가 달린 것처럼" 행동합니다.' },
-  { id: 12, category: 'hyperactivity', text: '과도하게 말을 많이 합니다.' },
-  // 충동성 (Impulsivity)
-  { id: 13, category: 'impulsivity', text: '질문이 끝나기 전에 대답을 불쑥 내뱉습니다.' },
-  { id: 14, category: 'impulsivity', text: '자기 차례를 기다리기 어렵습니다.' },
-  { id: 15, category: 'impulsivity', text: '다른 사람의 활동을 방해하거나 끼어듭니다.' },
-  { id: 16, category: 'impulsivity', text: '결과를 생각하지 않고 행동합니다.' },
-  { id: 17, category: 'impulsivity', text: '감정 조절에 어려움이 있습니다.' },
-  { id: 18, category: 'impulsivity', text: '위험한 활동을 즐기거나 위험을 무시합니다.' },
+  // 활동성 영역 (Activity)
+  { id: 7, category: 'activity', text: '손발을 가만히 두지 못하거나 의자에서 몸을 꿈틀거립니다.' },
+  { id: 8, category: 'activity', text: '앉아 있어야 할 상황에서 자리를 떠납니다.' },
+  { id: 9, category: 'activity', text: '부적절한 상황에서 과도하게 뛰어다니거나 기어오릅니다.' },
+  { id: 10, category: 'activity', text: '조용히 여가 활동에 참여하기 어렵습니다.' },
+  { id: 11, category: 'activity', text: '"끊임없이 움직이는" 것처럼 행동하거나 "모터가 달린 것처럼" 행동합니다.' },
+  { id: 12, category: 'activity', text: '과도하게 말을 많이 합니다.' },
+  // 자기조절 영역 (Self-control)
+  { id: 13, category: 'selfcontrol', text: '질문이 끝나기 전에 대답을 불쑥 내뱉습니다.' },
+  { id: 14, category: 'selfcontrol', text: '자기 차례를 기다리기 어렵습니다.' },
+  { id: 15, category: 'selfcontrol', text: '다른 사람의 활동을 방해하거나 끼어듭니다.' },
+  { id: 16, category: 'selfcontrol', text: '결과를 생각하지 않고 행동합니다.' },
+  { id: 17, category: 'selfcontrol', text: '감정 조절에 어려움이 있습니다.' },
+  { id: 18, category: 'selfcontrol', text: '위험한 활동을 즐기거나 위험을 무시합니다.' },
 ];
 
 const answerOptions = [
@@ -52,8 +53,8 @@ const answerOptions = [
 interface ScreeningResult {
   riskLevel: 'low' | 'moderate' | 'high';
   attentionScore: number;
-  hyperactivityScore: number;
-  impulsivityScore: number;
+  activityScore: number;
+  selfcontrolScore: number;
   totalScore: number;
   recommendations: string[];
   nextSteps: string[];
@@ -98,13 +99,13 @@ export default function ADHDScreening() {
 
   const calculateResult = () => {
     const attentionQuestions = questions.filter(q => q.category === 'attention');
-    const hyperactivityQuestions = questions.filter(q => q.category === 'hyperactivity');
-    const impulsivityQuestions = questions.filter(q => q.category === 'impulsivity');
+    const activityQuestions = questions.filter(q => q.category === 'activity');
+    const selfcontrolQuestions = questions.filter(q => q.category === 'selfcontrol');
 
     const attentionScore = attentionQuestions.reduce((sum, q) => sum + (answers[q.id] || 0), 0);
-    const hyperactivityScore = hyperactivityQuestions.reduce((sum, q) => sum + (answers[q.id] || 0), 0);
-    const impulsivityScore = impulsivityQuestions.reduce((sum, q) => sum + (answers[q.id] || 0), 0);
-    const totalScore = attentionScore + hyperactivityScore + impulsivityScore;
+    const activityScore = activityQuestions.reduce((sum, q) => sum + (answers[q.id] || 0), 0);
+    const selfcontrolScore = selfcontrolQuestions.reduce((sum, q) => sum + (answers[q.id] || 0), 0);
+    const totalScore = attentionScore + activityScore + selfcontrolScore;
 
     const maxScore = questions.length * 3;
     const percentage = (totalScore / maxScore) * 100;
@@ -116,7 +117,7 @@ export default function ADHDScreening() {
     if (percentage < 30) {
       riskLevel = 'low';
       recommendations = [
-        '현재 ADHD 관련 증상이 크게 나타나지 않습니다',
+        '현재 주의력 관련 어려움이 크게 나타나지 않습니다',
         '규칙적인 생활 패턴을 유지해주세요',
         '정기적인 발달 모니터링을 권장합니다'
       ];
@@ -128,7 +129,7 @@ export default function ADHDScreening() {
     } else if (percentage < 60) {
       riskLevel = 'moderate';
       recommendations = [
-        '일부 ADHD 관련 증상이 관찰됩니다',
+        '일부 주의력 관련 어려움이 관찰됩니다',
         '구조화된 환경과 루틴이 도움될 수 있습니다',
         '전문가 상담을 고려해보세요'
       ];
@@ -140,12 +141,12 @@ export default function ADHDScreening() {
     } else {
       riskLevel = 'high';
       recommendations = [
-        'ADHD 관련 증상이 두드러지게 나타납니다',
+        '주의력 관련 어려움이 두드러지게 나타납니다',
         '전문가의 정밀 진단이 필요합니다',
         '조기 개입이 효과적일 수 있습니다'
       ];
       nextSteps = [
-        '소아정신과 전문의 상담 필수',
+        '소아정신과 전문의 상담 권장',
         '종합 심리검사 권장',
         '학교/기관과 협력 체계 구축'
       ];
@@ -154,8 +155,8 @@ export default function ADHDScreening() {
     setResult({
       riskLevel,
       attentionScore,
-      hyperactivityScore,
-      impulsivityScore,
+      activityScore,
+      selfcontrolScore,
       totalScore,
       recommendations,
       nextSteps
@@ -174,8 +175,8 @@ export default function ADHDScreening() {
   const getCategoryLabel = (category: string) => {
     switch (category) {
       case 'attention': return { label: '주의력', icon: BookOpen, color: 'bg-blue-100 text-blue-600' };
-      case 'hyperactivity': return { label: '과잉행동', icon: Activity, color: 'bg-orange-100 text-orange-600' };
-      case 'impulsivity': return { label: '충동성', icon: Clock, color: 'bg-purple-100 text-purple-600' };
+      case 'activity': return { label: '활동성', icon: Activity, color: 'bg-orange-100 text-orange-600' };
+      case 'selfcontrol': return { label: '자기조절', icon: Clock, color: 'bg-purple-100 text-purple-600' };
       default: return { label: '', icon: Brain, color: '' };
     }
   };
@@ -183,9 +184,9 @@ export default function ADHDScreening() {
   return (
     <>
       <SEOHead 
-        title="ADHD 조기선별검사 - AIHPRO | 아동 발달지연 선별"
-        description="과학적 기준에 따른 ADHD 조기 선별 검사. 주의력결핍, 과잉행동, 충동성을 체계적으로 평가하고 전문가 연계까지 제공합니다."
-        keywords="ADHD검사,주의력결핍,과잉행동,발달지연,조기선별,아동심리,AIHPRO"
+        title="주의력 자가점검 - AIHPRO | 아동 집중력 체크"
+        description="주의력, 활동성, 자기조절 능력을 체계적으로 평가하는 자가점검 도구입니다. 전문가 상담 전 참고용으로 활용하세요."
+        keywords="주의력검사,집중력체크,아동발달,자가점검,아동심리,AIHPRO"
         canonicalUrl="https://aihpro.com/adhd-screening"
       />
       <LoginRequiredOverlay>
@@ -198,11 +199,12 @@ export default function ADHDScreening() {
                 홈으로
               </Button>
               <h1 className="text-xl font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">
-                ADHD 조기선별검사
+                주의력 자가점검
               </h1>
               <div className="w-20" />
             </div>
           </header>
+
 
           <main className="container mx-auto px-4 py-8 max-w-2xl">
             <AnimatePresence mode="wait">
@@ -215,9 +217,9 @@ export default function ADHDScreening() {
                   <Card className="bg-gradient-to-br from-teal-500 to-blue-600 text-white mb-6">
                     <CardContent className="py-8 text-center">
                       <Brain className="w-16 h-16 mx-auto mb-4" />
-                      <h2 className="text-2xl font-bold mb-2">ADHD 조기선별검사</h2>
+                      <h2 className="text-2xl font-bold mb-2">주의력 자가점검</h2>
                       <p className="opacity-90">
-                        DSM-5 기준에 따른 과학적 선별 도구입니다
+                        주의력과 자기조절 능력을 점검하는 자가체크 도구입니다
                       </p>
                     </CardContent>
                   </Card>
@@ -232,7 +234,7 @@ export default function ADHDScreening() {
                         </li>
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="w-5 h-5 text-teal-500 mt-0.5" />
-                          <span>주의력, 과잉행동, 충동성 3개 영역 평가</span>
+                          <span>주의력, 활동성, 자기조절 3개 영역 평가</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <CheckCircle2 className="w-5 h-5 text-teal-500 mt-0.5" />
@@ -240,7 +242,7 @@ export default function ADHDScreening() {
                         </li>
                         <li className="flex items-start gap-2">
                           <AlertTriangle className="w-5 h-5 text-yellow-500 mt-0.5" />
-                          <span>이 검사는 선별용이며, 정식 진단은 전문의 상담이 필요합니다</span>
+                          <span>이 검사는 자가점검용이며, 정확한 평가는 전문가 상담이 필요합니다</span>
                         </li>
                       </ul>
                     </CardContent>
@@ -249,8 +251,8 @@ export default function ADHDScreening() {
                   <div className="grid grid-cols-3 gap-4 mb-6">
                     {[
                       { icon: BookOpen, label: '주의력', desc: '집중, 조직력' },
-                      { icon: Activity, label: '과잉행동', desc: '활동 수준' },
-                      { icon: Clock, label: '충동성', desc: '자기 조절' },
+                      { icon: Activity, label: '활동성', desc: '활동 수준' },
+                      { icon: Clock, label: '자기조절', desc: '행동 조절' },
                     ].map((item, i) => (
                       <Card key={i}>
                         <CardContent className="py-4 text-center">
@@ -409,9 +411,9 @@ export default function ADHDScreening() {
                     <CardContent>
                       <div className="space-y-4">
                         {[
-                          { label: '주의력 결핍', score: result.attentionScore, max: 18, color: 'bg-blue-500' },
-                          { label: '과잉행동', score: result.hyperactivityScore, max: 18, color: 'bg-orange-500' },
-                          { label: '충동성', score: result.impulsivityScore, max: 18, color: 'bg-purple-500' },
+                          { label: '주의력', score: result.attentionScore, max: 18, color: 'bg-blue-500' },
+                          { label: '활동성', score: result.activityScore, max: 18, color: 'bg-orange-500' },
+                          { label: '자기조절', score: result.selfcontrolScore, max: 18, color: 'bg-purple-500' },
                         ].map(item => (
                           <div key={item.label}>
                             <div className="flex justify-between text-sm mb-1">

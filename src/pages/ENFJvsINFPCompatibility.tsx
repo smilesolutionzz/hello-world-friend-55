@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import LoginRequiredOverlay from '@/components/auth/LoginRequiredOverlay';
 
 type Gender = 'male' | 'female' | null;
 type MBTIType = 'ENFJ' | 'INFP' | null;
@@ -229,6 +230,7 @@ const ENFJvsINFPCompatibility = () => {
   };
 
   return (
+    <LoginRequiredOverlay>
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-800 to-rose-900 overflow-hidden">
       {/* 배경 파티클 */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -947,6 +949,7 @@ const ENFJvsINFPCompatibility = () => {
         </motion.div>
       </div>
     </div>
+    </LoginRequiredOverlay>
   );
 };
 

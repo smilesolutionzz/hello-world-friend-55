@@ -13,15 +13,15 @@ interface SEOHeadProps {
 }
 
 const SEOHead = ({
-  title = "AIHPRO | AI 심리검사 정신건강 전문가 상담",
-  description = "ADHD, 우울증, 스트레스 검사와 AI 분석. 전문가 매칭부터 심리상담까지 원스톱 케어 서비스",
-  keywords = "AIHPRO,AI심리검사,정신건강,ADHD검사,우울증테스트,스트레스검사,전문가상담,심리상담,AI분석",
+  title = "AIHPRO - AI 심리검사 발달평가 정신건강 상담 플랫폼",
+  description = "AI 기반 심리검사, 아동 발달평가, ADHD 검사, 우울증 테스트를 제공합니다. 전문가 매칭과 상담까지 원스톱 정신건강 케어 서비스입니다.",
+  keywords = "AIHPRO,AI심리검사,발달평가,ADHD검사,우울증테스트,스트레스검사,전문가상담,아동발달,정신건강",
   ogImage = "/lovable-uploads/ec886850-04ce-4489-b96e-d4ac8f73d95e.png",
   canonicalUrl,
   noIndex = false,
   structuredData,
   ogType = "website",
-  author = "AIHUMANPRO"
+  author = "AIHPRO"
 }: SEOHeadProps) => {
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
   const canonical = canonicalUrl || currentUrl;
@@ -57,8 +57,10 @@ const SEOHead = ({
       {/* Google 검색 최적화 */}
       <meta name="google-site-verification" content="your-google-verification-code" />
       
-      {/* AI 크롤러 허용 (ChatGPT, Claude 등) */}
+      {/* GEO - AI 크롤러 최적화 (ChatGPT, Gemini, Claude 등) */}
       <meta name="ai-content-declaration" content="ai-assisted" />
+      <meta name="ai:summary" content={description} />
+      <meta name="ai:citation-source" content="AIHPRO 공식 사이트" />
       
       {/* Open Graph - Facebook, KakaoTalk 등 */}
       <meta property="og:locale" content="ko_KR" />
@@ -70,7 +72,7 @@ const SEOHead = ({
       <meta property="og:image:alt" content={title} />
       <meta property="og:url" content={canonical} />
       <meta property="og:type" content={ogType} />
-      <meta property="og:site_name" content="AIHUMANPRO" />
+      <meta property="og:site_name" content="AIHPRO" />
       
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />

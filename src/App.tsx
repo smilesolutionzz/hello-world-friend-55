@@ -130,6 +130,7 @@ import AttachmentStyleTest from "./pages/AttachmentStyleTest";
 import EducationFeed from "./pages/EducationFeed";
 import MBTITest from "./pages/MBTITest";
 import ENFJvsINFPCompatibility from "./pages/ENFJvsINFPCompatibility";
+import FingerprintTemperamentTest from "./pages/FingerprintTemperamentTest";
 
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
@@ -227,6 +228,7 @@ const App = () => {
           <Route path="/fun-tests" element={<FunTests />} />
            <Route path="/fun-test-result" element={<FunTestResult />} />
            <Route path="/enfj-infp-compatibility" element={<ENFJvsINFPCompatibility />} />
+           <Route path="/fingerprint-temperament" element={<FingerprintTemperamentTest />} />
           
           <Route path="/assessment-history" element={<AssessmentHistory />} />
           <Route path="/life-achievement-history" element={<LifeAchievementHistory />} />

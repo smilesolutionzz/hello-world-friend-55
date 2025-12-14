@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Fingerprint, Brain, Sparkles, RefreshCw, Share2, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import LoginRequiredOverlay from '@/components/auth/LoginRequiredOverlay';
 import { Helmet } from 'react-helmet-async';
 
 interface TemperamentResult {
@@ -175,7 +176,7 @@ export default function FingerprintTemperamentTest() {
   };
 
   return (
-    <>
+    <LoginRequiredOverlay>
       <Helmet>
         <title>지문 인지기질검사 | 나의 두뇌 유형은?</title>
         <meta name="description" content="지문 스캔으로 알아보는 나의 인지기질 유형. 독특한 두뇌 패턴을 분석해보세요." />
@@ -471,6 +472,6 @@ export default function FingerprintTemperamentTest() {
           </AnimatePresence>
         </div>
       </div>
-    </>
+    </LoginRequiredOverlay>
   );
 }

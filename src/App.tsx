@@ -131,6 +131,9 @@ import EducationFeed from "./pages/EducationFeed";
 import MBTITest from "./pages/MBTITest";
 import ENFJvsINFPCompatibility from "./pages/ENFJvsINFPCompatibility";
 import FingerprintTemperamentTest from "./pages/FingerprintTemperamentTest";
+import DrawingDiaryHTP from "./pages/DrawingDiaryHTP";
+import GrowthDevelopmentReport from "./pages/GrowthDevelopmentReport";
+import ADHDScreening from "./pages/ADHDScreening";
 
 import HanMedicineTest from "./pages/HanMedicineTest";
 import IEPView from "./pages/IEPView";
@@ -229,6 +232,9 @@ const App = () => {
            <Route path="/fun-test-result" element={<FunTestResult />} />
            <Route path="/enfj-infp-compatibility" element={<ENFJvsINFPCompatibility />} />
            <Route path="/fingerprint-temperament" element={<FingerprintTemperamentTest />} />
+           <Route path="/drawing-diary-htp" element={<DrawingDiaryHTP />} />
+           <Route path="/growth-report" element={<GrowthDevelopmentReport />} />
+           <Route path="/adhd-screening" element={<ADHDScreening />} />
           
           <Route path="/assessment-history" element={<AssessmentHistory />} />
           <Route path="/life-achievement-history" element={<LifeAchievementHistory />} />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { detectRedFlagsFromResult, RedFlagResult } from '@/utils/redFlagDetection';
 
 interface EnhancedAnalysisResult {
   analysis: string;
@@ -35,6 +36,12 @@ export const useEnhancedAnalysis = ({
   const [analysis, setAnalysis] = useState<EnhancedAnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [redFlagResult, setRedFlagResult] = useState<RedFlagResult>({
+    hasRedFlags: false,
+    flags: [],
+    overallSeverity: 'none'
+  });
+  const [showRedFlagAlert, setShowRedFlagAlert] = useState(false);
 
   const fetchEnhancedAnalysis = async () => {
     try {
@@ -63,6 +70,21 @@ export const useEnhancedAnalysis = ({
 
       console.log('Enhanced analysis received:', data);
       setAnalysis(data);
+
+      // 레드플래그 감지
+      const redFlags = detectRedFlagsFromResult({
+        analysis: data.analysis,
+        riskLevel: data.riskLevel,
+        recommendations: data.recommendations,
+        scoreInterpretation: data.scoreInterpretation
+      }, assessmentType);
+      
+      setRedFlagResult(redFlags);
+      
+      // 레드플래그가 있으면 알림 표시
+      if (redFlags.hasRedFlags) {
+        setTimeout(() => setShowRedFlagAlert(true), 1500);
+      }
 
       // Save to database for future reference
       await saveAnalysisToDatabase(data);
@@ -125,7 +147,12 @@ export const useEnhancedAnalysis = ({
     analysis,
     isLoading,
     error,
-    refetch: fetchEnhancedAnalysis
+    refetch: fetchEnhancedAnalysis,
+    // 레드플래그 관련 상태
+    redFlagResult,
+    showRedFlagAlert,
+    closeRedFlagAlert: () => setShowRedFlagAlert(false),
+    openRedFlagAlert: () => setShowRedFlagAlert(true)
   };
 };
 

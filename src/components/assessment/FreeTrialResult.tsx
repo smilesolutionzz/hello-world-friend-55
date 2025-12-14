@@ -3,11 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Share2, Crown, Lock, ArrowRight, Star, ImageIcon, Loader2, FileDown } from 'lucide-react';
+import { Brain, Share2, Crown, Lock, ArrowRight, Star, ImageIcon, Loader2, FileDown, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAutoSaveTestResult } from '@/hooks/useAutoSaveTestResult';
 import { downloadResultAsPDF } from '@/utils/pdfDownload';
+import { useRedFlagDetection } from '@/hooks/useRedFlagDetection';
+import RedFlagAlertDialog from './RedFlagAlertDialog';
 
 interface FreeTrialResultProps {
   result: {
@@ -35,6 +37,18 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
   const [generatedImage, setGeneratedImage] = useState<string>("");
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
+
+  // 레드플래그 감지
+  const { redFlagResult, showAlert, closeAlert, openAlert, hasRedFlags } = useRedFlagDetection({
+    result: {
+      level: result.level,
+      description: result.description,
+      totalScore: result.totalScore,
+      recommendations: result.recommendations
+    },
+    testType: result.testType,
+    enabled: true
+  });
 
   const handleDownloadPDF = async () => {
     setIsDownloadingPDF(true);
@@ -146,7 +160,44 @@ const FreeTrialResult = ({ result }: FreeTrialResultProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-purple-500/10 to-blue-500/20 py-8">
+      {/* 레드플래그 알림 다이얼로그 */}
+      <RedFlagAlertDialog 
+        isOpen={showAlert} 
+        onClose={closeAlert} 
+        redFlagResult={redFlagResult} 
+      />
+
       <div id="free-trial-result" className="container mx-auto px-4 max-w-4xl">
+        {/* 레드플래그 배너 (항상 표시) */}
+        {hasRedFlags && (
+          <div 
+            onClick={openAlert}
+            className={`mb-6 p-4 rounded-lg border-2 cursor-pointer transition-all hover:shadow-lg ${
+              redFlagResult.overallSeverity === 'critical' 
+                ? 'bg-destructive/10 border-destructive animate-pulse' 
+                : 'bg-orange-50 border-orange-400'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <AlertTriangle className={`w-6 h-6 flex-shrink-0 ${
+                redFlagResult.overallSeverity === 'critical' ? 'text-destructive' : 'text-orange-600'
+              }`} />
+              <div className="flex-1">
+                <p className={`font-semibold ${
+                  redFlagResult.overallSeverity === 'critical' ? 'text-destructive' : 'text-orange-700'
+                }`}>
+                  {redFlagResult.overallSeverity === 'critical' 
+                    ? '⚠️ 즉각적인 전문가 상담이 필요합니다' 
+                    : '⚠️ 전문가 상담을 권장드립니다'}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  검사 결과에서 중요한 신호가 감지되었습니다. 탭하여 자세히 보기
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">

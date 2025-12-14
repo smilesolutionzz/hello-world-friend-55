@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Fingerprint, Brain, Sparkles, RefreshCw, Share2, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import LoginRequiredOverlay from '@/components/auth/LoginRequiredOverlay';
-import { Helmet } from 'react-helmet-async';
+import SEOHead from '@/components/common/SEOHead';
 
 interface TemperamentResult {
   type: string;
@@ -176,11 +176,27 @@ export default function FingerprintTemperamentTest() {
   };
 
   return (
-    <LoginRequiredOverlay>
-      <Helmet>
-        <title>지문 인지기질검사 | 나의 두뇌 유형은?</title>
-        <meta name="description" content="지문 스캔으로 알아보는 나의 인지기질 유형. 독특한 두뇌 패턴을 분석해보세요." />
-      </Helmet>
+    <>
+      <SEOHead 
+        title="지문 인지기질검사 - AIHPRO | 나의 두뇌 유형 분석"
+        description="지문 스캔으로 알아보는 나의 인지기질 유형. 알파, 베타, 감마, 델타, 오메가, 시그마 6가지 두뇌 패턴 중 나의 유형을 분석해보세요."
+        keywords="지문검사,인지기질검사,두뇌유형,성격검사,심리테스트,AI분석,AIHPRO"
+        canonicalUrl="https://aihpro.com/fingerprint-temperament"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "지문 인지기질검사",
+          "description": "지문 스캔으로 알아보는 인지기질 유형 분석 서비스",
+          "url": "https://aihpro.com/fingerprint-temperament",
+          "applicationCategory": "HealthApplication",
+          "operatingSystem": "Web",
+          "provider": {
+            "@type": "Organization",
+            "name": "AIHUMANPRO"
+          }
+        }}
+      />
+      <LoginRequiredOverlay>
 
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-hidden">
         {/* Animated Background */}
@@ -472,6 +488,7 @@ export default function FingerprintTemperamentTest() {
           </AnimatePresence>
         </div>
       </div>
-    </LoginRequiredOverlay>
+      </LoginRequiredOverlay>
+    </>
   );
 }

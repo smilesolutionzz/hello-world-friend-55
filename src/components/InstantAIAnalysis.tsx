@@ -481,65 +481,65 @@ const InstantAIAnalysis = () => {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto px-1">
       <motion.div 
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl"
+        className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl rounded-2xl md:rounded-3xl border border-white/10 overflow-hidden shadow-2xl"
       >
         {/* 헤더 */}
-        <div className="px-5 py-4 border-b border-white/10 bg-gradient-to-r from-amber-500/10 to-orange-500/10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
+        <div className="px-3 md:px-5 py-3 md:py-4 border-b border-white/10 bg-gradient-to-r from-amber-500/10 to-orange-500/10">
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shrink-0">
+              <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-white" />
             </div>
-            <div>
-              <h2 className="text-base font-bold text-white">내 고민 입력</h2>
-              <p className="text-xs text-white/50">분석 결과가 자동으로 고민 저장소에 저장됩니다</p>
+            <div className="min-w-0">
+              <h2 className="text-sm md:text-base font-bold text-white truncate">내 고민 입력</h2>
+              <p className="text-[10px] md:text-xs text-white/50 truncate">분석 결과가 자동으로 저장됩니다</p>
             </div>
           </div>
         </div>
 
         {/* 입력 영역 */}
-        <div className="p-5 space-y-4">
+        <div className="p-3 md:p-5 space-y-3 md:space-y-4">
           <div className="relative">
             <Textarea
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder="지금 가장 걱정되는 한 문장을 적어주세요..."
-              className="min-h-[140px] bg-slate-800/50 border-white/10 text-white placeholder:text-white/40 rounded-2xl resize-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 text-sm leading-relaxed p-4"
+              className="min-h-[120px] md:min-h-[140px] bg-slate-800/50 border-white/10 text-white placeholder:text-white/40 rounded-xl md:rounded-2xl resize-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 text-xs md:text-sm leading-relaxed p-3 md:p-4"
               maxLength={500}
             />
             
             {/* 음성 입력 버튼 */}
-            <div className="absolute bottom-3 right-3">
+            <div className="absolute bottom-2 md:bottom-3 right-2 md:right-3">
               <VoiceInputButton
                 onTranscription={(text) => setInputText(prev => prev ? `${prev} ${text}` : text)}
-                className="bg-white/10 hover:bg-white/20 border-white/20 text-white/80"
+                className="bg-white/10 hover:bg-white/20 border-white/20 text-white/80 h-7 w-7 md:h-8 md:w-8"
               />
             </div>
           </div>
 
           {/* 글자 수 & 버튼들 */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-white/40">{inputText.length}/500</span>
-              <span className="text-xs text-white/30">(최소 10자)</span>
+            <div className="flex items-center gap-1 md:gap-2">
+              <span className="text-[10px] md:text-xs text-white/40">{inputText.length}/500</span>
+              <span className="text-[10px] md:text-xs text-white/30">(최소 10자)</span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 md:gap-2">
               <Button
                 onClick={handleExpandPrompt}
                 disabled={isExpanding || inputText.length < 10}
                 size="sm"
                 variant="ghost"
-                className="text-xs text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 gap-1.5 h-8 px-3"
+                className="text-[10px] md:text-xs text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 gap-1 md:gap-1.5 h-7 md:h-8 px-2 md:px-3"
               >
                 {isExpanding ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <Loader2 className="w-3 h-3 md:w-3.5 md:h-3.5 animate-spin" />
                 ) : (
-                  <Wand2 className="w-3.5 h-3.5" />
+                  <Wand2 className="w-3 h-3 md:w-3.5 md:h-3.5" />
                 )}
                 AI 다듬기
               </Button>
@@ -547,21 +547,21 @@ const InstantAIAnalysis = () => {
           </div>
 
           {/* 팁 카드 */}
-          <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-2xl p-4 border border-amber-500/20">
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center shrink-0">
-                <Lightbulb className="w-4 h-4 text-amber-400" />
+          <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-xl md:rounded-2xl p-3 md:p-4 border border-amber-500/20">
+            <div className="flex items-start gap-2 md:gap-3">
+              <div className="w-6 h-6 md:w-8 md:h-8 rounded-md md:rounded-lg bg-amber-500/20 flex items-center justify-center shrink-0">
+                <Lightbulb className="w-3 h-3 md:w-4 md:h-4 text-amber-400" />
               </div>
-              <div className="space-y-1.5">
-                <p className="text-sm font-medium text-amber-200">고민 작성 팁</p>
-                <ul className="text-xs text-white/60 space-y-1">
+              <div className="space-y-1 md:space-y-1.5 min-w-0">
+                <p className="text-xs md:text-sm font-medium text-amber-200">고민 작성 팁</p>
+                <ul className="text-[10px] md:text-xs text-white/60 space-y-0.5 md:space-y-1">
                   <li>• "AI 다듬기"로 고민을 확장할 수 있어요</li>
-                  <li>• 최소 10자 이상, 핵심 고민만 간단히 적어주세요</li>
-                  <li>• 예: "5살 아이 말 늦어요", "아이가 친구 없어요"</li>
+                  <li>• 최소 10자 이상 적어주세요</li>
+                  <li>• 예: "5살 아이 말 늦어요"</li>
                 </ul>
-                <div className="pt-2 flex items-center gap-1.5 text-xs text-amber-300/80">
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>9가지 전문 리포트 + AI 발달 예측 무료 제공</span>
+                <div className="pt-1.5 md:pt-2 flex items-center gap-1 md:gap-1.5 text-[10px] md:text-xs text-amber-300/80">
+                  <FileText className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" />
+                  <span className="truncate">9가지 전문 리포트 + AI 발달 예측 무료</span>
                 </div>
               </div>
             </div>
@@ -633,13 +633,13 @@ const InstantAIAnalysis = () => {
               <Button
                 onClick={handleAnalyze}
                 disabled={inputText.length < 10}
-                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-6 rounded-2xl shadow-lg shadow-amber-500/25 transition-all duration-300 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 md:py-6 rounded-xl md:rounded-2xl shadow-lg shadow-amber-500/25 transition-all duration-300 disabled:opacity-50 text-sm md:text-base"
               >
-                <Sparkles className="w-5 h-5 mr-2" />
+                <Sparkles className="w-4 h-4 md:w-5 md:h-5 mr-1.5 md:mr-2" />
                 무료로 분석하기
               </Button>
 
-              <p className="text-center text-xs text-white/40">
+              <p className="text-center text-[10px] md:text-xs text-white/40">
                 무료, 30초 완료
               </p>
             </>

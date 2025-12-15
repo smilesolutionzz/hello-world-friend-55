@@ -10,7 +10,7 @@ import AdultAssessment from "@/components/assessment/AdultAssessment";
 import InfantAssessmentResult from "@/components/assessment/InfantAssessmentResult";
 import ChildAssessmentResult from "@/components/assessment/ChildAssessmentResult";
 import AdultAssessmentResult from "@/components/assessment/AdultAssessmentResult";
-import LanguageTestForm from "@/components/assessment/LanguageTestForm";
+import InfantLanguageTestForm from "@/components/assessment/InfantLanguageTestForm";
 import LanguageTestResult from "@/components/assessment/LanguageTestResult";
 import PanicTestForm from "@/components/assessment/PanicTestForm";
 import PanicTestResult from "@/components/assessment/PanicTestResult";
@@ -258,6 +258,8 @@ const Assessment = () => {
       setCurrentStep('attachment-test');
     } else if (type === 'career') {
       setCurrentStep('career-test');
+    } else if (type === 'language') {
+      setCurrentStep('language-test');
     } else if (type === 'developmental-delay') {
       setCurrentStep('developmental-delay-test');
     } else if (type === 'sensory-integration') {
@@ -1673,20 +1675,10 @@ const Assessment = () => {
 
   if (currentStep === 'language-test') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-calm-blue/20 to-warm-lavender/30 p-6">
-        <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-brand-gradient mb-2">언어발달 자가체크 (3분)</h1>
-            <p className="text-muted-foreground">연령에 맞춘 20문항 (참고용)</p>
-          </div>
-          <LanguageTestForm 
-            ageGroup={selectedAgeGroup! as 'infant' | 'child'} 
-            age={selectedAge}
-            onComplete={handleLanguageTestComplete}
-            onBack={handleBack}
-          />
-        </div>
-      </div>
+      <InfantLanguageTestForm 
+        onComplete={handleLanguageTestComplete}
+        onBack={handleBack}
+      />
     );
   }
 

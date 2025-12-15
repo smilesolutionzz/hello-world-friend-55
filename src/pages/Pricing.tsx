@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Sparkles, Building2, Users } from "lucide-react";
+import { Check, Sparkles, Building2, Users, Globe, Clock, CreditCard, MessageCircle, Video, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SEOHead from "@/components/common/SEOHead";
+import { Badge } from "@/components/ui/badge";
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Pricing = () => {
         "AI 분석 리포트 월 5회",
         "발달 영역별 상세 분석",
         "성장 추적 타임라인",
-        "전문가 상담 1회 (월)",
+        "전문가 상담 1회 (월) - 30분",
         "맞춤 육아 가이드"
       ],
       cta: "시작하기",
@@ -38,7 +39,7 @@ const Pricing = () => {
         "AI 분석 리포트 무제한",
         "학부모 공유 기능",
         "맞춤형 리포팅 템플릿",
-        "전문가 상담 3회 (월)",
+        "전문가 상담 3회 (월) - 각 30분",
         "우선 고객 지원",
         "교육 자료 라이브러리"
       ],
@@ -96,6 +97,73 @@ const Pricing = () => {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               부모님, 교사님, 기관까지 - 각자의 필요에 맞는 최적의 솔루션을 제공합니다
             </p>
+          </div>
+
+          {/* 해외 사용자 배너 */}
+          <div className="max-w-4xl mx-auto mb-12">
+            <Card className="bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 border-blue-500/30">
+              <CardContent className="py-6">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center">
+                      <Globe className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg flex items-center gap-2">
+                        해외 거주 한국인을 위한 서비스
+                        <Badge variant="secondary" className="bg-green-500/20 text-green-700 dark:text-green-300">해외결제 OK</Badge>
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Visa, Mastercard 등 해외카드 결제 가능 • 한국 전문가와 화상상담 연결
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={() => navigate("/expert")}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white whitespace-nowrap"
+                  >
+                    해외 상담 신청
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* 상담 정보 요약 */}
+          <div className="max-w-4xl mx-auto mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="bg-muted/50">
+              <CardContent className="py-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">상담 시간</p>
+                  <p className="text-xs text-muted-foreground">1회당 30분 또는 60분</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-muted/50">
+              <CardContent className="py-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Video className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">상담 방식</p>
+                  <p className="text-xs text-muted-foreground">화상/전화/채팅 선택 가능</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-muted/50">
+              <CardContent className="py-4 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <CreditCard className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">토큰 사용량</p>
+                  <p className="text-xs text-muted-foreground">30분 상담 = 10토큰</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Pricing Cards */}
@@ -210,12 +278,30 @@ const Pricing = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">결제 방법은 무엇이 있나요?</CardTitle>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    결제 방법은 무엇이 있나요?
+                    <Badge variant="secondary" className="bg-green-500/20 text-green-700 dark:text-green-300">해외결제 지원</Badge>
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    신용카드, 체크카드, 계좌이체를 지원합니다. 
+                    국내: 신용카드, 체크카드, 계좌이체를 지원합니다.<br />
+                    <strong className="text-foreground">해외: Visa, Mastercard, American Express 등 해외카드 결제가 가능합니다.</strong><br />
                     기관 플랜의 경우 세금계산서 발행이 가능합니다.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">전문가 상담은 어떻게 진행되나요?</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    <strong>상담 시간:</strong> 기본 30분, 연장 시 60분 선택 가능<br />
+                    <strong>상담 방식:</strong> 화상상담(Zoom), 전화상담, 채팅상담 중 선택<br />
+                    <strong>토큰 사용:</strong> 30분 상담 = 10토큰, 60분 상담 = 18토큰<br />
+                    <strong>해외 거주자:</strong> 시차를 고려한 예약 가능, 한국 전문가와 화상 연결
                   </p>
                 </CardContent>
               </Card>

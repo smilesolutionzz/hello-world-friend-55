@@ -900,386 +900,268 @@ const Column = () => {
         }}
       />
       
-      <div 
-        className="min-h-screen relative"
-        style={{
-          backgroundImage: `url(${columnBg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}
-      >
-        <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px]" />
-        <div className="relative z-10">
-          <UnifiedNavigation />
-          
-          <main className="container mx-auto px-4 py-12 max-w-7xl">
-          {/* Header */}
-          <div className="text-center mb-16 space-y-4">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
-              <Heart className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">매달 업데이트</span>
+      <div className="min-h-screen bg-background">
+        <UnifiedNavigation />
+        
+        <main className="container mx-auto px-4 py-8 md:py-16 max-w-6xl">
+          {/* Modern Hero Header */}
+          <header className="text-center mb-12 md:mb-20">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6">
+              <Heart className="w-3.5 h-3.5 text-primary" />
+              <span className="text-xs font-semibold text-primary tracking-wide uppercase">Monthly Insights</span>
             </div>
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-secondary bg-clip-text text-transparent whitespace-nowrap leading-tight">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground mb-4 tracking-tight">
               이수석칼럼
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-snug">
-              AI와 사람이 함께 만드는 더 나은 내일,<br className="block sm:hidden" />
-              진심을 담아 여러분께 전합니다
+            <p className="text-lg md:text-xl text-foreground/60 max-w-xl mx-auto font-light">
+              AI와 사람이 함께 만드는 더 나은 내일
             </p>
-          </div>
+          </header>
 
-          {/* Mission Section - 아코디언 */}
-          <div className="mb-16 max-w-5xl mx-auto relative">
-            {/* Animated warm background */}
-            <div className="absolute inset-0 -z-10 overflow-hidden rounded-3xl">
-              <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse" 
-                   style={{ animationDuration: '4s' }} />
-              <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-secondary/20 rounded-full blur-3xl animate-pulse" 
-                   style={{ animationDuration: '5s', animationDelay: '1s' }} />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse" 
-                   style={{ animationDuration: '6s', animationDelay: '2s' }} />
-            </div>
-            
+          {/* Mission Card - Minimal & Modern */}
+          <section className="mb-16 md:mb-24">
             <div 
-              className="text-center mb-8 space-y-6 cursor-pointer group relative"
+              className="group cursor-pointer"
               onClick={() => setExpandedId(expandedId === 'mission' ? null : 'mission')}
             >
-              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-secondary/20 to-primary/20 border-2 border-primary/30 mb-4 shadow-lg backdrop-blur-sm">
-                <Heart className="w-5 h-5 text-primary" />
-                <span className="text-base font-bold text-primary uppercase tracking-wide">Our Mission</span>
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/5 via-background to-secondary/5 border border-border/50 p-8 md:p-12 transition-all duration-500 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+                
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="text-xs font-bold text-primary/80 uppercase tracking-widest">Our Mission</span>
+                    <ChevronDown className={`w-5 h-5 text-foreground/40 transition-transform duration-300 ${expandedId === 'mission' ? 'rotate-180' : ''}`} />
+                  </div>
+                  
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+                    14년, 5,000명과 함께한 진심
+                  </h2>
+                  <p className="text-foreground/60 text-lg">데이터와 사람의 온기가 만나는 곳</p>
+                  
+                  <div className="flex items-center gap-8 mt-8">
+                    <div>
+                      <div className="text-4xl md:text-5xl font-black text-primary">14</div>
+                      <div className="text-xs text-foreground/50 mt-1">Years</div>
+                    </div>
+                    <div className="w-px h-12 bg-border" />
+                    <div>
+                      <div className="text-4xl md:text-5xl font-black text-secondary">5K+</div>
+                      <div className="text-xs text-foreground/50 mt-1">Clients</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center justify-center gap-4">
-                <h2 className="text-4xl md:text-5xl font-black text-primary drop-shadow-lg">
-                  14년, 5,000명과 함께한 진심
-                </h2>
-                <ArrowRight 
-                  className={`w-7 h-7 text-primary transition-all duration-300 group-hover:translate-x-1 ${expandedId === 'mission' ? 'rotate-90' : ''}`}
-                />
-              </div>
-              <p className="text-xl text-foreground/80 font-medium max-w-2xl mx-auto">
-                데이터와 사람의 온기가 만나는 곳
-              </p>
             </div>
 
+            {/* Mission Expanded Content */}
             {expandedId === 'mission' && (
-              <Card className="p-10 md:p-16 bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-xl border-2 border-primary/30 shadow-2xl animate-in slide-in-from-top-4 duration-500">
+              <div className="mt-4 p-8 md:p-12 bg-card border border-border/50 rounded-3xl animate-in slide-in-from-top-4 duration-500">
                 <div className="prose prose-lg max-w-none">
-                  <div className="space-y-8 text-foreground/90 leading-relaxed">
-                    <p className="text-2xl font-bold text-primary text-center border-b-2 border-primary/20 pb-6">
+                  <div className="space-y-6 text-foreground/80 leading-relaxed">
+                    <p className="text-xl font-medium text-foreground">
                       수천 번의 상담에서 발견한 단 하나의 진실
                     </p>
-
-                    <p className="text-lg leading-loose">
+                    <p>
                       지난 14년간, 저는 5,000명이 넘는 학부모, 청소년, 아동을 만나왔습니다. 
                       새벽같이 찾아오신 불안한 부모님들, 말없이 눈물만 흘리던 아이들, 
                       "이제 너무 늦은 건 아닐까요?"라며 떨리는 목소리로 물으시던 분들... 
-                      <span className="font-bold text-primary text-xl">그 하나하나가 모두 제 사명이 되었습니다.</span>
+                      그 하나하나가 모두 제 사명이 되었습니다.
                     </p>
-
-                    <div className="grid md:grid-cols-2 gap-8 my-10">
-                      <div className="bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 rounded-xl p-8 text-center space-y-4 shadow-lg">
-                        <div className="text-6xl font-bold text-primary drop-shadow-md">14년</div>
-                        <div className="text-base text-foreground/80 font-medium">
-                          매일 현장에서 쌓아온<br />생생한 임상 경험
-                        </div>
-                      </div>
-                      <div className="bg-gradient-to-br from-secondary/10 to-secondary/5 border-2 border-secondary/30 rounded-xl p-8 text-center space-y-4 shadow-lg">
-                        <div className="text-6xl font-bold text-secondary drop-shadow-md">5,000+</div>
-                        <div className="text-base text-foreground/80 font-medium">
-                          함께 울고 웃으며<br />성장한 소중한 인연들
-                        </div>
-                      </div>
-                    </div>
-
-                    <p className="text-lg leading-loose">
-                      상담실에서 마주한 수많은 이야기들은 공통된 진실을 말해주었습니다. 
-                      <span className="font-bold text-primary text-xl"> 사람들은 단순한 조언이 아닌, 
-                      자신을 깊이 이해하고 함께 걸어줄 누군가를 원한다는 것</span>을요. 
-                      하지만 현실은 가혹했습니다. 한 명의 전문가가 돌볼 수 있는 사람은 한정되어 있고, 
-                      많은 분들이 도움의 손길을 받지 못한 채 혼자 고통받고 계셨습니다.
-                    </p>
-
-                    <div className="bg-gradient-to-r from-primary/15 to-secondary/15 border-l-4 border-primary p-8 rounded-r-xl my-10 shadow-md">
-                      <p className="text-lg font-bold italic text-foreground/90 leading-relaxed">
-                        "어떻게 하면 더 많은 사람들에게<br />
-                        전문가의 따뜻한 손길을 전할 수 있을까?<br />
-                        어떻게 하면 한계를 넘어설 수 있을까?"
-                      </p>
-                    </div>
-
-                    <p className="text-lg leading-loose">
+                    <blockquote className="border-l-4 border-primary pl-6 py-2 italic text-foreground/70">
+                      "어떻게 하면 더 많은 사람들에게 전문가의 따뜻한 손길을 전할 수 있을까?"
+                    </blockquote>
+                    <p>
                       그 답을 AI에서 찾았습니다. 하지만 차갑고 기계적인 AI가 아닌, 
-                      <span className="font-bold text-primary text-xl"> 14년간 쌓아온 임상 경험과 
-                      5,000번의 상담에서 배운 인간에 대한 이해가 담긴 AI</span>였습니다. 
-                      AI가 24시간 데이터를 관찰하고 패턴을 발견하면, 
-                      전문가는 그 속에서 한 사람만의 이야기를 읽어냅니다.
+                      14년간 쌓아온 임상 경험과 5,000번의 상담에서 배운 인간에 대한 이해가 담긴 AI였습니다.
                     </p>
-
-                    <p className="text-lg leading-loose">
-                      기술은 더 많은 사람을 만날 수 있게 해주었지만, 
-                      제가 절대 포기할 수 없는 것이 있습니다. 
-                      <span className="font-bold text-primary text-xl"> 그것은 바로 '사람의 온기'입니다.</span> 
-                      아무리 정교한 AI라도, 부모의 떨리는 손을 잡아주는 따뜻함은 대신할 수 없습니다. 
-                      아무리 정확한 데이터라도, "괜찮을 거예요"라는 진심 어린 위로는 담을 수 없습니다.
-                    </p>
-
-                    <p className="text-lg leading-loose">
-                      그래서 AIHumanPro는 AI 플랫폼이면서도, 
-                      <span className="font-bold text-primary text-xl"> 반드시 사람이 포함되는 시스템</span>으로 만들었습니다. 
-                      여러분의 데이터는 AI가 분석하지만, 최종 리포트는 반드시 전문가의 검토를 거칩니다. 
-                      숫자 너머의 이야기를, 패턴 속의 감정을, 데이터 안의 사람을 읽어내기 위해서입니다.
-                    </p>
-
-                    <div className="bg-gradient-to-r from-primary/15 via-secondary/15 to-primary/15 rounded-xl p-8 my-10 text-center border-2 border-primary/20 shadow-lg">
-                      <p className="text-xl font-bold text-foreground mb-6 leading-relaxed">
-                        학부모의 불안 하나,<br />
-                        청소년의 침묵 하나,<br />
-                        아동의 작은 신호 하나가<br />
-                        모두 저에게는 소중한 사명입니다.
-                      </p>
-                      <p className="text-lg text-foreground/80 leading-relaxed">
-                        14년 전 첫 상담실을 열던 그날의 다짐,<br />
-                        <span className="font-bold text-primary">"한 사람 한 사람을 진심으로"</span><br />
-                        그 마음은 지금도, 앞으로도 변하지 않을 것입니다.
-                      </p>
-                    </div>
-
-                    <p className="text-lg leading-loose">
-                      여러분의 성장 여정에 함께할 수 있어 진심으로 감사합니다. 
-                      AI와 전문가가, 기술과 사람이, 데이터와 온기가 함께하는 그날까지 
-                      멈추지 않고 나아가겠습니다.
-                    </p>
-
-                    <div className="mt-12 pt-8 border-t-2 border-primary/20">
-                      <p className="text-right text-foreground/80 text-lg">
-                        14년간의 현장 경험을 담아,<br />
-                        <span className="font-bold text-primary text-xl md:text-2xl block mt-2">AIHumanPro<br />창립자 이수석</span>
+                    <div className="pt-6 border-t border-border mt-8">
+                      <p className="text-right text-foreground/60">
+                        AIHumanPro 창립자 <span className="font-bold text-foreground">이수석</span>
                       </p>
                     </div>
                   </div>
                 </div>
-              </Card>
+              </div>
             )}
-          </div>
+          </section>
 
-          {/* Category Filter */}
+          {/* Category Pills */}
           <div className="flex flex-wrap justify-center gap-2 mb-12">
             {categories.map((category) => (
-              <Button
+              <button
                 key={category}
-                variant={selectedCategory === category ? "default" : "outline"}
-                size="sm"
                 onClick={() => setSelectedCategory(category)}
-                className="rounded-full"
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  selectedCategory === category 
+                    ? 'bg-foreground text-background' 
+                    : 'bg-muted text-foreground/70 hover:bg-muted/80 hover:text-foreground'
+                }`}
               >
                 {category}
-              </Button>
+              </button>
             ))}
           </div>
 
-          {/* Featured Column */}
+          {/* Featured Article */}
           {featuredColumn && selectedCategory === "전체" && (
-            <Card className="mb-12 overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-              <div 
-                className="grid md:grid-cols-2 gap-8 p-8 md:p-12 cursor-pointer"
-                onClick={() => setExpandedId(expandedId === featuredColumn.id ? null : featuredColumn.id)}
-              >
-                <div className="space-y-6">
-                  <div className="flex items-center gap-2">
-                    <Badge className="bg-primary text-primary-foreground">
-                      <Sparkles className="w-3 h-3 mr-1" />
-                      Featured
-                    </Badge>
-                    <Badge variant="outline">{featuredColumn.category}</Badge>
-                  </div>
-                  
-                  <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
-                    {featuredColumn.title}
-                  </h2>
-                  
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    {featuredColumn.excerpt}
-                  </p>
-                  
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {featuredColumn.date}
-                    </div>
-                    <div>· {featuredColumn.readTime} 읽기</div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 text-primary font-medium">
-                    {expandedId === featuredColumn.id ? '접기' : '전체 글 읽기'}
-                    <ArrowRight className={`w-4 h-4 transition-transform ${expandedId === featuredColumn.id ? 'rotate-90' : ''}`} />
-                  </div>
+            <article 
+              className="mb-12 group cursor-pointer"
+              onClick={() => setExpandedId(expandedId === featuredColumn.id ? null : featuredColumn.id)}
+            >
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 p-8 md:p-12 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold">
+                    <Sparkles className="w-3 h-3" />
+                    Featured
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-foreground/10 text-foreground/70 text-xs font-medium">
+                    {featuredColumn.category}
+                  </span>
                 </div>
                 
-                <div className="hidden md:flex items-center justify-center">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full blur-3xl opacity-20 animate-pulse" />
-                    <div className="relative bg-card/50 backdrop-blur-xl rounded-2xl p-8 border border-primary/20">
-                      <div className="grid grid-cols-2 gap-6">
-                        <div className="text-center space-y-2">
-                          <Brain className="w-8 h-8 text-primary mx-auto" />
-                          <div className="text-2xl font-bold text-primary">AI</div>
-                          <div className="text-xs text-muted-foreground">패턴 발견</div>
-                        </div>
-                        <div className="text-center space-y-2">
-                          <Users className="w-8 h-8 text-secondary mx-auto" />
-                          <div className="text-2xl font-bold text-secondary">전문가</div>
-                          <div className="text-xs text-muted-foreground">마음 이해</div>
-                        </div>
-                        <div className="col-span-2 text-center space-y-2 pt-4 border-t border-border">
-                          <TrendingUp className="w-10 h-10 text-primary mx-auto" />
-                          <div className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                            진정한 변화
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
+                  {featuredColumn.title}
+                </h2>
+                
+                <p className="text-foreground/60 text-lg leading-relaxed mb-6 max-w-3xl">
+                  {featuredColumn.excerpt}
+                </p>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-sm text-foreground/50">
+                    <span>{featuredColumn.date}</span>
+                    <span>·</span>
+                    <span>{featuredColumn.readTime} 읽기</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-primary font-medium text-sm">
+                    {expandedId === featuredColumn.id ? '접기' : '전체 읽기'}
+                    <ArrowRight className={`w-4 h-4 transition-transform ${expandedId === featuredColumn.id ? 'rotate-90' : 'group-hover:translate-x-1'}`} />
                   </div>
                 </div>
               </div>
               
-              {/* Expanded Content */}
               {expandedId === featuredColumn.id && (
-                <CardContent className="pt-0 px-8 md:px-12 pb-8 animate-in slide-in-from-top-4 duration-500">
-                  <div className="prose prose-lg max-w-none border-t border-border pt-8">
-                    <div className="space-y-6 text-foreground/90 leading-relaxed whitespace-pre-line">
-                      {featuredColumn.fullContent}
-                    </div>
+                <div className="mt-4 p-8 md:p-12 bg-card border border-border/50 rounded-3xl animate-in slide-in-from-top-4 duration-500">
+                  <div className="prose prose-lg max-w-none text-foreground/80 leading-relaxed whitespace-pre-line">
+                    {featuredColumn.fullContent}
                   </div>
-                </CardContent>
+                </div>
               )}
-            </Card>
+            </article>
           )}
 
-          {/* Regular Columns Grid */}
-          <div className="space-y-6">
+          {/* Articles Grid */}
+          <div className="space-y-4">
             {(selectedCategory === "전체" ? regularColumns : filteredColumns).map((column) => (
-              <Card key={column.id} className="group border-border/50 overflow-hidden">
-                <CardHeader className="cursor-pointer" onClick={() => setExpandedId(expandedId === column.id ? null : column.id)}>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Badge variant="outline" className="border-primary/30">
-                          {column.category}
-                        </Badge>
-                      </div>
-                      <CardTitle className="text-2xl group-hover:text-primary transition-colors mb-2">
-                        {column.title}
-                      </CardTitle>
-                      <CardDescription className="text-base leading-relaxed">
-                        {column.excerpt}
-                      </CardDescription>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground mt-4">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {column.date}
-                        </div>
-                        <div>· {column.readTime}</div>
-                      </div>
+              <article 
+                key={column.id} 
+                className="group"
+              >
+                <div 
+                  className="flex items-start gap-6 p-6 md:p-8 rounded-2xl border border-border/50 bg-card/50 hover:bg-card hover:border-border transition-all duration-300 cursor-pointer"
+                  onClick={() => setExpandedId(expandedId === column.id ? null : column.id)}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="px-2.5 py-1 rounded-full bg-muted text-foreground/60 text-xs font-medium">
+                        {column.category}
+                      </span>
+                      <span className="text-xs text-foreground/40">{column.date}</span>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="group-hover:text-primary shrink-0"
-                    >
+                    
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                      {column.title}
+                    </h3>
+                    
+                    <p className="text-foreground/50 text-sm md:text-base line-clamp-2 leading-relaxed">
+                      {column.excerpt}
+                    </p>
+                    
+                    <div className="flex items-center gap-2 mt-4 text-primary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
                       {expandedId === column.id ? '접기' : '읽기'}
-                      <ArrowRight className={`w-4 h-4 ml-1 transition-transform ${expandedId === column.id ? 'rotate-90' : 'group-hover:translate-x-1'}`} />
-                    </Button>
-                  </div>
-                </CardHeader>
-                
-                {/* 전체 내용 - 아코디언 */}
-                {expandedId === column.id && (
-                  <CardContent className="pt-0 animate-in slide-in-from-top-2 duration-300">
-                    <div className="border-t border-border pt-6">
-                      <div className="prose prose-lg max-w-none">
-                        {column.fullContent.split('\n').map((paragraph, idx) => {
-                          // 제목 처리 (##)
-                          if (paragraph.startsWith('## ')) {
-                            return <h2 key={idx} className="text-2xl font-bold mt-8 mb-4 text-foreground">{paragraph.replace('## ', '')}</h2>;
-                          }
-                          // 소제목 처리 (###)
-                          if (paragraph.startsWith('### ')) {
-                            return <h3 key={idx} className="text-xl font-semibold mt-6 mb-3 text-foreground">{paragraph.replace('### ', '')}</h3>;
-                          }
-                          // 인용구 처리 (>)
-                          if (paragraph.startsWith('> ')) {
-                            return (
-                              <blockquote key={idx} className="border-l-4 border-primary pl-6 py-4 my-6 italic bg-primary/5 rounded-r-lg">
-                                <p className="text-foreground/90">{paragraph.replace('> ', '')}</p>
-                              </blockquote>
-                            );
-                          }
-                          // 리스트 아이템 처리 (-)
-                          if (paragraph.startsWith('- ')) {
-                            return (
-                              <li key={idx} className="ml-6 my-2 text-foreground/90">
-                                {paragraph.replace('- ', '').split('**').map((part, i) => 
-                                  i % 2 === 1 ? <strong key={i} className="font-semibold text-primary">{part}</strong> : part
-                                )}
-                              </li>
-                            );
-                          }
-                          // 일반 문단 처리
-                          if (paragraph.trim()) {
-                            return (
-                              <p key={idx} className="mb-4 leading-relaxed text-foreground/90">
-                                {paragraph.split('**').map((part, i) => 
-                                  i % 2 === 1 ? <strong key={i} className="font-semibold text-primary">{part}</strong> : part
-                                )}
-                              </p>
-                            );
-                          }
-                          return null;
-                        })}
-                      </div>
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </div>
-                  </CardContent>
+                  </div>
+                  
+                  <ChevronDown className={`w-5 h-5 text-foreground/30 shrink-0 transition-transform duration-300 ${expandedId === column.id ? 'rotate-180' : ''}`} />
+                </div>
+                
+                {expandedId === column.id && (
+                  <div className="mt-2 p-6 md:p-10 bg-card border border-border/50 rounded-2xl animate-in slide-in-from-top-2 duration-300">
+                    <div className="prose prose-lg max-w-none">
+                      {column.fullContent.split('\n').map((paragraph, idx) => {
+                        if (paragraph.startsWith('## ')) {
+                          return <h2 key={idx} className="text-2xl font-bold mt-8 mb-4 text-foreground">{paragraph.replace('## ', '')}</h2>;
+                        }
+                        if (paragraph.startsWith('### ')) {
+                          return <h3 key={idx} className="text-xl font-semibold mt-6 mb-3 text-foreground">{paragraph.replace('### ', '')}</h3>;
+                        }
+                        if (paragraph.startsWith('> ')) {
+                          return (
+                            <blockquote key={idx} className="border-l-4 border-primary pl-6 py-3 my-6 italic bg-primary/5 rounded-r-lg">
+                              <p className="text-foreground/80">{paragraph.replace('> ', '')}</p>
+                            </blockquote>
+                          );
+                        }
+                        if (paragraph.startsWith('- ')) {
+                          return (
+                            <li key={idx} className="ml-6 my-2 text-foreground/80">
+                              {paragraph.replace('- ', '').split('**').map((part, i) => 
+                                i % 2 === 1 ? <strong key={i} className="font-semibold text-primary">{part}</strong> : part
+                              )}
+                            </li>
+                          );
+                        }
+                        if (paragraph.trim()) {
+                          return (
+                            <p key={idx} className="mb-4 leading-relaxed text-foreground/80">
+                              {paragraph.split('**').map((part, i) => 
+                                i % 2 === 1 ? <strong key={i} className="font-semibold text-primary">{part}</strong> : part
+                              )}
+                            </p>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                  </div>
                 )}
-              </Card>
+              </article>
             ))}
           </div>
 
-          {/* CTA Section */}
-          <Card className="mt-16 bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/20">
-            <CardContent className="text-center py-12 space-y-6">
-              <h3 className="text-2xl md:text-3xl font-bold">
-                여러분의 성장 여정에 함께하고 싶습니다
+          {/* Modern CTA */}
+          <section className="mt-20 md:mt-32 text-center">
+            <div className="inline-block p-10 md:p-16 rounded-3xl bg-gradient-to-br from-primary/5 via-background to-secondary/5 border border-border/50">
+              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+                함께 성장하고 싶습니다
               </h3>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                AI와 전문가가 함께하는 초개인화 케어,<br />
-                지금 바로 시작해보세요
+              <p className="text-foreground/50 mb-8 max-w-md mx-auto">
+                AI와 전문가가 함께하는 초개인화 케어
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button 
                   size="lg"
                   onClick={() => navigate('/assessment')}
-                  className="bg-gradient-to-r from-primary to-primary/80"
+                  className="rounded-full px-8 bg-foreground text-background hover:bg-foreground/90"
                 >
-                  <Sparkles className="w-4 h-4 mr-2" />
                   무료 체험 시작
                 </Button>
                 <Button 
                   size="lg"
                   variant="outline"
                   onClick={() => navigate('/expert-hiring')}
-                  className="border-primary/30"
+                  className="rounded-full px-8 border-foreground/20 hover:bg-foreground/5"
                 >
-                  <Users className="w-4 h-4 mr-2" />
-                  전문가 상담 받기
+                  전문가 상담
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-          </main>
-          
-          <Footer />
-        </div>
+            </div>
+          </section>
+        </main>
+        
+        <Footer />
       </div>
     </>
   );

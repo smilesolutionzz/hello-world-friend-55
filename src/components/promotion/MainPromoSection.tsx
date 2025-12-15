@@ -118,7 +118,7 @@ export const MainPromoSection = () => {
                   <p className="text-slate-400">
                     {isFreeTrialEligible 
                       ? '신규 회원 전용 - 1개월 무료 체험 후 결정하세요!'
-                      : '모든 AI 검사와 프리미엄 기능을 무제한으로 이용하세요'
+                      : '모든 AI 검사와 프리미엄 기능 무제한 이용'
                     }
                   </p>
                 </div>

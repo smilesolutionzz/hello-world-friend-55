@@ -184,7 +184,7 @@ const TokenSubscription = () => {
             <div className="text-5xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
               ₩5,000
             </div>
-            <div className="text-xl font-bold text-slate-700 dark:text-slate-300 mb-6">50 캐시</div>
+            <div className="text-xl font-bold text-slate-700 dark:text-slate-300 mb-6">5,000 캐시</div>
             <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400 mb-8">
               <div className="flex items-center justify-center gap-2">
                 <Check className="w-4 h-4 text-blue-500" />
@@ -214,10 +214,10 @@ const TokenSubscription = () => {
             <div className="text-5xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
               ₩10,000
             </div>
-            <div className="text-xl font-bold text-slate-700 dark:text-slate-300 mb-1">110 캐시</div>
+            <div className="text-xl font-bold text-slate-700 dark:text-slate-300 mb-1">11,000 캐시</div>
             <div className="inline-flex items-center gap-1 text-emerald-600 text-sm font-medium mb-6">
               <Gift className="w-4 h-4" />
-              <span>+10 보너스</span>
+              <span>+1,000 보너스</span>
             </div>
             <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400 mb-8">
               <div className="flex items-center justify-center gap-2">

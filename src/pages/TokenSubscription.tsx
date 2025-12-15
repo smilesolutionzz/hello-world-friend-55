@@ -3,443 +3,594 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Coins, Check, Sparkles, Zap, Trophy, Clock, Brain, AlertCircle, Info } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  Coins, Check, Sparkles, Crown, Clock, Brain, 
+  AlertCircle, Info, Star, Zap, Users, Lock,
+  Gift, Infinity, Calendar
+} from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTokens } from '@/hooks/useTokens';
+import { useSubscription } from '@/hooks/useSubscription';
 import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
-import TokenBalance from '@/components/TokenBalance';
 
-interface TokenPackage {
-  name: string;
-  tokens: number;
-  price: number;
-  popular?: boolean;
-  features: string[];
-}
-
-const TOKEN_PACKAGES: TokenPackage[] = [
+// 캐시 충전 패키지
+const CASH_PACKAGES = [
   {
-    name: '토큰팩 50',
-    tokens: 50,
-    price: 9900,
+    id: 'cash_5000',
+    name: '₩5,000',
+    cash: 50,
+    price: 5000,
+    bonus: 0,
+    features: ['AI 분석 12회', '기본 검사 25회', '꿈해석 12회']
+  },
+  {
+    id: 'cash_10000',
+    name: '₩10,000',
+    cash: 110,
+    price: 10000,
+    bonus: 10,
+    popular: true,
+    features: ['AI 분석 27회', '기본 검사 55회', '꿈해석 27회', '+10 보너스 캐시']
+  },
+  {
+    id: 'cash_30000',
+    name: '₩30,000',
+    cash: 350,
+    price: 30000,
+    bonus: 50,
+    features: ['AI 분석 87회', '기본 검사 175회', '꿈해석 87회', '+50 보너스 캐시']
+  }
+];
+
+// 프리미엄 패스
+const PREMIUM_PASSES = [
+  {
+    id: 'pass_30',
+    name: '30일 패스',
+    duration: '30일',
+    price: 29900,
+    originalPrice: 49900,
+    discount: 40,
     features: [
-      '기본 심리검사 25회',
-      '엔터테인먼트 테스트 50회',
-      'AI 상담 50메시지',
-      '꿈해석 12회',
-      '관찰일지 분석 12회',
-      '토큰 영구 보관',
-      '부담 없는 시작'
+      '모든 AI 분석 무제한',
+      '모든 심리검사 무제한',
+      '상세 리포트 무제한',
+      '결과 저장 무제한',
+      '전문가 상담 20% 할인'
     ]
   },
   {
-    name: '토큰팩 150',
-    tokens: 150,
-    price: 19900,
+    id: 'pass_365',
+    name: '365일 패스',
+    duration: '1년',
+    price: 199000,
+    originalPrice: 598800,
+    discount: 67,
     popular: true,
     features: [
-      '🎉 보너스 +50 토큰 증정!',
-      '✨ 총 200토큰 지급 (150 + 보너스 50)',
-      '기본 심리검사 100회',
-      'AI 상담 200메시지',
-      '관찰일지 분석 50회',
-      '사주분석 33회',
-      '꿈해석 50회',
-      '1토큰당 99원으로 가장 합리적',
-      '정기적 이용에 최적'
+      '모든 AI 분석 무제한',
+      '모든 심리검사 무제한',
+      '상세 리포트 무제한',
+      '결과 저장 무제한',
+      '전문가 상담 30% 할인',
+      '신규 기능 우선 이용'
     ]
   },
   {
-    name: '토큰팩 400',
-    tokens: 400,
-    price: 39900,
+    id: 'pass_lifetime',
+    name: '평생 패스',
+    duration: '평생',
+    price: 299000,
+    originalPrice: 999000,
+    discount: 70,
+    best: true,
     features: [
-      '🎉 11월 특별 이벤트: +50 보너스 토큰!',
-      '총 450토큰 지급 (400 + 보너스 50)',
-      '기본 심리검사 200회',
-      '프리미엄 검사 50회',
-      'IEP 생성 8회',
-      '종합리포트 2회',
-      '모든 기능 자유 이용',
-      '토큰당 88원으로 최고 할인율',
-      '장기간 안심 이용',
-      '전문가급 서비스'
+      '평생 모든 기능 무제한',
+      '모든 AI 분석 무제한',
+      '모든 심리검사 무제한',
+      '상세 리포트 무제한',
+      '결과 저장 무제한',
+      '전문가 상담 40% 할인',
+      '신규 기능 평생 무료',
+      'VIP 고객 지원'
     ]
   }
+];
+
+// 전문가 상담 패키지
+const CONSULTATION_PACKAGES = [
+  {
+    id: 'consult_30',
+    name: '30분 상담',
+    duration: '30분',
+    price: 35000,
+    cashPrice: 350,
+    features: ['1:1 화상/전화 상담', '전문가 맞춤 조언', '상담 노트 제공']
+  },
+  {
+    id: 'consult_60',
+    name: '60분 상담',
+    duration: '60분',
+    price: 65000,
+    cashPrice: 650,
+    popular: true,
+    features: ['1:1 화상/전화 상담', '심층 분석 및 조언', '상담 노트 제공', '후속 질문 1회']
+  },
+  {
+    id: 'consult_package',
+    name: '3회 패키지',
+    duration: '30분 x 3회',
+    price: 89000,
+    cashPrice: 890,
+    originalPrice: 105000,
+    features: ['30분 상담 3회', '지속적 케어', '할인 적용', '우선 예약']
+  }
+];
+
+// 프리미엄 기능 미리보기 (블러 효과용)
+const PREMIUM_FEATURES = [
+  { name: 'MBTI 심층 분석', description: '16가지 성격유형 상세 분석', blur: true },
+  { name: '종합 심리 리포트', description: '10페이지 이상 전문 리포트', blur: true },
+  { name: 'AI 맞춤 상담', description: '개인화된 AI 상담 서비스', blur: true },
+  { name: '발달 추적 분석', description: '장기간 발달 패턴 분석', blur: true },
 ];
 
 const TokenSubscription = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { tokenBalance } = useTokens();
+  const { subscription, isPremiumUser } = useSubscription();
   const [loading, setLoading] = useState(false);
-  const [purchasingPackage, setPurchasingPackage] = useState<string | null>(null);
+  const [selectedTab, setSelectedTab] = useState('pass');
 
-  const handlePurchase = async (pkg: TokenPackage) => {
-    setPurchasingPackage(pkg.name);
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('ko-KR').format(price);
+  };
+
+  const handlePurchase = async (type: string, id: string, price: number) => {
     setLoading(true);
-
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
         toast({ 
           title: "로그인 필요", 
-          description: "토큰을 구매하려면 먼저 로그인해주세요." 
+          description: "구매하려면 먼저 로그인해주세요." 
         });
         navigate('/auth');
         return;
       }
 
-      // 토큰 수량을 URL 파라미터로 전달하여 해당 패키지 자동 선택
-      navigate(`/token-purchase?tokens=${pkg.tokens}`);
+      // 토스페이먼츠 결제 페이지로 이동
+      navigate(`/token-purchase?type=${type}&id=${id}&price=${price}`);
 
     } catch (error: any) {
-      console.error('토큰 구매 오류:', error);
+      console.error('구매 오류:', error);
       toast({ 
         title: "오류", 
-        description: error.message || "토큰 구매 중 오류가 발생했습니다.", 
+        description: error.message || "구매 중 오류가 발생했습니다.", 
         variant: "destructive" 
       });
     } finally {
       setLoading(false);
-      setPurchasingPackage(null);
     }
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ko-KR').format(price);
-  };
-
-  const getPackageIcon = (index: number) => {
-    if (index === 0) return <Zap className="h-8 w-8 text-blue-500" />;
-    if (index === 1) return <Sparkles className="h-8 w-8 text-purple-500" />;
-    return <Trophy className="h-8 w-8 text-yellow-500" />;
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <UnifiedNavigation />
       
-      {/* 롤칭 기념 특별 프로모션 배너 */}
-      <div className="bg-gradient-to-r from-orange-400 via-pink-500 to-pink-600 text-white py-8 px-4 relative overflow-hidden shadow-2xl">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] animate-pulse"></div>
+      {/* 헤더 배너 */}
+      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white py-10 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,white_0%,transparent_50%)]"></div>
         </div>
-        <div className="container mx-auto relative z-10 max-w-4xl">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 text-2xl font-bold mb-2">
-              <Sparkles className="w-8 h-8 animate-bounce" />
-              <span className="text-3xl">🎉 론칭 기념 특별 프로모션 🎊</span>
-              <Sparkles className="w-8 h-8 animate-bounce" />
-            </div>
-            
-            <div className="bg-white/20 backdrop-blur-sm rounded-3xl p-6 inline-block shadow-xl border-4 border-white/30">
-              <div className="text-6xl font-black mb-2 drop-shadow-lg">
-                50% 할인
-              </div>
-              <div className="text-xl font-semibold">
-                + 보너스 토큰 50개 추가 증정
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-center gap-3 text-xl mt-6">
-              <Clock className="w-6 h-6" />
-              <span className="font-semibold">남은 시간:</span>
-              <div className="bg-white/30 backdrop-blur-sm px-4 py-2 rounded-lg font-mono font-bold text-2xl border-2 border-white/50">
-                11:54:35
-              </div>
-            </div>
-            
-            <p className="text-sm opacity-90 mt-4">
-              * 오늘 자정까지만 유효한 혜택입니다
-            </p>
+        <div className="container mx-auto relative z-10 max-w-4xl text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Crown className="w-10 h-10" />
+            <h1 className="text-4xl font-bold">프리미엄 서비스</h1>
           </div>
-        </div>
-      </div>
-      
-      {/* 토큰제 안내 배너 */}
-      <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white py-6 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 animate-pulse"></div>
-        <div className="container mx-auto relative z-10">
-          <div className="text-center space-y-3">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="bg-white/20 rounded-full p-2">
-                <Coins className="w-6 h-6" />
-              </div>
-              <h2 className="text-2xl font-bold">🪙 간편한 토큰제 시스템</h2>
-            </div>
-            <p className="text-xl font-medium">
-              필요한 만큼만 구매하고, 1년간 자유롭게 사용하세요
-            </p>
-            <div className="flex items-center justify-center gap-2 text-lg">
-              <Clock className="w-5 h-5" />
-              <span>토큰 유효기간: <strong>구매일로부터 1년</strong></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div className="container mx-auto px-4 py-16">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            토큰 패키지 선택
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            부담 없이 시작하고, 언제든 충전하세요
+          <p className="text-xl opacity-90 mb-6">
+            더 깊은 분석, 더 정확한 인사이트를 경험하세요
           </p>
-            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-2xl mx-auto mb-8">
-            <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-              <Info className="w-4 h-4" />
-              토큰 구매는 회원가입이 필요합니다
-            </p>
-          </div>
           
-          <div className="flex justify-center mb-8">
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
-              <TokenBalance showPurchaseButton={false} />
-            </div>
+          {/* 현재 보유 캐시 */}
+          <div className="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-3">
+            <Coins className="w-6 h-6" />
+            <span className="text-lg font-semibold">
+              보유 캐시: {tokenBalance?.current_tokens || 0}
+            </span>
           </div>
         </div>
+      </div>
 
-        {/* Token Packages */}
-        <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {TOKEN_PACKAGES.map((pkg, index) => (
-            <Card 
-              key={pkg.name}
-              className={`relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-                pkg.popular 
-                  ? 'border-2 border-purple-400 shadow-lg scale-105' 
-                  : index === 2
-                  ? 'border-2 border-orange-400 shadow-lg'
-                  : 'border border-border hover:border-primary/20'
-              }`}
-              style={{ overflow: 'visible' }}
-            >
-              {pkg.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
-                    🌟 인기
-                  </Badge>
-                </div>
-              )}
-              {index === 2 && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                  <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 text-sm font-bold shadow-lg animate-pulse">
-                    🎉 11월 특별
-                  </Badge>
-                </div>
-              )}
-              
-              <CardHeader className="text-center pb-6 pt-12">
-                <div className="flex justify-center mb-4">
-                  <div className={`p-4 rounded-full ${pkg.popular ? 'bg-gradient-to-br from-purple-100 to-pink-100' : 'bg-gradient-to-br from-blue-100 to-cyan-100'}`}>
-                    {getPackageIcon(index)}
-                  </div>
-                </div>
-                
-                <CardTitle className="text-2xl mb-2">{pkg.name}</CardTitle>
-                
-                <div className="space-y-2">
-                  <div className="text-4xl font-bold text-foreground">
-                    {pkg.tokens} <span className="text-xl text-muted-foreground">토큰</span>
-                    {index === 2 && (
-                      <div className="text-lg text-orange-500 font-semibold mt-1">
-                        + 50 보너스 🎁
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-3xl font-bold text-primary">
-                    ₩{formatPrice(pkg.price)}
-                  </div>
-                  <div className="mt-2 text-sm text-muted-foreground">
-                    {index === 2 ? (
-                      <span className="text-orange-600 font-semibold">토큰당 ₩88 (이벤트가)</span>
-                    ) : (
-                      <span>토큰당 ₩{Math.round(pkg.price / pkg.tokens)}</span>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mt-2">
-                    <Clock className="w-4 h-4" />
-                    <span>1년간 유효</span>
-                  </div>
-                </div>
-              </CardHeader>
+      <div className="container mx-auto px-4 py-12">
+        {/* 탭 네비게이션 */}
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="max-w-6xl mx-auto">
+          <TabsList className="grid w-full grid-cols-3 mb-8 h-14">
+            <TabsTrigger value="pass" className="text-base font-semibold gap-2">
+              <Crown className="w-5 h-5" />
+              프리미엄 패스
+            </TabsTrigger>
+            <TabsTrigger value="cash" className="text-base font-semibold gap-2">
+              <Coins className="w-5 h-5" />
+              캐시 충전
+            </TabsTrigger>
+            <TabsTrigger value="consult" className="text-base font-semibold gap-2">
+              <Users className="w-5 h-5" />
+              전문가 상담
+            </TabsTrigger>
+          </TabsList>
 
-              <CardContent className="space-y-4 pb-8">
-                <div className="space-y-3">
-                  {pkg.features.map((feature, featureIndex) => (
-                    <div key={featureIndex} className="flex items-center gap-3">
-                      <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
+          {/* 프리미엄 패스 탭 */}
+          <TabsContent value="pass" className="space-y-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-3">프리미엄 패스로 무제한 이용</h2>
+              <p className="text-muted-foreground text-lg">
+                한 번 결제로 모든 기능을 마음껏 이용하세요
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-6">
+              {PREMIUM_PASSES.map((pass) => (
+                <Card 
+                  key={pass.id}
+                  className={`relative transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                    pass.best 
+                      ? 'border-2 border-amber-400 shadow-lg shadow-amber-100 dark:shadow-amber-900/20' 
+                      : pass.popular
+                      ? 'border-2 border-purple-400 shadow-lg'
+                      : 'border hover:border-primary/30'
+                  }`}
+                >
+                  {pass.best && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
+                        🏆 최고 인기
+                      </Badge>
                     </div>
-                  ))}
-                </div>
+                  )}
+                  {pass.popular && !pass.best && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
+                        ⭐ 추천
+                      </Badge>
+                    </div>
+                  )}
 
-                <div className="pt-4">
-                  <Button 
-                    className={`w-full py-3 text-lg font-bold ${
-                      pkg.popular
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
-                        : index === 2
-                        ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white'
-                        : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white'
-                    }`}
-                    disabled={loading}
-                    onClick={() => handlePurchase(pkg)}
+                  <CardHeader className="text-center pt-10 pb-4">
+                    <div className="flex justify-center mb-4">
+                      <div className={`p-4 rounded-full ${
+                        pass.best 
+                          ? 'bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30' 
+                          : 'bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30'
+                      }`}>
+                        {pass.best ? (
+                          <Infinity className="w-8 h-8 text-amber-600" />
+                        ) : pass.popular ? (
+                          <Calendar className="w-8 h-8 text-purple-600" />
+                        ) : (
+                          <Clock className="w-8 h-8 text-blue-600" />
+                        )}
+                      </div>
+                    </div>
+                    
+                    <CardTitle className="text-2xl mb-1">{pass.name}</CardTitle>
+                    <p className="text-muted-foreground">{pass.duration} 이용</p>
+                    
+                    <div className="mt-4 space-y-1">
+                      <div className="text-sm text-muted-foreground line-through">
+                        ₩{formatPrice(pass.originalPrice)}
+                      </div>
+                      <div className="text-4xl font-bold text-primary">
+                        ₩{formatPrice(pass.price)}
+                      </div>
+                      <Badge variant="destructive" className="mt-2">
+                        {pass.discount}% 할인
+                      </Badge>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="space-y-4 pb-8">
+                    <div className="space-y-3">
+                      {pass.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                          <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
+                          <span className="text-sm">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <Button 
+                      className={`w-full py-6 text-lg font-bold ${
+                        pass.best
+                          ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white'
+                          : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
+                      }`}
+                      disabled={loading}
+                      onClick={() => handlePurchase('pass', pass.id, pass.price)}
+                    >
+                      {pass.best ? '🏆 평생 이용하기' : '구매하기'}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* 프리미엄 기능 미리보기 (블러 효과) */}
+            <div className="mt-16">
+              <h3 className="text-2xl font-bold text-center mb-8">
+                프리미엄 전용 기능 미리보기
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {PREMIUM_FEATURES.map((feature, idx) => (
+                  <Card 
+                    key={idx} 
+                    className="relative overflow-hidden group cursor-pointer"
+                    onClick={() => !isPremiumUser() && toast({ 
+                      title: "프리미엄 전용", 
+                      description: "이 기능은 프리미엄 패스가 필요합니다." 
+                    })}
                   >
-                    <div className="flex items-center gap-2">
-                      {purchasingPackage === pkg.name ? (
-                        <>
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          처리 중...
-                        </>
-                      ) : (
-                        <>
-                          <Coins className="w-5 h-5" />
-                          {index === 2 ? '🎁 특별가로 구매하기' : '구매하기'}
-                        </>
+                    <CardContent className="p-6 relative">
+                      {/* 블러 오버레이 */}
+                      {!isPremiumUser() && (
+                        <div className="absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center z-10 group-hover:bg-background/70 transition-all">
+                          <div className="text-center">
+                            <Lock className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                            <span className="text-sm font-medium text-muted-foreground">프리미엄 전용</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="space-y-2">
+                        <Sparkles className="w-6 h-6 text-purple-500" />
+                        <h4 className="font-semibold">{feature.name}</h4>
+                        <p className="text-sm text-muted-foreground">{feature.description}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* 캐시 충전 탭 */}
+          <TabsContent value="cash" className="space-y-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-3">캐시 충전</h2>
+              <p className="text-muted-foreground text-lg">
+                필요한 만큼만 충전하고 원하는 기능을 이용하세요
+              </p>
+              <div className="mt-4 inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full">
+                <Info className="w-4 h-4" />
+                <span className="text-sm">1캐시 = ₩100 상당</span>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              {CASH_PACKAGES.map((pkg) => (
+                <Card 
+                  key={pkg.id}
+                  className={`relative transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                    pkg.popular 
+                      ? 'border-2 border-blue-400 shadow-lg' 
+                      : 'border hover:border-primary/30'
+                  }`}
+                >
+                  {pkg.popular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
+                        💎 인기
+                      </Badge>
+                    </div>
+                  )}
+
+                  <CardHeader className="text-center pt-10 pb-4">
+                    <div className="flex justify-center mb-4">
+                      <div className="p-4 rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30">
+                        <Coins className="w-8 h-8 text-blue-600" />
+                      </div>
+                    </div>
+                    
+                    <CardTitle className="text-2xl mb-2">{pkg.name}</CardTitle>
+                    
+                    <div className="space-y-1">
+                      <div className="text-4xl font-bold text-primary">
+                        {pkg.cash} <span className="text-xl">캐시</span>
+                      </div>
+                      {pkg.bonus > 0 && (
+                        <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+                          <Gift className="w-3 h-3 mr-1" />
+                          +{pkg.bonus} 보너스
+                        </Badge>
                       )}
                     </div>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  </CardHeader>
 
-        {/* 토큰 사용 안내 */}
-        <div className="mt-20 text-center">
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8 max-w-4xl mx-auto">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Brain className="w-8 h-8 text-blue-600" />
-              <h2 className="text-2xl font-bold">토큰 사용 가이드</h2>
-            </div>
-            <div className="grid md:grid-cols-2 gap-6 text-left">
-              <div className="space-y-2">
-                <div className="font-medium text-lg mb-3">📊 기능별 토큰 소비</div>
-                <div className="text-sm space-y-1">
-                  <div>• <strong>엔터테인먼트</strong>: 무료 (전생직업, 동물상 등)</div>
-                  <div>• <strong>기본 심리검사</strong>: 2토큰 (마음상태, 집중력 등)</div>
-                  <div>• <strong>AI 코치 세션</strong>: 3토큰</div>
-                  <div>• <strong>관찰분석</strong>: 4토큰</div>
-                  <div>• <strong>사주 분석</strong>: 6토큰</div>
-                  <div>• <strong>프리미엄 검사</strong>: 20토큰</div>
-                  <div>• <strong>IEP 생성</strong>: 무료</div>
-                  <div>• <strong>종합 리포팅</strong>: 200토큰</div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="font-medium text-lg mb-3">✨ 토큰제 장점</div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-sm">필요한 만큼만 구매</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-sm">1년간 자유롭게 사용</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-sm">언제든 추가 구매 가능</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-blue-500" />
-                  <span className="text-sm">구매일로부터 1년간 유효</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-sm">합리적인 가격 (최저 99원/토큰)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                  <CardContent className="space-y-4 pb-8">
+                    <div className="space-y-2">
+                      {pkg.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          <span className="text-sm">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
 
-        {/* 환불 정책 섹션 */}
-        <div className="mt-20">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-amber-50 dark:bg-amber-950/20 border-2 border-amber-200 dark:border-amber-800 rounded-xl p-8 mb-12">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-amber-100 dark:bg-amber-900 rounded-lg flex-shrink-0">
-                  <AlertCircle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    <Button 
+                      className="w-full py-5 text-base font-bold bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+                      disabled={loading}
+                      onClick={() => handlePurchase('cash', pkg.id, pkg.price)}
+                    >
+                      <Coins className="w-5 h-5 mr-2" />
+                      충전하기
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* 캐시 사용 안내 */}
+            <div className="mt-12 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-2xl p-8 max-w-4xl mx-auto">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Brain className="w-6 h-6 text-blue-600" />
+                캐시 사용 가이드
+              </h3>
+              <div className="grid md:grid-cols-2 gap-6 text-sm">
+                <div className="space-y-2">
+                  <div className="font-medium text-base mb-3">기능별 캐시 소비</div>
+                  <div>• <strong>엔터테인먼트</strong>: 무료</div>
+                  <div>• <strong>기본 심리검사</strong>: 2캐시</div>
+                  <div>• <strong>AI 분석</strong>: 4캐시</div>
+                  <div>• <strong>사주 분석</strong>: 6캐시</div>
+                  <div>• <strong>프리미엄 검사</strong>: 20캐시</div>
                 </div>
-                <div className="flex-1">
-                  <h2 className="text-2xl font-bold mb-4 text-amber-900 dark:text-amber-100">토큰 환불 정책</h2>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p><strong>환불 가능 기간:</strong> 구매일로부터 1주 이내</p>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p><strong>환불 조건:</strong> 사용하지 않은 토큰에 한하여 환불 가능</p>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p><strong>환불 방법:</strong> 결제하셨던 동일한 방법으로 환불 처리됩니다</p>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                      <p><strong>환불 불가:</strong> 토큰을 1개라도 사용한 경우 환불이 불가능합니다</p>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                      <p><strong>토큰 양도 불가:</strong> 충전된 토큰은 타인에게 양도할 수 없습니다</p>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <p>환불 문의: 고객센터 (aihpro@naver.com)</p>
-                    </div>
+                <div className="space-y-2">
+                  <div className="font-medium text-base mb-3">캐시 혜택</div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-500" />
+                    <span>1년간 유효</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-500" />
+                    <span>언제든 추가 충전 가능</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-500" />
+                    <span>충전 금액에 따른 보너스</span>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </TabsContent>
 
-        {/* FAQ Section */}
-        <div className="mt-12">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">자주 묻는 질문</h2>
-            <div className="space-y-6">
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">토큰은 언제까지 사용할 수 있나요?</h3>
-                <p className="text-muted-foreground">
-                  토큰의 유효기간은 구매일로부터 <strong>1년</strong>입니다. 유효기간 내에 사용하지 않은 토큰은 자동으로 소멸되며, 
-                  환불 가능 기간도 구매일로부터 1년 이내입니다.
-                </p>
-              </div>
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">회원가입 없이도 구매할 수 있나요?</h3>
-                <p className="text-muted-foreground">
-                  토큰 구매는 회원가입을 해야만 합니다. 구매한 토큰을 실제로 사용하시려면 
-                  회원가입 및 로그인이 필요합니다. 구매 시 입력하신 이메일로 가입하시면 자동으로 토큰이 연결됩니다.
-                </p>
-              </div>
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">환불이 가능한가요?</h3>
-                <p className="text-muted-foreground">
-                  네, 가능합니다. 토큰을 사용하지 않은 경우에 한하여 구매일로부터 1주 이내에 환불 요청이 가능하며, 
-                  결제하셨던 동일한 방법으로 환불 처리됩니다. 환불 문의는 고객센터 (aihpro@naver.com)로 연락 주시기 바랍니다.
-                </p>
-              </div>
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">토큰을 다른 사람에게 양도할 수 있나요?</h3>
-                <p className="text-muted-foreground">
-                  아니요, 충전된 토큰은 타인에게 양도가 불가능합니다. 구매하신 본인만 사용하실 수 있습니다.
-                </p>
-              </div>
-              <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-lg mb-2">토큰이 부족하면 어떻게 하나요?</h3>
-                <p className="text-muted-foreground">
-                  언제든 추가로 토큰을 구매할 수 있습니다. 새로 구매한 토큰도 구매일로부터 1년간 유효합니다.
-                </p>
-              </div>
+          {/* 전문가 상담 탭 */}
+          <TabsContent value="consult" className="space-y-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-3">전문가 1:1 상담</h2>
+              <p className="text-muted-foreground text-lg">
+                검증된 전문가와 깊이 있는 상담을 받아보세요
+              </p>
+              {isPremiumUser() && (
+                <Badge className="mt-4 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                  <Crown className="w-4 h-4 mr-1" />
+                  프리미엄 회원 할인 적용
+                </Badge>
+              )}
             </div>
-          </div>
+
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {CONSULTATION_PACKAGES.map((pkg) => (
+                <Card 
+                  key={pkg.id}
+                  className={`relative transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                    pkg.popular 
+                      ? 'border-2 border-green-400 shadow-lg' 
+                      : 'border hover:border-primary/30'
+                  }`}
+                >
+                  {pkg.popular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 text-sm font-bold shadow-lg">
+                        🌟 인기
+                      </Badge>
+                    </div>
+                  )}
+
+                  <CardHeader className="text-center pt-10 pb-4">
+                    <div className="flex justify-center mb-4">
+                      <div className="p-4 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30">
+                        <Users className="w-8 h-8 text-green-600" />
+                      </div>
+                    </div>
+                    
+                    <CardTitle className="text-2xl mb-1">{pkg.name}</CardTitle>
+                    <p className="text-muted-foreground">{pkg.duration}</p>
+                    
+                    <div className="mt-4 space-y-1">
+                      {pkg.originalPrice && (
+                        <div className="text-sm text-muted-foreground line-through">
+                          ₩{formatPrice(pkg.originalPrice)}
+                        </div>
+                      )}
+                      <div className="text-3xl font-bold text-primary">
+                        ₩{formatPrice(pkg.price)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        또는 {pkg.cashPrice} 캐시
+                      </div>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="space-y-4 pb-8">
+                    <div className="space-y-2">
+                      {pkg.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          <span className="text-sm">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Button 
+                        className="w-full py-5 text-base font-bold bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                        disabled={loading}
+                        onClick={() => handlePurchase('consult', pkg.id, pkg.price)}
+                      >
+                        카드/계좌로 결제
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        className="w-full py-5 text-base font-medium"
+                        disabled={loading || (tokenBalance?.current_tokens || 0) < pkg.cashPrice}
+                        onClick={() => handlePurchase('consult_cash', pkg.id, pkg.cashPrice)}
+                      >
+                        <Coins className="w-4 h-4 mr-2" />
+                        {pkg.cashPrice} 캐시로 결제
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* 상담사 소개 */}
+            <div className="mt-12 text-center">
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={() => navigate('/expert-hiring')}
+                className="gap-2"
+              >
+                <Users className="w-5 h-5" />
+                전문 상담사 보기
+              </Button>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* 환불 정책 */}
+        <div className="mt-16 max-w-4xl mx-auto">
+          <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <AlertCircle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="text-lg font-bold mb-3 text-amber-900 dark:text-amber-100">환불 정책</h3>
+                  <div className="space-y-2 text-sm text-amber-800 dark:text-amber-200">
+                    <p>• <strong>캐시:</strong> 구매 후 7일 이내, 미사용 시 전액 환불</p>
+                    <p>• <strong>프리미엄 패스:</strong> 구매 후 7일 이내, 서비스 미이용 시 전액 환불</p>
+                    <p>• <strong>전문가 상담:</strong> 상담 24시간 전까지 취소 시 전액 환불</p>
+                    <p className="text-amber-600 dark:text-amber-400">* 서비스 이용 후에는 환불이 불가합니다</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

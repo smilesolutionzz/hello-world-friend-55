@@ -227,6 +227,21 @@ const TokenSubscription = () => {
         <p className="text-muted-foreground">검증된 전문가와 깊이 있는 상담을 받으세요</p>
       </div>
 
+      {/* 예약 안내 */}
+      <div className="max-w-3xl mx-auto mb-6 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-800">
+        <div className="flex items-start gap-3">
+          <div className="text-2xl">📋</div>
+          <div>
+            <h4 className="font-bold text-amber-800 dark:text-amber-300 mb-1">상담 예약 안내</h4>
+            <ol className="text-sm text-amber-700 dark:text-amber-400 space-y-1">
+              <li>1. 아래 전문가 리스트에서 원하시는 전문가를 선택하세요</li>
+              <li>2. "예약하기" 버튼을 클릭하여 카카오톡으로 연락주세요</li>
+              <li>3. 결제 안내와 함께 상담 시간을 매칭해드립니다</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
       <div className="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto">
         {/* 30분 상담 */}
         <Card className="hover:shadow-lg transition-all">
@@ -243,8 +258,7 @@ const TokenSubscription = () => {
             </div>
             <Button 
               className="w-full bg-green-500 hover:bg-green-600"
-              onClick={() => handlePurchase('consult', 'consult_30', 35000)}
-              disabled={loading}
+              onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')}
             >
               예약하기
             </Button>
@@ -268,8 +282,7 @@ const TokenSubscription = () => {
             </div>
             <Button 
               className="w-full bg-green-500 hover:bg-green-600"
-              onClick={() => handlePurchase('consult', 'consult_60', 65000)}
-              disabled={loading}
+              onClick={() => window.open('https://open.kakao.com/o/sHLdK3Ch', '_blank')}
             >
               예약하기
             </Button>
@@ -277,15 +290,20 @@ const TokenSubscription = () => {
         </Card>
       </div>
 
-      {/* 상담사 보기 */}
-      <div className="text-center mt-6">
+      {/* 전문가 리스트 보기 */}
+      <div className="flex flex-col items-center gap-3 mt-8">
         <Button 
-          variant="link"
+          variant="outline"
+          size="lg"
           onClick={() => navigate('/expert-hiring')}
-          className="text-muted-foreground"
+          className="border-green-400 text-green-600 hover:bg-green-50"
         >
-          전문 상담사 프로필 보기 →
+          <Users className="w-5 h-5 mr-2" />
+          전문가 리스트 보기
         </Button>
+        <p className="text-sm text-muted-foreground">
+          원하시는 전문가를 선택하신 후 카카오톡으로 문의해주세요
+        </p>
       </div>
     </div>
   );

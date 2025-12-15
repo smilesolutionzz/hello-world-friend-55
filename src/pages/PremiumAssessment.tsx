@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins } from "lucide-react";
+import { Crown, Sparkles, Clock, Users, CheckCircle, Star, Coins } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
 import { MedicalDisclaimer } from "@/components/legal/MedicalDisclaimer";
@@ -172,14 +172,6 @@ const PremiumAssessment = () => {
       <div>
         <UnifiedNavigation />
         <div className="pt-4 container mx-auto px-4 max-w-4xl">
-          <Button 
-            variant="ghost" 
-            onClick={handleBack}
-            className="mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            뒤로가기
-          </Button>
           <DrawingAnalyzer />
         </div>
       </div>
@@ -348,18 +340,6 @@ const PremiumAssessment = () => {
         <div className="relative z-10 container mx-auto px-6 pt-8 pb-16 max-w-7xl">
         {/* Header - Mobile Optimized */}
         <div className="mb-10">
-          {/* Back Button - 모바일에서 가장 위에 독립 배치 */}
-          <div className="mb-6">
-            <Button 
-              variant="ghost" 
-              onClick={handleBack}
-              className="flex items-center gap-2 hover:bg-primary/10 transition-colors px-4 py-2"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span className="font-medium text-base">뒤로가기</span>
-            </Button>
-          </div>
-          
           {/* Title Section - 가로 정렬 */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-1.5 sm:gap-3 mb-4">
@@ -379,11 +359,11 @@ const PremiumAssessment = () => {
             <div className="flex items-center justify-center gap-2 mb-2">
               <Badge className="bg-purple-500 text-white text-base px-4 py-2 font-bold shadow-lg">
                 <Coins className="w-4 h-4 mr-2" />
-                각 검사당 2,000원
+                각 검사당 3,000원
               </Badge>
             </div>
             <p className="text-sm text-muted-foreground/80 text-center px-4">
-              프리미엄 검사 시작 시 자동으로 2,000원이 차감됩니다
+              프리미엄 검사 시작 시 자동으로 3,000원이 차감됩니다
             </p>
           </div>
         </div>

@@ -1,32 +1,22 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { ConcernStorageList } from '@/components/concern/ConcernStorageList';
 import AssessmentHistory from '@/components/history/AssessmentHistory';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, ClipboardCheck, FolderHeart } from 'lucide-react';
+import { Heart, ClipboardCheck, FolderHeart } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 
 const ConcernStorage = () => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'concerns' | 'assessments'>('concerns');
 
   return (
     <div className="min-h-screen bg-background">
+      <UnifiedNavigation />
+      
       {/* 헤더 */}
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate(-1)}
-            className="shrink-0"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div className="flex items-center gap-2">
-            <FolderHeart className="w-5 h-5 text-primary" />
-            <h1 className="font-semibold text-lg">저장소</h1>
-          </div>
+      <header className="sticky top-16 z-10 bg-background/80 backdrop-blur-md border-b">
+        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-center gap-2">
+          <FolderHeart className="w-5 h-5 text-primary" />
+          <h1 className="font-semibold text-lg">저장소</h1>
         </div>
       </header>
 

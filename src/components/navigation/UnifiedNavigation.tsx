@@ -128,7 +128,7 @@ export const UnifiedNavigation = () => {
                 className={`h-10 px-4 rounded-full font-medium transition-all ${
                   isActive('/') && location.pathname === '/'
                     ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    : 'text-foreground/80 hover:text-foreground hover:bg-accent'
                 }`}
               >
                 홈
@@ -149,7 +149,7 @@ export const UnifiedNavigation = () => {
                         className={`h-10 px-4 rounded-full font-medium transition-all gap-1 ${
                           item.children?.some(child => isActive(child.path))
                             ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
-                            : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                            : 'text-foreground/80 hover:text-foreground hover:bg-accent'
                         }`}
                       >
                         {item.label}
@@ -159,7 +159,7 @@ export const UnifiedNavigation = () => {
                     <DropdownMenuContent 
                       align="center" 
                       sideOffset={8}
-                      className="w-72 p-2 rounded-2xl border border-border/50 shadow-xl bg-background/95 backdrop-blur-xl"
+                      className="w-72 p-2 rounded-2xl border border-border shadow-xl bg-background backdrop-blur-xl"
                     >
                       {item.children.map((child) => (
                         <button
@@ -179,7 +179,7 @@ export const UnifiedNavigation = () => {
                             {child.icon ? <child.icon className="w-4 h-4" /> : <item.icon className="w-4 h-4" />}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm flex items-center gap-2">
+                            <div className="font-semibold text-sm flex items-center gap-2 text-foreground">
                               {child.label}
                               {child.badge && (
                                 <Badge className="bg-green-500/10 text-green-600 border-0 text-[10px] px-1.5 py-0">
@@ -187,7 +187,7 @@ export const UnifiedNavigation = () => {
                                 </Badge>
                               )}
                             </div>
-                            <div className="text-xs text-muted-foreground truncate">{child.desc}</div>
+                            <div className="text-xs text-foreground/60 truncate">{child.desc}</div>
                           </div>
                         </button>
                       ))}
@@ -202,7 +202,7 @@ export const UnifiedNavigation = () => {
                     className={`h-10 px-4 rounded-full font-medium transition-all ${
                       isActive(item.path!)
                         ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
-                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                        : 'text-foreground/80 hover:text-foreground hover:bg-accent'
                     }`}
                   >
                     {item.label}
@@ -241,18 +241,18 @@ export const UnifiedNavigation = () => {
                   <DropdownMenuContent 
                     align="end" 
                     sideOffset={8}
-                    className="w-56 p-2 rounded-2xl border border-border/50 shadow-xl bg-background/95 backdrop-blur-xl"
+                    className="w-56 p-2 rounded-2xl border border-border shadow-xl bg-background backdrop-blur-xl"
                   >
                     <div className="px-3 py-2 mb-1">
-                      <p className="text-xs text-muted-foreground">로그인됨</p>
-                      <p className="text-sm font-medium truncate">{user.email}</p>
+                      <p className="text-xs text-foreground/60">로그인됨</p>
+                      <p className="text-sm font-semibold truncate text-foreground">{user.email}</p>
                     </div>
                     <button
                       onClick={() => handleNavigation('/concern-storage')}
                       className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-accent transition-colors text-left"
                     >
-                      <Heart className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-sm">내 기록</span>
+                      <Heart className="w-4 h-4 text-foreground/70" />
+                      <span className="text-sm font-medium text-foreground">내 기록</span>
                     </button>
                     <button
                       onClick={handleAuth}
@@ -329,8 +329,8 @@ export const UnifiedNavigation = () => {
                           <User className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{user.email}</p>
-                          <p className="text-xs text-muted-foreground">로그인됨</p>
+                          <p className="text-sm font-semibold truncate text-foreground">{user.email}</p>
+                          <p className="text-xs text-foreground/60">로그인됨</p>
                         </div>
                       </div>
                     </div>
@@ -354,9 +354,9 @@ export const UnifiedNavigation = () => {
                       <div key={item.label}>
                         {item.children ? (
                           <div className="space-y-1">
-                            <div className="flex items-center gap-3 p-3 text-muted-foreground">
+                            <div className="flex items-center gap-3 p-3 text-foreground/70">
                               <item.icon className="w-5 h-5" />
-                              <span className="font-medium text-sm">{item.label}</span>
+                              <span className="font-semibold text-sm">{item.label}</span>
                             </div>
                             <div className="pl-4 space-y-1">
                               {item.children.map((child) => (

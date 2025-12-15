@@ -72,8 +72,86 @@ serve(async (req) => {
       });
     }
 
-    // 결제 금액 계산
-    const amount = subscriptionType === 'yearly' ? plan.yearly_price : plan.price;
+    // ========== 1개월 무료 체험 체크 (프리미엄 플랜 신규 가입자만) ==========
+    let isFreeTrial = false;
+    const isPremiumPlan = plan.type === 'premium' || plan.type === 'lifetime';
+
+    if (isPremiumPlan) {
+      // 1. 이전에 프리미엄 구독 이력이 있는지 확인
+      const { data: previousSubs } = await supabaseAdmin
+        .from('user_subscriptions')
+        .select('id')
+        .eq('user_id', user.id)
+        .in('subscription_type', ['premium', 'lifetime'])
+        .limit(1);
+
+      // 2. 무료 체험 사용 이력 확인
+      const { data: existingTrial } = await supabaseAdmin
+        .from('user_free_trials')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('plan_type', 'premium')
+        .limit(1);
+
+      // 이전 구독이 없고, 무료 체험을 사용한 적이 없으면 무료 체험 적용
+      if ((!previousSubs || previousSubs.length === 0) && (!existingTrial || existingTrial.length === 0)) {
+        isFreeTrial = true;
+        console.log('Free trial eligible for user:', user.id);
+      }
+    }
+
+    // 결제 금액 계산 (무료 체험인 경우 0원)
+    let amount = subscriptionType === 'yearly' ? plan.yearly_price : plan.price;
+    
+    if (isFreeTrial) {
+      amount = 0;
+    }
+
+    // 무료 체험인 경우 바로 구독 생성 (결제 없이)
+    if (isFreeTrial && amount === 0) {
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 1); // 1개월 무료
+
+      // 무료 체험 기록 저장
+      const { error: trialError } = await supabaseAdmin
+        .from('user_free_trials')
+        .insert({
+          user_id: user.id,
+          plan_type: 'premium',
+          trial_started_at: startDate.toISOString(),
+          trial_ends_at: endDate.toISOString(),
+          is_converted: false
+        });
+
+      if (trialError) {
+        console.error('Failed to save free trial record:', trialError);
+      }
+
+      // 구독 생성
+      const { error: subError } = await supabaseAdmin
+        .from('user_subscriptions')
+        .insert({
+          user_id: user.id,
+          plan_id: planId,
+          subscription_type: 'premium',
+          current_period_start: startDate.toISOString().split('T')[0],
+          current_period_end: endDate.toISOString().split('T')[0],
+          status: 'active',
+          payment_method: 'free_trial'
+        });
+
+      if (subError) throw subError;
+
+      return new Response(JSON.stringify({ 
+        success: true, 
+        isFreeTrial: true,
+        message: "🎉 1개월 무료 체험이 시작되었습니다!",
+        trialEndsAt: endDate.toISOString()
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     
     // 주문 ID 생성
     const orderId = `order_${user.id}_${Date.now()}`;
@@ -122,7 +200,8 @@ serve(async (req) => {
     return new Response(JSON.stringify({ 
       success: true, 
       paymentData,
-      clientKey: tossClientKey
+      clientKey: tossClientKey,
+      isFreeTrial: false
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

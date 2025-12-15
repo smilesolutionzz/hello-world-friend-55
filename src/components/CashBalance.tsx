@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Wallet, Plus, TrendingUp, Gift, Sparkles } from 'lucide-react';
+import { Wallet, Plus, Gift, Sparkles, History, Settings, Crown, ChevronRight, CreditCard } from 'lucide-react';
 import { useTokens } from '@/hooks/useTokens';
 import { useNavigate } from 'react-router-dom';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
@@ -53,16 +53,16 @@ const CashBalance: React.FC<CashBalanceProps> = ({ compact = true }) => {
               `}
             >
               <Wallet className="w-4 h-4" />
-              <span className="font-bold">{formatCash(cashValue)}</span>
+              <span className="font-bold">{formatCash(cashValue)}원</span>
             </Badge>
           </div>
         </PopoverTrigger>
-        <PopoverContent className="w-72 p-0" side="bottom" align="end">
+        <PopoverContent className="w-80 p-0" side="bottom" align="end">
           <Card className="border-0 shadow-xl">
             <CardHeader className="pb-2 bg-gradient-to-r from-amber-500/10 to-yellow-500/10">
               <CardTitle className="text-base flex items-center gap-2">
                 <Wallet className="w-5 h-5 text-amber-500" />
-                내 캐시 잔액
+                내 캐시 관리
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 pt-4">
@@ -72,24 +72,16 @@ const CashBalance: React.FC<CashBalanceProps> = ({ compact = true }) => {
                   {formatCash(cashValue)}
                   <span className="text-lg ml-1">원</span>
                 </div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  ({currentTokens}토큰 보유중)
-                </div>
-              </div>
-
-              {/* 프로모션 배너 */}
-              <div className="p-3 rounded-lg bg-gradient-to-r from-rose-500/10 to-orange-500/10 border border-rose-500/20">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-rose-500" />
-                  <span className="text-xs font-medium text-rose-500">
-                    🔥 지금 충전하면 50% 추가 적립!
-                  </span>
-                </div>
+                {isLowBalance && (
+                  <div className="text-xs text-red-500 mt-1 flex items-center justify-center gap-1">
+                    <span>⚠️</span> 잔액이 부족해요
+                  </div>
+                )}
               </div>
 
               {/* 사용 통계 */}
               {tokenBalance && (
-                <div className="space-y-1.5 text-sm">
+                <div className="space-y-1.5 text-sm bg-muted/30 rounded-lg p-3">
                   <div className="flex justify-between text-muted-foreground">
                     <span>총 충전</span>
                     <span className="font-medium">{formatTokenAsCash(tokenBalance.total_purchased)}</span>
@@ -110,14 +102,53 @@ const CashBalance: React.FC<CashBalanceProps> = ({ compact = true }) => {
                 </div>
               )}
 
-              {/* 충전 버튼 */}
-              <Button
+              {/* 캐시 관리 메뉴 */}
+              <div className="space-y-2">
+                <Button
+                  onClick={() => navigate('/token-subscription')}
+                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-bold justify-between"
+                >
+                  <span className="flex items-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    캐시 충전하기
+                  </span>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    onClick={() => navigate('/token-history')}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs"
+                  >
+                    <History className="w-3 h-3 mr-1" />
+                    사용내역
+                  </Button>
+                  <Button
+                    onClick={() => navigate('/my-page')}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs"
+                  >
+                    <Settings className="w-3 h-3 mr-1" />
+                    계정관리
+                  </Button>
+                </div>
+              </div>
+
+              {/* 프로모션 배너 */}
+              <div 
+                className="p-3 rounded-lg bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 border border-violet-500/20 cursor-pointer hover:border-violet-500/40 transition-colors"
                 onClick={() => navigate('/token-subscription')}
-                className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-bold"
               >
-                <Plus className="w-4 h-4 mr-2" />
-                캐시 충전하기
-              </Button>
+                <div className="flex items-center gap-2">
+                  <Crown className="w-4 h-4 text-violet-500" />
+                  <span className="text-xs font-medium text-violet-600 dark:text-violet-400">
+                    🎉 프리미엄 패스 1개월 무료 체험!
+                  </span>
+                </div>
+              </div>
 
               {/* 추천 보너스 */}
               <Button

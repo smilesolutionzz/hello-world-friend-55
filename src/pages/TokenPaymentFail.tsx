@@ -62,7 +62,7 @@ const TokenPaymentFail = () => {
             결제 실패
           </CardTitle>
           <CardDescription className="text-lg text-slate-600">
-            토큰 충전 중 문제가 발생했습니다.
+            캐시 충전 중 문제가 발생했습니다.
           </CardDescription>
         </CardHeader>
 

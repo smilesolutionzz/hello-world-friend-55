@@ -150,7 +150,7 @@ const TokenSubscription = () => {
           </div>
           <div className="text-left">
             <div className="text-xs text-amber-600 dark:text-amber-400">현재 보유</div>
-            <div className="text-lg font-bold text-amber-700 dark:text-amber-300">{tokenBalance?.current_tokens || 0} 캐시</div>
+            <div className="text-lg font-bold text-amber-700 dark:text-amber-300">{((tokenBalance?.current_tokens || 0) * 100).toLocaleString()}원</div>
           </div>
         </div>
       </div>

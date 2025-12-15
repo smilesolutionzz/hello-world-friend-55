@@ -713,7 +713,7 @@ const Assessment = () => {
                   className="bg-gradient-to-r from-primary to-primary-glow hover:from-primary/90 hover:to-primary-glow/90 text-white font-bold shadow-lg hover:shadow-xl transition-all"
                 >
                   <Coins className="w-5 h-5 mr-2" />
-                  토큰 충전하기
+                  캐시 충전하기
                 </Button>
               </div>
             </CardContent>
@@ -755,7 +755,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('psychological')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
                     </div>
                     <h3 className="text-xl font-bold text-brand-gradient mb-3">마음상태 체크</h3>
                     <p className="text-muted-foreground mb-3 text-sm">연령별 맞춤 심리상태 참고 분석 (진단 아님)</p>
@@ -771,7 +771,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('panic')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
                     </div>
                     <h3 className="text-xl font-bold text-brand-gradient mb-3">불안감 수준 확인</h3>
                     <p className="text-muted-foreground mb-3 text-sm">불안감 증상 자가체크 (참고용)</p>
@@ -787,7 +787,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('depression')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
                     </div>
                     <h3 className="text-xl font-bold text-brand-gradient mb-3">우울감 자가체크</h3>
                     <p className="text-muted-foreground mb-3 text-sm">우울감 수준 확인 (참고용)</p>
@@ -803,7 +803,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('adhd')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
                     </div>
                     <h3 className="text-xl font-bold text-brand-gradient mb-3">주의집중력 자가체크</h3>
                     <p className="text-muted-foreground mb-3 text-sm">연령별 ADHD 증상 확인 (참고용)</p>
@@ -819,7 +819,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('selfesteem')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-blue-500 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
                     </div>
                      <h3 className="text-xl font-bold text-brand-gradient mb-3">정서발달 체크</h3>
                      <p className="text-muted-foreground mb-3 text-sm">영유아·아동·성인 연령별 정서 및 감정발달 확인 (참고용)</p>
@@ -855,7 +855,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('developmental-delay')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-green-600 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-green-600 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
                     </div>
                     <h4 className="text-lg font-bold text-brand-gradient mb-3">발달지연 검사</h4>
                     <p className="text-muted-foreground text-sm mb-3">전반적 발달지연 선별진단</p>
@@ -871,7 +871,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('language')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-green-600 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-green-600 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
                     </div>
                     <div className="inline-flex items-center gap-1 bg-green-500 text-white px-2 py-1 rounded-full font-bold text-xs mb-2">
                       2분체크
@@ -890,7 +890,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('sensory-integration')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-green-600 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-green-600 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
                     </div>
                     <h4 className="text-lg font-bold text-brand-gradient mb-3">감각통합장애 검사</h4>
                     <p className="text-muted-foreground text-sm mb-3">감각처리 및 통합능력 평가</p>
@@ -906,7 +906,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('learning-disability')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-green-600 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-green-600 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
                     </div>
                     <h4 className="text-lg font-bold text-brand-gradient mb-3">학습장애 검사</h4>
                     <p className="text-muted-foreground text-sm mb-3">학습능력 및 인지기능 평가</p>
@@ -922,7 +922,7 @@ const Assessment = () => {
                     onClick={() => handleTestTypeSelect('social-development')}
                   >
                     <div className="absolute top-3 right-3">
-                      <Badge className="bg-green-600 text-white text-xs px-2 py-1 opacity-80">5토큰</Badge>
+                      <Badge className="bg-green-600 text-white text-xs px-2 py-1 opacity-80">500원</Badge>
                     </div>
                     <h4 className="text-lg font-bold text-brand-gradient mb-3">사회성 발달 검사</h4>
                     <p className="text-muted-foreground text-sm mb-3">사회적 상호작용 및 적응 평가</p>
@@ -981,7 +981,7 @@ const Assessment = () => {
                   <h3 className="text-2xl font-bold text-foreground mb-2">AIH 전문가 창작 검사</h3>
                   <p className="text-muted-foreground flex items-center justify-center gap-2">
                     <span>발달 심리전문가가 직접 개발한 신뢰도 높은 창작 검사</span>
-                    <Badge className="bg-emerald-500 text-white font-semibold">5토큰</Badge>
+                    <Badge className="bg-emerald-500 text-white font-semibold">500원</Badge>
                   </p>
                 </div>
                 

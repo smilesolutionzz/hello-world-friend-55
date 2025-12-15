@@ -29,7 +29,7 @@ const ProductSidebar = () => {
     {
       icon: <Clock className="w-5 h-5" />,
       title: "3분 심리테스트",
-      tokenCost: "2토큰",
+      tokenCost: "200원",
       badge: "시작",
       badgeType: "popular",
       description: "빠른 기본 심리상태 체크",
@@ -38,7 +38,7 @@ const ProductSidebar = () => {
     {
       icon: <FileText className="w-5 h-5" />,
       title: "관찰일지 작성",
-      tokenCost: "3토큰",
+      tokenCost: "300원",
       badge: "습관형성",
       badgeType: "new",
       description: "체계적인 행동 관찰 기록",
@@ -56,7 +56,7 @@ const ProductSidebar = () => {
     {
       icon: <Crown className="w-5 h-5" />,
       title: "프리미엄 검사",
-      tokenCost: "8토큰",
+      tokenCost: "2,000원",
       badge: "심화분석",
       badgeType: "hot",
       description: "전문가급 상세 심리분석",
@@ -65,7 +65,7 @@ const ProductSidebar = () => {
     {
       icon: <Users className="w-5 h-5" />,
       title: "가족케어 패키지",
-      tokenCost: "20토큰",
+      tokenCost: "2,000원",
       badge: "확장",
       badgeType: "package",
       description: "가족 전체 심리관리",
@@ -74,7 +74,7 @@ const ProductSidebar = () => {
     {
       icon: <MessageCircle className="w-5 h-5" />,
       title: "20분상담(비대면)",
-      tokenCost: "150토큰",
+      tokenCost: "15,000원",
       badge: "PRO전문가상담",
       badgeType: "recommended",
       description: "카카오톡,전화,화상 전문가 상담",
@@ -83,7 +83,7 @@ const ProductSidebar = () => {
     {
       icon: <Users className="w-5 h-5" />,
       title: "AIH박사급리포팅",
-      tokenCost: "200토큰",
+      tokenCost: "20,000원",
       badge: "프리미엄",
       badgeType: "premium",
       description: "15페이지이상의 맞춤 리포팅(PDF)",

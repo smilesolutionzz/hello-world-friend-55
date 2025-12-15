@@ -1525,7 +1525,7 @@ const ExpertHiring = () => {
               </div>
               <div className="min-w-0">
                 <p className="font-semibold text-xs md:text-sm truncate">토큰 사용</p>
-                <p className="text-[10px] md:text-xs text-muted-foreground truncate">30분 = 10토큰</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground truncate">30분 = 200토큰</p>
               </div>
             </CardContent>
           </Card>

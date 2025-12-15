@@ -40,8 +40,8 @@ const navItems = [
     label: '검사도구',
     icon: TrendingUp,
     children: [
-      { label: '3분테스트', path: '/assessment', desc: '빠르고 간편한 심리 체크' },
-      { label: '프리미엄테스트', path: '/premium-assessment', desc: '전문가 수준 종합 분석' },
+      { label: '간편테스트', path: '/assessment', desc: '빠르고 간편한 심리 체크' },
+      { label: '심층테스트', path: '/premium-assessment', desc: '전문가 수준 종합 분석' },
       { label: '체질분석', path: '/han-medicine-test', desc: '한의학 기반 건강 진단' },
     ]
   },

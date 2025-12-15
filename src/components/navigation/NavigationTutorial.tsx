@@ -29,7 +29,7 @@ const tutorialSteps: TutorialStep[] = [
   {
     id: 'assessment',
     title: '검사도구',
-    description: '간단한 3분테스트로 발달, 심리, 체질 등을 빠르게 분석받을 수 있습니다. 프리미엄 심층 테스트도 제공됩니다.',
+    description: '간편테스트로 발달, 심리, 체질 등을 빠르게 분석받을 수 있습니다. 심층테스트도 제공됩니다.',
     icon: TrendingUp,
     menuSelector: '[data-tutorial="assessment"]'
   },

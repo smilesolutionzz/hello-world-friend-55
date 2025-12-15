@@ -283,38 +283,71 @@ const InstantAIAnalysis = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-4xl mx-auto space-y-6"
+        className="w-full max-w-4xl mx-auto space-y-4 md:space-y-6"
       >
         {/* 결과 헤더 */}
-        <div className="bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl rounded-3xl border border-white/10 p-6 shadow-2xl">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-white" />
+        <div className="bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl rounded-2xl md:rounded-3xl border border-white/10 p-4 md:p-6 shadow-2xl">
+          <div className="flex items-center justify-between mb-3 md:mb-4">
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shrink-0">
+                <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-white">AI 분석 완료!</h3>
-                <p className="text-sm text-white/60">신뢰도 {analysisResult.confidence}%의 분석 결과입니다</p>
+              <div className="min-w-0">
+                <h3 className="text-base md:text-lg font-bold text-white">AI 분석 완료!</h3>
+                <p className="text-xs md:text-sm text-white/60 truncate">신뢰도 {analysisResult.confidence}%의 분석 결과</p>
               </div>
             </div>
-            <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 px-3 py-1.5 text-sm font-medium">
+            <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 px-2 md:px-3 py-1 md:py-1.5 text-xs md:text-sm font-medium shrink-0">
               {analysisResult.type}
             </Badge>
           </div>
         </div>
 
+        {/* 심층 분석 요약 (비회원도 풍부하게) */}
+        {analysisResult.deepAnalysis && (
+          <div className="bg-gradient-to-br from-violet-900/40 to-purple-900/40 backdrop-blur-xl rounded-2xl border border-violet-500/20 p-4 md:p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Brain className="w-5 h-5 text-violet-400" />
+              <h4 className="text-sm md:text-base font-bold text-white">심층 원인 분석</h4>
+            </div>
+            <p className="text-white/80 text-xs md:text-sm leading-relaxed mb-3">
+              {analysisResult.deepAnalysis.rootCauseAnalysis?.substring(0, 400)}...
+            </p>
+            {analysisResult.deepAnalysis.protectiveFactors && (
+              <div className="grid grid-cols-2 gap-2 md:gap-3 mt-3">
+                <div className="bg-green-500/10 rounded-xl p-3 border border-green-500/20">
+                  <p className="text-green-300 text-[10px] md:text-xs font-bold mb-1">보호요인</p>
+                  <ul className="text-white/70 text-[10px] md:text-xs space-y-0.5">
+                    {analysisResult.deepAnalysis.protectiveFactors?.slice(0, 2).map((f: string, i: number) => (
+                      <li key={i} className="truncate">• {f}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-red-500/10 rounded-xl p-3 border border-red-500/20">
+                  <p className="text-red-300 text-[10px] md:text-xs font-bold mb-1">주의요인</p>
+                  <ul className="text-white/70 text-[10px] md:text-xs space-y-0.5">
+                    {analysisResult.deepAnalysis.riskFactors?.slice(0, 2).map((f: string, i: number) => (
+                      <li key={i} className="truncate">• {f}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* 추천 리포트 목차 */}
         {tableOfContents && tableOfContents.length > 0 && (
-          <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 backdrop-blur-xl rounded-2xl border border-blue-500/20 p-5">
+          <div className="bg-gradient-to-br from-blue-900/40 to-purple-900/40 backdrop-blur-xl rounded-2xl border border-blue-500/20 p-4 md:p-5">
             <div className="flex items-center gap-2 mb-3">
-              <FileText className="w-5 h-5 text-blue-400" />
-              <h4 className="text-base font-bold text-white">추천 리포트 목차</h4>
+              <FileText className="w-4 h-4 md:w-5 md:h-5 text-blue-400" />
+              <h4 className="text-sm md:text-base font-bold text-white">추천 리포트 목차</h4>
             </div>
-            <ul className="space-y-1.5 text-sm">
+            <ul className="space-y-1 md:space-y-1.5 text-xs md:text-sm">
               {tableOfContents.map((item, i) => (
                 <li key={i} className="flex items-center gap-2 text-white/70">
-                  <span className="w-5 h-5 rounded-full bg-blue-500/20 text-blue-300 text-xs flex items-center justify-center font-medium">{item.index}</span>
-                  {item.title}
+                  <span className="w-4 h-4 md:w-5 md:h-5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] md:text-xs flex items-center justify-center font-medium shrink-0">{item.index}</span>
+                  <span className="truncate">{item.title}</span>
                 </li>
               ))}
             </ul>
@@ -322,15 +355,15 @@ const InstantAIAnalysis = () => {
         )}
 
         {/* AI 전문가 조언 - 접기/펼치기 */}
-        <div className="bg-gradient-to-br from-amber-900/30 to-orange-900/30 backdrop-blur-xl rounded-2xl border border-amber-500/20 p-5">
+        <div className="bg-gradient-to-br from-amber-900/30 to-orange-900/30 backdrop-blur-xl rounded-2xl border border-amber-500/20 p-4 md:p-5">
           <button 
             onClick={() => setIsAdviceExpanded(!isAdviceExpanded)}
-            className="w-full flex items-center justify-between mb-3"
+            className="w-full flex items-center justify-between mb-2 md:mb-3"
           >
             <div className="flex items-center gap-2">
-              <Heart className="w-5 h-5 text-amber-400" />
-              <h4 className="text-base font-bold text-white">AI 전문가의 조언</h4>
-              <Badge className={`${analysisResult.severity === '높음' ? 'bg-red-500/20 text-red-300' : analysisResult.severity === '중간' ? 'bg-orange-500/20 text-orange-300' : 'bg-green-500/20 text-green-300'} text-xs`}>
+              <Heart className="w-4 h-4 md:w-5 md:h-5 text-amber-400" />
+              <h4 className="text-sm md:text-base font-bold text-white">AI 전문가의 조언</h4>
+              <Badge className={`${analysisResult.severity === '높음' ? 'bg-red-500/20 text-red-300' : analysisResult.severity === '중간' ? 'bg-orange-500/20 text-orange-300' : 'bg-green-500/20 text-green-300'} text-[10px] md:text-xs`}>
                 {analysisResult.severity}
               </Badge>
             </div>
@@ -345,29 +378,29 @@ const InstantAIAnalysis = () => {
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <p className="text-white/80 text-sm leading-relaxed whitespace-pre-wrap">
+                <p className="text-white/80 text-xs md:text-sm leading-relaxed whitespace-pre-wrap">
                   {analysisResult.detailedAdvice}
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
           {!isAdviceExpanded && (
-            <p className="text-white/60 text-sm line-clamp-2">{analysisResult.detailedAdvice}</p>
+            <p className="text-white/60 text-xs md:text-sm line-clamp-2">{analysisResult.detailedAdvice}</p>
           )}
         </div>
 
         {/* 맞춤 솔루션 */}
         {analysisResult.recommendations && (
-          <div className="bg-gradient-to-br from-cyan-900/30 to-blue-900/30 backdrop-blur-xl rounded-2xl border border-cyan-500/20 p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Target className="w-5 h-5 text-cyan-400" />
-              <h4 className="text-base font-bold text-white">맞춤 솔루션</h4>
+          <div className="bg-gradient-to-br from-cyan-900/30 to-blue-900/30 backdrop-blur-xl rounded-2xl border border-cyan-500/20 p-4 md:p-5">
+            <div className="flex items-center gap-2 mb-2 md:mb-3">
+              <Target className="w-4 h-4 md:w-5 md:h-5 text-cyan-400" />
+              <h4 className="text-sm md:text-base font-bold text-white">맞춤 솔루션</h4>
             </div>
             <div className="space-y-2">
               {analysisResult.recommendations.map((rec: string, i: number) => (
-                <div key={i} className="flex items-start gap-2 bg-white/5 rounded-xl p-3 border border-white/5">
-                  <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">{i + 1}</span>
-                  <span className="text-white/80 text-sm">{rec}</span>
+                <div key={i} className="flex items-start gap-2 bg-white/5 rounded-lg md:rounded-xl p-2 md:p-3 border border-white/5">
+                  <span className="w-4 h-4 md:w-5 md:h-5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] md:text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">{i + 1}</span>
+                  <span className="text-white/80 text-xs md:text-sm">{rec}</span>
                 </div>
               ))}
             </div>

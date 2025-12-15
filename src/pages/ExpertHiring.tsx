@@ -1466,6 +1466,85 @@ const ExpertHiring = () => {
           </div>
         </div>
 
+        {/* 해외 거주 한국인을 위한 배너 */}
+        <Card className="mb-8 bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 border-blue-500/30">
+          <CardContent className="py-5 md:py-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shrink-0">
+                  <Globe className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm md:text-lg flex items-center gap-2 flex-wrap">
+                    🌏 해외 거주 한국인을 위한 전문 상담
+                    <Badge variant="secondary" className="bg-green-500/20 text-green-700 dark:text-green-300 text-[10px] md:text-xs">해외결제 OK</Badge>
+                  </h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">
+                    Visa/Mastercard 해외카드 결제 가능 • 시차 고려 예약 • 한국 전문가와 화상상담
+                  </p>
+                </div>
+              </div>
+              <Button 
+                onClick={() => {
+                  const expertsTab = document.querySelector('[value="experts"]') as HTMLElement;
+                  if (expertsTab) expertsTab.click();
+                  window.scrollTo({ top: 600, behavior: 'smooth' });
+                }}
+                className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white whitespace-nowrap text-xs md:text-sm"
+              >
+                해외 상담 신청
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 상담 정보 요약 카드 */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-8">
+          <Card className="bg-muted/50">
+            <CardContent className="py-3 md:py-4 flex items-center gap-2 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Clock className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-xs md:text-sm truncate">상담 시간</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground truncate">30분 / 60분 선택</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-muted/50">
+            <CardContent className="py-3 md:py-4 flex items-center gap-2 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Video className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-xs md:text-sm truncate">상담 방식</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground truncate">화상/전화/채팅</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-muted/50">
+            <CardContent className="py-3 md:py-4 flex items-center gap-2 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Zap className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-xs md:text-sm truncate">토큰 사용</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground truncate">30분 = 10토큰</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-muted/50">
+            <CardContent className="py-3 md:py-4 flex items-center gap-2 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <MessageCircle className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-xs md:text-sm truncate">세션 수</p>
+                <p className="text-[10px] md:text-xs text-muted-foreground truncate">월 1~4회 제공</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         {/* CTA 카드 섹션 */}
         <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-8">
           {/* 제휴기관 CTA */}

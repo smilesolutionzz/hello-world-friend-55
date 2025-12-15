@@ -6,6 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Coins, Calculator, TrendingUp, AlertTriangle, CheckCircle, Info } from 'lucide-react';
 import { TOKEN_COSTS } from '@/constants/tokenCosts';
 import { useTokens } from '@/hooks/useTokens';
+import { tokenToCash, formatCash, TOKEN_TO_WON_RATE } from '@/utils/tokenToCash';
 
 interface Service {
   key: keyof typeof TOKEN_COSTS;
@@ -35,6 +36,12 @@ interface TokenCostPreviewProps {
   compact?: boolean;
   showRecommended?: boolean;
 }
+
+// 캐시 형태로 표시하는 헬퍼 함수
+const getCashLabel = (tokens: number) => {
+  if (tokens === 0) return '무료';
+  return `${formatCash(tokenToCash(tokens))}원`;
+};
 
 const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({ 
   compact = false, 
@@ -103,7 +110,7 @@ const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({
             size="sm"
           >
             <TrendingUp className="w-4 h-4 mr-2" />
-            추천 서비스 선택 ({services.filter(s => s.recommended).reduce((sum, s) => sum + TOKEN_COSTS[s.key], 0)}토큰)
+            추천 서비스 선택 ({getCashLabel(services.filter(s => s.recommended).reduce((sum, s) => sum + TOKEN_COSTS[s.key], 0))})
           </Button>
 
           {/* 총 비용 표시 */}
@@ -111,24 +118,24 @@ const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({
             <div className={`p-3 rounded-lg border ${canAfford ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium">총 예상 비용</span>
-                <Badge className={getCostBadgeColor(totalCost)}>{totalCost}토큰</Badge>
+                <Badge className={getCostBadgeColor(totalCost)}>{getCashLabel(totalCost)}</Badge>
               </div>
               <div className="text-sm space-y-1">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">현재 보유</span>
-                  <span>{currentTokens}토큰</span>
+                  <span>{formatCash(tokenToCash(currentTokens))}원</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">사용 후 잔액</span>
                   <span className={remainingTokens < 0 ? 'text-red-600' : 'text-green-600'}>
-                    {remainingTokens}토큰
+                    {formatCash(tokenToCash(remainingTokens))}원
                   </span>
                 </div>
               </div>
               {!canAfford && (
                 <div className="mt-2 text-xs text-red-600 flex items-center gap-1">
                   <AlertTriangle className="w-3 h-3" />
-                  토큰이 {Math.abs(remainingTokens)}개 부족합니다
+                  {formatCash(tokenToCash(Math.abs(remainingTokens)))}원이 부족합니다
                 </div>
               )}
             </div>
@@ -145,10 +152,10 @@ const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calculator className="w-6 h-6 text-primary" />
-            🧮 토큰 사용량 계산기
+            🧮 서비스 비용 계산기
           </CardTitle>
           <p className="text-muted-foreground">
-            이용하고 싶은 서비스를 선택하여 필요한 토큰량을 미리 확인해보세요
+            이용하고 싶은 서비스를 선택하여 필요한 비용을 미리 확인해보세요
           </p>
         </CardHeader>
         <CardContent>
@@ -170,7 +177,7 @@ const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({
               <div className="flex flex-wrap gap-2">
                 {services.filter(s => s.recommended).map(service => (
                   <Badge key={service.key} variant="secondary" className="text-xs">
-                    {service.name} ({TOKEN_COSTS[service.key]}토큰)
+                    {service.name} ({getCashLabel(TOKEN_COSTS[service.key])})
                   </Badge>
                 ))}
               </div>
@@ -226,7 +233,7 @@ const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-medium">{service.name}</span>
                         <Badge className={getCostBadgeColor(TOKEN_COSTS[service.key])}>
-                          {TOKEN_COSTS[service.key]}토큰
+                          {getCashLabel(TOKEN_COSTS[service.key])}
                         </Badge>
                         {service.recommended && (
                           <Badge variant="secondary" className="text-xs">추천</Badge>
@@ -257,7 +264,7 @@ const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-medium">{service.name}</span>
                         <Badge className={getCostBadgeColor(TOKEN_COSTS[service.key])}>
-                          {TOKEN_COSTS[service.key]}토큰
+                          {getCashLabel(TOKEN_COSTS[service.key])}
                         </Badge>
                         {service.recommended && (
                           <Badge variant="secondary" className="text-xs">추천</Badge>
@@ -294,7 +301,7 @@ const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({
                     <div key={key} className="flex items-center justify-between p-2 bg-white rounded border">
                       <span className="text-sm">{service.name}</span>
                       <Badge className={getCostBadgeColor(TOKEN_COSTS[key])}>
-                        {TOKEN_COSTS[key] === 0 ? '무료' : `${TOKEN_COSTS[key]}토큰`}
+                        {getCashLabel(TOKEN_COSTS[key])}
                       </Badge>
                     </div>
                   );
@@ -305,21 +312,21 @@ const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({
             {/* 총 비용 및 잔액 */}
             <div className="pt-4 border-t space-y-3">
               <div className="flex items-center justify-between text-lg font-semibold">
-                <span>총 필요 토큰</span>
+                <span>총 예상 비용</span>
                 <Badge className={`${getCostBadgeColor(totalCost)} text-base px-3 py-1`}>
-                  {totalCost}토큰
+                  {getCashLabel(totalCost)}
                 </Badge>
               </div>
               
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">현재 보유 토큰</span>
-                  <span className="font-medium">{currentTokens}토큰</span>
+                  <span className="text-muted-foreground">현재 보유 캐시</span>
+                  <span className="font-medium">{formatCash(tokenToCash(currentTokens))}원</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">사용 후 잔액</span>
                   <span className={`font-medium ${remainingTokens < 0 ? 'text-red-600' : 'text-green-600'}`}>
-                    {remainingTokens}토큰
+                    {formatCash(tokenToCash(remainingTokens))}원
                   </span>
                 </div>
               </div>
@@ -328,10 +335,10 @@ const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({
                 <div className="p-3 rounded-lg bg-red-100 border border-red-200">
                   <div className="flex items-center gap-2 text-red-700 text-sm font-medium mb-1">
                     <AlertTriangle className="w-4 h-4" />
-                    토큰이 부족합니다
+                    캐시가 부족합니다
                   </div>
                   <p className="text-red-600 text-sm">
-                    {Math.abs(remainingTokens)}개의 토큰이 추가로 필요합니다. 토큰을 충전해주세요.
+                    {formatCash(tokenToCash(Math.abs(remainingTokens)))}원이 추가로 필요합니다. 캐시를 충전해주세요.
                   </p>
                 </div>
               )}
@@ -355,11 +362,11 @@ const TokenCostPreview: React.FC<TokenCostPreviewProps> = ({
           <div className="flex items-start gap-2">
             <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div className="text-sm space-y-1">
-              <p className="font-medium text-blue-800">💡 토큰 절약 팁</p>
+              <p className="font-medium text-blue-800">💡 캐시 절약 팁</p>
               <ul className="text-blue-700 space-y-1">
                 <li>• 먼저 무료 AI 상담사로 상담받아보세요</li>
-                <li>• 기본 검사(2토큰)로 시작한 후 필요시 프리미엄 서비스 이용</li>
-                <li>• 친구 추천시 10토큰 무료 지급!</li>
+                <li>• 기본 검사(500원)로 시작한 후 필요시 프리미엄 서비스 이용</li>
+                <li>• 친구 추천시 1,000원 캐시 무료 지급!</li>
                 <li>• 매일 로그인하면 일일 보너스 토큰 지급</li>
               </ul>
             </div>

@@ -5,11 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Coins, Clock, Star, Zap, Heart, Brain, Target, TrendingUp, Info, CheckCircle } from 'lucide-react';
 import { TOKEN_COSTS, TOKEN_COST_DESCRIPTIONS } from '@/constants/tokenCosts';
 import { useNavigate } from 'react-router-dom';
+import { tokenToCash, formatCash } from '@/utils/tokenToCash';
 
 interface TokenUsageGuideProps {
   compact?: boolean;
   showRecommendations?: boolean;
 }
+
+// 캐시 형태로 표시하는 헬퍼 함수
+const getCashLabel = (tokens: number) => {
+  if (tokens === 0) return '무료';
+  return `${formatCash(tokenToCash(tokens))}원`;
+};
 
 const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({ 
   compact = false, 
@@ -51,7 +58,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
   ];
 
   const comprehensiveServices = [
-    { key: 'COMPREHENSIVE_REPORT', name: '종합 리포팅 (200토큰)', icon: Star, category: '최고급' },
+    { key: 'COMPREHENSIVE_REPORT', name: '종합 리포팅 (20,000원)', icon: Star, category: '최고급' },
   ];
 
   const getCostBadgeColor = (cost: number) => {
@@ -80,7 +87,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <Coins className="w-5 h-5 text-primary" />
-            서비스별 토큰 비용
+            서비스별 이용 요금
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -102,12 +109,12 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
 
           {/* 엔터테인먼트 */}
           <div className="space-y-2">
-            <h4 className="font-medium text-sm text-muted-foreground">엔터테인먼트 (1토큰)</h4>
+            <h4 className="font-medium text-sm text-muted-foreground">엔터테인먼트 (100원)</h4>
             {entertainmentTests.map(service => (
               <div key={service.key} className="flex items-center justify-between text-sm">
                 <span>{service.name}</span>
                 <Badge className={getCostBadgeColor(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}>
-                  {getCostLabel(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}
+                  {getCashLabel(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}
                 </Badge>
               </div>
             ))}
@@ -115,12 +122,12 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
 
           {/* 기본 검사 */}
           <div className="space-y-2">
-            <h4 className="font-medium text-sm text-muted-foreground">기본 심리검사 (5토큰)</h4>
+            <h4 className="font-medium text-sm text-muted-foreground">기본 심리검사 (500원)</h4>
             {basicTests.map(service => (
               <div key={service.key} className="flex items-center justify-between text-sm">
                 <span>{service.name}</span>
                 <Badge className={getCostBadgeColor(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}>
-                  {getCostLabel(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}
+                  {getCashLabel(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}
                 </Badge>
               </div>
             ))}
@@ -128,12 +135,12 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
 
           {/* AIH 전문가 창작 */}
           <div className="space-y-2">
-            <h4 className="font-medium text-sm text-muted-foreground">AIH 전문가 창작 (5토큰)</h4>
+            <h4 className="font-medium text-sm text-muted-foreground">AIH 전문가 창작 (500원)</h4>
             {expertTests.map(service => (
               <div key={service.key} className="flex items-center justify-between text-sm">
                 <span>{service.name}</span>
                 <Badge className={getCostBadgeColor(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}>
-                  {getCostLabel(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}
+                  {getCashLabel(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}
                 </Badge>
               </div>
             ))}
@@ -141,12 +148,12 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
 
           {/* 프리미엄 서비스 */}
           <div className="space-y-2">
-            <h4 className="font-medium text-sm text-muted-foreground">프리미엄 (20토큰)</h4>
+            <h4 className="font-medium text-sm text-muted-foreground">프리미엄 (2,000원)</h4>
             {premiumServices.map(service => (
               <div key={service.key} className="flex items-center justify-between text-sm">
                 <span>{service.name}</span>
                 <Badge className={getCostBadgeColor(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}>
-                  {getCostLabel(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}
+                  {getCashLabel(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}
                 </Badge>
               </div>
             ))}
@@ -154,12 +161,12 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
 
           {/* 최고급 서비스 */}
           <div className="space-y-2">
-            <h4 className="font-medium text-sm text-muted-foreground">최고급 서비스 (200토큰)</h4>
+            <h4 className="font-medium text-sm text-muted-foreground">최고급 서비스 (20,000원)</h4>
             {comprehensiveServices.map(service => (
               <div key={service.key} className="flex items-center justify-between text-sm">
                 <span>{service.name}</span>
                 <Badge className={getCostBadgeColor(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}>
-                  {getCostLabel(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}
+                  {getCashLabel(TOKEN_COSTS[service.key as keyof typeof TOKEN_COSTS])}
                 </Badge>
               </div>
             ))}
@@ -198,7 +205,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium">{serviceName}</span>
                       <Badge className={getCostBadgeColor(cost)}>
-                        {getCostLabel(cost)}
+                        {getCashLabel(cost)}
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">{item.reason}</p>
@@ -209,7 +216,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
             <div className="mt-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
               <div className="flex items-center gap-2 text-primary text-sm">
                 <Info className="w-4 h-4" />
-                <span className="font-medium">총 예상 비용: 10토큰 (무료 서비스 제외)</span>
+                <span className="font-medium">총 예상 비용: 1,000원 (무료 서비스 제외)</span>
               </div>
             </div>
           </CardContent>
@@ -250,7 +257,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Star className="w-5 h-5 text-blue-600" />
-            엔터테인먼트 테스트 (1토큰)
+            엔터테인먼트 테스트 (100원)
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             재미있고 가벼운 심리 테스트
@@ -272,7 +279,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
                   </div>
                 </div>
                 <Badge className={getCostBadgeColor(cost)}>
-                  {getCostLabel(cost)}
+                  {getCashLabel(cost)}
                 </Badge>
               </div>
             );
@@ -285,7 +292,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="w-5 h-5 text-orange-600" />
-            기본 심리검사 (5토큰)
+            기본 심리검사 (500원)
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             전문 심리검사 및 발달검사
@@ -307,7 +314,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
                   </div>
                 </div>
                 <Badge className={getCostBadgeColor(cost)}>
-                  {getCostLabel(cost)}
+                  {getCashLabel(cost)}
                 </Badge>
               </div>
             );
@@ -320,7 +327,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5 text-orange-600" />
-            AIH 전문가 창작 검사 (5토큰)
+            AIH 전문가 창작 검사 (500원)
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             발달 심리전문가가 직접 개발한 신뢰도 높은 검사
@@ -342,7 +349,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
                   </div>
                 </div>
                 <Badge className={getCostBadgeColor(cost)}>
-                  {getCostLabel(cost)}
+                  {getCashLabel(cost)}
                 </Badge>
               </div>
             );
@@ -355,7 +362,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Star className="w-5 h-5 text-purple-600" />
-            프리미엄 서비스 (20토큰)
+            프리미엄 서비스 (2,000원)
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             전문가급 분석 및 리포트
@@ -377,7 +384,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
                   </div>
                 </div>
                 <Badge className={getCostBadgeColor(cost)}>
-                  {getCostLabel(cost)}
+                  {getCashLabel(cost)}
                 </Badge>
               </div>
             );
@@ -390,7 +397,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Star className="w-5 h-5 text-red-600" />
-            최고급 종합 서비스 (200토큰)
+            최고급 종합 서비스 (20,000원)
           </CardTitle>
           <p className="text-sm text-muted-foreground">
             모든 데이터 종합 박사급 분석 리포트 (3일내 휴대폰 전송)
@@ -412,7 +419,7 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
                   </div>
                 </div>
                 <Badge className={getCostBadgeColor(cost)}>
-                  {getCostLabel(cost)}
+                  {getCashLabel(cost)}
                 </Badge>
               </div>
             );
@@ -420,21 +427,21 @@ const TokenUsageGuide: React.FC<TokenUsageGuideProps> = ({
         </CardContent>
       </Card>
 
-      {/* 토큰 충전 안내 */}
+      {/* 캐시 충전 안내 */}
       <Card className="border-primary/20">
         <CardContent className="p-6 text-center space-y-4">
           <div className="flex items-center justify-center gap-2 text-primary">
             <Coins className="w-6 h-6" />
-            <span className="text-lg font-semibold">토큰이 부족하신가요?</span>
+            <span className="text-lg font-semibold">캐시가 부족하신가요?</span>
           </div>
           <p className="text-muted-foreground">
-            다양한 요금제로 합리적인 가격에 토큰을 충전하세요
+            다양한 요금제로 합리적인 가격에 캐시를 충전하세요
           </p>
           <Button 
             onClick={() => navigate('/token-subscription')}
             className="w-full max-w-xs mx-auto"
           >
-            토큰 충전하러 가기
+            캐시 충전하러 가기
           </Button>
         </CardContent>
       </Card>

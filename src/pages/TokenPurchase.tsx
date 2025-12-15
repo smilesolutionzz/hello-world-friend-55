@@ -246,9 +246,10 @@ const TokenPurchase = () => {
       if (data?.isFreeTrial) {
         toast({
           title: '🎉 무료 체험 시작!',
-          description: '1개월 무료 프리미엄 패스가 활성화되었습니다.',
+          description: '1개월 무료 프리미엄 패스가 활성화되었습니다. 모든 기능을 이용하실 수 있습니다.',
         });
-        navigate('/token-subscription');
+        // 무료 체험 시작 완료 후 안내 페이지로 이동
+        navigate('/free-trial-success');
       } else {
         throw new Error('무료 체험 처리 중 오류가 발생했습니다.');
       }

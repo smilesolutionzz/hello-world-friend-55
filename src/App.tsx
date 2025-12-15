@@ -118,6 +118,7 @@ import AssessmentHistory from "./components/history/AssessmentHistory";
 import FunTests from "./pages/FunTests";
 import FunTestResult from "./pages/FunTestResult";
 import FreeTrialResult from "./pages/FreeTrialResult";
+import FreeTrialSuccess from "./pages/FreeTrialSuccess";
 import PastLifeJobTestFree from "./components/assessment/PastLifeJobTestFree";
 import LifeAchievementHistory from "./pages/LifeAchievementHistory";
 import LifeAchievementStats from "./pages/LifeAchievementStats";
@@ -221,6 +222,7 @@ const App = () => {
           <Route path="/assessment/stress-test" element={<Assessment />} />
           <Route path="/assessment/past-life-job-test" element={<PastLifeJobTestFree />} />
           <Route path="/free-trial-result" element={<FreeTrialResult />} />
+          <Route path="/free-trial-success" element={<FreeTrialSuccess />} />
           <Route path="/assessment/relationship-style-test" element={<RelationshipStyleTest />} />
           <Route path="/assessment/communication-style-test" element={<CommunicationStyleTest />} />
           <Route path="/assessment/defense-mechanism-test" element={<DefenseMechanismTest />} />

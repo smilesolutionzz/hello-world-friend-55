@@ -8644,6 +8644,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_free_trials: {
+        Row: {
+          created_at: string
+          id: string
+          is_converted: boolean | null
+          plan_type: string
+          trial_ends_at: string
+          trial_started_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_converted?: boolean | null
+          plan_type?: string
+          trial_ends_at: string
+          trial_started_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_converted?: boolean | null
+          plan_type?: string
+          trial_ends_at?: string
+          trial_started_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_growth_points: {
         Row: {
           challenge_points: number | null

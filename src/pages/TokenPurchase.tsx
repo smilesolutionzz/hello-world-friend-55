@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Coins, CreditCard, Building2, Smartphone, Receipt, RefreshCw, Loader2, Crown, Users, Clock, Check } from 'lucide-react';
+import { Coins, CreditCard, Building2, Smartphone, Receipt, RefreshCw, Loader2, Crown, Users, Clock, Check, Gift, Sparkles } from 'lucide-react';
 import { loadPaymentWidget, PaymentWidgetInstance } from '@tosspayments/payment-widget-sdk';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
 
 // 세션 기반 고객 키 (페이지 새로고침해도 유지)
 const getCustomerKey = () => {
@@ -61,6 +62,11 @@ const TokenPurchase = () => {
   const [widgetVisible, setWidgetVisible] = useState(false);
   const [widgetLoading, setWidgetLoading] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  
+  // 무료 체험 관련 상태
+  const [isFreeTrialEligible, setIsFreeTrialEligible] = useState<boolean | null>(null);
+  const [freeTrialLoading, setFreeTrialLoading] = useState(false);
+  const [checkingFreeTrial, setCheckingFreeTrial] = useState(false);
 
   // URL 파라미터에서 상품 정보 가져오기
   const purchaseType = searchParams.get('type'); // 'pass', 'cash', 'consult', or null (token)
@@ -146,6 +152,117 @@ const TokenPurchase = () => {
       setInIframe(true);
     }
   }, []);
+
+  // 프리미엄 패스 무료 체험 자격 확인
+  useEffect(() => {
+    const checkFreeTrialEligibility = async () => {
+      // 프리미엄 패스가 아니면 체크 안함
+      if (!urlProduct || urlProduct.type !== 'pass') {
+        setIsFreeTrialEligible(false);
+        return;
+      }
+
+      setCheckingFreeTrial(true);
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData.session) {
+          setIsFreeTrialEligible(false);
+          return;
+        }
+
+        // 이전 프리미엄 구독 이력 확인
+        const { data: previousSubs } = await supabase
+          .from('user_subscriptions')
+          .select('id')
+          .eq('user_id', sessionData.session.user.id)
+          .in('subscription_type', ['premium', 'lifetime'])
+          .limit(1);
+
+        // 무료 체험 사용 이력 확인
+        const { data: existingTrial } = await supabase
+          .from('user_free_trials')
+          .select('id')
+          .eq('user_id', sessionData.session.user.id)
+          .eq('plan_type', 'premium')
+          .limit(1);
+
+        // 이전 구독이 없고, 무료 체험을 사용한 적이 없으면 무료 체험 가능
+        const isEligible = (!previousSubs || previousSubs.length === 0) && (!existingTrial || existingTrial.length === 0);
+        setIsFreeTrialEligible(isEligible);
+        console.log('🎁 무료 체험 자격:', isEligible);
+      } catch (error) {
+        console.error('무료 체험 자격 확인 오류:', error);
+        setIsFreeTrialEligible(false);
+      } finally {
+        setCheckingFreeTrial(false);
+      }
+    };
+
+    checkFreeTrialEligibility();
+  }, [urlProduct]);
+
+  // 무료 체험 시작 함수
+  const startFreeTrial = async () => {
+    if (!urlProduct || urlProduct.type !== 'pass') return;
+    
+    setFreeTrialLoading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) {
+        toast({
+          title: '로그인 필요',
+          description: '로그인 후 이용해주세요.',
+          variant: 'destructive'
+        });
+        navigate('/auth');
+        return;
+      }
+
+      // subscription_plans에서 premium 플랜 ID 찾기
+      const { data: plans } = await supabase
+        .from('subscription_plans')
+        .select('id')
+        .eq('type', 'premium')
+        .eq('is_active', true)
+        .limit(1);
+
+      if (!plans || plans.length === 0) {
+        throw new Error('구독 플랜을 찾을 수 없습니다.');
+      }
+
+      // Edge function 호출하여 무료 체험 시작
+      const { data, error } = await supabase.functions.invoke('create-toss-payment', {
+        headers: {
+          Authorization: `Bearer ${sessionData.session.access_token}`,
+        },
+        body: { 
+          planId: plans[0].id,
+          subscriptionType: 'monthly'
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.isFreeTrial) {
+        toast({
+          title: '🎉 무료 체험 시작!',
+          description: '1개월 무료 프리미엄 패스가 활성화되었습니다.',
+        });
+        navigate('/token-subscription');
+      } else {
+        throw new Error('무료 체험 처리 중 오류가 발생했습니다.');
+      }
+    } catch (error: any) {
+      console.error('무료 체험 시작 오류:', error);
+      toast({
+        title: '오류',
+        description: error.message || '무료 체험 시작 중 오류가 발생했습니다.',
+        variant: 'destructive'
+      });
+    } finally {
+      setFreeTrialLoading(false);
+    }
+  };
 
   // Toss Client Key 가져오기
   useEffect(() => {
@@ -621,62 +738,138 @@ const TokenPurchase = () => {
               )}
             </div>
 
-            {/* 결제 수단 카드 */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800">
-              <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800">
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white">결제 수단 선택</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                  카드, 가상계좌, 계좌이체, 휴대폰 결제
-                </p>
-              </div>
-              
-              <div className="p-6">
-                {/* 결제 수단 아이콘 그리드 */}
-                <div className="grid grid-cols-4 gap-3 mb-6">
-                  {paymentMethods.map((method, idx) => (
-                    <div key={idx} className="flex flex-col items-center p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                      <method.icon className="w-6 h-6 text-slate-600 dark:text-slate-400 mb-1" />
-                      <span className="text-xs font-medium text-slate-600 dark:text-slate-400 text-center leading-tight">
-                        {method.label}
-                      </span>
-                    </div>
-                  ))}
+            {/* 무료 체험 카드 (프리미엄 패스 + 신규 사용자) */}
+            {urlProduct.type === 'pass' && isFreeTrialEligible && (
+              <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/50 dark:via-orange-950/50 dark:to-yellow-950/50 rounded-3xl shadow-xl overflow-hidden border-2 border-amber-400 dark:border-amber-600">
+                <div className="px-6 py-6 text-center">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400 dark:border-amber-600 mb-4">
+                    <Gift className="w-5 h-5 text-amber-600" />
+                    <span className="font-bold text-amber-700 dark:text-amber-400">신규 가입자 특별 혜택</span>
+                  </div>
+                  
+                  <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+                    🎉 1개월 무료 체험
+                  </h2>
+                  <p className="text-slate-600 dark:text-slate-400 mb-6">
+                    첫 결제 ₩0원! 프리미엄 패스의 모든 기능을<br />
+                    1개월간 무료로 체험해보세요
+                  </p>
+                  
+                  <div className="space-y-3 text-left max-w-xs mx-auto mb-6">
+                    {[
+                      '모든 AI 분석 무제한',
+                      '모든 심리검사 무제한',
+                      '상세 리포트 무제한',
+                      '언제든지 해지 가능'
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full bg-amber-200 dark:bg-amber-800 flex items-center justify-center">
+                          <Check className="w-3 h-3 text-amber-700 dark:text-amber-300" />
+                        </div>
+                        <span className="text-slate-700 dark:text-slate-300">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="flex flex-col gap-3">
+                    <Button
+                      onClick={startFreeTrial}
+                      disabled={freeTrialLoading}
+                      className="w-full h-14 rounded-xl text-lg font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-amber-500/30"
+                    >
+                      {freeTrialLoading ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                          처리 중...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-5 h-5 mr-2" />
+                          무료 체험 시작하기
+                        </>
+                      )}
+                    </Button>
+                    
+                    <Button
+                      variant="ghost"
+                      onClick={() => setIsFreeTrialEligible(false)}
+                      className="text-slate-500 hover:text-slate-700"
+                    >
+                      바로 결제하기 (무료 체험 건너뛰기)
+                    </Button>
+                  </div>
                 </div>
+              </div>
+            )}
 
-                {widgetLoading && (
-                  <div className="flex items-center justify-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary mr-3" />
-                    <span className="text-slate-500">결제 수단 불러오는 중...</span>
+            {/* 결제 수단 카드 (무료 체험 자격이 없거나 건너뛴 경우) */}
+            {(urlProduct.type !== 'pass' || !isFreeTrialEligible) && (
+              <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                {/* 무료 체험 체크 중 로딩 */}
+                {urlProduct.type === 'pass' && checkingFreeTrial && (
+                  <div className="px-6 py-4 bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-800">
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
+                      <span className="text-sm text-amber-700 dark:text-amber-400">무료 체험 자격 확인 중...</span>
+                    </div>
                   </div>
                 )}
+                
+                <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800">
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">결제 수단 선택</h2>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    카드, 가상계좌, 계좌이체, 휴대폰 결제
+                  </p>
+                </div>
+                
+                <div className="p-6">
+                  {/* 결제 수단 아이콘 그리드 */}
+                  <div className="grid grid-cols-4 gap-3 mb-6">
+                    {paymentMethods.map((method, idx) => (
+                      <div key={idx} className="flex flex-col items-center p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <method.icon className="w-6 h-6 text-slate-600 dark:text-slate-400 mb-1" />
+                        <span className="text-xs font-medium text-slate-600 dark:text-slate-400 text-center leading-tight">
+                          {method.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
 
-                <div id="payment-widget" className="w-full" style={{ minHeight: widgetLoading ? '0' : '350px' }} />
+                  {widgetLoading && (
+                    <div className="flex items-center justify-center py-12">
+                      <Loader2 className="w-8 h-8 animate-spin text-primary mr-3" />
+                      <span className="text-slate-500">결제 수단 불러오는 중...</span>
+                    </div>
+                  )}
 
-                {/* 버튼 영역 */}
-                <div className="flex gap-3 mt-6">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate('/token-subscription')}
-                    className="flex-1 h-14 rounded-xl text-base font-medium"
-                  >
-                    이전
-                  </Button>
-                  <Button
-                    onClick={requestUrlProductPayment}
-                    disabled={!widgetReady}
-                    className={`flex-1 h-14 rounded-xl text-base font-bold text-white ${
-                      urlProduct.type === 'pass' 
-                        ? 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700' 
-                        : urlProduct.type === 'consult'
-                        ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700'
-                        : 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700'
-                    }`}
-                  >
-                    {widgetReady ? `₩${urlProduct.price.toLocaleString()} 결제하기` : '준비 중...'}
-                  </Button>
+                  <div id="payment-widget" className="w-full" style={{ minHeight: widgetLoading ? '0' : '350px' }} />
+
+                  {/* 버튼 영역 */}
+                  <div className="flex gap-3 mt-6">
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate('/token-subscription')}
+                      className="flex-1 h-14 rounded-xl text-base font-medium"
+                    >
+                      이전
+                    </Button>
+                    <Button
+                      onClick={requestUrlProductPayment}
+                      disabled={!widgetReady}
+                      className={`flex-1 h-14 rounded-xl text-base font-bold text-white ${
+                        urlProduct.type === 'pass' 
+                          ? 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700' 
+                          : urlProduct.type === 'consult'
+                          ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700'
+                          : 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700'
+                      }`}
+                    >
+                      {widgetReady ? `₩${urlProduct.price.toLocaleString()} 결제하기` : '준비 중...'}
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         ) : loading ? (
           <div className="flex flex-col items-center justify-center py-20">

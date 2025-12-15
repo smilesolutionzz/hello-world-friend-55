@@ -1388,6 +1388,22 @@ const Assessment = () => {
                       <li>• 다음 목표 제안</li>
                     </ul>
                   </div>
+
+                  <div 
+                    className="bg-gradient-to-br from-emerald-500 to-teal-600 hover-glow border border-emerald-300 rounded-2xl p-6 cursor-pointer transition-all hover:scale-105 text-white relative"
+                    onClick={() => navigate('/han-medicine-test')}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <Badge className="bg-green-500 text-white text-xs px-2 py-1 font-bold">무료</Badge>
+                    </div>
+                    <h3 className="text-lg font-bold mb-3">🌿 한의학 체질분석</h3>
+                    <p className="text-emerald-100 mb-3 text-sm">한의학 기반으로 알아보는 나의 체질과 건강!</p>
+                    <ul className="space-y-1 text-sm text-emerald-100">
+                      <li>• 체질 진단</li>
+                      <li>• 맞춤 건강 조언</li>
+                      <li>• 한방 솔루션</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>

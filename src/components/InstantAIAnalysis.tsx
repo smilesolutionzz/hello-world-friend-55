@@ -421,7 +421,7 @@ const InstantAIAnalysis = () => {
                   <Clock className="w-3 h-3" /> 단기 목표 (1-3개월)
                 </p>
                 <ul className="space-y-1">
-                  {reports.developmentRoadmap.shortTerm?.map((item: string, i: number) => (
+                  {reports.developmentRoadmap.immediate?.map((item: string, i: number) => (
                     <li key={i} className="text-white/70 text-sm flex items-start gap-2">
                       <span className="text-blue-400">•</span> {item}
                     </li>
@@ -434,7 +434,7 @@ const InstantAIAnalysis = () => {
                   <Clock className="w-3 h-3" /> 중기 목표 (3-6개월)
                 </p>
                 <ul className="space-y-1">
-                  {reports.developmentRoadmap.mediumTerm?.map((item: string, i: number) => (
+                  {reports.developmentRoadmap.shortTerm?.map((item: string, i: number) => (
                     <li key={i} className="text-white/70 text-sm flex items-start gap-2">
                       <span className="text-purple-400">•</span> {item}
                     </li>

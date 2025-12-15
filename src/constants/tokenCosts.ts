@@ -31,9 +31,9 @@ export const TOKEN_COSTS = {
   AI_COACH: 5,              // AI 코치 세션
   EXPERT_MATCHING: 5,       // 전문가 매칭
   
-  // 프리미엄 기능 (20토큰 통일)
+  // 프리미엄 기능
   OBSERVATION_ANALYSIS: 20,  // 관찰 분석
-  PREMIUM_ASSESSMENT: 20,    // 프리미엄 종합테스트
+  PREMIUM_ASSESSMENT: 30,    // 프리미엄 심층테스트 (3,000원)
   PROFESSIONAL_REPORT: 20,   // 전문가 리포트 생성
   
   // 최고급 서비스 (고가격대)
@@ -53,12 +53,13 @@ export const TOKEN_COSTS = {
   CRISIS_DETECTION: 0,      // 위기감지 (긴급상황이므로 무료 유지)
 } as const;
 
-// 기능별 설명 (균일화 버전)
+// 기능별 설명
 export const TOKEN_COST_DESCRIPTIONS = {
   0: "무료 서비스",
   1: "엔터테인먼트 테스트 또는 AI 상담 10메시지",
   5: "전문 심리검사 및 AIH 전문가 창작 검사", 
   20: "프리미엄 분석 및 전문가급 리포트",
+  30: "프리미엄 심층테스트 (3,000원)",
   200: "모든 데이터 종합 박사급 분석 리포트 (3일내 휴대폰 전송)",
 } as const;
 

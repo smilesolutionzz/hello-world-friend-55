@@ -16,6 +16,7 @@ import { FreeCounseling } from '@/components/metaverse/modes/FreeCounseling';
 import { StructuredCounselingMode } from '@/components/metaverse/modes/StructuredCounselingMode';
 import { RolePlayMode } from '@/components/metaverse/modes/RolePlayMode';
 import { TherapyMode } from '@/components/metaverse/modes/TherapyMode';
+import { UnifiedNavigation } from '@/components/navigation/UnifiedNavigation';
 
 const MetaverseVoicePage = () => {
   const navigate = useNavigate();
@@ -61,9 +62,10 @@ const MetaverseVoicePage = () => {
 
   return (
     <div className="relative min-h-screen">
+      <UnifiedNavigation />
       <ThreeBackground />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 pt-4 pb-8">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 pt-20 pb-8">
         <Tabs value={mode} onValueChange={(v) => setMode(v as 'structured' | 'free' | 'roleplay' | 'therapy')} className="w-full">
           <TabsList className="grid w-full max-w-4xl mx-auto grid-cols-4 mb-8 bg-black/40 backdrop-blur-sm border border-white/20">
             <TabsTrigger value="structured" className="gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">

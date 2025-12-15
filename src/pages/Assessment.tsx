@@ -646,11 +646,11 @@ const Assessment = () => {
         </div>
         
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
-          {/* 토큰 비용 안내 배너 */}
+          {/* 캐시 이용 안내 배너 */}
           <Card className="mb-12 border-2 border-primary/30 bg-gradient-to-r from-primary/5 via-primary-glow/5 to-primary/5">
             <CardHeader className="text-center pb-4">
               <CardTitle className="text-3xl font-bold text-brand-gradient mb-4">
-                💎 토큰 이용 안내
+                💎 이용 요금 안내
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -658,7 +658,7 @@ const Assessment = () => {
                 <div className="text-center p-6 bg-white dark:bg-card rounded-xl shadow-md hover:shadow-lg transition-shadow">
                   <div className="text-4xl mb-3">🆓</div>
                   <h3 className="text-xl font-bold mb-2">재미있는 AI 검사</h3>
-                  <p className="text-sm text-muted-foreground mb-3">토큰 없이 무제한</p>
+                  <p className="text-sm text-muted-foreground mb-3">무료로 무제한</p>
                   <ul className="text-sm space-y-1">
                     <li>• 꿈해석</li>
                     <li>• 사주분석</li>
@@ -670,7 +670,7 @@ const Assessment = () => {
                   <div className="text-4xl mb-3">⭐</div>
                   <h3 className="text-xl font-bold mb-2">AIH 전문가 창작</h3>
                   <div className="inline-flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-full font-bold text-lg mb-3">
-                    5토큰
+                    500원
                   </div>
                   <ul className="text-sm space-y-1">
                     <li>• 5D 성격분석</li>
@@ -683,7 +683,7 @@ const Assessment = () => {
                   <div className="text-4xl mb-3">⚡</div>
                   <h3 className="text-xl font-bold mb-2">전문 심리·발달검사</h3>
                   <div className="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-full font-bold text-lg mb-3">
-                    5토큰
+                    500원
                   </div>
                   <ul className="text-sm space-y-1">
                     <li>• 마음상태 체크</li>
@@ -696,7 +696,7 @@ const Assessment = () => {
                   <div className="text-4xl mb-3">👑</div>
                   <h3 className="text-xl font-bold mb-2">심층테스트</h3>
                   <div className="inline-flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-full font-bold text-lg mb-3">
-                    20토큰
+                    2,000원
                   </div>
                   <ul className="text-sm space-y-1">
                     <li>• 관찰일지 분석</li>

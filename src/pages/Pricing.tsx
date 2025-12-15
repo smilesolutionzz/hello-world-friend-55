@@ -119,7 +119,7 @@ const Pricing = () => {
                     </div>
                   </div>
                   <Button 
-                    onClick={() => navigate("/expert")}
+                    onClick={() => window.open('https://pf.kakao.com/_CYGdn', '_blank')}
                     className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white whitespace-nowrap"
                   >
                     해외 상담 신청

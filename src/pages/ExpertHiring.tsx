@@ -1485,11 +1485,7 @@ const ExpertHiring = () => {
                 </div>
               </div>
               <Button 
-                onClick={() => {
-                  const expertsTab = document.querySelector('[value="experts"]') as HTMLElement;
-                  if (expertsTab) expertsTab.click();
-                  window.scrollTo({ top: 600, behavior: 'smooth' });
-                }}
+                onClick={() => window.open('https://pf.kakao.com/_CYGdn', '_blank')}
                 className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white whitespace-nowrap text-xs md:text-sm"
               >
                 해외 상담 신청

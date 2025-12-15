@@ -866,7 +866,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
 
   // 대화 내용 텍스트로 변환
   const getConversationText = () => {
-    const header = `AI 메타버스 상담 기록\n날짜: ${new Date().toLocaleString('ko-KR')}\n이름: ${userName}\n${consultTopic ? `주제: ${consultTopic}\n` : ''}\n${'='.repeat(50)}\n\n`;
+    const header = `AI 아지트 상담 기록\n날짜: ${new Date().toLocaleString('ko-KR')}\n이름: ${userName}\n${consultTopic ? `주제: ${consultTopic}\n` : ''}\n${'='.repeat(50)}\n\n`;
     
     const conversation = messages.map((msg) => {
       const time = msg.timestamp.toLocaleTimeString('ko-KR');
@@ -1073,7 +1073,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-8 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20">
               <div className="text-center mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                  🎭 AI 메타버스 상담실
+                  🎭 AI 아지트
                 </h1>
                 <p className="text-purple-200/80">
                   가상 공간에서 AI 상담사와 실시간 음성 대화 • 자유롭게 이동하며 상담하세요

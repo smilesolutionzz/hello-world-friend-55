@@ -52,7 +52,7 @@ const newFeatures = [
   },
   {
     id: 'ai_metaverse',
-    title: '🎭 AI 메타버스 상담실',
+    title: '🎭 AI 아지트',
     description: '실시간 음성 API로 가상공간에서 실제 상담사와 자연스러운 대화하듯 구현',
     date: '2025-11-08',
     badge: 'HOT',

@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Coins, CreditCard, Building2, Smartphone, Receipt, RefreshCw, Loader2 } from 'lucide-react';
+import { Coins, CreditCard, Building2, Smartphone, Receipt, RefreshCw, Loader2, Crown, Users, Clock, Check } from 'lucide-react';
 import { loadPaymentWidget, PaymentWidgetInstance } from '@tosspayments/payment-widget-sdk';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
 
 // 세션 기반 고객 키 (페이지 새로고침해도 유지)
 const getCustomerKey = () => {
@@ -26,6 +27,25 @@ interface TokenPackage {
   bonus_tokens: number;
 }
 
+// 프리미엄 패스 상품 정보
+const passProducts = {
+  pass_30: { id: 'pass_30', name: '프리미엄 패스 30일', duration: '30일', price: 29900, originalPrice: 49900, discount: 40 },
+  pass_365: { id: 'pass_365', name: '프리미엄 패스 1년', duration: '1년', price: 199000, originalPrice: 598800, discount: 67 },
+  pass_lifetime: { id: 'pass_lifetime', name: '프리미엄 패스 평생', duration: '평생', price: 299000, originalPrice: 999000, discount: 70 },
+};
+
+// 캐시 충전 상품 정보
+const cashProducts = {
+  cash_5000: { id: 'cash_5000', name: '캐시 50', tokens: 50, price: 5000, bonus: 0 },
+  cash_10000: { id: 'cash_10000', name: '캐시 110', tokens: 100, price: 10000, bonus: 10 },
+};
+
+// 상담 상품 정보
+const consultProducts = {
+  consult_30: { id: 'consult_30', name: '전문가 상담 30분', duration: '30분', price: 35000 },
+  consult_60: { id: 'consult_60', name: '전문가 상담 60분', duration: '60분', price: 65000 },
+};
+
 const TokenPurchase = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -44,8 +64,36 @@ const TokenPurchase = () => {
   const [widgetLoading, setWidgetLoading] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
-  // 실제 DB에서 토큰 패키지 조회
+  // URL 파라미터에서 상품 정보 가져오기
+  const purchaseType = searchParams.get('type'); // 'pass', 'cash', 'consult', or null (token)
+  const productId = searchParams.get('id');
+  const productPrice = searchParams.get('price') ? parseInt(searchParams.get('price')!) : null;
+
+  // URL 파라미터로 전달된 상품 정보 가져오기
+  const getUrlProduct = () => {
+    if (!purchaseType || !productId) return null;
+    
+    if (purchaseType === 'pass' && productId in passProducts) {
+      return { type: 'pass', ...passProducts[productId as keyof typeof passProducts] };
+    }
+    if (purchaseType === 'cash' && productId in cashProducts) {
+      return { type: 'cash', ...cashProducts[productId as keyof typeof cashProducts] };
+    }
+    if (purchaseType === 'consult' && productId in consultProducts) {
+      return { type: 'consult', ...consultProducts[productId as keyof typeof consultProducts] };
+    }
+    return null;
+  };
+
+  const urlProduct = getUrlProduct();
+
+  // 실제 DB에서 토큰 패키지 조회 (URL 파라미터가 없을 때만)
   useEffect(() => {
+    if (urlProduct) {
+      setLoading(false);
+      return;
+    }
+
     const fetchTokenPackages = async () => {
       try {
         const { data, error } = await supabase
@@ -58,7 +106,6 @@ const TokenPurchase = () => {
 
         console.log('✅ 토큰 패키지 조회 완료:', data);
         
-        // DB 컬럼명을 인터페이스에 맞게 변환
         const mappedPackages: TokenPackage[] = (data || []).map(pkg => ({
           id: pkg.id,
           name: pkg.name,
@@ -70,13 +117,11 @@ const TokenPurchase = () => {
         
         setTokenPackages(mappedPackages);
 
-        // URL 파라미터에서 토큰 수량이 있으면 해당 패키지 자동 선택
         const requestedTokens = searchParams.get('tokens');
         if (requestedTokens && mappedPackages.length > 0) {
           const targetTokens = parseInt(requestedTokens);
           const matchingPackage = mappedPackages.find(pkg => pkg.tokens === targetTokens);
           if (matchingPackage) {
-            console.log('✅ URL 파라미터로 자동 선택된 패키지:', matchingPackage);
             setSelectedPack(matchingPackage);
           }
         }
@@ -93,7 +138,7 @@ const TokenPurchase = () => {
     };
 
     fetchTokenPackages();
-  }, [toast, searchParams]);
+  }, [toast, searchParams, urlProduct]);
 
   // 프리뷰(iFrame) 환경 감지
   useEffect(() => {
@@ -244,6 +289,70 @@ const TokenPurchase = () => {
     }
   }, [selectedPack, widgetReady, toast]);
 
+  // URL 상품용 위젯 렌더링
+  const renderUrlProductWidget = useCallback(async () => {
+    if (!urlProduct || !widgetReady || !paymentWidgetRef.current) {
+      return false;
+    }
+
+    try {
+      setWidgetLoading(true);
+      console.log('🎨 URL 상품 결제 수단 렌더링 시작:', urlProduct);
+      
+      const widgetContainer = document.getElementById('payment-widget');
+      if (widgetContainer) {
+        widgetContainer.innerHTML = '';
+      } else {
+        setWidgetLoading(false);
+        return false;
+      }
+
+      const paymentMethodsWidget = paymentWidgetRef.current.renderPaymentMethods(
+        '#payment-widget',
+        { value: urlProduct.price },
+        { variantKey: 'DEFAULT' }
+      );
+      
+      paymentMethodsWidgetRef.current = paymentMethodsWidget;
+      
+      let attempts = 0;
+      const maxAttempts = 10;
+      const checkInterval = 500;
+      
+      return new Promise<boolean>((resolve) => {
+        const checkIframe = () => {
+          const mounted = !!document.querySelector('#payment-widget iframe');
+          attempts++;
+          
+          if (mounted) {
+            setWidgetVisible(true);
+            setWidgetLoading(false);
+            resolve(true);
+          } else if (attempts >= maxAttempts) {
+            setWidgetVisible(false);
+            setWidgetLoading(false);
+            resolve(false);
+          } else {
+            setTimeout(checkIframe, checkInterval);
+          }
+        };
+        
+        setTimeout(checkIframe, checkInterval);
+      });
+    } catch (error) {
+      console.error('❌ URL 상품 결제 수단 렌더링 실패:', error);
+      setWidgetLoading(false);
+      return false;
+    }
+  }, [urlProduct, widgetReady]);
+
+  // URL 상품 위젯 렌더링 트리거
+  useEffect(() => {
+    if (urlProduct && widgetReady && paymentWidgetRef.current) {
+      renderUrlProductWidget();
+    }
+  }, [urlProduct, widgetReady, renderUrlProductWidget]);
+
   useEffect(() => {
     const renderPaymentMethods = async () => {
       if (!selectedPack) {
@@ -352,6 +461,58 @@ const TokenPurchase = () => {
     }
   };
 
+  // URL 상품 결제 요청
+  const requestUrlProductPayment = async () => {
+    if (!urlProduct || !paymentWidgetRef.current) {
+      toast({
+        title: '결제 준비 중',
+        description: '결제 준비가 완료될 때까지 기다려주세요.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      console.log('🔄 URL 상품 결제 요청 시작:', urlProduct);
+      
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) {
+        toast({
+          title: '로그인 필요',
+          description: '로그인 후 결제를 진행해주세요.',
+          variant: 'destructive'
+        });
+        navigate('/auth');
+        return;
+      }
+      
+      // 주문 ID 생성
+      const orderId = `${urlProduct.type}_${urlProduct.id}_${Date.now()}`;
+      
+      console.log('💳 결제 요청 시작:', { 
+        orderId, 
+        orderName: urlProduct.name, 
+        amount: urlProduct.price 
+      });
+
+      await paymentWidgetRef.current.requestPayment({
+        orderId,
+        orderName: urlProduct.name,
+        successUrl: `${window.location.origin}/token-payment-success?type=${urlProduct.type}`,
+        failUrl: `${window.location.origin}/token-payment-fail`,
+        customerEmail: sessionData.session.user.email || '',
+        customerName: sessionData.session.user.user_metadata?.full_name || '고객',
+      });
+    } catch (err: any) {
+      console.error('❌ URL 상품 결제 요청 오류:', err);
+      toast({
+        title: '결제 오류',
+        description: err.message || '결제 처리 중 오류가 발생했습니다.',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const paymentMethods = [
     { icon: CreditCard, label: '신용/체크카드', description: '간편하고 빠른 카드 결제' },
     { icon: Building2, label: '가상계좌', description: '계좌이체로 안전하게' },
@@ -363,11 +524,142 @@ const TokenPurchase = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background py-12 px-4">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">토큰 구매</h1>
-          <p className="text-muted-foreground">원하는 토큰팩과 결제 방법을 선택해주세요</p>
+          <h1 className="text-4xl font-bold mb-4">
+            {urlProduct?.type === 'pass' ? '프리미엄 패스 구매' : 
+             urlProduct?.type === 'consult' ? '전문가 상담 예약' : 
+             urlProduct?.type === 'cash' ? '캐시 충전' : '토큰 구매'}
+          </h1>
+          <p className="text-muted-foreground">
+            {urlProduct?.type === 'pass' ? '모든 기능을 무제한으로 이용하세요' : 
+             urlProduct?.type === 'consult' ? '전문가와 1:1 상담을 예약하세요' : 
+             urlProduct?.type === 'cash' ? 'AI 분석에 사용할 캐시를 충전하세요' : 
+             '원하는 토큰팩과 결제 방법을 선택해주세요'}
+          </p>
         </div>
 
-        {loading ? (
+        {/* URL 파라미터로 전달된 상품 결제 */}
+        {urlProduct ? (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    {urlProduct.type === 'pass' && (
+                      <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40">
+                        <Crown className="w-8 h-8 text-purple-600" />
+                      </div>
+                    )}
+                    {urlProduct.type === 'consult' && (
+                      <div className="p-3 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/40 dark:to-emerald-900/40">
+                        <Users className="w-8 h-8 text-green-600" />
+                      </div>
+                    )}
+                    {urlProduct.type === 'cash' && (
+                      <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/40 dark:to-cyan-900/40">
+                        <Coins className="w-8 h-8 text-blue-600" />
+                      </div>
+                    )}
+                    <div>
+                      <CardTitle className="text-2xl">{urlProduct.name}</CardTitle>
+                      {'duration' in urlProduct && (
+                        <p className="text-muted-foreground mt-1 flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {urlProduct.duration}
+                        </p>
+                      )}
+                      {'tokens' in urlProduct && (
+                        <p className="text-muted-foreground mt-1">
+                          {urlProduct.tokens} 캐시 {'bonus' in urlProduct && urlProduct.bonus > 0 && `+ ${urlProduct.bonus} 보너스`}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    {'originalPrice' in urlProduct && (
+                      <p className="text-sm text-muted-foreground line-through">
+                        ₩{urlProduct.originalPrice.toLocaleString()}
+                      </p>
+                    )}
+                    <p className="text-3xl font-bold text-primary">
+                      ₩{urlProduct.price.toLocaleString()}
+                    </p>
+                    {'discount' in urlProduct && (
+                      <Badge variant="destructive" className="mt-1">{urlProduct.discount}% 할인</Badge>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              {urlProduct.type === 'pass' && (
+                <CardContent className="border-t pt-4">
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-green-500" />
+                      <span>모든 AI 분석 무제한</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-green-500" />
+                      <span>모든 심리검사 무제한</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-green-500" />
+                      <span>상세 리포트 무제한</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-green-500" />
+                      <span>프리미엄 기능 이용</span>
+                    </div>
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">결제 수단 선택</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  카드, 가상계좌, 계좌이체, 휴대폰 결제를 지원합니다
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  {paymentMethods.map((method, idx) => (
+                    <div key={idx} className="flex flex-col items-center p-4 border rounded-lg hover:border-primary/50 transition-colors">
+                      <method.icon className="w-8 h-8 mb-2 text-primary" />
+                      <span className="text-sm font-medium text-center">{method.label}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {widgetLoading && (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary mr-3" />
+                    <span className="text-muted-foreground">결제 수단을 불러오는 중...</span>
+                  </div>
+                )}
+
+                <div id="payment-widget" className="w-full" style={{ minHeight: widgetLoading ? '0' : '400px' }} />
+
+                <div className="flex gap-4 mt-6">
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate('/token-subscription')}
+                    className="flex-1"
+                  >
+                    다시 선택
+                  </Button>
+                  <Button
+                    onClick={requestUrlProductPayment}
+                    disabled={!widgetReady}
+                    className="flex-1 h-12 text-lg font-bold"
+                    style={{ backgroundColor: urlProduct.type === 'pass' ? '#9333ea' : urlProduct.type === 'consult' ? '#22c55e' : '#0064FF' }}
+                  >
+                    {widgetReady ? '결제하기' : '준비 중...'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : loading ? (
           <div className="text-center py-12">
             <p className="text-lg text-muted-foreground">토큰 패키지 정보를 불러오는 중...</p>
           </div>

@@ -261,6 +261,11 @@ const InstantAIAnalysis = () => {
       }
     } catch (error: any) {
       console.error('프롬프트 확장 오류:', error);
+      toast({
+        title: "확장 실패",
+        description: error?.message || "AI 다듬기 중 오류가 발생했습니다. 다시 시도해주세요.",
+        variant: "destructive"
+      });
     } finally {
       setIsExpanding(false);
     }

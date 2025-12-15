@@ -342,12 +342,12 @@ const FreeTrialAssessment = () => {
           </div>
         </section>
 
-        {/* 프리미엄 테스트 섹션 (차단됨) */}
+        {/* 심층테스트 섹션 (차단됨) */}
         <section className="mb-12">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-2 text-gray-900 flex items-center justify-center gap-2">
               <Crown className="w-8 h-8 text-yellow-500" />
-              프리미엄 테스트
+              심층테스트
             </h2>
             <p className="text-gray-600">회원가입 후 이용 가능</p>
           </div>

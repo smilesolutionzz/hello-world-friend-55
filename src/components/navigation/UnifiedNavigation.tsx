@@ -50,7 +50,7 @@ const navItems = [
     icon: Bot,
     children: [
       { label: 'AI 상담', path: '/ai-assistant', desc: '24시간 AI 심리 상담', icon: MessageCircle },
-      { label: 'AI 메타버스', path: '/metaverse-voice', desc: '음성으로 AI와 대화', badge: 'NEW', icon: Mic },
+      { label: 'AI 아지트', path: '/metaverse-voice', desc: '음성으로 AI와 대화', badge: 'NEW', icon: Mic },
       { label: 'AI 관찰일지', path: '/observation', desc: '개인 관찰일지 AI 분석', icon: FileText },
     ]
   },

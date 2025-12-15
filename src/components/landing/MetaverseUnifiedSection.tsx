@@ -98,7 +98,7 @@ export const MetaverseUnifiedSection = () => {
           <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-primary/5 border border-border rounded-full">
             <Mic className="w-3 h-3 md:w-4 md:h-4 text-primary" />
             <span className="text-xs md:text-sm font-medium text-foreground">
-              실시간 음성 AI 메타버스
+              실시간 음성 AI 아지트
             </span>
           </div>
           

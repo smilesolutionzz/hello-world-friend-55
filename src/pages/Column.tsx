@@ -911,7 +911,7 @@ const Column = () => {
               <span className="text-xs font-semibold text-primary tracking-wide uppercase">Monthly Insights</span>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground mb-4 tracking-tight">
-              이수석칼럼
+              창립자 이수석칼럼
             </h1>
             <p className="text-lg md:text-xl text-foreground/60 max-w-xl mx-auto font-light">
               AI와 사람이 함께 만드는 더 나은 내일

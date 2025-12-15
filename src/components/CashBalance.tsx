@@ -48,7 +48,7 @@ const CashBalance: React.FC<CashBalanceProps> = ({ compact = true }) => {
                 hover:scale-105 hover:shadow-lg
                 ${isLowBalance 
                   ? 'bg-gradient-to-r from-red-500/10 to-orange-500/10 border-red-400/50 text-red-400 hover:border-red-400' 
-                  : 'bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border-amber-400/50 text-amber-400 hover:border-amber-400 hover:shadow-amber-500/20'
+                  : 'bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-400/50 text-blue-500 dark:text-blue-400 hover:border-blue-400 hover:shadow-blue-500/20'
                 }
               `}
             >
@@ -59,16 +59,16 @@ const CashBalance: React.FC<CashBalanceProps> = ({ compact = true }) => {
         </PopoverTrigger>
         <PopoverContent className="w-80 p-0" side="bottom" align="end">
           <Card className="border-0 shadow-xl">
-            <CardHeader className="pb-2 bg-gradient-to-r from-amber-500/10 to-yellow-500/10">
+            <CardHeader className="pb-2 bg-gradient-to-r from-blue-500/10 to-cyan-500/10">
               <CardTitle className="text-base flex items-center gap-2">
-                <Wallet className="w-5 h-5 text-amber-500" />
+                <Wallet className="w-5 h-5 text-blue-500" />
                 내 캐시 관리
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 pt-4">
               {/* 현재 캐시 잔액 */}
-              <div className="text-center p-4 rounded-xl bg-gradient-to-br from-amber-500/5 to-yellow-500/5 border border-amber-500/20">
-                <div className="text-3xl font-bold text-amber-500">
+              <div className="text-center p-4 rounded-xl bg-gradient-to-br from-blue-500/5 to-cyan-500/5 border border-blue-500/20">
+                <div className="text-3xl font-bold text-blue-500">
                   {formatCash(cashValue)}
                   <span className="text-lg ml-1">원</span>
                 </div>
@@ -106,11 +106,22 @@ const CashBalance: React.FC<CashBalanceProps> = ({ compact = true }) => {
               <div className="space-y-2">
                 <Button
                   onClick={() => navigate('/token-subscription')}
-                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-bold justify-between"
+                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold justify-between"
                 >
                   <span className="flex items-center gap-2">
                     <Plus className="w-4 h-4" />
                     캐시 충전하기
+                  </span>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+
+                <Button
+                  onClick={() => navigate('/concern-storage')}
+                  className="w-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white font-bold justify-between"
+                >
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4" />
+                    검사/고민 보관소
                   </span>
                   <ChevronRight className="w-4 h-4" />
                 </Button>
@@ -155,7 +166,7 @@ const CashBalance: React.FC<CashBalanceProps> = ({ compact = true }) => {
                 onClick={() => navigate('/?section=referral')}
                 variant="ghost"
                 size="sm"
-                className="w-full text-xs text-muted-foreground hover:text-amber-500"
+                className="w-full text-xs text-muted-foreground hover:text-blue-500"
               >
                 <Gift className="w-3 h-3 mr-1" />
                 친구 추천시 1,000원 무료!

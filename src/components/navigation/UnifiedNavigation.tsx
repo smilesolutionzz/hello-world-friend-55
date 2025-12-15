@@ -24,7 +24,7 @@ import {
   Heart,
   Zap,
   UserCheck,
-  Coins,
+  Wallet,
   LogOut,
   LogIn,
   Sparkles,
@@ -34,6 +34,7 @@ import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useTokens } from '@/hooks/useTokens';
 import { supabase } from '@/integrations/supabase/client';
 import logo from '@/assets/logo.png';
+import { formatCash, tokenToCash } from '@/utils/tokenToCash';
 
 const navItems = [
   {
@@ -220,9 +221,9 @@ export const UnifiedNavigation = () => {
                 onClick={() => handleNavigation('/token-subscription')}
                 className="h-9 rounded-full border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/30 hover:bg-amber-100 dark:hover:bg-amber-900/50 gap-2"
               >
-                <Coins className="w-4 h-4 text-amber-600" />
+                <Wallet className="w-4 h-4 text-amber-600" />
                 <span className="font-semibold text-amber-700 dark:text-amber-400">
-                  {tokenBalance?.current_tokens || 0}
+                  {formatCash(tokenToCash(tokenBalance?.current_tokens || 0))}
                 </span>
               </Button>
 
@@ -298,9 +299,9 @@ export const UnifiedNavigation = () => {
               onClick={() => handleNavigation('/token-subscription')}
               className="h-8 rounded-full px-3 gap-1.5"
             >
-              <Coins className="w-4 h-4 text-amber-600" />
+              <Wallet className="w-4 h-4 text-amber-600" />
               <span className="font-semibold text-amber-700 dark:text-amber-400 text-sm">
-                {tokenBalance?.current_tokens || 0}
+                {formatCash(tokenToCash(tokenBalance?.current_tokens || 0))}
               </span>
             </Button>
 

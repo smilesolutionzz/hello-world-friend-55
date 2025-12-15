@@ -422,7 +422,7 @@ const TokenSubscription = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
       <UnifiedNavigation />
       
-      <div className="container mx-auto px-4 py-12 max-w-5xl">
+      <div className="container mx-auto px-4 pt-24 pb-12 max-w-5xl">
         {step === 'select' && renderMainSelect()}
         {step === 'ai-analysis' && renderAIAnalysis()}
         {step === 'consultation' && renderConsultation()}

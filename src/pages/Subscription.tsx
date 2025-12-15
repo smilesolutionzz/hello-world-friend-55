@@ -134,14 +134,14 @@ const Subscription = () => {
               <div className="bg-white/20 rounded-full p-2">
                 <Coins className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-bold">🪙 간편한 토큰제 시스템</h2>
+              <h2 className="text-2xl font-bold">💰 간편한 캐시제 시스템</h2>
             </div>
             <p className="text-sm md:text-xl font-medium">
               필요한 만큼만 구매하고, 1년간 자유롭게 사용하세요
             </p>
             <div className="flex items-center justify-center gap-2 text-sm md:text-lg">
               <Clock className="w-4 h-4 md:w-5 md:h-5" />
-              <span className="whitespace-nowrap">토큰 유효기간: <strong>구매일로부터 1년</strong></span>
+              <span className="whitespace-nowrap">캐시 유효기간: <strong>구매일로부터 1년</strong></span>
             </div>
           </div>
         </div>
@@ -269,29 +269,29 @@ const Subscription = () => {
           ))}
         </div>
 
-        {/* 토큰 사용 안내 */}
+        {/* 캐시 사용 안내 */}
         <div className="mt-20 text-center">
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8 max-w-4xl mx-auto">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Brain className="w-8 h-8 text-blue-600" />
-              <h2 className="text-2xl font-bold">토큰 사용 가이드</h2>
+              <h2 className="text-2xl font-bold">캐시 사용 가이드</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-6 text-left">
               <div className="space-y-2">
-                <div className="font-medium text-lg mb-3">📊 기능별 토큰 소비</div>
+                <div className="font-medium text-lg mb-3">📊 기능별 비용</div>
                 <div className="text-sm space-y-1">
-                  <div>• <strong>엔터테인먼트</strong>: 1토큰 (전생직업, 동물상 등)</div>
-                  <div>• <strong>기본 심리검사</strong>: 2토큰 (마음상태, 집중력 등)</div>
-                  <div>• <strong>AI 코치 세션</strong>: 3토큰</div>
-                  <div>• <strong>꿈해석/관찰분석</strong>: 4토큰</div>
-                  <div>• <strong>사주 분석</strong>: 6토큰</div>
-                  <div>• <strong>프리미엄 검사</strong>: 8토큰</div>
-                  <div>• <strong>IEP 생성</strong>: 50토큰</div>
-                  <div>• <strong>종합 리포팅</strong>: 200토큰</div>
+                  <div>• <strong>엔터테인먼트</strong>: 100원 (전생직업, 동물상 등)</div>
+                  <div>• <strong>기본 심리검사</strong>: 200원 (마음상태, 집중력 등)</div>
+                  <div>• <strong>AI 코치 세션</strong>: 300원</div>
+                  <div>• <strong>꿈해석/관찰분석</strong>: 400원</div>
+                  <div>• <strong>사주 분석</strong>: 600원</div>
+                  <div>• <strong>프리미엄 검사</strong>: 800원</div>
+                  <div>• <strong>IEP 생성</strong>: 5,000원</div>
+                  <div>• <strong>종합 리포팅</strong>: 20,000원</div>
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="font-medium text-lg mb-3">✨ 토큰제 장점</div>
+                <div className="font-medium text-lg mb-3">✨ 캐시제 장점</div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-green-500" />
                   <span className="text-sm">필요한 만큼만 구매</span>
@@ -306,11 +306,11 @@ const Subscription = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-sm">토큰 영구 보관</span>
+                  <span className="text-sm">캐시 영구 보관</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-sm">합리적인 가격 (최저 99원/토큰)</span>
+                  <span className="text-sm">합리적인 가격</span>
                 </div>
               </div>
             </div>
@@ -323,22 +323,22 @@ const Subscription = () => {
             <h2 className="text-3xl font-bold text-center mb-12">자주 묻는 질문</h2>
             <div className="space-y-6">
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-sm md:text-lg mb-2">토큰은 언제까지 사용할 수 있나요?</h3>
+                <h3 className="font-semibold text-sm md:text-lg mb-2">캐시는 언제까지 사용할 수 있나요?</h3>
                 <p className="text-muted-foreground text-sm">
-                  구매한 토큰은 구매일로부터 <strong>1년간</strong> 사용 가능합니다. 기간 내에 자유롭게 사용하세요.
+                  구매한 캐시는 구매일로부터 <strong>1년간</strong> 사용 가능합니다. 기간 내에 자유롭게 사용하세요.
                 </p>
               </div>
               <div className="bg-card rounded-lg p-6 border border-border">
-                <h3 className="font-semibold text-sm md:text-lg mb-2">토큰이 부족하면 어떻게 하나요?</h3>
+                <h3 className="font-semibold text-sm md:text-lg mb-2">캐시가 부족하면 어떻게 하나요?</h3>
                 <p className="text-muted-foreground text-sm">
-                  언제든 추가로 토큰을 구매할 수 있습니다. 새로 구매한 토큰은 기존 토큰과 합산되며, 
+                  언제든 추가로 캐시를 구매할 수 있습니다. 새로 구매한 캐시는 기존 캐시와 합산되며, 
                   새로운 유효기간이 부여됩니다.
                 </p>
               </div>
               <div className="bg-card rounded-lg p-6 border border-border">
                 <h3 className="font-semibold text-sm md:text-lg mb-2">환불이 가능한가요?</h3>
                 <p className="text-muted-foreground text-sm">
-                  토큰을 사용하지 않은 경우, 구매일로부터 7일 이내에 전액 환불이 가능합니다. 
+                  캐시를 사용하지 않은 경우, 구매일로부터 7일 이내에 전액 환불이 가능합니다. 
                   일부 사용한 경우, 사용한 금액을 제외하고 환불됩니다.
                 </p>
               </div>

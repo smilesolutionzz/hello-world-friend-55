@@ -69,7 +69,7 @@ const TokenPaymentSuccess = () => {
           
           toast({
             title: "결제 완료!",
-            description: "토큰 충전이 완료되었습니다.",
+            description: "캐시 충전이 완료되었습니다.",
           });
         } else {
           throw new Error(data.error || '결제 처리에 실패했습니다.');
@@ -119,10 +119,10 @@ const TokenPaymentSuccess = () => {
           </div>
           
           <CardTitle className="text-3xl font-bold mb-2">
-            🎉 토큰 충전 완료!
+            🎉 캐시 충전 완료!
           </CardTitle>
           <CardDescription className="text-lg">
-            결제가 성공적으로 완료되어 토큰이 충전되었습니다.
+            결제가 성공적으로 완료되어 캐시가 충전되었습니다.
           </CardDescription>
         </CardHeader>
 
@@ -179,15 +179,15 @@ const TokenPaymentSuccess = () => {
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                3분 기본 테스트로 빠른 분석 받기 (5토큰)
+                3분 기본 테스트로 빠른 분석 받기 (500원)
               </li>
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                AI 맞춤 분석으로 깊이 있는 인사이트 얻기 (10토큰)
+                AI 맞춤 분석으로 깊이 있는 인사이트 얻기 (1,000원)
               </li>
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                전문가급 종합 분석 받기 (30토큰)
+                전문가급 종합 분석 받기 (3,000원)
               </li>
             </ul>
           </div>
@@ -215,7 +215,7 @@ const TokenPaymentSuccess = () => {
           {/* 고객 지원 */}
           <div className="text-center pt-4 border-t">
             <p className="text-sm text-muted-foreground mb-2">
-              결제나 토큰 사용에 문제가 있으신가요?
+              결제나 캐시 사용에 문제가 있으신가요?
             </p>
             <Button variant="link" className="h-auto p-0 text-sm">
               고객 지원센터 →

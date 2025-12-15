@@ -102,8 +102,8 @@ const AICounselor = () => {
     const success = await consumeTokens(TOKEN_COSTS.AI_COUNSELOR_CHAT);
     if (!success) {
       toast({
-        title: "토큰 차감 실패",
-        description: "토큰 충전 페이지로 이동하세요.",
+        title: "캐시 차감 실패",
+        description: "캐시 충전 페이지로 이동하세요.",
         variant: "destructive"
       });
       return;

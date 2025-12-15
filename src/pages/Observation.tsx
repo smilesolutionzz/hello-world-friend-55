@@ -1,41 +1,27 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { 
   ClipboardList, 
   Plus, 
   Eye, 
-  Download, 
   Calendar, 
   User, 
-  AlertCircle, 
-  ChevronLeft,
   Brain,
   Sparkles,
-  Target,
-  TrendingUp,
-  Star,
   ArrowRight,
-  Play,
-  Zap,
-  Shield,
+  Clock,
   FileText,
-  BarChart3,
-  Users,
-  Activity,
-  Clock
+  CheckCircle2,
+  Loader2
 } from "lucide-react";
 import ObservationSessionForm from "@/components/observation/ObservationSessionForm";
 import ObservationFormMobile from "@/components/observation/ObservationFormMobile";
 import ObservationResults from "@/components/observation/ObservationResults";
 import AuthenticationGuard from "@/components/observation/AuthenticationGuard";
-import IEPGenerationMotivation from "@/components/observation/IEPGenerationMotivation";
 import { isBetaTestPeriod } from '@/utils/betaTest';
 import { UnifiedNavigation } from "@/components/navigation/UnifiedNavigation";
 
@@ -46,28 +32,17 @@ const Observation = () => {
   const [sessions, setSessions] = useState<any[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
   const [selectedSession, setSelectedSession] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("new-observation");
+  const [activeTab, setActiveTab] = useState<"new" | "history" | "form" | "results">("new");
   const [loading, setLoading] = useState(true);
-  const [activeUsers, setActiveUsers] = useState(2847);
-  const [totalObservations, setTotalObservations] = useState(15623);
 
   useEffect(() => {
     loadData();
-    
-    // 실시간 지표 업데이트
-    const timer = setInterval(() => {
-      setActiveUsers(prev => prev + Math.floor(Math.random() * 3));
-      setTotalObservations(prev => prev + Math.floor(Math.random() * 2));
-    }, 10000);
-    
-    return () => clearInterval(timer);
   }, []);
 
   const loadData = async () => {
     try {
       setLoading(true);
       
-      // Load templates from database
       const { data: templatesData, error: templatesError } = await supabase
         .from('observation_templates')
         .select('*')
@@ -77,15 +52,11 @@ const Observation = () => {
       if (templatesError) throw templatesError;
       setTemplates(templatesData || []);
 
-      // Load user sessions
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: sessionsData, error: sessionsError } = await supabase
           .from('observation_sessions')
-          .select(`
-            *,
-            family_member:family_members(name)
-          `)
+          .select(`*, family_member:family_members(name)`)
           .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
@@ -105,61 +76,39 @@ const Observation = () => {
   };
 
   const getDomainDisplayName = (domain: string) => {
-    const names = {
-      child_development: '아동발달 추천',
-      psychology: '심리상담 추천',
+    const names: Record<string, string> = {
+      child_development: '아동발달',
+      psychology: '심리상담',
       elderly_care: '노인케어',
       workplace: '직장적응',
       learning: '학습능력',
       family: '가족상담',
       medical: '의료재활'
     };
-    return names[domain as keyof typeof names] || domain;
+    return names[domain] || domain;
   };
 
-  const getDomainColor = (domain: string) => {
-    const colors = {
-      child_development: 'bg-blue-100 text-blue-800',
-      psychology: 'bg-purple-100 text-purple-800',
-      elderly_care: 'bg-green-100 text-green-800',
-      workplace: 'bg-orange-100 text-orange-800',
-      learning: 'bg-indigo-100 text-indigo-800',
-      family: 'bg-pink-100 text-pink-800',
-      medical: 'bg-red-100 text-red-800'
+  const getStatusConfig = (status: string) => {
+    const config: Record<string, { bg: string; text: string; label: string }> = {
+      in_progress: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400', label: '진행중' },
+      completed: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-400', label: '완료' },
+      analyzed: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-400', label: '분석완료' }
     };
-    return colors[domain as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusColor = (status: string) => {
-    const colors = {
-      in_progress: 'bg-yellow-100 text-yellow-800',
-      completed: 'bg-blue-100 text-blue-800',
-      analyzed: 'bg-green-100 text-green-800'
-    };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusText = (status: string) => {
-    const texts = {
-      in_progress: '진행중',
-      completed: '완료',
-      analyzed: '분석완료'
-    };
-    return texts[status as keyof typeof texts] || status;
+    return config[status] || { bg: 'bg-slate-100', text: 'text-slate-700', label: status };
   };
 
   const startNewSession = (template: any) => {
     setSelectedTemplate(template);
-    setActiveTab("start-session");
+    setActiveTab("form");
   };
 
   const viewSession = (session: any) => {
     setSelectedSession(session);
-    setActiveTab("view-results");
+    setActiveTab("results");
   };
 
   const handleSessionCreated = () => {
-    setActiveTab("my-observations");
+    setActiveTab("history");
     loadData();
     toast({
       title: "관찰일지 작성 완료",
@@ -169,333 +118,274 @@ const Observation = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-pulse mx-auto"></div>
-          <div className="text-xl font-semibold text-gray-700">AI 시스템 로딩 중...</div>
+          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
+          <p className="text-slate-500">로딩 중...</p>
         </div>
       </div>
     );
   }
 
-  return (
-    <AuthenticationGuard fallbackMessage="차세대 AI 관찰일지 시스템을 사용하려면 로그인이 필요합니다.">
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-100 to-pink-100 relative overflow-hidden">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Floating Gradient Orbs */}
-          <div className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-blue-400/40 to-purple-500/40 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute top-1/3 -right-32 w-[500px] h-[500px] bg-gradient-to-bl from-purple-400/40 to-pink-500/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s', animationDuration: '3s' }}></div>
-          <div className="absolute -bottom-32 left-1/4 w-[450px] h-[450px] bg-gradient-to-tr from-pink-400/40 to-orange-400/40 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s', animationDuration: '4s' }}></div>
-          
-          {/* Moving Light Rays */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
-          
-          {/* Decorative Circles */}
-          <div className="absolute top-40 left-1/2 w-64 h-64 border-2 border-purple-300/30 rounded-full"></div>
-          <div className="absolute bottom-40 right-1/3 w-80 h-80 border-2 border-blue-300/30 rounded-full"></div>
+  // Form View
+  if (activeTab === "form" && selectedTemplate) {
+    return (
+      <AuthenticationGuard fallbackMessage="AI 관찰일지를 사용하려면 로그인이 필요합니다.">
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+          <UnifiedNavigation />
+          <div className="h-20" />
+          <div className="container mx-auto max-w-4xl px-4 py-8">
+            <button 
+              onClick={() => setActiveTab("new")}
+              className="flex items-center gap-2 text-slate-500 hover:text-slate-900 dark:hover:text-white mb-6 transition-colors"
+            >
+              <ArrowRight className="w-4 h-4 rotate-180" />
+              <span>뒤로가기</span>
+            </button>
+            
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                {selectedTemplate.name}
+              </h1>
+              <p className="text-slate-500">AI가 분석할 관찰 데이터를 입력해주세요</p>
+            </div>
+            
+            <div className="block md:hidden">
+              <ObservationFormMobile 
+                template={selectedTemplate}
+                onSessionCreated={handleSessionCreated}
+                onBack={() => setActiveTab("new")}
+              />
+            </div>
+            <div className="hidden md:block">
+              <ObservationSessionForm onSessionCreated={handleSessionCreated} />
+            </div>
+          </div>
         </div>
-        
-        {/* Unified Navigation */}
+      </AuthenticationGuard>
+    );
+  }
+
+  // Results View
+  if (activeTab === "results" && selectedSession) {
+    return (
+      <AuthenticationGuard fallbackMessage="AI 관찰일지를 사용하려면 로그인이 필요합니다.">
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+          <UnifiedNavigation />
+          <div className="h-20" />
+          <div className="container mx-auto max-w-6xl px-4 py-8">
+            <ObservationResults 
+              session={selectedSession} 
+              onBack={() => setActiveTab("history")}
+            />
+          </div>
+        </div>
+      </AuthenticationGuard>
+    );
+  }
+
+  return (
+    <AuthenticationGuard fallbackMessage="AI 관찰일지를 사용하려면 로그인이 필요합니다.">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
         <UnifiedNavigation />
         
-        {/* Hero Section - Simplified */}
-        <section className="pt-24 pb-12 px-4 relative z-10">
-          <div className="container mx-auto max-w-5xl">
-            <div className="text-center mb-12">
-              {isBetaTestPeriod() && (
-                <div className="inline-flex items-center gap-2 bg-orange-50 px-4 py-2 rounded-full mb-6 border border-orange-200">
-                  <Sparkles className="h-4 w-4 text-orange-600" />
-                  <span className="text-sm font-medium text-orange-800">
-                    베타테스트 기간 - 10월 31일까지 무료
-                  </span>
-                </div>
-              )}
-              
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-                AI 관찰일지 작성
-              </h1>
-              
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-                간단한 관찰 기록으로 전문가 수준의 분석 리포트를 받아보세요
-              </p>
-
-              {/* Simple 3-Step Guide */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
-                <div className="bg-white rounded-xl p-4 border border-gray-200">
-                  <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
-                    1
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">템플릿 선택</h3>
-                  <p className="text-sm text-gray-600">관찰 주제를 고르세요</p>
-                </div>
-                
-                <div className="bg-white rounded-xl p-4 border border-gray-200">
-                  <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
-                    2
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">관찰 기록</h3>
-                  <p className="text-sm text-gray-600">간단히 입력하세요</p>
-                </div>
-                
-                <div className="bg-white rounded-xl p-4 border border-gray-200">
-                  <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
-                    3
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-1">AI 분석</h3>
-                  <p className="text-sm text-gray-600">즉시 결과를 받아보세요</p>
-                </div>
+        {/* Hero */}
+        <div className="h-20" />
+        <section className="py-12 px-4">
+          <div className="container mx-auto max-w-4xl text-center">
+            {isBetaTestPeriod() && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-sm font-medium mb-6">
+                <Sparkles className="w-4 h-4" />
+                베타테스트 무료 이용중
               </div>
+            )}
+            
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+              AI 관찰일지
+            </h1>
+            <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto mb-10">
+              간단한 관찰 기록으로 전문가 수준의 분석 리포트를 받아보세요
+            </p>
+
+            {/* Steps */}
+            <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto mb-12">
+              {[
+                { step: 1, icon: ClipboardList, label: '템플릿 선택', color: 'from-blue-500 to-cyan-500' },
+                { step: 2, icon: FileText, label: '관찰 기록', color: 'from-violet-500 to-purple-500' },
+                { step: 3, icon: Brain, label: 'AI 분석', color: 'from-emerald-500 to-teal-500' },
+              ].map((item) => (
+                <div key={item.step} className="flex flex-col items-center">
+                  <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-3 shadow-lg`}>
+                    <item.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{item.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Main Content */}
-        <section className="py-8 px-4 relative z-10">
-          <div className="container mx-auto max-w-6xl">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 h-12 bg-white rounded-lg p-1 shadow mb-8 max-w-md mx-auto">
-                <TabsTrigger 
-                  value="new-observation" 
-                  className="text-sm data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-md"
-                >
-                  <Plus className="h-4 w-4 mr-1.5" />
-                  새 관찰
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="my-observations" 
-                  className="text-sm data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-md"
-                >
-                  <FileText className="h-4 w-4 mr-1.5" />
-                  내 기록
-                </TabsTrigger>
-              </TabsList>
+        {/* Tab Navigation */}
+        <section className="px-4 pb-8">
+          <div className="container mx-auto max-w-4xl">
+            <div className="flex justify-center gap-2 mb-8">
+              <button
+                onClick={() => setActiveTab("new")}
+                className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                  activeTab === "new"
+                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                <Plus className="w-4 h-4 inline mr-2" />
+                새 관찰
+              </button>
+              <button
+                onClick={() => setActiveTab("history")}
+                className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                  activeTab === "history"
+                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                <FileText className="w-4 h-4 inline mr-2" />
+                내 기록 ({sessions.length})
+              </button>
+            </div>
 
-              {/* New Observation Tab */}
-              <TabsContent value="new-observation" className="space-y-8">
-                {/* Template Selection */}
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <h2 className="text-2xl font-bold mb-2 text-gray-900">
-                      관찰 템플릿 선택하기
-                    </h2>
-                    <p className="text-gray-600">
-                      관찰하고 싶은 주제를 선택해주세요
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                    {templates.map((template) => (
-                      <Card 
-                        key={template.id} 
-                        className="bg-white hover:shadow-lg transition-all cursor-pointer border-2 hover:border-blue-300"
-                        onClick={() => startNewSession(template)}
-                      >
-                        <CardHeader>
-                          <div className="flex items-start gap-4">
-                            <div className={`w-12 h-12 ${template.template_type === 'basic' ? 'bg-blue-100' : 'bg-purple-100'} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                              <ClipboardList className={`h-6 w-6 ${template.template_type === 'basic' ? 'text-blue-600' : 'text-purple-600'}`} />
-                            </div>
-                            <div className="flex-1">
-                              <CardTitle className="text-xl font-bold text-gray-900 mb-2">{template.name}</CardTitle>
-                              <CardDescription className="text-sm">
-                                {getDomainDisplayName(template.domain)}
-                              </CardDescription>
-                            </div>
-                            {template.template_type === 'detailed' && (
-                              <Badge className="bg-purple-100 text-purple-700 border-0">
-                                상세
-                              </Badge>
-                            )}
-                          </div>
-                        </CardHeader>
-                        
-                        <CardContent className="space-y-4">
-                          {/* Key Features */}
-                          <div className="space-y-2">
-                            {template.template_type === 'basic' ? (
-                              <>
-                                <div className="flex items-center gap-2 text-sm text-gray-700">
-                                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                                  <span>기본 행동 패턴 분석</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-sm text-gray-700">
-                                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                                  <span>2-3페이지 리포트</span>
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <div className="flex items-center gap-2 text-sm text-gray-700">
-                                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-                                  <span>심층 발달 상태 분석</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-sm text-gray-700">
-                                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-                                  <span>5-8페이지 전문가 리포트</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-sm text-gray-700">
-                                  <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
-                                  <span>교육 컨텐츠 추천</span>
-                                </div>
-                              </>
-                            )}
-                          </div>
-
-                          {/* Info Row */}
-                          <div className="flex items-center justify-between pt-4 border-t">
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                              <Clock className="h-4 w-4" />
-                              <span>{template.duration}</span>
-                            </div>
-                            <div className={`text-sm font-semibold ${template.template_type === 'basic' ? 'text-blue-600' : 'text-purple-600'}`}>
-                              {isBetaTestPeriod() ? '무료' : (template.template_type === 'basic' ? '3 토큰' : '5 토큰')}
-                            </div>
-                          </div>
-
-                          <Button 
-                            className={`w-full ${
-                              template.template_type === 'basic' 
-                                ? 'bg-blue-600 hover:bg-blue-700' 
-                                : 'bg-purple-600 hover:bg-purple-700'
-                            } text-white`}
-                          >
-                            시작하기
-                            <ArrowRight className="h-4 w-4 ml-2" />
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-
-              </TabsContent>
-
-              {/* My Observations Tab */}
-              <TabsContent value="my-observations" className="space-y-8">
-                <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold mb-2 text-gray-900">
-                    내 관찰 기록
-                  </h2>
-                  <p className="text-gray-600">
-                    작성한 관찰일지를 확인하세요
-                  </p>
-                </div>
-
-                {sessions.length === 0 ? (
-                  <Card className="bg-white max-w-md mx-auto">
-                    <CardContent className="text-center py-12">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <ClipboardList className="h-8 w-8 text-gray-400" />
+            {/* New Observation */}
+            {activeTab === "new" && (
+              <div className="space-y-4">
+                {templates.map((template) => (
+                  <div
+                    key={template.id}
+                    onClick={() => startNewSession(template)}
+                    className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-lg transition-all cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 ${
+                        template.template_type === 'basic' 
+                          ? 'bg-gradient-to-br from-blue-500 to-cyan-500' 
+                          : 'bg-gradient-to-br from-violet-500 to-purple-500'
+                      }`}>
+                        <ClipboardList className="w-7 h-7 text-white" />
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">아직 작성한 관찰일지가 없습니다</h3>
-                      <p className="text-gray-600 mb-6 text-sm">
-                        첫 관찰일지를 작성해보세요
-                      </p>
-                      <Button 
-                        className="bg-blue-600 hover:bg-blue-700 text-white"
-                        onClick={() => setActiveTab("new-observation")}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        새 관찰 시작
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {sessions.map((session) => (
-                      <Card 
-                        key={session.id}
-                        className="bg-white hover:shadow-md transition-all cursor-pointer"
-                        onClick={() => viewSession(session)}
-                      >
-                        <CardHeader className="pb-3">
-                          <div className="flex justify-between items-start">
-                            <CardTitle className="text-base font-semibold text-gray-900">
-                              {session.session_name || '관찰일지'}
-                            </CardTitle>
-                            <Badge className={getStatusColor(session.status)} variant="outline">
-                              {getStatusText(session.status)}
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white truncate">
+                            {template.name}
+                          </h3>
+                          {template.template_type === 'detailed' && (
+                            <Badge className="bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 border-0 text-xs">
+                              상세
                             </Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                              <Calendar className="h-3.5 w-3.5" />
-                              {new Date(session.created_at).toLocaleDateString('ko-KR')}
-                            </div>
-                            {session.family_member && (
-                              <div className="flex items-center gap-2 text-sm text-gray-600">
-                                <User className="h-3.5 w-3.5" />
-                                {session.family_member.name}
-                              </div>
-                            )}
-                          </div>
-
-                          {session.analysis_data && (
-                            <div className="bg-green-50 rounded-lg p-2 border border-green-200">
-                              <div className="flex items-center gap-2">
-                                <Brain className="h-3.5 w-3.5 text-green-600" />
-                                <span className="text-xs font-medium text-green-700">분석 완료</span>
-                              </div>
-                            </div>
                           )}
-                          
-                          <Button 
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm"
-                            size="sm"
-                          >
-                            <Eye className="h-3.5 w-3.5 mr-1.5" />
-                            결과 보기
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    ))}
+                        </div>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          {getDomainDisplayName(template.domain)} • {template.duration}
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center gap-3">
+                        <span className={`text-sm font-semibold ${
+                          template.template_type === 'basic' ? 'text-blue-600' : 'text-violet-600'
+                        }`}>
+                          {isBetaTestPeriod() ? '무료' : (template.template_type === 'basic' ? '3 토큰' : '5 토큰')}
+                        </span>
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-slate-900 dark:group-hover:bg-white transition-colors">
+                          <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-white dark:group-hover:text-slate-900 transition-colors" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                )}
-              </TabsContent>
+                ))}
+              </div>
+            )}
 
-              {/* Session Form Tab */}
-              <TabsContent value="start-session">
-                {selectedTemplate && (
-                  <div className="max-w-4xl mx-auto">
-                    <div className="mb-8 text-center">
-                      <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                        {selectedTemplate.name} 시작
-                      </h2>
-                      <p className="text-gray-600">
-                        AI가 분석할 관찰 데이터를 입력해주세요
-                      </p>
+            {/* History */}
+            {activeTab === "history" && (
+              <>
+                {sessions.length === 0 ? (
+                  <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-200 dark:border-slate-800">
+                    <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
+                      <ClipboardList className="w-8 h-8 text-slate-400" />
                     </div>
-                    <div className="block md:hidden">
-                      <ObservationFormMobile 
-                        template={selectedTemplate}
-                        onSessionCreated={handleSessionCreated}
-                        onBack={() => setActiveTab("new-observation")}
-                      />
-                    </div>
-                    <div className="hidden md:block">
-                      <ObservationSessionForm 
-                        onSessionCreated={handleSessionCreated}
-                      />
-                    </div>
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                      아직 기록이 없습니다
+                    </h3>
+                    <p className="text-slate-500 mb-6">첫 관찰일지를 작성해보세요</p>
+                    <Button 
+                      onClick={() => setActiveTab("new")}
+                      className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      새 관찰 시작
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {sessions.map((session) => {
+                      const status = getStatusConfig(session.status);
+                      return (
+                        <div
+                          key={session.id}
+                          onClick={() => viewSession(session)}
+                          className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-lg transition-all cursor-pointer group"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                                session.analysis_data 
+                                  ? 'bg-gradient-to-br from-emerald-500 to-teal-500' 
+                                  : 'bg-slate-100 dark:bg-slate-800'
+                              }`}>
+                                {session.analysis_data ? (
+                                  <CheckCircle2 className="w-6 h-6 text-white" />
+                                ) : (
+                                  <FileText className="w-6 h-6 text-slate-400" />
+                                )}
+                              </div>
+                              
+                              <div>
+                                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">
+                                  {session.session_name || '관찰일지'}
+                                </h3>
+                                <div className="flex items-center gap-3 text-sm text-slate-500">
+                                  <span className="flex items-center gap-1">
+                                    <Calendar className="w-3.5 h-3.5" />
+                                    {new Date(session.created_at).toLocaleDateString('ko-KR')}
+                                  </span>
+                                  {session.family_member && (
+                                    <span className="flex items-center gap-1">
+                                      <User className="w-3.5 h-3.5" />
+                                      {session.family_member.name}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center gap-3">
+                              <Badge className={`${status.bg} ${status.text} border-0`}>
+                                {status.label}
+                              </Badge>
+                              <Button 
+                                size="sm" 
+                                className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100"
+                              >
+                                <Eye className="w-4 h-4 mr-1" />
+                                보기
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
-              </TabsContent>
-
-              {/* Results Tab */}
-              <TabsContent value="view-results">
-                {selectedSession && (
-                  <div className="max-w-6xl mx-auto">
-                    <ObservationResults 
-                      session={selectedSession} 
-                      onBack={() => setActiveTab("my-observations")}
-                    />
-                  </div>
-                )}
-              </TabsContent>
-            </Tabs>
+              </>
+            )}
           </div>
         </section>
       </div>

@@ -1581,34 +1581,35 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             </div>
           )}
 
-          {/* Voice Chat Interface - 자유 대화와 구조화 상담 모두 표시 */}
+          {/* Voice Chat Interface - 오른쪽 플로팅 패널 */}
           {!isUICollapsed && (
-          <Card className="bg-slate-900/80 backdrop-blur-xl border border-purple-500/30 p-4 sm:p-8 mb-6 max-w-2xl w-full animate-scale-in shadow-xl shadow-purple-500/20 pointer-events-none">
-            <div className="pointer-events-auto">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className={`w-4 h-4 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-purple-500/50'}`} />
-              <span className="text-lg font-medium text-white">
+          <div className="fixed right-4 top-20 bottom-4 w-80 md:w-96 z-40 flex flex-col pointer-events-none">
+            <Card className="bg-slate-900/90 backdrop-blur-xl border border-purple-500/30 p-4 flex-1 animate-scale-in shadow-xl shadow-purple-500/20 overflow-hidden flex flex-col">
+            <div className="pointer-events-auto flex flex-col h-full">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-purple-500/50'}`} />
+              <span className="text-sm font-medium text-white">
                 {isConnected ? '연결됨' : '대기중'}
               </span>
             </div>
 
             {/* AI Speaking Indicator */}
             {isSpeaking && (
-              <div className="flex items-center justify-center gap-3 mb-6 animate-fade-in">
+              <div className="flex items-center justify-center gap-2 mb-4 animate-fade-in">
                 <div className="flex gap-1">
-                  <div className="w-2 h-8 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-10 bg-primary rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-6 bg-primary rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
+                  <div className="w-1.5 h-6 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />
+                  <div className="w-1.5 h-8 bg-primary rounded-full animate-pulse" style={{ animationDelay: '150ms' }} />
+                  <div className="w-1.5 h-5 bg-primary rounded-full animate-pulse" style={{ animationDelay: '300ms' }} />
                 </div>
-                <span className="text-sm text-muted-foreground">AI가 말하고 있습니다...</span>
+                <span className="text-xs text-muted-foreground">AI가 말하고 있습니다...</span>
               </div>
             )}
 
             {/* Subtitles Toggle + Messages */}
             {messages.length > 0 && showConversationUI && (
-              <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <Button variant="ghost" size="sm" onClick={() => {
+              <div className="flex-1 min-h-0 flex flex-col mb-3">
+                <div className="flex justify-between items-center mb-2 flex-wrap gap-1">
+                  <Button variant="ghost" size="sm" className="text-xs h-7 px-2" onClick={() => {
                     setShowConversationUI(true);
                     setShowSubtitles((v) => !v);
                   }}>
@@ -1616,7 +1617,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                   </Button>
                   
                   {/* 대화 저장/공유 버튼 */}
-                  <div className="flex gap-2">
+                  <div className="flex gap-1">
                     <Button
                       variant="outline"
                       size="sm"
@@ -1624,56 +1625,56 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                         setShowConversationUI(true);
                         setShowTimeline(!showTimeline);
                       }}
-                      className="gap-2"
+                      className="gap-1 h-7 px-2 text-xs"
                     >
-                      <Clock className="w-4 h-4" />
-                      <span className="hidden sm:inline">타임라인</span>
+                      <Clock className="w-3 h-3" />
+                      타임라인
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={downloadConversation}
-                      className="gap-2"
+                      className="gap-1 h-7 px-2 text-xs"
                     >
-                      <Download className="w-4 h-4" />
-                      <span className="hidden sm:inline">다운로드</span>
+                      <Download className="w-3 h-3" />
+                      다운로드
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={copyToClipboard}
-                      className="gap-2"
+                      className="gap-1 h-7 px-2 text-xs"
                     >
-                      <Copy className="w-4 h-4" />
-                      <span className="hidden sm:inline">복사</span>
+                      <Copy className="w-3 h-3" />
+                      복사
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={shareToKakao}
-                      className="gap-2"
+                      className="gap-1 h-7 px-2 text-xs"
                     >
-                      <Share2 className="w-4 h-4" />
-                      <span className="hidden sm:inline">카톡공유</span>
+                      <Share2 className="w-3 h-3" />
+                      카톡공유
                     </Button>
                   </div>
                 </div>
                 {showSubtitles && (
-                  <div className="max-h-64 overflow-y-auto space-y-3">
+                  <div className="flex-1 overflow-y-auto space-y-2 pr-1">
                     {messages.map((msg, idx) => (
                       <div
                         key={`${msg.responseId || ''}-${idx}`}
-                        className={`p-3 rounded-lg ${
+                        className={`p-2 rounded-lg text-sm ${
                           msg.role === 'user'
-                            ? 'bg-primary/10 ml-8'
-                            : 'bg-muted mr-8'
+                            ? 'bg-primary/10 ml-4'
+                            : 'bg-muted mr-4'
                         }`}
                       >
                         <div className="flex items-start gap-2">
                           <span className="text-xs font-semibold text-muted-foreground">
                             {msg.role === 'user' ? '나' : 'AI'}
                           </span>
-                          <p className="text-sm flex-1 whitespace-pre-wrap break-words leading-relaxed">{msg.content}</p>
+                          <p className="text-xs flex-1 whitespace-pre-wrap break-words leading-relaxed">{msg.content}</p>
                         </div>
                       </div>
                     ))}
@@ -1685,18 +1686,18 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
 
             {/* 그룹 세션 발언권 표시 */}
             {groupSessionId && isConnected && (
-              <div className="mb-3 px-4 py-3 bg-background/80 backdrop-blur-sm rounded-lg border border-border/50">
+              <div className="mb-2 px-3 py-2 bg-background/80 backdrop-blur-sm rounded-lg border border-border/50">
                 {currentSpeaker === currentUserId ? (
-                  <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                      <span className="text-sm font-medium text-foreground">발언 중</span>
+                      <span className="text-xs font-medium text-foreground">발언 중</span>
                     </div>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={releaseSpeakingTurn}
-                      className="h-8 px-3"
+                      className="h-6 px-2 text-xs"
                     >
                       발언권 반납
                     </Button>
@@ -1704,19 +1705,19 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                 ) : currentSpeaker ? (
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-yellow-500 rounded-full" />
-                    <span className="text-sm text-muted-foreground">{speakerName}님이 발언 중입니다</span>
+                    <span className="text-xs text-muted-foreground">{speakerName}님이 발언 중입니다</span>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-gray-400 rounded-full" />
-                      <span className="text-sm text-muted-foreground">발언자 없음</span>
+                      <span className="text-xs text-muted-foreground">발언자 없음</span>
                     </div>
                     <Button
                       size="sm"
                       variant="default"
                       onClick={requestSpeakingTurn}
-                      className="h-8 px-3"
+                      className="h-6 px-2 text-xs"
                     >
                       발언 요청
                     </Button>
@@ -1726,28 +1727,28 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             )}
 
             {/* Controls */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2 mt-auto">
               {!isConnected ? (
                 <Button
                   onClick={startConversation}
                   disabled={isLoading}
-                  size="lg"
+                  size="default"
                   className="w-full gap-2"
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                       연결중...
                     </>
                   ) : (
                     <>
-                      <Mic className="w-5 h-5" />
+                      <Mic className="w-4 h-4" />
                       대화 시작
                     </>
                   )}
                 </Button>
               ) : (
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2">
                   {/* 텍스트 입력창 */}
                   <div className="flex gap-2">
                     <Input
@@ -1755,16 +1756,16 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                       onChange={(e) => setTextInput(e.target.value)}
                       onKeyPress={handleKeyPress}
                       placeholder="텍스트로 메시지 보내기..."
-                      className="flex-1"
+                      className="flex-1 h-9 text-sm"
                       disabled={isSpeaking}
                     />
                     <Button
                       onClick={sendTextMessage}
                       disabled={!textInput.trim() || isSpeaking}
-                      size="lg"
-                      className="gap-2"
+                      size="default"
+                      className="gap-1 h-9 px-3"
                     >
-                      <MessageSquare className="w-5 h-5" />
+                      <MessageSquare className="w-4 h-4" />
                       전송
                     </Button>
                   </div>
@@ -1773,25 +1774,25 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
                   <Button
                     onClick={endConversation}
                     variant="destructive"
-                    size="lg"
+                    size="default"
                     className="w-full gap-2"
                   >
-                    <Phone className="w-5 h-5" />
+                    <Phone className="w-4 h-4" />
                     종료
                   </Button>
                 </div>
               )}
 
               {isConnected && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground justify-center">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground justify-center">
                   {isSpeaking ? (
                     <>
-                      <MicOff className="w-4 h-4" />
+                      <MicOff className="w-3 h-3" />
                       <span>AI가 말하는 동안 대기중...</span>
                     </>
                   ) : (
                     <>
-                      <Mic className="w-4 h-4 text-green-500" />
+                      <Mic className="w-3 h-3 text-green-500" />
                       <span>마이크가 활성화되어 있습니다</span>
                     </>
                   )}
@@ -1800,6 +1801,7 @@ const MetaverseVoiceCounseling = ({ mode = 'free', structuredConfig, roleplaySce
             </div>
             </div>
           </Card>
+          </div>
           )}
 
           {/* 타임라인 패널 */}

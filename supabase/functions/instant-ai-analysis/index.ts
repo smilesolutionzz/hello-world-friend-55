@@ -242,7 +242,7 @@ ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
 - 순수 JSON만 반환 (마크다운이나 다른 텍스트 없이)
 - 학술적 근거와 실용성을 모두 갖춘 PRO급 분석 제공`;
 
-    // 심층 분석을 위해 gemini-2.5-pro 모델 사용
+    // 빠른 분석을 위해 gemini-2.5-flash 모델 사용 (속도 최적화)
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -250,7 +250,7 @@ ${targetLabel ? `**분석 대상:** ${targetLabel}` : ''}
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-pro',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { 
             role: 'system', 

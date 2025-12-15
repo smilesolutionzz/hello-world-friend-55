@@ -379,11 +379,11 @@ const PremiumAssessment = () => {
             <div className="flex items-center justify-center gap-2 mb-2">
               <Badge className="bg-purple-500 text-white text-base px-4 py-2 font-bold shadow-lg">
                 <Coins className="w-4 h-4 mr-2" />
-                각 검사당 20토큰 소비
+                각 검사당 2,000원
               </Badge>
             </div>
             <p className="text-sm text-muted-foreground/80 text-center px-4">
-              프리미엄 검사 시작 시 자동으로 20토큰이 차감됩니다
+              프리미엄 검사 시작 시 자동으로 2,000원이 차감됩니다
             </p>
           </div>
         </div>
